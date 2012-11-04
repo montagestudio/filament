@@ -1,0 +1,10 @@
+
+.header {
+    padding: 10px;
+    background: hsl(0,0%,30%);
+    color: hsl(0,0%,70%);
+}
+
+.header .logo {
+    width: 135px;
+}

@@ -1,0 +1,10 @@
+{
+    "name": "filament",
+    "version": "0.0.0",
+    "dependencies": {
+        "montage": "*",
+        "q": "*",
+        "q-comm": "*",
+        "palette": "*"
+    }
+}

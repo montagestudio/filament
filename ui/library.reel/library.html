@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+    <title>Library</title>
+    <meta charset="utf-8">
+    
+    <link href="library.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "library"}
+                }
+            },
+            
+            "search": {
+                "prototype": "montage/ui/input-text.reel",
+                "properties": {
+                    "element": {"#": "search"}
+                }
+            }
+            
+        }
+    </script>
+
+</head>
+<body>
+    
+    <aside data-montage-id="library" class="library">
+        
+        <nav class="tabs">
+            <button class="tab active">Montage</button>
+            <button class="tab">Custom</button>
+        </nav>
+        
+        <div class="search">
+            <input data-montage-id="search" class="search-input" type="search" placeholder="Search" autocomplete="on" />
+        </div>
+        
+        <ul class="list">
+            <li class="list-item stared">
+                <div class="list-item-child component"></div>
+                <div class="list-item-child component-description">Compontent 1</div>
+                <button class="list-item-child component-star" data-icon="&#9733;"></button>
+            </li>
+            <li class="list-item stared">
+                <div class="list-item-child component"></div>
+                <div class="list-item-child component-description">Compontent 5</div>
+                <button class="list-item-child component-star" data-icon="&#9733;"></button>
+            </li>
+            <li class="list-item">
+                <div class="list-item-child component"></div>
+                <div class="list-item-child component-description">Compontent 3</div>
+                <button class="list-item-child component-star" data-icon="&#9733;"></button>
+            </li>
+            <li class="list-item">
+                <div class="list-item-child component"></div>
+                <div class="list-item-child component-description">Compontent 4</div>
+                <button class="list-item-child component-star" data-icon="&#9733;"></button>
+            </li>
+            <li class="list-item">
+                <div class="list-item-child component"></div>
+                <div class="list-item-child component-description">Compontent 5</div>
+                <button class="list-item-child component-star" data-icon="&#9733;"></button>
+            </li>
+        </ul>
+        
+    </aside>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+.stage {
+    position: relative;
+    -webkit-flex: 1 1 auto;
+    background: hsl(0,0%,80%);
+}
+
+.device {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+.app {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+
+@media (min-width:1500px) and (min-height:800px) {
+    
+    .stage {
+        display: -webkit-flex;
+        -webkit-justify-content: center;
+        -webkit-align-items: center;
+    }
+    
+    .device {
+        position: relative;
+        width: 800px;
+        height: 600px;
+        box-sizing: content-box;
+        border: 30px solid #333;
+        border-width: 60px 80px;
+        border-radius: 30px;
+    }
+
+}

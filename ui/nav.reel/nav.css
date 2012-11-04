@@ -1,0 +1,53 @@
+
+/* nav ----------------------------------- */
+
+.nav {
+	background-color: hsl(0,0%,20%);
+	margin: 0;
+	padding-bottom: 5px;
+	list-style: none;
+	height: 100%;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    -webkit-justify-content: space-between;
+}
+
+.nav .logo {
+    display: block;
+	width: 50px;
+	height: 50px;
+	margin: 5px; 
+    border-radius: 10px;
+	background: url(../../assets/img/logo-icon.png) no-repeat center;
+	background-size: 40px;
+}
+
+
+
+.nav button {
+    display: block;
+	width: 50px;
+	height: 50px;
+	padding: 0;
+	margin: 5px; 
+    font-size: 50px;
+    border: none;
+    border-radius: 10px;
+	background-color: hsl(0,0%,25%);
+	color: hsl(0,0%,50%);
+	cursor: pointer;
+}
+
+.nav button:hover {
+    color: hsl(0,0%,70%);
+	background-color: hsl(0,0%,30%);
+}
+
+.nav button:active,
+.nav button.active {
+    margin: 5px 0 5px 10px;
+    border-radius: 10px 0 0 10px;
+    color: hsl(0,0%,30%);
+	background-color: hsl(0,0%,70%);
+	cursor: default;
+}

@@ -1,0 +1,6 @@
+[submodule "node_modules/montage"]
+	path = node_modules/montage
+	url = git@github.com:declarativ/montage.git
+[submodule "node_modules/palette"]
+	path = node_modules/palette
+	url = git@github.com:declarativ/palette.git

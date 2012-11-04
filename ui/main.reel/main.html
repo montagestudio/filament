@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+    <title>Main</title>
+    <meta charset="utf-8">
+    
+    <link href="main.css" rel="stylesheet" />
+    <link href="../../assets/icons/style.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "main"}
+                }
+            },
+
+            "header": {
+                "prototype": "ui/header.reel",
+                "properties": {
+                    "element": {"#": "header"}
+                }
+            },
+            
+            "nav": {
+                "prototype": "ui/nav.reel",
+                "properties": {
+                    "element": {"#": "nav"}
+                }
+            },
+            
+            "octopus": {
+                "prototype": "ui/octopus.reel",
+                "properties": {
+                    "element": {"#": "octopus"}
+                }
+            },
+            
+            "stage": {
+                "prototype": "ui/stage.reel",
+                "properties": {
+                    "element": {"#": "stage"}
+                }
+            },
+            
+            "configurator": {
+                "prototype": "ui/configurator.reel",
+                "properties": {
+                    "element": {"#": "configurator"}
+                }
+            },
+            
+            "library": {
+                "prototype": "ui/library.reel",
+                "properties": {
+                    "element": {"#": "library"}
+                }
+            }
+            
+        }
+    </script>
+
+</head>
+<body>
+
+    <div data-montage-id="main" class="main">
+        
+        <nav data-montage-id="nav"></nav>
+        <div class="view">
+            <header data-montage-id="header"></header>
+            <div class="wrapper">
+                <div class="editor">
+                    <div data-montage-id="octopus"></div>
+                    <div data-montage-id="stage"></div>
+                </div>
+                <aside data-montage-id="configurator"></aside>
+                <aside data-montage-id="library"></aside>
+            </div>
+        </div>
+        
+    </div>
+
+</body>
+</html>
