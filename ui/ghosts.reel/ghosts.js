@@ -1,4 +1,4 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component;
 
-exports.Octopus = Montage.create(Component, {});
+exports.Ghosts = Montage.create(Component, {});

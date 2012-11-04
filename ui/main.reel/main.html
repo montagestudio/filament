@@ -14,13 +14,6 @@
                     "element": {"#": "main"}
                 }
             },
-
-            "header": {
-                "prototype": "ui/header.reel",
-                "properties": {
-                    "element": {"#": "header"}
-                }
-            },
             
             "nav": {
                 "prototype": "ui/nav.reel",
@@ -29,10 +22,24 @@
                 }
             },
             
-            "octopus": {
-                "prototype": "ui/octopus.reel",
+            "library": {
+                "prototype": "ui/library.reel",
                 "properties": {
-                    "element": {"#": "octopus"}
+                    "element": {"#": "library"}
+                }
+            },
+            
+            "header": {
+                "prototype": "ui/header.reel",
+                "properties": {
+                    "element": {"#": "header"}
+                }
+            },
+            
+            "tree": {
+                "prototype": "ui/tree.reel",
+                "properties": {
+                    "element": {"#": "tree"}
                 }
             },
             
@@ -43,17 +50,17 @@
                 }
             },
             
+            "ghosts": {
+                "prototype": "ui/ghosts.reel",
+                "properties": {
+                    "element": {"#": "ghosts"}
+                }
+            },
+            
             "configurator": {
                 "prototype": "ui/configurator.reel",
                 "properties": {
                     "element": {"#": "configurator"}
-                }
-            },
-            
-            "library": {
-                "prototype": "ui/library.reel",
-                "properties": {
-                    "element": {"#": "library"}
                 }
             }
             
@@ -66,15 +73,16 @@
     <div data-montage-id="main" class="main">
         
         <nav data-montage-id="nav"></nav>
+        <aside data-montage-id="library"></aside>
         <div class="view">
             <header data-montage-id="header"></header>
             <div class="wrapper">
                 <div class="editor">
-                    <div data-montage-id="octopus"></div>
+                    <div data-montage-id="tree"></div>
                     <div data-montage-id="stage"></div>
+                    <div data-montage-id="ghosts"></div>
                 </div>
                 <aside data-montage-id="configurator"></aside>
-                <aside data-montage-id="library"></aside>
             </div>
         </div>
         

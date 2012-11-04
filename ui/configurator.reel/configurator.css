@@ -5,8 +5,6 @@
     width: 240px;
     background: hsl(0,0%,50%);
     padding: 10px 10px 0 10px;
-    border-left: 1px solid hsl(0,0%,60%);
-    border-right: 1px solid hsl(0,0%,40%);
 }
 
 
@@ -28,7 +26,6 @@
 /* List --------------------------------- */
 
 .configurator .component {
-    -webkit-flex: 1 1 auto;
     margin-bottom: 10px;
     background: hsl(0,0%,70%);
 }
@@ -37,11 +34,50 @@
     -webkit-flex: 0 0 auto;
 }
 
+
+/* Header --------------------------------- */
+
+.configurator .configurator-header {
+    display: -webkit-flex;
+    -webkit-justify-content: space-between;
+    -webkit-align-items: center;
+    padding-right: 10px;
+}
+
 .configurator .title {
     margin: 0;
     padding: 10px;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1;
+}
+
+.configurator .star {
+    visibility: hidden;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 4px;
+    border: 1px solid hsla(0,0%,70%,0);
+    background: transparent;
+    color: hsl(0,0%,60%);
+    font-size: 53px;
+    line-height: .5;
+    text-align: center;
+}
+
+.configurator .configurator-header.stared .star,
+.configurator .configurator-header:hover .star {
+    visibility: visible;
+}
+
+.configurator .star:hover {
+    cursor: pointer;
+    border: 1px solid hsl(0,0%,70%);
+    background: hsl(0,0%,90%);
+}
+
+.configurator .star:active {
+    background: transparent;
 }
 
 
@@ -64,7 +100,7 @@
     -webkit-align-items: center;
     -webkit-justify-content: space-between;
     padding: 10px;
-    font-size: 16px;
+    font-size: 14px;
     border-top: 1px solid hsl(0,0%,90%);
     border-bottom: 1px solid hsl(0,0%,70%);
 	background: hsl(0,0%,80%);
@@ -103,28 +139,4 @@
 
 .configurator .bound:hover {
     background: hsl(0,0%,100%);
-}
-
-.configurator .bound:after {
-    content: "";
-    position: absolute;
-    z-index: 1;
-    width: 4px;
-    height: 200px;
-    left: 9px;
-    background: hsl(0,0%,60%);
-    pointer-events: none;
-    visibility: hidden;
-}
-
-.configurator:hover .bound:after {
-    visibility: visible;
-}
-
-.configurator .component:nth-of-type(1) .bound:after {
-    top: 22px;
-}
-
-.configurator .component:nth-of-type(2) .bound:after {
-    bottom: 22px;
 }

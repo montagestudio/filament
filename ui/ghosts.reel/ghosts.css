@@ -1,0 +1,28 @@
+/* Ghosts */
+
+.ghosts {
+    display: -webkit-flex;
+    -webkit-justify-content: center;
+    background: hsl(0,0%,70%);
+}
+
+.ghosts button {
+    display: block;
+    padding: 2px 8px;
+    margin: 10px 3px;
+    font-size: 13px;
+    border: none;
+    border: 1px solid hsl(0, 0%, 90%);
+    background-color: hsl(0, 0%, 80%);
+    color: hsl(0, 0%, 20%);
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.ghosts button:hover {
+	background-color: hsl(0,0%,90%);
+}
+
+.ghosts button:active {
+	background-color: hsl(0,0%,70%);
+}

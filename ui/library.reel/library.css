@@ -4,9 +4,8 @@
     -webkit-flex-direction: column;
     padding: 10px;
     background: hsl(0,0%,50%);
-    border-left: 1px solid hsl(0,0%,60%);
-    border-right: 1px solid hsl(0,0%,40%);
 }
+
 
 /* List --------------------------------- */
 
@@ -66,7 +65,7 @@
     -webkit-align-items: center;
     
     padding: 10px 0;
-    font-size: 16px;
+    font-size: 14px;
     border-top: 1px solid hsl(0,0%,90%);
     border-bottom: 1px solid hsl(0,0%,70%);
 	background: hsl(0,0%,80%);

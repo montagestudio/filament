@@ -1,12 +1,15 @@
-/* Octopus */
+/* tree */
 
-.octopus {
+.tree {
     display: -webkit-flex;
+    -webkit-justify-content: space-between;
     background: hsl(0,0%,70%);
 }
 
 
-.octopus button {
+
+
+.tree button {
     display: block;
 	padding: 5px;
 	margin: 0; 
@@ -18,13 +21,29 @@
 	cursor: pointer;
 }
 
-.octopus button:hover {
+.tree button:hover {
 	background-color: hsl(0,0%,75%);
 }
 
-.octopus button:active,
-.octopus button.active {
+.tree button:active,
+.tree button.active {
     color: hsl(0,0%,80%);
 	background-color: hsl(0,0%,60%);
 	cursor: default;
+}
+
+
+/* Octopus ----------------------------- */
+
+.tree .octopus {
+    display: -webkit-flex;
+    background: hsl(0,0%,70%);
+}
+
+
+/* Owner ----------------------------- */
+
+.tree .owner {
+    background: hsl(200,100%,70%);
+    border: none;
 }
