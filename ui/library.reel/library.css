@@ -86,11 +86,23 @@
 .library .component {
     width: 60px;
     height: 30px;
-    border: 1px solid hsl(0,0%,70%);
-    border-radius: 4px;
-	background: hsl(0,0%,90%);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
 	-webkit-user-drag: element;
 }
+
+.library .list-item:nth-child(1) .component { background-image: url(../../assets/components/button.png); }
+.library .list-item:nth-child(2) .component { background-image: url(../../assets/components/input-checkbox.png); }
+.library .list-item:nth-child(3) .component { background-image: url(../../assets/components/input-radio.png); }
+.library .list-item:nth-child(4) .component { background-image: url(../../assets/components/select.png); }
+.library .list-item:nth-child(5) .component { background-image: url(../../assets/components/input-text.png); }
+.library .list-item:nth-child(6) .component { background-image: url(../../assets/components/textarea.png); }
+.library .list-item:nth-child(7) .component { background-image: url(../../assets/components/input-range.png); }
+.library .list-item:nth-child(8) .component { background-image: url(../../assets/components/progress.png); }
+
+
+
 
 .library .component:hover {
 	cursor: move;
