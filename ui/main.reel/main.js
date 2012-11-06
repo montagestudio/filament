@@ -1,6 +1,7 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
-    Connection = require("q-comm");
+    Connection = require("q-comm"),
+    AuthoringDocument = require("palette/core/authoring-document").AuthoringDocument;
 
 if (typeof globals != "undefined") {
     var backend = Connection(new WebSocket("ws://localhost:" + globals.nodePort));
@@ -18,15 +19,27 @@ if (typeof globals != "undefined") {
 
 exports.Main = Montage.create(Component, {
 
-    templateDidLoad: {
-        value: function() {
-            //console.log("main templateDidLoad")
-        }
+    prototypes:{
+        value: require("palette/core/components.js").components
+    },
+
+    workbench: {
+        value: null
     },
 
     prepareForDraw: {
-        value: function() {
-            //console.log("main prepareForDraw")
+        value: function () {
+            var doc = AuthoringDocument.create();
+            this.workbench.currentDocument = doc;
+            this.addEventListener("action", this, false);
+
+        }
+    },
+
+    handlePrototypeButtonAction:{
+        value:function (evt) {
+            var prototypeEntry = evt.target.prototypeObject;
+            this.workbench.addComponent(prototypeEntry.serialization.prototype, prototypeEntry.name, prototypeEntry.html);
         }
     }
 

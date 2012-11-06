@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="library-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "library-cell"}
+            }
+        },
+
+        "prototypeIcon": {
+            "prototype": "montage/ui/image.reel",
+            "properties": {
+                "element": {"#": "prototype-icon"}
+            },
+            "bindings": {
+                "src": {"<-": "@owner.prototypeObject.icon"}
+            }
+        },
+
+        "prototypeName": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "element": {"#": "prototype-name"},
+                "identifier": "prototypeButton"
+            },
+            "bindings": {
+                "label": {"<-": "@owner.prototypeObject.name"},
+                "prototypeObject": {"<-": "@owner.prototypeObject"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <li data-montage-id="library-cell" class="LibraryCell list-item starred">
+        <div class="list-item-child prototype-icon" data-montage-id="prototype-icon"></div>
+        <div class="list-item-child prototype-description" data-montage-id="prototype-name"></div>
+        <button class="list-item-child prototype-star" data-icon="&#9733;"></button>
+    </li>
+</body>
+</html>

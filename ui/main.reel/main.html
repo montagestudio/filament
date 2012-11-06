@@ -11,7 +11,8 @@
         {
             "owner": {
                 "properties": {
-                    "element": {"#": "main"}
+                    "element": {"#": "main"},
+                    "workbench": {"@": "workbench"}
                 }
             },
             
@@ -26,6 +27,9 @@
                 "prototype": "ui/library.reel",
                 "properties": {
                     "element": {"#": "library"}
+                },
+                "bindings": {
+                    "prototypes": {"<->": "@owner.prototypes"}
                 }
             },
             
@@ -43,8 +47,8 @@
                 }
             },
             
-            "stage": {
-                "prototype": "ui/stage.reel",
+            "workbench": {
+                "prototype": "palette/ui/workbench.reel",
                 "properties": {
                     "element": {"#": "stage"}
                 }
