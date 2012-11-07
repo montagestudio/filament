@@ -3,7 +3,7 @@ var Montage = require("montage/core/core").Montage,
     Connection = require("q-comm"),
     AuthoringDocument = require("palette/core/authoring-document").AuthoringDocument;
 
-if (typeof globals != "undefined") {
+if (typeof global !== "undefined") {
     var backend = Connection(new WebSocket("ws://localhost:" + globals.nodePort));
 
     // so you can play on the console:
@@ -11,10 +11,10 @@ if (typeof globals != "undefined") {
 
     // DEMO
     backend.get("fs").invoke("list", "/")
-    .then(function (list) {
-        console.log("File list from Node backend:", list);
-    })
-    .end();
+        .then(function (list) {
+            console.log("File list from Node backend:", list);
+        })
+        .end();
 }
 
 exports.Main = Montage.create(Component, {
