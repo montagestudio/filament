@@ -3,8 +3,8 @@ var Montage = require("montage/core/core").Montage,
     Connection = require("q-comm"),
     AuthoringDocument = require("palette/core/authoring-document").AuthoringDocument;
 
-if (typeof globals !== "undefined") {
-    var backend = Connection(new WebSocket("ws://localhost:" + globals.nodePort));
+if (typeof lumieres !== "undefined") {
+    var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
 
     // so you can play on the console:
     global.backend = backend;
