@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+    <title>Configurator</title>
+    <meta charset="utf-8">
+    
+    <link href="configurator.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "configurator"}
+                }
+            },
+            
+            "CelsiusNumber": {
+                "prototype": "montage/ui/input-number.reel",
+                "properties": {
+                    "element": {"#": "CelsiusNumber"}
+                }
+            },
+            
+            "CelsiusCheckbox1": {
+                "prototype": "montage/ui/input-checkbox.reel",
+                "properties": {
+                    "element": {"#": "CelsiusCheckbox1"}
+                }
+            },
+            
+            "CelsiusCheckbox2": {
+                "prototype": "montage/ui/input-checkbox.reel",
+                "properties": {
+                    "element": {"#": "CelsiusCheckbox2"}
+                }
+            },
+            
+            
+            "FahrenheitNumber": {
+                "prototype": "montage/ui/input-number.reel",
+                "properties": {
+                    "element": {"#": "FahrenheitNumber"}
+                }
+            },
+            
+            "FahrenheitCheckbox1": {
+                "prototype": "montage/ui/input-checkbox.reel",
+                "properties": {
+                    "element": {"#": "FahrenheitCheckbox2"}
+                }
+            },
+            
+            "FahrenheitCheckbox2": {
+                "prototype": "montage/ui/input-checkbox.reel",
+                "properties": {
+                    "element": {"#": "FahrenheitCheckbox1"}
+                }
+            },
+            
+            "search": {
+                "prototype": "montage/ui/input-text.reel",
+                "properties": {
+                    "element": {"#": "search"}
+                }
+            }
+            
+        }
+    </script>
+
+</head>
+<body>
+    
+    <aside data-montage-id="configurator" class="configurator">
+        
+        <header class="search">
+            <input data-montage-id="search" class="search-input" type="search" placeholder="Search" autocomplete="on" />
+        </header>
+        
+        <section class="component collapsed">
+            <header class="configurator-header stared">
+                <h1 class="title">Owner</h1>
+                <button class="star" data-icon="&#9733;"></button>
+            </header>
+        </section>
+        
+        <section class="component">
+            <header class="configurator-header">
+                <h1 class="title">Celsius</h1>
+                <button class="star" data-icon="&#9733;"></button>
+            </header>
+            <ul class="list">
+                <li class="list-item">
+                    <label><input data-montage-id="CelsiusNumber" type="number" value="0" /> Value</label>
+                    <div data-icon="&#59215;" class="binding bound"></div>
+                </li>
+                <li class="list-item">
+                    <label><input data-montage-id="CelsiusCheckbox1" type="checkbox" /> Label 2</label>
+                    <div class="binding"></div>
+                </li>
+                <li class="list-item">
+                    <label><input data-montage-id="CelsiusCheckbox2" type="checkbox" /> Label 3</label>
+                    <div class="binding"></div>
+                </li>
+            </ul>
+        </section>
+        
+        <section class="component">
+            <header class="configurator-header">
+                <h1 class="title">Fahrenheit</h1>
+                <button class="star" data-icon="&#9733;"></button>
+            </header>
+            <ul class="list">
+                <li class="list-item">
+                    <label><input data-montage-id="FahrenheitNumber" type="number" value="32" /> Value</label>
+                    <div data-icon="&#9652;" class="binding bound"></div>
+                </li>
+                <li class="list-item">
+                    <label><input data-montage-id="FahrenheitCheckbox1" type="checkbox" /> Label 2</label>
+                    <div class="binding"></div>
+                </li>
+                <li class="list-item">
+                    <label><input data-montage-id="FahrenheitCheckbox2" type="checkbox" /> Label 3</label>
+                    <div class="binding"></div>
+                </li>
+            </ul>
+        </section>
+        
+        <section class="component collapsed">
+            <header class="configurator-header">
+                <h1 class="title">Slider</h1>
+                <button class="star" data-icon="&#9733;"></button>
+            </header>
+        </section>
+        
+        <section class="component collapsed">
+            <header class="configurator-header">
+                <h1 class="title">Ghost 3</h1>
+                <button class="star" data-icon="&#9733;"></button>
+            </header>
+        </section>
+        
+    </aside>
+
+</body>
+</html>

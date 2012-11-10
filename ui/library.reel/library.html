@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+    <title>Library</title>
+    <meta charset="utf-8">
+    
+    <link href="library.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "library"}
+                }
+            },
+            
+            "search": {
+                "prototype": "montage/ui/input-text.reel",
+                "properties": {
+                    "element": {"#": "search"}
+                }
+            }
+            
+        }
+    </script>
+
+</head>
+<body>
+    
+    <aside data-montage-id="library" class="library">
+        
+        <nav class="tabs">
+            <button class="tab active">Library</button>
+            <button class="tab">Store</button>
+        </nav>
+        
+        <div class="search">
+            <input data-montage-id="search" class="search-input" type="search" placeholder="Search" autocomplete="on" />
+        </div>
+        
+        <ul class="list">
+            <li class="list-item stared">
+            	<div class="component-button">
+                    <div class="list-item-child component"></div>
+                    <div class="list-item-child component-description">Button</div>
+                    <button class="list-item-child component-star" data-icon="&#9733;"></button>
+            	</div>
+            </li>
+            <li class="list-item stared">
+                <div class="component-button">
+                    <div class="list-item-child component"></div>
+                    <div class="list-item-child component-description">Checkbox</div>
+                    <button class="list-item-child component-star" data-icon="&#9733;"></button>
+            	</div>
+            </li>
+            <li class="list-item">
+                <div class="component-button">
+                    <div class="list-item-child component"></div>
+                    <div class="list-item-child component-description">Radio</div>
+                    <button class="list-item-child component-star" data-icon="&#9733;"></button>
+            	</div>
+            </li>
+            <li class="list-item">
+                <div class="component-button">
+                    <div class="list-item-child component"></div>
+                    <div class="list-item-child component-description">Select</div>
+                    <button class="list-item-child component-star" data-icon="&#9733;"></button>
+            	</div>
+            </li>
+            <li class="list-item">
+                <div class="component-button">
+                    <div class="list-item-child component"></div>
+                    <div class="list-item-child component-description">Text</div>
+                    <button class="list-item-child component-star" data-icon="&#9733;"></button>
+            	</div>
+            </li>
+            <li class="list-item">
+                <div class="component-button">
+                    <div class="list-item-child component"></div>
+                    <div class="list-item-child component-description">Textarea</div>
+                    <button class="list-item-child component-star" data-icon="&#9733;"></button>
+            	</div>
+            </li>
+            <li class="list-item selected">
+                <div class="component-button">
+                	<div class="list-item-child component"></div>
+                	<div class="list-item-child component-description">Range</div>
+                	<button class="list-item-child component-star" data-icon="&#9733;"></button>
+                </div>
+                <div class="component-detail">
+                	<p>The Range component allows the selection of a value between a minimum and a maximum value.</p>
+                	<ul>
+                		<li><span class="detail-title">Module:</span> Montage Touch 1.1</li>
+                		<li><span class="detail-title">Author:</span> Montage Team</li>
+                	</ul>
+                </div>
+            </li>
+            <li class="list-item">
+                <div class="component-button">
+                    <div class="list-item-child component"></div>
+                    <div class="list-item-child component-description">Progress</div>
+                    <button class="list-item-child component-star" data-icon="&#9733;"></button>
+            	</div>
+            </li>
+        </ul>
+        
+    </aside>
+
+</body>
+</html>
