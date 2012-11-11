@@ -1,3 +1,76 @@
-.LibraryCell {
 
+.LibraryCell {
+    display: -webkit-box;
+    display: -webkit-flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;    
+    padding: 10px 5px;
+    font-size: 14px;
+    border-top: 1px solid hsl(0,0%,90%);
+    border-bottom: 1px solid hsl(0,0%,70%);
+	background: hsl(0,0%,80%);
+}
+
+.LibraryCell:hover {
+	background: hsl(0,0%,82%);
+}
+
+
+/* Icon --------------------------------- */
+
+.LibraryCell-icon {
+    width: 60px;
+    height: 40px;
+	background-size: 60px 40px;
+	background-repeat: no-repeat;
+	background-position: center;
+	-webkit-user-drag: element;
+}
+
+.library .component:hover {
+	cursor: move;
+}
+
+.library .component:active {
+	cursor: -webkit-grabbing;
+}
+
+
+/* Description --------------------------------- */
+
+.LibraryCell-button {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1; 
+}
+
+
+/* Star --------------------------------- */
+
+.LibraryCell-star {
+    visibility: hidden;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 4px;
+    border: 1px solid hsla(0,0%,70%,0);
+    background: transparent;
+    color: hsl(0,0%,60%);
+    font-size: 53px;
+    line-height: .5;
+    text-align: center;
+}
+
+.LibraryCell.starred .LibraryCell-star,
+.LibraryCell:hover .LibraryCell-star {
+    visibility: visible;
+}
+
+.LibraryCell-star:hover {
+    cursor: pointer;
+    border: 1px solid hsl(0,0%,70%);
+    background: hsl(0,0%,90%);
+}
+
+.LibraryCell-star:active {
+    background: transparent;
 }
