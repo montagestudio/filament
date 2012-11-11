@@ -9,7 +9,7 @@
 	height: 100%;
     display: -webkit-flex;
     -webkit-flex-direction: column;
-    -webkit-justify-content: space-between;
+    //-webkit-justify-content: space-between;
 }
 
 .nav .logo {
