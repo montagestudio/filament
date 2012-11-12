@@ -13,16 +13,19 @@
                 "properties": {
                     "element": {"#": "main"},
                     "workbench": {"@": "workbench"}
+                },
+                "bindings": {
+                    "selectedObject": {"<->": "@workbench.selectedObjects.0"}
                 }
             },
-            
+
             "nav": {
                 "prototype": "ui/nav.reel",
                 "properties": {
                     "element": {"#": "nav"}
                 }
             },
-            
+
             "library": {
                 "prototype": "ui/library.reel",
                 "properties": {
@@ -32,28 +35,28 @@
                     "prototypes": {"<->": "@owner.prototypes"}
                 }
             },
-            
+
             "header": {
                 "prototype": "ui/header.reel",
                 "properties": {
                     "element": {"#": "header"}
                 }
             },
-            
+
             "workbench": {
                 "prototype": "palette/ui/workbench.reel",
                 "properties": {
                     "element": {"#": "stage"}
                 }
             },
-            
+
             "configurator": {
                 "prototype": "ui/configurator.reel",
                 "properties": {
                     "element": {"#": "configurator"}
                 }
             }
-            
+
         }
     </script>
 
