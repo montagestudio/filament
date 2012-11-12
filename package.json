@@ -6,12 +6,5 @@
         "q": "*",
         "q-comm": "*",
         "palette": "*"
-    },
-
-    "devDependencies": {
-        "montage": "*",
-        "q": "*",
-        "q-comm": "*",
-        "palette": "*"
     }
 }
