@@ -9,6 +9,7 @@
     top: 0;
     bottom: 0;
     width: 100%;
+    border: 20px solid hsl(0,0%,20%);
 }
 
 .app {
@@ -33,7 +34,6 @@
         width: 800px;
         height: 600px;
         box-sizing: content-box;
-        border: 30px solid #333;
         border-width: 60px 80px;
         border-radius: 30px;
     }

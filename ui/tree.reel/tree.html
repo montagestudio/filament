@@ -12,6 +12,12 @@
                 "properties": {
                     "element": {"#": "tree"}
                 }
+            },
+            "search": {
+                "prototype": "montage/ui/input-text.reel",
+                "properties": {
+                    "element": {"#": "search"}
+                }
             }
         }
     </script>
@@ -21,13 +27,13 @@
 
     <div data-montage-id="tree" class="tree">
         <nav class="octopus">
-          <button>App</button>
+          <button>Temperature converter</button>
           <button>converter</button>
           <button>controls</button>
           <button>label</button>
           <button class="active">input</button>
         </nav>
-        <button class="owner">Owner</button>
+        <input data-montage-id="search" class="search-input" type="search" placeholder="Search" autocomplete="on" />
     </div>
 
 </body>

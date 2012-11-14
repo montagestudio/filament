@@ -1,0 +1,72 @@
+.controls {
+	display: -webkit-box;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+    background: hsl(0,0%,30%);
+    color: hsl(0,0%,70%);
+}
+
+.controls-group {
+	display: -webkit-box;
+	-webkit-box-align: center;
+	margin: 0 20px;
+}
+
+
+/* Buttons ----------------------------------- */
+
+.controls-button {
+	display: block;
+	border-radius: 0;
+	margin: 0;
+	padding-left: 35px;
+	border: none;
+	font-size: 11px;
+	color: hsl(0,0%,50%);
+	background: hsl(0,0%,30%);
+}
+
+.controls-button:hover {
+	color: hsl(0,0%,70%);
+	background: hsl(0,0%,35%);
+}
+
+.controls-button:active,
+.controls-button.selected {
+	background: hsl(0,0%,20%);
+}
+
+.controls-button[data-icon]:before {
+	right: auto;
+	width: 40px;
+	color: hsl(0,0%,70%);
+	line-height: .8;
+	font-size: 36px;
+}
+
+
+/* Zoom ----------------------------------- */
+
+.controls .zoom-label {
+	display: block;
+	color: hsl(0,0%,50%);
+	display: block;
+	font-size: 11px;
+}
+
+.controls .zoom-range {
+	display: block;
+	width: 200px;
+	height: 16px;
+	margin: 0 5px;
+	border-radius: 10px;
+	background: hsl(0,0%,10%);
+	border-color: hsl(0,0%,10%);
+}
+
+.controls .zoom .montage-InputRange-thumb {
+	background: hsl(0,0%,30%);
+	margin-top: -8px;
+	height: 16px;
+	border: 1px solid hsl(0,0%,10%);
+}

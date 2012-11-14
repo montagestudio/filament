@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+    <title>Controls</title>
+    <meta charset="utf-8">
+    
+    <link href="controls.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "controls"}
+                }
+            },
+            
+            "ButtonLandscape": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "ButtonLandscape"}
+                }
+            },
+            
+            "ButtonPortrait": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "ButtonPortrait"}
+                }
+            },
+            
+            "zoom": {
+                "prototype": "montage/ui/input-range.reel",
+                "properties": {
+                    "element": {"#": "zoom"}
+                }
+            }
+            
+        }
+    </script>
+
+</head>
+<body>
+
+    <div data-montage-id="controls" class="controls">
+        <nav class="controls-group">
+        	<button data-montage-id="ButtonLandscape" class="controls-button selected" data-icon="&#59191;">Landscape</button>
+        	<button data-montage-id="ButtonPortrait" class="controls-button" data-icon="&#59184;">Portrait</button>
+        </nav>
+        <nav class="controls-group zoom">
+        	<label class="zoom-label">100%</label>
+        	<input data-montage-id="zoom" class="zoom-range" type="range">
+        	<label class="zoom-label">50%</label>
+        </nav>
+    </div>
+
+</body>
+</html>

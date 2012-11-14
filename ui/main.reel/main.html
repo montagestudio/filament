@@ -29,10 +29,10 @@
                 }
             },
             
-            "header": {
-                "prototype": "ui/header.reel",
+            "ghosts": {
+                "prototype": "ui/ghosts.reel",
                 "properties": {
-                    "element": {"#": "header"}
+                    "element": {"#": "ghosts"}
                 }
             },
             
@@ -50,12 +50,13 @@
                 }
             },
             
-            "ghosts": {
-                "prototype": "ui/ghosts.reel",
+            "controls": {
+                "prototype": "ui/controls.reel",
                 "properties": {
-                    "element": {"#": "ghosts"}
+                    "element": {"#": "controls"}
                 }
             },
+            
             
             "configurator": {
                 "prototype": "ui/configurator.reel",
@@ -74,17 +75,13 @@
         
         <nav data-montage-id="nav"></nav>
         <aside data-montage-id="library"></aside>
-        <div class="view">
-            <header data-montage-id="header"></header>
-            <div class="wrapper">
-                <div class="editor">
-                    <div data-montage-id="tree"></div>
-                    <div data-montage-id="stage"></div>
-                    <div data-montage-id="ghosts"></div>
-                </div>
-                <aside data-montage-id="configurator"></aside>
-            </div>
+        <div class="editor">
+            <div data-montage-id="ghosts"></div>
+            <div data-montage-id="tree"></div>
+            <div data-montage-id="stage"></div>
+        	<div data-montage-id="controls"></div>
         </div>
+        <aside data-montage-id="configurator"></aside>
         
     </div>
 
