@@ -31,12 +31,12 @@ exports.Main = Montage.create(Component, {
             console.log("didLoad", isInLumieres);
 
             if (isInLumieres) {
-                var req = new XMLHttpRequest();
-                req.open("GET", "document://Users/mike/Projects/montage/ui/slot.reel/slot.html");
-                req.identifier = "loadRequest";
-                req.addEventListener("load", this, false);
-                req.addEventListener("error", this, false);
-                req.send();
+                // var req = new XMLHttpRequest();
+                // req.open("GET", "document://Users/mike/Projects/montage/ui/slot.reel/slot.html");
+                // req.identifier = "loadRequest";
+                // req.addEventListener("load", this, false);
+                // req.addEventListener("error", this, false);
+                // req.send();
             }
         }
     },
