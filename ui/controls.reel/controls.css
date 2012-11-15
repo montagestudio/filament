@@ -2,6 +2,7 @@
 	display: -webkit-box;
 	-webkit-box-pack: center;
 	-webkit-box-align: center;
+	padding: 5px;
     background: hsl(0,0%,30%);
     color: hsl(0,0%,70%);
 }
@@ -13,14 +14,28 @@
 }
 
 
-/* Buttons ----------------------------------- */
+/* Orientation ----------------------------------- */
+
+.controls-orientation {
+	border: 1px solid hsl(0,0%,15%);
+	border-radius: 20px;
+}
+
+.controls-orientation .controls-button:first-child {
+	border-radius: 20px 0 0 20px;
+}
+.controls-orientation .controls-button:last-child {
+	border-radius: 0 20px 20px 0;
+}
 
 .controls-button {
 	display: block;
 	border-radius: 0;
+	min-width: 100px;
 	margin: 0;
 	padding-left: 35px;
 	border: none;
+	text-align: left;
 	font-size: 11px;
 	color: hsl(0,0%,50%);
 	background: hsl(0,0%,30%);
@@ -33,12 +48,13 @@
 
 .controls-button:active,
 .controls-button.selected {
-	background: hsl(0,0%,20%);
+	background: hsl(0,0%,25%);
 }
 
 .controls-button[data-icon]:before {
 	right: auto;
-	width: 40px;
+	left: 10px;
+	width: 20px;
 	color: hsl(0,0%,70%);
 	line-height: .8;
 	font-size: 36px;
@@ -60,13 +76,13 @@
 	height: 16px;
 	margin: 0 5px;
 	border-radius: 10px;
-	background: hsl(0,0%,10%);
-	border-color: hsl(0,0%,10%);
+	background: hsl(0,0%,15%);
+	border-color: hsl(0,0%,15%);
 }
 
 .controls .zoom .montage-InputRange-thumb {
 	background: hsl(0,0%,30%);
 	margin-top: -8px;
 	height: 16px;
-	border: 1px solid hsl(0,0%,10%);
+	border: 1px solid hsl(0,0%,15%);
 }
