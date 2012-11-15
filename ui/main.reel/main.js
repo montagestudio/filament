@@ -1,23 +1,8 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
-    Connection = require("q-comm"),
-    AuthoringDocument = require("palette/core/authoring-document").AuthoringDocument;
+    Connection = require("q-comm");
 
-var isInLumieres = (typeof lumieres !== "undefined");
-
-if (isInLumieres) {
-    var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
-
-    // so you can play on the console:
-    global.backend = backend;
-
-    // DEMO
-    backend.get("fs").invoke("list", "/")
-        .then(function (list) {
-            console.log("File list from Node backend:", list);
-        })
-        .end();
-}
+var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
 exports.Main = Montage.create(Component, {
 
@@ -25,31 +10,48 @@ exports.Main = Montage.create(Component, {
         value: require("palette/core/components.js").components
     },
 
-    didCreate: {
-        value: function () {
+    currentProject: {
+        value: null
+    },
 
-            console.log("didLoad", isInLumieres);
+    _environmentBridge: {
+        value: null
+    },
 
-            if (isInLumieres) {
-                // var req = new XMLHttpRequest();
-                // req.open("GET", "document://Users/mike/Projects/montage/ui/slot.reel/slot.html");
-                // req.identifier = "loadRequest";
-                // req.addEventListener("load", this, false);
-                // req.addEventListener("error", this, false);
-                // req.send();
+    environmentBridge: {
+        get: function () {
+            return this._environmentBridge;
+        },
+        set: function (value) {
+            if (value === this._environmentBridge) {
+                return;
+            }
+
+            if (this._environmentBridge) {
+                this._environmentBridge.didExitEnvironment(this);
+            }
+
+            this._environmentBridge = value;
+
+            if (this._environmentBridge) {
+                this._environmentBridge.didEnterEnvironment(this);
+                this.currentProject = this._environmentBridge.project;
             }
         }
     },
 
-    handleLoadRequestLoad: {
-        value: function (evt) {
-            console.log("load", evt);
-        }
-    },
-
-    handleLoadRequestError: {
-        value: function (evt) {
-            console.log("fail", evt);
+    didCreate: {
+        value: function () {
+            var self = this;
+            if (IS_IN_LUMIERES) {
+                require.async("core/lumieres-bridge").then(function (exported) {
+                    self.environmentBridge = exported.LumiereBridge.create();
+                });
+            } else {
+                require.async("core/browser-bridge").then(function (exported) {
+                    self.environmentBridge = exported.BrowserBridge.create();
+                });
+            }
         }
     },
 
@@ -64,9 +66,7 @@ exports.Main = Montage.create(Component, {
 
     prepareForDraw: {
         value: function () {
-            this.workbench.currentDocument = AuthoringDocument.create();
             this.addEventListener("action", this, false);
-
         }
     },
 
