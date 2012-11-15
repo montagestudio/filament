@@ -73,7 +73,13 @@ exports.Main = Montage.create(Component, {
     handlePrototypeButtonAction: {
         value: function (evt) {
             var prototypeEntry = evt.target.prototypeObject;
-            this.workbench.addComponent(prototypeEntry.serialization.prototype, prototypeEntry.name, prototypeEntry.html);
+            this.workbench.addComponent(
+                prototypeEntry.serialization.prototype,
+                prototypeEntry.name,
+                prototypeEntry.html,
+                prototypeEntry.properties,
+                prototypeEntry.postProcess
+            );
         }
     }
 
