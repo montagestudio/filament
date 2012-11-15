@@ -2,8 +2,7 @@
     width: 280px;
     display: -webkit-flex;
     -webkit-flex-direction: column;
-    padding: 10px;
-    background: hsl(0,0%,50%);
+    background: hsl(0,0%,60%);
 }
 
 
@@ -17,10 +16,10 @@
     -webkit-flex: 1;
     padding: 10px 20px;
     margin: 0;
-    font-size: 16px;
-    border-radius: 10px 10px 0 0;
+    font-size: 13px;
+    border-top-right-radius: 10px;
     border: none;
-	background: hsla(0,0%,100%,.2);
+	background: transparent;
 }
 
 .library .tab.active {
