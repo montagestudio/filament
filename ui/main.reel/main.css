@@ -12,6 +12,10 @@
     position: relative;
 }
 
+.Workbench {
+	overflow: auto;
+}
+
 .montage-frame {
     width: 640px;
     height: 480px;
