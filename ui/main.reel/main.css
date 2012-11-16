@@ -6,17 +6,8 @@
 }
 
 .editor {
+    -webkit-flex: 1 1 auto;
     display: -webkit-flex;
     -webkit-flex-direction: column;
-    -webkit-flex: 1 1 auto;
     position: relative;
-}
-
-.Workbench {
-	overflow: auto;
-}
-
-.montage-frame {
-    width: 640px;
-    height: 480px;
 }
