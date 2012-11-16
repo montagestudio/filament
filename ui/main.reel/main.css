@@ -5,19 +5,6 @@
     height: 100%;
 }
 
-.view {
-    display: -webkit-flex;
-    -webkit-flex-direction: column;
-    -webkit-flex: 1 1 auto;
-}
-
-.wrapper {
-    display: -webkit-flex;
-    -webkit-flex-direction: row;
-    -webkit-flex: 1 0 auto;
-    height: 100%
-}
-
 .editor {
     display: -webkit-flex;
     -webkit-flex-direction: column;

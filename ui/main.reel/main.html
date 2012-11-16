@@ -36,13 +36,6 @@
                 }
             },
 
-            "header": {
-                "prototype": "ui/header.reel",
-                "properties": {
-                    "element": {"#": "header"}
-                }
-            },
-
             "workbench": {
                 "prototype": "palette/ui/workbench.reel",
                 "properties": {
@@ -70,15 +63,10 @@
         
         <nav data-montage-id="nav"></nav>
         <aside data-montage-id="library"></aside>
-        <div class="view">
-            <header data-montage-id="header"></header>
-            <div class="wrapper">
-                <div class="editor">
-                    <div data-montage-id="stage"></div>
-                </div>
-                <aside data-montage-id="configurator"></aside>
-            </div>
+        <div class="editor">
+            <div data-montage-id="stage"></div>
         </div>
+        <aside data-montage-id="configurator"></aside>
         
     </div>
 
