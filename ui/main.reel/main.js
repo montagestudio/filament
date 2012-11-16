@@ -77,7 +77,7 @@ exports.Main = Montage.create(Component, {
                 prototypeEntry.serialization.prototype,
                 prototypeEntry.name,
                 prototypeEntry.html,
-                prototypeEntry.properties,
+                prototypeEntry.serialization.properties,
                 prototypeEntry.postProcess
             );
         }
