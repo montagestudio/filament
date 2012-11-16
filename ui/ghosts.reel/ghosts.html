@@ -4,6 +4,7 @@
     <title>Ghosts</title>
     <meta charset="utf-8">
     
+<!--    <link href="../../assets/icons/style.css" rel="stylesheet" />-->
     <link href="ghosts.css" rel="stylesheet" />
 
     <script type="text/montage-serialization">
@@ -20,11 +21,17 @@
 <body>
 
     <div data-montage-id="ghosts" class="ghosts">
-        <button>Ghost 1</button>
-        <button>Ghost 2</button>
-        <button>Ghost 3</button>
-        <button>Ghost 4</button>
-        <button>Ghost 5</button>
+    	<div class="ghosts-tabs">
+    		<button class="ghosts-tab selected">Owner Properties</button>
+    		<button class="ghosts-tab">Template Objects</button>
+    	</div>
+        <div class="ghosts-list">
+        	<button class="ghosts-item bound"><i data-icon="&#59198;"></i> Ghost 1</button>
+        	<button class="ghosts-item"><i data-icon="&#128361;"></i> Ghost 2</button>
+        	<button class="ghosts-item bound"><i data-icon="&#128248;"></i> Ghost 3</button>
+        	<button class="ghosts-item bound"><i data-icon="&#59198;"></i> Ghost 4</button>
+        	<button class="ghosts-item"><i data-icon="&#128248;"></i> Ghost 5</button>
+        </div>
     </div>
 
 </body>

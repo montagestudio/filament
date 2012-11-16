@@ -1,28 +1,122 @@
+/*body {
+	margin: 0;
+    background: hsl(0,0%,20%);
+}*/
+
+
 /* Ghosts */
 
 .ghosts {
-    display: -webkit-flex;
-    -webkit-justify-content: center;
-    background: hsl(0,0%,40%);
+	display: -webkit-box;
+	display: -webkit-flex;
+    background: hsl(0,0%,30%);
 }
 
-.ghosts button {
+
+/* Tabs ----------------------------- */
+
+.ghosts-tabs {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	margin-right: 10px;
+	background-color: hsl(0,0%,30%);
+	border-right: 1px solid hsl(0,0%,20%);
+}
+
+.ghosts-tab {
+	display: block;
+	-webkit-box-flex: 1;
+	margin: 0;
+	line-height: 0;
+	font-size: 11px;
+	padding: 0 5px;
+	border: none;
+	background-color: hsl(0,0%,40%);
+	color: hsl(0,0%,20%);
+	cursor: pointer;
+}
+
+.ghosts-tab:hover {
+	background-color: hsl(0,0%,45%);
+	color: hsl(0,0%,10%);
+}
+
+.ghosts-tab:active {
+	background-color: hsl(0,0%,35%);
+}
+
+.ghosts-tab.selected {
+	color: hsl(0,0%,70%);
+	background-color: hsl(0,0%,30%);
+}
+
+
+/* List ----------------------------- */
+
+.ghosts-list {
+	display: -webkit-box;
+    display: -webkit-flex;
+    -webkit-justify-content: center;
+}
+
+.ghosts-item {
+	position: relative;
     display: block;
-    padding: 2px 8px;
-    margin: 10px 3px;
+    padding: 4px 10px;
+    margin: 4px 3px;
     font-size: 13px;
     border: none;
-    border: 1px solid hsl(0, 0%, 90%);
-    background-color: hsl(0, 0%, 80%);
-    color: hsl(0, 0%, 20%);
+    border: 1px solid transparent;
+    background-color: hsl(0,0%,20%);
+    color: hsl(0,0%,60%);
     cursor: pointer;
     border-radius: 20px;
 }
 
-.ghosts button:hover {
-	background-color: hsl(0,0%,90%);
+.ghosts-item:hover {
+    color: hsl(0,0%,70%);
+	background-color: hsl(0,0%,25%);
 }
 
-.ghosts button:active {
-	background-color: hsl(0,0%,70%);
+.ghosts-item:active {
+	background-color: hsl(0,0%,15%);
+}
+
+
+/* Bound indicator */
+
+.ghosts-item.bound {
+	border-color: hsl(0,0%,50%);
+}
+
+.ghosts-item.bound:after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    margin-left: -2px;
+    background: hsl(0,0%,50%);
+}
+
+
+/* Icons */
+
+.ghosts-item [data-icon] {
+    content: "";
+    position: relative;
+    display: inline-block;
+    width: 16px;
+    height: 12px;
+    line-height: 0;
+    font-style: normal;
+}
+
+.ghosts-item [data-icon]:before {
+    color: hsl(0,0%,80%);
+    line-height: .6;
+    left: 0px;
+    right: auto;
+    font-size: 24px;
 }

@@ -10,6 +10,7 @@
     bottom: 0;
     width: 100%;
     border: 20px solid hsl(0,0%,20%);
+    border-width: 20px 20px 0 20px;
 }
 
 .app {
