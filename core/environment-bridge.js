@@ -22,6 +22,12 @@ exports.EnvironmentBridge = Montage.create(Montage, {
                 this.mainComponent = null;
             }
         }
+    },
+
+    save: {
+        value: function (template, location) {
+            this.project.template = template;
+        }
     }
 
 });

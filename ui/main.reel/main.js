@@ -55,6 +55,20 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    handleSave: {
+        value: function (evt) {
+            this.save(evt.detail.url);
+        }
+    },
+
+    save: {
+        value: function (location) {
+            var template = this.workbench.template;
+            this.currentProject.template = template;
+            this.environmentBridge.save(template, location);
+        }
+    },
+
     workbench: {
         value: null
     },
@@ -67,6 +81,7 @@ exports.Main = Montage.create(Component, {
     prepareForDraw: {
         value: function () {
             this.addEventListener("action", this, false);
+            document.addEventListener("save", this, false);
         }
     },
 

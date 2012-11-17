@@ -26,5 +26,11 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
             return this._project;
         }
+    },
+
+    save: {
+        value: function (template, location) {
+            EnvironmentBridge.save.apply(this, arguments);
+        }
     }
 });
