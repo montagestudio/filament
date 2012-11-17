@@ -5,6 +5,7 @@
         "montage": "*",
         "q": "*",
         "q-comm": "*",
-        "palette": "*"
+        "palette": "*",
+        "flow-editor": "*"
     }
 }
