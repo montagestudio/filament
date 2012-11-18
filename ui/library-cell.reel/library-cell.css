@@ -4,44 +4,66 @@
     display: -webkit-flex;
     -webkit-box-align: center;
     -webkit-align-items: center;    
-    padding: 10px 20px;
     font-size: 14px;
     border-top: 1px solid hsl(0,0%,90%);
     border-bottom: 1px solid hsl(0,0%,70%);
 	background: hsl(0,0%,80%);
 }
 
-.LibraryCell:hover {
-	background: hsl(0,0%,82%);
+/* Button --------------------------------- */
+
+.LibraryCell-button {
+	-webkit-appearance: none;
+	-webkit-flex: 1;
+	padding: 4px 10px;
+	background: hsl(0,0%,80%);
+	
+	/* Resets */
+	text-align: left;
+	height: auto;
+	min-width: 0;
+	margin: 0;
+	border: none;
+	border-radius: 0;
+}
+
+.LibraryCell-button:hover {
+	background: hsl(0,0%,85%);
+}
+
+.LibraryCell-button:hover .LibraryCell-button-label {
+	color: hsl(0,0%,30%);
+}
+
+.LibraryCell-button:active {
+	background: hsl(0,0%,75%);
 }
 
 
 /* Icon --------------------------------- */
 
-.LibraryCell-icon {
-	display: none; /* Removed for now */
+.LibraryCell-button-icon {
+	display: inline-block;
+	margin: 0;
     width: 60px;
     height: 40px;
-	background-size: 60px 40px;
-	background-repeat: no-repeat;
-	background-position: center;
-	-webkit-user-drag: element;
-}
-
-.library .component:hover {
-	cursor: move;
-}
-
-.library .component:active {
-	cursor: -webkit-grabbing;
+    vertical-align: middle;
+	//-webkit-user-drag: element;
 }
 
 
-/* Description --------------------------------- */
+/* Label --------------------------------- */
 
-.LibraryCell-button {
-    -webkit-box-flex: 1;
-    -webkit-flex: 1; 
+.LibraryCell-button-label {
+	display: inline-block;
+	text-align: left;
+	margin-left: 4px;
+	width: 140px;
+	font-size: 14px;
+	color: hsl(0,0%,50%);
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 
@@ -49,6 +71,9 @@
 
 .LibraryCell-star {
 	display: none; /* Removed for now */
+}
+
+/*.LibraryCell-star {
     visibility: hidden;
     width: 30px;
     height: 30px;
@@ -75,4 +100,4 @@
 
 .LibraryCell-star:active {
     background: transparent;
-}
+}*/
