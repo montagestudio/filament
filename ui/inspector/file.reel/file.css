@@ -1,3 +1,27 @@
 .File {
 
 }
+
+.File > .montage-Button {
+	display: block;
+	margin: 0 0 4px 0;
+}
+
+.File > .montage-InputText {
+	border-color: transparent;
+	background: transparent;
+}
+
+.File > .montage-InputText:hover {
+	border: 1px solid #b3b3b3;
+    background-color: #fff;
+}
+
+.File > .montage-InputText:active {
+    background-color: #e5e5e5;
+}
+
+.File > .montage-InputText:focus {
+	border: 1px solid #b3b3b3;
+    background-color: #f2f2f2;
+}
