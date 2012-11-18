@@ -80,7 +80,7 @@ exports.Main = Montage.create(Component, {
 
     prepareForDraw: {
         value: function () {
-            this.addEventListener("action", this, false);
+            this.addEventListener("addComponent", this, false);
             document.addEventListener("save", this, false);
 
             this.addPropertyChangeListener("documentTitle", this, false);
@@ -120,14 +120,19 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    handlePrototypeButtonAction: {
+    handleAddComponent: {
         value: function (evt) {
 
             if (!this.currentProject) {
                 return;
             }
 
-            var prototypeEntry = evt.target.prototypeObject;
+            var prototypeEntry = evt.detail.prototypeObject;
+
+            if (!prototypeEntry) {
+                throw "cannot add component without more information";
+            }
+
             this.workbench.addComponent(
                 prototypeEntry.serialization.prototype,
                 prototypeEntry.name,

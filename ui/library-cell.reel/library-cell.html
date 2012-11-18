@@ -22,24 +22,37 @@
         },
 
         "prototypeName": {
-            "prototype": "montage/ui/button.reel",
+            "prototype": "montage/ui/dynamic-text.reel",
             "properties": {
-                "element": {"#": "prototype-name"},
-                "identifier": "prototypeButton",
-                "prototypeObject": null
+                "element": {"#": "prototype-name"}
             },
             "bindings": {
-                "label": {"<-": "@owner.prototypeObject.name"},
-                "prototypeObject": {"<-": "@owner.prototypeObject"}
+                "value": {"<-": "@owner.prototypeObject.name"}
             }
+        },
+
+        "addButton": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "element": {"#": "add-button"},
+                "identifier": "prototypeButton"
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>
 </head>
 <body>
     <li data-montage-id="library-cell" class="LibraryCell">
-        <img class="LibraryCell-icon" data-montage-id="prototype-icon"></img>
-        <button class="LibraryCell-button" data-montage-id="prototype-name"></button>
+        <button data-montage-id="add-button">
+            <img class="LibraryCell-icon" data-montage-id="prototype-icon">
+            <span data-montage-id="prototype-name"></span>
+        </button>
         <button class="LibraryCell-star" data-icon="&#9733;"></button>
     </li>
 </body>

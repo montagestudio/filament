@@ -15,6 +15,14 @@ exports.LibraryCell = Montage.create(Component, /** @lends module:"ui/library-ce
 
     prototypeObject: {
         value: null
+    },
+
+    handlePrototypeButtonAction: {
+        value: function (evt) {
+            this.dispatchEventNamed("addComponent", true, true, {
+                prototypeObject: this.prototypeObject
+            });
+        }
     }
 
 });
