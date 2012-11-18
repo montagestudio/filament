@@ -11,3 +11,9 @@
     -webkit-flex-direction: column;
     position: relative;
 }
+
+.editor .Workbench {
+	-webkit-flex: 1;
+	border: 10px solid hsl(0,0%,30%);
+	box-sizing: border-box;
+}
