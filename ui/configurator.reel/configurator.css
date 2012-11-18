@@ -3,7 +3,7 @@
     display: -webkit-flex;
     -webkit-flex-direction: column;
     width: 240px;
-    background: hsl(0,0%,50%);
+    background: hsl(0,0%,70%);
     overflow: auto;
 }
 
