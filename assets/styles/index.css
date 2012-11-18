@@ -14,22 +14,23 @@ body {
     margin: 0;
     height: 100%;
     font-family: Open Sans, sans-serif;
+    overflow: hidden; /* Removes bounce when scrolling on body */
 }
 
 
 /* Scrollbar -------------------------------- */
 
-/*::-webkit-scrollbar {
+::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 4px;
     height: 0px;
-    background-color: hsl(0,0%,70%);
+    background-color: hsl(0,0%,60%);
 }
 
 ::-webkit-scrollbar-thumb {
     background-clip: padding-box;
     background-color: hsl(0,0%,90%);
-}*/
+}
 
 
 

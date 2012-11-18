@@ -1,13 +1,30 @@
 .Configurator {
-    position: relative;
-    display: -webkit-flex;
-    -webkit-flex-direction: column;
-    width: 240px;
+	position: relative;
+	width: 240px;
+	display: -webkit-flex;
+	-webkit-flex-direction: column;
     background: hsl(0,0%,70%);
-    overflow: auto;
+}
+
+
+.Configurator-title {
+    padding: 10px;
+    margin: 0;
+    font-size: 14px;
+    font-weight: normal;
+    text-align: left;
+	background: hsl(0,0%,100%);
+	border-top: 1px solid hsla(0,0%,100%,.5);
+	border-bottom: 1px solid hsla(0,0%,0%,.08);
 }
 
 .Configurator .inspectorList {
-    padding: 0;
-    margin: 0;
+   	-webkit-flex: 1 1 0;
+   	min-height: 0;
+   	position: relative;
+   	margin: 0;
+   	padding: 0;
+   	list-style: none;
+   	overflow-y: scroll;
+   	background-color: hsl(0,0%,70%);
 }
