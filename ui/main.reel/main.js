@@ -7,7 +7,7 @@ var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 exports.Main = Montage.create(Component, {
 
     prototypes: {
-        value: require("palette/core/components.js").components
+        value: require("core/components.js").components
     },
 
     currentProject: {
