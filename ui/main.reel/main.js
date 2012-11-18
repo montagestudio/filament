@@ -82,6 +82,34 @@ exports.Main = Montage.create(Component, {
         value: function () {
             this.addEventListener("action", this, false);
             document.addEventListener("save", this, false);
+
+            this.addPropertyChangeListener("documentTitle", this, false);
+        }
+    },
+
+    handleChange: {
+        value: function (notification) {
+            console.log("notification", notification);
+            this.needsDraw = true;
+        }
+    },
+
+    draw: {
+        value: function () {
+            document.title = this.documentTitle;
+        }
+    },
+
+    documentTitle: {
+        dependencies: ["currentProject.title", "currentProject.reelUrl", "currentProject.packageLocation"],
+        get: function () {
+
+            if (!this.currentProject) {
+                return "Untitiled Component - Lumiere";
+            }
+
+            var proj = this.currentProject;
+            return proj.title + " - " + proj.reelUrl.replace(proj.packageLocation, "").replace(/[^\/]+\//, "");
         }
     },
 
