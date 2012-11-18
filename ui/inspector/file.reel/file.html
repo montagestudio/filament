@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="file.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "file"}
+            }
+        },
+
+        "path": {
+            "prototype": "montage/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "path"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.value"}
+            }
+        },
+
+        "choose": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "element": {"#": "choose"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="file" class="File">
+        <input type="text" data-montage-id="path">
+        <button data-montage-id="choose">Choose file...</button>
+    </div>
+</body>
+</html>
