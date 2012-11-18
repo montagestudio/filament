@@ -20,7 +20,6 @@ exports.Configurator = Montage.create(Component, {
 
     prepareForDraw: {
         value: function () {
-            window.foo = this.ownerComponent;
             this.addPropertyChangeListener("ownerComponent.selectedObject", this, false);
         }
     },
