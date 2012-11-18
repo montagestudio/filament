@@ -12,6 +12,10 @@
     position: relative;
 }
 
+.palettes-hidden .library,
+.palettes-hidden .Configurator {
+    display: none;
+}
 .editor .Workbench {
 	-webkit-flex: 1;
 	border: 10px solid hsl(0,0%,30%);

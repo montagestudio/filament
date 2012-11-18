@@ -98,6 +98,11 @@ exports.Main = Montage.create(Component, {
         value: function () {
             document.title = this.documentTitle;
 
+            if (this.palettesVisible) {
+                this.element.classList.remove("palettes-hidden");
+            } else {
+                this.element.classList.add("palettes-hidden");
+            }
             //TODO indicate whether or not we have a currentProject open
         }
     },
@@ -130,6 +135,30 @@ exports.Main = Montage.create(Component, {
                 prototypeEntry.serialization.properties,
                 prototypeEntry.postProcess
             );
+        }
+    },
+
+    handleTogglePaletteKeyPress: {
+        value: function (evt) {
+            this.palettesVisible = !this.palettesVisible;
+        }
+    },
+
+    _palettesVisible: {
+        value: true
+    },
+
+    palettesVisible: {
+        get: function () {
+            return this._palettesVisible;
+        },
+        set: function (value) {
+            if (value === this._palettesVisible) {
+                return;
+            }
+
+            this._palettesVisible = value;
+            this.needsDraw = true;
         }
     }
 

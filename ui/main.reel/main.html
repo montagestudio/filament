@@ -51,8 +51,26 @@
                 "properties": {
                     "element": {"#": "configurator"}
                 }
-            }
+            },
 
+            "togglePaletteKeyComposer": {
+                "prototype": "montage/ui/composer/key-composer",
+                "properties": {
+                    "keys": "shift+control+/",
+                    "identifier": "togglePalette",
+                    "component": {"@": "application"}
+                },
+                "listeners": [
+                    {
+                        "type": "keyPress",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "application": {
+                "prototype": "montage/ui/application"
+            }
         }
     </script>
 
