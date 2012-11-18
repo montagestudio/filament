@@ -97,6 +97,8 @@ exports.Main = Montage.create(Component, {
     draw: {
         value: function () {
             document.title = this.documentTitle;
+
+            //TODO indicate whether or not we have a currentProject open
         }
     },
 
@@ -105,7 +107,7 @@ exports.Main = Montage.create(Component, {
         get: function () {
 
             if (!this.currentProject) {
-                return "Untitiled Component - Lumiere";
+                return "Lumiere";
             }
 
             var proj = this.currentProject;
@@ -115,6 +117,11 @@ exports.Main = Montage.create(Component, {
 
     handlePrototypeButtonAction: {
         value: function (evt) {
+
+            if (!this.currentProject) {
+                return;
+            }
+
             var prototypeEntry = evt.target.prototypeObject;
             this.workbench.addComponent(
                 prototypeEntry.serialization.prototype,

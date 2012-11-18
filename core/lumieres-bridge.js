@@ -16,12 +16,14 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                 var reelUrl = window.location.search.replace(/\??file=/, ""),
                     project;
 
-                project = ComponentProject.create();
-                project.reelUrl = reelUrl;
+                if (reelUrl && !reelUrl.match(/fs:\/\(null\)/)) {
+                    project = ComponentProject.create();
+                    project.reelUrl = reelUrl;
 
-                console.log("Lumiere", reelUrl)
+                    console.log("Lumiere", reelUrl)
 
-                this._project = project;
+                    this._project = project;
+                }
             }
 
             return this._project;
