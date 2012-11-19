@@ -5,9 +5,9 @@
     -webkit-box-align: center;
     -webkit-align-items: center;    
     font-size: 14px;
-    border-top: 1px solid hsl(0,0%,90%);
-    border-bottom: 1px solid hsl(0,0%,70%);
-	background: hsl(0,0%,80%);
+    border-top: 1px solid hsla(0,0%,100%,.5);
+    border-bottom: 1px solid hsla(0,0%,0%,.1);
+	background: hsl(0,0%,85%);
 }
 
 /* Button --------------------------------- */
@@ -16,7 +16,7 @@
 	-webkit-appearance: none;
 	-webkit-flex: 1;
 	padding: 4px 10px;
-	background: hsl(0,0%,80%);
+	background: inherit;
 	
 	/* Resets */
 	text-align: left;
@@ -28,15 +28,11 @@
 }
 
 .LibraryCell-button:hover {
-	background: hsl(0,0%,85%);
-}
-
-.LibraryCell-button:hover .LibraryCell-button-label {
-	color: hsl(0,0%,30%);
+	background: hsl(0,0%,90%);
 }
 
 .LibraryCell-button:active {
-	background: hsl(0,0%,75%);
+	background: hsl(0,0%,80%);
 }
 
 
@@ -57,7 +53,7 @@
 .LibraryCell-button-label {
 	display: inline-block;
 	text-align: left;
-	margin-left: 4px;
+	margin-left: 10px;
 	width: 140px;
 	font-size: 14px;
 	color: hsl(0,0%,50%);

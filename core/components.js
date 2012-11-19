@@ -15,20 +15,6 @@ exports.components = [
         html: '<button data-montage-id=""></button>'
     },
     {
-        label: "Range",
-        name: "InputRange",
-        serialization: {
-            "prototype": "montage/ui/input-range.reel",
-            "properties": {
-                "minValue": 0,
-                "maxValue": 100,
-                "value": 50
-            }
-        },
-        icon: "assets/components/input-range.png",
-        html: '<input type="range" data-montage-id="">'
-    },
-    {
         label: "Toggle",
         name: "ToggleButton",
         serialization: {
@@ -55,17 +41,32 @@ exports.components = [
         html: '<input type="checkbox" data-montage-id="">'
     },
     {
-        label: "InputText",
-        name: "InputText",
+        label: "Radio",
+        name: "InputRadio",
         serialization: {
-            "prototype": "montage/ui/input-text.reel",
+            "prototype": "montage/ui/input-radio.reel",
             "properties": {
-                "value": "Editable text"
+                "checked": true
             }
         },
-        icon: "assets/components/input-text.png",
-        html: '<input data-montage-id="" type="text">'
+        icon: "assets/components/input-radio.png",
+        html: '<input type="radio" data-montage-id="">'
     },
+    {
+        label: "Range",
+        name: "InputRange",
+        serialization: {
+            "prototype": "montage/ui/input-range.reel",
+            "properties": {
+                "minValue": 0,
+                "maxValue": 100,
+                "value": 50
+            }
+        },
+        icon: "assets/components/input-range.png",
+        html: '<input type="range" data-montage-id="">'
+    },
+    
     {
         label: "DynamicText",
         name: "DynamicText",
@@ -79,6 +80,30 @@ exports.components = [
         html: '<p data-montage-id=""></p>'
     },
     {
+        label: "InputText",
+        name: "InputText",
+        serialization: {
+            "prototype": "montage/ui/input-text.reel",
+            "properties": {
+                "value": "Editable text"
+            }
+        },
+        icon: "assets/components/input-text.png",
+        html: '<input data-montage-id="" type="text">'
+    },
+    {
+        label: "Textarea",
+        name: "Textarea",
+        serialization: {
+            "prototype": "montage/ui/textarea.reel",
+            "properties": {
+                "value": "Textarea"
+            }
+        },
+        icon: "assets/components/textarea.png",
+        html: '<textarea data-montage-id=""></textarea>'
+    },
+    {
         label: "Image",
         name: "Image",
         serialization: {
@@ -89,6 +114,19 @@ exports.components = [
         },
         icon: "assets/components/image.png",
         html: '<img data-montage-id="">'
+    },
+    {
+        label: "Progress",
+        name: "Progress",
+        serialization: {
+            "prototype": "montage/ui/progress.reel",
+            "properties": {
+                "max": 100,
+                "value": 50
+            }
+        },
+        icon: "assets/components/progress.png",
+        html: '<progress data-montage-id=""></progress>'
     },
     {
         label: "Repetition",
