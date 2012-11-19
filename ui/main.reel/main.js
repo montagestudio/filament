@@ -73,11 +73,6 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-    // TODO support multiple select
-    selectedObject: {
-        value: null
-    },
-
     prepareForDraw: {
         value: function () {
             this.addEventListener("addComponent", this, false);
