@@ -53,6 +53,18 @@ exports.components = [
         html: '<input type="radio" data-montage-id="">'
     },
     {
+        label: "Number Input",
+        name: "InputNumber",
+        serialization: {
+            "prototype": "montage/ui/input-number.reel",
+            "properties": {
+                "value": 100
+            }
+        },
+        icon: "assets/components/input-number.png",
+        html: '<input type="number" data-montage-id="">'
+    },
+    {
         label: "Range",
         name: "InputRange",
         serialization: {
