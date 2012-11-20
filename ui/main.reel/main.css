@@ -12,13 +12,27 @@
     position: relative;
 }
 
-.palettes-hidden .library,
-.palettes-hidden .Configurator {
-    display: none;
-}
 .workShop .Workbench {
 	-webkit-flex: 1;
 	border: 10px solid hsl(0,0%,30%);
 	border-bottom: none;
 	box-sizing: border-box;
+}
+
+.editorSlot {
+    position: relative;
+    width: 500px;
+}
+
+
+/* States */
+
+.palettes-hidden .Library,
+.palettes-hidden .Configurator,
+.editorSlot {
+    display: none;
+}
+
+.palettes-hidden .editorSlot {
+    display: block;
 }
