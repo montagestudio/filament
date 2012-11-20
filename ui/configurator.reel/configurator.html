@@ -33,27 +33,10 @@
                     "element": {"#": "inspector"}
                 },
                 "bindings": {
-                    "object": {"<-": "@owner.selectedObjects.0"}
+                    "object": {"<-": "@owner.selectedObjects.0"},
+                    "inspectorController": {"<-": "@owner.inspectorControllers.0"}
                 }
-            },
-
-            "toggleEditorMode": {
-                "prototype": "montage/ui/composer/key-composer",
-                "properties": {
-                    "keys": "shift+control+e",
-                    "identifier": "toggleEditor",
-                    "component": {"@": "application"}
-                },
-                "listeners": [
-                    {
-                        "type": "keyPress",
-                        "listener": {"@": "owner"}
-                    }
-                ]
-            },
-
-            "application": {}
-
+            }
         }
     </script>
 
