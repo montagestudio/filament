@@ -5,7 +5,7 @@
     height: 100%;
 }
 
-.editor {
+.workShop {
     -webkit-flex: 1 1 auto;
     display: -webkit-flex;
     -webkit-flex-direction: column;
@@ -16,7 +16,7 @@
 .palettes-hidden .Configurator {
     display: none;
 }
-.editor .Workbench {
+.workShop .Workbench {
 	-webkit-flex: 1;
 	border: 10px solid hsl(0,0%,30%);
 	box-sizing: border-box;
