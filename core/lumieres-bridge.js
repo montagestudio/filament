@@ -33,8 +33,18 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         value: function (template, location) {
             EnvironmentBridge.save.apply(this, arguments);
 
-            //TODO change name of output file
-            var path = location.replace(/^\w+:\/\/\w+/m, "") + "lumiere_save.html",
+            //TODO I think I've made this regex many times...and probably differently
+            var filenameMatch = location.match(/.+\/(.+)\.reel/),
+                filename,
+                path,
+                content;
+
+                if (!(filenameMatch && filenameMatch[1])) {
+                    throw "Could not find name for file to save";
+                }
+
+                filename = filenameMatch[1];
+                path = location.replace(/^\w+:\/\/\w+/m, "") + "/" + filename + ".html";
                 content = template.exportToString();
 
             this.writeDataToFilePath(content, path, {flags: "w", charset: 'utf-8'});
