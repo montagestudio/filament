@@ -17,6 +17,9 @@ body {
     overflow: hidden; /* Removes bounce when scrolling on body */
 }
 
+.montage-invisible {
+    display: none;
+}
 
 /* Scrollbar -------------------------------- */
 

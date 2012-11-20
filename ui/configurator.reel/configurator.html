@@ -16,6 +16,17 @@
                 }
             },
 
+            "inspectorCondition": {
+                "prototype": "montage/ui/condition.reel",
+                "properties": {
+                    "element": {"#": "inspector-condition"},
+                    "removalStrategy": "hide"
+                },
+                "bindings": {
+                    "condition": {"<-": "@owner.selectedObjects"}
+                }
+            },
+
             "inspector": {
                 "prototype": "palette/ui/inspector/inspector.reel",
                 "properties": {
@@ -50,7 +61,9 @@
 <body>
     <aside data-montage-id="configurator" class="Configurator">
         <h2 class="Configurator-title">Inspector</h2>
-        <div data-montage-id="inspector"></div>
+        <div data-montage-id="inspector-condition">
+            <div data-montage-id="inspector"></div>
+        </div>
     </aside>
 </body>
 </html>
