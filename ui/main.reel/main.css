@@ -19,5 +19,6 @@
 .workShop .Workbench {
 	-webkit-flex: 1;
 	border: 10px solid hsl(0,0%,30%);
+	border-bottom: none;
 	box-sizing: border-box;
 }
