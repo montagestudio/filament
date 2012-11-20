@@ -204,6 +204,8 @@ exports.components = [
             dynamicText.needsDraw = true;
             self._orphanedChildren = [dynamicText];
 
+            self.originalContent = [innerElement];
+
             Object.defineBinding(dynamicText, "src", {
                 "boundObject" : self,
                 "boundObjectPropertyPath" : "objectAtCurrentIteration",
