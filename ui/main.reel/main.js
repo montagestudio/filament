@@ -162,6 +162,24 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    handleExitEditorKeyPress: {
+        value: function (evt) {
+            this.editorComponent = null;
+            this.palettesVisible = true;
+            this._isUsingEditor = true;
+        }
+    },
+
+    _isUsingEditor: {
+        value: false
+    },
+
+    isUsingEditor: {
+        get: function () {
+            return this._isUsingEditor;
+        }
+    },
+
     /**
         The component to show in the slot that will edit the selected component
      */
@@ -173,8 +191,8 @@ exports.Main = Montage.create(Component, {
         value: function (event) {
             this.editorComponent = event.detail.component;
             this.palettesVisible = false;
+            this._isUsingEditor = true;
         }
     }
-
 
 });

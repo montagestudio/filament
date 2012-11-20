@@ -84,6 +84,21 @@
                 ]
             },
 
+            "exitEditorKeyComposer": {
+                "prototype": "montage/ui/composer/key-composer",
+                "properties": {
+                    "keys": "escape",
+                    "identifier": "exitEditor",
+                    "component": {"@": "application"}
+                },
+                "listeners": [
+                    {
+                        "type": "keyPress",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
             "editorSlot": {
                 "prototype": "montage/ui/slot.reel",
                 "properties": {
