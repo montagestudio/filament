@@ -66,7 +66,15 @@ exports.components = [
         icon: "assets/components/input-range.png",
         html: '<input type="range" data-montage-id="">'
     },
-    
+    {
+        label: "Select",
+        name: "Select",
+        serialization: {
+            "prototype": "montage/ui/select.reel"
+        },
+        icon: "assets/components/select.png",
+        html: '<select data-montage-id=""><option value="">Select</option></select>'
+    },
     {
         label: "DynamicText",
         name: "DynamicText",
