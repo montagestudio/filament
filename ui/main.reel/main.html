@@ -3,7 +3,7 @@
 <head>
     <title>Main</title>
     <meta charset="utf-8">
-    
+
     <link href="main.css" rel="stylesheet" />
     <link href="../../assets/icons/style.css" rel="stylesheet" />
 
@@ -53,7 +53,13 @@
                 },
                 "bindings": {
                     "selectedObjects": {"<->": "@workbench.selectedObjects"}
-                }
+                },
+                "listeners": [
+                    {
+                        "type": "enterEditor",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             },
 
             "togglePaletteKeyComposer": {
@@ -71,6 +77,16 @@
                 ]
             },
 
+            "editorSlot": {
+                "prototype": "montage/ui/slot.reel",
+                "properties": {
+                    "element": {"#": "editorSlot"}
+                },
+                "bindings": {
+                    "content": {"<-": "@owner.editorComponent"}
+                }
+            },
+
             "application": {
                 "prototype": "montage/ui/application"
             }
@@ -81,14 +97,14 @@
 <body>
 
     <div data-montage-id="main" class="main">
-        
+
         <nav data-montage-id="nav"></nav>
         <aside data-montage-id="library"></aside>
         <div class="workShop">
             <div data-montage-id="workbench"></div>
         </div>
         <aside data-montage-id="configurator"></aside>
-        
+        <div data-montage-id="editorSlot"></div>
     </div>
 
 </body>

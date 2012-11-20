@@ -24,7 +24,24 @@
                 "bindings": {
                     "object": {"<-": "@owner.selectedObjects.0"}
                 }
-            }
+            },
+
+            "toggleEditorMode": {
+                "prototype": "montage/ui/composer/key-composer",
+                "properties": {
+                    "keys": "shift+control+e",
+                    "identifier": "toggleEditor",
+                    "component": {"@": "application"}
+                },
+                "listeners": [
+                    {
+                        "type": "keyPress",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "application": {}
 
         }
     </script>

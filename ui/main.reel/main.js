@@ -160,6 +160,21 @@ exports.Main = Montage.create(Component, {
             this._palettesVisible = value;
             this.needsDraw = true;
         }
+    },
+
+    /**
+        The component to show in the slot that will edit the selected component
+     */
+    editorComponent: {
+        value: null
+    },
+
+    handleEnterEditor: {
+        value: function (event) {
+            this.editorComponent = event.detail.component;
+            this.palettesVisible = false;
+        }
     }
+
 
 });
