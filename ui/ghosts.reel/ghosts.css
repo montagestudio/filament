@@ -1,5 +1,5 @@
 /*body {
-	margin: 0;
+    margin: 0;
     background: hsl(0,0%,20%);
 }*/
 
@@ -7,97 +7,81 @@
 /* Ghosts */
 
 .ghosts {
-	display: -webkit-box;
-	display: -webkit-flex;
-    background: hsl(0,0%,30%);
+    display: -webkit-flex;
+    -webkit-flex-flow: column;
+    -webkit-justify-content: space-around;
+    background: hsl(0,0%,40%);
 }
 
 
-/* Tabs ----------------------------- */
+/* Group ----------------------------- */
 
-.ghosts-tabs {
-	display: -webkit-box;
-	-webkit-box-orient: vertical;
-	margin-right: 10px;
-	background-color: hsl(0,0%,30%);
-	border-right: 1px solid hsl(0,0%,20%);
+.ghosts-group {
+    margin: 0;
 }
 
-.ghosts-tab {
-	display: block;
-	-webkit-box-flex: 1;
-	margin: 0;
-	line-height: 0;
-	font-size: 11px;
-	padding: 0 5px;
-	border: none;
-	background-color: hsl(0,0%,40%);
-	color: hsl(0,0%,20%);
-	cursor: pointer;
-}
+/* Title ----------------------------- */
 
-.ghosts-tab:hover {
-	background-color: hsl(0,0%,45%);
-	color: hsl(0,0%,10%);
-}
-
-.ghosts-tab:active {
-	background-color: hsl(0,0%,35%);
-}
-
-.ghosts-tab.selected {
-	color: hsl(0,0%,70%);
-	background-color: hsl(0,0%,30%);
+.ghosts-title {
+    margin: 0;
+    padding: 0 5px;
+    font-size: 13px;
+    text-align: center;
+    color: hsl(0,0%,25%);
 }
 
 
 /* List ----------------------------- */
 
 .ghosts-list {
-	display: -webkit-box;
     display: -webkit-flex;
-    -webkit-justify-content: center;
+    -webkit-flex-flow: column;
 }
 
 .ghosts-item {
-	position: relative;
+    position: relative;
     display: block;
-    padding: 4px 10px;
-    margin: 4px 3px;
+    max-width: 120px;
+    padding: 4px 8px;
+    margin: 4px;
+    text-align: left;
     font-size: 13px;
     border: none;
-    border: 1px solid transparent;
-    background-color: hsl(0,0%,20%);
-    color: hsl(0,0%,60%);
+    border: 2px dotted hsla(0,0%,100%,.1);
+    background-color: hsl(0,0%,40%);
+    color: hsl(0,0%,55%);
     cursor: pointer;
     border-radius: 20px;
+    white-space: nowrap;
 }
 
 .ghosts-item:hover {
     color: hsl(0,0%,70%);
-	background-color: hsl(0,0%,25%);
+    background-color: hsl(0,0%,30%);
 }
 
 .ghosts-item:active {
-	background-color: hsl(0,0%,15%);
+    background-color: hsl(0,0%,20%);
 }
 
 
 /* Bound indicator */
 
 .ghosts-item.bound {
-	border-color: hsl(0,0%,50%);
+    color: hsl(0,0%,15%);
+    border-color: hsl(0,0%,20%);
+    border-style: solid;
 }
 
 .ghosts-item.bound:after {
     content: "";
     position: absolute;
-    bottom: -5px;
-    left: 50%;
-    width: 4px;
-    height: 4px;
-    margin-left: -2px;
-    background: hsl(0,0%,50%);
+    top: 50%;
+    right: -6px;
+    width: 5px;
+    height: 6px;
+    margin-top: -3px;
+    background: hsl(0,0%,20%);
 }
 
 
@@ -114,9 +98,9 @@
 }
 
 .ghosts-item [data-icon]:before {
-    color: hsl(0,0%,80%);
-    line-height: .6;
+    color: hsl(0,0%,75%);
+    line-height: .5;
     left: 0px;
     right: auto;
-    font-size: 24px;
+    font-size: 28px;
 }
