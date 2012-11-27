@@ -1,11 +1,11 @@
 {
     "name": "filament",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "dependencies": {
-        "montage": "*",
+        "montage": "0.12.x",
         "q": "*",
         "q-comm": "*",
-        "palette": "*",
-        "flow-editor": "*"
+        "palette": "0.1.x",
+        "flow-editor": "0.1.x"
     }
 }
