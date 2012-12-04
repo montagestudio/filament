@@ -1,6 +1,5 @@
 var Montage = require("montage/core/core").Montage,
     EnvironmentBridge = require("core/environment-bridge").EnvironmentBridge,
-    Promise = require("montage/core/promise").Promise,
     Connection = require("q-connection");
 
 exports.LumiereBridge = Montage.create(EnvironmentBridge, {
