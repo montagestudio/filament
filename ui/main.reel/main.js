@@ -182,13 +182,13 @@ exports.Main = Montage.create(Component, {
     /**
         The component to show in the slot that will edit the selected component
      */
-    editorComponent: {
+    extendedEditorComponent: {
         value: null
     },
 
     handleEnterEditor: {
         value: function (event) {
-            this.editorComponent = event.detail.component;
+            this.extendedEditorComponent = event.detail.component;
             this.palettesVisible = false;
             this._isUsingEditor = true;
         }
