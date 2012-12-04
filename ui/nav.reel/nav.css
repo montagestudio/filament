@@ -1,18 +1,44 @@
 
 /* nav ----------------------------------- */
 
-.nav {
+.Nav {
+	margin: 0;
+	height: 100%;
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+}
+
+.Nav-scroll {
+    -webkit-flex: 1;
+    min-height: 0;
 	background-color: hsl(0,0%,20%);
 	margin: 0;
 	padding-bottom: 5px;
 	list-style: none;
-	height: 100%;
     display: -webkit-flex;
     -webkit-flex-direction: column;
     -webkit-justify-content: space-between;
 }
 
-.nav .logo {
+.Nav-loader {
+    width: 6px;
+	background-color: hsl(0,0%,60%);
+	background-size: 6px 12px, 6px 12px;
+}
+
+.Nav:hover .Nav-loader,
+.Nav-loader.isLoading {
+    background-image:   -webkit-linear-gradient( -45deg, hsla(0,0%,0%,0) 8px, hsla(0,0%,0%,.2) 8px ),
+                        -webkit-linear-gradient( 135deg, hsla(0,0%,0%,0) 8px, hsla(0,0%,0%,.2) 8px );
+    -webkit-animation: loading .3s linear infinite;
+}
+
+@-webkit-keyframes loading {
+    from { background-position: 0 0, 0 0; }
+      to { background-position: 0 12px, 0 12px; }
+}
+
+.Nav .logo {
     display: block;
 	width: 50px;
 	height: 50px;
@@ -24,7 +50,7 @@
 
 
 
-.nav button {
+.Nav button {
     display: block;
 	width: 50px;
 	height: 50px;
@@ -38,16 +64,16 @@
 	cursor: pointer;
 }
 
-.nav button:hover {
+.Nav button:hover {
     color: hsl(0,0%,70%);
 	background-color: hsl(0,0%,30%);
 }
 
-.nav button:active,
-.nav button.active {
+.Nav button:active,
+.Nav button.active {
     margin: 5px 0 5px 10px;
     border-radius: 10px 0 0 10px;
     color: hsl(0,0%,30%);
-	background-color: hsl(0,0%,80%);
+	background-color: hsl(0,0%,60%);
 	cursor: default;
 }
