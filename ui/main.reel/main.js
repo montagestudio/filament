@@ -5,12 +5,16 @@ var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
 exports.Main = Montage.create(Component, {
 
-    prototypes: {
-        value: require("core/components.js").components
+    workbench: {
+        value: null
     },
 
-    currentProject: {
+    editingDocument: {
         value: null
+    },
+
+    prototypes: {
+        value: require("core/components.js").components
     },
 
     _environmentBridge: {
@@ -27,14 +31,13 @@ exports.Main = Montage.create(Component, {
             }
 
             if (this._environmentBridge) {
-                this._environmentBridge.didExitEnvironment(this);
+                this._environmentBridge.mainComponentDidExitEnvironment(this);
             }
 
             this._environmentBridge = value;
 
             if (this._environmentBridge) {
-                this._environmentBridge.didEnterEnvironment(this);
-                this.currentProject = this._environmentBridge.project;
+                this._environmentBridge.mainComponentDidEnterEnvironment(this);
             }
         }
     },
@@ -45,12 +48,39 @@ exports.Main = Montage.create(Component, {
             if (IS_IN_LUMIERES) {
                 require.async("core/lumieres-bridge").then(function (exported) {
                     self.environmentBridge = exported.LumiereBridge.create();
+                    self.awaitEditor();
                 });
             } else {
                 require.async("core/browser-bridge").then(function (exported) {
                     self.environmentBridge = exported.BrowserBridge.create();
+                    self.awaitEditor();
                 });
             }
+        }
+    },
+
+    awaitEditor: {
+        value: function () {
+            this.addEventListener("canLoadReel", this);
+        }
+    },
+
+    handleCanLoadReel: {
+        value: function () {
+            this.load();
+        }
+    },
+
+    load: {
+        value: function () {
+            var reelInfo = this.environmentBridge.reelUrlInfo,
+                reelUrl = reelInfo.reelUrl,
+                packageUrl = reelInfo.packageUrl,
+                self = this;
+
+            this.workbench.load(reelUrl, packageUrl).then(function (editingDocument) {
+                self.editingDocument = editingDocument;
+            });
         }
     },
 
@@ -61,16 +91,17 @@ exports.Main = Montage.create(Component, {
     },
 
     save: {
-        value: function (location) {
-            var template = this.workbench.template;
-            this.currentProject.template = template;
-            this.environmentBridge.save(template, location);
+        value: function (url) {
+
+            if (!this.environmentBridge) {
+                throw "Cannot save '" + url + "' without an environment bridge";
+            }
+
+            this.environmentBridge.save(this.editingDocument, url);
         }
     },
 
-    workbench: {
-        value: null
-    },
+
 
     prepareForDraw: {
         value: function () {
@@ -102,22 +133,21 @@ exports.Main = Montage.create(Component, {
     },
 
     documentTitle: {
-        dependencies: ["currentProject.title", "currentProject.reelUrl", "currentProject.packageLocation"],
+        dependencies: ["editingDocument.title"],
         get: function () {
 
-            if (!this.currentProject) {
+            if (!this.editingDocument) {
                 return "Lumiere";
             }
 
-            var proj = this.currentProject;
-            return proj.title + " - " + proj.reelUrl.replace(proj.packageLocation, "").replace(/[^\/]+\//, "");
+            return this.editingDocument.title;
         }
     },
 
     handleAddComponent: {
         value: function (evt) {
 
-            if (!this.currentProject) {
+            if (!this.editingDocument) {
                 return;
             }
 
@@ -127,7 +157,7 @@ exports.Main = Montage.create(Component, {
                 throw "cannot add component without more information";
             }
 
-            this.workbench.addComponent(
+            this.editingDocument.addComponent(
                 prototypeEntry.serialization.prototype,
                 prototypeEntry.name,
                 prototypeEntry.html,

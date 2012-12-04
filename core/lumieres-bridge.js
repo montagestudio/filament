@@ -1,43 +1,33 @@
 var Montage = require("montage/core/core").Montage,
     EnvironmentBridge = require("core/environment-bridge").EnvironmentBridge,
-    ComponentProject = require("palette/core/component-project.js").ComponentProject,
     Promise = require("montage/core/promise").Promise,
     Connection = require("q-connection");
 
 exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
-    _project: {
-        value: null
-    },
-
-    project: {
+    reelUrlInfo: {
         get: function () {
+            //TODO make more robust, use qs library to parse querystring?
+            var reelParam = window.location.search.replace(/\??file=/, ""),
+                reelUrl;
 
-            if (!this._project) {
-                var reelUrl = window.location.search.replace(/\??file=/, ""),
-                    project;
-
-                if (reelUrl && !reelUrl.match(/fs:\/\(null\)/)) {
-                    project = ComponentProject.create();
-                    project.reelUrl = reelUrl;
-
-                    this._project = project;
-                }
+            if (reelParam && !reelParam.match(/fs:\/\(null\)/)) {
+                reelUrl = reelParam;
             }
 
-            return this._project;
+            return {"reelUrl": reelUrl};
         }
     },
 
     save: {
-        value: function (template, location) {
-            EnvironmentBridge.save.apply(this, arguments);
+        value: function (editingDocument, location) {
 
             //TODO I think I've made this regex many times...and probably differently
             var filenameMatch = location.match(/.+\/(.+)\.reel/),
                 filename,
                 path,
-                content;
+                content,
+                template = editingDocument.template;
 
                 if (!(filenameMatch && filenameMatch[1])) {
                     throw "Could not find name for file to save";

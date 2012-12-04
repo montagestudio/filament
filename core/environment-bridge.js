@@ -2,32 +2,16 @@ var Montage = require("montage/core/core").Montage;
 
 exports.EnvironmentBridge = Montage.create(Montage, {
 
-    mainComponent: {
-        value: null
+    mainComponentDidEnterEnvironment: {
+        value: Function.noop
     },
 
-    project: {
-        value: null
-    },
-
-    didEnterEnvironment: {
-        value: function (mainComponent) {
-            this.mainComponent = mainComponent;
-        }
-    },
-
-    didExitEnvironment: {
-        value: function (mainComponent) {
-            if (mainComponent === this.mainComponent) {
-                this.mainComponent = null;
-            }
-        }
+    mainComponentDidExitEnvironment: {
+        value: Function.noop
     },
 
     save: {
-        value: function (template, location) {
-            this.project.template = template;
-        }
+        value: Function.noop
     }
 
 });
