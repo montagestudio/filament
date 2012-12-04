@@ -10,6 +10,7 @@
     display: -webkit-flex;
     -webkit-flex-flow: column;
     -webkit-justify-content: space-around;
+    width: 120px;
     background: hsl(0,0%,40%);
 }
 
@@ -18,30 +19,38 @@
 
 .ghosts-group {
     margin: 0;
+    -webkit-flex: 1;
+    display: -webkit-flex;
+    -webkit-flex-flow: column;
 }
 
 /* Title ----------------------------- */
 
 .ghosts-title {
-    margin: 0;
-    padding: 0 5px;
+    margin: 0 0 4px 0;
+    padding: 6px;
     font-size: 13px;
     text-align: center;
     color: hsl(0,0%,25%);
+    background: hsl(0,0%,50%);
 }
 
 
 /* List ----------------------------- */
 
 .ghosts-list {
+    min-height: 0;
+    overflow: auto;
+    -webkit-flex: 1;
     display: -webkit-flex;
     -webkit-flex-flow: column;
+
 }
 
 .ghosts-item {
     position: relative;
     display: block;
-    max-width: 120px;
+    width: 112px;
     padding: 4px 8px;
     margin: 4px;
     text-align: left;
