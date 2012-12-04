@@ -1,6 +1,6 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
-    Connection = require("q-comm");
+    Connection = require("q-connection");
 
 var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 

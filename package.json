@@ -4,7 +4,7 @@
     "dependencies": {
         "montage": "0.12.x",
         "q": "*",
-        "q-comm": "*",
+        "q-connection": "*",
         "palette": "0.2.x",
         "flow-editor": "0.2.x"
     }
