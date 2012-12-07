@@ -1,0 +1,18 @@
+.Filament {
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+    height: 100%;
+}
+
+.Filament-view {
+    -webkit-flex: 1;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    position: relative;
+}
+
+.Filament-tabs {
+    padding: 10px;
+    font-size: 14px;
+    background: hsl(0,0%,80%);
+}
