@@ -4,8 +4,16 @@
     "dependencies": {
         "montage": "0.12.x",
         "q": "*",
-        "q-connection": "*",
-        "palette": "0.2.x",
-        "flow-editor": "0.2.x"
+        "q-connection": "*"
+    },
+    "mappings": {
+        "component-editor": {
+            "name": "filament-component-editor",
+            "location": "packages/component-editor"
+        },
+        "package-explorer": {
+            "name": "filament-package-explorer",
+            "location": "packages/package-explorer"
+        }
     }
 }

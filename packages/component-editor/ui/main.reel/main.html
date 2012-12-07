@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+    <title>Main</title>
+    <meta charset="utf-8">
+
+    <link href="main.css" rel="stylesheet" />
+    <link href="../../../../assets/icons/style.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "main"},
+                    "workbench": {"@": "workbench"}
+                },
+                "bindings": {
+                    "selectedObject": {"<->": "@workbench.selectedObjects.0"}
+                }
+            },
+
+            "library": {
+                "prototype": "ui/library.reel",
+                "properties": {
+                    "element": {"#": "library"}
+                },
+                "bindings": {
+                    "prototypes": {"<->": "@owner.prototypes"}
+                }
+            },
+
+            "workbench": {
+                "prototype": "palette/ui/workbench.reel",
+                "properties": {
+                    "element": {"#": "workbench"}
+                }
+            },
+            
+            "controls": {
+                "prototype": "ui/controls.reel",
+                "properties": {
+                    "element": {"#": "controls"}
+                }
+            },
+
+            "configurator": {
+                "prototype": "ui/configurator.reel",
+                "properties": {
+                    "element": {"#": "configurator"}
+                },
+                "bindings": {
+                    "selectedObjects": {"<->": "@workbench.selectedObjects"}
+                },
+                "listeners": [
+                    {
+                        "type": "enterEditor",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "togglePaletteKeyComposer": {
+                "prototype": "montage/ui/composer/key-composer",
+                "properties": {
+                    "keys": "shift+control+/",
+                    "identifier": "togglePalette",
+                    "component": {"@": "application"}
+                },
+                "listeners": [
+                    {
+                        "type": "keyPress",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "exitEditorKeyComposer": {
+                "prototype": "montage/ui/composer/key-composer",
+                "properties": {
+                    "keys": "escape",
+                    "identifier": "exitEditor",
+                    "component": {"@": "application"}
+                },
+                "listeners": [
+                    {
+                        "type": "keyPress",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "editorSlot": {
+                "prototype": "montage/ui/slot.reel",
+                "properties": {
+                    "element": {"#": "editorSlot"}
+                },
+                "bindings": {
+                    "content": {"<-": "@owner.extendedEditorComponent"}
+                }
+            },
+
+            "application": {
+                "prototype": "montage/ui/application"
+            }
+        }
+    </script>
+
+</head>
+<body>
+
+    <div data-montage-id="main" class="main">
+
+        <aside data-montage-id="library"></aside>
+        <div class="workShop">
+            <div data-montage-id="workbench"></div>
+            <div data-montage-id="controls"></div>
+        </div>
+        <aside data-montage-id="configurator"></aside>
+        <div data-montage-id="editorSlot" class="editorSlot"></div>
+    </div>
+
+</body>
+</html>

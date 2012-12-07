@@ -1,0 +1,14 @@
+{
+    "name": "filament-component-editor",
+    "version": "0.1.0",
+    "dependencies": {
+        "palette": "0.2.x",
+        "flow-editor": "0.2.x"
+    },
+    "mappings": {
+        "montage": {
+            "name": "montage",
+            "location": "../node_modules/montage"
+        }
+    }
+}

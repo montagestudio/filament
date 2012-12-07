@@ -1,4 +1,8 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component;
 
-exports.Nav = Montage.create(Component, {});
+var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
+
+exports.Main = Montage.create(Component, {
+
+});
