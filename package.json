@@ -3,8 +3,8 @@
     "version": "0.2.0",
     "dependencies": {
         "montage": "0.12.x",
-        "q": "*",
-        "q-connection": "*"
+        "q": "0.8.10",
+        "q-connection": "0.4.4"
     },
     "mappings": {
         "component-editor": {
