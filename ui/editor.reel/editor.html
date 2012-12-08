@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+    <title>Editor</title>
+    <meta charset="utf-8">
+    
+    <link href="editor.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "editor"}
+                }
+            },
+            
+            "library": {
+                "prototype": "ui/library.reel",
+                "properties": {
+                    "element": {"#": "library"}
+                }
+            },
+            
+            "ghosts": {
+                "prototype": "ui/ghosts.reel",
+                "properties": {
+                    "element": {"#": "ghosts"}
+                }
+            },
+            
+            "tree": {
+                "prototype": "ui/tree.reel",
+                "properties": {
+                    "element": {"#": "tree"}
+                }
+            },
+            
+            "stage": {
+                "prototype": "ui/stage.reel",
+                "properties": {
+                    "element": {"#": "stage"}
+                }
+            },
+            
+            "controls": {
+                "prototype": "ui/controls.reel",
+                "properties": {
+                    "element": {"#": "controls"}
+                }
+            },
+            
+            
+            "configurator": {
+                "prototype": "ui/configurator.reel",
+                "properties": {
+                    "element": {"#": "configurator"}
+                }
+            }
+            
+        }
+    </script>
+
+</head>
+<body>
+
+    <div data-montage-id="editor" class="Editor">        
+        <aside data-montage-id="library"></aside>
+        <aside data-montage-id="ghosts"></aside>
+        <div class="workBench">
+            <div data-montage-id="tree"></div>
+            <div data-montage-id="stage"></div>
+        	<div data-montage-id="controls"></div>
+        </div>
+        <aside data-montage-id="configurator"></aside>
+        
+    </div>
+
+</body>
+</html>

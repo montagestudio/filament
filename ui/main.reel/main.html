@@ -22,46 +22,17 @@
                 }
             },
             
-            "library": {
-                "prototype": "ui/library.reel",
+            "projects": {
+                "prototype": "ui/projects/projects.reel",
                 "properties": {
-                    "element": {"#": "library"}
+                    "element": {"#": "projects"}
                 }
             },
             
-            "ghosts": {
-                "prototype": "ui/ghosts.reel",
+            "editor": {
+                "prototype": "ui/editor.reel",
                 "properties": {
-                    "element": {"#": "ghosts"}
-                }
-            },
-            
-            "tree": {
-                "prototype": "ui/tree.reel",
-                "properties": {
-                    "element": {"#": "tree"}
-                }
-            },
-            
-            "stage": {
-                "prototype": "ui/stage.reel",
-                "properties": {
-                    "element": {"#": "stage"}
-                }
-            },
-            
-            "controls": {
-                "prototype": "ui/controls.reel",
-                "properties": {
-                    "element": {"#": "controls"}
-                }
-            },
-            
-            
-            "configurator": {
-                "prototype": "ui/configurator.reel",
-                "properties": {
-                    "element": {"#": "configurator"}
+                    "element": {"#": "editor"}
                 }
             }
             
@@ -71,18 +42,10 @@
 </head>
 <body>
 
-    <div data-montage-id="main" class="main">
-        
+    <div data-montage-id="main" class="main">        
         <nav data-montage-id="nav"></nav>
-        <aside data-montage-id="library"></aside>
-        <aside data-montage-id="ghosts"></aside>
-        <div class="editor">
-            <div data-montage-id="tree"></div>
-            <div data-montage-id="stage"></div>
-        	<div data-montage-id="controls"></div>
-        </div>
-        <aside data-montage-id="configurator"></aside>
-        
+        <div data-montage-id="projects"></div>
+        <!--<div data-montage-id="editor"></div>-->
     </div>
 
 </body>

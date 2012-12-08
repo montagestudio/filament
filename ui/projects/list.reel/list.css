@@ -1,0 +1,103 @@
+.ProjectsList {
+    width: 400px;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    background: hsl(0,0%,60%);
+}
+
+
+.ProjectsList-header {
+    padding: 10px;
+    border-bottom: 1px solid hsl(0,0%,70%);
+    background: hsl(0,0%,80%);
+}
+
+.ProjectsList-title {
+    margin: 0;
+
+}
+
+
+/* search --------------------------------- */
+
+.ProjectsList-search {
+    padding: 10px;
+    border-top: 1px solid hsl(0,0%,90%);
+    border-bottom: 1px solid hsl(0,0%,70%);
+    background: hsl(0,0%,80%);
+}
+
+.ProjectsList-search-input {
+    -webkit-appearance: none;
+    width: 100%;
+    padding: 0;
+}
+
+
+
+/* List --------------------------------- */
+
+.ProjectsList-list {
+    position: relative;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	overflow-y: scroll;
+	-webkit-flex: 1 1 0;
+	min-height: 0;
+	background-color: hsl(0,0%,70%);
+}
+
+.ProjectsList-list-item {
+    padding: 10px;
+    font-size: 20px;
+    border-top: 1px solid hsl(0,0%,90%);
+    border-bottom: 1px solid hsl(0,0%,70%);
+	background: hsl(0,0%,80%);
+	display: -webkit-flex;
+}
+
+.ProjectsList-list-item:hover {
+	background: hsl(0,0%,82%);
+}
+
+
+
+/* Component Button --------------------------------- */
+
+.ProjectsList-description {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -webkit-user-select: none;
+    cursor: default;
+    
+}
+
+.ProjectsList-star {
+    visibility: hidden;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 4px;
+    border: 1px solid hsla(0,0%,70%,0);
+    background: transparent;
+    color: hsl(0,0%,60%);
+    font-size: 53px;
+    line-height: .5;
+    text-align: center;
+}
+
+.ProjectsList-list-item.stared .ProjectsList-star,
+.ProjectsList-list-item:hover .ProjectsList-star {
+    visibility: visible;
+}
+
+.ProjectsList-star:hover {
+    cursor: pointer;
+    border: 1px solid hsl(0,0%,70%);
+    background: hsl(0,0%,90%);
+}
+
+.ProjectsList-star:active {
+    background: transparent;
+}

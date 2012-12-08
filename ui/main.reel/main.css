@@ -5,22 +5,14 @@
     height: 100%;
 }
 
-.view {
+/*.view {
     display: -webkit-flex;
     -webkit-flex-direction: column;
-    -webkit-flex: 1 1 auto;
+    -webkit-flex: 1;
 }
 
 .wrapper {
     display: -webkit-flex;
     -webkit-flex-direction: row;
-    -webkit-flex: 1 0 auto;
-}
-
-.editor {
-    display: -webkit-flex;
-    -webkit-flex-direction: column;
-    -webkit-flex: 1 1 auto;
-    position: relative;
-}
-
+    -webkit-flex: 1;
+}*/
