@@ -4,7 +4,8 @@
     "dependencies": {
         "montage": "0.12.x",
         "q": "0.8.10",
-        "q-connection": "0.4.4"
+        "q-connection": "0.4.4",
+        "qs": "0.5.2"
     },
     "mappings": {
         "component-editor": {

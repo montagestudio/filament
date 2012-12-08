@@ -1,13 +1,15 @@
 var Montage = require("montage/core/core").Montage,
     EnvironmentBridge = require("core/environment-bridge").EnvironmentBridge,
-    Connection = require("q-connection");
+    Connection = require("q-connection"),
+    qs = require("qs");
 
 exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     reelUrlInfo: {
         get: function () {
-            //TODO make more robust, use qs library to parse querystring?
-            var reelParam = window.location.search.replace(/\??file=/, ""),
+
+            var params = qs.parse(window.location.search.replace(/^\?/, "")),
+                reelParam = params.file,
                 reelUrl;
 
             if (reelParam && !reelParam.match(/fs:\/\(null\)/)) {
