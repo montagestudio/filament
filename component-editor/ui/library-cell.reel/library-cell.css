@@ -10,7 +10,7 @@
 
 /* Button --------------------------------- */
 
-.LibraryCell-button {
+.LibraryCell .LibraryCell-button {
 	-webkit-appearance: none;
 	-webkit-flex: 1;
 	padding: 4px 10px;
@@ -27,12 +27,12 @@
 	border-radius: 0;
 }
 
-.LibraryCell-button:hover {
+.LibraryCell .LibraryCell-button:hover {
 	background: hsl(0,0%,90%);
 }
 
-.LibraryCell-button:active,
-.LibraryCell-button:focus {
+.LibraryCell .LibraryCell-button:active,
+.LibraryCell .LibraryCell-button:focus {
     border-color: transparent;
 	background: hsl(0,0%,80%);
 }
@@ -41,7 +41,7 @@
 
 /* Icon --------------------------------- */
 
-.LibraryCell-button-icon {
+.LibraryCell .LibraryCell-button-icon {
 	display: inline-block;
 	margin: 0;
     width: 60px;
@@ -52,7 +52,7 @@
 
 /* Label --------------------------------- */
 
-.LibraryCell-button-label {
+.LibraryCell .LibraryCell-button-label {
 	display: inline-block;
 	text-align: left;
 	margin-left: 10px;
@@ -69,11 +69,11 @@
 
 /* Star --------------------------------- */
 
-.LibraryCell-star {
+.LibraryCell .LibraryCell-star {
 	display: none; /* Removed for now */
 }
 
-/*.LibraryCell-star {
+/* .LibraryCell .LibraryCell-star {
     visibility: hidden;
     width: 30px;
     height: 30px;
@@ -87,17 +87,17 @@
     text-align: center;
 }
 
-.LibraryCell.starred .LibraryCell-star,
-.LibraryCell:hover .LibraryCell-star {
+.LibraryCell .LibraryCell.starred .LibraryCell-star,
+.LibraryCell .LibraryCell:hover .LibraryCell-star {
     visibility: visible;
 }
 
-.LibraryCell-star:hover {
+.LibraryCell .LibraryCell-star:hover {
     cursor: pointer;
     border: 1px solid hsl(0,0%,70%);
     background: hsl(0,0%,90%);
 }
 
-.LibraryCell-star:active {
+.LibraryCell .LibraryCell-star:active {
     background: transparent;
 }*/

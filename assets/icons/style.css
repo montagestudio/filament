@@ -1,7 +1,7 @@
 @font-face {
     font-family: 'entypo';
     src: url('entypo.eot');
-    src: url('entypo.eot?#iefix') format('embedded-opentype'),
+    src: url('entypo.eot') format('embedded-opentype'),
          url('entypo.woff') format('woff'),
          url('entypo.ttf') format('truetype'),
          url('entypo.svg#entypo') format('svg');

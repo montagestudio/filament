@@ -8,7 +8,11 @@
     "mappings": {
         "montage": {
             "name": "montage",
-            "location": "../../node_modules/montage"
+            "location": "../node_modules/montage"
+        },
+        "lib": {
+            "name": "filament-lib",
+            "location": "../lib"
         }
     }
 }

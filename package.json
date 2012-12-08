@@ -9,11 +9,7 @@
     "mappings": {
         "component-editor": {
             "name": "filament-component-editor",
-            "location": "packages/component-editor"
-        },
-        "package-explorer": {
-            "name": "filament-package-explorer",
-            "location": "packages/package-explorer"
+            "location": "component-editor"
         }
     }
 }

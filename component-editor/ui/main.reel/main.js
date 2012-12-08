@@ -2,8 +2,6 @@ var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
     libraryComponents = require("core/components.js").components;
 
-var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
-
 exports.Main = Montage.create(Component, {
 
     workbench: {
@@ -18,68 +16,10 @@ exports.Main = Montage.create(Component, {
         value: libraryComponents
     },
 
-    _environmentBridge: {
-        value: null
-    },
-
-    environmentBridge: {
-        get: function () {
-            return this._environmentBridge;
-        },
-        set: function (value) {
-            if (value === this._environmentBridge) {
-                return;
-            }
-
-            if (this._environmentBridge) {
-                this._environmentBridge.mainComponentDidExitEnvironment(this);
-            }
-
-            this._environmentBridge = value;
-
-            if (this._environmentBridge) {
-                this._environmentBridge.mainComponentDidEnterEnvironment(this);
-            }
-        }
-    },
-
-    didCreate: {
-        value: function () {
-            var self = this;
-            if (IS_IN_LUMIERES) {
-                require.async("core/lumieres-bridge").then(function (exported) {
-                    self.environmentBridge = exported.LumiereBridge.create();
-                    self.awaitEditor();
-                });
-            } else {
-                require.async("core/browser-bridge").then(function (exported) {
-                    self.environmentBridge = exported.BrowserBridge.create();
-                    self.awaitEditor();
-                });
-            }
-        }
-    },
-
-    awaitEditor: {
-        value: function () {
-            this.addEventListener("canLoadReel", this);
-        }
-    },
-
-    handleCanLoadReel: {
-        value: function () {
-            this.load();
-        }
-    },
-
     load: {
-        value: function () {
-            var reelInfo = this.environmentBridge.reelUrlInfo,
-                reelUrl = reelInfo.reelUrl,
-                packageUrl = reelInfo.packageUrl,
-                self = this;
-
-            this.workbench.load(reelUrl, packageUrl).then(function (editingDocument) {
+        value: function (reelUrl, packageUrl) {
+            var self = this;
+            return this.workbench.load(reelUrl, packageUrl).then(function (editingDocument) {
                 self.editingDocument = editingDocument;
             });
         }

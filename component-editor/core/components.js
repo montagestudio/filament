@@ -1,5 +1,8 @@
 // Set of components available for use in the authoring system
 // TODO replace with dynamic browsing of available modules informed by ComponentDescriptions
+
+var packageLocation = require.location;
+
 exports.components = [
     {
         label: "Button",
@@ -11,7 +14,7 @@ exports.components = [
                 "enabled": true
             }
         },
-        icon: "assets/components/button.png",
+        icon: packageLocation + "assets/components/button.png",
         html: '<button data-montage-id=""></button>'
     },
     {
@@ -25,7 +28,7 @@ exports.components = [
                 "unpressedLabel": "Off"
             }
         },
-        icon: "assets/components/toggle-button.png",
+        icon: packageLocation + "assets/components/toggle-button.png",
         html: '<button data-montage-id=""></button>'
     },
     {
@@ -37,7 +40,7 @@ exports.components = [
                 "checked": true
             }
         },
-        icon: "assets/components/input-checkbox.png",
+        icon: packageLocation + "assets/components/input-checkbox.png",
         html: '<input type="checkbox" data-montage-id="">'
     },
     {
@@ -49,7 +52,7 @@ exports.components = [
                 "checked": true
             }
         },
-        icon: "assets/components/input-radio.png",
+        icon: packageLocation + "assets/components/input-radio.png",
         html: '<input type="radio" data-montage-id="">'
     },
     {
@@ -61,7 +64,7 @@ exports.components = [
                 "value": 100
             }
         },
-        icon: "assets/components/input-number.png",
+        icon: packageLocation + "assets/components/input-number.png",
         html: '<input type="number" data-montage-id="">'
     },
     {
@@ -75,7 +78,7 @@ exports.components = [
                 "value": 50
             }
         },
-        icon: "assets/components/input-range.png",
+        icon: packageLocation + "assets/components/input-range.png",
         html: '<input type="range" data-montage-id="">'
     },
     {
@@ -84,7 +87,7 @@ exports.components = [
         serialization: {
             "prototype": "montage/ui/select.reel"
         },
-        icon: "assets/components/select.png",
+        icon: packageLocation + "assets/components/select.png",
         html: '<select data-montage-id=""><option value="">Select</option></select>'
     },
     {
@@ -96,7 +99,7 @@ exports.components = [
                 "value": "Text"
             }
         },
-        icon: "assets/components/dynamic-text.png",
+        icon: packageLocation + "assets/components/dynamic-text.png",
         html: '<p data-montage-id=""></p>'
     },
     {
@@ -108,7 +111,7 @@ exports.components = [
                 "value": "Editable text"
             }
         },
-        icon: "assets/components/input-text.png",
+        icon: packageLocation + "assets/components/input-text.png",
         html: '<input data-montage-id="" type="text">'
     },
     {
@@ -120,7 +123,7 @@ exports.components = [
                 "value": "Textarea"
             }
         },
-        icon: "assets/components/textarea.png",
+        icon: packageLocation + "assets/components/textarea.png",
         html: '<textarea data-montage-id=""></textarea>'
     },
     {
@@ -132,7 +135,7 @@ exports.components = [
                 "src": "http://client/node_modules/palette/assets/image/placeholder.png"
             }
         },
-        icon: "assets/components/image.png",
+        icon: packageLocation + "assets/components/image.png",
         html: '<img data-montage-id="">'
     },
     {
@@ -145,7 +148,7 @@ exports.components = [
                 "value": 50
             }
         },
-        icon: "assets/components/progress.png",
+        icon: packageLocation + "assets/components/progress.png",
         html: '<progress data-montage-id=""></progress>'
     },
     {
@@ -157,7 +160,7 @@ exports.components = [
                 "objects": [1, 2, 3]
             }
         },
-        icon: "assets/components/repetition.png",
+        icon: packageLocation + "assets/components/repetition.png",
         html: '<ul data-montage-id=""><li>Item</li></ul>'
     },
     {
@@ -191,7 +194,7 @@ exports.components = [
                 ]
             }
         },
-        icon: "assets/components/flow.png",
+        icon: packageLocation + "assets/components/flow.png",
         html: '<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0"></div>',
         postProcess: function (element, iRequire) {
             var self = this;
