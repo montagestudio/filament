@@ -30,13 +30,13 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                 content,
                 template = editingDocument.template;
 
-                if (!(filenameMatch && filenameMatch[1])) {
-                    throw "Could not find name for file to save";
-                }
+            if (!(filenameMatch && filenameMatch[1])) {
+                throw "Could not find name for file to save";
+            }
 
-                filename = filenameMatch[1];
-                path = location.replace(/^\w+:\/\/\w+/m, "") + "/" + filename + ".html";
-                content = template.exportToString();
+            filename = filenameMatch[1];
+            path = location.replace(/^\w+:\/\/\w+/m, "") + "/" + filename + ".html";
+            content = template.exportToString();
 
             this.writeDataToFilePath(content, path, {flags: "w", charset: 'utf-8'});
         }
