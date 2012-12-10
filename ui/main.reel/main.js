@@ -56,12 +56,10 @@ exports.Main = Montage.create(Component, {
 
     handleCanLoadReel: {
         value: function () {
-
-            var reelInfo = this.environmentBridge.reelUrlInfo,
-                reelUrl = reelInfo.reelUrl,
-                packageUrl = reelInfo.packageUrl;
-
-            this.openComponent(reelUrl, packageUrl);
+            var self = this;
+            this.environmentBridge.reelInfo.then(function (reelInfo) {
+                self.openComponent(reelInfo.reelUrl, reelInfo.packageUrl);
+            });
         }
     },
 
