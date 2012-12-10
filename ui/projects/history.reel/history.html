@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+    <title>History</title>
+    <meta charset="utf-8">
+    
+    <link href="history.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "history"}
+                }
+            },
+            
+            "search": {
+                "prototype": "montage/ui/input-text.reel",
+                "properties": {
+                    "element": {"#": "search"}
+                }
+            }
+            
+        }
+    </script>
+
+</head>
+<body>
+    
+    <aside data-montage-id="history" class="History">
+        
+        <header class="History-header">
+            <h2 class="History-title">Recent Projects</h2>
+        </header>
+        
+        <div class="History-search">
+            <input data-montage-id="search" class="History-search-input" type="search" placeholder="Search" autocomplete="on" />
+        </div>
+        
+        <ul class="History-list">
+            <li class="History-list-item stared">
+                <div class="History-list-item-child History-description">My Project</div>
+                <button class="list-item-child History-star" data-icon="&#9733;"></button>
+            </li>
+            <li class="History-list-item stared">
+                <div class="History-list-item-child History-description">Calculator</div>
+                <button class="list-item-child History-star" data-icon="&#9733;"></button>
+            </li>
+            <li class="History-list-item">
+                <div class="History-list-item-child History-description">Temperature Converter</div>
+                <button class="list-item-child History-star" data-icon="&#9733;"></button>
+            </li>
+            <li class="History-list-item">
+                <div class="History-list-item-child History-description">Test</div>
+                <button class="list-item-child History-star" data-icon="&#9733;"></button>
+            </li>
+            <li class="History-list-item">
+                <div class="History-list-item-child History-description">Hello World</div>
+                <button class="list-item-child History-star" data-icon="&#9733;"></button>
+            </li>
+        </ul>
+        
+    </aside>
+
+</body>
+</html>

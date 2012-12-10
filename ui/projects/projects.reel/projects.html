@@ -14,10 +14,17 @@
                 }
             },
             
-            "list": {
-                "prototype": "ui/projects/list.reel",
+            "history": {
+                "prototype": "ui/projects/history.reel",
                 "properties": {
-                    "element": {"#": "list"}
+                    "element": {"#": "history"}
+                }
+            },
+            
+            "templates": {
+                "prototype": "ui/projects/templates.reel",
+                "properties": {
+                    "element": {"#": "templates"}
                 }
             }
             
@@ -28,7 +35,8 @@
 <body>
 
     <div data-montage-id="projects" class="Projects">        
-        <aside data-montage-id="list"></aside>
+        <aside data-montage-id="history"></aside>
+        <div data-montage-id="templates"></div>
     </div>
 
 </body>

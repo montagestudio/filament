@@ -1,18 +1,19 @@
-.ProjectsList {
+.History {
     width: 400px;
     display: -webkit-flex;
     -webkit-flex-direction: column;
     background: hsl(0,0%,60%);
+    border-right: 1px solid hsl(0,0%,60%);
 }
 
 
-.ProjectsList-header {
+.History-header {
     padding: 10px;
     border-bottom: 1px solid hsl(0,0%,70%);
     background: hsl(0,0%,80%);
 }
 
-.ProjectsList-title {
+.History-title {
     margin: 0;
 
 }
@@ -20,14 +21,14 @@
 
 /* search --------------------------------- */
 
-.ProjectsList-search {
+.History-search {
     padding: 10px;
     border-top: 1px solid hsl(0,0%,90%);
     border-bottom: 1px solid hsl(0,0%,70%);
     background: hsl(0,0%,80%);
 }
 
-.ProjectsList-search-input {
+.History-search-input {
     -webkit-appearance: none;
     width: 100%;
     padding: 0;
@@ -37,7 +38,7 @@
 
 /* List --------------------------------- */
 
-.ProjectsList-list {
+.History-list {
     position: relative;
 	margin: 0;
 	padding: 0;
@@ -48,7 +49,7 @@
 	background-color: hsl(0,0%,70%);
 }
 
-.ProjectsList-list-item {
+.History-list-item {
     padding: 10px;
     font-size: 20px;
     border-top: 1px solid hsl(0,0%,90%);
@@ -57,7 +58,7 @@
 	display: -webkit-flex;
 }
 
-.ProjectsList-list-item:hover {
+.History-list-item:hover {
 	background: hsl(0,0%,82%);
 }
 
@@ -65,7 +66,7 @@
 
 /* Component Button --------------------------------- */
 
-.ProjectsList-description {
+.History-description {
     -webkit-box-flex: 1;
     -webkit-flex: 1;
     -webkit-user-select: none;
@@ -73,7 +74,7 @@
     
 }
 
-.ProjectsList-star {
+.History-star {
     visibility: hidden;
     width: 30px;
     height: 30px;
@@ -87,17 +88,17 @@
     text-align: center;
 }
 
-.ProjectsList-list-item.stared .ProjectsList-star,
-.ProjectsList-list-item:hover .ProjectsList-star {
+.History-list-item.stared .History-star,
+.History-list-item:hover .History-star {
     visibility: visible;
 }
 
-.ProjectsList-star:hover {
+.History-star:hover {
     cursor: pointer;
     border: 1px solid hsl(0,0%,70%);
     background: hsl(0,0%,90%);
 }
 
-.ProjectsList-star:active {
+.History-star:active {
     background: transparent;
 }
