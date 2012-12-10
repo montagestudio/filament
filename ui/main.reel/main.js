@@ -57,16 +57,49 @@ exports.Main = Montage.create(Component, {
     handleCanLoadReel: {
         value: function () {
             var self = this;
-            this.environmentBridge.reelInfo.then(function (reelInfo) {
-                self.openComponent(reelInfo.reelUrl, reelInfo.packageUrl);
+
+            this.environmentBridge.projectInfo.then(function (projectInfo) {
+                self.openProject(projectInfo);
             });
         }
     },
 
+    packageUrl: {
+        value: null
+    },
+
+    componentUrls: {
+        value: null
+    },
+
+    // TODO define projectInfo contract
+    openProject: {
+        value: function (projectInfo) {
+            var reelUrl = projectInfo.reelUrl,
+                packageUrl = this.packageUrl = projectInfo.packageUrl;
+
+            this.componentUrls = projectInfo.componentUrls;
+
+            document.application.addEventListener("openComponent", this);
+
+            if (reelUrl) {
+                this.openComponent(reelUrl);
+            }
+        }
+    },
+
+    handleOpenComponent: {
+        value: function (evt) {
+            console.log("open component", evt.detail.componentUrl)
+            this.openComponent("fs:/" + evt.detail.componentUrl);
+        }
+    },
+
     openComponent: {
-        value: function (reelUrl, packageUrl) {
+        value: function (reelUrl) {
+            //TODO if no packageUrl...well we shouldn't open a reel
             //TODO if we already have this reelUrl open, switch to it
-            this.componentEditor.load(reelUrl, packageUrl);
+            this.componentEditor.load(reelUrl, this.packageUrl);
         }
     }
 

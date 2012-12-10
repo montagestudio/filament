@@ -3,7 +3,7 @@ var Montage = require("montage/core/core").Montage,
 
 exports.BrowserBridge = Montage.create(EnvironmentBridge, {
 
-    reelInfo: {
+    projectInfo: {
         get: function () {
             return {"reelUrl": require.getPackage({name: "palette"}).location + "templates/component.reel"};
         }

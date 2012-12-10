@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "component-cell"}
+            }
+        },
+
+        "componentUrl": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "component-url"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.componentUrl"}
+            }
+        },
+
+        "openComponentButton": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "element": {"#": "open-component-button"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+    }
+    </script>
+</head>
+<body>
+    <li data-montage-id="component-cell">
+        <button data-montage-id="open-component-button">
+            <span data-montage-id="component-url"></span>
+        </button>
+    </li>
+</body>
+</html>

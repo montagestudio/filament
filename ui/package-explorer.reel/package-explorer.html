@@ -12,6 +12,26 @@
                 "properties": {
                     "element": {"#": "package-explorer"}
                 }
+            },
+
+            "componentsList": {
+                "prototype": "montage/ui/repetition.reel",
+                "properties": {
+                    "element": {"#": "components-list"}
+                },
+                "bindings": {
+                    "objects": {"<-": "@owner.componentUrls"}
+                }
+            },
+
+            "componentCell": {
+                "prototype": "ui/component-cell.reel",
+                "properties": {
+                    "element": {"#": "component-cell"}
+                },
+                "bindings": {
+                    "componentUrl": {"<-": "@componentsList.objectAtCurrentIteration"}
+                }
             }
         }
     </script>
@@ -21,6 +41,9 @@
 
     <div data-montage-id="package-explorer" class="PackageExplorer">
         <h2 class="Library-title">Package Explorer</h2>
+        <ul data-montage-id="components-list">
+            <li data-montage-id="component-cell"></li>
+        </ul>
     </div>
 
 </body>

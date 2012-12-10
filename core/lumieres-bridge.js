@@ -6,19 +6,16 @@ var Montage = require("montage/core/core").Montage,
 
 exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
-    _deferredReelInfo: {
+    _deferredProjectInfo: {
         value: null
     },
 
-    // TODO this will need to change a bit to accommodate loading several reels within the same package
-    // TODO this should become projectInfo? seeing as we can either "open" a reel or a package, but it's
-    // always the package that filament will actually "open" even though we'll present the specified
-    // reel as the opened document
-    reelInfo: {
+    // TODO read, and validate, project info provided by a discovered .lumiereproject file?
+    projectInfo: {
         get: function () {
 
-            if (!this._deferredReelInfo) {
-                this._deferredReelInfo = Promise.defer();
+            if (!this._deferredProjectInfo) {
+                this._deferredProjectInfo = Promise.defer();
 
                 var params = qs.parse(window.location.search.replace(/^\?/, "")),
                     reelParam = params.file,
@@ -31,15 +28,25 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
                 this.findPackage(reelUrl.replace("fs:/", "")).then(function (packageUrl) {
 
-                    if (packageUrl) {
-                        packageUrl = "fs:/" + packageUrl;
-                    }
+                    //TODO what if no packageUrl? How did it get this far if that's the case, can it?
 
-                    self._deferredReelInfo.resolve({"reelUrl": reelUrl, "packageUrl": packageUrl});
+                    self.componentsInPackage(packageUrl).then(function (componentUrls) {
+
+                        if (packageUrl) {
+                            packageUrl = "fs:/" + packageUrl;
+                        }
+
+                        self._deferredProjectInfo.resolve({
+                            "reelUrl": reelUrl,
+                            "packageUrl": packageUrl,
+                            "componentUrls": componentUrls
+                        });
+
+                    });
                 });
             }
 
-            return this._deferredReelInfo.promise;
+            return this._deferredProjectInfo.promise;
         }
     },
 
@@ -62,6 +69,26 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                         });
                 }
             });
+        }
+    },
+
+    //TODO react to changes on the filesystem (created components, deleted components)
+    componentsInPackage: {
+        value: function (packageUrl) {
+
+            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort))
+
+            return backend.get("fs").invoke("normal", packageUrl + "/ui")
+                .then(function (uiPath) {
+                    return backend.get("fs").invoke("list", uiPath)
+                        .then(function (listing) {
+                            return listing.filter(function (entry) {
+                                return !!entry.match(/\.reel$/);
+                            }).map(function (reelEntry) {
+                                return uiPath + "/" + reelEntry;
+                            });
+                        });
+                });
         }
     },
 
