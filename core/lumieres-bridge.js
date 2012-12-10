@@ -10,30 +10,34 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         value: null
     },
 
+    // TODO this will need to change a bit to accommodate loading several reels within the same package
+    // TODO this should become projectInfo? seeing as we can either "open" a reel or a package, but it's
+    // always the package that filament will actually "open" even though we'll present the specified
+    // reel as the opened document
     reelInfo: {
         get: function () {
 
             if (!this._deferredReelInfo) {
                 this._deferredReelInfo = Promise.defer();
-            }
 
-            var params = qs.parse(window.location.search.replace(/^\?/, "")),
-                reelParam = params.file,
-                reelUrl,
-                self = this;
+                var params = qs.parse(window.location.search.replace(/^\?/, "")),
+                    reelParam = params.file,
+                    reelUrl,
+                    self = this;
 
-            if (reelParam && !reelParam.match(/fs:\/\(null\)/)) {
-                reelUrl = reelParam;
-            }
-
-            this.findPackage(reelUrl.replace("fs:/", "")).then(function (packageUrl) {
-
-                if (packageUrl) {
-                    packageUrl = "fs:/" + packageUrl;
+                if (reelParam && !reelParam.match(/fs:\/\(null\)/)) {
+                    reelUrl = reelParam;
                 }
 
-                self._deferredReelInfo.resolve({"reelUrl": reelUrl, "packageUrl": packageUrl});
-            });
+                this.findPackage(reelUrl.replace("fs:/", "")).then(function (packageUrl) {
+
+                    if (packageUrl) {
+                        packageUrl = "fs:/" + packageUrl;
+                    }
+
+                    self._deferredReelInfo.resolve({"reelUrl": reelUrl, "packageUrl": packageUrl});
+                });
+            }
 
             return this._deferredReelInfo.promise;
         }
