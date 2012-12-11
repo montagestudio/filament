@@ -3,7 +3,6 @@
     display: -webkit-flex;
     -webkit-flex-direction: column;
     background: hsl(0,0%,60%);
-    border-right: 1px solid hsl(0,0%,60%);
 }
 
 
@@ -15,7 +14,8 @@
 
 .History-title {
     margin: 0;
-
+    font-size: 18px;
+    font-weight: normal;
 }
 
 
@@ -51,7 +51,8 @@
 
 .History-list-item {
     padding: 10px;
-    font-size: 20px;
+    font-size: 16px;
+    line-height: 28px;
     border-top: 1px solid hsl(0,0%,90%);
     border-bottom: 1px solid hsl(0,0%,70%);
 	background: hsl(0,0%,80%);
