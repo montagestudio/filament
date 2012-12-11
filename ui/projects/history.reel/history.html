@@ -19,6 +19,13 @@
                 "properties": {
                     "element": {"#": "search"}
                 }
+            },
+            
+            "import": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "import"}
+                }
             }
             
         }
@@ -34,6 +41,7 @@
         </header>
         
         <div class="History-search">
+            <button data-montage-id="import" class="History-search-import">Import</button>
             <input data-montage-id="search" class="History-search-input" type="search" placeholder="Search" autocomplete="on" />
         </div>
         
