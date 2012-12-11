@@ -20,7 +20,7 @@
                     "element": {"#": "components-list"}
                 },
                 "bindings": {
-                    "objects": {"<-": "@owner.componentUrls"}
+                    "objects": {"<-": "@owner.components"}
                 }
             },
 
@@ -30,7 +30,7 @@
                     "element": {"#": "component-cell"}
                 },
                 "bindings": {
-                    "componentUrl": {"<-": "@componentsList.objectAtCurrentIteration"}
+                    "componentInfo": {"<-": "@componentsList.objectAtCurrentIteration"}
                 }
             }
         }

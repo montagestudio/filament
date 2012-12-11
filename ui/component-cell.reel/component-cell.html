@@ -10,13 +10,13 @@
             }
         },
 
-        "componentUrl": {
+        "componentTitle": {
             "prototype": "montage/ui/dynamic-text.reel",
             "properties": {
-                "element": {"#": "component-url"}
+                "element": {"#": "component-title"}
             },
             "bindings": {
-                "value": {"<-": "@owner.componentUrl"}
+                "value": {"<-": "@owner.componentInfo.title"}
             }
         },
 
@@ -38,7 +38,7 @@
 <body>
     <li data-montage-id="component-cell">
         <button data-montage-id="open-component-button">
-            <span data-montage-id="component-url"></span>
+            <span data-montage-id="component-title"></span>
         </button>
     </li>
 </body>

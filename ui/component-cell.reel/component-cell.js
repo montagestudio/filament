@@ -3,14 +3,14 @@ var Montage = require("montage").Montage,
 
 exports.ComponentCell = Montage.create(Component, {
 
-    componentUrl: {
+    componentInfo: {
         value: null
     },
 
     handleOpenComponentButtonAction: {
         value: function (evt) {
             this.dispatchEventNamed("openComponent", true, true, {
-                componentUrl: this.componentUrl
+                componentUrl: this.componentInfo.reelUrl
             });
         }
     }

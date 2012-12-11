@@ -1,5 +1,6 @@
 var Montage = require("montage/core/core").Montage,
-    Component = require("montage/ui/component").Component;
+    Component = require("montage/ui/component").Component,
+    ComponentInfo = require("core/component-info.js").ComponentInfo;
 
 var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
@@ -68,7 +69,7 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-    componentUrls: {
+    components: {
         value: null
     },
 
@@ -78,7 +79,11 @@ exports.Main = Montage.create(Component, {
             var reelUrl = projectInfo.reelUrl,
                 packageUrl = this.packageUrl = projectInfo.packageUrl;
 
-            this.componentUrls = projectInfo.componentUrls;
+            this.components = projectInfo.componentUrls.map(function (url) {
+                return ComponentInfo.create().initWithUrl(url);
+            });
+
+            console.log(this.components)
 
             document.application.addEventListener("openComponent", this);
 
