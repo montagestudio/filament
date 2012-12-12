@@ -1,4 +1,4 @@
-/*global FileDialog */
+/*global lumieres */
 
 /**
     @module "ui/file.reel"
@@ -48,7 +48,7 @@ exports.File = Montage.create(Component, /** @lends module:"ui/file.reel".File# 
             var deferred = Promise.defer();
 
             // FIXME: Move into its own Filament module
-            FileDialog.openFile(this._options, function(success, files) {
+            lumieres.openFileDialog(this._options, function(success, files) {
                 console.log(success, files);
                 if (!success) {
                     deferred.reject();
@@ -59,7 +59,7 @@ exports.File = Montage.create(Component, /** @lends module:"ui/file.reel".File# 
                     files = [files];
                 }
 
-                // We get "file://localhost" back from the FileDialog, change
+                // We get "file://localhost" back from lumieres, change
                 // to "fs:/"
                 // TODO: copy file into project
                 for (var i = 0, len = files.length; i < len; i++) {
