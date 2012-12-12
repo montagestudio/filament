@@ -3,8 +3,8 @@
     "version": "0.1.0",
 	"private": true,
     "dependencies": {
-        "palette": "https://github.com/declarativ/palette/tarball/master",
-        "flow-editor": "https://github.com/declarativ/flow-editor/tarball/master"
+        "palette": "git+ssh://git@github.com:declarativ/palette.git",
+        "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git"
     },
     "mappings": {
         "montage": {
