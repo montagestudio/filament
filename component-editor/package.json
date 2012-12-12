@@ -3,8 +3,8 @@
     "version": "0.1.0",
 	"private": true,
     "dependencies": {
-        "palette": "0.2.x",
-        "flow-editor": "0.2.x"
+        "palette": "git+ssh://git@github.com:declarativ/palette.git",
+        "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git"
     },
     "mappings": {
         "montage": {
