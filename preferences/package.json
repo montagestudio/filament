@@ -1,0 +1,12 @@
+{
+    "name": "filament-preferences",
+    "version": "0.0.0",
+    "dependencies": {
+        "montage": "*",
+        "q-comm": "*"
+    },
+
+    "mappings": {
+        "q-connection": "/node_modules/q-connection"
+    }
+}
