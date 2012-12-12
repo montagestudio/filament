@@ -1,0 +1,70 @@
+.Templates {
+    -webkit-flex: 1;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    background: hsl(0,0%,40%);
+    color: hsl(0,0%,90%);
+}
+
+
+.Templates-header {
+    display: -webkit-flex;
+    -webkit-justify-content: space-between;
+    padding: 10px;
+    background: hsl(0,0%,45%);
+    border-bottom: 1px solid hsla(0,0%,0%,.2);
+}
+
+.Templates-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: normal;
+    text-align: left;
+}
+
+.Templates-buttons .montage-Button {
+    background-color: hsl(0, 0%, 60%);
+    border-color: hsl(0, 0%, 30%);
+    color: hsl(0, 0%, 95%);
+}
+
+
+/* List --------------------------------- */
+
+.Templates-list {
+    -webkit-flex: 1;
+    overflow: auto;
+    min-height: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+.Templates-figure {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    margin: 10px;
+    vertical-align: top;
+}
+
+.Templates-thumb {
+    width: 100%;
+    border-radius: 8px;
+    border: 10px solid hsl(0,0%,30%);
+    border-right-width: 15px;
+    border-left-width: 15px;
+    cursor: pointer;
+}
+
+.Templates-thumb:hover {
+    border-color: hsl(0,0%,25%);
+}
+
+.Templates-thumb:active {
+    border-color: hsl(0,0%,35%);
+}
+
+.Templates-description {
+    text-align: center;
+    font-size: .8em;
+}

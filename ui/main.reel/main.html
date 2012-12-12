@@ -22,6 +22,13 @@
                 }
             },
             
+            "firstrun": {
+                "prototype": "ui/firstrun/firstrun.reel",
+                "properties": {
+                    "element": {"#": "firstrun"}
+                }
+            },
+            
             "projects": {
                 "prototype": "ui/projects/projects.reel",
                 "properties": {
@@ -44,7 +51,8 @@
 
     <div data-montage-id="main" class="main">        
         <nav data-montage-id="nav"></nav>
-        <div data-montage-id="projects"></div>
+        <div data-montage-id="firstrun"></div>
+        <div data-montage-id="projects" style="display: none;"></div>
         <div data-montage-id="editor" style="display: none;"></div>
     </div>
 

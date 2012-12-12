@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+    <title>Firstrun</title>
+    <meta charset="utf-8">
+    
+    <link href="firstrun.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "firstrun"}
+                }
+            },
+            
+            "intro": {
+                "prototype": "ui/firstrun/intro.reel",
+                "properties": {
+                    "element": {"#": "intro"}
+                }
+            },
+            
+            "templates": {
+                "prototype": "ui/firstrun/templates.reel",
+                "properties": {
+                    "element": {"#": "templates"}
+                }
+            }
+            
+        }
+    </script>
+
+</head>
+<body>
+
+    <div data-montage-id="firstrun" class="Firstrun">        
+        <aside data-montage-id="intro"></aside>
+        <div data-montage-id="templates"></div>
+    </div>
+
+</body>
+</html>

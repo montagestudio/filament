@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+    <title>Templates</title>
+    <meta charset="utf-8">
+    
+    <link href="templates.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "templates"}
+                }
+            },
+            
+            "import": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "import"}
+                }
+            },
+            
+            "edit": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "edit"}
+                }
+            }
+            
+        }
+    </script>
+
+</head>
+<body>
+    
+    <aside data-montage-id="templates" class="Templates">
+        
+        <header class="Templates-header">
+            <h2 class="Templates-title">New Project</h2>
+            <div class="Templates-buttons montage-ButtonGroup">
+                <button data-montage-id="import" class="Templates-import">Import</button>
+                <button data-montage-id="edit" class="Templates-edit">Edit</button>
+            </div>
+        </header>
+                
+        <div class="Templates-list">
+            <figure class="Templates-figure">
+            	<img class="Templates-thumb" src="assets/templates/blank.png">
+            	<figcaption class="Templates-description">Blank</figcaption>
+            </figure>
+            <figure class="Templates-figure">
+            	<img class="Templates-thumb" src="assets/templates/template1.png">
+            	<figcaption class="Templates-description">Side + Main</figcaption>
+            </figure>
+            <figure class="Templates-figure">
+            	<img class="Templates-thumb" src="assets/templates/template2.png">
+            	<figcaption class="Templates-description">Big Main</figcaption>
+            </figure>
+            <figure class="Templates-figure">
+            	<img class="Templates-thumb" src="assets/templates/template3.png">
+            	<figcaption class="Templates-description">Vertical Bar + Thumbs</figcaption>
+            </figure>
+            
+            <figure class="Templates-figure">
+            	<img class="Templates-thumb" src="assets/templates/blank.png">
+            	<figcaption class="Templates-description">Template 5</figcaption>
+            </figure>
+            <figure class="Templates-figure">
+            	<img class="Templates-thumb" src="assets/templates/blank.png">
+            	<figcaption class="Templates-description">Template 6</figcaption>
+            </figure>
+            <figure class="Templates-figure">
+            	<img class="Templates-thumb" src="assets/templates/blank.png">
+            	<figcaption class="Templates-description">Template 7</figcaption>
+            </figure>
+        </div>
+        
+    </aside>
+
+</body>
+</html>
