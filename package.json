@@ -13,5 +13,9 @@
             "name": "filament-component-editor",
             "location": "component-editor"
         }
-    }
+    },
+	"scripts": {
+		"install": "cd component-editor && npm install",
+		"update": "cd component-editor && npm update"
+	}
 }
