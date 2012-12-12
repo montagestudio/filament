@@ -21,6 +21,7 @@ exports.Main = Montage.create(Component, {
             var self = this;
             return this.workbench.load(reelUrl, packageUrl).then(function (editingDocument) {
                 self.editingDocument = editingDocument;
+                return editingDocument;
             });
         }
     },
@@ -42,46 +43,21 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-
-
     prepareForDraw: {
         value: function () {
             this.addEventListener("addComponent", this, false);
             document.addEventListener("save", this, false);
-
-            this.addPropertyChangeListener("documentTitle", this, false);
-        }
-    },
-
-    handleChange: {
-        value: function (notification) {
-            console.log("notification", notification);
-            this.needsDraw = true;
         }
     },
 
     draw: {
         value: function () {
-            document.title = this.documentTitle;
-
             if (this.palettesVisible) {
                 this.element.classList.remove("palettes-hidden");
             } else {
                 this.element.classList.add("palettes-hidden");
             }
             //TODO indicate whether or not we have a currentProject open
-        }
-    },
-
-    documentTitle: {
-        dependencies: ["editingDocument.title"],
-        get: function () {
-
-            if (!this.editingDocument) {
-                return "Lumiere";
-            }
-
-            return this.editingDocument.title;
         }
     },
 
