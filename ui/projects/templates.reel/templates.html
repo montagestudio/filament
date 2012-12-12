@@ -12,6 +12,20 @@
                 "properties": {
                     "element": {"#": "templates"}
                 }
+            },
+            
+            "import": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "import"}
+                }
+            },
+            
+            "edit": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "edit"}
+                }
             }
             
         }
@@ -23,7 +37,11 @@
     <aside data-montage-id="templates" class="Templates">
         
         <header class="Templates-header">
-            <h2 class="Templates-title">Templates</h2>
+            <h2 class="Templates-title">New Project</h2>
+            <div class="Templates-buttons montage-ButtonGroup">
+                <button data-montage-id="import" class="Templates-import">Import</button>
+                <button data-montage-id="edit" class="Templates-edit">Edit</button>
+            </div>
         </header>
                 
         <div class="Templates-list">
