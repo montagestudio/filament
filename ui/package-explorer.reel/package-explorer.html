@@ -32,6 +32,19 @@
                 "bindings": {
                     "componentInfo": {"<-": "@componentsList.objectAtCurrentIteration"}
                 }
+            },
+
+            "addFileButton": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "add-file-button"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             }
         }
     </script>
@@ -44,6 +57,7 @@
         <ul data-montage-id="components-list">
             <li data-montage-id="component-cell"></li>
         </ul>
+        <button data-montage-id="add-file-button">Add…</button>
     </div>
 
 </body>

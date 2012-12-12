@@ -87,6 +87,7 @@ exports.Main = Montage.create(Component, {
 
             this.addPropertyChangeListener("windowTitle", this, false);
             app.addEventListener("openComponent", this);
+            app.addEventListener("addFile", this);
 
             if (reelUrl) {
                 this.openComponent(reelUrl);
@@ -136,6 +137,13 @@ exports.Main = Montage.create(Component, {
             }
 
             return projectTitle;
+        }
+    },
+
+    handleAddFile: {
+        value: function (evt) {
+            //TODO present new file dialog
+            console.log("main: add new file");
         }
     },
 

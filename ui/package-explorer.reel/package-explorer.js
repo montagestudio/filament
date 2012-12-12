@@ -3,4 +3,10 @@ var Montage = require("montage/core/core").Montage,
 
 exports.PackageExplorer = Montage.create(Component, {
 
+    handleAddFileButtonAction: {
+        value: function (evt) {
+            this.dispatchEventNamed("addFile", true, true);
+        }
+    }
+
 });
