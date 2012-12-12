@@ -1,6 +1,7 @@
 {
     "name": "filament",
     "version": "0.2.0",
+	"private": true,
     "dependencies": {
         "montage": "0.12.x",
         "q": "0.8.10",

@@ -1,6 +1,7 @@
 {
     "name": "filament-component-editor",
     "version": "0.1.0",
+	"private": true,
     "dependencies": {
         "palette": "0.2.x",
         "flow-editor": "0.2.x"
