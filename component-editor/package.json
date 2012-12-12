@@ -1,7 +1,7 @@
 {
     "name": "filament-component-editor",
     "version": "0.1.0",
-	"private": true,
+    "private": true,
     "dependencies": {
         "palette": "git+ssh://git@github.com:declarativ/palette.git",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git"

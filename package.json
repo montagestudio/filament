@@ -1,13 +1,11 @@
 {
     "name": "filament",
     "version": "0.2.0",
-	"private": true,
-
-	"repository" : {
-		"type" : "git",
-	  	"url" : "git@github.com:declarativ/filament.git"
-	},
-
+    "private": true,
+    "repository" : {
+        "type" : "git",
+        "url" : "git@github.com:declarativ/filament.git"
+    },
     "dependencies": {
         "montage": "0.12.x",
         "q": "0.8.10",
@@ -20,8 +18,8 @@
             "location": "component-editor"
         }
     },
-	"scripts": {
-		"install": "cd component-editor && npm install",
-		"update": "cd component-editor && npm update"
-	}
+    "scripts": {
+        "install": "cd component-editor && npm install",
+        "update": "cd component-editor && npm update"
+    }
 }
