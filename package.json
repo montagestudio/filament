@@ -2,6 +2,12 @@
     "name": "filament",
     "version": "0.2.0",
 	"private": true,
+
+	"repository" : {
+		"type" : "git",
+	  	"url" : "git@github.com:declarativ/filament.git"
+	},
+
     "dependencies": {
         "montage": "0.12.x",
         "q": "0.8.10",
