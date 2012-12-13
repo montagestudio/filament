@@ -12,6 +12,7 @@ var Montage = require("montage/core/core").Montage,
     defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
 var getMainMenu = null;
+var kListenerError = "'menuAction' listener must be installed on a component or the Application object";
 
 exports.Menu = Menu = Montage.create(Montage, {
 
@@ -19,14 +20,7 @@ exports.Menu = Menu = Montage.create(Montage, {
         value: []
     },
 
-    _items: {
-        value: null
-    },
-
-    items: {
-        get: function() {
-            return this._items
-        },
+    itemsToInsert: {
         set: function(newItems) {
             var thisRef = this;
 
@@ -34,7 +28,7 @@ exports.Menu = Menu = Montage.create(Montage, {
             for (var i in newItems) {
                 var item = newItems[i];
                 if (typeof item.identifier !== "string" || item.identifier.length == 0) {
-                    item.identifier = item.title || item.insertBefore || item.insertAfter;
+                    item.identifier = item.title || (item.location ? (item.location.after || item.location.before) : "");
                     item.identifier = item.identifier.replace(/ /g, "");
                 }
             }
@@ -50,13 +44,22 @@ exports.Menu = Menu = Montage.create(Montage, {
         }
     },
 
+    _items: {
+        value: null
+    },
+
+    items: {
+        get: function() {
+            return this._items
+        }
+    },
+
     didCreate: {
         enumerable: false,
         value: function() {
             var thisRef = this;
 
             if (lumieres) {
-//                getMainMenu = Promise.nbind(lumieres.getMainMenu, lumieres);
                 getMainMenu = Promise.nfbind(lumieres.getMainMenu);
 
                 // Replace the lumieres MenuItem object by our own Montage Equivalent, and install our own action dispatcher
@@ -96,13 +99,13 @@ exports.Menu = Menu = Montage.create(Montage, {
 
     addEventListener: {
         value: function(type, listener, useCapture) {
-            throw new Error("To listen on menuAction, add your listener either on a UI or the Application component");
+            throw new Error("addEventListener not supported. " + kListenerError);
         }
     },
 
     removeEventListener: {
         value: function(type, listener, useCapture) {
-            throw new Error("To listen on menuAction, add your listener either on a UI or the Application component");
+            throw new Error("removeEventListener not supported. " + kListenerError);
         }
     },
 
@@ -132,7 +135,7 @@ exports.Menu = Menu = Montage.create(Montage, {
             };
 
             if (menu == undefined) {
-                menu = thisRef.items[0].menu;
+                menu = thisRef._items[0].menu;
                 if (menu) {
                     _reset(menu);
                 }
@@ -206,18 +209,23 @@ exports.Menu = Menu = Montage.create(Montage, {
 
             if (itemIndex < items.length) {
                 item = items[itemIndex];
-                if (item.insertBefore !== undefined) {
-                    location = thisRef._locationForPath(mainMenu, item.insertBefore, false);
-                    menu = location.menu;
-                    index = location.index;
-                } else if (item.insertAfter !== undefined) {
-                    location = thisRef._locationForPath(mainMenu, item.insertAfter, true);
-                    menu = location.menu;
-                    index = location.index;
-                } else {
-                    menu = mainMenu;
-                    index = null;
+                location = item.location;
+
+                menu = mainMenu;
+                index = null;
+
+                if (typeof location == "object") {
+                    if (location.before !== undefined) {
+                        location = thisRef._locationForPath(mainMenu, location.before, false);
+                        menu = location.menu;
+                        index = location.index;
+                    } else if (location.after !== undefined) {
+                        location = thisRef._locationForPath(mainMenu, location.after, true);
+                        menu = location.menu;
+                        index = location.index;
+                    }
                 }
+
                 lumieres.MenuItem.insertItem.call(menu, item, index, function() {
                     thisRef._insertItem(mainMenu, items, ++ itemIndex, callback);
                 })
@@ -254,12 +262,7 @@ exports.Menu = Menu = Montage.create(Montage, {
             }
 
             component = component || defaultEventManager.application;
-            var savedIdentifier = component.identifier;
-
-            // Let's temporary change the target's identifier to be the selected menu item's identifier
-            component.identifier = menuItem.identifier;
-                component.dispatchEvent(event);
-            component.identifier = savedIdentifier;
+            component.dispatchEvent(event);
         }
     }
 });

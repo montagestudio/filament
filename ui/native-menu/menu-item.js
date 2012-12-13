@@ -7,6 +7,8 @@
 var Montage = require("montage/core/core").Montage,
     defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
+var kListenerError = "'menuAction' listener must be installed on a component or the Application object";
+
 exports.MenuItem = Montage.create(Montage, {
 
     _title: {
@@ -72,7 +74,6 @@ exports.MenuItem = Montage.create(Montage, {
         set: function(value) {
             this._enabled = value;
             if (this.menu && !this._nativeLock) {
-                if (this.title == "Montage")
                 lumieres.MenuItem.setEnabled.call(this, value);
             }
         }
@@ -95,12 +96,8 @@ exports.MenuItem = Montage.create(Montage, {
         }
     },
 
-    insertAfter: {
-        value: undefined
-    },
-
-    insertBefore: {
-        value: undefined
+    location: {
+        value: null
     },
 
     deserializedFromSerialization: {
@@ -113,12 +110,13 @@ exports.MenuItem = Montage.create(Montage, {
 
     addEventListener: {
         value: function(type, listener, useCapture) {
-            throw new Error("To listen on menuAction, add your listener either on a UI or the Application component");
+            throw new Error("addEventListener not supported. " + kListenerError);
         }
     },
 
     removeEventListener: {
         value: function(type, listener, useCapture) {
+            throw new Error("removeEventListener not supported. " + kListenerError);
         }
     }
 
