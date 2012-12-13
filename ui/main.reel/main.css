@@ -5,14 +5,27 @@
     height: 100%;
 }
 
-/*.view {
-    display: -webkit-flex;
-    -webkit-flex-direction: column;
-    -webkit-flex: 1;
+
+/* States - Don't try this at home */
+
+.isFirstrun .Projects,
+.isFirstrun .Editor,
+.isFirstrun .Nav,
+
+.isOverview .Firstrun,
+.isOverview .Editor,
+
+.isEditor .Firstrun,
+.isEditor .Projects
+
+{
+    display: none;
 }
 
-.wrapper {
-    display: -webkit-flex;
-    -webkit-flex-direction: row;
-    -webkit-flex: 1;
-}*/
+
+/* Very nasty selectors */
+
+.isOverview .Nav .button-group:nth-child(3),
+.isOverview .Nav .button-group:nth-child(2) button:nth-child(2) ~ button {
+    visibility: hidden;
+}

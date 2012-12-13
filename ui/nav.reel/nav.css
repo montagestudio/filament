@@ -26,7 +26,6 @@
 	background-size: 6px 12px, 6px 12px;
 }
 
-.Nav:hover .Nav-loader,
 .Nav-loader.isLoading {
     background-image:   -webkit-linear-gradient( -45deg, hsla(0,0%,0%,0) 8px, hsla(0,0%,0%,.2) 8px ),
                         -webkit-linear-gradient( 135deg, hsla(0,0%,0%,0) 8px, hsla(0,0%,0%,.2) 8px );

@@ -11,7 +11,7 @@ exports.Main = Montage.create(Component, {
 
     prepareForDraw: {
         value: function() {
-            //console.log("main prepareForDraw")
+            
         }
     }
 
