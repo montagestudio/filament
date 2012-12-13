@@ -8,7 +8,7 @@
 
 /* States - Don't try this at home */
 
-.isFirstrun .Projects,
+.isFirstrun .Overview,
 .isFirstrun .Editor,
 .isFirstrun .Nav,
 
@@ -16,7 +16,7 @@
 .isOverview .Editor,
 
 .isEditor .Firstrun,
-.isEditor .Projects
+.isEditor .Overview
 
 {
     display: none;
