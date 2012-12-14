@@ -19,7 +19,7 @@
         }
     },
     "scripts": {
-        "install": "cd component-editor && npm install",
-        "update": "cd component-editor && npm update"
+        "install": "node fulfill-dependencies.js",
+        "update": "node fulfill-dependencies.js"
     }
 }
