@@ -7,14 +7,14 @@ var propertyInspector = require("palette/ui/inspector/property-inspector.reel");
 
 // Lumieres file open dialog
 var fileInspector = propertyInspector.PropertyTypeComponentDescriptor.create().init(
-    require("ui/inspector/file.reel").File,
+    require("component-editor/ui/inspector/file.reel").File,
     "div",
     "value"
 );
 propertyInspector.addPropertyTypeComponentDescriptor("file", fileInspector);
 
 var jsonInspector = propertyInspector.PropertyTypeComponentDescriptor.create().init(
-    require("ui/inspector/array.reel").Array,
+    require("component-editor/ui/inspector/array.reel").Array,
     "div",
     "array"
 );

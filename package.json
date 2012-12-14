@@ -10,16 +10,8 @@
         "montage": "0.12.x",
         "q": "0.8.10",
         "q-connection": "0.4.4",
-        "qs": "0.5.2"
-    },
-    "mappings": {
-        "component-editor": {
-            "name": "filament-component-editor",
-            "location": "component-editor"
-        }
-    },
-    "scripts": {
-        "install": "node fulfill-dependencies.js",
-        "update": "node fulfill-dependencies.js"
+        "qs": "0.5.2",
+        "palette": "git+ssh://git@github.com:declarativ/palette.git",
+        "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git"
     }
 }
