@@ -43,7 +43,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                         });
 
                     });
-                });
+                }).done();
             }
 
             return this._deferredProjectInfo.promise;
