@@ -1,0 +1,12 @@
+{
+    "name": "filament welcome",
+    "version": "0.1.0",
+    "private": true,
+    "repository" : {
+        "type" : "git",
+        "url" : "git@github.com:declarativ/filament.git"
+    },
+    "dependencies": {
+        "montage": "0.12.x"
+    }
+}

@@ -1,0 +1,73 @@
+.Launcher {
+    -webkit-flex: 1;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    background: hsl(0,0%,80%);
+    padding: 30px 40px;
+}
+
+.Launcher-section {
+    margin: 10px 0;
+    padding: 20px;
+    border-radius: 6px;
+    border: 1px solid hsla(0,0%,0%,.1);
+    background: hsl(0,0%,85%);
+}
+
+.Launcher-title {
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    font-weight: normal;
+    color: hsl(0,0%,60%);
+}
+
+
+/* New --------------------------------- */
+
+.New-input {
+	width: 200px;
+}
+
+.New-button {
+	margin: 0;
+}
+
+
+/* List --------------------------------- */
+
+.History {
+    -webkit-flex: 1;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+}
+
+.History-list {
+    -webkit-flex: 1;
+    position: relative;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	overflow-y: scroll;
+	-webkit-flex: 1 1 0;
+	min-height: 0;
+	background-color: hsl(0,0%,80%);
+}
+
+.History-list-item {
+    padding: 10px 20px;
+    font-size: 16px;
+    line-height: 28px;
+    border-top: 1px solid hsla(0,0%,100%,.6);
+    border-bottom: 1px solid hsla(0,0%,0%,.1);
+	background: hsl(0,0%,90%);
+	display: -webkit-flex;
+	cursor: pointer;
+}
+
+.History-list-item:first-child {
+    /border-top: none;
+}
+
+.History-list-item:hover {
+	background: hsl(0,0%,86%);
+}
