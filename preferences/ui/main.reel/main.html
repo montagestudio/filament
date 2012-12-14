@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+    <title>Main</title>
+    <meta charset="utf-8">
+
+    <link href="main.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "main"},
+                    "httpportTextField": {"@": "httpport"}
+                }
+            },
+
+            "httpport": {
+                "prototype": "montage/ui/input-text.reel",
+                "properties": {
+                    "element": {"#": "httpport"}
+                },
+                "bindings": {
+                    "value": {"<->": "@owner.userPreferences.httpPort"}
+                }
+            },
+
+            "application": {
+                "prototype": "montage/ui/application"
+            }
+        }
+    </script>
+
+</head>
+<body>
+
+    <div data-montage-id="main" class="main">
+        <div class="form-stacked">
+            <label for="httpport">Preview Port</label>
+            <input type="text" data-montage-id="httpport" required value="" pattern="^[1-9]\d{3,}$"/>
+        </div>
+    </div>
+
+</body>
+</html>
