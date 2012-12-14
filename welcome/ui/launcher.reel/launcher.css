@@ -8,7 +8,7 @@
 
 .Launcher-section {
     margin: 10px 0;
-    padding: 20px;
+    padding: 15px;
     border-radius: 6px;
     border: 1px solid hsla(0,0%,0%,.1);
     background: hsl(0,0%,85%);
@@ -18,7 +18,8 @@
     margin: 0 0 12px 0;
     font-size: 20px;
     font-weight: normal;
-    color: hsl(0,0%,60%);
+    color: hsl(0,0%,50%);
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
 }
 
 
