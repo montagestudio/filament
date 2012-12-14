@@ -24,6 +24,10 @@
 
 /* New --------------------------------- */
 
+.isFirstrun .New {
+	margin: auto;
+}
+
 .New-controls {
 	display: -webkit-flex;
 }
@@ -38,6 +42,10 @@
 
 
 /* List --------------------------------- */
+
+.isFirstrun .History {
+    display: none;
+}
 
 .History {
     -webkit-flex: 1;
@@ -61,17 +69,14 @@
     padding: 10px 20px;
     font-size: 16px;
     line-height: 28px;
-    border-top: 1px solid hsla(0,0%,100%,.8);
+    border-top: 1px solid hsla(0,0%,100%,.5);
     border-bottom: 1px solid hsla(0,0%,0%,.1);
 	background: hsl(0,0%,95%);
 	display: -webkit-flex;
 	cursor: pointer;
 }
 
-.History-list-item:first-child {
-    /border-top: none;
-}
-
 .History-list-item:hover {
-	background: hsl(0,0%,86%);
+    border-top: 1px solid hsla(0,0%,100%,.1);
+	background: hsl(0,0%,90%);
 }
