@@ -8,11 +8,14 @@
     <link href="../assets/styles/bootstrapping.css" rel="stylesheet" />
     <link href="../assets/styles/filament.css" rel="stylesheet" />
     
-    <script src="../node_modules/montage/montage.js"></script>
+    <script src="../node_modules/montage/montage.js" data-package=".."></script>
     <script type="text/montage-serialization">
         {
             "owner": {
-                "prototype": "montage/ui/loader.reel"
+                "prototype": "montage/ui/loader.reel",
+                "properties": {
+                    "mainModule": "welcome/ui/main.reel"
+                }
             }
         }
     </script>
