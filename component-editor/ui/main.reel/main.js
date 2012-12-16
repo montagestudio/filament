@@ -1,6 +1,5 @@
 var Montage = require("montage/core/core").Montage,
-    Component = require("montage/ui/component").Component,
-    libraryComponents = require("core/components.js").components;
+    Component = require("montage/ui/component").Component;
 
 exports.Main = Montage.create(Component, {
 
@@ -12,8 +11,8 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-    prototypes: {
-        value: libraryComponents
+    libraryItems: {
+        value: null
     },
 
     load: {
@@ -75,10 +74,10 @@ exports.Main = Montage.create(Component, {
             }
 
             this.editingDocument.addComponent(
-                prototypeEntry.serialization.prototype,
+                prototypeEntry.moduleId,
                 prototypeEntry.name,
                 prototypeEntry.html,
-                prototypeEntry.serialization.properties,
+                prototypeEntry.properties,
                 prototypeEntry.postProcess
             );
         }

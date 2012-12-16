@@ -1,6 +1,9 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
-    ComponentInfo = require("core/component-info.js").ComponentInfo;
+    ComponentInfo = require("core/component-info.js").ComponentInfo,
+    LibraryItem = require("core/library-item.js").LibraryItem,
+    Promise = require("montage/core/promise").Promise,
+    Deserializer = require("montage/core/deserializer").Deserializer;
 
 var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
@@ -69,6 +72,10 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
+    libraryItems: {
+        value: null
+    },
+
     components: {
         value: null
     },
@@ -77,12 +84,18 @@ exports.Main = Montage.create(Component, {
     openProject: {
         value: function (projectInfo) {
             var reelUrl = projectInfo.reelUrl,
-                app = document.application;
+                app = document.application,
+                self = this;
 
             this.packageUrl = projectInfo.packageUrl;
 
             this.components = projectInfo.componentUrls.map(function (url) {
                 return ComponentInfo.create().initWithUrl(url);
+            });
+
+            this._loadPlugins(projectInfo.dependencies).then(function (plugins) {
+                self.plugins = plugins;
+                self._populateLibrary(projectInfo.dependencies);
             });
 
             this.addPropertyChangeListener("windowTitle", this, false);
@@ -96,6 +109,64 @@ exports.Main = Montage.create(Component, {
             // Update title
             // TODO this should be unnecessary as the packageUrl has been changed...
             this.needsDraw = true;
+        }
+    },
+
+    _loadPlugins: {
+        value: function (dependencies) {
+            return Promise.all(dependencies.map(function (dependency) {
+                return require.async("plugins/" + dependency.dependency + ".js");
+            }));
+        }
+    },
+
+    _populateLibrary: {
+        value: function (dependencies) {
+            var self = this,
+                moduleId,
+                objectName;
+
+            Promise.all(dependencies.map(function (dependency) {
+                return self.environmentBridge.componentsInPackage(dependency.url);
+            })).then(function (dependencies) {
+
+                self.libraryItems = [];
+                //TODO group by dependency?
+
+                dependencies.forEach(function (dependencyComponents) {
+                    dependencyComponents.forEach(function (componentUrl) {
+
+                        moduleId = componentUrl.replace(/\S+\/node_modules\//, "");
+
+                        //TODO this utility should live somewhere else
+                        Deserializer._findObjectNameRegExp.test(moduleId);
+                        objectName = RegExp.$1.replace(Deserializer._toCamelCaseRegExp, Deserializer._replaceToCamelCase);
+
+                        self.libraryItems.push(self.libraryItemForModule(moduleId, objectName));
+                    });
+                });
+            }).done();
+        }
+    },
+
+    //TODO should account for the version of the dependency as well
+    libraryItemForModule: {
+        value: function (moduleId, objectName) {
+            //TODO not hardcode this
+            var plugin = this.plugins[0],
+                item;
+
+            if (plugin && plugin.libraryItems && plugin.libraryItems[moduleId]) {
+                item = plugin.libraryItems[moduleId].create();
+            } else {
+                item = LibraryItem.create();
+
+                item.moduleId = moduleId;
+                item.name = objectName;
+                item.html = '<div data-montage-id=""></div>';
+            }
+
+            return item;
         }
     },
 

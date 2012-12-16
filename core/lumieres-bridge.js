@@ -20,17 +20,20 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                 var params = qs.parse(window.location.search.replace(/^\?/, "")),
                     reelParam = params.file,
                     reelUrl,
-                    self = this;
+                    self = this,
+                    packageUrl;
 
                 if (reelParam && !reelParam.match(/fs:\/\(null\)/)) {
                     reelUrl = reelParam;
                 }
 
-                this.findPackage(reelUrl.replace("fs:/", "")).then(function (packageUrl) {
-
-                    //TODO what if no packageUrl? How did it get this far if that's the case, can it?
-
-                    self.componentsInPackage(packageUrl).then(function (componentUrls) {
+                this.findPackage(reelUrl.replace("fs:/", ""))
+                    .then(function (url) {
+                        packageUrl = url;
+                        //TODO what if no packageUrl? How did it get this far if that's the case, can it?
+                        return [self.componentsInPackage(url), self.dependenciesInPackage(url)];
+                    })
+                    .spread(function (componentUrls, dependencies) {
 
                         if (packageUrl) {
                             packageUrl = "fs:/" + packageUrl;
@@ -39,11 +42,11 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                         self._deferredProjectInfo.resolve({
                             "reelUrl": reelUrl,
                             "packageUrl": packageUrl,
-                            "componentUrls": componentUrls
+                            "componentUrls": componentUrls,
+                            "dependencies": dependencies
                         });
 
-                    });
-                }).done();
+                    }).done();
             }
 
             return this._deferredProjectInfo.promise;
@@ -73,10 +76,11 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
     },
 
     //TODO react to changes on the filesystem (created components, deleted components)
+    //TODO also find non-components, "LibraryItems"
     componentsInPackage: {
         value: function (packageUrl) {
 
-            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort))
+            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
 
             return backend.get("fs").invoke("normal", packageUrl + "/ui")
                 .then(function (uiPath) {
@@ -88,6 +92,26 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                                 return uiPath + "/" + reelEntry;
                             });
                         });
+                });
+        }
+    },
+
+    dependenciesInPackage: {
+        value: function (packageUrl) {
+
+            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
+
+            return backend.get("fs").invoke("read", packageUrl + "/package.json", {"charset": "utf-8"})
+                .then(function (content) {
+                    var packageInfo = JSON.parse(content),
+                        dependencyNames = Object.keys(packageInfo.dependencies);
+
+                    //TODO implement mapping in addition to just dependencies
+                    //TODO also report the version of the dependency
+
+                    return dependencyNames.map(function (dependencyName) {
+                        return {"dependency": dependencyName, "url": packageUrl + "/node_modules/" + dependencyName};
+                    });
                 });
         }
     },
