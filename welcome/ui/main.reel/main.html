@@ -1,42 +1,42 @@
 <!doctype html>
 <html>
 <head>
-    <title>Firstrun</title>
+    <title>Main</title>
     <meta charset="utf-8">
-    
-    <link href="firstrun.css" rel="stylesheet" />
+
+    <link href="main.css" rel="stylesheet" />
 
     <script type="text/montage-serialization">
         {
             "owner": {
                 "properties": {
-                    "element": {"#": "firstrun"}
+                    "element": {"#": "main"}
                 }
             },
             
             "intro": {
-                "prototype": "ui/firstrun/intro.reel",
+                "prototype": "welcome/ui/intro.reel",
                 "properties": {
                     "element": {"#": "intro"}
                 }
             },
             
-            "templates": {
-                "prototype": "ui/firstrun/templates.reel",
+            "launcher": {
+                "prototype": "welcome/ui/launcher.reel",
                 "properties": {
-                    "element": {"#": "templates"}
+                    "element": {"#": "launcher"}
                 }
             }
-            
+
         }
     </script>
 
 </head>
 <body>
 
-    <div data-montage-id="firstrun" class="Firstrun">        
-        <aside data-montage-id="intro"></aside>
-        <div data-montage-id="templates"></div>
+    <div data-montage-id="main" class="main Welcome">
+        <div data-montage-id="intro"></div>
+        <div data-montage-id="launcher"></div>
     </div>
 
 </body>
