@@ -7,28 +7,28 @@ exports.Nav = Montage.create(Component, {
         value: function() {
             
             var main = document.getElementById('main');
-            var overviewButton = document.getElementById('overviewButton');
-            var editorButton = document.getElementById('editorButton');
+            var libraryButton = document.getElementById('libraryButton');
+            var explorerButton = document.getElementById('explorerButton');
             
             
-            overviewButton.onclick = function() {
-                editorButton.classList.remove('active');
+            libraryButton.onclick = function() {
+                explorerButton.classList.remove('active');
                 this.classList.add('active');
                 
                 //console.log(overviewButton);
                 
-                main.classList.remove('isEditor');
-                main.classList.add('isOverview');
+                main.classList.remove('isExplorer');
+                main.classList.add('isLibrary');
             }
             
             
-            editorButton.onclick = function() {
-                overviewButton.classList.remove('active');
+            explorerButton.onclick = function() {
+                libraryButton.classList.remove('active');
                 this.classList.add('active');
                 
                 //console.log(editorButton);
-                main.classList.remove('isOverview');
-                main.classList.add('isEditor');
+                main.classList.remove('isLibrary');
+                main.classList.add('isExplorer');
             }
                         
         }

@@ -1,5 +1,5 @@
-.library {
-    width: 280px;
+.Library {
+    width: 240px;
     display: -webkit-flex;
     -webkit-flex-direction: column;
     background: hsl(0,0%,60%);
@@ -8,11 +8,11 @@
 
 /* List --------------------------------- */
 
-.library .tabs {
+.Library .tabs {
     display: -webkit-flex;
 }
 
-.library .tab {
+.Library .tab {
     -webkit-flex: 1;
     padding: 10px 20px;
     margin: 0;
@@ -22,19 +22,19 @@
 	background: transparent;
 }
 
-.library .tab.active {
+.Library .tab.active {
 	background: hsl(0,0%,80%);
 }
 
 
 /* search --------------------------------- */
 
-.library .search {
+.Library .search {
     padding: 10px;
     background: hsl(0,0%,80%);
 }
 
-.library .search-input {
+.Library .search-input {
     -webkit-appearance: none;
     width: 100%;
     padding: 0;
@@ -44,7 +44,7 @@
 
 /* List --------------------------------- */
 
-.library .list {
+.Library .list {
     position: relative;
 	margin: 0;
 	padding: 0;
@@ -56,25 +56,25 @@
 	background-color: hsl(0,0%,70%);
 }
 
-.library .list-item {
+.Library .list-item {
     font-size: 14px;
     border-top: 1px solid hsl(0,0%,90%);
     border-bottom: 1px solid hsl(0,0%,70%);
 	background: hsl(0,0%,80%);
 }
 
-.library .list-item:hover {
+.Library .list-item:hover {
 	background: hsl(0,0%,82%);
 }
 
-.library .list-item-child {
+.Library .list-item-child {
     margin: 0 5px;
 }
 
 
 /* Component Button --------------------------------- */
 
-.library .component-button {
+.Library .component-button {
     display: -webkit-box;
     display: -webkit-flex;
     -webkit-box-align: center;
@@ -83,7 +83,7 @@
 }
 
 
-.library .component {
+.Library .component {
     width: 60px;
     height: 40px;
 	background-size: 60px 40px;
@@ -92,34 +92,34 @@
 	-webkit-user-drag: element;
 }
 
-.library .list-item:nth-child(1) .component { background-image: url(../../assets/components/button.png); }
-.library .list-item:nth-child(2) .component { background-image: url(../../assets/components/input-checkbox.png); }
-.library .list-item:nth-child(3) .component { background-image: url(../../assets/components/input-radio.png); }
-.library .list-item:nth-child(4) .component { background-image: url(../../assets/components/select.png); }
-.library .list-item:nth-child(5) .component { background-image: url(../../assets/components/input-text.png); }
-.library .list-item:nth-child(6) .component { background-image: url(../../assets/components/textarea.png); }
-.library .list-item:nth-child(7) .component { background-image: url(../../assets/components/input-range.png); }
-.library .list-item:nth-child(8) .component { background-image: url(../../assets/components/progress.png); }
+.Library .list-item:nth-child(1) .component { background-image: url(../../assets/components/button.png); }
+.Library .list-item:nth-child(2) .component { background-image: url(../../assets/components/input-checkbox.png); }
+.Library .list-item:nth-child(3) .component { background-image: url(../../assets/components/input-radio.png); }
+.Library .list-item:nth-child(4) .component { background-image: url(../../assets/components/select.png); }
+.Library .list-item:nth-child(5) .component { background-image: url(../../assets/components/input-text.png); }
+.Library .list-item:nth-child(6) .component { background-image: url(../../assets/components/textarea.png); }
+.Library .list-item:nth-child(7) .component { background-image: url(../../assets/components/input-range.png); }
+.Library .list-item:nth-child(8) .component { background-image: url(../../assets/components/progress.png); }
 
 
 
 
-.library .component:hover {
+.Library .component:hover {
 	cursor: move;
 }
 
-.library .component:active {
+.Library .component:active {
 	cursor: -webkit-grabbing;
 }
 
-.library .component-description {
+.Library .component-description {
     -webkit-box-flex: 1;
     -webkit-flex: 1;
     -webkit-user-select: none;
     cursor: default;
 }
 
-.library .component-star {
+.Library .component-star {
     visibility: hidden;
     width: 30px;
     height: 30px;
@@ -133,25 +133,25 @@
     text-align: center;
 }
 
-.library .list-item.stared .component-star,
-.library .list-item:hover .component-star {
+.Library .list-item.stared .component-star,
+.Library .list-item:hover .component-star {
     visibility: visible;
 }
 
-.library .component-star:hover {
+.Library .component-star:hover {
     cursor: pointer;
     border: 1px solid hsl(0,0%,70%);
     background: hsl(0,0%,90%);
 }
 
-.library .component-star:active {
+.Library .component-star:active {
     background: transparent;
 }
 
 
 /* detail --------------------------------- */
 
-.library .component-detail {
+.Library .component-detail {
 	display: none;
 	position: relative;
     padding: 15px;
@@ -160,7 +160,7 @@
     border-top: 1px solid hsl(0,0%,60%);
 }
 
-.library .component-detail:before {
+.Library .component-detail:before {
 	content: "";
 	position: absolute;
 	width: 10px;
@@ -173,21 +173,21 @@
 	border-bottom: 1px solid hsl(0,0%,60%);
 }
 
-.library .list-item.selected .component-detail {
+.Library .list-item.selected .component-detail {
 	display: block;
 }
 
-.library .component-detail p {
+.Library .component-detail p {
 	margin: 0 0 10px 0;
 }
 
-.library .component-detail ul {
+.Library .component-detail ul {
 	list-style: none;
 	margin: 0;
 	padding: 0;
 }
 
-.library .detail-title {
+.Library .detail-title {
 	color: hsl(0,0%,50%);
 }
 

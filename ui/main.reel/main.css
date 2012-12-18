@@ -8,24 +8,8 @@
 
 /* States - Don't try this at home */
 
-.isFirstrun .Overview,
-.isFirstrun .Editor,
-.isFirstrun .Nav,
-
-.isOverview .Firstrun,
-.isOverview .Editor,
-
-.isEditor .Firstrun,
-.isEditor .Overview
-
+.isLibrary .Explorer,
+.isExplorer .Library
 {
     display: none;
-}
-
-
-/* Very nasty selectors */
-
-.isOverview .Nav .button-group:nth-child(3),
-.isOverview .Nav .button-group:nth-child(2) button:nth-child(2) ~ button {
-    visibility: hidden;
 }
