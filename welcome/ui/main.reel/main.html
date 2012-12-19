@@ -13,18 +13,27 @@
                     "element": {"#": "main"}
                 }
             },
-            
-            "intro": {
-                "prototype": "welcome/ui/intro.reel",
+
+            "newAppButton": {
+                "prototype": "montage/ui/button.reel",
                 "properties": {
-                    "element": {"#": "intro"}
-                }
+                    "element": {"#": "newAppButton"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             },
-            
-            "launcher": {
-                "prototype": "welcome/ui/launcher.reel",
+
+            "versionText": {
+                "prototype": "montage/ui/dynamic-text.reel",
                 "properties": {
-                    "element": {"#": "launcher"}
+                    "element": {"#": "versionText"}
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.version"}
                 }
             }
 
@@ -35,8 +44,43 @@
 <body>
 
     <div data-montage-id="main" class="main Welcome">
-        <div data-montage-id="intro"></div>
-        <div data-montage-id="launcher"></div>
+
+        <section class="Intro-box">
+            <img class="Intro-logo" src="../assets/img/logo.png" alt="logo">
+
+            <p class="Intro-version">Version 1.0</p>
+
+            <h1 class="Intro-title">Welcome to Montage Builder</h1>
+
+            <div class="Intro-help">
+                For help and support, please visit the <a href="http://montagejs.org/docs/" target="_blank">Docs</a>.
+            </div>
+            <p class="Intro-meta">&copy;2012-2013 Declarativ Inc.</p>
+        </section>
+
+        <section class="Launcher">
+            <section class="Launcher-section New">
+                <h2 class="Launcher-title">New Project</h2>
+
+                <div class="New-controls">
+                    <button data-montage-id="newAppButton" class="New-button">New Application…</button>
+                </div>
+            </section>
+
+            <section class="Launcher-section History">
+                <h2 class="Launcher-title">Recent Projects</h2>
+                <ul class="History-list">
+                    <li class="History-list-item">TodoMVC</li>
+                    <li class="History-list-item">Calculator</li>
+                    <li class="History-list-item">PhotoFX</li>
+                    <li class="History-list-item">MFiddle</li>
+                    <li class="History-list-item">Temperature Converter</li>
+                    <li class="History-list-item">Paparazzi</li>
+                    <li class="History-list-item">Popcorn</li>
+                </ul>
+            </section>
+        </section>
+
     </div>
 
 </body>
