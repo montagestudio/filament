@@ -58,6 +58,11 @@
     background-color: hsla(0,0%,0%,.1);
 }
 
+.Explorer-package li.disabled {
+    opacity: .3;
+    cursor: not-allowed;
+}
+
 .Explorer-package i {
     margin-right: 4px;
 }
@@ -142,4 +147,23 @@
     right: auto;
     font-size: 28px;
     opacity: .5;
+}
+
+
+/* Binding --------------------------------- */
+
+.Explorer .binding {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 24px;
+    height: 24px;
+    font-size: 20px;
+}
+
+.Explorer .binding:before {
+    width: 20px;
+    height: 20px;
+    line-height: .75;
 }

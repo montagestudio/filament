@@ -123,6 +123,8 @@
     width: 80px;
 }
 
+
+
 /* Binding --------------------------------- */
 
 .configurator .binding {
@@ -130,26 +132,6 @@
     width: 30px;
     height: 30px;
     margin-left: 10px;
-    border-radius: 50%;
-    background: hsl(0,0%,75%);
-    color: hsl(0,0%,40%);
-    text-align: center;
     font-size: 28px;
-    line-height: .8;
-    cursor: pointer;
-}
-
-.configurator .binding:hover {
-    border: 4px solid hsl(0,0%,60%);
-}
-
-/* Bound --------------------------------- */
-
-.configurator .bound {
-    background: hsl(0,0%,95%);
-    border: 4px solid hsl(0,0%,60%);
-}
-
-.configurator .bound:hover {
-    background: hsl(0,0%,100%);
+    line-height: .9;
 }

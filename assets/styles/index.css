@@ -69,3 +69,31 @@ body {
 .montage-app-loading .main {
     display: none;
 }
+
+
+
+
+/* Binding --------------------------------- */
+
+.binding {
+    border-radius: 50%;
+    background: hsl(0,0%,80%);
+    color: hsl(0,0%,40%);
+    text-align: center;
+    cursor: pointer;
+}
+
+.binding:hover {
+    border: 2px solid hsl(0,0%,60%);
+}
+
+/* Bound --------------------------------- */
+
+.binding.bound {
+    background: hsl(0,0%,90%);
+    border: 2px solid hsl(0,0%,60%);
+}
+
+.binding.bound:hover {
+    background: hsl(0,0%,100%);
+}
