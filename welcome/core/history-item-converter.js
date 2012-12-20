@@ -10,7 +10,6 @@ exports.HistoryItemConverter = Montage.create(Converter, {
 
     convert: {
         value: function (url) {
-            console.log(url)
             return HistoryItem.create().initWithUrl(url);
         }
     },
