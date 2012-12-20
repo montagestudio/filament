@@ -1,9 +1,3 @@
-/*body {
-    margin: 0;
-    background: hsl(0,0%,20%);
-}*/
-
-
 /* Explorer */
 
 .Explorer {
@@ -11,11 +5,12 @@
     -webkit-flex-flow: column;
     -webkit-justify-content: space-around;
     width: 240px;
-    background: hsl(0,0%,85%);
+    background: hsl(0,0%,75%);
 }
 
 .Explorer-group {
-    margin: 0;
+    margin: auto;
+    min-height: 0;
     -webkit-flex: 1;
     display: -webkit-flex;
     -webkit-flex-flow: column;
@@ -29,106 +24,67 @@
 
 .Explorer-title {
     margin: 0;
-    padding: 6px;
+    padding: 7px;
     font-size: 14px;
-    line-height: 18px;
+    line-height: 16px;
     text-align: center;
     color: hsl(0,0%,30%);
     border-bottom: 1px solid hsla(0,0%,0%,.1);
     background: hsla(0,0%,100%,.3);
 }
 
-.Explorer-title-sub {
-    margin-left: 6px;
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 18px;
-    color: hsl(0,0%,60%);
-}
 
 
-/* Package ----------------------------- */
+/* List ----------------------------- */
 
-.Explorer-package {
+.Explorer-list {
     margin: 0;
     padding: 0;
     list-style: none;
     font-size: 13px;
-    background: hsl(0,0%,75%);
 }
 
-.Explorer-package-title {
-    background: hsl(0,0%,80%);
-}
-
-.Explorer-package li {
+.Explorer-list li {
     padding: 2px 0px 2px 8px;
     cursor: pointer;
 }
 
-.Explorer .selected,
-.Explorer-package li:hover {
+.Explorer-list .selected,
+.Explorer-list li:hover {
     background-color: hsla(0,0%,0%,.1);
 }
 
-.Explorer-package li.disabled {
+.Explorer-list li.disabled {
     opacity: .3;
     cursor: not-allowed;
 }
 
-.Explorer-package i {
+.Explorer-list i {
     margin-right: 4px;
 }
 
-.Explorer-package ul {
+.Explorer-list ul {
     margin: 0 0 0 14px;
     padding: 0;
     list-style: none;
 }
 
-
-/* Pills ----------------------------- */
-
-.Explorer-pills {
-    display: -webkit-flex;
-    -webkit-flex-flow: column;
-}
-
-.Explorer-pill {
+.Explorer-list .selected {
     position: relative;
-    display: block;
-    padding: 4px 8px;
-    margin: 4px;
-    text-align: left;
-    font-size: 13px;   
-    border: none;
-    background-color: hsla(0,0%,100%,0);
-    color: hsl(0,0%,20%);
-    cursor: pointer;
-    border-radius: 20px;
-    white-space: nowrap;
+    overflow: hidden;
 }
 
-.Explorer-pill:hover,
-.Explorer-pill.bound:hover {
-    background-color: hsla(0,0%,0%,.1);
-}
-
-/* Bound indicator */
-
-.Explorer-pill.bound {
-    background-color: hsla(0,0%,0%,.05);
-}
-
-.Explorer-pill.bound:after {
+.Explorer-list .selected:after {
     content: "";
     position: absolute;
-    top: 50%;
-    right: -4px;
-    width: 5px;
-    height: 6px;
-    margin-top: -3px;
-    background: hsl(0,0%,20%);
+    width: 10px;
+    height: 10px;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    right: -5px;
+    background: hsl(0,0%,85%);
+    -webkit-transform: rotate(45deg);
 }
 
 
@@ -150,23 +106,4 @@
     right: auto;
     font-size: 28px;
     opacity: .5;
-}
-
-
-/* Binding --------------------------------- */
-
-.Explorer .binding {
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 24px;
-    height: 24px;
-    font-size: 20px;
-}
-
-.Explorer .binding:before {
-    width: 20px;
-    height: 20px;
-    line-height: .75;
 }

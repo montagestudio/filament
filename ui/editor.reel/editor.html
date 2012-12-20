@@ -28,6 +28,13 @@
                 }
             },
             
+            "ghosts": {
+                "prototype": "ui/ghosts.reel",
+                "properties": {
+                    "element": {"#": "ghosts"}
+                }
+            },
+            
             "tree": {
                 "prototype": "ui/tree.reel",
                 "properties": {
@@ -65,7 +72,8 @@
 
     <div data-montage-id="editor" class="Editor">        
         <aside data-montage-id="library"></aside>
-        <div data-montage-id="explorer"></div>
+        <aside data-montage-id="explorer"></aside>
+        <aside data-montage-id="ghosts"></aside>
         <div class="workBench">
             <div data-montage-id="tree"></div>
             <div data-montage-id="stage"></div>

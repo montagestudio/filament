@@ -1,0 +1,126 @@
+
+/* Ghosts */
+
+.Ghosts {
+    display: -webkit-flex;
+    -webkit-flex-flow: column;
+    -webkit-justify-content: space-around;
+    width: 240px;
+    background: hsl(0,0%,85%);
+}
+
+.Ghosts-group {
+    margin: 0;
+    -webkit-flex: 1;
+    display: -webkit-flex;
+    -webkit-flex-flow: column;
+}
+
+.Ghosts-scroll {
+    min-height: 0;
+    overflow: scroll;
+    -webkit-flex: 1;
+}
+
+.Ghosts-title {
+    margin: 0;
+    padding: 6px;
+    font-size: 14px;
+    line-height: 16px;
+    text-align: center;
+    color: hsl(0,0%,30%);
+    border-bottom: 1px solid hsla(0,0%,0%,.1);
+    background: hsla(0,0%,100%,.3);
+}
+
+.Ghosts-title-sub {
+    margin-left: 6px;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 18px;
+    color: hsl(0,0%,60%);
+}
+
+/* Pills ----------------------------- */
+
+.Ghosts-pills {
+    display: -webkit-flex;
+    -webkit-flex-flow: column;
+}
+
+.Ghosts-pill {
+    position: relative;
+    display: block;
+    padding: 4px 8px;
+    margin: 4px;
+    text-align: left;
+    font-size: 13px;   
+    border: none;
+    background-color: hsla(0,0%,100%,0);
+    color: hsl(0,0%,20%);
+    cursor: pointer;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.Ghosts-pill:hover,
+.Ghosts-pill.bound:hover {
+    background-color: hsla(0,0%,0%,.1);
+}
+
+/* Bound indicator */
+
+.Ghosts-pill.bound {
+    background-color: hsla(0,0%,0%,.05);
+}
+
+.Ghosts-pill.bound:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -4px;
+    width: 5px;
+    height: 6px;
+    margin-top: -3px;
+    background: hsl(0,0%,20%);
+}
+
+
+/* Icons */
+
+.Ghosts [data-icon] {
+    content: "";
+    position: relative;
+    display: inline-block;
+    width: 16px;
+    height: 12px;
+    line-height: 0;
+    font-style: normal;
+}
+
+.Ghosts [data-icon]:before {
+    line-height: .6;
+    left: 0px;
+    right: auto;
+    font-size: 28px;
+    opacity: .5;
+}
+
+
+/* Binding --------------------------------- */
+
+.Ghosts .binding {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 24px;
+    height: 24px;
+    font-size: 20px;
+}
+
+.Ghosts .binding:before {
+    width: 20px;
+    height: 20px;
+    line-height: .75;
+}
