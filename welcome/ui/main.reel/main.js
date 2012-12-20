@@ -48,5 +48,18 @@ exports.Main = Montage.create(Component, {
         value: function (evt) {
             this.environmentBridge.open(evt.detail.url);
         }
+    },
+
+    handleNewAppButtonAction: {
+        value: function () {
+            var envBridge = this.environmentBridge;
+            envBridge.newApplication()
+                .then(function (applicationUrl) {
+                    envBridge.open(applicationUrl);
+                }, function (fail) {
+                    throw new Error("Could not create new application");
+                }).done();
+        }
     }
+
 });
