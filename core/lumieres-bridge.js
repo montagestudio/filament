@@ -10,6 +10,12 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         value: null
     },
 
+    convertBackendUrlToPath: {
+        value: function (url) {
+            return url.replace(/^\w+:\//m, "");
+        }
+    },
+
     // TODO read, and validate, project info provided by a discovered .lumiereproject file?
     projectInfo: {
         get: function () {
@@ -27,7 +33,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                     reelUrl = reelParam;
                 }
 
-                this.findPackage(reelUrl.replace("fs:/", ""))
+                this.findPackage(this.convertBackendUrlToPath(reelUrl))
                     .then(function (url) {
                         packageUrl = url;
                         //TODO what if no packageUrl? How did it get this far if that's the case, can it?
@@ -131,10 +137,11 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
             }
 
             filename = filenameMatch[1];
-            path = location.replace(/^\w+:\/\/\w+/m, "") + "/" + filename + ".html";
+
+            path = this.convertBackendUrlToPath(location) + "/" + filename + ".html";
             content = template.exportToString();
 
-            this.writeDataToFilePath(content, path, {flags: "w", charset: 'utf-8'});
+            return this.writeDataToFilePath(content, path, {flags: "w", charset: 'utf-8'});
         }
     },
 
@@ -143,11 +150,11 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
             if (!lumieres.nodePort) {
                 // TODO improve error
-                throw "No port provided for filesystem connection";
+                throw new Error("No port provided for filesystem connection");
             }
 
             var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
-            backend.get("fs").invoke("write", path, data, flags).done();
+            return backend.get("fs").invoke("write", path, data, flags);
         }
     }
 });
