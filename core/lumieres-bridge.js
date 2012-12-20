@@ -141,6 +141,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
             path = this.convertBackendUrlToPath(location) + "/" + filename + ".html";
             content = template.exportToString();
 
+            // TODO replace the low-level writing promise with a promise to save
             return this.writeDataToFilePath(content, path, {flags: "w", charset: 'utf-8'});
         }
     },

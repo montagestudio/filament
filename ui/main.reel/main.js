@@ -226,11 +226,40 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    prepareForDraw: {
+        value: function () {
+            document.addEventListener("save", this, false);
+        }
+    },
+
     draw: {
         value: function () {
             if (this.windowTitle) {
                 document.title = this.windowTitle;
             }
+        }
+    },
+
+    handleSave: {
+        value: function (evt) {
+            this.save(evt.detail.url);
+        }
+    },
+
+    save: {
+        value: function (url) {
+
+            if (!this.currentDocument) {
+                return;
+            }
+
+            if (!this.environmentBridge) {
+                throw new Error("Cannot save without an environment bridge");
+            }
+
+            //TODO use either the url specified (save as), or the currentDoc's reelUrl
+            //TODO improve this, we're reaching deeper than I'd like to find the reelUrl
+            this.environmentBridge.save(this.currentDocument, this.currentDocument.reelUrl).done();
         }
     }
 

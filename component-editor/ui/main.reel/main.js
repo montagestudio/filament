@@ -25,27 +25,9 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    handleSave: {
-        value: function (evt) {
-            this.save(evt.detail.url);
-        }
-    },
-
-    save: {
-        value: function (url) {
-
-            if (!this.environmentBridge) {
-                throw "Cannot save '" + url + "' without an environment bridge";
-            }
-
-            this.environmentBridge.save(this.editingDocument, url);
-        }
-    },
-
     prepareForDraw: {
         value: function () {
             this.addEventListener("addComponent", this, false);
-            document.addEventListener("save", this, false);
         }
     },
 
