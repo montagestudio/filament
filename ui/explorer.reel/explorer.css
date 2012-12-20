@@ -11,7 +11,7 @@
     -webkit-flex-flow: column;
     -webkit-justify-content: space-around;
     width: 240px;
-    background: hsl(0,0%,80%);
+    background: hsl(0,0%,85%);
 }
 
 .Explorer-group {
@@ -28,15 +28,22 @@
 }
 
 .Explorer-title {
-    margin: 0 0 4px 0;
+    margin: 0;
     padding: 6px;
     font-size: 14px;
     line-height: 18px;
-    font-weight: normal;
     text-align: center;
     color: hsl(0,0%,30%);
-    border-bottom: 1px solid hsl(0,0%,70%);
-    background: hsl(0,0%,90%);
+    border-bottom: 1px solid hsla(0,0%,0%,.1);
+    background: hsla(0,0%,100%,.3);
+}
+
+.Explorer-title-sub {
+    margin-left: 6px;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 18px;
+    color: hsl(0,0%,60%);
 }
 
 
@@ -47,6 +54,11 @@
     padding: 0;
     list-style: none;
     font-size: 13px;
+    background: hsl(0,0%,75%);
+}
+
+.Explorer-package-title {
+    background: hsl(0,0%,80%);
 }
 
 .Explorer-package li {
@@ -54,6 +66,7 @@
     cursor: pointer;
 }
 
+.Explorer .selected,
 .Explorer-package li:hover {
     background-color: hsla(0,0%,0%,.1);
 }
@@ -89,8 +102,7 @@
     text-align: left;
     font-size: 13px;   
     border: none;
-    border: 2px solid hsla(0,0%,0%,.1);
-    background-color: hsl(0,0%,75%);
+    background-color: hsla(0,0%,100%,0);
     color: hsl(0,0%,20%);
     cursor: pointer;
     border-radius: 20px;
@@ -99,29 +111,20 @@
 
 .Explorer-pill:hover,
 .Explorer-pill.bound:hover {
-    color: hsl(0,0%,70%);
-    background-color: hsl(0,0%,30%);
+    background-color: hsla(0,0%,0%,.1);
 }
-
-.Explorer-pill:active,
-.Explorer-pill.bound:active {
-    background-color: hsl(0,0%,20%);
-}
-
 
 /* Bound indicator */
 
 .Explorer-pill.bound {
-    background-color: hsl(0,0%,70%);
-    border-color: hsl(0,0%,40%);
-    border-style: solid;
+    background-color: hsla(0,0%,0%,.05);
 }
 
 .Explorer-pill.bound:after {
     content: "";
     position: absolute;
     top: 50%;
-    right: -6px;
+    right: -4px;
     width: 5px;
     height: 6px;
     margin-top: -3px;

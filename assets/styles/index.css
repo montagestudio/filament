@@ -77,8 +77,8 @@ body {
 
 .binding {
     border-radius: 50%;
-    background: hsl(0,0%,80%);
-    color: hsl(0,0%,40%);
+    background: hsla(0,0%,0%,.15);
+    color: hsl(0,0%,30%);
     text-align: center;
     cursor: pointer;
 }
@@ -90,10 +90,9 @@ body {
 /* Bound --------------------------------- */
 
 .binding.bound {
-    background: hsl(0,0%,90%);
-    border: 2px solid hsl(0,0%,60%);
+    border: 2px solid hsl(0,0%,20%);
 }
 
 .binding.bound:hover {
-    background: hsl(0,0%,100%);
+    /background: hsl(0,0%,100%);
 }
