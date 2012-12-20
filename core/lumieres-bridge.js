@@ -122,6 +122,13 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         }
     },
 
+    open: {
+        value: function (url) {
+            //TODO implement this
+            console.log("open packageUrl", url);
+        }
+    },
+
     save: {
         value: function (editingDocument, location) {
 

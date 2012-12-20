@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+    <title>HistoryListItem</title>
+    <meta charset="utf-8">
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "historyListItem"}
+                }
+            },
+
+            "pressComposer": {
+                "prototype": "montage/ui/composer/press-composer",
+                "properties": {
+                    "component": {"@": "owner"}
+                },
+                "listeners": [
+                    {
+                        "type": "press",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "documentName": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "name"}
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.historyItem.filename"}
+                }
+            }
+        }
+    </script>
+
+</head>
+<body>
+
+<li data-montage-id="historyListItem" class="HistoryListItem">
+    <span data-montage-id="name"></span>
+</li>
+
+</body>
+</html>

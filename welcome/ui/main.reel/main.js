@@ -1,5 +1,6 @@
 var Montage = require("montage/core/core").Montage,
-    Component = require("montage/ui/component").Component;
+    Component = require("montage/ui/component").Component,
+    HistoryItemConverter = require("welcome/core/history-item-converter").HistoryItemConverter;
 
 var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
@@ -9,12 +10,23 @@ exports.Main = Montage.create(Component, {
         value: "X"
     },
 
+    recentDocuments: {
+        value: null
+    },
+
     didCreate: {
         value: function () {
 
             var self = this;
             if (IS_IN_LUMIERES) {
                 this.version = lumieres.version;
+
+                Object.defineBinding(this, "recentDocuments", {
+                    boundObject: lumieres,
+                    boundObjectPropertyPath: "recentDocuments",
+                    oneway: true
+                });
+
                 require.async("core/lumieres-bridge").then(function (exported) {
                     self.environmentBridge = exported.LumiereBridge.create();
                 });
@@ -30,5 +42,11 @@ exports.Main = Montage.create(Component, {
     //This would be a good case of the whole "custom loading scenario" idea
     environmentBridge: {
         value: null
+    },
+
+    handleOpenDocument: {
+        value: function (evt) {
+            this.environmentBridge.open(evt.detail.url);
+        }
     }
 });

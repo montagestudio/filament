@@ -11,7 +11,13 @@
             "owner": {
                 "properties": {
                     "element": {"#": "main"}
-                }
+                },
+                "listeners": [
+                    {
+                        "type": "openDocument",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             },
 
             "newAppButton": {
@@ -34,6 +40,33 @@
                 },
                 "bindings": {
                     "value": {"<-": "@owner.version"}
+                }
+            },
+
+            "historyList": {
+                "prototype": "montage/ui/repetition.reel",
+                "properties": {
+                    "element": {"#": "historyList"}
+                },
+                "bindings": {
+                    "objects": {"<-": "@owner.recentDocuments"}
+                }
+            },
+
+            "historyItemConverter": {
+                "prototype": "welcome/core/history-item-converter"
+            },
+
+            "historyListItem": {
+                "prototype": "welcome/ui/history-list-item.reel",
+                "properties": {
+                    "element": {"#": "historyListItem"}
+                },
+                "bindings": {
+                    "historyItem": {
+                        "<-": "@historyList.objectAtCurrentIteration",
+                        "converter": {"@": "historyItemConverter"}
+                    }
                 }
             }
 
@@ -69,14 +102,8 @@
 
             <section class="Launcher-section History">
                 <h2 class="Launcher-title">Recent Projects</h2>
-                <ul class="History-list">
-                    <li class="History-list-item">TodoMVC</li>
-                    <li class="History-list-item">Calculator</li>
-                    <li class="History-list-item">PhotoFX</li>
-                    <li class="History-list-item">MFiddle</li>
-                    <li class="History-list-item">Temperature Converter</li>
-                    <li class="History-list-item">Paparazzi</li>
-                    <li class="History-list-item">Popcorn</li>
+                <ul class="History-list" data-montage-id="historyList">
+                    <li class="History-list-item" data-montage-id="historyListItem"></li>
                 </ul>
             </section>
         </section>
