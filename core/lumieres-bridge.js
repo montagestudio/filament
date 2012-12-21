@@ -59,6 +59,13 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         }
     },
 
+    availablePlugins: {
+        get: function () {
+            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
+            return backend.get("lumieres").invoke("getPlugins");
+        }
+    },
+
     findPackage: {
         value: function (path, backend) {
             if (!backend) {

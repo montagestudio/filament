@@ -62,9 +62,14 @@ exports.Main = Montage.create(Component, {
         value: function () {
             var self = this;
 
-            this.environmentBridge.projectInfo.then(function (projectInfo) {
-                self.openProject(projectInfo);
-            });
+            //TODO we may be able to find available plugins even earlier,
+            //but we shouldn't be able to open a project without knowing
+            Promise.all([this.environmentBridge.availablePlugins, this.environmentBridge.projectInfo])
+                .spread(function (pluginUrls, projectInfo) {
+                    self.pluginUrls = pluginUrls;
+                    self.deferredPlugins = {};
+                    self.openProject(projectInfo);
+                });
         }
     },
 
@@ -93,10 +98,21 @@ exports.Main = Montage.create(Component, {
                 return ComponentInfo.create().initWithUrl(url);
             });
 
-            this._loadPlugins(projectInfo.dependencies).then(function (plugins) {
-                self.plugins = plugins;
-                self._populateLibrary(projectInfo.dependencies);
+            // Now that we have a project we're opening we know plugins we should activate
+            // for the project itself, we may have activated others for filament itself earlier
+            // This is a bit of an optimization to do this as soon as possible,
+            // Seeing as the plugins are exposed as promises within filament nobody
+            // should be waiting for them to be resolved before continuing.
+            // Simply using a plugin should force you to consider that it may not
+            // have been loaded yet. This should help keep everybody honest as
+            // we'll eventually be loading plugins dynamically and will need to be
+            // very used to new things coming and going at runtime.
+            projectInfo.dependencies.forEach(function (dependency) {
+                //TODO also pass along version of the package
+                self.pluginForPackage(dependency.dependency);
             });
+
+            this._populateLibrary(projectInfo.dependencies);
 
             this.addPropertyChangeListener("windowTitle", this, false);
             app.addEventListener("openComponent", this);
@@ -112,11 +128,11 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    _loadPlugins: {
-        value: function (dependencies) {
-            return Promise.all(dependencies.map(function (dependency) {
-                return require.async("plugins/" + dependency.dependency + ".js");
-            }));
+    _objectNameFromModuleId: {
+        value: function (moduleId) {
+            //TODO this utility should live somewhere else (/baz/foo-bar.reel to FooBar)
+            Deserializer._findObjectNameRegExp.test(moduleId);
+            return RegExp.$1.replace(Deserializer._toCamelCaseRegExp, Deserializer._replaceToCamelCase);
         }
     },
 
@@ -124,49 +140,82 @@ exports.Main = Montage.create(Component, {
         value: function (dependencies) {
             var self = this,
                 moduleId,
-                objectName;
+                objectName,
+                libraryItems;
 
-            Promise.all(dependencies.map(function (dependency) {
-                return self.environmentBridge.componentsInPackage(dependency.url);
-            })).then(function (dependencies) {
+            this.libraryItems = [];
 
-                self.libraryItems = [];
-                //TODO group by dependency?
-
-                dependencies.forEach(function (dependencyComponents) {
-                    dependencyComponents.forEach(function (componentUrl) {
-
+            dependencies.forEach(function (dependency) {
+                self.environmentBridge.componentsInPackage(dependency.url).then(function (componentUrls) {
+                    return componentUrls.map(function (componentUrl) {
                         moduleId = componentUrl.replace(/\S+\/node_modules\//, "");
+                        objectName = self._objectNameFromModuleId(moduleId);
 
-                        //TODO this utility should live somewhere else
-                        Deserializer._findObjectNameRegExp.test(moduleId);
-                        objectName = RegExp.$1.replace(Deserializer._toCamelCaseRegExp, Deserializer._replaceToCamelCase);
-
-                        self.libraryItems.push(self.libraryItemForModule(moduleId, objectName));
+                        return self.libraryItemForModule(moduleId, objectName);
                     });
-                });
-            }).done();
+                }).spread(function () {
+                    //TODO group by dependency in some way
+                    libraryItems = Array.prototype.slice.call(arguments, 0);
+                    self.libraryItems.push.apply(self.libraryItems, libraryItems);
+                }).done();
+            });
         }
     },
 
-    //TODO should account for the version of the dependency as well
     libraryItemForModule: {
         value: function (moduleId, objectName) {
-            //TODO not hardcode this
-            var plugin = this.plugins[0],
+
+            var packageName = moduleId.substring(0, moduleId.indexOf("/")),
                 item;
 
-            if (plugin && plugin.libraryItems && plugin.libraryItems[moduleId]) {
-                item = plugin.libraryItems[moduleId].create();
-            } else {
-                item = LibraryItem.create();
+            return this.pluginForPackage(packageName).then(function (plugin) {
 
-                item.moduleId = moduleId;
-                item.name = objectName;
-                item.html = '<div data-montage-id=""></div>';
+                if (plugin && plugin.libraryItems && plugin.libraryItems[moduleId]) {
+                    item = plugin.libraryItems[moduleId].create();
+                } else {
+                    item = LibraryItem.create();
+
+                    item.moduleId = moduleId;
+                    item.name = objectName;
+                    item.html = '<div data-montage-id=""></div>';
+                }
+
+                return item;
+            });
+        }
+    },
+
+    deferredPlugins: {
+        enumerable: false,
+        value: null
+    },
+
+    pluginForPackage: {
+        value: function (packageName, packageVersion) {
+            //TODO I want this API to be available to be able to answer what plugin would be used for this package at this version
+            // That said, you shouldn't ever use plugins for multiple versions of the same package
+            // So I'm not sure what to make of that all just yet; I probably want query and registry APIs
+            // I could refuse to give a package for a version if I already have a plugin for another version, but
+            // that would mean this wouldn't be queryable and would have that side-effect
+            var pluginDeferredId = packageName + "-" + (packageVersion || "*"),
+                deferredPlugin = this.deferredPlugins[pluginDeferredId],
+                candidatePluginModuleIds,
+                pluginModuleId;
+
+            if (!deferredPlugin) {
+                candidatePluginModuleIds = this.pluginUrls.filter(function (pluginUrl) {
+                    return pluginUrl.match(packageName);
+                }).map(function (pluginUrl) {
+                    //TODO not hardcode this knowledge about plugin locations
+                    return pluginUrl.replace(/\S+\/filament\//, "");
+                });
+
+                //TODO consider the version among the various available
+                pluginModuleId = candidatePluginModuleIds[0];
+                this.deferredPlugins[pluginDeferredId] = require.async(pluginModuleId);
             }
 
-            return item;
+            return deferredPlugin;
         }
     },
 
