@@ -148,18 +148,29 @@ exports.Main = Montage.create(Component, {
             this.libraryItems = [];
 
             dependencies.forEach(function (dependency) {
-                self.environmentBridge.componentsInPackage(dependency.url).then(function (componentUrls) {
-                    return componentUrls.map(function (componentUrl) {
-                        moduleId = componentUrl.replace(/\S+\/node_modules\//, "");
-                        objectName = self._objectNameFromModuleId(moduleId);
 
-                        return self.libraryItemForModule(moduleId, objectName);
-                    });
-                }).spread(function () {
-                    //TODO group by dependency in some way
-                    libraryItems = Array.prototype.slice.call(arguments, 0);
-                    self.libraryItems.push.apply(self.libraryItems, libraryItems);
-                }).done();
+                self.environmentBridge.componentsInPackage(dependency.url)
+                    .then(function (componentUrls) {
+
+                        //TODO should we have just rejected the promise for componentUrls?
+                        if (componentUrls) {
+                            return componentUrls.map(function (componentUrl) {
+                                moduleId = componentUrl.replace(/\S+\/node_modules\//, "");
+                                objectName = self._objectNameFromModuleId(moduleId);
+                                return self.libraryItemForModule(moduleId, objectName);
+                            });
+                        } else {
+                            //TODO this keeps the spread happy, but should we have just rejected?
+                            return [];
+                        }
+
+                    }).spread(function () {
+                        if (arguments.length > 0) {
+                            //TODO group by dependency in some way
+                            libraryItems = Array.prototype.slice.call(arguments, 0);
+                            self.libraryItems.push.apply(self.libraryItems, libraryItems);
+                        }
+                    }).done();
             });
         }
     },
@@ -202,6 +213,7 @@ exports.Main = Montage.create(Component, {
             var pluginDeferredId = packageName + "-" + (packageVersion || "*"),
                 deferredPlugin = this.deferredPlugins[pluginDeferredId],
                 candidatePluginModuleIds,
+                pluginPromise,
                 pluginModuleId;
 
             if (!deferredPlugin) {
@@ -212,9 +224,19 @@ exports.Main = Montage.create(Component, {
                     return pluginUrl.replace(/\S+\/filament\//, "");
                 });
 
-                //TODO consider the version among the various available
-                pluginModuleId = candidatePluginModuleIds[0];
-                this.deferredPlugins[pluginDeferredId] = require.async(pluginModuleId);
+                if (candidatePluginModuleIds && candidatePluginModuleIds.length > 0) {
+                    //TODO consider the version among the various available
+                    pluginModuleId = candidatePluginModuleIds[0];
+                    pluginPromise = require.async(pluginModuleId)
+                        .fail(function () {
+                            return null;
+                        });
+                } else {
+                    //TODO should this be considered a rejection?
+                    pluginPromise = Promise.resolve(null);
+                }
+
+                this.deferredPlugins[pluginDeferredId] = pluginPromise;
             }
 
             return deferredPlugin;
