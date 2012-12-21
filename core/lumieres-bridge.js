@@ -104,6 +104,9 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                             }).map(function (reelEntry) {
                                 return uiPath + "/" + reelEntry;
                             });
+                        }, function () {
+                            // Couldn't find components where we'd expect? That's fine
+                            return null;
                         });
                 });
         }

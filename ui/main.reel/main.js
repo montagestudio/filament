@@ -94,9 +94,11 @@ exports.Main = Montage.create(Component, {
 
             this.packageUrl = projectInfo.packageUrl;
 
-            this.components = projectInfo.componentUrls.map(function (url) {
-                return ComponentInfo.create().initWithUrl(url);
-            });
+            if (projectInfo.componentUrls) {
+                this.components = projectInfo.componentUrls.map(function (url) {
+                    return ComponentInfo.create().initWithUrl(url);
+                });
+            }
 
             // Now that we have a project we're opening we know plugins we should activate
             // for the project itself, we may have activated others for filament itself earlier
