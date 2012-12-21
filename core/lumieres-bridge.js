@@ -138,8 +138,8 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     open: {
         value: function (url) {
-            //TODO implement this
-            console.log("open packageUrl", url);
+            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
+            return backend.get("lumieres").invoke("openDocument", url);
         }
     },
 

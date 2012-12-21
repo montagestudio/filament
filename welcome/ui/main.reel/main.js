@@ -46,7 +46,9 @@ exports.Main = Montage.create(Component, {
 
     handleOpenDocument: {
         value: function (evt) {
-            this.environmentBridge.open(evt.detail.url);
+            this.environmentBridge.open(evt.detail.url).then(function () {
+                window.close();
+            });
         }
     },
 
