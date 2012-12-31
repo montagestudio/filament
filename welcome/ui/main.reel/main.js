@@ -14,6 +14,10 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
+    isFirstRun: {
+        value: true
+    },
+
     didCreate: {
         value: function () {
 
@@ -29,6 +33,12 @@ exports.Main = Montage.create(Component, {
 
                 require.async("core/lumieres-bridge").then(function (exported) {
                     self.environmentBridge = exported.LumiereBridge.create();
+                    self.environmentBridge.userPreferences.then(function (prefs) {
+                        self.isFirstRun = prefs.firstRun;
+                        //TODO I don't want firstrun to be set-able as an API, but this feels a little weird
+                        self.needsDraw = true;
+                    });
+
                 });
             } else {
                 require.async("core/browser-bridge").then(function (exported) {
@@ -61,6 +71,16 @@ exports.Main = Montage.create(Component, {
                 }, function (fail) {
                     throw new Error("Could not create new application");
                 }).done();
+        }
+    },
+
+    draw: {
+        value: function () {
+            if (this.isFirstRun) {
+                this.element.classList.add("isFirstRun");
+            } else {
+                this.element.classList.remove("isFirstRun");
+            }
         }
     }
 

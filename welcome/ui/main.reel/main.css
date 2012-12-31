@@ -32,7 +32,7 @@
 
 /* New --------------------------------- */
 
-.isFirstrun .New {
+.isFirstRun .New {
     margin: auto;
 }
 
@@ -50,7 +50,7 @@
 
 /* List --------------------------------- */
 
-.isFirstrun .History {
+.isFirstRun .History {
     display: none;
 }
 

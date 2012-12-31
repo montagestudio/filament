@@ -16,6 +16,22 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         }
     },
 
+    userPreferences: {
+        get: function () {
+            var deferredPrefs = Promise.defer();
+
+            lumieres.getUserPreferences(function (success, result) {
+                if (success) {
+                    deferredPrefs.resolve(result);
+                } else {
+                    deferredPrefs.reject();
+                }
+            });
+
+            return deferredPrefs.promise;
+        }
+    },
+
     // TODO read, and validate, project info provided by a discovered .lumiereproject file?
     projectInfo: {
         get: function () {
