@@ -150,8 +150,36 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     newApplication: {
         value: function () {
-            //TODO implement new application
-            console.log("make a new application");
+
+            var deferredApp = Promise.defer(),
+                options = {
+                    displayAsSheet: true,
+                    // TODO localize the default app-name
+                    defaultName: "my-app"
+                },
+                self = this;
+
+            lumieres.saveFileDialog(options, function (success, file) {
+                if (success) {
+                    var destinationDividerIndex = file.lastIndexOf("/"),
+                        appName = file.substring(destinationDividerIndex + 1),
+                        destination = file.substring(0, destinationDividerIndex).replace("file://localhost", ""),
+                        backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
+
+                    console.log("Creating new application", file, appName, destination);
+                    backend.get("lumieres").invoke("createApplication", appName, destination).then(function (result) {
+                        deferredApp.resolve("fs:/" + destination + "/" + appName);
+                    }, function (fail) {
+                        deferredApp.reject(fail);
+                    });
+
+
+                } else {
+                    deferredApp.reject();
+                }
+            });
+
+            return deferredApp.promise;
         }
     },
 

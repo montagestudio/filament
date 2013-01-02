@@ -1,5 +1,6 @@
 var path = require("path"),
-    fs = require("fs");
+    fs = require("fs"),
+    minitCreate = require("minit/lib/create").create;
 
 exports.getPlugins = function() {
     var result = [],
@@ -20,8 +21,7 @@ exports.getPlugins = function() {
     return result;
 };
 
-exports.createApplication = function(url) {
-    // TODO: Write me!
-    console.log("--- createApplication", url);
-    return null;
+exports.createApplication = function(name, packageHome) {
+    console.log("---- filament-server: createApplication name:" + name + " home: " + packageHome);
+    return minitCreate("app", {name: name, "packageHome": packageHome});
 };

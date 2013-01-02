@@ -67,10 +67,11 @@ exports.Main = Montage.create(Component, {
             var envBridge = this.environmentBridge;
             envBridge.newApplication()
                 .then(function (applicationUrl) {
-                    envBridge.open(applicationUrl);
-                }, function (fail) {
-                    throw new Error("Could not create new application");
-                }).done();
+                    return envBridge.open(applicationUrl);
+                }).then(function () {
+                    window.close();
+                })
+                .done();
         }
     },
 
