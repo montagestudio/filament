@@ -69,7 +69,7 @@ exports.Main = Montage.create(Component, {
                     self.pluginUrls = pluginUrls;
                     self.deferredPlugins = {};
                     self.openProject(projectInfo);
-                });
+                }).done();
         }
     },
 
