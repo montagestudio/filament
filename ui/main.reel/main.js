@@ -60,11 +60,35 @@ exports.Main = Montage.create(Component, {
 
     handleCanLoadReel: {
         value: function () {
+            var projectUrl = this.environmentBridge.projectUrl;
+
+            if (projectUrl) {
+                this.loadProject(projectUrl);
+            } else {
+                this.createApplication();
+            }
+        }
+    },
+
+    createApplication: {
+        value: function () {
+            var self = this;
+
+            this.environmentBridge.newApplication()
+                .then(function (applicationUrl) {
+                    self.loadProject(applicationUrl);
+                })
+                .done();
+        }
+    },
+
+    loadProject: {
+        value: function (projectUrl) {
             var self = this;
 
             //TODO we may be able to find available plugins even earlier,
             //but we shouldn't be able to open a project without knowing
-            Promise.all([this.environmentBridge.availablePlugins, this.environmentBridge.projectInfo])
+            Promise.all([this.environmentBridge.availablePlugins, this.environmentBridge.projectInfo(projectUrl)])
                 .spread(function (pluginUrls, projectInfo) {
                     self.pluginUrls = pluginUrls;
                     self.deferredPlugins = {};

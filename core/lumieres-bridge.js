@@ -32,24 +32,31 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         }
     },
 
+    projectUrl: {
+        get: function () {
+            var params = qs.parse(window.location.search.replace(/^\?/, "")),
+                reelParam = params.file,
+                reelUrl;
+
+            if (reelParam && !reelParam.match(/fs:\/\(null\)/)) {
+                reelUrl = reelParam;
+            }
+
+            return reelUrl;
+        }
+    },
+
     // TODO read, and validate, project info provided by a discovered .lumiereproject file?
     projectInfo: {
-        get: function () {
+        value: function (projectUrl) {
+
+            var self = this,
+                packageUrl;
 
             if (!this._deferredProjectInfo) {
                 this._deferredProjectInfo = Promise.defer();
 
-                var params = qs.parse(window.location.search.replace(/^\?/, "")),
-                    reelParam = params.file,
-                    reelUrl,
-                    self = this,
-                    packageUrl;
-
-                if (reelParam && !reelParam.match(/fs:\/\(null\)/)) {
-                    reelUrl = reelParam;
-                }
-
-                this.findPackage(this.convertBackendUrlToPath(reelUrl))
+                this.findPackage(this.convertBackendUrlToPath(projectUrl))
                     .then(function (url) {
                         packageUrl = url;
                         //TODO what if no packageUrl? How did it get this far if that's the case, can it?
@@ -62,7 +69,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                         }
 
                         self._deferredProjectInfo.resolve({
-                            "reelUrl": reelUrl,
+                            "reelUrl": projectUrl, //TODO rename this ? is it always a reel?
                             "packageUrl": packageUrl,
                             "componentUrls": componentUrls,
                             "dependencies": dependencies
