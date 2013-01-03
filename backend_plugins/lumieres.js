@@ -1,6 +1,8 @@
 var path = require("path"),
     fs = require("fs"),
-    minitCreate = require("minit/lib/create").create;
+    minitCreate = require("minit/lib/create").create,
+    Q = require("q"),
+    npm = require("npm");
 
 exports.getPlugins = function() {
     var result = [],
@@ -24,4 +26,11 @@ exports.getPlugins = function() {
 exports.createApplication = function(name, packageHome) {
     console.log("---- filament-server: createApplication name:" + name + " home: " + packageHome);
     return minitCreate("app", {name: name, "packageHome": packageHome});
+};
+
+exports.installDependencies = function (config) {
+    return Q.ninvoke(npm, "load", (config || null))
+        .then(function (loadedNpm) {
+            return Q.ninvoke(loadedNpm.commands, "install");
+        });
 };

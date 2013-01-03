@@ -45,6 +45,18 @@
                         "listener": {"@": "owner"}
                     }
                 ]
+            },
+            "installDependenciesButton": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "install-dependencies-button"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             }
         }
     </script>
@@ -58,6 +70,7 @@
             <li data-montage-id="component-cell"></li>
         </ul>
         <button data-montage-id="add-file-button">Add…</button>
+        <button data-montage-id="install-dependencies-button">Install Dependencies</button>
     </div>
 
 </body>

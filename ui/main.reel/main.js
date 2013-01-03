@@ -143,6 +143,7 @@ exports.Main = Montage.create(Component, {
             this.addPropertyChangeListener("windowTitle", this, false);
             app.addEventListener("openComponent", this);
             app.addEventListener("addFile", this);
+            app.addEventListener("installDependencies", this);
 
             if (reelUrl) {
                 this.openComponent(reelUrl);
@@ -312,6 +313,16 @@ exports.Main = Montage.create(Component, {
         value: function (evt) {
             //TODO present new file dialog
             console.log("main: add new file");
+        }
+    },
+
+    handleInstallDependencies: {
+        value: function (evt) {
+            var config = {
+                prefix : this.environmentBridge.convertBackendUrlToPath(this.packageUrl)
+            };
+
+            this.environmentBridge.installDependencies(config).done();
         }
     },
 

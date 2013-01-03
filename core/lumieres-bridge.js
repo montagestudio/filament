@@ -232,5 +232,12 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
             var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
             return backend.get("fs").invoke("write", path, data, flags);
         }
+    },
+
+    installDependencies: {
+        value: function (config) {
+            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
+            return backend.get("lumieres").invoke("installDependencies", config);
+        }
     }
 });
