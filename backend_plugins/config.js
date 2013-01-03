@@ -91,13 +91,21 @@ exports.menusAddOns = function() {
                 {
                     title: "Application…", enabled: true, keyEquivalent: "command+N",
                     identifier: "newApplication",
-                    action: {"openDocument": {type: "application"}}
+                    action: {openDocument: {type: "application"}}
                 },
                 {
                     title: "Component…", enabled: false, keyEquivalent: "command+shift+N",
                     identifier: "newComponent"
                 }
             ]
+        },
+
+        {
+            title: "Documentation and API Reference",
+            identifier: "help",
+            keyEquivalent: "command+option+?",
+            location: {insertBefore: "7.1"},
+            action: {openWindow: {url:"http://montagejs.org/docs/", width:650, height:800, canResize:true, showToolbar:true, canOpenMultiple: false}}
         }
     ]
 }
