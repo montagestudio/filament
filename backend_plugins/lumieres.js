@@ -24,7 +24,6 @@ exports.getPlugins = function() {
 };
 
 exports.createApplication = function(name, packageHome) {
-    console.log("---- filament-server: createApplication name:" + name + " home: " + packageHome);
     return minitCreate("app", {name: name, "packageHome": packageHome});
 };
 

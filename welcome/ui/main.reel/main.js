@@ -64,14 +64,9 @@ exports.Main = Montage.create(Component, {
 
     handleNewAppButtonAction: {
         value: function () {
-            var envBridge = this.environmentBridge;
-            envBridge.newApplication()
-                .then(function (applicationUrl) {
-                    return envBridge.open(applicationUrl);
-                }).then(function () {
-                    window.close();
-                })
-                .done();
+            this.environmentBridge.openNewApplication().then(function () {
+                window.close();
+            });
         }
     },
 

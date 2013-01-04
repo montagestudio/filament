@@ -155,38 +155,37 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         }
     },
 
-    newApplication: {
-        value: function () {
-
-            var deferredApp = Promise.defer(),
-                options = {
-                    displayAsSheet: true,
-                    // TODO localize the default app-name
-                    defaultName: "my-app"
-                },
-                self = this;
+    promptForSave: {
+        value: function (options) {
+            var deferredSave = Promise.defer();
 
             lumieres.saveFileDialog(options, function (success, file) {
                 if (success) {
-                    var destinationDividerIndex = file.lastIndexOf("/"),
-                        appName = file.substring(destinationDividerIndex + 1),
-                        destination = file.substring(0, destinationDividerIndex).replace("file://localhost", ""),
-                        backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
-
-                    console.log("Creating new application", file, appName, destination);
-                    backend.get("lumieres").invoke("createApplication", appName, destination).then(function (result) {
-                        deferredApp.resolve("fs:/" + destination + "/" + appName);
-                    }, function (fail) {
-                        deferredApp.reject(fail);
-                    });
-
-
+                    var destination = file.replace("file://localhost", "");
+                    deferredSave.resolve("fs:/" + destination);
                 } else {
-                    deferredApp.reject();
+                    deferredSave.reject();
                 }
             });
 
-            return deferredApp.promise;
+            return deferredSave.promise;
+        }
+    },
+
+    openNewApplication: {
+        value: function () {
+            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
+            return backend.get("application").invoke("openDocument", {type: "application"});
+        }
+    },
+
+    createApplication: {
+        value: function (name, packageHome) {
+            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
+            return backend.get("lumieres").invoke("createApplication", name, this.convertBackendUrlToPath(packageHome))
+                .then(function () {
+                    return packageHome + "/" + name;
+                });
         }
     },
 

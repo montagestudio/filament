@@ -72,13 +72,24 @@ exports.Main = Montage.create(Component, {
 
     createApplication: {
         value: function () {
-            var self = this;
+            var options = {
+                    displayAsSheet: true,
+                    // TODO localize the default app-name
+                    defaultName: "my-app"
+                },
+                self = this;
 
-            this.environmentBridge.newApplication()
-                .then(function (applicationUrl) {
-                    self.loadProject(applicationUrl);
-                })
-                .done();
+            this.environmentBridge.promptForSave(options).then(function (destination) {
+                var destinationDividerIndex = destination.lastIndexOf("/"),
+                    appName = destination.substring(destinationDividerIndex + 1),
+                    packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", "");
+
+                return self.environmentBridge.createApplication(appName, packageHome);
+            }).then(function (applicationUrl) {
+                self.loadProject(applicationUrl);
+            }, function (fail) {
+                window.close();
+            }).done();
         }
     },
 
