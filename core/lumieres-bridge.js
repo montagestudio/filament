@@ -189,6 +189,16 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         }
     },
 
+    createComponent: {
+        value: function (name, packageHome) {
+            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
+            return backend.get("lumieres").invoke("createComponent", name, this.convertBackendUrlToPath(packageHome))
+                .then(function () {
+                    return packageHome + "/" + name;
+                });
+        }
+    },
+
     open: {
         value: function (url) {
             var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));

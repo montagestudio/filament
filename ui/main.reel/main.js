@@ -322,8 +322,21 @@ exports.Main = Montage.create(Component, {
 
     handleAddFile: {
         value: function (evt) {
-            //TODO present new file dialog
-            console.log("main: add new file");
+            var packagePath = this.environmentBridge.convertBackendUrlToPath(this.packageUrl),
+                options = {
+                    defaultDirectory: "file://localhost" + packagePath,
+                    defaultName: "my-component"
+                },
+                self = this;
+
+            this.environmentBridge.promptForSave(options)
+                .then(function (destination) {
+                    var destinationDividerIndex = destination.lastIndexOf("/"),
+                        componentName = destination.substring(destinationDividerIndex + 1),
+                        packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", "");
+
+                    return self.environmentBridge.createComponent(componentName, packageHome);
+                }).done();
         }
     },
 

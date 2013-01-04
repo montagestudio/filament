@@ -27,6 +27,10 @@ exports.createApplication = function(name, packageHome) {
     return minitCreate("app", {name: name, "packageHome": packageHome});
 };
 
+exports.createComponent = function(name, packageHome) {
+    return minitCreate("component", {name: name, "packageHome": packageHome});
+};
+
 exports.installDependencies = function (config) {
     return Q.ninvoke(npm, "load", (config || null))
         .then(function (loadedNpm) {
