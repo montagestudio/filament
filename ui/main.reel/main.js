@@ -163,7 +163,7 @@ exports.Main = Montage.create(Component, {
             }
 
             if (currentDocument) {
-                projectTitle = currentDocument + " — " + projectTitle;
+                projectTitle = currentDocument.title + " — " + projectTitle;
             }
 
             return projectTitle;
