@@ -23,23 +23,30 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
+    _bridgePromise: {
+        value: null
+    },
+
     didCreate: {
         value: function () {
-
-            var bridgePromise,
-                self = this;
-
             if (IS_IN_LUMIERES) {
-                bridgePromise = require.async("core/lumieres-bridge").then(function (exported) {
+                this._bridgePromise = require.async("core/lumieres-bridge").then(function (exported) {
                     return Promise.resolve(exported.LumiereBridge.create());
                 });
             } else {
-                bridgePromise = require.async("core/browser-bridge").then(function (exported) {
+                this._bridgePromise = require.async("core/browser-bridge").then(function (exported) {
                     return Promise.resolve(exported.BrowserBridge.create());
                 });
             }
+        }
+    },
 
-            bridgePromise.then(function (environmentBridge) {
+    templateDidLoad: {
+        value: function () {
+
+            var self = this;
+
+            this._bridgePromise.then(function (environmentBridge) {
                 self.projectController = ProjectController.create().initWithEnvironmentBridgeAndComponentEditor(environmentBridge, self.componentEditor);
                 self.projectController.addEventListener("canLoadProject", self, false);
                 self.projectController.addEventListener("didOpenPackage", self, false);
