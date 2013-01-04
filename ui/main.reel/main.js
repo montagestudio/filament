@@ -60,6 +60,8 @@ exports.Main = Montage.create(Component, {
                     self.projectController.didResignKey();
                 });
 
+                self.application.addEventListener("menuAction", self, false);
+
             }).done();
         }
     },
@@ -136,6 +138,14 @@ exports.Main = Montage.create(Component, {
         value: function (notification) {
             if ("windowTitle" === notification.currentPropertyPath) {
                 this.needsDraw = true;
+            }
+        }
+    },
+
+    handleMenuAction: {
+        value: function (evt) {
+            if ("newComponent" === evt.detail.identifier) {
+                this.projectController.createComponent();
             }
         }
     },

@@ -322,6 +322,11 @@ exports.ProjectController = Montage.create(Montage, {
 
     createComponent: {
         value: function () {
+
+            if (!this.canCreateComponents) {
+                throw new Error("Cannot create components without an open project");
+            }
+
             var packagePath = this.environmentBridge.convertBackendUrlToPath(this.packageUrl),
                 options = {
                     defaultDirectory: "file://localhost" + packagePath,
