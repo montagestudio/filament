@@ -74,8 +74,8 @@ exports.Main = Montage.create(Component, {
         value: function () {
             var options = {
                     displayAsSheet: true,
-                    // TODO localize the default app-name
-                    defaultName: "my-app"
+                    defaultName: "my-app", // TODO localize the default app-name
+                    prompt: "Create" //TODO localize this
                 },
                 self = this;
 
@@ -325,7 +325,8 @@ exports.Main = Montage.create(Component, {
             var packagePath = this.environmentBridge.convertBackendUrlToPath(this.packageUrl),
                 options = {
                     defaultDirectory: "file://localhost" + packagePath,
-                    defaultName: "my-component"
+                    defaultName: "my-component", // TODO localize this
+                    prompt: "Create" //TODO localize this
                 },
                 self = this;
 
@@ -337,6 +338,7 @@ exports.Main = Montage.create(Component, {
 
                     return self.environmentBridge.createComponent(componentName, packageHome);
                 }).done();
+            //TODO handle a cancelled creation vs some error
         }
     },
 
