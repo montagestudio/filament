@@ -13,7 +13,7 @@
         "qs": "0.5.2",
         "palette": "git+ssh://git@github.com:declarativ/palette.git",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git",
-        "minit": "0.1.1",
+        "minit": "0.1.2",
         "npm": "1.1.70"
     }
 }
