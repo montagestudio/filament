@@ -11,6 +11,8 @@ exports.ProjectController = Montage.create(Montage, {
             this._environmentBridge = bridge;
             this._componentEditor = editor;
 
+            this.setupMenuItems();
+
             var self = this,
                 deferredEditor = Promise.defer();
 
@@ -337,6 +339,48 @@ exports.ProjectController = Montage.create(Montage, {
                     return self.environmentBridge.createComponent(componentName, packageHome);
                 }).done();
             //TODO handle a cancelled creation vs some error
+        }
+    },
+
+    _windowIsKey: {
+        value: true //TODO not assume our window is key
+    },
+
+    didBecomeKey: {
+        value: function (evt) {
+            this._windowIsKey = true;
+        }
+    },
+
+    didResignKey: {
+        value: function (evt) {
+            this._windowIsKey = false;
+        }
+    },
+
+    canCreateComponents: {
+        dependencies: ["_windowIsKey", "packageUrl"],
+        get: function () {
+            return !!(this._windowIsKey && this.packageUrl);
+        }
+    },
+
+    setupMenuItems: {
+        enumerable: false,
+        value: function () {
+
+            var newComponentMenuItem,
+                self = this;
+
+            this.environmentBridge.mainMenu.then(function (mainMenu) {
+                newComponentMenuItem = mainMenu.menuItemForIdentifier("newComponent");
+
+                Object.defineBinding(newComponentMenuItem, "enabled", {
+                    boundObject: self,
+                    boundObjectPropertyPath: "canCreateComponents",
+                    oneway: true
+                });
+            }).done();
         }
     }
 

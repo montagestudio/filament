@@ -2,7 +2,8 @@ var Montage = require("montage/core/core").Montage,
     EnvironmentBridge = require("core/environment-bridge").EnvironmentBridge,
     Connection = require("q-connection"),
     Promise = require("montage/core/promise").Promise,
-    qs = require("qs");
+    qs = require("qs"),
+    mainMenu = require("ui/native-menu/menu").defaultMenu;
 
 exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
@@ -247,6 +248,12 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         value: function (config) {
             var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
             return backend.get("lumieres").invoke("installDependencies", config);
+        }
+    },
+
+    mainMenu: {
+        get: function () {
+            return Promise.resolve(mainMenu);
         }
     }
 });

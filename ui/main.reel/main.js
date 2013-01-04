@@ -41,7 +41,7 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    templateDidLoad: {
+    prepareForDraw: {
         value: function () {
 
             var self = this;
@@ -50,6 +50,16 @@ exports.Main = Montage.create(Component, {
                 self.projectController = ProjectController.create().initWithEnvironmentBridgeAndComponentEditor(environmentBridge, self.componentEditor);
                 self.projectController.addEventListener("canLoadProject", self, false);
                 self.projectController.addEventListener("didOpenPackage", self, false);
+
+                //TODO I'm not sure if the project controller should just observe this itself
+                window.addEventListener("didBecomeKey", function () {
+                    self.projectController.didBecomeKey();
+                });
+
+                window.addEventListener("didResignKey", function () {
+                    self.projectController.didResignKey();
+                });
+
             }).done();
         }
     },
@@ -135,14 +145,15 @@ exports.Main = Montage.create(Component, {
         get: function () {
 
             var projectTitle,
-                packageUrl = this.projectController.packageUrl;
+                packageUrl = this.projectController ? this.projectController.packageUrl : null,
+                currentDocument = this.projectController ? this.projectController.currentDocument : null;
 
             if (packageUrl) {
                 projectTitle = packageUrl.substring(packageUrl.lastIndexOf("/") + 1);
             }
 
-            if (this.projectController.currentDocument) {
-                projectTitle = this.projectController.currentDocument.title + " — " + projectTitle;
+            if (currentDocument) {
+                projectTitle = currentDocument + " — " + projectTitle;
             }
 
             return projectTitle;
