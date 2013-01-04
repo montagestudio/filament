@@ -14,7 +14,7 @@ var Montage = require("montage/core/core").Montage,
 var getMainMenu = null;
 var kListenerError = "'menuAction' listener must be installed on a component or the Application object";
 
-exports.Menu = Menu = Montage.create(Montage, {
+var Menu = exports.Menu = Montage.create(Montage, {
 
     _itemsToInsert: {
         value: []
@@ -264,6 +264,30 @@ exports.Menu = Menu = Montage.create(Montage, {
             component = component || defaultEventManager.application;
             component.dispatchEvent(event);
         }
+    },
+
+    menuItemForIdentifier: {
+        value: function(identifier) {
+            var searchItemsTree = function(menu, identifier) {
+                for (var i in menu.items) {
+                    var item = menu.items[i];
+                    if (item.identifier === identifier) {
+                        return item;
+                    } else {
+                        if (item.items) {
+                            item = searchItemsTree(item, identifier);
+                            if (item) {
+                                return item;
+                            }
+                        }
+                    }
+                }
+
+                return undefined;
+            }
+
+            return searchItemsTree(this, identifier);
+        }
     }
 });
 
@@ -271,7 +295,7 @@ var _defaultMenu = null;
 Montage.defineProperty(exports, "defaultMenu", {
     get: function() {
         if (!_defaultMenu) {
-            _defaultMenu = Object.create(Menu);
+            _defaultMenu = Menu.create();
         }
         return _defaultMenu;
     }
