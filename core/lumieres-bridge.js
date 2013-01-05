@@ -48,38 +48,29 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
     },
 
     // TODO read, and validate, project info provided by a discovered .lumiereproject file?
+    // TODO more and more of this is being read dynamically by the projectController
+    // especially as it can change during runtime, so we consider doing even less up front
     projectInfo: {
         value: function (projectUrl) {
 
-            var self = this,
-                packageUrl;
+            var self = this;
 
-            if (!this._deferredProjectInfo) {
-                this._deferredProjectInfo = Promise.defer();
+            return this.findPackage(this.convertBackendUrlToPath(projectUrl))
+                .then(function (packageUrl) {
+                    return self.dependenciesInPackage(packageUrl)
+                        .then(function (dependencies) {
 
-                this.findPackage(this.convertBackendUrlToPath(projectUrl))
-                    .then(function (url) {
-                        packageUrl = url;
-                        //TODO what if no packageUrl? How did it get this far if that's the case, can it?
-                        return [self.componentsInPackage(url), self.dependenciesInPackage(url)];
-                    })
-                    .spread(function (componentUrls, dependencies) {
+                            if (packageUrl) {
+                                packageUrl = "fs:/" + packageUrl;
+                            }
 
-                        if (packageUrl) {
-                            packageUrl = "fs:/" + packageUrl;
-                        }
-
-                        self._deferredProjectInfo.resolve({
-                            "reelUrl": projectUrl, //TODO rename this ? is it always a reel?
-                            "packageUrl": packageUrl,
-                            "componentUrls": componentUrls,
-                            "dependencies": dependencies
+                            return {
+                                "reelUrl": projectUrl, //TODO rename this ? is it always a reel?
+                                "packageUrl": packageUrl,
+                                "dependencies": dependencies
+                            };
                         });
-
-                    }).done();
-            }
-
-            return this._deferredProjectInfo.promise;
+                });
         }
     },
 
@@ -254,6 +245,20 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
     mainMenu: {
         get: function () {
             return Promise.resolve(mainMenu);
+        }
+    },
+
+    watch: {
+        value: function (path, changeHandler) {
+            var local = {
+                    handleChange: function (changeType, filePath) {
+                        changeHandler(changeType, filePath);
+                    }
+                },
+                backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort), local);
+
+            path = this.convertBackendUrlToPath(path);
+            return backend.get("lumieres").invoke("watch", path, Promise.master(local));
         }
     }
 });

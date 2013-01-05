@@ -2,7 +2,8 @@ var path = require("path"),
     fs = require("fs"),
     minitCreate = require("minit/lib/create").create,
     Q = require("q"),
-    npm = require("npm");
+    npm = require("npm"),
+    watchr = require("watchr");
 
 exports.getPlugins = function() {
     var result = [],
@@ -36,4 +37,17 @@ exports.installDependencies = function (config) {
         .then(function (loadedNpm) {
             return Q.ninvoke(loadedNpm.commands, "install");
         });
+};
+
+exports.watch = function (path, changeHandler) {
+    //TODO make sure we return whatever watcher handle we need to stop watching, probably
+    return Q.invoke(watchr, "watch", {
+        path: path,
+        ignoreCommonPatterns: true,
+        listeners: {
+            change: function(changeType, filePath, fileCurrentStat, filePreviousStat) {
+                changeHandler.invoke("handleChange", changeType, filePath);
+            }
+        }
+    });
 };

@@ -81,6 +81,10 @@ exports.ProjectController = Montage.create(Montage, {
         value: null
     },
 
+    dependencies: {
+        value: null
+    },
+
     // The collection of all library items available to this package
     // TODO preserve the groups of the libraryItems somehow for nicer presentation
     libraryItems: {
@@ -106,35 +110,23 @@ exports.ProjectController = Montage.create(Montage, {
             var reelUrl = projectInfo.reelUrl,
                 self = this;
 
-            this.packageUrl = projectInfo.packageUrl;
-
             this.dispatchEventNamed("willOpenPackage", true, true, {
-                packageUrl: this.packageUrl,
+                packageUrl: projectInfo.packageUrl,
                 reelUrl: reelUrl
             });
 
-            if (projectInfo.componentUrls) {
-                this.components = projectInfo.componentUrls.map(function (url) {
-                    return ComponentInfo.create().initWithUrl(url);
-                });
-            }
+            this.packageUrl = projectInfo.packageUrl;
+            this.dependencies = projectInfo.dependencies;
 
-            this.findLibraryItems(projectInfo.dependencies).then(function (dependencyLibraryEntries) {
+            this.watchForFileChanges();
 
-                // TODO not flatten out the dependency-grouped libraryItems
-                return Promise.all(dependencyLibraryEntries.map(function (entry) {
-                    return entry.libraryItems;
-                }).reduce(function (a, b) {
-                    return a.concat(b);
-                }));
-
-            }).then(function (libraryItems) {
-                self.libraryItems = libraryItems;
-                self.dispatchEventNamed("didOpenPackage", true, true, {
-                    packageUrl: self.packageUrl,
-                    reelUrl: reelUrl
-                });
-            }).done();
+            Promise.all([this.populateComponents(), this.populateLibrary()])
+                .then(function () {
+                    self.dispatchEventNamed("didOpenPackage", true, true, {
+                        packageUrl: self.packageUrl,
+                        reelUrl: reelUrl
+                    });
+                }).done();
         }
     },
 
@@ -289,11 +281,17 @@ exports.ProjectController = Montage.create(Montage, {
 
     installDependencies: {
         value: function () {
-            var config = {
-                prefix : this.environmentBridge.convertBackendUrlToPath(this.packageUrl)
-            };
+            var self = this,
+                config = {
+                    prefix : this.environmentBridge.convertBackendUrlToPath(this.packageUrl)
+                };
 
-            this.environmentBridge.installDependencies(config).done();
+            this._isInstallingDependencies = true;
+            this.environmentBridge.installDependencies(config).then(function () {
+                //TODO update this.dependencies, they've possibly changed
+                self._isInstallingDependencies = false;
+                self.populateLibrary();
+            }).done();
         }
     },
 
@@ -387,7 +385,66 @@ exports.ProjectController = Montage.create(Montage, {
                 });
             }).done();
         }
-    }
+    },
 
+    watchForFileChanges: {
+        enumerable: false,
+        value: function () {
+            var self = this,
+                changeHandler = function (changeType, filePath) {
+                    self.handleFileSystemChange(changeType, filePath);
+                };
+
+            this.environmentBridge.watch(this.packageUrl, changeHandler).done();
+        }
+    },
+
+    handleFileSystemChange: {
+        value: function (change, filePath) {
+            //TODO do we only care about certain changes...what about files inside the reel?
+            if (/\.reel$/.test(filePath)) {
+                console.log("component changed on filesystem", change, filePath);
+                //TODO this is heavy handed, but really more of a proof of concept than anything else
+                if (!this._isInstallingDependencies) {
+                    this.populateLibrary().done();
+                }
+
+                if (!/\/node_modules\//.test(filePath)) {
+                    this.populateComponents().done();
+                }
+            }
+        }
+    },
+
+    populateComponents: {
+        value: function () {
+            var self = this,
+                packagePath = this.environmentBridge.convertBackendUrlToPath(this.packageUrl);
+
+            return this.environmentBridge.componentsInPackage(packagePath).then(function (componentUrls) {
+                self.components = componentUrls.map(function (url) {
+                    return ComponentInfo.create().initWithUrl(url);
+                });
+            });
+        }
+    },
+
+    populateLibrary: {
+        value: function () {
+            var self = this;
+            return this.findLibraryItems(this.dependencies).then(function (dependencyLibraryEntries) {
+
+                // TODO not flatten out the dependency-grouped libraryItems
+                return Promise.all(dependencyLibraryEntries.map(function (entry) {
+                    return entry.libraryItems;
+                }).reduce(function (a, b) {
+                    return a.concat(b);
+                }));
+
+            }).then(function (libraryItems) {
+                self.libraryItems = libraryItems;
+            });
+        }
+    }
 
 });

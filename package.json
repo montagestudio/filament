@@ -14,6 +14,7 @@
         "palette": "git+ssh://git@github.com:declarativ/palette.git",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git",
         "minit": "0.1.2",
-        "npm": "1.1.70"
+        "npm": "1.1.70",
+        "watchr": "2.3.1"
     }
 }
