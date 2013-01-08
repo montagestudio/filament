@@ -246,9 +246,9 @@ exports.ProjectController = Montage.create(Montage, {
                 } else {
                     item = LibraryItem.create();
 
-                    item.moduleId = moduleId;
+                    item.serialization = {prototype: moduleId};
                     item.name = objectName;
-                    item.html = '<div data-montage-id=""></div>';
+                    item.html = '<div></div>';
                 }
 
                 return item;

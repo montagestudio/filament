@@ -7,17 +7,14 @@ var packageLocation = require.location;
 
 var ButtonLibraryItem = Montage.create(LibraryItem, {
 
-    didCreate: {
-        value: function () {
-            this.properties = {
+    serialization: {
+        value: {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
                 label: "Button",
                 enabled: true
-            };
+            }
         }
-    },
-
-    moduleId: {
-        value: "montage/ui/button.reel"
     },
 
     name: {
@@ -40,18 +37,15 @@ var ButtonLibraryItem = Montage.create(LibraryItem, {
 
 var ToggleButtonLibraryItem = Montage.create(LibraryItem, {
 
-    didCreate: {
-        value: function () {
-            this.properties = {
+    serialization: {
+        value: {
+            "prototype": "montage/ui/toggle-button.reel",
+            "properties": {
                 "value": true,
                 "pressedLabel": "On",
                 "unpressedLabel": "Off"
-            };
+            }
         }
-    },
-
-    moduleId: {
-        value: "montage/ui/toggle-button.reel"
     },
 
     name: {
@@ -74,16 +68,13 @@ var ToggleButtonLibraryItem = Montage.create(LibraryItem, {
 
 var InputCheckboxLibraryItem = Montage.create(LibraryItem, {
 
-    didCreate: {
-        value: function () {
-            this.properties = {
+    serialization: {
+        value: {
+            "prototype": "montage/ui/input-checkbox.reel",
+            "properties": {
                 "checked": true
-            };
+            }
         }
-    },
-
-    moduleId: {
-        value: "montage/ui/input-checkbox.reel"
     },
 
     name: {
@@ -106,16 +97,13 @@ var InputCheckboxLibraryItem = Montage.create(LibraryItem, {
 
 var InputRadioLibraryItem = Montage.create(LibraryItem, {
 
-    didCreate: {
-        value: function () {
-            this.properties = {
+    serialization: {
+        value: {
+            "prototype": "montage/ui/input-radio.reel",
+            "properties": {
                 "checked": true
-            };
+            }
         }
-    },
-
-    moduleId: {
-        value: "montage/ui/input-radio.reel"
     },
 
     name: {
@@ -138,16 +126,13 @@ var InputRadioLibraryItem = Montage.create(LibraryItem, {
 
 var InputNumberLibraryItem = Montage.create(LibraryItem, {
 
-    didCreate: {
-        value: function () {
-            this.properties = {
+    serialization: {
+        value: {
+            "prototype": "montage/ui/input-number.reel",
+            "properties": {
                 "value": 100
-            };
+            }
         }
-    },
-
-    moduleId: {
-        value: "montage/ui/input-number.reel"
     },
 
     name: {
@@ -170,18 +155,15 @@ var InputNumberLibraryItem = Montage.create(LibraryItem, {
 
 var InputRangeLibraryItem = Montage.create(LibraryItem, {
 
-    didCreate: {
-        value: function () {
-            this.properties = {
+    serialization: {
+        value: {
+            "prototype": "montage/ui/input-range.reel",
+            "properties": {
                 "minValue": 0,
                 "maxValue": 100,
                 "value": 50
-            };
+            }
         }
-    },
-
-    moduleId: {
-        value: "montage/ui/input-range.reel"
     },
 
     name: {
@@ -204,8 +186,10 @@ var InputRangeLibraryItem = Montage.create(LibraryItem, {
 
 var SelectLibraryItem = Montage.create(LibraryItem, {
 
-    moduleId: {
-        value: "montage/ui/select.reel"
+    serialization: {
+        value: {
+            "prototype": "montage/ui/select.reel"
+        }
     },
 
     name: {
@@ -228,16 +212,13 @@ var SelectLibraryItem = Montage.create(LibraryItem, {
 
 var DynamicTextLibraryItem = Montage.create(LibraryItem, {
 
-    didCreate: {
-        value: function () {
-            this.properties = {
-                "value":"Text"
-            };
+    serialization: {
+        value: {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "value": "Text"
+            }
         }
-    },
-
-    moduleId: {
-        value: "montage/ui/dynamic-text.reel"
     },
 
     name: {
@@ -261,16 +242,13 @@ var DynamicTextLibraryItem = Montage.create(LibraryItem, {
 
 var InputTextLibraryItem = Montage.create(LibraryItem, {
 
-    didCreate: {
-        value: function () {
-            this.properties = {
+    serialization: {
+        value: {
+            "prototype": "montage/ui/input-text.reel",
+            "properties": {
                 "value": "Text"
-            };
+            }
         }
-    },
-
-    moduleId: {
-        value: "montage/ui/input-text.reel"
     },
 
     name: {
@@ -293,16 +271,13 @@ var InputTextLibraryItem = Montage.create(LibraryItem, {
 
 var TextareaLibraryItem = Montage.create(LibraryItem, {
 
-    didCreate: {
-        value: function () {
-            this.properties = {
+    serialization: {
+        value: {
+            "prototype": "montage/ui/textarea.reel",
+            "properties": {
                 "value": "Textarea"
-            };
+            }
         }
-    },
-
-    moduleId: {
-        value: "montage/ui/textarea.reel"
     },
 
     name: {
@@ -325,17 +300,14 @@ var TextareaLibraryItem = Montage.create(LibraryItem, {
 
 var ImageLibraryItem = Montage.create(LibraryItem, {
 
-    didCreate: {
-        value: function () {
-            this.properties = {
+    serialization: {
+        value: {
+            "prototype": "montage/ui/image.reel",
+            "properties": {
                 //TODO this should not be hardcoded in palette of all places
                 "src": "http://client/node_modules/palette/assets/image/placeholder.png"
-            };
+            }
         }
-    },
-
-    moduleId: {
-        value: "montage/ui/image.reel"
     },
 
     name: {
@@ -358,17 +330,14 @@ var ImageLibraryItem = Montage.create(LibraryItem, {
 
 var ProgressLibraryItem = Montage.create(LibraryItem, {
 
-    didCreate: {
-        value: function () {
-            this.properties = {
+    serialization: {
+        value: {
+            "prototype": "montage/ui/progress.reel",
+            "properties": {
                 "max": 100,
                 "value": 50
-            };
+            }
         }
-    },
-
-    moduleId: {
-        value: "montage/ui/progress.reel"
     },
 
     name: {
@@ -391,16 +360,13 @@ var ProgressLibraryItem = Montage.create(LibraryItem, {
 
 var RepetitionLibraryItem = Montage.create(LibraryItem, {
 
-    didCreate: {
-        value: function () {
-            this.properties = {
+    serialization: {
+        value: {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
                 "objects": [1, 2, 3]
-            };
+            }
         }
-    },
-
-    moduleId: {
-        value: "montage/ui/repetition.reel"
     },
 
     name: {
@@ -423,9 +389,10 @@ var RepetitionLibraryItem = Montage.create(LibraryItem, {
 
 var FlowLibraryItem = Montage.create(LibraryItem, {
 
-    didCreate: {
-        value: function () {
-            this.properties = {
+    serialization: {
+        value: {
+            "prototype": "montage/ui/flow.reel",
+            "properties": {
                 "objects": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
                 "cameraPosition": [0, 0, 1500],
                 "paths": [
@@ -449,12 +416,8 @@ var FlowLibraryItem = Montage.create(LibraryItem, {
                         "units": {}
                     }
                 ]
-            };
+            }
         }
-    },
-
-    moduleId: {
-        value: "montage/ui/flow.reel"
     },
 
     name: {
@@ -475,32 +438,41 @@ var FlowLibraryItem = Montage.create(LibraryItem, {
 
     // Action to take after addedTo the template
     //TODO rename didAddToTemplate?
+    //TODO if you really want to add child components...should they be part of the component you're adding itself?
     postProcess: {
-        value: function (element, iRequire) {
-            var self = this;
-            var innerElement = element.appendChild(element.ownerDocument.createElement("img"));
-            innerElement.setAttribute("data-montage-id", "foo");
-            var dynamicText = iRequire("montage/ui/image.reel").Image.create();
-            dynamicText.element = innerElement;
-            dynamicText.attachToParentComponent();
-            //dynamicText.value = "foo";
-            dynamicText.needsDraw = true;
-            self._orphanedChildren = [dynamicText];
+        value: function (editingProxy, editingDocument) {
 
-            self.originalContent = [innerElement];
+            var flowImageSerialization = Object.clone(ImageLibraryItem.serialization),
+                flowElement = editingProxy.stageObject.element,
+                imageElement,
+                imageIdentifier = "flowImage";
 
-            Object.defineBinding(dynamicText, "src", {
-                "boundObject": self,
-                "boundObjectPropertyPath": "objectAtCurrentIteration",
-                "oneway": true
-            });
+            if (!flowImageSerialization.bindings) {
+                flowImageSerialization.bindings = {};
+            }
 
-            innerElement.style.minWidth = "400px";
-            innerElement.style.minHeight = "400px";
-            innerElement.style.background = "white";
-            innerElement.style.webkitTransform = "translate3d(-50%, -50%, 0)";
-            innerElement.style.borderRadius = "12px";
+            flowImageSerialization.bindings.src = {
+                boundObject: {"<-": "@" + editingProxy.label},
+                boundObjectPropertyPath: "objectAtCurrentIteration",
+                oneway: true
+            };
 
+            //TODO while this will work it's probably sub-optimal and we do need a way to specify the destination
+            // of an element when adding a Component probably, though this works...
+            imageElement = flowElement.appendChild(flowElement.ownerDocument.createElement("img"));
+            imageElement.setAttribute("data-montage-id", imageIdentifier);
+            imageElement.style.minWidth = "400px";
+            imageElement.style.minHeight = "400px";
+            imageElement.style.background = "white";
+            imageElement.style.webkitTransform = "translate3d(-50%, -50%, 0)";
+            imageElement.style.borderRadius = "12px";
+
+            editingDocument.addComponent(
+                null,
+                flowImageSerialization,
+                ImageLibraryItem.html,
+                imageIdentifier
+            ).done();
         }
     }
 

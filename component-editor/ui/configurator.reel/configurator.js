@@ -49,7 +49,7 @@ exports.Configurator = Montage.create(Component, {
                 var selectedObject = this.getProperty("selectedObjects.0"),
                     self = this;
 
-                if (selectedObject && selectedObject._montage_metadata.module.indexOf("ui/flow.reel") !== -1) {
+                if (selectedObject && selectedObject.prototype.indexOf("ui/flow.reel") !== -1) {
                     require.async("flow-editor/core/controller").get("Controller").then(function (Controller) {
                         self.inspectorControllers = [Controller];
                     });

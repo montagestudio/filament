@@ -5,8 +5,14 @@ var Montage = require("montage").Montage;
 // template...when we are actually inserting a component
 exports.LibraryItem = Montage.create(Montage, {
 
-    moduleId: {
+    serialization: {
         value: null
+    },
+
+    moduleId: {
+        get: function () {
+            return this.serialization ? this.serialization.prototype : null;
+        }
     },
 
     name: {

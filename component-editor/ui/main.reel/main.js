@@ -17,9 +17,20 @@ exports.Main = Montage.create(Component, {
 
     load: {
         value: function (reelUrl, packageUrl) {
-            var self = this;
+            var self = this,
+                stageObject;
+
             return this.workbench.load(reelUrl, packageUrl).then(function (editingDocument) {
                 self.editingDocument = editingDocument;
+
+                editingDocument.editingProxies.forEach(function (proxy) {
+                    stageObject = proxy.stageObject;
+                    if (Object.keys(stageObject).indexOf("description") > -1) {
+                        //pre-fetch the description of this object/component
+                        stageObject.description.fail(Function.noop);
+                    }
+                });
+
                 return editingDocument;
             });
         }
@@ -49,19 +60,26 @@ exports.Main = Montage.create(Component, {
                 return;
             }
 
-            var prototypeEntry = evt.detail.prototypeObject;
+            var prototypeEntry = evt.detail.prototypeObject,
+                editingDocument = this.editingDocument;
 
             if (!prototypeEntry) {
                 throw "cannot add component without more information";
             }
 
             this.editingDocument.addComponent(
-                prototypeEntry.moduleId,
-                prototypeEntry.name,
-                prototypeEntry.html,
-                prototypeEntry.properties,
-                prototypeEntry.postProcess
-            );
+                null,
+                prototypeEntry.serialization,
+                prototypeEntry.html
+            ).then(function (proxy) {
+
+                // pre-fetch the description of this object
+                proxy.stageObject.description.fail(Function.noop);
+
+                if (typeof prototypeEntry.postProcess === "function") {
+                    prototypeEntry.postProcess(proxy, editingDocument);
+                }
+            }).done();
         }
     },
 
