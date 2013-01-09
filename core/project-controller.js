@@ -133,7 +133,9 @@ exports.ProjectController = Montage.create(Montage, {
     openComponent: {
         value: function (reelUrl) {
             var self = this;
-            //TODO if we already have this reelUrl open, switch to it
+            // TODO if we already have this reelUrl open, switch to it,
+            // preserving the selectedObjects
+            this.componentEditor.workbench.selectedObjects = null;
             this.componentEditor.load(reelUrl, this.packageUrl).then(function (editingDocument) {
                 self.currentDocument = editingDocument;
             });
