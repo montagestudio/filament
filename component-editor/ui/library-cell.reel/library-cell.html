@@ -7,7 +7,8 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "library-cell"}
+                "element": {"#": "library-cell"},
+                "icon": {"@": "prototypeIcon"}
             }
         },
 
@@ -49,8 +50,8 @@
 </head>
 <body>
     <li data-montage-id="library-cell" class="LibraryCell">
-        <button data-montage-id="add-button" class="LibraryCell-button">
-            <img data-montage-id="prototype-icon" class="LibraryCell-button-icon">
+        <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
+            <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false">
             <span data-montage-id="prototype-name" class="LibraryCell-button-label"></span>
         </button>
         <button class="LibraryCell-star" data-icon="&#9733;"></button>
