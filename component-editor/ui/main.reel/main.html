@@ -101,6 +101,17 @@
 
             "application": {
                 "prototype": "montage/ui/application"
+            },
+
+            "bindingJig": {
+                "prototype": "component-editor/ui/binding-jig.reel",
+                "properties": {
+                    "element": {"#": "bindingJig"}
+                },
+                "bindings": {
+                    "editingDocument": {"<-": "@owner.editingDocument"},
+                    "selectedObjects": {"<-": "@workbench.selectedObjects"}
+                }
             }
         }
     </script>
@@ -114,6 +125,7 @@
         <div class="workShop">
             <div data-montage-id="workbench"></div>
             <div data-montage-id="controls"></div>
+            <div data-montage-id="bindingJig"></div>
         </div>
         <aside data-montage-id="configurator"></aside>
         <div data-montage-id="editorSlot" class="editorSlot"></div>
