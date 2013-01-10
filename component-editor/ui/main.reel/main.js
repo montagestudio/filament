@@ -18,16 +18,17 @@ exports.Main = Montage.create(Component, {
     load: {
         value: function (reelUrl, packageUrl) {
             var self = this,
-                stageObject;
+                stageObject,
+                descriptionPromise;
 
             return this.workbench.load(reelUrl, packageUrl).then(function (editingDocument) {
                 self.editingDocument = editingDocument;
 
                 editingDocument.editingProxies.forEach(function (proxy) {
                     stageObject = proxy.stageObject;
-                    if (Object.keys(stageObject).indexOf("description") > -1) {
-                        //pre-fetch the description of this object/component
-                        stageObject.description.fail(Function.noop);
+                    descriptionPromise = stageObject.description;
+                    if (descriptionPromise) {
+                        descriptionPromise.fail(Function.noop);
                     }
                 });
 
