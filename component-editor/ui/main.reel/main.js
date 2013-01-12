@@ -1,5 +1,7 @@
 var Montage = require("montage/core/core").Montage,
-    Component = require("montage/ui/component").Component;
+    Component = require("montage/ui/component").Component,
+    Deserializer = require("montage/core/deserializer").Deserializer,
+    MimeTypes = require("core/mime-types");
 
 exports.Main = Montage.create(Component, {
 
@@ -40,6 +42,9 @@ exports.Main = Montage.create(Component, {
     prepareForDraw: {
         value: function () {
             this.addEventListener("addComponent", this, false);
+
+            this.workbench.addEventListener("dragover", this, false);
+            this.workbench.addEventListener("drop", this, false);
         }
     },
 
@@ -54,21 +59,18 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    handleAddComponent: {
-        value: function (evt) {
-
+    addComponent: {
+        value: function(prototypeEntry) {
             if (!this.editingDocument) {
-                return;
+                throw new Error("Cannot add component: no editing document");
             }
-
-            var prototypeEntry = evt.detail.prototypeObject,
-                editingDocument = this.editingDocument;
-
             if (!prototypeEntry) {
-                throw "cannot add component without more information";
+                throw new Error("Cannot add component: no prototypeEntry");
             }
 
-            this.editingDocument.addComponent(
+            var editingDocument = this.editingDocument;
+
+            return editingDocument.addComponent(
                 null,
                 prototypeEntry.serialization,
                 prototypeEntry.html
@@ -81,6 +83,41 @@ exports.Main = Montage.create(Component, {
                     prototypeEntry.postProcess(proxy, editingDocument);
                 }
             }).done();
+        }
+    },
+
+    handleAddComponent: {
+        value: function (evt) {
+            if (!this.editingDocument) {
+                return;
+            }
+
+            this.addComponent(evt.detail.prototypeObject);
+        }
+    },
+
+    handleWorkbenchDragover: {
+        value: function(event) {
+            if (event.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1) {
+                // allows us to drop
+                event.preventDefault();
+                event.dataTransfer.dropEffect = "copy";
+            } else {
+                event.dataTransfer.dropEffect = "none";
+            }
+        }
+    },
+    handleWorkbenchDrop: {
+        value: function(event) {
+            var self = this;
+
+            // TODO: security issues?
+            var data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
+                deserializer = Deserializer.create().initWithString(data, "dropped prototype object");
+
+            deserializer.deserialize(function(prototypeEntry) {
+                self.addComponent(prototypeEntry);
+            });
         }
     },
 

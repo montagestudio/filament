@@ -5,7 +5,8 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
-    Serializer = require("montage/core/serializer").Serializer;
+    Serializer = require("montage/core/serializer").Serializer,
+    MimeTypes = require("core/mime-types");
 
 var serializer = Serializer.create();
 
@@ -37,7 +38,7 @@ exports.LibraryCell = Montage.create(Component, /** @lends module:"ui/library-ce
             // Although we could use "application/json" here, the stage is
             // expecting a specific object type. We also might specially handle
             // "application/json" later.
-            event.dataTransfer.setData("x-filament/x-prototype-object", serializer.serialize(this.prototypeObject));
+            event.dataTransfer.setData(MimeTypes.PROTOTYPE_OBJECT, serializer.serialize(this.prototypeObject));
             // A nice fallback if the user drags the component into an editor
             event.dataTransfer.setData("text/plain", this.prototypeObject.moduleId);
 
