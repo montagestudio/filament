@@ -1,11 +1,33 @@
 var Montage = require("montage/core/core").Montage,
     EnvironmentBridge = require("core/environment-bridge").EnvironmentBridge,
     Connection = require("q-connection"),
+    adaptConnection = require("q-connection/adapt"),
     Promise = require("montage/core/promise").Promise,
     qs = require("qs"),
     mainMenu = require("ui/native-menu/menu").defaultMenu;
 
 exports.LumiereBridge = Montage.create(EnvironmentBridge, {
+
+    _backend: {
+        value: null
+    },
+
+    backend: {
+        get: function() {
+            var self = this;
+
+            if (self._backend == null) {
+                var connection = adaptConnection(new WebSocket("ws://localhost:" + lumieres.nodePort));
+                connection.closed.then(function() {
+                    self._backend = null;
+                });
+
+                self._backend = Connection(connection);
+            }
+
+            return self._backend;
+        }
+    },
 
     _deferredProjectInfo: {
         value: null
@@ -76,27 +98,23 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     availablePlugins: {
         get: function () {
-            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
-            return backend.get("lumieres").invoke("getPlugins");
+            return this.backend.get("lumieres").invoke("getPlugins");
         }
     },
 
     findPackage: {
-        value: function (path, backend) {
-            if (!backend) {
-                backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
-            }
-
+        value: function (path) {
             var self = this;
-            return backend.get("fs").invoke("exists", path + "/package.json").then(function (exists) {
+
+            return self.backend.get("fs").invoke("exists", path + "/package.json").then(function (exists) {
                 if (exists) {
                     return path;
                 } else if ("/" === path) {
                     return;
                 } else {
-                    return backend.get("fs").invoke("normal", path + "/..")
+                    return self.backend.get("fs").invoke("normal", path + "/..")
                         .then(function (parentPath) {
-                            return self.findPackage(parentPath, backend);
+                            return self.findPackage(parentPath);
                         });
                 }
             });
@@ -107,12 +125,11 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
     //TODO also find non-components, "LibraryItems"
     componentsInPackage: {
         value: function (packageUrl) {
+            var self = this;
 
-            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
-
-            return backend.get("fs").invoke("normal", packageUrl + "/ui")
+            return self.backend.get("fs").invoke("normal", packageUrl + "/ui")
                 .then(function (uiPath) {
-                    return backend.get("fs").invoke("list", uiPath)
+                    return self.backend.get("fs").invoke("list", uiPath)
                         .then(function (listing) {
                             return listing.filter(function (entry) {
                                 return !!entry.match(/\.reel$/);
@@ -129,10 +146,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     dependenciesInPackage: {
         value: function (packageUrl) {
-
-            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
-
-            return backend.get("fs").invoke("read", packageUrl + "/package.json", {"charset": "utf-8"})
+            return this.backend.get("fs").invoke("read", packageUrl + "/package.json", {"charset": "utf-8"})
                 .then(function (content) {
                     var packageInfo = JSON.parse(content),
                         dependencyNames = Object.keys(packageInfo.dependencies);
@@ -166,15 +180,13 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     openNewApplication: {
         value: function () {
-            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
-            return backend.get("application").invoke("openDocument", {type: "application"});
+            return this.backend.get("application").invoke("openDocument", {type: "application"});
         }
     },
 
     createApplication: {
         value: function (name, packageHome) {
-            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
-            return backend.get("lumieres").invoke("createApplication", name, this.convertBackendUrlToPath(packageHome))
+            return this.backend.get("lumieres").invoke("createApplication", name, this.convertBackendUrlToPath(packageHome))
                 .then(function () {
                     return packageHome + "/" + name;
                 });
@@ -183,8 +195,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     createComponent: {
         value: function (name, packageHome) {
-            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
-            return backend.get("lumieres").invoke("createComponent", name, this.convertBackendUrlToPath(packageHome))
+            return this.backend.get("lumieres").invoke("createComponent", name, this.convertBackendUrlToPath(packageHome))
                 .then(function () {
                     return packageHome + "/" + name;
                 });
@@ -193,8 +204,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     open: {
         value: function (url) {
-            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
-            return backend.get("application").invoke("openDocument", {url: url});
+            return this.backend.get("application").invoke("openDocument", {url: url});
         }
     },
 
@@ -230,15 +240,13 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                 throw new Error("No port provided for filesystem connection");
             }
 
-            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
-            return backend.get("fs").invoke("write", path, data, flags);
+            return this.backend.get("fs").invoke("write", path, data, flags);
         }
     },
 
     installDependencies: {
         value: function (config) {
-            var backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort));
-            return backend.get("lumieres").invoke("installDependencies", config);
+            return this.backend.get("lumieres").invoke("installDependencies", config);
         }
     },
 
