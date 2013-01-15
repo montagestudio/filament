@@ -61,7 +61,6 @@ exports.Main = Montage.create(Component, {
                 });
 
                 window.addEventListener("openRelatedFile", function (evt) {
-                    console.log("main: open related file", evt.detail)
                     self.projectController.openRelatedFile(evt.detail);
                 });
 
