@@ -339,9 +339,11 @@ exports.ProjectController = Montage.create(Montage, {
                 .then(function (destination) {
                     var destinationDividerIndex = destination.lastIndexOf("/"),
                         componentName = destination.substring(destinationDividerIndex + 1),
-                        packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", "");
+                        //TODO complain if packageHome does not match this.packageUrl?
+                        packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", ""),
+                        relativeDestination = destination.substring(0, destinationDividerIndex).replace(packageHome, "").replace(/^\//, "");
 
-                    return self.environmentBridge.createComponent(componentName, packageHome);
+                    return self.environmentBridge.createComponent(componentName, packageHome, relativeDestination);
                 }).done();
             //TODO handle a cancelled creation vs some error
         }

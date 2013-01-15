@@ -28,8 +28,8 @@ exports.createApplication = function(name, packageHome) {
     return minitCreate("app", {name: name, "packageHome": packageHome});
 };
 
-exports.createComponent = function(name, packageHome) {
-    return minitCreate("component", {name: name, "packageHome": packageHome});
+exports.createComponent = function(name, packageHome, destination) {
+    return minitCreate("component", {name: name, packageHome: packageHome, destination: destination});
 };
 
 exports.installDependencies = function (config) {
