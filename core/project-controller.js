@@ -75,6 +75,12 @@ exports.ProjectController = Montage.create(Montage, {
         value: null
     },
 
+    // The ID of the preview being served by our host environment
+    previewId: {
+        enumerable: false,
+        value: null
+    },
+
     // The collection of components available within the open package
     // This is actually a collection of descriptive ComponentInfo objects
     components: {
@@ -126,7 +132,40 @@ exports.ProjectController = Montage.create(Montage, {
                         packageUrl: self.packageUrl,
                         reelUrl: reelUrl
                     });
+
+                    //TODO only do this if we have an index.html
+                    self.environmentBridge.registerPreview(self.packageUrl, self.packageUrl + "/index.html").then(function (previewId) {
+                        self.previewId = previewId;
+                        //TODO not launch this automatically
+                        return self.launchPreview();
+                    }).done();
+
                 }).done();
+        }
+    },
+
+    willCloseProject: {
+        value: function () {
+            //TODO only if we're registered
+            this.unregisterPreview().done();
+        }
+    },
+
+    launchPreview: {
+        value: function () {
+            return this.environmentBridge.launchPreview(this.previewId);
+        }
+    },
+
+    refreshPreview: {
+        value: function () {
+            return this.environmentBridge.refreshPreview(this.previewId);
+        }
+    },
+
+    unregisterPreview: {
+        value: function () {
+            return this.environmentBridge.unregisterPreview(this.previewId);
         }
     },
 
@@ -297,7 +336,10 @@ exports.ProjectController = Montage.create(Montage, {
 
             //TODO use either the url specified (save as), or the currentDoc's reelUrl
             //TODO improve this, we're reaching deeper than I'd like to find the reelUrl
-            this.environmentBridge.save(this.currentDocument, this.currentDocument.reelUrl).done();
+            var self = this;
+            this.environmentBridge.save(this.currentDocument, this.currentDocument.reelUrl).then(function () {
+                return self.refreshPreview();
+            }).done();
         }
     },
 

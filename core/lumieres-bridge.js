@@ -271,5 +271,29 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
             path = this.convertBackendUrlToPath(path);
             return backend.get("lumieres").invoke("watch", path, Promise.master(local));
         }
+    },
+
+    registerPreview: {
+        value: function (name, url) {
+            return this.backend.get("preview").invoke("register", {name: name, url: url});
+        }
+    },
+
+    launchPreview: {
+        value: function (previewId) {
+            return this.backend.get("preview").invoke("launch", previewId);
+        }
+    },
+
+    refreshPreview: {
+        value: function (previewId) {
+            return this.backend.get("preview").invoke("refresh", previewId);
+        }
+    },
+
+    unregisterPreview: {
+        value: function (previewId) {
+            return this.backend.get("preview").invoke("unregister", previewId);
+        }
     }
 });

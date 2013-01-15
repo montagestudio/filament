@@ -64,6 +64,10 @@ exports.Main = Montage.create(Component, {
                     self.projectController.openRelatedFile(evt.detail);
                 });
 
+                window.addEventListener("beforeunload", function () {
+                    self.projectController.willCloseProject();
+                }, true);
+
                 self.application.addEventListener("menuAction", self, false);
 
             }).done();
