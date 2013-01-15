@@ -60,6 +60,11 @@ exports.Main = Montage.create(Component, {
                     self.projectController.didResignKey();
                 });
 
+                window.addEventListener("openRelatedFile", function (evt) {
+                    console.log("main: open related file", evt.detail)
+                    self.projectController.openRelatedFile(evt.detail);
+                });
+
                 self.application.addEventListener("menuAction", self, false);
 
             }).done();

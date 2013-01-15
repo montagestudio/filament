@@ -143,6 +143,14 @@ exports.ProjectController = Montage.create(Montage, {
         }
     },
 
+    openRelatedFile: {
+        value: function (url) {
+            if (/\.reel\/?$/.test(url)) {
+                this.openComponent(url.replace("file://localhost", "fs:/").replace(/\/$/, ""));
+            }
+        }
+    },
+
     deferredPlugins: {
         enumerable: false,
         value: null
