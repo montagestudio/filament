@@ -205,6 +205,9 @@ exports.ProjectController = Montage.create(Montage, {
                 dependencyLibraryPromises,
                 dependencyLibraryEntry;
 
+            // Add in components from the package being edited itself
+            dependencies.unshift({dependency: "", url: this.environmentBridge.convertBackendUrlToPath(this.packageUrl)});
+
             dependencyLibraryPromises = dependencies.map(function (dependency) {
 
                 return self.environmentBridge.componentsInPackage(dependency.url)
@@ -216,7 +219,16 @@ exports.ProjectController = Montage.create(Montage, {
 
                         if (componentUrls) {
                             dependencyLibraryEntry.libraryItems = componentUrls.map(function (componentUrl) {
-                                moduleId = componentUrl.replace(/\S+\/node_modules\//, "");
+                                if (/\/node_modules\//.test(componentUrl)) {
+                                    // It's a module inside a node_modules dependency
+                                    //TODO be able to handle dependencies from mappings?
+                                    moduleId = componentUrl.replace(/\S+\/node_modules\//, "");
+                                } else {
+                                    //It's a module that's part of the current package being edited
+                                    //TODO palette bootstrapping names the package of the app on the stage as "client"
+                                    // ...it probably shouldn't be so common a word, maybe random each time and reported back?
+                                    moduleId = componentUrl.replace(dependency.url + "/", "client/");
+                                }
                                 objectName = self._objectNameFromModuleId(moduleId);
                                 return self.libraryItemForModule(moduleId, objectName);
                             });
