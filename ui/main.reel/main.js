@@ -7,19 +7,7 @@ var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
 exports.Main = Montage.create(Component, {
 
-    componentEditor: {
-        value: null
-    },
-
     projectController: {
-        value: null
-    },
-
-    libraryItems: {
-        value: null
-    },
-
-    components: {
         value: null
     },
 
@@ -47,11 +35,11 @@ exports.Main = Montage.create(Component, {
             var self = this;
 
             this._bridgePromise.then(function (environmentBridge) {
-                self.projectController = ProjectController.create().initWithEnvironmentBridgeAndComponentEditor(environmentBridge, self.componentEditor);
+                var componentEditor = self.templateObjects.componentEditor;
+                self.projectController = ProjectController.create().initWithEnvironmentBridgeAndComponentEditor(environmentBridge, componentEditor);
                 self.projectController.addEventListener("canLoadProject", self, false);
                 self.projectController.addEventListener("didOpenPackage", self, false);
 
-                //TODO I'm not sure if the project controller should just observe this itself
                 window.addEventListener("didBecomeKey", function () {
                     self.projectController.didBecomeKey();
                 });
@@ -88,6 +76,7 @@ exports.Main = Montage.create(Component, {
     },
 
     handleDidOpenPackage: {
+        enumerable: false,
         value: function (evt) {
             this.addPropertyChangeListener("windowTitle", this, false);
 
@@ -98,18 +87,6 @@ exports.Main = Montage.create(Component, {
             app.addEventListener("addFile", this);
             app.addEventListener("installDependencies", this);
 
-            Object.defineBinding(this, "libraryItems", {
-                boundObject: this.projectController,
-                boundObjectPropertyPath: "libraryItems",
-                oneway: true
-            });
-
-            Object.defineBinding(this, "components", {
-                boundObject: this.projectController,
-                boundObjectPropertyPath: "components",
-                oneway: true
-            });
-
             // Update title
             // TODO this should be unnecessary as the packageUrl has been changed...
             this.needsDraw = true;
@@ -117,12 +94,14 @@ exports.Main = Montage.create(Component, {
     },
 
     handleOpenComponent: {
+        enumerable: false,
         value: function (evt) {
             this.projectController.openComponent("fs:/" + evt.detail.componentUrl);
         }
     },
 
     handleAddFile: {
+        enumerable: false,
         value: function (evt) {
             //TODO don't call addComponent until we know it's a component we want
             this.projectController.createComponent();
@@ -130,19 +109,21 @@ exports.Main = Montage.create(Component, {
     },
 
     handleInstallDependencies: {
+        enumerable: false,
         value: function () {
             this.projectController.installDependencies();
         }
     },
 
     handleSave: {
+        enumerable: false,
         value: function (evt) {
             this.projectController.save(evt.detail.url);
         }
     },
 
-
     handleChange: {
+        enumerable: false,
         value: function (notification) {
             if ("windowTitle" === notification.currentPropertyPath) {
                 this.needsDraw = true;
@@ -151,6 +132,7 @@ exports.Main = Montage.create(Component, {
     },
 
     handleMenuAction: {
+        enumerable: false,
         value: function (evt) {
             if ("newComponent" === evt.detail.identifier) {
                 this.projectController.createComponent();
@@ -178,10 +160,76 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    _palettesVisible: {
+        value: true
+    },
+
+    palettesVisible: {
+        get: function () {
+            return this._palettesVisible;
+        },
+        set: function (value) {
+            if (value === this._palettesVisible) {
+                return;
+            }
+
+            this._palettesVisible = value;
+            this.needsDraw = true;
+        }
+    },
+
+    handleTogglePaletteKeyPress: {
+        enumerable: false,
+        value: function (evt) {
+            this.palettesVisible = !this.palettesVisible;
+        }
+    },
+
+    handleExitEditorKeyPress: {
+        enumerable: false,
+        value: function (evt) {
+            this.editorComponent = null;
+            this.palettesVisible = true;
+            this._isUsingEditor = true;
+        }
+    },
+
+    _isUsingEditor: {
+        value: false
+    },
+
+    isUsingEditor: {
+        get: function () {
+            return this._isUsingEditor;
+        }
+    },
+
+    /**
+     The component to show in the slot that will edit the selected component
+     */
+    extendedEditorComponent: {
+        value: null
+    },
+
+    handleEnterEditor: {
+        enumerable: false,
+        value: function (event) {
+            this.extendedEditorComponent = event.detail.component;
+            this.palettesVisible = false;
+            this._isUsingEditor = true;
+        }
+    },
+
     draw: {
         value: function () {
             if (this.windowTitle) {
                 document.title = this.windowTitle;
+            }
+
+            if (this.palettesVisible) {
+                this.element.classList.remove("palettes-hidden");
+            } else {
+                this.element.classList.add("palettes-hidden");
             }
         }
     }

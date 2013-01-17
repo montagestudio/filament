@@ -10,8 +10,7 @@
         {
             "owner": {
                 "properties": {
-                    "element": {"#": "main"},
-                    "componentEditor": {"@": "componentEditor"}
+                    "element": {"#": "main"}
                 }
             },
 
@@ -21,17 +20,96 @@
                     "element": {"#": "packageExplorer"}
                 },
                 "bindings": {
-                    "components": {"<-": "@owner.components"}
+                    "components": {"<-": "@owner.projectController.components"}
+                }
+            },
+
+            "library": {
+                "prototype": "ui/library.reel",
+                "properties": {
+                    "element": {"#": "library"}
+                },
+                "bindings": {
+                    "prototypes": {"<->": "@owner.projectController.libraryItems"}
                 }
             },
 
             "componentEditor": {
-                "prototype": "component-editor/ui/main.reel",
+                "prototype": "ui/component-editor.reel",
                 "properties": {
                     "element": {"#": "componentEditor"}
+                }
+            },
+
+            "configurator": {
+                "prototype": "ui/configurator.reel",
+                "properties": {
+                    "element": {"#": "configurator"}
                 },
                 "bindings": {
-                    "libraryItems": {"<-": "@owner.libraryItems"}
+                    "selectedObjects": {"<->": "@componentEditor.selectedObjects"},
+                    "editingDocument": {"<-": "@owner.projectController.currentDocument"}
+                },
+                "listeners": [
+                    {
+                        "type": "enterEditor",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "togglePaletteKeyComposer": {
+                "prototype": "montage/ui/composer/key-composer",
+                "properties": {
+                    "keys": "shift+control+/",
+                    "identifier": "togglePalette",
+                    "component": {"@": "application"}
+                },
+                "listeners": [
+                    {
+                        "type": "keyPress",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "exitEditorKeyComposer": {
+                "prototype": "montage/ui/composer/key-composer",
+                "properties": {
+                    "keys": "escape",
+                    "identifier": "exitEditor",
+                    "component": {"@": "application"}
+                },
+                "listeners": [
+                    {
+                        "type": "keyPress",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "editorSlot": {
+                "prototype": "montage/ui/slot.reel",
+                "properties": {
+                    "element": {"#": "editorSlot"}
+                },
+                "bindings": {
+                    "content": {"<-": "@owner.extendedEditorComponent"}
+                }
+            },
+
+            "application": {
+                "prototype": "montage/ui/application"
+            },
+
+            "bindingJig": {
+                "prototype": "ui/binding-jig.reel",
+                "properties": {
+                    "element": {"#": "bindingJig"}
+                },
+                "bindings": {
+                    "editingDocument": {"<-": "@owner.projectController.currentDocument"},
+                    "selectedObjects": {"<-": "@componentEditor.selectedObjects"}
                 }
             }
 
@@ -43,10 +121,16 @@
 
     <div data-montage-id="main" class="Filament">
         <aside data-montage-id="packageExplorer"></aside>
-        <div class="Filament-view">
+        <aside data-montage-id="library"></aside>
+
+        <section class="Filament-view">
             <div class="Filament-tabs">Open Component Tabs</div>
             <div data-montage-id="componentEditor"></div>
-        </div>
+            <div data-montage-id="bindingJig"></div>
+        </section>
+
+        <aside data-montage-id="configurator"></aside>
+        <aside data-montage-id="editorSlot" class="editorSlot"></aside>
     </div>
 
 </body>

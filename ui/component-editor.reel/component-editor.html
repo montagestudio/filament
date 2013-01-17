@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+    <title>ComponentEditor</title>
+    <meta charset="utf-8">
+
+    <link href="component-editor.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "componentEditor"},
+                    "workbench": {"@": "workbench"}
+                },
+                "bindings": {
+                    "selectedObjects": {"<->": "@workbench.selectedObjects"}
+                }
+            },
+
+            "workbench": {
+                "prototype": "palette/ui/workbench.reel",
+                "properties": {
+                    "element": {"#": "workbench"}
+                }
+            },
+
+            "controls": {
+                "prototype": "./controls.reel",
+                "properties": {
+                    "element": {"#": "controls"}
+                }
+            }
+
+        }
+    </script>
+
+</head>
+<body>
+
+    <div data-montage-id="componentEditor" class="ComponentEditor">
+        <div data-montage-id="workbench"></div>
+        <div data-montage-id="controls"></div>
+    </div>
+
+</body>
+</html>

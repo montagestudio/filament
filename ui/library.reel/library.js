@@ -13,7 +13,7 @@ exports.Library = Montage.create(Component, {
     },
 
     didCreate: {
-        value: function() {
+        value: function () {
             this.prototypeController = ArrayController.create();
             Object.defineBinding(this.prototypeController, "content", {
                 boundObject: this,

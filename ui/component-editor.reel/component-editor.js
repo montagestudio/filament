@@ -3,9 +3,10 @@ var Montage = require("montage/core/core").Montage,
     Deserializer = require("montage/core/deserializer").Deserializer,
     MimeTypes = require("core/mime-types");
 
-exports.Main = Montage.create(Component, {
+exports.ComponentEditor = Montage.create(Component, {
 
     workbench: {
+        enumerable: false,
         value: null
     },
 
@@ -13,7 +14,8 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-    libraryItems: {
+    //TODO centralize selection into the editing document
+    selectedObjects: {
         value: null
     },
 
@@ -41,26 +43,15 @@ exports.Main = Montage.create(Component, {
 
     prepareForDraw: {
         value: function () {
-            this.addEventListener("addComponent", this, false);
+            this.application.addEventListener("addComponent", this, false);
 
             this.workbench.addEventListener("dragover", this, false);
             this.workbench.addEventListener("drop", this, false);
         }
     },
 
-    draw: {
-        value: function () {
-            if (this.palettesVisible) {
-                this.element.classList.remove("palettes-hidden");
-            } else {
-                this.element.classList.add("palettes-hidden");
-            }
-            //TODO indicate whether or not we have a currentProject open
-        }
-    },
-
     addComponent: {
-        value: function(prototypeEntry) {
+        value: function (prototypeEntry) {
             if (!this.editingDocument) {
                 throw new Error("Cannot add component: no editing document");
             }
@@ -87,6 +78,7 @@ exports.Main = Montage.create(Component, {
     },
 
     handleAddComponent: {
+        enumerable: false,
         value: function (evt) {
             if (!this.editingDocument) {
                 return;
@@ -97,7 +89,8 @@ exports.Main = Montage.create(Component, {
     },
 
     handleWorkbenchDragover: {
-        value: function(event) {
+        enumerable: false,
+        value: function (event) {
             if (event.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1) {
                 // allows us to drop
                 event.preventDefault();
@@ -108,73 +101,16 @@ exports.Main = Montage.create(Component, {
         }
     },
     handleWorkbenchDrop: {
-        value: function(event) {
-            var self = this;
-
-            // TODO: security issues?
-            var data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
+        enumerable: false,
+        value: function (event) {
+            var self = this,
+                // TODO: security issues?
+                data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
                 deserializer = Deserializer.create().initWithString(data, "dropped prototype object");
 
-            deserializer.deserialize(function(prototypeEntry) {
+            deserializer.deserialize(function (prototypeEntry) {
                 self.addComponent(prototypeEntry);
             });
-        }
-    },
-
-    handleTogglePaletteKeyPress: {
-        value: function (evt) {
-            this.palettesVisible = !this.palettesVisible;
-        }
-    },
-
-    _palettesVisible: {
-        value: true
-    },
-
-    palettesVisible: {
-        get: function () {
-            return this._palettesVisible;
-        },
-        set: function (value) {
-            if (value === this._palettesVisible) {
-                return;
-            }
-
-            this._palettesVisible = value;
-            this.needsDraw = true;
-        }
-    },
-
-    handleExitEditorKeyPress: {
-        value: function (evt) {
-            this.editorComponent = null;
-            this.palettesVisible = true;
-            this._isUsingEditor = true;
-        }
-    },
-
-    _isUsingEditor: {
-        value: false
-    },
-
-    isUsingEditor: {
-        get: function () {
-            return this._isUsingEditor;
-        }
-    },
-
-    /**
-        The component to show in the slot that will edit the selected component
-     */
-    extendedEditorComponent: {
-        value: null
-    },
-
-    handleEnterEditor: {
-        value: function (event) {
-            this.extendedEditorComponent = event.detail.component;
-            this.palettesVisible = false;
-            this._isUsingEditor = true;
         }
     }
 

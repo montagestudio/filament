@@ -18,7 +18,7 @@ var serializer = Serializer.create();
 exports.LibraryCell = Montage.create(Component, /** @lends module:"ui/library-cell.reel".LibraryCell# */ {
 
     prepareForDraw: {
-        value: function() {
+        value: function () {
             this._element.addEventListener("dragstart", this, true);
         }
     },
@@ -32,7 +32,7 @@ exports.LibraryCell = Montage.create(Component, /** @lends module:"ui/library-ce
     },
 
     captureDragstart: {
-        value: function(event) {
+        value: function (event) {
             event.dataTransfer.effectAllowed = 'all';
 
             // Although we could use "application/json" here, the stage is
@@ -45,8 +45,8 @@ exports.LibraryCell = Montage.create(Component, /** @lends module:"ui/library-ce
             var iconElement = this.icon.element;
             event.dataTransfer.setDragImage(
                 iconElement,
-                iconElement.width/2,
-                iconElement.height/2
+                iconElement.width / 2,
+                iconElement.height / 2
             );
         }
     },
