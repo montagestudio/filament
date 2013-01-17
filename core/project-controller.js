@@ -163,20 +163,39 @@ exports.ProjectController = Montage.create(Montage, {
     openComponent: {
         value: function (reelUrl, editor) {
 
+            var editingDocuments,
+                editingDocument,
+                docIndex,
+                self = this,
+                promisedDocument;
+
             if (!editor) {
-                return Promise.reject(new Error("Need a component editor to open the specified reel"));
+                promisedDocument = Promise.reject(new Error("Need a component editor to open the specified reel"));
+            } else {
+
+                if (this.currentDocument && reelUrl === this.currentDocument.reelUrl) {
+                    promisedDocument = Promise.resolve(this.currentDocument);
+                } else {
+
+                    editingDocuments = this.openDocumentsController.organizedObjects;
+                    docIndex = editingDocuments.map(function (doc) {
+                        return doc.reelUrl;
+                    }).indexOf(reelUrl);
+
+                    if (docIndex > -1) {
+                        this.currentDocument = editingDocument = editingDocuments[docIndex];
+                        promisedDocument = Promise.resolve(editingDocument);
+                    } else {
+                        promisedDocument = editor.load(reelUrl, this.packageUrl).then(function (editingDocument) {
+                            self.currentDocument = editingDocument;
+                            self.openDocumentsController.addObjects(editingDocument);
+                            return editingDocument;
+                        });
+                    }
+                }
             }
 
-            if (this.currentDocument && reelUrl === this.currentDocument.reelUrl) {
-                return Promise.fulfill(this.currentDocument);
-            }
-
-            var self = this;
-            return editor.load(reelUrl, this.packageUrl).then(function (editingDocument) {
-                self.currentDocument = editingDocument;
-                self.openDocumentsController.addObjects(editingDocument);
-                return editingDocument;
-            });
+            return promisedDocument;
         }
     },
 

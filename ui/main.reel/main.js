@@ -117,7 +117,7 @@ exports.Main = Montage.create(Component, {
             if (!editor) {
                 editor = ComponentEditor.create();
                 switchComponents[reelUrl] = editor;
-                this.componentEditorMap.set(editor, {reelUrl: reelUrl, hasDrawn: false});
+                this.componentEditorMap.set(editor, reelUrl);
             }
 
             //Trigger switching to the editor to the substitution
@@ -130,11 +130,22 @@ exports.Main = Montage.create(Component, {
         enumerable: false,
         value: function (slot, newContent) {
 
-            if (!newContent) {
+            var editor,
+                reelUrl;
+
+            if (!(newContent && (editor = newContent.controller) && (reelUrl = this.componentEditorMap.get(editor)))) {
+                // TODO inform projectController to show nothing and have no currentDocument
                 return;
             }
 
-            newContent.controller.addEventListener("firstDraw", this, false);
+            //TODO not rely on private API
+            if (editor._completedFirstDraw) {
+                this.projectController.openComponent(reelUrl, editor).done();
+            } else {
+                // We need to wait for this component to be useful before we try to load with it
+                //TODO push this along to the projectController? how knowledgeable should it be about components?
+                editor.addEventListener("firstDraw", this, false);
+            }
         }
     },
 
@@ -142,22 +153,11 @@ exports.Main = Montage.create(Component, {
         enumerable: false,
         value: function (evt) {
             var editor = evt.target,
-                editorEntry = this.componentEditorMap.get(editor),
-                reelUrl,
-                hasDrawn;
+                reelUrl = this.componentEditorMap.get(editor);
 
-            if (editorEntry) {
-                reelUrl = editorEntry.reelUrl;
-                hasDrawn = editorEntry.hasDrawn;
-
-                if (!hasDrawn) {
-                    this.projectController.openComponent(reelUrl, editor).then(function () {
-                        //TODO guard against using the same editor to open multiple times?
-                        editorEntry.hasDrawn = true;
-                    }).done();
-                }
-
-                evt.target.removeEventListener("firstDraw", this);
+            if (reelUrl) {
+                editor.removeEventListener("firstDraw", this);
+                this.projectController.openComponent(reelUrl, editor).done();
             }
 
         }
