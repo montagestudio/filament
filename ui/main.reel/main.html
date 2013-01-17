@@ -131,6 +131,19 @@
                 "prototype": "montage/ui/repetition.reel",
                 "properties": {
                     "element": {"#": "openComponentList"}
+                },
+                "bindings": {
+                    "contentController": {"<-": "@owner.projectController.openDocumentsController"}
+                }
+            },
+
+            "documentTab": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "documentTab"}
+                },
+                "bindings": {
+                    "value": {"<-": "@openComponentList.objectAtCurrentIteration.title"}
                 }
             }
 
@@ -146,7 +159,9 @@
         <aside data-montage-id="templateExplorer"></aside>
 
         <section class="Filament-view">
-            <div data-montage-id="openComponentList"></div>
+            <div data-montage-id="openComponentList">
+                <span data-montage-id="documentTab"></span>
+            </div>
             <div data-montage-id="componentEditorSubstitution" class="componentEditorSubstitution"></div>
             <div data-montage-id="bindingJig"></div>
         </section>
