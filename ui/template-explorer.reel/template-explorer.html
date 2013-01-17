@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="template-explorer.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "template-explorer"}
+            }
+        },
+
+        "templateObjectList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "templateObjectList"}
+            },
+            "bindings": {
+                "contentController": {"<-": "@owner.templateObjectsController"}
+            }
+        },
+
+        "templateObjectCell": {
+            "prototype": "./template-object-cell.reel",
+            "properties": {
+                "element": {"#": "templateObjectCell"}
+            },
+            "bindings": {
+                "templateObject": {"<-": "@templateObjectList.objectAtCurrentIteration"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="template-explorer" class="TemplateExplorer">
+        <h2 class="title">Template Explorer</h2>
+        <ul data-montage-id="templateObjectList" class="list" >
+            <li data-montage-id="templateObjectCell"></li>
+        </ul>
+    </div>
+</body>
+</html>

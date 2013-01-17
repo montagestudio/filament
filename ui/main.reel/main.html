@@ -34,6 +34,16 @@
                 }
             },
 
+            "templateExplorer": {
+                "prototype": "ui/template-explorer.reel",
+                "properties": {
+                    "element": {"#": "templateExplorer"}
+                },
+                "bindings": {
+                    "templateObjects": {"<-": "@owner.projectController.currentDocument.editingProxies"}
+                }
+            },
+
             "componentEditorSubstitution": {
                 "prototype": "montage/ui/substitution.reel",
                 "properties": {
@@ -133,6 +143,7 @@
     <div data-montage-id="main" class="Filament">
         <aside data-montage-id="packageExplorer"></aside>
         <aside data-montage-id="library"></aside>
+        <aside data-montage-id="templateExplorer"></aside>
 
         <section class="Filament-view">
             <div data-montage-id="openComponentList"></div>
