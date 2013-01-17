@@ -22,8 +22,8 @@ exports.ComponentEditor = Montage.create(Component, {
     load: {
         value: function (reelUrl, packageUrl) {
             var self = this,
-                stageObject,
-                descriptionPromise;
+                descriptionPromise,
+                stageObject;
 
             return this.workbench.load(reelUrl, packageUrl).then(function (editingDocument) {
                 self.editingDocument = editingDocument;

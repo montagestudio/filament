@@ -2,14 +2,15 @@ var Montage = require("montage/core/core").Montage,
     ComponentInfo = require("core/component-info.js").ComponentInfo,
     Promise = require("montage/core/promise").Promise,
     LibraryItem = require("core/library-item.js").LibraryItem,
-    Deserializer = require("montage/core/deserializer").Deserializer;
+    Deserializer = require("montage/core/deserializer").Deserializer,
+    ArrayController = require("montage/ui/controller/array-controller").ArrayController;
 
 exports.ProjectController = Montage.create(Montage, {
 
-    initWithEnvironmentBridgeAndComponentEditor: {
-        value: function (bridge, editor) {
+    initWithEnvironmentBridge: {
+        value: function (bridge) {
             this._environmentBridge = bridge;
-            this._componentEditor = editor;
+            this.openDocumentsController = ArrayController.create().initWithContent([]);
 
             this.setupMenuItems();
 
@@ -44,16 +45,6 @@ exports.ProjectController = Montage.create(Montage, {
     environmentBridge: {
         get: function () {
             return this._environmentBridge;
-        }
-    },
-
-    _componentEditor: {
-        value: null
-    },
-
-    componentEditor: {
-        get: function () {
-            return this._componentEditor;
         }
     },
 
@@ -170,15 +161,22 @@ exports.ProjectController = Montage.create(Montage, {
     },
 
     openComponent: {
-        value: function (reelUrl) {
-            var self = this;
-            // TODO if we already have this reelUrl open, switch to it,
-            // preserving the selectedObjects
-            this.componentEditor.workbench.selectedObjects = null;
-            this.componentEditor.load(reelUrl, this.packageUrl).then(function (editingDocument) {
-                self.currentDocument = editingDocument;
-            });
+        value: function (reelUrl, editor) {
 
+            if (!editor) {
+                return Promise.reject(new Error("Need a component editor to open the specified reel"));
+            }
+
+            if (this.currentDocument && reelUrl === this.currentDocument.reelUrl) {
+                return Promise.fulfill(this.currentDocument);
+            }
+
+            var self = this;
+            return editor.load(reelUrl, this.packageUrl).then(function (editingDocument) {
+                self.currentDocument = editingDocument;
+                self.openDocumentsController.addObjects(editingDocument);
+                return editingDocument;
+            });
         }
     },
 
@@ -188,6 +186,10 @@ exports.ProjectController = Montage.create(Montage, {
                 this.openComponent(url.replace("file://localhost", "fs:/").replace(/\/$/, ""));
             }
         }
+    },
+
+    openDocumentsController: {
+        value: null
     },
 
     deferredPlugins: {
@@ -324,7 +326,7 @@ exports.ProjectController = Montage.create(Montage, {
     },
 
     save: {
-        value: function (url) {
+        value: function () {
 
             if (!this.currentDocument) {
                 return;
@@ -376,7 +378,7 @@ exports.ProjectController = Montage.create(Montage, {
                 return self.environmentBridge.createApplication(appName, packageHome);
             }).then(function (applicationUrl) {
                 self.loadProject(applicationUrl);
-            }, function (fail) {
+            }, function () {
                 window.close();
             }).done();
         }
@@ -416,13 +418,13 @@ exports.ProjectController = Montage.create(Montage, {
     },
 
     didBecomeKey: {
-        value: function (evt) {
+        value: function () {
             this._windowIsKey = true;
         }
     },
 
     didResignKey: {
-        value: function (evt) {
+        value: function () {
             this._windowIsKey = false;
         }
     },

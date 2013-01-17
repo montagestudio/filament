@@ -34,10 +34,14 @@
                 }
             },
 
-            "componentEditor": {
-                "prototype": "ui/component-editor.reel",
+            "componentEditorSubstitution": {
+                "prototype": "montage/ui/substitution.reel",
                 "properties": {
-                    "element": {"#": "componentEditor"}
+                    "element": {"#": "componentEditorSubstitution"},
+                    "delegate": {"@": "owner"}
+                },
+                "bindings": {
+                    "switchValue": {"<-": "@owner.componentEditorReelUrl"}
                 }
             },
 
@@ -47,7 +51,7 @@
                     "element": {"#": "configurator"}
                 },
                 "bindings": {
-                    "selectedObjects": {"<->": "@componentEditor.selectedObjects"},
+                    "selectedObjects": {"<->": "@owner.projectController.currentDocument.selectedObjects"},
                     "editingDocument": {"<-": "@owner.projectController.currentDocument"}
                 },
                 "listeners": [
@@ -109,7 +113,14 @@
                 },
                 "bindings": {
                     "editingDocument": {"<-": "@owner.projectController.currentDocument"},
-                    "selectedObjects": {"<-": "@componentEditor.selectedObjects"}
+                    "selectedObjects": {"<-": "@owner.projectController.currentDocument.selectedObjects"}
+                }
+            },
+
+            "openComponentList": {
+                "prototype": "montage/ui/repetition.reel",
+                "properties": {
+                    "element": {"#": "openComponentList"}
                 }
             }
 
@@ -124,8 +135,8 @@
         <aside data-montage-id="library"></aside>
 
         <section class="Filament-view">
-            <div class="Filament-tabs">Open Component Tabs</div>
-            <div data-montage-id="componentEditor"></div>
+            <div data-montage-id="openComponentList"></div>
+            <div data-montage-id="componentEditorSubstitution" class="componentEditorSubstitution"></div>
             <div data-montage-id="bindingJig"></div>
         </section>
 

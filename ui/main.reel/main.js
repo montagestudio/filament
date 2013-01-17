@@ -1,7 +1,9 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
-    ProjectController = require("core/project-controller.js").ProjectController;
+    ProjectController = require("core/project-controller.js").ProjectController,
+    ComponentEditor = require("ui/component-editor.reel").ComponentEditor;
+    WeakMap = require("montage/collections/weak-map");
 
 var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
@@ -34,9 +36,10 @@ exports.Main = Montage.create(Component, {
 
             var self = this;
 
+            this.componentEditorMap = new WeakMap();
+
             this._bridgePromise.then(function (environmentBridge) {
-                var componentEditor = self.templateObjects.componentEditor;
-                self.projectController = ProjectController.create().initWithEnvironmentBridgeAndComponentEditor(environmentBridge, componentEditor);
+                self.projectController = ProjectController.create().initWithEnvironmentBridge(environmentBridge);
                 self.projectController.addEventListener("canLoadProject", self, false);
                 self.projectController.addEventListener("didOpenPackage", self, false);
 
@@ -77,7 +80,7 @@ exports.Main = Montage.create(Component, {
 
     handleDidOpenPackage: {
         enumerable: false,
-        value: function (evt) {
+        value: function () {
             this.addPropertyChangeListener("windowTitle", this, false);
 
             document.addEventListener("save", this, false);
@@ -93,16 +96,76 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    componentEditorReelUrl: {
+        value: null
+    },
+
+    componentEditorMap: {
+        enumerable: false,
+        value: null
+    },
+
     handleOpenComponent: {
         enumerable: false,
         value: function (evt) {
-            this.projectController.openComponent("fs:/" + evt.detail.componentUrl);
+
+            var substitution = this.templateObjects.componentEditorSubstitution,
+                switchComponents = substitution.switchComponents,
+                reelUrl = "fs:/" + evt.detail.componentUrl,
+                editor = switchComponents[reelUrl];
+
+            if (!editor) {
+                editor = ComponentEditor.create();
+                switchComponents[reelUrl] = editor;
+                this.componentEditorMap.set(editor, {reelUrl: reelUrl, hasDrawn: false});
+            }
+
+            //Trigger switching to the editor to the substitution
+            //TODO do this elsewhere offscreen and then have the substitution adopt the realized editor
+            this.componentEditorReelUrl = reelUrl;
+        }
+    },
+
+    slotDidSwitchContent: {
+        enumerable: false,
+        value: function (slot, newContent) {
+
+            if (!newContent) {
+                return;
+            }
+
+            newContent.controller.addEventListener("firstDraw", this, false);
+        }
+    },
+
+    handleFirstDraw: {
+        enumerable: false,
+        value: function (evt) {
+            var editor = evt.target,
+                editorEntry = this.componentEditorMap.get(editor),
+                reelUrl,
+                hasDrawn;
+
+            if (editorEntry) {
+                reelUrl = editorEntry.reelUrl;
+                hasDrawn = editorEntry.hasDrawn;
+
+                if (!hasDrawn) {
+                    this.projectController.openComponent(reelUrl, editor).then(function () {
+                        //TODO guard against using the same editor to open multiple times?
+                        editorEntry.hasDrawn = true;
+                    }).done();
+                }
+
+                evt.target.removeEventListener("firstDraw", this);
+            }
+
         }
     },
 
     handleAddFile: {
         enumerable: false,
-        value: function (evt) {
+        value: function () {
             //TODO don't call addComponent until we know it's a component we want
             this.projectController.createComponent();
         }
@@ -180,14 +243,14 @@ exports.Main = Montage.create(Component, {
 
     handleTogglePaletteKeyPress: {
         enumerable: false,
-        value: function (evt) {
+        value: function () {
             this.palettesVisible = !this.palettesVisible;
         }
     },
 
     handleExitEditorKeyPress: {
         enumerable: false,
-        value: function (evt) {
+        value: function () {
             this.editorComponent = null;
             this.palettesVisible = true;
             this._isUsingEditor = true;
