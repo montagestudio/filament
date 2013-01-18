@@ -10,7 +10,8 @@
         {
             "owner": {
                 "properties": {
-                    "element": {"#": "main"}
+                    "element": {"#": "main"},
+                    "componentEditorArea": {"#": "componentEditorArea"}
                 }
             },
 
@@ -31,7 +32,13 @@
                 },
                 "bindings": {
                     "prototypes": {"<->": "@owner.projectController.libraryItems"}
-                }
+                },
+                "listeners": [
+                    {
+                        "type": "addComponent",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             },
 
             "templateExplorer": {
@@ -41,17 +48,6 @@
                 },
                 "bindings": {
                     "templateObjects": {"<-": "@owner.projectController.currentDocument.editingProxies"}
-                }
-            },
-
-            "componentEditorSubstitution": {
-                "prototype": "montage/ui/substitution.reel",
-                "properties": {
-                    "element": {"#": "componentEditorSubstitution"},
-                    "delegate": {"@": "owner"}
-                },
-                "bindings": {
-                    "switchValue": {"<-": "@owner.componentEditorReelUrl"}
                 }
             },
 
@@ -162,7 +158,9 @@
             <div data-montage-id="openComponentList">
                 <span data-montage-id="documentTab"></span>
             </div>
-            <div data-montage-id="componentEditorSubstitution" class="componentEditorSubstitution"></div>
+
+            <div data-montage-id="componentEditorArea" class="componentEditorArea"></div>
+
             <div data-montage-id="bindingJig"></div>
         </section>
 

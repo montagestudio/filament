@@ -14,6 +14,10 @@ exports.ComponentEditor = Montage.create(Component, {
         value: null
     },
 
+    reelUrl: {
+        value: null
+    },
+
     //TODO centralize selection into the editing document
     selectedObjects: {
         value: null
@@ -24,6 +28,12 @@ exports.ComponentEditor = Montage.create(Component, {
             var self = this,
                 descriptionPromise,
                 stageObject;
+
+            Object.defineBinding(self, "reelUrl", {
+                boundObject: self,
+                boundObjectPropertyPath: "editingDocument.reelUrl",
+                oneway: true
+            });
 
             return this.workbench.load(reelUrl, packageUrl).then(function (editingDocument) {
                 self.editingDocument = editingDocument;
@@ -43,8 +53,6 @@ exports.ComponentEditor = Montage.create(Component, {
 
     prepareForDraw: {
         value: function () {
-            this.application.addEventListener("addComponent", this, false);
-
             this.workbench.addEventListener("dragover", this, false);
             this.workbench.addEventListener("drop", this, false);
         }
@@ -74,17 +82,6 @@ exports.ComponentEditor = Montage.create(Component, {
                     prototypeEntry.postProcess(proxy, editingDocument);
                 }
             }).done();
-        }
-    },
-
-    handleAddComponent: {
-        enumerable: false,
-        value: function (evt) {
-            if (!this.editingDocument) {
-                return;
-            }
-
-            this.addComponent(evt.detail.prototypeObject);
         }
     },
 

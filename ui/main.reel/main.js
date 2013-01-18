@@ -2,14 +2,18 @@ var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
     ProjectController = require("core/project-controller.js").ProjectController,
-    ComponentEditor = require("ui/component-editor.reel").ComponentEditor;
-    WeakMap = require("montage/collections/weak-map");
+    ComponentEditor = require("ui/component-editor.reel").ComponentEditor,
+    List = require("montage/collections/list");
 
 var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
 exports.Main = Montage.create(Component, {
 
     projectController: {
+        value: null
+    },
+
+    componentEditorArea: {
         value: null
     },
 
@@ -36,7 +40,9 @@ exports.Main = Montage.create(Component, {
 
             var self = this;
 
-            this.componentEditorMap = new WeakMap();
+            this.reelLoadQueue = new List();
+            this.componentEditorMap = {};
+            this.editorsToInsert = [];
 
             this._bridgePromise.then(function (environmentBridge) {
                 self.projectController = ProjectController.create().initWithEnvironmentBridge(environmentBridge);
@@ -96,7 +102,18 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    componentEditorReelUrl: {
+    handleAddComponent: {
+        value: function (evt) {
+            var editor;
+
+            if (this.currentReelUrl && (editor = this.componentEditorMap[this.currentReelUrl])) {
+                editor.addComponent(evt.detail.prototypeObject);
+            }
+        }
+    },
+
+    reelLoadQueue: {
+        enumerable: false,
         value: null
     },
 
@@ -105,47 +122,57 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-    handleOpenComponent: {
+    editorsToInsert: {
         enumerable: false,
-        value: function (evt) {
-
-            var substitution = this.templateObjects.componentEditorSubstitution,
-                switchComponents = substitution.switchComponents,
-                reelUrl = "fs:/" + evt.detail.componentUrl,
-                editor = switchComponents[reelUrl];
-
-            if (!editor) {
-                editor = ComponentEditor.create();
-                switchComponents[reelUrl] = editor;
-                this.componentEditorMap.set(editor, reelUrl);
-            }
-
-            //Trigger switching to the editor to the substitution
-            //TODO do this elsewhere offscreen and then have the substitution adopt the realized editor
-            this.componentEditorReelUrl = reelUrl;
-        }
+        value: null
     },
 
-    slotDidSwitchContent: {
+    _currentReelUrl: {
+        value: null
+    },
+
+    currentReelUrl: {
         enumerable: false,
-        value: function (slot, newContent) {
-
-            var editor,
-                reelUrl;
-
-            if (!(newContent && (editor = newContent.controller) && (reelUrl = this.componentEditorMap.get(editor)))) {
-                // TODO inform projectController to show nothing and have no currentDocument
+        get: function () {
+            return this._currentReelUrl;
+        },
+        set: function (value) {
+            if (value === this._currentReelUrl) {
                 return;
             }
 
-            //TODO not rely on private API
-            if (editor._completedFirstDraw) {
-                this.projectController.openComponent(reelUrl, editor).done();
-            } else {
-                // We need to wait for this component to be useful before we try to load with it
-                //TODO push this along to the projectController? how knowledgeable should it be about components?
-                editor.addEventListener("firstDraw", this, false);
+            this._currentReelUrl = value;
+            this.needsDraw = true;
+        }
+    },
+
+    handleOpenComponent: {
+        enumerable: false,
+        value: function (evt) {
+            var reelUrl = "fs:/" + evt.detail.componentUrl,
+                editor,
+                self;
+
+            this.currentReelUrl = reelUrl;
+
+            if (this.currentEditor && reelUrl === this.currentEditor.reelUrl) {
+                return;
             }
+
+            editor = this.componentEditorMap[reelUrl];
+
+            if (editor) {
+                self = this;
+                this.projectController.openComponent(reelUrl, editor).done();
+            } else if (!this.reelLoadQueue.has(reelUrl)) {
+                this.reelLoadQueue.push(reelUrl);
+
+                editor = ComponentEditor.create();
+                this.editorsToInsert.push(editor);
+                editor.addEventListener("firstDraw", this, false);
+                this.needsDraw = true;
+            }
+
         }
     },
 
@@ -153,13 +180,11 @@ exports.Main = Montage.create(Component, {
         enumerable: false,
         value: function (evt) {
             var editor = evt.target,
-                reelUrl = this.componentEditorMap.get(editor);
+                reelUrl = this.reelLoadQueue.pop();
 
-            if (reelUrl) {
-                editor.removeEventListener("firstDraw", this);
-                this.projectController.openComponent(reelUrl, editor).done();
-            }
-
+            editor.removeEventListener("firstDraw", this, false);
+            this.componentEditorMap[reelUrl] = editor;
+            this.projectController.openComponent(reelUrl, editor).done();
         }
     },
 
@@ -294,6 +319,41 @@ exports.Main = Montage.create(Component, {
             } else {
                 this.element.classList.add("palettes-hidden");
             }
+
+            var editorArea,
+                element,
+                self,
+                reelUrls,
+                editor;
+
+            if (this.editorsToInsert.length) {
+                editorArea = this.componentEditorArea;
+
+                //TODO do this in a fragment if possible
+                this.editorsToInsert.forEach(function (editor) {
+                    element = document.createElement("div");
+                    element.classList.add("standby");
+                    editor.element = element;
+                    editorArea.appendChild(element);
+                    editor.attachToParentComponent();
+                    editor.needsDraw = true;
+                });
+                this.editorsToInsert = [];
+            }
+
+            //TODO optimize this entire draw method
+            self = this;
+            reelUrls = Object.keys(this.componentEditorMap);
+
+            reelUrls.forEach(function (reelUrl) {
+                editor = self.componentEditorMap[reelUrl];
+
+                if (editor.element && reelUrl === self.currentReelUrl) {
+                    editor.element.classList.remove("standby");
+                } else if (editor.element) {
+                    editor.element.classList.add("standby");
+                }
+            });
         }
     }
 });

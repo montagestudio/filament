@@ -17,12 +17,20 @@
     background: hsl(0,0%,80%);
 }
 
-.componentEditorSubstitution {
+.componentEditorArea {
     -webkit-flex: 1 1 auto;
     display: -webkit-flex;
     -webkit-flex-direction: column;
     background-color: hsl(0,0%,30%);
     position: relative;
+}
+
+.componentEditorArea .ComponentEditor {
+    z-index: 10;
+}
+
+.componentEditorArea .ComponentEditor.standby {
+    z-index: 0;
 }
 
 /* States */
