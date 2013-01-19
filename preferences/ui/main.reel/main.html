@@ -8,10 +8,24 @@
 
     <script type="text/montage-serialization">
         {
+            "localizer": {
+                "object": "montage/core/localizer[defaultLocalizer]"
+            },
+
             "owner": {
                 "properties": {
                     "element": {"#": "main"},
                     "httpportTextField": {"@": "httpport"}
+                }
+            },
+
+            "previewPortLabel": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "previewPortLabel"}
+                },
+                "localizations": {
+                    "value": {"key": "preview_port"}
                 }
             },
 
@@ -36,7 +50,7 @@
 
     <div data-montage-id="main" class="main">
         <div class="form-stacked">
-            <label for="httpport">Preview Port</label>
+            <label for="httpport" data-montage-id="previewPortLabel">Preview Port</label>
             <input type="text" data-montage-id="httpport" required value="" pattern="^[1-9]\d{3,}$"/>
         </div>
     </div>
