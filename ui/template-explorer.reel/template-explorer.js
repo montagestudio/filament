@@ -4,8 +4,7 @@
     @requires montage/ui/component
 */
 var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
-    ArrayController = require("montage/ui/controller/array-controller").ArrayController;
+    Component = require("montage/ui/component").Component;
 
 /**
     Description TODO
@@ -18,20 +17,12 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         value: null
     },
 
-    templateObjectsController: {
+    selectedObjects: {
         value: null
     },
 
-    didCreate: {
-        value: function () {
-            //TODO share an arraycontroller so selections are updated in sync with editingDocument
-            this.templateObjectsController = ArrayController.create();
-            Object.defineBinding(this.templateObjectsController, "content", {
-                boundObject: this,
-                boundObjectPropertyPath: "templateObjects",
-                oneway: true
-            });
-        }
+    templateObjectsController: {
+        value: null
     }
 
 });

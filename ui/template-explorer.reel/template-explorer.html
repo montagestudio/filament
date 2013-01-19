@@ -7,7 +7,16 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "template-explorer"}
+                "element": {"#": "template-explorer"},
+                "templateObjectsController": {"@": "templateObjectsController"}
+            }
+        },
+
+        "templateObjectsController": {
+            "prototype": "montage/ui/controller/array-controller",
+            "bindings": {
+                "content": {"<-": "@owner.templateObjects"},
+                "selectedObjects": {"<->": "@owner.selectedObjects"}
             }
         },
 
