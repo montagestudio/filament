@@ -30,7 +30,7 @@ exports.Configurator = Montage.create(Component, {
         }
     },
 
-    selectedObjects: {
+    editingDocument: {
         value: null
     },
 
