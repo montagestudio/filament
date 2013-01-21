@@ -8,6 +8,12 @@
                     "files": {
                         "messages.json": null
                     }
+                },
+                "en-x-test": {
+                    "directory": true,
+                    "files": {
+                        "messages.js": null
+                    }
                 }
             }
         }
