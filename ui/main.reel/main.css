@@ -41,7 +41,7 @@
 .openComponentTab:active,
 .openComponentTab:focus,
 .openComponentTab.selected {
-    color: hsl(0,0%,50%);
+    color: hsl(0,0%,60%);
     background: hsl(0,0%,30%);
     border-color: hsl(0,0%,30%);
 }
@@ -57,12 +57,8 @@
     position: relative;
 }
 
-.componentEditorArea .ComponentEditor {
-    z-index: 10;
-}
-
 .componentEditorArea .ComponentEditor.standby {
-    z-index: 0;
+    display: none;
 }
 
 /* States ----------------------- */
