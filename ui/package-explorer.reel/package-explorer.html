@@ -66,11 +66,13 @@
 
     <div data-montage-id="package-explorer" class="PackageExplorer">
         <h2 class="Library-title">Package Explorer</h2>
-        <ul data-montage-id="components-list">
+        <menu class="PackageExplorer-menu">
+            <button data-montage-id="add-file-button" class="PackageExplorer-menu-item">Add Component…</button>
+            <button data-montage-id="install-dependencies-button" class="PackageExplorer-menu-item">Install Dependencies</button>
+        </menu>
+        <ul data-montage-id="components-list" class="PackageExplorer-list">
             <li data-montage-id="component-cell"></li>
         </ul>
-        <button data-montage-id="add-file-button">Add Component…</button>
-        <button data-montage-id="install-dependencies-button">Install Dependencies</button>
     </div>
 
 </body>
