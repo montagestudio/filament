@@ -1,9 +1,4 @@
 
-.ComponentCell {    
-    font-size: 14px;
-	background: hsl(0,0%,85%);
-}
-
 /* Button --------------------------------- */
 
 .ComponentCell .ComponentCell-button {
@@ -13,7 +8,9 @@
 	border: none;
     border-top: 1px solid hsla(0,0%,100%,.5);
     border-bottom: 1px solid hsla(0,0%,0%,.1);
-	background: inherit;
+	font-size: 14px;
+	color: hsl(0,0%,50%);
+	background: hsl(0,0%,85%);
 	
 	/* Resets */
 	text-align: left;

@@ -1,3 +1,25 @@
+
+.TemplateObjectCell {
+	-webkit-appearance: none;
+	width: 100%;
+	padding: 10px;
+	border: none;
+    border-top: 1px solid hsla(0,0%,100%,.5);
+    border-bottom: 1px solid hsla(0,0%,0%,.1);
+	font-size: 14px;
+	color: hsl(0,0%,50%);
+	background: hsl(0,0%,85%);
+	cursor: pointer;
+}
+
+.TemplateObjectCell:hover {
+	background: hsl(0,0%,90%);
+}
+
+.TemplateObjectCell:active,
+.TemplateObjectCell:focus,
 .TemplateObjectCell.selected {
-    background-color: hsl(210,56%,65%);
+    color: hsl(0,0%,30%);
+    border-color: transparent;
+	background: hsl(0,0%,80%);
 }
