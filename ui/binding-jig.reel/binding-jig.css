@@ -1,3 +1,30 @@
 .BindingJig {
+    font-size: 12px;
+    color: hsl(0,0%,60%);
+}
 
+.BindingJig-section {
+    display: -webkit-flex;
+    -webkit-align-items: center;
+    margin: 10px;
+}
+
+.BindingJig-sourceObject {
+    font-size: 14px;
+    color: hsl(0,0%,20%);
+    margin-left: 5px;
+    border-bottom: 1px dashed hsla(0,0%,0%,.2);
+}
+
+.BindingJig-input {
+    -webkit-flex: 1;
+    margin-left: 5px;
+}
+
+.BindingJig-button {
+    margin: 0 10px 0 5px;
+}
+
+.BindingJig-checkbox {
+    margin-left: 5px;
 }
