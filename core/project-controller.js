@@ -12,6 +12,8 @@ exports.ProjectController = Montage.create(Montage, {
             this._environmentBridge = bridge;
             this.openDocumentsController = ArrayController.create().initWithContent([]);
 
+            this.openDocumentsController.addPropertyChangeListener("selectedObjects", this);
+
             this.setupMenuItems();
 
             var self = this,
@@ -169,40 +171,43 @@ exports.ProjectController = Montage.create(Montage, {
                 self = this,
                 promisedDocument;
 
-            if (!editor) {
-                promisedDocument = Promise.reject(new Error("Need a component editor to open the specified reel"));
+            if (this.currentDocument && reelUrl === this.currentDocument.reelUrl) {
+                promisedDocument = Promise.resolve(this.currentDocument);
             } else {
 
-                if (this.currentDocument && reelUrl === this.currentDocument.reelUrl) {
-                    promisedDocument = Promise.resolve(this.currentDocument);
+                editingDocuments = this.openDocumentsController.organizedObjects;
+                docIndex = editingDocuments.map(function (doc) {
+                    return doc.reelUrl;
+                }).indexOf(reelUrl);
+
+                if (docIndex > -1) {
+                    this.currentDocument = editingDocument = editingDocuments[docIndex];
+                    self.openDocumentsController.selectedObjects = [editingDocument];
+                    promisedDocument = Promise.resolve(editingDocument);
                 } else {
-
-                    editingDocuments = this.openDocumentsController.organizedObjects;
-                    docIndex = editingDocuments.map(function (doc) {
-                        return doc.reelUrl;
-                    }).indexOf(reelUrl);
-
-                    if (docIndex > -1) {
-                        this.currentDocument = editingDocument = editingDocuments[docIndex];
-                        promisedDocument = Promise.resolve(editingDocument);
-                    } else {
-                        promisedDocument = editor.load(reelUrl, this.packageUrl).then(function (editingDocument) {
-                            self.currentDocument = editingDocument;
-                            self.openDocumentsController.addObjects(editingDocument);
-                            return editingDocument;
-                        });
-                    }
+                    promisedDocument = editor.load(reelUrl, this.packageUrl).then(function (editingDocument) {
+                        self.currentDocument = editingDocument;
+                        self.openDocumentsController.addObjects(editingDocument);
+                        self.openDocumentsController.selectedObjects = [editingDocument];
+                        return editingDocument;
+                    });
                 }
+
             }
 
             return promisedDocument;
         }
     },
 
-    openRelatedFile: {
-        value: function (url) {
-            if (/\.reel\/?$/.test(url)) {
-                this.openComponent(url.replace("file://localhost", "fs:/").replace(/\/$/, ""));
+    handleChange: {
+        value: function (notification) {
+            if (notification.target === this.openDocumentsController && "selectedObjects" === notification.currentPropertyPath) {
+                if (this.openDocumentsController.selectedObjects && this.openDocumentsController.selectedObjects.length > 0) {
+                    var reelUrl = this.openDocumentsController.selectedObjects[0].reelUrl;
+                    if (reelUrl !== this.currentDocument.reelUrl) {
+                        this.openComponent(reelUrl).done();
+                    }
+                }
             }
         }
     },

@@ -58,7 +58,11 @@ exports.Main = Montage.create(Component, {
                 });
 
                 window.addEventListener("openRelatedFile", function (evt) {
-                    self.projectController.openRelatedFile(evt.detail);
+                    var url = evt.detail;
+
+                    if (/\.reel\/?$/.test(url)) {
+                        self.openComponent(url.replace("file://localhost", "fs:/").replace(/\/$/, ""));
+                    }
                 });
 
                 window.addEventListener("beforeunload", function () {
@@ -96,6 +100,8 @@ exports.Main = Montage.create(Component, {
             app.addEventListener("addFile", this);
             app.addEventListener("installDependencies", this);
 
+
+
             // Update title
             // TODO this should be unnecessary as the packageUrl has been changed...
             this.needsDraw = true;
@@ -104,9 +110,10 @@ exports.Main = Montage.create(Component, {
 
     handleAddComponent: {
         value: function (evt) {
-            var editor;
+            var editor,
+                currentReelUrl = this.projectController.getProperty("currentDocument.reelUrl");
 
-            if (this.currentReelUrl && (editor = this.componentEditorMap[this.currentReelUrl])) {
+            if (currentReelUrl && (editor = this.componentEditorMap[currentReelUrl])) {
                 editor.addComponent(evt.detail.prototypeObject);
             }
         }
@@ -127,37 +134,18 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-    _currentReelUrl: {
-        value: null
-    },
-
-    currentReelUrl: {
-        enumerable: false,
-        get: function () {
-            return this._currentReelUrl;
-        },
-        set: function (value) {
-            if (value === this._currentReelUrl) {
-                return;
-            }
-
-            this._currentReelUrl = value;
-            this.needsDraw = true;
+    handleOpenComponent: {
+        value: function (evt) {
+            var reelUrl = "fs:/" + evt.detail.componentUrl;
+            this.openComponent(reelUrl);
         }
     },
 
-    handleOpenComponent: {
+    openComponent: {
         enumerable: false,
-        value: function (evt) {
-            var reelUrl = "fs:/" + evt.detail.componentUrl,
-                editor,
+        value: function (reelUrl) {
+            var editor,
                 self;
-
-            this.currentReelUrl = reelUrl;
-
-            if (this.currentEditor && reelUrl === this.currentEditor.reelUrl) {
-                return;
-            }
 
             editor = this.componentEditorMap[reelUrl];
 
@@ -324,7 +312,8 @@ exports.Main = Montage.create(Component, {
                 element,
                 self,
                 reelUrls,
-                editor;
+                editor,
+                currentReelUrl;
 
             if (this.editorsToInsert.length) {
                 editorArea = this.componentEditorArea;
@@ -344,11 +333,12 @@ exports.Main = Montage.create(Component, {
             //TODO optimize this entire draw method
             self = this;
             reelUrls = Object.keys(this.componentEditorMap);
+            currentReelUrl = this.projectController.getProperty("currentDocument.reelUrl");
 
             reelUrls.forEach(function (reelUrl) {
                 editor = self.componentEditorMap[reelUrl];
 
-                if (editor.element && reelUrl === self.currentReelUrl) {
+                if (editor.element && reelUrl === currentReelUrl) {
                     editor.element.classList.remove("standby");
                 } else if (editor.element) {
                     editor.element.classList.add("standby");
