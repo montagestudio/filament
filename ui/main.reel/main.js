@@ -333,7 +333,7 @@ exports.Main = Montage.create(Component, {
             //TODO optimize this entire draw method
             self = this;
             reelUrls = Object.keys(this.componentEditorMap);
-            currentReelUrl = this.projectController.getProperty("currentDocument.reelUrl");
+            currentReelUrl = this.getProperty("projectController.currentDocument.reelUrl");
 
             reelUrls.forEach(function (reelUrl) {
                 editor = self.componentEditorMap[reelUrl];
