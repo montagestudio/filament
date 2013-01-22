@@ -43,8 +43,8 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         get: function () {
             var deferredPrefs = Promise.defer();
 
-            lumieres.getUserPreferences(function (success, result) {
-                if (success) {
+            lumieres.getUserPreferences(function (error, result) {
+                if (!error) {
                     deferredPrefs.resolve(result);
                 } else {
                     deferredPrefs.reject();
@@ -165,8 +165,8 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         value: function (options) {
             var deferredSave = Promise.defer();
 
-            lumieres.saveFileDialog(options, function (success, file) {
-                if (success) {
+            lumieres.saveFileDialog(options, function (error, file) {
+                if (!error) {
                     var destination = file.replace("file://localhost", "");
                     deferredSave.resolve("fs:/" + destination);
                 } else {
