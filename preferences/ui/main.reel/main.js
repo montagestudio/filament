@@ -19,8 +19,8 @@ exports.Main = Montage.create(Component, {
         value: function() {
             if (lumieres !== undefined && lumieres.getUserPreferences) {
                 var thisRef = this;
-                lumieres.getUserPreferences(function(success, result) {
-                    if (success) {
+                lumieres.getUserPreferences(function(error, result) {
+                    if (!error) {
                         thisRef.userPreferences = result;
                     }
                 });
