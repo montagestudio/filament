@@ -39,6 +39,33 @@
                 }
             },
 
+            "localeLabel": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "localeLabel"}
+                },
+                "localizations": {
+                    "value": {"key": "language"}
+                }
+            },
+
+            "locale": {
+                "prototype": "preferences/ui/locale-switcher.reel",
+                "properties": {
+                    "element": {"#": "locale"}
+                }
+            },
+
+            "restartLabel": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "restartLabel"}
+                },
+                "localizations": {
+                    "value": {"key": "please_restart"}
+                }
+            },
+
             "application": {
                 "prototype": "montage/ui/application"
             }
@@ -52,6 +79,10 @@
         <div class="form-stacked">
             <label for="httpport" data-montage-id="previewPortLabel">Preview Port</label>
             <input type="text" data-montage-id="httpport" required value="" pattern="^[1-9]\d{3,}$"/>
+
+            <label for="locale" data-montage-id="localeLabel">Language</label>
+            <div data-montage-id="locale"></div>
+            <aside data-montage-id="restartLabel">Please restart for this change to take effect</aside>
         </div>
     </div>
 

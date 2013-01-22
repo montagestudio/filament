@@ -1,4 +1,7 @@
 {
+    "en": "English",
+    "en-x-test": "English (Test)",
+
     "package_explorer": {
         "message": "Package Explorer",
         "description": "Title for a pane to show all items in the current package",
@@ -130,6 +133,20 @@
         "description": "Title for the projects the user has most recently worked on",
         "locations": [
             "welcome/ui/main.reel/main.html"
+        ]
+    },
+    "language": {
+        "message": "Language",
+        "description": "Label for the select box that lets the user change language",
+        "locations": [
+            "preferences/ui/main.reel/main.html"
+        ]
+    },
+    "please_restart": {
+        "message": "Please restart for this change to take effect",
+        "description": "Notice to restart the app",
+        "locations": [
+            "preferences/ui/main.reel/main.html"
         ]
     }
 }
