@@ -14,6 +14,25 @@
                 }
             },
 
+            "packageExplorerLabel": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "packageExplorerLabel"}
+                },
+                "localizations": {
+                    "value": {"key": "package_explorer"}
+                }
+            },
+            "addComponentLabel": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "addComponentLabel"}
+                },
+                "localizations": {
+                    "value": {"key": "add_component"}
+                }
+            },
+
             "componentsList": {
                 "prototype": "montage/ui/repetition.reel",
                 "properties": {
@@ -39,6 +58,9 @@
                 "properties": {
                     "element": {"#": "add-file-button"}
                 },
+                "localizations": {
+                    "label": {"key": "add_component"}
+                },
                 "listeners": [
                     {
                         "type": "action",
@@ -50,6 +72,9 @@
                 "prototype": "montage/ui/button.reel",
                 "properties": {
                     "element": {"#": "install-dependencies-button"}
+                },
+                "localizations": {
+                    "label": {"key": "install_dependencies"}
                 },
                 "listeners": [
                     {
@@ -65,7 +90,7 @@
 <body>
 
     <div data-montage-id="package-explorer" class="PackageExplorer">
-        <h2 class="Library-title">Package Explorer</h2>
+        <h2 class="Library-title" data-montage-id="packageExplorerLabel">Package Explorer</h2>
         <menu class="PackageExplorer-menu">
             <button data-montage-id="add-file-button" class="PackageExplorer-menu-item">Add Component…</button>
             <button data-montage-id="install-dependencies-button" class="PackageExplorer-menu-item">Install Dependencies</button>

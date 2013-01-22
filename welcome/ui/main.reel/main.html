@@ -8,6 +8,10 @@
 
     <script type="text/montage-serialization">
         {
+            "localizer": {
+                "object": "montage/core/localizer[defaultLocalizer]"
+            },
+
             "owner": {
                 "properties": {
                     "element": {"#": "main"}
@@ -25,6 +29,9 @@
                 "properties": {
                     "element": {"#": "newAppButton"}
                 },
+                "localizations": {
+                    "label": {"key": "new_application"}
+                },
                 "listeners": [
                     {
                         "type": "action",
@@ -38,8 +45,51 @@
                 "properties": {
                     "element": {"#": "versionText"}
                 },
-                "bindings": {
-                    "value": {"<-": "@owner.version"}
+                "localizations": {
+                    "value": {
+                        "key": "version",
+                        "data": {
+                            "number": {"<-": "@owner.version"}
+                        }
+                    }
+                }
+            },
+
+            "introTitle": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "introTitle"}
+                },
+                "localizations": {
+                    "value": {"key": "welcome_message"}
+                }
+            },
+            "introMeta": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "introMeta"}
+                },
+                "localizations": {
+                    "value": {"key": "copyright"}
+                }
+            },
+
+            "newTitle": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "newTitle"}
+                },
+                "localizations": {
+                    "value": {"key": "new_project"}
+                }
+            },
+            "recentTitle": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "recentTitle"}
+                },
+                "localizations": {
+                    "value": {"key": "recent_projects"}
                 }
             },
 
@@ -81,19 +131,19 @@
         <section class="Intro-box">
             <img class="Intro-logo" src="../assets/img/logo.png" alt="logo">
 
-            <p class="Intro-version">Version <span data-montage-id="versionText"></span></p>
+            <p class="Intro-version" data-montage-id="versionText"></p>
 
-            <h1 class="Intro-title">Welcome to Montage Builder</h1>
+            <h1 class="Intro-title" data-montage-id="introTitle">Welcome to Montage Builder</h1>
 
             <div class="Intro-help">
                 For help and support, please visit the <a href="http://montagejs.org/docs/" target="_blank">Docs</a>.
             </div>
-            <p class="Intro-meta">&copy;2012-2013 Declarativ Inc.</p>
+            <p class="Intro-meta" data-montage-id="introMeta">&copy; 2012-2013 Declarativ Inc.</p>
         </section>
 
         <section class="Launcher">
             <section class="Launcher-section New">
-                <h2 class="Launcher-title">New Project</h2>
+                <h2 class="Launcher-title" data-montage-id="newTitle">New Project</h2>
 
                 <div class="New-controls">
                     <button data-montage-id="newAppButton" class="New-button">New Application…</button>
@@ -101,7 +151,7 @@
             </section>
 
             <section class="Launcher-section History">
-                <h2 class="Launcher-title">Recent Projects</h2>
+                <h2 class="Launcher-title" data-montage-id="recentTitle">Recent Projects</h2>
                 <ul class="History-list" data-montage-id="historyList">
                     <li class="History-list-item" data-montage-id="historyListItem"></li>
                 </ul>
