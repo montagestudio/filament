@@ -28,6 +28,13 @@
                 }
             },
             
+            "explorerTemplates": {
+                "prototype": "ui/explorer-templates.reel",
+                "properties": {
+                    "element": {"#": "explorer-templates"}
+                }
+            },
+            
             "ghosts": {
                 "prototype": "ui/ghosts.reel",
                 "properties": {
@@ -72,8 +79,9 @@
 
     <div data-montage-id="editor" class="Editor">        
         <aside data-montage-id="library"></aside>
-        <aside data-montage-id="explorer"></aside>
-        <aside data-montage-id="ghosts"></aside>
+        <aside data-montage-id="explorer" class="Panel--collapsed"></aside>
+        <aside data-montage-id="explorer-templates" class="Panel--collapsed"></aside>
+        <aside data-montage-id="ghosts" class="Panel--collapsed"></aside>
         <div class="workBench">
             <div data-montage-id="tree"></div>
             <div data-montage-id="stage"></div>

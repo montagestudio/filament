@@ -2,11 +2,17 @@
 /* Ghosts */
 
 .Ghosts {
+    width: 240px;
+    background: hsl(0,0%,85%);
+    display: -webkit-flex;
+    -webkit-flex-flow: column;
+}
+
+.Ghosts-content {
+    -webkit-flex: 1;
     display: -webkit-flex;
     -webkit-flex-flow: column;
     -webkit-justify-content: space-around;
-    width: 240px;
-    background: hsl(0,0%,85%);
 }
 
 .Ghosts-group {

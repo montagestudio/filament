@@ -11,5 +11,5 @@
 .isLibrary .Explorer,
 .isExplorer .Library
 {
-    display: none;
+    //display: none;
 }

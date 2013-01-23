@@ -14,6 +14,8 @@ body {
     margin: 0;
     height: 100%;
     font-family: Open Sans, sans-serif;
+    -webkit-user-select: none;
+    cursor: default;
 }
 
 
@@ -95,4 +97,67 @@ body {
 
 .binding.bound:hover {
     /background: hsl(0,0%,100%);
+}
+
+
+
+/* Panel --------------------------------- */
+
+.Panel-title {
+    height: 24px;
+    padding: 0 10px;
+    margin: 0;
+    line-height: 24px;
+    font-size: 12px;
+    //font-weight: normal;
+    color: hsl(0,0%,50%);
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
+    text-align: left;
+    border-top: 1px solid hsla(0,0%,100%,.6);
+    border-bottom: 1px solid hsla(0,0%,0%,.2);
+    background: hsl(0,0%,94%) -webkit-linear-gradient( hsla(0,0%,100%,.1), hsla(0,0%,0%,.1) );
+    cursor: pointer;
+}
+
+.Panel-title:hover {
+    background-color: hsl(0,0%,96%);
+}
+.Panel-title:active {
+    background-color: hsl(0,0%,92%);
+}
+
+/* Panel Collapsed --------------------------------- */
+
+.Panel--collapsed {
+    position: relative;
+    width: 24px;
+    border-left: 1px solid hsla(0,0%,100%,.1);
+    border-right: 1px solid hsla(0,0%,0%,.1);
+    background: hsl(0,0%,30%);
+    cursor: pointer;
+}
+
+.Panel--collapsed:hover {
+    background: hsl(0,0%,32%);
+}
+
+.Panel--collapsed:active {
+    background: hsl(0,0%,28%);
+}
+
+.Panel--collapsed .Panel-title {
+    position: absolute;
+    top: 0;
+    white-space: nowrap;
+    background: transparent;
+    border: none;
+    text-shadow: none;
+    color: hsla(0,0%,100%,.5);
+    -webkit-transform-origin: bottom left;
+    -webkit-transform: rotate(90deg) translateX(-24px);
+    
+}
+
+.Panel--collapsed .Panel-content {
+    display: none;
 }
