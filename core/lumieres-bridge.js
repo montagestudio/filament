@@ -170,7 +170,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                     var destination = file.replace("file://localhost", "");
                     deferredSave.resolve("fs:/" + destination);
                 } else {
-                    deferredSave.reject();
+                    deferredSave.resolve(null);
                 }
             });
 

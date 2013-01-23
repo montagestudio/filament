@@ -533,6 +533,10 @@ exports.ProjectController = Montage.create(Montage, {
 
             this.environmentBridge.promptForSave(options)
                 .then(function (destination) {
+                    if (!destination) {
+                        return null;
+                    }
+
                     var destinationDividerIndex = destination.lastIndexOf("/"),
                         componentName = destination.substring(destinationDividerIndex + 1),
                         //TODO complain if packageHome does not match this.packageUrl?
