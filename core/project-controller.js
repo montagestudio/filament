@@ -14,12 +14,20 @@ exports.ProjectController = Montage.create(Montage, {
 
             this.openDocumentsController.addPropertyChangeListener("selectedObjects", this);
 
+            this.loadedPlugins = [];
+            this.activePlugins = [];
+            this.moduleLibraryItemMap = {};
+
             this.setupMenuItems();
 
             var self = this,
+                application = document.application,
                 deferredEditor = Promise.defer();
 
-            document.application.addEventListener("canLoadReel", function () {
+            application.addEventListener("activatePlugin", this);
+            application.addEventListener("deactivatePlugin", this);
+
+            application.addEventListener("canLoadReel", function () {
                 deferredEditor.resolve(true);
             });
             //TODO timeout the promise in some reasonable window
@@ -28,15 +36,115 @@ exports.ProjectController = Montage.create(Montage, {
             // subsequent activity may rely on us knowing them
             this._pluginPromise = this.environmentBridge.availablePlugins
                 .then(function (pluginUrls) {
-                    self.pluginUrls = pluginUrls;
-                    self.deferredPlugins = {}; //TODO why this is needed/setup here is not obvious
+                    return self.loadPlugins(pluginUrls);
+                }).then(function (plugins) {
+                    plugins.forEach(function (plugin) {
+                        // TODO self.activatePlugin(plugin); if the plugin is supposed to be activated based on user preferences
+                    });
                 });
 
             Promise.all([this._pluginPromise, deferredEditor]).then(function () {
-                self.dispatchEventNamed("canLoadProject", true, true);
+                self.dispatchEventNamed("canLoadProject", true, false);
             }).done();
 
             return this;
+        }
+    },
+
+    loadPlugins: {
+        enumerable: false,
+        //TODO accept a single plugin as well
+        value: function (pluginUrls) {
+            var self = this;
+
+            return Promise.all(pluginUrls.map(function (url) {
+                return require.loadPackage(url).then(function (packageRequire) {
+                    return packageRequire.async("plugin").then(function (exports) {
+                        return self.loadPlugin(exports);
+                    });
+                });
+            }));
+        }
+    },
+
+    loadPlugin: {
+        enumerable: false,
+        value: function (pluginModule) {
+            var plugin = pluginModule.Plugin;
+
+            if (!plugin) {
+                throw new Error("Malformed plugin. Expected '" + pluginModule + "' to export 'Plugin'");
+            }
+
+            this.loadedPlugins.add(plugin);
+            return plugin;
+        }
+    },
+
+    loadedPlugins: {
+        value: null
+    },
+
+    activePlugins: {
+        value: null
+    },
+
+    handleActivatePlugin: {
+        value: function (evt) {
+            this.activatePlugin(evt.detail).done();
+        }
+    },
+
+    activatePlugin: {
+        value: function (plugin) {
+            var activationPromise;
+
+            if (-1 === this.activePlugins.indexOf(plugin)) {
+
+                this.dispatchEventNamed("willActivatePlugin", true, false, plugin);
+                this.activePlugins.push(plugin);
+
+                if (typeof plugin.activate === "function") {
+                    activationPromise = plugin.activate(document.application, this);
+                } else {
+                    activationPromise = Promise.resolve(plugin);
+                }
+
+            } else {
+                activationPromise = Promise.reject(new Error("Cannot activate an active plugin"));
+            }
+
+            return activationPromise;
+        }
+    },
+
+    handleDeactivatePlugin: {
+        value: function (evt) {
+            this.deactivatePlugin(evt.detail).done();
+        }
+    },
+
+    deactivatePlugin: {
+        value: function (plugin) {
+            var deactivationPromise,
+                index = this.activePlugins.indexOf(plugin);
+
+            if (index > -1) {
+
+                this.dispatchEventNamed("willDeactivatePlugin", true, false, plugin);
+                this.activePlugins.splice(index, 1);
+
+                if (typeof plugin.deactivate === "function") {
+                    deactivationPromise = plugin.deactivate(document.application, this);
+                } else {
+                    deactivationPromise = Promise.resolve(plugin);
+                }
+
+            } else {
+                deactivationPromise = Promise.reject(new Error("Cannot deactivate an inactive plugin"));
+            }
+
+            return deactivationPromise;
         }
     },
 
@@ -84,9 +192,8 @@ exports.ProjectController = Montage.create(Montage, {
         value: null
     },
 
-    // The collection of all library items available to this package
-    // TODO preserve the groups of the libraryItems somehow for nicer presentation
-    libraryItems: {
+    // The groups of library items available to this package
+    libraryGroups: {
         value: null
     },
 
@@ -109,7 +216,7 @@ exports.ProjectController = Montage.create(Montage, {
             var reelUrl = projectInfo.reelUrl,
                 self = this;
 
-            this.dispatchEventNamed("willOpenPackage", true, true, {
+            this.dispatchEventNamed("willOpenPackage", true, false, {
                 packageUrl: projectInfo.packageUrl,
                 reelUrl: reelUrl
             });
@@ -124,7 +231,7 @@ exports.ProjectController = Montage.create(Montage, {
 
             Promise.all([this.populateComponents(), this.populateLibrary()])
                 .then(function () {
-                    self.dispatchEventNamed("didOpenPackage", true, true, {
+                    self.dispatchEventNamed("didOpenPackage", true, false, {
                         packageUrl: self.packageUrl,
                         reelUrl: reelUrl
                     });
@@ -132,6 +239,7 @@ exports.ProjectController = Montage.create(Montage, {
                     //TODO only do this if we have an index.html
                     self.environmentBridge.registerPreview(self.packageUrl, self.packageUrl + "/index.html").then(function (previewId) {
                         self.previewId = previewId;
+                        self.dispatchEventNamed("didRegisterPreview", true, false);
                         //TODO not launch this automatically
                         return self.launchPreview();
                     }).done();
@@ -149,19 +257,31 @@ exports.ProjectController = Montage.create(Montage, {
 
     launchPreview: {
         value: function () {
-            return this.environmentBridge.launchPreview(this.previewId);
+            var self = this;
+            return this.environmentBridge.launchPreview(this.previewId).then(function () {
+                //TODO pass along url for preview in event
+                self.dispatchEventNamed("didLaunchPreview", true, false);
+            });
         }
     },
 
     refreshPreview: {
         value: function () {
-            return this.environmentBridge.refreshPreview(this.previewId);
+            var self = this;
+            return this.environmentBridge.refreshPreview(this.previewId).then(function () {
+                //TODO pass along url for preview in event
+                self.dispatchEventNamed("didRefreshPreview", true, false);
+            });
         }
     },
 
     unregisterPreview: {
         value: function () {
-            return this.environmentBridge.unregisterPreview(this.previewId);
+            var self = this;
+            return this.environmentBridge.unregisterPreview(this.previewId).then(function () {
+                //TODO pass along url for preview in event
+                self.dispatchEventNamed("didUnregisterPreview", true, false);
+            });
         }
     },
 
@@ -178,20 +298,30 @@ exports.ProjectController = Montage.create(Montage, {
                 promisedDocument = Promise.resolve(this.currentDocument);
             } else {
 
+                this.dispatchEventNamed("willExitDocument", true, false, this.currentDocument);
+
                 editingDocuments = this.openDocumentsController.organizedObjects;
                 docIndex = editingDocuments.map(function (doc) {
                     return doc.reelUrl;
                 }).indexOf(reelUrl);
 
                 if (docIndex > -1) {
+
                     this.currentDocument = editingDocument = editingDocuments[docIndex];
-                    self.openDocumentsController.selectedObjects = [editingDocument];
+                    this.openDocumentsController.selectedObjects = [editingDocument];
                     promisedDocument = Promise.resolve(editingDocument);
+
+                    this.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
+
                 } else {
                     promisedDocument = editor.load(reelUrl, this.packageUrl).then(function (editingDocument) {
                         self.currentDocument = editingDocument;
                         self.openDocumentsController.addObjects(editingDocument);
                         self.openDocumentsController.selectedObjects = [editingDocument];
+
+                        self.dispatchEventNamed("didLoadDocument", true, false, editingDocument);
+                        this.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
+
                         return editingDocument;
                     });
                 }
@@ -219,51 +349,6 @@ exports.ProjectController = Montage.create(Montage, {
         value: null
     },
 
-    deferredPlugins: {
-        enumerable: false,
-        value: null
-    },
-
-    pluginForPackage: {
-        value: function (packageName, packageVersion) {
-            //TODO I want this API to be available to be able to answer what plugin would be used for this package at this version
-            // That said, you shouldn't ever use plugins for multiple versions of the same package
-            // So I'm not sure what to make of that all just yet; I probably want query and registry APIs
-            // I could refuse to give a package for a version if I already have a plugin for another version, but
-            // that would mean this wouldn't be queryable and would have that side-effect
-            var pluginDeferredId = packageName + "-" + (packageVersion || "*"),
-                deferredPlugin = this.deferredPlugins[pluginDeferredId],
-                candidatePluginModuleIds,
-                pluginPromise,
-                pluginModuleId;
-
-            if (!deferredPlugin) {
-                candidatePluginModuleIds = this.pluginUrls.filter(function (pluginUrl) {
-                    return pluginUrl.match(packageName);
-                }).map(function (pluginUrl) {
-                    //TODO not hardcode this knowledge about plugin locations
-                    return pluginUrl.replace(/\S+\/filament\//, "");
-                });
-
-                if (candidatePluginModuleIds && candidatePluginModuleIds.length > 0) {
-                    //TODO consider the version among the various available
-                    pluginModuleId = candidatePluginModuleIds[0];
-                    pluginPromise = require.async(pluginModuleId)
-                        .fail(function () {
-                            return null;
-                        });
-                } else {
-                    //TODO should this be considered a rejection?
-                    pluginPromise = Promise.resolve(null);
-                }
-
-                deferredPlugin = this.deferredPlugins[pluginDeferredId] = pluginPromise;
-            }
-
-            return deferredPlugin;
-        }
-    },
-
     _objectNameFromModuleId: {
         value: function (moduleId) {
             //TODO this utility should live somewhere else (/baz/foo-bar.reel to FooBar)
@@ -274,6 +359,7 @@ exports.ProjectController = Montage.create(Montage, {
 
     //TODO cache this promise, clear cache when we detect a change?
     findLibraryItems: {
+        enumerable: false,
         value: function (dependencies) {
             var self = this,
                 moduleId,
@@ -303,7 +389,7 @@ exports.ProjectController = Montage.create(Montage, {
                                     moduleId = componentUrl.replace(dependency.url + "/", "client/");
                                 }
                                 objectName = self._objectNameFromModuleId(moduleId);
-                                return self.libraryItemForModule(moduleId, objectName);
+                                return self.libraryItemForModuleId(moduleId, objectName);
                             });
                         } else {
                             dependencyLibraryEntry.libraryItems = [];
@@ -317,27 +403,47 @@ exports.ProjectController = Montage.create(Montage, {
         }
     },
 
-    libraryItemForModule: {
+    moduleLibraryItemMap: {
+        enumerable: false,
+        value : null
+    },
+
+    //TODO handle multiple plugins possibly registering for the same moduleId, latest one wins?
+    registerLibraryItemForModuleId: {
+        value: function (libraryItem, moduleId) {
+            this.moduleLibraryItemMap[moduleId] = libraryItem;
+
+            //TODO don't refresh the library each time
+            this.populateLibrary();
+        }
+    },
+
+    //TODO allow for multiple plugins to unregister for same moduleId, don't disrupt current order
+    unregisterLibraryItemForModuleId: {
+        value: function (moduleId) {
+            delete this.moduleLibraryItemMap[moduleId];
+
+            //TODO don't refresh the library each time
+            this.populateLibrary();
+        }
+    },
+
+    libraryItemForModuleId: {
         enumerable: false,
         value: function (moduleId, objectName) {
-
-            var packageName = moduleId.substring(0, moduleId.indexOf("/")),
+            var libraryEntry = this.moduleLibraryItemMap[moduleId],
                 item;
 
-            return this.pluginForPackage(packageName).then(function (plugin) {
+            if (libraryEntry) {
+                item = libraryEntry.create();
+            } else {
+                item = LibraryItem.create();
+                item.serialization = {prototype: moduleId};
+                item.name = objectName;
+                item.html = '<div></div>';
+            }
 
-                if (plugin && plugin.libraryItems && plugin.libraryItems[moduleId]) {
-                    item = plugin.libraryItems[moduleId].create();
-                } else {
-                    item = LibraryItem.create();
-
-                    item.serialization = {prototype: moduleId};
-                    item.name = objectName;
-                    item.html = '<div></div>';
-                }
-
-                return item;
-            });
+            return item;
         }
     },
 
@@ -359,6 +465,8 @@ exports.ProjectController = Montage.create(Montage, {
             if (!this.environmentBridge) {
                 throw new Error("Cannot save without an environment bridge");
             }
+
+            this.dispatchEventNamed("willSave", true, false);
 
             //TODO use either the url specified (save as), or the currentDoc's reelUrl
             //TODO improve this, we're reaching deeper than I'd like to find the reelUrl
@@ -493,16 +601,25 @@ exports.ProjectController = Montage.create(Montage, {
 
     handleFileSystemChange: {
         value: function (change, filePath) {
+
+            this.dispatchEventNamed("fileSystemChange", true, false, {
+                change: change,
+                filePath: filePath
+            });
+
             //TODO do we only care about certain changes...what about files inside the reel?
             if (/\.reel$/.test(filePath)) {
-                console.log("component changed on filesystem", change, filePath);
+
                 //TODO this is heavy handed, but really more of a proof of concept than anything else
                 if (!this._isInstallingDependencies) {
                     this.populateLibrary().done();
                 }
 
                 if (!/\/node_modules\//.test(filePath)) {
-                    this.populateComponents().done();
+                    var self = this;
+                    this.populateComponents().then(function () {
+                        return self.populateLibrary();
+                    }).done();
                 }
             }
         }
@@ -525,16 +642,7 @@ exports.ProjectController = Montage.create(Montage, {
         value: function () {
             var self = this;
             return this.findLibraryItems(this.dependencies).then(function (dependencyLibraryEntries) {
-
-                // TODO not flatten out the dependency-grouped libraryItems
-                return Promise.all(dependencyLibraryEntries.map(function (entry) {
-                    return entry.libraryItems;
-                }).reduce(function (a, b) {
-                    return a.concat(b);
-                }));
-
-            }).then(function (libraryItems) {
-                self.libraryItems = libraryItems;
+                self.libraryGroups = dependencyLibraryEntries;
             });
         }
     }

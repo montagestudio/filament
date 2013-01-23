@@ -10,27 +10,55 @@
         {
             "owner": {
                 "properties": {
-                    "element": {"#": "library"}
-                }
-            },
-            
-            "prototypeRepetition": {
-                "prototype": "montage/ui/repetition.reel",
-                "properties": {
-                    "element": {"#": "prototype-library"}
-                },
-                "bindings": {
-                    "contentController": {"<-": "@owner.prototypeController"}
+                    "element": {"#": "library"},
+                    "groupsController": {"@": "groupsController"}
                 }
             },
 
-            "prototypeCell": {
-                "prototype": "./library-cell.reel",
+            "groupsController": {
+                "prototype": "montage/ui/controller/array-controller",
+                "bindings": {
+                    "content": {"<-": "@owner.groups"}
+                }
+            },
+
+            "groupList": {
+                "prototype": "montage/ui/repetition.reel",
                 "properties": {
-                    "element": {"#": "prototype-cell"}
+                    "element": {"#": "groupList"}
                 },
                 "bindings": {
-                    "prototypeObject": {"<-": "@prototypeRepetition.objectAtCurrentIteration"}
+                    "contentController": {"<-": "@owner.groupsController"}
+                }
+            },
+
+            "groupName": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "groupName"}
+                },
+                "bindings": {
+                    "value": {"<-": "@groupList.objectAtCurrentIteration.dependency"}
+                }
+            },
+
+            "libraryItemList": {
+                "prototype": "montage/ui/repetition.reel",
+                "properties": {
+                    "element": {"#": "libraryItemList"}
+                },
+                "bindings": {
+                    "objects": {"<-": "@groupList.objectAtCurrentIteration.libraryItems"}
+                }
+            },
+
+            "libraryItemCell": {
+                "prototype": "./library-cell.reel",
+                "properties": {
+                    "element": {"#": "libraryItemCell"}
+                },
+                "bindings": {
+                    "prototypeObject": {"<-": "@libraryItemList.objectAtCurrentIteration"}
                 }
             }
             
@@ -43,8 +71,13 @@
     <aside data-montage-id="library" class="Library">
         
 		<h2 class="Library-title">Library</h2>
-        <ul data-montage-id="prototype-library" class="Library-list" >
-            <li data-montage-id="prototype-cell">Here</li>
+        <ul data-montage-id="groupList" class="Library-list" >
+            <li>
+                <h3 data-montage-id="groupName"></h3>
+                <ul data-montage-id="libraryItemList" class="Library-list" >
+                    <li data-montage-id="libraryItemCell"></li>
+                </ul>
+            </li>
         </ul>
         
     </aside>

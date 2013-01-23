@@ -14,8 +14,8 @@ exports.getPlugins = function() {
 
         for (var i in list) {
             var fileName = list[i];
-            // For now accept any file that ends with .js
-            if (path.extname(fileName).toLowerCase() == ".js") {
+            // For now accept any file that ends with .filament-plugin
+            if (path.extname(fileName).toLowerCase() == ".filament-plugin") {
                 result.push("fs:/" + path.join(parentPath, fileName));
             }
         }

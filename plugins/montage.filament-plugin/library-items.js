@@ -1,5 +1,5 @@
 var Montage = require("montage").Montage;
-var LibraryItem = require("core/library-item.js").LibraryItem;
+var LibraryItem = require("filament/core/library-item.js").LibraryItem; //TODO move to palette, a "public" package
 
 //TODO assets like the icons for use in library items should be versioned with the plugins themselves
 //TODO each plugin really should be its own package, anticipate consuming plugins from elsewhere

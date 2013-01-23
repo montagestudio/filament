@@ -15,6 +15,16 @@
                 }
             },
 
+            "pluginPanel": {
+                "prototype": "ui/plugin-panel.reel",
+                "properties": {
+                    "element": {"#": "pluginPanel"}
+                },
+                "bindings": {
+                    "plugins": {"<-": "@owner.projectController.loadedPlugins"}
+                }
+            },
+
             "packageExplorer": {
                 "prototype": "ui/package-explorer.reel",
                 "properties": {
@@ -31,7 +41,7 @@
                     "element": {"#": "library"}
                 },
                 "bindings": {
-                    "prototypes": {"<->": "@owner.projectController.libraryItems"}
+                    "groups": {"<->": "@owner.projectController.libraryGroups"}
                 },
                 "listeners": [
                     {
@@ -151,6 +161,8 @@
 <body>
 
     <div data-montage-id="main" class="Filament">
+
+        <aside data-montage-id="pluginPanel"></aside>
         <aside data-montage-id="library"></aside>
         <aside data-montage-id="packageExplorer"></aside>
         <aside data-montage-id="templateExplorer"></aside>
