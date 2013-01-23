@@ -117,6 +117,9 @@ exports.ProjectController = Montage.create(Montage, {
             this.packageUrl = projectInfo.packageUrl;
             this.dependencies = projectInfo.dependencies;
 
+            // Add in components from the package being edited itself
+            this.dependencies.unshift({dependency: "", url: this.environmentBridge.convertBackendUrlToPath(this.packageUrl)});
+
             this.watchForFileChanges();
 
             Promise.all([this.populateComponents(), this.populateLibrary()])
@@ -277,9 +280,6 @@ exports.ProjectController = Montage.create(Montage, {
                 objectName,
                 dependencyLibraryPromises,
                 dependencyLibraryEntry;
-
-            // Add in components from the package being edited itself
-            dependencies.unshift({dependency: "", url: this.environmentBridge.convertBackendUrlToPath(this.packageUrl)});
 
             dependencyLibraryPromises = dependencies.map(function (dependency) {
 
