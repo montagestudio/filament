@@ -1,0 +1,152 @@
+{
+    "en": "English",
+    "en-x-test": "English (Test)",
+
+    "package_explorer": {
+        "message": "Package Explorer",
+        "description": "Title for a pane to show all items in the current package",
+        "locations": [
+            "ui/package-explorer.reel/package-explorer.html"
+        ]
+    },
+    "add_component": {
+        "message": "Add Component…",
+        "description": "Button to add a component to the stage",
+        "locations": [
+            "ui/package-explorer.reel/package-explorer.html"
+        ]
+    },
+    "install_dependencies": {
+        "message": "Install Dependencies",
+        "description": "Button to install the programatic dependencies of the project",
+        "locations": [
+            "ui/package-explorer.reel/package-explorer.html"
+        ]
+    },
+    "library": {
+        "message": "Library",
+        "description": "Title for the library of components available for the user",
+        "locations": [
+            "ui/library.reel/library.html"
+        ]
+    },
+    "preview_port": {
+        "message": "Preview Port",
+        "description": "The 'port number' that preview server is run on",
+        "locations": [
+            "preferences/ui/main.reel/main.html"
+        ]
+    },
+    "sourceobject": {
+        "message": "SourceObject:",
+        "description": "",
+        "locations": [
+            "ui/binding-jig.reel/binding-jig.html"
+        ]
+    },
+    "boundobject": {
+        "message": "Bound Object:",
+        "description": "",
+        "locations": [
+            "ui/binding-jig.reel/binding-jig.html"
+        ]
+    },
+    "inspector": {
+        "message": "Inspector",
+        "description": "Title for the pane that allows the user to view and modify the properties of a component",
+        "locations": [
+            "ui/configurator.reel/configurator.html"
+        ]
+    },
+    "comma_separated_list_of_json_values": {
+        "message": "Comma separated list of JSON values",
+        "description": "",
+        "locations": [
+            "ui/inspector/array.reel/array.html"
+        ]
+    },
+    "choose_file": {
+        "message": "Choose File",
+        "description": "Button to let the user pick a file",
+        "locations": [
+            "ui/inspector/file.reel/file.html"
+        ]
+    },
+    "template_explorer": {
+        "message": "Template Explorer",
+        "description": "Title for a pane that shows all the objects in the current template",
+        "locations": [
+            "ui/template-explorer.reel/template-explorer.html"
+        ]
+    },
+    "version": {
+        "message": "Version {number}",
+        "description": "Shows the version number of the application",
+        "locations": [
+            "welcome/ui/main.reel/main.html"
+        ]
+    },
+    "welcome_message": {
+        "message": "Welcome to Montage Builder",
+        "description": "",
+        "locations": [
+            "welcome/ui/main.reel/main.html"
+        ]
+    },
+    "forhelpandsupportpleasevisitthe": {
+        "message": "For help and support, please visit the",
+        "description": "TODO",
+        "locations": [
+            "welcome/ui/main.reel/main.html"
+        ]
+    },
+    "docs": {
+        "message": "Docs",
+        "description": "",
+        "locations": [
+            "welcome/ui/main.reel/main.html"
+        ]
+    },
+    "copyright": {
+        "message": "© 2012-2013 Declarativ Inc.",
+        "description": "",
+        "locations": [
+            "welcome/ui/main.reel/main.html"
+        ]
+    },
+    "new_project": {
+        "message": "New Project",
+        "description": "Title for a group of buttons to start a new project",
+        "locations": [
+            "welcome/ui/main.reel/main.html"
+        ]
+    },
+    "new_application": {
+        "message": "New Application…",
+        "description": "Button to create a new application",
+        "locations": [
+            "welcome/ui/main.reel/main.html"
+        ]
+    },
+    "recent_projects": {
+        "message": "Recent Projects",
+        "description": "Title for the projects the user has most recently worked on",
+        "locations": [
+            "welcome/ui/main.reel/main.html"
+        ]
+    },
+    "language": {
+        "message": "Language",
+        "description": "Label for the select box that lets the user change language",
+        "locations": [
+            "preferences/ui/main.reel/main.html"
+        ]
+    },
+    "please_restart": {
+        "message": "Please restart for this change to take effect",
+        "description": "Notice to restart the app",
+        "locations": [
+            "preferences/ui/main.reel/main.html"
+        ]
+    }
+}

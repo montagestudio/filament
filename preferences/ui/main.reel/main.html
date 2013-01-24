@@ -8,10 +8,24 @@
 
     <script type="text/montage-serialization">
         {
+            "localizer": {
+                "object": "montage/core/localizer[defaultLocalizer]"
+            },
+
             "owner": {
                 "properties": {
                     "element": {"#": "main"},
                     "httpportTextField": {"@": "httpport"}
+                }
+            },
+
+            "previewPortLabel": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "previewPortLabel"}
+                },
+                "localizations": {
+                    "value": {"key": "preview_port"}
                 }
             },
 
@@ -22,6 +36,33 @@
                 },
                 "bindings": {
                     "value": {"<->": "@owner.userPreferences.httpPort"}
+                }
+            },
+
+            "localeLabel": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "localeLabel"}
+                },
+                "localizations": {
+                    "value": {"key": "language"}
+                }
+            },
+
+            "locale": {
+                "prototype": "preferences/ui/locale-switcher.reel",
+                "properties": {
+                    "element": {"#": "locale"}
+                }
+            },
+
+            "restartLabel": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "restartLabel"}
+                },
+                "localizations": {
+                    "value": {"key": "please_restart"}
                 }
             },
 
@@ -36,8 +77,12 @@
 
     <div data-montage-id="main" class="main">
         <div class="form-stacked">
-            <label for="httpport">Preview Port</label>
+            <label for="httpport" data-montage-id="previewPortLabel">Preview Port</label>
             <input type="text" data-montage-id="httpport" required value="" pattern="^[1-9]\d{3,}$"/>
+
+            <label for="locale" data-montage-id="localeLabel">Language</label>
+            <div data-montage-id="locale"></div>
+            <aside data-montage-id="restartLabel">Please restart for this change to take effect</aside>
         </div>
     </div>
 

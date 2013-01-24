@@ -10,6 +10,16 @@
                 "element": {"#": "array"},
                 "_textareaEl": {"#": "input"}
             }
+        },
+
+        "info": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "info"}
+            },
+            "localizations": {
+                "value": {"key": "comma_separated_list_of_json_values"}
+            }
         }
     }
     </script>
@@ -17,7 +27,7 @@
 <body>
     <div data-montage-id="array" class="Array">
         <textarea data-montage-id="input"></textarea>
-        <p class="Array-info">Comma separated list of JSON values</p>
+        <p class="Array-info" data-montage-id="info">Comma separated list of JSON values</p>
     </div>
 </body>
 </html>

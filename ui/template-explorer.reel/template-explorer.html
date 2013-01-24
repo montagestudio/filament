@@ -20,6 +20,16 @@
             }
         },
 
+        "title": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "title"}
+            },
+            "localizations": {
+                "value": {"key": "template_explorer"}
+            }
+        },
+
         "templateObjectList": {
             "prototype": "montage/ui/repetition.reel",
             "properties": {
@@ -45,7 +55,7 @@
 </head>
 <body>
     <div data-montage-id="template-explorer" class="TemplateExplorer">
-        <h2 class="title">Template Explorer</h2>
+        <h2 class="title" data-montage-id="title">Template Explorer</h2>
         <ul data-montage-id="templateObjectList" class="list" >
             <li data-montage-id="templateObjectCell"></li>
         </ul>
