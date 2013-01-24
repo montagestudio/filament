@@ -1,60 +1,78 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Montage Builder - Preview</title>
-        <meta charset="utf-8">
-        <script src="{$CLIENT}/node_modules/montage/montage.js" data-package="."></script>
-        <script src="{$SERVER}/refresh.js"></script>
-        <script type="text/montage-serialization">
-            {
-                "controller": {
-                    "prototype": "montage/ui/controller/array-controller",
-                    "properties": {
-                        "selectObjectsOnAddition": true,
-                        "automaticallyOrganizeObjects": true,
-                        "content": [
-                        ]
+<head>
+    <title>Montage Builder - Preview</title>
+    <meta charset="utf-8">
+    
+    <link href="fonts/fonts.css" rel="stylesheet">
+    <link href="preview-home.css" rel="stylesheet">
+    
+    <script src="{$CLIENT}/node_modules/montage/montage.js" data-package="."></script>
+    <script src="{$SERVER}/refresh.js"></script>
+    <script type="text/montage-serialization">
+        {
+            "controller": {
+                "prototype": "montage/ui/controller/array-controller",
+                "properties": {
+                    "selectObjectsOnAddition": true,
+                    "automaticallyOrganizeObjects": true,
+                    "content": [
+                    ]
+                },
+                "bindings": {
+                    "content": {"<-": "@owner.previewList"}
+                }
+            },
+            "repetition": {
+                "prototype": "montage/ui/repetition.reel",
+                "properties": {
+                    "element": {
+                        "#": "repetition"
                     },
-                    "bindings": {
-                        "content": {"<-": "@owner.previewList"}
-                    }
-                },
-                "repetition": {
-                    "prototype": "montage/ui/repetition.reel",
-                    "properties": {
-                        "element": {
-                            "#": "repetition"
-                        },
-                        "isSelectionEnabled": true,
-                        "contentController": {"@": "controller"},
-                        "orientation": "vertical"
-                    }
-                },
+                    "isSelectionEnabled": true,
+                    "contentController": {"@": "controller"},
+                    "orientation": "vertical"
+                }
+            },
 
-                "link" : {
-                   "prototype": "montage/ui/anchor.reel",
-                   "properties": {
-                       "element": {"#": "link"}
-                   },
-                   "bindings": {
-                       "textContent": {"<-": "@repetition.objectAtCurrentIteration.name"},
-                       "href": {"<-": "@repetition.objectAtCurrentIteration.url"}
-                   }
-                },
+            "link" : {
+               "prototype": "montage/ui/anchor.reel",
+               "properties": {
+                   "element": {"#": "link"}
+               },
+               "bindings": {
+                   "textContent": {"<-": "@repetition.objectAtCurrentIteration.name"},
+                   "href": {"<-": "@repetition.objectAtCurrentIteration.url"}
+               }
+            },
 
-                "owner": {
-                    "prototype": "preview-home",
-                    "properties": {
-                    }
+            "owner": {
+                "prototype": "preview-home",
+                "properties": {
                 }
             }
-        </script>
-    </head>
-    <body>
-    <div class="repetition" data-montage-id="repetition">
-        <div class="item">
-            <a data-montage-id="link"></a>
-        </div>
+        }
+    </script>
+</head>
+<body>
+
+    <div class="PreviewHome">
+
+        <section class="Intro">
+            <img class="Intro-logo" src="img/logo.png" alt="logo">
+            <p class="Intro-meta">&copy;2012-2013 Declarativ Inc.</p>
+        </section>
+
+        <section class="Preview">
+            <h2 class="Preview-title">Open Projects</h2>
+            <ul data-montage-id="repetition" class="Preview-list">
+                <li class="Preview-list-item">
+                    <a data-montage-id="link" class="Preview-list-item-link"></a>
+                </li>
+            </ul>
+        </section>
+
     </div>
-    </body>
+
+</body>
 </html>
