@@ -15,7 +15,7 @@
             "owner": {
                 "properties": {
                     "element": {"#": "main"},
-                    "componentEditorArea": {"#": "componentEditorArea"}
+                    "editorSlot": {"#": "editorSlot"}
                 }
             },
 
@@ -35,52 +35,10 @@
                     "element": {"#": "packageExplorer"}
                 },
                 "bindings": {
-                    "components": {"<-": "@owner.projectController.components"}
+                    "files": {"<-": "@owner.projectController.components"}
                 }
             },
 
-            "library": {
-                "prototype": "ui/library.reel",
-                "properties": {
-                    "element": {"#": "library"}
-                },
-                "bindings": {
-                    "groups": {"<->": "@owner.projectController.libraryGroups"}
-                },
-                "listeners": [
-                    {
-                        "type": "addComponent",
-                        "listener": {"@": "owner"}
-                    }
-                ]
-            },
-
-            "templateExplorer": {
-                "prototype": "ui/template-explorer.reel",
-                "properties": {
-                    "element": {"#": "templateExplorer"}
-                },
-                "bindings": {
-                    "templateObjects": {"<-": "@owner.projectController.currentDocument.editingProxies"},
-                    "selectedObjects": {"<->": "@owner.projectController.currentDocument.selectedObjects"}
-                }
-            },
-
-            "configurator": {
-                "prototype": "ui/configurator.reel",
-                "properties": {
-                    "element": {"#": "configurator"}
-                },
-                "bindings": {
-                    "editingDocument": {"<-": "@owner.projectController.currentDocument"}
-                },
-                "listeners": [
-                    {
-                        "type": "enterEditor",
-                        "listener": {"@": "owner"}
-                    }
-                ]
-            },
 
             "togglePaletteKeyComposer": {
                 "prototype": "montage/ui/composer/key-composer",
@@ -112,10 +70,10 @@
                 ]
             },
 
-            "editorSlot": {
+            "extendedEditorSlot": {
                 "prototype": "montage/ui/slot.reel",
                 "properties": {
-                    "element": {"#": "editorSlot"}
+                    "element": {"#": "extendedEditorSlot"}
                 },
                 "bindings": {
                     "content": {"<-": "@owner.extendedEditorComponent"}
@@ -124,38 +82,6 @@
 
             "application": {
                 "prototype": "montage/ui/application"
-            },
-
-            "bindingJig": {
-                "prototype": "ui/binding-jig.reel",
-                "properties": {
-                    "element": {"#": "bindingJig"}
-                },
-                "bindings": {
-                    "editingDocument": {"<-": "@owner.projectController.currentDocument"},
-                    "selectedObjects": {"<-": "@owner.projectController.currentDocument.selectedObjects"}
-                }
-            },
-
-            "openComponentList": {
-                "prototype": "montage/ui/repetition.reel",
-                "properties": {
-                    "element": {"#": "openComponentList"},
-                    "isSelectionEnabled": true
-                },
-                "bindings": {
-                    "contentController": {"<-": "@owner.projectController.openDocumentsController"}
-                }
-            },
-
-            "documentTab": {
-                "prototype": "montage/ui/dynamic-text.reel",
-                "properties": {
-                    "element": {"#": "documentTab"}
-                },
-                "bindings": {
-                    "value": {"<-": "@openComponentList.objectAtCurrentIteration.title"}
-                }
             }
 
         }
@@ -164,25 +90,19 @@
 </head>
 <body>
 
-    <div data-montage-id="main" class="Filament">
+    <div data-montage-id="main" class="Main">
 
         <aside data-montage-id="pluginPanel"></aside>
-        <aside data-montage-id="library"></aside>
         <aside data-montage-id="packageExplorer"></aside>
-        <aside data-montage-id="templateExplorer"></aside>
 
-        <section class="Filament-view">
+        <section class="editor">
             <nav data-montage-id="openComponentList" class="openComponentTabs">
                 <span data-montage-id="documentTab" class="openComponentTab"></span>
             </nav>
-
-            <div data-montage-id="componentEditorArea" class="componentEditorArea"></div>
-
-            <div data-montage-id="bindingJig"></div>
+            <section data-montage-id="editorSlot"></section>
         </section>
 
-        <aside data-montage-id="configurator"></aside>
-        <aside data-montage-id="editorSlot" class="editorSlot"></aside>
+        <aside data-montage-id="extendedEditorSlot" class="extendedEditorSlot"></aside>
     </div>
 
 </body>

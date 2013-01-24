@@ -285,16 +285,15 @@ exports.ProjectController = Montage.create(Montage, {
         }
     },
 
-    openComponent: {
-        value: function (reelUrl, editor) {
-
+    openFileUrlInEditor: {
+        value: function (fileUrl, editor) {
             var editingDocuments,
                 editingDocument,
                 docIndex,
                 self = this,
                 promisedDocument;
 
-            if (this.currentDocument && reelUrl === this.currentDocument.reelUrl) {
+            if (this.currentDocument && fileUrl === this.currentDocument.reelUrl) {
                 promisedDocument = Promise.resolve(this.currentDocument);
             } else {
 
@@ -303,7 +302,7 @@ exports.ProjectController = Montage.create(Montage, {
                 editingDocuments = this.openDocumentsController.organizedObjects;
                 docIndex = editingDocuments.map(function (doc) {
                     return doc.reelUrl;
-                }).indexOf(reelUrl);
+                }).indexOf(fileUrl);
 
                 if (docIndex > -1) {
 
@@ -314,13 +313,13 @@ exports.ProjectController = Montage.create(Montage, {
                     this.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
 
                 } else {
-                    promisedDocument = editor.load(reelUrl, this.packageUrl).then(function (editingDocument) {
+                    promisedDocument = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
                         self.currentDocument = editingDocument;
                         self.openDocumentsController.addObjects(editingDocument);
                         self.openDocumentsController.selectedObjects = [editingDocument];
 
                         self.dispatchEventNamed("didLoadDocument", true, false, editingDocument);
-                        this.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
+                        self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
 
                         return editingDocument;
                     });

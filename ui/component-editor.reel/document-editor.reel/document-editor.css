@@ -1,0 +1,21 @@
+
+.DocumentEditor {
+    -webkit-flex: 1;
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+    height: 100%;
+}
+
+.DocumentEditor {
+    -webkit-flex: 1 1 auto;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    position: relative;
+}
+
+.DocumentEditor .Workbench {
+	-webkit-flex: 1;
+	border: 10px solid hsl(0,0%,30%);
+	border-bottom: none;
+	box-sizing: border-box;
+}

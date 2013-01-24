@@ -1,10 +1,10 @@
-.Filament {
+.Main {
     display: -webkit-flex;
     -webkit-flex-direction: row;
     height: 100%;
 }
 
-.Filament-view {
+.Main .editor {
     -webkit-flex: 1;
     display: -webkit-flex;
     -webkit-flex-direction: column;

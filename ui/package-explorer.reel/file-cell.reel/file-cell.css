@@ -1,7 +1,7 @@
 
 /* Button --------------------------------- */
 
-.ComponentCell .ComponentCell-button {
+.FileCell .FileCell-button {
 	-webkit-appearance: none;
 	width: 100%;
 	padding: 10px;
@@ -20,12 +20,12 @@
 	border-radius: 0;
 }
 
-.ComponentCell .ComponentCell-button:hover {
+.FileCell .FileCell-button:hover {
 	background: hsl(0,0%,90%);
 }
 
-.ComponentCell .ComponentCell-button:active,
-.ComponentCell .ComponentCell-button:focus {
+.FileCell .FileCell-button:active,
+.FileCell .FileCell-button:focus {
     border-color: transparent;
 	background: hsl(0,0%,80%);
 }

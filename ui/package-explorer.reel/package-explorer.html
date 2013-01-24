@@ -33,23 +33,23 @@
                 }
             },
 
-            "componentsList": {
+            "fileList": {
                 "prototype": "montage/ui/repetition.reel",
                 "properties": {
-                    "element": {"#": "components-list"}
+                    "element": {"#": "fileList"}
                 },
                 "bindings": {
-                    "objects": {"<-": "@owner.components"}
+                    "objects": {"<-": "@owner.files"}
                 }
             },
 
-            "componentCell": {
-                "prototype": "ui/component-cell.reel",
+            "fileCell": {
+                "prototype": "./file-cell.reel",
                 "properties": {
-                    "element": {"#": "component-cell"}
+                    "element": {"#": "file-cell"}
                 },
                 "bindings": {
-                    "componentInfo": {"<-": "@componentsList.objectAtCurrentIteration"}
+                    "fileInfo": {"<-": "@fileList.objectAtCurrentIteration"}
                 }
             },
 
@@ -95,8 +95,8 @@
             <button data-montage-id="add-file-button" class="PackageExplorer-menu-item">Add Component…</button>
             <button data-montage-id="install-dependencies-button" class="PackageExplorer-menu-item">Install Dependencies</button>
         </menu>
-        <ul data-montage-id="components-list" class="PackageExplorer-list">
-            <li data-montage-id="component-cell"></li>
+        <ul data-montage-id="fileList" class="PackageExplorer-list">
+            <li data-montage-id="file-cell"></li>
         </ul>
     </div>
 

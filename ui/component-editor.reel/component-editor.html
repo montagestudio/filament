@@ -1,34 +1,75 @@
 <!doctype html>
 <html>
 <head>
-    <title>ComponentEditor</title>
+    <title>Main</title>
     <meta charset="utf-8">
 
     <link href="component-editor.css" rel="stylesheet" />
 
     <script type="text/montage-serialization">
         {
+            "localizer": {
+                "object": "montage/core/localizer[defaultLocalizer]"
+            },
+
             "owner": {
                 "properties": {
                     "element": {"#": "componentEditor"},
-                    "workbench": {"@": "workbench"}
+                    "documentEditorSlot": {"#": "documentEditorSlot"}
+                }
+            },
+
+            "library": {
+                "prototype": "ui/library.reel",
+                    "properties": {
+                    "element": {"#": "library"}
                 },
                 "bindings": {
-                    "selectedObjects": {"<->": "@workbench.selectedObjects"}
+                    "groups": {"<->": "@owner.projectController.libraryGroups"}
+                },
+                "listeners": [
+                    {
+                        "type": "addComponent",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "templateExplorer": {
+                "prototype": "ui/template-explorer.reel",
+                "properties": {
+                    "element": {"#": "templateExplorer"}
+                },
+                "bindings": {
+                    "templateObjects": {"<-": "@owner.projectController.currentDocument.editingProxies"},
+                    "selectedObjects": {"<->": "@owner.projectController.currentDocument.selectedObjects"}
                 }
             },
 
-            "workbench": {
-                "prototype": "palette/ui/workbench.reel",
+            "configurator": {
+                "prototype": "ui/configurator.reel",
                 "properties": {
-                    "element": {"#": "workbench"}
-                }
+                    "element": {"#": "configurator"}
+                },
+                "bindings": {
+                    "editingDocument": {"<-": "@owner.projectController.currentDocument"}
+                },
+                "listeners": [
+                    {
+                        "type": "enterEditor",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             },
 
-            "controls": {
-                "prototype": "./controls.reel",
+            "bindingJig": {
+                "prototype": "ui/binding-jig.reel",
                 "properties": {
-                    "element": {"#": "controls"}
+                    "element": {"#": "bindingJig"}
+                },
+                "bindings": {
+                    "editingDocument": {"<-": "@owner.projectController.currentDocument"},
+                    "selectedObjects": {"<-": "@owner.projectController.currentDocument.selectedObjects"}
                 }
             }
 
@@ -38,10 +79,18 @@
 </head>
 <body>
 
-    <div data-montage-id="componentEditor" class="ComponentEditor">
-        <div data-montage-id="workbench"></div>
-        <div data-montage-id="controls"></div>
-    </div>
+<section data-montage-id="componentEditor" class="ComponentEditor">
+    <aside data-montage-id="library"></aside>
+    <aside data-montage-id="templateExplorer"></aside>
+
+    <section class="Filament-view">
+        <div data-montage-id="documentEditorSlot" class="documentEditorSlot"></div>
+
+        <div data-montage-id="bindingJig"></div>
+    </section>
+
+    <aside data-montage-id="configurator"></aside>
+</section>
 
 </body>
 </html>
