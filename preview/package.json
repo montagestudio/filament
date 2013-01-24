@@ -1,0 +1,9 @@
+{
+    "name": "preview-home",
+    "version": "0.0.0",
+    "mappings": {
+        "montage": "{$CLIENT}/node_modules/montage",
+        "q-comm": "{$CLIENT}/node_modules/q-comm",
+        "q-connection": "{$CLIENT}/node_modules/q-connection"
+    }
+ }

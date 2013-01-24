@@ -83,6 +83,10 @@ exports.preferencesPageInfo = function() {
     return {url: "http://client/preferences/index.html", width:906, height:540};
 }
 
+exports.previewPageInfo = function() {
+    return {url: "http://client/preview/index.html"};
+}
+
 exports.menusAddOns = function() {
     return [
         {
