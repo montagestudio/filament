@@ -23,6 +23,10 @@ exports.ViewController = Montage.create(Montage, {
     registerEditorTypeForFileTypeMatcher: {
         value: function (editorType, fileTypeMatcher) {
 
+            if (!(editorType && fileTypeMatcher)) {
+                throw new Error("Both an editor and a matcher function are needed to register");
+            }
+
             if (this.matcherEditorTypeMap.has(fileTypeMatcher)) {
                 throw new Error("Already has an editor type registered for this matcher");
             }

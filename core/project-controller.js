@@ -7,9 +7,10 @@ var Montage = require("montage/core/core").Montage,
 
 exports.ProjectController = Montage.create(Montage, {
 
-    initWithEnvironmentBridge: {
-        value: function (bridge) {
+    init: {
+        value: function (bridge, viewController) {
             this._environmentBridge = bridge;
+            this._viewController = viewController;
             this.openDocumentsController = ArrayController.create().initWithContent([]);
 
             this.openDocumentsController.addPropertyChangeListener("selectedObjects", this);
@@ -105,7 +106,7 @@ exports.ProjectController = Montage.create(Montage, {
                 this.activePlugins.push(plugin);
 
                 if (typeof plugin.activate === "function") {
-                    activationPromise = plugin.activate(document.application, this);
+                    activationPromise = plugin.activate(document.application, this, this._viewController);
                 } else {
                     activationPromise = Promise.resolve(plugin);
                 }
@@ -135,7 +136,7 @@ exports.ProjectController = Montage.create(Montage, {
                 this.activePlugins.splice(index, 1);
 
                 if (typeof plugin.deactivate === "function") {
-                    deactivationPromise = plugin.deactivate(document.application, this);
+                    deactivationPromise = plugin.deactivate(document.application, this, this._viewController);
                 } else {
                     deactivationPromise = Promise.resolve(plugin);
                 }
@@ -156,6 +157,10 @@ exports.ProjectController = Montage.create(Montage, {
         get: function () {
             return this._environmentBridge;
         }
+    },
+
+    _viewController: {
+        value: null
     },
 
     _pluginPromise: {

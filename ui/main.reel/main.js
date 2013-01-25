@@ -51,7 +51,8 @@ exports.Main = Montage.create(Component, {
             this.fileUrlEditorMap = {};
 
             this._bridgePromise.then(function (environmentBridge) {
-                self.projectController = ProjectController.create().initWithEnvironmentBridge(environmentBridge);
+                self.viewController = ViewController.create();
+                self.projectController = ProjectController.create().init(environmentBridge, self.viewController);
                 self.projectController.addEventListener("canLoadProject", self, false);
                 self.projectController.addEventListener("didOpenPackage", self, false);
 
@@ -65,10 +66,7 @@ exports.Main = Montage.create(Component, {
 
                 window.addEventListener("openRelatedFile", function (evt) {
                     var url = evt.detail;
-
-                    if (/\.reel\/?$/.test(url)) {
-                        self.openComponent(url.replace("file://localhost", "fs:/").replace(/\/$/, ""));
-                    }
+                    self.openFileUrl(url.replace("file://localhost", "fs:/").replace(/\/$/, ""));
                 });
 
                 window.addEventListener("beforeunload", function () {
@@ -77,7 +75,7 @@ exports.Main = Montage.create(Component, {
 
                 self.application.addEventListener("menuAction", self, false);
 
-                self.viewController = ViewController.create();
+
                 self.viewController.registerEditorTypeForFileTypeMatcher(ComponentEditor, function (fileUrl) {
                     return (/\.reel\/?$/).test(fileUrl);
                 });
