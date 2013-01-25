@@ -148,22 +148,9 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     listTreeAtUrl: {
         value: function (url) {
-            var self = this,
-                //TODO use this guard to not go through all of the node_modules directory
-                guard = function (path, stat) {
-                    return !(/\/node_modules\//.test(path));
-                };
-
-            //TODO just use the guard to build the stat collection, seems like it gets it without any extra work
-
-            return self.backend.get("fs").invoke("normal", url).then(function (rootPath) {
-                return self.backend.get("fs").invoke("listTree", rootPath).then(function (paths) {
-                    return Promise.all(paths.map(function (p) {
-                        return self.backend.get("fs").invoke("stat", p).then(function (stat) {
-                            //TODO this URL building should be improved
-                            return FileDescriptor.create().initWithUrlAndStat("fs:/" + rootPath + "/" + p, stat);
-                        });
-                    }));
+            return this.backend.get("lumieres").invoke("listTree", url).then(function (fileDescriptors) {
+                return fileDescriptors.map(function (fd) {
+                    return FileDescriptor.create().initWithUrlAndStat(fd.url, fd.stat);
                 });
             });
         }

@@ -3,7 +3,8 @@ var path = require("path"),
     minitCreate = require("minit/lib/create").create,
     Q = require("q"),
     npm = require("npm"),
-    watchr = require("watchr");
+    watchr = require("watchr"),
+    QFS = require("q-io/fs");
 
 exports.getPlugins = function() {
     var result = [],
@@ -50,5 +51,19 @@ exports.watch = function (path, changeHandler) {
                 changeHandler.invoke("handleChange", changeType, filePath);
             }
         }
+    });
+};
+
+exports.listTree = function (url) {
+    var guard = function (path, stat) {
+            return !(/\/node_modules\//.test(path));
+        };
+
+    return QFS.listTree(url, guard).then(function (paths) {
+        return Q.all(paths.map(function (p) {
+            return QFS.stat(path).then(function (stat) {
+               return {url: "fs:/" + path, stat: stat};
+            });
+        }));
     });
 };
