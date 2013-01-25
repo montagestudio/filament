@@ -25,7 +25,7 @@
 /* List --------------------------------- */
 
 .Library-list {
-	-webkit-flex: 1 1 0;
+	-webkit-flex: 1;
 	min-height: 0;
     position: relative;
 	margin: 0;
@@ -33,4 +33,32 @@
 	list-style: none;
 	overflow-y: scroll;
 	background-color: hsl(0,0%,70%);
+}
+
+
+/* List Group --------------------------------- */
+/* .Library-list-group {} */
+
+
+/* List Group Title --------------------------------- */
+
+.Library-list-group-title {
+	padding: 5px 10px;
+	margin: 0;
+	font-size: 12px;
+	font-weight: normal;
+	text-align: left;
+	color: hsl(0,0%,50%); 
+	background: hsl(0,0%,80%);
+	border-top: 1px solid hsla(0,0%,100%,.2);
+	border-bottom: 1px solid hsla(0,0%,0%,.15);
+}
+
+
+/* List Group Items --------------------------------- */
+
+.Library-list-group-items {
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }
