@@ -1,9 +1,7 @@
 
-.DocumentEditor {
-    -webkit-flex: 1;
-    display: -webkit-flex;
-    -webkit-flex-direction: row;
-    height: 100%;
+.DocumentEditor.standby {
+    /* TODO: Uncomment once only inactive gets the standby class */
+    /* display: none; */
 }
 
 .DocumentEditor {

@@ -47,6 +47,12 @@
 }
 
 
+.editorSlot {
+    -webkit-flex: 1;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+}
+
 /* Editor Area ----------------------- */
 
 .componentEditorArea {
