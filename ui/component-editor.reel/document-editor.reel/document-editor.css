@@ -1,7 +1,6 @@
 
 .DocumentEditor.standby {
-    /* TODO: Uncomment once only inactive gets the standby class */
-    /* display: none; */
+     display: none;
 }
 
 .DocumentEditor {
