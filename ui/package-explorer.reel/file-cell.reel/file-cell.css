@@ -4,13 +4,14 @@
 .FileCell .FileCell-button {
 	-webkit-appearance: none;
 	width: 100%;
-	padding: 10px;
+	padding: 6px 10px;
 	border: none;
-    border-top: 1px solid hsla(0,0%,100%,.5);
-    border-bottom: 1px solid hsla(0,0%,0%,.1);
-	font-size: 14px;
-	color: hsl(0,0%,50%);
+    border-top: 1px solid hsla(0,0%,100%,.3);
+    border-bottom: 1px solid hsla(0,0%,0%,.08);
+	font-size: 12px;
+	color: hsl(0,0%,40%);
 	background: hsl(0,0%,85%);
+	white-space: nowrap;
 	
 	/* Resets */
 	text-align: left;
