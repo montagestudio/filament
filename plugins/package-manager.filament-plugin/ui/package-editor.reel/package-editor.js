@@ -4,7 +4,8 @@
     @requires montage/ui/component
 */
 var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+    Component = require("montage/ui/component").Component,
+    Promise = require("montage/core/promise").Promise;
 
 /**
     Description TODO
@@ -13,4 +14,10 @@ var Montage = require("montage").Montage,
 */
 exports.PackageEditor = Montage.create(Component, /** @lends module:"./package-editor.reel".PackageEditor# */ {
 
+    load: {
+        value: function (fileUrl, packageUrl) {
+            console.log("Edit Package.json", fileUrl, packageUrl);
+            return Promise.resolve({reelUrl: fileUrl});
+        }
+    }
 });
