@@ -82,6 +82,27 @@
 
             "application": {
                 "prototype": "montage/ui/application"
+            },
+
+            "openComponentList": {
+                "prototype": "montage/ui/repetition.reel",
+                "properties": {
+                    "element": {"#": "openComponentList"},
+                    "isSelectionEnabled": true
+                },
+                "bindings": {
+                    "contentController": {"<-": "@owner.projectController.openDocumentsController"}
+                }
+            },
+
+            "documentTab": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "documentTab"}
+                },
+                "bindings": {
+                    "value": {"<-": "@openComponentList.objectAtCurrentIteration.title"}
+                }
             }
 
         }

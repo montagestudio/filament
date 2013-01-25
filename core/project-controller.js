@@ -225,6 +225,8 @@ exports.ProjectController = Montage.create(Montage, {
             var reelUrl = projectInfo.reelUrl,
                 self = this;
 
+            this._fileUrlEditorMap = {};
+
             this.dispatchEventNamed("willOpenPackage", true, false, {
                 packageUrl: projectInfo.packageUrl,
                 reelUrl: reelUrl
@@ -294,6 +296,10 @@ exports.ProjectController = Montage.create(Montage, {
         }
     },
 
+    _fileUrlEditorMap: {
+        value: null
+    },
+
     openFileUrlInEditor: {
         value: function (fileUrl, editor) {
             var editingDocuments,
@@ -322,6 +328,9 @@ exports.ProjectController = Montage.create(Montage, {
                     this.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
 
                 } else {
+
+                    this._fileUrlEditorMap[fileUrl] = editor;
+
                     promisedDocument = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
                         self.currentDocument = editingDocument;
                         self.openDocumentsController.addObjects(editingDocument);
@@ -344,10 +353,9 @@ exports.ProjectController = Montage.create(Montage, {
         value: function (notification) {
             if (notification.target === this.openDocumentsController && "selectedObjects" === notification.currentPropertyPath) {
                 if (this.openDocumentsController.selectedObjects && this.openDocumentsController.selectedObjects.length > 0) {
-                    var reelUrl = this.openDocumentsController.selectedObjects[0].reelUrl;
-                    if (reelUrl !== this.currentDocument.reelUrl) {
-                        this.openComponent(reelUrl).done();
-                    }
+                    var fileUrl = this.openDocumentsController.selectedObjects[0].reelUrl,
+                        editor = this._fileUrlEditorMap[fileUrl];
+                    this.openFileUrlInEditor(fileUrl, editor).done();
                 }
             }
         }
