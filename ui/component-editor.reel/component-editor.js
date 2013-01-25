@@ -20,10 +20,22 @@ exports.ComponentEditor = Montage.create(Component, {
         value: null
     },
 
+    fileUrlEditorMap: {
+        enumerable: false,
+        value: null
+    },
+
+    fileUrlDocumentMap: {
+        enumerable: false,
+        value: null
+    },
+
     didCreate: {
         value: function () {
             this.editorsToInsert = [];
             this.fileUrlEditorPromiseMap = {};
+            this.fileUrlEditorMap = {};
+            this.fileUrlDocumentMap = {};
         }
     },
 
@@ -32,7 +44,10 @@ exports.ComponentEditor = Montage.create(Component, {
             var documentEditorPromise = this.fileUrlEditorPromiseMap[fileUrl],
                 deferredEditor,
                 newEditor,
-                editorFirstDrawHandler;
+                editorFirstDrawHandler,
+                editingDocument,
+                editingDocumentPromise,
+                self = this;
 
             if (!documentEditorPromise) {
                 deferredEditor = Promise.defer();
@@ -45,6 +60,8 @@ exports.ComponentEditor = Montage.create(Component, {
                 editorFirstDrawHandler = function (evt) {
                     var editor = evt.target;
                     editor.removeEventListener("firstDraw", editorFirstDrawHandler, false);
+
+                    self.fileUrlEditorMap[fileUrl] = editor;
                     deferredEditor.resolve(editor);
                 };
 
@@ -53,7 +70,24 @@ exports.ComponentEditor = Montage.create(Component, {
             }
 
             return documentEditorPromise.then(function (editor) {
-                return editor.load(fileUrl, packageUrl);
+
+                editingDocument = self.fileUrlDocumentMap[fileUrl];
+
+                if (editingDocument) {
+                    editingDocumentPromise = Promise.resolve(editingDocument);
+                } else {
+                    editingDocumentPromise = editor.load(fileUrl, packageUrl).then(function (editingDoc) {
+                        self.fileUrlDocumentMap[fileUrl] = editingDoc;
+                        return editingDoc;
+                    });
+                }
+
+                //Update the stadby classes
+                editingDocumentPromise.then(function () {
+                    self.needsDraw = true;
+                });
+
+                return editingDocumentPromise;
             });
         }
     },
@@ -61,9 +95,16 @@ exports.ComponentEditor = Montage.create(Component, {
     draw: {
         value: function () {
 
+            var self = this,
+                editorArea,
+                element,
+                editorElement,
+                fileUrls,
+                currentFileUrl,
+                editor;
+
             if (this.editorsToInsert.length) {
-                var editorArea = this.documentEditorSlot,
-                    element;
+                editorArea = this.documentEditorSlot;
 
                 //TODO do this in a fragment if possible
                 this.editorsToInsert.forEach(function (editor) {
@@ -76,6 +117,21 @@ exports.ComponentEditor = Montage.create(Component, {
                 });
                 this.editorsToInsert = [];
             }
+
+            //TODO optimize this entire draw method
+            fileUrls = Object.keys(this.fileUrlEditorMap);
+            currentFileUrl = this.getProperty("projectController.currentDocument.reelUrl"); //TODO fileUrl hopefully
+
+            fileUrls.forEach(function (fileUrl) {
+                editor = self.fileUrlEditorMap[fileUrl];
+                editorElement = editor.element;
+
+                if (editorElement && fileUrl === currentFileUrl) {
+                    editorElement.classList.remove("standby");
+                } else if (editorElement) {
+                    editor.element.classList.add("standby");
+                }
+            });
 
         }
     }

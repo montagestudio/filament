@@ -321,11 +321,12 @@ exports.ProjectController = Montage.create(Montage, {
 
                 if (docIndex > -1) {
 
-                    this.currentDocument = editingDocument = editingDocuments[docIndex];
-                    this.openDocumentsController.selectedObjects = [editingDocument];
-                    promisedDocument = Promise.resolve(editingDocument);
-
-                    this.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
+                    promisedDocument = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
+                        self.currentDocument = editingDocument;
+                        self.openDocumentsController.selectedObjects = [editingDocument];
+                        self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
+                        return editingDocument;
+                    });
 
                 } else {
 
