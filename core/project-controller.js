@@ -420,7 +420,7 @@ exports.ProjectController = Montage.create(Montage, {
             this.moduleLibraryItemMap[moduleId] = libraryItem;
 
             //TODO don't refresh the library each time
-            this.populateLibrary();
+            this.populateLibrary().done();
         }
     },
 
@@ -430,7 +430,7 @@ exports.ProjectController = Montage.create(Montage, {
             delete this.moduleLibraryItemMap[moduleId];
 
             //TODO don't refresh the library each time
-            this.populateLibrary();
+            this.populateLibrary().done();
         }
     },
 
@@ -494,7 +494,7 @@ exports.ProjectController = Montage.create(Montage, {
             this.environmentBridge.installDependencies(config).then(function () {
                 //TODO update this.dependencies, they've possibly changed
                 self._isInstallingDependencies = false;
-                self.populateLibrary();
+                self.populateLibrary().done();
             }).done();
         }
     },
