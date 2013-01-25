@@ -131,7 +131,7 @@ exports.Main = Montage.create(Component, {
         value: function (evt) {
             //TODO why do we need to append fs to what looks like it should be a URL?
             //TODO as user action made this happen, make sure we end up showing the latest handleOpenFile above all others, regardless of the order the promises resolve in
-            this.openFileUrl("fs:/" + evt.detail.fileUrl).done();
+            this.openFileUrl(evt.detail.fileUrl).done();
         }
     },
 
