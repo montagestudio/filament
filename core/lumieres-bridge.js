@@ -129,17 +129,19 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
             return self.backend.get("fs").invoke("normal", packageUrl + "/ui")
                 .then(function (uiPath) {
-                    return self.backend.get("fs").invoke("list", uiPath)
-                        .then(function (listing) {
-                            return listing.filter(function (entry) {
-                                return !!entry.match(/\.reel$/);
-                            }).map(function (reelEntry) {
-                                return uiPath + "/" + reelEntry;
+                    return self.backend.get("fs").invoke("exists", uiPath).then(function (exists) {
+                        if (exists) {
+                            return self.backend.get("fs").invoke("list", uiPath).then(function (listing) {
+                                return listing.filter(function (entry) {
+                                    return !!entry.match(/\.reel$/);
+                                }).map(function (reelEntry) {
+                                    return uiPath + "/" + reelEntry;
+                                });
                             });
-                        }, function () {
-                            // Couldn't find components where we'd expect? That's fine
+                        } else {
                             return null;
-                        });
+                        }
+                    });
                 });
         }
     },
