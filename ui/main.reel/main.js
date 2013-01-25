@@ -49,6 +49,7 @@ exports.Main = Montage.create(Component, {
             this.editorTypeInstancePromiseMap = new WeakMap();
             this.editorsToInsert = [];
             this.fileUrlEditorMap = {};
+            this.openEditors = [];
 
             this._bridgePromise.then(function (environmentBridge) {
                 self.viewController = ViewController.create();
@@ -145,6 +146,11 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
+    openEditors: {
+        enumerable: false,
+        value: null
+    },
+
     openFileUrl: {
         enumerable: false,
         value: function (fileUrl) {
@@ -173,8 +179,6 @@ exports.Main = Montage.create(Component, {
                         editor.projectController = self.projectController;
 
                         editor.removeEventListener("firstDraw", editorFirstDrawHandler, false);
-
-                        self.fileUrlEditorMap[fileUrl] = editor;
                         deferredEditor.resolve(editor);
                     };
 
@@ -198,6 +202,11 @@ exports.Main = Montage.create(Component, {
     openFileUrlInEditor: {
         enumerable: false,
         value: function (fileUrl, editor) {
+            if (-1 === this.openEditors.indexOf(editor)) {
+                this.openEditors.push(editor);
+            }
+            this.fileUrlEditorMap[fileUrl] = editor;
+
             return this.projectController.openFileUrlInEditor(fileUrl, editor);
         }
     },
@@ -336,9 +345,8 @@ exports.Main = Montage.create(Component, {
 
             var editorArea,
                 element,
-                self,
-                fileUrls,
-                editor,
+                editorElement,
+                currentEditor,
                 currentFileUrl;
 
             if (this.editorsToInsert.length) {
@@ -356,17 +364,15 @@ exports.Main = Montage.create(Component, {
             }
 
             //TODO optimize this entire draw method
-            self = this;
-            fileUrls = Object.keys(this.fileUrlEditorMap);
             currentFileUrl = this.getProperty("projectController.currentDocument.reelUrl"); //TODO fileUrl hopefully
+            currentEditor = this.fileUrlEditorMap[currentFileUrl];
 
-            fileUrls.forEach(function (fileUrl) {
-                editor = self.fileUrlEditorMap[fileUrl];
-
-                if (editor.element && fileUrl === currentFileUrl) {
-                    editor.element.classList.remove("standby");
+            this.openEditors.forEach(function (editor) {
+                editorElement = editor.element;
+                if (editorElement && editor === currentEditor) {
+                    editorElement.classList.remove("standby");
                 } else if (editor.element) {
-                    editor.element.classList.add("standby");
+                    editorElement.classList.add("standby");
                 }
             });
         }
