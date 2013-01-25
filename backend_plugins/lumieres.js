@@ -54,13 +54,31 @@ exports.watch = function (path, changeHandler) {
     });
 };
 
-exports.listTree = function (url) {
-    var guard = function (path, stat) {
-            return !(/\/node_modules\//.test(path));
-        };
+var ignoredPatterns  =[/\.git$/, /\.gitignore$/, /\.DS_Store$/, /\.idea$/, /\/node_modules\//],
+    shallowPatterns  =[/\/node_modules$/],
+    treeGuard = function (path) {
 
-    return QFS.listTree(url, guard).then(function (paths) {
-        return Q.all(paths.map(function (p) {
+        var ignored, shallow;
+
+        ignored = !!(ignoredPatterns.filter(function(pattern) {
+            return pattern.test(path);
+        }).length);
+
+        if (ignored) {
+            return null;
+        } else {
+
+            shallow = !!(shallowPatterns.filter(function(pattern) {
+                return pattern.test(path);
+            }).length);
+
+            return !shallow;
+        }
+    };
+
+exports.listTree = function (url) {
+    return QFS.listTree(url, treeGuard).then(function (paths) {
+        return Q.all(paths.map(function (path) {
             return QFS.stat(path).then(function (stat) {
                return {url: "fs:/" + path, stat: stat};
             });
