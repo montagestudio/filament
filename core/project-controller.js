@@ -62,10 +62,11 @@ exports.ProjectController = Montage.create(Montage, {
             var self = this;
 
             return Promise.all(pluginUrls.map(function (url) {
+                // TODO npm install?
                 return require.loadPackage(url).then(function (packageRequire) {
-                    return packageRequire.async("plugin").then(function (exports) {
-                        return self.loadPlugin(exports);
-                    });
+                    return packageRequire.async("plugin");
+                }).then(function (exports) {
+                    return self.loadPlugin(exports);
                 });
             }));
         }
