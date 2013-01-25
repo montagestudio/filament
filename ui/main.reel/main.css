@@ -53,6 +53,10 @@
     -webkit-flex-direction: column;
 }
 
+.standby {
+    display: none;
+}
+
 /* Editor Area ----------------------- */
 
 .componentEditorArea {
