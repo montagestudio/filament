@@ -62,6 +62,13 @@
                 ]
             },
 
+            "bindings": {
+                "prototype": "ui/bindings.reel",
+                "properties": {
+                    "element": {"#": "bindings"}
+                }
+            },
+
             "bindingJig": {
                 "prototype": "ui/binding-jig.reel",
                 "properties": {
@@ -86,6 +93,7 @@
     <section class="Filament-view">
         <div data-montage-id="documentEditorSlot" class="documentEditorSlot"></div>
 
+        <div data-montage-id="bindings"></div>
         <div data-montage-id="bindingJig"></div>
     </section>
 

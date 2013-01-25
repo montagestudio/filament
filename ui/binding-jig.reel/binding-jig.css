@@ -3,6 +3,10 @@
     color: hsl(0,0%,60%);
 }
 
+.BindingJig.isHidden {
+    display: none;
+}
+
 .BindingJig-section {
     display: -webkit-flex;
     -webkit-align-items: center;

@@ -392,9 +392,7 @@ exports.ProjectController = Montage.create(Montage, {
                                     moduleId = componentUrl.replace(/\S+\/node_modules\//, "");
                                 } else {
                                     //It's a module that's part of the current package being edited
-                                    //TODO palette bootstrapping names the package of the app on the stage as "client"
-                                    // ...it probably shouldn't be so common a word, maybe random each time and reported back?
-                                    moduleId = componentUrl.replace(dependency.url + "/", "client/");
+                                    moduleId = componentUrl.replace(dependency.url + "/", "");
                                 }
                                 objectName = self._objectNameFromModuleId(moduleId);
                                 return self.libraryItemForModuleId(moduleId, objectName);
