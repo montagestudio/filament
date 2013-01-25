@@ -126,6 +126,13 @@
                 "prototype": "montage/ui/application"
             },
 
+            "bindings": {
+                "prototype": "ui/bindings.reel",
+                "properties": {
+                    "element": {"#": "bindings"}
+                }
+            },
+            
             "bindingJig": {
                 "prototype": "ui/binding-jig.reel",
                 "properties": {
@@ -178,6 +185,7 @@
 
             <div data-montage-id="componentEditorArea" class="componentEditorArea"></div>
 
+            <div data-montage-id="bindings"></div>
             <div data-montage-id="bindingJig"></div>
         </section>
 
