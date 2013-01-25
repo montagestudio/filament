@@ -27,6 +27,7 @@ var Menu = exports.Menu = Montage.create(Montage, {
             // Generate an identifier if not is specified
             for (var i in newItems) {
                 var item = newItems[i];
+
                 if (typeof item.identifier !== "string" || item.identifier.length == 0) {
                     item.identifier = item.title || (item.location ? (item.location.after || item.location.before) : "");
                     item.identifier = item.identifier.replace(/ /g, "");
@@ -113,28 +114,61 @@ var Menu = exports.Menu = Montage.create(Montage, {
         value: 0
     },
 
+    insertItem: {
+        value: function(item, index) {
+            var deferredInsert = Promise.defer();
+
+            lumieres.MenuItem.insertItem.call(this, item, index, function(error, item) {
+                if (!error) {
+                    deferredInsert.resolve(item);
+                } else {
+                    deferredInsert.resolve(null);
+                }
+            });
+
+            return deferredInsert.promise;
+        }
+    },
+
+    removeItem: {
+        value: function(item) {
+            var deferredRemove = Promise.defer();
+
+            lumieres.MenuItem.removeItem.call(this, item, function(error, item) {
+                if (!error) {
+                    deferredRemove.resolve(item);
+                } else {
+                    deferredRemove.resolve(null);
+                }
+            });
+
+            return deferredRemove.promise;
+        }
+    },
+
     resetMenu: {
-        value: function(menu, callback) {
+        value: function(menu) {
             var thisRef = this;
+            var deferredReset = Promise.defer();
 
             var _reset = function(item) {
                 if (item.isJavascriptOwned && item.menu) {
                     thisRef._deleteCallbackCount ++;
-                    lumieres.MenuItem.deleteItem.call(item.menu, item, function() {
+                    lumieres.MenuItem.removeItem.call(item.menu, item, function() {
                         thisRef._deleteCallbackCount --;
-                        if (thisRef._deleteCallbackCount == 0 && callback) {
-                            callback();
+                        if (thisRef._deleteCallbackCount == 0) {
                             thisRef._deleteCallbackCount --; // To prevent firing the callback more than once
+                            deferredReset.resolve(menu);
                         }
                     });
                 } else if (item.items) {
                     for (var i in item.items) {
-                        _reset(item.items[i], callback);
+                        _reset(item.items[i]);
                     }
                 }
             };
 
-            if (menu == undefined) {
+            if (!menu) {
                 menu = thisRef._items[0].menu;
                 if (menu) {
                     _reset(menu);
@@ -144,9 +178,11 @@ var Menu = exports.Menu = Montage.create(Montage, {
             }
 
             // Fire the callback when there was no items to delete at all
-            if (thisRef._deleteCallbackCount == 0 && callback) {
-                callback();
+            if (thisRef._deleteCallbackCount == 0) {
+                deferredReset.resolve(menu);
             }
+
+            return deferredReset.promise;
         }
     },
 

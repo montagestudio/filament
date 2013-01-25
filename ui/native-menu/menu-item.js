@@ -5,6 +5,7 @@
  */
 
 var Montage = require("montage/core/core").Montage,
+    Promise = require("montage/core/promise").Promise,
     defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
 var kListenerError = "'menuAction' listener must be installed on a component or the Application object";
@@ -98,6 +99,38 @@ exports.MenuItem = Montage.create(Montage, {
 
     location: {
         value: null
+    },
+
+    insertItem: {
+        value: function(item, index) {
+            var deferredInsert = Promise.defer();
+
+            lumieres.MenuItem.insertItem.call(this, item, index, function(error, item) {
+                if (!error) {
+                    deferredInsert.resolve(item);
+                } else {
+                    deferredInsert.resolve(null);
+                }
+            });
+
+            return deferredInsert.promise;
+        }
+    },
+
+    removeItem: {
+        value: function(item) {
+            var deferredRemove = Promise.defer();
+
+            lumieres.MenuItem.removeItem.call(this, item, function(error, item) {
+                if (!error) {
+                    deferredRemove.resolve(item);
+                } else {
+                    deferredRemove.resolve(null);
+                }
+            });
+
+            return deferredRemove.promise;
+        }
     },
 
     deserializedFromSerialization: {
