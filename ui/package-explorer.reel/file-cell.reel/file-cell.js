@@ -10,7 +10,7 @@ exports.FileCell = Montage.create(Component, {
     handleOpenFileButtonAction: {
         value: function (evt) {
             this.dispatchEventNamed("openFile", true, true, {
-                fileUrl: this.fileInfo.reelUrl
+                fileUrl: this.fileInfo.fileUrl
             });
         }
     }

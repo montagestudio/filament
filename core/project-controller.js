@@ -188,6 +188,10 @@ exports.ProjectController = Montage.create(Montage, {
         value: null
     },
 
+    files: {
+        value: null
+    },
+
     dependencies: {
         value: null
     },
@@ -229,7 +233,7 @@ exports.ProjectController = Montage.create(Montage, {
 
             this.watchForFileChanges();
 
-            Promise.all([this.populateComponents(), this.populateLibrary()])
+            Promise.all([this.populateFiles(), this.populateComponents(), this.populateLibrary()])
                 .then(function () {
                     self.dispatchEventNamed("didOpenPackage", true, false, {
                         packageUrl: self.packageUrl,
@@ -625,6 +629,17 @@ exports.ProjectController = Montage.create(Montage, {
                     }).done();
                 }
             }
+        }
+    },
+
+    populateFiles: {
+        value: function () {
+            var self = this,
+                packagePath = this.environmentBridge.convertBackendUrlToPath(this.packageUrl);
+
+            return this.environmentBridge.listTreeAtUrl(packagePath).then(function (fileDescriptors) {
+                self.files = fileDescriptors;
+            });
         }
     },
 

@@ -4,7 +4,8 @@ var Montage = require("montage/core/core").Montage,
     adaptConnection = require("q-connection/adapt"),
     Promise = require("montage/core/promise").Promise,
     qs = require("qs"),
-    mainMenu = require("ui/native-menu/menu").defaultMenu;
+    mainMenu = require("ui/native-menu/menu").defaultMenu,
+    FileDescriptor = require("core/file-descriptor").FileDescriptor;
 
 exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
@@ -121,7 +122,6 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         }
     },
 
-    //TODO react to changes on the filesystem (created components, deleted components)
     //TODO also find non-components, "LibraryItems"
     componentsInPackage: {
         value: function (packageUrl) {
@@ -141,6 +141,29 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                             return null;
                         });
                 });
+        }
+    },
+
+    listTreeAtUrl: {
+        value: function (url) {
+            var self = this,
+                //TODO use this guard to not go through all of the node_modules directory
+                guard = function (path, stat) {
+                    return !(/\/node_modules\//.test(path));
+                };
+
+            //TODO just use the guard to build the stat collection, seems like it gets it without any extra work
+
+            return self.backend.get("fs").invoke("normal", url).then(function (rootPath) {
+                return self.backend.get("fs").invoke("listTree", rootPath).then(function (paths) {
+                    return Promise.all(paths.map(function (p) {
+                        return self.backend.get("fs").invoke("stat", p).then(function (stat) {
+                            //TODO this URL building should be improved
+                            return FileDescriptor.create().initWithUrlAndStat("fs:/" + rootPath + "/" + p, stat);
+                        });
+                    }));
+                });
+            });
         }
     },
 
