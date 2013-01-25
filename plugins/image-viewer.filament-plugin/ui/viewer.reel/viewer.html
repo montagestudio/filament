@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="viewer.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "viewer"}
+            }
+        },
+
+        "imageView": {
+            "prototype": "montage/ui/image.reel",
+            "properties": {
+                "element": {"#": "imageView"}
+            },
+            "bindings": {
+                "src": {"<-": "@owner.currentDocument.reelUrl"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="viewer" class="Viewer">
+        Image Viewer
+        <img data-montage-id="imageView">
+    </div>
+</body>
+</html>
