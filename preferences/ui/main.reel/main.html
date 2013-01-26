@@ -76,13 +76,22 @@
 <body>
 
     <div data-montage-id="main" class="main">
-        <div class="form-stacked">
-            <label for="httpport" data-montage-id="previewPortLabel">Preview Port</label>
-            <input type="text" data-montage-id="httpport" required value="" pattern="^[1-9]\d{3,}$"/>
-
-            <label for="locale" data-montage-id="localeLabel">Language</label>
-            <div data-montage-id="locale"></div>
-            <aside data-montage-id="restartLabel">Please restart for this change to take effect</aside>
+        
+        <div class="Intro">
+            <img class="Intro-logo" src="../assets/img/logo.png" alt="logo">
+            <p class="Intro-meta" data-montage-id="introMeta">&copy; 2012-2013 Declarativ Inc.</p>
+        </div>
+        
+        <div class="Preferences">
+            <section class="Preferences-section">
+                <label data-montage-id="previewPortLabel" class="Preferences-label" for="httpport">Preview Port</label>
+                <input type="text" data-montage-id="httpport" required value="" pattern="^[1-9]\d{3,}$"/>
+            </section>
+            <section class="Preferences-section">
+                <label data-montage-id="localeLabel" class="Preferences-label" for="locale">Language</label>
+                <select data-montage-id="locale"></select>
+                <p data-montage-id="restartLabel" class="Preferences-hint">Please restart for this change to take effect</p>
+            </section>
         </div>
     </div>
 
