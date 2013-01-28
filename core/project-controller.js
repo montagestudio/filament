@@ -18,6 +18,7 @@ exports.ProjectController = Montage.create(Montage, {
             this.loadedPlugins = [];
             this.activePlugins = [];
             this.moduleLibraryItemMap = {};
+            this.packageNameLibraryItemsMap = {};
 
             this.setupMenuItems();
 
@@ -382,7 +383,8 @@ exports.ProjectController = Montage.create(Montage, {
                 moduleId,
                 objectName,
                 dependencyLibraryPromises,
-                dependencyLibraryEntry;
+                dependencyLibraryEntry,
+                offeredLibraryItems;
 
             dependencyLibraryPromises = dependencies.map(function (dependency) {
 
@@ -410,6 +412,12 @@ exports.ProjectController = Montage.create(Montage, {
                             });
                         } else {
                             dependencyLibraryEntry.libraryItems = [];
+                        }
+
+                        // add libraryItems any plugins offered for this package
+                        offeredLibraryItems = self.packageNameLibraryItemsMap[dependency.dependency];
+                        if (offeredLibraryItems) {
+                            dependencyLibraryEntry.libraryItems.push.apply(dependencyLibraryEntry.libraryItems, offeredLibraryItems);
                         }
 
                         return dependencyLibraryEntry;
@@ -461,6 +469,42 @@ exports.ProjectController = Montage.create(Montage, {
             }
 
             return item;
+        }
+    },
+
+    packageNameLibraryItemsMap: {
+        enumerable: false,
+        value: null
+    },
+
+    registerLibraryItemForPackageName: {
+        value: function (libraryItem, packageName) {
+            var addedLibraryItems = this.packageNameLibraryItemsMap[packageName];
+
+            if (!addedLibraryItems) {
+                addedLibraryItems = this.packageNameLibraryItemsMap[packageName] = [];
+            }
+
+            addedLibraryItems.push(libraryItem);
+
+            //TODO don't refresh the library each time
+            this.populateLibrary().done();
+        }
+    },
+
+    unregisterLibraryItemForPackageName: {
+        value: function (libraryItem, packageName) {
+            var addedLibraryItems = this.packageNameLibraryItemsMap[packageName],
+                index;
+
+            if (addedLibraryItems) {
+                index = addedLibraryItems.indexOf(libraryItem);
+                if (index >= 0) {
+                    addedLibraryItems.splice(index, 1);
+                    //TODO don't refresh the library each time
+                    this.populateLibrary().done();
+                }
+            }
         }
     },
 

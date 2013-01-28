@@ -495,3 +495,23 @@ exports.libraryItems = {
     "montage/ui/repetition.reel": RepetitionLibraryItem,
     "montage/ui/flow.reel": FlowLibraryItem
 };
+
+var ArrayControllerLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/controller/array-controller"
+        }
+    },
+
+    name: {
+        value: "ArrayController"
+    },
+
+    label: {
+        value: "ArrayController"
+    }
+
+});
+
+exports.libraryAdditions = [ArrayControllerLibraryItem];
