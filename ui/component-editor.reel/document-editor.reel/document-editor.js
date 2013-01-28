@@ -58,15 +58,35 @@ exports.DocumentEditor = Montage.create(Component, {
         }
     },
 
-    //TODO Can we get get rid of the editing API being here, on a component and instead always rely on the editingDocument
-    addComponent: {
-        value: function (prototypeEntry) {
+    addLibraryItem: {
+        value: function (libraryItem) {
+
             if (!this.editingDocument) {
                 throw new Error("Cannot add component: no editing document");
             }
-            if (!prototypeEntry) {
+            if (!libraryItem) {
                 throw new Error("Cannot add component: no prototypeEntry");
             }
+
+            if (libraryItem.html) {
+                this.addComponent(libraryItem);
+            } else {
+                this.addObject(libraryItem);
+            }
+        }
+    },
+
+    addObject: {
+        enumerable: false,
+        value: function (prototypeEntry) {
+            return this.editingDocument.addObject(null, prototypeEntry.serialization);
+        }
+    },
+
+    //TODO Can we get get rid of the editing API being here, on a component and instead always rely on the editingDocument
+    addComponent: {
+        enumerable: false,
+        value: function (prototypeEntry) {
 
             var editingDocument = this.editingDocument;
 
@@ -107,7 +127,7 @@ exports.DocumentEditor = Montage.create(Component, {
                 deserializer = Deserializer.create().initWithString(data, "dropped prototype object");
 
             deserializer.deserialize(function (prototypeEntry) {
-                self.addComponent(prototypeEntry);
+                self.addLibraryItem(prototypeEntry);
             });
         }
     }
