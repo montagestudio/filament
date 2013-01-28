@@ -5,7 +5,7 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
-    EditingDocument = require("core/editing-document").EditingDocument,
+    ImageDocument = require("core/image-document").ImageDocument,
     Promise = require("montage/core/promise").Promise;
 
 /**
@@ -22,7 +22,7 @@ exports.Viewer = Montage.create(Component, /** @lends module:"./viewer.reel".Vie
     load: {
         value: function (fileUrl, packageUrl) {
             //TODO not make a new document each time..
-            var document = EditingDocument.create().init(fileUrl, packageUrl);
+            var document = ImageDocument.create().init(fileUrl, packageUrl);
             this.currentDocument = document;
             return Promise.resolve(document);
         }

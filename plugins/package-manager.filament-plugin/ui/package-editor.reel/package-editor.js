@@ -6,7 +6,7 @@
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
-    EditingDocument = require("core/editing-document").EditingDocument;
+    PackageDocument = require("core/package-document").PackageDocument;
 
 /**
     Description TODO
@@ -18,7 +18,7 @@ exports.PackageEditor = Montage.create(Component, /** @lends module:"./package-e
     load: {
         value: function (fileUrl, packageUrl) {
             //TODO not make a new document each time..
-            var document = EditingDocument.create().init(fileUrl, packageUrl);
+            var document = PackageDocument.create().init(fileUrl, packageUrl);
             return Promise.resolve(document);
         }
     }

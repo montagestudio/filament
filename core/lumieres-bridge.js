@@ -59,14 +59,14 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
     projectUrl: {
         get: function () {
             var params = qs.parse(window.location.search.replace(/^\?/, "")),
-                reelParam = params.file,
-                reelUrl;
+                fileParam = params.file,
+                fileUrl;
 
-            if (reelParam && !reelParam.match(/fs:\/\(null\)/)) {
-                reelUrl = reelParam;
+            if (fileParam && !fileParam.match(/fs:\/\(null\)/)) {
+                fileUrl = fileParam;
             }
 
-            return reelUrl;
+            return fileUrl;
         }
     },
 
@@ -88,7 +88,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                             }
 
                             return {
-                                "reelUrl": projectUrl, //TODO rename this ? is it always a reel?
+                                "fileUrl": projectUrl,
                                 "packageUrl": packageUrl,
                                 "dependencies": dependencies
                             };

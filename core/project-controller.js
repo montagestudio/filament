@@ -1,5 +1,4 @@
 var Montage = require("montage/core/core").Montage,
-    ComponentInfo = require("core/component-info.js").ComponentInfo,
     Promise = require("montage/core/promise").Promise,
     LibraryItem = require("core/library-item.js").LibraryItem,
     Deserializer = require("montage/core/deserializer").Deserializer,
@@ -223,14 +222,12 @@ exports.ProjectController = Montage.create(Montage, {
     openProject: {
         enumerable: false,
         value: function (projectInfo) {
-            var reelUrl = projectInfo.reelUrl,
-                self = this;
+            var self = this;
 
             this._fileUrlEditorMap = {};
 
             this.dispatchEventNamed("willOpenPackage", true, false, {
-                packageUrl: projectInfo.packageUrl,
-                reelUrl: reelUrl
+                packageUrl: projectInfo.packageUrl
             });
 
             this.packageUrl = projectInfo.packageUrl;
@@ -241,11 +238,10 @@ exports.ProjectController = Montage.create(Montage, {
 
             this.watchForFileChanges();
 
-            Promise.all([this.populateFiles(), this.populateComponents(), this.populateLibrary()])
+            Promise.all([this.populateFiles(), this.populateLibrary()])
                 .then(function () {
                     self.dispatchEventNamed("didOpenPackage", true, false, {
-                        packageUrl: self.packageUrl,
-                        reelUrl: reelUrl
+                        packageUrl: self.packageUrl
                     });
 
                     //TODO only do this if we have an index.html
@@ -304,12 +300,11 @@ exports.ProjectController = Montage.create(Montage, {
     openFileUrlInEditor: {
         value: function (fileUrl, editor) {
             var editingDocuments,
-                editingDocument,
                 docIndex,
                 self = this,
                 promisedDocument;
 
-            if (this.currentDocument && fileUrl === this.currentDocument.reelUrl) {
+            if (this.currentDocument && fileUrl === this.currentDocument.fileUrl) {
                 promisedDocument = Promise.resolve(this.currentDocument);
             } else {
 
@@ -317,7 +312,7 @@ exports.ProjectController = Montage.create(Montage, {
 
                 editingDocuments = this.openDocumentsController.organizedObjects;
                 docIndex = editingDocuments.map(function (doc) {
-                    return doc.reelUrl;
+                    return doc.fileUrl;
                 }).indexOf(fileUrl);
 
                 if (docIndex > -1) {
@@ -355,7 +350,7 @@ exports.ProjectController = Montage.create(Montage, {
         value: function (notification) {
             if (notification.target === this.openDocumentsController && "selectedObjects" === notification.currentPropertyPath) {
                 if (this.openDocumentsController.selectedObjects && this.openDocumentsController.selectedObjects.length > 0) {
-                    var fileUrl = this.openDocumentsController.selectedObjects[0].reelUrl,
+                    var fileUrl = this.openDocumentsController.selectedObjects[0].fileUrl,
                         editor = this._fileUrlEditorMap[fileUrl];
                     this.openFileUrlInEditor(fileUrl, editor).done();
                 }
@@ -529,10 +524,10 @@ exports.ProjectController = Montage.create(Montage, {
 
             this.dispatchEventNamed("willSave", true, false);
 
-            //TODO use either the url specified (save as), or the currentDoc's reelUrl
-            //TODO improve this, we're reaching deeper than I'd like to find the reelUrl
+            //TODO use either the url specified (save as), or the currentDoc's fileUrl
+            //TODO improve this, we're reaching deeper than I'd like to find the fileUrl
             var self = this;
-            this.environmentBridge.save(this.currentDocument, this.currentDocument.reelUrl).then(function () {
+            this.environmentBridge.save(this.currentDocument, this.currentDocument.fileUrl).then(function () {
                 return self.refreshPreview();
             }).done();
         }
@@ -672,25 +667,15 @@ exports.ProjectController = Montage.create(Montage, {
                 filePath: filePath
             });
 
-            //TODO do we only care about certain changes...what about files inside the reel?
-            if (/\.reel$/.test(filePath)) {
-
-                //TODO this is heavy handed, but really more of a proof of concept than anything else
-                if (!this._isInstallingDependencies) {
-                    this.populateLibrary().done();
-                }
-
-                if (!/\/node_modules\//.test(filePath)) {
-                    var self = this;
-                    this.populateComponents().then(function () {
-                        return self.populateLibrary();
-                    }).done();
-                }
+            //TODO this is heavy handed, but really more of a proof of concept than anything else
+            if (!this._isInstallingDependencies) {
+                this.populateLibrary().done();
             }
         }
     },
 
     populateFiles: {
+        enumerable: false,
         value: function () {
             var self = this,
                 packagePath = this.environmentBridge.convertBackendUrlToPath(this.packageUrl);
@@ -701,20 +686,8 @@ exports.ProjectController = Montage.create(Montage, {
         }
     },
 
-    populateComponents: {
-        value: function () {
-            var self = this,
-                packagePath = this.environmentBridge.convertBackendUrlToPath(this.packageUrl);
-
-            return this.environmentBridge.componentsInPackage(packagePath).then(function (componentUrls) {
-                self.components = componentUrls.map(function (url) {
-                    return ComponentInfo.create().initWithUrl(url);
-                });
-            });
-        }
-    },
-
     populateLibrary: {
+        enumerable: false,
         value: function () {
             var self = this;
             return this.findLibraryItems(this.dependencies).then(function (dependencyLibraryEntries) {

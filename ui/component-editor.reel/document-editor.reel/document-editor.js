@@ -14,7 +14,7 @@ exports.DocumentEditor = Montage.create(Component, {
         value: null
     },
 
-    reelUrl: {
+    fileUrl: {
         value: null
     },
 
@@ -24,18 +24,18 @@ exports.DocumentEditor = Montage.create(Component, {
     },
 
     load: {
-        value: function (reelUrl, packageUrl) {
+        value: function (fileUrl, packageUrl) {
             var self = this,
                 descriptionPromise,
                 stageObject;
 
-            Object.defineBinding(self, "reelUrl", {
+            Object.defineBinding(self, "fileUrl", {
                 boundObject: self,
-                boundObjectPropertyPath: "editingDocument.reelUrl",
+                boundObjectPropertyPath: "editingDocument.fileUrl",
                 oneway: true
             });
 
-            return this.workbench.load(reelUrl, packageUrl).then(function (editingDocument) {
+            return this.workbench.load(fileUrl, packageUrl).then(function (editingDocument) {
                 self.editingDocument = editingDocument;
 
                 editingDocument.editingProxies.forEach(function (proxy) {
