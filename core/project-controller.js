@@ -405,6 +405,8 @@ exports.ProjectController = Montage.create(Montage, {
                                 }
                                 objectName = self._objectNameFromModuleId(moduleId);
                                 return self.libraryItemForModuleId(moduleId, objectName);
+                            }).filter(function (libraryItem) {
+                                return libraryItem;
                             });
                         } else {
                             dependencyLibraryEntry.libraryItems = [];
@@ -451,7 +453,7 @@ exports.ProjectController = Montage.create(Montage, {
 
             if (libraryEntry) {
                 item = libraryEntry.create();
-            } else {
+            } else if (typeof libraryEntry === "undefined") {
                 item = LibraryItem.create();
                 item.serialization = {prototype: moduleId};
                 item.name = objectName;
