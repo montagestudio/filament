@@ -4,7 +4,8 @@ var Montage = require("montage/core/core").Montage,
     adaptConnection = require("q-connection/adapt"),
     Promise = require("montage/core/promise").Promise,
     qs = require("qs"),
-    mainMenu = require("ui/native-menu/menu").defaultMenu;
+    mainMenu = require("ui/native-menu/menu").defaultMenu,
+    FileDescriptor = require("core/file-descriptor").FileDescriptor;
 
 exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
@@ -58,14 +59,14 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
     projectUrl: {
         get: function () {
             var params = qs.parse(window.location.search.replace(/^\?/, "")),
-                reelParam = params.file,
-                reelUrl;
+                fileParam = params.file,
+                fileUrl;
 
-            if (reelParam && !reelParam.match(/fs:\/\(null\)/)) {
-                reelUrl = reelParam;
+            if (fileParam && !fileParam.match(/fs:\/\(null\)/)) {
+                fileUrl = fileParam;
             }
 
-            return reelUrl;
+            return fileUrl;
         }
     },
 
@@ -87,7 +88,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                             }
 
                             return {
-                                "reelUrl": projectUrl, //TODO rename this ? is it always a reel?
+                                "fileUrl": projectUrl,
                                 "packageUrl": packageUrl,
                                 "dependencies": dependencies
                             };
@@ -121,7 +122,6 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         }
     },
 
-    //TODO react to changes on the filesystem (created components, deleted components)
     //TODO also find non-components, "LibraryItems"
     componentsInPackage: {
         value: function (packageUrl) {
@@ -129,18 +129,30 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
             return self.backend.get("fs").invoke("normal", packageUrl + "/ui")
                 .then(function (uiPath) {
-                    return self.backend.get("fs").invoke("list", uiPath)
-                        .then(function (listing) {
-                            return listing.filter(function (entry) {
-                                return !!entry.match(/\.reel$/);
-                            }).map(function (reelEntry) {
-                                return uiPath + "/" + reelEntry;
+                    return self.backend.get("fs").invoke("exists", uiPath).then(function (exists) {
+                        if (exists) {
+                            return self.backend.get("fs").invoke("list", uiPath).then(function (listing) {
+                                return listing.filter(function (entry) {
+                                    return !!entry.match(/\.reel$/);
+                                }).map(function (reelEntry) {
+                                    return uiPath + "/" + reelEntry;
+                                });
                             });
-                        }, function () {
-                            // Couldn't find components where we'd expect? That's fine
+                        } else {
                             return null;
-                        });
+                        }
+                    });
                 });
+        }
+    },
+
+    listTreeAtUrl: {
+        value: function (url) {
+            return this.backend.get("lumieres").invoke("listTree", url).then(function (fileDescriptors) {
+                return fileDescriptors.map(function (fd) {
+                    return FileDescriptor.create().initWithUrlAndStat(fd.url, fd.stat);
+                });
+            });
         }
     },
 

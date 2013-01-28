@@ -1,4 +1,3 @@
-
 .ComponentEditor {
     -webkit-flex: 1;
     display: -webkit-flex;
@@ -6,16 +5,14 @@
     height: 100%;
 }
 
-.ComponentEditor {
-    -webkit-flex: 1 1 auto;
+.Filament-view {
+    -webkit-flex: 1;
     display: -webkit-flex;
     -webkit-flex-direction: column;
-    position: relative;
 }
 
-.ComponentEditor .Workbench {
-	-webkit-flex: 1;
-	border: 10px solid hsl(0,0%,30%);
-	border-bottom: none;
-	box-sizing: border-box;
+.documentEditorSlot {
+    -webkit-flex: 1;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
 }

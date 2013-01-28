@@ -1,12 +1,19 @@
 .PackageExplorer {
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
     width: 240px;
     background: hsl(0,0%,50%);
 }
 
-.PackageExplorer-list {
+.PackageExplorer-title {
+    padding: 10px;
     margin: 0;
-    padding: 0;
-    list-style: none;
+    font-size: 14px;
+    font-weight: normal;
+    text-align: left;
+	background: hsl(0,0%,95%);
+	border-top: 1px solid hsla(0,0%,100%,.5);
+	border-bottom: 1px solid hsla(0,0%,0%,.08);
 }
 
 .PackageExplorer-menu {
@@ -25,3 +32,19 @@
 .PackageExplorer-menu .PackageExplorer-menu-item:first-child {
     margin: 0;
 }
+
+.PackageExplorer-list {
+    -webkit-flex: 1;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+}
+
+.PackageExplorer-list .montage-List-Scroller {
+    -webkit-flex: 1;
+    min-height: 0;
+}
+

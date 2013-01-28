@@ -2,8 +2,10 @@ var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
     ProjectController = require("core/project-controller.js").ProjectController,
+    ViewController = require("core/view-controller.js").ViewController,
     ComponentEditor = require("ui/component-editor.reel").ComponentEditor,
-    List = require("montage/collections/list");
+    List = require("montage/collections/list"),
+    WeakMap = require("montage/collections/weak-map");
 
 var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
@@ -13,7 +15,11 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-    componentEditorArea: {
+    viewController: {
+        value: null
+    },
+
+    editorSlot: {
         value: null
     },
 
@@ -40,12 +46,14 @@ exports.Main = Montage.create(Component, {
 
             var self = this;
 
-            this.reelLoadQueue = new List();
-            this.componentEditorMap = {};
+            this.editorTypeInstancePromiseMap = new WeakMap();
             this.editorsToInsert = [];
+            this.fileUrlEditorMap = {};
+            this.openEditors = [];
 
             this._bridgePromise.then(function (environmentBridge) {
-                self.projectController = ProjectController.create().initWithEnvironmentBridge(environmentBridge);
+                self.viewController = ViewController.create();
+                self.projectController = ProjectController.create().init(environmentBridge, self.viewController);
                 self.projectController.addEventListener("canLoadProject", self, false);
                 self.projectController.addEventListener("didOpenPackage", self, false);
 
@@ -59,10 +67,7 @@ exports.Main = Montage.create(Component, {
 
                 window.addEventListener("openRelatedFile", function (evt) {
                     var url = evt.detail;
-
-                    if (/\.reel\/?$/.test(url)) {
-                        self.openComponent(url.replace("file://localhost", "fs:/").replace(/\/$/, ""));
-                    }
+                    self.openFileUrl(url.replace("file://localhost", "fs:/").replace(/\/$/, ""));
                 });
 
                 window.addEventListener("beforeunload", function () {
@@ -70,6 +75,12 @@ exports.Main = Montage.create(Component, {
                 }, true);
 
                 self.application.addEventListener("menuAction", self, false);
+
+
+                self.viewController.registerEditorTypeForFileTypeMatcher(ComponentEditor, function (fileUrl) {
+                    return (/\.reel\/?$/).test(fileUrl);
+                });
+
 
             }).done();
         }
@@ -96,11 +107,9 @@ exports.Main = Montage.create(Component, {
             document.addEventListener("save", this, false);
 
             var app = document.application;
-            app.addEventListener("openComponent", this);
+            app.addEventListener("openFile", this);
             app.addEventListener("addFile", this);
             app.addEventListener("installDependencies", this);
-
-
 
             // Update title
             // TODO this should be unnecessary as the packageUrl has been changed...
@@ -111,68 +120,94 @@ exports.Main = Montage.create(Component, {
     handleAddComponent: {
         value: function (evt) {
             var editor,
-                currentReelUrl = this.projectController.getProperty("currentDocument.reelUrl");
+                currentFileUrl = this.projectController.getProperty("currentDocument.fileUrl");
 
-            if (currentReelUrl && (editor = this.componentEditorMap[currentReelUrl])) {
+            if (currentFileUrl && (editor = this.componentEditorMap[currentFileUrl])) {
                 editor.addComponent(evt.detail.prototypeObject);
             }
         }
     },
 
-    reelLoadQueue: {
-        enumerable: false,
-        value: null
-    },
-
-    componentEditorMap: {
-        enumerable: false,
-        value: null
-    },
-
-    editorsToInsert: {
-        enumerable: false,
-        value: null
-    },
-
-    handleOpenComponent: {
+    handleOpenFile: {
         value: function (evt) {
-            var reelUrl = "fs:/" + evt.detail.componentUrl;
-            this.openComponent(reelUrl);
+            //TODO why do we need to append fs to what looks like it should be a URL?
+            //TODO as user action made this happen, make sure we end up showing the latest handleOpenFile above all others, regardless of the order the promises resolve in
+            this.openFileUrl(evt.detail.fileUrl).done();
         }
     },
 
-    openComponent: {
+    editorTypeInstancePromiseMap: {
         enumerable: false,
-        value: function (reelUrl) {
-            var editor,
-                self;
+        value: null
+    },
 
-            editor = this.componentEditorMap[reelUrl];
+    fileUrlEditorMap: {
+        enumerable: false,
+        value: null
+    },
 
-            if (editor) {
+    openEditors: {
+        enumerable: false,
+        value: null
+    },
+
+    openFileUrl: {
+        enumerable: false,
+        value: function (fileUrl) {
+            var openFilePromise,
+                editorType = this.viewController.editorTypeForFileUrl(fileUrl),
+                editorPromise,
+                deferredEditor,
+                newEditor,
+                editorFirstDrawHandler,
                 self = this;
-                this.projectController.openComponent(reelUrl, editor).done();
-            } else if (!this.reelLoadQueue.has(reelUrl)) {
-                this.reelLoadQueue.push(reelUrl);
 
-                editor = ComponentEditor.create();
-                this.editorsToInsert.push(editor);
-                editor.addEventListener("firstDraw", this, false);
-                this.needsDraw = true;
+            if (editorType) {
+                editorPromise = this.editorTypeInstancePromiseMap.get(editorType);
+
+                if (!editorPromise) {
+
+                    deferredEditor = Promise.defer();
+                    editorPromise = deferredEditor.promise;
+                    this.editorTypeInstancePromiseMap.set(editorType, editorPromise);
+
+                    newEditor = editorType.create();
+                    this.editorsToInsert.push(newEditor);
+
+                    editorFirstDrawHandler = function (evt) {
+                        var editor = evt.target;
+                        editor.projectController = self.projectController;
+
+                        editor.removeEventListener("firstDraw", editorFirstDrawHandler, false);
+                        deferredEditor.resolve(editor);
+                    };
+
+                    newEditor.addEventListener("firstDraw", editorFirstDrawHandler, false);
+                    this.needsDraw = true;
+                }
+
+                openFilePromise = editorPromise.then(function (editorInstance) {
+                    return self.openFileUrlInEditor(fileUrl, editorInstance);
+                });
+
+            } else {
+                console.log("No editor type for this file", fileUrl);
+                openFilePromise = Promise.resolve(null);
             }
 
+            return openFilePromise;
         }
     },
 
-    handleFirstDraw: {
+    openFileUrlInEditor: {
         enumerable: false,
-        value: function (evt) {
-            var editor = evt.target,
-                reelUrl = this.reelLoadQueue.pop();
+        value: function (fileUrl, editor) {
+            if (-1 === this.openEditors.indexOf(editor)) {
+                this.openEditors.push(editor);
+            }
+            this.fileUrlEditorMap[fileUrl] = editor;
 
-            editor.removeEventListener("firstDraw", this, false);
-            this.componentEditorMap[reelUrl] = editor;
-            this.projectController.openComponent(reelUrl, editor).done();
+            return this.projectController.openFileUrlInEditor(fileUrl, editor);
         }
     },
 
@@ -310,18 +345,16 @@ exports.Main = Montage.create(Component, {
 
             var editorArea,
                 element,
-                self,
-                reelUrls,
-                editor,
-                currentReelUrl;
+                editorElement,
+                currentEditor,
+                currentFileUrl;
 
             if (this.editorsToInsert.length) {
-                editorArea = this.componentEditorArea;
+                editorArea = this.editorSlot;
 
                 //TODO do this in a fragment if possible
                 this.editorsToInsert.forEach(function (editor) {
                     element = document.createElement("div");
-                    element.classList.add("standby");
                     editor.element = element;
                     editorArea.appendChild(element);
                     editor.attachToParentComponent();
@@ -331,17 +364,15 @@ exports.Main = Montage.create(Component, {
             }
 
             //TODO optimize this entire draw method
-            self = this;
-            reelUrls = Object.keys(this.componentEditorMap);
-            currentReelUrl = this.getProperty("projectController.currentDocument.reelUrl");
+            currentFileUrl = this.getProperty("projectController.currentDocument.fileUrl");
+            currentEditor = this.fileUrlEditorMap[currentFileUrl];
 
-            reelUrls.forEach(function (reelUrl) {
-                editor = self.componentEditorMap[reelUrl];
-
-                if (editor.element && reelUrl === currentReelUrl) {
-                    editor.element.classList.remove("standby");
+            this.openEditors.forEach(function (editor) {
+                editorElement = editor.element;
+                if (editorElement && editor === currentEditor) {
+                    editorElement.classList.remove("standby");
                 } else if (editor.element) {
-                    editor.element.classList.add("standby");
+                    editorElement.classList.add("standby");
                 }
             });
         }

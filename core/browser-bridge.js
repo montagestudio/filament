@@ -6,7 +6,7 @@ exports.BrowserBridge = Montage.create(EnvironmentBridge, {
 
     projectInfo: {
         get: function () {
-            return Promise.resolve({"reelUrl": require.getPackage({name: "palette"}).location + "templates/component.reel"});
+            return Promise.resolve({"fileUrl": require.getPackage({name: "palette"}).location + "templates/component.reel"});
         }
     }
 

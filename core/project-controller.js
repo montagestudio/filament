@@ -1,5 +1,4 @@
 var Montage = require("montage/core/core").Montage,
-    ComponentInfo = require("core/component-info.js").ComponentInfo,
     Promise = require("montage/core/promise").Promise,
     LibraryItem = require("core/library-item.js").LibraryItem,
     Deserializer = require("montage/core/deserializer").Deserializer,
@@ -7,9 +6,10 @@ var Montage = require("montage/core/core").Montage,
 
 exports.ProjectController = Montage.create(Montage, {
 
-    initWithEnvironmentBridge: {
-        value: function (bridge) {
+    init: {
+        value: function (bridge, viewController) {
             this._environmentBridge = bridge;
+            this._viewController = viewController;
             this.openDocumentsController = ArrayController.create().initWithContent([]);
 
             this.openDocumentsController.addPropertyChangeListener("selectedObjects", this);
@@ -17,6 +17,7 @@ exports.ProjectController = Montage.create(Montage, {
             this.loadedPlugins = [];
             this.activePlugins = [];
             this.moduleLibraryItemMap = {};
+            this.packageNameLibraryItemsMap = {};
 
             this.setupMenuItems();
 
@@ -105,7 +106,7 @@ exports.ProjectController = Montage.create(Montage, {
                 this.activePlugins.push(plugin);
 
                 if (typeof plugin.activate === "function") {
-                    activationPromise = plugin.activate(document.application, this);
+                    activationPromise = plugin.activate(document.application, this, this._viewController);
                 } else {
                     activationPromise = Promise.resolve(plugin);
                 }
@@ -135,7 +136,7 @@ exports.ProjectController = Montage.create(Montage, {
                 this.activePlugins.splice(index, 1);
 
                 if (typeof plugin.deactivate === "function") {
-                    deactivationPromise = plugin.deactivate(document.application, this);
+                    deactivationPromise = plugin.deactivate(document.application, this, this._viewController);
                 } else {
                     deactivationPromise = Promise.resolve(plugin);
                 }
@@ -156,6 +157,10 @@ exports.ProjectController = Montage.create(Montage, {
         get: function () {
             return this._environmentBridge;
         }
+    },
+
+    _viewController: {
+        value: null
     },
 
     _pluginPromise: {
@@ -188,6 +193,10 @@ exports.ProjectController = Montage.create(Montage, {
         value: null
     },
 
+    files: {
+        value: null
+    },
+
     dependencies: {
         value: null
     },
@@ -213,12 +222,12 @@ exports.ProjectController = Montage.create(Montage, {
     openProject: {
         enumerable: false,
         value: function (projectInfo) {
-            var reelUrl = projectInfo.reelUrl,
-                self = this;
+            var self = this;
+
+            this._fileUrlEditorMap = {};
 
             this.dispatchEventNamed("willOpenPackage", true, false, {
-                packageUrl: projectInfo.packageUrl,
-                reelUrl: reelUrl
+                packageUrl: projectInfo.packageUrl
             });
 
             this.packageUrl = projectInfo.packageUrl;
@@ -229,11 +238,10 @@ exports.ProjectController = Montage.create(Montage, {
 
             this.watchForFileChanges();
 
-            Promise.all([this.populateComponents(), this.populateLibrary()])
+            Promise.all([this.populateFiles(), this.populateLibrary()])
                 .then(function () {
                     self.dispatchEventNamed("didOpenPackage", true, false, {
-                        packageUrl: self.packageUrl,
-                        reelUrl: reelUrl
+                        packageUrl: self.packageUrl
                     });
 
                     //TODO only do this if we have an index.html
@@ -285,16 +293,18 @@ exports.ProjectController = Montage.create(Montage, {
         }
     },
 
-    openComponent: {
-        value: function (reelUrl, editor) {
+    _fileUrlEditorMap: {
+        value: null
+    },
 
+    openFileUrlInEditor: {
+        value: function (fileUrl, editor) {
             var editingDocuments,
-                editingDocument,
                 docIndex,
                 self = this,
                 promisedDocument;
 
-            if (this.currentDocument && reelUrl === this.currentDocument.reelUrl) {
+            if (this.currentDocument && fileUrl === this.currentDocument.fileUrl) {
                 promisedDocument = Promise.resolve(this.currentDocument);
             } else {
 
@@ -302,25 +312,29 @@ exports.ProjectController = Montage.create(Montage, {
 
                 editingDocuments = this.openDocumentsController.organizedObjects;
                 docIndex = editingDocuments.map(function (doc) {
-                    return doc.reelUrl;
-                }).indexOf(reelUrl);
+                    return doc.fileUrl;
+                }).indexOf(fileUrl);
 
                 if (docIndex > -1) {
 
-                    this.currentDocument = editingDocument = editingDocuments[docIndex];
-                    this.openDocumentsController.selectedObjects = [editingDocument];
-                    promisedDocument = Promise.resolve(editingDocument);
-
-                    this.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
+                    promisedDocument = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
+                        self.currentDocument = editingDocument;
+                        self.openDocumentsController.selectedObjects = [editingDocument];
+                        self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
+                        return editingDocument;
+                    });
 
                 } else {
-                    promisedDocument = editor.load(reelUrl, this.packageUrl).then(function (editingDocument) {
+
+                    this._fileUrlEditorMap[fileUrl] = editor;
+
+                    promisedDocument = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
                         self.currentDocument = editingDocument;
                         self.openDocumentsController.addObjects(editingDocument);
                         self.openDocumentsController.selectedObjects = [editingDocument];
 
                         self.dispatchEventNamed("didLoadDocument", true, false, editingDocument);
-                        this.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
+                        self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
 
                         return editingDocument;
                     });
@@ -336,10 +350,9 @@ exports.ProjectController = Montage.create(Montage, {
         value: function (notification) {
             if (notification.target === this.openDocumentsController && "selectedObjects" === notification.currentPropertyPath) {
                 if (this.openDocumentsController.selectedObjects && this.openDocumentsController.selectedObjects.length > 0) {
-                    var reelUrl = this.openDocumentsController.selectedObjects[0].reelUrl;
-                    if (reelUrl !== this.currentDocument.reelUrl) {
-                        this.openComponent(reelUrl).done();
-                    }
+                    var fileUrl = this.openDocumentsController.selectedObjects[0].fileUrl,
+                        editor = this._fileUrlEditorMap[fileUrl];
+                    this.openFileUrlInEditor(fileUrl, editor).done();
                 }
             }
         }
@@ -365,7 +378,8 @@ exports.ProjectController = Montage.create(Montage, {
                 moduleId,
                 objectName,
                 dependencyLibraryPromises,
-                dependencyLibraryEntry;
+                dependencyLibraryEntry,
+                offeredLibraryItems;
 
             dependencyLibraryPromises = dependencies.map(function (dependency) {
 
@@ -388,9 +402,17 @@ exports.ProjectController = Montage.create(Montage, {
                                 }
                                 objectName = self._objectNameFromModuleId(moduleId);
                                 return self.libraryItemForModuleId(moduleId, objectName);
+                            }).filter(function (libraryItem) {
+                                return libraryItem;
                             });
                         } else {
                             dependencyLibraryEntry.libraryItems = [];
+                        }
+
+                        // add libraryItems any plugins offered for this package
+                        offeredLibraryItems = self.packageNameLibraryItemsMap[dependency.dependency];
+                        if (offeredLibraryItems) {
+                            dependencyLibraryEntry.libraryItems.push.apply(dependencyLibraryEntry.libraryItems, offeredLibraryItems);
                         }
 
                         return dependencyLibraryEntry;
@@ -412,7 +434,7 @@ exports.ProjectController = Montage.create(Montage, {
             this.moduleLibraryItemMap[moduleId] = libraryItem;
 
             //TODO don't refresh the library each time
-            this.populateLibrary();
+            this.populateLibrary().done();
         }
     },
 
@@ -422,7 +444,7 @@ exports.ProjectController = Montage.create(Montage, {
             delete this.moduleLibraryItemMap[moduleId];
 
             //TODO don't refresh the library each time
-            this.populateLibrary();
+            this.populateLibrary().done();
         }
     },
 
@@ -434,7 +456,7 @@ exports.ProjectController = Montage.create(Montage, {
 
             if (libraryEntry) {
                 item = libraryEntry.create();
-            } else {
+            } else if (typeof libraryEntry === "undefined") {
                 item = LibraryItem.create();
                 item.serialization = {prototype: moduleId};
                 item.name = objectName;
@@ -442,6 +464,42 @@ exports.ProjectController = Montage.create(Montage, {
             }
 
             return item;
+        }
+    },
+
+    packageNameLibraryItemsMap: {
+        enumerable: false,
+        value: null
+    },
+
+    registerLibraryItemForPackageName: {
+        value: function (libraryItem, packageName) {
+            var addedLibraryItems = this.packageNameLibraryItemsMap[packageName];
+
+            if (!addedLibraryItems) {
+                addedLibraryItems = this.packageNameLibraryItemsMap[packageName] = [];
+            }
+
+            addedLibraryItems.push(libraryItem);
+
+            //TODO don't refresh the library each time
+            this.populateLibrary().done();
+        }
+    },
+
+    unregisterLibraryItemForPackageName: {
+        value: function (libraryItem, packageName) {
+            var addedLibraryItems = this.packageNameLibraryItemsMap[packageName],
+                index;
+
+            if (addedLibraryItems) {
+                index = addedLibraryItems.indexOf(libraryItem);
+                if (index >= 0) {
+                    addedLibraryItems.splice(index, 1);
+                    //TODO don't refresh the library each time
+                    this.populateLibrary().done();
+                }
+            }
         }
     },
 
@@ -466,10 +524,10 @@ exports.ProjectController = Montage.create(Montage, {
 
             this.dispatchEventNamed("willSave", true, false);
 
-            //TODO use either the url specified (save as), or the currentDoc's reelUrl
-            //TODO improve this, we're reaching deeper than I'd like to find the reelUrl
+            //TODO use either the url specified (save as), or the currentDoc's fileUrl
+            //TODO improve this, we're reaching deeper than I'd like to find the fileUrl
             var self = this;
-            this.environmentBridge.save(this.currentDocument, this.currentDocument.reelUrl).then(function () {
+            this.environmentBridge.save(this.currentDocument, this.currentDocument.fileUrl).then(function () {
                 return self.refreshPreview();
             }).done();
         }
@@ -486,7 +544,7 @@ exports.ProjectController = Montage.create(Montage, {
             this.environmentBridge.installDependencies(config).then(function () {
                 //TODO update this.dependencies, they've possibly changed
                 self._isInstallingDependencies = false;
-                self.populateLibrary();
+                self.populateLibrary().done();
             }).done();
         }
     },
@@ -609,38 +667,27 @@ exports.ProjectController = Montage.create(Montage, {
                 filePath: filePath
             });
 
-            //TODO do we only care about certain changes...what about files inside the reel?
-            if (/\.reel$/.test(filePath)) {
-
-                //TODO this is heavy handed, but really more of a proof of concept than anything else
-                if (!this._isInstallingDependencies) {
-                    this.populateLibrary().done();
-                }
-
-                if (!/\/node_modules\//.test(filePath)) {
-                    var self = this;
-                    this.populateComponents().then(function () {
-                        return self.populateLibrary();
-                    }).done();
-                }
+            //TODO this is heavy handed, but really more of a proof of concept than anything else
+            if (!this._isInstallingDependencies) {
+                this.populateLibrary().done();
             }
         }
     },
 
-    populateComponents: {
+    populateFiles: {
+        enumerable: false,
         value: function () {
             var self = this,
                 packagePath = this.environmentBridge.convertBackendUrlToPath(this.packageUrl);
 
-            return this.environmentBridge.componentsInPackage(packagePath).then(function (componentUrls) {
-                self.components = componentUrls.map(function (url) {
-                    return ComponentInfo.create().initWithUrl(url);
-                });
+            return this.environmentBridge.listTreeAtUrl(packagePath).then(function (fileDescriptors) {
+                self.files = fileDescriptors;
             });
         }
     },
 
     populateLibrary: {
+        enumerable: false,
         value: function () {
             var self = this;
             return this.findLibraryItems(this.dependencies).then(function (dependencyLibraryEntries) {

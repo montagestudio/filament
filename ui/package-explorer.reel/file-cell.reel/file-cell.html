@@ -3,30 +3,30 @@
 <head>
     <title></title>
     
-    <link href="component-cell.css" rel="stylesheet">
+    <link href="file-cell.css" rel="stylesheet">
     
     <script type="text/montage-serialization">
     {
         "owner": {
             "properties": {
-                "element": {"#": "component-cell"}
+                "element": {"#": "file-cell"}
             }
         },
 
-        "componentTitle": {
+        "fileTitle": {
             "prototype": "montage/ui/dynamic-text.reel",
             "properties": {
-                "element": {"#": "component-title"}
+                "element": {"#": "file-title"}
             },
             "bindings": {
-                "value": {"<-": "@owner.componentInfo.title"}
+                "value": {"<-": "@owner.fileInfo.name"}
             }
         },
 
-        "openComponentButton": {
+        "openFileButton": {
             "prototype": "montage/ui/button.reel",
             "properties": {
-                "element": {"#": "open-component-button"}
+                "element": {"#": "open-file-button"}
             },
             "listeners": [
                 {
@@ -39,9 +39,9 @@
     </script>
 </head>
 <body>
-    <li data-montage-id="component-cell" class="ComponentCell">
-        <button data-montage-id="open-component-button" class="ComponentCell-button">
-            <span data-montage-id="component-title"></span>
+    <li data-montage-id="file-cell" class="FileCell">
+        <button data-montage-id="open-file-button" class="FileCell-button">
+            <span data-montage-id="file-title"></span>
         </button>
     </li>
 </body>

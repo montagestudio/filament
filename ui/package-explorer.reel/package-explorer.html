@@ -23,33 +23,24 @@
                     "value": {"key": "package_explorer"}
                 }
             },
-            "addComponentLabel": {
-                "prototype": "montage/ui/dynamic-text.reel",
+
+            "fileList": {
+                "prototype": "montage/ui/list.reel",
                 "properties": {
-                    "element": {"#": "addComponentLabel"}
+                    "element": {"#": "fileList"}
                 },
-                "localizations": {
-                    "value": {"key": "add_component"}
+                "bindings": {
+                    "objects": {"<-": "@owner.files"}
                 }
             },
 
-            "componentsList": {
-                "prototype": "montage/ui/repetition.reel",
+            "fileCell": {
+                "prototype": "./file-cell.reel",
                 "properties": {
-                    "element": {"#": "components-list"}
+                    "element": {"#": "file-cell"}
                 },
                 "bindings": {
-                    "objects": {"<-": "@owner.components"}
-                }
-            },
-
-            "componentCell": {
-                "prototype": "ui/component-cell.reel",
-                "properties": {
-                    "element": {"#": "component-cell"}
-                },
-                "bindings": {
-                    "componentInfo": {"<-": "@componentsList.objectAtCurrentIteration"}
+                    "fileInfo": {"<-": "@fileList.objectAtCurrentIteration"}
                 }
             },
 
@@ -90,13 +81,13 @@
 <body>
 
     <div data-montage-id="package-explorer" class="PackageExplorer">
-        <h2 class="Library-title" data-montage-id="packageExplorerLabel">Package Explorer</h2>
+        <h2 data-montage-id="packageExplorerLabel" class="PackageExplorer-title">Package Explorer</h2>
         <menu class="PackageExplorer-menu">
             <button data-montage-id="add-file-button" class="PackageExplorer-menu-item">Add Component…</button>
             <button data-montage-id="install-dependencies-button" class="PackageExplorer-menu-item">Install Dependencies</button>
         </menu>
-        <ul data-montage-id="components-list" class="PackageExplorer-list">
-            <li data-montage-id="component-cell"></li>
+        <ul data-montage-id="fileList" class="PackageExplorer-list">
+            <li data-montage-id="file-cell"></li>
         </ul>
     </div>
 

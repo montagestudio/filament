@@ -1,113 +1,138 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
-    Deserializer = require("montage/core/deserializer").Deserializer,
-    MimeTypes = require("core/mime-types");
+    DocumentEditor = require("./document-editor.reel").DocumentEditor,
+    Promise = require("montage/core/promise").Promise;
 
 exports.ComponentEditor = Montage.create(Component, {
 
-    workbench: {
+    editorsToInsert: {
         enumerable: false,
         value: null
     },
 
-    editingDocument: {
+    documentEditorSlot: {
+        enumerable: false,
         value: null
     },
 
-    reelUrl: {
+    fileUrlEditorPromiseMap: {
+        enumerable: false,
         value: null
     },
 
-    //TODO centralize selection into the editing document
-    selectedObjects: {
+    fileUrlEditorMap: {
+        enumerable: false,
         value: null
+    },
+
+    fileUrlDocumentMap: {
+        enumerable: false,
+        value: null
+    },
+
+    didCreate: {
+        value: function () {
+            this.editorsToInsert = [];
+            this.fileUrlEditorPromiseMap = {};
+            this.fileUrlEditorMap = {};
+            this.fileUrlDocumentMap = {};
+        }
     },
 
     load: {
-        value: function (reelUrl, packageUrl) {
-            var self = this,
-                descriptionPromise,
-                stageObject;
+        value: function (fileUrl, packageUrl) {
+            var documentEditorPromise = this.fileUrlEditorPromiseMap[fileUrl],
+                deferredEditor,
+                newEditor,
+                editorFirstDrawHandler,
+                editingDocument,
+                editingDocumentPromise,
+                self = this;
 
-            Object.defineBinding(self, "reelUrl", {
-                boundObject: self,
-                boundObjectPropertyPath: "editingDocument.reelUrl",
-                oneway: true
-            });
+            if (!documentEditorPromise) {
+                deferredEditor = Promise.defer();
+                documentEditorPromise = deferredEditor.promise;
+                this.fileUrlEditorPromiseMap[fileUrl] = documentEditorPromise;
 
-            return this.workbench.load(reelUrl, packageUrl).then(function (editingDocument) {
-                self.editingDocument = editingDocument;
+                newEditor = DocumentEditor.create();
+                this.editorsToInsert.push(newEditor);
 
-                editingDocument.editingProxies.forEach(function (proxy) {
-                    stageObject = proxy.stageObject;
-                    descriptionPromise = stageObject.description;
-                    if (descriptionPromise) {
-                        descriptionPromise.fail(Function.noop);
-                    }
+                editorFirstDrawHandler = function (evt) {
+                    var editor = evt.target;
+                    editor.removeEventListener("firstDraw", editorFirstDrawHandler, false);
+
+                    self.fileUrlEditorMap[fileUrl] = editor;
+                    deferredEditor.resolve(editor);
+                };
+
+                newEditor.addEventListener("firstDraw", editorFirstDrawHandler, false);
+                this.needsDraw = true;
+            }
+
+            return documentEditorPromise.then(function (editor) {
+
+                editingDocument = self.fileUrlDocumentMap[fileUrl];
+
+                if (editingDocument) {
+                    editingDocumentPromise = Promise.resolve(editingDocument);
+                } else {
+                    editingDocumentPromise = editor.load(fileUrl, packageUrl).then(function (editingDoc) {
+                        self.fileUrlDocumentMap[fileUrl] = editingDoc;
+                        return editingDoc;
+                    });
+                }
+
+                //Update the stadby classes
+                editingDocumentPromise.then(function () {
+                    self.needsDraw = true;
                 });
 
-                return editingDocument;
+                return editingDocumentPromise;
             });
         }
     },
 
-    prepareForDraw: {
+    draw: {
         value: function () {
-            this.workbench.addEventListener("dragover", this, false);
-            this.workbench.addEventListener("drop", this, false);
-        }
-    },
 
-    addComponent: {
-        value: function (prototypeEntry) {
-            if (!this.editingDocument) {
-                throw new Error("Cannot add component: no editing document");
-            }
-            if (!prototypeEntry) {
-                throw new Error("Cannot add component: no prototypeEntry");
-            }
-
-            var editingDocument = this.editingDocument;
-
-            return editingDocument.addComponent(
-                null,
-                prototypeEntry.serialization,
-                prototypeEntry.html
-            ).then(function (proxy) {
-
-                // pre-fetch the description of this object
-                proxy.stageObject.description.fail(Function.noop);
-
-                if (typeof prototypeEntry.postProcess === "function") {
-                    prototypeEntry.postProcess(proxy, editingDocument);
-                }
-            }).done();
-        }
-    },
-
-    handleWorkbenchDragover: {
-        enumerable: false,
-        value: function (event) {
-            if (event.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1) {
-                // allows us to drop
-                event.preventDefault();
-                event.dataTransfer.dropEffect = "copy";
-            } else {
-                event.dataTransfer.dropEffect = "none";
-            }
-        }
-    },
-    handleWorkbenchDrop: {
-        enumerable: false,
-        value: function (event) {
             var self = this,
-                // TODO: security issues?
-                data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
-                deserializer = Deserializer.create().initWithString(data, "dropped prototype object");
+                editorArea,
+                element,
+                editorElement,
+                fileUrls,
+                currentFileUrl,
+                editor;
 
-            deserializer.deserialize(function (prototypeEntry) {
-                self.addComponent(prototypeEntry);
+            if (this.editorsToInsert.length) {
+                editorArea = this.documentEditorSlot;
+
+                //TODO do this in a fragment if possible
+                this.editorsToInsert.forEach(function (editor) {
+                    element = document.createElement("div");
+                    element.classList.add("standby");
+                    editor.element = element;
+                    editorArea.appendChild(element);
+                    editor.attachToParentComponent();
+                    editor.needsDraw = true;
+                });
+                this.editorsToInsert = [];
+            }
+
+            //TODO optimize this entire draw method
+            fileUrls = Object.keys(this.fileUrlEditorMap);
+            currentFileUrl = this.getProperty("projectController.currentDocument.fileUrl");
+
+            fileUrls.forEach(function (fileUrl) {
+                editor = self.fileUrlEditorMap[fileUrl];
+                editorElement = editor.element;
+
+                if (editorElement && fileUrl === currentFileUrl) {
+                    editorElement.classList.remove("standby");
+                } else if (editorElement) {
+                    editor.element.classList.add("standby");
+                }
             });
+
         }
     }
 
