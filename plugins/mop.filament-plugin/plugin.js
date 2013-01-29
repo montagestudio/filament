@@ -47,7 +47,7 @@ exports.Plugin = Montage.create(Plugin, {
                 return toolsMenu.insertItem(mopItem);
             });
 
-            return this.mopMenu.then(function (x) {
+            return this.mopMenu.then(function () {
                 application.addEventListener("menuAction", self, false);
                 return self;
             });
@@ -92,7 +92,11 @@ exports.Plugin = Montage.create(Plugin, {
                 noCss: true,
                 delimiter: "@",
                 overlays: ["browser"],
-                production: true
+                // TODO move this to promise progress notifications when
+                // available over Q-Connection
+                progress: Promise.master(function (progress) {
+                    console.log(progress);
+                })
             }).then(function (result) {
                 console.log("Done mopping:", result);
             }, function (err) {
