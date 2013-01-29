@@ -26,7 +26,7 @@ exports.Configurator = Montage.create(Component, {
     didCreate: {
         value: function () {
             //TODO handle multiple selection better
-            this.addPropertyChangeListener("selectedObjects.0", this, false);
+            this.addPropertyChangeListener("editingDocument.selectedObjects.0", this, false);
         }
     },
 
@@ -45,8 +45,8 @@ exports.Configurator = Montage.create(Component, {
 
     handleChange: {
         value: function (notification) {
-            if ("selectedObjects.0" === notification.currentPropertyPath) {
-                var selectedObject = this.getProperty("selectedObjects.0"),
+            if ("editingDocument.selectedObjects.0" === notification.currentPropertyPath) {
+                var selectedObject = this.getProperty("editingDocument.selectedObjects.0"),
                     self = this;
 
                 if (selectedObject && selectedObject.prototype.indexOf("ui/flow.reel") !== -1) {
