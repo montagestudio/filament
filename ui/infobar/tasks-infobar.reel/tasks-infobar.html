@@ -7,7 +7,15 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "tasks-infobar"}
+                "element": {"#": "tasks-infobar"},
+                "infobar": {"@": "infobar"}
+            }
+        },
+
+        "title": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "title"}
             }
         },
 
@@ -15,7 +23,10 @@
             "prototype": "palette/ui/infobar.reel",
             "properties": {
                 "element": {"#": "infobar"}
-            }
+            },
+            "listeners": [
+                {"type": "closed", "listener": {"@": "owner"}}
+            ]
         }
     }
     </script>
