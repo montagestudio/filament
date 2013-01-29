@@ -1,15 +1,8 @@
 var Montage = require("montage/core/core").Montage,
-    Plugin = require("filament/core/plugin").Plugin,
+    Plugin = require("filament-plugin/core/plugin").Plugin,
     Promise = require("montage/core/promise").Promise;
 
-exports.Plugin = Montage.create(Plugin, {
-
-    name: {
-        get: function () {
-            //TODO read the name from the package or something
-            return "Dev";
-        }
-    },
+var Plugin = exports.Plugin = Montage.create(Plugin, {
 
     supportsFilamentVersion: {
         value: function () {
@@ -56,3 +49,5 @@ exports.Plugin = Montage.create(Plugin, {
     }
 
 });
+
+Plugin.pluginRequire = require;

@@ -45,13 +45,23 @@
             "bindings": {
                 "value": {"<-": "@owner.plugin.name"}
             }
+        },
+
+        "pluginVersion": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "pluginVersion"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.plugin.version"}
+            }
         }
     }
     </script>
 </head>
 <body>
     <li data-montage-id="plugin-cell" class="PluginCell">
-        <button data-montage-id="activationButton">Activate</button><button data-montage-id="deactivationButton">Deactivate</button><span data-montage-id="pluginName"></span>
+        <button data-montage-id="activationButton">Activate</button><button data-montage-id="deactivationButton">Deactivate</button><span data-montage-id="pluginName"></span> <span data-montage-id="pluginVersion"></span>
     </li>
 </body>
 </html>

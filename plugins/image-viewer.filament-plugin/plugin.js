@@ -1,16 +1,9 @@
 var Montage = require("montage/core/core").Montage,
-    Plugin = require("filament/core/plugin").Plugin,
+    Plugin = require("filament-plugin/core/plugin").Plugin,
     Promise = require("montage/core/promise").Promise,
     Viewer = require("ui/viewer.reel").Viewer;
 
-exports.Plugin = Montage.create(Plugin, {
-
-    name: {
-        get: function () {
-            //TODO read the name from the package or something
-            return "ImageViewer";
-        }
-    },
+var Plugin = exports.Plugin = Montage.create(Plugin, {
 
     editorFileMatchFunction: {
         enumerable: false,
@@ -38,3 +31,4 @@ exports.Plugin = Montage.create(Plugin, {
     }
 
 });
+Plugin.pluginRequire = require;

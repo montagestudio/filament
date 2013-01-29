@@ -1,17 +1,10 @@
 var Montage = require("montage/core/core").Montage,
-    Plugin = require("filament/core/plugin").Plugin,
+    Plugin = require("filament-plugin/core/plugin").Plugin,
     Promise = require("montage/core/promise").Promise,
     libraryItems = require("library-items").libraryItems,
     libraryAdditions = require("library-items").libraryAdditions;
 
-exports.Plugin = Montage.create(Plugin, {
-
-    name: {
-        get: function () {
-            //TODO read the name from the package or something
-            return "Montage";
-        }
-    },
+var Plugin = exports.Plugin = Montage.create(Plugin, {
 
     activate: {
         value: function (application, projectController) {
@@ -45,3 +38,4 @@ exports.Plugin = Montage.create(Plugin, {
     }
 
 });
+Plugin.pluginRequire = require;

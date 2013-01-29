@@ -1,6 +1,6 @@
 var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
-    LibraryItem = require("core/library-item.js").LibraryItem,
+    LibraryItem = require("filament-plugin/core/library-item.js").LibraryItem,
     Deserializer = require("montage/core/deserializer").Deserializer,
     ArrayController = require("montage/ui/controller/array-controller").ArrayController;
 
