@@ -75,12 +75,11 @@ exports.Main = Montage.create(Component, {
                 }, true);
 
                 self.application.addEventListener("menuAction", self, false);
-
+                self.application.addEventListener("enterEditor", self, false);
 
                 self.viewController.registerEditorTypeForFileTypeMatcher(ComponentEditor, function (fileUrl) {
                     return (/\.reel\/?$/).test(fileUrl);
                 });
-
 
             }).done();
         }
