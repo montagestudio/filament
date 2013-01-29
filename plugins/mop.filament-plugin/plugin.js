@@ -4,6 +4,7 @@ var Montage = require("montage/core/core").Montage,
     defaultMenu = require("filament/ui/native-menu/menu").defaultMenu,
     MenuItem = require("filament/ui/native-menu/menu-item").MenuItem;
 
+var FILE_PROTOCOL = "file://";
 
 /*global lumieres */
 
@@ -73,12 +74,40 @@ exports.Plugin = Montage.create(Plugin, {
         }
     },
 
+    optimize: {
+        value: function () {
+            var self = this,
+                projectController = this.projectController,
+                bridge = projectController.environmentBridge;
+
+            this.mop = bridge.backend.get("mop");
+
+            var location = FILE_PROTOCOL + bridge.convertBackendUrlToPath(projectController.packageUrl);
+            var buildLocation = FILE_PROTOCOL + bridge.convertBackendUrlToPath(projectController.packageUrl + "/builds");
+
+            return this.mop.invoke("build", location, {
+                buildLocation: buildLocation,
+                minify: true,
+                lint: 0,
+                noCss: true,
+                delimiter: "@",
+                overlays: ["browser"],
+                production: true
+            }).then(function (result) {
+                console.log("Done mopping:", result);
+            }, function (err) {
+                console.error(err.stack);
+            }).then(function () {
+                return self;
+            });
+        }
+    },
 
     handleMenuAction: {
         value: function(event) {
             if (event.detail.identifier === "mop") {
                 console.log("mop menu action");
-
+                this.optimize();
             }
         }
     }
