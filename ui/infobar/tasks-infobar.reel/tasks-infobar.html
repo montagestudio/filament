@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="tasks-infobar.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "tasks-infobar"}
+            }
+        },
+
+        "infobar": {
+            "prototype": "palette/ui/infobar.reel",
+            "properties": {
+                "element": {"#": "infobar"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="tasks-infobar" class="TasksInfobar">
+        <div data-montage-id="infobar" >
+            <progress type="progress" data-montage-id="progress"></progress>
+            <span data-montage-id="title">Waiting</span>
+            <span data-montage-id="info"></span>
+            <button type="button" data-montage-id="details" class="TasksInfobar-details">Details...</button>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+.TasksInfobar {
+}
+
+.TasksInfobar progress {
+    float: left;
+}
+
+.TasksInfobar-details {
+    float: right;
+    margin-right: 30px;
+}

@@ -1,7 +1,13 @@
+.Main-wrap {
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    height: 100%;
+}
+
 .Main {
     display: -webkit-flex;
+    -webkit-flex: 1;
     -webkit-flex-direction: row;
-    height: 100%;
 }
 
 .Main .editor {

@@ -19,6 +19,13 @@
                 }
             },
 
+            "tasksInfobar": {
+                "prototype": "ui/infobar/tasks-infobar.reel",
+                "properties": {
+                    "element": {"#": "tasksInfobar"}
+                }
+            },
+
             "pluginPanel": {
                 "prototype": "ui/plugin-panel.reel",
                 "properties": {
@@ -111,19 +118,23 @@
 </head>
 <body>
 
-    <div data-montage-id="main" class="Main">
+    <div data-montage-id="main" class="Main-wrap">
 
-        <aside data-montage-id="pluginPanel"></aside>
-        <aside data-montage-id="packageExplorer" class="palette"></aside>
+        <div data-montage-id="tasksInfobar"></div>
 
-        <section class="editor">
-            <nav data-montage-id="openComponentList" class="openComponentTabs palette">
-                <span data-montage-id="documentTab" class="openComponentTab"></span>
-            </nav>
-            <section data-montage-id="editorSlot" class="editorSlot"></section>
-        </section>
+        <div class="Main">
+            <aside data-montage-id="pluginPanel"></aside>
+            <aside data-montage-id="packageExplorer" class="palette"></aside>
 
-        <aside data-montage-id="modalEditorSlot" class="modalEditorSlot"></aside>
+            <section class="editor">
+                <nav data-montage-id="openComponentList" class="openComponentTabs palette">
+                    <span data-montage-id="documentTab" class="openComponentTab"></span>
+                </nav>
+                <section data-montage-id="editorSlot" class="editorSlot"></section>
+            </section>
+
+            <aside data-montage-id="modalEditorSlot" class="modalEditorSlot"></aside>
+        </div>
     </div>
 
 </body>
