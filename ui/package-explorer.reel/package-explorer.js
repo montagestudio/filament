@@ -7,12 +7,6 @@ exports.PackageExplorer = Montage.create(Component, {
         value: function (evt) {
             this.dispatchEventNamed("addFile", true, true);
         }
-    },
-
-    handleInstallDependenciesButtonAction: {
-        value: function (evt) {
-            this.dispatchEventNamed("installDependencies", true, true);
-        }
     }
 
 });

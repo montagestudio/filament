@@ -108,7 +108,6 @@ exports.Main = Montage.create(Component, {
             var app = document.application;
             app.addEventListener("openFile", this);
             app.addEventListener("addFile", this);
-            app.addEventListener("installDependencies", this);
 
             // Update title
             // TODO this should be unnecessary as the packageUrl has been changed...
@@ -129,7 +128,6 @@ exports.Main = Montage.create(Component, {
 
     handleOpenFile: {
         value: function (evt) {
-            //TODO why do we need to append fs to what looks like it should be a URL?
             //TODO as user action made this happen, make sure we end up showing the latest handleOpenFile above all others, regardless of the order the promises resolve in
             this.openFileUrl(evt.detail.fileUrl).done();
         }
@@ -215,13 +213,6 @@ exports.Main = Montage.create(Component, {
         value: function () {
             //TODO don't call addComponent until we know it's a component we want
             this.projectController.createComponent();
-        }
-    },
-
-    handleInstallDependencies: {
-        enumerable: false,
-        value: function () {
-            this.projectController.installDependencies();
         }
     },
 
