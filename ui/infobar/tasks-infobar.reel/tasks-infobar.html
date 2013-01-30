@@ -12,31 +12,78 @@
             }
         },
 
-        "title": {
-            "prototype": "montage/ui/dynamic-text.reel",
-            "properties": {
-                "element": {"#": "title"}
-            }
-        },
-
         "infobar": {
             "prototype": "palette/ui/infobar.reel",
             "properties": {
                 "element": {"#": "infobar"}
             },
+            "bindings": {
+                "open": {"<->": "@owner.open"}
+            },
             "listeners": [
                 {"type": "closed", "listener": {"@": "owner"}}
             ]
+        },
+
+        "completedTitle": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "completedTitle"}
+            }
+        },
+        "completedInfo": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "completedInfo"}
+            }
+        },
+
+        "failedTitle": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "failedTitle"}
+            }
+        },
+        "failedInfo": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "failedInfo"}
+            }
+        },
+
+        "runningTitle": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "runningTitle"}
+            }
+        },
+        "runningInfo": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "runningInfo"}
+            }
         }
     }
     </script>
 </head>
 <body>
     <div data-montage-id="tasks-infobar" class="TasksInfobar">
-        <div data-montage-id="infobar" >
-            <progress type="progress" data-montage-id="progress"></progress>
-            <span data-montage-id="title">Waiting</span>
-            <span data-montage-id="info"></span>
+        <div data-montage-id="infobar">
+            <div class="TasksInfobar-completed">
+                ✔
+                <span data-montage-id="completedTitle">Waiting</span>
+                <span data-montage-id="completedInfo"></span>
+            </div>
+            <div class="TasksInfobar-failed">
+                ✘
+                <span data-montage-id="failedTitle">Waiting</span>
+                <span data-montage-id="failedInfo"></span>
+            </div>
+            <div class="TasksInfobar-running">
+                <progress type="progress" data-montage-id="progress"></progress>
+                <span data-montage-id="runningTitle">Waiting</span>
+                <span data-montage-id="runningInfo"></span>
+            </div>
             <button type="button" data-montage-id="details" class="TasksInfobar-details">Details...</button>
         </div>
     </div>

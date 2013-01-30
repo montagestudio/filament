@@ -7,6 +7,8 @@ var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     Set = require("collections/set");
 
+var CLASS_PREFIX = "TasksInfobar";
+
 /**
     Description TODO
     @class module:"ui/tasks-infobar.reel".TasksInfobar
@@ -77,13 +79,42 @@ exports.TasksInfobar = Montage.create(Component, /** @lends module:"ui/tasks-inf
 
     draw: {
         value: function() {
-            var out = "";
+            var states = ["Completed", "Failed", "Running"];
 
-            out += this._runningTasks.length + " running ";
-            out += this._completedTasks.length + " completed ";
-            out += this._failedTasks.length + " failed ";
+            for (var i = 0; i < 3; i++) {
+                var state = states[i];
+                var lowerState = state.toLowerCase();
+                var num = this["_"+lowerState+"Tasks"].length;
 
-            this.templateObjects.title.value = out;
+                this._element.classList.remove(CLASS_PREFIX+"--none"+state);
+                this._element.classList.remove(CLASS_PREFIX+"--one"+state);
+                this._element.classList.remove(CLASS_PREFIX+"--many"+state);
+                if (num === 0) {
+                    this._element.classList.add(CLASS_PREFIX+"--none"+state);
+
+                    this.templateObjects[lowerState+"Title"].value = "";
+                    this.templateObjects[lowerState+"Info"].value = "";
+                } else if (num === 1) {
+                    this._element.classList.add(CLASS_PREFIX+"--one"+state);
+
+                    this.templateObjects[lowerState+"Title"].value = this["_"+lowerState+"Tasks"].one().title;
+                    this.templateObjects[lowerState+"Info"].value = this["_"+lowerState+"Tasks"].one().info;
+                } else {
+                    this._element.classList.add(CLASS_PREFIX+"--many"+state);
+                    // TODO localize
+                    this.templateObjects[lowerState+"Title"].value = num;
+                    this.templateObjects[lowerState+"Info"].value = "";
+                }
+            }
+
+
+            // var out = "";
+
+            // out += this._runningTasks.length + " running ";
+            // out += this._completedTasks.length + " completed ";
+            // out += this._failedTasks.length + " failed ";
+
+            // this.templateObjects.title.value = out;
         }
     }
 

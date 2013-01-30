@@ -6,6 +6,52 @@
 }
 
 .TasksInfobar-details {
-    float: right;
-    margin-right: 30px;
+    position: absolute;
+    top: 5px;
+    right: 30px;
 }
+
+.TasksInfobar-completed, .TasksInfobar-failed, .TasksInfobar-running {
+    float: left;
+
+    overflow: hidden;
+    white-space: nowrap;
+
+    height: 100%;
+
+    -webkit-transition: width 200ms ease-in-out;
+
+    /* TODO remove: */
+    width: 30%;
+}
+
+.TasksInfobar-completed {
+    background: rgb(159, 255, 128);
+}
+
+.TasksInfobar-failed {
+    background: rgb(253, 166, 163);
+}
+
+.TasksInfobar--noneCompleted .TasksInfobar-completed,
+.TasksInfobar--noneFailed .TasksInfobar-failed,
+.TasksInfobar--noneRunning .TasksInfobar-running {
+    width: 0px;
+}
+
+.TasksInfobar--manyCompleted .TasksInfobar-completed,
+.TasksInfobar--manyFailed .TasksInfobar-failed {
+    width: 50px;
+}
+
+/* only one of a type */
+.TasksInfobar--oneCompleted.TasksInfobar--noneFailed.TasksInfobar--noneRunning .TasksInfobar-completed {
+    width: 100%;
+}
+.TasksInfobar--noneCompleted.TasksInfobar--oneFailed.TasksInfobar--noneRunning .TasksInfobar-failed {
+    width: 100%;
+}
+.TasksInfobar--noneCompleted.TasksInfobar--noneFailed.TasksInfobar--oneRunning .TasksInfobar-running {
+    width: 100%;
+}
+
