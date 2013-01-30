@@ -54,7 +54,12 @@ exports.TasksInfobar = Montage.create(Component, /** @lends module:"ui/tasks-inf
                 self._completedTasks.add(task);
                 self.needsDraw = true;
             }, function (err) {
-                task.info = err;
+                var message = "";
+                if (err.message) message = err.message;
+                // avoid ugly [object Object]
+                else if (err.toString !== Object.prototype.toString) message = err.toString;
+
+                task.info = message;
                 self._runningTasks.delete(task);
                 self._failedTasks.add(task);
                 self.needsDraw = true;
