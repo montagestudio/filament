@@ -20,9 +20,6 @@
     height: 100%;
 
     -webkit-transition: width 200ms ease-in-out;
-
-    /* TODO remove: */
-    width: 30%;
 }
 
 .TasksInfobar-completed {
@@ -34,8 +31,7 @@
 }
 
 .TasksInfobar--noneCompleted .TasksInfobar-completed,
-.TasksInfobar--noneFailed .TasksInfobar-failed,
-.TasksInfobar--noneRunning .TasksInfobar-running {
+.TasksInfobar--noneFailed .TasksInfobar-failed {
     width: 0px;
 }
 
@@ -63,7 +59,7 @@
     width: 50px;
 }
 
-/* 1 completed or many completed, 1 failed, 0 running
+/* 1 completed or many completed, 1 or many failed, 0 running
                                     |c|f       | */
 .TasksInfobar--oneCompleted.TasksInfobar--oneFailed.TasksInfobar--noneRunning .TasksInfobar-failed {
     width: -webkit-calc(100% - 50px);
