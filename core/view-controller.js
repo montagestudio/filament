@@ -7,8 +7,13 @@ exports.ViewController = Montage.create(Montage, {
         value: function () {
             this.editorMatchers = [];
             this.matcherEditorTypeMap = new WeakMap();
+
+            this.modalEditorMatchers = [];
+            this.matcherModalEditorTypeMap = new WeakMap();
         }
     },
+
+    // Editor Registration
 
     matcherEditorTypeMap: {
         enumerable: false,
@@ -59,17 +64,56 @@ exports.ViewController = Montage.create(Montage, {
         }
     },
 
-    registerExtendedEditorForObjectTypeMatcher: {
-        value: function (editor, objectTypeMatcher) {
+    // Modal Editor Registration
 
+    matcherModalEditorTypeMap: {
+        enumerable: false,
+        value: null
+    },
+
+    modalEditorMatchers: {
+        enumerable: false,
+        value: null
+    },
+
+    registerModalEditorTypeForObjectTypeMatcher: {
+        value: function (editorType, objectTypeMatcher) {
+            if (!(editorType && objectTypeMatcher)) {
+                throw new Error("Both an modal editor type and a matcher function are needed to register");
+            }
+
+            if (this.matcherModalEditorTypeMap.has(objectTypeMatcher)) {
+                throw new Error("Already has an modal editor type registered for this matcher");
+            }
+
+            //TODO use one data structure for both of these
+            this.modalEditorMatchers.push(objectTypeMatcher);
+            this.matcherModalEditorTypeMap.set(objectTypeMatcher, editorType);
         }
     },
 
-    unregisterExtendedEditorForObjectTypeMatcher: {
+    unregisterModalEditorTypeForObjectTypeMatcher: {
         value: function (objectTypeMatcher) {
-
+            //TODO implement this
         }
     },
+
+    modalEditorTypeForObject: {
+        value: function (object) {
+            var editorType,
+                matchResults = this.modalEditorMatchers.filter(function (matcher) {
+                    return matcher(object) ? matcher : false;
+                });
+
+            if (matchResults.length) {
+                editorType = this.matcherModalEditorTypeMap.get(matchResults[matchResults.length - 1]);
+            }
+
+            return editorType;
+        }
+    },
+
+    //Contextual Inspectors
 
     registerContextualInspectorForObjectTypeMatcher: {
         value: function (contextualInspector, objectTypeMatcher) {

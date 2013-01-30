@@ -52,14 +52,9 @@
                     "element": {"#": "configurator"}
                 },
                 "bindings": {
-                    "editingDocument": {"<-": "@owner.projectController.currentDocument"}
-                },
-                "listeners": [
-                    {
-                        "type": "enterEditor",
-                        "listener": {"@": "owner"}
-                    }
-                ]
+                    "editingDocument": {"<-": "@owner.projectController.currentDocument"},
+                    "viewController": {"<-": "@owner.viewController"}
+                }
             },
 
             "bindings": {
@@ -87,17 +82,17 @@
 <body>
 
 <section data-montage-id="componentEditor" class="ComponentEditor">
-    <aside data-montage-id="library"></aside>
-    <aside data-montage-id="templateExplorer"></aside>
+    <aside data-montage-id="library" class="palette"></aside>
+    <aside data-montage-id="templateExplorer" class="palette"></aside>
 
     <section class="Filament-view">
         <div data-montage-id="documentEditorSlot" class="documentEditorSlot"></div>
 
-        <div data-montage-id="bindings"></div>
-        <div data-montage-id="bindingJig"></div>
+        <div data-montage-id="bindings" class="palette"></div>
+        <div data-montage-id="bindingJig" class="palette"></div>
     </section>
 
-    <aside data-montage-id="configurator"></aside>
+    <aside data-montage-id="configurator" class="palette"></aside>
 </section>
 
 </body>

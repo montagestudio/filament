@@ -5,6 +5,14 @@ var Montage = require("montage/core/core").Montage,
 
 exports.ComponentEditor = Montage.create(Component, {
 
+    projectController: {
+        value: null
+    },
+
+    viewController: {
+        vaule: null
+    },
+
     editorsToInsert: {
         enumerable: false,
         value: null

@@ -34,6 +34,10 @@ exports.Configurator = Montage.create(Component, {
         value: null
     },
 
+    viewController: {
+        value: null
+    },
+
     //TODO this is a little weird that the inspector for selectedObjects.I finds its controller from inspectorControllers.I
     inspectorControllers: {
         value: null
@@ -47,12 +51,10 @@ exports.Configurator = Montage.create(Component, {
         value: function (notification) {
             if ("editingDocument.selectedObjects.0" === notification.currentPropertyPath) {
                 var selectedObject = this.getProperty("editingDocument.selectedObjects.0"),
-                    self = this;
+                    inspectorController = this.viewController.modalEditorTypeForObject(selectedObject);
 
-                if (selectedObject && selectedObject.prototype.indexOf("ui/flow.reel") !== -1) {
-                    require.async("flow-editor/core/controller").get("Controller").then(function (Controller) {
-                        self.inspectorControllers = [Controller];
-                    });
+                if (inspectorController) {
+                    this.inspectorControllers = [inspectorController];
                 } else {
                     this.inspectorControllers = null;
                 }

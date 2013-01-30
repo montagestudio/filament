@@ -59,7 +59,7 @@
                 "prototype": "montage/ui/composer/key-composer",
                 "properties": {
                     "keys": "escape",
-                    "identifier": "exitEditor",
+                    "identifier": "exitModalEditor",
                     "component": {"@": "application"}
                 },
                 "listeners": [
@@ -70,13 +70,13 @@
                 ]
             },
 
-            "extendedEditorSlot": {
+            "modalEditorSlot": {
                 "prototype": "montage/ui/slot.reel",
                 "properties": {
-                    "element": {"#": "extendedEditorSlot"}
+                    "element": {"#": "modalEditorSlot"}
                 },
                 "bindings": {
-                    "content": {"<-": "@owner.extendedEditorComponent"}
+                    "content": {"<-": "@owner.modalEditorComponent"}
                 }
             },
 
@@ -111,19 +111,19 @@
 </head>
 <body>
 
-    <div data-montage-id="main" class="Main">
+    <div data-montage-id="main" class="Main">1
 
         <aside data-montage-id="pluginPanel"></aside>
-        <aside data-montage-id="packageExplorer"></aside>
+        <aside data-montage-id="packageExplorer" class="palette"></aside>
 
         <section class="editor">
-            <nav data-montage-id="openComponentList" class="openComponentTabs">
+            <nav data-montage-id="openComponentList" class="openComponentTabs palette">
                 <span data-montage-id="documentTab" class="openComponentTab"></span>
             </nav>
             <section data-montage-id="editorSlot" class="editorSlot"></section>
         </section>
 
-        <aside data-montage-id="extendedEditorSlot" class="extendedEditorSlot"></aside>
+        <aside data-montage-id="modalEditorSlot" class="modalEditorSlot"></aside>
     </div>
 
 </body>

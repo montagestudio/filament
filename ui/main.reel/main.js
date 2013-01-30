@@ -75,7 +75,7 @@ exports.Main = Montage.create(Component, {
                 }, true);
 
                 self.application.addEventListener("menuAction", self, false);
-                self.application.addEventListener("enterEditor", self, false);
+                self.application.addEventListener("enterModalEditor", self, false);
 
                 self.viewController.registerEditorTypeForFileTypeMatcher(ComponentEditor, function (fileUrl) {
                     return (/\.reel\/?$/).test(fileUrl);
@@ -174,6 +174,7 @@ exports.Main = Montage.create(Component, {
                     editorFirstDrawHandler = function (evt) {
                         var editor = evt.target;
                         editor.projectController = self.projectController;
+                        editor.viewController = self.viewController;
 
                         editor.removeEventListener("firstDraw", editorFirstDrawHandler, false);
                         deferredEditor.resolve(editor);
@@ -286,38 +287,38 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    handleExitEditorKeyPress: {
+    handleExitModalEditorKeyPress: {
         enumerable: false,
         value: function () {
-            this.editorComponent = null;
+            this.modalEditorComponent = null;
             this.palettesVisible = true;
-            this._isUsingEditor = true;
+            this._isUsingModalEditor = false;
         }
     },
 
-    _isUsingEditor: {
+    _isUsingModalEditor: {
         value: false
     },
 
-    isUsingEditor: {
+    isUsingModalEditor: {
         get: function () {
-            return this._isUsingEditor;
+            return this._isUsingModalEditor;
         }
     },
 
     /**
      The component to show in the slot that will edit the selected component
      */
-    extendedEditorComponent: {
+    modalEditorComponent: {
         value: null
     },
 
-    handleEnterEditor: {
+    handleEnterModalEditor: {
         enumerable: false,
         value: function (event) {
-            this.extendedEditorComponent = event.detail.component;
+            this.modalEditorComponent = event.detail.modalEditor;
             this.palettesVisible = false;
-            this._isUsingEditor = true;
+            this._isUsingModalEditor = true;
         }
     },
 
