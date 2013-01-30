@@ -54,7 +54,7 @@
 
 
 .editorSlot {
-    -webkit-flex: 1;
+    -webkit-flex: auto;
     display: -webkit-flex;
     -webkit-flex-direction: column;
 }
