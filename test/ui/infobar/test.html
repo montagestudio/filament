@@ -23,6 +23,15 @@
                     {"type": "action", "listener": {"@": "owner"}}
                 ]
             },
+            "countdownFail": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "countdownFail"}
+                },
+                "listeners": [
+                    {"type": "action", "listener": {"@": "owner"}}
+                ]
+            },
             "complete": {
                 "prototype": "montage/ui/button.reel",
                 "properties": {
@@ -58,7 +67,8 @@
     <div data-montage-id="owner">
         <div data-montage-id="tasksInfobar" style="width: 100%"></div>
 
-        <button data-montage-id="countdown">5 second count down</button>
+        <button data-montage-id="countdown">5 second to complete</button>
+        <button data-montage-id="countdownFail">5 second to fail</button>
         <button data-montage-id="complete">complete</button>
         <button data-montage-id="fail">fail</button>
     </div>

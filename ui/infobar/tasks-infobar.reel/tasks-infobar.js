@@ -89,20 +89,23 @@ exports.TasksInfobar = Montage.create(Component, /** @lends module:"ui/tasks-inf
                 var els = this["_"+lowerState+"Els"];
 
 
-                this._element.classList.remove(CLASS_PREFIX+"--none"+state);
-                this._element.classList.remove(CLASS_PREFIX+"--one"+state);
-                this._element.classList.remove(CLASS_PREFIX+"--many"+state);
                 if (num === 0) {
                     this._element.classList.add(CLASS_PREFIX+"--none"+state);
+                    this._element.classList.remove(CLASS_PREFIX+"--one"+state);
+                    this._element.classList.remove(CLASS_PREFIX+"--many"+state);
 
                     els.title.textContent = "";
                     els.info.textContent= "";
                 } else if (num === 1) {
+                    this._element.classList.remove(CLASS_PREFIX+"--none"+state);
                     this._element.classList.add(CLASS_PREFIX+"--one"+state);
+                    this._element.classList.remove(CLASS_PREFIX+"--many"+state);
 
                     els.title.textContent = tasks.one().title;
                     els.info.textContent = tasks.one().info;
                 } else {
+                    this._element.classList.remove(CLASS_PREFIX+"--none"+state);
+                    this._element.classList.add(CLASS_PREFIX+"--one"+state);
                     this._element.classList.add(CLASS_PREFIX+"--many"+state);
                     // TODO localize
                     els.title.textContent = num;

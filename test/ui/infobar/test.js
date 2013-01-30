@@ -20,6 +20,23 @@ exports.Test = Montage.create(Montage, {
         }
     },
 
+    handleCountdownFailAction: {
+        value: function() {
+            var deferred = Promise.defer(), count = 5;
+            var countDown = function() {
+                count--;
+                if (count === 0) {
+                    deferred.reject("fail counted");
+                } else {
+                    deferred.notify(count);
+                    setTimeout(countDown, 1000);
+                }
+            };
+            this.infobar.addTask(deferred.promise, "Count down", "counting...");
+            countDown();
+        }
+    },
+
     handleCompleteAction: {
         value: function() {
             this.infobar.addTask(Promise.resolve("completed"), "Complete", "complete note");

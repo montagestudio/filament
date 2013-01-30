@@ -39,19 +39,33 @@
     width: 0px;
 }
 
+/* only one of a type */
+.TasksInfobar--oneCompleted.TasksInfobar--noneFailed.TasksInfobar--noneRunning .TasksInfobar-completed,
+.TasksInfobar--noneCompleted.TasksInfobar--oneFailed.TasksInfobar--noneRunning .TasksInfobar-failed,
+.TasksInfobar--noneCompleted.TasksInfobar--noneFailed.TasksInfobar--oneRunning .TasksInfobar-running {
+    width: 100%;
+}
+
+/* 1 completed, 1 or many running   |c|r       | */
+.TasksInfobar--oneCompleted.TasksInfobar--oneRunning .TasksInfobar-completed,
+/* 1 failed, 1 or many running      |f|r       | */
+.TasksInfobar--oneFailed.TasksInfobar--oneRunning .TasksInfobar-failed,
+/* 1 completed or many completed, 1 failed or many failed, 1 or many running
+                                    |c|f|r     | */
+.TasksInfobar--oneCompleted.TasksInfobar--oneFailed.TasksInfobar--oneRunning .TasksInfobar-completed,
+.TasksInfobar--oneCompleted.TasksInfobar--oneFailed.TasksInfobar--oneRunning .TasksInfobar-failed,
+/* many completed, many failed      |c|f|?     | */
 .TasksInfobar--manyCompleted .TasksInfobar-completed,
-.TasksInfobar--manyFailed .TasksInfobar-failed {
+.TasksInfobar--manyFailed .TasksInfobar-failed,
+/* 1 completed or many completed, 1 failed, 0 running
+                                    |c|f       | */
+.TasksInfobar--oneCompleted.TasksInfobar--oneFailed.TasksInfobar--noneRunning .TasksInfobar-completed {
     width: 50px;
 }
 
-/* only one of a type */
-.TasksInfobar--oneCompleted.TasksInfobar--noneFailed.TasksInfobar--noneRunning .TasksInfobar-completed {
-    width: 100%;
-}
-.TasksInfobar--noneCompleted.TasksInfobar--oneFailed.TasksInfobar--noneRunning .TasksInfobar-failed {
-    width: 100%;
-}
-.TasksInfobar--noneCompleted.TasksInfobar--noneFailed.TasksInfobar--oneRunning .TasksInfobar-running {
-    width: 100%;
+/* 1 completed or many completed, 1 failed, 0 running
+                                    |c|f       | */
+.TasksInfobar--oneCompleted.TasksInfobar--oneFailed.TasksInfobar--noneRunning .TasksInfobar-failed {
+    width: -webkit-calc(100% - 50px);
 }
 
