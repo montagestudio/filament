@@ -631,20 +631,20 @@ exports.ProjectController = Montage.create(Montage, {
                 },
                 self = this;
 
-            this.environmentBridge.promptForSave(options)
-                .then(function (destination) {
-                    if (!destination) {
-                        return null;
-                    }
+            return this.environmentBridge.promptForSave(options)
+            .then(function (destination) {
+                if (!destination) {
+                    return null;
+                }
 
-                    var destinationDividerIndex = destination.lastIndexOf("/"),
-                        componentName = destination.substring(destinationDividerIndex + 1),
-                        //TODO complain if packageHome does not match this.packageUrl?
-                        packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", ""),
-                        relativeDestination = destination.substring(0, destinationDividerIndex).replace(packageHome, "").replace(/^\//, "");
+                var destinationDividerIndex = destination.lastIndexOf("/"),
+                    componentName = destination.substring(destinationDividerIndex + 1),
+                    //TODO complain if packageHome does not match this.packageUrl?
+                    packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", ""),
+                    relativeDestination = destination.substring(0, destinationDividerIndex).replace(packageHome, "").replace(/^\//, "");
 
-                    return self.environmentBridge.createComponent(componentName, packageHome, relativeDestination);
-                }).done();
+                return self.environmentBridge.createComponent(componentName, packageHome, relativeDestination);
+            });
             //TODO handle a cancelled creation vs some error
         }
     },

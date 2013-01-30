@@ -227,7 +227,8 @@ exports.Main = Montage.create(Component, {
         enumerable: false,
         value: function () {
             //TODO don't call addComponent until we know it's a component we want
-            this.projectController.createComponent();
+            var promise = this.projectController.createComponent();
+            this.templateObjects.tasksInfobar.addTask(promise, "Add component");
         }
     },
 
