@@ -5,7 +5,7 @@
     "dependencies": {
         "montage": "*",
         "filament-plugin": "*",
-        "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git"
+		"flow-editor": "*"
     }
 }
 
