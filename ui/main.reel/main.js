@@ -51,6 +51,8 @@ exports.Main = Montage.create(Component, {
             this.fileUrlEditorMap = {};
             this.openEditors = [];
 
+            this.application.addEventListener("asyncTask", this, false);
+
             this._bridgePromise.then(function (environmentBridge) {
                 self.viewController = ViewController.create();
                 self.projectController = ProjectController.create().init(environmentBridge, self.viewController);
@@ -220,6 +222,16 @@ exports.Main = Montage.create(Component, {
             this.fileUrlEditorMap[fileUrl] = editor;
 
             return this.projectController.openFileUrlInEditor(fileUrl, editor);
+        }
+    },
+
+    handleAsyncTask: {
+        value: function(event) {
+            this.templateObjects.tasksInfobar.addTask(
+                event.detail.promise,
+                event.detail.title,
+                event.detail.info
+            );
         }
     },
 

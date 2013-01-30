@@ -1,5 +1,5 @@
 var Montage = require("montage/core/core").Montage,
-    Plugin = require("filament/core/plugin").Plugin,
+    Plugin = require("filament-plugin/core/plugin").Plugin,
     Promise = require("montage/core/promise").Promise,
     defaultMenu = require("filament/ui/native-menu/menu").defaultMenu,
     MenuItem = require("filament/ui/native-menu/menu-item").MenuItem;
@@ -8,7 +8,7 @@ var FILE_PROTOCOL = "file://";
 
 /*global lumieres */
 
-exports.Plugin = Montage.create(Plugin, {
+var Plugin = exports.Plugin = Montage.create(Plugin, {
 
     name: {
         get: function () {
@@ -25,6 +25,10 @@ exports.Plugin = Montage.create(Plugin, {
         value: null
     },
 
+    application: {
+        value: null
+    },
+
     projectController: {
         value: null
     },
@@ -33,6 +37,7 @@ exports.Plugin = Montage.create(Plugin, {
         value: function (application, projectController) {
             var self = this;
 
+            this.application = application;
             this.projectController = projectController;
 
             var toolsMenu = MenuItem.create();
@@ -68,6 +73,7 @@ exports.Plugin = Montage.create(Plugin, {
             }).then(function () {
                 self.toolsMenu = null;
                 self.mopMenu = null;
+                self.application = null;
                 self.projectController = null;
                 return self;
             });
@@ -85,13 +91,14 @@ exports.Plugin = Montage.create(Plugin, {
             var location = FILE_PROTOCOL + bridge.convertBackendUrlToPath(projectController.packageUrl);
             var buildLocation = FILE_PROTOCOL + bridge.convertBackendUrlToPath(projectController.packageUrl + "/builds");
 
-            return this.mop.invoke("build", location, {
+            var promise = this.mop.invoke("build", location, {
                 buildLocation: buildLocation,
                 minify: true,
                 lint: 0,
                 noCss: true,
                 delimiter: "@",
                 overlays: ["browser"],
+                production: true,
                 // TODO move this to promise progress notifications when
                 // available over Q-Connection
                 progress: Promise.master(function (progress) {
@@ -99,11 +106,19 @@ exports.Plugin = Montage.create(Plugin, {
                 })
             }).then(function (result) {
                 console.log("Done mopping:", result);
+                return result;
             }, function (err) {
                 console.error(err.stack);
-            }).then(function () {
-                return self;
+                throw err;
             });
+
+            this.dispatchEventNamed("asyncTask", true, false, {
+                promise: promise,
+                title: "Mop",
+                info: projectController.packageUrl
+            });
+
+            return promise;
         }
     },
 
@@ -116,3 +131,5 @@ exports.Plugin = Montage.create(Plugin, {
         }
     }
 });
+
+Plugin.pluginRequire = require;
