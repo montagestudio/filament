@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+    <title>infobar</title>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="../../../node_modules/montage/montage.js" data-package="../../.."></script>
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "prototype": "test/ui/infobar/test",
+                "properties": {
+                    "element": {"#": "owner"},
+                    "infobar": {"@": "tasksInfobar"}
+                }
+            },
+
+            "countdown": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "countdown"}
+                },
+                "listeners": [
+                    {"type": "action", "listener": {"@": "owner"}}
+                ]
+            },
+            "complete": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "complete"}
+                },
+                "listeners": [
+                    {"type": "action", "listener": {"@": "owner"}}
+                ]
+            },
+            "fail": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "fail"}
+                },
+                "listeners": [
+                    {"type": "action", "listener": {"@": "owner"}}
+                ]
+            },
+
+            "tasksInfobar": {
+                "prototype": "ui/infobar/tasks-infobar.reel",
+                "properties": {
+                    "element": {"#": "tasksInfobar"},
+                    "open": true
+                }
+            }
+        }
+    </script>
+
+</head>
+<body>
+
+    <div data-montage-id="owner">
+        <div data-montage-id="tasksInfobar" style="width: 100%"></div>
+
+        <button data-montage-id="countdown">5 second count down</button>
+        <button data-montage-id="complete">complete</button>
+        <button data-montage-id="fail">fail</button>
+    </div>
+
+</body>
+</html>
