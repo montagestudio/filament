@@ -74,6 +74,20 @@ exports.Main = Montage.create(Component, {
                     self.projectController.willCloseProject();
                 }, true);
 
+                window.addEventListener("undo", function (evt) {
+                    //TODO stop the event here?
+                    evt.stopPropagation();
+                    evt.preventDefault();
+                    self.projectController.undo();
+                }, true);
+
+                window.addEventListener("redo", function (evt) {
+                    //TODO stop the event here?
+                    evt.stopPropagation();
+                    evt.preventDefault();
+                    self.projectController.redo();
+                }, true);
+
                 self.application.addEventListener("menuAction", self, false);
                 self.application.addEventListener("enterModalEditor", self, false);
 

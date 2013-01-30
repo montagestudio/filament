@@ -307,5 +307,17 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         value: function (previewId) {
             return this.backend.get("preview").invoke("unregister", previewId);
         }
+    },
+
+    setUndoState: {
+        value: function (state, label) {
+            lumieres.undoManager.setUndoState(state, label);
+        }
+    },
+
+    setRedoState: {
+        value: function (state, label) {
+            lumieres.undoManager.setRedoState(state, label);
+        }
     }
 });

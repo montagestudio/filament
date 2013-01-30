@@ -48,6 +48,9 @@ exports.ProjectController = Montage.create(Montage, {
                 self.dispatchEventNamed("canLoadProject", true, false);
             }).done();
 
+            this.addPropertyChangeListener("currentDocument.undoManager.undoLabel", this);
+            this.addPropertyChangeListener("currentDocument.undoManager.redoLabel", this);
+
             return this;
         }
     },
@@ -348,12 +351,37 @@ exports.ProjectController = Montage.create(Montage, {
 
     handleChange: {
         value: function (notification) {
-            if (notification.target === this.openDocumentsController && "selectedObjects" === notification.currentPropertyPath) {
+
+            var currentPropertyPath = notification.currentPropertyPath;
+
+            if (notification.target === this.openDocumentsController && "selectedObjects" === currentPropertyPath) {
                 if (this.openDocumentsController.selectedObjects && this.openDocumentsController.selectedObjects.length > 0) {
                     var fileUrl = this.openDocumentsController.selectedObjects[0].fileUrl,
                         editor = this._fileUrlEditorMap[fileUrl];
                     this.openFileUrlInEditor(fileUrl, editor).done();
                 }
+            } else if ("currentDocument.undoManager.undoLabel" === currentPropertyPath ||
+                       "currentDocument.undoManager.redoLabel" === currentPropertyPath) {
+                this.updateUndoMenus();
+            }
+
+        }
+    },
+
+    updateUndoMenus: {
+        enumerable: false,
+        value: function () {
+
+            if (this.getProperty("currentDocument.undoManager.undoCount")) {
+                this.environmentBridge.setUndoState(true, this.getProperty("currentDocument.undoManager.undoLabel"));
+            } else {
+                this.environmentBridge.setUndoState(false);
+            }
+
+            if (this.getProperty("currentDocument.undoManager.redoCount")) {
+                this.environmentBridge.setRedoState(true, this.getProperty("currentDocument.undoManager.redoLabel"));
+            } else {
+                this.environmentBridge.setRedoState(false);
             }
         }
     },
@@ -505,6 +533,22 @@ exports.ProjectController = Montage.create(Montage, {
 
     currentDocument: {
         value: null
+    },
+
+    undo: {
+        value: function () {
+            if (this.currentDocument) {
+                this.currentDocument.undo();
+            }
+        }
+    },
+
+    redo: {
+        value: function () {
+            if (this.currentDocument) {
+                this.currentDocument.redo();
+            }
+        }
     },
 
     documents: {
