@@ -8,7 +8,20 @@
         "owner": {
             "properties": {
                 "element": {"#": "tasks-infobar"},
-                "infobar": {"@": "infobar"}
+                "infobar": {"@": "infobar"},
+
+                "_completedEls": {
+                    "title": {"#": "completedTitle"},
+                    "info": {"#": "completedInfo"}
+                },
+                "_failedEls": {
+                    "title": {"#": "failedTitle"},
+                    "info": {"#": "failedInfo"}
+                },
+                "_runningEls": {
+                    "title": {"#": "runningTitle"},
+                    "info": {"#": "runningInfo"}
+                }
             }
         },
 
@@ -23,45 +36,6 @@
             "listeners": [
                 {"type": "closed", "listener": {"@": "owner"}}
             ]
-        },
-
-        "completedTitle": {
-            "prototype": "montage/ui/dynamic-text.reel",
-            "properties": {
-                "element": {"#": "completedTitle"}
-            }
-        },
-        "completedInfo": {
-            "prototype": "montage/ui/dynamic-text.reel",
-            "properties": {
-                "element": {"#": "completedInfo"}
-            }
-        },
-
-        "failedTitle": {
-            "prototype": "montage/ui/dynamic-text.reel",
-            "properties": {
-                "element": {"#": "failedTitle"}
-            }
-        },
-        "failedInfo": {
-            "prototype": "montage/ui/dynamic-text.reel",
-            "properties": {
-                "element": {"#": "failedInfo"}
-            }
-        },
-
-        "runningTitle": {
-            "prototype": "montage/ui/dynamic-text.reel",
-            "properties": {
-                "element": {"#": "runningTitle"}
-            }
-        },
-        "runningInfo": {
-            "prototype": "montage/ui/dynamic-text.reel",
-            "properties": {
-                "element": {"#": "runningInfo"}
-            }
         }
     }
     </script>

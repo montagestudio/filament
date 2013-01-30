@@ -84,7 +84,10 @@ exports.TasksInfobar = Montage.create(Component, /** @lends module:"ui/tasks-inf
             for (var i = 0; i < 3; i++) {
                 var state = states[i];
                 var lowerState = state.toLowerCase();
-                var num = this["_"+lowerState+"Tasks"].length;
+                var tasks = this["_"+lowerState+"Tasks"];
+                var num = tasks.length;
+                var els = this["_"+lowerState+"Els"];
+
 
                 this._element.classList.remove(CLASS_PREFIX+"--none"+state);
                 this._element.classList.remove(CLASS_PREFIX+"--one"+state);
@@ -92,18 +95,18 @@ exports.TasksInfobar = Montage.create(Component, /** @lends module:"ui/tasks-inf
                 if (num === 0) {
                     this._element.classList.add(CLASS_PREFIX+"--none"+state);
 
-                    this.templateObjects[lowerState+"Title"].value = "";
-                    this.templateObjects[lowerState+"Info"].value = "";
+                    els.title.textContent = "";
+                    els.info.textContent= "";
                 } else if (num === 1) {
                     this._element.classList.add(CLASS_PREFIX+"--one"+state);
 
-                    this.templateObjects[lowerState+"Title"].value = this["_"+lowerState+"Tasks"].one().title;
-                    this.templateObjects[lowerState+"Info"].value = this["_"+lowerState+"Tasks"].one().info;
+                    els.title.textContent = tasks.one().title;
+                    els.info.textContent = tasks.one().info;
                 } else {
                     this._element.classList.add(CLASS_PREFIX+"--many"+state);
                     // TODO localize
-                    this.templateObjects[lowerState+"Title"].value = num;
-                    this.templateObjects[lowerState+"Info"].value = "";
+                    els.title.textContent = num;
+                    els.info.textContent = "";
                 }
             }
 
