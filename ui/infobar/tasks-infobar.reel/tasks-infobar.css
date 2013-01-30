@@ -11,6 +11,19 @@
     right: 30px;
 }
 
+.TasksInfobar-title {
+    font-weight: bold;
+}
+
+.TasksInfobar-num {
+    width: 0;
+    opacity: 0;
+    display: inline-block;
+    overflow: hidden;
+
+    -webkit-transition: width 200ms ease-in-out, opacity 150ms ease-in-out;
+}
+
 .TasksInfobar-completed, .TasksInfobar-failed, .TasksInfobar-running {
     float: left;
 
@@ -41,22 +54,42 @@
 .TasksInfobar--noneCompleted.TasksInfobar--noneFailed.TasksInfobar--oneRunning .TasksInfobar-running {
     width: 100%;
 }
+.TasksInfobar--oneCompleted.TasksInfobar--noneFailed.TasksInfobar--noneRunning .TasksInfobar-completed .TasksInfobar-num,
+.TasksInfobar--noneCompleted.TasksInfobar--oneFailed.TasksInfobar--noneRunning .TasksInfobar-failed .TasksInfobar-num {
+    width: 0;
+    opacity: 0;
+}
+
+
+/* Below I'm using the same rule for the width of the section, and the width of
+the num. This has the effect of pushing the title out of the way, leaving only
+the number being displayed. I'm not sure if this is the best way, or if a better
+effect could be achieved by taking the .TasksInfobar-num selectors and applying
+some other rules */
 
 /* 1 completed, 1 or many running   |c|r       | */
 .TasksInfobar--oneCompleted.TasksInfobar--oneRunning .TasksInfobar-completed,
+.TasksInfobar--oneCompleted.TasksInfobar--oneRunning .TasksInfobar-completed .TasksInfobar-num,
 /* 1 failed, 1 or many running      |f|r       | */
 .TasksInfobar--oneFailed.TasksInfobar--oneRunning .TasksInfobar-failed,
+.TasksInfobar--oneFailed.TasksInfobar--oneRunning .TasksInfobar-failed .TasksInfobar-num,
 /* 1 completed or many completed, 1 failed or many failed, 1 or many running
                                     |c|f|r     | */
 .TasksInfobar--oneCompleted.TasksInfobar--oneFailed.TasksInfobar--oneRunning .TasksInfobar-completed,
+.TasksInfobar--oneCompleted.TasksInfobar--oneFailed.TasksInfobar--oneRunning .TasksInfobar-completed .TasksInfobar-num,
 .TasksInfobar--oneCompleted.TasksInfobar--oneFailed.TasksInfobar--oneRunning .TasksInfobar-failed,
-/* many completed, many failed      |c|f|?     | */
+.TasksInfobar--oneCompleted.TasksInfobar--oneFailed.TasksInfobar--oneRunning .TasksInfobar-failed .TasksInfobar-num,
+/* many completed, many failed      |c|f|      | */
 .TasksInfobar--manyCompleted .TasksInfobar-completed,
+.TasksInfobar--manyCompleted .TasksInfobar-completed .TasksInfobar-num,
 .TasksInfobar--manyFailed .TasksInfobar-failed,
+.TasksInfobar--manyFailed .TasksInfobar-failed .TasksInfobar-num,
 /* 1 completed or many completed, 1 failed, 0 running
                                     |c|f       | */
-.TasksInfobar--oneCompleted.TasksInfobar--oneFailed.TasksInfobar--noneRunning .TasksInfobar-completed {
+.TasksInfobar--oneCompleted.TasksInfobar--oneFailed.TasksInfobar--noneRunning .TasksInfobar-completed,
+.TasksInfobar--oneCompleted.TasksInfobar--oneFailed.TasksInfobar--noneRunning .TasksInfobar-completed .TasksInfobar-num {
     width: 50px;
+    opacity: 1;
 }
 
 /* 1 completed or many completed, 1 or many failed, 0 running
@@ -64,4 +97,7 @@
 .TasksInfobar--oneCompleted.TasksInfobar--oneFailed.TasksInfobar--noneRunning .TasksInfobar-failed {
     width: -webkit-calc(100% - 50px);
 }
-
+.TasksInfobar--oneCompleted.TasksInfobar--oneFailed.TasksInfobar--noneRunning .TasksInfobar-failed .TasksInfobar-num {
+    width: 0;
+    opacity: 0;
+}

@@ -88,6 +88,7 @@ exports.TasksInfobar = Montage.create(Component, /** @lends module:"ui/tasks-inf
                 var num = tasks.length;
                 var els = this["_"+lowerState+"Els"];
 
+                // TODO localize
 
                 if (num === 0) {
                     this._element.classList.add(CLASS_PREFIX+"--none"+state);
@@ -101,26 +102,19 @@ exports.TasksInfobar = Montage.create(Component, /** @lends module:"ui/tasks-inf
                     this._element.classList.add(CLASS_PREFIX+"--one"+state);
                     this._element.classList.remove(CLASS_PREFIX+"--many"+state);
 
+                    if (els.num) els.num.textContent = num;
                     els.title.textContent = tasks.one().title;
                     els.info.textContent = tasks.one().info;
                 } else {
                     this._element.classList.remove(CLASS_PREFIX+"--none"+state);
                     this._element.classList.add(CLASS_PREFIX+"--one"+state);
                     this._element.classList.add(CLASS_PREFIX+"--many"+state);
-                    // TODO localize
-                    els.title.textContent = num;
-                    els.info.textContent = "";
+
+                    if (els.num) els.num.textContent = num;
+                    els.title.textContent = "";
+                    els.info.textContent = num + " tasks " + lowerState;
                 }
             }
-
-
-            // var out = "";
-
-            // out += this._runningTasks.length + " running ";
-            // out += this._completedTasks.length + " completed ";
-            // out += this._failedTasks.length + " failed ";
-
-            // this.templateObjects.title.value = out;
         }
     }
 

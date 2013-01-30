@@ -11,10 +11,12 @@
                 "infobar": {"@": "infobar"},
 
                 "_completedEls": {
+                    "num": {"#": "completedNum"},
                     "title": {"#": "completedTitle"},
                     "info": {"#": "completedInfo"}
                 },
                 "_failedEls": {
+                    "num": {"#": "failedNum"},
                     "title": {"#": "failedTitle"},
                     "info": {"#": "failedInfo"}
                 },
@@ -45,18 +47,20 @@
         <div data-montage-id="infobar">
             <div class="TasksInfobar-completed">
                 ✔
-                <span data-montage-id="completedTitle">Waiting</span>
-                <span data-montage-id="completedInfo"></span>
+                <span data-montage-id="completedNum" class="TasksInfobar-num">Waiting</span>
+                <span data-montage-id="completedTitle" class="TasksInfobar-title">Waiting</span>
+                <span data-montage-id="completedInfo" class="TasksInfobar-info"></span>
             </div>
             <div class="TasksInfobar-failed">
                 ✘
-                <span data-montage-id="failedTitle">Waiting</span>
-                <span data-montage-id="failedInfo"></span>
+                <span data-montage-id="failedNum" class="TasksInfobar-num">Waiting</span>
+                <span data-montage-id="failedTitle" class="TasksInfobar-title">Waiting</span>
+                <span data-montage-id="failedInfo" class="TasksInfobar-info"></span>
             </div>
             <div class="TasksInfobar-running">
                 <progress type="progress" data-montage-id="progress"></progress>
-                <span data-montage-id="runningTitle">Waiting</span>
-                <span data-montage-id="runningInfo"></span>
+                <span data-montage-id="runningTitle" class="TasksInfobar-title">Waiting</span>
+                <span data-montage-id="runningInfo" class="TasksInfobar-info"></span>
             </div>
             <button type="button" data-montage-id="details" class="TasksInfobar-details">Details...</button>
         </div>
