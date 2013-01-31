@@ -200,7 +200,9 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         value: function (name, packageHome) {
             return this.backend.get("lumieres").invoke("createApplication", name, this.convertBackendUrlToPath(packageHome))
                 .then(function () {
-                    return packageHome + "/" + name;
+                    var applicationUrl = packageHome + "/" + name;
+                    lumieres.document.setFileURL(applicationUrl);
+                    return applicationUrl;
                 });
         }
     },
