@@ -462,7 +462,9 @@ exports.ProjectController = Montage.create(Montage, {
             this.moduleLibraryItemMap[moduleId] = libraryItem;
 
             //TODO don't refresh the library each time
-            this.populateLibrary().done();
+            if (this.dependencies) {
+                this.populateLibrary().done();
+            }
         }
     },
 
@@ -472,7 +474,9 @@ exports.ProjectController = Montage.create(Montage, {
             delete this.moduleLibraryItemMap[moduleId];
 
             //TODO don't refresh the library each time
-            this.populateLibrary().done();
+            if (this.dependencies) {
+                this.populateLibrary().done();
+            }
         }
     },
 
@@ -511,7 +515,9 @@ exports.ProjectController = Montage.create(Montage, {
             addedLibraryItems.push(libraryItem);
 
             //TODO don't refresh the library each time
-            this.populateLibrary().done();
+            if (this.dependencies) {
+                this.populateLibrary().done();
+            }
         }
     },
 
@@ -525,7 +531,9 @@ exports.ProjectController = Montage.create(Montage, {
                 if (index >= 0) {
                     addedLibraryItems.splice(index, 1);
                     //TODO don't refresh the library each time
-                    this.populateLibrary().done();
+                    if (this.dependencies) {
+                        this.populateLibrary().done();
+                    }
                 }
             }
         }
