@@ -17,7 +17,6 @@
         "mop": "~0.12.2",
         "npm": "1.1.70",
         "watchr": "2.3.1",
-        "collections": "~0.1.12",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git"
     },
     "mappings": {

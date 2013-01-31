@@ -5,7 +5,7 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
-    Set = require("collections/set");
+    Set = require("montage/collections/set");
 
 var CLASS_PREFIX = "TasksInfobar";
 
