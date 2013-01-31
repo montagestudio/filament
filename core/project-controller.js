@@ -40,7 +40,7 @@ exports.ProjectController = Montage.create(Montage, {
                     return self.loadPlugins(pluginUrls);
                 }).then(function (plugins) {
                     plugins.forEach(function (plugin) {
-                        // TODO self.activatePlugin(plugin); if the plugin is supposed to be activated based on user preferences
+                        self.activatePlugin(plugin); //TODO is the plugin is supposed to be activated based on user preferences?
                     });
                 });
 
