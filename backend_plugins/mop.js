@@ -1,20 +1,14 @@
 var Q = require("Q");
-var build = require("mop/lib/build");
+var optimize = require("mop");
 
-exports.build = build;
+exports.optimize = function(location, config) {
+    var slice = Array.prototype.slice;
 
-// exports.build = function(location, config) {
-//     var a = Q.defer();
+    var status = config.out.status;
 
-//     // TODO move this to promise progress notifications when
-//     // available over Q-Connection
-//     var progress = config.progress;
-//     delete config.progress;
-//     Q.fcall(progress, "fcall");
+    config.out.status = function() {
+        Q.fapply(status, slice.call(arguments));
+    };
 
-//     setTimeout(function() {
-//         a.resolve("done");
-//     }, 1000);
-
-//     return a.promise;
-// };
+    return optimize(location, config);
+};

@@ -4,8 +4,6 @@ var Montage = require("montage/core/core").Montage,
     defaultMenu = require("filament/ui/native-menu/menu").defaultMenu,
     MenuItem = require("filament/ui/native-menu/menu-item").MenuItem;
 
-var FILE_PROTOCOL = "file://";
-
 /*global lumieres */
 
 var Plugin = exports.Plugin = Montage.create(Plugin, {
@@ -84,48 +82,38 @@ var Plugin = exports.Plugin = Montage.create(Plugin, {
         value: function () {
             var self = this,
                 projectController = this.projectController,
-                bridge = projectController.environmentBridge;
+                bridge = projectController.environmentBridge,
+                mop = bridge.backend.get("mop");
 
-            this.mop = bridge.backend.get("mop");
+            var slice = Array.prototype.slice;
 
-            var location = FILE_PROTOCOL + bridge.convertBackendUrlToPath(projectController.packageUrl);
-            var buildLocation = FILE_PROTOCOL + bridge.convertBackendUrlToPath(projectController.packageUrl + "/builds");
+            var location = bridge.convertBackendUrlToPath(projectController.packageUrl);
+            var deferred = Promise.defer();
 
-            var promise = this.mop.invoke("build", location, {
-                buildLocation: buildLocation,
-                minify: true,
-                lint: 0,
-                noCss: true,
-                delimiter: "@",
-                overlays: ["browser"],
-                production: true,
-                // TODO move this to promise progress notifications when
-                // available over Q-Connection
-                progress: Promise.master(function (progress) {
-                    console.log(progress);
-                })
-            }).then(function (result) {
-                console.log("Done mopping:", result);
-                return result;
-            }, function (err) {
+            mop.invoke("optimize", location, {
+                out: {
+                    status: Promise.master(function () {
+                        deferred.notify(slice.call(arguments).join(" "));
+                    })
+                }
+            }).then(deferred.resolve, function (err) {
                 console.error(err.stack);
-                throw err;
+                deferred.reject(err);
             });
 
             this.dispatchEventNamed("asyncTask", true, false, {
-                promise: promise,
+                promise: deferred.promise,
                 title: "Mop",
                 info: projectController.packageUrl
             });
 
-            return promise;
+            return deferred.promise;
         }
     },
 
     handleMenuAction: {
         value: function(event) {
             if (event.detail.identifier === "mop") {
-                console.log("mop menu action");
                 this.optimize();
             }
         }
