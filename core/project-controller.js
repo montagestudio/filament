@@ -19,6 +19,7 @@ exports.ProjectController = Montage.create(Montage, {
             this.moduleLibraryItemMap = {};
             this.packageNameLibraryItemsMap = {};
 
+            bridge.setDocumentDirtyState(false);
             this.setupMenuItems();
 
             var self = this,
@@ -50,6 +51,7 @@ exports.ProjectController = Montage.create(Montage, {
 
             this.addPropertyChangeListener("currentDocument.undoManager.undoLabel", this);
             this.addPropertyChangeListener("currentDocument.undoManager.redoLabel", this);
+            this.addPropertyChangeListener("currentDocument.undoManager.undoCount", this);
 
             return this;
         }
@@ -364,6 +366,10 @@ exports.ProjectController = Montage.create(Montage, {
             } else if ("currentDocument.undoManager.undoLabel" === currentPropertyPath ||
                        "currentDocument.undoManager.redoLabel" === currentPropertyPath) {
                 this.updateUndoMenus();
+            } else if ("currentDocument.undoManager.undoCount" === currentPropertyPath) {
+                var undoCount = this.getProperty(currentPropertyPath);
+                //Dirty if we have a document and there things to undo
+                this.environmentBridge.setDocumentDirtyState(null != undoCount && undoCount > 0);
             }
 
         }
