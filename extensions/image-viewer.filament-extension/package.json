@@ -1,0 +1,10 @@
+{
+    "name": "image-viewer-filament-extension",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "montage": "*",
+        "filament-extension": "*",
+        "palette": "*"
+    }
+}

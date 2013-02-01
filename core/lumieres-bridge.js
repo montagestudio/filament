@@ -97,9 +97,9 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         }
     },
 
-    availablePlugins: {
+    availableExtensions: {
         get: function () {
-            return this.backend.get("lumieres").invoke("getPlugins");
+            return this.backend.get("lumieres").invoke("getExtensions");
         }
     },
 

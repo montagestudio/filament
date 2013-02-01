@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="extension-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "extension-cell"}
+            }
+        },
+
+        "activationButton": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "element": {"#": "activationButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "deactivationButton": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "element": {"#": "deactivationButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "extensionName": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "extensionName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.extension.name"}
+            }
+        },
+
+        "extensionVersion": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "extensionVersion"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.extension.version"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <li data-montage-id="extension-cell" class="ExtensionCell">
+        <button data-montage-id="activationButton">Activate</button><button data-montage-id="deactivationButton">Deactivate</button><span data-montage-id="extensionName"></span> <span data-montage-id="extensionVersion"></span>
+    </li>
+</body>
+</html>

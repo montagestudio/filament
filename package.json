@@ -13,16 +13,15 @@
         "q-io": "1.5.2",
         "qs": "0.5.2",
         "palette": "git+ssh://git@github.com:declarativ/palette.git",
-        "minit": ">=0.1.7",
         "mop": "~0.12.2",
         "npm": "1.1.70",
         "watchr": "2.3.1",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git"
     },
     "mappings": {
-        "filament-plugin": {
-            "name": "filament-plugin",
-            "location": "filament-plugin"
+        "filament-extension": {
+            "name": "filament-extension",
+            "location": "filament-extension"
         }
     },
     "manifest": true

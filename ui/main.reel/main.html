@@ -26,13 +26,13 @@
                 }
             },
 
-            "pluginPanel": {
-                "prototype": "ui/plugin-panel.reel",
+            "extensionPanel": {
+                "prototype": "ui/extension-panel.reel",
                 "properties": {
-                    "element": {"#": "pluginPanel"}
+                    "element": {"#": "extensionPanel"}
                 },
                 "bindings": {
-                    "plugins": {"<-": "@owner.projectController.loadedPlugins"}
+                    "extensions": {"<-": "@owner.projectController.loadedExtensions"}
                 }
             },
 
@@ -123,7 +123,7 @@
         <div data-montage-id="tasksInfobar"></div>
 
         <div class="Main">
-            <aside data-montage-id="pluginPanel"></aside>
+            <aside data-montage-id="extensionPanel"></aside>
             <aside data-montage-id="packageExplorer" class="palette"></aside>
 
             <section class="editor">

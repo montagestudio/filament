@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="extension-panel.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "extension-panel"},
+                "extensionsController": {"@": "extensionsController"}
+            }
+        },
+
+        "extensionsController": {
+            "prototype": "montage/ui/controller/array-controller",
+            "bindings": {
+                "content": {"<-": "@owner.extensions"}
+            }
+        },
+
+        "extensionList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "extensionList"}
+            },
+            "bindings": {
+                "contentController": {"<-": "@owner.extensionsController"}
+            }
+        },
+
+        "extensionCell": {
+            "prototype": "./extension-cell.reel",
+            "properties": {
+                "element": {"#": "extensionCell"}
+            },
+            "bindings": {
+                "extension": {"<-": "@extensionList.objectAtCurrentIteration"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="extension-panel" class="ExtensionPanel">
+        <h1>Extensions</h1>
+
+        <ul data-montage-id="extensionList">
+            <li data-montage-id="extensionCell"></li>
+        </ul>
+    </div>
+</body>
+</html>

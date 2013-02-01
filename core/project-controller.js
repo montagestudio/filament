@@ -1,6 +1,6 @@
 var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
-    LibraryItem = require("filament-plugin/core/library-item.js").LibraryItem,
+    LibraryItem = require("filament-extension/core/library-item.js").LibraryItem,
     Deserializer = require("montage/core/deserializer").Deserializer,
     ArrayController = require("montage/ui/controller/array-controller").ArrayController;
 
@@ -14,8 +14,8 @@ exports.ProjectController = Montage.create(Montage, {
 
             this.openDocumentsController.addPropertyChangeListener("selectedObjects", this);
 
-            this.loadedPlugins = [];
-            this.activePlugins = [];
+            this.loadedExtensions = [];
+            this.activeExtensions = [];
             this.moduleLibraryItemMap = {};
             this.packageNameLibraryItemsMap = {};
 
@@ -25,26 +25,26 @@ exports.ProjectController = Montage.create(Montage, {
                 application = document.application,
                 deferredEditor = Promise.defer();
 
-            application.addEventListener("activatePlugin", this);
-            application.addEventListener("deactivatePlugin", this);
+            application.addEventListener("activateExtension", this);
+            application.addEventListener("deactivateExtension", this);
 
             application.addEventListener("canLoadReel", function () {
                 deferredEditor.resolve(true);
             });
             //TODO timeout the promise in some reasonable window
 
-            // discover available plugins as soon as possible,
+            // discover available extensions as soon as possible,
             // subsequent activity may rely on us knowing them
-            this._pluginPromise = this.environmentBridge.availablePlugins
-                .then(function (pluginUrls) {
-                    return self.loadPlugins(pluginUrls);
-                }).then(function (plugins) {
-                    plugins.forEach(function (plugin) {
-                        self.activatePlugin(plugin); //TODO is the plugin is supposed to be activated based on user preferences?
+            this._extensionPromise = this.environmentBridge.availableExtensions
+                .then(function (extensionUrls) {
+                    return self.loadExtensions(extensionUrls);
+                }).then(function (extensions) {
+                    extensions.forEach(function (extension) {
+                        self.activateExtension(extension); //TODO is the extension is supposed to be activated based on user preferences?
                     });
                 });
 
-            Promise.all([this._pluginPromise, deferredEditor]).then(function () {
+            Promise.all([this._extensionPromise, deferredEditor]).then(function () {
                 self.dispatchEventNamed("canLoadProject", true, false);
             }).done();
 
@@ -55,98 +55,98 @@ exports.ProjectController = Montage.create(Montage, {
         }
     },
 
-    loadPlugins: {
+    loadExtensions: {
         enumerable: false,
-        //TODO accept a single plugin as well
-        value: function (pluginUrls) {
+        //TODO accept a single extension as well
+        value: function (extensionUrls) {
             var self = this;
 
-            return Promise.all(pluginUrls.map(function (url) {
+            return Promise.all(extensionUrls.map(function (url) {
                 // TODO npm install?
                 return require.loadPackage(url).then(function (packageRequire) {
-                    return packageRequire.async("plugin");
+                    return packageRequire.async("extension");
                 }).then(function (exports) {
-                    return self.loadPlugin(exports);
+                    return self.loadExtension(exports);
                 });
             }));
         }
     },
 
-    loadPlugin: {
+    loadExtension: {
         enumerable: false,
-        value: function (pluginModule) {
-            var plugin = pluginModule.Plugin;
+        value: function (extensionModule) {
+            var extension = extensionModule.Extension;
 
-            if (!plugin) {
-                throw new Error("Malformed plugin. Expected '" + pluginModule + "' to export 'Plugin'");
+            if (!extension) {
+                throw new Error("Malformed extension. Expected '" + extensionModule + "' to export 'Extension'");
             }
 
-            this.loadedPlugins.add(plugin);
-            return plugin;
+            this.loadedExtensions.add(extension);
+            return extension;
         }
     },
 
-    loadedPlugins: {
+    loadedExtensions: {
         value: null
     },
 
-    activePlugins: {
+    activeExtensions: {
         value: null
     },
 
-    handleActivatePlugin: {
+    handleActivateExtension: {
         value: function (evt) {
-            this.activatePlugin(evt.detail).done();
+            this.activateExtension(evt.detail).done();
         }
     },
 
-    activatePlugin: {
-        value: function (plugin) {
+    activateExtension: {
+        value: function (extension) {
             var activationPromise;
 
-            if (-1 === this.activePlugins.indexOf(plugin)) {
+            if (-1 === this.activeExtensions.indexOf(extension)) {
 
-                this.dispatchEventNamed("willActivatePlugin", true, false, plugin);
-                this.activePlugins.push(plugin);
+                this.dispatchEventNamed("willActivateExtension", true, false, extension);
+                this.activeExtensions.push(extension);
 
-                if (typeof plugin.activate === "function") {
-                    activationPromise = plugin.activate(document.application, this, this._viewController);
+                if (typeof extension.activate === "function") {
+                    activationPromise = extension.activate(document.application, this, this._viewController);
                 } else {
-                    activationPromise = Promise.resolve(plugin);
+                    activationPromise = Promise.resolve(extension);
                 }
 
             } else {
-                activationPromise = Promise.reject(new Error("Cannot activate an active plugin"));
+                activationPromise = Promise.reject(new Error("Cannot activate an active extension"));
             }
 
             return activationPromise;
         }
     },
 
-    handleDeactivatePlugin: {
+    handleDeactivateExtension: {
         value: function (evt) {
-            this.deactivatePlugin(evt.detail).done();
+            this.deactivateExtension(evt.detail).done();
         }
     },
 
-    deactivatePlugin: {
-        value: function (plugin) {
+    deactivateExtension: {
+        value: function (extension) {
             var deactivationPromise,
-                index = this.activePlugins.indexOf(plugin);
+                index = this.activeExtensions.indexOf(extension);
 
             if (index > -1) {
 
-                this.dispatchEventNamed("willDeactivatePlugin", true, false, plugin);
-                this.activePlugins.splice(index, 1);
+                this.dispatchEventNamed("willDeactivateExtension", true, false, extension);
+                this.activeExtensions.splice(index, 1);
 
-                if (typeof plugin.deactivate === "function") {
-                    deactivationPromise = plugin.deactivate(document.application, this, this._viewController);
+                if (typeof extension.deactivate === "function") {
+                    deactivationPromise = extension.deactivate(document.application, this, this._viewController);
                 } else {
-                    deactivationPromise = Promise.resolve(plugin);
+                    deactivationPromise = Promise.resolve(extension);
                 }
 
             } else {
-                deactivationPromise = Promise.reject(new Error("Cannot deactivate an inactive plugin"));
+                deactivationPromise = Promise.reject(new Error("Cannot deactivate an inactive extension"));
             }
 
             return deactivationPromise;
@@ -167,7 +167,7 @@ exports.ProjectController = Montage.create(Montage, {
         value: null
     },
 
-    _pluginPromise: {
+    _extensionPromise: {
         value: null
     },
 
@@ -214,7 +214,7 @@ exports.ProjectController = Montage.create(Montage, {
         value: function (url) {
             var self = this;
 
-            this._pluginPromise.then(function () {
+            this._extensionPromise.then(function () {
                 return self.environmentBridge.projectInfo(url);
             }).then(function (projectInfo) {
                 self.openProject(projectInfo);
@@ -438,7 +438,7 @@ exports.ProjectController = Montage.create(Montage, {
                             dependencyLibraryEntry.libraryItems = [];
                         }
 
-                        // add libraryItems any plugins offered for this package
+                        // add libraryItems any extensions offered for this package
                         offeredLibraryItems = self.packageNameLibraryItemsMap[dependency.dependency];
                         if (offeredLibraryItems) {
                             dependencyLibraryEntry.libraryItems.push.apply(dependencyLibraryEntry.libraryItems, offeredLibraryItems);
@@ -457,7 +457,7 @@ exports.ProjectController = Montage.create(Montage, {
         value : null
     },
 
-    //TODO handle multiple plugins possibly registering for the same moduleId, latest one wins?
+    //TODO handle multiple extensions possibly registering for the same moduleId, latest one wins?
     registerLibraryItemForModuleId: {
         value: function (libraryItem, moduleId) {
             this.moduleLibraryItemMap[moduleId] = libraryItem;
@@ -469,7 +469,7 @@ exports.ProjectController = Montage.create(Montage, {
         }
     },
 
-    //TODO allow for multiple plugins to unregister for same moduleId, don't disrupt current order
+    //TODO allow for multiple extensions to unregister for same moduleId, don't disrupt current order
     unregisterLibraryItemForModuleId: {
         value: function (moduleId) {
             delete this.moduleLibraryItemMap[moduleId];

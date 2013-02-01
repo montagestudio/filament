@@ -6,17 +6,17 @@ var path = require("path"),
     watchr = require("watchr"),
     QFS = require("q-io/fs");
 
-exports.getPlugins = function() {
+exports.getExtensions = function() {
     var result = [],
-        parentPath = path.join(global.clientPath, "plugins");
+        parentPath = path.join(global.clientPath, "extensions");
 
     if (fs.existsSync(parentPath)) {
         var list = fs.readdirSync(parentPath);
 
         for (var i in list) {
             var fileName = list[i];
-            // For now accept any file that ends with .filament-plugin
-            if (path.extname(fileName).toLowerCase() == ".filament-plugin") {
+            // For now accept any file that ends with .filament-extension
+            if (path.extname(fileName).toLowerCase() == ".filament-extension") {
                 result.push("fs:/" + path.join(parentPath, fileName));
             }
         }
