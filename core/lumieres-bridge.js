@@ -274,7 +274,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
     },
 
     watch: {
-        value: function (path, changeHandler) {
+        value: function (path, ignoreSubPaths, changeHandler) {
             var local = {
                     handleChange: function (changeType, filePath) {
                         changeHandler(changeType, filePath);
@@ -283,7 +283,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                 backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort), local);
 
             path = this.convertBackendUrlToPath(path);
-            return backend.get("lumieres").invoke("watch", path, Promise.master(local));
+            return backend.get("lumieres").invoke("watch", path, ignoreSubPaths, Promise.master(local));
         }
     },
 

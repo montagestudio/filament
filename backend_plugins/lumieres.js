@@ -4,7 +4,8 @@ var path = require("path"),
     Q = require("q"),
     npm = require("npm"),
     watchr = require("watchr"),
-    QFS = require("q-io/fs");
+    QFS = require("q-io/fs"),
+    PATH = require('path');
 
 exports.getExtensions = function() {
     var result = [],
@@ -41,10 +42,15 @@ exports.installDependencies = function (config) {
         });
 };
 
-exports.watch = function (path, changeHandler) {
+exports.watch = function (path, ignoreSubPaths, changeHandler) {
+    var ignorePaths = ignoreSubPaths.map(function (ignorePath) {
+        return PATH.resolve(path, ignorePath) + PATH.sep;
+    });
+
     //TODO make sure we return whatever watcher handle we need to stop watching, probably
     return Q.invoke(watchr, "watch", {
         path: path,
+        ignorePaths: ignorePaths,
         ignoreCommonPatterns: true,
         listeners: {
             change: function(changeType, filePath, fileCurrentStat, filePreviousStat) {

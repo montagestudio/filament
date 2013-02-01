@@ -710,7 +710,7 @@ exports.ProjectController = Montage.create(Montage, {
                     self.handleFileSystemChange(changeType, filePath);
                 };
 
-            this.environmentBridge.watch(this.packageUrl, changeHandler).done();
+            this.environmentBridge.watch(this.packageUrl, ["builds/"], changeHandler).done();
         }
     },
 
