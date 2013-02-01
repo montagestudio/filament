@@ -321,5 +321,11 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         value: function (state, label) {
             lumieres.undoManager.setRedoState(state, label);
         }
+    },
+
+    setDocumentDirtyState: {
+        value: function (state) {
+            lumieres.document.dirty = state;
+        }
     }
 });

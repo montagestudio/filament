@@ -580,9 +580,11 @@ exports.ProjectController = Montage.create(Montage, {
             //TODO use either the url specified (save as), or the currentDoc's fileUrl
             //TODO improve this, we're reaching deeper than I'd like to find the fileUrl
             var self = this;
-            this.environmentBridge.save(this.currentDocument, this.currentDocument.fileUrl).then(function () {
-                return self.refreshPreview();
-            }).done();
+            return this.environmentBridge.save(this.currentDocument, this.currentDocument.fileUrl).then(function () {
+                self.environmentBridge.setDocumentDirtyState(false);
+                self.refreshPreview().done();
+                return self.currentDocument.fileUrl;
+            });
         }
     },
 

@@ -247,7 +247,10 @@ exports.Main = Montage.create(Component, {
     handleSave: {
         enumerable: false,
         value: function (evt) {
-            this.projectController.save(evt.detail.url);
+            evt.preventDefault();
+            this.projectController.save(evt.detail.url).then(function () {
+                evt.detail.operationCallback();
+            }).done();
         }
     },
 
