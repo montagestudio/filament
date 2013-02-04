@@ -57,7 +57,7 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
                 var message = "";
                 if (err.message) message = err.message;
                 // avoid ugly [object Object]
-                else if (err.toString !== Object.prototype.toString) message = err.toString;
+                else if (err.toString !== Object.prototype.toString) message = err.toString();
 
                 task.info = message;
                 self._runningActivities.delete(task);
