@@ -15,7 +15,7 @@ exports.Test = Montage.create(Montage, {
                     setTimeout(countDown, 1000);
                 }
             };
-            this.infobar.addTask(deferred.promise, "Count down", "counting...");
+            this.infobar.addActivity(deferred.promise, "Count down", "counting...");
             countDown();
         }
     },
@@ -32,20 +32,20 @@ exports.Test = Montage.create(Montage, {
                     setTimeout(countDown, 1000);
                 }
             };
-            this.infobar.addTask(deferred.promise, "Count down", "counting...");
+            this.infobar.addActivity(deferred.promise, "Count down", "counting...");
             countDown();
         }
     },
 
     handleCompleteAction: {
         value: function() {
-            this.infobar.addTask(Promise.resolve("completed"), "Complete", "complete note");
+            this.infobar.addActivity(Promise.resolve("completed"), "Complete", "complete note");
         }
     },
 
     handleFailAction: {
         value: function() {
-            this.infobar.addTask(Promise.reject("failed"), "Fail", "fail note");
+            this.infobar.addActivity(Promise.reject("failed"), "Fail", "fail note");
         }
     }
 

@@ -51,7 +51,7 @@ exports.Main = Montage.create(Component, {
             this.fileUrlEditorMap = {};
             this.openEditors = [];
 
-            this.application.addEventListener("asyncTask", this, false);
+            this.application.addEventListener("asyncActivity", this, false);
 
             this._bridgePromise.then(function (environmentBridge) {
                 self.viewController = ViewController.create();
@@ -225,9 +225,9 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    handleAsyncTask: {
+    handleAsyncActivity: {
         value: function(event) {
-            this.templateObjects.tasksInfobar.addTask(
+            this.templateObjects.tasksInfobar.addActivity(
                 event.detail.promise,
                 event.detail.title,
                 event.detail.info
@@ -240,7 +240,7 @@ exports.Main = Montage.create(Component, {
         value: function () {
             //TODO don't call addComponent until we know it's a component we want
             var promise = this.projectController.createComponent();
-            this.templateObjects.tasksInfobar.addTask(promise, "Add component");
+            this.templateObjects.tasksInfobar.addActivity(promise, "Add component");
         }
     },
 

@@ -1,0 +1,103 @@
+.ActivityInfobar {
+}
+
+.ActivityInfobar progress {
+    float: left;
+}
+
+.ActivityInfobar-details {
+    position: absolute;
+    top: 5px;
+    right: 30px;
+}
+
+.ActivityInfobar-title {
+    font-weight: bold;
+}
+
+.ActivityInfobar-num {
+    width: 0;
+    opacity: 0;
+    display: inline-block;
+    overflow: hidden;
+
+    -webkit-transition: width 200ms ease-in-out, opacity 150ms ease-in-out;
+}
+
+.ActivityInfobar-completed, .ActivityInfobar-failed, .ActivityInfobar-running {
+    float: left;
+
+    overflow: hidden;
+    white-space: nowrap;
+
+    height: 100%;
+
+    -webkit-transition: width 200ms ease-in-out;
+}
+
+.ActivityInfobar-completed {
+    background: rgb(159, 255, 128);
+}
+
+.ActivityInfobar-failed {
+    background: rgb(253, 166, 163);
+}
+
+.ActivityInfobar--noneCompleted .ActivityInfobar-completed,
+.ActivityInfobar--noneFailed .ActivityInfobar-failed {
+    width: 0px;
+}
+
+/* only one of a type */
+.ActivityInfobar--oneCompleted.ActivityInfobar--noneFailed.ActivityInfobar--noneRunning .ActivityInfobar-completed,
+.ActivityInfobar--noneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-failed,
+.ActivityInfobar--noneCompleted.ActivityInfobar--noneFailed.ActivityInfobar--oneRunning .ActivityInfobar-running {
+    width: 100%;
+}
+.ActivityInfobar--oneCompleted.ActivityInfobar--noneFailed.ActivityInfobar--noneRunning .ActivityInfobar-completed .ActivityInfobar-num,
+.ActivityInfobar--noneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-failed .ActivityInfobar-num {
+    width: 0;
+    opacity: 0;
+}
+
+
+/* Below I'm using the same rule for the width of the section, and the width of
+the num. This has the effect of pushing the title out of the way, leaving only
+the number being displayed. I'm not sure if this is the best way, or if a better
+effect could be achieved by taking the .ActivityInfobar-num selectors and applying
+some other rules */
+
+/* 1 completed, 1 or many running   |c|r       | */
+.ActivityInfobar--oneCompleted.ActivityInfobar--oneRunning .ActivityInfobar-completed,
+.ActivityInfobar--oneCompleted.ActivityInfobar--oneRunning .ActivityInfobar-completed .ActivityInfobar-num,
+/* 1 failed, 1 or many running      |f|r       | */
+.ActivityInfobar--oneFailed.ActivityInfobar--oneRunning .ActivityInfobar-failed,
+.ActivityInfobar--oneFailed.ActivityInfobar--oneRunning .ActivityInfobar-failed .ActivityInfobar-num,
+/* 1 completed or many completed, 1 failed or many failed, 1 or many running
+                                    |c|f|r     | */
+.ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--oneRunning .ActivityInfobar-completed,
+.ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--oneRunning .ActivityInfobar-completed .ActivityInfobar-num,
+.ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--oneRunning .ActivityInfobar-failed,
+.ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--oneRunning .ActivityInfobar-failed .ActivityInfobar-num,
+/* many completed, many failed      |c|f|      | */
+.ActivityInfobar--manyCompleted .ActivityInfobar-completed,
+.ActivityInfobar--manyCompleted .ActivityInfobar-completed .ActivityInfobar-num,
+.ActivityInfobar--manyFailed .ActivityInfobar-failed,
+.ActivityInfobar--manyFailed .ActivityInfobar-failed .ActivityInfobar-num,
+/* 1 completed or many completed, 1 failed, 0 running
+                                    |c|f       | */
+.ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-completed,
+.ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-completed .ActivityInfobar-num {
+    width: 50px;
+    opacity: 1;
+}
+
+/* 1 completed or many completed, 1 or many failed, 0 running
+                                    |c|f       | */
+.ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-failed {
+    width: -webkit-calc(100% - 50px);
+}
+.ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-failed .ActivityInfobar-num {
+    width: 0;
+    opacity: 0;
+}

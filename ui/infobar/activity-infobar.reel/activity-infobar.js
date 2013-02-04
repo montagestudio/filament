@@ -1,5 +1,5 @@
 /**
-    @module "ui/tasks-infobar.reel"
+    @module "ui/activity-infobar.reel"
     @requires montage
     @requires montage/ui/component
 */
@@ -7,36 +7,36 @@ var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     Set = require("montage/collections/set");
 
-var CLASS_PREFIX = "TasksInfobar";
+var CLASS_PREFIX = "ActivityInfobar";
 
 /**
     Description TODO
-    @class module:"ui/tasks-infobar.reel".TasksInfobar
+    @class module:"ui/activity-infobar.reel".ActivityInfobar
     @extends module:montage/ui/component.Component
 */
-exports.TasksInfobar = Montage.create(Component, /** @lends module:"ui/tasks-infobar.reel".TasksInfobar# */ {
+exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activity-infobar.reel".ActivityInfobar# */ {
 
     didCreate: {
         value: function() {
-            this._runningTasks = Set();
-            this._completedTasks = Set();
-            this._failedTasks = Set();
+            this._runningActivities = Set();
+            this._completedActivities = Set();
+            this._failedActivities = Set();
         }
     },
 
-    _runningTasks: {
+    _runningActivities: {
         value: null
     },
 
-    _completedTasks: {
+    _completedActivities: {
         value: null
     },
 
-    _failedTasks: {
+    _failedActivities: {
         value: null
     },
 
-    addTask: {
+    addActivity: {
         value: function(promise, title, info) {
             var self = this;
 
@@ -50,8 +50,8 @@ exports.TasksInfobar = Montage.create(Component, /** @lends module:"ui/tasks-inf
 
             promise.then(function (value) {
                 task.info = value;
-                self._runningTasks.delete(task);
-                self._completedTasks.add(task);
+                self._runningActivities.delete(task);
+                self._completedActivities.add(task);
                 self.needsDraw = true;
             }, function (err) {
                 var message = "";
@@ -60,15 +60,15 @@ exports.TasksInfobar = Montage.create(Component, /** @lends module:"ui/tasks-inf
                 else if (err.toString !== Object.prototype.toString) message = err.toString;
 
                 task.info = message;
-                self._runningTasks.delete(task);
-                self._failedTasks.add(task);
+                self._runningActivities.delete(task);
+                self._failedActivities.add(task);
                 self.needsDraw = true;
             }, function (info) {
                 task.info = info;
                 self.needsDraw = true;
             });
 
-            this._runningTasks.add(task);
+            this._runningActivities.add(task);
             this.needsDraw = true;
             this.infobar.show();
         }
@@ -76,8 +76,8 @@ exports.TasksInfobar = Montage.create(Component, /** @lends module:"ui/tasks-inf
 
     handleInfobarClosed: {
         value: function (event) {
-            this._completedTasks.clear();
-            this._failedTasks.clear();
+            this._completedActivities.clear();
+            this._failedActivities.clear();
             this.needsDraw = true;
         }
     },
@@ -89,7 +89,7 @@ exports.TasksInfobar = Montage.create(Component, /** @lends module:"ui/tasks-inf
             for (var i = 0; i < 3; i++) {
                 var state = states[i];
                 var lowerState = state.toLowerCase();
-                var tasks = this["_"+lowerState+"Tasks"];
+                var tasks = this["_"+lowerState+"Activities"];
                 var num = tasks.length;
                 var els = this["_"+lowerState+"Els"];
 

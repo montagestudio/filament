@@ -2,12 +2,12 @@
 <html>
 <head>
     <title></title>
-    <link rel="stylesheet" type="text/css" href="tasks-infobar.css">
+    <link rel="stylesheet" type="text/css" href="activity-infobar.css">
     <script type="text/montage-serialization">
     {
         "owner": {
             "properties": {
-                "element": {"#": "tasks-infobar"},
+                "element": {"#": "activity-infobar"},
                 "infobar": {"@": "infobar"},
 
                 "_completedEls": {
@@ -43,26 +43,26 @@
     </script>
 </head>
 <body>
-    <div data-montage-id="tasks-infobar" class="TasksInfobar">
+    <div data-montage-id="activity-infobar" class="ActivityInfobar">
         <div data-montage-id="infobar">
-            <div class="TasksInfobar-completed">
+            <div class="ActivityInfobar-completed">
                 ✔
-                <span data-montage-id="completedNum" class="TasksInfobar-num">Waiting</span>
-                <span data-montage-id="completedTitle" class="TasksInfobar-title">Waiting</span>
-                <span data-montage-id="completedInfo" class="TasksInfobar-info"></span>
+                <span data-montage-id="completedNum" class="ActivityInfobar-num">Waiting</span>
+                <span data-montage-id="completedTitle" class="ActivityInfobar-title">Waiting</span>
+                <span data-montage-id="completedInfo" class="ActivityInfobar-info"></span>
             </div>
-            <div class="TasksInfobar-failed">
+            <div class="ActivityInfobar-failed">
                 ✘
-                <span data-montage-id="failedNum" class="TasksInfobar-num">Waiting</span>
-                <span data-montage-id="failedTitle" class="TasksInfobar-title">Waiting</span>
-                <span data-montage-id="failedInfo" class="TasksInfobar-info"></span>
+                <span data-montage-id="failedNum" class="ActivityInfobar-num">Waiting</span>
+                <span data-montage-id="failedTitle" class="ActivityInfobar-title">Waiting</span>
+                <span data-montage-id="failedInfo" class="ActivityInfobar-info"></span>
             </div>
-            <div class="TasksInfobar-running">
+            <div class="ActivityInfobar-running">
                 <progress type="progress" data-montage-id="progress"></progress>
-                <span data-montage-id="runningTitle" class="TasksInfobar-title">Waiting</span>
-                <span data-montage-id="runningInfo" class="TasksInfobar-info"></span>
+                <span data-montage-id="runningTitle" class="ActivityInfobar-title">Waiting</span>
+                <span data-montage-id="runningInfo" class="ActivityInfobar-info"></span>
             </div>
-            <button type="button" data-montage-id="details" class="TasksInfobar-details">Details...</button>
+            <button type="button" data-montage-id="details" class="ActivityInfobar-details">Details...</button>
         </div>
     </div>
 </body>
