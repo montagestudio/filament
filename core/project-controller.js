@@ -642,7 +642,8 @@ exports.ProjectController = Montage.create(Montage, {
 
             var packagePath = this.environmentBridge.convertBackendUrlToPath(this.packageUrl),
                 options = {
-                    defaultDirectory: "file://localhost" + packagePath,
+                    //TODO so what if the ui doesn't exist?
+                    defaultDirectory: "file://localhost" + packagePath + "/ui",
                     defaultName: "my-component", // TODO localize this
                     prompt: "Create" //TODO localize this
                 },
