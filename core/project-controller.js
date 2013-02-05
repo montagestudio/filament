@@ -720,6 +720,10 @@ exports.ProjectController = Montage.create(Montage, {
         }
     },
 
+    repopulateOnFileSystemChanges: {
+        value: true
+    },
+
     handleFileSystemChange: {
         value: function (change, filePath) {
 
@@ -728,10 +732,15 @@ exports.ProjectController = Montage.create(Montage, {
                 filePath: filePath
             });
 
-            //TODO this is heavy handed, but really more of a proof of concept than anything else
-            if (!this._isInstallingDependencies) {
-                this.populateLibrary().done();
+            if (this.repopulateOnFileSystemChanges) {
+                this.populateFromFileSystem().done();
             }
+        }
+    },
+
+    populateFromFileSystem: {
+        value: function () {
+            return Promise.all([this.populateFiles(), this.populateLibrary()]);
         }
     },
 
