@@ -26,7 +26,7 @@ exports.DocumentEditor = Montage.create(Component, {
     load: {
         value: function (fileUrl, packageUrl) {
             var self = this,
-                descriptionPromise,
+                blueprintPromise,
                 stageObject;
 
             Object.defineBinding(self, "fileUrl", {
@@ -40,9 +40,9 @@ exports.DocumentEditor = Montage.create(Component, {
 
                 editingDocument.editingProxies.forEach(function (proxy) {
                     stageObject = proxy.stageObject;
-                    descriptionPromise = stageObject.description;
-                    if (descriptionPromise) {
-                        descriptionPromise.fail(Function.noop);
+                    blueprintPromise = stageObject.blueprint;
+                    if (blueprintPromise) {
+                        blueprintPromise.fail(Function.noop);
                     }
                 });
 
@@ -97,7 +97,7 @@ exports.DocumentEditor = Montage.create(Component, {
             ).then(function (proxy) {
 
                 // pre-fetch the description of this object
-                proxy.stageObject.description.fail(Function.noop);
+                proxy.stageObject.blueprint.fail(Function.noop);
 
                 if (typeof prototypeEntry.postProcess === "function") {
                     prototypeEntry.postProcess(proxy, editingDocument);
