@@ -13,16 +13,16 @@
                 "_completedEls": {
                     "num": {"#": "completedNum"},
                     "title": {"#": "completedTitle"},
-                    "info": {"#": "completedInfo"}
+                    "status": {"#": "completedStatus"}
                 },
                 "_failedEls": {
                     "num": {"#": "failedNum"},
                     "title": {"#": "failedTitle"},
-                    "info": {"#": "failedInfo"}
+                    "status": {"#": "failedStatus"}
                 },
                 "_runningEls": {
                     "title": {"#": "runningTitle"},
-                    "info": {"#": "runningInfo"}
+                    "status": {"#": "runningStatus"}
                 }
             }
         },
@@ -49,18 +49,18 @@
                 ✔
                 <span data-montage-id="completedNum" class="ActivityInfobar-num">Waiting</span>
                 <span data-montage-id="completedTitle" class="ActivityInfobar-title">Waiting</span>
-                <span data-montage-id="completedInfo" class="ActivityInfobar-info"></span>
+                <span data-montage-id="completedStatus" class="ActivityInfobar-status"></span>
             </div>
             <div class="ActivityInfobar-failed">
                 ✘
                 <span data-montage-id="failedNum" class="ActivityInfobar-num">Waiting</span>
                 <span data-montage-id="failedTitle" class="ActivityInfobar-title">Waiting</span>
-                <span data-montage-id="failedInfo" class="ActivityInfobar-info"></span>
+                <span data-montage-id="failedStatus" class="ActivityInfobar-status"></span>
             </div>
             <div class="ActivityInfobar-running">
                 <progress type="progress" data-montage-id="progress"></progress>
                 <span data-montage-id="runningTitle" class="ActivityInfobar-title">Waiting</span>
-                <span data-montage-id="runningInfo" class="ActivityInfobar-info"></span>
+                <span data-montage-id="runningStatus" class="ActivityInfobar-status"></span>
             </div>
             <button type="button" data-montage-id="details" class="ActivityInfobar-details">Details...</button>
         </div>

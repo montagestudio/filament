@@ -230,7 +230,7 @@ exports.Main = Montage.create(Component, {
             this.templateObjects.tasksInfobar.addActivity(
                 event.detail.promise,
                 event.detail.title,
-                event.detail.info
+                event.detail.status
             );
         }
     },

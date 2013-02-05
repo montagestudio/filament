@@ -104,7 +104,7 @@ var Extension = exports.Extension = Montage.create(Extension, {
             this.dispatchEventNamed("asyncActivity", true, false, {
                 promise: deferred.promise,
                 title: "Mop",
-                info: projectController.packageUrl
+                status: projectController.packageUrl
             });
 
             return deferred.promise;

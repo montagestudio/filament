@@ -37,7 +37,7 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
     },
 
     addActivity: {
-        value: function(promise, title, info) {
+        value: function(promise, title, status) {
             var self = this;
 
             // TODO check if promise already exists
@@ -45,11 +45,11 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
             var task = {
                 promise: promise,
                 title: title || "Unnamed task",
-                info: info || "",
+                status: status || "",
             };
 
             promise.then(function (value) {
-                task.info = value;
+                task.status = value;
                 self._runningActivities.delete(task);
                 self._completedActivities.add(task);
                 self.needsDraw = true;
@@ -59,12 +59,12 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
                 // avoid ugly [object Object]
                 else if (err.toString !== Object.prototype.toString) message = err.toString();
 
-                task.info = message;
+                task.status = message;
                 self._runningActivities.delete(task);
                 self._failedActivities.add(task);
                 self.needsDraw = true;
-            }, function (info) {
-                task.info = info;
+            }, function (status) {
+                task.status = status;
                 self.needsDraw = true;
             });
 
@@ -101,7 +101,7 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
                     this._element.classList.remove(CLASS_PREFIX+"--many"+state);
 
                     els.title.textContent = "";
-                    els.info.textContent= "";
+                    els.status.textContent= "";
                 } else if (num === 1) {
                     this._element.classList.remove(CLASS_PREFIX+"--none"+state);
                     this._element.classList.add(CLASS_PREFIX+"--one"+state);
@@ -109,7 +109,7 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
 
                     if (els.num) els.num.textContent = num;
                     els.title.textContent = tasks.one().title;
-                    els.info.textContent = tasks.one().info;
+                    els.status.textContent = tasks.one().status;
                 } else {
                     this._element.classList.remove(CLASS_PREFIX+"--none"+state);
                     this._element.classList.add(CLASS_PREFIX+"--one"+state);
@@ -117,7 +117,7 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
 
                     if (els.num) els.num.textContent = num;
                     els.title.textContent = "";
-                    els.info.textContent = num + " tasks " + lowerState;
+                    els.status.textContent = num + " tasks " + lowerState;
                 }
             }
         }
