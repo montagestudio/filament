@@ -198,12 +198,23 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     createApplication: {
         value: function (name, packageHome) {
-            return this.backend.get("lumieres").invoke("createApplication", name, this.convertBackendUrlToPath(packageHome))
-                .then(function () {
-                    var applicationUrl = packageHome + "/" + name;
-                    lumieres.document.setFileURL(applicationUrl);
-                    return applicationUrl;
-                });
+            var self = this,
+                packagePath = this.convertBackendUrlToPath(packageHome),
+                //TODO use fs join to make all these
+                applicationPath = packagePath + "/" + name,
+                applicationUrl =  packageHome + "/" + name;
+
+            return self.backend.get("fs").invoke("exists", applicationPath).then(function (result) {
+                if (result) {
+                    return self.backend.get("application").invoke("moveToTrash", applicationUrl);
+                }
+            }).then(function () {
+                return self.backend.get("lumieres").invoke("createApplication", name, packagePath)
+                    .then(function () {
+                        lumieres.document.setFileURL(applicationUrl);
+                        return applicationUrl;
+                    });
+            });
         }
     },
 
