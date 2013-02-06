@@ -99,7 +99,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     availableExtensions: {
         get: function () {
-            return this.backend.get("lumieres").invoke("getExtensions");
+            return this.backend.get("filament-backend").invoke("getExtensions");
         }
     },
 
@@ -148,7 +148,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     listTreeAtUrl: {
         value: function (url) {
-            return this.backend.get("lumieres").invoke("listTree", url).then(function (fileDescriptors) {
+            return this.backend.get("filament-backend").invoke("listTree", url).then(function (fileDescriptors) {
                 return fileDescriptors.map(function (fd) {
                     return FileDescriptor.create().initWithUrlAndStat(fd.url, fd.stat);
                 });
@@ -209,7 +209,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                     return self.backend.get("application").invoke("moveToTrash", applicationUrl);
                 }
             }).then(function () {
-                return self.backend.get("lumieres").invoke("createApplication", name, packagePath)
+                return self.backend.get("filament-backend").invoke("createApplication", name, packagePath)
                     .then(function () {
                         lumieres.document.setFileURL(applicationUrl);
                         return applicationUrl;
@@ -221,7 +221,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
     createComponent: {
         value: function (name, packageHome, destination) {
             var backend = this.backend;
-            return backend.get("lumieres").invoke("createComponent", name, this.convertBackendUrlToPath(packageHome), destination)
+            return backend.get("filament-backend").invoke("createComponent", name, this.convertBackendUrlToPath(packageHome), destination)
                 .then(function () {
                     return backend.get("fs").invoke("join", packageHome, destination, name);
                 }).then(function (componentPath) {
@@ -274,7 +274,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     installDependencies: {
         value: function (config) {
-            return this.backend.get("lumieres").invoke("installDependencies", config);
+            return this.backend.get("filament-backend").invoke("installDependencies", config);
         }
     },
 
@@ -294,7 +294,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                 backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort), local);
 
             path = this.convertBackendUrlToPath(path);
-            return backend.get("lumieres").invoke("watch", path, ignoreSubPaths, Promise.master(local));
+            return backend.get("filament-backend").invoke("watch", path, ignoreSubPaths, Promise.master(local));
         }
     },
 
