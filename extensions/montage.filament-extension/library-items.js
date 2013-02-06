@@ -493,7 +493,26 @@ exports.libraryItems = {
     "montage/ui/image.reel": ImageLibraryItem,
     "montage/ui/progress.reel": ProgressLibraryItem,
     "montage/ui/repetition.reel": RepetitionLibraryItem,
-    "montage/ui/flow.reel": FlowLibraryItem
+    "montage/ui/flow.reel": FlowLibraryItem,
+    "montage/ui/rich-text-editor/overlays/rich-text-linkpopup.reel": null,
+    "montage/ui/rich-text-editor/overlays/rich-text-resizer.reel": null,
+    "montage/ui/autocomplete/result-item.reel": null,
+    "montage/ui/autocomplete/results-list.reel": null,
+    "montage/ui/bluemoon/button-group.reel": null,
+    "montage/ui/bluemoon/button.reel": null,
+    "montage/ui/bluemoon/checkbox.reel": null,
+    "montage/ui/bluemoon/progress.reel": null,
+    "montage/ui/bluemoon/slider.reel": null,
+    "montage/ui/bluemoon/tabs.reel": null,
+    "montage/ui/bluemoon/textarea.reel": null,
+    "montage/ui/bluemoon/textfield.reel": null,
+    "montage/ui/bluemoon/toggle.reel": null,
+    "montage/ui/loader.reel": null,
+    "montage/ui/loading-panel.reel": null,
+    "montage/ui/loading.reel": null,
+    "montage/ui/token-field/token.reel": null,
+    "montage/ui/component-group.reel": null,
+    "montage/ui/scroll-bars.reel": null
 };
 
 var ArrayControllerLibraryItem = Montage.create(LibraryItem, {

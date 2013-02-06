@@ -92,3 +92,19 @@ exports.listTree = function (url) {
         }));
     });
 };
+
+var packageGuard = function(packageBaseUrl) {
+    return function (path) {
+        return !/\/node_modules\//.test(path.replace(packageBaseUrl, ""));
+    };
+};
+
+exports.listPackage = function (url) {
+    return QFS.listTree(url, packageGuard(url)).then(function (paths) {
+        return Q.all(paths.map(function (path) {
+            return QFS.stat(path).then(function (stat) {
+                return {url: "fs:/" + path, stat: stat};
+            });
+        }));
+    });
+};
