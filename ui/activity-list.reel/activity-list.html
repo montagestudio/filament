@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="activity-list.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "activity-list"}
+            }
+        },
+
+        "runningActivities": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "runningActivities"}
+            },
+            "bindings": {
+                "contentController": {"<-": "@owner.runningActivities"}
+            }
+        },
+
+        "runningTitle": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "runningTitle"}
+            },
+            "bindings": {
+                "value": {"<-": "@runningActivities.objectAtCurrentIteration.title"}
+            }
+        },
+
+        "runningStatus": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "runningStatus"}
+            },
+            "bindings": {
+                "value": {"<-": "@runningActivities.objectAtCurrentIteration.status"}
+            }
+        },
+
+        "failedActivities": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "failedActivities"}
+            },
+            "bindings": {
+                "contentController": {"<-": "@owner.failedActivities"}
+            }
+        },
+
+        "failedTitle": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "failedTitle"}
+            },
+            "bindings": {
+                "value": {"<-": "@failedActivities.objectAtCurrentIteration.title"}
+            }
+        },
+
+        "failedStatus": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "failedStatus"}
+            },
+            "bindings": {
+                "value": {"<-": "@failedActivities.objectAtCurrentIteration.status"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="activity-list" class="ActivityList">
+        <div data-montage-id="runningActivities" class="ActivityList-list">
+            <div>
+                <progress></progress>
+                <strong data-montage-id="runningTitle">Title</strong>
+                <span data-montage-id="runningStatus">Status</span>
+            </div>
+        </div>
+
+        <div data-montage-id="failedActivities" class="ActivityList-list">
+            <div>
+                <span>✘</span>
+                <strong data-montage-id="failedTitle">Title</strong>
+                <span data-montage-id="failedStatus">Status</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

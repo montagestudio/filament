@@ -18,21 +18,21 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
 
     didCreate: {
         value: function() {
-            this._runningActivities = Set();
-            this._completedActivities = Set();
-            this._failedActivities = Set();
+            this.runningActivities = Set();
+            this.completedActivities = Set();
+            this.failedActivities = Set();
         }
     },
 
-    _runningActivities: {
+    runningActivities: {
         value: null
     },
 
-    _completedActivities: {
+    completedActivities: {
         value: null
     },
 
-    _failedActivities: {
+    failedActivities: {
         value: null
     },
 
@@ -50,8 +50,8 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
 
             promise.then(function (value) {
                 task.status = value;
-                self._runningActivities.delete(task);
-                self._completedActivities.add(task);
+                self.runningActivities.delete(task);
+                self.completedActivities.add(task);
                 self.needsDraw = true;
             }, function (err) {
                 var message = "";
@@ -60,24 +60,47 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
                 else if (err.toString !== Object.prototype.toString) message = err.toString();
 
                 task.status = message;
-                self._runningActivities.delete(task);
-                self._failedActivities.add(task);
+                self.runningActivities.delete(task);
+                self.failedActivities.add(task);
                 self.needsDraw = true;
             }, function (status) {
                 task.status = status;
                 self.needsDraw = true;
             });
 
-            this._runningActivities.add(task);
+            this.runningActivities.add(task);
             this.needsDraw = true;
             this.infobar.show();
         }
     },
 
+    handleDetailsAction: {
+        value: function (event) {
+            var self = this;
+            var win = document.application.openWindow("ui/activity-list.reel",
+                "ActivityList",
+                {width: 500, height: 300}
+            );
+            win.addEventListener("load", function (event) {
+                Object.defineBinding(win.component, "runningActivities", {
+                    boundObject: self,
+                    boundObjectPropertyPath: "runningActivities",
+                    oneway: true
+                });
+
+                Object.defineBinding(win.component, "failedActivities", {
+                    boundObject: self,
+                    boundObjectPropertyPath: "failedActivities",
+                    oneway: true
+                });
+            }, false);
+        }
+    },
+
     handleInfobarClosed: {
         value: function (event) {
-            this._completedActivities.clear();
-            this._failedActivities.clear();
+            this.completedActivities.clear();
+            this.failedActivities.clear();
             this.needsDraw = true;
         }
     },
@@ -89,7 +112,7 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
             for (var i = 0; i < 3; i++) {
                 var state = states[i];
                 var lowerState = state.toLowerCase();
-                var tasks = this["_"+lowerState+"Activities"];
+                var tasks = this[lowerState+"Activities"];
                 var num = tasks.length;
                 var els = this["_"+lowerState+"Els"];
 

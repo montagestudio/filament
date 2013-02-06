@@ -1,0 +1,18 @@
+.ActivityList {
+    font-family: Open Sans, sans-serif;
+    display: table;
+}
+
+.ActivityList-list {
+    display: table-row-group;
+    border-bottom: 1px solid #DDD;
+}
+
+.ActivityList-list > div {
+    display: table-row;
+    border-bottom: 1px solid #DDD;
+}
+
+.ActivityList-list > div > * {
+    display: table-cell;
+}

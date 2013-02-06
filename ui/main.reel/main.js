@@ -240,6 +240,7 @@ exports.Main = Montage.create(Component, {
         value: function () {
             //TODO don't call addComponent until we know it's a component we want
             var promise = this.projectController.createComponent();
+            // TODO localize
             this.templateObjects.tasksInfobar.addActivity(promise, "Add component");
         }
     },
