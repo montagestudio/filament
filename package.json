@@ -19,11 +19,18 @@
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git",
         "minit": "0.1.8"
     },
+    "devDependencies": {
+        "jasmine-node": "1.2.2",
+        "sandboxed-module": "0.1.4"
+    },
     "mappings": {
         "filament-extension": {
             "name": "filament-extension",
             "location": "filament-extension"
         }
+    },
+    "scripts": {
+        "test": "node test/run.js"
     },
     "manifest": true
 }
