@@ -62,43 +62,9 @@ exports.watch = function (path, ignoreSubPaths, changeHandler) {
     });
 };
 
-var ignoredPatterns  =[/\.git$/, /\.gitignore$/, /\.DS_Store$/, /\.idea$/, /\/node_modules\//],
-    shallowPatterns  =[/\/node_modules$/],
-    treeGuard = function (path) {
-
-        var ignored, shallow;
-
-        ignored = !!(ignoredPatterns.filter(function(pattern) {
-            return pattern.test(path);
-        }).length);
-
-        if (ignored) {
-            return null;
-        } else {
-
-            shallow = !!(shallowPatterns.filter(function(pattern) {
-                return pattern.test(path);
-            }).length);
-
-            return !shallow;
-        }
-    };
-
-exports.listTree = function (url) {
-    return QFS.listTree(url, treeGuard).then(function (paths) {
-        return Q.all(paths.map(function (path) {
-            return QFS.stat(path).then(function (stat) {
-               return {url: "fs:/" + path, stat: stat};
-            });
-        }));
-    });
-};
-
-var packageGuard = function (exclude) {
+var guard = function (exclude) {
     exclude = exclude || [];
-    exclude.push("node_modules", ".*");
     var minimatchOpts = {matchBase: true};
-
     return function (path) {
         // make sure none of the excludes match
         return exclude.every(function (glob) {
@@ -108,17 +74,37 @@ var packageGuard = function (exclude) {
 };
 
 /**
+ * Lists all the files in the given path except node_modules and dotfiles.
+ * @param  {string} path An absolute path to a directory.
+ * @return {Promise.<Array.<string>>} A promise for an array of paths.
+ */
+exports.listTree = function (path) {
+    return QFS.listTree(path, guard([
+            "node_modules",
+            ".*"
+        ])).then(function (paths) {
+        return Q.all(paths.map(function (path) {
+            return QFS.stat(path).then(function (stat) {
+               return {url: "fs:/" + path, stat: stat};
+            });
+        }));
+    });
+};
+
+/**
  * Lists all the files in a package except node_modules, dotfiles and files
  * matching the globs listed in the package.json "exclude" property.
  * @param  {string} path An absolute path to the package directory to list.
  * @return {Promise.<Array.<string>>} A promise for an array of paths.
  */
 exports.listPackage = function (path) {
+    var exclude = ["node_modules", ".*"];
+
     return QFS.read(PATH.join(path, "package.json")).then(function (contents) {
         var pkg = JSON.parse(contents);
-        return packageGuard(pkg.exclude);
+        return guard(exclude.concat(pkg.exclude));
     }, function (err) {
-        return packageGuard();
+        return guard(exclude);
     }).then(function (guard) {
         return QFS.listTree(path, guard).then(function (paths) {
             return Q.all(paths.map(function (path) {
