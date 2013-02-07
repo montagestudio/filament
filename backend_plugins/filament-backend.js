@@ -5,7 +5,8 @@ var path = require("path"),
     npm = require("npm"),
     watchr = require("watchr"),
     QFS = require("q-io/fs"),
-    PATH = require('path');
+    PATH = require('path'),
+    minimatch = require('minimatch');
 
 exports.getExtensions = function() {
     var result = [],
@@ -93,18 +94,38 @@ exports.listTree = function (url) {
     });
 };
 
-var packageGuard = function(packageBaseUrl) {
+var packageGuard = function (exclude) {
+    exclude = exclude || [];
+    exclude.push("node_modules", ".*");
+    var minimatchOpts = {matchBase: true};
+
     return function (path) {
-        return !/\/node_modules\//.test(path.replace(packageBaseUrl, ""));
+        // make sure none of the excludes match
+        return exclude.every(function (glob) {
+            return !minimatch(path, glob, minimatchOpts);
+        }) ? true : null; // if false return null so directories aren't traversed
     };
 };
 
-exports.listPackage = function (url) {
-    return QFS.listTree(url, packageGuard(url)).then(function (paths) {
-        return Q.all(paths.map(function (path) {
-            return QFS.stat(path).then(function (stat) {
-                return {url: "fs:/" + path, stat: stat};
-            });
-        }));
+/**
+ * Lists all the files in a package except node_modules, dotfiles and files
+ * matching the globs listed in the package.json "exclude" property.
+ * @param  {string} path An absolute path to the package directory to list.
+ * @return {Promise.<Array.<string>>} A promise for an array of paths.
+ */
+exports.listPackage = function (path) {
+    return QFS.read(PATH.join(path, "package.json")).then(function (contents) {
+        var pkg = JSON.parse(contents);
+        return packageGuard(pkg.exclude);
+    }, function (err) {
+        return packageGuard();
+    }).then(function (guard) {
+        return QFS.listTree(path, guard).then(function (paths) {
+            return Q.all(paths.map(function (path) {
+                return QFS.stat(path).then(function (stat) {
+                    return {url: "fs:/" + path, stat: stat};
+                });
+            }));
+        });
     });
 };

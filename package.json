@@ -17,7 +17,8 @@
         "npm": "1.1.70",
         "watchr": "2.3.3",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git",
-        "minit": "0.1.8"
+        "minit": "0.1.8",
+        "minimatch": "0.2.9"
     },
     "devDependencies": {
         "jasmine-node": "1.2.2",
