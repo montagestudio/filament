@@ -193,12 +193,6 @@ exports.ProjectController = Montage.create(Montage, {
         value: null
     },
 
-    // The collection of components available within the open package
-    // This is actually a collection of descriptive ComponentInfo objects
-    components: {
-        value: null
-    },
-
     files: {
         value: null
     },
