@@ -7,8 +7,35 @@ var QFSMock = require("q-io/fs-mock");
 
 describe("filament backend", function () {
 
-    describe("listTree", function () {
+    describe("getExtensions", function () {
+        var mockFS, filamentBackend;
 
+        beforeEach(function () {
+            mockFS = {
+                existsSync: function (path) {
+                    expect(path).toEqual("/root/extensions");
+                    return true;
+                },
+                readdirSync: function (path) {
+                    return ["a.filament-extension", "b.filament-extension", "c.js", "filament-extension"];
+                }
+            };
+
+            filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
+                requires: {"fs": mockFS},
+                globals: {clientPath: "/root"}
+            });
+        });
+
+        it("lists files with .filament-extension in extensions directory", function () {
+            var extensions = filamentBackend.getExtensions();
+            expect(extensions.length).toBe(2);
+            expect(extensions[0]).toBe("fs://root/extensions/a.filament-extension");
+            expect(extensions[1]).toBe("fs://root/extensions/b.filament-extension");
+        });
+    });
+
+    describe("listTree", function () {
         var mockFS, filamentBackend;
 
         beforeEach(function () {
@@ -45,7 +72,6 @@ describe("filament backend", function () {
 
             filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
                 requires: {"q-io/fs": mockFS},
-                globals: {clientPath: "a"}
             });
         });
 
