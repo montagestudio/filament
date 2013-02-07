@@ -125,6 +125,16 @@ exports.Main = Montage.create(Component, {
             app.addEventListener("openFile", this);
             app.addEventListener("addFile", this);
 
+            var files = this.projectController.files;
+            var projectUrl = this.projectController.projectUrl;
+            for (var i = 0, len = files.length; i < len; i++) {
+                var fileUrl = files[i].fileUrl;
+                if (fileUrl.replace(projectUrl, "") === "/ui/main.reel") {
+                    this.openFileUrl(fileUrl).done();
+                    break;
+                }
+            }
+
             // Update title
             // TODO this should be unnecessary as the packageUrl has been changed...
             this.needsDraw = true;
