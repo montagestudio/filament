@@ -102,7 +102,7 @@ exports.listPackage = function (path) {
 
     return QFS.read(PATH.join(path, "package.json")).then(function (contents) {
         var pkg = JSON.parse(contents);
-        return guard(exclude.concat(pkg.exclude));
+        return guard(exclude.concat(pkg.exclude || []));
     }, function (err) {
         return guard(exclude);
     }).then(function (guard) {
