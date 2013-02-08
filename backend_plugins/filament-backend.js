@@ -109,7 +109,7 @@ exports.listPackage = function (path) {
         return QFS.listTree(path, guard).then(function (paths) {
             return Q.all(paths.map(function (path) {
                 return QFS.stat(path).then(function (stat) {
-                    return {url: "fs:/localhost" + path, stat: stat};
+                    return {url: "fs://localhost" + path, stat: stat};
                 });
             }));
         });
