@@ -619,6 +619,8 @@ exports.ProjectController = Montage.create(Montage, {
                 self = this;
 
             this.environmentBridge.promptForSave(options).then(function (destination) {
+                // remove traling slash
+                destination = destination.replace(/\/$/, "");
                 var destinationDividerIndex = destination.lastIndexOf("/"),
                     appName = destination.substring(destinationDividerIndex + 1),
                     packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", "");
@@ -653,7 +655,8 @@ exports.ProjectController = Montage.create(Montage, {
                 if (!destination) {
                     return null;
                 }
-
+                // remove traling slash
+                destination = destination.replace(/\/$/, "");
                 var destinationDividerIndex = destination.lastIndexOf("/"),
                     componentName = destination.substring(destinationDividerIndex + 1),
                     //TODO complain if packageHome does not match this.packageUrl?
