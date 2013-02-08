@@ -15,6 +15,7 @@
     display: -webkit-flex;
     -webkit-flex-direction: column;
     position: relative;
+    background: hsl(0, 0%, 30%);
 }
 
 
