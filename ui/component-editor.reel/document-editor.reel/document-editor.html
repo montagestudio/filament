@@ -12,9 +12,6 @@
                 "properties": {
                     "element": {"#": "documentEditor"},
                     "workbench": {"@": "workbench"}
-                },
-                "bindings": {
-                    "selectedObjects": {"<->": "@workbench.selectedObjects"}
                 }
             },
 
@@ -22,6 +19,9 @@
                 "prototype": "palette/ui/workbench.reel",
                 "properties": {
                     "element": {"#": "workbench"}
+                },
+                "bindings": {
+                    "selectedObjects": {"<-": "@owner.editingDocument.selectedObjects"}
                 }
             }
         }
