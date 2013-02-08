@@ -1,0 +1,91 @@
+
+/* 
+ * CSS-Only components used in Filament
+ * Could be moved into "real" reels.
+ */
+
+
+
+/* Button --------------------------------- */
+
+.Button {    
+    white-space: nowrap;
+    color: hsla(0,0%,0%,.7);
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
+    border-color: hsl(0,0%,80%);
+    background-image: -webkit-linear-gradient(top, hsl(0,0%,96%), hsl(0,0%,92%) );
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,.8), inset 0 -1px 1px hsla(0,0%,0%,.04), 0 1px 0 hsla(0,0%,100%,.6);
+}
+
+.Button:hover {
+    background-image: -webkit-linear-gradient(top, hsl(0,0%,98%), hsl(0,0%,94%) );
+}
+
+.Button:active {
+    background-image: -webkit-linear-gradient(top, hsl(0,0%,90%), hsl(0,0%,90%) );
+    box-shadow: inset 0 -1px 1px hsla(0,0%,0%,.04), 0 1px 0 hsla(0,0%,100%,.6);
+}
+
+.Button:focus {
+    border-color: #7f7f7f;
+}
+
+/* Button Action --------------------------------- */
+
+.Button--action {    
+    color: hsla(0,0%,100%,1);
+    text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
+    border-color: hsl(210,100%,50%);
+    background-image: -webkit-linear-gradient(top, hsl(210,100%,66%), hsl(210,100%,56%) );
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,.15), 0 1px 0 hsla(0,0%,100%,.6);
+}
+
+.Button--action:hover {
+    color: hsla(0,0%,100%,1);
+    background-image: -webkit-linear-gradient(top, hsl(210,100%,68%), hsl(210,100%,58%) );
+}
+
+.Button--action.active {
+    background-image: -webkit-linear-gradient(top, hsl(210,100%,56%), hsl(210,100%,56%) );
+    box-shadow: 0 1px 0 hsla(0,0%,100%,.6);
+}
+
+.Button--action:focus {
+    border-color: hsl(210,100%,20%);
+}
+
+
+
+
+/* Panel --------------------------------- */
+
+.Panel {
+    display: -webkit-flex;
+    -webkit-flex-flow: column;
+    position: relative;
+    width: 240px;
+    background: hsl(0,0%,60%);
+}
+
+.Panel-title {
+    height: 32px;
+    padding: 0 8px;
+    margin: 0;
+    line-height: 30px;
+    font-size: 14px;
+    font-weight: normal;
+    color: hsl(0,0%,40%);
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
+    text-align: left;
+    border-top: 1px solid hsla(0,0%,100%,1);
+    border-bottom: 1px solid hsla(0,0%,0%,.2);
+    background: hsl(0,0%,96%) -webkit-linear-gradient( hsla(0,0%,100%,.1), hsla(0,0%,0%,.06) );
+}
+
+.Panel-content {
+    -webkit-flex: 1;
+    min-height: 0;
+    overflow-y: scroll;
+    background: hsl(0,0%,90%);
+}
+

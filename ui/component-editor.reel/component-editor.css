@@ -1,8 +1,8 @@
 .ComponentEditor {
     -webkit-flex: 1;
+    min-height: 0;
     display: -webkit-flex;
     -webkit-flex-direction: row;
-    height: 100%;
 }
 
 .Filament-view {

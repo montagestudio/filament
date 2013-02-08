@@ -1,6 +1,7 @@
 .ExtensionPanel {
-    width: 2em;
+    width: 0;
     -webkit-transition: width 200ms ease-in-out;
+    border: 10px solid hsl(0,0%,30%);
     background-color: hsl(0,0%,30%);
     overflow: hidden;
 }

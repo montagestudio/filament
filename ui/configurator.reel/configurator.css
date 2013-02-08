@@ -1,28 +1,8 @@
-.Configurator {
-	position: relative;
-	width: 240px;
-	display: -webkit-flex;
-	-webkit-flex-direction: column;
-    background: hsl(0,0%,70%);
-}
+.Configurator {}
 
-.Configurator-title {
-    padding: 10px;
-    margin: 0;
-    font-size: 14px;
-    font-weight: normal;
-    text-align: left;
-	background: hsl(0,0%,100%);
-	border-top: 1px solid hsla(0,0%,100%,.5);
-	border-bottom: 1px solid hsla(0,0%,0%,.08);
-}
+.Configurator-title {}
 
 .Configurator-inspectorCondition {
-    -webkit-flex: 1;
-    min-height: 0;
-    overflow-y: scroll;
-    position: relative;
     margin: 0;
     padding: 0;
-    background-color: hsl(0,0%,70%);
 }

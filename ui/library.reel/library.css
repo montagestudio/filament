@@ -1,9 +1,4 @@
 .Library {
-    position: relative;
-    width: 240px;
-    display: -webkit-flex;
-    -webkit-flex-direction: column;
-    background: hsl(0,0%,70%);
     -webkit-user-select: none;
 }
 
@@ -11,28 +6,16 @@
 /* Title --------------------------------- */
 
 .Library-title {
-    padding: 10px;
-    margin: 0;
-    font-size: 14px;
-    font-weight: normal;
-    text-align: left;
-    background: hsl(0,0%,90%);
-	border-top: 1px solid hsl(0,0%,95%);
-	border-bottom: 1px solid hsl(0,0%,70%);
 }
 
 
 /* List --------------------------------- */
 
 .Library-list {
-	-webkit-flex: 1;
-	min-height: 0;
     position: relative;
 	margin: 0;
 	padding: 0;
 	list-style: none;
-	overflow-y: scroll;
-	background-color: hsl(0,0%,70%);
 }
 
 

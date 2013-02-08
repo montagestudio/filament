@@ -25,6 +25,7 @@ body {
 
 /* Scrollbar -------------------------------- */
 
+/*
 ::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 4px;
@@ -36,3 +37,4 @@ body {
     background-clip: padding-box;
     background-color: hsl(0,0%,60%);
 }
+*/
