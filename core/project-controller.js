@@ -614,7 +614,6 @@ exports.ProjectController = Montage.create(Montage, {
         value: function () {
             var options = {
                     displayAsSheet: true,
-                    defaultName: "my-app", // TODO localize the default app-name
                     prompt: "Create" //TODO localize this
                 },
                 self = this;
