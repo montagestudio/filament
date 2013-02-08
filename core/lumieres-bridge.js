@@ -36,7 +36,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     convertBackendUrlToPath: {
         value: function (url) {
-            return url.replace(/^\w+:\//m, "");
+            return url.replace(/^\w+:\/\/\w*/m, "");
         }
     },
 
@@ -59,14 +59,9 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
     projectUrl: {
         get: function () {
             var params = qs.parse(window.location.search.replace(/^\?/, "")),
-                fileParam = params.file,
-                fileUrl;
+                fileParam = params.file;
 
-            if (fileParam && !fileParam.match(/fs:\/\(null\)/)) {
-                fileUrl = fileParam;
-            }
-
-            return fileUrl;
+            return fileParam;
         }
     },
 
@@ -84,7 +79,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                         .then(function (dependencies) {
 
                             if (packageUrl) {
-                                packageUrl = "fs:/" + packageUrl;
+                                packageUrl = "fs://localhost" + packageUrl;
                             }
 
                             return {
@@ -168,8 +163,8 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
             lumieres.saveFileDialog(options, function (error, file) {
                 if (!error) {
-                    var destination = file.replace("file://localhost", "");
-                    deferredSave.resolve("fs:/" + destination);
+                    var destination = file.replace("file://localhost", "fs://localhost");
+                    deferredSave.resolve(destination);
                 } else {
                     deferredSave.resolve(null);
                 }

@@ -18,7 +18,17 @@ exports.HistoryItem = Montage.create(Montage, {
         get: function () {
             var name;
             if (this.url) {
-                name = this.url.substring(this.url.lastIndexOf("/") + 1);
+                var url = this.url,
+                    index = url.indexOf("?");
+
+                if (index !== -1) {
+                    url = url.substring(0, index);
+                }
+                if (url.charAt(url.length - 1) == "/") {
+                    url = url.substring(0, url.length - 1);
+                }
+
+                name = url.substring(url.lastIndexOf("/") + 1);
             }
             return name;
         }

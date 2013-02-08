@@ -69,7 +69,7 @@ exports.Main = Montage.create(Component, {
 
                 window.addEventListener("openRelatedFile", function (evt) {
                     var url = evt.detail;
-                    self.openFileUrl(url.replace("file://localhost", "fs:/").replace(/\/$/, ""));
+                    self.openFileUrl(url.replace("file://localhost/", "fs://localhost/").replace(/\/$/, ""));
                 });
 
                 window.addEventListener("beforeunload", function () {

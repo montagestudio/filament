@@ -19,7 +19,7 @@ exports.getExtensions = function() {
             var fileName = list[i];
             // For now accept any file that ends with .filament-extension
             if (path.extname(fileName).toLowerCase() == ".filament-extension") {
-                result.push("fs:/" + path.join(parentPath, fileName));
+                result.push("http://client/extensions/" + fileName);
             }
         }
     }
@@ -85,7 +85,7 @@ exports.listTree = function (path) {
         ])).then(function (paths) {
         return Q.all(paths.map(function (path) {
             return QFS.stat(path).then(function (stat) {
-               return {url: "fs:/" + path, stat: stat};
+               return {url: "fs://localhost" + path, stat: stat};
             });
         }));
     });
@@ -109,7 +109,7 @@ exports.listPackage = function (path) {
         return QFS.listTree(path, guard).then(function (paths) {
             return Q.all(paths.map(function (path) {
                 return QFS.stat(path).then(function (stat) {
-                    return {url: "fs:/" + path, stat: stat};
+                    return {url: "fs:/localhost" + path, stat: stat};
                 });
             }));
         });

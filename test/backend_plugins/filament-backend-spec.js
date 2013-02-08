@@ -30,8 +30,8 @@ describe("filament backend", function () {
         it("lists files with .filament-extension in extensions directory", function () {
             var extensions = filamentBackend.getExtensions();
             expect(extensions.length).toBe(2);
-            expect(extensions[0]).toBe("fs://root/extensions/a.filament-extension");
-            expect(extensions[1]).toBe("fs://root/extensions/b.filament-extension");
+            expect(extensions[0]).toBe("fs://localhost/root/extensions/a.filament-extension");
+            expect(extensions[1]).toBe("fs://localhost/root/extensions/b.filament-extension");
         });
     });
 
@@ -79,7 +79,7 @@ describe("filament backend", function () {
             return filamentBackend.listTree("/simple/a")
             .then(function (fileDescriptors) {
                 expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
-                    "fs://simple/a", "fs://simple/a/b.js", "fs://simple/a/c", "fs://simple/a/c/d.js"
+                    "fs://localhost/simple/a", "fs://localhost/simple/a/b.js", "fs://localhost/simple/a/c", "fs://localhost/simple/a/c/d.js"
                 ]);
 
             });
@@ -89,7 +89,7 @@ describe("filament backend", function () {
             return filamentBackend.listTree("/ignore")
             .then(function (fileDescriptors) {
                 expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
-                    "fs://ignore", "fs://ignore/ok.js"
+                    "fs://localhost/ignore", "fs://localhost/ignore/ok.js"
                 ]);
             });
         });
@@ -99,7 +99,7 @@ describe("filament backend", function () {
             .then(function (fileDescriptors) {
                 return filamentBackend.listPackage("/root/a").then(function (fileDescriptors) {
                     expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
-                        "fs://ignore/node_modules/x", "fs://ignore/node_modules/x/index.js"
+                        "fs://localhost/ignore/node_modules/x", "fs://localhost/ignore/node_modules/x/index.js"
                     ]);
                 });
             });
@@ -133,7 +133,7 @@ describe("filament backend", function () {
 
             return filamentBackend.listPackage("/root/a").then(function (fileDescriptors) {
                 expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
-                    "fs://root/a", "fs://root/a/ok.js"
+                    "fs://localhost/root/a", "fs://localhost/root/a/ok.js"
                 ]);
             });
         });
@@ -157,7 +157,7 @@ describe("filament backend", function () {
 
             return filamentBackend.listPackage("/root/a").then(function (fileDescriptors) {
                 expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
-                    "fs://root/a", "fs://root/a/ok.js"
+                    "fs://localhost/root/a", "fs://localhost/root/a/ok.js"
                 ]);
             });
         });
@@ -189,7 +189,7 @@ describe("filament backend", function () {
 
             return filamentBackend.listPackage("/root/a").then(function (fileDescriptors) {
                 expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
-                    "fs://root/a", "fs://root/a/ok.js", "fs://root/a/package.json"
+                    "fs://localhost/root/a", "fs://localhost/root/a/ok.js", "fs://localhost/root/a/package.json"
                 ]);
             });
         });
