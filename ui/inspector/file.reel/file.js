@@ -60,10 +60,10 @@ exports.File = Montage.create(Component, /** @lends module:"ui/file.reel".File# 
                 }
 
                 // We get "file://localhost" back from lumieres, change
-                // to "fs:/"
+                // to "fs://localhost/"
                 // TODO: copy file into project
                 for (var i = 0, len = files.length; i < len; i++) {
-                    files[i] = files[i].replace(/^file:\/\/localhost/, "fs:/");
+                    files[i] = files[i].replace(/^file:\/\/localhost/, "fs://localhost");
                 }
 
                 deferred.resolve(files);
