@@ -27,6 +27,9 @@ var Extension = exports.Extension = Montage.create(Extension, {
                 application.addEventListener(eventType, self, false);
             });
 
+            // Log the amount of time an async activity takes to run
+            application.addEventListener("asyncActivity", this, false);
+
             return Promise.resolve(this);
         }
     },
@@ -39,6 +42,16 @@ var Extension = exports.Extension = Montage.create(Extension, {
             });
 
             return Promise.resolve(this);
+        }
+    },
+
+    handleAsyncActivity: {
+        value: function (event) {
+            var title = "Async activity " + event.detail.title, promise = event.detail.promise;
+            console.time(title);
+            promise.finally(function () {
+                console.timeEnd(title);
+            });
         }
     },
 
