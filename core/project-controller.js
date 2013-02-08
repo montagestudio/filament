@@ -625,11 +625,17 @@ exports.ProjectController = Montage.create(Montage, {
                     appName = destination.substring(destinationDividerIndex + 1),
                     packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", "");
 
-                return self.environmentBridge.createApplication(appName, packageHome);
+                var promise = self.environmentBridge.createApplication(appName, packageHome);
+
+                this.dispatchEventNamed("asyncActivity", true, false, {
+                    promise: promise,
+                    title: "Create application", // TODO localize
+                    status: destination
+                });
+
+                return promise;
             }).then(function (applicationUrl) {
                 self.loadProject(applicationUrl);
-            }, function () {
-                window.close();
             }).done();
         }
     },
@@ -663,7 +669,15 @@ exports.ProjectController = Montage.create(Montage, {
                     packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", ""),
                     relativeDestination = destination.substring(0, destinationDividerIndex).replace(packageHome, "").replace(/^\//, "");
 
-                return self.environmentBridge.createComponent(componentName, packageHome, relativeDestination);
+                var promise = self.environmentBridge.createComponent(componentName, packageHome, relativeDestination);
+
+                this.dispatchEventNamed("asyncActivity", true, false, {
+                    promise: promise,
+                    title: "Create component", // TODO localize
+                    status: destination
+                });
+
+                return promise;
             });
             //TODO handle a cancelled creation vs some error
         }
