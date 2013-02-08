@@ -103,27 +103,42 @@ body {
 
 /* Panel --------------------------------- */
 
-.Panel-title {
-    height: 24px;
-    padding: 0 10px;
-    margin: 0;
-    line-height: 24px;
-    font-size: 12px;
-    //font-weight: normal;
-    color: hsl(0,0%,50%);
-    text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
-    text-align: left;
-    border-top: 1px solid hsla(0,0%,100%,.6);
-    border-bottom: 1px solid hsla(0,0%,0%,.2);
-    background: hsl(0,0%,94%) -webkit-linear-gradient( hsla(0,0%,100%,.1), hsla(0,0%,0%,.1) );
-    cursor: pointer;
+.Panel {
+    display: -webkit-flex;
+    -webkit-flex-flow: column;
+    width: 240px;
+    background: hsl(0,0%,60%);
+    border: solid hsl(0,0%,60%);
+    border-width: 2px 1px 2px 1px;
 }
 
-.Panel-title:hover {
-    background-color: hsl(0,0%,96%);
+.Panel:first-child {
+    border-left-width: 2px;
 }
-.Panel-title:active {
-    background-color: hsl(0,0%,92%);
+
+.Panel:last-child {
+    border-right-width: 2px;
+}
+
+.Panel-title {
+    height: 24px;
+    padding: 0 8px;
+    margin: 0;
+    line-height: 22px;
+    font-size: 12px;
+    font-weight: normal;
+    color: hsl(0,0%,40%);
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
+    text-align: left;
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
+    border-radius: 3px 3px 0 0;
+    border-top: 1px solid hsla(0,0%,100%,1);
+    border-bottom: 1px solid hsla(0,0%,0%,.2);
+    background: hsl(0,0%,96%) -webkit-linear-gradient( hsla(0,0%,100%,.1), hsla(0,0%,0%,.06) );
+}
+
+.Panel-content {
+    background: hsl(0,0%,90%);
 }
 
 /* Panel Collapsed --------------------------------- */
