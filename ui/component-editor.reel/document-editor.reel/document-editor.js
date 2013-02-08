@@ -44,23 +44,20 @@ exports.DocumentEditor = Montage.create(Component, {
                 exportName;
 
 
-            editingDocumentPromise = require.loadPackage(packageUrl)
-                .then(function (packageRequire) {
-                    return ReelDocument.load(fileUrl, packageRequire)
-                        .then(function (reelDocument) {
+            editingDocumentPromise = ReelDocument.load(fileUrl, packageUrl)
+                .then(function (reelDocument) {
 
-                            // pre-load blueprints for everything already on the stage
-                            // but don't complain if we can't find one
-                            reelDocument.editingProxies.forEach(function (proxy) {
-                                moduleId = proxy.moduleId;
-                                exportName = proxy.exportName;
-                                if (moduleId && exportName) {
-                                    packageRequire.async(moduleId).get(exportName).get("blueprint").fail(Function.noop);
-                                }
-                            });
+                    // pre-load blueprints for everything already on the stage
+                    // but don't complain if we can't find one
+                    reelDocument.editingProxies.forEach(function (proxy) {
+                        moduleId = proxy.moduleId;
+                        exportName = proxy.exportName;
+                        if (moduleId && exportName) {
+                            reelDocument.packageRequire.async(moduleId).get(exportName).get("blueprint").fail(Function.noop);
+                        }
+                    });
 
-                            return reelDocument;
-                        });
+                    return reelDocument;
                 });
 
             //Wait for the stage and the editingDocument: only return the editingDocument
