@@ -648,7 +648,7 @@ exports.ProjectController = Montage.create(Montage, {
     createComponent: {
         value: function () {
 
-            if (!this.canCreateComponents) {
+            if (!this.canEdit) {
                 throw new Error("Cannot create components without an open project");
             }
 
@@ -704,7 +704,7 @@ exports.ProjectController = Montage.create(Montage, {
         }
     },
 
-    canCreateComponents: {
+    canEdit: {
         dependencies: ["_windowIsKey", "packageUrl"],
         get: function () {
             return !!(this._windowIsKey && this.packageUrl);
