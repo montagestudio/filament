@@ -645,19 +645,18 @@ exports.ProjectController = Montage.create(Montage, {
         }
     },
 
-    createComponent: {
-        value: function () {
-
+    _create: {
+        value: function (thing, subdirectory, fn) {
             if (!this.canEdit) {
-                throw new Error("Cannot create components without an open project");
+                throw new Error("Cannot create " + thing + " without an open project"); // TODO localize
             }
 
             var packagePath = this.environmentBridge.convertBackendUrlToPath(this.packageUrl),
                 options = {
                     //TODO so what if the ui doesn't exist?
-                    defaultDirectory: "file://localhost" + packagePath + "/ui",
-                    defaultName: "my-component", // TODO localize this
-                    prompt: "Create" //TODO localize this
+                    defaultDirectory: "file://localhost" + packagePath + "/" + subdirectory,
+                    defaultName: "my-" + thing, // TODO localize
+                    prompt: "Create" //TODO localize
                 },
                 self = this;
 
@@ -669,22 +668,29 @@ exports.ProjectController = Montage.create(Montage, {
                 // remove traling slash
                 destination = destination.replace(/\/$/, "");
                 var destinationDividerIndex = destination.lastIndexOf("/"),
-                    componentName = destination.substring(destinationDividerIndex + 1),
+                    name = destination.substring(destinationDividerIndex + 1),
                     //TODO complain if packageHome does not match this.packageUrl?
                     packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", ""),
                     relativeDestination = destination.substring(0, destinationDividerIndex).replace(packageHome, "").replace(/^\//, "");
 
-                var promise = self.environmentBridge.createComponent(componentName, packageHome, relativeDestination);
+                var promise = fn(name, packageHome, relativeDestination);
 
                 this.dispatchEventNamed("asyncActivity", true, false, {
                     promise: promise,
-                    title: "Create component", // TODO localize
+                    title: "Create " + thing, // TODO localize
                     status: destination
                 });
 
                 return promise;
             });
-            //TODO handle a cancelled creation vs some error
+        }
+    },
+
+    createComponent: {
+        value: function () {
+            return this._create("component", "ui",
+                this.environmentBridge.createComponent.bind(this.environmentBridge)
+            );
         }
     },
 
