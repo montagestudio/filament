@@ -204,13 +204,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     createComponent: {
         value: function (name, packageHome, destination) {
-            var backend = this.backend;
-            return backend.get("filament-backend").invoke("createComponent", name, this.convertBackendUrlToPath(packageHome), destination)
-                .then(function () {
-                    return backend.get("fs").invoke("join", packageHome, destination, name);
-                }).then(function (componentPath) {
-                    return componentPath;
-                });
+            return this.backend.get("filament-backend").invoke("createComponent", name, this.convertBackendUrlToPath(packageHome), destination);
         }
     },
 

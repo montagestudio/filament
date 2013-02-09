@@ -34,7 +34,10 @@ exports.createApplication = function(name, packageHome) {
 exports.createComponent = function(name, packageHome, destination) {
     destination = destination || ".";
     name = name.replace(/\.reel$/, "");
-    return minitCreate("component", {name: name, packageHome: packageHome, destination: destination});
+    return minitCreate("component", {name: name, packageHome: packageHome, destination: destination})
+    .then(function () {
+        return path.join(packageHome, destination, name);
+    });
 };
 
 exports.installDependencies = function (config) {
