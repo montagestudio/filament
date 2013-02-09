@@ -1,6 +1,7 @@
 .BindingJig {
     font-size: 12px;
     color: hsl(0,0%,60%);
+    background: hsl(0, 0%, 90%);
 }
 
 .BindingJig.isHidden {

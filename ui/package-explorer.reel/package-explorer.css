@@ -5,7 +5,9 @@
 .PackageExplorer-menu {
     margin: 0;
     padding: 8px;
-    background: hsl(0, 0%, 80%);
+    background: hsl(0,0%,96%);
+    border-top: 1px solid hsla(0,0%,100%,.3);
+    border-bottom: 1px solid hsla(0,0%,0%,.2);
 }
 
 .PackageExplorer-menu .PackageExplorer-menu-item {
@@ -13,24 +15,12 @@
     width: 100%;
     margin: 10px 0 0 0;
     min-width: 0;
-    box-shadow: inset 0 1px 0 hsla(0,0%,100%,.2), 0 1px 0 hsla(0,0%,100%,.3);
-    
 }
 
 .PackageExplorer-menu .PackageExplorer-menu-item:first-child {
     margin: 0;
 }
 
-.PackageExplorer-list {
-    display: -webkit-flex;
-    -webkit-flex-direction: column;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+.PackageExplorer .Panel-shadow {
+    top: 80px;
 }
-
-.PackageExplorer-list .montage-List-Scroller {
-    -webkit-flex: 1;
-    min-height: 0;
-}
-

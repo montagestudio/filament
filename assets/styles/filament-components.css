@@ -88,7 +88,7 @@
     -webkit-flex-flow: column;
     position: relative;
     width: 240px;
-    background: hsl(0,0%,60%);
+    background: hsl(0, 0%, 30%);
 }
 
 .Panel-title {
@@ -101,15 +101,71 @@
     color: hsl(0,0%,40%);
     text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
     text-align: left;
+    border: 1px solid hsla(0,0%,0%,.05);
     border-top: 1px solid hsla(0,0%,100%,1);
     border-bottom: 1px solid hsla(0,0%,0%,.2);
-    background: hsl(0,0%,96%) -webkit-linear-gradient( hsla(0,0%,100%,.1), hsla(0,0%,0%,.06) );
+    background: -webkit-linear-gradient( hsl(0,0%,96%), hsl(0,0%,90%) );
 }
 
 .Panel-content {
     -webkit-flex: 1;
     min-height: 0;
     overflow-y: scroll;
-    background: hsl(0,0%,90%);
+    background: hsl(0,0%,80%);
+}
+
+.Panel-shadow {
+    position: absolute;
+    pointer-events: none;
+    top: 32px; left: 0; right: 0; bottom: 0;
+    box-shadow: inset 0 1px 4px hsla(0,0%,0%,.15), inset 0 -1px 1px hsla(0,0%,0%,.05);
+}
+
+
+
+/* List --------------------------------- */
+
+.List {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.List-item {
+	padding: 8px;
+	border: none;
+    border-top: 1px solid hsla(0,0%,100%,.2);
+    border-bottom: 1px solid hsla(0,0%,0%,.06);
+	font-size: 12px;
+	line-height: 1;
+	color: hsl(0,0%,40%);
+	text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	cursor: pointer;
+	background: hsl(0,0%,86%);
+}
+
+.List-item:hover {
+	background: hsl(0,0%,90%);
+}
+
+.List-item.active,
+.List-item:active,
+.List-item:focus {
+    border-color: transparent;
+	background: hsl(0,0%,80%);
+}
+
+.List-title {
+	padding: 5px 10px;
+	margin: 0;
+	font-size: 12px;
+	font-weight: normal;
+	text-align: left;
+	color: hsl(0,0%,50%); 
+	background: hsl(0,0%,80%);
+	border-top: 1px solid hsla(0, 0%, 0%, 0.1);
 }
 
