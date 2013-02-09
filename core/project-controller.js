@@ -694,6 +694,14 @@ exports.ProjectController = Montage.create(Montage, {
         }
     },
 
+    createModule: {
+        value: function () {
+            return this._create("module", "core",
+                this.environmentBridge.createModule.bind(this.environmentBridge)
+            );
+        }
+    },
+
     _windowIsKey: {
         value: true //TODO not assume our window is key
     },
@@ -725,11 +733,16 @@ exports.ProjectController = Montage.create(Montage, {
                 self = this;
 
             this.environmentBridge.mainMenu.then(function (mainMenu) {
-                newComponentMenuItem = mainMenu.menuItemForIdentifier("newComponent");
 
-                Object.defineBinding(newComponentMenuItem, "enabled", {
+                Object.defineBinding(mainMenu.menuItemForIdentifier("newComponent"), "enabled", {
                     boundObject: self,
-                    boundObjectPropertyPath: "canCreateComponents",
+                    boundObjectPropertyPath: "canEdit",
+                    oneway: true
+                });
+
+                Object.defineBinding(mainMenu.menuItemForIdentifier("newModule"), "enabled", {
+                    boundObject: self,
+                    boundObjectPropertyPath: "canEdit",
                     oneway: true
                 });
             }).done();

@@ -249,7 +249,7 @@ exports.Main = Montage.create(Component, {
         enumerable: false,
         value: function () {
             //TODO don't call addComponent until we know it's a component we want
-            var promise = this.projectController.createComponent();
+            this.projectController.createComponent().done();
         }
     },
 
@@ -276,7 +276,9 @@ exports.Main = Montage.create(Component, {
         enumerable: false,
         value: function (evt) {
             if ("newComponent" === evt.detail.identifier) {
-                this.projectController.createComponent();
+                this.projectController.createComponent().done();
+            } else if ("newModule" === evt.detail.identifier) {
+                this.projectController.createModule().done();
             }
         }
     },

@@ -100,6 +100,10 @@ exports.menusAddOns = function() {
                 {
                     title: "Component…", enabled: false, keyEquivalent: "command+shift+N",
                     identifier: "newComponent"
+                },
+                {
+                    title: "Module…", enabled: false, keyEquivalent: "command+control+shift+N",
+                    identifier: "newModule"
                 }
             ]
         },

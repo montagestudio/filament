@@ -208,6 +208,12 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         }
     },
 
+    createModule: {
+        value: function (name, packageHome, destination) {
+            return this.backend.get("filament-backend").invoke("createModule", name, this.convertBackendUrlToPath(packageHome), destination);
+        }
+    },
+
     open: {
         value: function (url) {
             return this.backend.get("application").invoke("openDocument", {url: url});

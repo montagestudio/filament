@@ -40,6 +40,14 @@ exports.createComponent = function(name, packageHome, destination) {
     });
 };
 
+exports.createModule = function(name, packageHome, destination) {
+    destination = destination || ".";
+    return minitCreate("module", {name: name, packageHome: packageHome, destination: destination})
+    .then(function () {
+        return path.join(packageHome, destination, name);
+    });
+};
+
 exports.installDependencies = function (config) {
     return Q.ninvoke(npm, "load", (config || null))
         .then(function (loadedNpm) {
