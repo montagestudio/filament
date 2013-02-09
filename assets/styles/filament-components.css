@@ -87,8 +87,8 @@
     display: -webkit-flex;
     -webkit-flex-flow: column;
     position: relative;
-    width: 240px;
-    background: hsl(0, 0%, 30%);
+    width: 200px;
+    background: hsl(0, 0%, 40%);
 }
 
 .Panel-title {
