@@ -619,6 +619,11 @@ exports.ProjectController = Montage.create(Montage, {
                 self = this;
 
             this.environmentBridge.promptForSave(options).then(function (destination) {
+                if (!destination) {
+                    window.close();
+                    return null;
+                }
+
                 // remove traling slash
                 destination = destination.replace(/\/$/, "");
                 var destinationDividerIndex = destination.lastIndexOf("/"),
