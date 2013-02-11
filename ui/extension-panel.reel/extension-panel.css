@@ -1,13 +1,12 @@
 .ExtensionPanel {
-    width: 0;
+    display: none;
     -webkit-transition: width 200ms ease-in-out;
-    border: 10px solid hsl(0,0%,30%);
+    padding: 10px;
     background-color: hsl(0,0%,30%);
-    overflow: hidden;
 }
 
-.ExtensionPanel:hover {
-    width: 30em;
+.ExtensionPanel.isOpen {
+    display: block;
 }
 
 .ExtensionPanel ul {
