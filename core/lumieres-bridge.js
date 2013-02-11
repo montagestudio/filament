@@ -163,8 +163,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
             lumieres.saveFileDialog(options, function (error, file) {
                 if (!error) {
-                    var destination = file.replace("file://localhost", "fs://localhost");
-                    deferredSave.resolve(destination);
+                    deferredSave.resolve(file);
                 } else {
                     deferredSave.resolve(null);
                 }
