@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="blueprint-editor.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "blueprint-editor"}
+            }
+        },
+
+        "blueprintCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "blueprint-condition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.currentDocument.isBlueprint"}
+            }
+        },
+
+        "blueprintInspector": {
+            "prototype": "palette/ui/inspector/inspector.reel",
+            "properties": {
+                "element": {"#": "blueprint-inspector"}
+            },
+            "bindings": {
+                "object": {"<-": "@owner.currentDocument.currentProxyObject"},
+                "editingDocument": {"<-": "@owner.currentDocument"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="blueprint-editor" class="BlueprintEditor">
+        <div data-montage-id="blueprint-condition" class="Blueprint-inspectorCondition">
+            <div data-montage-id="blueprint-inspector" class="BlueprintInspector"></div>
+        </div>
+    </div>
+</body>
+</html>
