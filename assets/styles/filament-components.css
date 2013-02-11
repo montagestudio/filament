@@ -92,6 +92,7 @@
 }
 
 .Panel-title {
+    position: relative;
     height: 32px;
     padding: 0 8px;
     margin: 0;
@@ -107,6 +108,12 @@
     background: -webkit-linear-gradient( hsl(0,0%,96%), hsl(0,0%,90%) );
 }
 
+.Panel-title-button {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+}
+
 .Panel-content {
     -webkit-flex: 1;
     min-height: 0;
@@ -117,10 +124,10 @@
 .Panel-shadow {
     position: absolute;
     pointer-events: none;
-    top: 32px; left: 0; right: 0; bottom: 0;
-    box-shadow: inset 0 1px 4px hsla(0,0%,0%,.15), inset 0 -1px 1px hsla(0,0%,0%,.05);
+    height: 4px;
+    top: 32px; left: 0; right: 0;    
+    background-image: -webkit-radial-gradient(center 0%, ellipse farthest-side, hsla(0,0%,0%,0.1), hsla(0,0%,0%,.02) 110% );
 }
-
 
 
 /* List --------------------------------- */
