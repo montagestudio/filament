@@ -79,6 +79,52 @@
 }
 
 
+/* Tabs --------------------------------- */
+
+.Tabs {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    background: hsl(300, 50%, 30%);
+}
+
+
+.Tabs-tab:first-child {
+    border-top-left-radius: 0;
+}
+
+.Tabs-tab {
+    display: inline-block;
+    height: 32px;
+    padding: 0 8px;
+    margin: 0;
+    line-height: 30px;
+    font-size: 13px;
+    font-weight: normal;
+    text-align: center;    
+    color: hsla(0,0%,100%,.5);
+    border-radius: 6px 6px 0 0;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    cursor: pointer;
+}
+
+.Tabs-tab:hover {
+    color: hsla(0,0%,100%,.8);
+    background: hsla(0,0%,100%,.2);
+}
+
+.Tabs-tab:active,
+.Tabs-tab:focus,
+.Tabs-tab.selected {
+    color: hsl(0,0%,40%);
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
+    border-top: 1px solid hsla(0,0%,100%,1);
+    border-bottom: 1px solid hsla(0,0%,0%,.2);
+    background: -webkit-linear-gradient( hsl(0,0%,96%), hsl(0,0%,90%) );
+    cursor: default;
+}
 
 
 /* Panel --------------------------------- */
@@ -92,17 +138,15 @@
 }
 
 .Panel-title {
-    position: relative;
+    text-align: left;
     height: 32px;
     padding: 0 8px;
     margin: 0;
     line-height: 30px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: normal;
     color: hsl(0,0%,40%);
     text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
-    text-align: left;
-    border: 1px solid hsla(0,0%,0%,.05);
     border-top: 1px solid hsla(0,0%,100%,1);
     border-bottom: 1px solid hsla(0,0%,0%,.2);
     background: -webkit-linear-gradient( hsl(0,0%,96%), hsl(0,0%,90%) );

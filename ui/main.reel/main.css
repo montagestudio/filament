@@ -20,37 +20,6 @@
 }
 
 
-/* Tabs ----------------------- */
-
-.openComponentTabs {
-    margin: 4px 0 0 0;
-    padding: 0;
-    font-size: 0;
-}
-
-.openComponentTab {
-    padding: 0 10px;
-    line-height: 27px;
-    font-size: 14px;
-    display: inline-block;
-    cursor: pointer;
-    border-radius: 6px 6px 0 0;
-    color: hsl(0, 0%, 70%);
-}
-
-.openComponentTab:hover {
-    color: hsl(0, 0%, 70%);
-    background: hsl(0, 0%, 50%);
-}
-.openComponentTab:active,
-.openComponentTab:focus,
-.openComponentTab.selected {
-    color: hsl(0,0%,30%);
-    background: hsl(0,0%,100%);
-    border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
-}
-
-
 .editorSlot {
     -webkit-flex: 1;
     min-height: 0;
