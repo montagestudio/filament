@@ -161,6 +161,7 @@
 .Panel-content {
     -webkit-flex: 1;
     min-height: 0;
+    overflow-x: hidden;
     overflow-y: scroll;
     background: hsl(0,0%,80%);
 }
