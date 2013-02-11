@@ -3,6 +3,7 @@
 
 .LibraryCell .LibraryCell-button {
 	-webkit-appearance: none;
+	display: block;
 	width: 100%;
 	text-align: left;
 	height: auto;
