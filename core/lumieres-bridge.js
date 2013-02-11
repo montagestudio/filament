@@ -222,24 +222,14 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
     save: {
         value: function (editingDocument, location) {
 
-            //TODO I think I've made this regex many times...and probably differently
-            var filenameMatch = location.match(/.+\/(.+)\.reel/),
-                filename,
-                path,
-                content,
-                template = editingDocument.template;
+            var dataWriter = function (self, flags) {
+                return function (data, path) {
+                    path = self.convertBackendUrlToPath(path);
+                    return self.writeDataToFilePath(data, path, flags);
+                };
+            };
 
-            if (!(filenameMatch && filenameMatch[1])) {
-                throw "Could not find name for file to save";
-            }
-
-            filename = filenameMatch[1];
-
-            path = this.convertBackendUrlToPath(location) + "/" + filename + ".html";
-            content = template.exportToString();
-
-            // TODO replace the low-level writing promise with a promise to save
-            return this.writeDataToFilePath(content, path, {flags: "w", charset: 'utf-8'});
+            return editingDocument.save(location, dataWriter(this, {flags: "w", charset: 'utf-8'}));
         }
     },
 
