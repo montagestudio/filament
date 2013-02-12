@@ -451,7 +451,7 @@ var FlowLibraryItem = Montage.create(LibraryItem, {
                 flowImageSerialization.bindings = {};
             }
 
-            // FIXME HACK WTF is going on here?
+            // XXX FIXME HACK WTF is going on here?
             flowImageSerialization.bindings.src = {
                 boundObject: {"<-": "@" + editingProxy.label},
                 boundObjectPropertyPath: "objectAtCurrentIteration",
