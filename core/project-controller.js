@@ -311,7 +311,7 @@ exports.ProjectController = Montage.create(Montage, {
 
                 this.dispatchEventNamed("willExitDocument", true, false, this.currentDocument);
 
-                editingDocuments = this.openDocumentsController.organizedObjects;
+                editingDocuments = this.openDocumentsController.visibleContent;
                 docIndex = editingDocuments.map(function (doc) {
                     return doc.fileUrl;
                 }).indexOf(fileUrl);
