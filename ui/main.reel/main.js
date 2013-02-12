@@ -396,10 +396,7 @@ exports.Main = Montage.create(Component, {
             }
 
             //TODO optimize this entire draw method
-            // FIXME: remove if when getPath fixed
-            if (this.projectController && this.projectController.currentDocument) {
-                currentFileUrl = this.getPath("projectController.currentDocument.fileUrl");
-            }
+            currentFileUrl = this.getProperty("projectController.currentDocument.fileUrl");
             currentEditor = this.fileUrlEditorMap[currentFileUrl];
 
             this.openEditors.forEach(function (editor) {
