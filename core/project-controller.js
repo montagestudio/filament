@@ -2,6 +2,7 @@ var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
     LibraryItem = require("filament-extension/core/library-item.js").LibraryItem,
     Deserializer = require("montage/core/serialization").Deserializer,
+    findObjectNameRegExp = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver._findObjectNameRegExp,
     ContentController = require("montage/core/content-controller").ContentController;
 
 exports.ProjectController = Montage.create(Montage, {
@@ -394,7 +395,7 @@ exports.ProjectController = Montage.create(Montage, {
     _objectNameFromModuleId: {
         value: function (moduleId) {
             //TODO this utility should live somewhere else (/baz/foo-bar.reel to FooBar)
-            Deserializer._findObjectNameRegExp.test(moduleId);
+            findObjectNameRegExp.test(moduleId);
             return RegExp.$1.replace(Deserializer._toCamelCaseRegExp, Deserializer._replaceToCamelCase);
         }
     },
