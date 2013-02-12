@@ -78,11 +78,11 @@
 
 /* Nav Tab ----------------------------------- */
 
-.Nav-button--tab {
+.Nav-tabs .Nav-button {
 	-webkit-transition: -webkit-transform .3s cubic-bezier(.20, .11, .14, .94);
 }
 
-.Nav-button--tab.active {
+.Nav-tabs .Nav-button.active {
     color: hsla(0,0%,0%,.5);
     text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
     border-radius: 0 12px 12px 0;
