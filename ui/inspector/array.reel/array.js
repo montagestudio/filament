@@ -4,8 +4,7 @@
     @requires montage/ui/component
 */
 var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
-    Bindings = require("montage/core/bindings").Bindings;
+    Component = require("montage/ui/component").Component;
 
 var converter = {
     convert: function(value) {
@@ -39,10 +38,7 @@ exports.Array = Montage.create(Component, /** @lends module:"ui/array.reel".Arra
 
     didCreate: {
         value: function() {
-            this.defineBinding("array", {
-                "<->": "string",
-                converter: converter
-            });
+            this.defineBinding("array", {"<->": "string", converter: converter});
         }
     },
 

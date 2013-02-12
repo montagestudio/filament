@@ -1,6 +1,5 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
-    Bindings = require("montage/core/bindings").Bindings,
     HistoryItemConverter = require("welcome/core/history-item-converter").HistoryItemConverter;
 
 var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
@@ -27,8 +26,8 @@ exports.Main = Montage.create(Component, {
                 this.version = lumieres.version;
 
                 this.defineBinding("recentDocuments", {
-                    source: lumieres,
-                    "<-": "recentDocuments"
+                    "<-": "recentDocuments",
+                    source: lumieres
                 });
 
                 require.async("core/lumieres-bridge").then(function (exported) {

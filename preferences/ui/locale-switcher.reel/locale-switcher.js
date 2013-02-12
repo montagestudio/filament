@@ -5,7 +5,6 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
-    Bindings = require("montage/core/bindings").Bindings,
     ContentController = require("montage/core/content-controller").ContentController,
     Promise = require("montage/core/promise").Promise,
     defaultLocalizer = require("montage/core/localizer").defaultLocalizer;
@@ -21,10 +20,7 @@ exports.LocaleSwitcher = Montage.create(Component, /** @lends module:"ui/locale-
         value: function() {
             var self = this;
 
-            Bindings.defineBinding(self, "locale", {
-                source: defaultLocalizer,
-                "<->": "locale"
-            });
+            this.defineBinding("locale", {"<->": "locale", source: defaultLocalizer});
 
             defaultLocalizer.availableLocales.then(function (locales) {
                 // Get the name of each locale
