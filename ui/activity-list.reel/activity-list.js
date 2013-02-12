@@ -6,7 +6,7 @@
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
-    ArrayController = require("montage/ui/controller/array-controller").ArrayController,
+    ContentController = require("montage/core/content-controller").ContentController,
     defaultLocalizer = require("montage/core/localizer").defaultLocalizer;
 
 /**
@@ -37,7 +37,7 @@ exports.ActivityList = Montage.create(Component, /** @lends module:"ui/activity-
             if (!Array.isArray(value)) {
                 value = value.toArray();
             }
-            value = ArrayController.create().initWithContent(value);
+            value = ContentController.create().initWithContent(value);
             this._runningActivities = value;
         }
     },
@@ -55,7 +55,7 @@ exports.ActivityList = Montage.create(Component, /** @lends module:"ui/activity-
             if (!Array.isArray(value)) {
                 value = value.toArray();
             }
-            value = ArrayController.create().initWithContent(value);
+            value = ContentController.create().initWithContent(value);
             this._failedActivities = value;
         }
     }

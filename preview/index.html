@@ -4,17 +4,17 @@
     <title>Montage Builder - Preview</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    
+
     <link href="{$CLIENT}/assets/fonts/fonts.css" rel="stylesheet">
     <link href="{$CLIENT}/assets/styles/filament.css" rel="stylesheet">
     <link href="preview-home.css" rel="stylesheet">
-    
+
     <script src="{$CLIENT}/node_modules/montage/montage.js" data-package="."></script>
     <script src="{$SERVER}/refresh.js"></script>
     <script type="text/montage-serialization">
         {
             "controller": {
-                "prototype": "montage/ui/controller/array-controller",
+                "prototype": "montage/core/content-controller",
                 "properties": {
                     "selectObjectsOnAddition": true,
                     "automaticallyOrganizeObjects": true,
@@ -68,7 +68,7 @@
                 </li>
             </ul>
         </section>
-        
+
         <section class="Intro">
             <img class="Intro-logo" src="{$CLIENT}/assets/img/logo.png" alt="logo">
             <p class="Intro-meta">&copy;2012-2013 Declarativ Inc.</p>

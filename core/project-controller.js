@@ -2,7 +2,7 @@ var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
     LibraryItem = require("filament-extension/core/library-item.js").LibraryItem,
     Deserializer = require("montage/core/deserializer").Deserializer,
-    ArrayController = require("montage/ui/controller/array-controller").ArrayController;
+    ContentController = require("montage/core/content-controller").ContentController;
 
 exports.ProjectController = Montage.create(Montage, {
 
@@ -10,7 +10,7 @@ exports.ProjectController = Montage.create(Montage, {
         value: function (bridge, viewController) {
             this._environmentBridge = bridge;
             this._viewController = viewController;
-            this.openDocumentsController = ArrayController.create().initWithContent([]);
+            this.openDocumentsController = ContentController.create().initWithContent([]);
 
             this.openDocumentsController.addPropertyChangeListener("selectedObjects", this);
 
