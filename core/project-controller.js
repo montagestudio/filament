@@ -347,7 +347,7 @@ exports.ProjectController = Montage.create(Montage, {
         }
     },
 
-    handleChange: {
+    handlePropertyChange: {
         value: function (notification) {
 
             var currentPropertyPath = notification.currentPropertyPath;
