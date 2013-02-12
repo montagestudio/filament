@@ -5,7 +5,7 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
-    Serializer = require("montage/core/serializer").Serializer,
+    Serializer = require("montage/core/serialization").Serializer,
     MimeTypes = require("core/mime-types");
 
 var serializer = Serializer.create();

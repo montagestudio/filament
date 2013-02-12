@@ -1,7 +1,7 @@
 var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
     LibraryItem = require("filament-extension/core/library-item.js").LibraryItem,
-    Deserializer = require("montage/core/deserializer").Deserializer,
+    Deserializer = require("montage/core/serialization").Deserializer,
     ContentController = require("montage/core/content-controller").ContentController;
 
 exports.ProjectController = Montage.create(Montage, {

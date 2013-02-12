@@ -1,6 +1,6 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
-    Deserializer = require("montage/core/deserializer").Deserializer,
+    Deserializer = require("montage/core/serialization").Deserializer,
     ReelDocument = require("palette/core/reel-document").ReelDocument,
     MimeTypes = require("core/mime-types"),
     Promise = require("montage/core/promise").Promise;
