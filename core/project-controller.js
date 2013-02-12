@@ -1,4 +1,5 @@
 var Montage = require("montage/core/core").Montage,
+    Bindings = require("montage/core/bindings").Bindings,
     Promise = require("montage/core/promise").Promise,
     LibraryItem = require("filament-extension/core/library-item.js").LibraryItem,
     Deserializer = require("montage/core/serialization").Deserializer,
@@ -729,16 +730,14 @@ exports.ProjectController = Montage.create(Montage, {
 
             this.environmentBridge.mainMenu.then(function (mainMenu) {
 
-                Object.defineBinding(mainMenu.menuItemForIdentifier("newComponent"), "enabled", {
-                    boundObject: self,
-                    boundObjectPropertyPath: "canEdit",
-                    oneway: true
+                Bindings.defineBinding(mainMenu.menuItemForIdentifier("newComponent"), "enabled", {
+                    source: self,
+                    "<-": "canEdit"
                 });
 
-                Object.defineBinding(mainMenu.menuItemForIdentifier("newModule"), "enabled", {
-                    boundObject: self,
-                    boundObjectPropertyPath: "canEdit",
-                    oneway: true
+                Bindings.defineBinding(mainMenu.menuItemForIdentifier("newModule"), "enabled", {
+                    source: self,
+                    "<-": "canEdit"
                 });
             }).done();
         }

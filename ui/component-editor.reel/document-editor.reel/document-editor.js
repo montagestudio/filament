@@ -1,5 +1,6 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
+    Bindings = require("montage/core/bindings").Bindings,
     Deserializer = require("montage/core/serialization").Deserializer,
     ReelDocument = require("palette/core/reel-document").ReelDocument,
     MimeTypes = require("core/mime-types"),
@@ -27,11 +28,7 @@ exports.DocumentEditor = Montage.create(Component, {
 
     didCreate: {
         value: function () {
-            Object.defineBinding(this, "fileUrl", {
-                boundObject: this,
-                boundObjectPropertyPath: "editingDocument.fileUrl",
-                oneway: true
-            });
+            this.defineBinding("fileUrl", {"<-": "editingDocument.fileUrl"});
         }
     },
 

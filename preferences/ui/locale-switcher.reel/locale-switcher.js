@@ -5,6 +5,7 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
+    Bindings = require("montage/core/bindings").Bindings,
     ContentController = require("montage/core/content-controller").ContentController,
     Promise = require("montage/core/promise").Promise,
     defaultLocalizer = require("montage/core/localizer").defaultLocalizer;
@@ -20,10 +21,9 @@ exports.LocaleSwitcher = Montage.create(Component, /** @lends module:"ui/locale-
         value: function() {
             var self = this;
 
-            Object.defineBinding(self, "locale", {
-                boundObject: defaultLocalizer,
-                boundObjectPropertyPath: "locale",
-                oneway: false
+            Bindings.defineBinding(self, "locale", {
+                source: defaultLocalizer,
+                "<->": "locale"
             });
 
             defaultLocalizer.availableLocales.then(function (locales) {

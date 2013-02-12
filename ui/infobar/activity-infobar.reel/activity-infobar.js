@@ -5,6 +5,7 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
+    Bindings = require("montage/core/bindings").Bindings,
     Set = require("montage/collections/set");
 
 var CLASS_PREFIX = "ActivityInfobar";
@@ -82,16 +83,14 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
                 {width: 500, height: 300}
             );
             win.addEventListener("load", function (event) {
-                Object.defineBinding(win.component, "runningActivities", {
-                    boundObject: self,
-                    boundObjectPropertyPath: "runningActivities",
-                    oneway: true
+                Bindings.defineBinding(win.component, "runningActivities", {
+                    source: self,
+                    "<-": "runningActivities"
                 });
 
-                Object.defineBinding(win.component, "failedActivities", {
-                    boundObject: self,
-                    boundObjectPropertyPath: "failedActivities",
-                    oneway: true
+                Bindings.defineBinding(win.component, "failedActivities", {
+                    source: self,
+                    "<-": "failedActivities"
                 });
             }, false);
         }
