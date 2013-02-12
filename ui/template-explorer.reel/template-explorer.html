@@ -8,14 +8,14 @@
         "owner": {
             "properties": {
                 "element": {"#": "template-explorer"},
-                "templateObjectsController": {"@": "templateObjectsController"}
+                "templatesObjectsController": {"@": "templatesObjectsController"}
             }
         },
 
-        "templateObjectsController": {
+        "templatesObjectsController": {
             "prototype": "montage/core/content-controller",
             "bindings": {
-                "content": {"<-": "@owner.templateObjects"},
+                "content": {"<-": "@owner.templatesObjects"},
                 "selectedObjects": {"<->": "@owner.selectedObjects"}
             }
         },
@@ -37,7 +37,7 @@
                 "isSelectionEnabled": true
             },
             "bindings": {
-                "contentController": {"<-": "@owner.templateObjectsController"}
+                "contentController": {"<-": "@owner.templatesObjectsController"}
             }
         },
 

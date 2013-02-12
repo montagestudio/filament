@@ -13,7 +13,7 @@ var Montage = require("montage").Montage,
 */
 exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./template-explorer.reel".TemplateExplorer# */ {
 
-    templateObjects: {
+    templatesObjects: {
         value: null
     },
 
@@ -21,7 +21,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         value: null
     },
 
-    templateObjectsController: {
+    templatesObjectsController: {
         value: null
     }
 
