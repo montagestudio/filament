@@ -128,7 +128,7 @@ exports.ComponentEditor = Montage.create(Component, {
 
             //TODO optimize this entire draw method
             fileUrls = Object.keys(this.fileUrlEditorMap);
-            currentFileUrl = this.getProperty("projectController.currentDocument.fileUrl");
+            currentFileUrl = this.getPath("projectController.currentDocument.fileUrl");
 
             fileUrls.forEach(function (fileUrl) {
                 editor = self.fileUrlEditorMap[fileUrl];

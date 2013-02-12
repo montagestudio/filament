@@ -362,7 +362,7 @@ exports.ProjectController = Montage.create(Montage, {
                        "currentDocument.undoManager.redoLabel" === currentPropertyPath) {
                 this.updateUndoMenus();
             } else if ("currentDocument.undoManager.undoCount" === currentPropertyPath) {
-                var undoCount = this.getProperty(currentPropertyPath);
+                var undoCount = this.getPath(currentPropertyPath);
                 //Dirty if we have a document and there things to undo
                 this.environmentBridge.setDocumentDirtyState(null != undoCount && undoCount > 0);
             }
@@ -374,14 +374,14 @@ exports.ProjectController = Montage.create(Montage, {
         enumerable: false,
         value: function () {
 
-            if (this.getProperty("currentDocument.undoManager.undoCount")) {
-                this.environmentBridge.setUndoState(true, this.getProperty("currentDocument.undoManager.undoLabel"));
+            if (this.getPath("currentDocument.undoManager.undoCount")) {
+                this.environmentBridge.setUndoState(true, this.getPath("currentDocument.undoManager.undoLabel"));
             } else {
                 this.environmentBridge.setUndoState(false);
             }
 
-            if (this.getProperty("currentDocument.undoManager.redoCount")) {
-                this.environmentBridge.setRedoState(true, this.getProperty("currentDocument.undoManager.redoLabel"));
+            if (this.getPath("currentDocument.undoManager.redoCount")) {
+                this.environmentBridge.setRedoState(true, this.getPath("currentDocument.undoManager.redoLabel"));
             } else {
                 this.environmentBridge.setRedoState(false);
             }

@@ -50,7 +50,7 @@ exports.Configurator = Montage.create(Component, {
     handleChange: {
         value: function (notification) {
             if ("editingDocument.selectedObjects.0" === notification.currentPropertyPath) {
-                var selectedObject = this.getProperty("editingDocument.selectedObjects.0"),
+                var selectedObject = this.getPath("editingDocument.selectedObjects.0"),
                     inspectorController = this.viewController ? this.viewController.modalEditorTypeForObject(selectedObject) : null;
 
                 if (inspectorController) {

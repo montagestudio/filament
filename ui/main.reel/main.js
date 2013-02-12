@@ -144,7 +144,7 @@ exports.Main = Montage.create(Component, {
     handleAddComponent: {
         value: function (evt) {
             var editor,
-                currentFileUrl = this.projectController.getProperty("currentDocument.fileUrl");
+                currentFileUrl = this.projectController.getPath("currentDocument.fileUrl");
 
             if (currentFileUrl && (editor = this.componentEditorMap[currentFileUrl])) {
                 editor.addComponent(evt.detail.prototypeObject);
@@ -396,7 +396,7 @@ exports.Main = Montage.create(Component, {
             }
 
             //TODO optimize this entire draw method
-            currentFileUrl = this.getProperty("projectController.currentDocument.fileUrl");
+            currentFileUrl = this.getPath("projectController.currentDocument.fileUrl");
             currentEditor = this.fileUrlEditorMap[currentFileUrl];
 
             this.openEditors.forEach(function (editor) {

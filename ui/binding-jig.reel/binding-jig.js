@@ -36,7 +36,7 @@ exports.BindingJig = Montage.create(Component, {
                 return;
             }
 
-            this.boundObject = this.getProperty("selectedObjects.0");
+            this.boundObject = this.getPath("selectedObjects.0");
         }
     },
 
@@ -46,7 +46,7 @@ exports.BindingJig = Montage.create(Component, {
                 return;
             }
 
-            this.sourceObject = this.getProperty("selectedObjects.0");
+            this.sourceObject = this.getPath("selectedObjects.0");
         }
     },
 
