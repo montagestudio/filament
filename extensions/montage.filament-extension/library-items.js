@@ -364,7 +364,7 @@ var RepetitionLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "montage/ui/repetition.reel",
             "properties": {
-                "objects": [1, 2, 3]
+                "content": [1, 2, 3]
             }
         }
     },

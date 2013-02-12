@@ -3,7 +3,7 @@
 <head>
     <title>Library</title>
     <meta charset="utf-8">
-    
+
     <link href="library.css" rel="stylesheet" />
 
     <script type="text/montage-serialization">
@@ -58,7 +58,7 @@
                     "element": {"#": "libraryItemList"}
                 },
                 "bindings": {
-                    "objects": {"<-": "@groupList.objectAtCurrentIteration.libraryItems"}
+                    "content": {"<-": "@groupList.objectAtCurrentIteration.libraryItems"}
                 }
             },
 
@@ -71,14 +71,14 @@
                     "prototypeObject": {"<-": "@libraryItemList.objectAtCurrentIteration"}
                 }
             }
-            
+
         }
     </script>
 
 </head>
 <body>
-    
-    <aside data-montage-id="library" class="Panel Library">        
+
+    <aside data-montage-id="library" class="Panel Library">
 		<h2 data-montage-id="libraryLabel" class="Panel-title">Library</h2>
         <div class="Panel-content">
             <ul data-montage-id="groupList" class="List">
