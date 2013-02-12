@@ -26,7 +26,7 @@ exports.Configurator = Montage.create(Component, {
     didCreate: {
         value: function () {
             //TODO handle multiple selection better
-            this.addPropertyChangeListener("editingDocument.selectedObjects.0", this, false);
+            this.addOwnPropertyChangeListener("editingDocument.selectedObjects.0", this, false);
         }
     },
 

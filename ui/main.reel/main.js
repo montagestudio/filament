@@ -117,7 +117,7 @@ exports.Main = Montage.create(Component, {
     handleDidOpenPackage: {
         enumerable: false,
         value: function () {
-            this.addPropertyChangeListener("windowTitle", this, false);
+            this.addOwnPropertyChangeListener("windowTitle", this, false);
 
             document.addEventListener("save", this, false);
 

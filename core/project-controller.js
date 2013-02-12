@@ -13,7 +13,7 @@ exports.ProjectController = Montage.create(Montage, {
             this._viewController = viewController;
             this.openDocumentsController = ContentController.create().initWithContent([]);
 
-            this.openDocumentsController.addPropertyChangeListener("selectedObjects", this);
+            this.openDocumentsController.addOwnPropertyChangeListener("selectedObjects", this);
 
             this.loadedExtensions = [];
             this.activeExtensions = [];
@@ -50,9 +50,9 @@ exports.ProjectController = Montage.create(Montage, {
                 self.dispatchEventNamed("canLoadProject", true, false);
             }).done();
 
-            this.addPropertyChangeListener("currentDocument.undoManager.undoLabel", this);
-            this.addPropertyChangeListener("currentDocument.undoManager.redoLabel", this);
-            this.addPropertyChangeListener("currentDocument.undoManager.undoCount", this);
+            this.addOwnPropertyChangeListener("currentDocument.undoManager.undoLabel", this);
+            this.addOwnPropertyChangeListener("currentDocument.undoManager.redoLabel", this);
+            this.addOwnPropertyChangeListener("currentDocument.undoManager.undoCount", this);
 
             return this;
         }
