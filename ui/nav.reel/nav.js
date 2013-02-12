@@ -5,7 +5,7 @@ exports.Nav = Montage.create(Component, {
 
     prepareForDraw: {
         value: function() {
-            
+            /*
             var main = document.getElementById('main');
             var device = document.getElementById('device');
             var libraryButton = document.getElementById('libraryButton');
@@ -24,7 +24,7 @@ exports.Nav = Montage.create(Component, {
                 main.classList.remove('isLibrary');
                 main.classList.add('isExplorer');
             }
-                        
+            */
         }
     }
 
