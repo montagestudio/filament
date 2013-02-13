@@ -8,7 +8,7 @@ var Montage = require("montage").Montage,
     Serializer = require("montage/core/serialization").Serializer,
     MimeTypes = require("core/mime-types");
 
-var serializer = Serializer.create();
+var serializer = Serializer.create().initWithRequire(require);
 
 /**
     Description TODO
