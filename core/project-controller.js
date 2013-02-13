@@ -331,7 +331,7 @@ exports.ProjectController = Montage.create(Montage, {
 
                     promisedDocument = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
                         self.currentDocument = editingDocument;
-                        self.openDocumentsController.addObjects(editingDocument);
+                        self.openDocumentsController.content.push(editingDocument);
                         self.openDocumentsController.selectedObjects = [editingDocument];
 
                         self.dispatchEventNamed("didLoadDocument", true, false, editingDocument);
