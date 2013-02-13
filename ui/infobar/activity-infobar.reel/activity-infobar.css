@@ -1,62 +1,140 @@
 .ActivityInfobar {
 }
 
-.ActivityInfobar progress {
-    float: left;
+.Infobar-content {
+    display: -webkit-flex;
+    -webkit-align-items: center;
 }
 
-.ActivityInfobar-details {
+/* Item ------------------------ */
+
+.ActivityInfobar-item {
+    position: relative;
+    -webkit-flex: 1;
+    height: 32px;
+    color: hsla(0,0%,100%,.9);
+    text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
+    overflow: hidden;
+    white-space: nowrap;
+    -webkit-transition: -webkit-flex .4s cubic-bezier(.37, .05, .22, .95);
+}
+
+.ActivityInfobar-item--running {
+    padding: 0 8px;
+    background: hsl(0,0%,30%);
+}
+
+.ActivityInfobar-item--completed { background: hsl(140, 50%, 50%); }
+.ActivityInfobar-item--failed { background: hsl(10, 80%, 54%); }
+
+
+
+/* Container ------------------------ */
+
+.ActivityInfobar-item-container {
     position: absolute;
-    right: 30px;
+    top: 0;
+    left: 0;
+}
+
+.ActivityInfobar-icon {
+    display: inline-block;
+    width: 32px;
+    line-height: 32px;
+    text-align: center;
+    background-color: hsla(0,0%,0%,.2);
+}
+
+.ActivityInfobar-num {
+    display: none;
+    //width: 0;
+    //opacity: 0;
+    //display: inline-block;
+    //overflow: hidden;
+    //-webkit-transition: width 200ms ease-in-out, opacity 150ms ease-in-out;
+}
+
+.ActivityInfobar-progress {
+    display: inline-block;
+    vertical-align: top;
+    width: 32px;
+    height: 32px;
+    background-color: hsla(0,0%,0%,.5);
+    background-size: 12px;
+    background-image:   -webkit-linear-gradient( -45deg, hsla(0,0%,100%,0) 8px, hsla(0,0%,100%,.2) 8px ),
+                        -webkit-linear-gradient( 135deg, hsla(0,0%,100%,0) 8px, hsla(0,0%,100%,.2) 8px );
+    -webkit-animation: progress .3s linear infinite;
+}
+@-webkit-keyframes progress {
+    from { background-position: 0 0, 0 0; }
+      to { background-position: 0 12px, 0 12px; }
 }
 
 .ActivityInfobar-title {
     font-weight: bold;
+    margin: 0 4px;
 }
 
-.ActivityInfobar-num {
-    width: 0;
-    opacity: 0;
-    display: inline-block;
-    overflow: hidden;
-
-    -webkit-transition: width 200ms ease-in-out, opacity 150ms ease-in-out;
+.ActivityInfobar-status {
+    color: hsla(0,0%,100%,.8);
 }
 
-.ActivityInfobar-completed, .ActivityInfobar-failed, .ActivityInfobar-running {
-    float: left;
 
-    overflow: hidden;
-    white-space: nowrap;
+/* Details Button ------------------------ */
 
-    height: 100%;
-
-    -webkit-transition: width 200ms ease-in-out;
+.ActivityInfobar .ActivityInfobar-details {
+    margin: 0 8px;
+    height: 24px;
+    color: hsla(0,0%,100%,.8);
+    border-color: hsl(0, 0%, 25%);
+    background: -webkit-linear-gradient(hsl(0, 0%, 40%), hsl(0, 0%, 35%));
 }
 
-.ActivityInfobar-completed {
-    background: rgb(159, 255, 128);
+.ActivityInfobar .ActivityInfobar-details:hover {
+    color: hsla(0,0%,100%,.9);
+    background: -webkit-linear-gradient(hsl(0, 0%, 42%), hsl(0, 0%, 37%));
 }
 
-.ActivityInfobar-failed {
-    background: rgb(253, 166, 163);
+.ActivityInfobar .ActivityInfobar-details.active {
+    color: hsla(0,0%,100%,.7);
+    background: -webkit-linear-gradient(hsl(0, 0%, 36%), hsl(0, 0%, 30%));
 }
 
-.ActivityInfobar--noneCompleted .ActivityInfobar-completed,
-.ActivityInfobar--noneFailed .ActivityInfobar-failed {
-    width: 0px;
+
+/* States ------------------------ */
+
+.ActivityInfobar--noneRunning .ActivityInfobar-item--running,
+.ActivityInfobar--noneCompleted .ActivityInfobar-item--completed,
+.ActivityInfobar--noneFailed .ActivityInfobar-item--failed {
+    -webkit-flex: 0 1 0;
+    min-width: 0;
+    padding: 0;
 }
+
+.ActivityInfobar--noneCompleted.ActivityInfobar--noneFailed .ActivityInfobar-details {
+    display: none;
+}
+
+
+
+
+
+
+
+/* Styles below not needed anymore ------------------------ */
+
+
 
 /* only one of a type */
 .ActivityInfobar--oneCompleted.ActivityInfobar--noneFailed.ActivityInfobar--noneRunning .ActivityInfobar-completed,
 .ActivityInfobar--noneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-failed,
 .ActivityInfobar--noneCompleted.ActivityInfobar--noneFailed.ActivityInfobar--oneRunning .ActivityInfobar-running {
-    width: 100%;
+    //width: 100%;
 }
 .ActivityInfobar--oneCompleted.ActivityInfobar--noneFailed.ActivityInfobar--noneRunning .ActivityInfobar-completed .ActivityInfobar-num,
 .ActivityInfobar--noneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-failed .ActivityInfobar-num {
-    width: 0;
-    opacity: 0;
+    //width: 0;
+    //opacity: 0;
 }
 
 
@@ -87,16 +165,16 @@ some other rules */
                                     |c|f       | */
 .ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-completed,
 .ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-completed .ActivityInfobar-num {
-    width: 50px;
-    opacity: 1;
+    //width: 50px;
+    //opacity: 1;
 }
 
 /* 1 completed or many completed, 1 or many failed, 0 running
                                     |c|f       | */
 .ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-failed {
-    width: -webkit-calc(100% - 50px);
+    //width: -webkit-calc(100% - 50px);
 }
 .ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-failed .ActivityInfobar-num {
-    width: 0;
-    opacity: 0;
+    //width: 0;
+    //opacity: 0;
 }
