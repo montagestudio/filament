@@ -2,7 +2,8 @@
 <html>
 <head>
     <title></title>
-    <link rel="stylesheet" type="text/css" href="activity-list.css">
+    <link href="../../assets/fonts/fonts.css" rel="stylesheet">
+    <link href="activity-list.css" rel="stylesheet">
     <script type="text/montage-serialization">
     {
         "owner": {
@@ -75,19 +76,19 @@
 </head>
 <body>
     <div data-montage-id="activity-list" class="ActivityList">
-        <div data-montage-id="runningActivities" class="ActivityList-list">
-            <div>
-                <progress></progress>
-                <strong data-montage-id="runningTitle">Title</strong>
-                <span data-montage-id="runningStatus">Status</span>
+        <div data-montage-id="runningActivities" class="ActivityList-group">
+            <div class="ActivityList-row">
+                <i class="ActivityList-cell ActivityList-icon"></i>
+                <strong data-montage-id="runningTitle" class="ActivityList-cell ActivityList-title">Title</strong>
+                <span data-montage-id="runningStatus" class="ActivityList-cell ActivityList-status">Status</span>
             </div>
         </div>
 
-        <div data-montage-id="failedActivities" class="ActivityList-list">
-            <div>
-                <span>✘</span>
-                <strong data-montage-id="failedTitle">Title</strong>
-                <span data-montage-id="failedStatus">Status</span>
+        <div data-montage-id="failedActivities" class="ActivityList-group ActivityList-failed">
+            <div class="ActivityList-row">
+                <i class="ActivityList-cell ActivityList-icon">✘</i>
+                <strong data-montage-id="failedTitle" class="ActivityList-cell ActivityList-title">Title</strong>
+                <span data-montage-id="failedStatus" class="ActivityList-cell ActivityList-status">Status</span>
             </div>
         </div>
     </div>
