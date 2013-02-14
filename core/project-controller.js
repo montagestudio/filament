@@ -13,7 +13,7 @@ exports.ProjectController = Montage.create(Montage, {
             this._viewController = viewController;
             this.openDocumentsController = ContentController.create().initWithContent([]);
 
-            this.openDocumentsController.addOwnPropertyChangeListener("selection", this);
+            this.openDocumentsController.addRangeAtPathChangeListener("selection", this, "handleOpenDocumentsSelectionChange");
 
             this.loadedExtensions = [];
             this.activeExtensions = [];
@@ -347,18 +347,21 @@ exports.ProjectController = Montage.create(Montage, {
         }
     },
 
+    handleOpenDocumentsSelectionChange: {
+        value: function (plus, minus, index) {
+            if (this.openDocumentsController.selection && this.openDocumentsController.selection.length > 0) {
+                var fileUrl = this.openDocumentsController.selection[0].fileUrl,
+                    editor = this._fileUrlEditorMap[fileUrl];
+                this.openFileUrlInEditor(fileUrl, editor).done();
+            }
+        }
+    },
+
     handlePropertyChange: {
         value: function (notification) {
 
             var currentPropertyPath = notification.currentPropertyPath;
-
-            if (notification.target === this.openDocumentsController && "selection" === currentPropertyPath) {
-                if (this.openDocumentsController.selection && this.openDocumentsController.selection.length > 0) {
-                    var fileUrl = this.openDocumentsController.selection[0].fileUrl,
-                        editor = this._fileUrlEditorMap[fileUrl];
-                    this.openFileUrlInEditor(fileUrl, editor).done();
-                }
-            } else if ("currentDocument.undoManager.undoLabel" === currentPropertyPath ||
+            if ("currentDocument.undoManager.undoLabel" === currentPropertyPath ||
                        "currentDocument.undoManager.redoLabel" === currentPropertyPath) {
                 this.updateUndoMenus();
             } else if ("currentDocument.undoManager.undoCount" === currentPropertyPath) {
