@@ -13,7 +13,7 @@ exports.ProjectController = Montage.create(Montage, {
             this._viewController = viewController;
             this.openDocumentsController = ContentController.create().initWithContent([]);
 
-            this.openDocumentsController.addOwnPropertyChangeListener("selectedObjects", this);
+            this.openDocumentsController.addOwnPropertyChangeListener("selection", this);
 
             this.loadedExtensions = [];
             this.activeExtensions = [];
@@ -320,7 +320,7 @@ exports.ProjectController = Montage.create(Montage, {
 
                     promisedDocument = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
                         self.currentDocument = editingDocument;
-                        self.openDocumentsController.selectedObjects = [editingDocument];
+                        self.openDocumentsController.selection = [editingDocument];
                         self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
                         return editingDocument;
                     });
@@ -332,7 +332,7 @@ exports.ProjectController = Montage.create(Montage, {
                     promisedDocument = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
                         self.currentDocument = editingDocument;
                         self.openDocumentsController.content.push(editingDocument);
-                        self.openDocumentsController.selectedObjects = [editingDocument];
+                        self.openDocumentsController.selection = [editingDocument];
 
                         self.dispatchEventNamed("didLoadDocument", true, false, editingDocument);
                         self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
@@ -352,9 +352,9 @@ exports.ProjectController = Montage.create(Montage, {
 
             var currentPropertyPath = notification.currentPropertyPath;
 
-            if (notification.target === this.openDocumentsController && "selectedObjects" === currentPropertyPath) {
-                if (this.openDocumentsController.selectedObjects && this.openDocumentsController.selectedObjects.length > 0) {
-                    var fileUrl = this.openDocumentsController.selectedObjects[0].fileUrl,
+            if (notification.target === this.openDocumentsController && "selection" === currentPropertyPath) {
+                if (this.openDocumentsController.selection && this.openDocumentsController.selection.length > 0) {
+                    var fileUrl = this.openDocumentsController.selection[0].fileUrl,
                         editor = this._fileUrlEditorMap[fileUrl];
                     this.openFileUrlInEditor(fileUrl, editor).done();
                 }
