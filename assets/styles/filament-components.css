@@ -86,7 +86,7 @@
     margin: 0;
     padding: 0;
     font-size: 0;
-    background: hsl(300, 50%, 30%);
+    background: hsl(0,0%,30%);
 }
 
 
@@ -105,13 +105,15 @@
     text-align: center;    
     color: hsla(0,0%,100%,.5);
     border-radius: 6px 6px 0 0;
-    border-top: 1px solid transparent;
-    border-bottom: 1px solid transparent;
+    border: 1px solid;
+    border-color: transparent transparent transparent hsla(0, 0%, 0%, .15);
+    background: hsla(0,0%,100%,.1);
     cursor: pointer;
 }
 
 .Tabs-tab:hover {
     color: hsla(0,0%,100%,.8);
+    border-color: transparent;
     background: hsla(0,0%,100%,.2);
 }
 
@@ -120,10 +122,30 @@
 .Tabs-tab.selected {
     color: hsl(0,0%,40%);
     text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
-    border-top: 1px solid hsla(0,0%,100%,1);
-    border-bottom: 1px solid hsla(0,0%,0%,.2);
+    border-color: hsla(0,0%,100%,1) transparent hsla(0,0%,0%,.2) transparent;
     background: -webkit-linear-gradient( hsl(0,0%,96%), hsl(0,0%,90%) );
     cursor: default;
+}
+
+.Tabs-tab-close {
+    width: 16px;
+    height: 16px;
+    margin-left: 2px;
+    line-height: 16px;
+    padding: 0;
+    border-radius: 8px;
+    border: none;
+    color: inherit;
+    background: transparent;
+    cursor: pointer;
+}
+
+.Tabs-tab-close:hover {
+    background: hsla(0,0%,0%,.1);
+}
+
+.Tabs-tab-close:active {
+    background: hsla(0,0%,0%,.3);
 }
 
 
