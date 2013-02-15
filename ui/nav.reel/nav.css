@@ -19,7 +19,7 @@
     -webkit-justify-content: space-between;
 }
 
-.Nav-loader {
+/*.Nav-loader {
     width: 4px;
 	background-color: hsl(0,0%,70%);
 	background-size: 6px 12px, 6px 12px;
@@ -34,7 +34,7 @@
 @-webkit-keyframes loading {
     from { background-position: 0 0, 0 0; }
       to { background-position: 0 12px, 0 12px; }
-}
+}*/
 
 .Nav-logo {
     display: block;
@@ -87,7 +87,7 @@
     text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
     border-radius: 0 12px 12px 0;
     box-shadow: inset -1px 0 0px hsla(0,0%,100%,.6), 2px 0 2px hsla(0,0%,0%,.4);
-    background-image: -webkit-linear-gradient( left, hsl(0,0%,70%), hsl(0,0%,76%) 10%, hsl(0,0%,90%) );
+    background-image: -webkit-linear-gradient( left, hsl(0,0%,80%), hsl(0,0%,90%) );
 	cursor: default;
 	-webkit-transform: translateX(-4px);
 	-webkit-transition: none;
