@@ -49,9 +49,8 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
     save:{
         value:function (location, dataWriter) {
             // we need to be sur to use the right require.
-            var serializer = Serializer.create().initWithRequire(this.currentProxyObject.packageRequire);
+            var serializer = Serializer.create().initWithRequire(this.packageRequire);
             var serializedDescription = serializer.serializeObject(this.currentProxyObject.proxiedObject);
-            console.log(serializedDescription);
             return dataWriter(serializedDescription, location);
         }
     },
