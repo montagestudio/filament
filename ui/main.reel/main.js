@@ -91,7 +91,6 @@ exports.Main = Montage.create(Component, {
                 }, true);
 
                 self.application.addEventListener("menuAction", self, false);
-                self.application.addEventListener("enterModalEditor", self, false);
 
                 self.viewController.registerEditorTypeForFileTypeMatcher(ComponentEditor, function (fileUrl) {
                     return (/\.reel\/?$/).test(fileUrl);
@@ -122,8 +121,10 @@ exports.Main = Montage.create(Component, {
             document.addEventListener("save", this, false);
 
             var app = document.application;
+            app.addEventListener("enterModalEditor", this);
             app.addEventListener("openFile", this);
             app.addEventListener("addFile", this);
+            app.addEventListener("closeDocument", this);
 
             var files = this.projectController.files;
             var projectUrl = this.projectController.projectUrl;
@@ -156,6 +157,12 @@ exports.Main = Montage.create(Component, {
         value: function (evt) {
             //TODO as user action made this happen, make sure we end up showing the latest handleOpenFile above all others, regardless of the order the promises resolve in
             this.openFileUrl(evt.detail.fileUrl).done();
+        }
+    },
+
+    handleCloseDocument: {
+        value: function (evt) {
+            this.closeFileUrl(evt.detail).done();
         }
     },
 
@@ -232,6 +239,15 @@ exports.Main = Montage.create(Component, {
             this.fileUrlEditorMap[fileUrl] = editor;
 
             return this.projectController.openFileUrlInEditor(fileUrl, editor);
+        }
+    },
+
+    closeFileUrl: {
+        value: function () {
+            //TODO find the editor that has this fileUrl
+            //TODO then tell that editor to close the file
+            //TODO then remove the entry for that fileUrl in our fileUrlEditorMap
+            return Promise.resolve(null);
         }
     },
 
