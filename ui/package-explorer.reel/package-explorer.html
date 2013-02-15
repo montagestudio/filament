@@ -58,6 +58,13 @@
                         "listener": {"@": "owner"}
                     }
                 ]
+            },
+            
+            "addModuleButton": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "add-module-button"}
+                }       
             }
         }
     </script>
@@ -67,9 +74,13 @@
 
     <div data-montage-id="package-explorer" class="Panel PackageExplorer">
         <h2 data-montage-id="packageExplorerLabel" class="Panel-title">Package Explorer</h2>
-        <menu class="PackageExplorer-menu">
-            <button data-montage-id="add-file-button" class="Button Button--action PackageExplorer-menu-item">Add Component…</button>
-        </menu>
+        <div class="PackageExplorer-bar">
+            <span class="PackageExplorer-bar-label">Add</span>
+            <menu class="montage-ButtonGroup PackageExplorer-menu">
+                <button data-montage-id="add-file-button" class="Button PackageExplorer-menu-item"> Component</button>
+                <button data-montage-id="add-module-button" class="Button PackageExplorer-menu-item">Module</button>
+            </menu>
+        </div>
         <ul data-montage-id="fileList" class="Panel-content List PackageExplorer-list">
             <li data-montage-id="file-cell"></li>
         </ul>

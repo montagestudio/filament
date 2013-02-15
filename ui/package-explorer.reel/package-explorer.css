@@ -1,23 +1,29 @@
 
-.PackageExplorer-menu {
+.PackageExplorer-bar {
     margin: 0;
-    padding: 8px;
+    padding: 0 8px;
     background: hsl(0,0%,96%);
     border-top: 1px solid hsla(0,0%,100%,.3);
     border-bottom: 1px solid hsla(0,0%,0%,.2);
 }
 
-.PackageExplorer-menu .PackageExplorer-menu-item {
-    display: block;
-    width: 100%;
-    margin: 10px 0 0 0;
-    min-width: 0;
+.PackageExplorer-bar-label {
+    display: inline-block;
+    margin-right: 4px;
+    font-size: 12px;
+    line-height: 30px;
 }
 
-.PackageExplorer-menu .PackageExplorer-menu-item:first-child {
+.PackageExplorer-menu {
+    display: inline-block;
     margin: 0;
 }
 
+.PackageExplorer-menu .PackageExplorer-menu-item {
+    height: 21px;
+    padding: 0 6px;
+}
+
 .PackageExplorer .Panel-shadow {
-    top: 80px;
+    top: 64px;
 }

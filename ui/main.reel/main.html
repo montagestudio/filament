@@ -76,6 +76,13 @@
                     }
                 ]
             },
+            
+            "nav": {
+                "prototype": "ui/nav.reel",
+                "properties": {
+                    "element": {"#": "nav"}
+                }
+            },
 
             "modalEditorSlot": {
                 "prototype": "montage/ui/slot.reel",
@@ -127,11 +134,16 @@
             <aside data-montage-id="packageExplorer" class="palette"></aside>
 
             <section class="editor">
-                <nav data-montage-id="openComponentList" class="Tabs openComponentTabs palette">
-                    <span data-montage-id="documentTab" class="Tabs-tab openComponentTab"></span>
-                </nav>
+                <ul data-montage-id="openComponentList" class="Tabs palette">
+                    <li class="Tabs-tab">
+                        <span data-montage-id="documentTab" class="Tabs-tab-label"></span>
+                        <button class="Tabs-tab-close">×</button>
+                    </li>
+                </ul>
                 <section data-montage-id="editorSlot" class="editorSlot"></section>
             </section>
+            
+            <nav data-montage-id="nav"></nav>
 
             <aside data-montage-id="modalEditorSlot" class="modalEditorSlot"></aside>
         </div>

@@ -1,0 +1,15 @@
+.BlueprintEditor {
+    display: -webkit-flex;
+    -webkit-flex: auto;
+    -webkit-justify-content: center;
+    -webkit-align-items: center;
+}
+
+.BlueprintEditor .BlueprintInspector {
+    -webkit-box-shadow: 0 2px 5px hsl(0,0%,20%);
+}
+
+.BlueprintEditor .Blueprint-inspectorCondition {
+    margin: 0;
+    padding: 0;
+}
