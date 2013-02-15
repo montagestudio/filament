@@ -1,180 +1,165 @@
+/* Activity Infobar
+
+Classes to toggle state
+    .ActivityInfobar--running
+    .ActivityInfobar--completed
+    .ActivityInfobar--failed
+
+Classes to toggle counter
+    .ActivityInfobar--noneCompleted
+    .ActivityInfobar--noneFailed
+
+*/
+
+
+
 .ActivityInfobar {
+    background: hsl(0,0%,30%);
 }
 
 .Infobar-content {
     display: -webkit-flex;
     -webkit-align-items: center;
-}
-
-/* Item ------------------------ */
-
-.ActivityInfobar-item {
-    position: relative;
-    -webkit-flex: 1;
     height: 32px;
     color: hsla(0,0%,100%,.9);
     text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
-    overflow: hidden;
-    white-space: nowrap;
-    -webkit-transition: -webkit-flex .4s cubic-bezier(.37, .05, .22, .95);
-}
-
-.ActivityInfobar-item--running {
-    padding: 0 8px;
-    background: hsl(0,0%,30%);
-}
-
-.ActivityInfobar-item--completed { background: hsl(140, 50%, 50%); }
-.ActivityInfobar-item--failed { background: hsl(10, 80%, 54%); }
-
-
-
-/* Container ------------------------ */
-
-.ActivityInfobar-item-container {
-    position: absolute;
-    top: 0;
-    left: 0;
 }
 
 .ActivityInfobar-icon {
-    display: inline-block;
+    display: block;
     width: 32px;
+    height: 32px;
     line-height: 32px;
     text-align: center;
     background-color: hsla(0,0%,0%,.2);
 }
 
-.ActivityInfobar-num {
-    display: none;
-    //width: 0;
-    //opacity: 0;
-    //display: inline-block;
-    //overflow: hidden;
-    //-webkit-transition: width 200ms ease-in-out, opacity 150ms ease-in-out;
-}
-
-.ActivityInfobar-progress {
-    display: inline-block;
-    vertical-align: top;
-    width: 32px;
-    height: 32px;
-    background-color: hsla(0,0%,0%,.5);
-    background-size: 12px;
-    background-image:   -webkit-linear-gradient( -45deg, hsla(0,0%,100%,0) 8px, hsla(0,0%,100%,.2) 8px ),
-                        -webkit-linear-gradient( 135deg, hsla(0,0%,100%,0) 8px, hsla(0,0%,100%,.2) 8px );
-    -webkit-animation: progress .3s linear infinite;
-}
-@-webkit-keyframes progress {
-    from { background-position: 0 0, 0 0; }
-      to { background-position: 0 12px, 0 12px; }
-}
-
 .ActivityInfobar-title {
     font-weight: bold;
-    margin: 0 4px;
+    margin: 0 8px;
 }
 
 .ActivityInfobar-status {
-    color: hsla(0,0%,100%,.8);
+    -webkit-flex: 1;
+    min-width: 0;
+    color: hsla(0, 0%, 100%, .8);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+
+
+/* Running ------------------------ */
+
+.ActivityInfobar--running .ActivityInfobar-icon {
+    background-color: hsla(0,0%,0%,.6);
+    background-size: 17px;
+    background-image:   -webkit-repeating-linear-gradient( -45deg, 
+        hsla(0,0%,100%,0), hsla(0,0%,100%,0) 4px, hsla(0,0%,100%,.2) 4px, hsla(0,0%,100%,.2) 6px );
+    -webkit-animation: progress .6s linear infinite;
+}
+@-webkit-keyframes progress {
+    from { background-position: 0 0; }
+      to { background-position: 0 17px; }
+}
+
+
+
+/* Completed ------------------------ */
+
+.ActivityInfobar--completed .ActivityInfobar-icon,
+.ActivityInfobar-counter-completed {
+    background-color: hsl(140, 50%, 50%);
+}
+
+.ActivityInfobar--completed .ActivityInfobar-icon:before,
+.ActivityInfobar-counter-completed:before {
+    content: "✔";
+}
+
+.ActivityInfobar--noneCompleted .ActivityInfobar-counter-completed {
+    display: none;
+}
+
+
+/* Failded ------------------------ */
+
+.ActivityInfobar--failed .ActivityInfobar-icon,
+.ActivityInfobar-counter-failed {
+    background-color: hsl(10, 80%, 54%);
+}
+.ActivityInfobar--failed .ActivityInfobar-icon:before,
+.ActivityInfobar-counter-failed:before {
+    content: "✘";
+}
+
+.ActivityInfobar--noneFailed .ActivityInfobar-counter-failed {
+    display: none;
+}
+
+
+
+/* Counter ------------------------ */
+
+.ActivityInfobar-counter {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    line-height: 0;
+}
+
+.ActivityInfobar-counter-completed,
+.ActivityInfobar-counter-failed {
+    display: inline-block;
+    font-size: 13px;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 8px;
+    box-shadow: inset 0 1px 4px hsla(0, 0%, 0%, 0.2);
+    border: 1px solid hsl(0, 0%, 25%);
+    border-right: none;
+}
+
+.ActivityInfobar-counter-completed:before,
+.ActivityInfobar-counter-failed:before {
+    margin-right: 4px;
+    font-size: 13px;
+    color: hsla(0,0%,100%,.5);
+}
+
+.ActivityInfobar-counter-failed {
+    border-radius: 12px 0 0 12px;
+}
+
+.ActivityInfobar--noneFailed .ActivityInfobar-counter-completed {
+    border-radius: 12px 0 0 12px;
 }
 
 
 /* Details Button ------------------------ */
 
-.ActivityInfobar .ActivityInfobar-details {
-    margin: 0 8px;
+.ActivityInfobar .ActivityInfobar-detailsButton {
+    margin: 0 4px 0 0;
     height: 24px;
     color: hsla(0,0%,100%,.8);
     border-color: hsl(0, 0%, 25%);
-    background: -webkit-linear-gradient(hsl(0, 0%, 40%), hsl(0, 0%, 35%));
+    border-radius: 0 12px 12px 0;
+    background: -webkit-linear-gradient(hsl(0, 0%, 50%), hsl(0, 0%, 40%));
 }
 
-.ActivityInfobar .ActivityInfobar-details:hover {
+.ActivityInfobar .ActivityInfobar-detailsButton:hover {
     color: hsla(0,0%,100%,.9);
-    background: -webkit-linear-gradient(hsl(0, 0%, 42%), hsl(0, 0%, 37%));
+    background: -webkit-linear-gradient(hsl(0, 0%, 54%), hsl(0, 0%, 44%));
 }
 
-.ActivityInfobar .ActivityInfobar-details.active {
+.ActivityInfobar .ActivityInfobar-detailsButton.active {
     color: hsla(0,0%,100%,.7);
     background: -webkit-linear-gradient(hsl(0, 0%, 36%), hsl(0, 0%, 30%));
 }
 
-
-/* States ------------------------ */
-
-.ActivityInfobar--noneRunning .ActivityInfobar-item--running,
-.ActivityInfobar--noneCompleted .ActivityInfobar-item--completed,
-.ActivityInfobar--noneFailed .ActivityInfobar-item--failed {
-    -webkit-flex: 0 1 0;
-    min-width: 0;
-    padding: 0;
-}
-
-.ActivityInfobar--noneCompleted.ActivityInfobar--noneFailed .ActivityInfobar-details {
+.ActivityInfobar--noneCompleted.ActivityInfobar--noneFailed .ActivityInfobar-detailsButton {
     display: none;
 }
 
-
-
-
-
-
-
-/* Styles below not needed anymore ------------------------ */
-
-
-
-/* only one of a type */
-.ActivityInfobar--oneCompleted.ActivityInfobar--noneFailed.ActivityInfobar--noneRunning .ActivityInfobar-completed,
-.ActivityInfobar--noneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-failed,
-.ActivityInfobar--noneCompleted.ActivityInfobar--noneFailed.ActivityInfobar--oneRunning .ActivityInfobar-running {
-    //width: 100%;
-}
-.ActivityInfobar--oneCompleted.ActivityInfobar--noneFailed.ActivityInfobar--noneRunning .ActivityInfobar-completed .ActivityInfobar-num,
-.ActivityInfobar--noneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-failed .ActivityInfobar-num {
-    //width: 0;
-    //opacity: 0;
-}
-
-
-/* Below I'm using the same rule for the width of the section, and the width of
-the num. This has the effect of pushing the title out of the way, leaving only
-the number being displayed. I'm not sure if this is the best way, or if a better
-effect could be achieved by taking the .ActivityInfobar-num selectors and applying
-some other rules */
-
-/* 1 completed, 1 or many running   |c|r       | */
-.ActivityInfobar--oneCompleted.ActivityInfobar--oneRunning .ActivityInfobar-completed,
-.ActivityInfobar--oneCompleted.ActivityInfobar--oneRunning .ActivityInfobar-completed .ActivityInfobar-num,
-/* 1 failed, 1 or many running      |f|r       | */
-.ActivityInfobar--oneFailed.ActivityInfobar--oneRunning .ActivityInfobar-failed,
-.ActivityInfobar--oneFailed.ActivityInfobar--oneRunning .ActivityInfobar-failed .ActivityInfobar-num,
-/* 1 completed or many completed, 1 failed or many failed, 1 or many running
-                                    |c|f|r     | */
-.ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--oneRunning .ActivityInfobar-completed,
-.ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--oneRunning .ActivityInfobar-completed .ActivityInfobar-num,
-.ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--oneRunning .ActivityInfobar-failed,
-.ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--oneRunning .ActivityInfobar-failed .ActivityInfobar-num,
-/* many completed, many failed      |c|f|      | */
-.ActivityInfobar--manyCompleted .ActivityInfobar-completed,
-.ActivityInfobar--manyCompleted .ActivityInfobar-completed .ActivityInfobar-num,
-.ActivityInfobar--manyFailed .ActivityInfobar-failed,
-.ActivityInfobar--manyFailed .ActivityInfobar-failed .ActivityInfobar-num,
-/* 1 completed or many completed, 1 failed, 0 running
-                                    |c|f       | */
-.ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-completed,
-.ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-completed .ActivityInfobar-num {
-    //width: 50px;
-    //opacity: 1;
-}
-
-/* 1 completed or many completed, 1 or many failed, 0 running
-                                    |c|f       | */
-.ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-failed {
-    //width: -webkit-calc(100% - 50px);
-}
-.ActivityInfobar--oneCompleted.ActivityInfobar--oneFailed.ActivityInfobar--noneRunning .ActivityInfobar-failed .ActivityInfobar-num {
-    //width: 0;
-    //opacity: 0;
-}

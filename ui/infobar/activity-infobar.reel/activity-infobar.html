@@ -55,31 +55,14 @@
 <body>
     <div data-montage-id="activity-infobar" class="ActivityInfobar">
         <div data-montage-id="infobar">
-            <div class="ActivityInfobar-item ActivityInfobar-item--running">
-                <div class="ActivityInfobar-item-container">
-                    <!--<progress type="progress" data-montage-id="progress" class="ActivityInfobar-progress"></progress>-->
-                    <i class="ActivityInfobar-progress"></i>
-                    <span data-montage-id="runningTitle" class="ActivityInfobar-title">Waiting</span>
-                    <span data-montage-id="runningStatus" class="ActivityInfobar-status"></span>
-                </div>
-            </div>
-            <div class="ActivityInfobar-item ActivityInfobar-item--completed">
-                <div class="ActivityInfobar-item-container">
-                    <i class="ActivityInfobar-icon">✔</i>
-                    <span data-montage-id="completedNum" class="ActivityInfobar-num">0</span>
-                    <span data-montage-id="completedTitle" class="ActivityInfobar-title">Waiting</span>
-                    <span data-montage-id="completedStatus" class="ActivityInfobar-status"></span>
-                </div>
-            </div>
-            <div class="ActivityInfobar-item ActivityInfobar-item--failed">
-                <div class="ActivityInfobar-item-container">
-                    <i class="ActivityInfobar-icon">✘</i>
-                    <span data-montage-id="failedNum" class="ActivityInfobar-num">0</span>
-                    <span data-montage-id="failedTitle" class="ActivityInfobar-title">Waiting</span>
-                    <span data-montage-id="failedStatus" class="ActivityInfobar-status"></span>
-                </div>
-            </div>
-            <button type="button" data-montage-id="details" class="ActivityInfobar-details">Details</button>
+            <i class="ActivityInfobar-icon"></i>
+            <div data-montage-id="runningTitle" class="ActivityInfobar-title">Waiting</div>
+            <div data-montage-id="runningStatus" class="ActivityInfobar-status">Status</div>
+            <ul class="ActivityInfobar-counter">
+                <li class="ActivityInfobar-counter-failed">0</li>
+                <li class="ActivityInfobar-counter-completed">0</li>
+            </ul>
+            <button type="button" data-montage-id="details" class="ActivityInfobar-detailsButton">Details</button>
         </div>
     </div>
 </body>
