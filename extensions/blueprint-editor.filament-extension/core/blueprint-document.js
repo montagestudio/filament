@@ -4,7 +4,7 @@ var Montage = require("montage").Montage,
     Blueprint = require("montage/core/meta/blueprint").Blueprint,
     EditingDocument = require("palette/core/editing-document").EditingDocument,
     BlueprintProxy = require("./blueprint-proxy").BlueprintProxy;
-var Serializer = require("montage/core/serializer").Serializer;
+var Serializer = require("montage/core/serialization").Serializer;
 
 var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocument, {
 
