@@ -10,20 +10,10 @@
                 "element": {"#": "activity-infobar"},
                 "infobar": {"@": "infobar"},
 
-                "_completedEls": {
-                    "num": {"#": "completedNum"},
-                    "title": {"#": "completedTitle"},
-                    "status": {"#": "completedStatus"}
-                },
-                "_failedEls": {
-                    "num": {"#": "failedNum"},
-                    "title": {"#": "failedTitle"},
-                    "status": {"#": "failedStatus"}
-                },
-                "_runningEls": {
-                    "title": {"#": "runningTitle"},
-                    "status": {"#": "runningStatus"}
-                }
+                "_completedNumEl": {"#": "completedNum"},
+                "_failedNumEl": {"#": "failedNum"},
+                "_titleEl": {"#": "runningTitle"},
+                "_statusEl": {"#": "runningStatus"}
             }
         },
 
@@ -59,8 +49,8 @@
             <div data-montage-id="runningTitle" class="ActivityInfobar-title">Waiting</div>
             <div data-montage-id="runningStatus" class="ActivityInfobar-status">Status</div>
             <ul class="ActivityInfobar-counter">
-                <li class="ActivityInfobar-counter-failed">0</li>
-                <li class="ActivityInfobar-counter-completed">0</li>
+                <li data-montage-id="failedNum" class="ActivityInfobar-counter-failed">0</li>
+                <li data-montage-id="completedNum" class="ActivityInfobar-counter-completed">0</li>
             </ul>
             <button type="button" data-montage-id="details" class="ActivityInfobar-detailsButton">Details</button>
         </div>
