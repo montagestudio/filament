@@ -160,6 +160,6 @@ Classes to toggle counter
 }
 
 .ActivityInfobar--noneCompleted.ActivityInfobar--noneFailed .ActivityInfobar-detailsButton {
-    display: none;
+    border-radius: 12px;
 }
 
