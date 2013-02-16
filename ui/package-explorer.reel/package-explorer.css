@@ -1,20 +1,15 @@
 
 .Panel-title.PackageExplorer-bar {
-    padding: 1px 0 0 4px;
-    line-height: 22px;
+    height: 92px;
+    padding: 10px 10px 0 10px;
 }
 
-.PackageExplorer-menu {
-    display: inline-block;
-    margin: 0;
-}
-
-.PackageExplorer-menu .PackageExplorer-menu-item {
-    height: 22px;
-    padding: 0 4px;
-    font-size: 11px;
+.PackageExplorer-bar .Button {
+    display: block;
+    width: 100%;
+    margin: 0 0 10px 0;
 }
 
 .PackageExplorer .Panel-shadow {
-    top: 64px;
+    top: 124px;
 }
