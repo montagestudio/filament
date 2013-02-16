@@ -13,7 +13,7 @@ exports.ProjectController = Montage.create(Montage, {
             this._viewController = viewController;
             this.openDocumentsController = ContentController.create().initWithContent([]);
 
-            this.openDocumentsController.addRangeAtPathChangeListener("selection", this, "handleOpenDocumentsSelectionChange");
+            this.openDocumentsController.addRangeAtPathChangeListener("selection", this, "openDocumentsSelection");
 
             this.loadedExtensions = [];
             this.activeExtensions = [];
@@ -347,7 +347,7 @@ exports.ProjectController = Montage.create(Montage, {
         }
     },
 
-    handleOpenDocumentsSelectionChange: {
+    handleOpenDocumentsSelectionRangeChange: {
         value: function (plus, minus, index) {
             if (this.openDocumentsController.selection && this.openDocumentsController.selection.length > 0) {
                 var fileUrl = this.openDocumentsController.selection[0].fileUrl,
