@@ -156,7 +156,7 @@
     -webkit-flex-flow: column;
     position: relative;
     width: 200px;
-    background: hsl(0, 0%, 40%);
+    background: hsl(0, 0%, 80%);
 }
 
 .Panel-title {
