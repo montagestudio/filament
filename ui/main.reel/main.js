@@ -47,8 +47,8 @@ exports.Main = Montage.create(Component, {
             var self = this;
 
             this.editorTypeInstancePromiseMap = new WeakMap();
-            this.editorsToInsert = [];
-            this.fileUrlEditorMap = {};
+            this._editorsToInsert = [];
+            this._fileUrlEditorMap = {};
             this.openEditors = [];
 
             this.application.addEventListener("asyncActivity", this, false);
@@ -162,7 +162,7 @@ exports.Main = Montage.create(Component, {
 
     handleCloseDocument: {
         value: function (evt) {
-            this.closeFileUrl(evt.detail).done();
+            this.closeFileUrl(evt.detail.fileUrl).done();
         }
     },
 
@@ -171,7 +171,7 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-    fileUrlEditorMap: {
+    _fileUrlEditorMap: {
         enumerable: false,
         value: null
     },
@@ -202,7 +202,7 @@ exports.Main = Montage.create(Component, {
                     this.editorTypeInstancePromiseMap.set(editorType, editorPromise);
 
                     newEditor = editorType.create();
-                    this.editorsToInsert.push(newEditor);
+                    this._editorsToInsert.push(newEditor);
 
                     editorFirstDrawHandler = function (evt) {
                         var editor = evt.target;
@@ -236,18 +236,27 @@ exports.Main = Montage.create(Component, {
             if (-1 === this.openEditors.indexOf(editor)) {
                 this.openEditors.push(editor);
             }
-            this.fileUrlEditorMap[fileUrl] = editor;
+            this._fileUrlEditorMap[fileUrl] = editor;
 
             return this.projectController.openFileUrlInEditor(fileUrl, editor);
         }
     },
 
     closeFileUrl: {
-        value: function () {
-            //TODO find the editor that has this fileUrl
-            //TODO then tell that editor to close the file
-            //TODO then remove the entry for that fileUrl in our fileUrlEditorMap
-            return Promise.resolve(null);
+        value: function (fileUrl) {
+            var editor = this._fileUrlEditorMap[fileUrl],
+                promisedClose,
+                self = this;
+
+            if (editor) {
+                promisedClose = this.projectController.closeFileUrlInEditor(fileUrl, editor).then(function (document) {
+                   delete self._fileUrlEditorMap[fileUrl];
+                });
+            } else {
+                promisedClose = Promise.reject(new Error("Cannot close file that is not open"));
+            }
+
+            return promisedClose;
         }
     },
 
@@ -397,23 +406,23 @@ exports.Main = Montage.create(Component, {
                 currentEditor,
                 currentFileUrl;
 
-            if (this.editorsToInsert.length) {
+            if (this._editorsToInsert.length) {
                 editorArea = this.editorSlot;
 
                 //TODO do this in a fragment if possible
-                this.editorsToInsert.forEach(function (editor) {
+                this._editorsToInsert.forEach(function (editor) {
                     element = document.createElement("div");
                     editor.element = element;
                     editorArea.appendChild(element);
                     editor.attachToParentComponent();
                     editor.needsDraw = true;
                 });
-                this.editorsToInsert = [];
+                this._editorsToInsert = [];
             }
 
             //TODO optimize this entire draw method
             currentFileUrl = this.getProperty("projectController.currentDocument.fileUrl");
-            currentEditor = this.fileUrlEditorMap[currentFileUrl];
+            currentEditor = this._fileUrlEditorMap[currentFileUrl];
 
             this.openEditors.forEach(function (editor) {
                 editorElement = editor.element;

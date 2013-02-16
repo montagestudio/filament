@@ -225,6 +225,7 @@ exports.ProjectController = Montage.create(Montage, {
             var self = this;
 
             this._fileUrlEditorMap = {};
+            this._fileUrlDocumentMap = {};
 
             this.dispatchEventNamed("willOpenPackage", true, false, {
                 packageUrl: projectInfo.packageUrl
@@ -297,6 +298,10 @@ exports.ProjectController = Montage.create(Montage, {
         value: null
     },
 
+    _fileUrlDocumentMap: {
+        value: null
+    },
+
     openFileUrlInEditor: {
         value: function (fileUrl, editor) {
             var editingDocuments,
@@ -308,7 +313,9 @@ exports.ProjectController = Montage.create(Montage, {
                 promisedDocument = Promise.resolve(this.currentDocument);
             } else {
 
-                this.dispatchEventNamed("willExitDocument", true, false, this.currentDocument);
+                if (this.currentDocument) {
+                    this.dispatchEventNamed("willExitDocument", true, false, this.currentDocument);
+                }
 
                 editingDocuments = this.openDocumentsController.organizedObjects;
                 docIndex = editingDocuments.map(function (doc) {
@@ -332,6 +339,7 @@ exports.ProjectController = Montage.create(Montage, {
                         self.currentDocument = editingDocument;
                         self.openDocumentsController.addObjects(editingDocument);
                         self.openDocumentsController.selectedObjects = [editingDocument];
+                        self._fileUrlDocumentMap[fileUrl] = editingDocument;
 
                         self.dispatchEventNamed("didLoadDocument", true, false, editingDocument);
                         self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
@@ -343,6 +351,59 @@ exports.ProjectController = Montage.create(Montage, {
             }
 
             return promisedDocument;
+        }
+    },
+
+    closeFileUrlInEditor: {
+        value: function (fileUrl, editor) {
+            var self = this,
+                openNextDocPromise,
+                editingDocument = this._fileUrlDocumentMap[fileUrl],
+                editingDocuments = this.openDocumentsController.organizedObjects,
+                docIndex,
+                nextDocIndex,
+                nextDoc,
+                nextEditor,
+                editor;
+
+            if (this.currentDocument && fileUrl === this.currentDocument.fileUrl) {
+
+
+                if (1 === editingDocuments.length) {
+                    this.dispatchEventNamed("willExitDocument", true, false, this.currentDocument);
+                    this.currentDocument = null;
+                    openNextDocPromise = Promise.resolve(true);
+                } else {
+                    //Switch to the "next" tab, however we want to define that
+                    docIndex = editingDocuments.indexOf(editingDocument);
+                    nextDocIndex = docIndex + 1;
+
+                    if (nextDocIndex > editingDocuments.length - 1) {
+                        nextDocIndex = docIndex - 1;
+                    }
+
+                    nextDoc = editingDocuments[nextDocIndex];
+                    nextEditor = this._fileUrlEditorMap[nextDoc.fileUrl];
+
+                    //TODO I want to call openDocument, or openFileUrl here without knowing the editor
+                    // I think we should centralize that knowledge here if possible and out of main
+
+                    openNextDocPromise = this.openFileUrlInEditor(nextDoc.fileUrl, nextEditor);
+                }
+            } else {
+                openNextDocPromise = Promise.resolve(true);
+            }
+
+            self.dispatchEventNamed("willCloseDocument", true, false, editingDocument);
+
+            return openNextDocPromise.then(function () {
+                return editor.close(fileUrl).then(function (document) {
+                    self.openDocumentsController.removeObjects(document);
+                    delete self._fileUrlEditorMap[fileUrl];
+                    delete self._fileUrlDocumentMap[fileUrl];
+                    return document;
+                });
+            });
         }
     },
 

@@ -14,7 +14,7 @@ var Extension = exports.Extension = Montage.create(Extension, {
         distinct: true,
         value: ["willOpenPackage", "didOpenPackage", "canLoadProject",
             "willActivateExtension", "willDeactivateExtension",
-            "willExitDocument", "didLoadDocument", "didEnterDocument",
+            "willExitDocument", "didLoadDocument", "didEnterDocument", "willCloseDocument",
             "fileSystemChange",
             "willSave",
             "didLaunchPreview", "didRefreshPreview", "didUnregisterPreview"]
