@@ -11,7 +11,7 @@
      border-radius: 6px 6px 0 0;
      border: 1px solid;
      border-color: transparent transparent transparent hsla(0, 0%, 0%, .15);
-     background: hsla(0,0%,100%,.1);
+     background: hsla(0,0%,100%,0);
      cursor: pointer;
  }
 
@@ -24,10 +24,10 @@
 .DocumentTab:active,
 .DocumentTab:focus,
 .DocumentTab.selected {
-    color: hsl(0,0%,40%);
+    color: hsl(0,0%,30%);
     text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
     border-color: hsla(0,0%,100%,1) transparent hsla(0,0%,0%,.2) transparent;
-    background: -webkit-linear-gradient( hsl(0,0%,96%), hsl(0,0%,90%) );
+    background: -webkit-linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
     cursor: default;
 }
 
