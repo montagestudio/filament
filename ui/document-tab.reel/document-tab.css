@@ -1,9 +1,9 @@
 .DocumentTab {
      display: inline-block;
      height: 32px;
-     padding: 0 8px;
+     padding: 0 2px 0 8px;
      margin: 0;
-     line-height: 30px;
+     line-height: 28px;
      font-size: 13px;
      font-weight: normal;
      text-align: center;
@@ -32,17 +32,19 @@
 }
 
 .DocumentTab .DocumentTab-close {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
+    min-width: 0;
     margin-left: 2px;
-    line-height: 16px;
+    margin-top: -2px;
+    line-height: 20px;
     padding: 0;
-    border-radius: 8px;
+    border-radius: 10px;
     border: none;
     color: inherit;
     background: transparent;
     cursor: pointer;
-    -webkit-appearance: none !important;
+    -webkit-appearance: none;
 }
 
 .DocumentTab .DocumentTab-close:hover {

@@ -90,7 +90,7 @@
 }
 
 
-.Tabs-tab:first-child {
+.Tabs .DocumentTab:first-child {
     border-top-left-radius: 0;
 }
 
