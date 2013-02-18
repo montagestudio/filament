@@ -8,7 +8,7 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
     editorObjectMatchFunction: {
         enumerable: false,
         value : function (object) {
-            return object && object.prototype && (/montage\/ui\/flow\.reel/).test(object.prototype);
+            return object && object.moduleId && (/montage\/ui\/flow\.reel/).test(object.moduleId);
         }
     },
 
