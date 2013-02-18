@@ -33,6 +33,7 @@ var Menu = exports.Menu = Montage.create(Montage, {
                     item.identifier = item.identifier.replace(/ /g, "");
                 }
             }
+
             thisRef._itemsToInsert = thisRef._itemsToInsert.concat(newItems);
             if (!thisRef._fetchingMenu) {
                 var itemsBeingInserted = thisRef._itemsToInsert.splice(0),
@@ -49,9 +50,48 @@ var Menu = exports.Menu = Montage.create(Montage, {
         value: null
     },
 
+    _itemsDeferPromises: {
+        value: []
+    },
+
     items: {
         get: function() {
-            return this._items
+            return this._items;
+        }
+    },
+
+    getMainMenu: {
+        value: function() {
+            var defer = Promise.defer();
+            if (!this._fetchingMenu) {
+                defer.resolve(this);
+            } else {
+                this._itemsDeferPromises.push(defer);
+            }
+            return defer.promise;
+        }
+    },
+
+    _fetchMainMenu: {
+        value: function() {
+            var thisRef = this,
+                getMainMenu = Promise.nfbind(lumieres.getMainMenu);
+
+            thisRef._fetchingMenu = true;
+            getMainMenu().then(function(mainMenu) {
+                thisRef._items = mainMenu.items;
+                if (thisRef._itemsToInsert.length) {
+                    var itemsBeingInserted = thisRef._itemsToInsert.splice(0);
+                    thisRef._insertItem(mainMenu, itemsBeingInserted, 0, function() {
+                        thisRef._items = mainMenu.items;
+                    })
+                }
+            }).done(function() {
+                thisRef._itemsDeferPromises.forEach(function(defer) {
+                    defer.resolve(thisRef);
+                })
+                delete thisRef._fetchingMenu;
+            });
         }
     },
 
@@ -61,9 +101,7 @@ var Menu = exports.Menu = Montage.create(Montage, {
             var thisRef = this;
 
             if (lumieres) {
-                getMainMenu = Promise.nfbind(lumieres.getMainMenu);
-
-                // Replace the lumieres MenuItem object by our own Montage Equivalent, and install our own action dispatcher
+                // Replace the lumieres MenuItem object by our own Montage Equivalent
                 if (lumieres.MenuItem === undefined) {
                     lumieres.MenuItem = window.MenuItem;
                     window.MenuItem = MenuItem;
@@ -72,24 +110,12 @@ var Menu = exports.Menu = Montage.create(Montage, {
                         value: lumieres.MenuItem.doAction
                     });
 
-                    Object.defineProperty(MenuItem, "dispatchAction", {
-                        value: function(menuItem) {
-                            thisRef.dispatchAction(menuItem);
-                        }
+                    Object.defineProperty(MenuItem, "doValidate", {
+                        value: lumieres.MenuItem.doValidate
                     });
                 }
-                thisRef._fetchingMenu = true;
-                getMainMenu().then(function(mainMenu) {
-                    thisRef._items = mainMenu.items;
-                    if (thisRef._itemsToInsert.length) {
-                        var itemsBeingInserted = thisRef._itemsToInsert.splice(0);
-                        thisRef._insertItem(mainMenu, itemsBeingInserted, 0, function() {
-                            thisRef._items = mainMenu.items;
-                        })
-                    }
-                }).done(function() {
-                    delete thisRef._fetchingMenu;
-                });
+
+                thisRef._fetchMainMenu();
             } else {
                 throw new Error("the Native Menu component can only be use in conjunction with Lumieres");
             }
@@ -273,32 +299,7 @@ var Menu = exports.Menu = Montage.create(Montage, {
 
     handleDidBecomeKey: {
         value: function(event) {
-            var thisRef = this;
-
-            if (thisRef._items && thisRef._items.length !== 0) {
-                getMainMenu().then(function(mainMenu) {
-                    thisRef._items = mainMenu.items;
-                }).done();
-            }
-        }
-    },
-
-    dispatchAction:{
-        value: function(menuItem) {
-            var event = new CustomEvent("menuAction", {
-                                   detail: menuItem,
-                                   bubbles: true,
-                                   cancelable: true
-                               }),
-                target = document.activeElement,
-                component = target.controller;
-
-            while (component == null && target) {
-               target = target.parentNode;
-            }
-
-            component = component || defaultEventManager.application;
-            component.dispatchEvent(event);
+            this._fetchMainMenu();
         }
     },
 

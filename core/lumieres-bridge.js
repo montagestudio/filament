@@ -297,12 +297,14 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     setUndoState: {
         value: function (state, label) {
+            // JFD TODO: obsolete, need to be redone
             lumieres.undoManager.setUndoState(state, label);
         }
     },
 
     setRedoState: {
         value: function (state, label) {
+            // JFD TODO: obsolete, need to be redone
             lumieres.undoManager.setRedoState(state, label);
         }
     },

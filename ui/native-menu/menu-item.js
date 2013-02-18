@@ -29,6 +29,15 @@ exports.MenuItem = Montage.create(Montage, {
         }
     },
 
+    setTitle: {
+        // needed in order to be compatible with the lumieres implememtation
+        enumerable: false,
+        value: function(value) {
+            this.title = value;
+        }
+    },
+
+
     _menu: {
         value: null
     },
@@ -150,6 +159,27 @@ exports.MenuItem = Montage.create(Montage, {
     removeEventListener: {
         value: function(type, listener, useCapture) {
             throw new Error("removeEventListener not supported. " + kListenerError);
+        }
+    },
+
+    dispatchMenuEvent:{
+        value: function(type) {
+            var event = new CustomEvent(type, {
+                                   detail: this,
+                                   bubbles: true,
+                                   cancelable: true
+                               }),
+                target = document.activeElement,
+                component = target.controller;
+
+            while (component == null && target) {
+               target = target.parentNode;
+            }
+
+            component = component || defaultEventManager.application;
+            component.dispatchEvent(event);
+
+            return event.defaultPrevented;
         }
     }
 
