@@ -1,10 +1,10 @@
 <!doctype html>
 <html>
 <head>
-    <title>Nav</title>
+    <title>Nav Main</title>
     <meta charset="utf-8">
     
-    <link href="nav.css" rel="stylesheet">
+    <link href="nav-main.css" rel="stylesheet">
 
     <script type="text/montage-serialization">
         {
@@ -19,13 +19,11 @@
 </head>
 <body>
     
-    <nav data-montage-id="nav" class="Nav">
-        <!--<div class="Nav-loader"></div>-->
+    <nav data-montage-id="nav" class="Nav Nav--main">
         <div class="Nav-scroll">
             <div class="Nav-logo"></div>
             <div class="Nav-tabs">
-                <button class="Nav-button active" data-icon="&#9776;"></button>
-                <button class="Nav-button" data-icon="&#128193;"></button>
+                <button id="packageExplorerButton" class="Nav-button selected" data-icon="&#128193;"></button>
             </div>
             <div>
                 <button class="Nav-button" data-icon="&#59153;"></button>

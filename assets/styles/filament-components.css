@@ -96,6 +96,10 @@
 
 /* Panel --------------------------------- */
 
+.Panel.Panel--hidden {
+    display: none;
+}
+
 .Panel {
     display: -webkit-flex;
     -webkit-flex-flow: column;
@@ -186,5 +190,81 @@
 	color: hsl(0,0%,50%); 
 	background: hsl(0,0%,80%);
 	border-top: 1px solid hsla(0, 0%, 0%, 0.1);
+}
+
+
+
+/* Nav ----------------------------------- */
+
+.Nav {
+	margin: 0;
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+}
+
+.Nav-scroll {
+    -webkit-flex: 1;
+    min-height: 0;
+	background-color: hsl(0,0%,20%);
+	margin: 0;
+	padding-bottom: 4px;
+	list-style: none;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    -webkit-justify-content: space-between;
+}
+
+
+/* Nav Button ----------------------------------- */
+
+.Nav-button {
+    display: block;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin: 4px;
+    font-size: 40px;
+    border: none;
+    border-radius: 4px;
+    color: hsla(0,0%,100%,.4);
+    text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
+    box-shadow: inset 0 1px 2px hsla(0,0%,100%,.1), 0 1px 4px hsla(0,0%,0%,.4);
+    background-image: -webkit-linear-gradient( hsl(0,0%,36%), hsl(0,0%,30%) );
+    cursor: pointer;
+}
+
+.Nav-button:hover {
+    color: hsla(0,0%,100%,.5);
+    background-image: -webkit-linear-gradient( hsl(0,0%,38%), hsl(0,0%,32%) );
+}
+
+.Nav-button:active {
+    color: hsla(0,0%,100%,.3);
+    box-shadow: inset 0 1px 2px hsla(0,0%,100%,0), 0 1px 2px hsla(0,0%,0%,.4);
+    background-image: -webkit-linear-gradient( hsl(0,0%,32%), hsl(0,0%,26%) );
+}
+
+
+/* Nav Tab ----------------------------------- */
+
+.Nav-tabs .Nav-button {
+	-webkit-transition: -webkit-transform .3s cubic-bezier(.20, .11, .14, .94);
+}
+
+.Nav-tabs .Nav-button.selected {
+    color: hsla(0,0%,0%,.5);
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
+    border-radius: 0 12px 12px 0;
+    box-shadow: inset -1px 0 0px hsla(0,0%,100%,.6), 2px 0 2px hsla(0,0%,0%,.4);
+    background-image: -webkit-linear-gradient( left, hsl(0,0%,80%), hsl(0,0%,90%) );
+	-webkit-transform: translateX(-4px);
+	-webkit-transition: none;
+}
+
+.Nav-tabs .Nav-button.selected:hover {
+    background: hsl(0,0%,90%);
+}
+.Nav-tabs .Nav-button.selected:active {
+    background: hsl(0,0%,80%);
 }
 
