@@ -321,10 +321,6 @@ exports.ProjectController = Montage.create(Montage, {
                 promisedDocument = Promise.resolve(this.currentDocument);
             } else {
 
-                if (this.currentDocument) {
-                    this.dispatchEventNamed("willExitDocument", true, false, this.currentDocument);
-                }
-
                 editingDocuments = this.openDocumentsController.organizedObjects;
                 docIndex = editingDocuments.map(function (doc) {
                     return doc.fileUrl;
@@ -333,10 +329,17 @@ exports.ProjectController = Montage.create(Montage, {
                 if (docIndex > -1) {
 
                     promisedDocument = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
+                        if (self.currentDocument) {
+                            self.dispatchEventNamed("willExitDocument", true, false, self.currentDocument);
+                        }
+
                         self.currentDocument = editingDocument;
                         self.openDocumentsController.selectedObjects = [editingDocument];
                         self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
                         return editingDocument;
+                    }, function() {
+                        // Something gone wrong revert to the current document
+                        return Promise.resolve(self.currentDocument);
                     });
 
                 } else {
@@ -344,6 +347,10 @@ exports.ProjectController = Montage.create(Montage, {
                     this._fileUrlEditorMap[fileUrl] = editor;
 
                     promisedDocument = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
+                        if (self.currentDocument) {
+                            self.dispatchEventNamed("willExitDocument", true, false, self.currentDocument);
+                        }
+
                         self.currentDocument = editingDocument;
                         self.openDocumentsController.addObjects(editingDocument);
                         self.openDocumentsController.selectedObjects = [editingDocument];
@@ -353,6 +360,9 @@ exports.ProjectController = Montage.create(Montage, {
                         self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
 
                         return editingDocument;
+                    }, function () {
+                        // Something gone wrong revert to the current document
+                        return Promise.resolve(self.currentDocument);
                     });
                 }
 
