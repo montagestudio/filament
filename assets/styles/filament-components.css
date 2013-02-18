@@ -97,15 +97,18 @@
 /* Panel --------------------------------- */
 
 .Panel.Panel--hidden {
-    display: none;
+    -webkit-flex: 0 1 0;
+    overflow: hidden;
 }
 
 .Panel {
+    -webkit-flex: 0 0 200px;
+    min-width: 0;
     display: -webkit-flex;
     -webkit-flex-flow: column;
     position: relative;
-    width: 200px;
     background: hsl(0, 0%, 80%);
+    -webkit-transition: -webkit-flex .3s cubic-bezier(.26, .06, .08, 1);
 }
 
 .Panel-title {
