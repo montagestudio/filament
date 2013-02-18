@@ -187,6 +187,10 @@ exports.ProjectController = Montage.create(Montage, {
         value: null
     },
 
+    packageDescription: {
+        value: null
+    },
+
     // The ID of the preview being served by our host environment
     previewId: {
         enumerable: false,
@@ -233,6 +237,10 @@ exports.ProjectController = Montage.create(Montage, {
 
             this.packageUrl = projectInfo.packageUrl;
             this.dependencies = projectInfo.dependencies;
+
+            require.loadPackage(this.packageUrl).then(function (packageRequire) {
+                self.packageDescription = packageRequire.packageDescription;
+            }).done();
 
             // Add in components from the package being edited itself
             this.dependencies.unshift({dependency: "", url: this.environmentBridge.convertBackendUrlToPath(this.packageUrl)});

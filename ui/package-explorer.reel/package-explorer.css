@@ -3,6 +3,12 @@
     border-right: 1px solid hsl(0, 0%, 75%);
 }
 
+.PackageExplorer .Panel-title h2 {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
 .Panel-title.PackageExplorer-bar {
     height: 92px;
     padding: 10px 10px 0 10px;

@@ -14,13 +14,23 @@
                 }
             },
 
-            "packageExplorerLabel": {
+            "packageName": {
                 "prototype": "montage/ui/dynamic-text.reel",
                 "properties": {
-                    "element": {"#": "packageExplorerLabel"}
+                    "element": {"#": "packageName"}
                 },
-                "localizations": {
-                    "value": {"key": "package_explorer"}
+                "bindings": {
+                    "value": {"<-": "@owner.packageDescription.name"}
+                }
+            },
+
+            "packageVersion": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "packageVersion"}
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.packageDescription.version"}
                 }
             },
 
@@ -73,7 +83,10 @@
 <body>
 
     <div id="packageExplorer" data-montage-id="package-explorer" class="Panel PackageExplorer">
-        <h2 data-montage-id="packageExplorerLabel" class="Panel-title">Package Explorer</h2>
+        <div class="Panel-title">
+            <h2 data-montage-id="packageName"></h2>
+            <span data-montage-id="packageVersion"></span>
+        </div>
         <ul data-montage-id="fileList" class="Panel-content List PackageExplorer-list">
             <li data-montage-id="file-cell"></li>
         </ul>
