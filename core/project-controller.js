@@ -326,8 +326,6 @@ exports.ProjectController = Montage.create(Montage, {
                     return doc.fileUrl;
                 }).indexOf(fileUrl);
 
-                debugger
-
                 if (docIndex > -1) {
 
                     promisedDocument = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
