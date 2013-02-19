@@ -1,3 +1,6 @@
+.Nav--main .Nav-scroll{
+    background-image: -webkit-linear-gradient(left , hsla(0,0%,20%, 0) 58%, hsl(0, 0%, 16%) 90%, hsl(0, 0%, 8%) 100%);
+}
 
 .Nav--main .Nav-tabs .Nav-button.selected {
     border-radius: 12px 0 0 12px;

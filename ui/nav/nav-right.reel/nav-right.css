@@ -1,3 +1,6 @@
+.Nav--right .Nav-scroll{
+    background-image: -webkit-linear-gradient(right , hsla(0,0%,20%, 0) 58%, hsl(0, 0%, 16%) 90%, hsl(0, 0%, 8%) 100%);
+}
 
 .Nav--right .Nav-scroll {
     -webkit-justify-content: center;
