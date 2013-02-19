@@ -196,6 +196,9 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                     .then(function () {
                         lumieres.document.setFileURL(applicationUrl);
                         return applicationUrl;
+                    }, function(error) {
+                        console.log("Could not create the application " + name + " at " + packagePath, error);
+                        return "";
                     });
             });
         }
