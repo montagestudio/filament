@@ -36,6 +36,10 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
         value: null
     },
 
+    mostRecentActivity: {
+        value: null
+    },
+
     addActivity: {
         value: function(promise, title, status) {
             var self = this;
@@ -52,6 +56,7 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
                 task.status = value;
                 self.runningActivities.delete(task);
                 self.completedActivities.add(task);
+                self.mostRecentActivity = task;
                 self.needsDraw = true;
             }, function (err) {
                 var message = "";
@@ -62,13 +67,17 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
                 task.status = message;
                 self.runningActivities.delete(task);
                 self.failedActivities.add(task);
+                self.mostRecentActivity = task;
                 self.needsDraw = true;
             }, function (status) {
                 task.status = status;
+                self.mostRecentActivity = task;
                 self.needsDraw = true;
             });
 
             this.runningActivities.add(task);
+            self.mostRecentActivity = task;
+
             this.needsDraw = true;
             this.infobar.show();
         }
@@ -105,41 +114,57 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
 
     draw: {
         value: function() {
-            var states = ["Completed", "Failed", "Running"];
+            this._completedNumEl.textContent = this.completedActivities.length;
+            this._failedNumEl.textContent = this.failedActivities.length;
 
-            for (var i = 0; i < 3; i++) {
-                var state = states[i];
-                var lowerState = state.toLowerCase();
-                var tasks = this[lowerState+"Activities"];
-                var num = tasks.length;
-                var els = this["_"+lowerState+"Els"];
+            // TODO replace with bindings once we get FRB
+            if (this.completedActivities.length === 0) {
+                this._element.classList.add(CLASS_PREFIX+"--noneCompleted");
+            } else {
+                this._element.classList.remove(CLASS_PREFIX+"--noneCompleted");
+            }
 
-                // TODO localize
+            if (this.failedActivities.length === 0) {
+                this._element.classList.add(CLASS_PREFIX+"--noneFailed");
+            } else {
+                this._element.classList.remove(CLASS_PREFIX+"--noneFailed");
+            }
 
-                if (num === 0) {
-                    this._element.classList.add(CLASS_PREFIX+"--none"+state);
-                    this._element.classList.remove(CLASS_PREFIX+"--one"+state);
-                    this._element.classList.remove(CLASS_PREFIX+"--many"+state);
+            if (!this.mostRecentActivity) {
+                return;
+            }
 
-                    els.title.textContent = "";
-                    els.status.textContent= "";
-                } else if (num === 1) {
-                    this._element.classList.remove(CLASS_PREFIX+"--none"+state);
-                    this._element.classList.add(CLASS_PREFIX+"--one"+state);
-                    this._element.classList.remove(CLASS_PREFIX+"--many"+state);
+            // If there are no running activities, display the message from the
+            // most recently passed/failed along with the appropriate pass/fail
+            // style.
+            // If there is one task running display its title and status,
+            // otherwise display a count of the running tasks
 
-                    if (els.num) els.num.textContent = num;
-                    els.title.textContent = tasks.one().title;
-                    els.status.textContent = tasks.one().status;
-                } else {
-                    this._element.classList.remove(CLASS_PREFIX+"--none"+state);
-                    this._element.classList.add(CLASS_PREFIX+"--one"+state);
-                    this._element.classList.add(CLASS_PREFIX+"--many"+state);
+            if (this.runningActivities.length === 0) {
+                this._element.classList.remove(CLASS_PREFIX+"--running");
+                this._titleEl.textContent = this.mostRecentActivity.title;
+                this._statusEl.textContent = this.mostRecentActivity.status;
 
-                    if (els.num) els.num.textContent = num;
-                    els.title.textContent = "";
-                    els.status.textContent = num + " tasks " + lowerState;
+                if (this.mostRecentActivity.promise.isFulfilled()) {
+                    this._element.classList.add(CLASS_PREFIX+"--completed");
+                    this._element.classList.remove(CLASS_PREFIX+"--failed");
+                } else if (this.mostRecentActivity.promise.isRejected()) {
+                    this._element.classList.remove(CLASS_PREFIX+"--completed");
+                    this._element.classList.add(CLASS_PREFIX+"--failed");
                 }
+            } else {
+                this._element.classList.remove(CLASS_PREFIX+"--completed");
+                this._element.classList.remove(CLASS_PREFIX+"--failed");
+                this._element.classList.add(CLASS_PREFIX+"--running");
+
+                if (this.runningActivities.length === 1) {
+                    this._titleEl.textContent = this.mostRecentActivity.title;
+                    this._statusEl.textContent = this.mostRecentActivity.status;
+                } else {
+                    this._titleEl.textContent = "";
+                    this._statusEl.textContent = this.runningActivities.length + " activities running";
+                }
+
             }
         }
     }

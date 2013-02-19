@@ -188,6 +188,10 @@ exports.ProjectController = Montage.create(Montage, {
         value: null
     },
 
+    packageDescription: {
+        value: null
+    },
+
     // The ID of the preview being served by our host environment
     previewId: {
         enumerable: false,
@@ -226,6 +230,7 @@ exports.ProjectController = Montage.create(Montage, {
             var self = this;
 
             this._fileUrlEditorMap = {};
+            this._fileUrlDocumentMap = {};
 
             this.dispatchEventNamed("willOpenPackage", true, false, {
                 packageUrl: projectInfo.packageUrl
@@ -233,6 +238,10 @@ exports.ProjectController = Montage.create(Montage, {
 
             this.packageUrl = projectInfo.packageUrl;
             this.dependencies = projectInfo.dependencies;
+
+            require.loadPackage(this.packageUrl).then(function (packageRequire) {
+                self.packageDescription = packageRequire.packageDescription;
+            }).done();
 
             // Add in components from the package being edited itself
             this.dependencies.unshift({dependency: "", url: this.environmentBridge.convertBackendUrlToPath(this.packageUrl)});
@@ -298,6 +307,10 @@ exports.ProjectController = Montage.create(Montage, {
         value: null
     },
 
+    _fileUrlDocumentMap: {
+        value: null
+    },
+
     openFileUrlInEditor: {
         value: function (fileUrl, editor) {
             var editingDocuments,
@@ -308,21 +321,28 @@ exports.ProjectController = Montage.create(Montage, {
             if (this.currentDocument && fileUrl === this.currentDocument.fileUrl) {
                 promisedDocument = Promise.resolve(this.currentDocument);
             } else {
-
-                this.dispatchEventNamed("willExitDocument", true, false, this.currentDocument);
-
                 editingDocuments = this.openDocumentsController.visibleContent;
                 docIndex = editingDocuments.map(function (doc) {
                     return doc.fileUrl;
                 }).indexOf(fileUrl);
 
+                debugger
+
                 if (docIndex > -1) {
 
                     promisedDocument = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
+                        if (self.currentDocument) {
+                            self.dispatchEventNamed("willExitDocument", true, false, self.currentDocument);
+                        }
+
                         self.currentDocument = editingDocument;
                         self.openDocumentsController.selection = [editingDocument];
                         self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
                         return editingDocument;
+                    }, function() {
+                        //TODO log the error that got us here
+                        // Something gone wrong revert to the current document
+                        return Promise.resolve(self.currentDocument);
                     });
 
                 } else {
@@ -330,14 +350,23 @@ exports.ProjectController = Montage.create(Montage, {
                     this._fileUrlEditorMap[fileUrl] = editor;
 
                     promisedDocument = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
+                        if (self.currentDocument) {
+                            self.dispatchEventNamed("willExitDocument", true, false, self.currentDocument);
+                        }
+
                         self.currentDocument = editingDocument;
                         self.openDocumentsController.content.push(editingDocument);
                         self.openDocumentsController.selection = [editingDocument];
+                        self._fileUrlDocumentMap[fileUrl] = editingDocument;
 
                         self.dispatchEventNamed("didLoadDocument", true, false, editingDocument);
                         self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
 
                         return editingDocument;
+                    }, function () {
+                        // Something gone wrong revert to the current document
+                        //TODO log the error that got us here
+                        return Promise.resolve(self.currentDocument);
                     });
                 }
 
@@ -370,6 +399,59 @@ exports.ProjectController = Montage.create(Montage, {
                 this.environmentBridge.setDocumentDirtyState(null != undoCount && undoCount > 0);
             }
 
+        }
+    },
+
+    closeFileUrlInEditor: {
+        value: function (fileUrl, editor) {
+            var self = this,
+                openNextDocPromise,
+                editingDocument = this._fileUrlDocumentMap[fileUrl],
+                editingDocuments = this.openDocumentsController.organizedObjects,
+                docIndex,
+                nextDocIndex,
+                nextDoc,
+                nextEditor,
+                editor;
+
+            if (this.currentDocument && fileUrl === this.currentDocument.fileUrl) {
+
+
+                if (1 === editingDocuments.length) {
+                    this.dispatchEventNamed("willExitDocument", true, false, this.currentDocument);
+                    this.currentDocument = null;
+                    openNextDocPromise = Promise.resolve(true);
+                } else {
+                    //Switch to the "next" tab, however we want to define that
+                    docIndex = editingDocuments.indexOf(editingDocument);
+                    nextDocIndex = docIndex + 1;
+
+                    if (nextDocIndex > editingDocuments.length - 1) {
+                        nextDocIndex = docIndex - 1;
+                    }
+
+                    nextDoc = editingDocuments[nextDocIndex];
+                    nextEditor = this._fileUrlEditorMap[nextDoc.fileUrl];
+
+                    //TODO I want to call openDocument, or openFileUrl here without knowing the editor
+                    // I think we should centralize that knowledge here if possible and out of main
+
+                    openNextDocPromise = this.openFileUrlInEditor(nextDoc.fileUrl, nextEditor);
+                }
+            } else {
+                openNextDocPromise = Promise.resolve(true);
+            }
+
+            self.dispatchEventNamed("willCloseDocument", true, false, editingDocument);
+
+            return openNextDocPromise.then(function () {
+                return editor.close(fileUrl).then(function (document) {
+                    self.openDocumentsController.removeObjects(document);
+                    delete self._fileUrlEditorMap[fileUrl];
+                    delete self._fileUrlDocumentMap[fileUrl];
+                    return document;
+                });
+            });
         }
     },
 

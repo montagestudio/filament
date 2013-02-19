@@ -27,7 +27,6 @@ exports.BlueprintEditor = Montage.create(Component, /** @lends module:"./viewer.
 
     load:{
         value:function (fileUrl, packageUrl) {
-            //TODO not make a new document each time..
             var self = this;
             return BlueprintDocument.load(fileUrl, packageUrl).then(function (document) {
                 self.dispatchPropertyChange("currentDocument", function () {

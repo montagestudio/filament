@@ -3,8 +3,9 @@ var Montage = require("montage").Montage,
     Binder = require("montage/core/meta/binder").Binder,
     Blueprint = require("montage/core/meta/blueprint").Blueprint,
     EditingDocument = require("palette/core/editing-document").EditingDocument,
-    BlueprintProxy = require("./blueprint-proxy").BlueprintProxy;
-var Serializer = require("montage/core/serialization").Serializer;
+    BlueprintProxy = require("./blueprint-proxy").BlueprintProxy,
+    Serializer = require("montage/core/serialization").Serializer,
+    MontageRevivier = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver;
 
 var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocument, {
 
@@ -17,14 +18,24 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
             }
 
             require.loadPackage(packageUrl).then(function (packageRequire) {
-                // This cheesy and we probably need some better key to what we are editing
+                // This is cheesy and we probably need some better key to what we are editing
                 if (blueprintModuleId.indexOf("blueprint") > -1) {
                     Blueprint.getBlueprintWithModuleId(blueprintModuleId, packageRequire).then(function (blueprint) {
                         deferredDoc.resolve(BlueprintDocument.create().init(fileUrl, packageRequire, blueprint, true));
+                    }, function () {
+                        // The blueprint file does not exist yet lets use the default blueprint.
+                        var desc = MontageReviver.parseObjectLocationId(blueprintModuleId.substring(0, blueprintModuleId.lastIndexOf("/")));
+                        packageRequire.async(desc.moduleId).get(desc.objectName).get("blueprint").then(function (blueprint) {
+                            deferredDoc.resolve(BlueprintDocument.create().init(fileUrl, packageRequire, blueprint, true));
+                        }, function () {
+                            deferredDoc.reject(new Error("Could not open file at " + fileUrl));
+                        });
                     });
                 } else {
                     Binder.getBinderWithModuleId(blueprintModuleId, packageRequire).then(function (binder) {
                         deferredDoc.resolve(BlueprintDocument.create().init(fileUrl, packageRequire, binder, false));
+                    }, function () {
+                        deferredDoc.reject(new Error("Could not open file at " + fileUrl));
                     });
                 }
             });

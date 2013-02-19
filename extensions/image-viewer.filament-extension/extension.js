@@ -1,9 +1,9 @@
 var Montage = require("montage/core/core").Montage,
-    Extension = require("filament-extension/core/extension").Extension,
+    CoreExtension = require("filament-extension/core/extension").Extension,
     Promise = require("montage/core/promise").Promise,
     Viewer = require("ui/viewer.reel").Viewer;
 
-var Extension = exports.Extension = Montage.create(Extension, {
+var Extension = exports.Extension = Montage.create(CoreExtension, {
 
     editorFileMatchFunction: {
         enumerable: false,

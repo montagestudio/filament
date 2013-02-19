@@ -47,8 +47,8 @@ exports.Main = Montage.create(Component, {
             var self = this;
 
             this.editorTypeInstancePromiseMap = new WeakMap();
-            this.editorsToInsert = [];
-            this.fileUrlEditorMap = {};
+            this._editorsToInsert = [];
+            this._fileUrlEditorMap = {};
             this.openEditors = [];
 
             this.application.addEventListener("asyncActivity", this, false);
@@ -91,7 +91,6 @@ exports.Main = Montage.create(Component, {
                 }, true);
 
                 self.application.addEventListener("menuAction", self, false);
-                self.application.addEventListener("enterModalEditor", self, false);
 
                 self.viewController.registerEditorTypeForFileTypeMatcher(ComponentEditor, function (fileUrl) {
                     return (/\.reel\/?$/).test(fileUrl);
@@ -122,8 +121,10 @@ exports.Main = Montage.create(Component, {
             document.addEventListener("save", this, false);
 
             var app = document.application;
+            app.addEventListener("enterModalEditor", this);
             app.addEventListener("openFile", this);
             app.addEventListener("addFile", this);
+            app.addEventListener("closeDocument", this);
 
             var files = this.projectController.files;
             var projectUrl = this.projectController.projectUrl;
@@ -159,12 +160,18 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    handleCloseDocument: {
+        value: function (evt) {
+            this.closeFileUrl(evt.detail.fileUrl).done();
+        }
+    },
+
     editorTypeInstancePromiseMap: {
         enumerable: false,
         value: null
     },
 
-    fileUrlEditorMap: {
+    _fileUrlEditorMap: {
         enumerable: false,
         value: null
     },
@@ -195,7 +202,7 @@ exports.Main = Montage.create(Component, {
                     this.editorTypeInstancePromiseMap.set(editorType, editorPromise);
 
                     newEditor = editorType.create();
-                    this.editorsToInsert.push(newEditor);
+                    this._editorsToInsert.push(newEditor);
 
                     editorFirstDrawHandler = function (evt) {
                         var editor = evt.target;
@@ -229,9 +236,27 @@ exports.Main = Montage.create(Component, {
             if (-1 === this.openEditors.indexOf(editor)) {
                 this.openEditors.push(editor);
             }
-            this.fileUrlEditorMap[fileUrl] = editor;
+            this._fileUrlEditorMap[fileUrl] = editor;
 
             return this.projectController.openFileUrlInEditor(fileUrl, editor);
+        }
+    },
+
+    closeFileUrl: {
+        value: function (fileUrl) {
+            var editor = this._fileUrlEditorMap[fileUrl],
+                promisedClose,
+                self = this;
+
+            if (editor) {
+                promisedClose = this.projectController.closeFileUrlInEditor(fileUrl, editor).then(function (document) {
+                   delete self._fileUrlEditorMap[fileUrl];
+                });
+            } else {
+                promisedClose = Promise.reject(new Error("Cannot close file that is not open"));
+            }
+
+            return promisedClose;
         }
     },
 
@@ -381,23 +406,23 @@ exports.Main = Montage.create(Component, {
                 currentEditor,
                 currentFileUrl;
 
-            if (this.editorsToInsert.length) {
+            if (this._editorsToInsert.length) {
                 editorArea = this.editorSlot;
 
                 //TODO do this in a fragment if possible
-                this.editorsToInsert.forEach(function (editor) {
+                this._editorsToInsert.forEach(function (editor) {
                     element = document.createElement("div");
                     editor.element = element;
                     editorArea.appendChild(element);
                     editor.attachToParentComponent();
                     editor.needsDraw = true;
                 });
-                this.editorsToInsert = [];
+                this._editorsToInsert = [];
             }
 
             //TODO optimize this entire draw method
             currentFileUrl = this.getPath("projectController.currentDocument.fileUrl");
-            currentEditor = this.fileUrlEditorMap[currentFileUrl];
+            currentEditor = this._fileUrlEditorMap[currentFileUrl];
 
             this.openEditors.forEach(function (editor) {
                 editorElement = editor.element;

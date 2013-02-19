@@ -14,13 +14,23 @@
                 }
             },
 
-            "packageExplorerLabel": {
+            "packageName": {
                 "prototype": "montage/ui/dynamic-text.reel",
                 "properties": {
-                    "element": {"#": "packageExplorerLabel"}
+                    "element": {"#": "packageName"}
                 },
-                "localizations": {
-                    "value": {"key": "package_explorer"}
+                "bindings": {
+                    "value": {"<-": "@owner.packageDescription.name"}
+                }
+            },
+
+            "packageVersion": {
+                "prototype": "montage/ui/dynamic-text.reel",
+                "properties": {
+                    "element": {"#": "packageVersion"}
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.packageDescription.version"}
                 }
             },
 
@@ -72,19 +82,19 @@
 </head>
 <body>
 
-    <div data-montage-id="package-explorer" class="Panel PackageExplorer">
-        <h2 data-montage-id="packageExplorerLabel" class="Panel-title">Package Explorer</h2>
-        <div class="PackageExplorer-bar">
-            <span class="PackageExplorer-bar-label">Add</span>
-            <menu class="montage-ButtonGroup PackageExplorer-menu">
-                <button data-montage-id="add-file-button" class="Button PackageExplorer-menu-item"> Component</button>
-                <button data-montage-id="add-module-button" class="Button PackageExplorer-menu-item">Module</button>
-            </menu>
+    <div id="packageExplorer" data-montage-id="package-explorer" class="Panel PackageExplorer">
+        <div class="Panel-title">
+            <h2 data-montage-id="packageName"></h2>
+            <span data-montage-id="packageVersion"></span>
         </div>
         <ul data-montage-id="fileList" class="Panel-content List PackageExplorer-list">
             <li data-montage-id="file-cell"></li>
         </ul>
         <div class="Panel-shadow"></div>
+        <div class="Panel-title PackageExplorer-bar">
+            <button data-montage-id="add-file-button" class="Button">Add Component…</button>
+            <button data-montage-id="add-module-button" class="Button">Add Module…</button>
+        </div>
     </div>
 
 </body>

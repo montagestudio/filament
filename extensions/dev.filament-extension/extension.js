@@ -1,8 +1,8 @@
 var Montage = require("montage/core/core").Montage,
-    Extension = require("filament-extension/core/extension").Extension,
+    CoreExtension = require("filament-extension/core/extension").Extension,
     Promise = require("montage/core/promise").Promise;
 
-var Extension = exports.Extension = Montage.create(Extension, {
+var Extension = exports.Extension = Montage.create(CoreExtension, {
 
     supportsFilamentVersion: {
         value: function () {
@@ -14,7 +14,7 @@ var Extension = exports.Extension = Montage.create(Extension, {
         distinct: true,
         value: ["willOpenPackage", "didOpenPackage", "canLoadProject",
             "willActivateExtension", "willDeactivateExtension",
-            "willExitDocument", "didLoadDocument", "didEnterDocument",
+            "willExitDocument", "didLoadDocument", "didEnterDocument", "willCloseDocument",
             "fileSystemChange",
             "willSave",
             "didLaunchPreview", "didRefreshPreview", "didUnregisterPreview"]

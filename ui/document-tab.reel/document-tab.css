@@ -1,0 +1,56 @@
+.DocumentTab {
+     display: inline-block;
+     height: 32px;
+     padding: 0 2px 0 8px;
+     margin: 0;
+     line-height: 28px;
+     font-size: 13px;
+     font-weight: normal;
+     text-align: center;
+     color: hsla(0,0%,100%,.5);
+     border-radius: 6px 6px 0 0;
+     border: 1px solid;
+     border-color: transparent transparent transparent hsla(0, 0%, 0%, .15);
+     background: hsla(0,0%,100%,0);
+     cursor: pointer;
+ }
+
+.DocumentTab:hover {
+    color: hsla(0,0%,100%,.8);
+    border-color: transparent;
+    background: hsla(0,0%,100%,.2);
+}
+
+.DocumentTab:active,
+.DocumentTab:focus,
+.DocumentTab.selected {
+    color: hsl(0,0%,30%);
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
+    border-color: hsla(0,0%,100%,1) transparent hsla(0,0%,0%,.2) transparent;
+    background: -webkit-linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
+    cursor: default;
+}
+
+.DocumentTab .DocumentTab-close {
+    width: 20px;
+    height: 20px;
+    min-width: 0;
+    margin-left: 2px;
+    margin-top: -2px;
+    line-height: 20px;
+    padding: 0;
+    border-radius: 10px;
+    border: none;
+    color: inherit;
+    background: transparent;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+.DocumentTab .DocumentTab-close:hover {
+    background: hsla(0,0%,0%,.1);
+}
+
+.DocumentTab .DocumentTab-close:active {
+    background: hsla(0,0%,0%,.3);
+}

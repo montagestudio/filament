@@ -1,13 +1,13 @@
 {
     "name": "filament",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "private": true,
     "repository" : {
         "type" : "git",
         "url" : "git@github.com:declarativ/filament.git"
     },
     "dependencies": {
-        "montage": "0.12.x",
+        "montage": "~0.12.4",
         "q": "0.8.11",
         "q-connection": ">=0.4.7",
         "q-io": "1.5.2",

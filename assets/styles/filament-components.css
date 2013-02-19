@@ -13,12 +13,12 @@
     color: hsla(0,0%,0%,.7);
     text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
     border-color: hsl(0,0%,80%);
-    background-image: -webkit-linear-gradient(top, hsl(0,0%,96%), hsl(0,0%,92%) );
+    background-image: -webkit-linear-gradient(top, hsl(0,0%,98%), hsl(0,0%,90%) );
     box-shadow: inset 0 1px 0 hsla(0,0%,100%,.8), inset 0 -1px 1px hsla(0,0%,0%,.04), 0 1px 0 hsla(0,0%,100%,.6);
 }
 
 .Button:hover {
-    background-image: -webkit-linear-gradient(top, hsl(0,0%,98%), hsl(0,0%,94%) );
+    background-image: -webkit-linear-gradient(top, hsl(0,0%,100%), hsl(0,0%,92%) );
 }
 
 .Button.active {
@@ -90,73 +90,25 @@
 }
 
 
-.Tabs-tab:first-child {
+.Tabs .DocumentTab:first-child {
     border-top-left-radius: 0;
 }
 
-.Tabs-tab {
-    display: inline-block;
-    height: 32px;
-    padding: 0 8px;
-    margin: 0;
-    line-height: 30px;
-    font-size: 13px;
-    font-weight: normal;
-    text-align: center;    
-    color: hsla(0,0%,100%,.5);
-    border-radius: 6px 6px 0 0;
-    border: 1px solid;
-    border-color: transparent transparent transparent hsla(0, 0%, 0%, .15);
-    background: hsla(0,0%,100%,.1);
-    cursor: pointer;
-}
-
-.Tabs-tab:hover {
-    color: hsla(0,0%,100%,.8);
-    border-color: transparent;
-    background: hsla(0,0%,100%,.2);
-}
-
-.Tabs-tab:active,
-.Tabs-tab:focus,
-.Tabs-tab.selected {
-    color: hsl(0,0%,40%);
-    text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
-    border-color: hsla(0,0%,100%,1) transparent hsla(0,0%,0%,.2) transparent;
-    background: -webkit-linear-gradient( hsl(0,0%,96%), hsl(0,0%,90%) );
-    cursor: default;
-}
-
-.Tabs-tab-close {
-    width: 16px;
-    height: 16px;
-    margin-left: 2px;
-    line-height: 16px;
-    padding: 0;
-    border-radius: 8px;
-    border: none;
-    color: inherit;
-    background: transparent;
-    cursor: pointer;
-}
-
-.Tabs-tab-close:hover {
-    background: hsla(0,0%,0%,.1);
-}
-
-.Tabs-tab-close:active {
-    background: hsla(0,0%,0%,.3);
-}
-
-
 /* Panel --------------------------------- */
 
+.Panel.Panel--hidden {
+    -webkit-flex: 0 1 0;
+}
+
 .Panel {
+    -webkit-flex: 0 0 200px;
+    min-width: 0;
+    overflow: hidden;
     display: -webkit-flex;
     -webkit-flex-flow: column;
     position: relative;
-    width: 200px;
-    background: hsl(0, 0%, 40%);
+    background: hsl(0, 0%, 80%);
+    -webkit-transition: -webkit-flex .3s cubic-bezier(.26, .06, .08, 1);
 }
 
 .Panel-title {
@@ -167,11 +119,11 @@
     line-height: 30px;
     font-size: 13px;
     font-weight: normal;
-    color: hsl(0,0%,40%);
+    color: hsl(0,0%,30%);
     text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
     border-top: 1px solid hsla(0,0%,100%,1);
     border-bottom: 1px solid hsla(0,0%,0%,.2);
-    background: -webkit-linear-gradient( hsl(0,0%,96%), hsl(0,0%,90%) );
+    background: -webkit-linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
 }
 
 .Panel-title-button {
@@ -208,28 +160,28 @@
 .List-item {
 	padding: 8px;
 	border: none;
-    border-top: 1px solid hsla(0,0%,100%,.2);
-    border-bottom: 1px solid hsla(0,0%,0%,.06);
+    border-top: 1px solid hsla(0,0%,100%,0.2);
+    border-bottom: 1px solid hsla(0,0%,0%,0.05);
 	font-size: 12px;
 	line-height: 1;
-	color: hsl(0,0%,40%);
+	color: hsl(0,0%,30%);
 	text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
 	cursor: pointer;
-	background: hsl(0,0%,86%);
+	background: hsl(0,0%,90%);
 }
 
 .List-item:hover {
-	background: hsl(0,0%,90%);
+	background: hsl(0,0%,94%);
 }
 
 .List-item.active,
 .List-item:active,
 .List-item:focus {
     border-color: transparent;
-	background: hsl(0,0%,80%);
+	background: hsl(0,0%,85%);
 }
 
 .List-title {
@@ -238,8 +190,84 @@
 	font-size: 12px;
 	font-weight: normal;
 	text-align: left;
-	color: hsl(0,0%,50%); 
+	color: hsl(0,0%,40%); 
 	background: hsl(0,0%,80%);
 	border-top: 1px solid hsla(0, 0%, 0%, 0.1);
+}
+
+
+
+/* Nav ----------------------------------- */
+
+.Nav {
+	margin: 0;
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+}
+
+.Nav-scroll {
+    -webkit-flex: 1;
+    min-height: 0;
+	background-color: hsl(0,0%,20%);
+	margin: 0;
+	padding-bottom: 4px;
+	list-style: none;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    -webkit-justify-content: space-between;
+}
+
+
+/* Nav Button ----------------------------------- */
+
+.Nav-button {
+    display: block;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin: 4px;
+    font-size: 40px;
+    border: none;
+    border-radius: 4px;
+    color: hsla(0,0%,100%,.4);
+    text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
+    box-shadow: inset 0 1px 2px hsla(0,0%,100%,.1), 0 1px 4px hsla(0,0%,0%,.4);
+    background-image: -webkit-linear-gradient( hsl(0,0%,36%), hsl(0,0%,30%) );
+    cursor: pointer;
+}
+
+.Nav-button:hover {
+    color: hsla(0,0%,100%,.5);
+    background-image: -webkit-linear-gradient( hsl(0,0%,38%), hsl(0,0%,32%) );
+}
+
+.Nav-button:active {
+    color: hsla(0,0%,100%,.3);
+    box-shadow: inset 0 1px 2px hsla(0,0%,100%,0), 0 1px 2px hsla(0,0%,0%,.4);
+    background-image: -webkit-linear-gradient( hsl(0,0%,32%), hsl(0,0%,26%) );
+}
+
+
+/* Nav Tab ----------------------------------- */
+
+.Nav-tabs .Nav-button {
+	-webkit-transition: -webkit-transform .3s cubic-bezier(.20, .11, .14, .94);
+}
+
+.Nav-tabs .Nav-button.selected {
+    color: hsla(0,0%,0%,.5);
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
+    border-radius: 0 12px 12px 0;
+    box-shadow: inset -1px 0 0px hsla(0,0%,100%,.6), 2px 0 2px hsla(0,0%,0%,.4);
+    background-image: -webkit-linear-gradient( left, hsl(0,0%,80%), hsl(0,0%,90%) );
+	-webkit-transform: translateX(-4px);
+	-webkit-transition: none;
+}
+
+.Nav-tabs .Nav-button.selected:hover {
+    background: hsl(0,0%,90%);
+}
+.Nav-tabs .Nav-button.selected:active {
+    background: hsl(0,0%,80%);
 }
 

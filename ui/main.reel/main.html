@@ -25,7 +25,14 @@
                     "element": {"#": "tasksInfobar"}
                 }
             },
-
+            
+            "navMain": {
+                "prototype": "ui/nav/nav-main.reel",
+                "properties": {
+                    "element": {"#": "navMain"}
+                }
+            },
+            
             "extensionPanel": {
                 "prototype": "ui/extension-panel.reel",
                 "properties": {
@@ -42,7 +49,8 @@
                     "element": {"#": "packageExplorer"}
                 },
                 "bindings": {
-                    "files": {"<-": "@owner.projectController.files"}
+                    "files": {"<-": "@owner.projectController.files"},
+                    "packageDescription": {"<-": "@owner.projectController.packageDescription"}
                 }
             },
 
@@ -76,13 +84,6 @@
                     }
                 ]
             },
-            
-            "nav": {
-                "prototype": "ui/nav.reel",
-                "properties": {
-                    "element": {"#": "nav"}
-                }
-            },
 
             "modalEditorSlot": {
                 "prototype": "montage/ui/slot.reel",
@@ -98,10 +99,10 @@
                 "prototype": "montage/ui/application"
             },
 
-            "openComponentList": {
+            "openDocumentList": {
                 "prototype": "montage/ui/repetition.reel",
                 "properties": {
-                    "element": {"#": "openComponentList"},
+                    "element": {"#": "openDocumentList"},
                     "isSelectionEnabled": true
                 },
                 "bindings": {
@@ -110,12 +111,12 @@
             },
 
             "documentTab": {
-                "prototype": "montage/ui/dynamic-text.reel",
+                "prototype": "ui/document-tab.reel",
                 "properties": {
                     "element": {"#": "documentTab"}
                 },
                 "bindings": {
-                    "value": {"<-": "@openComponentList.objectAtCurrentIteration.title"}
+                    "document": {"<-": "@openDocumentList.objectAtCurrentIteration"}
                 }
             }
 
@@ -130,20 +131,16 @@
         <div data-montage-id="tasksInfobar"></div>
 
         <div class="Main">
+            <nav data-montage-id="navMain"></nav>
             <aside data-montage-id="extensionPanel"></aside>
             <aside data-montage-id="packageExplorer" class="palette"></aside>
 
             <section class="editor">
-                <ul data-montage-id="openComponentList" class="Tabs palette">
-                    <li class="Tabs-tab">
-                        <span data-montage-id="documentTab" class="Tabs-tab-label"></span>
-                        <button class="Tabs-tab-close">×</button>
-                    </li>
+                <ul data-montage-id="openDocumentList" class="Tabs palette">
+                    <li data-montage-id="documentTab"></li>
                 </ul>
                 <section data-montage-id="editorSlot" class="editorSlot"></section>
             </section>
-            
-            <nav data-montage-id="nav"></nav>
 
             <aside data-montage-id="modalEditorSlot" class="modalEditorSlot"></aside>
         </div>

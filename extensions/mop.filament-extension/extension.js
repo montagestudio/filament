@@ -1,53 +1,60 @@
 var Montage = require("montage/core/core").Montage,
-    Extension = require("filament-extension/core/extension").Extension,
+    CoreExtension = require("filament-extension/core/extension").Extension,
     Promise = require("montage/core/promise").Promise,
     defaultMenu = require("filament/ui/native-menu/menu").defaultMenu,
     MenuItem = require("filament/ui/native-menu/menu-item").MenuItem;
 
 /*global lumieres */
 
-var Extension = exports.Extension = Montage.create(Extension, {
+var PARENT_MENU = "tools";
 
-    name: {
-        get: function () {
+var Extension = exports.Extension = Montage.create(CoreExtension, {
+
+    name:{
+        get:function () {
             //TODO read the name from the package or something
             return "Mop";
         }
     },
 
-    toolsMenu: {
-        value: null
+    parentMenu:{
+        value:null
     },
 
-    mopMenu: {
-        value: null
+    mopMenu:{
+        value:null
     },
 
-    application: {
-        value: null
+    application:{
+        value:null
     },
 
-    projectController: {
-        value: null
+    projectController:{
+        value:null
     },
 
-    activate: {
-        value: function (application, projectController) {
+    activate:{
+        value:function (application, projectController) {
             var self = this;
 
             this.application = application;
             this.projectController = projectController;
 
-            var toolsMenu = MenuItem.create();
-            toolsMenu.identifier = "Tools";
-            toolsMenu.title = "Tools";
+            var existingMenu = defaultMenu.menuItemForIdentifier(PARENT_MENU);
+            if (existingMenu) {
+                this.parentMenu = Promise.resolve(existingMenu);
+            } else {
+                var parentMenu = MenuItem.create();
+                parentMenu.identifier = PARENT_MENU.toLowerCase();
+                parentMenu.title = PARENT_MENU; // This should be localized
+                this.parentMenu = defaultMenu.insertItem(parentMenu, 5);
+            }
 
-            this.toolsMenu = defaultMenu.insertItem(toolsMenu, 5);
-            this.mopMenu = this.toolsMenu.then(function (toolsMenu) {
+            this.mopMenu = this.parentMenu.then(function (parentMenu) {
                 var mopItem = MenuItem.create();
-                mopItem.title = "Mop";
+                mopItem.title = "Mop"; // This should be localized
                 mopItem.identifier = "mop";
-                return toolsMenu.insertItem(mopItem);
+                return parentMenu.insertItem(mopItem);
             });
 
             return this.mopMenu.then(function () {
@@ -58,28 +65,28 @@ var Extension = exports.Extension = Montage.create(Extension, {
         }
     },
 
-    deactivate: {
-        value: function (application, projectController) {
+    deactivate:{
+        value:function (application, projectController) {
             var self = this;
 
-            return Promise.all([this.toolsMenu, this.mopMenu]).spread(function (toolsMenu, mopMenu) {
-                return toolsMenu.removeItem(mopMenu).then(function () {
-                    if (toolsMenu.items.length === 0) {
-                        return defaultMenu.removeItem(toolsMenu);
+            return Promise.all([this.parentMenu, this.mopMenu]).spread(function (parentMenu, mopMenu) {
+                return parentMenu.removeItem(mopMenu).then(function () {
+                    if (parentMenu.items.length === 0) {
+                        return defaultMenu.removeItem(parentMenu);
                     }
                 });
             }).then(function () {
-                self.toolsMenu = null;
-                self.mopMenu = null;
-                self.application = null;
-                self.projectController = null;
-                return self;
-            });
+                    self.parentMenu = null;
+                    self.mopMenu = null;
+                    self.application = null;
+                    self.projectController = null;
+                    return self;
+                });
         }
     },
 
-    optimize: {
-        value: function () {
+    optimize:{
+        value:function () {
             var self = this,
                 projectController = this.projectController,
                 bridge = projectController.environmentBridge,
@@ -91,28 +98,28 @@ var Extension = exports.Extension = Montage.create(Extension, {
             var deferred = Promise.defer();
 
             mop.invoke("optimize", location, {
-                out: {
-                    status: Promise.master(function () {
+                out:{
+                    status:Promise.master(function () {
                         deferred.notify(slice.call(arguments).join(" "));
                     })
                 }
             }).then(deferred.resolve, function (err) {
-                console.error(err.stack);
-                deferred.reject(err);
-            });
+                    console.error(err.stack);
+                    deferred.reject(err);
+                });
 
             this.dispatchEventNamed("asyncActivity", true, false, {
-                promise: deferred.promise,
-                title: "Mop",
-                status: projectController.packageUrl
+                promise:deferred.promise,
+                title:"Mop",
+                status:projectController.packageUrl
             });
 
             return deferred.promise;
         }
     },
 
-    handleMenuAction: {
-        value: function(event) {
+    handleMenuAction:{
+        value:function (event) {
             if (event.detail.identifier === "mop") {
                 this.optimize();
             }

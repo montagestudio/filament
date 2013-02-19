@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="document-tab.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "documentTab"}
+            }
+        },
+
+        "label": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "label"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.document.title"}
+            }
+        },
+
+        "closeButton": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "element": {"#": "closeButton"}
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
+        }
+    }
+    </script>
+</head>
+<body>
+    <ul>
+        <li data-montage-id="documentTab" class="DocumentTab">
+            <span data-montage-id="label" class="DocumentTab-label"></span>
+            <button data-montage-id="closeButton" class="DocumentTab-close">×</button>
+        </li>
+    </ul>
+</body>
+</html>

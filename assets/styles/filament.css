@@ -25,16 +25,15 @@ body {
 
 /* Scrollbar -------------------------------- */
 
-/*
 ::-webkit-scrollbar {
     -webkit-appearance: none;
-    width: 4px;
+    width: 3px;
     height: 0px;
-    background-color: hsl(0,0%,90%);
+    background-color: hsla(0,0%,0%,.05);
 }
 
 ::-webkit-scrollbar-thumb {
+    border-radius: 3px;
     background-clip: padding-box;
-    background-color: hsl(0,0%,60%);
+    background-color: hsla(0,0%,0%,.2);
 }
-*/

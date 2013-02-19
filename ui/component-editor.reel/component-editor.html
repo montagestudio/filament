@@ -15,7 +15,7 @@
             "owner": {
                 "properties": {
                     "element": {"#": "componentEditor"},
-                    "documentEditorSlot": {"#": "documentEditorSlot"}
+                    "_documentEditorSlot": {"#": "documentEditorSlot"}
                 }
             },
 
@@ -56,6 +56,13 @@
                     "viewController": {"<-": "@owner.viewController"}
                 }
             },
+            
+            "nav": {
+                "prototype": "ui/nav/nav-right.reel",
+                "properties": {
+                    "element": {"#": "nav"}
+                }
+            },
 
             "bindingJig": {
                 "prototype": "ui/binding-jig.reel",
@@ -82,6 +89,7 @@
         </section>
         <aside data-montage-id="configurator" class="palette"></aside>
         <aside data-montage-id="library" class="palette"></aside>
+        <nav data-montage-id="nav"></nav>
     </section>
 
 </body>
