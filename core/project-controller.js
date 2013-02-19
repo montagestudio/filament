@@ -338,9 +338,9 @@ exports.ProjectController = Montage.create(Montage, {
                         self.openDocumentsController.selection = [editingDocument];
                         self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
                         return editingDocument;
-                    }, function() {
-                        //TODO log the error that got us here
+                    }, function(error) {
                         // Something gone wrong revert to the current document
+                        console.log("Could not open the document. reverting to the previous one. ", error);
                         return Promise.resolve(self.currentDocument);
                     });
 
@@ -362,10 +362,10 @@ exports.ProjectController = Montage.create(Montage, {
                         self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
 
                         return editingDocument;
-                    }, function () {
+                    }, function(error) {
                         // Something gone wrong revert to the current document
-                        //TODO log the error that got us here
-                        return Promise.resolve(self.currentDocument);
+                        console.log("Could not open the document. reverting to the previous one. ", error);
+                         return Promise.resolve(self.currentDocument);
                     });
                 }
 
