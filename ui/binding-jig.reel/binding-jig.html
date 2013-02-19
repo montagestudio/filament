@@ -107,7 +107,21 @@
                 }
             ]
         },
-        
+
+        "deleteBindingButton": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "label":"Delete Binding",
+                "element": {"#":"deleteBindingButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
         "BindingJigToggle": {
             "prototype": "montage/ui/button.reel",
             "properties": {
@@ -121,31 +135,29 @@
 <body>
 
     <div data-montage-id="binding-jig" class="BindingJig">
-        
         <menu class="BindingJig-tabs">
             <button id="BindingJigToggle" data-montage-id="BindingJigToggle" class="BindingJig-tabs-tab">Bindings</button>
         </menu>
-        
+
         <div id="BindingJigContent" class="BindingJig-content">
-        
-            <section class="BindingJig-section">
-                SourceObject: <span data-montage-id="sourceObjectIdentifier" class="BindingJig-sourceObject">testObject</span>
-                <button data-montage-id="setSourceObjectButton" class="Button BindingJig-button"></button>
-                Property Path: <input data-montage-id="sourceObjectPropertyPath" class="BindingJig-input" type="text">
-            </section>
-    
-            <section class="BindingJig-section">
-                Bound Object: <span data-montage-id="boundObjectIdentifier" class="BindingJig-sourceObject">test2Object</span>
-                <button data-montage-id="setBoundObjectButton" class="Button BindingJig-button"></button>
-                Property Path: <input data-montage-id="boundObjectPropertyPath" class="BindingJig-input" type="text">
-            </section>
-    
-            <section class="BindingJig-section">
-                OneWay: <input data-montage-id="oneWayBindingCheckbox" class="BindingJig-checkbox" type="checkbox">
-                <button data-montage-id="defineBindingButton" class="Button Button--action BindingJig-button"></button>
-            </section>
-        
-        </div>
+
+        <section class="BindingJig-section">
+            SourceObject: <span data-montage-id="sourceObjectIdentifier" class="BindingJig-sourceObject">testObject</span>
+            <button data-montage-id="setSourceObjectButton" class="Button BindingJig-button"></button>
+            Property Path: <input data-montage-id="sourceObjectPropertyPath" class="BindingJig-input" type="text">
+        </section>
+
+        <section class="BindingJig-section">
+            Bound Object: <span data-montage-id="boundObjectIdentifier" class="BindingJig-sourceObject">test2Object</span>
+            <button data-montage-id="setBoundObjectButton" class="Button BindingJig-button"></button>
+            Property Path: <input data-montage-id="boundObjectPropertyPath" class="BindingJig-input" type="text">
+        </section>
+
+        <section class="BindingJig-section">
+            OneWay: <input data-montage-id="oneWayBindingCheckbox" class="BindingJig-checkbox" type="checkbox">
+            <button data-montage-id="defineBindingButton" class="Button Button--action BindingJig-button"></button>
+            <button data-montage-id="deleteBindingButton" class="Button BindingJig-button"></button>
+        </section>
 
     </div>
 
