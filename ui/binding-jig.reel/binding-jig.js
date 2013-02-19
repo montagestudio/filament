@@ -56,7 +56,13 @@ exports.BindingJig = Montage.create(Component, {
 
     handleDefineBindingButtonAction: {
         value: function (evt) {
-            this.editingDocument.defineBinding(this.sourceObject, this.sourceObjectPropertyPath, this.boundObject, this.boundObjectPropertyPath, this.oneWay);
+            this.editingDocument.defineObjectBinding(
+                this.sourceObject,
+                this.sourceObjectPropertyPath,
+                this.boundObject,
+                this.boundObjectPropertyPath,
+                this.oneWay
+            );
         }
     },
     
