@@ -74,9 +74,22 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
+    /**
+     * Asynchronously load the extension package from the specified
+     * extensionUrl, returning a reference to the exported Extension.
+     *
+     * When called as a method on an instance of a ProjectController
+     * the loadedExtension will be added to the instance's
+     * loadedExtensions collection automatically.
+     *
+     * @param {string} extensionUrl The extension package Url to load
+     * @return {Promise} A promise for the exported Extension object
+     */
     loadExtension: {
         enumerable: false,
         value: function (extensionUrl) {
+
+            var self = this;
 
             // TODO npm install?
             return require.loadPackage(extensionUrl).then(function (packageRequire) {
@@ -88,20 +101,36 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                     throw new Error("Malformed extension. Expected '" + extensionUrl + "' to export 'Extension'");
                 }
 
+                if (self.loadedExtensions) {
+                    self.loadedExtensions.push(extension);
+                }
+
                 return extension;
             });
         }
     },
 
+    /**
+     * The collection of all extensions loaded by the projectController.
+     * Note that these are not necessarily active, simply loaded.
+     */
     loadedExtensions: {
         value: null
     },
 
+    /**
+     * The collection of all active extensions
+     */
     activeExtensions: {
         value: null
     },
 
-
+    /**
+     * Asynchronously activate the specified extension
+     *
+     * @param {Extension} extension The extension to activate
+     * @return {Promise} A promise for the activated extension
+     */
     activateExtension: {
         value: function (extension) {
             var activationPromise;
@@ -125,6 +154,12 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
+    /**
+     * Asynchronously deactivate the specified extension
+     *
+     * @param {Extension} extension The extension to deactivate
+     * @return {Promise} A promise for the deactivated extension
+     */
     deactivateExtension: {
         value: function (extension) {
             var deactivationPromise,
@@ -153,6 +188,9 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         value: null
     },
 
+    /**
+     * The environment bridge providing services for the projectController
+     */
     environmentBridge: {
         get: function () {
             return this._environmentBridge;
@@ -176,25 +214,34 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
-    // The url of the package of the open project
+    /**
+     * The url of the package of the open project
+     */
     packageUrl: {
         value: null
     },
 
+    /**
+     * The package description of the open project
+     */
     packageDescription: {
         value: null
     },
 
-    // The ID of the preview being served by our host environment
+    /**
+     * The ID of the preview being served by our host environment
+     */
     previewId: {
         enumerable: false,
         value: null
     },
 
+    // The flat list of files to present in the package explorer
     files: {
         value: null
     },
 
+    // The collection of dependencies for this package
     dependencies: {
         value: null
     },
