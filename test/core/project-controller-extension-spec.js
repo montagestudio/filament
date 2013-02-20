@@ -6,13 +6,17 @@ var Montage = require("montage").Montage,
     Promise = require("montage/core/promise").Promise,
     WAITSFOR_TIMEOUT = 2500;
 
-describe("core/project-controller-spec", function () {
+describe("core/project-controller-extension-spec", function () {
 
-    describe("loading a project controller", function () {
+    describe("loading extensions", function () {
 
     });
 
-    describe("initializaing a project controller", function () {
+    describe("activating extensions", function () {
+
+    });
+
+    describe("deactivating extensions", function () {
 
     });
 

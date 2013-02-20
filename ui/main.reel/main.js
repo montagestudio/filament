@@ -23,21 +23,31 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-    _bridgePromise: {
+    _projectControllerPromise: {
         value: null
     },
 
     didCreate: {
         value: function () {
+            var bridgePromise,
+                self = this;
+
             if (IS_IN_LUMIERES) {
-                this._bridgePromise = require.async("core/lumieres-bridge").then(function (exported) {
+                bridgePromise = require.async("core/lumieres-bridge").then(function (exported) {
                     return Promise.resolve(exported.LumiereBridge.create());
                 });
             } else {
-                this._bridgePromise = require.async("core/browser-bridge").then(function (exported) {
+                bridgePromise = require.async("core/browser-bridge").then(function (exported) {
                     return Promise.resolve(exported.BrowserBridge.create());
                 });
             }
+
+            this._projectControllerPromise = bridgePromise.then(function (environmentBridge) {
+                self.viewController = ViewController.create();
+                return ProjectController.load(environmentBridge, self.viewController);
+            });
+
+            return this._projectControllerPromise;
         }
     },
 
@@ -53,10 +63,17 @@ exports.Main = Montage.create(Component, {
 
             this.application.addEventListener("asyncActivity", this, false);
 
-            this._bridgePromise.then(function (environmentBridge) {
-                self.viewController = ViewController.create();
-                self.projectController = ProjectController.create().init(environmentBridge, self.viewController);
-                self.projectController.addEventListener("canLoadProject", self, false);
+            this._projectControllerPromise.then(function (projectController) {
+                self.projectController = projectController;
+
+                var projectUrl = self.projectController.projectUrl;
+
+                if (projectUrl) {
+                    self.projectController.loadProject(projectUrl).done();
+                } else {
+                    self.projectController.createApplication();
+                }
+
                 self.projectController.addEventListener("didOpenPackage", self, false);
 
                 window.addEventListener("didBecomeKey", function () {
@@ -95,21 +112,7 @@ exports.Main = Montage.create(Component, {
                 self.viewController.registerEditorTypeForFileTypeMatcher(ComponentEditor, function (fileUrl) {
                     return (/\.reel\/?$/).test(fileUrl);
                 });
-
             }).done();
-        }
-    },
-
-    handleCanLoadProject: {
-        enumerable: false,
-        value: function () {
-            var projectUrl = this.projectController.projectUrl;
-
-            if (projectUrl) {
-                this.projectController.loadProject(projectUrl).done();
-            } else {
-                this.projectController.createApplication();
-            }
         }
     },
 
@@ -300,10 +303,13 @@ exports.Main = Montage.create(Component, {
     handleMenuAction: {
         enumerable: false,
         value: function (evt) {
-            if ("newComponent" === evt.detail.identifier) {
-                this.projectController.createComponent().done();
-            } else if ("newModule" === evt.detail.identifier) {
-                this.projectController.createModule().done();
+            switch (evt.detail.identifier) {
+                case "newComponent":
+                    this.projectController.createComponent().done();
+                    break;
+                case "newModule":
+                    this.projectController.createModule().done();
+                    break;
             }
         }
     },

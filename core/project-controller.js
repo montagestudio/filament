@@ -3,52 +3,72 @@ var Montage = require("montage/core/core").Montage,
     LibraryItem = require("filament-extension/core/library-item.js").LibraryItem,
     Deserializer = require("montage/core/serialization").Deserializer,
     findObjectNameRegExp = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver._findObjectNameRegExp,
-    ContentController = require("montage/core/content-controller").ContentController;
+    ContentController = require("montage/core/content-controller").ContentController,
+    ProjectController;
 
-exports.ProjectController = Montage.create(Montage, {
+exports.ProjectController = ProjectController = Montage.create(Montage, {
 
-    init: {
+    /**
+     * Asynchronously create a ProjectController, loading all the available extensions found by the
+     * specified environment bridge.
+     *
+     * @param {EnvironmentBridge} bridge An environment bridge that normalizes different environment features
+     * @param {ViewController} viewController A controller that manages registration of views that can appear through filament
+     * @return {Promise} A promise for a ProjectController
+     */
+    load: {
         value: function (bridge, viewController) {
+
+            var self = this;
+            return bridge.availableExtensions.then(function (extensionUrls) {
+
+                return Promise.all(extensionUrls.map(function (url) {
+                    return self.loadExtension(url);
+                }));
+
+            }).then(function (extensions) {
+                return ProjectController.create().init(bridge, viewController, extensions);
+            });
+        }
+    },
+
+    /**
+     * Initialize a ProjectController
+     *
+     * @param {EnvironmentBridge} bridge An environment bridge that normalizes different environment features
+     * @param {ViewController} viewController A controller that manages registration of views that can appear through filament
+     * @param {array} extensions A collection of extension objects to make available to this instance of the projectController
+     * @return {ProjectController} An initialized instance of a ProjectController
+     */
+    init: {
+        value: function (bridge, viewController, extensions) {
+            bridge.setDocumentDirtyState(false);
+
+            var self = this,
+                application = document.application;
+
             this._environmentBridge = bridge;
             this._viewController = viewController;
-            this.openDocumentsController = ContentController.create().initWithContent([]);
-
-            this.openDocumentsController.addRangeAtPathChangeListener("selection", this, "openDocumentsSelection");
-
-            this.loadedExtensions = [];
-            this.activeExtensions = [];
             this.moduleLibraryItemMap = {};
             this.packageNameLibraryItemsMap = {};
 
-            bridge.setDocumentDirtyState(false);
-            this.setupMenuItems();
+            this.loadedExtensions = extensions;
+            this.activeExtensions = [];
 
-            var self = this,
-                application = document.application,
-                deferredEditor = Promise.defer();
+            //TODO only activate some extensions…
+            if (extensions) {
+                extensions.forEach(function (extension) {
+                    self.activateExtension(extension);
+                });
+            }
+
+            this.openDocumentsController = ContentController.create().initWithContent([]);
+            this.openDocumentsController.addRangeAtPathChangeListener("selection", this, "openDocumentsSelection");
+
+            this.setupMenuItems();
 
             application.addEventListener("activateExtension", this);
             application.addEventListener("deactivateExtension", this);
-
-            application.addEventListener("canLoadReel", function () {
-                deferredEditor.resolve(true);
-            });
-            //TODO timeout the promise in some reasonable window
-
-            // discover available extensions as soon as possible,
-            // subsequent activity may rely on us knowing them
-            this._extensionPromise = this.environmentBridge.availableExtensions
-                .then(function (extensionUrls) {
-                    return self.loadExtensions(extensionUrls);
-                }).then(function (extensions) {
-                    extensions.forEach(function (extension) {
-                        self.activateExtension(extension); //TODO is the extension is supposed to be activated based on user preferences?
-                    });
-                });
-
-            Promise.all([this._extensionPromise, deferredEditor]).then(function () {
-                self.dispatchEventNamed("canLoadProject", true, false);
-            }).done();
 
             this.addOwnPropertyChangeListener("currentDocument.undoManager.undoLabel", this);
             this.addOwnPropertyChangeListener("currentDocument.undoManager.redoLabel", this);
@@ -58,34 +78,22 @@ exports.ProjectController = Montage.create(Montage, {
         }
     },
 
-    loadExtensions: {
-        enumerable: false,
-        //TODO accept a single extension as well
-        value: function (extensionUrls) {
-            var self = this;
-
-            return Promise.all(extensionUrls.map(function (url) {
-                // TODO npm install?
-                return require.loadPackage(url).then(function (packageRequire) {
-                    return packageRequire.async("extension");
-                }).then(function (exports) {
-                    return self.loadExtension(exports);
-                });
-            }));
-        }
-    },
-
     loadExtension: {
         enumerable: false,
-        value: function (extensionModule) {
-            var extension = extensionModule.Extension;
+        value: function (extensionUrl) {
 
-            if (!extension) {
-                throw new Error("Malformed extension. Expected '" + extensionModule + "' to export 'Extension'");
-            }
+            // TODO npm install?
+            return require.loadPackage(extensionUrl).then(function (packageRequire) {
+                return packageRequire.async("extension");
+            }).then(function (exports) {
+                var extension = exports.Extension;
 
-            this.loadedExtensions.add(extension);
-            return extension;
+                if (!extension) {
+                    throw new Error("Malformed extension. Expected '" + extensionUrl + "' to export 'Extension'");
+                }
+
+                return extension;
+            });
         }
     },
 
@@ -215,11 +223,10 @@ exports.ProjectController = Montage.create(Montage, {
         value: function (url) {
             var self = this;
 
-            return this._extensionPromise.then(function () {
-                return self.environmentBridge.projectInfo(url);
-            }).then(function (projectInfo) {
-                return self.openProject(projectInfo);
-            });
+            return self.environmentBridge.projectInfo(url)
+                .then(function (projectInfo) {
+                    return self.openProject(projectInfo);
+                });
         }
     },
 
