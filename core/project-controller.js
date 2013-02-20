@@ -44,8 +44,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         value: function (bridge, viewController, extensions) {
             bridge.setDocumentDirtyState(false);
 
-            var self = this,
-                application = document.application;
+            var self = this;
 
             this._environmentBridge = bridge;
             this._viewController = viewController;
@@ -66,9 +65,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
             this.openDocumentsController.addRangeAtPathChangeListener("selection", this, "openDocumentsSelection");
 
             this.setupMenuItems();
-
-            application.addEventListener("activateExtension", this);
-            application.addEventListener("deactivateExtension", this);
 
             this.addOwnPropertyChangeListener("currentDocument.undoManager.undoLabel", this);
             this.addOwnPropertyChangeListener("currentDocument.undoManager.redoLabel", this);
@@ -105,11 +101,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         value: null
     },
 
-    handleActivateExtension: {
-        value: function (evt) {
-            this.activateExtension(evt.detail).done();
-        }
-    },
 
     activateExtension: {
         value: function (extension) {
@@ -131,12 +122,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
             }
 
             return activationPromise;
-        }
-    },
-
-    handleDeactivateExtension: {
-        value: function (evt) {
-            this.deactivateExtension(evt.detail).done();
         }
     },
 

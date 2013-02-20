@@ -66,7 +66,8 @@ exports.Main = Montage.create(Component, {
             this._projectControllerPromise.then(function (projectController) {
                 self.projectController = projectController;
 
-                var projectUrl = self.projectController.projectUrl;
+                var projectUrl = self.projectController.projectUrl,
+                    app = self.application;
 
                 if (projectUrl) {
                     self.projectController.loadProject(projectUrl).done();
@@ -107,7 +108,9 @@ exports.Main = Montage.create(Component, {
                     self.projectController.redo();
                 }, true);
 
-                self.application.addEventListener("menuAction", self, false);
+                app.addEventListener("menuAction", self, false);
+                app.addEventListener("activateExtension", this);
+                app.addEventListener("deactivateExtension", this);
 
                 self.viewController.registerEditorTypeForFileTypeMatcher(ComponentEditor, function (fileUrl) {
                     return (/\.reel\/?$/).test(fileUrl);
@@ -142,6 +145,18 @@ exports.Main = Montage.create(Component, {
             // Update title
             // TODO this should be unnecessary as the packageUrl has been changed...
             this.needsDraw = true;
+        }
+    },
+
+    handleActivateExtension: {
+        value: function (evt) {
+            this.projectController.activateExtension(evt.detail).done();
+        }
+    },
+
+    handleDeactivateExtension: {
+        value: function (evt) {
+            this.projectController.deactivateExtension(evt.detail).done();
         }
     },
 
