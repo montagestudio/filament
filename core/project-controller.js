@@ -66,6 +66,12 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
 
             this.setupMenuItems();
 
+            //TODO get rid of this once we have property dependencies
+            this.addOwnPropertyChangeListener("packageUrl", this, true);
+            this.addOwnPropertyChangeListener("packageUrl", this, false);
+            this.addOwnPropertyChangeListener("_windowIsKey", this, true);
+            this.addOwnPropertyChangeListener("_windowIsKey", this, false);
+
             this.addOwnPropertyChangeListener("currentDocument.undoManager.undoLabel", this);
             this.addOwnPropertyChangeListener("currentDocument.undoManager.redoLabel", this);
             this.addOwnPropertyChangeListener("currentDocument.undoManager.undoCount", this);
@@ -846,8 +852,35 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
+    //TODO get rid of this when we get property dependencies
+    handlePackageUrlWillChange: {
+        value: function (notification) {
+            this.dispatchBeforeOwnPropertyChange("canEdit", this.canEdit);
+        }
+    },
+
+    //TODO get rid of this when we get property dependencies
+    handlePackageUrlChange: {
+        value: function (notification) {
+            this.dispatchOwnPropertyChange("canEdit", this.canEdit);
+        }
+    },
+
+    //TODO get rid of this when we get property dependencies
+    handle_windowIsKeyWillChange: {
+        value: function (notification) {
+            this.dispatchBeforeOwnPropertyChange("canEdit", this.canEdit);
+        }
+    },
+
+    //TODO get rid of this when we get property dependencies
+    handle_windowIsKeyChange: {
+        value: function (notification) {
+            this.dispatchOwnPropertyChange("canEdit", this.canEdit);
+        }
+    },
+
     canEdit: {
-        dependencies: ["_windowIsKey", "packageUrl"],
         get: function () {
             return !!(this._windowIsKey && this.packageUrl);
         }
