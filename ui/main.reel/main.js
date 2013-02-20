@@ -43,8 +43,28 @@ exports.Main = Montage.create(Component, {
             }
 
             this._projectControllerPromise = bridgePromise.then(function (environmentBridge) {
+                var projectUrl = environmentBridge.projectUrl;
+
                 self.viewController = ViewController.create();
-                return ProjectController.load(environmentBridge, self.viewController);
+
+                // Add ComponentEditor for handling .reel files
+                self.viewController.registerEditorTypeForFileTypeMatcher(ComponentEditor, function (fileUrl) {
+                    return (/\.reel\/?$/).test(fileUrl);
+                });
+
+                return ProjectController.load(environmentBridge, self.viewController).then(function (projectController) {
+
+                    self.projectController = projectController;
+                    projectController.addEventListener("didOpenPackage", self, false);
+
+                    if (projectUrl) {
+                        projectController.loadProject(projectUrl).done();
+                    } else {
+                        projectController.createApplication();
+                    }
+
+                    return projectController;
+                });
             });
 
             return this._projectControllerPromise;
@@ -64,18 +84,8 @@ exports.Main = Montage.create(Component, {
             this.application.addEventListener("asyncActivity", this, false);
 
             this._projectControllerPromise.then(function (projectController) {
-                self.projectController = projectController;
 
-                var projectUrl = self.projectController.projectUrl,
-                    app = self.application;
-
-                if (projectUrl) {
-                    self.projectController.loadProject(projectUrl).done();
-                } else {
-                    self.projectController.createApplication();
-                }
-
-                self.projectController.addEventListener("didOpenPackage", self, false);
+                var app = self.application;
 
                 window.addEventListener("didBecomeKey", function () {
                     self.projectController.didBecomeKey();
@@ -112,9 +122,6 @@ exports.Main = Montage.create(Component, {
                 app.addEventListener("activateExtension", this);
                 app.addEventListener("deactivateExtension", this);
 
-                self.viewController.registerEditorTypeForFileTypeMatcher(ComponentEditor, function (fileUrl) {
-                    return (/\.reel\/?$/).test(fileUrl);
-                });
             }).done();
         }
     },

@@ -163,16 +163,16 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         value: null
     },
 
-    _extensionPromise: {
+    _projectUrl: {
         value: null
     },
 
-    // The project url as provided by the environment
-    // Typically, if a url is provided by the environment this would be the url
-    // to try and load.
+    /**
+     * The url of the project this projectController is meant to open
+     */
     projectUrl: {
         get: function () {
-            return this.environmentBridge.projectUrl;
+            return this._projectUrl;
         }
     },
 
@@ -204,9 +204,19 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         value: null
     },
 
+    /**
+     * Asynchronously load the project at the specified url
+     *
+     * @param {string} url The url of the file to attempt to open
+     * @return {Promise} A promise for the project's loaded status
+     */
     loadProject: {
         value: function (url) {
             var self = this;
+
+            //TODO what if this is called multiple times?
+
+            this._projectUrl = url;
 
             return self.environmentBridge.projectInfo(url)
                 .then(function (projectInfo) {
