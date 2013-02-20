@@ -1,13 +1,28 @@
 
 .PackageExplorer .Panel-title {
-    border-right: 1px solid hsl(0, 0%, 75%);
+    padding: 12px 8px 0 8px;
+    border-right: 1px solid hsla(0,0%,0%,.2);
+    height: 64px;
 }
 
-.PackageExplorer .Panel-title h2 {
-    display: inline-block;
+.PackageExplorer .Panel-title-name {
     margin: 0;
     padding: 0;
+    color: hsl(0,0%,30%);
+    font-family: Titillium Web, Open Sans, sans-serif;
+    font-size: 24px;
+    line-height: 16px;
 }
+
+.PackageExplorer .Panel-title-version {
+   color: hsl(0,0%,70%);
+   font-size: 11px;
+}
+
+.PackageExplorer .Panel-shadow {
+    top: 64px;
+}
+
 
 .Panel-title.PackageExplorer-bar {
     height: 92px;

@@ -83,18 +83,18 @@
 <body>
 
     <div data-montage-id="package-explorer" class="Panel PackageExplorer">
-        <div class="Panel-title">
-            <h2 data-montage-id="packageName"></h2>
-            <span data-montage-id="packageVersion"></span>
-        </div>
+        <header class="Panel-title">
+            <h2 data-montage-id="packageName" class="Panel-title-name"></h2>
+            <span data-montage-id="packageVersion" class="Panel-title-version"></span>
+        </header>
         <ul data-montage-id="fileList" class="Panel-content List PackageExplorer-list">
             <li data-montage-id="file-cell"></li>
         </ul>
         <div class="Panel-shadow"></div>
-        <div class="Panel-title PackageExplorer-bar">
+        <footer class="Panel-title PackageExplorer-bar">
             <button data-montage-id="add-file-button" class="Button">Add Component…</button>
             <button data-montage-id="add-module-button" class="Button">Add Module…</button>
-        </div>
+        </footer>
     </div>
 
 </body>
