@@ -22,7 +22,8 @@
     },
     "devDependencies": {
         "jasmine-node": "1.2.2",
-        "sandboxed-module": "0.1.4"
+        "sandboxed-module": "0.1.4",
+        "montage-testing": "~0.1.1"
     },
     "mappings": {
         "filament-extension": {
