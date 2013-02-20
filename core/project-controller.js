@@ -393,7 +393,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                         self.openDocumentsController.selection = [editingDocument];
                         self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
                         return editingDocument;
-                    }, function(error) {
+                    }, function (error) {
                         // Something gone wrong revert to the current document
                         console.log("Could not open the document. reverting to the previous one. ", error);
                         return Promise.resolve(self.currentDocument);
@@ -417,10 +417,10 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                         self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
 
                         return editingDocument;
-                    }, function(error) {
+                    }, function (error) {
                         // Something gone wrong revert to the current document
                         console.log("Could not open the document. reverting to the previous one. ", error);
-                         return Promise.resolve(self.currentDocument);
+                        return Promise.resolve(self.currentDocument);
                     });
                 }
 
@@ -443,12 +443,13 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
     handlePropertyChange: {
         value: function (notification) {
 
-            var currentPropertyPath = notification.currentPropertyPath;
+            var currentPropertyPath = notification.currentPropertyPath,
+                undoCount;
             if ("currentDocument.undoManager.undoLabel" === currentPropertyPath ||
                        "currentDocument.undoManager.redoLabel" === currentPropertyPath) {
                 this.updateUndoMenus();
             } else if ("currentDocument.undoManager.undoCount" === currentPropertyPath) {
-                var undoCount = this.getPath(currentPropertyPath);
+                undoCount = this.getPath(currentPropertyPath);
                 //Dirty if we have a document and there things to undo
                 this.environmentBridge.setDocumentDirtyState(null != undoCount && undoCount > 0);
             }
@@ -465,8 +466,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                 docIndex,
                 nextDocIndex,
                 nextDoc,
-                nextEditor,
-                editor;
+                nextEditor;
 
             if (this.currentDocument && fileUrl === this.currentDocument.fileUrl) {
 
@@ -707,24 +707,29 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
     save: {
         value: function () {
 
-            if (!this.currentDocument) {
-                return;
-            }
-
             if (!this.environmentBridge) {
                 throw new Error("Cannot save without an environment bridge");
             }
 
-            this.dispatchEventNamed("willSave", true, false);
+            var savePromise,
+                self = this;
 
-            //TODO use either the url specified (save as), or the currentDoc's fileUrl
-            //TODO improve this, we're reaching deeper than I'd like to find the fileUrl
-            var self = this;
-            return this.environmentBridge.save(this.currentDocument, this.currentDocument.fileUrl).then(function () {
-                self.environmentBridge.setDocumentDirtyState(false);
-                self.refreshPreview().done();
-                return self.currentDocument.fileUrl;
-            });
+            if (!this.currentDocument) {
+                savePromise = Promise.resolve(null);
+            } else {
+
+                this.dispatchEventNamed("willSave", true, false);
+
+                //TODO use either the url specified (save as), or the currentDoc's fileUrl
+                //TODO improve this, we're reaching deeper than I'd like to find the fileUrl
+                savePromise = this.environmentBridge.save(this.currentDocument, this.currentDocument.fileUrl).then(function () {
+                    self.environmentBridge.setDocumentDirtyState(false);
+                    self.refreshPreview().done();
+                    return self.currentDocument.fileUrl;
+                });
+            }
+
+            return savePromise;
         }
     },
 
@@ -735,10 +740,8 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                     prefix : this.environmentBridge.convertBackendUrlToPath(this.packageUrl)
                 };
 
-            this._isInstallingDependencies = true;
             this.environmentBridge.installDependencies(config).then(function () {
                 //TODO update this.dependencies, they've possibly changed
-                self._isInstallingDependencies = false;
                 self.populateLibrary().done();
             }).done();
         }
@@ -762,9 +765,8 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                 destination = destination.replace(/\/$/, "");
                 var destinationDividerIndex = destination.lastIndexOf("/"),
                     appName = destination.substring(destinationDividerIndex + 1),
-                    packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", "");
-
-                var promise = self.environmentBridge.createApplication(appName, packageHome);
+                    packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", ""),
+                    promise = self.environmentBridge.createApplication(appName, packageHome);
 
                 this.dispatchEventNamed("asyncActivity", true, false, {
                     promise: promise,
@@ -791,48 +793,44 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                     defaultDirectory: "file://localhost" + packagePath + "/" + subdirectory,
                     defaultName: "my-" + thing, // TODO localize
                     prompt: "Create" //TODO localize
-                },
-                self = this;
+                };
 
             return this.environmentBridge.promptForSave(options)
-            .then(function (destination) {
-                if (!destination) {
-                    return null;
-                }
-                // remove traling slash
-                destination = destination.replace(/\/$/, "");
-                var destinationDividerIndex = destination.lastIndexOf("/"),
-                    name = destination.substring(destinationDividerIndex + 1),
-                    //TODO complain if packageHome does not match this.packageUrl?
-                    packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", ""),
-                    relativeDestination = destination.substring(0, destinationDividerIndex).replace(packageHome, "").replace(/^\//, "");
+                .then(function (destination) {
+                    if (!destination) {
+                        return null;
+                    }
+                    // remove trailing slash
+                    destination = destination.replace(/\/$/, "");
+                    var destinationDividerIndex = destination.lastIndexOf("/"),
+                        name = destination.substring(destinationDividerIndex + 1),
+                        //TODO complain if packageHome does not match this.packageUrl?
+                        packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", ""),
+                        relativeDestination = destination.substring(0, destinationDividerIndex).replace(packageHome, "").replace(/^\//, ""),
+                        promise = fn(name, packageHome, relativeDestination);
 
-                var promise = fn(name, packageHome, relativeDestination);
+                    this.dispatchEventNamed("asyncActivity", true, false, {
+                        promise: promise,
+                        title: "Create " + thing, // TODO localize
+                        status: destination
+                    });
 
-                this.dispatchEventNamed("asyncActivity", true, false, {
-                    promise: promise,
-                    title: "Create " + thing, // TODO localize
-                    status: destination
+                    return promise;
                 });
-
-                return promise;
-            });
         }
     },
 
     createComponent: {
         value: function () {
             return this._create("component", "ui",
-                this.environmentBridge.createComponent.bind(this.environmentBridge)
-            );
+                this.environmentBridge.createComponent.bind(this.environmentBridge));
         }
     },
 
     createModule: {
         value: function () {
             return this._create("module", "core",
-                this.environmentBridge.createModule.bind(this.environmentBridge)
-            );
+                this.environmentBridge.createModule.bind(this.environmentBridge));
         }
     },
 
@@ -890,8 +888,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         enumerable: false,
         value: function () {
 
-            var newComponentMenuItem,
-                self = this;
+            var self = this;
 
             this.environmentBridge.mainMenu.then(function (mainMenu) {
 
