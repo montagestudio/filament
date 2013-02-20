@@ -215,11 +215,11 @@ exports.ProjectController = Montage.create(Montage, {
         value: function (url) {
             var self = this;
 
-            this._extensionPromise.then(function () {
+            return this._extensionPromise.then(function () {
                 return self.environmentBridge.projectInfo(url);
             }).then(function (projectInfo) {
-                self.openProject(projectInfo);
-            }).done();
+                return self.openProject(projectInfo);
+            });
         }
     },
 
@@ -248,7 +248,7 @@ exports.ProjectController = Montage.create(Montage, {
 
             this.watchForFileChanges();
 
-            Promise.all([this.populateFiles(), this.populateLibrary()])
+            return Promise.all([this.populateFiles(), this.populateLibrary()])
                 .then(function () {
                     self.dispatchEventNamed("didOpenPackage", true, false, {
                         packageUrl: self.packageUrl
@@ -262,7 +262,8 @@ exports.ProjectController = Montage.create(Montage, {
                         return self.launchPreview();
                     }).done();
 
-                }).done();
+                    return true;
+                });
         }
     },
 
