@@ -5,7 +5,7 @@ var Montage = require("montage").Montage,
     EditingDocument = require("palette/core/editing-document").EditingDocument,
     BlueprintProxy = require("./blueprint-proxy").BlueprintProxy,
     Serializer = require("montage/core/serialization").Serializer,
-    MontageRevivier = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver;
+    MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver;
 
 var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocument, {
 
@@ -46,12 +46,16 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
     init:{
         value:function (fileUrl, packageRequire, currentObject, isBlueprint) {
             var self = EditingDocument.init.call(this, fileUrl, packageRequire);
-            this.dispatchPropertyChange("currentProxyObject", function () {
-                self._currentProxyObject = BlueprintProxy.create().init("blueprint", self, currentObject);
-            });
-            this.dispatchPropertyChange("isBlueprint", function () {
-                self._isBlueprint = isBlueprint;
-            });
+
+            var proxy = BlueprintProxy.create().init("blueprint", self, currentObject);
+            self.dispatchBeforeOwnPropertyChange("currentProxyObject", self._currentProxyObject);
+            self._currentProxyObject = proxy;
+            self.dispatchOwnPropertyChange("currentProxyObject", proxy);
+
+            self.dispatchBeforeOwnPropertyChange("isBlueprint", self._isBlueprint);
+            self._isBlueprint = isBlueprint;
+            self.dispatchOwnPropertyChange("isBlueprint", isBlueprint);
+
             self._packageRequire = packageRequire;
             return self;
         }

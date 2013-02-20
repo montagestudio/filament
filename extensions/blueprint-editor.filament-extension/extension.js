@@ -117,8 +117,6 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
         value:function (evt) {
             var location = this.projectController.currentDocument.fileUrl;
             var filenameMatch = location.match(/.+\/(.+)\.reel/);
-            var menuEnabled = (filenameMatch && filenameMatch[1]);
-            console.log("handleDidEnterDocument enable " + menuEnabled, evt.type, evt.detail);
             this.blueprintMenu.then(function (menuItem) {
                 if (filenameMatch && filenameMatch[1]) {
                     menuItem.enabled = true;
