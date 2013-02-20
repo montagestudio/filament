@@ -10,34 +10,48 @@
 .BindingJig-tabs {
     margin: 0;
     padding: 0;
-    border-top: 1px solid hsla(0,0%,0%,.05);
-    border-bottom: 1px solid hsla(0,0%,0%,.12);
-    background: -webkit-linear-gradient(top, hsl(0,0%,98%), hsl(0,0%,94%));
+    border-top: 1px solid hsla(0,0%,0%,.2);
+    border-bottom: 1px solid hsla(0,0%,0%,.6);
+    background: -webkit-linear-gradient(top, hsl(0,0%,30%), hsl(0,0%,20%));
 }
 
 .BindingJig-tabs .BindingJig-tabs-tab {
+    position: relative;
     margin: 0;
-    height: 30px;
-    color: hsl(0,0%,30%);
-    text-shadow: 0 1px 0 hsla(0,0%,100%,.6);
+    height: 32px;
+    color: hsl(0,0%,60%);
+    text-shadow: 0 1px 0 hsla(0,0%,0%,.4);
     border-radius: 0;
-    border-top: 1px solid hsla(0,0%,100%,.8);
-    border-left: 1px solid hsla(0,0%,100%,.6);
-    border-right: 1px solid hsla(0,0%,0%,.05);
-    border-bottom: none;
+    border: none;
+    border-left: 1px solid hsla(0,0%,100%,.1);
+    border-right: 1px solid hsla(0,0%,0%,.1);
     background: transparent;
     cursor: pointer;
 }
 
 .BindingJig-tabs .BindingJig-tabs-tab:hover {
-    background: hsla(0,0%,100%,.2);
+    color: hsl(0,0%,60%);
+    background: hsla(0,0%,100%,.06);
 }
 
 .BindingJig-tabs .BindingJig-tabs-tab:active,
 .BindingJig-tabs .BindingJig-tabs-tab.selected {
-    background: hsl(0,0%,90%);
+    color: hsl(0,0%,80%);
+    background: hsl(0,0%,18%);
     border-top: 1px solid hsla(0,0%,100%,0);
     border-left: 1px solid hsla(0,0%,100%,0);
+}
+
+.BindingJig-tabs .BindingJig-tabs-tab.selected:after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -3px;
+    margin: 0 0 -5px -5px;
+    width: 10px;
+    height: 10px;
+    background-color: hsl(0,0%,90%);
+    -webkit-transform: rotate(45deg);
 }
 
 
