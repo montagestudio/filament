@@ -86,7 +86,7 @@
     margin: 0;
     padding: 0;
     font-size: 0;
-    background: hsl(0,0%,30%);
+    background-image: -webkit-linear-gradient(top, hsl(0,0%,30%), hsl(0,0%,20%) );
 }
 
 

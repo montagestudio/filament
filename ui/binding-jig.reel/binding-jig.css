@@ -10,9 +10,7 @@
 .BindingJig-tabs {
     margin: 0;
     padding: 0;
-    border-top: 1px solid hsla(0,0%,0%,.2);
-    border-bottom: 1px solid hsla(0,0%,0%,.6);
-    background: -webkit-linear-gradient(top, hsl(0,0%,30%), hsl(0,0%,20%));
+    background: -webkit-linear-gradient(top, hsl(0,0%,20%), hsl(0,0%,26%));
 }
 
 .BindingJig-tabs .BindingJig-tabs-tab {
@@ -20,7 +18,7 @@
     margin: 0;
     height: 32px;
     color: hsl(0,0%,60%);
-    text-shadow: 0 1px 0 hsla(0,0%,0%,.4);
+    text-shadow: 0 1px 0 hsla(0,0%,0%,.2);
     border-radius: 0;
     border: none;
     border-left: 1px solid hsla(0,0%,100%,.1);
