@@ -273,26 +273,33 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
 
             return self.environmentBridge.projectInfo(url)
                 .then(function (projectInfo) {
-                    return self.openProject(projectInfo);
+                    return self._openProject(projectInfo.packageUrl, projectInfo.dependencies);
                 });
         }
     },
 
-    // TODO define projectInfo contract
-    openProject: {
+    _fileUrlEditorMap: {
+        value: null
+    },
+
+    _fileUrlDocumentMap: {
+        value: null
+    },
+
+    _openProject: {
         enumerable: false,
-        value: function (projectInfo) {
+        value: function (packageUrl, dependencies) {
             var self = this;
 
             this._fileUrlEditorMap = {};
             this._fileUrlDocumentMap = {};
 
             this.dispatchEventNamed("willOpenPackage", true, false, {
-                packageUrl: projectInfo.packageUrl
+                packageUrl: packageUrl
             });
 
-            this.packageUrl = projectInfo.packageUrl;
-            this.dependencies = projectInfo.dependencies;
+            this.packageUrl = packageUrl;
+            this.dependencies = dependencies;
 
             require.loadPackage(this.packageUrl).then(function (packageRequire) {
                 self.packageDescription = packageRequire.packageDescription;
@@ -357,14 +364,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                 self.dispatchEventNamed("didUnregisterPreview", true, false);
             });
         }
-    },
-
-    _fileUrlEditorMap: {
-        value: null
-    },
-
-    _fileUrlDocumentMap: {
-        value: null
     },
 
     openFileUrlInEditor: {
