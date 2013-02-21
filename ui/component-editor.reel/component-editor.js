@@ -28,10 +28,6 @@ exports.ComponentEditor = Montage.create(Component, {
         value: null
     },
 
-    _fileUrlEditorPromiseMap: {
-        value: null
-    },
-
     _fileUrlEditorMap: {
         value: null
     },
@@ -44,8 +40,8 @@ exports.ComponentEditor = Montage.create(Component, {
         value: function () {
             this._editorsToInsert = [];
             this._editorsToRemove = [];
+            this._openEditors = [];
             this._editorDeferredCloseMap = new WeakMap();
-            this._fileUrlEditorPromiseMap = {};
             this._fileUrlEditorMap = {};
             this._fileUrlDocumentMap = {};
         }
@@ -53,55 +49,34 @@ exports.ComponentEditor = Montage.create(Component, {
 
     load: {
         value: function (fileUrl, packageUrl) {
-            var documentEditorPromise = this._fileUrlEditorPromiseMap[fileUrl],
-                deferredEditor,
-                newEditor,
-                editorFirstDrawHandler,
-                editingDocument,
-                editingDocumentPromise,
+            var docEditor = this._fileUrlEditorMap[fileUrl],
                 self = this;
 
-            if (!documentEditorPromise) {
-                deferredEditor = Promise.defer();
-                documentEditorPromise = deferredEditor.promise;
-                this._fileUrlEditorPromiseMap[fileUrl] = documentEditorPromise;
+            if (!docEditor) {
+                docEditor = DocumentEditor.create();
+                this._fileUrlEditorMap[fileUrl] = docEditor;
 
-                newEditor = DocumentEditor.create();
-                this._editorsToInsert.push(newEditor);
-
-                editorFirstDrawHandler = function (evt) {
-                    var editor = evt.target;
-                    editor.removeEventListener("firstDraw", editorFirstDrawHandler, false);
-
-                    self._fileUrlEditorMap[fileUrl] = editor;
-                    deferredEditor.resolve(editor);
-                };
-
-                newEditor.addEventListener("firstDraw", editorFirstDrawHandler, false);
-                this.needsDraw = true;
+                this._editorsToInsert.push(docEditor);
+                this._openEditors.push(docEditor);
             }
 
-            return documentEditorPromise.then(function (editor) {
+            this._currentEditor = docEditor;
+            this.needsDraw = true;
 
-                editingDocument = self._fileUrlDocumentMap[fileUrl];
-
-                if (editingDocument) {
-                    editingDocumentPromise = Promise.resolve(editingDocument);
-                } else {
-                    editingDocumentPromise = editor.load(fileUrl, packageUrl).then(function (editingDoc) {
-                        self._fileUrlDocumentMap[fileUrl] = editingDoc;
-                        return editingDoc;
-                    });
-                }
-
-                //Update the stadby classes
-                editingDocumentPromise.then(function () {
-                    self.needsDraw = true;
-                });
-
-                return editingDocumentPromise;
+            return docEditor.load(fileUrl, packageUrl).then(function (editingDoc) {
+                self._fileUrlDocumentMap[fileUrl] = editingDoc;
+                self.needsDraw = true;
+                return editingDoc;
             });
         }
+    },
+
+    _openEditors: {
+        value: null
+    },
+
+    _currentEditor: {
+        value: null
     },
 
     _editorDeferredCloseMap: {
@@ -140,9 +115,7 @@ exports.ComponentEditor = Montage.create(Component, {
                 editorArea,
                 element,
                 editorElement,
-                fileUrls,
-                currentFileUrl,
-                editor;
+                currentEditor = this._currentEditor;
 
             if (this._editorsToInsert.length) {
                 editorArea = this._documentEditorSlot;
@@ -170,15 +143,10 @@ exports.ComponentEditor = Montage.create(Component, {
                 this._editorsToRemove = [];
             }
 
-            //TODO optimize this entire draw method
-            fileUrls = Object.keys(this._fileUrlEditorMap);
-            currentFileUrl = this.getPath("projectController.currentDocument.fileUrl");
-
-            fileUrls.forEach(function (fileUrl) {
-                editor = self._fileUrlEditorMap[fileUrl];
+            this._openEditors.forEach(function (editor) {
                 editorElement = editor.element;
 
-                if (editorElement && fileUrl === currentFileUrl) {
+                if (editorElement && editor === currentEditor) {
                     editorElement.classList.remove("standby");
                 } else if (editorElement) {
                     editor.element.classList.add("standby");

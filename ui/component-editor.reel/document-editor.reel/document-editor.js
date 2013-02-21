@@ -25,25 +25,33 @@ exports.DocumentEditor = Montage.create(Component, {
         value: null
     },
 
+    _deferredWorkbench: {
+        value: null
+    },
+
     didCreate: {
         value: function () {
             this.defineBinding("fileUrl", {"<-": "editingDocument.fileUrl"});
+            this._deferredWorkbench = Promise.defer();
         }
     },
 
     load: {
         value: function (fileUrl, packageUrl) {
             var self = this,
-                liveStageInfoPromise = this.workbench.load(fileUrl, packageUrl),
+                liveStageInfoPromise,
                 editingDocumentPromise,
                 moduleId,
                 exportName;
 
+            liveStageInfoPromise = this._deferredWorkbench.promise.then(function(workbench) {
+                return workbench.load(fileUrl, packageUrl);
+            });
 
             editingDocumentPromise = ReelDocument.load(fileUrl, packageUrl)
                 .then(function (reelDocument) {
 
-                    // pre-load blueprints for everything already on the stage
+                    // pre-load blueprints for everything already in the template
                     // but don't complain if we can't find one
                     reelDocument.editingProxies.forEach(function (proxy) {
                         moduleId = proxy.moduleId;
@@ -56,17 +64,20 @@ exports.DocumentEditor = Montage.create(Component, {
                     return reelDocument;
                 });
 
-            //Wait for the stage and the editingDocument: only return the editingDocument
-            return Promise.all([liveStageInfoPromise, editingDocumentPromise]).spread(function (liveStageInfo, editingDocument) {
+            // When the stage has loaded, associate it with the editing model
+            Promise.all([liveStageInfoPromise, editingDocumentPromise]).spread(function (liveStageInfo, editingDocument) {
                 editingDocument.associateWithLiveRepresentations(liveStageInfo.owner, liveStageInfo.template, liveStageInfo.frame);
                 self.editingDocument = editingDocument;
-                return editingDocument;
-            }).timeout(10000);
+            }).done();
+
+            return editingDocumentPromise;
         }
     },
 
     prepareForDraw: {
         value: function () {
+            this._deferredWorkbench.resolve(this.workbench);
+
             this.workbench.addEventListener("dragover", this, false);
             this.workbench.addEventListener("drop", this, false);
             this.workbench.addEventListener("select", this, false);

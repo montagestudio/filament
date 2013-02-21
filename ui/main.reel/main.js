@@ -27,10 +27,18 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
+    _currentFileUrl: {
+        value: null
+    },
+
     didCreate: {
         value: function () {
             var bridgePromise,
                 self = this;
+
+            this._editorsToInsert = [];
+            this._fileUrlEditorMap = {};
+            this._openEditors = [];
 
             if (IS_IN_LUMIERES) {
                 bridgePromise = require.async("core/lumieres-bridge").then(function (exported) {
@@ -57,6 +65,12 @@ exports.Main = Montage.create(Component, {
                     self.projectController = projectController;
                     projectController.addEventListener("didOpenPackage", self, false);
 
+                    self.defineBinding("_currentFileUrl", {
+                        "<-": "currentDocument.fileUrl",
+                        source: projectController
+                    });
+                    self.addOwnPropertyChangeListener("_currentFileUrl", self, false);
+
                     if (projectUrl) {
                         projectController.loadProject(projectUrl).done();
                     } else {
@@ -76,11 +90,6 @@ exports.Main = Montage.create(Component, {
 
             var self = this;
 
-            this.editorTypeInstancePromiseMap = new WeakMap();
-            this._editorsToInsert = [];
-            this._fileUrlEditorMap = {};
-            this.openEditors = [];
-
             this.application.addEventListener("asyncActivity", this, false);
 
             this._projectControllerPromise.then(function (projectController) {
@@ -97,7 +106,7 @@ exports.Main = Montage.create(Component, {
 
                 window.addEventListener("openRelatedFile", function (evt) {
                     var url = evt.detail;
-                    self.openFileUrl(url.replace("file://localhost/", "fs://localhost/").replace(/\/$/, ""));
+                    self.openFileUrl(url.replace("file://localhost/", "fs://localhost/").replace(/\/$/, "")).done();
                 });
 
                 window.addEventListener("beforeunload", function () {
@@ -139,6 +148,7 @@ exports.Main = Montage.create(Component, {
             app.addEventListener("addFile", this);
             app.addEventListener("closeDocument", this);
 
+            //TODO double check that this works
             var files = this.projectController.files;
             var projectUrl = this.projectController.projectUrl;
             for (var i = 0, len = files.length; i < len; i++) {
@@ -148,9 +158,11 @@ exports.Main = Montage.create(Component, {
                     break;
                 }
             }
+        }
+    },
 
-            // Update title
-            // TODO this should be unnecessary as the packageUrl has been changed...
+    handle_currentFileUrlChange: {
+        value: function () {
             this.needsDraw = true;
         }
     },
@@ -180,9 +192,29 @@ exports.Main = Montage.create(Component, {
 
     handleOpenFile: {
         value: function (evt) {
-            //TODO as user action made this happen, make sure we end up showing the latest handleOpenFile above all others, regardless of the order the promises resolve in
             this.openFileUrl(evt.detail.fileUrl).done();
         }
+    },
+
+    openFileUrl: {
+        value: function (fileUrl) {
+            var self = this,
+                editor;
+
+            return this.projectController.openFileUrl(fileUrl).then(function (loadInfo) {
+                editor = loadInfo.editor;
+                if (-1 === self._openEditors.indexOf(editor)) {
+                    self._editorsToInsert.push(editor);
+                    self._openEditors.push(editor);
+                }
+                self._currentDocEditor = editor;
+                self.needsDraw = true;
+            });
+        }
+    },
+
+    _currentDocEditor: {
+        value: null
     },
 
     handleCloseDocument: {
@@ -191,8 +223,7 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    editorTypeInstancePromiseMap: {
-        enumerable: false,
+    _editorTypeInstanceMap: {
         value: null
     },
 
@@ -201,89 +232,28 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-    openEditors: {
-        enumerable: false,
+    _openEditors: {
         value: null
     },
 
-    openFileUrl: {
-        enumerable: false,
-        value: function (fileUrl) {
-            var openFilePromise,
-                editorType = this.viewController.editorTypeForFileUrl(fileUrl),
-                editorPromise,
-                deferredEditor,
-                newEditor,
-                editorFirstDrawHandler,
-                self = this;
-
-            if (editorType) {
-                editorPromise = this.editorTypeInstancePromiseMap.get(editorType);
-
-                if (!editorPromise) {
-
-                    deferredEditor = Promise.defer();
-                    editorPromise = deferredEditor.promise;
-                    this.editorTypeInstancePromiseMap.set(editorType, editorPromise);
-
-                    newEditor = editorType.create();
-                    this._editorsToInsert.push(newEditor);
-
-                    editorFirstDrawHandler = function (evt) {
-                        var editor = evt.target;
-                        editor.projectController = self.projectController;
-                        editor.viewController = self.viewController;
-
-                        editor.removeEventListener("firstDraw", editorFirstDrawHandler, false);
-                        deferredEditor.resolve(editor);
-                    };
-
-                    newEditor.addEventListener("firstDraw", editorFirstDrawHandler, false);
-                    this.needsDraw = true;
-                }
-
-                openFilePromise = editorPromise.then(function (editorInstance) {
-                    return self.openFileUrlInEditor(fileUrl, editorInstance);
-                });
-
-            } else {
-                console.log("No editor type for this file", fileUrl);
-                openFilePromise = Promise.resolve(null);
-            }
-
-            return openFilePromise;
-        }
-    },
-
-    openFileUrlInEditor: {
-        enumerable: false,
-        value: function (fileUrl, editor) {
-            if (-1 === this.openEditors.indexOf(editor)) {
-                this.openEditors.push(editor);
-            }
-            this._fileUrlEditorMap[fileUrl] = editor;
-
-            return this.projectController.openFileUrlInEditor(fileUrl, editor);
-        }
-    },
-
-    closeFileUrl: {
-        value: function (fileUrl) {
-            var editor = this._fileUrlEditorMap[fileUrl],
-                promisedClose,
-                self = this;
-
-            if (editor) {
-                promisedClose = this.projectController.closeFileUrlInEditor(fileUrl, editor).then(function (document) {
-                   delete self._fileUrlEditorMap[fileUrl];
-                });
-            } else {
-                promisedClose = Promise.reject(new Error("Cannot close file that is not open"));
-            }
-
-            return promisedClose;
-        }
-    },
+//
+//    closeFileUrl: {
+//        value: function (fileUrl) {
+//            var editor = this._fileUrlEditorMap[fileUrl],
+//                promisedClose,
+//                self = this;
+//
+//            if (editor) {
+//                promisedClose = this.projectController.closeFileUrlInEditor(fileUrl, editor).then(function (document) {
+//                   delete self._fileUrlEditorMap[fileUrl];
+//                });
+//            } else {
+//                promisedClose = Promise.reject(new Error("Cannot close file that is not open"));
+//            }
+//
+//            return promisedClose;
+//        }
+//    },
 
     handleAsyncActivity: {
         value: function(event) {
@@ -431,8 +401,7 @@ exports.Main = Montage.create(Component, {
             var editorArea,
                 element,
                 editorElement,
-                currentEditor,
-                currentFileUrl;
+                currentEditor = this._currentDocEditor;
 
             if (this._editorsToInsert.length) {
                 editorArea = this.editorSlot;
@@ -448,11 +417,7 @@ exports.Main = Montage.create(Component, {
                 this._editorsToInsert = [];
             }
 
-            //TODO optimize this entire draw method
-            currentFileUrl = this.getPath("projectController.currentDocument.fileUrl");
-            currentEditor = this._fileUrlEditorMap[currentFileUrl];
-
-            this.openEditors.forEach(function (editor) {
+            this._openEditors.forEach(function (editor) {
                 editorElement = editor.element;
                 if (editorElement && editor === currentEditor) {
                     editorElement.classList.remove("standby");

@@ -4,6 +4,7 @@ var Montage = require("montage/core/core").Montage,
     Deserializer = require("montage/core/serialization").Deserializer,
     findObjectNameRegExp = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver._findObjectNameRegExp,
     ContentController = require("montage/core/content-controller").ContentController,
+    WeakMap = require("montage/collections/weak-map"),
     ProjectController;
 
 exports.ProjectController = ProjectController = Montage.create(Montage, {
@@ -102,6 +103,10 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         value: null
     },
 
+    _editorTypeInstanceMap: {
+        value: null
+    },
+
     _fileUrlEditorMap: {
         value: null
     },
@@ -140,6 +145,10 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
             bridge.setDocumentDirtyState(false);
 
             var self = this;
+
+            this._editorTypeInstanceMap = new WeakMap();
+            this._fileUrlEditorMap = {};
+            this._fileUrlDocumentMap = {};
 
             this._environmentBridge = bridge;
             this._viewController = viewController;
@@ -314,9 +323,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         value: function (packageUrl, dependencies) {
             var self = this;
 
-            this._fileUrlEditorMap = {};
-            this._fileUrlDocumentMap = {};
-
             this.dispatchEventNamed("willOpenPackage", true, false, {
                 packageUrl: packageUrl
             });
@@ -411,74 +417,97 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
     handleOpenDocumentsSelectionRangeChange: {
         value: function (plus, minus, index) {
             if (this.openDocumentsController.selection && this.openDocumentsController.selection.length > 0) {
-                var fileUrl = this.openDocumentsController.selection[0].fileUrl,
-                    editor = this._fileUrlEditorMap[fileUrl];
-                this.openFileUrlInEditor(fileUrl, editor).done();
+                var fileUrl = this.openDocumentsController.selection[0].fileUrl;
+                this.openFileUrl(fileUrl).done();
             }
         }
     },
 
-    //TODO document this whole loading lifecycle
-    openFileUrlInEditor: {
-        value: function (fileUrl, editor) {
-            var editingDocuments,
-                docIndex,
+    //TODO make this a two step thing? loadFileUrl then openFileUrl to give us a place to have an editor instance and have it draw before "opening" the document?
+    //TODO expose the currentEditor, not the currentDocument?
+    /**
+     * Find a suitable editor for the document at the specified fileUrl and open it
+     *
+     * @return {Promise} A promise for the editing document and the editor used to open the document
+     */
+    openFileUrl: {
+        value: function (fileUrl) {
+            var editor,
+                docAlreadyLoaded,
                 self = this,
                 promisedDocument;
 
             if (this.currentDocument && fileUrl === this.currentDocument.fileUrl) {
-                promisedDocument = Promise.resolve(this.currentDocument);
+                // fileUrl is already open; do nothing
+                editor = this._fileUrlEditorMap[fileUrl];
+                promisedDocument = Promise.resolve({document: this.currentDocument, editor: editor});
             } else {
-                editingDocuments = this.openDocumentsController.visibleContent;
-                docIndex = editingDocuments.map(function (doc) {
-                    return doc.fileUrl;
-                }).indexOf(fileUrl);
 
-                if (docIndex > -1) {
+                editor = this._editorForFileUrl(fileUrl);
 
-                    promisedDocument = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
-                        if (self.currentDocument) {
-                            self.dispatchEventNamed("willExitDocument", true, false, self.currentDocument);
-                        }
-
-                        self.currentDocument = editingDocument;
-                        self.openDocumentsController.selection = [editingDocument];
-                        self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
-                        return editingDocument;
-                    }, function (error) {
-                        // Something gone wrong revert to the current document
-                        console.log("Could not open the document. reverting to the previous one. ", error);
-                        return Promise.resolve(self.currentDocument);
-                    });
-
+                if (!editor) {
+                    // No editor available for this document
+                    promisedDocument = Promise.resolve({document: null, editor: null});
                 } else {
 
+                    docAlreadyLoaded = !!this._fileUrlDocumentMap[fileUrl];
                     this._fileUrlEditorMap[fileUrl] = editor;
 
+                    // Editor available; load the editingDocument
                     promisedDocument = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
                         if (self.currentDocument) {
                             self.dispatchEventNamed("willExitDocument", true, false, self.currentDocument);
                         }
 
-                        self.currentDocument = editingDocument;
-                        self.openDocumentsController.content.push(editingDocument);
-                        self.openDocumentsController.selection = [editingDocument];
-                        self._fileUrlDocumentMap[fileUrl] = editingDocument;
+                        if (!docAlreadyLoaded) {
+                            self._fileUrlDocumentMap[fileUrl] = editingDocument;
+                            self.openDocumentsController.content.push(editingDocument);
+                        }
 
-                        self.dispatchEventNamed("didLoadDocument", true, false, editingDocument);
+                        self.currentDocument = editingDocument;
+                        self.openDocumentsController.selection = [editingDocument];
+
+                        if (!docAlreadyLoaded) {
+                            self.dispatchEventNamed("didLoadDocument", true, false, editingDocument);
+                        }
+
                         self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
 
-                        return editingDocument;
+                        return {document: editingDocument, editor: editor};
                     }, function (error) {
                         // Something gone wrong revert to the current document
                         console.log("Could not open the document. reverting to the previous one. ", error);
-                        return Promise.resolve(self.currentDocument);
+                        return Promise.resolve({document: self.currentDocument, editor: editor});
                     });
                 }
-
             }
 
             return promisedDocument;
+        }
+    },
+
+    _editorForFileUrl: {
+        value: function (fileUrl) {
+            var editor = this._fileUrlEditorMap[fileUrl],
+                editorType;
+
+            if (!editor) {
+                editorType = this._viewController.editorTypeForFileUrl(fileUrl);
+
+                if (editorType) {
+                    editor = this._editorTypeInstanceMap.get(editorType);
+
+                    if (!editor) {
+                        editor = editorType.create();
+                        editor.projectController = this;
+                        editor.viewController = this.viewController;
+
+                        this._editorTypeInstanceMap.set(editorType, editor);
+                    }
+                }
+            }
+
+            return editor;
         }
     },
 
