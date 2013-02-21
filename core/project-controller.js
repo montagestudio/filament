@@ -62,7 +62,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
             }
 
             this.openDocumentsController = ContentController.create().initWithContent([]);
-            this.openDocumentsController.addRangeAtPathChangeListener("selection", this, "openDocumentsSelection");
+            this.openDocumentsController.addRangeAtPathChangeListener("selection", this, "handleOpenDocumentsSelectionRangeChange");
 
             this.setupMenuItems();
 
