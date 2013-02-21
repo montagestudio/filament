@@ -25,7 +25,8 @@
                     "element": {"#": "library"}
                 },
                 "bindings": {
-                    "groups": {"<->": "@owner.projectController.libraryGroups"}
+                    "groups": {"<->": "@owner.projectController.libraryGroups"},
+                    "visible": {"<->": "@nav.isLibraryVisible"}
                 },
                 "listeners": [
                     {
@@ -53,10 +54,11 @@
                 },
                 "bindings": {
                     "editingDocument": {"<-": "@owner.projectController.currentDocument"},
-                    "viewController": {"<-": "@owner.viewController"}
+                    "viewController": {"<-": "@owner.viewController"},
+                    "visible": {"<->": "@nav.isConfiguratorVisible"}
                 }
             },
-            
+
             "nav": {
                 "prototype": "ui/nav.reel",
                 "properties": {

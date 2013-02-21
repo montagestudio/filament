@@ -47,6 +47,22 @@ exports.Configurator = Montage.create(Component, {
         value: null
     },
 
+    _visible: {
+        value: false
+    },
+    visible: {
+        get: function () {
+            return this._visible;
+        },
+        set: function (value) {
+            value = !!value;
+            if (value !== this._visible) {
+                this._visible = value;
+                this.needsDraw = true;
+            }
+        }
+    },
+
     handleChange: {
         value: function (notification) {
             if ("editingDocument.selectedObjects.0" === notification.currentPropertyPath) {
@@ -59,6 +75,13 @@ exports.Configurator = Montage.create(Component, {
                     this.inspectorControllers = null;
                 }
             }
+        }
+    },
+
+    draw: {
+        value: function () {
+            // Note: Panel--hidden === !this._visible
+            this._element.classList[(this._visible) ? "remove" : "add"]("Panel--hidden");
         }
     }
 

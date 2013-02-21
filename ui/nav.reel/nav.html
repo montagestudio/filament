@@ -3,7 +3,7 @@
 <head>
     <title>Nav Right</title>
     <meta charset="utf-8">
-    
+
     <link href="nav.css" rel="stylesheet">
 
     <script type="text/montage-serialization">
@@ -11,6 +11,28 @@
             "owner": {
                 "properties": {
                     "element": {"#": "nav"}
+                },
+                "bindings": {
+                    "isConfiguratorVisible": {"<->": "@configuratorToggle.pressed"},
+                    "isLibraryVisible": {"<->": "@libraryToggle.pressed"}
+                }
+            },
+
+            "configuratorToggle": {
+                "prototype": "montage/ui/toggle-button.reel",
+                "properties": {
+                    "element": {"#": "configuratorToggle"},
+                    "pressed": true,
+                    "pressedClass": "selected"
+                }
+            },
+
+            "libraryToggle": {
+                "prototype": "montage/ui/toggle-button.reel",
+                "properties": {
+                    "element": {"#": "libraryToggle"},
+                    "pressed": true,
+                    "pressedClass": "selected"
                 }
             }
         }
@@ -18,12 +40,12 @@
 
 </head>
 <body>
-    
+
     <nav data-montage-id="nav" class="Nav">
         <div class="Nav-scroll">
             <div class="Nav-tabs">
-                <button id="configuratorButton" class="Nav-button selected" data-icon="&#128269;"></button>
-                <button id="libraryButton" class="Nav-button selected" data-icon="&#59392;"></button>
+                <button data-montage-id="configuratorToggle" class="Nav-button" data-icon="&#128269;"></button>
+                <button data-montage-id="libraryToggle" class="Nav-button" data-icon="&#59392;"></button>
             </div>
         </div>
     </nav>
