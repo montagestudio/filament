@@ -8,6 +8,8 @@ var Montage = require("montage/core/core").Montage,
 
 exports.ProjectController = ProjectController = Montage.create(Montage, {
 
+    // "CLASS" METHODS
+
     /**
      * Asynchronously create a ProjectController, loading all the available extensions found by the
      * specified environment bridge.
@@ -31,6 +33,99 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
             });
         }
     },
+
+    // PROPERTIES
+
+    _environmentBridge: {
+        value: null
+    },
+
+    /**
+     * The environment bridge providing services for the projectController
+     */
+    environmentBridge: {
+        get: function () {
+            return this._environmentBridge;
+        }
+    },
+
+    _viewController: {
+        value: null
+    },
+
+    _projectUrl: {
+        value: null
+    },
+
+    /**
+     * The url of the project this projectController is meant to open
+     */
+    projectUrl: {
+        get: function () {
+            return this._projectUrl;
+        }
+    },
+
+    /**
+     * The url of the package of the open project
+     */
+    packageUrl: {
+        value: null
+    },
+
+    /**
+     * The package description of the open project
+     */
+    packageDescription: {
+        value: null
+    },
+
+    /**
+     * The controller managing the collection of openDocuments
+     */
+    openDocumentsController: {
+        value: null
+    },
+
+    // The flat list of files to present in the package explorer
+    files: {
+        value: null
+    },
+
+    // The collection of dependencies for this package
+    dependencies: {
+        value: null
+    },
+
+    // The groups of library items available to this package
+    libraryGroups: {
+        value: null
+    },
+
+    _fileUrlEditorMap: {
+        value: null
+    },
+
+    _fileUrlDocumentMap: {
+        value: null
+    },
+
+    /**
+     * The ID of the preview being served by our host environment
+     */
+    _previewId: {
+        value: null
+    },
+
+    /**
+     * The active EditingDocument instance
+     */
+    //TODO not let this be read/write
+    currentDocument: {
+        value: null
+    },
+
+    // INITIALIZATION
 
     /**
      * Initialize a ProjectController
@@ -79,6 +174,8 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
             return this;
         }
     },
+
+    // EXTENSIONS
 
     /**
      * Asynchronously load the extension package from the specified
@@ -190,72 +287,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
-    _environmentBridge: {
-        value: null
-    },
-
-    /**
-     * The environment bridge providing services for the projectController
-     */
-    environmentBridge: {
-        get: function () {
-            return this._environmentBridge;
-        }
-    },
-
-    _viewController: {
-        value: null
-    },
-
-    _projectUrl: {
-        value: null
-    },
-
-    /**
-     * The url of the project this projectController is meant to open
-     */
-    projectUrl: {
-        get: function () {
-            return this._projectUrl;
-        }
-    },
-
-    /**
-     * The url of the package of the open project
-     */
-    packageUrl: {
-        value: null
-    },
-
-    /**
-     * The package description of the open project
-     */
-    packageDescription: {
-        value: null
-    },
-
-    /**
-     * The ID of the preview being served by our host environment
-     */
-    previewId: {
-        enumerable: false,
-        value: null
-    },
-
-    // The flat list of files to present in the package explorer
-    files: {
-        value: null
-    },
-
-    // The collection of dependencies for this package
-    dependencies: {
-        value: null
-    },
-
-    // The groups of library items available to this package
-    libraryGroups: {
-        value: null
-    },
+    // PROJECT LOADING
 
     /**
      * Asynchronously load the project at the specified url
@@ -278,16 +310,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
-    _fileUrlEditorMap: {
-        value: null
-    },
-
-    _fileUrlDocumentMap: {
-        value: null
-    },
-
     _openProject: {
-        enumerable: false,
         value: function (packageUrl, dependencies) {
             var self = this;
 
@@ -318,7 +341,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
 
                     //TODO only do this if we have an index.html
                     self.environmentBridge.registerPreview(self.packageUrl, self.packageUrl + "/index.html").then(function (previewId) {
-                        self.previewId = previewId;
+                        self._previewId = previewId;
                         self.dispatchEventNamed("didRegisterPreview", true, false);
                         //TODO not launch this automatically
                         return self.launchPreview();
@@ -329,6 +352,53 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
+    // PREVIEW SERVING
+
+    /**
+     * Launch the preview server for this project
+     *
+     * @return {Promise} A promise for the successful launch of the preview
+     */
+    launchPreview: {
+        value: function () {
+            var self = this;
+            return this.environmentBridge.launchPreview(this._previewId).then(function () {
+                //TODO pass along url for preview in event
+                self.dispatchEventNamed("didLaunchPreview", true, false);
+            });
+        }
+    },
+
+    /**
+     * Refresh the preview server for this project
+     *
+     * @return {Promise} A promise for the successful refresh of the preview
+     */
+    refreshPreview: {
+        value: function () {
+            var self = this;
+            return this.environmentBridge.refreshPreview(this._previewId).then(function () {
+                //TODO pass along url for preview in event
+                self.dispatchEventNamed("didRefreshPreview", true, false);
+            });
+        }
+    },
+
+    /**
+     * Unregister the preview server for this project
+     *
+     * @return {Promise} A promise for the successful unregistration of the preview
+     */
+    unregisterPreview: {
+        value: function () {
+            var self = this;
+            return this.environmentBridge.unregisterPreview(this._previewId).then(function () {
+                //TODO pass along url for preview in event
+                self.dispatchEventNamed("didUnregisterPreview", true, false);
+            });
+        }
+    },
+
     willCloseProject: {
         value: function () {
             //TODO only if we're registered
@@ -336,36 +406,19 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
-    launchPreview: {
-        value: function () {
-            var self = this;
-            return this.environmentBridge.launchPreview(this.previewId).then(function () {
-                //TODO pass along url for preview in event
-                self.dispatchEventNamed("didLaunchPreview", true, false);
-            });
+    // DOCUMENT HANDLING
+
+    handleOpenDocumentsSelectionRangeChange: {
+        value: function (plus, minus, index) {
+            if (this.openDocumentsController.selection && this.openDocumentsController.selection.length > 0) {
+                var fileUrl = this.openDocumentsController.selection[0].fileUrl,
+                    editor = this._fileUrlEditorMap[fileUrl];
+                this.openFileUrlInEditor(fileUrl, editor).done();
+            }
         }
     },
 
-    refreshPreview: {
-        value: function () {
-            var self = this;
-            return this.environmentBridge.refreshPreview(this.previewId).then(function () {
-                //TODO pass along url for preview in event
-                self.dispatchEventNamed("didRefreshPreview", true, false);
-            });
-        }
-    },
-
-    unregisterPreview: {
-        value: function () {
-            var self = this;
-            return this.environmentBridge.unregisterPreview(this.previewId).then(function () {
-                //TODO pass along url for preview in event
-                self.dispatchEventNamed("didUnregisterPreview", true, false);
-            });
-        }
-    },
-
+    //TODO document this whole loading lifecycle
     openFileUrlInEditor: {
         value: function (fileUrl, editor) {
             var editingDocuments,
@@ -426,16 +479,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
             }
 
             return promisedDocument;
-        }
-    },
-
-    handleOpenDocumentsSelectionRangeChange: {
-        value: function (plus, minus, index) {
-            if (this.openDocumentsController.selection && this.openDocumentsController.selection.length > 0) {
-                var fileUrl = this.openDocumentsController.selection[0].fileUrl,
-                    editor = this._fileUrlEditorMap[fileUrl];
-                this.openFileUrlInEditor(fileUrl, editor).done();
-            }
         }
     },
 
@@ -526,9 +569,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
-    openDocumentsController: {
-        value: null
-    },
 
     _objectNameFromModuleId: {
         value: function (moduleId) {
@@ -679,10 +719,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
-    currentDocument: {
-        value: null
-    },
-
     undo: {
         value: function () {
             if (this.currentDocument) {
@@ -697,10 +733,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                 this.currentDocument.redo();
             }
         }
-    },
-
-    documents: {
-        value: null
     },
 
     save: {
