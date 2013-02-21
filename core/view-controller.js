@@ -25,6 +25,12 @@ exports.ViewController = Montage.create(Montage, {
         value: null
     },
 
+    /**
+     * Registers an editor prototype to be used when the specified fileTypeMatcher returns true
+     *
+     * @param {Prototype} editorType A Prototype to use build editors
+     * @param {function} fileTypeMatcher A function that tests whether or not a provided fileUrl can be opened by the editorType
+     */
     registerEditorTypeForFileTypeMatcher: {
         value: function (editorType, fileTypeMatcher) {
 
