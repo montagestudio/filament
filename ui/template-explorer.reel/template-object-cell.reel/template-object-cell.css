@@ -1,3 +1,11 @@
 .TemplateObjectCell {
-	
+
+}
+
+.TemplateObjectCell.selected {
+    background: hsla(210, 90%, 60%, .7);
+}
+
+.TemplateObjectCell.selected:hover {
+    background: hsla(210, 90%, 60%, .4);
 }

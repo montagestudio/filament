@@ -23,6 +23,20 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
 
     templatesObjectsController: {
         value: null
+    },
+
+    prepareForActivationEvents: {
+        value: function () {
+            // semi-HACK to unselect other objects
+            // FIXME when the repetition support single selection
+            this.templateObjects.templateObjectList.element.addEventListener("mouseup", this, true);
+        }
+    },
+
+    captureMouseup: {
+        value: function (event) {
+            this.selectedObjects.clear();
+        }
     }
 
 });
