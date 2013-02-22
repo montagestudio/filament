@@ -29,10 +29,13 @@ exports.BlueprintEditor = Montage.create(Component, /** @lends module:"./viewer.
         value:function (fileUrl, packageUrl) {
             var self = this;
             return BlueprintDocument.load(fileUrl, packageUrl).then(function (document) {
-                self.dispatchBeforeOwnPropertyChange("currentDocument", this._currentDocument);
+                self.dispatchBeforeOwnPropertyChange("currentDocument", self._currentDocument);
                 self._currentDocument = document;
                 self.dispatchOwnPropertyChange("currentDocument", document);
-                return document ;
+                return document;
+            }, function (error) {
+                console.log("Editor could not load document " + fileUrl, error);
+                return Promise.reject(new Error("Editor could not load document " + fileUrl));
             });
         }
     }
