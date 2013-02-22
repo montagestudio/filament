@@ -435,26 +435,26 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
             var editor,
                 docAlreadyLoaded,
                 self = this,
-                promisedDocument;
+                promisedLoadInfo;
 
             if (this.currentDocument && fileUrl === this.currentDocument.fileUrl) {
                 // fileUrl is already open; do nothing
                 editor = this._fileUrlEditorMap[fileUrl];
-                promisedDocument = Promise.resolve({document: this.currentDocument, editor: editor});
+                promisedLoadInfo = Promise.resolve({document: this.currentDocument, editor: editor});
             } else {
 
                 editor = this._editorForFileUrl(fileUrl);
 
                 if (!editor) {
                     // No editor available for this document
-                    promisedDocument = Promise.resolve({document: null, editor: null});
+                    promisedLoadInfo = Promise.resolve({document: null, editor: null});
                 } else {
 
                     docAlreadyLoaded = !!this._fileUrlDocumentMap[fileUrl];
                     this._fileUrlEditorMap[fileUrl] = editor;
 
                     // Editor available; load the editingDocument
-                    promisedDocument = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
+                    promisedLoadInfo = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
                         if (self.currentDocument) {
                             self.dispatchEventNamed("willExitDocument", true, false, self.currentDocument);
                         }
@@ -482,7 +482,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                 }
             }
 
-            return promisedDocument;
+            return promisedLoadInfo;
         }
     },
 
