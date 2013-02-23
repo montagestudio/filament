@@ -100,6 +100,15 @@
     -webkit-flex: 0 1 0;
 }
 
+.Panel.Panel--floating {
+    position: absolute;
+    z-index: 1;
+    width: 200px;
+    top: 32px;
+    right: 48px;
+    bottom: 0;
+}
+
 .Panel {
     -webkit-flex: 0 0 200px;
     min-width: 0;
