@@ -236,24 +236,17 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-//
-//    closeFileUrl: {
-//        value: function (fileUrl) {
-//            var editor = this._fileUrlEditorMap[fileUrl],
-//                promisedClose,
-//                self = this;
-//
-//            if (editor) {
-//                promisedClose = this.projectController.closeFileUrlInEditor(fileUrl, editor).then(function (document) {
-//                   delete self._fileUrlEditorMap[fileUrl];
-//                });
-//            } else {
-//                promisedClose = Promise.reject(new Error("Cannot close file that is not open"));
-//            }
-//
-//            return promisedClose;
-//        }
-//    },
+
+    closeFileUrl: {
+        value: function (fileUrl) {
+            var self = this;
+
+            return this.projectController.closeFileUrl(fileUrl).then(function () {
+                delete self._fileUrlEditorMap[fileUrl];
+                //TODO close the editor entirely if it has no documents open?
+            });
+        }
+    },
 
     handleAsyncActivity: {
         value: function(event) {

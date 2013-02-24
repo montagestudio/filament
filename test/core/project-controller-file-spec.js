@@ -39,7 +39,7 @@ describe("core/project-controller-file-spec", function () {
             openPromise.timeout(WAITSFOR_TIMEOUT).done();
         });
 
-        it("must open the current document if asked to open the same fileUrl", function () {
+        it("should open the current document if asked to open the same fileUrl", function () {
             var doc = {fileUrl: textUrl};
             projectController.currentDocument = doc;
 
@@ -121,5 +121,135 @@ describe("core/project-controller-file-spec", function () {
 
     });
 
+    describe("closing a file", function () {
+        var editorType, editingDocument;
+
+        beforeEach(function () {
+
+            var documents = {};
+            documents[textUrl] = {fileUrl: textUrl};
+            documents[reelUrl] = {fileUrl: reelUrl};
+            documents["foo"] = {fileUrl: "foo"};
+
+            editorType = editorMock({
+                load: function (fileUrl) {
+                    return Promise.resolve(documents[fileUrl]);
+                },
+                close: function (fileUrl) {
+                    return Promise.resolve(documents[fileUrl]);
+                }
+            });
+
+            viewController.registerEditorTypeForFileTypeMatcher(editorType, function () {
+                return true;
+            });
+        });
+
+        describe("that is not open", function () {
+
+            it("must return a rejected promise", function () {
+                var closedDocumentPromise = projectController.closeFileUrl("foo");
+
+                expect(Promise.isPromiseAlike(closedDocumentPromise)).toBeTruthy();
+
+                return closedDocumentPromise.fail(function (error) {
+                    expect(error instanceof Error).toBeTruthy();
+                });
+            });
+
+        });
+
+        describe("that is open", function () {
+
+            it("should return a promise for the closed document", function () {
+                return projectController.openFileUrl(textUrl).then(function () {
+                    var closedDocumentPromise =  projectController.closeFileUrl(textUrl);
+                    expect(Promise.isPromiseAlike(closedDocumentPromise)).toBeTruthy();
+                });
+
+            });
+
+            it("should allow the editor to close the document", function () {
+                return projectController.openFileUrl(textUrl).then(function (loadInfo) {
+                    var editor = loadInfo.editor;
+
+                    spyOn(editor, "close").andCallThrough();
+
+                    return projectController.closeFileUrl(textUrl).then(function (closedDocument) {
+                        expect(editor.close).toHaveBeenCalled();
+                    });
+                });
+            });
+
+            it("should close the document associated with the specified fileUrl", function () {
+                return projectController.openFileUrl(textUrl).then(function () {
+                    return projectController.closeFileUrl(textUrl);
+                }).then(function (closedDocument) {
+                    expect(closedDocument.fileUrl).toBe(textUrl);
+                });
+            });
+
+            it("must not consider a closed document open any more", function () {
+                return projectController.openFileUrl(textUrl).then(function () {
+                    return projectController.closeFileUrl(textUrl);
+                }).then(function (closedDocument) {
+                    expect(projectController.openDocumentsController.content.indexOf(closedDocument)).toBe(-1);
+                });
+            });
+
+            describe("and is not the current document", function () {
+
+                it("must not change the currentDocument", function () {
+                    return projectController.openFileUrl(textUrl).then(function () {
+                        return projectController.openFileUrl(reelUrl);
+                    }).then(function () {
+                        return projectController.closeFileUrl(textUrl);
+                    }).then(function () {
+                        expect(projectController.currentDocument.fileUrl).toBe(reelUrl);
+                    });
+                });
+
+            });
+
+            describe("and is the current document", function () {
+
+                it("should leave no document open if there are no other documents to open", function () {
+                    return projectController.openFileUrl(textUrl).then(function () {
+                        return projectController.closeFileUrl(textUrl);
+                    }).then(function () {
+                        expect(projectController.currentDocument).toBeNull();
+                    });
+                });
+
+                it("should leave the next document in order open if there is one", function () {
+                    return projectController.openFileUrl(textUrl).then(function () {
+                        return projectController.openFileUrl(reelUrl);
+                    }).then(function () {
+                        return projectController.openFileUrl(textUrl);
+                    }).then(function () {
+                        // [>>Text<<] [Reel]
+                        return projectController.closeFileUrl(textUrl);
+                    }).then(function () {
+                        expect(projectController.currentDocument.fileUrl).toBe(reelUrl);
+                    });
+                });
+
+                //TODO move out the determination of "next" document out to its own spec
+                it("should leave the previous document in order open if this was the last document", function () {
+                    return projectController.openFileUrl(reelUrl).then(function () {
+                        return projectController.openFileUrl(textUrl);
+                    }).then(function () {
+                        // [Reel] [>>Text<<]
+                        return projectController.closeFileUrl(textUrl);
+                    }).then(function () {
+                        expect(projectController.currentDocument.fileUrl).toBe(reelUrl);
+                    });
+                });
+
+            });
+
+        });
+
+    });
 
 });

@@ -36,6 +36,18 @@ exports.ComponentEditor = Montage.create(Component, {
         value: null
     },
 
+    _openEditors: {
+        value: null
+    },
+
+    _currentEditor: {
+        value: null
+    },
+
+    _editorDeferredCloseMap: {
+        value: null
+    },
+
     didCreate: {
         value: function () {
             this._editorsToInsert = [];
@@ -63,6 +75,8 @@ exports.ComponentEditor = Montage.create(Component, {
             this._currentEditor = docEditor;
             this.needsDraw = true;
 
+            // TODO still should track the loading promise in a map somewhere in case we try to close it
+            // before it's fully loaded; this is probably true at all levels where we do this dance
             return docEditor.load(fileUrl, packageUrl).then(function (editingDoc) {
                 self._fileUrlDocumentMap[fileUrl] = editingDoc;
                 self.needsDraw = true;
@@ -71,34 +85,18 @@ exports.ComponentEditor = Montage.create(Component, {
         }
     },
 
-    _openEditors: {
-        value: null
-    },
-
-    _currentEditor: {
-        value: null
-    },
-
-    _editorDeferredCloseMap: {
-        value: null
-    },
-
     close: {
         value: function (fileUrl) {
             var editor = this._fileUrlEditorMap[fileUrl],
-                deferredClose = Promise.defer(),
-                loadingPromise = this._fileUrlEditorPromiseMap[fileUrl];
+                deferredClose = Promise.defer();
+
+            if (!editor) {
+                //TODO sort this situation out
+                throw new Error("Closing a document that is in the process of being opened, TODO");
+            }
 
             delete this._fileUrlDocumentMap[fileUrl];
             delete this._fileUrlEditorMap[fileUrl];
-
-            if (!loadingPromise.isFulfilled()) {
-                //TODO sort this situation out
-                throw new Error("Closing a document that is in the process of being opened, TODO");
-            } else {
-                delete this._fileUrlEditorPromiseMap[fileUrl];
-            }
-
 
             this._editorsToRemove.push(editor);
             this._editorDeferredCloseMap.set(editor, deferredClose);

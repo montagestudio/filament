@@ -486,6 +486,64 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
+    /**
+     * Close the specified fileUrl in whatever editor has it open.
+     *
+     * @note If the specified fileUrl refers to the currentDocument the next logical document will
+     * become the current document.
+     *
+     * @return {Promise} A promise for the closed document
+     */
+    closeFileUrl: {
+        value: function (fileUrl) {
+
+            var editingDocument = this._fileUrlDocumentMap[fileUrl],
+                editingDocuments = this.openDocumentsController.visibleContent,
+                openNextDocPromise,
+                nextDoc,
+                editor,
+                self = this;
+
+            if (!editingDocument) {
+                return Promise.reject(new Error("Cannot close unopened file '" + fileUrl + "'"));
+            }
+
+            this.dispatchEventNamed("willCloseDocument", true, false, editingDocument);
+
+            if (this.currentDocument && editingDocument === this.currentDocument) {
+                //The current document is the one being closed:
+
+                if (1 === editingDocuments.length) {
+                    // No other documents to open; manually exit
+                    this.dispatchEventNamed("willExitDocument", true, false, this.currentDocument);
+                    this.currentDocument = null;
+                    openNextDocPromise = Promise.resolve(true);
+                } else {
+                    //Open the next document
+                    nextDoc = this._nextDocument(editingDocument);
+                    openNextDocPromise = this.openFileUrl(nextDoc.fileUrl);
+                }
+            } else {
+                openNextDocPromise = Promise.resolve(true);
+            }
+
+            return openNextDocPromise.then(function () {
+
+                editor = self._fileUrlEditorMap[fileUrl];
+
+                return editor.close(fileUrl).then(function (document) {
+                    //TODO use controller API to remove
+                    var index = self.openDocumentsController.content.indexOf(document);
+                    self.openDocumentsController.content.splice(index, 1);
+                    delete self._fileUrlEditorMap[fileUrl];
+                    delete self._fileUrlDocumentMap[fileUrl];
+                    return document;
+                });
+            });
+
+        }
+    },
+
     _editorForFileUrl: {
         value: function (fileUrl) {
             var editor = this._fileUrlEditorMap[fileUrl],
@@ -511,6 +569,21 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
+    // Find the "next" document after the specified document
+    _nextDocument: {
+        value: function (editingDocument) {
+            var editingDocuments = this.openDocumentsController.visibleContent,
+                docIndex = editingDocuments.indexOf(editingDocument),
+                nextDocIndex = docIndex + 1;
+
+            if (nextDocIndex > editingDocuments.length - 1) {
+                nextDocIndex = docIndex - 1;
+            }
+
+            return editingDocuments[nextDocIndex];
+        }
+    },
+
     handlePropertyChange: {
         value: function (notification) {
 
@@ -528,57 +601,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
-    closeFileUrlInEditor: {
-        value: function (fileUrl, editor) {
-            var self = this,
-                openNextDocPromise,
-                editingDocument = this._fileUrlDocumentMap[fileUrl],
-                editingDocuments = this.openDocumentsController.organizedObjects,
-                docIndex,
-                nextDocIndex,
-                nextDoc,
-                nextEditor;
 
-            if (this.currentDocument && fileUrl === this.currentDocument.fileUrl) {
-
-
-                if (1 === editingDocuments.length) {
-                    this.dispatchEventNamed("willExitDocument", true, false, this.currentDocument);
-                    this.currentDocument = null;
-                    openNextDocPromise = Promise.resolve(true);
-                } else {
-                    //Switch to the "next" tab, however we want to define that
-                    docIndex = editingDocuments.indexOf(editingDocument);
-                    nextDocIndex = docIndex + 1;
-
-                    if (nextDocIndex > editingDocuments.length - 1) {
-                        nextDocIndex = docIndex - 1;
-                    }
-
-                    nextDoc = editingDocuments[nextDocIndex];
-                    nextEditor = this._fileUrlEditorMap[nextDoc.fileUrl];
-
-                    //TODO I want to call openDocument, or openFileUrl here without knowing the editor
-                    // I think we should centralize that knowledge here if possible and out of main
-
-                    openNextDocPromise = this.openFileUrlInEditor(nextDoc.fileUrl, nextEditor);
-                }
-            } else {
-                openNextDocPromise = Promise.resolve(true);
-            }
-
-            self.dispatchEventNamed("willCloseDocument", true, false, editingDocument);
-
-            return openNextDocPromise.then(function () {
-                return editor.close(fileUrl).then(function (document) {
-                    self.openDocumentsController.removeObjects(document);
-                    delete self._fileUrlEditorMap[fileUrl];
-                    delete self._fileUrlDocumentMap[fileUrl];
-                    return document;
-                });
-            });
-        }
-    },
 
     updateUndoMenus: {
         enumerable: false,
