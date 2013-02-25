@@ -498,7 +498,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         value: function (fileUrl) {
 
             var editingDocument = this._fileUrlDocumentMap[fileUrl],
-                editingDocuments = this.openDocumentsController.visibleContent,
+                editingDocuments = this.openDocumentsController.content,
                 openNextDocPromise,
                 nextDoc,
                 editor,
