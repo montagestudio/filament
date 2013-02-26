@@ -83,6 +83,18 @@ exports.BlueprintProxy = Montage.create(EditingProxy, {
         }
     },
 
+    getObjectProperty: {
+        value: function (property) {
+            return Montage.getPath.call(this.properties, property);
+        }
+    },
+
+    setObjectProperty: {
+        value: function (property, value) {
+            Montage.setPath.call(this.properties, property, value);
+        }
+    },
+
     properties: {
         get: function () {
             return this._proxiedObject;
