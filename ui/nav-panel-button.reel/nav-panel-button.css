@@ -1,6 +1,7 @@
 /* Nav Button ----------------------------------- */
 
 .Nav .Nav-button {
+    position: relative;
     display: block;
     width: 40px;
     height: 40px;
@@ -44,6 +45,22 @@
 }
 .Nav-tabs .Nav-button.selected:active {
     background: hsl(0,0%,80%);
+}
+
+.Nav-tabs .Nav-button.selected:after {
+    content: "";
+    position: absolute;
+    left: -12px;
+    top: 15px;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background: hsl(0,0%,80%);
+    -webkit-transform: rotate(45deg);
+}
+
+.Nav-tabs .Nav-button.selected.locked:after {
+    display: none;
 }
 
 .Nav-tabs .Nav-button.locked {
