@@ -1,5 +1,5 @@
 var Montage = require("montage/core/core").Montage,
-    Component = require("montage/ui/component").Component,
+    Panel = require("ui/panel.reel").Panel,
     RangeController = require("montage/core/range-controller").RangeController;
 
 // Add custom value components
@@ -21,7 +21,7 @@ var jsonInspector = propertyInspector.PropertyTypeComponentDescriptor.create().i
 propertyInspector.addPropertyTypeComponentDescriptor("array", jsonInspector);
 
 
-exports.Configurator = Montage.create(Component, {
+exports.Configurator = Montage.create(Panel, {
 
     didCreate: {
         value: function () {
@@ -47,22 +47,6 @@ exports.Configurator = Montage.create(Component, {
         value: null
     },
 
-    _visible: {
-        value: false
-    },
-    visible: {
-        get: function () {
-            return this._visible;
-        },
-        set: function (value) {
-            value = !!value;
-            if (value !== this._visible) {
-                this._visible = value;
-                this.needsDraw = true;
-            }
-        }
-    },
-
     handleChange: {
         value: function (notification) {
             if ("editingDocument.selectedObjects.0" === notification.currentPropertyPath) {
@@ -75,13 +59,6 @@ exports.Configurator = Montage.create(Component, {
                     this.inspectorControllers = null;
                 }
             }
-        }
-    },
-
-    draw: {
-        value: function () {
-            // Note: Panel--hidden === !this._visible
-            this._element.classList[(this._visible) ? "remove" : "add"]("Panel--hidden");
         }
     }
 

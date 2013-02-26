@@ -26,7 +26,7 @@
                 },
                 "bindings": {
                     "groups": {"<->": "@owner.projectController.libraryGroups"},
-                    "visible": {"<->": "@nav.isLibraryVisible"}
+                    "state": {"<->": "@nav.libraryPanelState"}
                 },
                 "listeners": [
                     {
@@ -55,7 +55,7 @@
                 "bindings": {
                     "editingDocument": {"<-": "@owner.projectController.currentDocument"},
                     "viewController": {"<-": "@owner.viewController"},
-                    "visible": {"<->": "@nav.isConfiguratorVisible"}
+                    "state": {"<->": "@nav.configuratorPanelState"}
                 }
             },
 

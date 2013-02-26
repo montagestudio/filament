@@ -13,26 +13,27 @@
                     "element": {"#": "nav"}
                 },
                 "bindings": {
-                    "isConfiguratorVisible": {"<->": "@configuratorToggle.pressed"},
-                    "isLibraryVisible": {"<->": "@libraryToggle.pressed"}
+                    "configuratorPanelState": {"<->": "@configuratorToggle.state"},
+                    "libraryPanelState": {"<->": "@libraryToggle.state"}
                 }
             },
 
+            "LOCKED_STATE": {
+                "object": "ui/panel.reel[LOCKED_STATE]"
+            },
+
             "configuratorToggle": {
-                "prototype": "montage/ui/toggle-button.reel",
+                "prototype": "ui/nav-panel-button.reel",
                 "properties": {
                     "element": {"#": "configuratorToggle"},
-                    "pressed": true,
-                    "pressedClass": "selected"
+                    "state": {"@": "LOCKED_STATE"}
                 }
             },
 
             "libraryToggle": {
-                "prototype": "montage/ui/toggle-button.reel",
+                "prototype": "ui/nav-panel-button.reel",
                 "properties": {
-                    "element": {"#": "libraryToggle"},
-                    "pressed": true,
-                    "pressedClass": "selected"
+                    "element": {"#": "libraryToggle"}
                 }
             }
         }
