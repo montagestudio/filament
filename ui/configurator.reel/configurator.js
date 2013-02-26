@@ -1,6 +1,6 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
-    ContentController = require("montage/core/content-controller").ContentController;
+    RangeController = require("montage/core/range-controller").RangeController;
 
 // Add custom value components
 var propertyInspector = require("palette/ui/inspector/property-inspector.reel");

@@ -5,7 +5,7 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
-    ContentController = require("montage/core/content-controller").ContentController,
+    RangeController = require("montage/core/range-controller").RangeController,
     Promise = require("montage/core/promise").Promise,
     defaultLocalizer = require("montage/core/localizer").defaultLocalizer;
 
@@ -33,7 +33,7 @@ exports.LocaleSwitcher = Montage.create(Component, /** @lends module:"ui/locale-
                     return deferred.promise;
                 });
             }).all().then(function (locales) {
-                self.locales = ContentController.create().initWithContent(locales);
+                self.locales = RangeController.create().initWithContent(locales);
             }).done();
         }
     },

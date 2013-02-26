@@ -516,22 +516,22 @@ exports.libraryItems = {
     "montage/ui/scroll-bars.reel": null
 };
 
-var ContentControllerLibraryItem = Montage.create(LibraryItem, {
+var RangeControllerLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/core/content-controller"
+            "prototype": "montage/core/range-controller"
         }
     },
 
     name: {
-        value: "ContentController"
+        value: "RangeController"
     },
 
     label: {
-        value: "ContentController"
+        value: "RangeController"
     }
 
 });
 
-exports.libraryAdditions = [ContentControllerLibraryItem];
+exports.libraryAdditions = [RangeControllerLibraryItem];

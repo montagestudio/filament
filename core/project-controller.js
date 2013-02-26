@@ -3,7 +3,7 @@ var Montage = require("montage/core/core").Montage,
     LibraryItem = require("filament-extension/core/library-item.js").LibraryItem,
     Deserializer = require("montage/core/serialization").Deserializer,
     findObjectNameRegExp = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver._findObjectNameRegExp,
-    ContentController = require("montage/core/content-controller").ContentController,
+    RangeController = require("montage/core/range-controller").RangeController,
     WeakMap = require("montage/collections/weak-map"),
     ProjectController;
 
@@ -165,7 +165,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                 });
             }
 
-            this.openDocumentsController = ContentController.create().initWithContent([]);
+            this.openDocumentsController = RangeController.create().initWithContent([]);
             this.openDocumentsController.addRangeAtPathChangeListener("selection", this, "handleOpenDocumentsSelectionRangeChange");
 
             this.setupMenuItems();
