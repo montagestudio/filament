@@ -456,6 +456,10 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                     this._fileUrlEditorMap[fileUrl] = editor;
 
                     // Editor available; load the editingDocument
+                    if (!docAlreadyLoaded) {
+                        this.dispatchEventNamed("willLoadDocument", true, false, fileUrl);
+                    }
+
                     promisedLoadInfo = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
                         if (self.currentDocument) {
                             self.dispatchEventNamed("willExitDocument", true, false, self.currentDocument);
@@ -463,8 +467,11 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
 
                         if (!docAlreadyLoaded) {
                             self._fileUrlDocumentMap[fileUrl] = editingDocument;
-                            self.openDocumentsController.content.push(editingDocument);
+                            self.openDocumentsController.push(editingDocument);
+                            self.dispatchEventNamed("didLoadDocument", true, false, editingDocument);
                         }
+
+                        self.dispatchEventNamed("willEnterDocument", true, false, editingDocument);
 
                         self.currentDocument = editingDocument;
                         self.openDocumentsController.selection = [editingDocument];
@@ -534,9 +541,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                 editor = self._fileUrlEditorMap[fileUrl];
 
                 return editor.close(fileUrl).then(function (document) {
-                    //TODO use controller API to remove
-                    var index = self.openDocumentsController.content.indexOf(document);
-                    self.openDocumentsController.content.splice(index, 1);
+                    self.openDocumentsController.delete(document);
                     delete self._fileUrlEditorMap[fileUrl];
                     delete self._fileUrlDocumentMap[fileUrl];
                     return document;
