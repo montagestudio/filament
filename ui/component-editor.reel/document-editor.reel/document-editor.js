@@ -61,6 +61,7 @@ exports.DocumentEditor = Montage.create(Component, {
                         }
                     });
 
+                    self.editingDocument = reelDocument;
                     return reelDocument;
                 });
 
