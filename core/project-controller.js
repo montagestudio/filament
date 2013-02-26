@@ -572,7 +572,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
     // Find the "next" document after the specified document
     _nextDocument: {
         value: function (editingDocument) {
-            var editingDocuments = this.openDocumentsController.visibleContent,
+            var editingDocuments = this.openDocumentsController.organizedContent,
                 docIndex = editingDocuments.indexOf(editingDocument),
                 nextDocIndex = docIndex + 1;
 

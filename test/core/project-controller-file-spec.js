@@ -102,7 +102,7 @@ describe("core/project-controller-file-spec", function () {
 
             it("should populate the openDocument controller", function () {
                 var openDocuments = [],
-                    content = projectController.openDocumentsController.visibleContent;
+                    content = projectController.openDocumentsController.organizedContent;
 
                 return projectController.openFileUrl("foo")
                     .then(function (loadedInfo) {
