@@ -67,7 +67,8 @@ exports.DocumentEditor = Montage.create(Component, {
             // When the stage has loaded, associate it with the editing model
             Promise.all([liveStageInfoPromise, editingDocumentPromise]).spread(function (liveStageInfo, editingDocument) {
                 editingDocument.associateWithLiveRepresentations(liveStageInfo.owner, liveStageInfo.template, liveStageInfo.frame);
-                self.editingDocument = editingDocument;
+            }, function (error) {
+                //Don't bother associating the two representations if either fails to load
             }).done();
 
             return editingDocumentPromise;
