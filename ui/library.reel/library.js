@@ -1,5 +1,6 @@
 var Montage = require("montage/core/core").Montage,
-    Panel = require("ui/panel.reel").Panel;
+    panel = require("ui/panel.reel"),
+    Panel = panel.Panel;
 
 exports.Library = Montage.create(Panel, {
 
@@ -9,6 +10,20 @@ exports.Library = Montage.create(Panel, {
 
     groupsController: {
         value: null
+    },
+
+    prepareForActivationEvents: {
+        value: function () {
+            this._element.addEventListener("dragstart", this, false);
+        }
+    },
+
+    handleDragstart: {
+        value: function (event) {
+            if (this.state === panel.FLOATING_STATE) {
+                this.state = panel.HIDDEN_STATE;
+            }
+        }
     }
 
 });
