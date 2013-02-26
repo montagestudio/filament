@@ -418,7 +418,9 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         value: function (plus, minus, index) {
             if (this.openDocumentsController.selection && this.openDocumentsController.selection.length > 0) {
                 var fileUrl = this.openDocumentsController.selection[0].fileUrl;
-                this.openFileUrl(fileUrl).done();
+                if (!this.currentDocument || fileUrl !== this.currentDocument.fileUrl) {
+                    this.openFileUrl(fileUrl).done();
+                }
             }
         }
     },

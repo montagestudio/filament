@@ -62,6 +62,8 @@ exports.ComponentEditor = Montage.create(Component, {
     load: {
         value: function (fileUrl, packageUrl) {
             var docEditor = this._fileUrlEditorMap[fileUrl],
+                editingDocument = this._fileUrlDocumentMap[fileUrl],
+                loadedDocumentPromise,
                 self = this;
 
             if (!docEditor) {
@@ -72,16 +74,22 @@ exports.ComponentEditor = Montage.create(Component, {
                 this._openEditors.push(docEditor);
             }
 
+            if (!editingDocument) {
+                // TODO still should track the loading promise in a map somewhere in case we try to close it
+                // before it's fully loaded; this is probably true at all levels where we do this dance
+                loadedDocumentPromise = docEditor.load(fileUrl, packageUrl).then(function (editingDoc) {
+                    self._fileUrlDocumentMap[fileUrl] = editingDoc;
+                    self.needsDraw = true;
+                    return editingDoc;
+                });
+            } else {
+                loadedDocumentPromise = Promise.resolve(editingDocument);
+            }
+
             this._currentEditor = docEditor;
             this.needsDraw = true;
 
-            // TODO still should track the loading promise in a map somewhere in case we try to close it
-            // before it's fully loaded; this is probably true at all levels where we do this dance
-            return docEditor.load(fileUrl, packageUrl).then(function (editingDoc) {
-                self._fileUrlDocumentMap[fileUrl] = editingDoc;
-                self.needsDraw = true;
-                return editingDoc;
-            });
+            return loadedDocumentPromise;
         }
     },
 
