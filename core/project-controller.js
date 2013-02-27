@@ -986,16 +986,23 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
 
     validateMenu: {
         value: function (menu) {
+
+            var validated = false;
+
             switch (menu.identifier) {
             case "undo":
                 menu.enabled = this.getPath("currentDocument.undoManager.canUndo");
                 menu.title = this.getPath("currentDocument.undoManager.undoLabel");
+                validated = true;
                 break;
             case "redo":
                 menu.enabled = this.getPath("currentDocument.undoManager.canRedo");
                 menu.title = this.getPath("currentDocument.undoManager.redoLabel");
+                validated = true;
                 break;
             }
+
+            return validated;
         }
     },
 

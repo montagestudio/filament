@@ -294,7 +294,9 @@ exports.Main = Montage.create(Component, {
 
     handleMenuValidate: {
         value: function (evt) {
-            this.projectController.validateMenu(evt.detail);
+            if (this.projectController.validateMenu(evt.detail)) {
+                evt.preventDefault();
+            }
         }
     },
 
