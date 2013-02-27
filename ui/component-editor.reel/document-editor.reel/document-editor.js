@@ -124,8 +124,10 @@ exports.DocumentEditor = Montage.create(Component, {
                 prototypeEntry.html
             ).then(function (proxy) {
 
-                // pre-fetch the description of this object
-                proxy.stageObject.blueprint.fail(Function.noop);
+                // try to pre-fetch the description of this object
+                if (proxy.stageObject) {
+                    proxy.stageObject.blueprint.fail(Function.noop);
+                }
 
                 if (typeof prototypeEntry.postProcess === "function") {
                     prototypeEntry.postProcess(proxy, editingDocument);
