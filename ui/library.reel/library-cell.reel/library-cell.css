@@ -26,8 +26,8 @@
 .LibraryCell-button-icon {
 	display: inline-block;
 	margin: 0 4px 0 0;
-    width: 60px;
-    height: 40px;
+    width: 48px;
+    height: 32px;
 	vertical-align: middle;
 }
 
@@ -39,7 +39,7 @@
 	text-align: left;
 	width: 116px;
 	font-size: 14px;
-	line-height: 40px;
+	line-height: 36px;
 	vertical-align: middle;
 	text-overflow: ellipsis;
 	overflow: hidden;
