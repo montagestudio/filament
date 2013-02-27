@@ -99,6 +99,7 @@
 
 .Panel.Panel--hidden {
     -webkit-flex: 0 1 0;
+    border: none;
 }
 
 .Panel.Panel--floating {
