@@ -45,9 +45,19 @@ exports.Panel = Montage.create(Component, /** @lends module:"ui/panel.reel".Pane
 
     handleMouseup: {
         value: function (event) {
-            console.log("panel handleMouseup");
-            document.removeEventListener("mouseup", this, false);
-            this.state = HIDDEN_STATE;
+            var target = event.target, isInPanel = false;
+            while (target) {
+                if (target === this._element) {
+                    isInPanel = true;
+                    break;
+                }
+                target = target.parentElement;
+            }
+
+            if (!isInPanel) {
+                document.removeEventListener("mouseup", this, false);
+                this.state = HIDDEN_STATE;
+            }
         }
     },
 
