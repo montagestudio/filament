@@ -171,14 +171,14 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
             this.setupMenuItems();
 
             //TODO get rid of this once we have property dependencies
-            this.addOwnPropertyChangeListener("packageUrl", this, true);
-            this.addOwnPropertyChangeListener("packageUrl", this, false);
-            this.addOwnPropertyChangeListener("_windowIsKey", this, true);
-            this.addOwnPropertyChangeListener("_windowIsKey", this, false);
+            this.addPathChangeListener("packageUrl", this, null, true);
+            this.addPathChangeListener("packageUrl", this);
+            this.addPathChangeListener("_windowIsKey", this, null, true);
+            this.addPathChangeListener("_windowIsKey", this);
 
-            this.addOwnPropertyChangeListener("currentDocument.undoManager.undoLabel", this);
-            this.addOwnPropertyChangeListener("currentDocument.undoManager.redoLabel", this);
-            this.addOwnPropertyChangeListener("currentDocument.undoManager.undoCount", this);
+            this.addPathChangeListener("currentDocument.undoManager.undoLabel", this);
+            this.addPathChangeListener("currentDocument.undoManager.redoLabel", this);
+            this.addPathChangeListener("currentDocument.undoManager.undoCount", this);
 
             return this;
         }
@@ -591,24 +591,17 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
-    handlePropertyChange: {
-        value: function (notification) {
-
-            var currentPropertyPath = notification.currentPropertyPath,
-                undoCount;
-            if ("currentDocument.undoManager.undoLabel" === currentPropertyPath ||
-                       "currentDocument.undoManager.redoLabel" === currentPropertyPath) {
+    handlePathChange: {
+        value: function (value, property, object) {
+            if ("undoLabel" === property || "redoLabel" === property) {
                 this.updateUndoMenus();
-            } else if ("currentDocument.undoManager.undoCount" === currentPropertyPath) {
-                undoCount = this.getPath(currentPropertyPath);
+            } else if ("undoCount" === property) {
                 //Dirty if we have a document and there things to undo
-                this.environmentBridge.setDocumentDirtyState(null != undoCount && undoCount > 0);
+                this.environmentBridge.setDocumentDirtyState(null != value && value > 0);
             }
 
         }
     },
-
-
 
     updateUndoMenus: {
         enumerable: false,

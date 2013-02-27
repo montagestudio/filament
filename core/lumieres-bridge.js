@@ -300,15 +300,17 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     setUndoState: {
         value: function (state, label) {
-            // JFD TODO: obsolete, need to be redone
-            lumieres.undoManager.setUndoState(state, label);
+            var undoMenuItem = mainMenu.menuItemForIdentifier("undo");
+            undoMenuItem.title = label;
+            undoMenuItem.enabled = state;
         }
     },
 
     setRedoState: {
         value: function (state, label) {
-            // JFD TODO: obsolete, need to be redone
-            lumieres.undoManager.setRedoState(state, label);
+            var redoMenuItem = mainMenu.menuItemForIdentifier("redo");
+            redoMenuItem.title = label;
+            redoMenuItem.enabled = state;
         }
     },
 
