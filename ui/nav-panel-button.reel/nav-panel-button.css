@@ -50,12 +50,12 @@
 .Nav-tabs .Nav-button.selected:after {
     content: "";
     position: absolute;
-    left: -12px;
-    top: 15px;
-    width: 10px;
-    height: 10px;
+    left: -6px;
+    top: 16px;
+    width: 12px;
+    height: 12px;
     border-radius: 2px;
-    background: hsl(0,0%,80%);
+    background: -webkit-linear-gradient(45deg, hsl(0,0%,80%) 50%, hsl(0,0%,70%) );
     -webkit-transform: rotate(45deg);
 }
 
