@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="library-group.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "library-group"}
+            }
+        },
+
+        "groupName": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "groupName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.details.dependency"}
+            }
+        },
+
+        "groupDescription": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "groupDescription"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.details.description"}
+            }
+        },
+
+        "libraryItemList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "libraryItemList"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.details.libraryItems"}
+            }
+        },
+
+        "libraryItemCell": {
+            "prototype": "../library-cell.reel",
+            "properties": {
+                "element": {"#": "libraryItemCell"}
+            },
+            "bindings": {
+                "prototypeObject": {"<-": "@libraryItemList.objectAtCurrentIteration"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <details data-montage-id="library-group" class="LibraryGroup">
+        <summary data-montage-id="groupName" class="List-title"></summary>
+        <p data-montage-id="groupDescription" class="List-description"></p>
+        <ul data-montage-id="libraryItemList" class="List" >
+            <li data-montage-id="libraryItemCell"></li>
+        </ul>
+    </details>
+</body>
+</html>

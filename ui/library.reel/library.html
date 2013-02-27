@@ -42,43 +42,14 @@
                 }
             },
 
-            "groupName": {
-                "prototype": "montage/ui/dynamic-text.reel",
+            "group": {
+                "prototype": "./library-group.reel",
                 "properties": {
-                    "element": {"#": "groupName"}
+                    "element": {"#": "group"}
                 },
                 "bindings": {
-                    "value": {"<-": "@groupList.objectAtCurrentIteration.dependency"}
-                }
-            },
-
-            "groupDescription": {
-                "prototype": "montage/ui/dynamic-text.reel",
-                "properties": {
-                    "element": {"#": "groupDescription"}
-                },
-                "bindings": {
-                    "value": {"<-": "@groupList.objectAtCurrentIteration.description"}
-                }
-            },
-
-            "libraryItemList": {
-                "prototype": "montage/ui/repetition.reel",
-                "properties": {
-                    "element": {"#": "libraryItemList"}
-                },
-                "bindings": {
-                    "content": {"<-": "@groupList.objectAtCurrentIteration.libraryItems"}
-                }
-            },
-
-            "libraryItemCell": {
-                "prototype": "./library-cell.reel",
-                "properties": {
-                    "element": {"#": "libraryItemCell"}
-                },
-                "bindings": {
-                    "prototypeObject": {"<-": "@libraryItemList.objectAtCurrentIteration"}
+                    "details": {"<-": "@groupList.objectAtCurrentIteration"},
+                    "open": {"<-": "@groupList.currentIteration.index == 0"}
                 }
             }
 
@@ -91,13 +62,7 @@
 		<h2 data-montage-id="libraryLabel" class="Panel-title">Library</h2>
         <div class="Panel-content">
             <div data-montage-id="groupList" class="List">
-                <details>
-                    <summary data-montage-id="groupName" class="List-title"></summary>
-                    <p data-montage-id="groupDescription" class="List-description"></p>
-                    <ul data-montage-id="libraryItemList" class="List" >
-                        <li data-montage-id="libraryItemCell"></li>
-                    </ul>
-                </details>
+                <details data-montage-id="group"></details>
             </div>
         </div>
         <div class="Panel-shadow"></div>
