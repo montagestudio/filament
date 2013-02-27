@@ -14,7 +14,7 @@ var Montage = require("montage").Montage,
 exports.LibraryGroup = Montage.create(Component, /** @lends module:"ui/library.reel/library-group.reel".LibraryGroup# */ {
 
     _open: {
-        value: false
+        value: true
     },
     open: {
         get: function() {
