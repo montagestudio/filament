@@ -50,6 +50,9 @@ exports.Main = Montage.create(Component, {
                 });
             }
 
+            this.addOwnPropertyChangeListener("projectController.packageUrl", this, false);
+            this.addOwnPropertyChangeListener("projectController.currentDocument", this, false);
+
             this._projectControllerPromise = bridgePromise.then(function (environmentBridge) {
                 var projectUrl = environmentBridge.projectUrl;
 
@@ -138,8 +141,6 @@ exports.Main = Montage.create(Component, {
     handleDidOpenPackage: {
         enumerable: false,
         value: function () {
-            this.addOwnPropertyChangeListener("windowTitle", this, false);
-
             document.addEventListener("save", this, false);
 
             var app = document.application;
@@ -276,15 +277,6 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    handleChange: {
-        enumerable: false,
-        value: function (notification) {
-            if ("windowTitle" === notification.currentPropertyPath) {
-                this.needsDraw = true;
-            }
-        }
-    },
-
     handleMenuAction: {
         enumerable: false,
         value: function (evt) {
@@ -299,23 +291,36 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    handlePackageUrlChange: {
+        value: function (value) {
+            this.dispatchOwnPropertyChange("windowTitle", this.windowTitle);
+            this.needsDraw = true;
+        }
+    },
+    handleCurrentDocumentChange: {
+        value: function (value) {
+            this.dispatchOwnPropertyChange("windowTitle", this.windowTitle);
+            this.needsDraw = true;
+        }
+    },
+
     windowTitle: {
-        dependencies: ["packageUrl", "projectController.currentDocument.title"],
         get: function () {
 
-            var projectTitle,
+            var projectTitle = [],
                 packageUrl = this.projectController ? this.projectController.packageUrl : null,
                 currentDocument = this.projectController ? this.projectController.currentDocument : null;
 
-            if (packageUrl) {
-                projectTitle = packageUrl.substring(packageUrl.lastIndexOf("/") + 1);
-            }
 
             if (currentDocument) {
-                projectTitle = currentDocument.title + " — " + projectTitle;
+                projectTitle.push(currentDocument.title);
             }
 
-            return projectTitle;
+            if (packageUrl) {
+                projectTitle.push(packageUrl.substring(packageUrl.lastIndexOf("/") + 1));
+            }
+
+            return projectTitle.join(" - ");
         }
     },
 
