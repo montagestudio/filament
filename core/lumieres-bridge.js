@@ -301,7 +301,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
     setUndoState: {
         value: function (state, label) {
             var undoMenuItem = mainMenu.menuItemForIdentifier("undo");
-            undoMenuItem.title = label;
+            undoMenuItem.title = label || "";
             undoMenuItem.enabled = state;
         }
     },
@@ -309,7 +309,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
     setRedoState: {
         value: function (state, label) {
             var redoMenuItem = mainMenu.menuItemForIdentifier("redo");
-            redoMenuItem.title = label;
+            redoMenuItem.title = label || "";
             redoMenuItem.enabled = state;
         }
     },

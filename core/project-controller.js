@@ -607,17 +607,11 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         enumerable: false,
         value: function () {
 
-            if (this.getPath("currentDocument.undoManager.undoCount")) {
-                this.environmentBridge.setUndoState(true, this.getPath("currentDocument.undoManager.undoLabel"));
-            } else {
-                this.environmentBridge.setUndoState(false);
-            }
+            var undoEnabled = !!this.getPath("currentDocument.undoManager.undoCount"),
+                redoEnabled = !!this.getPath("currentDocument.undoManager.redoCount");
 
-            if (this.getPath("currentDocument.undoManager.redoCount")) {
-                this.environmentBridge.setRedoState(true, this.getPath("currentDocument.undoManager.redoLabel"));
-            } else {
-                this.environmentBridge.setRedoState(false);
-            }
+            this.environmentBridge.setUndoState(undoEnabled, this.getPath("currentDocument.undoManager.undoLabel"));
+            this.environmentBridge.setRedoState(redoEnabled, this.getPath("currentDocument.undoManager.redoLabel"));
         }
     },
 
