@@ -5,6 +5,62 @@ var LibraryItem = require("filament-extension/core/library-item.js").LibraryItem
 //TODO each extension really should be its own package, anticipate consuming extensions from elsewhere
 var packageLocation = require.location;
 
+
+var AnchorLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/anchor.reel",
+            "properties": {
+                "value": "Link"
+            }
+        }
+    },
+
+    name: {
+        value: "Anchor"
+    },
+
+    label: {
+        value: "Anchor"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/anchor.png"
+    },
+
+    html: {
+        value: '<a data-montage-id=""></a>'
+    }
+
+});
+
+var AutocompleteLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/autocomplete/autocomplete.reel"
+        }
+    },
+
+    name: {
+        value: "Autocomplete"
+    },
+
+    label: {
+        value: "Autocomplete"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/autocomplete.png"
+    },
+    
+    html: {
+        value: '<input data-montage-id="">'
+    }
+
+});
+
 var ButtonLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
@@ -120,6 +176,35 @@ var InputRadioLibraryItem = Montage.create(LibraryItem, {
 
     html: {
         value: '<input type="radio" data-montage-id="">'
+    }
+
+});
+
+var InputDateLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/input-date.reel",
+            "properties": {
+                "value": "2013-02-28"
+            }
+        }
+    },
+
+    name: {
+        value: "InputDate"
+    },
+
+    label: {
+        value: "Date Input"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/input-date.png"
+    },
+
+    html: {
+        value: '<input type="date" data-montage-id="">'
     }
 
 });
@@ -481,10 +566,13 @@ var FlowLibraryItem = Montage.create(LibraryItem, {
 
 //TODO build this automatically
 exports.libraryItems = {
+    "montage/ui/anchor.reel": AnchorLibraryItem,
+    "montage/ui/autocomplete/autocomplete.reel": AutocompleteLibraryItem,
     "montage/ui/button.reel": ButtonLibraryItem,
     "montage/ui/toggle-button.reel": ToggleButtonLibraryItem,
     "montage/ui/input-checkbox.reel": InputCheckboxLibraryItem,
     "montage/ui/input-radio.reel": InputRadioLibraryItem,
+    "montage/ui/input-date.reel": InputDateLibraryItem,
     "montage/ui/input-number.reel": InputNumberLibraryItem,
     "montage/ui/input-range.reel": InputRangeLibraryItem,
     "montage/ui/select.reel": SelectLibraryItem,
@@ -530,6 +618,10 @@ var RangeControllerLibraryItem = Montage.create(LibraryItem, {
 
     label: {
         value: "RangeController"
+    },
+    
+    icon: {
+        value: packageLocation + "assets/components/range-controller.png"
     }
 
 });
