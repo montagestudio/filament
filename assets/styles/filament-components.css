@@ -176,12 +176,17 @@
 	font-size: 12px;
 	font-weight: bold;
 	color: hsl(0,0%,50%);
-	text-align: center;
-	text-transform: uppercase;
 	text-shadow: 0 1px 0 hsla(0,0%,100%,.8);
 	border-bottom: 1px solid hsla(0,0%,0%,.1);
 	background: -webkit-linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
+	cursor: pointer;
 }
+
+.List-title:focus {
+    outline: none;
+}
+
+
 
 .List-description {
     margin: 0;
