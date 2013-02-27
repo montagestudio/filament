@@ -131,6 +131,7 @@ exports.Main = Montage.create(Component, {
                 }, true);
 
                 app.addEventListener("menuAction", self, false);
+                app.addEventListener("menuValidate", self, false);
                 app.addEventListener("activateExtension", this);
                 app.addEventListener("deactivateExtension", this);
 
@@ -288,6 +289,12 @@ exports.Main = Montage.create(Component, {
                     this.projectController.createModule().done();
                     break;
             }
+        }
+    },
+
+    handleMenuValidate: {
+        value: function (evt) {
+            this.projectController.validateMenu(evt.detail);
         }
     },
 
