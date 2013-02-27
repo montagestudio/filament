@@ -1,5 +1,5 @@
 var Montage = require("montage").Montage,
-    EditingProxy = require("palette/core/editing-proxy").EditingProxy
+    EditingProxy = require("palette/core/editing-proxy").EditingProxy,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver;
 
 
