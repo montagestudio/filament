@@ -148,5 +148,13 @@
         "locations": [
             "preferences/ui/main.reel/main.html"
         ]
+    },
+    "undo_label": {
+        "message": "Undo {label}",
+        "description": "Label for undo menu label"
+    },
+    "redo_label": {
+        "message": "Redo {label}",
+        "description": "Label for redo menu label"
     }
 }

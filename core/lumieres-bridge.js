@@ -5,9 +5,17 @@ var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
     qs = require("qs"),
     mainMenu = require("ui/native-menu/menu").defaultMenu,
-    FileDescriptor = require("core/file-descriptor").FileDescriptor;
+    FileDescriptor = require("core/file-descriptor").FileDescriptor,
+    defaultLocalizer = require("montage/core/localizer").defaultLocalizer;
 
 exports.LumiereBridge = Montage.create(EnvironmentBridge, {
+
+    _undoMessagePromise: {
+        value: defaultLocalizer.localize("undo_label", "Undo {label}")
+    },
+    _redoMessagePromise: {
+        value: defaultLocalizer.localize("redo_label", "Redo {label}")
+    },
 
     _backend: {
         value: null
@@ -301,16 +309,32 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
     setUndoState: {
         value: function (state, label) {
             var undoMenuItem = mainMenu.menuItemForIdentifier("undo");
-            undoMenuItem.title = label || "";
             undoMenuItem.enabled = state;
+
+            if (this._undoMessagePromise.isResolved()) {
+                undoMenuItem.title = this._undoMessagePromise.valueOf()({label: label || ""});
+            } else {
+                var self = this;
+                this._undoMessagePromise.then(function (undoMessage) {
+                    self.setUndoState(state, label);
+                }).done();
+            }
         }
     },
 
     setRedoState: {
         value: function (state, label) {
             var redoMenuItem = mainMenu.menuItemForIdentifier("redo");
-            redoMenuItem.title = label || "";
             redoMenuItem.enabled = state;
+
+            if (this._redoMessagePromise.isResolved()) {
+                redoMenuItem.title = this._redoMessagePromise.valueOf()({label: label || ""});
+            } else {
+                var self = this;
+                this._redoMessagePromise.then(function (undoMessage) {
+                    self.setRedoState(state, label);
+                }).done();
+            }
         }
     },
 
