@@ -69,10 +69,12 @@ exports.Panel = Montage.create(Component, /** @lends module:"ui/panel.reel".Pane
             switch (this._state) {
                 case HIDDEN_STATE:
                     classList.remove("Panel--floating");
+                    classList.remove("Panel--noAnimation");
                     classList.add("Panel--hidden");
                     break;
                 case FLOATING_STATE:
                     classList.add("Panel--floating");
+                    classList.add("Panel--noAnimation");
                     classList.remove("Panel--hidden");
                 break;
                 case LOCKED_STATE:

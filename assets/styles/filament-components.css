@@ -114,6 +114,10 @@
     box-shadow: -2px 0 4px hsla(0,0%,0%,0.4);
 }
 
+.Panel.Panel--noAnimation {
+    -webkit-transition: none;
+}
+
 .Panel {
     -webkit-flex: 0 0 200px;
     min-width: 0;
