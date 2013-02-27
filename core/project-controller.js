@@ -591,15 +591,36 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
+    _needsMenuUpdate: {
+        value: false
+    },
+
     handlePathChange: {
         value: function (value, property, object) {
-            if ("undoLabel" === property || "redoLabel" === property) {
-                this.updateUndoMenus();
-            } else if ("undoCount" === property) {
-                //Dirty if we have a document and there things to undo
-                this.environmentBridge.setDocumentDirtyState(null != value && value > 0);
-            }
 
+            var self = this;
+
+            switch (property) {
+            case "undoCount":
+            case "undoLabel":
+            case "redoLabel":
+
+                // While several properties trigger the need for updating, only update once
+                if (!this._needsMenuUpdate) {
+                    this._needsMenuUpdate = true;
+                    //TODO reconsider where the nextTicking responsibility should live; it's weird being here
+                    // ensuring consistency between the various bound properties in the undoManager that may not have synced up yet
+                    Promise.nextTick(function () {
+                        self.updateUndoMenus();
+                    });
+                }
+
+                if ("undoCount" === property) {
+                    this.environmentBridge.setDocumentDirtyState(null != value && value > 0);
+                }
+
+                break;
+            }
         }
     },
 
@@ -607,11 +628,13 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         enumerable: false,
         value: function () {
 
-            var undoEnabled = !!this.getPath("currentDocument.undoManager.undoCount"),
-                redoEnabled = !!this.getPath("currentDocument.undoManager.redoCount");
+            var undoEnabled = this.getPath("currentDocument.undoManager.canUndo"),
+                redoEnabled = this.getPath("currentDocument.undoManager.canRedo");
 
             this.environmentBridge.setUndoState(undoEnabled, this.getPath("currentDocument.undoManager.undoLabel"));
             this.environmentBridge.setRedoState(redoEnabled, this.getPath("currentDocument.undoManager.redoLabel"));
+
+            this._needsMenuUpdate = false;
         }
     },
 
