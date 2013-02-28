@@ -1,133 +1,21 @@
-.configurator {
+.Configurator {
 
 }
 
 
 /* Search --------------------------------- */
 
-.configurator .search {
-    padding: 10px;
-    background: hsl(0,0%,80%);
-    border-bottom: 1px solid hsl(0,0%,70%);
+.Configurator-name {
+    padding: 8px;
 }
 
-.configurator .search-input {
+.Configurator-name-input {
     -webkit-appearance: none;
     width: 100%;
-    padding: 0;
-}
-
-
-/* List --------------------------------- */
-
-.configurator .component {
-    border-top: 1px solid hsl(0,0%,90%);
-    border-bottom: 1px solid hsl(0,0%,70%);
-    background: hsl(0,0%,80%);
-}
-
-.configurator .component.collapsed {
-    -webkit-flex: 0 0 auto;
-}
-
-
-
-/* Header --------------------------------- */
-
-.configurator .configurator-header {
-    display: -webkit-flex;
-    -webkit-justify-content: space-between;
-    -webkit-align-items: center;
-    padding-right: 10px;
-}
-
-.configurator .title {
-    margin: 0;
-    padding: 10px;
-    font-size: 14px;
-    line-height: 1;
-}
-
-.configurator .star {
-    visibility: hidden;
-    width: 30px;
-    height: 30px;
-    border: none;
-    border-radius: 4px;
-    border: 1px solid hsla(0,0%,70%,0);
-    background: transparent;
-    color: hsl(0,0%,60%);
-    font-size: 53px;
-    line-height: .5;
-    text-align: center;
-}
-
-.configurator .configurator-header.stared .star,
-.configurator .configurator-header:hover .star {
-    visibility: visible;
-}
-
-.configurator .star:hover {
-    cursor: pointer;
-    border: 1px solid hsl(0,0%,70%);
-    background: hsl(0,0%,90%);
-}
-
-.configurator .star:active {
+    border-color: transparent;
     background: transparent;
 }
 
-
-/* List --------------------------------- */
-
-.configurator .list {
-    position: relative;
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	-webkit-flex: 1 1 0;
-	min-height: 0;
-	background-color: hsl(0,0%,70%);
-}
-
-.configurator .list:before {
-	content: "";
-	position: absolute;
-	width: 10px;
-	height: 10px;
-	top: -5px;
-	left: 15px;
-	z-index: 1;
-	-webkit-transform: rotate(45deg);
-	background: hsl(0,0%,80%);
-	border-right: 1px solid hsl(0,0%,60%);
-	border-bottom: 1px solid hsl(0,0%,60%);
-}
-
-.configurator .list-item {
-    position: relative;
-    display: -webkit-flex;
-    -webkit-align-items: center;
-    -webkit-justify-content: space-between;
-    padding: 10px;
-    font-size: 14px;
-    background: hsl(0,0%,70%);
-    border-top: 1px solid hsl(0,0%,60%);
-}
-
-.configurator input[type=number] {
+.Configurator input[type=number] {
     width: 80px;
-}
-
-
-
-/* Binding --------------------------------- */
-
-.configurator .binding {
-    display: block;
-    width: 30px;
-    height: 30px;
-    margin-left: 10px;
-    font-size: 28px;
-    line-height: .9;
 }

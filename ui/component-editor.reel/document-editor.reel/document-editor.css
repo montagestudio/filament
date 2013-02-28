@@ -1,0 +1,17 @@
+
+.DocumentEditor.standby {
+     display: none;
+}
+
+.DocumentEditor {
+    -webkit-flex: 1 1 auto;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    position: relative;
+}
+
+.DocumentEditor .Workbench {
+	-webkit-flex: 1;
+	border-left: 6px solid hsl(0,0%,20%);
+	border-right: 6px solid hsl(0,0%,20%);
+}

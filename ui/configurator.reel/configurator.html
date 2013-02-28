@@ -70,85 +70,45 @@
 </head>
 <body>
     
-    <aside data-montage-id="configurator" class="Panel configurator">
+    <aside data-montage-id="configurator" class="Panel Configurator">
         
         <h2 class="Panel-title">Inspector</h2>
         
-        <div class="Panel-content">
+        <div class="Panel-content List">
             
-            <header class="search">
-                <input data-montage-id="search" class="search-input" type="search" placeholder="Search" autocomplete="on" />
+            <header class="List-title Configurator-name">
+                <input data-montage-id="search" class="Configurator-name-input" type="text" placeholder="Name">
             </header>
             
-            <section class="component collapsed">
-                <header class="configurator-header stared">
-                    <h1 class="title">Owner</h1>
-                    <button class="star" data-icon="&#9733;"></button>
-                </header>
-            </section>
-            
-            <section class="component">
-                <header class="configurator-header">
-                    <h1 class="title">Celsius</h1>
-                    <button class="star" data-icon="&#9733;"></button>
-                </header>
-                <ul class="list">
-                    <li class="list-item">
+            <details open>
+                <summary class="List-title">Button</summary>
+                <ul class="List">
+                    <li class="List-item">
                         <label><input data-montage-id="CelsiusNumber" type="number" value="0" /> Value</label>
-                        <div data-icon="&#59215;" class="binding bound"></div>
                     </li>
-                    <li class="list-item">
+                    <li class="List-item">
                         <label><input data-montage-id="CelsiusCheckbox1" type="checkbox" /> Label 2</label>
-                        <div class="binding"></div>
                     </li>
-                    <li class="list-item">
+                    <li class="List-item">
                         <label><input data-montage-id="CelsiusCheckbox2" type="checkbox" /> Label 3</label>
-                        <div class="binding"></div>
                     </li>
                 </ul>
-            </section>
+            </details>
             
-            <section class="component">
-                <header class="configurator-header">
-                    <h1 class="title">Fahrenheit</h1>
-                    <button class="star" data-icon="&#9733;"></button>
-                </header>
-                <ul class="list">
-                    <li class="list-item">
+            <details open>
+                <summary class="List-title">Component</summary>
+                <ul class="List">
+                    <li class="List-item">
                         <label><input data-montage-id="FahrenheitNumber" type="number" value="32" /> Value</label>
-                        <div data-icon="&#9652;" class="binding bound"></div>
                     </li>
-                    <li class="list-item">
+                    <li class="List-item">
                         <label><input data-montage-id="FahrenheitCheckbox1" type="checkbox" /> Label 2</label>
-                        <div class="binding"></div>
                     </li>
-                    <li class="list-item">
+                    <li class="List-item">
                         <label><input data-montage-id="FahrenheitCheckbox2" type="checkbox" /> Label 3</label>
-                        <div class="binding"></div>
                     </li>
                 </ul>
-            </section>
-            
-            <section class="component collapsed">
-                <header class="configurator-header">
-                    <h1 class="title">Slider</h1>
-                    <button class="star" data-icon="&#9733;"></button>
-                </header>
-            </section>
-            
-            <section class="component collapsed">
-                <header class="configurator-header">
-                    <h1 class="title">Ghost 3</h1>
-                    <button class="star" data-icon="&#9733;"></button>
-                </header>
-            </section>
-            
-            <section class="component collapsed">
-                <header class="configurator-header">
-                    <h1 class="title">Ghost 2</h1>
-                    <button class="star" data-icon="&#9733;"></button>
-                </header>
-            </section>
+            </details>
             
         </div>
         

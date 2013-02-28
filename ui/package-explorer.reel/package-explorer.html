@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+    <title>PackageExplorer</title>
+    <meta charset="utf-8">
+
+    <link href="package-explorer.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "package-explorer"}
+                }
+            },
+                      
+            "addFileButton": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "add-file-button"}
+                }
+            },
+            
+            "addModuleButton": {
+                "prototype": "montage/ui/button.reel",
+                "properties": {
+                    "element": {"#": "add-module-button"}
+                }       
+            }
+        }
+    </script>
+
+</head>
+<body>
+
+    <div data-montage-id="package-explorer" class="Panel PackageExplorer">
+        <header class="Panel-title">
+            <h2 data-montage-id="packageName" class="Panel-title-name">PhotoFX</h2>
+            <span data-montage-id="packageVersion" class="Panel-title-version">1.2.1</span>
+        </header>
+
+        <ul class="Panel-content List PackageExplorer-list">
+        	<li><i data-icon="&#128193;"></i> assets</li>
+        	<li><i data-icon="&#59156;"></i> index.html</li>
+        	<li><i data-icon="&#128193;"></i> node_modules</li>
+        	<li class="disabled"><i data-icon="&#128230;"></i> package.json</li>
+        	<li><i data-icon="&#128193;"></i> ui
+                <ul>
+                    <li><i data-icon="&#128191;"></i> configurator.reel</li>
+                    <li><i data-icon="&#128191;"></i> editor.reel</li>
+                    <li class="selected"><i data-icon="&#128191;"></i> main.reel
+                        <ul>
+                            <li><i data-icon="&#59156;"></i> main.css</li>
+                            <li><i data-icon="&#59156;"></i> main.html</li>
+                            <li><i data-icon="&#59156;"></i> main.js</li>
+                        </ul>
+                    </li>
+                    <li><i data-icon="&#128191;"></i> nav.reel</li>
+                </ul>
+        	</li>
+        </ul>
+        <div class="Panel-shadow"></div>
+        <footer class="Panel-title PackageExplorer-bar">
+            <button data-montage-id="add-file-button" class="Button">Add Component…</button>
+            <button data-montage-id="add-module-button" class="Button">Add Module…</button>
+        </footer>
+    </div>
+
+</body>
+</html>

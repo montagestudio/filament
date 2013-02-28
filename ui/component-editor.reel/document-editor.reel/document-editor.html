@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+    <title>DocumentEditor</title>
+    <meta charset="utf-8">
+
+    <link href="document-editor.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "documentEditor"},
+                    "workbench": {"@": "workbench"}
+                }
+            },
+
+            "stage": {
+                "prototype": "ui/stage.reel",
+                "properties": {
+                    "element": {"#": "stage"}
+                }
+            }
+        }
+    </script>
+
+</head>
+<body>
+
+    <div data-montage-id="documentEditor" class="DocumentEditor">
+        <div data-montage-id="stage"></div>
+    </div>
+
+</body>
+</html>

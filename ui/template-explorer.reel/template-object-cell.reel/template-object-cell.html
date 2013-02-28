@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="template-object-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "template-object-cell"}
+            }
+        },
+
+        "templateObjectLabel": {
+            "prototype": "montage/ui/dynamic-text.reel",
+            "properties": {
+                "element": {"#": "templateObjectLabel"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.label"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <li data-montage-id="template-object-cell" class="List-item TemplateObjectCell">
+        <span data-montage-id="templateObjectLabel"></span>
+    </li>
+</body>
+</html>

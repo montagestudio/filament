@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     
     <link href="main.css" rel="stylesheet" />
-    <link href="../../assets/icons/style.css" rel="stylesheet" />
 
     <script type="text/montage-serialization">
         {
@@ -15,17 +14,17 @@
                 }
             },
             
-            "nav": {
-                "prototype": "ui/nav.reel",
+            "packageExplorer": {
+                "prototype": "ui/package-explorer.reel",
                 "properties": {
-                    "element": {"#": "nav"}
+                    "element": {"#": "packageExplorer"}
                 }
             },
             
-            "editor": {
-                "prototype": "ui/editor.reel",
+            "componentEditor": {
+                "prototype": "ui/component-editor.reel",
                 "properties": {
-                    "element": {"#": "editor"}
+                    "element": {"#": "componentEditor"}
                 }
             }
             
@@ -35,9 +34,32 @@
 </head>
 <body>
 
-    <div data-montage-id="main" id="main" class="main isLibrary">        
-        <nav data-montage-id="nav"></nav>
-        <div data-montage-id="editor"></div>
+    <div data-montage-id="main" class="Main-wrap">
+    
+        <div class="Main">
+            <aside data-montage-id="packageExplorer"></aside>
+
+            <section class="editor">
+                <ul data-montage-id="openDocumentList" class="Tabs palette">
+                    <li data-montage-id="documentTab" class="DocumentTab selected">
+                        <span data-montage-id="label" class="DocumentTab-label">main.reel</span>
+                        <button data-montage-id="closeButton" class="DocumentTab-close">×</button>
+                    </li>
+                    <li data-montage-id="documentTab" class="DocumentTab">
+                        <span data-montage-id="label" class="DocumentTab-label">detail.reel</span>
+                        <button data-montage-id="closeButton" class="DocumentTab-close">×</button>
+                    </li>
+                    <li data-montage-id="documentTab" class="DocumentTab">
+                        <span data-montage-id="label" class="DocumentTab-label">picker.reel</span>
+                        <button data-montage-id="closeButton" class="DocumentTab-close">×</button>
+                    </li>
+                </ul>
+                
+                <section data-montage-id="componentEditor"></section>
+                
+            </section>
+
+        </div>
     </div>
 
 </body>

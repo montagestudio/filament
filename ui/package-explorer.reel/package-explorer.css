@@ -1,0 +1,115 @@
+
+.PackageExplorer .Panel-title {
+    padding: 12px 8px 0 8px;
+    border-right: 1px solid hsla(0,0%,0%,.2);
+    height: 64px;
+}
+
+.PackageExplorer .Panel-title-name {
+    margin: 0;
+    padding: 0;
+    color: hsl(0,0%,30%);
+    font-family: Titillium Web, Open Sans, sans-serif;
+    font-size: 24px;
+    line-height: 16px;
+}
+
+.PackageExplorer .Panel-title-version {
+   color: hsl(0,0%,70%);
+   font-size: 11px;
+}
+
+.PackageExplorer .Panel-shadow {
+    top: 64px;
+}
+
+
+.Panel-title.PackageExplorer-bar {
+    height: 92px;
+    padding: 10px 10px 0 10px;
+}
+
+.PackageExplorer-bar .Button {
+    display: block;
+    width: 100%;
+    margin: 0 0 10px 0;
+}
+
+
+
+
+
+
+
+/* List ----------------------------- */
+
+.PackageExplorer-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+}
+
+.PackageExplorer-list li {
+    padding: 2px 0px 2px 8px;
+    cursor: pointer;
+}
+
+.PackageExplorer-list .selected,
+.PackageExplorer-list li:hover {
+    background-color: hsla(0,0%,0%,.1);
+}
+
+.PackageExplorer-list li.disabled {
+    opacity: .3;
+    cursor: not-allowed;
+}
+
+.PackageExplorer-list i {
+    margin-right: 4px;
+}
+
+.PackageExplorer-list ul {
+    margin: 0 0 0 14px;
+    padding: 0;
+    list-style: none;
+}
+
+.PackageExplorer-list .selected {
+    position: relative;
+    overflow: hidden;
+}
+
+/*.PackageExplorer-list .selected:after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    right: -5px;
+    background: hsl(0,0%,85%);
+    -webkit-transform: rotate(45deg);
+}*/
+
+
+/* Icons */
+
+.PackageExplorer-list [data-icon] {
+    content: "";
+    position: relative;
+    display: inline-block;
+    width: 16px;
+    height: 12px;
+    line-height: 0;
+    font-style: normal;
+}
+
+.PackageExplorer-list [data-icon]:before {
+    line-height: .6;
+    left: 0px;
+    right: auto;
+    font-size: 28px;
+    opacity: .5;
+}

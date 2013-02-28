@@ -1,0 +1,18 @@
+.ComponentEditor {
+    -webkit-flex: 1;
+    min-height: 0;
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+}
+
+.Filament-view {
+    -webkit-flex: 1;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+}
+
+.documentEditorSlot {
+    -webkit-flex: 1;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+}
