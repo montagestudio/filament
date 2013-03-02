@@ -1,0 +1,40 @@
+
+/* Global ------------------------------------- */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    background-color: hsl(0,0%,90%);
+}
+
+body {
+    margin: 0;
+    height: 100%;
+    font-family: Open Sans, sans-serif;
+    overflow: hidden; /* Removes bounce when scrolling on body */
+    -webkit-user-select: none; /* Disable text selection */
+    cursor: default; /* Disable text cursor on text */
+}
+
+.montage-invisible {
+    display: none;
+}
+
+/* Scrollbar -------------------------------- */
+
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 8px;
+    height: 0px;
+    background-color: hsla(0,0%,0%,0);
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    border: 3px solid hsla(0,0%,0%,0);
+    background-clip: padding-box;
+    background-color: hsla(0,0%,0%,.15);
+}

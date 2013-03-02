@@ -1,8 +1,15 @@
 
+.Panel.PackageExplorer {
+    background: hsl(0,0%,86%);
+    margin: 0;
+    border-right: 1px solid hsla(0,0%,0%,.1);
+}
+
 .PackageExplorer .Panel-title {
     padding: 12px 8px 0 8px;
-    border-right: 1px solid hsla(0,0%,0%,.2);
-    height: 64px;
+    height: 56px;
+    border-top: 1px solid hsla(0,0%,100%,1);
+    background: -webkit-linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
 }
 
 .PackageExplorer .Panel-title-name {
@@ -17,10 +24,11 @@
 .PackageExplorer .Panel-title-version {
    color: hsl(0,0%,70%);
    font-size: 11px;
+   line-height: 1.2;
 }
 
 .PackageExplorer .Panel-shadow {
-    top: 64px;
+    top: 56px;
 }
 
 
@@ -47,7 +55,7 @@
     margin: 0;
     padding: 0;
     list-style: none;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .PackageExplorer-list li {
@@ -57,7 +65,7 @@
 
 .PackageExplorer-list .selected,
 .PackageExplorer-list li:hover {
-    background-color: hsla(0,0%,0%,.1);
+    background-color: hsl(0,0%,75%);
 }
 
 .PackageExplorer-list li.disabled {

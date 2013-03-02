@@ -9,8 +9,8 @@
     top: 0;
     bottom: 0;
     width: 100%;
-    border-left: 6px solid hsl(0,0%,20%);
-    border-right: 6px solid hsl(0,0%,20%);
+    border-left: 1px solid hsl(0,0%,75%);
+    border-right: 1px solid hsl(0,0%,75%);
     background: hsl(0,0%,90%) url(bg-stage.svg);
     background-size: 10px;
 }
@@ -25,7 +25,7 @@
 
 
 
-@media (min-width:1500px) and (min-height:800px) {
+/*@media (min-width:1500px) and (min-height:800px) {
     
     .stage {
         display: -webkit-flex;
@@ -42,4 +42,4 @@
         border-radius: 30px;
     }
 
-}
+}*/

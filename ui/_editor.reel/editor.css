@@ -5,6 +5,7 @@
     display: -webkit-flex;
     -webkit-flex-direction: row;
     height: 100%;
+    padding: 0 6px;
     background: hsl(0,0%,50%);
 }
 

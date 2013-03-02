@@ -2,18 +2,11 @@
 
 }
 
-
-/* Search --------------------------------- */
-
-.Configurator-name {
-    padding: 8px;
-}
-
-.Configurator-name-input {
+.Configurator .Configurator-name {
     -webkit-appearance: none;
     width: 100%;
-    border-color: transparent;
-    background: transparent;
+    margin-bottom: 8px;
+    border-radius: 4px;
 }
 
 .Configurator input[type=number] {
