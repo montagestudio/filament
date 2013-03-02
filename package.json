@@ -7,12 +7,12 @@
         "url" : "git@github.com:declarativ/filament.git"
     },
     "dependencies": {
-        "montage": "~0.12.4",
+        "montage": "git+ssh://git@github.com:montagejs/montage.git#integrate-bindings",
         "q": "0.8.11",
         "q-connection": ">=0.4.7",
         "q-io": "1.5.2",
         "qs": "0.5.2",
-        "palette": "git+ssh://git@github.com:declarativ/palette.git",
+        "palette": "git+ssh://git@github.com:declarativ/palette.git#frb+template",
         "mop": "~0.12.2",
         "npm": "1.1.70",
         "watchr": "2.3.3",
