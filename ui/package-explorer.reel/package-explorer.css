@@ -2,7 +2,7 @@
 .Panel.PackageExplorer {
     background: hsl(0,0%,86%);
     margin: 0;
-    border-right: 1px solid hsla(0,0%,0%,.1);
+    border-right: 1px solid hsl(0,0%,75%);
 }
 
 .PackageExplorer .Panel-title {
@@ -65,7 +65,7 @@
 
 .PackageExplorer-list .selected,
 .PackageExplorer-list li:hover {
-    background-color: hsl(0,0%,75%);
+    background-color: hsla(0,0%,0%,.06);
 }
 
 .PackageExplorer-list li.disabled {
