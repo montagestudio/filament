@@ -3,12 +3,12 @@ var Montage = require("montage/core/core").Montage,
 
 exports.Configurator = Montage.create(Component, {
 
-    prepareForDraw: {
-        value: function() {
-            this._element.addEventListener("click", function(event) {
-                this.classList.toggle("Panel--collapsed");
-            }, false); 
-        }
-    }
+//    prepareForDraw: {
+//        value: function() {
+//            this._element.addEventListener("click", function(event) {
+//                this.classList.toggle("Panel--collapsed");
+//            }, false); 
+//        }
+//    }
 
 });

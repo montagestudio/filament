@@ -9,6 +9,10 @@
     border-radius: 4px;
 }
 
+.Configurator input {
+    margin-right: 6px;
+}
+
 .Configurator input[type=number] {
     width: 80px;
 }

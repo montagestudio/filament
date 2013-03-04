@@ -1,0 +1,15 @@
+
+.TemplateExplorer .List-item {
+    cursor: pointer;
+}
+
+.TemplateExplorer .List-item:hover {
+	background: hsl(0,0%,96%);
+}
+
+.TemplateExplorer .List-item.active,
+.TemplateExplorer .List-item:active,
+.TemplateExplorer .List-item:focus {
+    border-color: transparent;
+	background: hsl(0,0%,85%);
+}

@@ -239,20 +239,8 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
-	cursor: pointer;
 }
 
 .List-item:last-child {
     border-radius: 0 0 4px 4px;
-}
-
-.List-item:hover {
-	background: hsl(0,0%,94%);
-}
-
-.List-item.active,
-.List-item:active,
-.List-item:focus {
-    border-color: transparent;
-	background: hsl(0,0%,85%);
 }
