@@ -7,7 +7,7 @@
         "url" : "git@github.com:declarativ/filament.git"
     },
     "dependencies": {
-        "montage": "git+ssh://git@github.com:montagejs/montage.git#integrate-bindings",
+        "montage": "git+ssh://git@github.com:montagejs/montage.git#edge",
         "q": "0.8.11",
         "q-connection": ">=0.4.7",
         "q-io": "1.5.2",
