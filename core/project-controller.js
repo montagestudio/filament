@@ -5,6 +5,7 @@ var Montage = require("montage/core/core").Montage,
     findObjectNameRegExp = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver._findObjectNameRegExp,
     RangeController = require("montage/core/range-controller").RangeController,
     WeakMap = require("montage/collections/weak-map"),
+    Map = require("montage/collections/map"),
     ProjectController;
 
 exports.ProjectController = ProjectController = Montage.create(Montage, {
@@ -147,13 +148,13 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
             var self = this;
 
             this._editorTypeInstanceMap = new WeakMap();
-            this._fileUrlEditorMap = {};
-            this._fileUrlDocumentMap = {};
+            this._fileUrlEditorMap = new Map();
+            this._fileUrlDocumentMap = new Map();
 
             this._environmentBridge = bridge;
             this._viewController = viewController;
-            this.moduleLibraryItemMap = {};
-            this.packageNameLibraryItemsMap = {};
+            this.moduleLibraryItemMap = new Map();
+            this._packageNameLibraryItemsMap = new Map();
 
             this.loadedExtensions = extensions;
             this.activeExtensions = [];
@@ -453,7 +454,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                 } else {
 
                     docAlreadyLoaded = !!this._fileUrlDocumentMap[fileUrl];
-                    this._fileUrlEditorMap[fileUrl] = editor;
+                    this._fileUrlEditorMap.set(fileUrl, editor);
 
                     // Editor available; load the editingDocument
                     if (!docAlreadyLoaded) {
@@ -466,7 +467,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                         }
 
                         if (!docAlreadyLoaded) {
-                            self._fileUrlDocumentMap[fileUrl] = editingDocument;
+                            self._fileUrlDocumentMap.set(fileUrl, editingDocument);
                             self.openDocumentsController.push(editingDocument);
                             self.dispatchEventNamed("didLoadDocument", true, false, editingDocument);
                         }
@@ -506,7 +507,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
     closeFileUrl: {
         value: function (fileUrl) {
 
-            var editingDocument = this._fileUrlDocumentMap[fileUrl],
+            var editingDocument = this._fileUrlDocumentMap.get(fileUrl),
                 editingDocuments = this.openDocumentsController.content,
                 openNextDocPromise,
                 nextDoc,
@@ -538,12 +539,12 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
 
             return openNextDocPromise.then(function () {
 
-                editor = self._fileUrlEditorMap[fileUrl];
+                editor = self._fileUrlEditorMap.get(fileUrl);
 
                 return editor.close(fileUrl).then(function (document) {
                     self.openDocumentsController.delete(document);
-                    delete self._fileUrlEditorMap[fileUrl];
-                    delete self._fileUrlDocumentMap[fileUrl];
+                    self._fileUrlEditorMap.delete(fileUrl);
+                    self._fileUrlDocumentMap.delete(fileUrl);
                     return document;
                 });
             });
@@ -553,7 +554,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
 
     _editorForFileUrl: {
         value: function (fileUrl) {
-            var editor = this._fileUrlEditorMap[fileUrl],
+            var editor = this._fileUrlEditorMap.get(fileUrl),
                 editorType;
 
             if (!editor) {
@@ -687,7 +688,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                         }
 
                         // add libraryItems any extensions offered for this package
-                        offeredLibraryItems = self.packageNameLibraryItemsMap[dependency.dependency];
+                        offeredLibraryItems = self._packageNameLibraryItemsMap.get(dependency.dependency);
                         if (offeredLibraryItems) {
                             dependencyLibraryEntry.libraryItems.push.apply(dependencyLibraryEntry.libraryItems, offeredLibraryItems);
                         }
@@ -730,7 +731,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
     },
 
     libraryItemForModuleId: {
-        enumerable: false,
         value: function (moduleId, objectName) {
             var libraryEntry = this.moduleLibraryItemMap[moduleId],
                 item;
@@ -748,17 +748,17 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
-    packageNameLibraryItemsMap: {
-        enumerable: false,
+    _packageNameLibraryItemsMap: {
         value: null
     },
 
     registerLibraryItemForPackageName: {
         value: function (libraryItem, packageName) {
-            var addedLibraryItems = this.packageNameLibraryItemsMap[packageName];
+            var addedLibraryItems = this._packageNameLibraryItemsMap.get(packageName);
 
             if (!addedLibraryItems) {
-                addedLibraryItems = this.packageNameLibraryItemsMap[packageName] = [];
+                addedLibraryItems = [];
+                this._packageNameLibraryItemsMap.set(packageName, addedLibraryItems);
             }
 
             addedLibraryItems.push(libraryItem);
@@ -772,7 +772,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
 
     unregisterLibraryItemForPackageName: {
         value: function (libraryItem, packageName) {
-            var addedLibraryItems = this.packageNameLibraryItemsMap[packageName],
+            var addedLibraryItems = this._packageNameLibraryItemsMap.get(packageName),
                 index;
 
             if (addedLibraryItems) {
