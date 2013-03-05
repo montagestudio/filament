@@ -139,17 +139,14 @@ exports.DocumentEditor = Montage.create(Component, {
     handleSelect: {
         value: function (evt) {
             var detail = evt.detail,
-                selectionCandidate = detail.candidate.controller,
+                selectionCandidate = detail.candidate,
                 isAddingToSelection = detail.addingToSelection,
                 isRemovingFromSelection = detail.removingFromSelection,
                 editingDocument = this.editingDocument;
 
-            if (
-                selectionCandidate &&
-                (selectionCandidate = editingDocument.editingProxyForObject(selectionCandidate))
-            ) {
-                //TODO make the element associated with the current selection invisible to point events to drill through a tree
+            selectionCandidate = editingDocument.updateSelectionCandidate(selectionCandidate);
 
+            if (selectionCandidate) {
                 if (isAddingToSelection) {
                     editingDocument.selectObject(selectionCandidate);
                 } else if (isRemovingFromSelection) {
