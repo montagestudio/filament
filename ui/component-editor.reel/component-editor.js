@@ -14,6 +14,10 @@ exports.ComponentEditor = Montage.create(Component, {
         vaule: null
     },
 
+    templateObjectsController: {
+        value: null
+    },
+
     _editorsToInsert: {
         enumerable: false,
         value: null

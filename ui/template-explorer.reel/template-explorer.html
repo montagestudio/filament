@@ -7,16 +7,7 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "template-explorer"},
-                "templatesObjectsController": {"@": "templatesObjectsController"}
-            }
-        },
-
-        "templatesObjectsController": {
-            "prototype": "montage/core/range-controller",
-            "bindings": {
-                "content": {"<-": "@owner.templatesObjects"},
-                "selection": {"<->": "@owner.selectedObjects"}
+                "element": {"#": "template-explorer"}
             }
         },
 
@@ -37,7 +28,7 @@
                 "isSelectionEnabled": true
             },
             "bindings": {
-                "contentController": {"<-": "@owner.templatesObjectsController"}
+                "contentController": {"<-": "@owner.templateObjectsController"}
             }
         },
 

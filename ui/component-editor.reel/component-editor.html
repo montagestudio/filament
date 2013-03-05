@@ -15,7 +15,8 @@
             "owner": {
                 "properties": {
                     "element": {"#": "componentEditor"},
-                    "_documentEditorSlot": {"#": "documentEditorSlot"}
+                    "_documentEditorSlot": {"#": "documentEditorSlot"},
+                    "templateObjectsController": {"@": "templateObjectsController"}
                 }
             },
 
@@ -36,14 +37,21 @@
                 ]
             },
 
+            "templateObjectsController": {
+                "prototype": "montage/core/range-controller",
+                "bindings": {
+                    "content": {"<-": "@owner.projectController.currentDocument.editingProxies"},
+                    "selection": {"<->": "@owner.projectController.currentDocument.selectedObjects"}
+                }
+            },
+
             "templateExplorer": {
                 "prototype": "ui/template-explorer.reel",
                 "properties": {
                     "element": {"#": "templateExplorer"}
                 },
                 "bindings": {
-                    "templatesObjects": {"<-": "@owner.projectController.currentDocument.editingProxies"},
-                    "selectedObjects": {"<->": "@owner.projectController.currentDocument.selectedObjects"}
+                    "templateObjectsController": {"<-": "@owner.templateObjectsController"}
                 }
             },
 
