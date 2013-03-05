@@ -179,7 +179,7 @@ exports.DocumentEditor = Montage.create(Component, {
             var self = this,
                 // TODO: security issues?
                 data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
-                deserializer = Deserializer.create().initWithSerializationStringAndRequire(data, require);
+                deserializer = Deserializer.create().init(data, require);
 
             deserializer.deserialize().then(function (prototypeEntry) {
                 self.addLibraryItem(prototypeEntry);
