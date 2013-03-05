@@ -7,13 +7,13 @@
         "url" : "git@github.com:declarativ/filament.git"
     },
     "dependencies": {
-        "montage": "git+ssh://git@github.com:montagejs/montage.git#edge",
+        "montage": "0.13.0-alpha",
         "q": "0.8.11",
         "q-connection": ">=0.4.7",
         "q-io": "1.5.2",
         "qs": "0.5.2",
         "palette": "git+ssh://git@github.com:declarativ/palette.git#frb+template",
-        "mop": "~0.12.2",
+        "mop": "git+ssh://git@github.com:montagejs/mop.git#edge",
         "npm": "1.1.70",
         "watchr": "2.3.3",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git",
@@ -23,7 +23,7 @@
     "devDependencies": {
         "jasmine-node": "1.2.2",
         "sandboxed-module": "0.1.4",
-        "montage-testing": "~0.1.1"
+        "montage-testing": "git+ssh://git@github.com:montagejs/montage-testing.git#edge"
     },
     "mappings": {
         "filament-extension": {
