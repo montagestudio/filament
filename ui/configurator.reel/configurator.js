@@ -50,7 +50,6 @@ exports.Configurator = Montage.create(Panel, {
     handlePathChange: {
         value: function (value, path) {
             if ("editingDocument.selectedObjects.0" === path) {
-                console.log("asd");
                 var selectedObject = this.getPath("editingDocument.selectedObjects.0"),
                     inspectorController = this.viewController ? this.viewController.modalEditorTypeForObject(selectedObject) : null;
 
