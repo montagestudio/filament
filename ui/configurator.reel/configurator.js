@@ -26,7 +26,7 @@ exports.Configurator = Montage.create(Panel, {
     didCreate: {
         value: function () {
             //TODO handle multiple selection better
-            this.addOwnPropertyChangeListener("editingDocument.selectedObjects.0", this, false);
+            this.addPathChangeListener("editingDocument.selectedObjects.0", this);
         }
     },
 
@@ -47,9 +47,10 @@ exports.Configurator = Montage.create(Panel, {
         value: null
     },
 
-    handleChange: {
-        value: function (notification) {
-            if ("editingDocument.selectedObjects.0" === notification.currentPropertyPath) {
+    handlePathChange: {
+        value: function (value, path) {
+            if ("editingDocument.selectedObjects.0" === path) {
+                console.log("asd");
                 var selectedObject = this.getPath("editingDocument.selectedObjects.0"),
                     inspectorController = this.viewController ? this.viewController.modalEditorTypeForObject(selectedObject) : null;
 
