@@ -15,13 +15,23 @@
                 }
             },
 
+            "selections": {
+                "prototype": "palette/ui/selection/selections.reel",
+                "properties": {
+                    "element": {"#": "selections"}
+                },
+                "bindings": {
+                    "contentComponent": {"<-": "@workbench.editingFrame"},
+                    "selectedObjects": {"<-": "@owner.editingDocument.selectedObjects"}
+                }
+            },
+
             "workbench": {
                 "prototype": "palette/ui/workbench.reel",
                 "properties": {
                     "element": {"#": "workbench"}
                 },
                 "bindings": {
-                    "selectedObjects": {"<-": "@owner.editingDocument.selectedObjects"},
                     "contextualInspectors": {"<-": "@owner.contextualInspectors"}
                 }
             }
@@ -32,7 +42,9 @@
 <body>
 
     <div data-montage-id="documentEditor" class="DocumentEditor">
-        <div data-montage-id="workbench"></div>
+        <div data-montage-id="workbench">
+            <div data-arg="overlay" data-montage-id="selections"></div>
+        </div>
     </div>
 
 </body>
