@@ -335,7 +335,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                     if (!editor) {
                         editor = editorType.create();
                         editor.projectController = this;
-                        editor.viewController = this.viewController;
+                        editor.viewController = this._viewController;
 
                         this._editorTypeInstanceMap.set(editorType, editor);
                     }
