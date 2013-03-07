@@ -72,6 +72,7 @@ exports.ComponentEditor = Montage.create(Component, {
 
             if (!docEditor) {
                 docEditor = DocumentEditor.create();
+                docEditor.viewController = this.viewController;
                 this._fileUrlEditorMap[fileUrl] = docEditor;
 
                 this._editorsToInsert.push(docEditor);

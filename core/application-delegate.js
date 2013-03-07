@@ -8,6 +8,8 @@ var Montage = require("montage/core/core").Montage,
     ComponentEditor = require("ui/component-editor.reel").ComponentEditor,
     IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
+var InnerTemplateInspector = require("contextual-inspectors/inner-template/core/controller");
+
 exports.ApplicationDelegate = Montage.create(Montage, {
 
     detectEnvironmentBridge: {
@@ -76,6 +78,10 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             this.viewController = ViewController.create();
             this.viewController.registerEditorTypeForFileTypeMatcher(ComponentEditor, function (fileUrl) {
                 return (/\.reel\/?$/).test(fileUrl);
+            });
+
+            this.viewController.registerContextualInspectorForObjectTypeMatcher(InnerTemplateInspector, function (object) {
+                return object && object.moduleId && (/montage\/ui\/repetition\.reel/).test(object.moduleId);
             });
 
             this.previewController = PreviewController.create().init(this);

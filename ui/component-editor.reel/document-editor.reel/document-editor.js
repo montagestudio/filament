@@ -12,16 +12,15 @@ exports.DocumentEditor = Montage.create(Component, {
         value: null
     },
 
+    viewController: {
+        value: null
+    },
+
     editingDocument: {
         value: null
     },
 
     fileUrl: {
-        value: null
-    },
-
-    //TODO centralize selection into the editing document
-    selectedObjects: {
         value: null
     },
 
@@ -33,6 +32,8 @@ exports.DocumentEditor = Montage.create(Component, {
         value: function () {
             this.defineBinding("fileUrl", {"<-": "editingDocument.fileUrl"});
             this._deferredWorkbench = Promise.defer();
+
+            this.addRangeAtPathChangeListener("editingDocument.selectedObjects", this, "handleSelectedObjectsRangeChange");
         }
     },
 
@@ -133,6 +134,16 @@ exports.DocumentEditor = Montage.create(Component, {
                     prototypeEntry.postProcess(proxy, editingDocument);
                 }
             }).done();
+        }
+    },
+
+    handleSelectedObjectsRangeChange: {
+        value: function (plus, minus, index) {
+            if (this.getPath("editingDocument.selectedObjects.length") === 1) {
+                debugger;
+                var inspectors = this.viewController.contextualInspectorsForObject(this.editingDocument.selectedObjects[0]);
+                console.log(inspectors);
+            }
         }
     },
 

@@ -10,6 +10,9 @@ exports.ViewController = Montage.create(Montage, {
 
             this.modalEditorMatchers = [];
             this.matcherModalEditorTypeMap = new WeakMap();
+
+            this.contextualInspectorMatchers = [];
+            this.matcherContextualInspectorMap = new WeakMap();
         }
     },
 
@@ -155,16 +158,11 @@ exports.ViewController = Montage.create(Montage, {
 
     contextualInspectorsForObject: {
         value: function (object) {
-            var inspectorType,
-                matchResults = this.contextualInspectorMatchers.filter(function (matcher) {
-                    return matcher(object) ? matcher : false;
-                });
-
-            if (matchResults.length) {
-                inspectorType = this.matcherContextualInspectorMap.get(matchResults[matchResults.length - 1]);
-            }
-
-            return inspectorType;
+            return this.contextualInspectorMatchers.filter(function (matcher) {
+                return matcher(object) ? matcher : false;
+            }).map(function (match) {
+                return this.matcherContextualInspectorMap.get(match);
+            }, this);
         }
     },
 
