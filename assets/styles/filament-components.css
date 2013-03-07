@@ -131,6 +131,12 @@
     -webkit-flex-flow: column;
     position: relative;
     background: hsl(0, 0%, 86%);
+    background: hsl(0, 0%, 86%) -webkit-linear-gradient( left,
+        hsla(0,0%,0%,.04),
+        hsla(0,0%,0%,0) 2%,
+        hsla(0,0%,0%,0) 98%, 
+        hsla(0,0%,0%,.04)
+    );
     -webkit-transition: -webkit-flex .3s cubic-bezier(.26, .06, .08, 1);
 }
 
