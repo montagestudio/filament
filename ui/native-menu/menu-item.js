@@ -1,3 +1,4 @@
+/* global lumieres */
 /**
  @module native-menu
  @requires montage/core/core

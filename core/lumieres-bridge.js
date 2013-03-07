@@ -1,3 +1,4 @@
+/* global lumieres */
 var Montage = require("montage/core/core").Montage,
     EnvironmentBridge = require("core/environment-bridge").EnvironmentBridge,
     Connection = require("q-connection"),
@@ -129,7 +130,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         value: function (packageUrl) {
             return this.backend.get("filament-backend").invoke("listPackage", packageUrl, true).then(function (fileDescriptors) {
                 return fileDescriptors.filter(function (fd) {
-                    return /\.reel$/.test(fd.url);
+                    return (/\.reel$/).test(fd.url);
                 }).map(function (fd) {
                     return fd.url;
                 });

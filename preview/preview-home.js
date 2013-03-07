@@ -1,3 +1,4 @@
+/* global lumieres */
 var Montage = require("montage").Montage;
 
 exports.PreviewHome = Montage.create(Montage, {
