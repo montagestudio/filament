@@ -139,10 +139,22 @@ exports.DocumentEditor = Montage.create(Component, {
 
     handleSelectedObjectsRangeChange: {
         value: function (plus, minus, index) {
-            if (this.getPath("editingDocument.selectedObjects.length") === 1) {
-                debugger;
-                var inspectors = this.viewController.contextualInspectorsForObject(this.editingDocument.selectedObjects[0]);
-                console.log(inspectors);
+            var self = this;
+            var selectedObjects = this.getPath("editingDocument.selectedObjects");
+            if (selectedObjects && selectedObjects.length === 1) {
+                var selectedObject = selectedObjects[0];
+                var inspectors = this.viewController.contextualInspectorsForObject(selectedObject);
+
+                Promise.all(inspectors.map(function (inspectorController) {
+                    return inspectorController.inspectorComponent().then(function (component) {
+                        var inspector = component.create();
+                        inspector.object = selectedObject;
+                        // TODO set top and left of inspector?
+                        return inspector;
+                    });
+                })).then(function (inspectors) {
+                    self.contextualInspectors = inspectors;
+                }).done();
             }
         }
     },
