@@ -97,9 +97,10 @@
 
 /* Panel --------------------------------- */
 
-.Panel + .Panel .Panel-content {
+/*.Panel + .Panel .Panel-content {
     padding-left: 0;
-}
+    //border-left: 1px solid hsl(0,0%,75%);
+}*/
 
 .Panel.Panel--hidden {
     -webkit-flex: 0 1 0;
@@ -196,7 +197,7 @@
 	cursor: pointer;
 	border-radius: 4px;
 	box-shadow: inset 0 0 0 1px hsla(0,0%,0%,.1), 0 1px 0 hsla(0,0%,100%,.2);
-	background: hsla(0,0%,0%,.05);
+	background-color: hsla(0,0%,0%,.05);
 }
 
 .List-title:focus {
@@ -208,7 +209,7 @@
     text-shadow: 0 1px 0 hsla(0,0%,100%,.8);
     border-bottom: 1px solid hsla(0,0%,0%,.1);
     box-shadow: inset 0 1px 0 hsla(0,0%,100%,1);
-	background: -webkit-linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
+	background: -webkit-linear-gradient( hsl(0,0%,99%), hsl(0,0%,96%) );
 }
 
 

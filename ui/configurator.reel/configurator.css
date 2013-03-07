@@ -1,5 +1,5 @@
 .Configurator {
-
+    border-right: 1px solid hsl(0,0%,75%);
 }
 
 .Configurator .Configurator-name {

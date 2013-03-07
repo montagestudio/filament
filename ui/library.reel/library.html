@@ -27,8 +27,8 @@
             <div class="List">
                 
                 <details class="ListGroup" open>
-                    <summary data-montage-id="groupName" class="List-title">PhotoFX Library</summary>
-                    <ul data-montage-id="libraryItemList" class="List" >
+                    <summary data-montage-id="groupName" class="List-title">Label only</summary>
+                    <ul data-montage-id="libraryItemList" class="List Library--labelOnly" >
                         <li data-montage-id="library-cell" class="List-item LibraryCell">
                             <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
                                 <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="../../filament/assets/img/library-icon.png">
@@ -41,11 +41,72 @@
                                 <span data-montage-id="prototype-name" class="LibraryCell-button-label">Color Picker</span>
                             </button>
                         </li>
+                        <li data-montage-id="library-cell" class="List-item LibraryCell">
+                            <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
+                                <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="../../filament/assets/img/library-icon.png">
+                                <span data-montage-id="prototype-name" class="LibraryCell-button-label">Loupe</span>
+                            </button>
+                        </li>
                     </ul>
                 </details>
                 
                 <details class="ListGroup" open>
-                    <summary data-montage-id="groupName" class="List-title">Montage</summary>
+                    <summary data-montage-id="groupName" class="List-title">Grid</summary>
+                    <ul data-montage-id="libraryItemList" class="List Library--iconOnly" >
+                        <li data-montage-id="library-cell" class="List-item LibraryCell">
+                            <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
+                                <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/button.png">
+                                <span data-montage-id="prototype-name" class="LibraryCell-button-label">Button</span>
+                            </button>
+                        </li>
+                        <li data-montage-id="library-cell" class="List-item LibraryCell">
+                            <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
+                                <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/input-checkbox.png">
+                                <span data-montage-id="prototype-name" class="LibraryCell-button-label">Checkbox</span>
+                            </button>
+                        </li>
+                        <li data-montage-id="library-cell" class="List-item LibraryCell">
+                            <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
+                                <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/input-radio.png">
+                                <span data-montage-id="prototype-name" class="LibraryCell-button-label">Radio</span>
+                            </button>
+                        </li>
+                        <li data-montage-id="library-cell" class="List-item LibraryCell">
+                            <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
+                                <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/input-range.png">
+                                <span data-montage-id="prototype-name" class="LibraryCell-button-label">Range</span>
+                            </button>
+                        </li>
+                        <li data-montage-id="library-cell" class="List-item LibraryCell">
+                            <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
+                                <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/progress.png">
+                                <span data-montage-id="prototype-name" class="LibraryCell-button-label">Progress</span>
+                            </button>
+                        </li>
+                        <li data-montage-id="library-cell" class="List-item LibraryCell">
+                            <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
+                                <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/select.png">
+                                <span data-montage-id="prototype-name" class="LibraryCell-button-label">Select</span>
+                            </button>
+                        </li>
+                        <li data-montage-id="library-cell" class="List-item LibraryCell">
+                            <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
+                                <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/input-text.png">
+                                <span data-montage-id="prototype-name" class="LibraryCell-button-label">Text</span>
+                            </button>
+                        </li>
+                        <li data-montage-id="library-cell" class="List-item LibraryCell">
+                            <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
+                                <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/textarea.png">
+                                <span data-montage-id="prototype-name" class="LibraryCell-button-label">Textarea</span>
+                            </button>
+                        </li>
+                    </ul>
+                </details>
+                
+                
+                <details class="ListGroup" open>
+                    <summary data-montage-id="groupName" class="List-title">List</summary>
                     <ul data-montage-id="libraryItemList" class="List" >
                         <li data-montage-id="library-cell" class="List-item LibraryCell">
                             <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
@@ -73,12 +134,6 @@
                         </li>
                         <li data-montage-id="library-cell" class="List-item LibraryCell">
                             <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
-                                <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/input-text.png">
-                                <span data-montage-id="prototype-name" class="LibraryCell-button-label">Text</span>
-                            </button>
-                        </li>
-                        <li data-montage-id="library-cell" class="List-item LibraryCell">
-                            <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
                                 <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/progress.png">
                                 <span data-montage-id="prototype-name" class="LibraryCell-button-label">Progress</span>
                             </button>
@@ -87,6 +142,12 @@
                             <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
                                 <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/select.png">
                                 <span data-montage-id="prototype-name" class="LibraryCell-button-label">Select</span>
+                            </button>
+                        </li>
+                        <li data-montage-id="library-cell" class="List-item LibraryCell">
+                            <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
+                                <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/input-text.png">
+                                <span data-montage-id="prototype-name" class="LibraryCell-button-label">Text</span>
                             </button>
                         </li>
                         <li data-montage-id="library-cell" class="List-item LibraryCell">

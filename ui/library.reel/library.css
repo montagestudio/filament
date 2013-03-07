@@ -1,11 +1,14 @@
 .Library {
     -webkit-user-select: none;
     //border-left: 1px solid hsl(0, 0%, 75%);
+    //background: hsl(0, 0%, 80%);
 }
 
 .Library .List-item {
     padding: 0;
 }
+
+
 
 
 /* LibraryCell Button --------------------------------- */
@@ -38,9 +41,8 @@
 
 .LibraryCell-button-icon {
 	display: inline-block;
-	margin: 0 4px 0 0;
-    width: 48px;
-    height: 32px;
+	margin: 0 6px 0 0;
+	width: 36px;
 	vertical-align: middle;
 }
 
@@ -50,11 +52,64 @@
 .LibraryCell-button-label {
 	display: inline-block;
 	text-align: left;
-	width: 116px;
-	font-size: 14px;
-	line-height: 36px;
+	font-size: 12px;
+	line-height: 20px;
 	vertical-align: middle;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
+}
+
+
+/* States --------------------------------- */
+
+/* Label only */
+
+.Library--labelOnly .LibraryCell-button-icon {
+    display: none;
+}
+
+
+/* Icon only */
+
+.Library--iconOnly {
+    font-size: 0;
+    background: hsl(0,0%,94%);
+    border-radius: 0 0 4px 4px;
+}
+
+.Library--iconOnly .LibraryCell {
+    display: inline-block;
+    width: 61px;
+    padding: 4px 0 0 0;
+    background: transparent;
+    border-right: 1px solid hsla(0, 0%, 0%, 0.05);
+}
+
+.Library--iconOnly .LibraryCell:nth-child(3n) {
+    border-right-color: hsl(0,0%,94%);
+}
+
+.Library--iconOnly .LibraryCell:nth-last-child(-n+2) {
+    border-bottom: none;
+}
+
+.Library--iconOnly .LibraryCell:last-child {
+    border-radius: 0;
+}
+
+.Library--iconOnly .LibraryCell-button {
+	padding: 4px;
+	text-align: center;
+}
+
+.Library--iconOnly .LibraryCell-button-icon {
+    width: 45px;
+    margin: 0;
+}
+
+.Library--iconOnly .LibraryCell-button-label {
+    display: block;
+    font-size: 9px;
+    text-align: center;
 }
