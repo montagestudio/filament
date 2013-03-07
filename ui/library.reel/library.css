@@ -63,22 +63,22 @@
 
 /* States --------------------------------- */
 
-/* Label only */
+/* Label only --------------------------------- */
 
 .Library--labelOnly .LibraryCell-button-icon {
     display: none;
 }
 
 
-/* Icon only */
+/* Grid --------------------------------- */
 
-.Library--iconOnly {
+.Library--grid {
     font-size: 0;
     background: hsl(0,0%,94%);
     border-radius: 0 0 4px 4px;
 }
 
-.Library--iconOnly .LibraryCell {
+.Library--grid .LibraryCell {
     display: inline-block;
     width: 61px;
     padding: 4px 0 0 0;
@@ -86,30 +86,52 @@
     border-right: 1px solid hsla(0, 0%, 0%, 0.05);
 }
 
-.Library--iconOnly .LibraryCell:nth-child(3n) {
+.Library--grid .LibraryCell:nth-child(3n) {
     border-right-color: hsl(0,0%,94%);
 }
 
-.Library--iconOnly .LibraryCell:nth-last-child(-n+2) {
+.Library--grid .LibraryCell:nth-last-child(-n+2) {
     border-bottom: none;
 }
 
-.Library--iconOnly .LibraryCell:last-child {
+.Library--grid .LibraryCell:last-child {
     border-radius: 0;
 }
 
-.Library--iconOnly .LibraryCell-button {
+.Library--grid .LibraryCell-button {
 	padding: 4px;
 	text-align: center;
 }
 
-.Library--iconOnly .LibraryCell-button-icon {
+.Library--grid .LibraryCell-button-icon {
     width: 45px;
     margin: 0;
 }
 
-.Library--iconOnly .LibraryCell-button-label {
+.Library--grid .LibraryCell-button-label {
     display: block;
     font-size: 9px;
     text-align: center;
 }
+
+
+/* with Details --------------------------------- */
+
+.Library--withDetails .LibraryCell-button-icon {
+    float: left;
+    margin-top: 2px;
+}
+
+.Library--withDetails .LibraryCell-button-description {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 10px;
+    color: hsl(0,0%,70%);
+}
+
+.Library--withDetails .LibraryCell-button-label {
+    line-height: 16px;
+}
+
