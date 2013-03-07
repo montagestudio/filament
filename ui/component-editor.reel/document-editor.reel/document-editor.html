@@ -15,6 +15,13 @@
                 }
             },
 
+            "workbench": {
+                "prototype": "palette/ui/workbench.reel",
+                "properties": {
+                    "element": {"#": "workbench"}
+                }
+            },
+
             "selections": {
                 "prototype": "palette/ui/selection/selections.reel",
                 "properties": {
@@ -26,13 +33,23 @@
                 }
             },
 
-            "workbench": {
-                "prototype": "palette/ui/workbench.reel",
+            "contextualInspectors": {
+                "prototype": "montage/ui/repetition.reel",
                 "properties": {
-                    "element": {"#": "workbench"}
+                    "element": {"#": "contextualInspectors"}
                 },
                 "bindings": {
-                    "contextualInspectors": {"<-": "@owner.contextualInspectors"}
+                    "content": {"<-": "@owner.contextualInspectors"}
+                }
+            },
+
+            "inspectorSlot": {
+                "prototype": "montage/ui/slot.reel",
+                "properties": {
+                    "element": {"#": "inspectorSlot"}
+                },
+                "bindings": {
+                    "content": {"<-": "@contextualInspectors.objectAtCurrentIteration"}
                 }
             }
         }
@@ -43,7 +60,12 @@
 
     <div data-montage-id="documentEditor" class="DocumentEditor">
         <div data-montage-id="workbench">
-            <div data-arg="overlay" data-montage-id="selections"></div>
+            <div data-arg="overlay">
+                <div data-montage-id="selections"></div>
+                <div data-montage-id="contextualInspectors">
+                    <div data-montage-id="inspectorSlot"></div>
+                </div>
+            </div>
         </div>
     </div>
 
