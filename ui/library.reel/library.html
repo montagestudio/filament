@@ -26,9 +26,11 @@
         
             <div class="List">
                 
-                <details class="ListGroup" open>
-                    <summary data-montage-id="groupName" class="List-title">Label only</summary>
-                    <ul data-montage-id="libraryItemList" class="List Library--labelOnly" >
+                <details class="ListGroup Library--labelOnly" open>
+                    <summary data-montage-id="groupName" class="List-title">Label only
+                        <button class="List-title-button" data-icon="&#9776;"></button>
+                    </summary>
+                    <ul data-montage-id="libraryItemList" class="List" >
                         <li data-montage-id="library-cell" class="List-item LibraryCell">
                             <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
                                 <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="../../filament/assets/img/library-icon.png">
@@ -50,64 +52,76 @@
                     </ul>
                 </details>
                 
-                <details class="ListGroup" open>
-                    <summary data-montage-id="groupName" class="List-title">Grid</summary>
-                    <ul data-montage-id="libraryItemList" class="List Library--grid" >
+                <details id="LibraryGrid" class="ListGroup Library--grid" open>
+                    <summary data-montage-id="groupName" class="List-title">Library
+                        <button id="LibraryGridButton" class="List-title-button" data-icon="&#9871;"></button>
+                    </summary>
+                    <ul data-montage-id="libraryItemList" class="List">
                         <li data-montage-id="library-cell" class="List-item LibraryCell">
                             <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
                                 <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/button.png">
                                 <span data-montage-id="prototype-name" class="LibraryCell-button-label">Button</span>
+                                <span class="LibraryCell-button-description">This component can be used for creating unicorns.</span>
                             </button>
                         </li>
                         <li data-montage-id="library-cell" class="List-item LibraryCell">
                             <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
                                 <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/input-checkbox.png">
                                 <span data-montage-id="prototype-name" class="LibraryCell-button-label">Checkbox</span>
+                                <span class="LibraryCell-button-description">This component can be used for creating unicorns.</span>
                             </button>
                         </li>
                         <li data-montage-id="library-cell" class="List-item LibraryCell">
                             <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
                                 <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/input-radio.png">
                                 <span data-montage-id="prototype-name" class="LibraryCell-button-label">Radio</span>
+                                <span class="LibraryCell-button-description">This component can be used for creating unicorns.</span>
                             </button>
                         </li>
                         <li data-montage-id="library-cell" class="List-item LibraryCell">
                             <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
                                 <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/input-range.png">
                                 <span data-montage-id="prototype-name" class="LibraryCell-button-label">Range</span>
+                                <span class="LibraryCell-button-description">This component can be used for creating unicorns.</span>
                             </button>
                         </li>
                         <li data-montage-id="library-cell" class="List-item LibraryCell">
                             <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
                                 <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/progress.png">
                                 <span data-montage-id="prototype-name" class="LibraryCell-button-label">Progress</span>
+                                <span class="LibraryCell-button-description">This component can be used for creating unicorns.</span>
                             </button>
                         </li>
                         <li data-montage-id="library-cell" class="List-item LibraryCell">
                             <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
                                 <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/select.png">
                                 <span data-montage-id="prototype-name" class="LibraryCell-button-label">Select</span>
+                                <span class="LibraryCell-button-description">This component can be used for creating unicorns.</span>
                             </button>
                         </li>
                         <li data-montage-id="library-cell" class="List-item LibraryCell">
                             <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
                                 <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/input-text.png">
                                 <span data-montage-id="prototype-name" class="LibraryCell-button-label">Text</span>
+                                <span class="LibraryCell-button-description">This component can be used for creating unicorns.</span>
                             </button>
                         </li>
                         <li data-montage-id="library-cell" class="List-item LibraryCell">
                             <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
                                 <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/textarea.png">
                                 <span data-montage-id="prototype-name" class="LibraryCell-button-label">Textarea</span>
+                                <span class="LibraryCell-button-description">This component can be used for creating unicorns.</span>
                             </button>
                         </li>
                     </ul>
                 </details>
                 
                 
-                <details class="ListGroup" open>
-                    <summary data-montage-id="groupName" class="List-title">List</summary>
-                    <ul data-montage-id="libraryItemList" class="List Library--withDetails">
+                <details class="ListGroup Library--withDetails" open>
+                    <summary data-montage-id="groupName" class="List-title">List
+                        <button class="List-title-button" data-icon="&#57349;"></button>
+                    </summary>
+                    <ul data-montage-id="libraryItemList" class="List">
                         <li data-montage-id="library-cell" class="List-item LibraryCell">
                             <button data-montage-id="add-button" class="LibraryCell-button" draggable="true">
                                 <img data-montage-id="prototype-icon" class="LibraryCell-button-icon" draggable="false" src="assets/components/button.png">
