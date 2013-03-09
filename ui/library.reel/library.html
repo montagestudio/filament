@@ -15,16 +15,6 @@
                 }
             },
 
-            "libraryLabel": {
-                "prototype": "montage/ui/dynamic-text.reel",
-                "properties": {
-                    "element": {"#": "libraryLabel"}
-                },
-                "localizations": {
-                    "value": {"key": "library"}
-                }
-            },
-
             "groupsController": {
                 "prototype": "montage/core/range-controller",
                 "bindings": {
@@ -58,13 +48,9 @@
 </head>
 <body>
     <aside data-montage-id="library" class="Panel Library">
-		<h2 data-montage-id="libraryLabel" class="Panel-title">Library</h2>
-        <div class="Panel-content">
-            <div data-montage-id="groupList" class="List">
-                <details data-montage-id="group"></details>
-            </div>
-        </div>
-        <div class="Panel-shadow"></div>
+		<div data-montage-id="groupList" class="Library-list">
+		    <details data-montage-id="group"></details>
+		</div>
     </aside>
 
 </body>

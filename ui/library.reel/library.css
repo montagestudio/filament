@@ -1,4 +1,29 @@
-.Library {
+.Panel.Library {
     -webkit-user-select: none;
-    border-left: 1px solid hsl(0, 0%, 75%);
+    //border-left: 1px solid hsl(0, 0%, 75%);
+    background: hsl(0, 0%, 86%);
+}
+
+.Library-list {
+    -webkit-flex: 1;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 8px 0 8px 8px;
+}
+
+/* Scrollbar -------------------------------- */
+
+.Library ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 8px;
+    height: 0px;
+    background-color: hsla(0,0%,0%,0);
+}
+
+.Library ::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    border: 3px solid hsla(0,0%,0%,0);
+    background-clip: padding-box;
+    background-color: hsla(0,0%,0%,.15);
 }

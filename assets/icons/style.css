@@ -11,10 +11,6 @@
 
 /* Use the following CSS code if you want to use data attributes for inserting your icons */
 
-[data-icon] {
-    position: relative;
-}
-
 [data-icon]:before {
 	content: attr(data-icon);	
 	font-family: 'entypo';

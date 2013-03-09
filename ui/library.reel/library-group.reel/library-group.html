@@ -54,10 +54,13 @@
     </script>
 </head>
 <body>
-    <details data-montage-id="library-group" class="LibraryGroup">
-        <summary data-montage-id="groupName" class="List-title"></summary>
-        <p data-montage-id="groupDescription" class="List-description"></p>
-        <ul data-montage-id="libraryItemList" class="List" >
+    <details data-montage-id="library-group" class="LibraryGroup Library--grid">
+        <summary class="LibraryGroup-header">
+            <span data-montage-id="groupName"></span>
+            <button id="LibraryGridButton" class="LibraryGroup-header-button" data-icon></button>
+        </summary>
+        <p data-montage-id="groupDescription" class="LibraryGroup-description">Package description</p>
+        <ul data-montage-id="libraryItemList" class="LibraryGroup-list" >
             <li data-montage-id="libraryItemCell"></li>
         </ul>
     </details>
