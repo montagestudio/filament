@@ -38,8 +38,8 @@
 
 .LibraryCell-button-icon {
 	display: inline-block;
-	margin: 0 6px 0 0;
-	width: 36px;
+	margin: 0 8px 0 0;
+	width: 42px;
 	vertical-align: top;
 }
 
@@ -101,7 +101,6 @@
 }
 
 .Library--grid .LibraryCell-button-icon {
-    width: 45px;
     margin: 0;
 }
 
