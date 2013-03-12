@@ -155,6 +155,10 @@ exports.DocumentEditor = Montage.create(Component, {
                 })).then(function (inspectors) {
                     self.contextualInspectors = inspectors;
                 }).done();
+            } else {
+                if (this.contextualInspectors) {
+                    this.contextualInspectors.clear();
+                }
             }
         }
     },
