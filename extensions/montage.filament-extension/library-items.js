@@ -122,6 +122,32 @@ var ToggleButtonLibraryItem = Montage.create(LibraryItem, {
 
 });
 
+var ToggleSwitchLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/toggle-switch.reel"
+        }
+    },
+
+    name: {
+        value: "ToggleSwitch"
+    },
+
+    label: {
+        value: "Switch"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/toggle-switch.png"
+    },
+
+    html: {
+        value: '<input data-montage-id="" type="checkbox">'
+    }
+
+});
+
 var InputCheckboxLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
@@ -570,6 +596,7 @@ exports.libraryItems = {
     "montage/ui/autocomplete/autocomplete.reel": AutocompleteLibraryItem,
     "montage/ui/button.reel": ButtonLibraryItem,
     "montage/ui/toggle-button.reel": ToggleButtonLibraryItem,
+    "montage/ui/toggle-switch.reel": ToggleSwitchLibraryItem,
     "montage/ui/input-checkbox.reel": InputCheckboxLibraryItem,
     "montage/ui/input-radio.reel": InputRadioLibraryItem,
     "montage/ui/input-date.reel": InputDateLibraryItem,
