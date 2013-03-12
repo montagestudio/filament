@@ -1,17 +1,20 @@
 /**
-    @module "ui//inspector.reel"
+    @module "ui//inner-template-inspector.reel"
     @requires montage
     @requires montage/ui/component
 */
 var Montage = require("montage").Montage,
     Inspector = require("contextual-inspectors/base/ui/inspector.reel").Inspector;
 
+var INSPECTOR_HEIGHT = 200;
+var INSPECTOR_PADDING = 10;
+
 /**
     Description TODO
-    @class module:"ui//inspector.reel".Inspector
+    @class module:"ui//inner-template-inspector.reel".InnerTemplateInspector
     @extends module:montage/ui/component.Component
 */
-exports.Inspector = Montage.create(Inspector, /** @lends module:"ui//inspector.reel".Inspector# */ {
+exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui//inner-template-inspector.reel".InnerTemplateInspector# */ {
 
     willDraw: {
         value: function() {
@@ -25,9 +28,9 @@ exports.Inspector = Montage.create(Inspector, /** @lends module:"ui//inspector.r
 
             var rect = this._getBounds(el);
 
-            this._top = rect.top;
+            this._top = rect.top - INSPECTOR_HEIGHT - INSPECTOR_PADDING;
             this._left = rect.left;
-            this._height = rect.bottom - rect.top;
+            this._height = INSPECTOR_HEIGHT;
             this._width = rect.right - rect.left;
         }
     },

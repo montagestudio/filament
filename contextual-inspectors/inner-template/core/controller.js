@@ -28,7 +28,7 @@ exports.Controller = Montage.create(Montage, /** @lends module:"/controller".Con
 
     inspectorComponent: {
         value: function () {
-            return require.async("../ui/inspector.reel").get("Inspector");
+            return require.async("../ui/inner-template-inspector.reel").get("InnerTemplateInspector");
         }
     }
 
