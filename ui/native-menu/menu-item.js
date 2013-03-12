@@ -171,7 +171,7 @@ exports.MenuItem = Montage.create(Montage, {
                                    cancelable: true
                                }),
                 target = document.activeElement,
-                component = target.controller;
+                component = target.component;
 
             while (component == null && target) {
                target = target.parentNode;
