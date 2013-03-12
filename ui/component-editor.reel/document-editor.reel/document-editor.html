@@ -19,7 +19,11 @@
                 "prototype": "palette/ui/workbench.reel",
                 "properties": {
                     "element": {"#": "workbench"}
-                }
+                },
+                "listeners": [
+                    {"type": "update", "listener": {"@": "selections"}},
+                    {"type": "update", "listener": {"@": "contextualInspectors"}}
+                ]
             },
 
             "selections": {
