@@ -143,7 +143,7 @@ var ToggleSwitchLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input data-montage-id="" type="checkbox">'
+        value: '<div data-montage-id=""></div>'
     }
 
 });
@@ -590,6 +590,84 @@ var FlowLibraryItem = Montage.create(LibraryItem, {
 
 });
 
+var VideoPlayerLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/video-player.reel"
+        }
+    },
+
+    name: {
+        value: "VideoPlayer"
+    },
+
+    label: {
+        value: "Video"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/video.png"
+    },
+
+    html: {
+        value: '<video data-montage-id=""></video>'
+    }
+
+});
+
+var TokenFieldLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/token-field.reel"
+        }
+    },
+
+    name: {
+        value: "TokenField"
+    },
+
+    label: {
+        value: "Token Input"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/token-field.png"
+    },
+
+    html: {
+        value: '<input data-montage-id="">'
+    }
+
+});
+
+var TextSliderLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/text-slider.reel"
+        }
+    },
+
+    name: {
+        value: "TextSlider"
+    },
+
+    label: {
+        value: "Text Slider"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/text-slider.png"
+    },
+
+    html: {
+        value: '<input data-montage-id="">'
+    }
+
+});
+
 //TODO build this automatically
 exports.libraryItems = {
     "montage/ui/anchor.reel": AnchorLibraryItem,
@@ -610,10 +688,34 @@ exports.libraryItems = {
     "montage/ui/progress.reel": ProgressLibraryItem,
     "montage/ui/repetition.reel": RepetitionLibraryItem,
     "montage/ui/flow.reel": FlowLibraryItem,
+    "montage/ui/token-field/token-field.reel": TokenFieldLibraryItem,
+    "montage/ui/text-slider.reel": TextSliderLibraryItem,
+    "montage/ui/video-player.reel": VideoPlayerLibraryItem,
+    
     "montage/ui/rich-text-editor/overlays/rich-text-linkpopup.reel": null,
     "montage/ui/rich-text-editor/overlays/rich-text-resizer.reel": null,
     "montage/ui/autocomplete/result-item.reel": null,
     "montage/ui/autocomplete/results-list.reel": null,
+    "montage/ui/loader.reel": null,
+    "montage/ui/loading-panel.reel": null,
+    "montage/ui/loading.reel": null,
+    "montage/ui/token-field/token.reel": null,
+    "montage/ui/component-group.reel": null,
+    "montage/ui/scroll-bars.reel": null,
+    
+    "montage/ui/native/anchor.reel": null,
+    "montage/ui/native/button.reel": null,
+    "montage/ui/native/image.reel": null,
+    "montage/ui/native/input-checkbox.reel": null,
+    "montage/ui/native/input-date.reel": null,
+    "montage/ui/native/input-number.reel": null,
+    "montage/ui/native/input-radio.reel": null,
+    "montage/ui/native/input-range.reel": null,
+    "montage/ui/native/input-text.reel": null,
+    "montage/ui/native/progress.reel": null,
+    "montage/ui/native/select.reel": null,
+    "montage/ui/native/textarea.reel": null,
+
     "montage/ui/bluemoon/button-group.reel": null,
     "montage/ui/bluemoon/button.reel": null,
     "montage/ui/bluemoon/checkbox.reel": null,
@@ -622,13 +724,7 @@ exports.libraryItems = {
     "montage/ui/bluemoon/tabs.reel": null,
     "montage/ui/bluemoon/textarea.reel": null,
     "montage/ui/bluemoon/textfield.reel": null,
-    "montage/ui/bluemoon/toggle.reel": null,
-    "montage/ui/loader.reel": null,
-    "montage/ui/loading-panel.reel": null,
-    "montage/ui/loading.reel": null,
-    "montage/ui/token-field/token.reel": null,
-    "montage/ui/component-group.reel": null,
-    "montage/ui/scroll-bars.reel": null
+    "montage/ui/bluemoon/toggle.reel": null
 };
 
 var RangeControllerLibraryItem = Montage.create(LibraryItem, {
