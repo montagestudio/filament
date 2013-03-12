@@ -38,22 +38,12 @@
             },
 
             "contextualInspectors": {
-                "prototype": "montage/ui/repetition.reel",
+                "prototype": "ui/contextual-inspectors.reel",
                 "properties": {
                     "element": {"#": "contextualInspectors"}
                 },
                 "bindings": {
-                    "content": {"<-": "@owner.contextualInspectors"}
-                }
-            },
-
-            "inspectorSlot": {
-                "prototype": "montage/ui/slot.reel",
-                "properties": {
-                    "element": {"#": "inspectorSlot"}
-                },
-                "bindings": {
-                    "content": {"<-": "@contextualInspectors.objectAtCurrentIteration"}
+                    "contextualInspectors": {"<-": "@owner.contextualInspectors"}
                 }
             }
         }
@@ -66,9 +56,7 @@
         <div data-montage-id="workbench">
             <div data-arg="overlay">
                 <div data-montage-id="selections"></div>
-                <div data-montage-id="contextualInspectors">
-                    <div data-montage-id="inspectorSlot"></div>
-                </div>
+                <div data-montage-id="contextualInspectors"></div>
             </div>
         </div>
     </div>
