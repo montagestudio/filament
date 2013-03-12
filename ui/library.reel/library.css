@@ -41,8 +41,8 @@
 
 .LibraryCell-button-icon {
 	display: inline-block;
-	margin: 0 6px 0 0;
-	width: 36px;
+	margin: 0 8px 0 0;
+	width: 42px;
 	vertical-align: middle;
 }
 
@@ -110,7 +110,7 @@
 }
 
 .Library--grid .LibraryCell-button-icon {
-    width: 45px;
+    width: 42px;
     margin: 0;
 }
 
@@ -118,26 +118,5 @@
     display: block;
     font-size: 9px;
     text-align: center;
-}
-
-
-/* with Details --------------------------------- */
-
-.Library--withDetails .LibraryCell-button-icon {
-    float: left;
-    margin-top: 2px;
-}
-
-.Library--withDetails .LibraryCell-button-description {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 10px;
-    color: hsl(0,0%,70%);
-}
-
-.Library--withDetails .LibraryCell-button-label {
-    line-height: 16px;
 }
 
