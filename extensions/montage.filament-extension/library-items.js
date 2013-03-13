@@ -731,6 +731,58 @@ var TextSliderLibraryItem = Montage.create(LibraryItem, {
 
 });
 
+var SlotLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/slot.reel"
+        }
+    },
+
+    name: {
+        value: "Slot"
+    },
+
+    label: {
+        value: "Slot"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/slot.png"
+    },
+
+    html: {
+        value: '<div data-montage-id=""></div>'
+    }
+
+});
+
+var SubstitutionLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/substitution.reel"
+        }
+    },
+
+    name: {
+        value: "Substitution"
+    },
+
+    label: {
+        value: "Substitution"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/substitution.png"
+    },
+
+    html: {
+        value: '<div data-montage-id=""></div>'
+    }
+
+});
+
 //TODO build this automatically
 exports.libraryItems = {
     "montage/ui/anchor.reel": AnchorLibraryItem,
@@ -757,6 +809,8 @@ exports.libraryItems = {
     "montage/ui/token-field/token-field.reel": TokenFieldLibraryItem,
     "montage/ui/text-slider.reel": TextSliderLibraryItem,
     "montage/ui/video-player.reel": VideoPlayerLibraryItem,
+    "montage/ui/slot.reel": SlotLibraryItem,
+    "montage/ui/substitution.reel": SubstitutionLibraryItem,
     
     "montage/ui/rich-text-editor/overlays/rich-text-linkpopup.reel": null,
     "montage/ui/rich-text-editor/overlays/rich-text-resizer.reel": null,
@@ -769,6 +823,8 @@ exports.libraryItems = {
     "montage/ui/component-group.reel": null,
     "montage/ui/scroll-bars.reel": null,
     "montage/ui/radio-button.reel": null,
+    "montage/ui/dynamic-element.reel": null,
+    "montage/ui/condition.reel": null,
     
     "montage/ui/native/anchor.reel": null,
     "montage/ui/native/button.reel": null,
