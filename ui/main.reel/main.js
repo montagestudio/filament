@@ -82,6 +82,9 @@ exports.Main = Montage.create(Component, {
                     }
 
                     return projectController;
+                }, function(error) {
+                    console.log("Could not load project at " + projectUrl, error);
+                    return Promise.reject(new Error(error));
                 });
             });
 

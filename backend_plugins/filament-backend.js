@@ -9,22 +9,17 @@ var path = require("path"),
     minimatch = require('minimatch');
 
 exports.getExtensions = function() {
-    var result = [],
-        parentPath = path.join(global.clientPath, "extensions");
-
-    if (fs.existsSync(parentPath)) {
-        var list = fs.readdirSync(parentPath);
-
-        for (var i in list) {
-            var fileName = list[i];
-            // For now accept any file that ends with .filament-extension
-            if (path.extname(fileName).toLowerCase() == ".filament-extension") {
-                result.push("http://client/extensions/" + fileName);
-            }
-        }
-    }
-
-    return result;
+    var extensionFolder = path.join(global.clientPath, "extensions");
+    console.log("getExtensions from " + extensionFolder);
+    return QFS.listTree(extensionFolder, function (filePath) {
+            return path.extname(filePath).toLowerCase() == ".filament-extension" ? true : (filePath ==  extensionFolder ? false : null); // if false return null so directories aren't traversed
+         }).then(function (filePaths) {
+        return Q.all(filePaths.map(function (filePath) {
+            return QFS.stat(filePath).then(function (stat) {
+               return {url: "http://client/extensions" + filePath.substring(extensionFolder.length), stat: stat};
+            });
+        }));
+    });
 };
 
 exports.createApplication = function(name, packageHome) {

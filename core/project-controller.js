@@ -20,19 +20,23 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
      * @param {ViewController} viewController A controller that manages registration of views that can appear through filament
      * @return {Promise} A promise for a ProjectController
      */
-    load: {
-        value: function (bridge, viewController) {
-
+    load:{
+        value:function (bridge, viewController) {
             var self = this;
             return bridge.availableExtensions.then(function (extensionUrls) {
-
-                return Promise.all(extensionUrls.map(function (url) {
-                    return self.loadExtension(url);
+                return Promise.all(extensionUrls.map(function (entry) {
+                    return self.loadExtension(entry.url);
                 }));
 
+            },function (error) {
+                console.log("Could not load extensions", error);
+                return Promise.reject(new Error(error));
             }).then(function (extensions) {
-                return ProjectController.create().init(bridge, viewController, extensions);
-            });
+                    return ProjectController.create().init(bridge, viewController, extensions);
+                }, function (error) {
+                    console.log("Could not load project controller", error);
+                    return Promise.reject(new Error(error));
+                });
         }
     },
 
@@ -219,6 +223,9 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                 }
 
                 return extension;
+            }, function(error) {
+                   console.log("Could not load extension at: " + extensionUrl);
+                   Promise.reject(new Error("Could not load extension at: " + extensionUrl, error));
             });
         }
     },
