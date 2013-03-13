@@ -1,4 +1,8 @@
 var Montage = require("montage").Montage;
+var constants = {
+    S_IFDIR: 16384,
+    S_IFMT: 61440
+};
 
 exports.FileDescriptor = Montage.create(Montage, {
 
@@ -26,6 +30,18 @@ exports.FileDescriptor = Montage.create(Montage, {
 
     name: {
         value: null
+    },
+
+    isDirectory: {
+        get: function () {
+            return this._checkModeProperty(constants.S_IFDIR);
+        }
+    },
+
+    _checkModeProperty: {
+        value: function (property) {
+            return ((this._stat.node.mode & constants.S_IFMT) === property);
+        }
     }
 
 });
