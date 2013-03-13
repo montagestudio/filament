@@ -9,7 +9,7 @@
     "dependencies": {
         "montage": "0.13.0-alpha",
         "q": "0.8.11",
-        "q-connection": ">=0.4.7",
+        "q-connection": "0.5.0",
         "q-io": "1.5.2",
         "qs": "0.5.2",
         "palette": "git+ssh://git@github.com:declarativ/palette.git#frb+template",

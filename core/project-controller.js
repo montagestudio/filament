@@ -1065,7 +1065,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         value: function () {
             var self = this;
 
-            this.filesAtUrl(this.packageUrl).then(function (fileDescriptors) {
+            return this.filesAtUrl(this.packageUrl).then(function (fileDescriptors) {
                 //TODO a bit of a hack here to make a "root node" as list only gives content inside the specified path
                 self.files = {children: fileDescriptors, root: true};
             });
