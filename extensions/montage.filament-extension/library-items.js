@@ -642,6 +642,69 @@ var TokenFieldLibraryItem = Montage.create(LibraryItem, {
 
 });
 
+var RichTextEditorLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/rich-text-editor/rich-text-editor.reel"
+        }
+    },
+
+    name: {
+        value: "RichTextEditor"
+    },
+
+    label: {
+        value: "Rich Text Editor"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/rte.png"
+    }
+});
+
+var ScrollerLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/scroller.reel"
+        }
+    },
+
+    name: {
+        value: "Scroller"
+    },
+
+    label: {
+        value: "Scroller"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/scroller.png"
+    }
+});
+
+var ListLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/list.reel"
+        }
+    },
+
+    name: {
+        value: "List"
+    },
+
+    label: {
+        value: "List"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/list.png"
+    }
+});
+
 var TextSliderLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
@@ -683,6 +746,9 @@ exports.libraryItems = {
     "montage/ui/select.reel": SelectLibraryItem,
     "montage/ui/dynamic-text.reel": DynamicTextLibraryItem,
     "montage/ui/input-text.reel": InputTextLibraryItem,
+    "montage/ui/rich-text-editor/rich-text-editor.reel": RichTextEditorLibraryItem,
+    "montage/ui/scroller.reel": ScrollerLibraryItem,
+    "montage/ui/list.reel": ListLibraryItem,
     "montage/ui/textarea.reel": TextareaLibraryItem,
     "montage/ui/image.reel": ImageLibraryItem,
     "montage/ui/progress.reel": ProgressLibraryItem,
@@ -702,6 +768,7 @@ exports.libraryItems = {
     "montage/ui/token-field/token.reel": null,
     "montage/ui/component-group.reel": null,
     "montage/ui/scroll-bars.reel": null,
+    "montage/ui/radio-button.reel": null,
     
     "montage/ui/native/anchor.reel": null,
     "montage/ui/native/button.reel": null,
