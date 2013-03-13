@@ -206,12 +206,14 @@ exports.Main = Montage.create(Component, {
 
             return this.projectController.openFileUrl(fileUrl).then(function (loadInfo) {
                 editor = loadInfo.editor;
-                if (-1 === self._openEditors.indexOf(editor)) {
-                    self._editorsToInsert.push(editor);
-                    self._openEditors.push(editor);
+                if (editor) {
+                    if (-1 === self._openEditors.indexOf(editor)) {
+                        self._editorsToInsert.push(editor);
+                        self._openEditors.push(editor);
+                    }
+                    self._currentDocEditor = editor;
+                    self.needsDraw = true;
                 }
-                self._currentDocEditor = editor;
-                self.needsDraw = true;
             });
         }
     },
