@@ -27,7 +27,7 @@ jasmine.Block.prototype.execute = function (onComplete) {
 
 jasmine.executeSpecsInFolder({
     specFolder: __dirname,
-    regExpSpec: /-spec\.js$/i,
+    regExpSpec: /backend-spec\.js$/i,
     showColors: true,
     // isVerbose: true,
     onComplete: function(runner, log){
