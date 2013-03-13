@@ -3,6 +3,14 @@ var Montage = require("montage/core/core").Montage,
 
 exports.PackageExplorer = Montage.create(Component, {
 
+    projectController: {
+        value: null
+    },
+
+    fileTreeController: {
+        value: null
+    },
+
     packageDescription: {
         value: null
     },

@@ -1057,15 +1057,25 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
+    /**
+     * @deprecated
+     */
     populateFiles: {
         enumerable: false,
         value: function () {
-            var self = this,
-                packagePath = this.environmentBridge.convertBackendUrlToPath(this.packageUrl);
+            var self = this;
 
-            return this.environmentBridge.listTreeAtUrl(packagePath).then(function (fileDescriptors) {
-                self.files = fileDescriptors;
+            this.filesAtUrl(this.packageUrl).then(function (fileDescriptors) {
+                //TODO a bit of a hack here to make a "root node" as list only gives content inside the specified path
+                self.files = {children: fileDescriptors, root: true};
             });
+        }
+    },
+
+    filesAtUrl: {
+        value: function (url) {
+            var path = this.environmentBridge.convertBackendUrlToPath(url);
+            return this.environmentBridge.list(path);
         }
     },
 

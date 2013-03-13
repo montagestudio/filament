@@ -10,7 +10,8 @@
         {
             "owner": {
                 "properties": {
-                    "element": {"#": "package-explorer"}
+                    "element": {"#": "package-explorer"},
+                    "fileTreeController": {"@": "fileTreeController"}
                 }
             },
 
@@ -34,13 +35,24 @@
                 }
             },
 
-            "fileList": {
-                "prototype": "montage/ui/repetition.reel",
+            "fileTreeController": {
+                "prototype": "montage/core/tree-controller",
                 "properties": {
-                    "element": {"#": "fileList"}
+                    "childrenPath": "children"
                 },
                 "bindings": {
                     "content": {"<-": "@owner.files"}
+                }
+            },
+
+            "fileList": {
+                "prototype": "ui/tree.reel",
+                "properties": {
+                    "element": {"#": "fileList"},
+                    "isSelectionEnabled": true
+                },
+                "bindings": {
+                    "treeController": {"<-": "@owner.fileTreeController"}
                 }
             },
 
@@ -50,7 +62,9 @@
                     "element": {"#": "file-cell"}
                 },
                 "bindings": {
-                    "fileInfo": {"<-": "@fileList.objectAtCurrentIteration"}
+                    "fileInfo": {"<-": "@fileCell.parentComponent.object"},
+                    "iteration": {"<-": "@fileCell.parentComponent.iteration"},
+                    "projectController": {"<-": "@owner.projectController"}
                 }
             },
 
@@ -87,9 +101,9 @@
             <h2 data-montage-id="packageName" class="Panel-title-name"></h2>
             <span data-montage-id="packageVersion" class="Panel-title-version"></span>
         </header>
-        <ul data-montage-id="fileList" class="Panel-content List PackageExplorer-list">
-            <li data-montage-id="file-cell"></li>
-        </ul>
+        <div data-montage-id="fileList" class="Panel-content List PackageExplorer-list">
+            <span data-montage-id="file-cell" data-arg="treeNode"></span>
+        </div>
         <div class="Panel-shadow"></div>
         <footer class="Panel-title PackageExplorer-bar">
             <button data-montage-id="add-file-button" class="Button">Add Component…</button>

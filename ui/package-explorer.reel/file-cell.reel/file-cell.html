@@ -34,15 +34,39 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
+
+        "expanded": {
+            "prototype": "montage/ui/input-checkbox.reel",
+            "properties": {
+                "element": {"#": "expanded"}
+            },
+            "bindings": {
+                "checked": {"<->": "@owner.iteration.expanded"}
+            }
+        },
+
+        "isDirectoryCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "isDirectoryCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.fileInfo.isDirectory"}
+            }
         }
     }
     </script>
 </head>
 <body>
-    <li data-montage-id="file-cell" class="FileCell">
+    <div data-montage-id="file-cell" class="FileCell">
+        <span data-montage-id="isDirectoryCondition">
+            <input type="checkbox" data-montage-id="expanded">
+        </span>
         <button data-montage-id="open-file-button" class="List-item FileCell-button">
             <span data-montage-id="file-title"></span>
         </button>
-    </li>
+    </div>
 </body>
 </html>

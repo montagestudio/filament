@@ -196,5 +196,56 @@ describe("filament backend", function () {
 
     });
 
+    describe("list", function () {
+        var mockFS, filamentBackend;
+
+        beforeEach(function () {
+            mockFS = QFSMock({
+                "simple": {
+                    "a": {
+                        "b.js": 1,
+                        "c": {
+                            "d.js": 1
+                        }
+                    }
+                },
+
+                "ignore": {
+                    ".git": {
+                        "xxx": 1
+                    },
+                    ".gitignore": 1,
+                    ".DS_Store": 1,
+                    ".idea": 1,
+                    "node_modules": {
+                        "x": {
+                            "node_modules": {
+                                "y": {
+                                    "y.js": 1
+                                }
+                            },
+                            "index.js": 1
+                        }
+                    },
+                    "ok.js": 1
+                }
+            });
+
+            filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
+                requires: {"q-io/fs": mockFS}
+            });
+        });
+
+        it("lists the files and directories at the specified path without any deep traversal", function () {
+            return filamentBackend.list("/simple/a")
+                .then(function (fileDescriptors) {
+                    expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
+                        "fs://localhost/simple/a/b.js", "fs://localhost/simple/a/c"
+                    ]);
+
+                });
+        });
+    });
+
 });
 

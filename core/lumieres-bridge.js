@@ -149,6 +149,16 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         }
     },
 
+    list: {
+        value: function (url) {
+            return this.backend.get("filament-backend").invoke("list", url).then(function (fileDescriptors) {
+                return fileDescriptors.map(function (fd) {
+                    return FileDescriptor.create().initWithUrlAndStat(fd.url, fd.stat);
+                });
+            });
+        }
+    },
+
     dependenciesInPackage: {
         value: function (packageUrl) {
             return this.backend.get("fs").invoke("read", packageUrl + "/package.json", {"charset": "utf-8"})

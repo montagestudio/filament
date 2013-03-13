@@ -94,9 +94,20 @@ exports.listTree = function (path) {
             "node_modules",
             ".*"
         ])).then(function (paths) {
-        return Q.all(paths.map(function (path) {
-            return QFS.stat(path).then(function (stat) {
-               return {url: "fs://localhost" + path, stat: stat};
+            return Q.all(paths.map(function (path) {
+                return QFS.stat(path).then(function (stat) {
+                    return {url: "fs://localhost" + path, stat: stat};
+                });
+            }));
+        });
+};
+
+exports.list = function (path) {
+    return QFS.list(path).then(function (filenames) {
+        return Q.all(filenames.map(function (filename) {
+            var fullPath = PATH.join(path, filename);
+            return QFS.stat(fullPath).then(function (stat) {
+                return {url: "fs://localhost" + fullPath, stat: stat};
             });
         }));
     });

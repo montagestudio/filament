@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="tree.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "tree"}
+            },
+            "bindings": {
+                "root": {"<-": "@owner.treeController.object"}
+            }
+        },
+
+        "list": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "list"},
+                "contentController": {"@": "listController"}
+            }
+        },
+
+        "listController": {
+            "prototype": "montage/core/range-controller",
+            "bindings": {
+                "content": {"<-": "@owner.treeController.iterations"}
+            }
+        },
+
+        "row": {
+            "prototype": "ui/tree.reel/indent",
+            "properties": {
+                "element": {"#": "row"}
+            },
+            "bindings": {
+                "iteration": {"<-": "@list.objectAtCurrentIteration"},
+                "depth": {"<-": "@list.objectAtCurrentIteration.depth"},
+                "object": {"<-": "@list.objectAtCurrentIteration.content"}
+            }
+        }
+    }
+</script>
+<style>
+    .tree-row {
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
+    .tree-row.selected {
+        background-color: #aaaaff;
+    }
+</style>
+<body>
+
+<div data-montage-id="tree">
+    <div data-montage-id="list">
+        <div data-montage-id="row" class="tree-row">
+            <div data-param="treeNode"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
