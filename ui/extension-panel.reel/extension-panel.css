@@ -1,12 +1,6 @@
 .ExtensionPanel {
-    display: none;
-    -webkit-transition: width 200ms ease-in-out;
     padding: 10px;
     background-color: hsl(0,0%,30%);
-}
-
-.ExtensionPanel.isOpen {
-    display: block;
 }
 
 .ExtensionPanel ul {

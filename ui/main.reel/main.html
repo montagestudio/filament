@@ -36,6 +36,32 @@
                 }
             },
 
+            "toggleExtensionsPanel": {
+                "prototype": "montage/composer/key-composer",
+                "properties": {
+                    "keys": "shift+control+e",
+                    "identifier": "toggleExtensions",
+                    "component": {"@": "application"}
+                },
+                "listeners": [
+                    {
+                        "type": "keyPress",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "extensionsPanelCondition": {
+                "prototype": "montage/ui/condition.reel",
+                "properties": {
+                    "element": {"#": "extensionsPanelCondition"},
+                    "removalStrategy": "hide"
+                },
+                "bindings": {
+                    "condition": {"<-": "@owner._extensionsVisible"}
+                }
+            },
+
             "packageExplorer": {
                 "prototype": "ui/package-explorer.reel",
                 "properties": {
@@ -125,7 +151,9 @@
         <div data-montage-id="tasksInfobar"></div>
 
         <div class="Main">
-            <aside data-montage-id="extensionPanel"></aside>
+            <div data-montage-id="extensionsPanelCondition">
+                <aside data-montage-id="extensionPanel"></aside>
+            </div>
             <aside data-montage-id="packageExplorer" class="palette"></aside>
 
             <section class="editor">

@@ -364,6 +364,16 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    _extensionsVisible: {
+        value: false
+    },
+
+    handleToggleExtensionsKeyPress: {
+        value: function () {
+            this._extensionsVisible = !this._extensionsVisible;
+        }
+    },
+
     handleExitModalEditorKeyPress: {
         enumerable: false,
         value: function () {
