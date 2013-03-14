@@ -33,15 +33,20 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             }
 
             this._object = value;
+            this._instantiateInnerTemplate();
         }
     },
 
-    templateDidLoad: {
+    _instantiateInnerTemplate: {
         value: function () {
+            if (!this.templateObjects || !this._object) {
+                return;
+            }
+
             var self = this;
-            var value = this._object;
-            var doc = value.stageObject.element.ownerDocument;
-            value.stageObject.innerTemplate.instantiate(doc).then(function (part) {
+            var object = this._object.stageObject;
+            var doc = object.element.ownerDocument;
+            object.innerTemplate.instantiate(doc).then(function (part) {
                 part.childComponents.forEach(function (component) {
                     self.templateObjects.innerTemplate.addChildComponent(component);
                     // component.attachToParentComponent();
@@ -54,6 +59,12 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
                     self.needsDraw = true;
                 });
             }).done();
+        }
+    },
+
+    templateDidLoad: {
+        value: function () {
+            this._instantiateInnerTemplate();
         }
     },
 
