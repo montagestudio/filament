@@ -783,6 +783,111 @@ var SubstitutionLibraryItem = Montage.create(LibraryItem, {
 
 });
 
+var PopupLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/popup/popup.reel"
+        }
+    },
+
+    name: {
+        value: "Popup"
+    },
+
+    label: {
+        value: "Popup"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/popup-popup.png"
+    },
+
+    html: {
+        value: '<div data-montage-id=""></div>'
+    }
+
+});
+
+var AlertLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/popup/alert.reel"
+        }
+    },
+
+    name: {
+        value: "Alert"
+    },
+
+    label: {
+        value: "Alert"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/popup-alert.png"
+    },
+
+    html: {
+        value: '<div data-montage-id=""></div>'
+    }
+
+});
+
+var NotifierLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/popup/notifier.reel"
+        }
+    },
+
+    name: {
+        value: "Notifier"
+    },
+
+    label: {
+        value: "Notifier"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/popup-notifier.png"
+    },
+
+    html: {
+        value: '<div data-montage-id=""></div>'
+    }
+
+});
+
+var ConfirmLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/popup/confirm.reel"
+        }
+    },
+
+    name: {
+        value: "Confirm"
+    },
+
+    label: {
+        value: "Confirm"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/popup-confirm.png"
+    },
+
+    html: {
+        value: '<div data-montage-id=""></div>'
+    }
+
+});
+
+
 //TODO build this automatically
 exports.libraryItems = {
     "montage/ui/anchor.reel": AnchorLibraryItem,
@@ -811,6 +916,10 @@ exports.libraryItems = {
     "montage/ui/video-player.reel": VideoPlayerLibraryItem,
     "montage/ui/slot.reel": SlotLibraryItem,
     "montage/ui/substitution.reel": SubstitutionLibraryItem,
+    "montage/ui/popup/popup.reel": PopupLibraryItem,
+    "montage/ui/popup/notifier.reel": NotifierLibraryItem,
+    "montage/ui/popup/alert.reel": AlertLibraryItem,
+    "montage/ui/popup/confirm.reel": ConfirmLibraryItem,
     
     "montage/ui/rich-text-editor/overlays/rich-text-linkpopup.reel": null,
     "montage/ui/rich-text-editor/overlays/rich-text-resizer.reel": null,
