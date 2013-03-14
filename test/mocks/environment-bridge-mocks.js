@@ -35,6 +35,7 @@ exports.environmentBridgeMock = function (options) {
         projectInfoPromise = Promise.resolve({packageUrl: "packageUrl", dependencies: []}),
         watchPromise = Promise.resolve(),
         listTreePromise = Promise.resolve(),
+        listPromise = Promise.resolve(),
         componentsInPackagePromise = Promise.resolve(),
         registerPreviewPromise = Promise.resolve(),
         launchPreviewPromise = Promise.resolve(),
@@ -50,6 +51,7 @@ exports.environmentBridgeMock = function (options) {
 
     bridge.projectInfo = options.projectInfo || promiseFunction(projectInfoPromise);
     bridge.listTreeAtUrl = options.listTreeAtUrl || promiseFunction(listTreePromise);
+    bridge.list = options.list || promiseFunction(listPromise);
     bridge.watch = options.watch || promiseFunction(watchPromise);
     bridge.componentsInPackage = options.componentsInPackage || promiseFunction(componentsInPackagePromise);
     bridge.registerPreview = options.registerPreview || promiseFunction(registerPreviewPromise);
