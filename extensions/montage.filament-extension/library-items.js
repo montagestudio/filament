@@ -783,6 +783,32 @@ var SubstitutionLibraryItem = Montage.create(LibraryItem, {
 
 });
 
+var ConditionLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/condition.reel"
+        }
+    },
+
+    name: {
+        value: "Condition"
+    },
+
+    label: {
+        value: "Condition"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/condition.png"
+    },
+
+    html: {
+        value: '<div data-montage-id=""></div>'
+    }
+
+});
+
 var PopupLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
@@ -916,6 +942,7 @@ exports.libraryItems = {
     "montage/ui/video-player.reel": VideoPlayerLibraryItem,
     "montage/ui/slot.reel": SlotLibraryItem,
     "montage/ui/substitution.reel": SubstitutionLibraryItem,
+    "montage/ui/condition.reel": ConditionLibraryItem,
     "montage/ui/popup/popup.reel": PopupLibraryItem,
     "montage/ui/popup/notifier.reel": NotifierLibraryItem,
     "montage/ui/popup/alert.reel": AlertLibraryItem,
@@ -933,7 +960,6 @@ exports.libraryItems = {
     "montage/ui/scroll-bars.reel": null,
     "montage/ui/radio-button.reel": null,
     "montage/ui/dynamic-element.reel": null,
-    "montage/ui/condition.reel": null,
     
     "montage/ui/native/anchor.reel": null,
     "montage/ui/native/button.reel": null,
