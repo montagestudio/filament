@@ -62,6 +62,26 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
         }
     },
 
+    prepareForDraw: {
+        value: function () {
+            this.element.addEventListener("mousedown", this, false);
+        }
+    },
+
+    handleMousedown: {
+        value: function (event) {
+            var selectionCandidate = event.target;
+
+            this.dispatchEventNamed("select", true, true, {
+                candidate: selectionCandidate,
+                addToSelection: false,
+                expandToSelection: false,
+                removeFromSelection: false,
+                retractFromSelection: false
+            });
+        }
+    },
+
     templateDidLoad: {
         value: function () {
             this._instantiateInnerTemplate();

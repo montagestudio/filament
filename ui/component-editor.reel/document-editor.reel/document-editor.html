@@ -44,7 +44,10 @@
                 },
                 "bindings": {
                     "contextualInspectors": {"<-": "@owner.contextualInspectors"}
-                }
+                },
+                "listeners": [
+                    {"type": "select", "listener": {"@": "owner"}}
+                ]
             }
         }
     </script>
