@@ -136,8 +136,8 @@ exports.Main = Montage.create(Component, {
 
                 app.addEventListener("menuAction", self, false);
                 app.addEventListener("menuValidate", self, false);
-                app.addEventListener("activateExtension", this);
-                app.addEventListener("deactivateExtension", this);
+                app.addEventListener("activateExtension", self);
+                app.addEventListener("deactivateExtension", self);
 
             }).done();
         }
