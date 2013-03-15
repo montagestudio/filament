@@ -1,14 +1,10 @@
-/* global lumieres */
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
     ProjectController = require("core/project-controller.js").ProjectController,
-    ViewController = require("core/view-controller.js").ViewController,
     ComponentEditor = require("ui/component-editor.reel").ComponentEditor,
     List = require("montage/collections/list"),
     WeakMap = require("montage/collections/weak-map");
-
-var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
 exports.Main = Montage.create(Component, {
 
@@ -16,15 +12,7 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-    viewController: {
-        value: null
-    },
-
     editorSlot: {
-        value: null
-    },
-
-    _projectControllerPromise: {
         value: null
     },
 
@@ -41,54 +29,13 @@ exports.Main = Montage.create(Component, {
             this._fileUrlEditorMap = {};
             this._openEditors = [];
 
-            if (IS_IN_LUMIERES) {
-                bridgePromise = require.async("core/lumieres-bridge").then(function (exported) {
-                    return Promise.resolve(exported.LumiereBridge.create());
-                });
-            } else {
-                bridgePromise = require.async("core/browser-bridge").then(function (exported) {
-                    return Promise.resolve(exported.BrowserBridge.create());
-                });
-            }
-
             this.addOwnPropertyChangeListener("projectController.packageUrl", this, false);
             this.addOwnPropertyChangeListener("projectController.currentDocument", this, false);
 
-            this._projectControllerPromise = bridgePromise.then(function (environmentBridge) {
-                var projectUrl = environmentBridge.projectUrl;
-
-                self.viewController = ViewController.create();
-
-                // Add ComponentEditor for handling .reel files
-                self.viewController.registerEditorTypeForFileTypeMatcher(ComponentEditor, function (fileUrl) {
-                    return (/\.reel\/?$/).test(fileUrl);
-                });
-
-                return ProjectController.load(environmentBridge, self.viewController).then(function (projectController) {
-
-                    self.projectController = projectController;
-                    projectController.addEventListener("didOpenPackage", self, false);
-
-                    self.defineBinding("_currentFileUrl", {
-                        "<-": "currentDocument.fileUrl",
-                        source: projectController
-                    });
-                    self.addOwnPropertyChangeListener("_currentFileUrl", self, false);
-
-                    if (projectUrl) {
-                        projectController.loadProject(projectUrl).done();
-                    } else {
-                        projectController.createApplication().done();
-                    }
-
-                    return projectController;
-                }, function(error) {
-                    console.log("Could not load project at " + projectUrl, error);
-                    return Promise.reject(new Error(error));
-                });
+            this.defineBinding("_currentFileUrl", {
+                "<-": "projectController.currentDocument.fileUrl"
             });
-
-            return this._projectControllerPromise;
+            this.addOwnPropertyChangeListener("_currentFileUrl", self, false);
         }
     },
 
@@ -97,91 +44,20 @@ exports.Main = Montage.create(Component, {
 
             var self = this;
 
-            this.application.addEventListener("asyncActivity", this, false);
-
-            this._projectControllerPromise.then(function (projectController) {
-
-                var app = self.application;
-
-                window.addEventListener("didBecomeKey", function () {
-                    self.projectController.didBecomeKey();
-                });
-
-                window.addEventListener("didResignKey", function () {
-                    self.projectController.didResignKey();
-                });
-
-                window.addEventListener("openRelatedFile", function (evt) {
-                    var url = evt.detail;
-                    self.openFileUrl(url.replace("file://localhost/", "fs://localhost/").replace(/\/$/, "")).done();
-                });
-
-                window.addEventListener("beforeunload", function () {
-                    self.projectController.willCloseProject();
-                }, true);
-
-                window.addEventListener("undo", function (evt) {
-                    //TODO stop the event here?
-                    evt.stopPropagation();
-                    evt.preventDefault();
-                    self.projectController.undo();
-                }, true);
-
-                window.addEventListener("redo", function (evt) {
-                    //TODO stop the event here?
-                    evt.stopPropagation();
-                    evt.preventDefault();
-                    self.projectController.redo();
-                }, true);
-
-                app.addEventListener("menuAction", self, false);
-                app.addEventListener("menuValidate", self, false);
-                app.addEventListener("activateExtension", self);
-                app.addEventListener("deactivateExtension", self);
-
-            }).done();
-        }
-    },
-
-    handleDidOpenPackage: {
-        enumerable: false,
-        value: function () {
-            document.addEventListener("save", this, false);
-
             var app = document.application;
+            app.addEventListener("asyncActivity", this, false);
             app.addEventListener("enterModalEditor", this);
             app.addEventListener("openFile", this);
             app.addEventListener("addFile", this);
             app.addEventListener("closeDocument", this);
 
-            //TODO double check that this works
-            var files = this.projectController.files;
-            var projectUrl = this.projectController.projectUrl;
-            for (var i = 0, len = files.length; i < len; i++) {
-                var fileUrl = files[i].fileUrl;
-                if (fileUrl.replace(projectUrl, "") === "/ui/main.reel") {
-                    this.openFileUrl(fileUrl).done();
-                    break;
-                }
-            }
+            document.addEventListener("save", this, false);
         }
     },
 
     handle_currentFileUrlChange: {
         value: function () {
             this.needsDraw = true;
-        }
-    },
-
-    handleActivateExtension: {
-        value: function (evt) {
-            this.projectController.activateExtension(evt.detail).done();
-        }
-    },
-
-    handleDeactivateExtension: {
-        value: function (evt) {
-            this.projectController.deactivateExtension(evt.detail).done();
         }
     },
 

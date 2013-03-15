@@ -65,7 +65,7 @@ var ButtonLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/button.reel",
+            "prototype": "matte/ui/button.reel",
             "properties": {
                 label: "Button",
                 enabled: true
@@ -152,7 +152,7 @@ var InputCheckboxLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/input-checkbox.reel",
+            "prototype": "matte/ui/input-checkbox.reel",
             "properties": {
                 "checked": true
             }
@@ -181,7 +181,7 @@ var InputRadioLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/input-radio.reel",
+            "prototype": "matte/ui/input-radio.reel",
             "properties": {
                 "checked": true
             }
@@ -210,7 +210,7 @@ var InputDateLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/input-date.reel",
+            "prototype": "matte/ui/input-date.reel",
             "properties": {
                 "value": "2013-02-28"
             }
@@ -239,7 +239,7 @@ var InputNumberLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/input-number.reel",
+            "prototype": "matte/ui/input-number.reel",
             "properties": {
                 "value": 100
             }
@@ -268,7 +268,7 @@ var InputRangeLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/input-range.reel",
+            "prototype": "matte/ui/input-range.reel",
             "properties": {
                 "minValue": 0,
                 "maxValue": 100,
@@ -299,7 +299,7 @@ var SelectLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/select.reel"
+            "prototype": "matte/ui/select.reel"
         }
     },
 
@@ -325,7 +325,7 @@ var DynamicTextLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/dynamic-text.reel",
+            "prototype": "montage/ui/text.reel",
             "properties": {
                 "value": "Text"
             }
@@ -355,7 +355,7 @@ var InputTextLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/input-text.reel",
+            "prototype": "matte/ui/input-text.reel",
             "properties": {
                 "value": "Text"
             }
@@ -413,7 +413,7 @@ var ImageLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/image.reel",
+            "prototype": "matte/ui/image.reel",
             "properties": {
                 //TODO this should not be hardcoded in palette of all places
                 "src": "http://client/node_modules/palette/assets/image/placeholder.png"
@@ -918,22 +918,22 @@ var ConfirmLibraryItem = Montage.create(LibraryItem, {
 exports.libraryItems = {
     "montage/ui/anchor.reel": AnchorLibraryItem,
     "montage/ui/autocomplete/autocomplete.reel": AutocompleteLibraryItem,
-    "montage/ui/button.reel": ButtonLibraryItem,
+    "matte/ui/button.reel": ButtonLibraryItem,
     "montage/ui/toggle-button.reel": ToggleButtonLibraryItem,
     "montage/ui/toggle-switch.reel": ToggleSwitchLibraryItem,
-    "montage/ui/input-checkbox.reel": InputCheckboxLibraryItem,
-    "montage/ui/input-radio.reel": InputRadioLibraryItem,
-    "montage/ui/input-date.reel": InputDateLibraryItem,
-    "montage/ui/input-number.reel": InputNumberLibraryItem,
-    "montage/ui/input-range.reel": InputRangeLibraryItem,
-    "montage/ui/select.reel": SelectLibraryItem,
-    "montage/ui/dynamic-text.reel": DynamicTextLibraryItem,
-    "montage/ui/input-text.reel": InputTextLibraryItem,
+    "matte/ui/input-checkbox.reel": InputCheckboxLibraryItem,
+    "matte/ui/input-radio.reel": InputRadioLibraryItem,
+    "matte/ui/input-date.reel": InputDateLibraryItem,
+    "matte/ui/input-number.reel": InputNumberLibraryItem,
+    "matte/ui/input-range.reel": InputRangeLibraryItem,
+    "matte/ui/select.reel": SelectLibraryItem,
+    "montage/ui/text.reel": DynamicTextLibraryItem,
+    "matte/ui/input-text.reel": InputTextLibraryItem,
     "montage/ui/rich-text-editor/rich-text-editor.reel": RichTextEditorLibraryItem,
     "montage/ui/scroller.reel": ScrollerLibraryItem,
     "montage/ui/list.reel": ListLibraryItem,
     "montage/ui/textarea.reel": TextareaLibraryItem,
-    "montage/ui/image.reel": ImageLibraryItem,
+    "matte/ui/image.reel": ImageLibraryItem,
     "montage/ui/progress.reel": ProgressLibraryItem,
     "montage/ui/repetition.reel": RepetitionLibraryItem,
     "montage/ui/flow.reel": FlowLibraryItem,

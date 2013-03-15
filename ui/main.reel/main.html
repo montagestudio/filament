@@ -16,6 +16,10 @@
                 "properties": {
                     "element": {"#": "main"},
                     "editorSlot": {"#": "editorSlot"}
+                },
+                "bindings": {
+                    "projectController": {"<-": "@application.delegate.projectController"},
+                    "extensionController": {"<-": "@application.delegate.extensionController"}
                 }
             },
 
@@ -32,7 +36,7 @@
                     "element": {"#": "extensionPanel"}
                 },
                 "bindings": {
-                    "extensions": {"<-": "@owner.projectController.loadedExtensions"}
+                    "extensions": {"<-": "@owner.extensionController.loadedExtensions"}
                 }
             },
 

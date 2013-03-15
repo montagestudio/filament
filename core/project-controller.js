@@ -10,36 +10,6 @@ var Montage = require("montage/core/core").Montage,
 
 exports.ProjectController = ProjectController = Montage.create(Montage, {
 
-    // "CLASS" METHODS
-
-    /**
-     * Asynchronously create a ProjectController, loading all the available extensions found by the
-     * specified environment bridge.
-     *
-     * @param {EnvironmentBridge} bridge An environment bridge that normalizes different environment features
-     * @param {ViewController} viewController A controller that manages registration of views that can appear through filament
-     * @return {Promise} A promise for a ProjectController
-     */
-    load:{
-        value:function (bridge, viewController) {
-            var self = this;
-            return bridge.availableExtensions.then(function (extensionUrls) {
-                return Promise.all(extensionUrls.map(function (entry) {
-                    return self.loadExtension(entry.url);
-                }));
-
-            },function (error) {
-                console.log("Could not load extensions", error);
-                return Promise.reject(new Error(error));
-            }).then(function (extensions) {
-                    return ProjectController.create().init(bridge, viewController, extensions);
-                }, function (error) {
-                    console.log("Could not load project controller", error);
-                    return Promise.reject(new Error(error));
-                });
-        }
-    },
-
     // PROPERTIES
 
     _environmentBridge: {
@@ -142,11 +112,10 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
      *
      * @param {EnvironmentBridge} bridge An environment bridge that normalizes different environment features
      * @param {ViewController} viewController A controller that manages registration of views that can appear through filament
-     * @param {array} extensions A collection of extension objects to make available to this instance of the projectController
      * @return {ProjectController} An initialized instance of a ProjectController
      */
     init: {
-        value: function (bridge, viewController, extensions) {
+        value: function (bridge, viewController) {
             bridge.setDocumentDirtyState(false);
 
             var self = this;
@@ -160,20 +129,9 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
             this.moduleLibraryItemMap = new Map();
             this._packageNameLibraryItemsMap = new Map();
 
-            this.loadedExtensions = extensions;
-            this.activeExtensions = [];
-
-            //TODO only activate some extensions…
-            if (extensions) {
-                extensions.forEach(function (extension) {
-                    self.activateExtension(extension);
-                });
-            }
 
             this.openDocumentsController = RangeController.create().initWithContent([]);
             this.openDocumentsController.addRangeAtPathChangeListener("selection", this, "handleOpenDocumentsSelectionRangeChange");
-
-            this.setupMenuItems();
 
             //TODO get rid of this once we have property dependencies
             this.addPathChangeListener("packageUrl", this, null, true);
@@ -186,121 +144,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
             this.addPathChangeListener("currentDocument.undoManager.undoCount", this);
 
             return this;
-        }
-    },
-
-    // EXTENSIONS
-
-    /**
-     * Asynchronously load the extension package from the specified
-     * extensionUrl, returning a reference to the exported Extension.
-     *
-     * When called as a method on an instance of a ProjectController
-     * the loadedExtension will be added to the instance's
-     * loadedExtensions collection automatically.
-     *
-     * @param {string} extensionUrl The extension package Url to load
-     * @return {Promise} A promise for the exported Extension object
-     */
-    loadExtension: {
-        enumerable: false,
-        value: function (extensionUrl) {
-
-            var self = this;
-
-            // TODO npm install?
-            return require.loadPackage(extensionUrl).then(function (packageRequire) {
-                return packageRequire.async("extension");
-            }).then(function (exports) {
-                var extension = exports.Extension;
-
-                if (!extension) {
-                    throw new Error("Malformed extension. Expected '" + extensionUrl + "' to export 'Extension'");
-                }
-
-                if (self.loadedExtensions) {
-                    self.loadedExtensions.push(extension);
-                }
-
-                return extension;
-            }, function(error) {
-                   console.log("Could not load extension at: " + extensionUrl);
-                   Promise.reject(new Error("Could not load extension at: " + extensionUrl, error));
-            });
-        }
-    },
-
-    /**
-     * The collection of all extensions loaded by the projectController.
-     * Note that these are not necessarily active, simply loaded.
-     */
-    loadedExtensions: {
-        value: null
-    },
-
-    /**
-     * The collection of all active extensions
-     */
-    activeExtensions: {
-        value: null
-    },
-
-    /**
-     * Asynchronously activate the specified extension
-     *
-     * @param {Extension} extension The extension to activate
-     * @return {Promise} A promise for the activated extension
-     */
-    activateExtension: {
-        value: function (extension) {
-            var activationPromise;
-
-            if (-1 === this.activeExtensions.indexOf(extension)) {
-
-                this.dispatchEventNamed("willActivateExtension", true, false, extension);
-                this.activeExtensions.push(extension);
-
-                if (typeof extension.activate === "function") {
-                    activationPromise = extension.activate(document.application, this, this._viewController);
-                } else {
-                    activationPromise = Promise.resolve(extension);
-                }
-
-            } else {
-                activationPromise = Promise.reject(new Error("Cannot activate an active extension"));
-            }
-
-            return activationPromise;
-        }
-    },
-
-    /**
-     * Asynchronously deactivate the specified extension
-     *
-     * @param {Extension} extension The extension to deactivate
-     * @return {Promise} A promise for the deactivated extension
-     */
-    deactivateExtension: {
-        value: function (extension) {
-            var deactivationPromise,
-                index = this.activeExtensions.indexOf(extension);
-
-            if (index > -1) {
-
-                this.dispatchEventNamed("willDeactivateExtension", true, false, extension);
-                this.activeExtensions.splice(index, 1);
-
-                if (typeof extension.deactivate === "function") {
-                    deactivationPromise = extension.deactivate(document.application, this, this._viewController);
-                } else {
-                    deactivationPromise = Promise.resolve(extension);
-                }
-
-            } else {
-                deactivationPromise = Promise.reject(new Error("Cannot deactivate an inactive extension"));
-            }
-
-            return deactivationPromise;
         }
     },
 
