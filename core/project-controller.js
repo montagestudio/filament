@@ -314,6 +314,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
      */
     loadProject: {
         value: function (url) {
+
             var self = this;
 
             //TODO what if this is called multiple times?
@@ -862,7 +863,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                 },
                 self = this;
 
-            this.environmentBridge.promptForSave(options).then(function (destination) {
+            return this.environmentBridge.promptForSave(options).then(function (destination) {
                 if (!destination) {
                     window.close();
                     return null;
@@ -883,8 +884,8 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
 
                 return promise;
             }).then(function (applicationUrl) {
-                self.loadProject(applicationUrl);
-            }).done();
+                return self.loadProject(applicationUrl);
+            });
         }
     },
 

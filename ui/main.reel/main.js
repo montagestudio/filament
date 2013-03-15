@@ -78,7 +78,7 @@ exports.Main = Montage.create(Component, {
                     if (projectUrl) {
                         projectController.loadProject(projectUrl).done();
                     } else {
-                        projectController.createApplication();
+                        projectController.createApplication().done();
                     }
 
                     return projectController;
