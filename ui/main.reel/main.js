@@ -29,13 +29,8 @@ exports.Main = Montage.create(Component, {
             this._fileUrlEditorMap = {};
             this._openEditors = [];
 
-            this.addOwnPropertyChangeListener("projectController.packageUrl", this, false);
-            this.addOwnPropertyChangeListener("projectController.currentDocument", this, false);
-
-            this.defineBinding("_currentFileUrl", {
-                "<-": "projectController.currentDocument.fileUrl"
-            });
-            this.addOwnPropertyChangeListener("_currentFileUrl", self, false);
+            this.addPathChangeListener("projectController.currentDocument.title", this, "handleTitleWillChange", true);
+            this.addPathChangeListener("projectController.currentDocument.title", this, "handleTitleChange");
         }
     },
 
@@ -52,12 +47,6 @@ exports.Main = Montage.create(Component, {
             app.addEventListener("closeDocument", this);
 
             document.addEventListener("save", this, false);
-        }
-    },
-
-    handle_currentFileUrlChange: {
-        value: function () {
-            this.needsDraw = true;
         }
     },
 
@@ -182,14 +171,14 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    handlePackageUrlChange: {
-        value: function (value) {
-            this.dispatchOwnPropertyChange("windowTitle", this.windowTitle);
-            this.needsDraw = true;
+    handleTitleWillChange: {
+        value: function () {
+            this.dispatchBeforeOwnPropertyChange("windowTitle", this.windowTitle);
         }
     },
-    handleCurrentDocumentChange: {
-        value: function (value) {
+
+    handleTitleChange: {
+        value: function () {
             this.dispatchOwnPropertyChange("windowTitle", this.windowTitle);
             this.needsDraw = true;
         }
