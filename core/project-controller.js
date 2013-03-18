@@ -91,13 +91,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
     },
 
     /**
-     * The ID of the preview being served by our host environment
-     */
-    _previewId: {
-        value: null
-    },
-
-    /**
      * The active EditingDocument instance
      */
     //TODO not let this be read/write
@@ -196,71 +189,8 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                     self.dispatchEventNamed("didOpenPackage", true, false, {
                         packageUrl: self.packageUrl
                     });
-
-                    //TODO only do this if we have an index.html
-                    self.environmentBridge.registerPreview(self.packageUrl, self.packageUrl + "/index.html").then(function (previewId) {
-                        self._previewId = previewId;
-                        self.dispatchEventNamed("didRegisterPreview", true, false);
-                        //TODO not launch this automatically
-                        return self.launchPreview();
-                    }).done();
-
-                    return true;
+                    return packageUrl;
                 });
-        }
-    },
-
-    // PREVIEW SERVING
-
-    /**
-     * Launch the preview server for this project
-     *
-     * @return {Promise} A promise for the successful launch of the preview
-     */
-    launchPreview: {
-        value: function () {
-            var self = this;
-            return this.environmentBridge.launchPreview(this._previewId).then(function () {
-                //TODO pass along url for preview in event
-                self.dispatchEventNamed("didLaunchPreview", true, false);
-            });
-        }
-    },
-
-    /**
-     * Refresh the preview server for this project
-     *
-     * @return {Promise} A promise for the successful refresh of the preview
-     */
-    refreshPreview: {
-        value: function () {
-            var self = this;
-            return this.environmentBridge.refreshPreview(this._previewId).then(function () {
-                //TODO pass along url for preview in event
-                self.dispatchEventNamed("didRefreshPreview", true, false);
-            });
-        }
-    },
-
-    /**
-     * Unregister the preview server for this project
-     *
-     * @return {Promise} A promise for the successful unregistration of the preview
-     */
-    unregisterPreview: {
-        value: function () {
-            var self = this;
-            return this.environmentBridge.unregisterPreview(this._previewId).then(function () {
-                //TODO pass along url for preview in event
-                self.dispatchEventNamed("didUnregisterPreview", true, false);
-            });
-        }
-    },
-
-    willCloseProject: {
-        value: function () {
-            //TODO only if we're registered
-            this.unregisterPreview().done();
         }
     },
 
@@ -675,7 +605,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                 //TODO improve this, we're reaching deeper than I'd like to find the fileUrl
                 savePromise = this.environmentBridge.save(this.currentDocument, this.currentDocument.fileUrl).then(function () {
                     self.environmentBridge.setDocumentDirtyState(false);
-                    self.refreshPreview().done();
+                    self.dispatchEventNamed("didSave", true, false);
                     return self.currentDocument.fileUrl;
                 });
             }

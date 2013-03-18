@@ -3,6 +3,7 @@ var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
     ExtensionController = require("core/extension-controller.js").ExtensionController,
     ViewController = require("core/view-controller.js").ViewController,
+    PreviewController = require("core/preview-controller.js").PreviewController,
     ProjectController = require("core/project-controller.js").ProjectController,
     ComponentEditor = require("ui/component-editor.reel").ComponentEditor,
     IS_IN_LUMIERES = (typeof lumieres !== "undefined");
@@ -43,6 +44,10 @@ exports.ApplicationDelegate = Montage.create(Montage, {
         value: null
     },
 
+    previewController: {
+        value: null
+    },
+
     environmentBridge: {
         value: null
     },
@@ -59,6 +64,8 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             this.viewController.registerEditorTypeForFileTypeMatcher(ComponentEditor, function (fileUrl) {
                 return (/\.reel\/?$/).test(fileUrl);
             });
+
+            this.previewController = PreviewController.create().init(this);
 
             var self = this,
                 promisedApplication = this._deferredApplication.promise,
@@ -93,6 +100,12 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                     return promisedProjectUrl;
                 }).then(function (projectUrl) {
                     self.projectController.setupMenuItems();
+
+                    //TODO only do this if we have an index.html
+                    return self.previewController.registerPreview(projectUrl, projectUrl + "/index.html").then(function () {
+                        //TODO not launch the preview automatically?
+                        return self.previewController.launchPreview();
+                    });
                 }).done();
         }
     },
@@ -118,7 +131,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             });
 
             window.addEventListener("beforeunload", function () {
-                self.projectController.willCloseProject();
+                self.willClose();
             }, true);
 
             window.addEventListener("undo", function (evt) {
@@ -135,7 +148,22 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                 self.projectController.redo();
             }, true);
 
+            app.addEventListener("didSave", this);
+
             this._deferredApplication.resolve(app);
+        }
+    },
+
+    willClose: {
+        value: function () {
+            //TODO only if we're registered
+            this.previewController.unregisterPreview().done();
+        }
+    },
+
+    handleDidSave: {
+        value: function () {
+            this.previewController.refreshPreview().done();
         }
     }
 });
