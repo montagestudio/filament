@@ -1015,16 +1015,27 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
             var self = this;
 
             this.environmentBridge.mainMenu.then(function (mainMenu) {
+                var menuItem;
 
-                mainMenu.menuItemForIdentifier("newComponent").defineBinding("enabled", {
-                    "<-": "canEdit",
-                    source: self
-                });
+                menuItem = mainMenu.menuItemForIdentifier("newComponent");
+                if (menuItem) {
+                    menuItem.defineBinding("enabled", {
+                        "<-": "canEdit",
+                        source: self
+                    });
+                } else {
+                    throw new Error("Cannot load menu item 'newComponent'");
+                }
 
-                mainMenu.menuItemForIdentifier("newModule").defineBinding("enabled", {
-                    "<-": "canEdit",
-                    source: self
-                });
+                menuItem = mainMenu.menuItemForIdentifier("newModule");
+                if (menuItem) {
+                    menuItem.defineBinding("enabled", {
+                        "<-": "canEdit",
+                        source: self
+                    });
+                } else {
+                    throw new Error("Cannot load menu item 'newModule'");
+                }
             }).done();
         }
     },
