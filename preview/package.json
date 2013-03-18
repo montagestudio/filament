@@ -3,6 +3,7 @@
     "version": "0.0.0",
     "mappings": {
         "montage": "{$CLIENT}/node_modules/montage",
+        "matte": "{$CLIENT}/node_modules/matte",
         "q-comm": "{$CLIENT}/node_modules/q-comm",
         "q-connection": "{$CLIENT}/node_modules/q-connection"
     }
