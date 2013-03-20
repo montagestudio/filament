@@ -124,7 +124,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
 
 
             this.openDocumentsController = RangeController.create().initWithContent([]);
-            this.openDocumentsController.addRangeAtPathChangeListener("selection", this, "handleOpenDocumentsSelectionRangeChange");
 
             //TODO get rid of this once we have property dependencies
             this.addPathChangeListener("packageUrl", this, null, true);
@@ -195,17 +194,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
     },
 
     // DOCUMENT HANDLING
-
-    handleOpenDocumentsSelectionRangeChange: {
-        value: function (plus, minus, index) {
-            if (this.openDocumentsController.selection && this.openDocumentsController.selection.length > 0) {
-                var fileUrl = this.openDocumentsController.selection[0].fileUrl;
-                if (!this.currentDocument || fileUrl !== this.currentDocument.fileUrl) {
-                    this.openFileUrl(fileUrl).done();
-                }
-            }
-        }
-    },
 
     //TODO make this a two step thing? loadFileUrl then openFileUrl to give us a place to have an editor instance and have it draw before "opening" the document?
     //TODO expose the currentEditor, not the currentDocument?
