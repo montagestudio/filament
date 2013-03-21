@@ -37,42 +37,30 @@ exports.DocumentEditor = Montage.create(Component, {
     },
 
     load: {
-        value: function (fileUrl, packageUrl) {
+        value: function (document) {
             var self = this,
                 liveStageInfoPromise,
                 editingDocumentPromise,
                 moduleId,
                 exportName;
 
-            liveStageInfoPromise = this._deferredWorkbench.promise.then(function(workbench) {
-                return workbench.load(fileUrl, packageUrl);
+            // pre-load blueprints for everything already in the template
+            // but don't complain if we can't find one
+            document.editingProxies.forEach(function (proxy) {
+                moduleId = proxy.moduleId;
+                exportName = proxy.exportName;
+                if (moduleId && exportName) {
+                    document.packageRequire.async(moduleId).get(exportName).get("blueprint").fail(Function.noop);
+                }
             });
 
-            editingDocumentPromise = ReelDocument.load(fileUrl, packageUrl)
-                .then(function (reelDocument) {
+            self.editingDocument = document;
 
-                    // pre-load blueprints for everything already in the template
-                    // but don't complain if we can't find one
-                    reelDocument.editingProxies.forEach(function (proxy) {
-                        moduleId = proxy.moduleId;
-                        exportName = proxy.exportName;
-                        if (moduleId && exportName) {
-                            reelDocument.packageRequire.async(moduleId).get(exportName).get("blueprint").fail(Function.noop);
-                        }
-                    });
-
-                    self.editingDocument = reelDocument;
-                    return reelDocument;
-                });
-
-            // When the stage has loaded, associate it with the editing model
-            Promise.all([liveStageInfoPromise, editingDocumentPromise]).spread(function (liveStageInfo, editingDocument) {
-                editingDocument.associateWithLiveRepresentations(liveStageInfo.owner, liveStageInfo.template, liveStageInfo.frame);
-            }, function (error) {
-                //Don't bother associating the two representations if either fails to load
-            }).done();
-
-            return editingDocumentPromise;
+            return this._deferredWorkbench.promise.then(function(workbench) {
+                return workbench.load(document.fileUrl, document.packageRequire.location);
+            }).then(function (liveStageInfo) {
+                document.associateWithLiveRepresentations(liveStageInfo.owner, liveStageInfo.template, liveStageInfo.frame);
+            });
         }
     },
 

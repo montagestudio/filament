@@ -17,7 +17,7 @@
                 "element": {"#": "imageView"}
             },
             "bindings": {
-                "src": {"<-": "@owner.currentDocument.fileUrl"}
+                "src": {"<-": "@owner.currentDocument.fileUrl || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQIW2NkAAIAAAoAAggA9GkAAAAASUVORK5CYII='"}
             }
         }
     }

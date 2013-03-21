@@ -40,8 +40,8 @@
             "templateObjectsController": {
                 "prototype": "montage/core/range-controller",
                 "bindings": {
-                    "content": {"<-": "@owner.projectController.currentDocument.editingProxies"},
-                    "selection": {"<->": "@owner.projectController.currentDocument.selectedObjects"}
+                    "content": {"<-": "@owner.currentDocument.editingProxies"},
+                    "selection": {"<->": "@owner.currentDocument.selectedObjects"}
                 }
             },
 
@@ -80,8 +80,8 @@
                     "element": {"#": "bindingJig"}
                 },
                 "bindings": {
-                    "editingDocument": {"<-": "@owner.projectController.currentDocument"},
-                    "selectedObjects": {"<-": "@owner.projectController.currentDocument.selectedObjects"}
+                    "editingDocument": {"<-": "@owner.currentDocument"},
+                    "selectedObjects": {"<-": "@owner.currentDocument.selectedObjects"}
                 }
             }
 
