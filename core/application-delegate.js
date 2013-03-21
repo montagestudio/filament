@@ -16,11 +16,11 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
             if (IS_IN_LUMIERES) {
                 bridgePromise = require.async("core/lumieres-bridge").then(function (exported) {
-                    return Promise.resolve(exported.LumiereBridge.create());
+                    return exported.LumiereBridge.create();
                 });
             } else {
                 bridgePromise = require.async("core/browser-bridge").then(function (exported) {
-                    return Promise.resolve(exported.BrowserBridge.create());
+                    return exported.BrowserBridge.create();
                 });
             }
 

@@ -256,7 +256,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                     }, function (error) {
                         // Something gone wrong revert to the current document
                         console.log("Could not open the document. reverting to the previous one. ", error);
-                        return Promise.resolve({document: self.currentDocument, editor: editor});
+                        return {document: self.currentDocument, editor: editor};
                     });
                 }
             }
