@@ -1,10 +1,7 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
-    Promise = require("montage/core/promise").Promise,
-    ProjectController = require("core/project-controller.js").ProjectController,
-    ComponentEditor = require("ui/component-editor.reel").ComponentEditor,
-    List = require("montage/collections/list"),
-    WeakMap = require("montage/collections/weak-map");
+    WeakMap = require("montage/collections/weak-map"),
+    application = require("montage/core/application").application;
 
 exports.Main = Montage.create(Component, {
 
@@ -22,9 +19,6 @@ exports.Main = Montage.create(Component, {
 
     didCreate: {
         value: function () {
-            var bridgePromise,
-                self = this;
-
             this._editorsToInsert = [];
             this._fileUrlEditorMap = {};
             this._openEditors = [];
@@ -36,15 +30,11 @@ exports.Main = Montage.create(Component, {
 
     prepareForDraw: {
         value: function () {
-
-            var self = this;
-
-            var app = document.application;
-            app.addEventListener("asyncActivity", this, false);
-            app.addEventListener("enterModalEditor", this);
-            app.addEventListener("openFile", this);
-            app.addEventListener("addFile", this);
-            app.addEventListener("closeDocument", this);
+            application.addEventListener("asyncActivity", this, false);
+            application.addEventListener("enterModalEditor", this);
+            application.addEventListener("openFile", this);
+            application.addEventListener("addFile", this);
+            application.addEventListener("closeDocument", this);
 
             document.addEventListener("save", this, false);
         }
