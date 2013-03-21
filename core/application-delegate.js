@@ -58,6 +58,19 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
     didCreate: {
         value: function () {
+            // Make stack traces from promise errors easily available in the
+            // console. Otherwise you need to manually inspect the error.stack
+            // in the debugger.
+            Promise.onerror = function (error) {
+                if (error.stack) {
+                    console.groupCollapsed("%c Uncaught promise rejection: " + (error.message || error), "color: #F00; font-weight: normal");
+                    console.log(error.stack);
+                    console.groupEnd();
+                } else {
+                    throw error;
+                }
+            };
+
             this._deferredApplication = Promise.defer();
 
             this.viewController = ViewController.create();
