@@ -8,7 +8,7 @@ var Montage = require("montage/core/core").Montage,
     ComponentEditor = require("ui/component-editor.reel").ComponentEditor,
     IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
-var InnerTemplateInspector = require("contextual-inspectors/inner-template/core/controller");
+var InnerTemplateInspector = require("contextual-inspectors/inner-template/ui/inner-template-inspector.reel").InnerTemplateInspector;
 
 exports.ApplicationDelegate = Montage.create(Montage, {
 
