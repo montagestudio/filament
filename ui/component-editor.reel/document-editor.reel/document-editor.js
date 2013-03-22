@@ -153,6 +153,26 @@ exports.DocumentEditor = Montage.create(Component, {
                 })).then(function (inspectors) {
                     self.contextualInspectors = inspectors;
                 }).done();
+
+                // TODO make a loop
+                var parentObject;
+                if (Array.isArray(selectedObject.stageObject) && selectedObject.stageObject[0].parentComponent) {
+                    parentObject = this.editingDocument.editingProxyForObject(selectedObject.stageObject[0].parentComponent);
+                } else {
+                    parentObject = this.editingDocument.editingProxyForObject(selectedObject.stageObject.parentComponent);
+                }
+                var parentInspectors = this.viewController.contextualInspectorsForObject(parentObject).filter(function (inspector) {
+                    return inspector.showForChildComponents;
+                });
+                Promise.all(parentInspectors.map(function (component) {
+                    var inspector = component.create();
+                    inspector.object = parentObject;
+                    // TODO set top and left of inspector?
+                    return inspector;
+                })).then(function (inspectors) {
+                    self.contextualInspectors.push.apply(self.contextualInspectors, inspectors);
+                }).done();
+
             } else {
                 if (this.contextualInspectors) {
                     this.contextualInspectors.clear();
