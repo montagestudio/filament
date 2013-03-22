@@ -2,9 +2,9 @@
     "name": "filament",
     "version": "0.6.0",
     "private": true,
-    "repository" : {
-        "type" : "git",
-        "url" : "git@github.com:declarativ/filament.git"
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:declarativ/filament.git"
     },
     "dependencies": {
         "montage": "0.13.0-alpha",
@@ -24,7 +24,9 @@
     "devDependencies": {
         "jasmine-node": "1.2.2",
         "sandboxed-module": "0.1.4",
-        "montage-testing": "git+ssh://git@github.com:montagejs/montage-testing.git#edge"
+        "montage-testing": "git+ssh://git@github.com:montagejs/montage-testing.git#edge",
+        "shelljs": "0.1.2",
+        "jshint": "1.1.0"
     },
     "mappings": {
         "filament-extension": {
@@ -33,7 +35,8 @@
         }
     },
     "scripts": {
-        "test": "node test/run.js"
+        "test": "node test/run.js",
+        "lint": "node test/lint.js"
     },
     "manifest": true
 }
