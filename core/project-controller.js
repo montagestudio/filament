@@ -279,6 +279,10 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                 documentType,
                 editorType;
 
+            if (this.currentDocument && fileUrl === this.currentDocument.url) {
+                return Promise.resolve(this.currentDocument);
+            }
+
             documentType = this.documentTypeForUrl(fileUrl);
 
             if (documentType) {
@@ -297,8 +301,16 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                 this._editorController.bringEditorToFront(editor);
                 this._currentEditor = editor;
 
-                return this.openUrl(fileUrl).then(function () {
+                this.dispatchEventNamed("willOpenDocument", true, false, {
+                    url: fileUrl
+                });
 
+                return this.openUrl(fileUrl).then(function (doc) {
+                    self.dispatchEventNamed("didOpenDocument", true, false, {
+                        document: doc,
+                        isCurrentDocument: doc === self.currentDocument
+                    });
+                    return doc;
                 });
             } else {
                 return Promise.resolve(null);
@@ -344,10 +356,11 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                 self = this,
                 documentIndex,
                 nextDocument = null,
-                closedPromise;
+                closedPromise,
+                wasCurrentDocument = document === this.currentDocument;
 
 
-            if (document === this.currentDocument) {
+            if (wasCurrentDocument) {
                 documentIndex = this.documents.indexOf(document);
 
                 if (this.documents.length - 1 > documentIndex) {
@@ -356,6 +369,11 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                     nextDocument = this.documents[documentIndex - 1];
                 }
             }
+
+            this.dispatchEventNamed("willCloseDocument", true, false, {
+                document: document,
+                isCurrentDocument: wasCurrentDocument
+            });
 
             if (nextDocument) {
                 closedPromise = this.openUrlForEditing(nextDocument.fileUrl).then(function () {
@@ -369,7 +387,13 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                 closedPromise = Promise.resolve(document);
             }
 
-            return closedPromise;
+            return closedPromise.then(function (doc) {
+                self.dispatchEventNamed("didCloseDocument", true, false, {
+                    document: doc,
+                    wasCurrentDocument: doc === self.currentDocument
+                });
+                return doc;
+            });
 
         }
     },
