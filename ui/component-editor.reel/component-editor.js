@@ -12,7 +12,7 @@ exports.ComponentEditor = Montage.create(Editor, {
     },
 
     viewController: {
-        vaule: null
+        value: null
     },
 
     templateObjectsController: {
