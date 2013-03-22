@@ -1,7 +1,7 @@
 var Montage = require("montage/core/core").Montage,
     CoreExtension = require("filament-extension/core/extension").Extension,
     Promise = require("montage/core/promise").Promise,
-    Viewer = require("ui/viewer.reel").Viewer;
+    ImageDocument = require("core/image-document").ImageDocument;
 
 var Extension = exports.Extension = Montage.create(CoreExtension, {
 
@@ -14,18 +14,14 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
 
     activate: {
         value: function (application, projectController, viewController) {
-
-            viewController.registerEditorTypeForFileTypeMatcher(Viewer, this.editorFileMatchFunction);
-
+            projectController.registerUrlMatcherForDocumentType(this.editorFileMatchFunction, ImageDocument);
             return Promise.resolve(this);
         }
     },
 
     deactivate: {
         value: function (application, projectController, viewController) {
-
-            viewController.unregisterEditorTypeForFileTypeMatcher(this.editorFileMatchFunction);
-
+            viewController.unregisterUrlMatcherForDocumentType(this.editorFileMatchFunction, ImageDocument);
             return Promise.resolve(this);
         }
     }

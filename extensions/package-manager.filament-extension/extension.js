@@ -1,7 +1,7 @@
 var Montage = require("montage/core/core").Montage,
     CoreExtension = require("filament-extension/core/extension").Extension,
     Promise = require("montage/core/promise").Promise,
-    PackageEditor = require("ui/package-editor.reel").PackageEditor;
+    PackageDocument = require("core/package-document").PackageDocument;
 
 var Extension = exports.Extension = Montage.create(CoreExtension, {
 
@@ -14,9 +14,7 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
 
     activate: {
         value: function (application, projectController, viewController) {
-
-            viewController.registerEditorTypeForFileTypeMatcher(PackageEditor, this.editorFileMatchFunction);
-
+            projectController.registerUrlMatcherForDocumentType(this.editorFileMatchFunction, PackageDocument);
             return Promise.resolve(this);
         }
     },

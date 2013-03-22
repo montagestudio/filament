@@ -1,5 +1,7 @@
 var Montage = require("montage/core/core").Montage,
+    DocumentController = require("core/document-controller").DocumentController,
     Promise = require("montage/core/promise").Promise,
+    application = require("montage/core/application").application,
     LibraryItem = require("filament-extension/core/library-item.js").LibraryItem,
     Deserializer = require("montage/core/serialization").Deserializer,
     findObjectNameRegExp = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver._findObjectNameRegExp,
@@ -8,7 +10,7 @@ var Montage = require("montage/core/core").Montage,
     Map = require("montage/collections/map"),
     ProjectController;
 
-exports.ProjectController = ProjectController = Montage.create(Montage, {
+exports.ProjectController = ProjectController = Montage.create(DocumentController, {
 
     // PROPERTIES
 
@@ -82,19 +84,11 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         value: null
     },
 
-    _fileUrlEditorMap: {
-        value: null
-    },
-
     _fileUrlDocumentMap: {
         value: null
     },
 
-    /**
-     * The active EditingDocument instance
-     */
-    //TODO not let this be read/write
-    currentDocument: {
+    _editorController: {
         value: null
     },
 
@@ -104,26 +98,27 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
      * Initialize a ProjectController
      *
      * @param {EnvironmentBridge} bridge An environment bridge that normalizes different environment features
-     * @param {ViewController} viewController A controller that manages registration of views that can appear through filament
+     * @param {Object} viewController A controller that manages registration of views that can appear through filament
+     * @param {Object} editorController A controller that manages the visible editor stack
      * @return {ProjectController} An initialized instance of a ProjectController
      */
     init: {
-        value: function (bridge, viewController) {
+        value: function (bridge, viewController, editorController) {
             bridge.setDocumentDirtyState(false);
 
             var self = this;
 
-            this._editorTypeInstanceMap = new WeakMap();
-            this._fileUrlEditorMap = new Map();
-            this._fileUrlDocumentMap = new Map();
-
             this._environmentBridge = bridge;
             this._viewController = viewController;
+            this._editorController = editorController;
             this.moduleLibraryItemMap = new Map();
             this._packageNameLibraryItemsMap = new Map();
 
+            this._documentTypeUrlMatchers = [];
+            this._urlMatcherDocumentTypeMap = new WeakMap();
+            this._editorTypeInstanceMap = new WeakMap();
 
-            this.openDocumentsController = RangeController.create().initWithContent([]);
+            this.openDocumentsController = RangeController.create().initWithContent(this.documents);
 
             //TODO get rid of this once we have property dependencies
             this.addPathChangeListener("packageUrl", this, null, true);
@@ -134,6 +129,9 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
             this.addPathChangeListener("currentDocument.undoManager.undoLabel", this);
             this.addPathChangeListener("currentDocument.undoManager.redoLabel", this);
             this.addPathChangeListener("currentDocument.undoManager.undoCount", this);
+
+            application.addEventListener("openUrl", this);
+            application.addEventListener("closeDocument", this);
 
             return this;
         }
@@ -151,8 +149,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         value: function (url) {
 
             var self = this;
-
-            //TODO what if this is called multiple times?
 
             this._projectUrl = url;
 
@@ -195,154 +191,186 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
 
     // DOCUMENT HANDLING
 
-    //TODO make this a two step thing? loadFileUrl then openFileUrl to give us a place to have an editor instance and have it draw before "opening" the document?
-    //TODO expose the currentEditor, not the currentDocument?
-    /**
-     * Find a suitable editor for the document at the specified fileUrl and open it
-     *
-     * @return {Promise} A promise for the editing document and the editor used to open the document
-     */
-    openFileUrl: {
-        value: function (fileUrl) {
-            var editor,
-                docAlreadyLoaded,
-                self = this,
-                promisedLoadInfo;
+    _editorTypeEditorMap: {
+        value: null
+    },
 
-            if (this.currentDocument && fileUrl === this.currentDocument.fileUrl) {
-                // fileUrl is already open; do nothing
-                editor = this._fileUrlEditorMap[fileUrl];
-                promisedLoadInfo = Promise.resolve({document: this.currentDocument, editor: editor});
-            } else {
+    _currentEditor: {
+        value: null
+    },
 
-                editor = this._editorForFileUrl(fileUrl);
+    _urlMatcherDocumentTypeMap: {
+        value: null
+    },
 
-                if (!editor) {
-                    // No editor available for this document
-                    promisedLoadInfo = Promise.resolve({document: null, editor: null});
-                } else {
+    _documentTypeUrlMatchers: {
+        value: null
+    },
 
-                    docAlreadyLoaded = !!this._fileUrlDocumentMap[fileUrl];
-                    this._fileUrlEditorMap.set(fileUrl, editor);
-
-                    // Editor available; load the editingDocument
-                    if (!docAlreadyLoaded) {
-                        this.dispatchEventNamed("willLoadDocument", true, false, fileUrl);
-                    }
-
-                    promisedLoadInfo = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
-                        if (self.currentDocument) {
-                            self.dispatchEventNamed("willExitDocument", true, false, self.currentDocument);
-                        }
-
-                        if (!docAlreadyLoaded) {
-                            self._fileUrlDocumentMap.set(fileUrl, editingDocument);
-                            self.openDocumentsController.push(editingDocument);
-                            self.dispatchEventNamed("didLoadDocument", true, false, editingDocument);
-                        }
-
-                        self.dispatchEventNamed("willEnterDocument", true, false, editingDocument);
-
-                        self.currentDocument = editingDocument;
-                        self.openDocumentsController.selection = [editingDocument];
-
-                        if (!docAlreadyLoaded) {
-                            self.dispatchEventNamed("didLoadDocument", true, false, editingDocument);
-                        }
-
-                        self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
-
-                        return {document: editingDocument, editor: editor};
-                    }, function (error) {
-                        // Something gone wrong revert to the current document
-                        console.log("Could not open the document. reverting to the previous one. ", error);
-                        return {document: self.currentDocument, editor: editor};
-                    });
-                }
+    registerUrlMatcherForDocumentType: {
+        value: function (urlMatcher, documentType) {
+            if (!(documentType && urlMatcher)) {
+                throw new Error("Both a document type and a url matcher are needed to register");
             }
 
-            return promisedLoadInfo;
+            if (this._urlMatcherDocumentTypeMap.has(urlMatcher)) {
+                throw new Error("Already has this url matcher registered for a document type");
+            }
+
+            //TODO use one data structure for both of these
+            this._documentTypeUrlMatchers.push(urlMatcher);
+            this._urlMatcherDocumentTypeMap.set(urlMatcher, documentType);
+        }
+    },
+
+    unregisterUrlMatcherForDocumentType: {
+        value: function (urlMatcher, documentType) {
+            //TODO track documentTypes we have open
+            throw new Error("Implement unregistering a document type");
         }
     },
 
     /**
-     * Close the specified fileUrl in whatever editor has it open.
-     *
-     * @note If the specified fileUrl refers to the currentDocument the next logical document will
-     * become the current document.
-     *
-     * @return {Promise} A promise for the closed document
+     * The document prototype to use for the specified url
+     * @override
      */
-    closeFileUrl: {
-        value: function (fileUrl) {
-
-            var editingDocument = this._fileUrlDocumentMap.get(fileUrl),
-                editingDocuments = this.openDocumentsController.content,
-                openNextDocPromise,
-                nextDoc,
-                editor,
-                self = this;
-
-            if (!editingDocument) {
-                return Promise.reject(new Error("Cannot close unopened file '" + fileUrl + "'"));
-            }
-
-            this.dispatchEventNamed("willCloseDocument", true, false, editingDocument);
-
-            if (this.currentDocument && editingDocument === this.currentDocument) {
-                //The current document is the one being closed:
-
-                if (1 === editingDocuments.length) {
-                    // No other documents to open; manually exit
-                    this.dispatchEventNamed("willExitDocument", true, false, this.currentDocument);
-                    this.currentDocument = null;
-                    openNextDocPromise = Promise.resolve(true);
-                } else {
-                    //Open the next document
-                    nextDoc = this._nextDocument(editingDocument);
-                    openNextDocPromise = this.openFileUrl(nextDoc.fileUrl);
-                }
-            } else {
-                openNextDocPromise = Promise.resolve(true);
-            }
-
-            return openNextDocPromise.then(function () {
-
-                editor = self._fileUrlEditorMap.get(fileUrl);
-
-                return editor.close(fileUrl).then(function (document) {
-                    self.openDocumentsController.delete(document);
-                    self._fileUrlEditorMap.delete(fileUrl);
-                    self._fileUrlDocumentMap.delete(fileUrl);
-                    return document;
+    documentTypeForUrl: {
+        value: function (url) {
+            var documentType,
+                matchResults = this._documentTypeUrlMatchers.filter(function (matcher) {
+                    return matcher(url) ? matcher : false;
                 });
-            });
 
+            if (matchResults.length) {
+                documentType = this._urlMatcherDocumentTypeMap.get(matchResults[matchResults.length - 1]);
+            }
+
+            return documentType;
         }
     },
 
-    _editorForFileUrl: {
+    /**
+     * @override
+     */
+    createDocumentWithTypeAndUrl: {
+        value: function (documentType, url) {
+            return documentType.load(url, this.packageUrl);
+        }
+    },
+
+    handleOpenUrl: {
+        value: function (evt) {
+            this.openUrlForEditing(evt.detail).done();
+        }
+    },
+
+    /**
+     * Open a document representing the specified fileUrl.
+     *
+     * This will also bring the document's editor to the front.
+     *
+     * @param {string} fileUrl The url for which to open a representative document
+     * @return {Promise} A promise for the representative document
+     */
+    openUrlForEditing: {
         value: function (fileUrl) {
-            var editor = this._fileUrlEditorMap.get(fileUrl),
+            var self = this,
+                editor,
+                documentType,
                 editorType;
 
-            if (!editor) {
-                editorType = this._viewController.editorTypeForFileUrl(fileUrl);
+            documentType = this.documentTypeForUrl(fileUrl);
 
-                if (editorType) {
-                    editor = this._editorTypeInstanceMap.get(editorType);
+            if (documentType) {
+                editorType = documentType.editorType;
+                editor = this._editorTypeInstanceMap.get(editorType);
 
-                    if (!editor) {
-                        editor = editorType.create();
-                        editor.projectController = this;
-                        editor.viewController = this.viewController;
+                if (!editor) {
+                    editor = editorType.create();
+                    //TODO formalize exactly what we pass along to the editors
+                    // Most of this right here is simply for the componentEditor
+                    editor.projectController = this;
+                    editor.viewController = this._viewController;
+                    this._editorTypeInstanceMap.set(editorType, editor);
+                }
 
-                        this._editorTypeInstanceMap.set(editorType, editor);
-                    }
+                this._editorController.bringEditorToFront(editor);
+                this._currentEditor = editor;
+
+                return this.openUrl(fileUrl).then(function () {
+
+                });
+            } else {
+                return Promise.resolve(null);
+            }
+        }
+    },
+
+    /**
+     * @override
+     */
+    acceptedCurrentDocument: {
+        value: function () {
+            this._currentEditor.open(this.currentDocument);
+            var selection;
+            if (this.currentDocument) {
+                selection = [this.currentDocument];
+            } else {
+                selection = [];
+            }
+            this.openDocumentsController.selection = selection;
+        }
+    },
+
+    handleCloseDocument: {
+        value: function (evt) {
+            this.closeDocument(evt.detail).done();
+        }
+    },
+
+    /**
+     * Close the specified document.
+     *
+     * @note If the specified document refers to the currentDocument the next logical document will
+     * become the current document.
+     *
+     * @param {Document} document The document to close
+     * @return {Promise} A promise for the closed document
+     */
+    closeDocument: {
+        value: function (document) {
+            var editorType = document.editorType,
+                editor = this._editorTypeInstanceMap.get(editorType),
+                self = this,
+                documentIndex,
+                nextDocument = null,
+                closedPromise;
+
+
+            if (document === this.currentDocument) {
+                documentIndex = this.documents.indexOf(document);
+
+                if (this.documents.length - 1 > documentIndex) {
+                    nextDocument = this.documents[documentIndex + 1];
+                } else {
+                    nextDocument = this.documents[documentIndex - 1];
                 }
             }
 
-            return editor;
+            if (nextDocument) {
+                closedPromise = this.openUrlForEditing(nextDocument.fileUrl).then(function () {
+                    editor.close(document);
+                    self.removeDocument(document);
+                    return document;
+                });
+            } else {
+                editor.close(document);
+                this.removeDocument(document);
+                closedPromise = Promise.resolve(document);
+            }
+
+            return closedPromise;
+
         }
     },
 

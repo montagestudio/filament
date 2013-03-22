@@ -44,9 +44,7 @@ exports.FileCell = Montage.create(Component, {
 
     handleOpenFileButtonAction: {
         value: function (evt) {
-            this.dispatchEventNamed("openFile", true, true, {
-                fileUrl: this.fileInfo.fileUrl
-            });
+            this.dispatchEventNamed("openUrl", true, true, this.fileInfo.fileUrl);
         }
     }
 

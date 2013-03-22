@@ -29,6 +29,19 @@
             "listeners": [
                 {"type": "action", "listener": {"@": "owner"}}
             ]
+        },
+
+        "pressComposer": {
+            "prototype": "montage/composer/press-composer",
+            "properties": {
+                "component": {"@": "owner"}
+            },
+            "listeners": [
+                {
+                    "type": "press",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>

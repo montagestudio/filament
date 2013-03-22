@@ -5,7 +5,7 @@ var Montage = require("montage/core/core").Montage,
     ViewController = require("core/view-controller.js").ViewController,
     PreviewController = require("core/preview-controller.js").PreviewController,
     ProjectController = require("core/project-controller.js").ProjectController,
-    ComponentEditor = require("ui/component-editor.reel").ComponentEditor,
+    ReelDocument = require("core/reel-document").ReelDocument,
     IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
 exports.ApplicationDelegate = Montage.create(Montage, {
@@ -56,6 +56,10 @@ exports.ApplicationDelegate = Montage.create(Montage, {
         value: null
     },
 
+    _deferredMainComponent: {
+        value: null
+    },
+
     didCreate: {
         value: function () {
             // Make stack traces from promise errors easily available in the
@@ -72,34 +76,41 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             };
 
             this._deferredApplication = Promise.defer();
+            this._deferredMainComponent = Promise.defer();
 
             this.viewController = ViewController.create();
-            this.viewController.registerEditorTypeForFileTypeMatcher(ComponentEditor, function (fileUrl) {
-                return (/\.reel\/?$/).test(fileUrl);
-            });
 
             this.previewController = PreviewController.create().init(this);
 
             var self = this,
                 promisedApplication = this._deferredApplication.promise,
-                promisedEnvironment,
+                promisedMainComponent = this._deferredMainComponent.promise,
+                promisedLoadedExtensions,
                 extensionController;
 
-            promisedEnvironment = this.detectEnvironmentBridge().then(function (bridge) {
-                self.environmentBridge = bridge;
-                self.projectController = ProjectController.create().init(bridge, self.viewController);
-                extensionController = self.extensionController = ExtensionController.create().init(self);
+            promisedLoadedExtensions = Promise.all([promisedApplication, this.detectEnvironmentBridge()])
+                .spread(function (app, bridge) {
+                    self.application = app;
+                    self.environmentBridge = bridge;
 
-                return extensionController.loadExtensions();
-            });
+                    extensionController = self.extensionController = ExtensionController.create().init(self);
+                    return extensionController.loadExtensions();
 
-            Promise.all([promisedApplication, promisedEnvironment])
-                .then(function() {
+                });
+
+            Promise.all([promisedMainComponent, promisedLoadedExtensions])
+                .spread(function (mainComponent, loadedExtensions) {
+                    self.projectController = ProjectController.create().init(self.environmentBridge, self.viewController, mainComponent);
+
+                    self.projectController.registerUrlMatcherForDocumentType(function (fileUrl) {
+                        return (/\.reel\/?$/).test(fileUrl);
+                    }, ReelDocument);
+
                     //TODO not activate all extensions by default
                     return Promise.all(extensionController.loadedExtensions.map(function (extension) {
                         return extensionController.activateExtension(extension);
                     }));
-                }).then(function () {
+                }).then(function (activatedExtensions) {
                     var projectUrl = self.environmentBridge.projectUrl,
                         promisedProjectUrl;
 
@@ -123,10 +134,15 @@ exports.ApplicationDelegate = Montage.create(Montage, {
         }
     },
 
+    handleComponentLoaded: {
+        value: function (evt) {
+            this._deferredMainComponent.resolve(evt.detail);
+        }
+    },
+
     willFinishLoading: {
         value: function (app) {
             var self = this;
-            this.application = app;
 
             //TODO sort out where many of these belong, more of the actual handling should probably be here
 
