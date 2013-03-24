@@ -84,10 +84,6 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
         value: null
     },
 
-    _fileUrlDocumentMap: {
-        value: null
-    },
-
     _editorController: {
         value: null
     },
@@ -351,6 +347,11 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
      */
     closeDocument: {
         value: function (document) {
+
+            if (!this._urlDocumentMap.get(document.url)) {
+                return Promise.reject(new Error("Cannot close a document that is not open"));
+            }
+
             var editorType = document.editorType,
                 editor = this._editorTypeInstanceMap.get(editorType),
                 self = this,
