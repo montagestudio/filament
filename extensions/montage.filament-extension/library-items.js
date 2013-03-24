@@ -54,7 +54,7 @@ var AutocompleteLibraryItem = Montage.create(LibraryItem, {
     icon: {
         value: packageLocation + "assets/components/autocomplete.png"
     },
-    
+
     html: {
         value: '<input data-montage-id="">'
     }
@@ -502,7 +502,7 @@ var FlowLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/flow.reel",
+            "prototype": "matte/ui/flow.reel",
             "properties": {
                 "objects": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
                 "cameraPosition": [0, 0, 1500],
@@ -947,7 +947,7 @@ exports.libraryItems = {
     "montage/ui/popup/notifier.reel": NotifierLibraryItem,
     "montage/ui/popup/alert.reel": AlertLibraryItem,
     "montage/ui/popup/confirm.reel": ConfirmLibraryItem,
-    
+
     "montage/ui/rich-text-editor/overlays/rich-text-linkpopup.reel": null,
     "montage/ui/rich-text-editor/overlays/rich-text-resizer.reel": null,
     "montage/ui/autocomplete/result-item.reel": null,
@@ -960,7 +960,7 @@ exports.libraryItems = {
     "montage/ui/scroll-bars.reel": null,
     "montage/ui/radio-button.reel": null,
     "montage/ui/dynamic-element.reel": null,
-    
+
     "montage/ui/native/anchor.reel": null,
     "montage/ui/native/button.reel": null,
     "montage/ui/native/image.reel": null,
@@ -1000,7 +1000,7 @@ var RangeControllerLibraryItem = Montage.create(LibraryItem, {
     label: {
         value: "RangeController"
     },
-    
+
     icon: {
         value: packageLocation + "assets/components/range-controller.png"
     }

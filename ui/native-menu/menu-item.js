@@ -166,15 +166,15 @@ exports.MenuItem = Montage.create(Montage, {
     dispatchMenuEvent:{
         value: function(type) {
             var event = new CustomEvent(type, {
-                                   detail: this,
-                                   bubbles: true,
-                                   cancelable: true
-                               }),
+                    detail: this,
+                    bubbles: true,
+                    cancelable: true
+                }),
                 target = document.activeElement,
                 component = target.component;
 
             while (component == null && target) {
-               target = target.parentNode;
+                target = target.parentNode;
             }
 
             component = component || defaultEventManager.application;

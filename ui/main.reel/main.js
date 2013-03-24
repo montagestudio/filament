@@ -96,12 +96,12 @@ exports.Main = Montage.create(Component, {
         enumerable: false,
         value: function (evt) {
             switch (evt.detail.identifier) {
-                case "newComponent":
-                    this.projectController.createComponent().done();
-                    break;
-                case "newModule":
-                    this.projectController.createModule().done();
-                    break;
+            case "newComponent":
+                this.projectController.createComponent().done();
+                break;
+            case "newModule":
+                this.projectController.createModule().done();
+                break;
             }
         }
     },

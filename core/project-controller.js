@@ -285,7 +285,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
             alreadyOpenedDoc = this.documentForUrl(fileUrl);
 
             if (alreadyOpenedDoc) {
-                editorType = alreadyOpenedDoc.editorType
+                editorType = alreadyOpenedDoc.editorType;
             } else {
                 documentType = this.documentTypeForUrl(fileUrl);
 

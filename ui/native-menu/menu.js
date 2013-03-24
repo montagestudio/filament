@@ -29,7 +29,7 @@ var Menu = exports.Menu = Montage.create(Montage, {
             for (var i in newItems) {
                 var item = newItems[i];
 
-                if (typeof item.identifier !== "string" || item.identifier.length == 0) {
+                if (typeof item.identifier !== "string" || 0 === item.identifier.length) {
                     item.identifier = item.title || (item.location ? (item.location.after || item.location.before) : "");
                     item.identifier = item.identifier.replace(/ /g, "");
                 }
@@ -42,7 +42,7 @@ var Menu = exports.Menu = Montage.create(Montage, {
 
                 thisRef._insertItem(mainMenu, itemsBeingInserted, 0, function() {
                     thisRef._items = mainMenu.items;
-                })
+                });
             }
         }
     },
@@ -85,12 +85,12 @@ var Menu = exports.Menu = Montage.create(Montage, {
                     var itemsBeingInserted = thisRef._itemsToInsert.splice(0);
                     thisRef._insertItem(mainMenu, itemsBeingInserted, 0, function() {
                         thisRef._items = mainMenu.items;
-                    })
+                    });
                 }
             }).done(function() {
                 thisRef._itemsDeferPromises.forEach(function(defer) {
                     defer.resolve(thisRef);
-                })
+                });
                 delete thisRef._fetchingMenu;
             });
         }
@@ -183,7 +183,7 @@ var Menu = exports.Menu = Montage.create(Montage, {
                     thisRef._deleteCallbackCount ++;
                     lumieres.MenuItem.removeItem.call(item.menu, item, function() {
                         thisRef._deleteCallbackCount --;
-                        if (thisRef._deleteCallbackCount == 0) {
+                        if (0 === thisRef._deleteCallbackCount) {
                             thisRef._deleteCallbackCount --; // To prevent firing the callback more than once
                             deferredReset.resolve(menu);
                         }
@@ -205,7 +205,7 @@ var Menu = exports.Menu = Montage.create(Montage, {
             }
 
             // Fire the callback when there was no items to delete at all
-            if (thisRef._deleteCallbackCount == 0) {
+            if (0 === thisRef._deleteCallbackCount) {
                 deferredReset.resolve(menu);
             }
 
@@ -232,13 +232,13 @@ var Menu = exports.Menu = Montage.create(Montage, {
                         continue;
                     }
 
-                    if (-- index == 0) {
+                    if (-- index === 0) {
                         return { menu: item, index: parseInt(i, 10) };
                     }
                 }
 
                 return { menu: null, index: -1 };
-            }
+            };
 
             // Path are relative to native menus, ignore all JS menus
             for (i = 0; i < nbrPath; i ++) {
@@ -258,7 +258,7 @@ var Menu = exports.Menu = Montage.create(Montage, {
             return {
                 menu: menu !== mainMenu ? menu.menu : mainMenu,
                 index: null ? null : isAfter ? index + 1 : index
-            }
+            };
         }
     },
 
@@ -277,7 +277,7 @@ var Menu = exports.Menu = Montage.create(Montage, {
                 menu = mainMenu;
                 index = null;
 
-                if (typeof location == "object") {
+                if (typeof location === "object") {
                     if (location.before !== undefined) {
                         location = thisRef._locationForPath(mainMenu, location.before, false);
                         menu = location.menu;
@@ -291,7 +291,7 @@ var Menu = exports.Menu = Montage.create(Montage, {
 
                 lumieres.MenuItem.insertItem.call(menu, item, index, function() {
                     thisRef._insertItem(mainMenu, items, ++ itemIndex, callback);
-                })
+                });
             } else if (callback) {
                 callback(0, null);
             }
@@ -322,7 +322,7 @@ var Menu = exports.Menu = Montage.create(Montage, {
                 }
 
                 return undefined;
-            }
+            };
 
             return searchItemsTree(this, identifier);
         }

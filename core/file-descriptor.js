@@ -1,3 +1,4 @@
+/* jshint -W016 */
 var Montage = require("montage").Montage;
 var constants = {
     S_IFDIR: 16384,
