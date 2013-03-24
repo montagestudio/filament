@@ -20,6 +20,12 @@ var Bridge = Montage.create(EnvironmentBridge, {
         value: function (url) {
             return url;
         }
+    },
+
+    projectInfo: {
+        value: function (url) {
+            return Promise.resolve({packageUrl: "packageUrl", dependencies: []})
+        }
     }
 
 });
@@ -32,7 +38,6 @@ var promiseFunction = function (promise) {
 
 exports.environmentBridgeMock = function (options) {
     var bridge = Bridge.create(),
-        projectInfoPromise = Promise.resolve({packageUrl: "packageUrl", dependencies: []}),
         watchPromise = Promise.resolve(),
         listTreePromise = Promise.resolve(),
         listPromise = Promise.resolve(),
@@ -49,7 +54,6 @@ exports.environmentBridgeMock = function (options) {
     bridge.mainMenu = Promise.resolve(options.mainMenu || null);
     bridge.availableExtensions = Promise.resolve(options.extensionUrls || []);
 
-    bridge.projectInfo = options.projectInfo || promiseFunction(projectInfoPromise);
     bridge.listTreeAtUrl = options.listTreeAtUrl || promiseFunction(listTreePromise);
     bridge.list = options.list || promiseFunction(listPromise);
     bridge.watch = options.watch || promiseFunction(watchPromise);

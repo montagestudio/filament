@@ -117,10 +117,10 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
             this.openDocumentsController = RangeController.create().initWithContent(this.documents);
 
             //TODO get rid of this once we have property dependencies
-            this.addPathChangeListener("packageUrl", this, null, true);
-            this.addPathChangeListener("packageUrl", this);
-            this.addPathChangeListener("_windowIsKey", this, null, true);
-            this.addPathChangeListener("_windowIsKey", this);
+            this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyWillChange", true);
+            this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyChange");
+            this.addPathChangeListener("_windowIsKey", this, "handleCanEditDependencyWillChange", true);
+            this.addPathChangeListener("_windowIsKey", this, "handleCanEditDependencyChange");
 
             this.addPathChangeListener("currentDocument.undoManager.undoLabel", this);
             this.addPathChangeListener("currentDocument.undoManager.redoLabel", this);
@@ -779,28 +779,14 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
     },
 
     //TODO get rid of this when we get property dependencies
-    handlePackageUrlWillChange: {
+    handleCanEditDependencyWillChange: {
         value: function (notification) {
             this.dispatchBeforeOwnPropertyChange("canEdit", this.canEdit);
         }
     },
 
     //TODO get rid of this when we get property dependencies
-    handlePackageUrlChange: {
-        value: function (notification) {
-            this.dispatchOwnPropertyChange("canEdit", this.canEdit);
-        }
-    },
-
-    //TODO get rid of this when we get property dependencies
-    handle_windowIsKeyWillChange: {
-        value: function (notification) {
-            this.dispatchBeforeOwnPropertyChange("canEdit", this.canEdit);
-        }
-    },
-
-    //TODO get rid of this when we get property dependencies
-    handle_windowIsKeyChange: {
+    handleCanEditDependencyChange: {
         value: function (notification) {
             this.dispatchOwnPropertyChange("canEdit", this.canEdit);
         }
