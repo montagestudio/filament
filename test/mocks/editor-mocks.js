@@ -3,10 +3,8 @@ var Montage = require("montage").Montage,
 
 var Editor = Montage.create(Montage, {
 
-    load: {
-        value: function (fileUrl) {
-            return Promise.reject(new Error("Editor cannot open fileUrl"));
-        }
+    open: {
+        value: Function.noop
     }
 
 });

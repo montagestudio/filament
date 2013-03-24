@@ -128,6 +128,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
 
             application.addEventListener("openUrl", this);
             application.addEventListener("closeDocument", this);
+            application.addEventListener("menuValidate", this);
 
             return this;
         }
@@ -272,6 +273,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
         value: function (fileUrl) {
             var self = this,
                 editor,
+                alreadyOpenedDoc,
                 documentType,
                 editorType;
 
@@ -279,10 +281,20 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                 return Promise.resolve(this.currentDocument);
             }
 
-            documentType = this.documentTypeForUrl(fileUrl);
+            // Find editor to make frontmost
+            alreadyOpenedDoc = this.documentForUrl(fileUrl);
 
-            if (documentType) {
-                editorType = documentType.editorType;
+            if (alreadyOpenedDoc) {
+                editorType = alreadyOpenedDoc.editorType
+            } else {
+                documentType = this.documentTypeForUrl(fileUrl);
+
+                if (documentType) {
+                    editorType = documentType.editorType;
+                }
+            }
+
+            if (editorType) {
                 editor = this._editorTypeInstanceMap.get(editorType);
 
                 if (!editor) {
@@ -309,6 +321,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                     return doc;
                 });
             } else {
+                //TODO do something more appropriate if there's no editor available for this document
                 return Promise.resolve(null);
             }
         }
@@ -355,20 +368,13 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
             var editorType = document.editorType,
                 editor = this._editorTypeInstanceMap.get(editorType),
                 self = this,
-                documentIndex,
                 nextDocument = null,
                 closedPromise,
                 wasCurrentDocument = document === this.currentDocument;
 
 
             if (wasCurrentDocument) {
-                documentIndex = this.documents.indexOf(document);
-
-                if (this.documents.length - 1 > documentIndex) {
-                    nextDocument = this.documents[documentIndex + 1];
-                } else {
-                    nextDocument = this.documents[documentIndex - 1];
-                }
+                nextDocument = this._nextDocument(document);
             }
 
             this.dispatchEventNamed("willCloseDocument", true, false, {
@@ -377,7 +383,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
             });
 
             if (nextDocument) {
-                closedPromise = this.openUrlForEditing(nextDocument.fileUrl).then(function () {
+                closedPromise = this.openUrlForEditing(nextDocument.url).then(function () {
                     editor.close(document);
                     self.removeDocument(document);
                     return document;
@@ -644,10 +650,10 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
 
                 //TODO use either the url specified (save as), or the currentDoc's fileUrl
                 //TODO improve this, we're reaching deeper than I'd like to find the fileUrl
-                savePromise = this.environmentBridge.save(this.currentDocument, this.currentDocument.fileUrl).then(function () {
+                savePromise = this.environmentBridge.save(this.currentDocument, this.currentDocument.url).then(function () {
                     self.environmentBridge.setDocumentDirtyState(false);
                     self.dispatchEventNamed("didSave", true, false);
-                    return self.currentDocument.fileUrl;
+                    return self.currentDocument.url;
                 });
             }
 
