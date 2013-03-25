@@ -4,10 +4,17 @@ var Montage = require("montage").Montage,
     Blueprint = require("montage/core/meta/blueprint").Blueprint,
     EditingDocument = require("palette/core/editing-document").EditingDocument,
     BlueprintProxy = require("./blueprint-proxy").BlueprintProxy,
-    Serializer = require("montage/core/serialization").Serializer,
+    BlueprintEditor = require("ui/blueprint-editor.reel").BlueprintEditor,
+   Serializer = require("montage/core/serialization").Serializer,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver;
 
 var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocument, {
+
+    editorType: {
+        get: function () {
+            return BlueprintEditor;
+        }
+    },
 
     load:{
         value:function (fileUrl, packageUrl) {
