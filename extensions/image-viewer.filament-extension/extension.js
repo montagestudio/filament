@@ -21,7 +21,7 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
 
     deactivate: {
         value: function (application, projectController, viewController) {
-            viewController.unregisterUrlMatcherForDocumentType(this.editorFileMatchFunction, ImageDocument);
+            projectController.unregisterUrlMatcherForDocumentType(this.editorFileMatchFunction, ImageDocument);
             return Promise.resolve(this);
         }
     }
