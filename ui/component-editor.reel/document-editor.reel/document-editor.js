@@ -162,7 +162,7 @@ exports.DocumentEditor = Montage.create(Component, {
                 Promise.all(parentInspectors.map(function (component) {
                     var inspector = component.create();
                     inspector.object = parentObject;
-                    // TODO set top and left of inspector?
+                    inspector.selectedObject = selectedObject;
                     return inspector;
                 })).then(function (inspectors) {
                     self.contextualInspectors.push.apply(self.contextualInspectors, inspectors);

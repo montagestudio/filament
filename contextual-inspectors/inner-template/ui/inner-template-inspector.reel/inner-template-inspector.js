@@ -55,6 +55,9 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
                     // set stageObject of child components?
                     self.templateObjects.innerTemplate.addChildComponent(component);
                 });
+                if (self.selectedObject && self.selectedObject.label in part.objects) {
+                    self.selectedObject.stageObject = part.objects[self.selectedObject.label];
+                }
                 return part.loadComponentTree().then(function() {
                     self.part = part;
                     self.needsDraw = true;
