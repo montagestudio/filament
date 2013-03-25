@@ -52,6 +52,7 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             var doc = object.element.ownerDocument;
             object.innerTemplate.instantiate(doc).then(function (part) {
                 part.childComponents.forEach(function (component) {
+                    // set stageObject of child components?
                     self.templateObjects.innerTemplate.addChildComponent(component);
                 });
                 return part.loadComponentTree().then(function() {

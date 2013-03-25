@@ -155,12 +155,7 @@ exports.DocumentEditor = Montage.create(Component, {
                 }).done();
 
                 // TODO make a loop
-                var parentObject;
-                if (Array.isArray(selectedObject.stageObject) && selectedObject.stageObject[0].parentComponent) {
-                    parentObject = this.editingDocument.editingProxyForObject(selectedObject.stageObject[0].parentComponent);
-                } else {
-                    parentObject = this.editingDocument.editingProxyForObject(selectedObject.stageObject.parentComponent);
-                }
+                var parentObject = this.editingDocument.editingProxyForObject(selectedObject.parentComponent);
                 var parentInspectors = this.viewController.contextualInspectorsForObject(parentObject).filter(function (inspector) {
                     return inspector.showForChildComponents;
                 });
