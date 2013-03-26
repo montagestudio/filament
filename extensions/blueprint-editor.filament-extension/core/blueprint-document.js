@@ -102,9 +102,9 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
 
     getOwnedObjectProperty: {
         value: function (proxy, property) {
-             return proxy.getObjectProperty(property);
+            return proxy.getObjectProperty(property);
         }
-     },
+    },
 
     setOwnedObjectProperty:{
         value:function (proxy, property, value) {
@@ -112,7 +112,7 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
             var undoManager = this.undoManager,
                 undoneValue = proxy.getObjectProperty(property);
 
-            if (undoneValue != value) {
+            if (undoneValue !== value) {
                 console.log("setOwnedObjectProperty " + property + "  " + value);
 
                 //TODO maybe the proxy shouldn't be involved in doing this as we hand out the proxies
