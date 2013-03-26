@@ -88,7 +88,7 @@ exports.DocumentEditor = Montage.create(Component, {
     },
 
     addLibraryItem: {
-        value: function (libraryItem) {
+        value: function (libraryItem, parentProxy) {
 
             if (!this.editingDocument) {
                 throw new Error("Cannot add component: no editing document");
@@ -98,9 +98,9 @@ exports.DocumentEditor = Montage.create(Component, {
             }
 
             if (libraryItem.html) {
-                this.addComponent(libraryItem);
+                return this.addComponent(libraryItem, parentProxy);
             } else {
-                this.addObject(libraryItem);
+                return this.addObject(libraryItem);
             }
         }
     },
@@ -115,14 +115,17 @@ exports.DocumentEditor = Montage.create(Component, {
     //TODO Can we get get rid of the editing API being here, on a component and instead always rely on the editingDocument
     addComponent: {
         enumerable: false,
-        value: function (prototypeEntry) {
+        value: function (prototypeEntry, parentProxy) {
 
             var editingDocument = this.editingDocument;
 
             return editingDocument.addComponent(
                 null,
                 prototypeEntry.serialization,
-                prototypeEntry.html
+                prototypeEntry.html,
+                undefined, // elementMontageId
+                undefined, // identifier
+                parentProxy
             ).then(function (proxy) {
 
                 // try to pre-fetch the description of this object
@@ -133,7 +136,9 @@ exports.DocumentEditor = Montage.create(Component, {
                 if (typeof prototypeEntry.postProcess === "function") {
                     prototypeEntry.postProcess(proxy, editingDocument);
                 }
-            }).done();
+
+                return proxy;
+            });
         }
     },
 
@@ -148,20 +153,25 @@ exports.DocumentEditor = Montage.create(Component, {
                 Promise.all(inspectors.map(function (component) {
                     var inspector = component.create();
                     inspector.object = selectedObject;
-                    // TODO set top and left of inspector?
+                    inspector.documentEditor = self;
                     return inspector;
                 })).then(function (inspectors) {
                     self.contextualInspectors = inspectors;
                 }).done();
 
+                if (!selectedObject.parentProxy) {
+                    return;
+                }
+
                 // TODO make a loop
-                var parentObject = this.editingDocument.editingProxyForObject(selectedObject.parentComponent);
+                var parentObject = selectedObject.parentProxy;
                 var parentInspectors = this.viewController.contextualInspectorsForObject(parentObject).filter(function (inspector) {
                     return inspector.showForChildComponents;
                 });
                 Promise.all(parentInspectors.map(function (component) {
                     var inspector = component.create();
                     inspector.object = parentObject;
+                    inspector.documentEditor = self;
                     inspector.selectedObject = selectedObject;
                     return inspector;
                 })).then(function (inspectors) {
@@ -222,7 +232,7 @@ exports.DocumentEditor = Montage.create(Component, {
                 deserializer = Deserializer.create().init(data, require);
 
             deserializer.deserialize().then(function (prototypeEntry) {
-                self.addLibraryItem(prototypeEntry);
+                self.addLibraryItem(prototypeEntry).done();
             }).done();
         }
     }
