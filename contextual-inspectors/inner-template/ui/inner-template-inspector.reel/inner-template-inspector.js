@@ -6,6 +6,9 @@
 var Montage = require("montage").Montage,
     Inspector = require("contextual-inspectors/base/ui/inspector.reel").Inspector;
 
+var Deserializer = require("montage/core/serialization").Deserializer;
+var MimeTypes = require("core/mime-types");
+
 var INSPECTOR_HEIGHT = 200;
 var INSPECTOR_PADDING = 10;
 
@@ -69,6 +72,9 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
     prepareForDraw: {
         value: function () {
             this.element.addEventListener("mousedown", this, false);
+
+            this.templateObjects.innerTemplate.element.addEventListener("dragover", this, false);
+            this.templateObjects.innerTemplate.element.addEventListener("drop", this, false);
         }
     },
 
@@ -83,6 +89,32 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
                 removeFromSelection: false,
                 retractFromSelection: false
             });
+        }
+    },
+
+    handleDragover: {
+        value: function (event) {
+            if (event.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1) {
+                // allows us to drop
+                event.preventDefault();
+                event.dataTransfer.dropEffect = "copy";
+            } else {
+                event.dataTransfer.dropEffect = "none";
+            }
+        }
+    },
+
+    handleDrop: {
+        value: function (event) {
+            var self = this,
+                // TODO: security issues?
+                data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
+                deserializer = Deserializer.create().init(data, require);
+
+            deserializer.deserialize().then(function (prototypeEntry) {
+                debugger;
+                self.documentEditor.addLibraryItem(prototypeEntry, self.object).done();
+            }).done();
         }
     },
 
