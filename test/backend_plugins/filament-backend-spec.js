@@ -245,6 +245,17 @@ describe("filament backend", function () {
 
                 });
         });
+
+        it("should ignore hidden files", function () {
+            return filamentBackend.list("/ignore")
+                .then(function (fileDescriptors) {
+                    expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
+                        "fs://localhost/ignore/node_modules", "fs://localhost/ignore/ok.js"
+                    ]);
+
+                });
+        });
+
     });
 
 });

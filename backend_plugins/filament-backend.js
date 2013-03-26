@@ -100,6 +100,11 @@ exports.listTree = function (path) {
 
 exports.list = function (path) {
     return QFS.list(path).then(function (filenames) {
+
+        filenames = filenames.filter(function (name) {
+            return !(/^\./).test(name);
+        });
+
         return Q.all(filenames.map(function (filename) {
             var fullPath = PATH.join(path, filename);
             return QFS.stat(fullPath).then(function (stat) {
