@@ -26,14 +26,12 @@ var Menu = exports.Menu = Montage.create(Montage, {
             var thisRef = this;
 
             // Generate an identifier if not is specified
-            for (var i in newItems) {
-                var item = newItems[i];
-
+            newItems.forEach(function (item) {
                 if (typeof item.identifier !== "string" || 0 === item.identifier.length) {
                     item.identifier = item.title || (item.location ? (item.location.after || item.location.before) : "");
                     item.identifier = item.identifier.replace(/ /g, "");
                 }
-            }
+            });
 
             thisRef._itemsToInsert = thisRef._itemsToInsert.concat(newItems);
             if (!thisRef._fetchingMenu) {
@@ -189,9 +187,9 @@ var Menu = exports.Menu = Montage.create(Montage, {
                         }
                     });
                 } else if (item.items) {
-                    for (var i in item.items) {
-                        _reset(item.items[i]);
-                    }
+                    item.items.forEach(function (childItem) {
+                        _reset(childItem);
+                    });
                 }
             };
 
@@ -223,17 +221,16 @@ var Menu = exports.Menu = Montage.create(Montage, {
 
             var nativeItemAtIndex = function(menu, index) {
                 var items = menu.items,
-                    item,
+                    iItem,
                     i;
 
-                for (i in menu.items) {
-                    item = items[i];
-                    if (item.isJavascriptOwned) {
+                for (i = 0; (iItem = menu.items[i]); i++) {
+                    if (iItem.isJavascriptOwned) {
                         continue;
                     }
 
                     if (-- index === 0) {
-                        return { menu: item, index: parseInt(i, 10) };
+                        return { menu: iItem, index: parseInt(i, 10) };
                     }
                 }
 
@@ -307,21 +304,23 @@ var Menu = exports.Menu = Montage.create(Montage, {
     menuItemForIdentifier: {
         value: function(identifier) {
             var searchItemsTree = function(menu, identifier) {
-                for (var i in menu.items) {
-                    var item = menu.items[i];
-                    if (item.identifier === identifier) {
-                        return item;
+                var iItem,
+                    i;
+
+                for (i = 0; (iItem = menu.items[i]); i++) {
+                    if (iItem.identifier === identifier) {
+                        return iItem;
                     } else {
-                        if (item.items) {
-                            item = searchItemsTree(item, identifier);
-                            if (item) {
-                                return item;
+                        if (iItem.items) {
+                            iItem = searchItemsTree(iItem, identifier);
+                            if (iItem) {
+                                return iItem;
                             }
                         }
                     }
                 }
 
-                return undefined;
+                return;
             };
 
             return searchItemsTree(this, identifier);
