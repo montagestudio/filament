@@ -29,6 +29,8 @@
         "it",
         "xit",
         "expect",
-        "spyOn"
+        "spyOn",
+
+        "console"
     ]
 }
