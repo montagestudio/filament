@@ -10,6 +10,10 @@ var baseHash = exec("git rev-parse --short " + baseName, {silent: true}).output.
 var HEAD = exec("git rev-parse --short HEAD", {silent: true}).output.trim();
 var jshintOptions = JSON.parse(cat(__dirname + "/../.jshintrc"));
 
+// globals is not accepted as an option through the API, pass along as its own arg
+var globals = jshintOptions.globals;
+delete jshintOptions.globals;
+
 var changedJsFiles = exec("git diff --name-only " + baseHash, {silent: true}).output
 .trim()
 .split("\n")
@@ -22,7 +26,7 @@ console.log();
 
 var results = [], data = [];
 changedJsFiles.forEach(function (filename) {
-    if (!JSHINT(cat(filename), jshintOptions)) {
+    if (!JSHINT(cat(filename), jshintOptions, globals)) {
         JSHINT.errors.forEach(function (err) {
             if (err) {
                 results.push({ file: filename, error: err });
