@@ -8,6 +8,7 @@ var Montage = require("montage/core/core").Montage,
     RangeController = require("montage/core/range-controller").RangeController,
     WeakMap = require("montage/collections/weak-map"),
     Map = require("montage/collections/map"),
+    Confirm = require("matte/ui/popup/confirm.reel").Confirm,
     ProjectController;
 
 exports.ProjectController = ProjectController = Montage.create(DocumentController, {
@@ -365,43 +366,73 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                 return Promise.reject(new Error("Cannot close a document that is not open"));
             }
 
-            var editorType = document.editorType,
-                editor = this._editorTypeInstanceMap.get(editorType),
-                self = this,
-                nextDocument = null,
-                closedPromise,
-                wasCurrentDocument = document === this.currentDocument;
-
-
-            if (wasCurrentDocument) {
-                nextDocument = this._nextDocument(document);
+            var canCloseMessage = this.canCloseDocument(document, document.url);
+            var canCancelPromise = Promise.defer();
+            if (canCloseMessage) {
+                // TODO PJYF This needs to be localized.
+                var options = {
+                    message: canCloseMessage + " Are you sure you want to close that document?",
+                    okLabel: "Close",
+                    cancelLabel: "Cancel"
+                };
+                Confirm.show(options, function () {
+                    canCancelPromise.resolve();
+                }, function () {
+                    canCancelPromise.reject(new Error("The document prevented the close"));
+                });
             }
 
-            this.dispatchEventNamed("willCloseDocument", true, false, {
-                document: document,
-                isCurrentDocument: wasCurrentDocument
-            });
+            var self = this;
+            return canCancelPromise.promise.then(function () {
 
-            if (nextDocument) {
-                closedPromise = this.openUrlForEditing(nextDocument.url).then(function () {
+                var editorType = document.editorType,
+                    editor = self._editorTypeInstanceMap.get(editorType),
+                    nextDocument = null,
+                    closedPromise,
+                    wasCurrentDocument = document === self.currentDocument;
+
+                if (wasCurrentDocument) {
+                    nextDocument = self._nextDocument(document);
+                }
+
+                this.dispatchEventNamed("willCloseDocument", true, false, {
+                    document: document,
+                    isCurrentDocument: wasCurrentDocument
+                });
+
+                if (nextDocument) {
+                    closedPromise = self.openUrlForEditing(nextDocument.url).then(function () {
+                        editor.close(document);
+                        self.removeDocument(document);
+                        return document;
+                    });
+                } else {
                     editor.close(document);
                     self.removeDocument(document);
-                    return document;
-                });
-            } else {
-                editor.close(document);
-                this.removeDocument(document);
-                closedPromise = Promise.resolve(document);
-            }
+                    closedPromise = Promise.resolve(document);
+                }
 
-            return closedPromise.then(function (doc) {
-                self.dispatchEventNamed("didCloseDocument", true, false, {
-                    document: doc,
-                    wasCurrentDocument: doc === self.currentDocument
+                return closedPromise.then(function (doc) {
+                    self.dispatchEventNamed("didCloseDocument", true, false, {
+                        document: doc,
+                        wasCurrentDocument: doc === self.currentDocument
+                    });
+                    return doc;
                 });
-                return doc;
-            });
+            }, Function.noop);
 
+        }
+    },
+
+    /*
+     * Give the document an opportunity to decide if it can be closed.
+     * @param {Document} document to be closed
+     * @param {String} location of the document being saved
+     * @return null if the document can be closed, a string withe reason it cannot close otherwise
+     */
+    canCloseDocument: {
+        value: function (document, location) {
+            return (document ? document.canClose(location) : null);
         }
     },
 

@@ -5,10 +5,14 @@ var Montage = require("montage").Montage,
     EditingDocument = require("palette/core/editing-document").EditingDocument,
     BlueprintProxy = require("./blueprint-proxy").BlueprintProxy,
     BlueprintEditor = require("ui/blueprint-editor.reel").BlueprintEditor,
-   Serializer = require("montage/core/serialization").Serializer,
+    Serializer = require("montage/core/serialization").Serializer,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver;
 
 var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocument, {
+
+    __existOnDisk: {
+        value: true
+    },
 
     editorType: {
         get: function () {
@@ -33,7 +37,7 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
                         // The blueprint file does not exist yet lets use the default blueprint.
                         var desc = MontageReviver.parseObjectLocationId(blueprintModuleId.substring(0, blueprintModuleId.lastIndexOf("/")));
                         packageRequire.async(desc.moduleId).get(desc.objectName).get("blueprint").then(function (blueprint) {
-                            deferredDoc.resolve(BlueprintDocument.create().init(fileUrl, packageRequire, blueprint, true));
+                            deferredDoc.resolve(BlueprintDocument.create().init(fileUrl, packageRequire, blueprint, true, true));
                         }, function () {
                             deferredDoc.reject(new Error("Could not open file at " + fileUrl));
                         });
@@ -51,7 +55,7 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
     },
 
     init:{
-        value:function (fileUrl, packageRequire, currentObject, isBlueprint) {
+        value:function (fileUrl, packageRequire, currentObject, isBlueprint, needsSave) {
             var self = EditingDocument.init.call(this, fileUrl, packageRequire);
 
             var proxy = BlueprintProxy.create().init("blueprint", self, currentObject);
@@ -64,6 +68,7 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
             self.dispatchOwnPropertyChange("isBlueprint", isBlueprint);
 
             self._packageRequire = packageRequire;
+            self.__existOnDisk = (needsSave ? false : true);
             return self;
         }
     },
@@ -73,7 +78,18 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
             // we need to be sur to use the right require.
             var serializer = Serializer.create().initWithRequire(this.packageRequire);
             var serializedDescription = serializer.serializeObject(this.currentProxyObject.proxiedObject);
+            self.__existOnDisk = true;
             return dataWriter(serializedDescription, location);
+        }
+    },
+
+    canClose: {
+        value: function (location) {
+            // TODO PJYF This message needs to be localized
+            if (!this.__existOnDisk) {
+                return "This document was never saved."
+            }
+            return (this.isDirty() ? "You have unsaved Changes" : null);
         }
     },
 
