@@ -380,6 +380,8 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                 }, function () {
                     canCancelPromise.reject(new Error("The document prevented the close"));
                 });
+            } else {
+                canCancelPromise.resolve();
             }
 
             var self = this;
