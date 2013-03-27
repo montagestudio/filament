@@ -22,3 +22,10 @@
   font-weight: 700;
   src: local('Open Sans Bold Italic'), local('OpenSans-BoldItalic'), url(OpenSans-BoldItalic.woff) format('woff');
 }
+
+@font-face {
+  font-family: 'Titillium Web';
+  font-style: normal;
+  font-weight: 600;
+  src: local('Titillium Web'), local('TitilliumWeb'), url(TitilliumWeb.woff) format('woff');
+}
