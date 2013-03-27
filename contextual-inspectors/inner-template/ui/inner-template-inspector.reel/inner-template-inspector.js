@@ -63,7 +63,12 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
                 }
                 return part.loadComponentTree().then(function() {
                     self.part = part;
-                    self.needsDraw = true;
+                    // Originally there was a `self.needsDraw = true` here but
+                    // for some reason, I do not know why, it would cause the
+                    // event manager of the frame and of our window to get
+                    // mixed together, so that the delegate of the event
+                    // manager in thw frame would get called for events in our
+                    // window.
                 });
             }).done();
         }
