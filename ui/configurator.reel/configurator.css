@@ -43,7 +43,7 @@
     background: -webkit-linear-gradient( hsl(0,0%,99%), hsl(0,0%,96%) );
 }
 
-.Inspector-header-title {
+.Inspector-header-title.matte-InputText {
     border-color: hsl(0,0%,85%);
 }
 
