@@ -87,7 +87,7 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
         value: function (location) {
             // TODO PJYF This message needs to be localized
             if (!this.__existOnDisk) {
-                return "This document was never saved."
+                return "This document was never saved.";
             }
             return (this.isDirty() ? "You have unsaved Changes" : null);
         }
