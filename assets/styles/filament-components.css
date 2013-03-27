@@ -175,8 +175,7 @@
     list-style: none;
 }
 
-.List-title,
-.PropertyGroup-toggle {
+.List-title {
     position: relative;
 	padding: 5px 10px;
 	margin: 0;
@@ -194,8 +193,7 @@
 }
 
 
-.List-item,
-.PropertyInspector {
+.List-item {
 	padding: 8px;
 	border: none;
     border-top: 1px solid hsla(0,0%,100%,0.2);
