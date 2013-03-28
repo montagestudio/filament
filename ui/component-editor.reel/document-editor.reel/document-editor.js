@@ -12,16 +12,15 @@ exports.DocumentEditor = Montage.create(Component, {
         value: null
     },
 
+    acceptsActiveTarget: {
+        value: true
+    },
+
     editingDocument: {
         value: null
     },
 
     fileUrl: {
-        value: null
-    },
-
-    //TODO centralize selection into the editing document
-    selectedObjects: {
         value: null
     },
 
@@ -68,9 +67,50 @@ exports.DocumentEditor = Montage.create(Component, {
         value: function () {
             this._deferredWorkbench.resolve(this.workbench);
 
+            //TODO it was weird that the workbench component emitted DOM events
             this.workbench.addEventListener("dragover", this, false);
             this.workbench.addEventListener("drop", this, false);
             this.workbench.addEventListener("select", this, false);
+
+            this.addEventListener("menuValidate", this);
+            this.addEventListener("menuAction", this);
+        }
+    },
+
+    canDelete: {
+        get: function () {
+            return !!this.getPath("editingDocument.selectedObjects.0");
+        }
+    },
+
+    handleMenuValidate: {
+        value: function (evt) {
+            var menuItem = evt.detail,
+                identifier = evt.detail.identifier;
+
+            if ("delete" === identifier) {
+                menuItem.enabled = this.canDelete;
+                evt.stop();
+            }
+        }
+    },
+
+    handleMenuAction: {
+        value: function (evt) {
+            var menuItem = evt.detail,
+                identifier = evt.detail.identifier;
+
+            if ("delete" === identifier) {
+                if (this.canDelete) {
+                    this.editingDocument.deleteSelected();
+                }
+                evt.stop();
+            } else if ("undo" === identifier) {
+                if (this.can) {
+                    this.editingDocument.deleteSelected();
+                }
+                evt.stop();
+            }
         }
     },
 
@@ -149,7 +189,7 @@ exports.DocumentEditor = Montage.create(Component, {
         }
     },
 
-    handleWorkbenchDragover: {
+    handleDragover: {
         enumerable: false,
         value: function (event) {
             if (event.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1) {
@@ -161,7 +201,7 @@ exports.DocumentEditor = Montage.create(Component, {
             }
         }
     },
-    handleWorkbenchDrop: {
+    handleDrop: {
         enumerable: false,
         value: function (event) {
             var self = this,

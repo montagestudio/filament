@@ -92,28 +92,6 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    handleMenuAction: {
-        enumerable: false,
-        value: function (evt) {
-            switch (evt.detail.identifier) {
-            case "newComponent":
-                this.projectController.createComponent().done();
-                break;
-            case "newModule":
-                this.projectController.createModule().done();
-                break;
-            }
-        }
-    },
-
-    handleMenuValidate: {
-        value: function (evt) {
-            if (this.projectController.validateMenu(evt.detail)) {
-                evt.preventDefault();
-            }
-        }
-    },
-
     handleTitleWillChange: {
         value: function () {
             this.dispatchBeforeOwnPropertyChange("windowTitle", this.windowTitle);

@@ -130,6 +130,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
             application.addEventListener("openUrl", this);
             application.addEventListener("closeDocument", this);
             application.addEventListener("menuValidate", this);
+            application.addEventListener("menuAction", this);
 
             return this;
         }
@@ -193,7 +194,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
         value: null
     },
 
-    _currentEditor: {
+    currentEditor: {
         value: null
     },
 
@@ -308,7 +309,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                 }
 
                 this._editorController.bringEditorToFront(editor);
-                this._currentEditor = editor;
+                this.currentEditor = editor;
 
                 this.dispatchEventNamed("willOpenDocument", true, false, {
                     url: fileUrl
@@ -333,7 +334,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
      */
     acceptedCurrentDocument: {
         value: function () {
-            this._currentEditor.open(this.currentDocument);
+            this.currentEditor.open(this.currentDocument);
             var selection;
             if (this.currentDocument) {
                 selection = [this.currentDocument];
@@ -500,6 +501,51 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
         }
     },
 
+    handleMenuAction: {
+        enumerable: false,
+        value: function (evt) {
+            switch (evt.detail.identifier) {
+            case "newComponent":
+                evt.preventDefault();
+                evt.stopPropagation();
+
+                if (this.canCreateComponent) {
+                    this.createComponent().done();
+                }
+                break;
+            case "newModule":
+                evt.preventDefault();
+                evt.stopPropagation();
+
+                if (this.canCreateModule) {
+                    this.createModule().done();
+                }
+                break;
+            }
+        }
+    },
+
+    handleMenuValidate: {
+        value: function (evt) {
+            var menuItem = evt.detail;
+
+            switch (menuItem.identifier) {
+            case "newComponent":
+                evt.preventDefault();
+                evt.stopPropagation();
+
+                menuItem.enabled = this.canCreateComponent;
+                break;
+            case "newModule":
+                evt.preventDefault();
+                evt.stopPropagation();
+
+                menuItem.enabled = this.canCreateModule;
+                break;
+            }
+
+        }
+    },
 
     _objectNameFromModuleId: {
         value: function (moduleId) {
@@ -649,22 +695,6 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
         }
     },
 
-    undo: {
-        value: function () {
-            if (this.currentDocument) {
-                this.currentDocument.undo();
-            }
-        }
-    },
-
-    redo: {
-        value: function () {
-            if (this.currentDocument) {
-                this.currentDocument.redo();
-            }
-        }
-    },
-
     save: {
         value: function () {
 
@@ -754,7 +784,8 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                     defaultDirectory: "file://localhost" + packagePath + "/" + subdirectory,
                     defaultName: "my-" + thing, // TODO localize
                     prompt: "Create" //TODO localize
-                };
+                },
+                self = this;
 
             return this.environmentBridge.promptForSave(options)
                 .then(function (destination) {
@@ -770,7 +801,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                         relativeDestination = destination.substring(0, destinationDividerIndex).replace(packageHome, "").replace(/^\//, ""),
                         promise = fn(name, packageHome, relativeDestination);
 
-                    this.dispatchEventNamed("asyncActivity", true, false, {
+                    self.dispatchEventNamed("asyncActivity", true, false, {
                         promise: promise,
                         title: "Create " + thing, // TODO localize
                         status: destination
@@ -781,10 +812,22 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
         }
     },
 
+    canCreateComponent: {
+        get: function () {
+            return this.canEdit;
+        }
+    },
+
     createComponent: {
         value: function () {
             return this._create("component", "ui",
                 this.environmentBridge.createComponent.bind(this.environmentBridge));
+        }
+    },
+
+    canCreateModule: {
+        get: function () {
+            return this.canEdit;
         }
     },
 

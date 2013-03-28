@@ -106,6 +106,10 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                         return (/\.reel\/?$/).test(fileUrl);
                     }, ReelDocument);
 
+                    // Ensure that the currentEditor is considered the nextTarget before the application
+                    //TODO should probably be the document
+                    mainComponent.defineBinding("nextTarget", {"<-": "projectController.currentEditor", source: self});
+
                     //TODO not activate all extensions by default
                     return Promise.all(extensionController.loadedExtensions.map(function (extension) {
                         return extensionController.activateExtension(extension);
@@ -161,20 +165,6 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
             window.addEventListener("beforeunload", function () {
                 self.willClose();
-            }, true);
-
-            window.addEventListener("undo", function (evt) {
-                //TODO stop the event here?
-                evt.stopPropagation();
-                evt.preventDefault();
-                self.projectController.undo();
-            }, true);
-
-            window.addEventListener("redo", function (evt) {
-                //TODO stop the event here?
-                evt.stopPropagation();
-                evt.preventDefault();
-                self.projectController.redo();
             }, true);
 
             app.addEventListener("didSave", this);

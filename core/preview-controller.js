@@ -1,7 +1,8 @@
 var Montage = require("montage/core/core").Montage,
+    Target = require("montage/core/target").Target,
     Promise = require("montage/core/promise").Promise;
 
-exports.PreviewController = Montage.create(Montage, {
+exports.PreviewController = Montage.create(Target, {
 
     _applicationDelegate: {
         value: null

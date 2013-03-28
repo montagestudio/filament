@@ -1,9 +1,10 @@
 var Montage = require("montage/core/core").Montage,
+    Target = require("montage/core/target").Target,
     Document = require("core/document").Document,
     Promise = require("montage/core/promise").Promise,
     Map = require("montage/collections/map");
 
-exports.DocumentController = Montage.create(Montage, {
+exports.DocumentController = Montage.create(Target, {
 
     didCreate: {
         value: function () {

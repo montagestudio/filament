@@ -1,7 +1,9 @@
 var Montage = require("montage/core/core").Montage,
-    Promise = require("montage/core/promise").Promise;
+    Target = require("montage/core/target").Target,
+    Promise = require("montage/core/promise").Promise,
+    application = require("montage/core/application").application;
 
-exports.ExtensionController = Montage.create(Montage, {
+exports.ExtensionController = Montage.create(Target, {
 
     _applicationDelegate: {
         value: null
@@ -38,6 +40,7 @@ exports.ExtensionController = Montage.create(Montage, {
     init: {
         value: function (applicationDelegate) {
             this._applicationDelegate = applicationDelegate;
+            this.nextTarget = application;
             return this;
         }
     },
@@ -45,8 +48,7 @@ exports.ExtensionController = Montage.create(Montage, {
     loadExtensions: {
         value: function () {
             var self = this,
-                bridge = this.applicationDelegate.environmentBridge,
-                app = this.applicationDelegate.application;
+                bridge = this.applicationDelegate.environmentBridge;
 
             return bridge.availableExtensions.then(function (extensionUrls) {
                 return Promise.all(extensionUrls.map(function (entry) {
@@ -55,9 +57,8 @@ exports.ExtensionController = Montage.create(Montage, {
             }).then(function (extensions) {
                 self.loadedExtensions = extensions;
 
-                //TODO just listen on applicationController once it's in the event target chain
-                app.addEventListener("activateExtension", self);
-                app.addEventListener("deactivateExtension", self);
+                application.addEventListener("activateExtension", self);
+                application.addEventListener("deactivateExtension", self);
 
                 return extensions;
             });

@@ -169,16 +169,9 @@ exports.MenuItem = Montage.create(Montage, {
                     detail: this,
                     bubbles: true,
                     cancelable: true
-                }),
-                target = document.activeElement,
-                component = target.component;
+                });
 
-            while (component == null && target) {
-                target = target.parentNode;
-            }
-
-            component = component || defaultEventManager.application;
-            component.dispatchEvent(event);
+            defaultEventManager.activeTarget.dispatchEvent(event);
 
             return event.defaultPrevented;
         }

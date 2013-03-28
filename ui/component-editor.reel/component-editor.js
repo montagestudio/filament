@@ -39,6 +39,13 @@ exports.ComponentEditor = Montage.create(Editor, {
         value: null
     },
 
+    nextTarget: {
+        get: function () {
+            // Consider whichever documentEditor is upfront to be the nextTarget
+            return this._frontEditor;
+        }
+    },
+
     didCreate: {
         value: function () {
             this._editorsToInsert = [];
@@ -57,6 +64,9 @@ exports.ComponentEditor = Montage.create(Editor, {
 
                 if (!editor) {
                     editor = DocumentEditor.create();
+                    // Preserve the existing target chain;
+                    // the componentEditor considers hosted documentEditors to be it's nextTarget
+                    editor.nextTarget = this.parentComponent;
                     editor.load(document).done();
                     this._documentEditorMap.set(document, editor);
                 }
