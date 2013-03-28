@@ -537,7 +537,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                                     moduleId = componentUrl.replace(/\S+\/node_modules\//, "");
                                 } else {
                                     //It's a module that's part of the current package being edited
-                                    moduleId = componentUrl.replace(dependency.url + "/", "");
+                                    moduleId = componentUrl.replace(new RegExp(".+" + dependency.url + "\/"), "");
                                 }
                                 objectName = self._objectNameFromModuleId(moduleId);
                                 return self.libraryItemForModuleId(moduleId, objectName);
