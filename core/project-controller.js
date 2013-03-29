@@ -491,22 +491,22 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
         enumerable: false,
         value: function (evt) {
             switch (evt.detail.identifier) {
-                case "newComponent":
-                    evt.preventDefault();
-                    evt.stopPropagation();
+            case "newComponent":
+                evt.preventDefault();
+                evt.stopPropagation();
 
-                    if (this.canCreateComponent) {
-                        this.createComponent().done();
-                    }
-                    break;
-                case "newModule":
-                    evt.preventDefault();
-                    evt.stopPropagation();
+                if (this.canCreateComponent) {
+                    this.createComponent().done();
+                }
+                break;
+            case "newModule":
+                evt.preventDefault();
+                evt.stopPropagation();
 
-                    if (this.canCreateModule) {
-                        this.createModule().done();
-                    }
-                    break;
+                if (this.canCreateModule) {
+                    this.createModule().done();
+                }
+                break;
             }
         }
     },
