@@ -64,9 +64,6 @@ exports.ComponentEditor = Montage.create(Editor, {
 
                 if (!editor) {
                     editor = DocumentEditor.create();
-                    // Preserve the existing target chain;
-                    // the componentEditor considers hosted documentEditors to be it's nextTarget
-                    editor.nextTarget = this.parentComponent;
                     editor.load(document).done();
                     this._documentEditorMap.set(document, editor);
                 }
