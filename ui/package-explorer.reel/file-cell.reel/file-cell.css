@@ -1,27 +1,67 @@
 .FileCell {
+    font-size: 11px;
     white-space: nowrap;
 }
 
+.FileCell .montage-invisible {
+    display: inline-block;
+    visibility: hidden;
+}
+
+
+/* Toggle --------------------------------- */
+
+.FileCell .FileCell-toggle {
+	-webkit-appearance: none;
+    position: relative;
+	margin: 0;
+	width: 18px;
+	color: hsl(0,0%,50%);
+	border: none;
+	border-radius: 0;
+	background: url(/assets/icons/toggle.svg) no-repeat left center;
+	background-size: 14px auto;
+	-webkit-transition: -webkit-transform .1s ease-in-out;
+}
+
+.FileCell .FileCell-toggle:checked {
+	-webkit-transform: rotate(90deg);
+}
+
+
+
 /* Button --------------------------------- */
+
+.FileCell .FileCell-button.open {
+    opacity: 1;
+    font-weight: bold;
+}
 
 .FileCell .FileCell-button {
 	-webkit-appearance: none;
 	text-align: left;
 	height: auto;
+    min-height: 16px;
 	min-width: 0;
 	margin: 0;
 	border-radius: 0;
-
-    background: none;
     border: none;
-    min-height: 16px;
+    font-size: inherit;
+    color: hsl(0,0%,0%);
+    opacity: .6;
+    
+    background: none;
+    background-repeat: no-repeat;
+    padding-left: 20px;
+    background-size: 14px auto;
+    background-position: left center;
 }
 
 .FileCell .FileCell-button:hover,
 .FileCell .FileCell-button:active,
 .FileCell .FileCell-button:focus {
     border-color: transparent;
-    background: none;
+    background-color: transparent;
 }
 
 .FileCell .FileCell-button.folder,
@@ -33,44 +73,28 @@
 .FileCell .FileCell-button.css,
 .FileCell .FileCell-button.image
 {
-    background-repeat: no-repeat;
-    padding-left: 18px;
-    -webkit-background-size: 16px 16px;
-    background-position: left center;
+    
 }
 
 .FileCell .FileCell-button.folder {
-    background-image: url(/assets/icons/folder.png);
+    background-image: url(/assets/icons/folder.svg);
 }
 
 .FileCell .FileCell-button.reel {
-    background-image: url(/assets/icons/reel.png);
+    background-image: url(/assets/icons/reel.svg);
 }
 
-.FileCell .FileCell-button.json {
-    background-image: url(/assets/icons/file.png);
-}
-
-.FileCell .FileCell-button.html {
-    background-image: url(/assets/icons/file.png);
-}
-
-.FileCell .FileCell-button.css {
-    background-image: url(/assets/icons/file.png);
-}
-
+.FileCell .FileCell-button.json,
+.FileCell .FileCell-button.css,
+.FileCell .FileCell-button.html,
 .FileCell .FileCell-button.js {
-    background-image: url(/assets/icons/file.png);
+    background-image: url(/assets/icons/file.svg);
 }
 
 .FileCell .FileCell-button.image {
-    background-image: url(/assets/icons/file.png);
+    background-image: url(/assets/icons/image.svg);
 }
 
 .FileCell .FileCell-button.package {
-    background-image: url(/assets/icons/package.png);
-}
-
-.FileCell .FileCell-button.open {
-    font-weight: bold;
+    background-image: url(/assets/icons/package.svg);
 }
