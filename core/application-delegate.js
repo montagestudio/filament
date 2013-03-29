@@ -148,14 +148,6 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
             //TODO sort out where many of these belong, more of the actual handling should probably be here
 
-            window.addEventListener("didBecomeKey", function () {
-                self.projectController.didBecomeKey();
-            });
-
-            window.addEventListener("didResignKey", function () {
-                self.projectController.didResignKey();
-            });
-
             window.addEventListener("openRelatedFile", function (evt) {
                 var url = evt.detail;
                 self.openFileUrl(url.replace("file://localhost/", "fs://localhost/").replace(/\/$/, "")).done();
