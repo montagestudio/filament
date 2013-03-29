@@ -68,6 +68,7 @@ describe("core/project-controller-file-spec", function () {
                 openedDocument = Montage.create();
                 openedDocument.url = "opened";
                 openedDocument.editorType = editorType;
+                openedDocument.canClose = Function.noop;
 
                 // Sneaky mock "opening"
                 projectController._editorTypeInstanceMap.set(editorType, editor);
@@ -113,11 +114,13 @@ describe("core/project-controller-file-spec", function () {
                     fooDocument = Montage.create();
                     fooDocument.url = "other";
                     fooDocument.editorType = editorType;
+                    fooDocument.canClose = Function.noop;
                     projectController.addDocument(fooDocument);
 
                     barDocument = Montage.create();
                     barDocument.url = "current";
                     barDocument.editorType = editorType;
+                    barDocument.canClose = Function.noop;
                     projectController.addDocument(barDocument);
                     //Note currentDocument needs to be opened as part of each test
                 });

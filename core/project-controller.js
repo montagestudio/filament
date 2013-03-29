@@ -399,7 +399,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                     nextDocument = self._nextDocument(document);
                 }
 
-                this.dispatchEventNamed("willCloseDocument", true, false, {
+                self.dispatchEventNamed("willCloseDocument", true, false, {
                     document: document,
                     isCurrentDocument: wasCurrentDocument
                 });
