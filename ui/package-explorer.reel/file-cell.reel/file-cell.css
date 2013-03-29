@@ -15,12 +15,13 @@
 	-webkit-appearance: none;
     position: relative;
 	margin: 0;
-	width: 18px;
+	width: 14px;
 	color: hsl(0,0%,50%);
 	border: none;
 	border-radius: 0;
 	background: url(/assets/icons/toggle.svg) no-repeat left center;
 	background-size: 14px auto;
+	-webkit-transform-origin: 6px center;
 	-webkit-transition: -webkit-transform .1s ease-in-out;
 }
 
@@ -32,9 +33,13 @@
 
 /* Button --------------------------------- */
 
-.FileCell .FileCell-button.open {
+.FileCell .FileCell-button.open,
+.FileCell .FileCell-button.open:hover {
     opacity: 1;
     font-weight: bold;
+    border-radius: 20px;
+    background-color: hsla(0,0%,100%,.3);
+    box-shadow: 0 1px 1px hsla(0,0%,0%,.1);
 }
 
 .FileCell .FileCell-button {
@@ -48,13 +53,14 @@
     border: none;
     font-size: inherit;
     color: hsl(0,0%,0%);
-    opacity: .6;
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
+    opacity: .5;
     
     background: none;
     background-repeat: no-repeat;
-    padding-left: 20px;
+    padding-left: 22px;
     background-size: 14px auto;
-    background-position: left center;
+    background-position: 2px center;
 }
 
 .FileCell .FileCell-button:hover,
@@ -62,18 +68,6 @@
 .FileCell .FileCell-button:focus {
     border-color: transparent;
     background-color: transparent;
-}
-
-.FileCell .FileCell-button.folder,
-.FileCell .FileCell-button.reel,
-.FileCell .FileCell-button.json,
-.FileCell .FileCell-button.html,
-.FileCell .FileCell-button.package,
-.FileCell .FileCell-button.js,
-.FileCell .FileCell-button.css,
-.FileCell .FileCell-button.image
-{
-    
 }
 
 .FileCell .FileCell-button.folder {
@@ -84,10 +78,19 @@
     background-image: url(/assets/icons/reel.svg);
 }
 
-.FileCell .FileCell-button.json,
-.FileCell .FileCell-button.css,
-.FileCell .FileCell-button.html,
+.FileCell .FileCell-button.html {
+    background-image: url(/assets/icons/file-html.svg);
+}
+
+.FileCell .FileCell-button.css {
+    background-image: url(/assets/icons/file-css.svg);
+}
+
 .FileCell .FileCell-button.js {
+    background-image: url(/assets/icons/file-js.svg);
+}
+
+.FileCell .FileCell-button.json {
     background-image: url(/assets/icons/file.svg);
 }
 
