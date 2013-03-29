@@ -9,6 +9,7 @@ var Montage = require("montage/core/core").Montage,
     WeakMap = require("montage/collections/weak-map"),
     Map = require("montage/collections/map"),
     Confirm = require("matte/ui/popup/confirm.reel").Confirm,
+    MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     ProjectController;
 
 exports.ProjectController = ProjectController = Montage.create(DocumentController, {
@@ -38,6 +39,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
 
     /**
      * The url of the project this projectController is meant to open
+     * This is the url that was actually "opened"
      */
     projectUrl: {
         get: function () {
@@ -47,13 +49,15 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
 
     /**
      * The url of the package of the open project
+     * This specifies the location of the project's package.json.
      */
     packageUrl: {
         value: null
     },
 
     /**
-     * The package description of the open project
+     * The package description of the open project as read from the
+     * package.json
      */
     packageDescription: {
         value: null
@@ -78,14 +82,6 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
 
     // The groups of library items available to this package
     libraryGroups: {
-        value: null
-    },
-
-    _editorTypeInstanceMap: {
-        value: null
-    },
-
-    _editorController: {
         value: null
     },
 
@@ -120,8 +116,6 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
             //TODO get rid of this once we have property dependencies
             this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyWillChange", true);
             this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyChange");
-            this.addPathChangeListener("_windowIsKey", this, "handleCanEditDependencyWillChange", true);
-            this.addPathChangeListener("_windowIsKey", this, "handleCanEditDependencyChange");
 
             this.addPathChangeListener("currentDocument.undoManager.undoLabel", this);
             this.addPathChangeListener("currentDocument.undoManager.redoLabel", this);
@@ -190,7 +184,14 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
 
     // DOCUMENT HANDLING
 
-    _editorTypeEditorMap: {
+    // The controller that facilittates bringing editors components
+    // to the front as needed
+    // Typically this is filament's mainComponent
+    _editorController: {
+        value: null
+    },
+
+    _editorTypeInstanceMap: {
         value: null
     },
 
@@ -454,72 +455,11 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
         }
     },
 
-    _needsMenuUpdate: {
-        value: false
-    },
-
     handlePathChange: {
         value: function (value, property, object) {
-
-            var self = this;
-
             switch (property) {
             case "undoCount":
-            case "undoLabel":
-            case "redoLabel":
-
-                // While several properties trigger the need for updating, only update once
-                if (!this._needsMenuUpdate) {
-                    this._needsMenuUpdate = true;
-                    //TODO reconsider where the nextTicking responsibility should live; it's weird being here
-                    // ensuring consistency between the various bound properties in the undoManager that may not have synced up yet
-                    Promise.nextTick(function () {
-                        self.updateUndoMenus();
-                    });
-                }
-
-                if ("undoCount" === property) {
-                    this.environmentBridge.setDocumentDirtyState(null != value && value > 0);
-                }
-
-                break;
-            }
-        }
-    },
-
-    updateUndoMenus: {
-        enumerable: false,
-        value: function () {
-
-            var undoEnabled = this.getPath("currentDocument.undoManager.canUndo"),
-                redoEnabled = this.getPath("currentDocument.undoManager.canRedo");
-
-            this.environmentBridge.setUndoState(undoEnabled, this.getPath("currentDocument.undoManager.undoLabel"));
-            this.environmentBridge.setRedoState(redoEnabled, this.getPath("currentDocument.undoManager.redoLabel"));
-
-            this._needsMenuUpdate = false;
-        }
-    },
-
-    handleMenuAction: {
-        enumerable: false,
-        value: function (evt) {
-            switch (evt.detail.identifier) {
-            case "newComponent":
-                evt.preventDefault();
-                evt.stopPropagation();
-
-                if (this.canCreateComponent) {
-                    this.createComponent().done();
-                }
-                break;
-            case "newModule":
-                evt.preventDefault();
-                evt.stopPropagation();
-
-                if (this.canCreateModule) {
-                    this.createModule().done();
-                }
+                this.environmentBridge.setDocumentDirtyState(null != value && value > 0);
                 break;
             }
         }
@@ -547,11 +487,27 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
         }
     },
 
-    _objectNameFromModuleId: {
-        value: function (moduleId) {
-            //TODO this utility should live somewhere else (/baz/foo-bar.reel to FooBar)
-            findObjectNameRegExp.test(moduleId);
-            return RegExp.$1.replace(Deserializer._toCamelCaseRegExp, Deserializer._replaceToCamelCase);
+    handleMenuAction: {
+        enumerable: false,
+        value: function (evt) {
+            switch (evt.detail.identifier) {
+                case "newComponent":
+                    evt.preventDefault();
+                    evt.stopPropagation();
+
+                    if (this.canCreateComponent) {
+                        this.createComponent().done();
+                    }
+                    break;
+                case "newModule":
+                    evt.preventDefault();
+                    evt.stopPropagation();
+
+                    if (this.canCreateModule) {
+                        this.createModule().done();
+                    }
+                    break;
+            }
         }
     },
 
@@ -585,7 +541,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                                     //It's a module that's part of the current package being edited
                                     moduleId = componentUrl.replace(new RegExp(".+" + dependency.url + "\/"), "");
                                 }
-                                objectName = self._objectNameFromModuleId(moduleId);
+                                objectName = MontageReviver.parseObjectLocationId(moduleId).objectName;
                                 return self.libraryItemForModuleId(moduleId, objectName);
                             }).filter(function (libraryItem) {
                                 return libraryItem;
@@ -838,22 +794,6 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
         }
     },
 
-    _windowIsKey: {
-        value: true //TODO not assume our window is key
-    },
-
-    didBecomeKey: {
-        value: function () {
-            this._windowIsKey = true;
-        }
-    },
-
-    didResignKey: {
-        value: function () {
-            this._windowIsKey = false;
-        }
-    },
-
     //TODO get rid of this when we get property dependencies
     handleCanEditDependencyWillChange: {
         value: function (notification) {
@@ -870,55 +810,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
 
     canEdit: {
         get: function () {
-            return !!(this._windowIsKey && this.packageUrl);
-        }
-    },
-
-    validateMenu: {
-        value: function (menu) {
-            var validated = false;
-
-            switch (menu.identifier) {
-            case "undo":
-            case "redo":
-                this.updateUndoMenus();
-                validated = true;
-                break;
-            }
-
-            return validated;
-        }
-    },
-
-    setupMenuItems: {
-        enumerable: false,
-        value: function () {
-
-            var self = this;
-
-            this.environmentBridge.mainMenu.then(function (mainMenu) {
-                var menuItem;
-
-                menuItem = mainMenu.menuItemForIdentifier("newComponent");
-                if (menuItem) {
-                    menuItem.defineBinding("enabled", {
-                        "<-": "canEdit",
-                        source: self
-                    });
-                } else {
-                    throw new Error("Cannot load menu item 'newComponent'");
-                }
-
-                menuItem = mainMenu.menuItemForIdentifier("newModule");
-                if (menuItem) {
-                    menuItem.defineBinding("enabled", {
-                        "<-": "canEdit",
-                        source: self
-                    });
-                } else {
-                    throw new Error("Cannot load menu item 'newModule'");
-                }
-            }).done();
+            return !!this.packageUrl;
         }
     },
 

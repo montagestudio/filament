@@ -37,16 +37,8 @@ describe("core/project-controller-spec", function () {
             expect(projectController.canEdit).toBeFalsy();
         });
 
-        it("must not be considered editable when its window is not key", function () {
+        it("should be considered editable when it has a loaded project", function () {
             return projectController.loadProject("url").then(function () {
-                projectController._windowIsKey = false;
-                expect(projectController.canEdit).toBeFalsy();
-            });
-        });
-
-        it("should be considered editable when it has a loaded project and its window is key", function () {
-            return projectController.loadProject("url").then(function () {
-                projectController._windowIsKey = true;
                 expect(projectController.canEdit).toBeTruthy();
             });
         });

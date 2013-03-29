@@ -127,8 +127,6 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
                     return promisedProjectUrl;
                 }).then(function (projectUrl) {
-                    self.projectController.setupMenuItems();
-
                     //TODO only do this if we have an index.html
                     return self.previewController.registerPreview(projectUrl, projectUrl + "/index.html").then(function () {
                         //TODO not launch the preview automatically?
