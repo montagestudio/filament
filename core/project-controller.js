@@ -715,7 +715,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                     packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", ""),
                     promise = self.environmentBridge.createApplication(appName, packageHome);
 
-                this.dispatchEventNamed("asyncActivity", true, false, {
+                self.dispatchEventNamed("asyncActivity", true, false, {
                     promise: promise,
                     title: "Create application", // TODO localize
                     status: destination
