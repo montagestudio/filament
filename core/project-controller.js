@@ -1,5 +1,5 @@
 var Montage = require("montage/core/core").Montage,
-    DocumentController = require("core/document-controller").DocumentController,
+    DocumentController = require("palette/core/document-controller").DocumentController,
     Promise = require("montage/core/promise").Promise,
     application = require("montage/core/application").application,
     LibraryItem = require("filament-extension/core/library-item.js").LibraryItem,

@@ -1,7 +1,7 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
     Deserializer = require("montage/core/serialization").Deserializer,
-    ReelDocument = require("palette/core/reel-document").ReelDocument,
+    ReelDocument = require("core/reel-document").ReelDocument,
     MimeTypes = require("core/mime-types"),
     Promise = require("montage/core/promise").Promise;
 
@@ -54,6 +54,7 @@ exports.DocumentEditor = Montage.create(Component, {
             });
 
             self.editingDocument = document;
+            document.editor = self;
 
             return this._deferredWorkbench.promise.then(function(workbench) {
                 return workbench.load(document.fileUrl, document.packageRequire.location);
@@ -71,46 +72,6 @@ exports.DocumentEditor = Montage.create(Component, {
             this.workbench.addEventListener("dragover", this, false);
             this.workbench.addEventListener("drop", this, false);
             this.workbench.addEventListener("select", this, false);
-
-            this.addEventListener("menuValidate", this);
-            this.addEventListener("menuAction", this);
-        }
-    },
-
-    canDelete: {
-        get: function () {
-            return !!this.getPath("editingDocument.selectedObjects.0");
-        }
-    },
-
-    handleMenuValidate: {
-        value: function (evt) {
-            var menuItem = evt.detail,
-                identifier = evt.detail.identifier;
-
-            if ("delete" === identifier) {
-                menuItem.enabled = this.canDelete;
-                evt.stop();
-            }
-        }
-    },
-
-    handleMenuAction: {
-        value: function (evt) {
-            var menuItem = evt.detail,
-                identifier = evt.detail.identifier;
-
-            if ("delete" === identifier) {
-                if (this.canDelete) {
-                    this.editingDocument.deleteSelected();
-                }
-                evt.stop();
-            } else if ("undo" === identifier) {
-                if (this.can) {
-                    this.editingDocument.deleteSelected();
-                }
-                evt.stop();
-            }
         }
     },
 
