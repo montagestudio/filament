@@ -1,6 +1,6 @@
 var Montage = require("montage").Montage,
     ReelDocument = require("core/reel-document").ReelDocument,
-    Template = require("montage/ui/template").Template;
+    Template = require("montage/core/template").Template;
 
 exports.mockReelDocument = function (fileUrl, serialization, bodyMarkup) {
 

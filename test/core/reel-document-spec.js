@@ -1,7 +1,7 @@
 var Montage = require("montage").Montage,
     Promise = require("montage/core/promise").Promise,
     ReelDocument = require("core/reel-document").ReelDocument,
-    Template = require("montage/ui/template").Template,
+    Template = require("montage/core/template").Template,
     WAITSFOR_TIMEOUT = 2500;
 
 describe("core/reel-document-spec", function () {

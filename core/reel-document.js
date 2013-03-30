@@ -654,7 +654,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 removalPromise,
                 deferredUndo = Promise.defer();
 
-            this.undoManager.register("Remove Component", deferredUndo.promise);
+            this.undoManager.register("Remove", deferredUndo.promise);
 
             if (this._editingController) {
                 removalPromise = this._editingController.removeComponent(proxy.stageObject)

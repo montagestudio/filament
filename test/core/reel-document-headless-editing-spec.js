@@ -1,5 +1,5 @@
 var Montage = require("montage").Montage,
-    Template = require("montage/ui/template").Template,
+    Template = require("montage/core/template").Template,
     Promise = require("montage/core/promise").Promise,
     mockReelDocument = require("test/mocks/reel-document-mocks").mockReelDocument,
     WAITSFOR_TIMEOUT = 2500;
