@@ -85,6 +85,16 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             if ("delete" === identifier) {
                 menuItem.enabled = this.canDelete;
                 evt.stop();
+            } else if ("undo" === identifier) {
+                menuItem.enabled = this.canUndo;
+                //TODO localize
+                menuItem.title = this.canUndo ? "Undo " + this.undoManager.undoLabel : "Undo";
+                evt.stop();
+            } else if ("redo" === identifier) {
+                menuItem.enabled = this.canRedo;
+                //TODO localize
+                menuItem.title = this.canRedo ? "Redo " + this.undoManager.redoLabel : "Redo";
+                evt.stop();
             }
         }
     },
@@ -100,8 +110,13 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 }
                 evt.stop();
             } else if ("undo" === identifier) {
-                if (this.undoManager) {
-                    this.deleteSelected();
+                if (this.canUndo) {
+                    this.undo();
+                }
+                evt.stop();
+            } else if ("redo" === identifier) {
+                if (this.canRedo) {
+                    this.redo();
                 }
                 evt.stop();
             }
@@ -111,6 +126,18 @@ exports.ReelDocument = Montage.create(EditingDocument, {
     canDelete: {
         get: function () {
             return !!this.getPath("selectedObjects.0");
+        }
+    },
+
+    canUndo: {
+        get: function () {
+            return this.getPath("undoManager.undoCount > 0");
+        }
+    },
+
+    canRedo: {
+        get: function () {
+            return this.getPath("undoManager.redoCount > 0");
         }
     },
 
