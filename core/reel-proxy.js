@@ -179,7 +179,7 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
                 } else if (this.stageObject.setProperty) {
                     this.stageObject.setProperty(property, value);
                 }
-             }
+            }
         }
     },
 

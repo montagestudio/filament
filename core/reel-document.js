@@ -679,7 +679,8 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                     removedProxy.serialization,
                     removedProxy.markup,
                     removedProxy.elementMontageId,
-                    removedProxy.getPath("properties.identifier")]);
+                    removedProxy.getPath("properties.identifier")
+                ]);
 
                 return removedProxy;
             });
