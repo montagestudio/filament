@@ -59,6 +59,21 @@ describe("core/editing-proxy-spec", function () {
 
     });
 
+    describe("reporting the identifier", function () {
+
+        it("should report its label as the identifier in lieu of an explicit identifier", function () {
+            expect(proxy.identifier).toBe(label);
+        });
+
+        it("should report its explicit identifier as its identifier", function () {
+            serialization.properties.identifier = "fooIdentifier";
+            proxy = ReelProxy.create().init(label, serialization, doc, exportId);
+
+            expect(proxy.identifier).toBe("fooIdentifier");
+        });
+
+    });
+
     describe("setting properties", function () {
 
         it("should create a properties unit if none exists when setting a property", function () {
@@ -89,6 +104,12 @@ describe("core/editing-proxy-spec", function () {
         it("should get the specified value at the specified key", function () {
             proxy.properties.foo = 22;
             expect(proxy.getObjectProperty("foo")).toBe(22);
+        });
+
+        it("should set the identifier as expected", function () {
+            proxy.identifier = "aNewIdentifier";
+            expect(proxy.identifier).toBe("aNewIdentifier");
+            expect(proxy.serialization.properties.identifier).toBe("aNewIdentifier");
         });
 
     });

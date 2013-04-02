@@ -31,6 +31,17 @@ var Montage = require("montage").Montage,
  */
 exports.ReelProxy = Montage.create(EditingProxy,  {
 
+    identifier: {
+        get: function () {
+            return this.getPath("properties.identifier") || this.label;
+        },
+        set: function (value) {
+            if (value !== this.identifier) {
+                this.setObjectProperty("identifier", value);
+            }
+        }
+    },
+
     /**
      * The require for the package this proxy is used within
      */
