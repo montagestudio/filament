@@ -106,17 +106,17 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
             if ("delete" === identifier) {
                 if (this.canDelete) {
-                    this.deleteSelected();
+                    this.deleteSelected().done();
                 }
                 evt.stop();
             } else if ("undo" === identifier) {
                 if (this.canUndo) {
-                    this.undo();
+                    this.undo().done();
                 }
                 evt.stop();
             } else if ("redo" === identifier) {
                 if (this.canRedo) {
-                    this.redo();
+                    this.redo().done();
                 }
                 evt.stop();
             }
