@@ -16,6 +16,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                 }
             },
             "foo": {
+                "prototype": "ui/foo.reel",
                 "properties": {
                     "element": {"#": "foo"}
                 }
@@ -114,6 +115,41 @@ describe("core/reel-document-headless-editing-spec", function () {
                     templateSerialization = JSON.parse(reelDocument.serialization);
                     expect(templateSerialization.owner).toBeTruthy();
                     expect(templateSerialization.bar).toBeTruthy();
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should add an undo operation for this removal", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var proxyToRemove = reelDocument.editingProxyMap[labelInOwner],
+                    removalPromise = reelDocument.removeObject(proxyToRemove),
+                    templateSerialization;
+
+                return removalPromise.then(function () {
+                    expect(reelDocument.undoManager.undoCount).toBe(1);
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should undo removal operation by adding a similar component", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var proxyToRemove = reelDocument.editingProxyMap[labelInOwner],
+                    removalPromise = reelDocument.removeObject(proxyToRemove),
+                    templateSerialization;
+
+                return removalPromise.then(function () {
+                    return reelDocument.undo();
+                }).then(function (undoPerformed) {
+                    var addedProxy = reelDocument._editingProxyMap[labelInOwner];
+                    expect(addedProxy).toBeTruthy();
+
+                    expect(addedProxy).not.toBe(proxyToRemove);
+                    expect(addedProxy.serialization).not.toBe(proxyToRemove.serialization);
+
+                    expect(addedProxy.serialization.properties.element["#"]).toBe("foo");
+                    expect(addedProxy.exportId).toBe("ui/foo.reel");
+                    expect(addedProxy.exportName).toBe("Foo");
+                    expect(addedProxy.identifier).toBe(labelInOwner);
                 });
             }).timeout(WAITSFOR_TIMEOUT);
         });
