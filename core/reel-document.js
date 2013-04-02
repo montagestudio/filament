@@ -6,12 +6,14 @@ var Montage = require("montage").Montage,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     ReelProxy = require("core/reel-proxy").ReelProxy,
     SORTERS = require("palette/core/sorters"),
-    ComponentEditor = require("ui/component-editor.reel").ComponentEditor;
+    ComponentEditor = require("ui/component-editor.reel").ComponentEditor,
+    ReelSerializer = require("core/serialization/reel-serializer").ReelSerializer,
+    ReelVisitor = require("core/serialization/reel-visitor").ReelVisitor,
+    ReelReviver = require("core/serialization/reel-reviver").ReelReviver,
+    ReelContext = require("core/serialization/reel-context").ReelContext;
 
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = Montage.create(EditingDocument, {
-
-
 
     load: {
         value: function (fileUrl, packageUrl) {
@@ -69,11 +71,23 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             self.selectedObjects = [];
 
             //TODO handle external serializations
-            var serialization = template.getInlineObjectsString(template.document);
+            var serialization = JSON.parse(template.getInlineObjectsString(template.document));
+            var context = this.deserializationContext(serialization);
+
+            //TODO make a real map
             self._editingProxyMap = {};
-            self._addProxies(self._proxiesFromSerialization(serialization));
+            self._addProxies(context.getObjects());
 
             return self;
+        }
+    },
+
+    deserializationContext: {
+        value: function (serialization) {
+            var reviver = ReelReviver.create();
+            var context = ReelContext.create().init(serialization, reviver);
+            context.editingDocument = this;
+            return context;
         }
     },
 
@@ -151,20 +165,21 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 templateObjects = {};
 
             Object.keys(this._editingProxyMap).sort(SORTERS.labelComparator).forEach(function (label) {
-                templateObjects[label] = SORTERS.unitSorter(this._editingProxyMap[label].serialization);
+                templateObjects[label] = this.serializationForProxy(this._editingProxyMap[label]);
             }, this);
-
-            this.dispatchBeforeOwnPropertyChange("serialization", template.objectsString);
 
             template.objectsString = JSON.stringify(templateObjects, null, 4);
 
-            this.dispatchOwnPropertyChange("serialization", template.objectsString);
+            return templateObjects;
         }
     },
 
-    serialization: {
-        get: function () {
-            return this._template.objectsString;
+    serializationForProxy: {
+        value: function (proxy) {
+            var serializer = ReelSerializer.create().initWithRequire(this._packageRequire);
+            var serialization = JSON.parse(serializer.serializeObject(proxy))[proxy.label];
+
+            return SORTERS.unitSorter(serialization);
         }
     },
 
@@ -176,20 +191,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
     _ownerElement: {
         get: function () {
-            var montageId = this.getPath("_editingProxyMap.owner.properties.element.property('#')"),
-                element;
-
-            if (!montageId) {
-                throw new Error("Owner component has no element specified");
-            }
-
-            element = this.htmlDocument.querySelector("[data-montage-id='" + montageId + "']");
-
-            if (!element) {
-                throw new Error("Owner component element could not be found");
-            }
-
-            return element;
+            return this.getPath("_editingProxyMap.owner.element");
         }
     },
 
@@ -234,35 +236,6 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
     // Editing Model
 
-    _proxiesFromSerialization: {
-        value: function (serialization) {
-
-            serialization = JSON.parse(serialization);
-
-            var labels = Object.keys(serialization),
-                self = this,
-                proxy,
-                montageId;
-
-            return labels.map(function (label) {
-
-                var exportId;
-                if (serialization[label].prototype) {
-                    exportId = serialization[label].prototype;
-                } else {
-                    if (self.fileUrl && self.packageRequire) {
-                        exportId = self.fileUrl.substring(self.packageRequire.location.length);
-                    }
-                }
-
-                proxy = ReelProxy.create().init(label, serialization[label], self, exportId);
-                montageId = proxy.getPath("properties.element.property('#')");
-                proxy.element = self.htmlDocument.querySelector("[data-montage-id='" + montageId + "']");
-                return proxy;
-            });
-        }
-    },
-
     _addProxies: {
         value: function (proxies) {
             var self = this;
@@ -290,6 +263,9 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             var proxyMap = this._editingProxyMap;
 
             proxyMap[proxy.label] = proxy;
+
+            //TODO not simply stick this on the object; the inspector needs it right now
+            proxy.packageRequire = this._packageRequire;
 
             //TODO not blindly append to the end of the body
             //TODO react to changing the element?
@@ -554,7 +530,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
             self.undoManager.register("Add Object", deferredUndo.promise);
 
-            proxy = ReelProxy.create().init(labelInOwner, serialization, self);
+            proxy = ReelProxy.create().init(labelInOwner, serialization);
 
             if (this._editingController) {
                 proxyPromise = this._editingController.addObject(labelInOwner, serialization)
@@ -603,7 +579,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
             return removalPromise.then(function (removedProxy) {
                 self._removeProxies(removedProxy);
-                deferredUndo.resolve([self.addObject, self, removedProxy.label, removedProxy.serialization]);
+                deferredUndo.resolve([self.addObject, self, removedProxy.label, self.serializationForProxy(removedProxy)]);
                 return removedProxy;
             });
         }
@@ -622,19 +598,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 labelInOwner = this._generateLabel(serialization);
             }
 
-            //Only set these if they were not explicitly falsy; assume that if they
-            // were explicitly falsy the author is doing so on purpose
-            //TODO I don't like manipulating the serialization without knowing how the package's version of montage would do it
-            // we can work around that but we shouldn't rely on the live stage object/editingController to do the work for us
-            //TODO pull more out of the EditingController
-            if (typeof elementMontageId === "undefined") {
-                elementMontageId = labelInOwner; //TODO format more appropriately for use in DOM?
-                if (!serialization.properties) {
-                    serialization.properties = {};
-                }
-                serialization.properties.element = {"#": elementMontageId};
-            }
-
+            // Only include the identifier in the serialization if it was explicitly set
             if (typeof identifier === "undefined") {
                 identifier = labelInOwner; //TODO lower case the identifier?
                 if (!serialization.properties) {
@@ -646,9 +610,8 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             deferredUndo = Promise.defer();
             self.undoManager.register("Add Component", deferredUndo.promise);
 
-            proxy = ReelProxy.create().init(labelInOwner, serialization, this);
+            proxy = ReelProxy.create().init(labelInOwner, serialization);
             proxy.markup = markup; //TODO formalize this, ComponentProxy subclass?
-            proxy.elementMontageId = elementMontageId; //TODO same here
             proxy.parentProxy = parentProxy;
 
             if (this._editingController) {
@@ -714,7 +677,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                     self.addComponent,
                     self,
                     removedProxy.label,
-                    removedProxy.serialization,
+                    self.serializationForProxy(removedProxy),
                     removedProxy.markup,
                     removedProxy.elementMontageId,
                     // Only pass along the identifier if it had been explicitly set, not inferred

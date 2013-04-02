@@ -9,6 +9,7 @@
     "dependencies": {
         "montage": "0.13.0-alpha",
         "matte": "0.1.1-alpha",
+        "mousse": "0.1.0",
         "q": "0.9.2",
         "q-connection": "0.5.0",
         "q-io": "1.5.4",

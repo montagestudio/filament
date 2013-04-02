@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="binding-entry.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "binding-entry"}
+            }
+        },
+
+        "targetPath": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "targetPath"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.binding.targetPath"}
+            }
+        },
+
+        "unidirectionalCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "unidirectionalCondition"}
+            },
+            "bindings": {
+                "condition": {"<-": "!@owner.binding.twoWay"}
+            }
+        },
+
+        "bidirectionalCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "bidirectionalCondition"}
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.binding.twoWay"}
+            }
+        },
+
+        "sourcePath": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "sourcePath"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.binding.sourcePath"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <li data-montage-id="binding-entry" class="BindingEntry">
+        <span data-montage-id="targetPath"></span>
+        <span data-montage-id="unidirectionalCondition">⬅</span>
+        <span data-montage-id="bidirectionalCondition">⬌</span>
+        <span data-montage-id="sourcePath"></span>
+    </li>
+</body>
+</html>

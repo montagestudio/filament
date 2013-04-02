@@ -1,7 +1,8 @@
 var Montage = require("montage").Montage,
     Bindings = require("montage/core/bindings").Bindings,
     EditingProxy = require("palette/core/editing-proxy").EditingProxy,
-    MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver;
+    MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
+    Map = require("montage/collections/map");
 
 /**
  * The ReelProxy is an EditingProxy for objects that can be declared in a component's template.
@@ -31,23 +32,17 @@ var Montage = require("montage").Montage,
  */
 exports.ReelProxy = Montage.create(EditingProxy,  {
 
+    /**
+     * The identifier of the representedObject
+     */
     identifier: {
         get: function () {
-            return this.getPath("properties.identifier") || this.label;
+            return this.getPath("properties.get('identifier')") || this.label;
         },
         set: function (value) {
             if (value !== this.identifier) {
                 this.setObjectProperty("identifier", value);
             }
-        }
-    },
-
-    /**
-     * The require for the package this proxy is used within
-     */
-    packageRequire: {
-        get: function () {
-            return this.editingDocument.packageRequire;
         }
     },
 
@@ -99,47 +94,6 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
         }
     },
 
-    _serialization: {
-        value: null
-    },
-
-    /**
-     * The combined serialization units used to populate the declaration of the represented object
-     * @note The prototype or object property as well as the properties, bindings, and listeners units
-     */
-    serialization: {
-        get: function () {
-            return this._serialization;
-        }
-    },
-
-    /**
-     * The dictionary of the properties serialization unit
-     */
-    properties: {
-        get: function () {
-            return this.serialization.properties;
-        }
-    },
-
-    /**
-     * The dictionary of the serialization bindings unit
-     */
-    bindings: {
-        get: function () {
-            return this.serialization.bindings || null;
-        }
-    },
-
-    /**
-     * The dictionary of the listeners serialization unit
-     */
-    listeners: {
-        get: function () {
-            return this.serialization.listeners || null;
-        }
-    },
-
     /**
      * The live object this editingProxy is representing
      * @note Edits made to the proxy are set on the live objects, this may not be the case forever
@@ -159,37 +113,113 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
     },
 
     /**
-     * Initialize an ReelProxy suitable for editing through an EditingDocument
+     * Initialize an ReelProxy suitable for editing
      *
-     * @param {string} label The label for this object within the EditingDocument
-     * @param {object} serialization The serialization block used to declare this object in the EditingDocument's template
-     * @param {EditingDocument} editingDocument The editingDocument that owns this editingObject
-     * @param {string} exportId The string used as the exportId of the object represented by this editingObject
+     * @param {string} label The label for the represented object within a template
+     * @param {object} serialization The revived serialization of the represented object
+     * @param {string} exportId The string used as the exportId of the represented object if none is found in the serialization
      */
     init: {
-        value: function (label, serialization, editingDocument, exportId) {
+        //TODO not pass along a reference to the editingDocument as part of the proxy itself
+        // it's being done out of convenience to help out the inspector but I'm not sure I like
+        // that
+        value: function (label, serialization, exportId, editingDocument) {
+
+            if (!exportId && !serialization.prototype && !serialization.object) {
+                throw new Error("No exportId provided or found for template object with label '" + label + "'");
+            }
 
             if (exportId && serialization.prototype && exportId !== serialization.prototype) {
-                throw new Error("Conflicting serialization prototype and exportId values provided for ReelProxy");
+                throw new Error("Conflicting serialization prototype and exportId values provided template object with label '" + label + "'");
             }
+
+            if (serialization.object && serialization.prototype) {
+                throw new Error("Serialization for object with label '" + label +  "' cannot have both 'prototype' and 'object' attributes");
+            }
+
             //TODO make sure that if the serialization specifically had no prototype, we don't go and write one in when saving
 
             var self = EditingProxy.init.call(this, label, editingDocument);
-            self._serialization = serialization;
-            self._exportId = exportId || serialization.prototype;
+            self._exportId = exportId || serialization.prototype || serialization.object;
+
+            this._populateWithSerialization(serialization);
+
             return self;
+        }
+    },
+
+    _populateWithSerialization: {
+        value: function (serialization) {
+            this._properties = new Map(serialization.properties);
+
+            var bindings = [];
+            for (var key in serialization.bindings) {
+                if (serialization.bindings.hasOwnProperty(key)) {
+                    var bindingEntry = serialization.bindings[key];
+                    var bindingDescriptor = {
+                        targetPath: key,
+                        twoWay: "<->" in bindingEntry
+                    };
+                    bindingDescriptor.sourcePath = bindingDescriptor.twoWay ? bindingEntry["<->"] : bindingEntry["<-"];
+
+                    bindings.push(bindingDescriptor);
+                }
+            }
+            this._bindings = bindings;
+
+            var listeners = [];
+            if (serialization.listeners) {
+                listeners = serialization.listeners.map(function (listenerEntry) {
+                    return {
+                        //TODO resolve the listener reference
+                        listener: listenerEntry.listener,
+                        type: listenerEntry.type,
+                        useCapture: listenerEntry.useCapture
+                    };
+                });
+            }
+            this._listeners = listeners;
+        }
+    },
+
+    /**
+     * The map of properties that should be applied to the object this proxy represents
+     */
+    properties: {
+        get: function () {
+            return this._properties;
+        }
+    },
+
+    _bindings: {
+        value: null
+    },
+
+    /**
+     * The collection of bindings associated with the object this proxy represents
+     */
+    bindings: {
+        get: function () {
+            return this._bindings;
+        }
+    },
+
+    _listeners: {
+        value: null
+    },
+
+    /**
+     * The collection of listeners observing the object this proxy represents
+     */
+    listeners: {
+        get: function () {
+            return this._listeners;
         }
     },
 
     setObjectProperty: {
         value: function (property, value) {
-
-            if (!this.serialization.properties) {
-                this.serialization.properties = {};
-            }
-
-            // Set property in an observable fashion, just in case it's a new property being added
-            Montage.setPath.call(this.serialization.properties, property, value);
+            this.properties.set(property, value);
 
             if (this.stageObject) {
                 //TODO how do we know what to do on the other side? Objects may not react well to setting values at runtime
@@ -202,18 +232,15 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
         }
     },
 
+    getObjectProperty: {
+        value: function (property) {
+            return this.properties.get(property);
+        }
+    },
+
     deleteObjectProperty: {
         value: function (property) {
-
-            if (!this.serialization.properties || !this.serialization.properties.hasOwnProperty(property)) {
-                throw new Error("Cannot remove nonexistent property '" + property + "'");
-            }
-
-            delete this.serialization.properties[property];
-
-            if (!Object.keys(this.serialization.properties).length) {
-                delete this.serialization.properties;
-            }
+            this.properties.delete(property);
 
             if (this.stageObject) {
                 if (this.stageObject.setPath) {
@@ -225,6 +252,7 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
         }
     },
 
+    //TODO update this to not use serialization
     defineObjectBinding: {
         value: function (sourceObjectPropertyPath, boundObject, boundObjectPropertyPath, oneWay, converter) {
             //TODO handle converter
@@ -261,6 +289,7 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
         }
     },
 
+    //TODO update this to not use serialization
     cancelObjectBinding: {
         value: function (sourceObjectPropertyPath) {
             delete this.serialization.bindings[sourceObjectPropertyPath];
