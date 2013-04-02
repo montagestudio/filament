@@ -258,6 +258,14 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 proxy = ReelProxy.create().init(label, serialization[label], self, exportId);
                 montageId = proxy.getPath("properties.element.property('#')");
                 proxy.element = self.htmlDocument.querySelector("[data-montage-id='" + montageId + "']");
+
+                // TODO formalize these a bit, we add them when programmatically adding,
+                // so they need to be done when discovering as well
+                if (proxy.element) {
+                    proxy.markup = proxy.element.outerHTML;
+                }
+                proxy.elementMontageId = montageId;
+
                 return proxy;
             });
         }
@@ -679,6 +687,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                     removedProxy.serialization,
                     removedProxy.markup,
                     removedProxy.elementMontageId,
+                    // Only pass along the identifier if it had been explicitly set, not inferred
                     removedProxy.getPath("properties.identifier")
                 ]);
 
@@ -690,9 +699,13 @@ exports.ReelDocument = Montage.create(EditingDocument, {
     deleteSelected: {
         value: function () {
             var selectedObject = this.getPath("selectedObjects.0");
-            //TODO object vs component
-            //TODO what about when we add entire templates, do we remove the added template and all objects in one shot?
-            return this.removeComponent(selectedObject);
+            //TODO minimize different handling of objects and components
+            if (selectedObject.markup) {
+                return this.removeComponent(selectedObject);
+            } else {
+                return this.removeObject(selectedObject);
+            }
+
         }
     },
 

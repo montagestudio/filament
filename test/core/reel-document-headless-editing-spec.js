@@ -63,6 +63,17 @@ describe("core/reel-document-headless-editing-spec", function () {
                 });
             }).timeout(WAITSFOR_TIMEOUT);
         });
+
+        it("should add the component's element to the htmlDocument of the editing document", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var addedComponent = reelDocument.addComponent(labelInOwner, serialization, markup, elementMontageId, identifier);
+
+                return addedComponent.then(function (proxy) {
+                    var addedElement = reelDocument.htmlDocument.querySelector("[data-montage-id=myComponentId]");
+                    expect(addedElement).toBeTruthy();
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
     });
 
     describe("removing a component", function () {
@@ -104,10 +115,22 @@ describe("core/reel-document-headless-editing-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
+        it("should remove the component's element from the htmlDocument of the editing document", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var proxyToRemove = reelDocument.editingProxyMap[labelInOwner],
+                    removalPromise = reelDocument.removeComponent(proxyToRemove);
+
+                return removalPromise.then(function () {
+                    var removedElement = reelDocument.htmlDocument.querySelector("[data-montage-id=foo]");
+                    expect(removedElement).toBeNull();
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
         it("must not remove any other components from the serialization of the editing document", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxyToRemove = reelDocument.editingProxyMap[labelInOwner],
-                    removalPromise = reelDocument.removeObject(proxyToRemove),
+                    removalPromise = reelDocument.removeComponent(proxyToRemove),
                     templateSerialization;
 
                 return removalPromise.then(function () {
@@ -122,7 +145,7 @@ describe("core/reel-document-headless-editing-spec", function () {
         it("should add an undo operation for this removal", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxyToRemove = reelDocument.editingProxyMap[labelInOwner],
-                    removalPromise = reelDocument.removeObject(proxyToRemove),
+                    removalPromise = reelDocument.removeComponent(proxyToRemove),
                     templateSerialization;
 
                 return removalPromise.then(function () {
@@ -133,9 +156,8 @@ describe("core/reel-document-headless-editing-spec", function () {
 
         it("should undo removal operation by adding a similar component", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                var proxyToRemove = reelDocument.editingProxyMap[labelInOwner],
-                    removalPromise = reelDocument.removeObject(proxyToRemove),
-                    templateSerialization;
+                var proxyToRemove = reelDocument.editingProxyMap[labelInOwner];
+                var removalPromise = reelDocument.removeComponent(proxyToRemove);
 
                 return removalPromise.then(function () {
                     return reelDocument.undo();
@@ -150,6 +172,9 @@ describe("core/reel-document-headless-editing-spec", function () {
                     expect(addedProxy.exportId).toBe("ui/foo.reel");
                     expect(addedProxy.exportName).toBe("Foo");
                     expect(addedProxy.identifier).toBe(labelInOwner);
+
+                    var addedElement = reelDocument.htmlDocument.querySelector("[data-montage-id=foo]");
+                    expect(addedElement).toBeTruthy();
                 });
             }).timeout(WAITSFOR_TIMEOUT);
         });
