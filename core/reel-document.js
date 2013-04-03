@@ -258,14 +258,6 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 proxy = ReelProxy.create().init(label, serialization[label], self, exportId);
                 montageId = proxy.getPath("properties.element.property('#')");
                 proxy.element = self.htmlDocument.querySelector("[data-montage-id='" + montageId + "']");
-
-                // TODO formalize these a bit, we add them when programmatically adding,
-                // so they need to be done when discovering as well
-                if (proxy.element) {
-                    proxy.markup = proxy.element.outerHTML;
-                }
-                proxy.elementMontageId = montageId;
-
                 return proxy;
             });
         }
@@ -302,7 +294,12 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             //TODO not blindly append to the end of the body
             //TODO react to changing the element?
             if (proxy.element && !proxy.element.parentNode) {
-                this._ownerElement.appendChild(proxy.element);
+                var parentProxy = proxy.parentProxy;
+                if (parentProxy && parentProxy.element) {
+                    parentProxy.element.appendChild(proxy.element);
+                } else {
+                    this._ownerElement.appendChild(proxy.element);
+                }
             }
         }
     },
@@ -349,7 +346,8 @@ exports.ReelDocument = Montage.create(EditingDocument, {
         value: function (owner, template, frame) {
             var labels = Object.keys(owner.templateObjects),
                 self = this,
-                proxy;
+                proxy,
+                serialization = template.getSerialization().getSerializationObject();
 
             var editController = this._editingController = EditingController.create();
             editController.frame = frame;
@@ -357,7 +355,25 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
             labels.forEach(function (label) {
                 proxy = self.editingProxyMap[label];
-                proxy.stageObject = owner.templateObjects[label];
+                var stageObject = owner.templateObjects[label];
+                // If this is an array, and not just array...
+                if (Array.isArray(stageObject) && !("value" in serialization[label])) {
+                    // ... then it's something repeated, and so we don't
+                    // currently have a live representation. This will
+                    // be provided by an inspector
+                    proxy.stageObject = null;
+                    // FIXME/HACK: need a way to get the parent of a component
+                    // without having a live object
+                    if (!stageObject.length) {
+                        console.error("TODO: cannot get parentComponent of " + label);
+                        proxy.parentComponent = null;
+                        return;
+                    }
+                    proxy.parentComponent = stageObject[0].parentComponent;
+                } else {
+                    proxy.stageObject = stageObject;
+                    proxy.parentComponent = stageObject.parentComponent || owner;
+                }
             });
         }
     },
@@ -417,7 +433,8 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             var selectedObjects = this.selectedObjects;
             var selectionCandidate = currentElement.component;
 
-            var ownerElement = this.editingProxyMap.owner.stageObject.element;
+            var ownerComponent = this.editingProxyMap.owner.stageObject;
+            var ownerElement = ownerComponent.element;
             var selectedElements = selectedObjects.map(function (object) {
                 return object.getPath("stageObject.element");
             });
@@ -428,8 +445,15 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                     selectedElements.indexOf(currentElement) === -1  &&
                     currentElement != null
                 ) {
-                if (currentElement.component) {
-                    selectionCandidate = currentElement.component;
+                var component = currentElement.component;
+                if (component) {
+                    if (component.ownerComponent !== ownerComponent) {
+                        // We've hit a component that isn't in the edited reel,
+                        // so stop going up and use the last selection
+                        // candidate.
+                        break;
+                    }
+                    selectionCandidate = component;
                 }
                 currentElement = currentElement.parentElement;
             }
@@ -581,7 +605,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
     },
 
     addComponent: {
-        value: function (labelInOwner, serialization, markup, elementMontageId, identifier) {
+        value: function (labelInOwner, serialization, markup, elementMontageId, identifier, parentProxy) {
             var self = this,
                 deferredUndo,
                 proxy,
@@ -620,9 +644,10 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             proxy = ReelProxy.create().init(labelInOwner, serialization, this);
             proxy.markup = markup; //TODO formalize this, ComponentProxy subclass?
             proxy.elementMontageId = elementMontageId; //TODO same here
+            proxy.parentProxy = parentProxy;
 
             if (this._editingController) {
-                proxyPromise = this._editingController.addComponent(labelInOwner, serialization, markup, elementMontageId, identifier)
+                proxyPromise = this._editingController.addComponent(labelInOwner, serialization, markup, elementMontageId, identifier, parentProxy)
                     .then(function (newComponent) {
                         proxy.stageObject = newComponent;
                         return proxy;
