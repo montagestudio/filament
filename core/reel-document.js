@@ -715,12 +715,33 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             var undoManager = this.undoManager,
                 undoneValue = proxy.getObjectProperty(property);
 
+            if (value === undoneValue) {
+                // The values are identical no need to do anything.
+                return;
+            }
+
+            if (property === "identifier") {
+                // We changed the identifier check that there are no conflicts
+                if (value in this.editingProxyMap) {
+                    console.log("Cannot change the identifier it already exists.");
+                    return;
+                }
+            }
+
             //TODO maybe the proxy shouldn't be involved in doing this as we hand out the proxies
             // throughout the editingEnvironment, I don't want to expose accessible editing APIs
             // that do not go through the editingDocument...or do I?
 
             // Might be nice to have an editing API that avoids undoability and event dispatching?
             proxy.setObjectProperty(property, value);
+
+            if (property === "identifier") {
+                // We changed the identifier so the label need to be kept in sync.
+                var proxiedObject = this.editingProxyMap[undoneValue];
+                delete this.editingProxyMap[undoneValue];
+                proxiedObject.label = value;
+                this.editingProxyMap[value] = proxiedObject;
+            }
 
             this._buildSerialization();
 
@@ -733,6 +754,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 //            });
 
             undoManager.register("Set Property", Promise.resolve([this.setOwnedObjectProperty, this, proxy, property, undoneValue]));
+
         }
     },
 
