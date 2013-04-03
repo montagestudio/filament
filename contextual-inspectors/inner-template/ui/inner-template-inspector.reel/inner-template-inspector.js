@@ -69,7 +69,6 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             }
 
             if (this._mutationObserver) {
-                console.log("disconnect _mutationObserver");
                 this._mutationObserver.disconnect();
                 this._mutationObserver = null;
             }
@@ -77,7 +76,6 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             this._objectElement = value;
 
             if (value) {
-                console.log("connect _mutationObserver");
                 this._mutationObserver = new WebKitMutationObserver(this.handleMutations.bind(this));
                 this._mutationObserver.observe(value, MUTATION_OBSERVER_CONFIG);
             }
@@ -172,11 +170,6 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
 
     handleMutations: {
         value: function (mutations) {
-            // console.log("mutations", mutations);
-            // this._object.stageObject._innerTemplate = null;
-            // var innerTemplate = this._object.stageObject.innerTemplate;
-            // debugger;
-            // this._object.stageObject.innerTemplate = innerTemplate;
 
             // adapted from montage/ui/component.js innerTemplate.get
             var innerTemplate,
