@@ -82,7 +82,7 @@ exports.DocumentEditor = Montage.create(Component, {
     },
 
     addLibraryItem: {
-        value: function (libraryItem, parentProxy) {
+        value: function (libraryItem, parentProxy, parentElement) {
 
             if (!this.editingDocument) {
                 throw new Error("Cannot add component: no editing document");
@@ -92,7 +92,7 @@ exports.DocumentEditor = Montage.create(Component, {
             }
 
             if (libraryItem.html) {
-                return this.addComponent(libraryItem, parentProxy);
+                return this.addComponent(libraryItem, parentProxy, parentElement);
             } else {
                 return this.addObject(libraryItem);
             }
@@ -109,7 +109,7 @@ exports.DocumentEditor = Montage.create(Component, {
     //TODO Can we get get rid of the editing API being here, on a component and instead always rely on the editingDocument
     addComponent: {
         enumerable: false,
-        value: function (prototypeEntry, parentProxy) {
+        value: function (prototypeEntry, parentProxy, parentElement) {
 
             var editingDocument = this.editingDocument;
 
@@ -119,7 +119,8 @@ exports.DocumentEditor = Montage.create(Component, {
                 prototypeEntry.html,
                 undefined, // elementMontageId
                 undefined, // identifier
-                parentProxy
+                parentProxy,
+                parentElement
             ).then(function (proxy) {
 
                 // try to pre-fetch the description of this object

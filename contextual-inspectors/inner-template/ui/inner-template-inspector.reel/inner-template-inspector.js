@@ -163,7 +163,7 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
                 deserializer = Deserializer.create().init(data, require);
 
             deserializer.deserialize().then(function (prototypeEntry) {
-                self.documentEditor.addLibraryItem(prototypeEntry, self.object).done();
+                self.documentEditor.addLibraryItem(prototypeEntry, self.object, self.templateObjects.innerTemplate.element).done();
             }).done();
         }
     },

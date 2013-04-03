@@ -605,7 +605,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
     },
 
     addComponent: {
-        value: function (labelInOwner, serialization, markup, elementMontageId, identifier, parentProxy) {
+        value: function (labelInOwner, serialization, markup, elementMontageId, identifier, parentProxy, parentElement) {
             var self = this,
                 deferredUndo,
                 proxy,
@@ -647,7 +647,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             proxy.parentProxy = parentProxy;
 
             if (this._editingController) {
-                proxyPromise = this._editingController.addComponent(labelInOwner, serialization, markup, elementMontageId, identifier, parentProxy)
+                proxyPromise = this._editingController.addComponent(labelInOwner, serialization, markup, elementMontageId, identifier, parentProxy, parentElement)
                     .then(function (newComponent) {
                         proxy.stageObject = newComponent;
                         return proxy;
