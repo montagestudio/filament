@@ -4,10 +4,21 @@ var Montage = require("montage").Montage,
     Blueprint = require("montage/core/meta/blueprint").Blueprint,
     EditingDocument = require("palette/core/editing-document").EditingDocument,
     BlueprintProxy = require("./blueprint-proxy").BlueprintProxy,
+    BlueprintEditor = require("ui/blueprint-editor.reel").BlueprintEditor,
     Serializer = require("montage/core/serialization").Serializer,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver;
 
 var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocument, {
+
+    __existOnDisk: {
+        value: true
+    },
+
+    editorType: {
+        get: function () {
+            return BlueprintEditor;
+        }
+    },
 
     load:{
         value:function (fileUrl, packageUrl) {
@@ -26,7 +37,7 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
                         // The blueprint file does not exist yet lets use the default blueprint.
                         var desc = MontageReviver.parseObjectLocationId(blueprintModuleId.substring(0, blueprintModuleId.lastIndexOf("/")));
                         packageRequire.async(desc.moduleId).get(desc.objectName).get("blueprint").then(function (blueprint) {
-                            deferredDoc.resolve(BlueprintDocument.create().init(fileUrl, packageRequire, blueprint, true));
+                            deferredDoc.resolve(BlueprintDocument.create().init(fileUrl, packageRequire, blueprint, true, true));
                         }, function () {
                             deferredDoc.reject(new Error("Could not open file at " + fileUrl));
                         });
@@ -44,7 +55,7 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
     },
 
     init:{
-        value:function (fileUrl, packageRequire, currentObject, isBlueprint) {
+        value:function (fileUrl, packageRequire, currentObject, isBlueprint, needsSave) {
             var self = EditingDocument.init.call(this, fileUrl, packageRequire);
 
             var proxy = BlueprintProxy.create().init("blueprint", self, currentObject);
@@ -57,6 +68,7 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
             self.dispatchOwnPropertyChange("isBlueprint", isBlueprint);
 
             self._packageRequire = packageRequire;
+            self.__existOnDisk = (needsSave ? false : true);
             return self;
         }
     },
@@ -66,7 +78,18 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
             // we need to be sur to use the right require.
             var serializer = Serializer.create().initWithRequire(this.packageRequire);
             var serializedDescription = serializer.serializeObject(this.currentProxyObject.proxiedObject);
+            this.__existOnDisk = true;
             return dataWriter(serializedDescription, location);
+        }
+    },
+
+    canClose: {
+        value: function (location) {
+            // TODO PJYF This message needs to be localized
+            if (!this.__existOnDisk) {
+                return "This document was never saved.";
+            }
+            return (this.isDirty() ? "You have unsaved Changes" : null);
         }
     },
 
@@ -102,9 +125,9 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
 
     getOwnedObjectProperty: {
         value: function (proxy, property) {
-             return proxy.getObjectProperty(property);
+            return proxy.getObjectProperty(property);
         }
-     },
+    },
 
     setOwnedObjectProperty:{
         value:function (proxy, property, value) {
@@ -112,7 +135,7 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
             var undoManager = this.undoManager,
                 undoneValue = proxy.getObjectProperty(property);
 
-            if (undoneValue != value) {
+            if (undoneValue !== value) {
                 console.log("setOwnedObjectProperty " + property + "  " + value);
 
                 //TODO maybe the proxy shouldn't be involved in doing this as we hand out the proxies

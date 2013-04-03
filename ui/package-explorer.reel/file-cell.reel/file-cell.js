@@ -1,5 +1,6 @@
 var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+    Component = require("montage/ui/component").Component,
+    application = require("montage/core/application").application;
 
 exports.FileCell = Montage.create(Component, {
 
@@ -23,6 +24,12 @@ exports.FileCell = Montage.create(Component, {
         }
     },
 
+    prepareForDraw: {
+        value: function () {
+            application.addEventListener("didOpenDocument", this);
+        }
+    },
+
     handlePathChange: {
         value: function () {
             if (this.fileInfo && this.iteration && this.fileInfo.root) {
@@ -42,11 +49,31 @@ exports.FileCell = Montage.create(Component, {
         }
     },
 
+    handleDidOpenDocument: {
+        value: function (evt) {
+            var openedDocument = evt.detail.document;
+            if (this.fileInfo && this.fileInfo.fileUrl === openedDocument.url) {
+                this.fileInfo.associatedDocument = openedDocument;
+                application.removeEventListener("didOpenDocument", this);
+                application.addEventListener("didCloseDocument", this);
+            }
+        }
+    },
+
+    handleDidCloseDocument: {
+        value: function (evt) {
+            var openedDocument = evt.detail.document;
+            if (this.fileInfo && this.fileInfo.fileUrl === openedDocument.url) {
+                this.fileInfo.associatedDocument = null;
+                application.addEventListener("didOpenDocument", this);
+                application.removeEventListener("didCloseDocument", this);
+            }
+        }
+    },
+
     handleOpenFileButtonAction: {
         value: function (evt) {
-            this.dispatchEventNamed("openFile", true, true, {
-                fileUrl: this.fileInfo.fileUrl
-            });
+            this.dispatchEventNamed("openUrl", true, true, this.fileInfo.fileUrl);
         }
     }
 

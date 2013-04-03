@@ -3,7 +3,7 @@ var Montage = require("montage/core/core").Montage,
     defaultMenu = require("filament/ui/native-menu/menu").defaultMenu,
     MenuItem = require("filament/ui/native-menu/menu-item").MenuItem,
     Promise = require("montage/core/promise").Promise,
-    BlueprintEditor = require("ui/blueprint-editor.reel").BlueprintEditor;
+    BlueprintDocument = require("core/blueprint-document").BlueprintDocument;
 var Blueprint = require("montage/core/meta/blueprint").Blueprint;
 
 
@@ -36,14 +36,14 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
 
     activate:{
         value:function (application, projectController, viewController) {
-            viewController.registerEditorTypeForFileTypeMatcher(BlueprintEditor, this.editorFileMatchFunction);
+            projectController.registerUrlMatcherForDocumentType(this.editorFileMatchFunction, BlueprintDocument);
             var self = this;
 
             this.application = application;
             this.projectController = projectController;
 
-            application.addEventListener("didEnterDocument", self, false);
-            application.addEventListener("willExitDocument", self, false);
+            application.addEventListener("didOpenDocument", self, false);
+            application.addEventListener("willCloseDocument", self, false);
 
             var existingMenu = defaultMenu.menuItemForIdentifier(PARENT_MENU);
             if (existingMenu) {
@@ -72,11 +72,11 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
 
     deactivate:{
         value:function (application, projectController, viewController) {
-            viewController.unregisterEditorTypeForFileTypeMatcher(this.editorFileMatchFunction);
+            projectController.unregisterUrlMatcherForDocumentType(this.editorFileMatchFunction, BlueprintDocument);
             var self = this;
 
-            application.removeEventListener("didEnterDocument", self, false);
-            application.removeEventListener("willExitDocument", self, false);
+            application.removeEventListener("didOpenDocument", self, false);
+            application.removeEventListener("willCloseDocument", self, false);
 
             return Promise.all([this.parentMenu, this.blueprintMenu]).spread(function (parentMenu, blueprintMenu) {
                 return parentMenu.removeItem(blueprintMenu).then(function () {
@@ -106,17 +106,17 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
                     console.log("The current version only supports adding blueprint to reels.", location);
                     return;
                 }
-                this.dispatchEventNamed("openFile", true, true, {
-                    fileUrl:location + "/" + filenameMatch[1] + Blueprint.FileExtension
-                });
+                this.dispatchEventNamed("openUrl", true, true,
+                    location + "/" + filenameMatch[1] + Blueprint.FileExtension
+                );
             }
         }
     },
 
-    handleDidEnterDocument:{
+    handleDidOpenDocument:{
         value:function (evt) {
-            var location = this.projectController.currentDocument.fileUrl;
-            var filenameMatch = location.match(/.+\/(.+)\.reel/);
+            var location = evt.detail.document.fileUrl;
+            var filenameMatch = location.match(/.+\/(.+)\.reel$/);
             this.blueprintMenu.then(function (menuItem) {
                 if (filenameMatch && filenameMatch[1]) {
                     menuItem.enabled = true;
@@ -127,7 +127,7 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
         }
     },
 
-    handleWillExitDocument:{
+    handleWillCloseDocument:{
         value: function (evt) {
             this.blueprintMenu.then(function (menuItem) {
                 menuItem.enabled = false;

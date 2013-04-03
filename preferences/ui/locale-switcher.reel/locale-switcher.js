@@ -27,8 +27,7 @@ exports.LocaleSwitcher = Montage.create(Component, /** @lends module:"ui/locale-
                 return locales.map(function (locale) {
                     var deferred = Promise.defer();
                     defaultLocalizer.localize(locale).then(function (name) {
-                        var locale_name = {locale: locale, name: name()};
-                        deferred.resolve(locale_name);
+                        deferred.resolve({locale: locale, name: name()});
                     }).done();
                     return deferred.promise;
                 });

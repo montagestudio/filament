@@ -1,14 +1,18 @@
 var Montage = require("montage/core/core").Montage,
+    DocumentController = require("palette/core/document-controller").DocumentController,
     Promise = require("montage/core/promise").Promise,
+    application = require("montage/core/application").application,
     LibraryItem = require("filament-extension/core/library-item.js").LibraryItem,
     Deserializer = require("montage/core/serialization").Deserializer,
     findObjectNameRegExp = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver._findObjectNameRegExp,
     RangeController = require("montage/core/range-controller").RangeController,
     WeakMap = require("montage/collections/weak-map"),
     Map = require("montage/collections/map"),
+    Confirm = require("matte/ui/popup/confirm.reel").Confirm,
+    MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     ProjectController;
 
-exports.ProjectController = ProjectController = Montage.create(Montage, {
+exports.ProjectController = ProjectController = Montage.create(DocumentController, {
 
     // PROPERTIES
 
@@ -35,6 +39,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
 
     /**
      * The url of the project this projectController is meant to open
+     * This is the url that was actually "opened"
      */
     projectUrl: {
         get: function () {
@@ -44,13 +49,15 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
 
     /**
      * The url of the package of the open project
+     * This specifies the location of the project's package.json.
      */
     packageUrl: {
         value: null
     },
 
     /**
-     * The package description of the open project
+     * The package description of the open project as read from the
+     * package.json
      */
     packageDescription: {
         value: null
@@ -78,62 +85,46 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         value: null
     },
 
-    _editorTypeInstanceMap: {
-        value: null
-    },
-
-    _fileUrlEditorMap: {
-        value: null
-    },
-
-    _fileUrlDocumentMap: {
-        value: null
-    },
-
-    /**
-     * The active EditingDocument instance
-     */
-    //TODO not let this be read/write
-    currentDocument: {
-        value: null
-    },
-
     // INITIALIZATION
 
     /**
      * Initialize a ProjectController
      *
      * @param {EnvironmentBridge} bridge An environment bridge that normalizes different environment features
-     * @param {ViewController} viewController A controller that manages registration of views that can appear through filament
+     * @param {Object} viewController A controller that manages registration of views that can appear through filament
+     * @param {Object} editorController A controller that manages the visible editor stack
      * @return {ProjectController} An initialized instance of a ProjectController
      */
     init: {
-        value: function (bridge, viewController) {
+        value: function (bridge, viewController, editorController) {
             bridge.setDocumentDirtyState(false);
 
             var self = this;
 
-            this._editorTypeInstanceMap = new WeakMap();
-            this._fileUrlEditorMap = new Map();
-            this._fileUrlDocumentMap = new Map();
-
             this._environmentBridge = bridge;
             this._viewController = viewController;
+            this._editorController = editorController;
             this.moduleLibraryItemMap = new Map();
             this._packageNameLibraryItemsMap = new Map();
 
+            this._documentTypeUrlMatchers = [];
+            this._urlMatcherDocumentTypeMap = new WeakMap();
+            this._editorTypeInstanceMap = new WeakMap();
 
-            this.openDocumentsController = RangeController.create().initWithContent([]);
+            this.openDocumentsController = RangeController.create().initWithContent(this.documents);
 
             //TODO get rid of this once we have property dependencies
-            this.addPathChangeListener("packageUrl", this, null, true);
-            this.addPathChangeListener("packageUrl", this);
-            this.addPathChangeListener("_windowIsKey", this, null, true);
-            this.addPathChangeListener("_windowIsKey", this);
+            this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyWillChange", true);
+            this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyChange");
 
             this.addPathChangeListener("currentDocument.undoManager.undoLabel", this);
             this.addPathChangeListener("currentDocument.undoManager.redoLabel", this);
             this.addPathChangeListener("currentDocument.undoManager.undoCount", this);
+
+            application.addEventListener("openUrl", this);
+            application.addEventListener("closeDocument", this);
+            application.addEventListener("menuValidate", this);
+            application.addEventListener("menuAction", this);
 
             return this;
         }
@@ -151,8 +142,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         value: function (url) {
 
             var self = this;
-
-            //TODO what if this is called multiple times?
 
             this._projectUrl = url;
 
@@ -195,154 +184,259 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
 
     // DOCUMENT HANDLING
 
-    //TODO make this a two step thing? loadFileUrl then openFileUrl to give us a place to have an editor instance and have it draw before "opening" the document?
-    //TODO expose the currentEditor, not the currentDocument?
-    /**
-     * Find a suitable editor for the document at the specified fileUrl and open it
-     *
-     * @return {Promise} A promise for the editing document and the editor used to open the document
-     */
-    openFileUrl: {
-        value: function (fileUrl) {
-            var editor,
-                docAlreadyLoaded,
-                self = this,
-                promisedLoadInfo;
+    // The controller that facilittates bringing editors components
+    // to the front as needed
+    // Typically this is filament's mainComponent
+    _editorController: {
+        value: null
+    },
 
-            if (this.currentDocument && fileUrl === this.currentDocument.fileUrl) {
-                // fileUrl is already open; do nothing
-                editor = this._fileUrlEditorMap[fileUrl];
-                promisedLoadInfo = Promise.resolve({document: this.currentDocument, editor: editor});
-            } else {
+    _editorTypeInstanceMap: {
+        value: null
+    },
 
-                editor = this._editorForFileUrl(fileUrl);
+    currentEditor: {
+        value: null
+    },
 
-                if (!editor) {
-                    // No editor available for this document
-                    promisedLoadInfo = Promise.resolve({document: null, editor: null});
-                } else {
+    _urlMatcherDocumentTypeMap: {
+        value: null
+    },
 
-                    docAlreadyLoaded = !!this._fileUrlDocumentMap[fileUrl];
-                    this._fileUrlEditorMap.set(fileUrl, editor);
+    _documentTypeUrlMatchers: {
+        value: null
+    },
 
-                    // Editor available; load the editingDocument
-                    if (!docAlreadyLoaded) {
-                        this.dispatchEventNamed("willLoadDocument", true, false, fileUrl);
-                    }
-
-                    promisedLoadInfo = editor.load(fileUrl, this.packageUrl).then(function (editingDocument) {
-                        if (self.currentDocument) {
-                            self.dispatchEventNamed("willExitDocument", true, false, self.currentDocument);
-                        }
-
-                        if (!docAlreadyLoaded) {
-                            self._fileUrlDocumentMap.set(fileUrl, editingDocument);
-                            self.openDocumentsController.push(editingDocument);
-                            self.dispatchEventNamed("didLoadDocument", true, false, editingDocument);
-                        }
-
-                        self.dispatchEventNamed("willEnterDocument", true, false, editingDocument);
-
-                        self.currentDocument = editingDocument;
-                        self.openDocumentsController.selection = [editingDocument];
-
-                        if (!docAlreadyLoaded) {
-                            self.dispatchEventNamed("didLoadDocument", true, false, editingDocument);
-                        }
-
-                        self.dispatchEventNamed("didEnterDocument", true, false, editingDocument);
-
-                        return {document: editingDocument, editor: editor};
-                    }, function (error) {
-                        // Something gone wrong revert to the current document
-                        console.log("Could not open the document. reverting to the previous one. ", error);
-                        return {document: self.currentDocument, editor: editor};
-                    });
-                }
+    registerUrlMatcherForDocumentType: {
+        value: function (urlMatcher, documentType) {
+            if (!(documentType && urlMatcher)) {
+                throw new Error("Both a document type and a url matcher are needed to register");
             }
 
-            return promisedLoadInfo;
+            if (this._urlMatcherDocumentTypeMap.has(urlMatcher)) {
+                throw new Error("Already has this url matcher registered for a document type");
+            }
+
+            //TODO use one data structure for both of these
+            this._documentTypeUrlMatchers.push(urlMatcher);
+            this._urlMatcherDocumentTypeMap.set(urlMatcher, documentType);
+        }
+    },
+
+    unregisterUrlMatcherForDocumentType: {
+        value: function (urlMatcher, documentType) {
+            //TODO track documentTypes we have open
+            throw new Error("Implement unregistering a document type");
         }
     },
 
     /**
-     * Close the specified fileUrl in whatever editor has it open.
-     *
-     * @note If the specified fileUrl refers to the currentDocument the next logical document will
-     * become the current document.
-     *
-     * @return {Promise} A promise for the closed document
+     * The document prototype to use for the specified url
+     * @override
      */
-    closeFileUrl: {
-        value: function (fileUrl) {
-
-            var editingDocument = this._fileUrlDocumentMap.get(fileUrl),
-                editingDocuments = this.openDocumentsController.content,
-                openNextDocPromise,
-                nextDoc,
-                editor,
-                self = this;
-
-            if (!editingDocument) {
-                return Promise.reject(new Error("Cannot close unopened file '" + fileUrl + "'"));
-            }
-
-            this.dispatchEventNamed("willCloseDocument", true, false, editingDocument);
-
-            if (this.currentDocument && editingDocument === this.currentDocument) {
-                //The current document is the one being closed:
-
-                if (1 === editingDocuments.length) {
-                    // No other documents to open; manually exit
-                    this.dispatchEventNamed("willExitDocument", true, false, this.currentDocument);
-                    this.currentDocument = null;
-                    openNextDocPromise = Promise.resolve(true);
-                } else {
-                    //Open the next document
-                    nextDoc = this._nextDocument(editingDocument);
-                    openNextDocPromise = this.openFileUrl(nextDoc.fileUrl);
-                }
-            } else {
-                openNextDocPromise = Promise.resolve(true);
-            }
-
-            return openNextDocPromise.then(function () {
-
-                editor = self._fileUrlEditorMap.get(fileUrl);
-
-                return editor.close(fileUrl).then(function (document) {
-                    self.openDocumentsController.delete(document);
-                    self._fileUrlEditorMap.delete(fileUrl);
-                    self._fileUrlDocumentMap.delete(fileUrl);
-                    return document;
+    documentTypeForUrl: {
+        value: function (url) {
+            var documentType,
+                matchResults = this._documentTypeUrlMatchers.filter(function (matcher) {
+                    return matcher(url) ? matcher : false;
                 });
-            });
 
+            if (matchResults.length) {
+                documentType = this._urlMatcherDocumentTypeMap.get(matchResults[matchResults.length - 1]);
+            }
+
+            return documentType;
         }
     },
 
-    _editorForFileUrl: {
+    /**
+     * @override
+     */
+    createDocumentWithTypeAndUrl: {
+        value: function (documentType, url) {
+            return documentType.load(url, this.packageUrl);
+        }
+    },
+
+    handleOpenUrl: {
+        value: function (evt) {
+            this.openUrlForEditing(evt.detail).done();
+        }
+    },
+
+    /**
+     * Open a document representing the specified fileUrl.
+     *
+     * This will also bring the document's editor to the front.
+     *
+     * @param {string} fileUrl The url for which to open a representative document
+     * @return {Promise} A promise for the representative document
+     */
+    openUrlForEditing: {
         value: function (fileUrl) {
-            var editor = this._fileUrlEditorMap.get(fileUrl),
+            var self = this,
+                editor,
+                alreadyOpenedDoc,
+                documentType,
                 editorType;
 
-            if (!editor) {
-                editorType = this._viewController.editorTypeForFileUrl(fileUrl);
+            if (this.currentDocument && fileUrl === this.currentDocument.url) {
+                return Promise.resolve(this.currentDocument);
+            }
 
-                if (editorType) {
-                    editor = this._editorTypeInstanceMap.get(editorType);
+            // Find editor to make frontmost
+            alreadyOpenedDoc = this.documentForUrl(fileUrl);
 
-                    if (!editor) {
-                        editor = editorType.create();
-                        editor.projectController = this;
-                        editor.viewController = this._viewController;
+            if (alreadyOpenedDoc) {
+                editorType = alreadyOpenedDoc.editorType;
+            } else {
+                documentType = this.documentTypeForUrl(fileUrl);
 
-                        this._editorTypeInstanceMap.set(editorType, editor);
-                    }
+                if (documentType) {
+                    editorType = documentType.editorType;
                 }
             }
 
-            return editor;
+            if (editorType) {
+                editor = this._editorTypeInstanceMap.get(editorType);
+
+                if (!editor) {
+                    editor = editorType.create();
+                    //TODO formalize exactly what we pass along to the editors
+                    // Most of this right here is simply for the componentEditor
+                    editor.projectController = this;
+                    editor.viewController = this._viewController;
+                    this._editorTypeInstanceMap.set(editorType, editor);
+                }
+
+                this._editorController.bringEditorToFront(editor);
+                this.currentEditor = editor;
+
+                this.dispatchEventNamed("willOpenDocument", true, false, {
+                    url: fileUrl
+                });
+
+                return this.openUrl(fileUrl).then(function (doc) {
+                    self.dispatchEventNamed("didOpenDocument", true, false, {
+                        document: doc,
+                        isCurrentDocument: doc === self.currentDocument
+                    });
+                    return doc;
+                });
+            } else {
+                //TODO do something more appropriate if there's no editor available for this document
+                return Promise.resolve(null);
+            }
+        }
+    },
+
+    /**
+     * @override
+     */
+    acceptedCurrentDocument: {
+        value: function () {
+            this.currentEditor.open(this.currentDocument);
+            var selection;
+            if (this.currentDocument) {
+                selection = [this.currentDocument];
+            } else {
+                selection = [];
+            }
+            this.openDocumentsController.selection = selection;
+        }
+    },
+
+    handleCloseDocument: {
+        value: function (evt) {
+            this.closeDocument(evt.detail).done();
+        }
+    },
+
+    /**
+     * Close the specified document.
+     *
+     * @note If the specified document refers to the currentDocument the next logical document will
+     * become the current document.
+     *
+     * @param {Document} document The document to close
+     * @return {Promise} A promise for the closed document
+     */
+    closeDocument: {
+        value: function (document) {
+
+            if (!this._urlDocumentMap.get(document.url)) {
+                return Promise.reject(new Error("Cannot close a document that is not open"));
+            }
+
+            var canCloseMessage = this.canCloseDocument(document, document.url);
+            var canCancelPromise = Promise.defer();
+            if (canCloseMessage) {
+                // TODO PJYF This needs to be localized.
+                var options = {
+                    message: canCloseMessage + " Are you sure you want to close that document?",
+                    okLabel: "Close",
+                    cancelLabel: "Cancel"
+                };
+                Confirm.show(options, function () {
+                    canCancelPromise.resolve();
+                }, function () {
+                    canCancelPromise.reject(new Error("The document prevented the close"));
+                });
+            } else {
+                canCancelPromise.resolve();
+            }
+
+            var self = this;
+            return canCancelPromise.promise.then(function () {
+
+                var editorType = document.editorType,
+                    editor = self._editorTypeInstanceMap.get(editorType),
+                    nextDocument = null,
+                    closedPromise,
+                    wasCurrentDocument = document === self.currentDocument;
+
+                if (wasCurrentDocument) {
+                    nextDocument = self._nextDocument(document);
+                }
+
+                self.dispatchEventNamed("willCloseDocument", true, false, {
+                    document: document,
+                    isCurrentDocument: wasCurrentDocument
+                });
+
+                if (nextDocument) {
+                    closedPromise = self.openUrlForEditing(nextDocument.url).then(function () {
+                        editor.close(document);
+                        self.removeDocument(document);
+                        return document;
+                    });
+                } else {
+                    editor.close(document);
+                    self.removeDocument(document);
+                    closedPromise = Promise.resolve(document);
+                }
+
+                return closedPromise.then(function (doc) {
+                    self.dispatchEventNamed("didCloseDocument", true, false, {
+                        document: doc,
+                        wasCurrentDocument: doc === self.currentDocument
+                    });
+                    return doc;
+                });
+            }, Function.noop);
+
+        }
+    },
+
+    /*
+     * Give the document an opportunity to decide if it can be closed.
+     * @param {Document} document to be closed
+     * @param {String} location of the document being saved
+     * @return null if the document can be closed, a string withe reason it cannot close otherwise
+     */
+    canCloseDocument: {
+        value: function (document, location) {
+            return (document ? document.canClose(location) : null);
         }
     },
 
@@ -361,59 +455,59 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
-    _needsMenuUpdate: {
-        value: false
-    },
-
     handlePathChange: {
         value: function (value, property, object) {
-
-            var self = this;
-
             switch (property) {
             case "undoCount":
-            case "undoLabel":
-            case "redoLabel":
-
-                // While several properties trigger the need for updating, only update once
-                if (!this._needsMenuUpdate) {
-                    this._needsMenuUpdate = true;
-                    //TODO reconsider where the nextTicking responsibility should live; it's weird being here
-                    // ensuring consistency between the various bound properties in the undoManager that may not have synced up yet
-                    Promise.nextTick(function () {
-                        self.updateUndoMenus();
-                    });
-                }
-
-                if ("undoCount" === property) {
-                    this.environmentBridge.setDocumentDirtyState(null != value && value > 0);
-                }
-
+                this.environmentBridge.setDocumentDirtyState(null != value && value > 0);
                 break;
             }
         }
     },
 
-    updateUndoMenus: {
-        enumerable: false,
-        value: function () {
+    handleMenuValidate: {
+        value: function (evt) {
+            var menuItem = evt.detail;
 
-            var undoEnabled = this.getPath("currentDocument.undoManager.canUndo"),
-                redoEnabled = this.getPath("currentDocument.undoManager.canRedo");
+            switch (menuItem.identifier) {
+            case "newComponent":
+                evt.preventDefault();
+                evt.stopPropagation();
 
-            this.environmentBridge.setUndoState(undoEnabled, this.getPath("currentDocument.undoManager.undoLabel"));
-            this.environmentBridge.setRedoState(redoEnabled, this.getPath("currentDocument.undoManager.redoLabel"));
+                menuItem.enabled = this.canCreateComponent;
+                break;
+            case "newModule":
+                evt.preventDefault();
+                evt.stopPropagation();
 
-            this._needsMenuUpdate = false;
+                menuItem.enabled = this.canCreateModule;
+                break;
+            }
+
         }
     },
 
+    handleMenuAction: {
+        enumerable: false,
+        value: function (evt) {
+            switch (evt.detail.identifier) {
+            case "newComponent":
+                evt.preventDefault();
+                evt.stopPropagation();
 
-    _objectNameFromModuleId: {
-        value: function (moduleId) {
-            //TODO this utility should live somewhere else (/baz/foo-bar.reel to FooBar)
-            findObjectNameRegExp.test(moduleId);
-            return RegExp.$1.replace(Deserializer._toCamelCaseRegExp, Deserializer._replaceToCamelCase);
+                if (this.canCreateComponent) {
+                    this.createComponent().done();
+                }
+                break;
+            case "newModule":
+                evt.preventDefault();
+                evt.stopPropagation();
+
+                if (this.canCreateModule) {
+                    this.createModule().done();
+                }
+                break;
+            }
         }
     },
 
@@ -445,9 +539,9 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                                     moduleId = componentUrl.replace(/\S+\/node_modules\//, "");
                                 } else {
                                     //It's a module that's part of the current package being edited
-                                    moduleId = componentUrl.replace(dependency.url + "/", "");
+                                    moduleId = componentUrl.replace(new RegExp(".+" + dependency.url + "\/"), "");
                                 }
-                                objectName = self._objectNameFromModuleId(moduleId);
+                                objectName = MontageReviver.parseObjectLocationId(moduleId).objectName;
                                 return self.libraryItemForModuleId(moduleId, objectName);
                             }).filter(function (libraryItem) {
                                 return libraryItem;
@@ -557,22 +651,6 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
-    undo: {
-        value: function () {
-            if (this.currentDocument) {
-                this.currentDocument.undo();
-            }
-        }
-    },
-
-    redo: {
-        value: function () {
-            if (this.currentDocument) {
-                this.currentDocument.redo();
-            }
-        }
-    },
-
     save: {
         value: function () {
 
@@ -591,10 +669,10 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
 
                 //TODO use either the url specified (save as), or the currentDoc's fileUrl
                 //TODO improve this, we're reaching deeper than I'd like to find the fileUrl
-                savePromise = this.environmentBridge.save(this.currentDocument, this.currentDocument.fileUrl).then(function () {
+                savePromise = this.environmentBridge.save(this.currentDocument, this.currentDocument.url).then(function () {
                     self.environmentBridge.setDocumentDirtyState(false);
                     self.dispatchEventNamed("didSave", true, false);
-                    return self.currentDocument.fileUrl;
+                    return self.currentDocument.url;
                 });
             }
 
@@ -637,7 +715,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                     packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", ""),
                     promise = self.environmentBridge.createApplication(appName, packageHome);
 
-                this.dispatchEventNamed("asyncActivity", true, false, {
+                self.dispatchEventNamed("asyncActivity", true, false, {
                     promise: promise,
                     title: "Create application", // TODO localize
                     status: destination
@@ -662,7 +740,8 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                     defaultDirectory: "file://localhost" + packagePath + "/" + subdirectory,
                     defaultName: "my-" + thing, // TODO localize
                     prompt: "Create" //TODO localize
-                };
+                },
+                self = this;
 
             return this.environmentBridge.promptForSave(options)
                 .then(function (destination) {
@@ -678,7 +757,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
                         relativeDestination = destination.substring(0, destinationDividerIndex).replace(packageHome, "").replace(/^\//, ""),
                         promise = fn(name, packageHome, relativeDestination);
 
-                    this.dispatchEventNamed("asyncActivity", true, false, {
+                    self.dispatchEventNamed("asyncActivity", true, false, {
                         promise: promise,
                         title: "Create " + thing, // TODO localize
                         status: destination
@@ -689,10 +768,22 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
+    canCreateComponent: {
+        get: function () {
+            return this.canEdit;
+        }
+    },
+
     createComponent: {
         value: function () {
             return this._create("component", "ui",
                 this.environmentBridge.createComponent.bind(this.environmentBridge));
+        }
+    },
+
+    canCreateModule: {
+        get: function () {
+            return this.canEdit;
         }
     },
 
@@ -703,45 +794,15 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
         }
     },
 
-    _windowIsKey: {
-        value: true //TODO not assume our window is key
-    },
-
-    didBecomeKey: {
-        value: function () {
-            this._windowIsKey = true;
-        }
-    },
-
-    didResignKey: {
-        value: function () {
-            this._windowIsKey = false;
-        }
-    },
-
     //TODO get rid of this when we get property dependencies
-    handlePackageUrlWillChange: {
+    handleCanEditDependencyWillChange: {
         value: function (notification) {
             this.dispatchBeforeOwnPropertyChange("canEdit", this.canEdit);
         }
     },
 
     //TODO get rid of this when we get property dependencies
-    handlePackageUrlChange: {
-        value: function (notification) {
-            this.dispatchOwnPropertyChange("canEdit", this.canEdit);
-        }
-    },
-
-    //TODO get rid of this when we get property dependencies
-    handle_windowIsKeyWillChange: {
-        value: function (notification) {
-            this.dispatchBeforeOwnPropertyChange("canEdit", this.canEdit);
-        }
-    },
-
-    //TODO get rid of this when we get property dependencies
-    handle_windowIsKeyChange: {
+    handleCanEditDependencyChange: {
         value: function (notification) {
             this.dispatchOwnPropertyChange("canEdit", this.canEdit);
         }
@@ -749,55 +810,7 @@ exports.ProjectController = ProjectController = Montage.create(Montage, {
 
     canEdit: {
         get: function () {
-            return !!(this._windowIsKey && this.packageUrl);
-        }
-    },
-
-    validateMenu: {
-        value: function (menu) {
-            var validated = false;
-
-            switch (menu.identifier) {
-            case "undo":
-            case "redo":
-                this.updateUndoMenus();
-                validated = true;
-                break;
-            }
-
-            return validated;
-        }
-    },
-
-    setupMenuItems: {
-        enumerable: false,
-        value: function () {
-
-            var self = this;
-
-            this.environmentBridge.mainMenu.then(function (mainMenu) {
-                var menuItem;
-
-                menuItem = mainMenu.menuItemForIdentifier("newComponent");
-                if (menuItem) {
-                    menuItem.defineBinding("enabled", {
-                        "<-": "canEdit",
-                        source: self
-                    });
-                } else {
-                    throw new Error("Cannot load menu item 'newComponent'");
-                }
-
-                menuItem = mainMenu.menuItemForIdentifier("newModule");
-                if (menuItem) {
-                    menuItem.defineBinding("enabled", {
-                        "<-": "canEdit",
-                        source: self
-                    });
-                } else {
-                    throw new Error("Cannot load menu item 'newModule'");
-                }
-            }).done();
+            return !!this.packageUrl;
         }
     },
 

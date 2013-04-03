@@ -26,7 +26,7 @@ exports.Indent = Montage.create(Component, {
 
     draw: {
         value: function () {
-            this.element.style.paddingLeft = (2 * this.depth) + 'em';
+            this.element.style.paddingLeft = (20 * this.depth) + 'px';
         }
     }
 

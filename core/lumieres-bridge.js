@@ -24,7 +24,12 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
 
     backend: {
         get: function () {
-            var self = this;
+            var self = this,
+                resolvePort = function () {
+                    if (lumieres.nodePort) {
+                        port.resolve(lumieres.nodePort);
+                    }
+                };
 
             if (self._backend == null) {
                 var port = Promise.defer();
@@ -32,12 +37,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                     port.resolve(lumieres.nodePort);
                 } else {
                     while (port.promise.isPending()) {
-                        port.promise.delay(20).then(function () {
-                                if (lumieres.nodePort) {
-                                    port.resolve(lumieres.nodePort);
-                                }
-                            }
-                        )
+                        port.promise.delay(20).then(resolvePort);
                     }
                 }
                 var connection = adaptConnection(new WebSocket("ws://localhost:" + lumieres.nodePort));

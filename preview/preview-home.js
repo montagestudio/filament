@@ -1,5 +1,6 @@
-/* global lumieres */
-var Montage = require("montage").Montage;
+var Montage = require("montage").Montage,
+    lumieres;
+    //TODO it looks like lumieres is always populated from an XHR, not the environment-provided-global it normally is; rename this to reduce confusion?
 
 exports.PreviewHome = Montage.create(Montage, {
     previewList: {
@@ -24,13 +25,13 @@ exports.PreviewHome = Montage.create(Montage, {
 
             xhr.onload = function(event) {
                 try {
-                    if (this.status == 200) {
+                    if (200 === this.status) {
                         lumieres = JSON.parse(this.response);
                         thisRef.previewList = lumieres.previewList;
                     } else {
                         console.log("ERROR:", this.status, this.response);
                     }
-                } catch(error) {};
+                } catch(error) {}
             };
 
             xhr.send();

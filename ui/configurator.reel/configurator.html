@@ -16,16 +16,6 @@
                 }
             },
 
-            "title": {
-                "prototype": "montage/ui/text.reel",
-                "properties": {
-                    "element": {"#": "title"}
-                },
-                "localizations": {
-                    "value": {"key": "inspector"}
-                }
-            },
-
             "inspectorCondition": {
                 "prototype": "montage/ui/condition.reel",
                 "properties": {
@@ -54,11 +44,9 @@
 </head>
 <body>
     <aside id="configurator" data-montage-id="configurator" class="Panel Configurator">
-        <h2 data-montage-id="title" class="Panel-title">Inspector</h2>
-        <div data-montage-id="inspector-condition" class="Panel-content Configurator-inspectorCondition">
+        <div data-montage-id="inspector-condition" class="Configurator-inspectorCondition">
             <div data-montage-id="inspector"></div>
         </div>
-        <div class="Panel-shadow"></div>
     </aside>
 </body>
 </html>

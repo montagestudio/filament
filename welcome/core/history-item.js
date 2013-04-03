@@ -24,7 +24,7 @@ exports.HistoryItem = Montage.create(Montage, {
                 if (index !== -1) {
                     url = url.substring(0, index);
                 }
-                if (url.charAt(url.length - 1) == "/") {
+                if (url.charAt(url.length - 1) === "/") {
                     url = url.substring(0, url.length - 1);
                 }
 

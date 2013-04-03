@@ -1,3 +1,4 @@
+/* jshint -W016 */
 var Montage = require("montage").Montage;
 var constants = {
     S_IFDIR: 16384,
@@ -36,6 +37,52 @@ exports.FileDescriptor = Montage.create(Montage, {
         get: function () {
             return this._checkModeProperty(constants.S_IFDIR);
         }
+    },
+
+    isReel: {
+        get: function () {
+            return (this.isDirectory && (/\.reel$/).test(this.fileUrl));
+        }
+    },
+
+    isJson: {
+        get: function () {
+            return (!this.isDirectory && (/\.json$/).test(this.fileUrl));
+        }
+    },
+
+    isPackage: {
+        get: function () {
+            return (!this.isDirectory && (/\/package\.json$/).test(this.fileUrl));
+        }
+    },
+
+    isHtml: {
+        get: function () {
+            return (!this.isDirectory && (/\.html/).test(this.fileUrl));
+        }
+    },
+
+    isCss: {
+        get: function () {
+            return (!this.isDirectory && (/\.css/).test(this.fileUrl));
+        }
+    },
+
+    isJavaScript: {
+        get: function () {
+            return (!this.isDirectory && (/\.js/).test(this.fileUrl));
+        }
+    },
+
+    isImage: {
+        get: function () {
+            return (!this.isDirectory && (/\.png|jpg/).test(this.fileUrl));
+        }
+    },
+
+    associatedDocument: {
+        value: null
     },
 
     _checkModeProperty: {

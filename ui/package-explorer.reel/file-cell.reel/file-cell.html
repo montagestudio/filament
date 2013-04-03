@@ -28,6 +28,17 @@
             "properties": {
                 "element": {"#": "open-file-button"}
             },
+            "bindings": {
+                "classList.has('folder')": {"<-": "@owner.fileInfo.isDirectory"},
+                "classList.has('reel')": {"<-": "@owner.fileInfo.isReel"},
+                "classList.has('html')": {"<-": "@owner.fileInfo.isHtml"},
+                "classList.has('css')": {"<-": "@owner.fileInfo.isCss"},
+                "classList.has('js')": {"<-": "@owner.fileInfo.isJavaScript"},
+                "classList.has('json')": {"<-": "@owner.fileInfo.isJson"},
+                "classList.has('package')": {"<-": "@owner.fileInfo.isPackage"},
+                "classList.has('image')": {"<-": "@owner.fileInfo.isImage"},
+                "classList.has('open')": {"<-": "@owner.fileInfo.associatedDocument"}
+            },
             "listeners": [
                 {
                     "type": "action",
@@ -62,9 +73,9 @@
 <body>
     <div data-montage-id="file-cell" class="FileCell">
         <span data-montage-id="isDirectoryCondition">
-            <input type="checkbox" data-montage-id="expanded">
+            <input data-montage-id="expanded" class="FileCell-toggle" type="checkbox">
         </span>
-        <button data-montage-id="open-file-button" class="List-item FileCell-button">
+        <button data-montage-id="open-file-button" class="FileCell-button">
             <span data-montage-id="file-title"></span>
         </button>
     </div>

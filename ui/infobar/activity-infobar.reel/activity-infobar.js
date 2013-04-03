@@ -49,7 +49,7 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
             var task = {
                 promise: promise,
                 title: title || "Unnamed task",
-                status: status || "",
+                status: status || ""
             };
 
             promise.then(function (value) {
@@ -60,9 +60,13 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
                 self.needsDraw = true;
             }, function (err) {
                 var message = "";
-                if (err.message) message = err.message;
+                if (err.message) {
+                    message = err.message;
+                }
                 // avoid ugly [object Object]
-                else if (err.toString !== Object.prototype.toString) message = err.toString();
+                else if (err.toString !== Object.prototype.toString) {
+                    message = err.toString();
+                }
 
                 task.status = message;
                 self.runningActivities.delete(task);

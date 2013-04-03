@@ -21,6 +21,12 @@ exports.DocumentTab = Montage.create(Component, /** @lends module:"ui/document-t
         value: function (evt) {
             this.dispatchEventNamed("closeDocument", true, true, this.document);
         }
+    },
+
+    handlePress: {
+        value: function (evt) {
+            this.dispatchEventNamed("openUrl", true, true, this.document.url);
+        }
     }
 
 });

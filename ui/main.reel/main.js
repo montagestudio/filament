@@ -13,14 +13,9 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-    _currentFileUrl: {
-        value: null
-    },
-
     didCreate: {
         value: function () {
             this._editorsToInsert = [];
-            this._fileUrlEditorMap = {};
             this._openEditors = [];
 
             this.addPathChangeListener("projectController.currentDocument.title", this, "handleTitleWillChange", true);
@@ -32,9 +27,7 @@ exports.Main = Montage.create(Component, {
         value: function () {
             application.addEventListener("asyncActivity", this, false);
             application.addEventListener("enterModalEditor", this);
-            application.addEventListener("openFile", this);
             application.addEventListener("addFile", this);
-            application.addEventListener("closeDocument", this);
 
             document.addEventListener("save", this, false);
         }
@@ -51,64 +44,24 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    handleOpenFile: {
-        value: function (evt) {
-            this.openFileUrl(evt.detail.fileUrl).done();
-        }
-    },
-
-    openFileUrl: {
-        value: function (fileUrl) {
-            var self = this,
-                editor;
-
-            return this.projectController.openFileUrl(fileUrl).then(function (loadInfo) {
-                editor = loadInfo.editor;
-                if (editor) {
-                    if (-1 === self._openEditors.indexOf(editor)) {
-                        self._editorsToInsert.push(editor);
-                        self._openEditors.push(editor);
-                    }
-                    self._currentDocEditor = editor;
-                    self.needsDraw = true;
-                }
-            });
-        }
-    },
-
-    _currentDocEditor: {
+    _frontEditor: {
         value: null
     },
 
-    handleCloseDocument: {
-        value: function (evt) {
-            this.closeFileUrl(evt.detail.fileUrl).done();
+    bringEditorToFront: {
+        value: function (editor) {
+            if (!editor.element) {
+                this._editorsToInsert.push(editor);
+                this._openEditors.push(editor);
+            }
+
+            this._frontEditor = editor;
+            this.needsDraw = true;
         }
-    },
-
-    _editorTypeInstanceMap: {
-        value: null
-    },
-
-    _fileUrlEditorMap: {
-        enumerable: false,
-        value: null
     },
 
     _openEditors: {
         value: null
-    },
-
-
-    closeFileUrl: {
-        value: function (fileUrl) {
-            var self = this;
-
-            return this.projectController.closeFileUrl(fileUrl).then(function () {
-                delete self._fileUrlEditorMap[fileUrl];
-                //TODO close the editor entirely if it has no documents open?
-            });
-        }
     },
 
     handleAsyncActivity: {
@@ -136,28 +89,6 @@ exports.Main = Montage.create(Component, {
             this.projectController.save(evt.detail.url).then(function () {
                 evt.detail.operationCallback();
             }).done();
-        }
-    },
-
-    handleMenuAction: {
-        enumerable: false,
-        value: function (evt) {
-            switch (evt.detail.identifier) {
-                case "newComponent":
-                    this.projectController.createComponent().done();
-                    break;
-                case "newModule":
-                    this.projectController.createModule().done();
-                    break;
-            }
-        }
-    },
-
-    handleMenuValidate: {
-        value: function (evt) {
-            if (this.projectController.validateMenu(evt.detail)) {
-                evt.preventDefault();
-            }
         }
     },
 
@@ -279,12 +210,11 @@ exports.Main = Montage.create(Component, {
             var editorArea,
                 element,
                 editorElement,
-                currentEditor = this._currentDocEditor;
+                frontEditor = this._frontEditor;
 
             if (this._editorsToInsert.length) {
                 editorArea = this.editorSlot;
 
-                //TODO do this in a fragment if possible
                 this._editorsToInsert.forEach(function (editor) {
                     element = document.createElement("div");
                     editor.element = element;
@@ -297,9 +227,9 @@ exports.Main = Montage.create(Component, {
 
             this._openEditors.forEach(function (editor) {
                 editorElement = editor.element;
-                if (editorElement && editor === currentEditor) {
+                if (editor === frontEditor) {
                     editorElement.classList.remove("standby");
-                } else if (editor.element) {
+                } else {
                     editorElement.classList.add("standby");
                 }
             });

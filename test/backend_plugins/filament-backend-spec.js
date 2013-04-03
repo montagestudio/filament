@@ -11,27 +11,27 @@ describe("filament backend", function () {
         var mockFS, filamentBackend;
 
         beforeEach(function () {
-            mockFS = {
-                existsSync: function (path) {
-                    expect(path).toEqual("/root/extensions");
-                    return true;
-                },
-                readdirSync: function (path) {
-                    return ["a.filament-extension", "b.filament-extension", "c.js", "filament-extension"];
+            mockFS = QFSMock({
+                "root": {
+                    "extensions": {
+                        "a.filament-extension": 1,
+                        "b.filament-extension": 1
+                    }
                 }
-            };
+            });
 
             filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
-                requires: {"fs": mockFS},
+                requires: {"q-io/fs": mockFS},
                 globals: {clientPath: "/root"}
             });
         });
 
         it("lists files with .filament-extension in extensions directory", function () {
-            var extensions = filamentBackend.getExtensions();
-            expect(extensions.length).toBe(2);
-            expect(extensions[0]).toBe("http://client/extensions/a.filament-extension");
-            expect(extensions[1]).toBe("http://client/extensions/b.filament-extension");
+            return filamentBackend.getExtensions().then(function (extensions) {
+                expect(extensions.length).toBe(2);
+                expect(extensions[0].url).toBe("http://client/extensions/a.filament-extension");
+                expect(extensions[1].url).toBe("http://client/extensions/b.filament-extension");
+            });
         });
     });
 
@@ -245,6 +245,17 @@ describe("filament backend", function () {
 
                 });
         });
+
+        it("should ignore hidden files", function () {
+            return filamentBackend.list("/ignore")
+                .then(function (fileDescriptors) {
+                    expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
+                        "fs://localhost/ignore/node_modules", "fs://localhost/ignore/ok.js"
+                    ]);
+
+                });
+        });
+
     });
 
 });

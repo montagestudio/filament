@@ -1,3 +1,4 @@
+/* global __dirname, process */
 var jasmine = require('jasmine-node');
 var Q = require("q");
 
@@ -31,10 +32,10 @@ jasmine.executeSpecsInFolder({
     showColors: true,
     // isVerbose: true,
     onComplete: function(runner, log){
-      if (runner.results().failedCount == 0) {
-        process.exit(0);
-      } else {
-        process.exit(1);
-      }
+        if (0 === runner.results().failedCount) {
+            process.exit(0);
+        } else {
+            process.exit(1);
+        }
     }
 });

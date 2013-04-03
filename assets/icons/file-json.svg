@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <title>Slice 1</title>
+    <description>Created with Sketch (http://www.bohemiancoding.com/sketch)</description>
+    <defs></defs>
+    <g id="Page 1" fill="hsl(120,100%,30%)" fill-rule="evenodd">
+        <path d="M57,8 L57,33 L82,33 Z M13.9945832,0.185976207 L61.901705,0.185976207 L90,28.2842712 L90,95.9946169 C90,98.2038168 88.2115642,100 86.0054168,100 L13.9945832,100 C11.7830797,100 10,98.2067289 10,95.9946169 L10,4.19135931 C10,1.98215942 11.7884358,0.185976207 13.9945832,0.185976207 Z M13.9945832,0.185976207" id="Rectangle 1"></path>
+    </g>
+</svg>

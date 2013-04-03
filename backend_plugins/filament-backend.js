@@ -1,3 +1,4 @@
+/* global global */
 var path = require("path"),
     fs = require("fs"),
     minitCreate = require("minit/lib/create").create,
@@ -12,11 +13,11 @@ exports.getExtensions = function() {
     var extensionFolder = path.join(global.clientPath, "extensions");
     console.log("getExtensions from " + extensionFolder);
     return QFS.listTree(extensionFolder, function (filePath) {
-            return path.extname(filePath).toLowerCase() == ".filament-extension" ? true : (filePath ==  extensionFolder ? false : null); // if false return null so directories aren't traversed
-         }).then(function (filePaths) {
+        return path.extname(filePath).toLowerCase() === ".filament-extension" ? true : (filePath ===  extensionFolder ? false : null); // if false return null so directories aren't traversed
+    }).then(function (filePaths) {
         return Q.all(filePaths.map(function (filePath) {
             return QFS.stat(filePath).then(function (stat) {
-               return {url: "http://client/extensions" + filePath.substring(extensionFolder.length), stat: stat};
+                return {url: "http://client/extensions" + filePath.substring(extensionFolder.length), stat: stat};
             });
         }));
     });
@@ -99,6 +100,11 @@ exports.listTree = function (path) {
 
 exports.list = function (path) {
     return QFS.list(path).then(function (filenames) {
+
+        filenames = filenames.filter(function (name) {
+            return !(/^\./).test(name);
+        });
+
         return Q.all(filenames.map(function (filename) {
             var fullPath = PATH.join(path, filename);
             return QFS.stat(fullPath).then(function (stat) {

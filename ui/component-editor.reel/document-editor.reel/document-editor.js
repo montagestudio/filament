@@ -1,7 +1,7 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
     Deserializer = require("montage/core/serialization").Deserializer,
-    ReelDocument = require("palette/core/reel-document").ReelDocument,
+    ReelDocument = require("core/reel-document").ReelDocument,
     MimeTypes = require("core/mime-types"),
     Promise = require("montage/core/promise").Promise;
 
@@ -14,6 +14,10 @@ exports.DocumentEditor = Montage.create(Component, {
 
     viewController: {
         value: null
+    },
+
+    acceptsActiveTarget: {
+        value: true
     },
 
     editingDocument: {
@@ -38,42 +42,31 @@ exports.DocumentEditor = Montage.create(Component, {
     },
 
     load: {
-        value: function (fileUrl, packageUrl) {
+        value: function (document) {
             var self = this,
                 liveStageInfoPromise,
                 editingDocumentPromise,
                 moduleId,
                 exportName;
 
-            liveStageInfoPromise = this._deferredWorkbench.promise.then(function(workbench) {
-                return workbench.load(fileUrl, packageUrl);
+            // pre-load blueprints for everything already in the template
+            // but don't complain if we can't find one
+            document.editingProxies.forEach(function (proxy) {
+                moduleId = proxy.moduleId;
+                exportName = proxy.exportName;
+                if (moduleId && exportName) {
+                    document.packageRequire.async(moduleId).get(exportName).get("blueprint").fail(Function.noop);
+                }
             });
 
-            editingDocumentPromise = ReelDocument.load(fileUrl, packageUrl)
-                .then(function (reelDocument) {
+            self.editingDocument = document;
+            document.editor = self;
 
-                    // pre-load blueprints for everything already in the template
-                    // but don't complain if we can't find one
-                    reelDocument.editingProxies.forEach(function (proxy) {
-                        moduleId = proxy.moduleId;
-                        exportName = proxy.exportName;
-                        if (moduleId && exportName) {
-                            reelDocument.packageRequire.async(moduleId).get(exportName).get("blueprint").fail(Function.noop);
-                        }
-                    });
-
-                    self.editingDocument = reelDocument;
-                    return reelDocument;
-                });
-
-            // When the stage has loaded, associate it with the editing model
-            Promise.all([liveStageInfoPromise, editingDocumentPromise]).spread(function (liveStageInfo, editingDocument) {
-                editingDocument.associateWithLiveRepresentations(liveStageInfo.owner, liveStageInfo.template, liveStageInfo.frame);
-            }, function (error) {
-                //Don't bother associating the two representations if either fails to load
-            }).done();
-
-            return editingDocumentPromise;
+            return this._deferredWorkbench.promise.then(function(workbench) {
+                return workbench.load(document.fileUrl, document.packageRequire.location);
+            }).then(function (liveStageInfo) {
+                document.associateWithLiveRepresentations(liveStageInfo.owner, liveStageInfo.template, liveStageInfo.frame);
+            });
         }
     },
 
@@ -81,6 +74,7 @@ exports.DocumentEditor = Montage.create(Component, {
         value: function () {
             this._deferredWorkbench.resolve(this.workbench);
 
+            //TODO it was weird that the workbench component emitted DOM events
             this.workbench.addEventListener("dragover", this, false);
             this.workbench.addEventListener("drop", this, false);
             this.workbench.addEventListener("select", this, false);
@@ -211,7 +205,7 @@ exports.DocumentEditor = Montage.create(Component, {
         }
     },
 
-    handleWorkbenchDragover: {
+    handleDragover: {
         enumerable: false,
         value: function (event) {
             if (event.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1) {
@@ -223,7 +217,7 @@ exports.DocumentEditor = Montage.create(Component, {
             }
         }
     },
-    handleWorkbenchDrop: {
+    handleDrop: {
         enumerable: false,
         value: function (event) {
             var self = this,
