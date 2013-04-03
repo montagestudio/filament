@@ -10,7 +10,7 @@ var AnchorLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/anchor.reel",
+            "prototype": "matte/ui/anchor.reel",
             "properties": {
                 "value": "Link"
             }
@@ -39,7 +39,7 @@ var AutocompleteLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/autocomplete/autocomplete.reel"
+            "prototype": "matte/ui/autocomplete/autocomplete.reel"
         }
     },
 
@@ -95,7 +95,7 @@ var ToggleButtonLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/toggle-button.reel",
+            "prototype": "matte/ui/toggle-button.reel",
             "properties": {
                 "value": true,
                 "pressedLabel": "On",
@@ -126,7 +126,7 @@ var ToggleSwitchLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/toggle-switch.reel"
+            "prototype": "matte/ui/toggle-switch.reel"
         }
     },
 
@@ -325,7 +325,7 @@ var DynamicTextLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/text.reel",
+            "prototype": "matte/ui/text.reel",
             "properties": {
                 "value": "Text"
             }
@@ -384,7 +384,7 @@ var TextareaLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/textarea.reel",
+            "prototype": "matte/ui/textarea.reel",
             "properties": {
                 "value": "Textarea"
             }
@@ -443,7 +443,7 @@ var ProgressLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/progress.reel",
+            "prototype": "matte/ui/progress.reel",
             "properties": {
                 "max": 100,
                 "value": 50
@@ -473,7 +473,7 @@ var RepetitionLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/repetition.reel",
+            "prototype": "matte/ui/repetition.reel",
             "properties": {
                 "content": [1, 2, 3]
             }
@@ -594,7 +594,7 @@ var VideoPlayerLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/video-player.reel"
+            "prototype": "matte/ui/video-player.reel"
         }
     },
 
@@ -620,7 +620,7 @@ var TokenFieldLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/token-field.reel"
+            "prototype": "matte/ui/token-field.reel"
         }
     },
 
@@ -646,7 +646,7 @@ var RichTextEditorLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/rich-text-editor/rich-text-editor.reel"
+            "prototype": "matte/ui/rich-text-editor/rich-text-editor.reel"
         }
     },
 
@@ -667,7 +667,7 @@ var ScrollerLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/scroller.reel"
+            "prototype": "matte/ui/scroller.reel"
         }
     },
 
@@ -688,7 +688,7 @@ var ListLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/list.reel"
+            "prototype": "matte/ui/list.reel"
         }
     },
 
@@ -709,7 +709,7 @@ var TextSliderLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/text-slider.reel"
+            "prototype": "matte/ui/text-slider.reel"
         }
     },
 
@@ -735,7 +735,7 @@ var SlotLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/slot.reel"
+            "prototype": "matte/ui/slot.reel"
         }
     },
 
@@ -761,7 +761,7 @@ var SubstitutionLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/substitution.reel"
+            "prototype": "matte/ui/substitution.reel"
         }
     },
 
@@ -787,7 +787,7 @@ var ConditionLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/condition.reel"
+            "prototype": "matte/ui/condition.reel"
         }
     },
 
@@ -813,7 +813,7 @@ var PopupLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/popup/popup.reel"
+            "prototype": "matte/ui/popup/popup.reel"
         }
     },
 
@@ -839,7 +839,7 @@ var AlertLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/popup/alert.reel"
+            "prototype": "matte/ui/popup/alert.reel"
         }
     },
 
@@ -865,7 +865,7 @@ var NotifierLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/popup/notifier.reel"
+            "prototype": "matte/ui/popup/notifier.reel"
         }
     },
 
@@ -891,7 +891,7 @@ var ConfirmLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/popup/confirm.reel"
+            "prototype": "matte/ui/popup/confirm.reel"
         }
     },
 
@@ -916,50 +916,52 @@ var ConfirmLibraryItem = Montage.create(LibraryItem, {
 
 //TODO build this automatically
 exports.libraryItems = {
-    "montage/ui/anchor.reel": AnchorLibraryItem,
-    "montage/ui/autocomplete/autocomplete.reel": AutocompleteLibraryItem,
+    "matte/ui/anchor.reel": AnchorLibraryItem,
+    "matte/ui/autocomplete/autocomplete.reel": AutocompleteLibraryItem,
     "matte/ui/button.reel": ButtonLibraryItem,
-    "montage/ui/toggle-button.reel": ToggleButtonLibraryItem,
-    "montage/ui/toggle-switch.reel": ToggleSwitchLibraryItem,
+    "matte/ui/toggle-button.reel": ToggleButtonLibraryItem,
+    "matte/ui/toggle-switch.reel": ToggleSwitchLibraryItem,
     "matte/ui/input-checkbox.reel": InputCheckboxLibraryItem,
     "matte/ui/input-radio.reel": InputRadioLibraryItem,
     "matte/ui/input-date.reel": InputDateLibraryItem,
     "matte/ui/input-number.reel": InputNumberLibraryItem,
     "matte/ui/input-range.reel": InputRangeLibraryItem,
     "matte/ui/select.reel": SelectLibraryItem,
-    "montage/ui/text.reel": DynamicTextLibraryItem,
     "matte/ui/input-text.reel": InputTextLibraryItem,
-    "montage/ui/rich-text-editor/rich-text-editor.reel": RichTextEditorLibraryItem,
-    "montage/ui/scroller.reel": ScrollerLibraryItem,
-    "montage/ui/list.reel": ListLibraryItem,
-    "montage/ui/textarea.reel": TextareaLibraryItem,
+    "matte/ui/rich-text-editor/rich-text-editor.reel": RichTextEditorLibraryItem,
+    "matte/ui/scroller.reel": ScrollerLibraryItem,
+    "matte/ui/list.reel": ListLibraryItem,
+    "matte/ui/textarea.reel": TextareaLibraryItem,
     "matte/ui/image.reel": ImageLibraryItem,
-    "montage/ui/progress.reel": ProgressLibraryItem,
+    "matte/ui/progress.reel": ProgressLibraryItem,
+    "matte/ui/flow.reel": FlowLibraryItem,
+    "matte/ui/token-field/token-field.reel": TokenFieldLibraryItem,
+    "matte/ui/text-slider.reel": TextSliderLibraryItem,
+    "matte/ui/video-player.reel": VideoPlayerLibraryItem,
+    "matte/ui/popup/popup.reel": PopupLibraryItem,
+    "matte/ui/popup/notifier.reel": NotifierLibraryItem,
+    "matte/ui/popup/alert.reel": AlertLibraryItem,
+    "matte/ui/popup/confirm.reel": ConfirmLibraryItem,
+    
+    "montage/ui/condition.reel": ConditionLibraryItem,
     "montage/ui/repetition.reel": RepetitionLibraryItem,
-    "montage/ui/flow.reel": FlowLibraryItem,
-    "montage/ui/token-field/token-field.reel": TokenFieldLibraryItem,
-    "montage/ui/text-slider.reel": TextSliderLibraryItem,
-    "montage/ui/video-player.reel": VideoPlayerLibraryItem,
     "montage/ui/slot.reel": SlotLibraryItem,
     "montage/ui/substitution.reel": SubstitutionLibraryItem,
-    "montage/ui/condition.reel": ConditionLibraryItem,
-    "montage/ui/popup/popup.reel": PopupLibraryItem,
-    "montage/ui/popup/notifier.reel": NotifierLibraryItem,
-    "montage/ui/popup/alert.reel": AlertLibraryItem,
-    "montage/ui/popup/confirm.reel": ConfirmLibraryItem,
+    "montage/ui/text.reel": DynamicTextLibraryItem,
 
-    "montage/ui/rich-text-editor/overlays/rich-text-linkpopup.reel": null,
-    "montage/ui/rich-text-editor/overlays/rich-text-resizer.reel": null,
-    "montage/ui/autocomplete/result-item.reel": null,
-    "montage/ui/autocomplete/results-list.reel": null,
+    "matte/ui/rich-text-editor/overlays/rich-text-linkpopup.reel": null,
+    "matte/ui/rich-text-editor/overlays/rich-text-resizer.reel": null,
+    "matte/ui/token-field/token.reel": null,
+    "matte/ui/scroll-bars.reel": null,
+    "matte/ui/loading-panel.reel": null,
+    "matte/ui/loading.reel": null,
+    "matte/ui/dynamic-element.reel": null,
+    "matte/ui/component-group.reel": null,
+    "matte/ui/autocomplete/result-item.reel": null,
+    "matte/ui/autocomplete/results-list.reel": null,
+
     "montage/ui/loader.reel": null,
-    "montage/ui/loading-panel.reel": null,
-    "montage/ui/loading.reel": null,
-    "montage/ui/token-field/token.reel": null,
-    "montage/ui/component-group.reel": null,
-    "montage/ui/scroll-bars.reel": null,
     "montage/ui/radio-button.reel": null,
-    "montage/ui/dynamic-element.reel": null,
 
     "montage/ui/native/anchor.reel": null,
     "montage/ui/native/button.reel": null,
