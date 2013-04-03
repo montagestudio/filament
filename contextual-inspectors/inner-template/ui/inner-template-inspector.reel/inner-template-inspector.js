@@ -3,6 +3,8 @@
     @requires montage
     @requires montage/ui/component
 */
+/*global WebKitMutationObserver */
+
 var Montage = require("montage").Montage,
     Inspector = require("contextual-inspectors/base/ui/inspector.reel").Inspector;
 
@@ -12,12 +14,26 @@ var MimeTypes = require("core/mime-types");
 var INSPECTOR_HEIGHT = 200;
 var INSPECTOR_PADDING = 10;
 
+// configuration of the observer:
+var MUTATION_OBSERVER_CONFIG = {
+    attributes: true,
+    childList: true,
+    characterData: true,
+    subtree: true
+};
+
 /**
     Description TODO
     @class module:"ui//inner-template-inspector.reel".InnerTemplateInspector
     @extends module:montage/ui/component.Component
 */
 exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui//inner-template-inspector.reel".InnerTemplateInspector# */ {
+
+    didCreate: {
+        value: function () {
+            this.defineBinding("objectElement", {"<-": "object.element"});
+        }
+    },
 
     _innerTemplateInstancePromise: {
         value: null
@@ -38,6 +54,38 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             this._object = value;
             this._instantiateInnerTemplate();
         }
+    },
+
+    _objectElement: {
+        value: null
+    },
+    objectElement: {
+        get: function() {
+            return this._objectElement;
+        },
+        set: function(value) {
+            if (this._objectElement === value) {
+                return;
+            }
+
+            if (this._mutationObserver) {
+                console.log("disconnect _mutationObserver");
+                this._mutationObserver.disconnect();
+                this._mutationObserver = null;
+            }
+
+            this._objectElement = value;
+
+            if (value) {
+                console.log("connect _mutationObserver");
+                this._mutationObserver = new WebKitMutationObserver(this.handleMutations.bind(this));
+                this._mutationObserver.observe(value, MUTATION_OBSERVER_CONFIG);
+            }
+        }
+    },
+
+    _mutationObserver: {
+        value: null
     },
 
     showForChildComponents: {
@@ -117,9 +165,49 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
                 deserializer = Deserializer.create().init(data, require);
 
             deserializer.deserialize().then(function (prototypeEntry) {
-                debugger;
                 self.documentEditor.addLibraryItem(prototypeEntry, self.object).done();
             }).done();
+        }
+    },
+
+    handleMutations: {
+        value: function (mutations) {
+            // console.log("mutations", mutations);
+            // this._object.stageObject._innerTemplate = null;
+            // var innerTemplate = this._object.stageObject.innerTemplate;
+            // debugger;
+            // this._object.stageObject.innerTemplate = innerTemplate;
+
+            // adapted from montage/ui/component.js innerTemplate.get
+            var innerTemplate,
+                ownerDocumentPart,
+                ownerTemplate,
+                elementId,
+                serialization,
+                externalObjectLabels,
+                ownerTemplateObjects,
+                externalObjects;
+
+            // is this the correct _ownerDocumentPart? We're kind of using a
+            // hybrid of our internal template and the stage's template...
+            ownerDocumentPart = this.object.stageObject._ownerDocumentPart;
+
+            ownerTemplate = this.documentEditor.editingDocument._template;
+
+            elementId = this.object.stageObject.getElementId();
+            innerTemplate = ownerTemplate.createTemplateFromElementContents(elementId);
+
+            serialization = innerTemplate.getSerialization();
+            externalObjectLabels = serialization.getExternalObjectLabels();
+            ownerTemplateObjects = ownerDocumentPart.objects;
+            externalObjects = Object.create(null);
+
+            for (var i = 0, label; (label = externalObjectLabels[i]); i++) {
+                externalObjects[label] = ownerTemplateObjects[label];
+            }
+            innerTemplate.setInstances(externalObjects);
+
+            this.object.stageObject.innerTemplate = innerTemplate;
         }
     },
 
