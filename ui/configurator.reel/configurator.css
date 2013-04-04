@@ -45,6 +45,7 @@
 
 .Inspector-header-title.matte-InputText {
     border-color: hsl(0,0%,85%);
+    width: auto;
 }
 
 
