@@ -448,7 +448,10 @@ exports.ReelDocument = Montage.create(EditingDocument, {
     // Remove object from current set of selectedObjects
     deselectObject: {
         value: function (object) {
-            this.selectedObjects.splice(0, this.selectedObjects.length, object);
+            var index = this.selectedObjects.indexOf(object);
+            if (index >= 0) {
+                this.selectedObjects.splice(index, 1);
+            }
         }
     },
 
