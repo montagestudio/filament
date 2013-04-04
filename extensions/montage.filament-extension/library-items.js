@@ -325,7 +325,7 @@ var DynamicTextLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/text.reel",
+            "prototype": "montage/ui/text.reel",
             "properties": {
                 "value": "Text"
             }
@@ -473,7 +473,7 @@ var RepetitionLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/repetition.reel",
+            "prototype": "montage/ui/repetition.reel",
             "properties": {
                 "content": [1, 2, 3]
             }
@@ -735,7 +735,7 @@ var SlotLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/slot.reel"
+            "prototype": "montage/ui/slot.reel"
         }
     },
 
@@ -761,7 +761,7 @@ var SubstitutionLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/substitution.reel"
+            "prototype": "montage/ui/substitution.reel"
         }
     },
 
@@ -787,7 +787,7 @@ var ConditionLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/condition.reel"
+            "prototype": "montage/ui/condition.reel"
         }
     },
 
