@@ -353,6 +353,8 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             editController.frame = frame;
             editController.owner = owner;
 
+            var ownerProxy = this.editingProxyForObject(owner);
+
             labels.forEach(function (label) {
                 proxy = self.editingProxyMap[label];
                 var stageObject = owner.templateObjects[label];
@@ -369,12 +371,12 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                         proxy.parentComponent = null;
                         return;
                     }
-                    proxy.parentComponent = stageObject[0].parentComponent;
+                    proxy.parentProxy = this.editingProxyForObject(stageObject[0].parentComponent);
                 } else {
                     proxy.stageObject = stageObject;
-                    proxy.parentComponent = stageObject.parentComponent || owner;
+                    proxy.parentProxy = this.editingProxyForObject(stageObject.parentComponent) || ownerProxy;
                 }
-            });
+            }, this);
         }
     },
 

@@ -154,7 +154,7 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
      * The parent component of this object. For non-component objects this is
      * the owner.
      */
-    parentComponent: {
+    parentProxy: {
         value: null
     },
 
