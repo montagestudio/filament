@@ -61,9 +61,11 @@ exports.NavPanelButton = Montage.create(Button, /** @lends module:"ui/nav-panel-
         value: false
     },
 
-    prepareForDraw: {
-        value: function () {
-            this._element.addEventListener("mouseup", this, false);
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this._element.addEventListener("mouseup", this, false);
+            }
         }
     },
 

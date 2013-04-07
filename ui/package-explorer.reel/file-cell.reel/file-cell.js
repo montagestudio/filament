@@ -24,9 +24,11 @@ exports.FileCell = Montage.create(Component, {
         }
     },
 
-    prepareForDraw: {
-        value: function () {
-            application.addEventListener("didOpenDocument", this);
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                application.addEventListener("didOpenDocument", this);
+            }
         }
     },
 

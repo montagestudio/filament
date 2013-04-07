@@ -64,14 +64,16 @@ exports.DocumentEditor = Montage.create(Component, {
         }
     },
 
-    prepareForDraw: {
-        value: function () {
-            this._deferredWorkbench.resolve(this.workbench);
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this._deferredWorkbench.resolve(this.workbench);
 
-            //TODO it was weird that the workbench component emitted DOM events
-            this.workbench.addEventListener("dragover", this, false);
-            this.workbench.addEventListener("drop", this, false);
-            this.workbench.addEventListener("select", this, false);
+                //TODO it was weird that the workbench component emitted DOM events
+                this.workbench.addEventListener("dragover", this, false);
+                this.workbench.addEventListener("drop", this, false);
+                this.workbench.addEventListener("select", this, false);
+            }
         }
     },
 

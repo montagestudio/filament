@@ -68,9 +68,11 @@ exports.Array = Montage.create(Component, /** @lends module:"ui/array.reel".Arra
         }
     },
 
-    prepareForDraw: {
-        value: function() {
-            this._textareaEl.addEventListener("change", this, false);
+    enterDocument: {
+        value: function(firstTime) {
+            if (firstTime) {
+                this._textareaEl.addEventListener("change", this, false);
+            }
         }
     },
 

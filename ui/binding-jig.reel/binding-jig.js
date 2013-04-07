@@ -67,16 +67,20 @@ exports.BindingJig = Montage.create(Component, {
     },
 
     // TODO: Proper implementation, probably as an own component
-    prepareForDraw: {
-        value: function() {
+    enterDocument: {
+        value: function(firstTime) {
+            var BindingJigContent,
+                BindingJigToggle;
 
-            var BindingJigContent = document.getElementById('BindingJigContent'),
-                BindingJigToggle = document.getElementById('BindingJigToggle');
+            if (firstTime) {
+                var BindingJigContent = document.getElementById('BindingJigContent'),
+                    BindingJigToggle = document.getElementById('BindingJigToggle');
 
-            BindingJigToggle.onclick = function() {
-                BindingJigToggle.classList.toggle('selected');
-                BindingJigContent.classList.toggle('show');
-            };
+                BindingJigToggle.onclick = function() {
+                    BindingJigToggle.classList.toggle('selected');
+                    BindingJigContent.classList.toggle('show');
+                };
+            }
         }
     },
 

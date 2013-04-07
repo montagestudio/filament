@@ -17,9 +17,11 @@ var serializer = Serializer.create().initWithRequire(require);
 */
 exports.LibraryCell = Montage.create(Component, /** @lends module:"ui/library-cell.reel".LibraryCell# */ {
 
-    prepareForDraw: {
-        value: function () {
-            this._element.addEventListener("dragstart", this, true);
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this._element.addEventListener("dragstart", this, true);
+            }
         }
     },
 

@@ -23,13 +23,15 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    prepareForDraw: {
-        value: function () {
-            application.addEventListener("asyncActivity", this, false);
-            application.addEventListener("enterModalEditor", this);
-            application.addEventListener("addFile", this);
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                application.addEventListener("asyncActivity", this, false);
+                application.addEventListener("enterModalEditor", this);
+                application.addEventListener("addFile", this);
 
-            document.addEventListener("save", this, false);
+                document.addEventListener("save", this, false);
+            }
         }
     },
 
