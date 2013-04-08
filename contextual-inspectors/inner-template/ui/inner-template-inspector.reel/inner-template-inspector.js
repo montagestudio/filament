@@ -120,12 +120,14 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
         }
     },
 
-    prepareForDraw: {
-        value: function () {
-            this.element.addEventListener("mousedown", this, false);
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this.element.addEventListener("mousedown", this, false);
 
-            this.templateObjects.innerTemplate.element.addEventListener("dragover", this, false);
-            this.templateObjects.innerTemplate.element.addEventListener("drop", this, false);
+                this.templateObjects.innerTemplate.element.addEventListener("dragover", this, false);
+                this.templateObjects.innerTemplate.element.addEventListener("drop", this, false);
+            }
         }
     },
 
