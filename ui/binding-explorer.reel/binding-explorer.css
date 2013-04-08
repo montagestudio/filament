@@ -4,7 +4,7 @@
     max-height: 160px;
     overflow-y: auto;
     text-shadow: 0 1px 0 hsla(0,0%,100%,0.4);
-    border-top: 6px solid hsl(0,0%,30%);
+    border-top: 6px solid hsl(0,0%,20%);
 }
 
 .BindingExplorer-objectList {
