@@ -151,6 +151,14 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
     },
 
     /**
+     * The parent component of this object. For non-component objects this is
+     * the owner.
+     */
+    parentProxy: {
+        value: null
+    },
+
+    /**
      * Initialize an ReelProxy suitable for editing through an EditingDocument
      *
      * @param {string} label The label for this object within the EditingDocument

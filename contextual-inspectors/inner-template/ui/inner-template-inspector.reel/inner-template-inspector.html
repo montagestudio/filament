@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="inner-template-inspector.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "innerTemplateInspector"}
+            }
+        },
+
+        "title": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "title"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.object.label"}
+            }
+        },
+
+        "innerTemplate": {
+            "prototype": "matte/ui/dynamic-element.reel",
+            "properties": {
+                "element": {"#": "innerTemplate"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="innerTemplateInspector" class="InnerTemplateInspector">
+        <div class="InnerTemplateInspector-header">
+            <span data-montage-id="title">label</span>
+        </div>
+        <div data-montage-id="innerTemplate"></div>
+    </div>
+</body>
+</html>

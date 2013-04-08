@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="contextual-inspectors.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "contextualInspectors"}
+            }
+        },
+
+        "repetition": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "repetition"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.contextualInspectors"}
+            }
+        },
+
+        "inspectorSlot": {
+            "prototype": "montage/ui/slot.reel",
+            "properties": {
+                "element": {"#": "inspectorSlot"}
+            },
+            "bindings": {
+                "content": {"<-": "@repetition.objectAtCurrentIteration"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="contextualInspectors" class="ContextualInspectors">
+        <div data-montage-id="repetition">
+            <div data-montage-id="inspectorSlot"></div>
+        </div>
+    </div>
+</body>
+</html>
