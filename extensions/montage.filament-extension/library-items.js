@@ -9,7 +9,10 @@ var ConditionLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/condition.reel"
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "condition"}
+            }
         }
     },
 
@@ -26,7 +29,7 @@ var ConditionLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="condition"></div>'
     }
 
 });
@@ -65,7 +68,10 @@ var SlotLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/slot.reel"
+            "prototype": "montage/ui/slot.reel",
+            "properties": {
+                "element": {"#": "slot"}
+            }
         }
     },
 
@@ -82,7 +88,7 @@ var SlotLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="slot"></div>'
     }
 
 });
@@ -91,7 +97,10 @@ var SubstitutionLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "montage/ui/substitution.reel"
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "substitution"}
+            }
         }
     },
 
@@ -108,7 +117,7 @@ var SubstitutionLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="substitution"></div>'
     }
 
 });
@@ -119,7 +128,8 @@ var DynamicTextLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "montage/ui/text.reel",
             "properties": {
-                "value": "Text"
+                "value": "Text",
+                "element": {"#": "text"}
             }
         }
     },
@@ -138,7 +148,7 @@ var DynamicTextLibraryItem = Montage.create(LibraryItem, {
 
     html: {
         //TODO why a paragraph; highlighting the pain of hiding the dom
-        value: '<p data-montage-id=""></p>'
+        value: '<p data-montage-id="text"></p>'
     }
 
 });
