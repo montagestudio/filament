@@ -636,14 +636,16 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
     deleteSelected: {
         value: function () {
-            var selectedObject = this.getPath("selectedObjects.0");
-            //TODO minimize different handling of objects and components
-            if (selectedObject.markup) {
-                return this.removeComponent(selectedObject);
+            var selectedObject = this.getPath("selectedObjects.0"),
+                result;
+
+            if (selectedObject) {
+                result = this.removeObject(selectedObject);
             } else {
-                return this.removeObject(selectedObject);
+                result = Promise.resolve(null);
             }
 
+            return result;
         }
     },
 
