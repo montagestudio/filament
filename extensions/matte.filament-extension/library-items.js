@@ -12,7 +12,8 @@ var AnchorLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/anchor.reel",
             "properties": {
-                "value": "Link"
+                "element": {"#": "anchor"},
+                "value": "Link",
             }
         }
     },
@@ -30,7 +31,7 @@ var AnchorLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<a data-montage-id=""></a>'
+        value: '<a data-montage-id="anchor"></a>'
     }
 
 });
@@ -39,7 +40,10 @@ var AutocompleteLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/autocomplete/autocomplete.reel"
+            "prototype": "matte/ui/autocomplete/autocomplete.reel",
+            "properties": {
+                "element": {"#": "autocomplete"}
+            }
         }
     },
 
@@ -56,7 +60,7 @@ var AutocompleteLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input data-montage-id="">'
+        value: '<input data-montage-id="autocomplete">'
     }
 
 });
@@ -67,6 +71,7 @@ var ButtonLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/button.reel",
             "properties": {
+                element: {"#": "button"},
                 label: "Button",
                 enabled: true
             }
@@ -86,7 +91,7 @@ var ButtonLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<button data-montage-id=""></button>'
+        value: '<button data-montage-id="button"></button>'
     }
 
 });
@@ -97,6 +102,7 @@ var ToggleButtonLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/toggle-button.reel",
             "properties": {
+                "element": {"#": "toggleButton"},
                 "value": true,
                 "pressedLabel": "On",
                 "unpressedLabel": "Off"
@@ -117,7 +123,7 @@ var ToggleButtonLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<button data-montage-id=""></button>'
+        value: '<button data-montage-id="toggleButton"></button>'
     }
 
 });
@@ -126,7 +132,10 @@ var ToggleSwitchLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/toggle-switch.reel"
+            "prototype": "matte/ui/toggle-switch.reel",
+            "properties": {
+                "element": {"#": "toggleSwitch"}
+            }
         }
     },
 
@@ -143,7 +152,7 @@ var ToggleSwitchLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="toggleSwitch"></div>'
     }
 
 });
@@ -154,6 +163,7 @@ var InputCheckboxLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/input-checkbox.reel",
             "properties": {
+                element: {"#": "checkbox"},
                 "checked": true
             }
         }
@@ -172,7 +182,7 @@ var InputCheckboxLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input type="checkbox" data-montage-id="">'
+        value: '<input type="checkbox" data-montage-id="checkbox">'
     }
 
 });
@@ -183,6 +193,7 @@ var InputRadioLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/input-radio.reel",
             "properties": {
+                "element": {"#": "radio"},
                 "checked": true
             }
         }
@@ -201,7 +212,7 @@ var InputRadioLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input type="radio" data-montage-id="">'
+        value: '<input type="radio" data-montage-id="radio">'
     }
 
 });
@@ -212,6 +223,7 @@ var InputDateLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/input-date.reel",
             "properties": {
+                "element": {"#": "date"},
                 "value": "2013-02-28"
             }
         }
@@ -230,7 +242,7 @@ var InputDateLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input type="date" data-montage-id="">'
+        value: '<input type="date" data-montage-id="date">'
     }
 
 });
@@ -241,6 +253,7 @@ var InputNumberLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/input-number.reel",
             "properties": {
+                "element": {"#": "number"},
                 "value": 100
             }
         }
@@ -259,7 +272,7 @@ var InputNumberLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input type="number" data-montage-id="">'
+        value: '<input type="number" data-montage-id="number">'
     }
 
 });
@@ -270,6 +283,7 @@ var InputRangeLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/input-range.reel",
             "properties": {
+                "element": {"#": "inputRange"},
                 "minValue": 0,
                 "maxValue": 100,
                 "value": 50
@@ -290,7 +304,7 @@ var InputRangeLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input type="range" data-montage-id="">'
+        value: '<input type="range" data-montage-id="inputRange">'
     }
 
 });
@@ -299,7 +313,10 @@ var SelectLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/select.reel"
+            "prototype": "matte/ui/select.reel",
+            "properties": {
+                "element": {"#": "select"}
+            }
         }
     },
 
@@ -316,7 +333,7 @@ var SelectLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<select data-montage-id=""><option value="">Select</option></select>'
+        value: '<select data-montage-id="select"><option value="">Select</option></select>'
     }
 
 });
@@ -327,6 +344,7 @@ var InputTextLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/input-text.reel",
             "properties": {
+                "element": {"#": "inputText"},
                 "value": "Text"
             }
         }
@@ -345,7 +363,7 @@ var InputTextLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input data-montage-id="" type="text">'
+        value: '<input data-montage-id="inputText" type="text">'
     }
 
 });
@@ -356,6 +374,7 @@ var TextareaLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/textarea.reel",
             "properties": {
+                "element": {"#": "textarea"},
                 "value": "Textarea"
             }
         }
@@ -374,7 +393,7 @@ var TextareaLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<textarea data-montage-id=""></textarea>'
+        value: '<textarea data-montage-id="textarea"></textarea>'
     }
 
 });
@@ -385,6 +404,7 @@ var ImageLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/image.reel",
             "properties": {
+                "element": {"#": "image"},
                 //TODO this should not be hardcoded in palette of all places
                 "src": "http://client/node_modules/palette/assets/image/placeholder.png"
             }
@@ -404,7 +424,7 @@ var ImageLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<img data-montage-id="">'
+        value: '<img data-montage-id="image">'
     }
 
 });
@@ -415,6 +435,7 @@ var ProgressLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/progress.reel",
             "properties": {
+                "element": {"#": "progress"},
                 "max": 100,
                 "value": 50
             }
@@ -434,7 +455,7 @@ var ProgressLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<progress data-montage-id=""></progress>'
+        value: '<progress data-montage-id="progress"></progress>'
     }
 
 });
@@ -445,6 +466,7 @@ var FlowLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/flow.reel",
             "properties": {
+                "element": {"#": "flow"},
                 "objects": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
                 "cameraPosition": [0, 0, 1500],
                 "paths": [
@@ -485,7 +507,7 @@ var FlowLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0"></div>'
+        value: '<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0" data-montage-id="flow"></div>'
     },
 
     // Action to take after addedTo the template
@@ -535,7 +557,10 @@ var VideoPlayerLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/video-player.reel"
+            "prototype": "matte/ui/video-player.reel",
+            "properties": {
+                "element": {"#": "video"}
+            }
         }
     },
 
@@ -552,7 +577,7 @@ var VideoPlayerLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<video data-montage-id=""></video>'
+        value: '<video data-montage-id="video"></video>'
     }
 
 });
@@ -561,7 +586,10 @@ var TokenFieldLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/token-field.reel"
+            "prototype": "matte/ui/token-field.reel",
+            "properties": {
+                "element": {"#": "tokenField"}
+            }
         }
     },
 
@@ -578,7 +606,7 @@ var TokenFieldLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input data-montage-id="">'
+        value: '<input data-montage-id="tokenField">'
     }
 
 });
@@ -587,7 +615,10 @@ var RichTextEditorLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/rich-text-editor/rich-text-editor.reel"
+            "prototype": "matte/ui/rich-text-editor/rich-text-editor.reel",
+            "properties": {
+                "element": {"#": "richTextEditor"}
+            }
         }
     },
 
@@ -601,6 +632,10 @@ var RichTextEditorLibraryItem = Montage.create(LibraryItem, {
 
     icon: {
         value: packageLocation + "assets/components/rte.png"
+    },
+
+    html: {
+        value: '<div data-montage-id="richTextEditor"></div>'
     }
 });
 
@@ -608,7 +643,10 @@ var ScrollerLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/scroller.reel"
+            "prototype": "matte/ui/scroller.reel",
+            "properties": {
+                "element": {"#": "scroller"}
+            }
         }
     },
 
@@ -622,6 +660,10 @@ var ScrollerLibraryItem = Montage.create(LibraryItem, {
 
     icon: {
         value: packageLocation + "assets/components/scroller.png"
+    },
+
+    html: {
+        value: '<div data-montage-id="scroller"></div>'
     }
 });
 
@@ -629,7 +671,10 @@ var ListLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/list.reel"
+            "prototype": "matte/ui/list.reel",
+            "properties": {
+                "element": {"#": "list"}
+            }
         }
     },
 
@@ -643,6 +688,10 @@ var ListLibraryItem = Montage.create(LibraryItem, {
 
     icon: {
         value: packageLocation + "assets/components/list.png"
+    },
+
+    html: {
+        value: '<ul data-montage-id="list"><li>Item</li></ul>'
     }
 });
 
@@ -650,7 +699,10 @@ var TextSliderLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/text-slider.reel"
+            "prototype": "matte/ui/text-slider.reel",
+            "properties": {
+                "element": {"#": "textSlider"}
+            }
         }
     },
 
@@ -667,7 +719,7 @@ var TextSliderLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input data-montage-id="">'
+        value: '<input data-montage-id="textSlider">'
     }
 
 });
@@ -676,7 +728,10 @@ var PopupLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/popup/popup.reel"
+            "prototype": "matte/ui/popup/popup.reel",
+            "properties": {
+                "element": {"#": "popup"}
+            }
         }
     },
 
@@ -693,7 +748,7 @@ var PopupLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="popup"></div>'
     }
 
 });
@@ -702,7 +757,10 @@ var AlertLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/popup/alert.reel"
+            "prototype": "matte/ui/popup/alert.reel",
+            "properties": {
+                "element": {"#": "alert"}
+            }
         }
     },
 
@@ -719,7 +777,7 @@ var AlertLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="alert"></div>'
     }
 
 });
@@ -728,7 +786,10 @@ var NotifierLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/popup/notifier.reel"
+            "prototype": "matte/ui/popup/notifier.reel",
+            "properties": {
+                "element": {"#": "notifier"}
+            }
         }
     },
 
@@ -745,7 +806,7 @@ var NotifierLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="notifier"></div>'
     }
 
 });
@@ -754,7 +815,10 @@ var ConfirmLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/popup/confirm.reel"
+            "prototype": "matte/ui/popup/confirm.reel",
+            "properties": {
+                "element": {"#": "confirm"}
+            }
         }
     },
 
@@ -771,7 +835,7 @@ var ConfirmLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="confirm"></div>'
     }
 
 });

@@ -36,7 +36,7 @@ describe("core/reel-document-spec", function () {
         beforeEach(function () {
             mockDocument = document.implementation.createHTMLDocument();
 
-            serialization = '{"owner": {}, "foo": {}}';
+            serialization = '{"owner": {"properties": {}}, "foo": {"prototype": "foo-module"}}';
 
             var serializationNode = mockDocument.createElement("script");
             serializationNode.setAttribute("type", "text/montage-serialization");

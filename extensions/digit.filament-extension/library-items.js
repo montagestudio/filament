@@ -12,6 +12,7 @@ var ActionSheetLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "digit/action-sheet.reel",
             "properties": {
+                "element": {"#": "anchor"},
                 "value": "Link"
             }
         }
@@ -30,7 +31,7 @@ var ActionSheetLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<a data-montage-id="anchor"></a>'
     }
 
 });
@@ -39,7 +40,10 @@ var AudioLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/audio.reel"
+            "prototype": "digit/audio.reel",
+            "properties": {
+                "element": {"#": "audio"}
+            }
         }
     },
 
@@ -56,7 +60,7 @@ var AudioLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<audio data-montage-id=""></audio>'
+        value: '<audio data-montage-id="audio"></audio>'
     }
 
 });
@@ -65,7 +69,10 @@ var ButtonGroupLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/button-group.reel"
+            "prototype": "digit/button-group.reel",
+            "properties": {
+                "element": {"#": "buttonGroup"}
+            }
         }
     },
 
@@ -82,7 +89,7 @@ var ButtonGroupLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="buttonGroup"></div>'
     }
 
 });
@@ -93,6 +100,7 @@ var ButtonLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "digit/button.reel",
             "properties": {
+                "element": {"#": "button"},
                 label: "Button",
                 enabled: true
             }
@@ -112,7 +120,7 @@ var ButtonLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<button data-montage-id=""></button>'
+        value: '<button data-montage-id="button"></button>'
     }
 
 });
@@ -121,7 +129,10 @@ var HeaderLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/header.reel"
+            "prototype": "digit/header.reel",
+            "properties": {
+                "element": {"#": "header"}
+            }
         }
     },
 
@@ -138,7 +149,7 @@ var HeaderLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="header"></div>'
     }
 
 });
@@ -149,6 +160,7 @@ var InputCheckboxLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "digit/input-checkbox.reel",
             "properties": {
+                "element": {"#": "checkbox"},
                 "checked": true
             }
         }
@@ -167,7 +179,7 @@ var InputCheckboxLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input type="checkbox" data-montage-id="">'
+        value: '<input type="checkbox" data-montage-id="checkbox">'
     }
 
 });
@@ -178,6 +190,7 @@ var InputDateLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "digit/input-date.reel",
             "properties": {
+                "element": {"#": "date"},
                 "value": "2013-02-28"
             }
         }
@@ -196,7 +209,7 @@ var InputDateLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input type="date" data-montage-id="">'
+        value: '<input type="date" data-montage-id="date">'
     }
 
 });
@@ -207,6 +220,7 @@ var InputNumberLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "digit/input-number.reel",
             "properties": {
+                "element": {"#": "number"},
                 "value": 100
             }
         }
@@ -225,7 +239,7 @@ var InputNumberLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input type="number" data-montage-id="">'
+        value: '<input type="number" data-montage-id="number">'
     }
 
 });
@@ -236,6 +250,7 @@ var InputRadioLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "digit/input-radio.reel",
             "properties": {
+                "element": {"#": "radio"},
                 "checked": true
             }
         }
@@ -254,7 +269,7 @@ var InputRadioLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input type="radio" data-montage-id="">'
+        value: '<input type="radio" data-montage-id="radio">'
     }
 
 });
@@ -265,6 +280,7 @@ var InputRangeLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "digit/input-range.reel",
             "properties": {
+                "element": {"#": "inputRange"},
                 "minValue": 0,
                 "maxValue": 100,
                 "value": 50
@@ -285,7 +301,7 @@ var InputRangeLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input type="range" data-montage-id="">'
+        value: '<input type="range" data-montage-id="inputRange">'
     }
 
 });
@@ -296,6 +312,7 @@ var InputTextLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "digit/input-text.reel",
             "properties": {
+                "element": {"#": "inputText"},
                 "value": "Text"
             }
         }
@@ -314,7 +331,7 @@ var InputTextLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input data-montage-id="" type="text">'
+        value: '<input data-montage-id="inputText" type="text">'
     }
 
 });
@@ -323,7 +340,10 @@ var ListLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/list.reel"
+            "prototype": "digit/list.reel",
+            "properties": {
+                "element": {"#": "list"}
+            }
         }
     },
 
@@ -337,6 +357,10 @@ var ListLibraryItem = Montage.create(LibraryItem, {
 
     icon: {
         value: packageLocation + "assets/components/list.png"
+    },
+
+    html: {
+        value: '<ul data-montage-id="list"><li>Item</li></ul>'
     }
 });
 
@@ -344,7 +368,10 @@ var MapLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/map.reel"
+            "prototype": "digit/map.reel",
+            "properties": {
+                "element": {"#": "map"}
+            }
         }
     },
 
@@ -361,7 +388,7 @@ var MapLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="map"></div>'
     }
 
 });
@@ -370,7 +397,10 @@ var ModalLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/popup/modal.reel"
+            "prototype": "digit/popup/modal.reel",
+            "properties": {
+                "element": {"#": "popup"}
+            }
         }
     },
 
@@ -387,7 +417,7 @@ var ModalLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="popup"></div>'
     }
 
 });
@@ -396,7 +426,10 @@ var NotificationLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/popup/notification.reel"
+            "prototype": "digit/popup/notification.reel",
+            "properties": {
+                "element": {"#": "notification"}
+            }
         }
     },
 
@@ -413,7 +446,7 @@ var NotificationLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="notification"></div>'
     }
 
 });
@@ -424,6 +457,7 @@ var ProgressLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "digit/progress.reel",
             "properties": {
+                "element": {"#": "progress"},
                 "max": 100,
                 "value": 50
             }
@@ -443,7 +477,7 @@ var ProgressLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<progress data-montage-id=""></progress>'
+        value: '<progress data-montage-id="progress"></progress>'
     }
 
 });
@@ -452,7 +486,10 @@ var SelectLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/select.reel"
+            "prototype": "digit/select.reel",
+            "properties": {
+                "element": {"#": "select"}
+            }
         }
     },
 
@@ -469,7 +506,7 @@ var SelectLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<select data-montage-id=""><option value="">Select</option></select>'
+        value: '<select data-montage-id="select"><option value="">Select</option></select>'
     }
 
 });
@@ -479,6 +516,9 @@ var SplitViewLibraryItem = Montage.create(LibraryItem, {
     serialization: {
         value: {
             "prototype": "digit/split-view.reel",
+            "properties": {
+                "element": {"#": "splitView"}
+            }
         }
     },
 
@@ -495,16 +535,19 @@ var SplitViewLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="splitView"></div>'
     }
 
 });
 
-var TabBarLibraryItemll = Montage.create(LibraryItem, {
+var TabBarLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/popup/tab-bar.reel"
+            "prototype": "digit/popup/tab-bar.reel",
+            "properties": {
+                "element": {"#": "tabBar"}
+            }
         }
     },
 
@@ -521,7 +564,7 @@ var TabBarLibraryItemll = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="tabBar"></div>'
     }
 
 });
@@ -532,6 +575,7 @@ var TextareaLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "digit/textarea.reel",
             "properties": {
+                "element": {"#": "textarea"},
                 "value": "Textarea"
             }
         }
@@ -550,7 +594,7 @@ var TextareaLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<textarea data-montage-id=""></textarea>'
+        value: '<textarea data-montage-id="textarea"></textarea>'
     }
 
 });
@@ -559,7 +603,10 @@ var ToggleLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/toggle.reel"
+            "prototype": "digit/toggle.reel",
+            "properties": {
+                "element": {"#": "toggle"}
+            }
         }
     },
 
@@ -576,7 +623,7 @@ var ToggleLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="toggle"></div>'
     }
 
 });
@@ -585,7 +632,10 @@ var ToolBarLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/popup/tool-bar.reel"
+            "prototype": "digit/popup/tool-bar.reel",
+            "properties": {
+                "element": {"#": "toolBar"}
+            }
         }
     },
 
@@ -602,7 +652,7 @@ var ToolBarLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<div data-montage-id=""></div>'
+        value: '<div data-montage-id="toolBar"></div>'
     }
 
 });
@@ -611,7 +661,10 @@ var VideoLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/video.reel"
+            "prototype": "digit/video.reel",
+            "properties": {
+                "element": {"#": "video"}
+            }
         }
     },
 
@@ -628,7 +681,7 @@ var VideoLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<video data-montage-id=""></video>'
+        value: '<video data-montage-id="video"></video>'
     }
 
 });
@@ -654,7 +707,7 @@ exports.libraryItems = {
     "digit/progress.reel": ProgressLibraryItem,
     "digit/select.reel": SelectLibraryItem,
     "digit/split-view.reel": SplitViewLibraryItem,
-    "digit/tab-bar.reel": TabBarLibraryItemll,
+    "digit/tab-bar.reel": TabBarLibraryItem,
     "digit/textarea.reel": TextareaLibraryItem,
     "digit/toggle.reel": ToggleLibraryItem,
     "digit/tool-bar.reel": ToolBarLibraryItem,

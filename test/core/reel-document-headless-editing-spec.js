@@ -21,7 +21,9 @@ describe("core/reel-document-headless-editing-spec", function () {
                     "element": {"#": "foo"}
                 }
             },
-            "bar": {}
+            "bar": {
+                "prototype": "bar-exportId"
+            }
         }, '<div data-montage-id="ownerElement"></div><div data-montage-id="foo"></div>');
     });
 
@@ -58,7 +60,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                     templateSerialization;
 
                 return addedComponent.then(function (proxy) {
-                    templateSerialization = JSON.parse(reelDocument.serialization);
+                    templateSerialization = reelDocument._buildSerialization();
                     expect(templateSerialization[labelInOwner]).toBeTruthy();
                 });
             }).timeout(WAITSFOR_TIMEOUT);
@@ -109,7 +111,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                     templateSerialization;
 
                 return removalPromise.then(function () {
-                    templateSerialization = JSON.parse(reelDocument.serialization);
+                    templateSerialization = reelDocument._buildSerialization();
                     expect(templateSerialization[labelInOwner]).toBeUndefined();
                 });
             }).timeout(WAITSFOR_TIMEOUT);
@@ -135,7 +137,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
                 return removalPromise.then(function () {
                     expect(reelDocument.editingProxies.length).toBe(2);
-                    templateSerialization = JSON.parse(reelDocument.serialization);
+                    templateSerialization = reelDocument._buildSerialization();
                     expect(templateSerialization.owner).toBeTruthy();
                     expect(templateSerialization.bar).toBeTruthy();
                 });
@@ -166,9 +168,8 @@ describe("core/reel-document-headless-editing-spec", function () {
                     expect(addedProxy).toBeTruthy();
 
                     expect(addedProxy).not.toBe(proxyToRemove);
-                    expect(addedProxy.serialization).not.toBe(proxyToRemove.serialization);
 
-                    expect(addedProxy.serialization.properties.element["#"]).toBe("foo");
+                    expect(addedProxy.element.getAttribute("data-montage-id")).toBe("foo");
                     expect(addedProxy.exportId).toBe("ui/foo.reel");
                     expect(addedProxy.exportName).toBe("Foo");
                     expect(addedProxy.identifier).toBe(labelInOwner);
@@ -209,7 +210,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                     templateSerialization;
 
                 return addedObject.then(function (proxy) {
-                    templateSerialization = JSON.parse(reelDocument.serialization);
+                    templateSerialization = reelDocument._buildSerialization();
                     expect(templateSerialization[labelInOwner]).toBeTruthy();
                 });
             }).timeout(WAITSFOR_TIMEOUT);
@@ -252,7 +253,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                     templateSerialization;
 
                 return removalPromise.then(function () {
-                    templateSerialization = JSON.parse(reelDocument.serialization);
+                    templateSerialization = reelDocument._buildSerialization();
                     expect(templateSerialization[labelInOwner]).toBeUndefined();
                 });
             }).timeout(WAITSFOR_TIMEOUT);
@@ -266,7 +267,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
                 return removalPromise.then(function () {
                     expect(reelDocument.editingProxies.length).toBe(2);
-                    templateSerialization = JSON.parse(reelDocument.serialization);
+                    templateSerialization = reelDocument._buildSerialization();
                     expect(templateSerialization.owner).toBeTruthy();
                     expect(templateSerialization.foo).toBeTruthy();
                 });
@@ -289,7 +290,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                 var proxyToEdit = reelDocument.editingProxyMap[labelInOwner];
                 reelDocument.setOwnedObjectProperty(proxyToEdit, "prop", "myValue");
 
-                expect(proxyToEdit.properties.prop).toBe("myValue");
+                expect(proxyToEdit.properties.get("prop")).toBe("myValue");
             });
         });
 
@@ -299,7 +300,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                     templateSerialization;
 
                 reelDocument.setOwnedObjectProperty(proxyToEdit, "prop", "myValue");
-                templateSerialization = JSON.parse(reelDocument.serialization);
+                templateSerialization = reelDocument._buildSerialization();
 
                 expect(templateSerialization[labelInOwner].properties.prop).toBe("myValue");
             });

@@ -1,6 +1,5 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
-    Deserializer = require("montage/core/serialization").Deserializer,
     ReelDocument = require("core/reel-document").ReelDocument,
     MimeTypes = require("core/mime-types"),
     Promise = require("montage/core/promise").Promise;
@@ -36,8 +35,6 @@ exports.DocumentEditor = Montage.create(Component, {
         value: function () {
             this.defineBinding("fileUrl", {"<-": "editingDocument.fileUrl"});
             this._deferredWorkbench = Promise.defer();
-
-            this.addRangeAtPathChangeListener("editingDocument.selectedObjects", this, "handleSelectedObjectsRangeChange");
         }
     },
 
@@ -79,106 +76,6 @@ exports.DocumentEditor = Montage.create(Component, {
                 this.workbench.addEventListener("dragover", this, false);
                 this.workbench.addEventListener("drop", this, false);
                 this.workbench.addEventListener("select", this, false);
-            }
-        }
-    },
-
-    addLibraryItem: {
-        value: function (libraryItem, parentProxy, parentElement) {
-
-            if (!this.editingDocument) {
-                throw new Error("Cannot add component: no editing document");
-            }
-            if (!libraryItem) {
-                throw new Error("Cannot add component: no prototypeEntry");
-            }
-
-            if (libraryItem.html) {
-                return this.addComponent(libraryItem, parentProxy, parentElement);
-            } else {
-                return this.addObject(libraryItem);
-            }
-        }
-    },
-
-    addObject: {
-        enumerable: false,
-        value: function (prototypeEntry) {
-            return this.editingDocument.addObject(null, prototypeEntry.serialization);
-        }
-    },
-
-    //TODO Can we get get rid of the editing API being here, on a component and instead always rely on the editingDocument
-    addComponent: {
-        enumerable: false,
-        value: function (prototypeEntry, parentProxy, parentElement) {
-
-            var editingDocument = this.editingDocument;
-
-            return editingDocument.addComponent(
-                null,
-                prototypeEntry.serialization,
-                prototypeEntry.html,
-                undefined, // elementMontageId
-                undefined, // identifier
-                parentProxy,
-                parentElement
-            ).then(function (proxy) {
-
-                // try to pre-fetch the description of this object
-                if (proxy.stageObject) {
-                    proxy.stageObject.blueprint.fail(Function.noop);
-                }
-
-                if (typeof prototypeEntry.postProcess === "function") {
-                    prototypeEntry.postProcess(proxy, editingDocument);
-                }
-
-                return proxy;
-            });
-        }
-    },
-
-    handleSelectedObjectsRangeChange: {
-        value: function (plus, minus, index) {
-            var self = this;
-            var selectedObjects = this.getPath("editingDocument.selectedObjects");
-            if (selectedObjects && selectedObjects.length === 1) {
-                var selectedObject = selectedObjects[0];
-                var inspectors = this.viewController.contextualInspectorsForObject(selectedObject);
-
-                Promise.all(inspectors.map(function (component) {
-                    var inspector = component.create();
-                    inspector.object = selectedObject;
-                    inspector.documentEditor = self;
-                    return inspector;
-                })).then(function (inspectors) {
-                    self.contextualInspectors = inspectors;
-                }).done();
-
-                if (!selectedObject.parentProxy) {
-                    return;
-                }
-
-                // TODO make a loop
-                var parentObject = selectedObject.parentProxy;
-                var parentInspectors = this.viewController.contextualInspectorsForObject(parentObject).filter(function (inspector) {
-                    return inspector.showForChildComponents;
-                });
-                Promise.all(parentInspectors.map(function (component) {
-                    var inspector = component.create();
-                    inspector.object = parentObject;
-                    inspector.documentEditor = self;
-                    inspector.selectedObject = selectedObject;
-                    return inspector;
-                })).then(function (inspectors) {
-                    self.contextualInspectors.push.apply(self.contextualInspectors, inspectors);
-                }).done();
-
-            } else {
-                if (this.contextualInspectors) {
-                    this.contextualInspectors.clear();
-                }
             }
         }
     },
@@ -238,14 +135,11 @@ exports.DocumentEditor = Montage.create(Component, {
     handleDrop: {
         enumerable: false,
         value: function (event) {
-            var self = this,
-                // TODO: security issues?
-                data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
-                deserializer = Deserializer.create().init(data, require);
+            // TODO: security issues?
+            var data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
+                transferObject = JSON.parse(data);
 
-            deserializer.deserialize().then(function (prototypeEntry) {
-                self.addLibraryItem(prototypeEntry).done();
-            }).done();
+            this.editingDocument.addFragment(transferObject.serializationFragment, transferObject.htmlFragment).done();
         }
     }
 

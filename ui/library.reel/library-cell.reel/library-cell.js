@@ -40,7 +40,13 @@ exports.LibraryCell = Montage.create(Component, /** @lends module:"ui/library-ce
             // Although we could use "application/json" here, the stage is
             // expecting a specific object type. We also might specially handle
             // "application/json" later.
-            event.dataTransfer.setData(MimeTypes.PROTOTYPE_OBJECT, serializer.serialize(this.prototypeObject));
+
+            var transferObject = {
+                serializationFragment: this.prototypeObject.serialization,
+                htmlFragment: this.prototypeObject.html
+            };
+
+            event.dataTransfer.setData(MimeTypes.PROTOTYPE_OBJECT, JSON.stringify(transferObject));
             // A nice fallback if the user drags the component into an editor
             event.dataTransfer.setData("text/plain", this.prototypeObject.moduleId);
 

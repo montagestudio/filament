@@ -6,12 +6,14 @@ var Montage = require("montage").Montage,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     ReelProxy = require("core/reel-proxy").ReelProxy,
     SORTERS = require("palette/core/sorters"),
-    ComponentEditor = require("ui/component-editor.reel").ComponentEditor;
+    ComponentEditor = require("ui/component-editor.reel").ComponentEditor,
+    ReelSerializer = require("core/serialization/reel-serializer").ReelSerializer,
+    ReelVisitor = require("core/serialization/reel-visitor").ReelVisitor,
+    ReelReviver = require("core/serialization/reel-reviver").ReelReviver,
+    ReelContext = require("core/serialization/reel-context").ReelContext;
 
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = Montage.create(EditingDocument, {
-
-
 
     load: {
         value: function (fileUrl, packageUrl) {
@@ -69,11 +71,23 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             self.selectedObjects = [];
 
             //TODO handle external serializations
-            var serialization = template.getInlineObjectsString(template.document);
+            var serialization = JSON.parse(template.getInlineObjectsString(template.document));
+            var context = this.deserializationContext(serialization);
+
+            //TODO make a real map
             self._editingProxyMap = {};
-            self._addProxies(self._proxiesFromSerialization(serialization));
+            self._addProxies(context.getObjects());
 
             return self;
+        }
+    },
+
+    deserializationContext: {
+        value: function (serialization, objects) {
+            var reviver = ReelReviver.create();
+            var context = ReelContext.create().init(serialization, reviver, objects);
+            context.editingDocument = this;
+            return context;
         }
     },
 
@@ -151,20 +165,21 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 templateObjects = {};
 
             Object.keys(this._editingProxyMap).sort(SORTERS.labelComparator).forEach(function (label) {
-                templateObjects[label] = SORTERS.unitSorter(this._editingProxyMap[label].serialization);
+                templateObjects[label] = this.serializationForProxy(this._editingProxyMap[label]);
             }, this);
-
-            this.dispatchBeforeOwnPropertyChange("serialization", template.objectsString);
 
             template.objectsString = JSON.stringify(templateObjects, null, 4);
 
-            this.dispatchOwnPropertyChange("serialization", template.objectsString);
+            return templateObjects;
         }
     },
 
-    serialization: {
-        get: function () {
-            return this._template.objectsString;
+    serializationForProxy: {
+        value: function (proxy) {
+            var serializer = ReelSerializer.create().initWithRequire(this._packageRequire);
+            var serialization = JSON.parse(serializer.serializeObject(proxy))[proxy.label];
+
+            return SORTERS.unitSorter(serialization);
         }
     },
 
@@ -176,20 +191,8 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
     _ownerElement: {
         get: function () {
-            var montageId = this.getPath("_editingProxyMap.owner.properties.element.property('#')"),
-                element;
-
-            if (!montageId) {
-                throw new Error("Owner component has no element specified");
-            }
-
-            element = this.htmlDocument.querySelector("[data-montage-id='" + montageId + "']");
-
-            if (!element) {
-                throw new Error("Owner component element could not be found");
-            }
-
-            return element;
+            //TODO patch this up a bit; should the proxies have an element property?
+            return this.getPath("_editingProxyMap.owner.properties.get('element')");
         }
     },
 
@@ -234,35 +237,6 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
     // Editing Model
 
-    _proxiesFromSerialization: {
-        value: function (serialization) {
-
-            serialization = JSON.parse(serialization);
-
-            var labels = Object.keys(serialization),
-                self = this,
-                proxy,
-                montageId;
-
-            return labels.map(function (label) {
-
-                var exportId;
-                if (serialization[label].prototype) {
-                    exportId = serialization[label].prototype;
-                } else {
-                    if (self.fileUrl && self.packageRequire) {
-                        exportId = self.fileUrl.substring(self.packageRequire.location.length);
-                    }
-                }
-
-                proxy = ReelProxy.create().init(label, serialization[label], self, exportId);
-                montageId = proxy.getPath("properties.element.property('#')");
-                proxy.element = self.htmlDocument.querySelector("[data-montage-id='" + montageId + "']");
-                return proxy;
-            });
-        }
-    },
-
     _addProxies: {
         value: function (proxies) {
             var self = this;
@@ -290,6 +264,9 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             var proxyMap = this._editingProxyMap;
 
             proxyMap[proxy.label] = proxy;
+
+            //TODO not simply stick this on the object; the inspector needs it right now
+            proxy.packageRequire = this._packageRequire;
 
             //TODO not blindly append to the end of the body
             //TODO react to changing the element?
@@ -531,161 +508,109 @@ exports.ReelDocument = Montage.create(EditingDocument, {
         }
     },
 
-    addObject: {
-        value: function (labelInOwner, serialization, identifier) {
-            var self = this,
-                deferredUndo = Promise.defer(),
-                proxy,
-                proxyPromise;
+    /**
+     * The method is a temporary anomaly that accepts what our library items currently are
+     * and builds a template for merging
+     *
+     * This will be replaced with an addTemplate or insertTemplate or mergeTemplate
+     */
+    addFragment: {
+        value: function (serializationFragment, htmlFragment) {
 
-            serialization = Object.clone(serialization);
+            // Right now a LibraryItem only represents a single object or component
+            // TODO account for a LibraryItem Template consisting of several objects and components
+            var labelInOwner = this._generateLabel(serializationFragment),
+                templateSerialization = {},
+                self = this;
 
-            if (!labelInOwner) {
-                labelInOwner = this._generateLabel(serialization);
-            }
+            templateSerialization [labelInOwner] = serializationFragment;
 
-            if (typeof identifier === "undefined") {
-                identifier = labelInOwner; //TODO lower case the identifier?
-                if (!serialization.properties) {
-                    serialization.properties = {};
-                }
-                serialization.properties.identifier = identifier;
-            }
+            var doc = document.implementation.createHTMLDocument();
+            var serializationElement = doc.createElement("script");
+            serializationElement.setAttribute("type", "text/montage-serialization");
+            serializationElement.appendChild(document.createTextNode(JSON.stringify(templateSerialization)));
+            doc.head.appendChild(serializationElement);
+            doc.body.innerHTML = htmlFragment;
 
-            self.undoManager.register("Add Object", deferredUndo.promise);
+            //TODO this seems a bit like undoing the work we just did
+            return Template.create().initWithDocument(doc, this._packageRequire).then(function(template) {
+                self._buildSerialization();
 
-            proxy = ReelProxy.create().init(labelInOwner, serialization, self);
+                var serializationToMerge = template.getSerialization(),
+                    elementToAppend = template.document.body.children[0],
+                    labelsCollisionTable,
+                    context,
+                    proxy,
+                    proxyElement,
+                    actualLabel;
 
-            if (this._editingController) {
-                proxyPromise = this._editingController.addObject(labelInOwner, serialization)
-                    .then(function (newObject) {
-                        proxy.stageObject = newObject;
-                        return proxy;
-                    });
-            } else {
-                proxyPromise = Promise.resolve(proxy);
-            }
+                // Merge the incoming template into the reelDocument's own template
+                labelsCollisionTable = self._merge(self._template, serializationToMerge, elementToAppend);
 
-            return proxyPromise.then(function (addedProxy) {
+                // Prepare a context that knows about the existing editing proxies prior to
+                // creating new editing proxies
+                context = self.deserializationContext(self._template.getSerialization().getSerializationObject(), self._editingProxyMap);
 
-                self._addProxies(addedProxy);
+                serializationToMerge.getSerializationLabels().forEach(function (label) {
 
-//                self.dispatchEventNamed("didAddObject", true, true, {
-//                    object: addedProxy
-//                });
+                    if (labelsCollisionTable && labelsCollisionTable.hasOwnProperty(label)) {
+                        actualLabel = labelsCollisionTable[label];
+                    } else {
+                        actualLabel = label;
+                    }
 
-                if (self.selectObjectsOnAddition) {
-                    self.clearSelectedObjects();
-                    self.selectObject(addedProxy);
-                }
+                    proxy = context.getObject(actualLabel);
+                    self._addProxies(proxy);
+                    proxyElement = proxy.getObjectProperty("element");
 
-                deferredUndo.resolve([self.removeObject, self, addedProxy]);
+                    //TODO formalize this API
+                    //TODO why _template?
+                    self._editingController.owner._template.objectsString = self._template.objectsString;
+                    self._editingController.owner._template.setDocument(self._template.document);
 
-                return addedProxy;
+                    //TODO once we insert several labels per libraryItem, we need to know the markup for each inserted object
+                    self._editingController.addComponent(label, serializationFragment, proxyElement.outerHTML, proxyElement ? proxyElement.getAttribute("data-montage-id") : null)
+                        .then(function (newComponents) {
+
+                            for (var label in newComponents) {
+                                // NOTE the objects is a null-prototyped object that does not need
+                                // to be filtered with a hasOwnProperty
+                                self._editingProxyMap[label].stageObject = newComponents[label];
+                            }
+                        }).done();
+
+                });
+
             });
         }
     },
 
+    _merge: {
+        value: function(template, serialization, element) {
+            var templateSerialization = template.getSerialization(),
+                labelsCollisionTable,
+                idsCollisionTable;
+
+            // Merge markup
+            idsCollisionTable = template.insertNodeBefore(element, this._ownerElement.lastChild);
+            serialization.renameElementReferences(idsCollisionTable);
+
+            // Merge serialization
+            labelsCollisionTable = templateSerialization.mergeSerialization(serialization);
+
+            //Update underlying template string
+            template.objectsString = templateSerialization.getSerializationString();
+
+            return labelsCollisionTable;
+        }
+    },
+
+    /**
+     * Remove the specified proxy from the editing model object graph
+     * @param {Proxy} proxy An editing proxy to remove from the editing model
+     * @return {Promise} A promise for the removal of the proxy
+     */
     removeObject: {
-        value: function (proxy) {
-
-            var self = this,
-                deferredUndo = Promise.defer(),
-                removalPromise;
-
-            this.undoManager.register("Remove Object", deferredUndo.promise);
-
-            if (this._editingController) {
-                removalPromise = this._editingController.removeObject(proxy.stageObject);
-            } else {
-                removalPromise = Promise.resolve(proxy);
-            }
-
-            return removalPromise.then(function (removedProxy) {
-                self._removeProxies(removedProxy);
-                deferredUndo.resolve([self.addObject, self, removedProxy.label, removedProxy.serialization]);
-                return removedProxy;
-            });
-        }
-    },
-
-    addComponent: {
-        value: function (labelInOwner, serialization, markup, elementMontageId, identifier, parentProxy, parentElement) {
-            var self = this,
-                deferredUndo,
-                proxy,
-                proxyPromise;
-
-            serialization = Object.clone(serialization);
-
-            if (!labelInOwner) {
-                labelInOwner = this._generateLabel(serialization);
-            }
-
-            //Only set these if they were not explicitly falsy; assume that if they
-            // were explicitly falsy the author is doing so on purpose
-            //TODO I don't like manipulating the serialization without knowing how the package's version of montage would do it
-            // we can work around that but we shouldn't rely on the live stage object/editingController to do the work for us
-            //TODO pull more out of the EditingController
-            if (typeof elementMontageId === "undefined") {
-                elementMontageId = labelInOwner; //TODO format more appropriately for use in DOM?
-                if (!serialization.properties) {
-                    serialization.properties = {};
-                }
-                serialization.properties.element = {"#": elementMontageId};
-            }
-
-            if (typeof identifier === "undefined") {
-                identifier = labelInOwner; //TODO lower case the identifier?
-                if (!serialization.properties) {
-                    serialization.properties = {};
-                }
-                serialization.properties.identifier = identifier;
-            }
-
-            deferredUndo = Promise.defer();
-            self.undoManager.register("Add Component", deferredUndo.promise);
-
-            proxy = ReelProxy.create().init(labelInOwner, serialization, this);
-            proxy.markup = markup; //TODO formalize this, ComponentProxy subclass?
-            proxy.elementMontageId = elementMontageId; //TODO same here
-            proxy.parentProxy = parentProxy;
-
-            if (this._editingController) {
-                proxyPromise = this._editingController.addComponent(labelInOwner, serialization, markup, elementMontageId, identifier, parentProxy, parentElement)
-                    .then(function (newComponent) {
-                        proxy.stageObject = newComponent;
-                        return proxy;
-                    });
-            } else {
-                proxyPromise = Promise.resolve(proxy);
-            }
-
-            return proxyPromise.then(function (resolvedProxy) {
-
-                if (markup) {
-                    resolvedProxy.element = self._createElementFromMarkup(markup, elementMontageId);
-                }
-
-                self._addProxies(resolvedProxy);
-
-//                self.dispatchEventNamed("didAddComponent", true, true, {
-//                    component: resolvedProxy
-//                });
-
-                if (self.selectObjectsOnAddition) {
-                    self.clearSelectedObjects();
-                    self.selectObject(resolvedProxy);
-                }
-
-                deferredUndo.resolve([self.removeComponent, self, resolvedProxy]);
-
-                return resolvedProxy;
-            });
-        }
-    },
-
-    removeComponent: {
         value: function (proxy) {
 
             var self = this,
@@ -695,32 +620,15 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             this.undoManager.register("Remove", deferredUndo.promise);
 
             if (this._editingController) {
-                removalPromise = this._editingController.removeComponent(proxy.stageObject)
-                    .then(function () {
-                        return proxy;
-                    });
+                removalPromise = this._editingController.removeObject(proxy.stageObject);
             } else {
                 removalPromise = Promise.resolve(proxy);
             }
 
             return removalPromise.then(function (removedProxy) {
                 self._removeProxies(removedProxy);
-
-//                self.dispatchEventNamed("didRemoveComponent", true, true, {
-//                    component: removedProxy
-//                });
-
-                deferredUndo.resolve([
-                    self.addComponent,
-                    self,
-                    removedProxy.label,
-                    removedProxy.serialization,
-                    removedProxy.markup,
-                    removedProxy.elementMontageId,
-                    // Only pass along the identifier if it had been explicitly set, not inferred
-                    removedProxy.getPath("properties.identifier")
-                ]);
-
+                // TODO build a template and schedule calling addTemplate/etc.
+                // deferredUndo.resolve([self.addObject, self, removedProxy.label, self.serializationForProxy(removedProxy)]);
                 return removedProxy;
             });
         }

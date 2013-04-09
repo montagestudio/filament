@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="binding-explorer.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "binding-explorer"}
+            }
+        },
+
+        "objectList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "objectList"}
+            },
+            "bindings": {
+                "contentController": {"<-": "@owner.templateObjectsController"}
+            }
+        },
+
+        "objectLabel": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "objectLabel"}
+            },
+            "bindings": {
+                "value": {"<-": "@objectList.objectAtCurrentIteration.label"}
+            }
+        },
+
+        "bindingList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "bindingList"}
+            },
+            "bindings": {
+                "content": {"<-": "@objectList.objectAtCurrentIteration.bindings"}
+            }
+        },
+
+        "bindingEntry": {
+            "prototype": "./binding-entry.reel",
+            "properties": {
+                "element": {"#": "bindingEntry"}
+            },
+            "bindings": {
+                "binding": {"<-": "@bindingList.objectAtCurrentIteration"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="binding-explorer" class="BindingExplorer">
+        <ul data-montage-id="objectList" class="BindingExplorer-objectList">
+            <li class="BindingExplorer-objectList-item">
+                <span data-montage-id="objectLabel" class="BindingExplorer-objectLabel"></span>
+                <ul data-montage-id="bindingList" class="BindingExplorer-bindingList">
+                    <li data-montage-id="bindingEntry"></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
