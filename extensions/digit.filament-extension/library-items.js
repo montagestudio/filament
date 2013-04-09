@@ -6,11 +6,11 @@ var LibraryItem = require("filament-extension/core/library-item.js").LibraryItem
 var packageLocation = require.location;
 
 
-var AnchorLibraryItem = Montage.create(LibraryItem, {
+var ActionSheetLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/anchor.reel",
+            "prototype": "digit/action-sheet.reel",
             "properties": {
                 "value": "Link"
             }
@@ -18,19 +18,19 @@ var AnchorLibraryItem = Montage.create(LibraryItem, {
     },
 
     name: {
-        value: "Anchor"
+        value: "ActionSheet"
     },
 
     label: {
-        value: "Anchor"
+        value: "Action Sheet"
     },
 
     icon: {
-        value: packageLocation + "assets/components/anchor.png"
+        value: packageLocation + "assets/components/action-sheet.png"
     },
 
     html: {
-        value: '<a data-montage-id=""></a>'
+        value: '<div data-montage-id=""></div>'
     }
 
 });
@@ -637,7 +637,7 @@ var VideoLibraryItem = Montage.create(LibraryItem, {
 //TODO build this automatically
 exports.libraryItems = {
 
-    "digit/action-sheet.reel": AnchorLibraryItem,
+    "digit/action-sheet.reel": ActionSheetLibraryItem,
     "digit/audio.reel": AudioLibraryItem,
     "digit/button-group.reel": ButtonGroupLibraryItem,
     "digit/button.reel": ButtonLibraryItem,
