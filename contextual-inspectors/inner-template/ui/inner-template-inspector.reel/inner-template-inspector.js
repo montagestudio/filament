@@ -68,22 +68,8 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
                 return;
             }
 
-            if (this._mutationObserver) {
-                this._mutationObserver.disconnect();
-                this._mutationObserver = null;
-            }
-
             this._objectElement = value;
-
-            if (value) {
-                this._mutationObserver = new WebKitMutationObserver(this.handleMutations.bind(this));
-                this._mutationObserver.observe(value, MUTATION_OBSERVER_CONFIG);
-            }
         }
-    },
-
-    _mutationObserver: {
-        value: null
     },
 
     showForChildComponents: {
@@ -165,13 +151,15 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
                 deserializer = Deserializer.create().init(data, require);
 
             deserializer.deserialize().then(function (prototypeEntry) {
-                self.documentEditor.addLibraryItem(prototypeEntry, self.object, self.templateObjects.innerTemplate.element).done();
+                return self.documentEditor.addLibraryItem(prototypeEntry, self.object, self.templateObjects.innerTemplate.element);
+            }).then(function () {
+                return self.updateInnerTemplate();
             }).done();
         }
     },
 
-    handleMutations: {
-        value: function (mutations) {
+    updateInnerTemplate: {
+        value: function () {
 
             // adapted from montage/ui/component.js innerTemplate.get
             var innerTemplate,
