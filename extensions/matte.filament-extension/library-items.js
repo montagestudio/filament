@@ -67,6 +67,7 @@ var ButtonLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/button.reel",
             "properties": {
+                element: {"#": "button"},
                 label: "Button",
                 enabled: true
             }
@@ -86,7 +87,7 @@ var ButtonLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<button data-montage-id=""></button>'
+        value: '<button data-montage-id="button"></button>'
     }
 
 });
@@ -154,6 +155,7 @@ var InputCheckboxLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/input-checkbox.reel",
             "properties": {
+                element: {"#": "checkbox"},
                 "checked": true
             }
         }
@@ -172,7 +174,7 @@ var InputCheckboxLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input type="checkbox" data-montage-id="">'
+        value: '<input type="checkbox" data-montage-id="checkbox">'
     }
 
 });
@@ -270,6 +272,7 @@ var InputRangeLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/input-range.reel",
             "properties": {
+                "element": {"#": "inputRange"},
                 "minValue": 0,
                 "maxValue": 100,
                 "value": 50
@@ -290,7 +293,7 @@ var InputRangeLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<input type="range" data-montage-id="">'
+        value: '<input type="range" data-montage-id="inputRange">'
     }
 
 });

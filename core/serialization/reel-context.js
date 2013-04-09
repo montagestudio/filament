@@ -9,8 +9,8 @@ exports.ReelContext = Montage.create(Context.prototype, {
     },
 
     init: {
-        value: function(serialization, reviver) {
-            Context.call(this, serialization, reviver);
+        value: function(serialization, reviver, objects) {
+            Context.call(this, serialization, reviver, objects);
 
             return this;
         }
@@ -41,17 +41,36 @@ exports.ReelContext = Montage.create(Context.prototype, {
             for (var label in serialization) {
                 if (serialization.hasOwnProperty(label)) {
                     object = this.getObject(label);
-
-                    //TODO ignoring rejected promises is suspicious...
-                    if (object.then) {
-                        throw new Error("Cannot resolve external reference for label '" + label + "'");
-                    } else {
-                        results.push(object);
-                    }
+                    results.push(object);
                 }
             }
 
             return results;
+        }
+    },
+
+    getObject: {
+        value: function(label) {
+            var serialization = this._serialization,
+                reviver = this._reviver,
+                objects = this._objects,
+                object;
+
+            if (label in objects) {
+                return objects[label];
+            } else if (label in serialization) {
+                object = reviver.reviveRootObject(serialization[label], this, label);
+                // If no object has been set by the reviver we safe its
+                // return, it could be a value or a promise, we need to
+                // make sure the object won't be revived twice.
+                if (!(label in objects)) {
+                    objects[label] = object;
+                }
+
+                return object;
+            } else {
+                throw new Error("Object with label '" + label + "' was not found.");
+            }
         }
     }
 });

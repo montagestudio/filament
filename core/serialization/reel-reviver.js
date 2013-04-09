@@ -8,6 +8,11 @@ exports.ReelReviver = Montage.create(MontageReviver, {
 
     reviveMontageObject: {
         value: function(value, context, label) {
+
+            if (context.hasUserObject(label)) {
+                return context.getUserObject(label);
+            }
+
             var exportId,
                 proxyObject = ReelProxy.create(),
                 revivedSerialization;

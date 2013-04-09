@@ -37,6 +37,7 @@ var RepetitionLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "montage/ui/repetition.reel",
             "properties": {
+                "element": {"#": "repetition"},
                 "content": [1, 2, 3]
             }
         }
@@ -55,7 +56,7 @@ var RepetitionLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<ul data-montage-id=""><li>Item</li></ul>'
+        value: '<ul data-montage-id="repetition"><li>Item</li></ul>'
     }
 
 });
