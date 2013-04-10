@@ -17,7 +17,8 @@
                 "element": {"#": "label"}
             },
             "bindings": {
-                "value": {"<-": "@owner.document.title"}
+                "value": {"<-": "@owner.document.title"},
+                "classList.has('document-dirty')" : { "<-" : "@owner.document.isDirty"}
             }
         },
 
