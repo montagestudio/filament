@@ -196,20 +196,6 @@ exports.ReelDocument = Montage.create(EditingDocument, {
         }
     },
 
-    _createElementFromMarkup: {
-        value: function (markup, id) {
-            //TODO not create an element each time
-            var incubator = this.htmlDocument.createElement('div'),
-                result;
-
-            incubator.innerHTML = markup;
-            result = incubator.removeChild(incubator.firstElementChild);
-            result.setAttribute("data-montage-id", id);
-
-            return result;
-        }
-    },
-
     save: {
         value: function (location, dataWriter) {
             //TODO I think I've made this regex many times...and probably differently
