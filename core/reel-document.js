@@ -516,14 +516,16 @@ exports.ReelDocument = Montage.create(EditingDocument, {
      */
     addLibraryItemFragments: {
         value: function (serializationFragment, htmlFragment) {
-            var labelInOwner = this._generateLabel(serializationFragment);
+            var labelInOwner = this._generateLabel(serializationFragment),
                 templateSerialization = {},
-                self = this;
+                self = this,
+                doc,
+                serializationElement;
 
             templateSerialization [labelInOwner] = serializationFragment;
 
-            var doc = document.implementation.createHTMLDocument();
-            var serializationElement = doc.createElement("script");
+            doc = document.implementation.createHTMLDocument();
+            serializationElement = doc.createElement("script");
             serializationElement.setAttribute("type", "text/montage-serialization");
             serializationElement.appendChild(document.createTextNode(JSON.stringify(templateSerialization)));
             doc.head.appendChild(serializationElement);
