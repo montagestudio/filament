@@ -516,7 +516,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
      */
     addLibraryItemFragments: {
         value: function (serializationFragment, htmlFragment) {
-            var labelInOwner = "button1",
+            var labelInOwner = this._generateLabel(serializationFragment);
                 templateSerialization = {},
                 self = this;
 
@@ -622,8 +622,13 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             var revisedTemplate = sourceTemplate.clone(),
                 revisedSerialization = revisedTemplate.getSerialization();
 
-            revisedSerialization.renameElementReferences(idsCollisionTable);
-            revisedSerialization.renameSerializationLabels(labelsCollisionTable);
+            if (idsCollisionTable) {
+                revisedSerialization.renameElementReferences(idsCollisionTable);
+            }
+            if (labelsCollisionTable) {
+                revisedSerialization.renameSerializationLabels(labelsCollisionTable);
+            }
+
             revisedTemplate.objectsString = revisedSerialization.getSerializationString();
 
             for (var id in idsCollisionTable) {
