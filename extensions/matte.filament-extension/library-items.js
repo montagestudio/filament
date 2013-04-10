@@ -71,7 +71,7 @@ var ButtonLibraryItem = Montage.create(LibraryItem, {
         value: {
             "prototype": "matte/ui/button.reel",
             "properties": {
-                element: {"#": "button"},
+                element: {"#": "button1"},
                 label: "Button",
                 enabled: true
             }
@@ -91,7 +91,7 @@ var ButtonLibraryItem = Montage.create(LibraryItem, {
     },
 
     html: {
-        value: '<button data-montage-id="button"></button>'
+        value: '<button data-montage-id="button1"></button>'
     }
 
 });

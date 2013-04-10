@@ -514,12 +514,9 @@ exports.ReelDocument = Montage.create(EditingDocument, {
      *
      * This will be replaced with an addTemplate or insertTemplate or mergeTemplate
      */
-    addFragment: {
+    addLibraryItemFragments: {
         value: function (serializationFragment, htmlFragment) {
-
-            // Right now a LibraryItem only represents a single object or component
-            // TODO account for a LibraryItem Template consisting of several objects and components
-            var labelInOwner = this._generateLabel(serializationFragment),
+            var labelInOwner = "button1",
                 templateSerialization = {},
                 self = this;
 
@@ -534,74 +531,109 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
             //TODO this seems a bit like undoing the work we just did
             return Template.create().initWithDocument(doc, this._packageRequire).then(function(template) {
-                self._buildSerialization();
-
-                var serializationToMerge = template.getSerialization(),
-                    elementToAppend = template.document.body.children[0],
-                    labelsCollisionTable,
-                    context,
-                    proxy,
-                    proxyElement,
-                    actualLabel;
-
-                // Merge the incoming template into the reelDocument's own template
-                labelsCollisionTable = self._merge(self._template, serializationToMerge, elementToAppend);
-
-                // Prepare a context that knows about the existing editing proxies prior to
-                // creating new editing proxies
-                context = self.deserializationContext(self._template.getSerialization().getSerializationObject(), self._editingProxyMap);
-
-                serializationToMerge.getSerializationLabels().forEach(function (label) {
-
-                    if (labelsCollisionTable && labelsCollisionTable.hasOwnProperty(label)) {
-                        actualLabel = labelsCollisionTable[label];
-                    } else {
-                        actualLabel = label;
-                    }
-
-                    proxy = context.getObject(actualLabel);
-                    self._addProxies(proxy);
-                    proxyElement = proxy.getObjectProperty("element");
-
-                    //TODO formalize this API
-                    //TODO why _template?
-                    self._editingController.owner._template.objectsString = self._template.objectsString;
-                    self._editingController.owner._template.setDocument(self._template.document);
-
-                    //TODO once we insert several labels per libraryItem, we need to know the markup for each inserted object
-                    self._editingController.addComponent(label, serializationFragment, proxyElement.outerHTML, proxyElement ? proxyElement.getAttribute("data-montage-id") : null)
-                        .then(function (newComponents) {
-
-                            for (var label in newComponents) {
-                                // NOTE the objects is a null-prototyped object that does not need
-                                // to be filtered with a hasOwnProperty
-                                self._editingProxyMap[label].stageObject = newComponents[label];
-                            }
-                        }).done();
-
-                });
-
+                return self.addObjectsFromTemplate(template);
             });
         }
     },
 
+    /**
+     * Merges content from the specified template into the Template being edited
+     *
+     * @param {Template} template A Montage template
+     */
+    addObjectsFromTemplate: {
+        value: function (sourceTemplate) {
+
+            // TODO accept a target element
+
+            // Ensure backing template is up to date
+            this._buildSerialization();
+
+            var destinationTemplate = this._template,
+                context,
+                proxy,
+                self = this,
+                revisedTemplate = this._merge(destinationTemplate, sourceTemplate);
+
+            // Prepare a context that knows about the existing editing proxies prior to
+            // creating new editing proxies
+            context = this.deserializationContext(destinationTemplate.getSerialization().getSerializationObject(), this._editingProxyMap);
+
+            revisedTemplate.getSerialization().getSerializationLabels().forEach(function (label) {
+                proxy = context.getObject(label);
+                self._addProxies(proxy);
+            });
+
+            // Introduce the revised template into the stage
+            if (this._editingController) {
+
+                //TODO not sneak this in through the editingController
+                // Make the owner component in the stage look like we expect before trying to install objects
+                this._editingController.owner._template.objectsString = destinationTemplate.objectsString;
+                this._editingController.owner._template.setDocument(destinationTemplate.document);
+
+                self._editingController.addObjectsFromTemplate(revisedTemplate).then(function (objects) {
+                    for (var label in objects) {
+                        if (objects.hasOwnProperty !== "function" || objects.hasOwnProperty(label)) {
+                            self._editingProxyMap[label].stageObject = objects[label];
+                        }
+                    }
+                }).done();
+            }
+        }
+    },
+
+    /**
+     * Merges the content from the sourceTemplate into the destinationTemplate while resolving
+     * collisions between element identifiers and labels that already appear within the
+     * destinationTemplate.
+     *
+     * @param {Template} destinationTemplate The template to merge the sourceTemplate content into
+     * @param {Template} sourceTemplate The template to merge into the destination template
+     *
+     * @returns {Template} The revised template that was logically used to introduce the sourceTemplate into the destinationTemplate
+     * @private
+     */
     _merge: {
-        value: function(template, serialization, element) {
-            var templateSerialization = template.getSerialization(),
+        value: function(destinationTemplate, sourceTemplate) {
+            var serializationToMerge = sourceTemplate.getSerialization(),
+                sourceContentRange,
+                sourceContentFragment,
+                sourceDocument = sourceTemplate.document,
+                templateSerialization = destinationTemplate.getSerialization(),
                 labelsCollisionTable,
                 idsCollisionTable;
 
+            sourceContentRange = sourceDocument.createRange();
+            sourceContentRange.selectNodeContents(sourceDocument.body);
+            sourceContentFragment = sourceContentRange.cloneContents();
+
             // Merge markup
-            idsCollisionTable = template.insertNodeBefore(element, this._ownerElement.lastChild);
-            serialization.renameElementReferences(idsCollisionTable);
+            idsCollisionTable = destinationTemplate.insertNodeBefore(sourceContentFragment, this._ownerElement.lastChild);
+            serializationToMerge.renameElementReferences(idsCollisionTable);
 
             // Merge serialization
-            labelsCollisionTable = templateSerialization.mergeSerialization(serialization);
+            labelsCollisionTable = templateSerialization.mergeSerialization(serializationToMerge);
 
             //Update underlying template string
-            template.objectsString = templateSerialization.getSerializationString();
+            destinationTemplate.objectsString = templateSerialization.getSerializationString();
 
-            return labelsCollisionTable;
+            // Revise the sourceSerialization
+            var revisedTemplate = sourceTemplate.clone(),
+                revisedSerialization = revisedTemplate.getSerialization();
+
+            revisedSerialization.renameElementReferences(idsCollisionTable);
+            revisedSerialization.renameSerializationLabels(labelsCollisionTable);
+            revisedTemplate.objectsString = revisedSerialization.getSerializationString();
+
+            for (var id in idsCollisionTable) {
+                if (typeof idsCollisionTable.hasOwnProperty !== "function" || idsCollisionTable.hasOwnProperty(id)) {
+                    var element = revisedTemplate.getElementById(id);
+                    revisedTemplate.setElementId(element, idsCollisionTable[id]);
+                }
+            }
+
+            return revisedTemplate;
         }
     },
 

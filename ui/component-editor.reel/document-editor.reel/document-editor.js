@@ -123,7 +123,7 @@ exports.DocumentEditor = Montage.create(Component, {
             var data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
                 transferObject = JSON.parse(data);
 
-            this.editingDocument.addFragment(transferObject.serializationFragment, transferObject.htmlFragment).done();
+            this.editingDocument.addLibraryItemFragments(transferObject.serializationFragment, transferObject.htmlFragment).done();
         }
     }
 
