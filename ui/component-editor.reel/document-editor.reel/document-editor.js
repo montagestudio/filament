@@ -86,8 +86,7 @@ exports.DocumentEditor = Montage.create(Component, {
                 selectionCandidate = detail.candidate,
                 isAddingToSelection = detail.addingToSelection,
                 isRemovingFromSelection = detail.removingFromSelection,
-                editingDocument = this.editingDocument,
-                selectedObjects = editingDocument.selectedObjects;
+                editingDocument = this.editingDocument;
 
             selectionCandidate = editingDocument.updateSelectionCandidate(selectionCandidate);
 
@@ -97,22 +96,7 @@ exports.DocumentEditor = Montage.create(Component, {
                 } else if (isRemovingFromSelection) {
                     editingDocument.deselectObject(selectionCandidate);
                 } else {
-                    if (selectedObjects && selectedObjects.length) {
-                        var length = selectedObjects.length;
-                        var wasSelected = false;
-                        for (var i = 0; i < length; i++) {
-                            if (selectedObjects[i] !== selectionCandidate) {
-                                editingDocument.deselectObject(selectedObjects[i]);
-                            } else {
-                                wasSelected = true;
-                            }
-                            if (!wasSelected) {
-                                editingDocument.selectObject(selectionCandidate);
-                            }
-                        }
-                    } else {
-                        editingDocument.selectObject(selectionCandidate);
-                    }
+                    editingDocument.selectedObjects = [selectionCandidate];
                 }
             } else {
                 editingDocument.clearSelectedObjects();
