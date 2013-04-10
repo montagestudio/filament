@@ -20,7 +20,7 @@
 	border: none;
 	border-radius: 0;
 	background: url(/assets/icons/toggle.svg) no-repeat left center;
-	background-size: 14px auto;
+	background-size: 14px;
 	-webkit-transform-origin: 6px center;
 	-webkit-transition: -webkit-transform .1s ease-in-out;
 }
@@ -35,11 +35,11 @@
 
 .FileCell .FileCell-button.open,
 .FileCell .FileCell-button.open:hover {
-    opacity: 1;
     font-weight: bold;
-    border-radius: 20px;
-    background-color: hsla(0,0%,100%,.3);
-    box-shadow: 0 1px 1px hsla(0,0%,0%,.1);
+    color: hsl(0,0%,20%);
+    border-radius: 4px;
+    background-color: hsla(0,0%,100%,1);
+    box-shadow: 0 1px 3px hsla(0,0%,0%,0.1);
 }
 
 .FileCell .FileCell-button {
@@ -52,14 +52,12 @@
 	border-radius: 0;
     border: none;
     font-size: inherit;
-    color: hsl(0,0%,0%);
-    text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
-    opacity: .55;
-    
+    color: hsl(0,0%,40%);
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.3);    
     background: none;
     background-repeat: no-repeat;
     padding-left: 22px;
-    background-size: 14px auto;
+    background-size: 14px;
     background-position: 2px center;
 }
 
@@ -70,34 +68,11 @@
     background-color: transparent;
 }
 
-.FileCell .FileCell-button.folder {
-    background-image: url(/assets/icons/folder.svg);
-}
-
-.FileCell .FileCell-button.reel {
-    background-image: url(/assets/icons/reel.svg);
-}
-
-.FileCell .FileCell-button.html {
-    background-image: url(/assets/icons/file-html.svg);
-}
-
-.FileCell .FileCell-button.css {
-    background-image: url(/assets/icons/file-css.svg);
-}
-
-.FileCell .FileCell-button.js {
-    background-image: url(/assets/icons/file-js.svg);
-}
-
-.FileCell .FileCell-button.json {
-    background-image: url(/assets/icons/file-json.svg);
-}
-
-.FileCell .FileCell-button.image {
-    background-image: url(/assets/icons/image.svg);
-}
-
-.FileCell .FileCell-button.package {
-    background-image: url(/assets/icons/package.svg);
-}
+.FileCell .FileCell-button.folder {     background-image: url(/assets/icons/folder.png); }
+.FileCell .FileCell-button.html {       background-image: url(/assets/icons/file-html.png); }
+.FileCell .FileCell-button.css {        background-image: url(/assets/icons/file-css.png); }
+.FileCell .FileCell-button.js {         background-image: url(/assets/icons/file-js.png); }
+.FileCell .FileCell-button.json {       background-image: url(/assets/icons/file-json.png); }
+.FileCell .FileCell-button.image {      background-image: url(/assets/icons/image.svg); }
+.FileCell .FileCell-button.reel {       background-image: url(/assets/icons/reel.png); }
+.FileCell .FileCell-button.package {    background-image: url(/assets/icons/package.png); }
