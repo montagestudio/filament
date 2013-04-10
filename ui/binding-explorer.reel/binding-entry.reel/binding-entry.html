@@ -10,7 +10,14 @@
                 "element": {"#": "binding-entry"}
             }
         },
-
+        
+        "removeButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "removeButton"}
+            }
+        },
+        
         "targetPath": {
             "prototype": "montage/ui/text.reel",
             "properties": {
@@ -55,10 +62,11 @@
 </head>
 <body>
     <li data-montage-id="binding-entry" class="BindingEntry">
-        <span data-montage-id="targetPath" class="BindingEntry-pill"></span>
-        <span data-montage-id="unidirectionalCondition" class="BindingEntry-direction BindingEntry-direction--unidirectional"></span>
-        <span data-montage-id="bidirectionalCondition" class="BindingEntry-direction BindingEntry-direction--bidirectional"></span>
-        <span data-montage-id="sourcePath" class="BindingEntry-pill"></span>
+        <div data-montage-id="targetPath" class="BindingEntry-pill"></div>
+        <div data-montage-id="unidirectionalCondition" class="BindingEntry-direction BindingEntry-direction--unidirectional"></div>
+        <div data-montage-id="bidirectionalCondition" class="BindingEntry-direction BindingEntry-direction--bidirectional"></div>
+        <div data-montage-id="sourcePath" class="BindingEntry-pill"></div>
+        <button data-montage-id="removeButton" class="BindingEntry-removeButton">×</button>
     </li>
 </body>
 </html>
