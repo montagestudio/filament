@@ -1,67 +1,6 @@
 .BindingJig {
     font-size: 12px;
-    color: hsl(0,0%,30%);
-    background: hsl(0, 0%, 90%);
-}
-
-
-/* BindingJig Tabs ---------------------- */
-
-.BindingJig-tabs {
-    margin: 0;
-    padding: 0;
-    background: -webkit-linear-gradient(top, hsl(0,0%,20%), hsl(0,0%,26%));
-}
-
-.BindingJig-tabs .BindingJig-tabs-tab {
-    position: relative;
-    margin: 0;
-    height: 32px;
-    color: hsl(0,0%,60%);
-    text-shadow: 0 1px 0 hsla(0,0%,0%,.2);
-    border-radius: 0;
-    border: none;
-    border-left: 1px solid hsla(0,0%,100%,.1);
-    border-right: 1px solid hsla(0,0%,0%,.1);
-    background: transparent;
-    cursor: pointer;
-}
-
-.BindingJig-tabs .BindingJig-tabs-tab:hover {
-    color: hsl(0,0%,60%);
-    background: hsla(0,0%,100%,.06);
-}
-
-.BindingJig-tabs .BindingJig-tabs-tab:active,
-.BindingJig-tabs .BindingJig-tabs-tab.selected {
-    color: hsl(0,0%,80%);
-    background: hsl(0,0%,18%);
-    border-top: 1px solid hsla(0,0%,100%,0);
-    border-left: 1px solid hsla(0,0%,100%,0);
-}
-
-.BindingJig-tabs .BindingJig-tabs-tab.selected:after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -3px;
-    margin: 0 0 -5px -5px;
-    width: 10px;
-    height: 10px;
-    background-color: hsl(0,0%,90%);
-    -webkit-transform: rotate(45deg);
-}
-
-
-/* BindingJig Content ---------------------- */
-
-.BindingJig-content {
-    display: none;
-    overflow: auto;
-}
-
-.BindingJig-content.show {
-    display: block;
+    background: hsl(0, 0%, 94%);
 }
 
 
@@ -71,25 +10,38 @@
     display: -webkit-flex;
     -webkit-align-items: center;
     min-width: 500px;
-    padding: 10px;
+    margin: 10px;
 }
 
-.BindingJig-sourceObject {
-    font-size: 14px;
-    color: hsl(0,0%,20%);
-    margin-left: 5px;
-    border-bottom: 1px dashed hsla(0,0%,0%,.2);
+.BindingJig-label {
+    width: 100px;
+    margin-right: 10px;
+    color: hsl(0,0%,50%);
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .BindingJig-input {
     -webkit-flex: 1;
-    margin-left: 5px;
 }
 
-.BindingJig-button {
-    margin: 0 10px 0 5px;
+.BindingJig .matte-Select {
+    margin: 0;
+    height: 24px;
+    padding: 0 16px 0 6px;
 }
 
-.BindingJig-checkbox {
-    margin-left: 5px;
+.BindingJig .matte-InputCheckbox {
+    margin: 0 10px 0 0;
+}
+
+.BindingJig-footer {
+    margin: 10px;
+    text-align: right;
+}
+
+.BindingJig-footer .BindingJig-button {
+    margin: 0 0 0 10px;
 }

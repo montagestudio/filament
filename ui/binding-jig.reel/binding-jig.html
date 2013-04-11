@@ -3,6 +3,7 @@
 <head>
     <title></title>
     <link rel="stylesheet" type="text/css" href="binding-jig.css">
+    <link rel="stylesheet" type="text/css" href="binding-jig-skin.css">
     <script type="text/montage-serialization">
     {
         "owner": {
@@ -127,6 +128,13 @@
             "properties": {
                 "element": {"#":"BindingJigToggle"}
             }
+        },
+        
+        "select": {
+            "prototype": "matte/ui/select.reel",
+            "properties": {
+                "element": {"#":"select"}
+            }
         }
 
     }
@@ -135,29 +143,52 @@
 <body>
 
     <div data-montage-id="binding-jig" class="BindingJig">
-        <menu class="BindingJig-tabs">
-            <button id="BindingJigToggle" data-montage-id="BindingJigToggle" class="BindingJig-tabs-tab">Bindings</button>
-        </menu>
+        
+        <div style="display: none;">
+            <menu class="BindingJig-tabs">
+                <button id="BindingJigToggle" data-montage-id="BindingJigToggle" class="BindingJig-tabs-tab">Bindings</button>
+            </menu>
 
-        <div id="BindingJigContent" class="BindingJig-content">
-
+            <div id="BindingJigContent" class="BindingJig-content">
+        
+                <section class="BindingJig-section">
+                    SourceObject: <span data-montage-id="sourceObjectIdentifier" class="BindingJig-sourceObject">testObject</span>
+                    <button data-montage-id="setSourceObjectButton" class="Button BindingJig-button"></button>
+                </section>
+        
+                <section class="BindingJig-section">
+                    Bound Object: <span data-montage-id="boundObjectIdentifier" class="BindingJig-sourceObject">test2Object</span>
+                    <button data-montage-id="setBoundObjectButton" class="Button BindingJig-button"></button>
+                </section>
+                
+            </div>
+        
+        </div>
+        
+        <!-- Above can probably get removed -->
+        
+        
         <section class="BindingJig-section">
-            SourceObject: <span data-montage-id="sourceObjectIdentifier" class="BindingJig-sourceObject">testObject</span>
-            <button data-montage-id="setSourceObjectButton" class="Button BindingJig-button"></button>
-            Property Path: <input data-montage-id="sourceObjectPropertyPath" class="BindingJig-input" type="text">
+            <label class="BindingJig-label">Source Object:</label>
+            <input data-montage-id="sourceObjectPropertyPath" class="BindingJig-input" type="text">
+        </section>
+        
+        <section class="BindingJig-section">
+            <label class="BindingJig-label">OneWay:</label>
+            <input data-montage-id="oneWayBindingCheckbox" class="BindingJig-checkbox" type="checkbox">
+            <select data-montage-id="select"></select>
+        </section>
+        
+        <section class="BindingJig-section">
+            <label class="BindingJig-label">Bound Object:</label>
+            <input data-montage-id="boundObjectPropertyPath" class="BindingJig-input" type="text">
         </section>
 
-        <section class="BindingJig-section">
-            Bound Object: <span data-montage-id="boundObjectIdentifier" class="BindingJig-sourceObject">test2Object</span>
-            <button data-montage-id="setBoundObjectButton" class="Button BindingJig-button"></button>
-            Property Path: <input data-montage-id="boundObjectPropertyPath" class="BindingJig-input" type="text">
-        </section>
-
-        <section class="BindingJig-section">
-            OneWay: <input data-montage-id="oneWayBindingCheckbox" class="BindingJig-checkbox" type="checkbox">
-            <button data-montage-id="defineBindingButton" class="Button Button--action BindingJig-button"></button>
-            <button data-montage-id="deleteBindingButton" class="Button BindingJig-button"></button>
-        </section>
+        <footer class="BindingJig-footer">
+            <button data-montage-id="deleteBindingButton"></button>
+            <button data-montage-id="defineBindingButton" class="Button--action"></button>
+        </footer>
+        
 
     </div>
 
