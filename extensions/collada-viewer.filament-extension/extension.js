@@ -94,15 +94,10 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
             //consider using event.detail.isCurrentDocument
             if (this.editorFileMatchFunction(location)) {
                 //console.log("convert file a location file location:"+location);
-                debugger;
                 this.assetCompiler.convert(location).then(function(outputURL) {
                     self.projectController.currentDocument.compiledFileURL = outputURL;
                 }, function(e) {}).done();
 
-                //this.assetCompiler.convert(location, function(outputURL) {
-                //    self.projectController.currentDocument.compiledFileURL = outputURL;
-                    //console.log("converted file:"+outputURL);
-                //});
             }
         }
     },
