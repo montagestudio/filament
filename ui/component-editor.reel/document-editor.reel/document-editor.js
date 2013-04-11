@@ -84,7 +84,6 @@ exports.DocumentEditor = Montage.create(Component, {
 
     handleSelectedObjectsRangeChange: {
         value: function (plus, minus, index) {
-            console.log("handleSelectedObjectsRangeChange");
             var self = this;
             var selectedObjects = this.getPath("editingDocument.selectedObjects");
             if (selectedObjects && selectedObjects.length === 1) {
