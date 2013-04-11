@@ -21,7 +21,8 @@
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#edge-matte",
         "minit": "0.3.0-alpha",
         "minimatch": "0.2.9",
-        "underscore": "1.4.4"
+        "underscore": "1.4.4",
+        "glTF-webgl-viewer":"git+ssh://git@github.com:fabrobinet/glTF-webgl-viewer.git"
     },
     "devDependencies": {
         "jasmine-node": "1.2.2",
@@ -35,6 +36,10 @@
         "filament-extension": {
             "name": "filament-extension",
             "location": "filament-extension"
+        },
+        "filament-asset-compiler": {
+            "name": "filament-asset-compiler",
+            "location": "filament-asset-compiler"
         }
     },
     "scripts": {
