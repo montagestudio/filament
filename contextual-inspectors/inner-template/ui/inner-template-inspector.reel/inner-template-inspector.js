@@ -31,7 +31,7 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
 
     didCreate: {
         value: function () {
-            this.defineBinding("objectElement", {"<-": "object.element"});
+            this.defineBinding("objectElement", {"<-": "object.properties.get('element')"});
         }
     },
 
@@ -145,16 +145,20 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
 
     handleDrop: {
         value: function (event) {
-            var self = this,
-                // TODO: security issues?
-                data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
-                deserializer = Deserializer.create().init(data, require);
+            var self = this;
+            var data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
+                transferObject = JSON.parse(data);
 
-            deserializer.deserialize().then(function (prototypeEntry) {
-                return self.documentEditor.addLibraryItem(prototypeEntry, self.object, self.templateObjects.innerTemplate.element);
-            }).then(function () {
+            this.documentEditor.editingDocument.addLibraryItemFragments(
+                transferObject.serializationFragment,
+                transferObject.htmlFragment,
+                self.object,
+                self.templateObjects.innerTemplate.element
+            )
+            .then(function () {
                 return self.updateInnerTemplate();
-            }).done();
+            })
+            .done();
         }
     },
 

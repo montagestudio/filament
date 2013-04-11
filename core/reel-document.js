@@ -501,7 +501,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
      * This will be replaced with an addTemplate or insertTemplate or mergeTemplate
      */
     addLibraryItemFragments: {
-        value: function (serializationFragment, htmlFragment) {
+        value: function (serializationFragment, htmlFragment, parentProxy, stageElement) {
             var labelInOwner = this._generateLabel(serializationFragment),
                 templateSerialization = {},
                 self = this,
@@ -519,7 +519,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
             //TODO this seems a bit like undoing the work we just did
             return Template.create().initWithDocument(doc, this._packageRequire).then(function(template) {
-                return self.addObjectsFromTemplate(template);
+                return self.addObjectsFromTemplate(template, parentProxy, stageElement);
             });
         }
     },
@@ -530,10 +530,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
      * @param {Template} template A Montage template
      */
     addObjectsFromTemplate: {
-        value: function (sourceTemplate) {
-
-            // TODO accept a target element
-
+        value: function (sourceTemplate, parentProxy, stageElement) {
             // Ensure backing template is up to date
             this._buildSerialization();
 
@@ -541,7 +538,10 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 context,
                 proxy,
                 self = this,
-                revisedTemplate = this._merge(destinationTemplate, sourceTemplate);
+                templateElement = (parentProxy) ? parentProxy.getObjectProperty("element") : void 0,
+                revisedTemplate = this._merge(destinationTemplate, sourceTemplate, templateElement);
+
+            var ownerProxy = this.editingProxyMap.owner;
 
             // Prepare a context that knows about the existing editing proxies prior to
             // creating new editing proxies
@@ -549,6 +549,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
             revisedTemplate.getSerialization().getSerializationLabels().forEach(function (label) {
                 proxy = context.getObject(label);
+                proxy.parentProxy = parentProxy || ownerProxy;
                 self._addProxies(proxy);
             });
 
@@ -560,13 +561,13 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 this._editingController.owner._template.objectsString = destinationTemplate.objectsString;
                 this._editingController.owner._template.setDocument(destinationTemplate.document);
 
-                self._editingController.addObjectsFromTemplate(revisedTemplate).then(function (objects) {
+                return self._editingController.addObjectsFromTemplate(revisedTemplate, stageElement).then(function (objects) {
                     for (var label in objects) {
                         if (objects.hasOwnProperty !== "function" || objects.hasOwnProperty(label)) {
                             self._editingProxyMap[label].stageObject = objects[label];
                         }
                     }
-                }).done();
+                });
             }
         }
     },
@@ -583,7 +584,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
      * @private
      */
     _merge: {
-        value: function(destinationTemplate, sourceTemplate) {
+        value: function(destinationTemplate, sourceTemplate, templateElement) {
             var serializationToMerge = sourceTemplate.getSerialization(),
                 sourceContentRange,
                 sourceContentFragment,
@@ -597,7 +598,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             sourceContentFragment = sourceContentRange.cloneContents();
 
             // Merge markup
-            idsCollisionTable = destinationTemplate.insertNodeBefore(sourceContentFragment, this._ownerElement.lastChild);
+            idsCollisionTable = destinationTemplate.insertNodeBefore(sourceContentFragment, (templateElement || this._ownerElement).lastChild);
             serializationToMerge.renameElementReferences(idsCollisionTable);
 
             // Merge serialization
