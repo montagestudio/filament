@@ -2,25 +2,6 @@ var Montage = require("montage/core/core").Montage,
     Panel = require("ui/panel.reel").Panel,
     RangeController = require("montage/core/range-controller").RangeController;
 
-// Add custom value components
-var propertyInspector = require("palette/ui/inspector/property-inspector.reel");
-
-// Lumieres file open dialog
-var fileInspector = propertyInspector.PropertyTypeComponentDescriptor.create().init(
-    require("ui/inspector/file.reel").File,
-    "div",
-    "value"
-);
-propertyInspector.addPropertyTypeComponentDescriptor("file", fileInspector);
-
-var jsonInspector = propertyInspector.PropertyTypeComponentDescriptor.create().init(
-    require("ui/inspector/array.reel").Array,
-    "div",
-    "array"
-);
-propertyInspector.addPropertyTypeComponentDescriptor("array", jsonInspector);
-
-
 exports.Configurator = Montage.create(Panel, {
 
     didCreate: {
