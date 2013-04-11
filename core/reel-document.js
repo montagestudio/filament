@@ -589,7 +589,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                             self._editingProxyMap[label].stageObject = objects[label];
                         }
                     }
-                    
+
                     return addedProxies;
                 });
             } else {
@@ -684,14 +684,14 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 removalPromise = Promise.resolve(proxy);
             }
 
-            return removalPromise.then(function (removedProxy) {
-                self._removeProxies(removedProxy);
+            return removalPromise.then(function () {
+                self._removeProxies(proxy);
 
-                self._templateForProxy(removedProxy).then(function (restorationTemplate) {
+                self._templateForProxy(proxy).then(function (restorationTemplate) {
                     deferredUndo.resolve([self.addObjectsFromTemplate, self, restorationTemplate]);
                 }).done();
 
-                return removedProxy;
+                return proxy;
             });
         }
     },
