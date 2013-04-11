@@ -97,7 +97,6 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
                 this.assetCompiler.convert(location).then(function(outputURL) {
                     self.projectController.currentDocument.compiledFileURL = outputURL;
                 }, function(e) {}).done();
-
             }
         }
     },
