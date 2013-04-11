@@ -19,7 +19,8 @@
         "watchr": "2.3.3",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git",
         "minit": "0.2.0-alpha",
-        "minimatch": "0.2.9"
+        "minimatch": "0.2.9",
+        "glTF-node-module": "git+ssh://git@github.com:declarativ/glTF-node-module.git"
     },
     "devDependencies": {
         "jasmine-node": "1.2.2",
@@ -32,6 +33,14 @@
         "filament-extension": {
             "name": "filament-extension",
             "location": "filament-extension"
+        },
+        "filament-asset-compiler": {
+            "name": "filament-asset-compiler",
+            "location": "filament-asset-compiler"
+        },
+        "asset-compilers": {
+            "name": "asset-compilers",
+            "location": "asset-compilers"
         }
     },
     "scripts": {
