@@ -45,3 +45,57 @@
 .BindingJig-footer .BindingJig-button {
     margin: 0 0 0 10px;
 }
+
+
+/* BindingJig direction ---------------------- */
+
+.BindingJig-direction {
+    position: relative;
+    padding-left: 1px;
+    margin: 0 6px 0 0;
+    font-size: 0;
+}
+
+.BindingJig-radio {
+    margin: 0 0 0 -1px;
+    width: 24px;
+    height: 24px;
+    background-position: center 1px, center;
+    background-repeat: no-repeat;
+    border-color: hsl(0,0%,80%);
+    background-color: hsl(0,0%,94%);
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,1), 0 1px 2px hsla(0,0%,0%,0.1);
+}
+
+.BindingJig-radio:hover {
+    background-color: hsla(0,0%,0%,.02);
+}
+
+.BindingJig-radio:checked {
+    background-color: hsl(210,100%,90%);
+    border-color: hsl(210,100%,80%);
+    box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.08), 0 1px 0 hsla(0,0%,100%,.6);
+}
+
+.BindingJig-radio:focus {
+    border-color: hsl(210,100%,70%);
+    background-color: hsla(210,100%,60%,0.1);
+}
+
+.BindingJig-radio--undirectional {
+    border-radius: 3px 0 0 3px;
+    background-image: url(/assets/icons/binding.svg),
+                        -webkit-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+}
+.BindingJig-radio--undirectional:checked {
+    background-image: url(/assets/icons/binding.svg);
+}
+
+.BindingJig-radio--bidirectional {
+    border-radius: 0 3px 3px 0;
+    background-image: url(/assets/icons/binding-bi.svg),
+                        -webkit-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+}
+.BindingJig-radio--bidirectional:checked {
+    background-image: url(/assets/icons/binding-bi.svg);
+}

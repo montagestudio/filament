@@ -135,6 +135,20 @@
             "properties": {
                 "element": {"#":"select"}
             }
+        },
+        
+        "undirectional": {
+            "prototype": "matte/ui/input-radio.reel",
+            "properties": {
+                "element": {"#":"undirectional"}
+            }
+        },
+        
+        "bidirectional": {
+            "prototype": "matte/ui/input-radio.reel",
+            "properties": {
+                "element": {"#":"bidirectional"}
+            }
         }
 
     }
@@ -161,6 +175,8 @@
                     <button data-montage-id="setBoundObjectButton" class="Button BindingJig-button"></button>
                 </section>
                 
+                <input data-montage-id="oneWayBindingCheckbox" class="BindingJig-checkbox" type="checkbox">
+                
             </div>
         
         </div>
@@ -174,8 +190,11 @@
         </section>
         
         <section class="BindingJig-section">
-            <label class="BindingJig-label">OneWay:</label>
-            <input data-montage-id="oneWayBindingCheckbox" class="BindingJig-checkbox" type="checkbox">
+            <label class="BindingJig-label">Direction:</label>
+            <span class="BindingJig-direction">
+                <input data-montage-id="undirectional" class="BindingJig-radio BindingJig-radio--undirectional" type="radio" name="direction">
+                <input data-montage-id="bidirectional" class="BindingJig-radio BindingJig-radio--bidirectional" type="radio" name="direction">
+            </span>
             <select data-montage-id="select"></select>
         </section>
         
