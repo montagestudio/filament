@@ -253,17 +253,6 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
             //TODO not simply stick this on the object; the inspector needs it right now
             proxy.packageRequire = this._packageRequire;
-
-            //TODO not blindly append to the end of the body
-            //TODO react to changing the element?
-            if (proxy.element && !proxy.element.parentNode) {
-                var parentProxy = proxy.parentProxy;
-                if (parentProxy && parentProxy.element) {
-                    parentProxy.element.appendChild(proxy.element);
-                } else {
-                    this._ownerElement.appendChild(proxy.element);
-                }
-            }
         }
     },
 
@@ -494,6 +483,36 @@ exports.ReelDocument = Montage.create(EditingDocument, {
         }
     },
 
+    _templateForProxy: {
+        value: function (proxy) {
+
+            // TODO gather proxies that are children of this seeing as we're including their elements
+
+            var doc,
+                serializationElement,
+                sourceDocument = this._template.document,
+                proxySerializationFragment = this.serializationForProxy(proxy),
+                proxySerialization = {},
+                proxyElement = proxy.properties.get("element"),
+                importedNode;
+
+            proxySerialization[proxy.label] = proxySerializationFragment;
+
+            doc = sourceDocument.implementation.createHTMLDocument();
+            serializationElement = doc.createElement("script");
+            serializationElement.setAttribute("type", "text/montage-serialization");
+            serializationElement.appendChild(document.createTextNode(JSON.stringify(proxySerialization)));
+            doc.head.appendChild(serializationElement);
+
+            if (proxyElement) {
+                importedNode = doc.importNode(proxyElement, true);
+                doc.body.appendChild(importedNode);
+            }
+
+            return Template.create().initWithDocument(doc, this._packageRequire);
+        }
+    },
+
     /**
      * The method is a temporary anomaly that accepts what our library items currently are
      * and builds a template for merging
@@ -517,7 +536,6 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             doc.head.appendChild(serializationElement);
             doc.body.innerHTML = htmlFragment;
 
-            //TODO this seems a bit like undoing the work we just did
             return Template.create().initWithDocument(doc, this._packageRequire).then(function(template) {
                 return self.addObjectsFromTemplate(template, parentProxy, stageElement);
             });
@@ -537,11 +555,14 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             var destinationTemplate = this._template,
                 context,
                 proxy,
+                addedProxies = [],
                 self = this,
                 templateElement = (parentProxy) ? parentProxy.getObjectProperty("element") : void 0,
-                revisedTemplate = this._merge(destinationTemplate, sourceTemplate, templateElement);
+                revisedTemplate,
+                ownerProxy;
 
-            var ownerProxy = this.editingProxyMap.owner;
+            revisedTemplate = this._merge(destinationTemplate, sourceTemplate, templateElement);
+            ownerProxy = this.editingProxyMap.owner;
 
             // Prepare a context that knows about the existing editing proxies prior to
             // creating new editing proxies
@@ -551,6 +572,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 proxy = context.getObject(label);
                 proxy.parentProxy = parentProxy || ownerProxy;
                 self._addProxies(proxy);
+                addedProxies.push(proxy);
             });
 
             // Introduce the revised template into the stage
@@ -567,7 +589,11 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                             self._editingProxyMap[label].stageObject = objects[label];
                         }
                     }
+                    
+                    return addedProxies;
                 });
+            } else {
+                return Promise.resolve(addedProxies);
             }
         }
     },
@@ -645,6 +671,13 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
             this.undoManager.register("Remove", deferredUndo.promise);
 
+            //TODO handle removing any child proxies
+
+            var element = proxy.properties.get("element");
+            if (element) {
+                element.parentNode.removeChild(element);
+            }
+
             if (this._editingController) {
                 removalPromise = this._editingController.removeObject(proxy.stageObject);
             } else {
@@ -653,8 +686,11 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
             return removalPromise.then(function (removedProxy) {
                 self._removeProxies(removedProxy);
-                // TODO build a template and schedule calling addTemplate/etc.
-                // deferredUndo.resolve([self.addObject, self, removedProxy.label, self.serializationForProxy(removedProxy)]);
+
+                self._templateForProxy(removedProxy).then(function (restorationTemplate) {
+                    deferredUndo.resolve([self.addObjectsFromTemplate, self, restorationTemplate]);
+                }).done();
+
                 return removedProxy;
             });
         }

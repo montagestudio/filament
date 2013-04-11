@@ -4,11 +4,28 @@ var Montage = require("montage").Montage,
     mockReelDocument = require("test/mocks/reel-document-mocks").mockReelDocument,
     WAITSFOR_TIMEOUT = 2500;
 
+var templateWithSerializationAndBodyContent = function (serializationObject, htmlString) {
+    var doc = document.implementation.createHTMLDocument();
+    var serializationElement = doc.createElement("script");
+    serializationElement.setAttribute("type", "text/montage-serialization");
+    serializationElement.appendChild(document.createTextNode(JSON.stringify(serializationObject)));
+    doc.head.appendChild(serializationElement);
+    doc.body.innerHTML = htmlString;
+
+
+    return Template.create().initWithDocument(doc);
+};
+
 describe("core/reel-document-headless-editing-spec", function () {
 
     var reelDocumentPromise;
 
     beforeEach(function () {
+
+        Template._templateCache = {
+            moduleId: Object.create(null)
+        };
+
         reelDocumentPromise = mockReelDocument("foo/bar/mock.reel", {
             "owner": {
                 "properties": {
@@ -24,54 +41,59 @@ describe("core/reel-document-headless-editing-spec", function () {
             "bar": {
                 "prototype": "bar-exportId"
             }
-        }, '<div data-montage-id="ownerElement"></div><div data-montage-id="foo"></div>');
+        }, '<div data-montage-id="ownerElement"><div data-montage-id="foo"></div></div>');
     });
 
-    describe("adding a component", function () {
+    describe("adding a single component", function () {
+        var readyPromise;
 
-        var labelInOwner = "myComponent",
-            serialization = {prototype: "test/my-component.reel"},
-            markup = '<div></div>',
-            elementMontageId = "myComponentId",
-            identifier = "myComponentIdentifier";
+        beforeEach(function () {
+            var serialization = {
+                "myComponent": {
+                    "prototype": "test/my-component.reel",
+                    "properties": {
+                        "element": {"#": "myComponent"}
+                    }
+                }
+            };
+
+            var markup = '<div data-montage-id="myComponent"></div>';
+
+            readyPromise = Promise.all([reelDocumentPromise, templateWithSerializationAndBodyContent(serialization, markup)]);
+        });
 
         it("should return a promise for a proxy of the added component", function () {
-            return reelDocumentPromise.then(function (reelDocument) {
-                var addedComponent = reelDocument.addComponent(labelInOwner, serialization, markup, elementMontageId, identifier);
-                expect(Promise.isPromiseAlike(addedComponent)).toBeTruthy();
-                return addedComponent;
-            }).timeout(WAITSFOR_TIMEOUT).done();
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                var addedObjects = reelDocument.addObjectsFromTemplate(insertionTemplate);
+                expect(Promise.isPromiseAlike(addedObjects)).toBeTruthy();
+                addedObjects.done();
+            }).timeout(WAITSFOR_TIMEOUT);
         });
 
         it("should add the proxy to the editing document", function () {
-            return reelDocumentPromise.then(function (reelDocument) {
-                var addedComponent = reelDocument.addComponent(labelInOwner, serialization, markup, elementMontageId, identifier);
-                return addedComponent.then(function (proxy) {
-                    expect(proxy).toBeTruthy();
-                    expect(reelDocument.editingProxyMap[labelInOwner]).toBe(proxy);
-                    expect(reelDocument.editingProxies.indexOf(proxy) >= 0).toBeTruthy();
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (proxies) {
+                    expect(proxies).toBeTruthy();
+                    expect(proxies.length).toBe(1);
+                    expect(reelDocument.editingProxyMap.myComponent).toBe(proxies[0]);
+                    expect(reelDocument.editingProxies.indexOf(proxies[0]) >= 0).toBeTruthy();
                 });
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
         it("should add the component to the serialization of the editing document", function () {
-            return reelDocumentPromise.then(function (reelDocument) {
-                var addedComponent = reelDocument.addComponent(labelInOwner, serialization, markup, elementMontageId, identifier),
-                    templateSerialization;
-
-                return addedComponent.then(function (proxy) {
-                    templateSerialization = reelDocument._buildSerialization();
-                    expect(templateSerialization[labelInOwner]).toBeTruthy();
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (proxies) {
+                    var templateSerialization = reelDocument._buildSerialization();
+                    expect(templateSerialization.myComponent).toBeTruthy();
                 });
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
         it("should add the component's element to the htmlDocument of the editing document", function () {
-            return reelDocumentPromise.then(function (reelDocument) {
-                var addedComponent = reelDocument.addComponent(labelInOwner, serialization, markup, elementMontageId, identifier);
-
-                return addedComponent.then(function (proxy) {
-                    var addedElement = reelDocument.htmlDocument.querySelector("[data-montage-id=myComponentId]");
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (proxies) {
+                    var addedElement = reelDocument.htmlDocument.querySelector("[data-montage-id=myComponent]");
                     expect(addedElement).toBeTruthy();
                 });
             }).timeout(WAITSFOR_TIMEOUT);
@@ -85,10 +107,10 @@ describe("core/reel-document-headless-editing-spec", function () {
         it("should return a promise for a removed proxy", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxyToRemove = reelDocument.editingProxyMap[labelInOwner],
-                    removalPromise = reelDocument.removeComponent(proxyToRemove);
+                    removalPromise = reelDocument.removeObject(proxyToRemove);
 
                 expect(Promise.isPromiseAlike(removalPromise)).toBeTruthy();
-                return removalPromise;
+                removalPromise.done();
             }).timeout(WAITSFOR_TIMEOUT).done();
         });
 
@@ -96,7 +118,7 @@ describe("core/reel-document-headless-editing-spec", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxyToRemove = reelDocument.editingProxyMap[labelInOwner];
 
-                return reelDocument.removeComponent(proxyToRemove).then(function (removedProxy) {
+                return reelDocument.removeObject(proxyToRemove).then(function (removedProxy) {
                     expect(removedProxy).toBeTruthy();
                     expect(reelDocument.editingProxyMap[labelInOwner]).toBeUndefined();
                     expect(reelDocument.editingProxies.indexOf(removedProxy) === -1).toBeTruthy();
@@ -107,7 +129,7 @@ describe("core/reel-document-headless-editing-spec", function () {
         it("should remove the component from the serialization of the editing document", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxyToRemove = reelDocument.editingProxyMap[labelInOwner],
-                    removalPromise = reelDocument.removeComponent(proxyToRemove),
+                    removalPromise = reelDocument.removeObject(proxyToRemove),
                     templateSerialization;
 
                 return removalPromise.then(function () {
@@ -120,7 +142,7 @@ describe("core/reel-document-headless-editing-spec", function () {
         it("should remove the component's element from the htmlDocument of the editing document", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxyToRemove = reelDocument.editingProxyMap[labelInOwner],
-                    removalPromise = reelDocument.removeComponent(proxyToRemove);
+                    removalPromise = reelDocument.removeObject(proxyToRemove);
 
                 return removalPromise.then(function () {
                     var removedElement = reelDocument.htmlDocument.querySelector("[data-montage-id=foo]");
@@ -132,7 +154,7 @@ describe("core/reel-document-headless-editing-spec", function () {
         it("must not remove any other components from the serialization of the editing document", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxyToRemove = reelDocument.editingProxyMap[labelInOwner],
-                    removalPromise = reelDocument.removeComponent(proxyToRemove),
+                    removalPromise = reelDocument.removeObject(proxyToRemove),
                     templateSerialization;
 
                 return removalPromise.then(function () {
@@ -147,7 +169,7 @@ describe("core/reel-document-headless-editing-spec", function () {
         it("should add an undo operation for this removal", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxyToRemove = reelDocument.editingProxyMap[labelInOwner],
-                    removalPromise = reelDocument.removeComponent(proxyToRemove),
+                    removalPromise = reelDocument.removeObject(proxyToRemove),
                     templateSerialization;
 
                 return removalPromise.then(function () {
@@ -159,17 +181,17 @@ describe("core/reel-document-headless-editing-spec", function () {
         it("should undo removal operation by adding a similar component", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxyToRemove = reelDocument.editingProxyMap[labelInOwner];
-                var removalPromise = reelDocument.removeComponent(proxyToRemove);
+                var removalPromise = reelDocument.removeObject(proxyToRemove);
 
                 return removalPromise.then(function () {
                     return reelDocument.undo();
-                }).then(function (undoPerformed) {
+                }).then(function (undoResult) {
                     var addedProxy = reelDocument._editingProxyMap[labelInOwner];
                     expect(addedProxy).toBeTruthy();
 
                     expect(addedProxy).not.toBe(proxyToRemove);
 
-                    expect(addedProxy.element.getAttribute("data-montage-id")).toBe("foo");
+                    expect(addedProxy.properties.get("element").getAttribute("data-montage-id")).toBe("foo");
                     expect(addedProxy.exportId).toBe("ui/foo.reel");
                     expect(addedProxy.exportName).toBe("Foo");
                     expect(addedProxy.identifier).toBe(labelInOwner);
@@ -181,37 +203,45 @@ describe("core/reel-document-headless-editing-spec", function () {
         });
     });
 
-    describe("adding an object", function () {
+    describe("adding a single object", function () {
+        var readyPromise;
 
-        var labelInOwner = "myObject",
-            serialization = {prototype: "test/my-object"};
+        beforeEach(function () {
+            var serialization = {
+                "myController": {
+                    "prototype": "test/my-controller"
+                }
+            };
+
+            var markup = '';
+
+            readyPromise = Promise.all([reelDocumentPromise, templateWithSerializationAndBodyContent(serialization, markup)]);
+        });
 
         it("should return a promise for a proxy of the added object", function () {
-            return reelDocumentPromise.then(function (reelDocument) {
-                var addedObject = reelDocument.addObject(labelInOwner, serialization);
-                expect(Promise.isPromiseAlike(addedObject)).toBeTruthy();
-                return addedObject;
-            }).timeout(WAITSFOR_TIMEOUT).done();
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                var addedObjects = reelDocument.addObjectsFromTemplate(insertionTemplate);
+                expect(Promise.isPromiseAlike(addedObjects)).toBeTruthy();
+                addedObjects.done();
+            }).timeout(WAITSFOR_TIMEOUT);
         });
 
         it("should add the proxy to the editing document", function () {
-            return reelDocumentPromise.then(function (reelDocument) {
-                return reelDocument.addObject(labelInOwner, serialization).then(function (proxy) {
-                    expect(proxy).toBeTruthy();
-                    expect(reelDocument.editingProxyMap[labelInOwner]).toBe(proxy);
-                    expect(reelDocument.editingProxies.indexOf(proxy) >= 0).toBeTruthy();
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (addedObjects) {
+                    expect(addedObjects).toBeTruthy();
+                    expect(addedObjects.length).toBe(1);
+                    expect(reelDocument.editingProxyMap.myController).toBe(addedObjects[0]);
+                    expect(reelDocument.editingProxies.indexOf(addedObjects[0]) >= 0).toBeTruthy();
                 });
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
         it("should add the component to the serialization of the editing document", function () {
-            return reelDocumentPromise.then(function (reelDocument) {
-                var addedObject = reelDocument.addObject(labelInOwner, serialization),
-                    templateSerialization;
-
-                return addedObject.then(function (proxy) {
-                    templateSerialization = reelDocument._buildSerialization();
-                    expect(templateSerialization[labelInOwner]).toBeTruthy();
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (addedObjects) {
+                    var templateSerialization = reelDocument._buildSerialization();
+                    expect(templateSerialization.myController).toBeTruthy();
                 });
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -229,8 +259,8 @@ describe("core/reel-document-headless-editing-spec", function () {
                     removalPromise = reelDocument.removeObject(proxyToRemove);
 
                 expect(Promise.isPromiseAlike(removalPromise)).toBeTruthy();
-                return removalPromise;
-            }).timeout(WAITSFOR_TIMEOUT).done();
+                removalPromise.done();
+            }).timeout(WAITSFOR_TIMEOUT);
         });
 
         it("should remove the proxy from the editing document", function () {
@@ -281,10 +311,6 @@ describe("core/reel-document-headless-editing-spec", function () {
         var labelInOwner = "bar",
             proxyToEdit;
 
-        beforeEach(function () {
-
-        });
-
         it("should set the property on the proxy to be the expected value", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxyToEdit = reelDocument.editingProxyMap[labelInOwner];
@@ -305,10 +331,6 @@ describe("core/reel-document-headless-editing-spec", function () {
                 expect(templateSerialization[labelInOwner].properties.prop).toBe("myValue");
             });
         });
-
-    });
-
-    describe("adding a serialized editing payload", function () {
 
     });
 
