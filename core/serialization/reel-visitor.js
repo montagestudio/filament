@@ -105,13 +105,31 @@ exports.ReelVisitor = Montage.create(MontageVisitor, {
                 value = this.serializeBindingProxies(object.bindings);
 
             } else if ("listeners" === unitName) {
-                //TODO implement this
-                value = object.listeners;
+                value = this.serializeListenerProxies(object.listeners);
             }
 
             if (value != null) {
                 malker.visit(value, unitName);
             }
+        }
+    },
+
+    serializeListenerProxies: {
+        value: function (listeners) {
+            var outputs = [];
+            var hasListeners;
+
+            listeners.forEach(function (value) {
+                var output = {};
+                output.type = value.type;
+                output.useCapture = value.useCapture;
+                output.listener = {"@": value.listener.label};
+
+                outputs.push(output);
+                hasListeners = true;
+            });
+
+            return hasListeners ? outputs : undefined;
         }
     },
 
@@ -154,6 +172,6 @@ exports.ReelVisitor = Montage.create(MontageVisitor, {
                 builderObject.setProperty("object", objectId);
             }
         }
-    },
+    }
 
 });
