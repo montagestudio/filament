@@ -213,6 +213,13 @@ exports.Main = Montage.create(Component, {
 
     draw: {
         value: function () {
+
+            //TODO this is a hack to work around enterDocument having not been called REMOVE when fixed
+            if (typeof DID_ENTER_DOCUMENT === "undefined") {
+                this.enterDocument(true);
+                DID_ENTER_DOCUMENT = true;
+            }
+
             if (this.windowTitle) {
                 document.title = this.windowTitle;
             }
