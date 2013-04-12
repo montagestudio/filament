@@ -789,9 +789,9 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
     addOwnedObjectEventListener: {
         value: function (proxy, type, listener, useCapture) {
-            var listener = proxy.addObjectEventListener(type, listener, useCapture);
+            var listenerEntry = proxy.addObjectEventListener(type, listener, useCapture);
 
-            if (listener) {
+            if (listenerEntry) {
                 if (this._editingController) {
                     // TODO register the listener on the stage, make sure we can remove it later
                 }
@@ -799,7 +799,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 this.undoManager.register("Add Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listener]));
             }
 
-            return listener;
+            return listenerEntry;
         }
     },
 
