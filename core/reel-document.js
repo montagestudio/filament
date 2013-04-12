@@ -739,9 +739,9 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 //TODO clean this up, the editingController should probably be involved
                 if (proxy.stageObject) {
                     if (proxy.stageObject.setPath) {
-                        proxy.stageObject.setPath(property, null);
+                        proxy.stageObject.setPath(property, value);
                     } else if (this.stageObject.setProperty) {
-                        proxy.stageObject.setProperty(property, null);
+                        proxy.stageObject.setProperty(property, value);
                     }
                 }
             }
