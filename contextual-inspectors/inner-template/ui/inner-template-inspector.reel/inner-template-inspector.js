@@ -12,7 +12,7 @@ var Template = require("montage/core/template").Template;
 var MimeTypes = require("core/mime-types");
 
 var INSPECTOR_HEIGHT = 200;
-var INSPECTOR_PADDING = 10;
+var INSPECTOR_PADDING = 16;
 
 // configuration of the observer:
 var MUTATION_OBSERVER_CONFIG = {
