@@ -165,7 +165,6 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
 
     handleObjectPropertiesMapChange: {
         value: function () {
-            console.log("handleObjectPropertiesMapChange");
             var self = this;
             // need to wait until the next tick so that the serialization
             // can be rebuilt
