@@ -34,7 +34,7 @@
                 "element": {"#": "unidirectionalCondition"}
             },
             "bindings": {
-                "condition": {"<-": "!@owner.binding.twoWay"}
+                "condition": {"<-": "@owner.binding.oneway"}
             }
         },
 
@@ -44,7 +44,7 @@
                 "element": {"#": "bidirectionalCondition"}
             },
             "bindings": {
-                "condition": {"<-": "@owner.binding.twoWay"}
+                "condition": {"<-": "!@owner.binding.oneway"}
             }
         },
 

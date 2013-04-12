@@ -156,26 +156,29 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
             for (var key in serialization.bindings) {
                 if (serialization.bindings.hasOwnProperty(key)) {
                     var bindingEntry = serialization.bindings[key];
-                    var bindingDescriptor = {
-                        targetPath: key,
-                        twoWay: "<->" in bindingEntry
-                    };
-                    bindingDescriptor.sourcePath = bindingDescriptor.twoWay ? bindingEntry["<->"] : bindingEntry["<-"];
+                    var bindingDescriptor = Object.create(null);
+
+                    bindingDescriptor.targetPath = key;
+                    bindingDescriptor.oneway = ("<-" in bindingEntry);
+                    bindingDescriptor.sourcePath = bindingDescriptor.oneway ? bindingEntry["<-"] : bindingEntry["<->"];
 
                     bindings.push(bindingDescriptor);
                 }
             }
             this._bindings = bindings;
 
-            var listeners = [];
+            var listeners = [],
+                listenerDescriptor;
+
             if (serialization.listeners) {
                 listeners = serialization.listeners.map(function (listenerEntry) {
-                    return {
-                        //TODO resolve the listener reference
-                        listener: listenerEntry.listener,
-                        type: listenerEntry.type,
-                        useCapture: listenerEntry.useCapture
-                    };
+                    listenerDescriptor = Object.create(null);
+
+                    //TODO resolve the listener reference
+                    listenerDescriptor.listener = listenerEntry.listener;
+                    listenerDescriptor.type = listenerEntry.type;
+                    listenerDescriptor.useCapture = listenerEntry.useCapture;
+                    return listenerDescriptor;
                 });
             }
             this._listeners = listeners;
@@ -235,50 +238,23 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
         }
     },
 
-    //TODO update this to not use serialization
     defineObjectBinding: {
-        value: function (sourceObjectPropertyPath, boundObject, boundObjectPropertyPath, oneWay, converter) {
-            //TODO handle converter
+        value: function (targetPath, oneway, sourcePath) {
+            var binding = Object.create(null);
 
-            if (!this.serialization.bindings) {
-                this.serialization.bindings = {};
-            }
+            binding.targetPath = targetPath;
+            binding.oneway = oneway;
+            binding.sourcePath = sourcePath;
 
-            var arrow = (oneWay ? "<-" : "<->"),
-                bindingSerialization = {},
-                bindingDescriptor;
-
-            //TODO what happenes when the labels change, we should either update or indicate they're broken...
-            //TODO what happens if the serialization format changes, we shouldn't be doing this ourselves
-            // we should rely on the serializer of the package's version of montage
-
-            bindingSerialization[arrow] = "@" + boundObject.label + "." + boundObjectPropertyPath;
-            this.serialization.bindings[sourceObjectPropertyPath] = bindingSerialization;
-
-            if (this.stageObject) {
-                bindingDescriptor = {};
-                bindingDescriptor[arrow] = boundObjectPropertyPath;
-                bindingDescriptor.source = boundObject.stageObject;
-
-                if (converter) {
-                    bindingDescriptor.converter = converter;
-                }
-
-                if (this.stageObject.getBinding(sourceObjectPropertyPath)) {
-                    this.stageObject.cancelBinding(sourceObjectPropertyPath);
-                }
-                this.stageObject.defineBinding(sourceObjectPropertyPath, bindingDescriptor);
-            }
+            return binding;
         }
     },
 
-    //TODO update this to not use serialization
     cancelObjectBinding: {
-        value: function (sourceObjectPropertyPath) {
-            delete this.serialization.bindings[sourceObjectPropertyPath];
-
-            if (this.stageObject) {
-                this.stageObject.cancelBinding(sourceObjectPropertyPath);
+        value: function (binding) {
+            var bindingIndex = this.bindings.indexOf(binding);
+            if (bindingIndex > -1) {
+                this.bindings.splice(bindingIndex, 1);
             }
         }
     }
