@@ -109,7 +109,7 @@ describe("core/reel-proxy-spec", function () {
 
             expect(bindingEntry).toBeTruthy();
             expect(bindingEntry.targetPath).toBe("propertyOfFoo");
-            expect(bindingEntry.twoWay).toBeTruthy();
+            expect(bindingEntry.oneway).toBeFalsy();
             expect(bindingEntry.sourcePath).toBe("@foo.anotherPropertyOfFoo");
         });
 
