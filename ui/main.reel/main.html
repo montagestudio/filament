@@ -120,7 +120,13 @@
             },
 
             "application": {
-                "prototype": "montage/core/application"
+                "prototype": "montage/core/application",
+                "listeners": [
+                    {
+                        "type": "keyPress",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             },
 
             "openDocumentList": {
