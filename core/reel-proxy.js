@@ -254,10 +254,45 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
 
     cancelObjectBinding: {
         value: function (binding) {
-            var bindingIndex = this.bindings.indexOf(binding);
+            var removedBinding,
+                bindingIndex = this.bindings.indexOf(binding);
+
             if (bindingIndex > -1) {
                 this.bindings.splice(bindingIndex, 1);
+                removedBinding = binding;
             }
+
+            return removedBinding;
+        }
+    },
+
+    addObjectEventListener: {
+        value: function (type, listener, useCapture) {
+            var listenerModel = Object.create(null);
+
+            //TODO check for duplicate entry already registered
+
+            listenerModel.type = type;
+            listenerModel.listener = listener;
+            listenerModel.useCapture = useCapture;
+
+            this.listeners.push(listenerModel);
+
+            return listenerModel;
+        }
+    },
+
+    removeObjectEventListener: {
+        value: function (listener) {
+            var removedListener,
+                listenerIndex = this.listeners.indexOf(listener);
+
+            if (listenerIndex > -1) {
+                this.listeners.splice(listenerIndex, 1);
+                removedListener = listener;
+            }
+
+            return removedListener;
         }
     }
 

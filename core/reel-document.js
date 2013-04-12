@@ -757,11 +757,13 @@ exports.ReelDocument = Montage.create(EditingDocument, {
         value: function (proxy, targetPath, oneway, sourcePath) {
             var binding = proxy.defineObjectBinding(targetPath, oneway, sourcePath);
 
-            if (this._editingController) {
-                // TODO define the binding on the stage, make sure we can cancel it later
-            }
+            if (binding) {
+                if (this._editingController) {
+                    // TODO define the binding on the stage, make sure we can cancel it later
+                }
 
-            this.undoManager.register("Define Binding", Promise.resolve([this.cancelOwnedObjectBinding, this, proxy, binding]));
+                this.undoManager.register("Define Binding", Promise.resolve([this.cancelOwnedObjectBinding, this, proxy, binding]));
+            }
 
             return binding;
         }
@@ -769,17 +771,53 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
     cancelOwnedObjectBinding: {
         value: function (proxy, binding) {
-            proxy.cancelObjectBinding(binding);
+            var removedBinding = proxy.cancelObjectBinding(binding);
 
-            if (this._editingController) {
-                // TODO cancel the binding in the stage
+            if (removedBinding) {
+                if (this._editingController) {
+                    // TODO cancel the binding in the stage
+                }
+
+                this.undoManager.register("Cancel Binding", Promise.resolve([
+                    this.defineOwnedObjectBinding, this, proxy, binding.targetPath, binding.oneway, binding.sourcePath
+                ]));
             }
 
-            this.undoManager.register("Cancel Binding", Promise.resolve([
-                this.defineOwnedObjectBinding, this, proxy, binding.targetPath, !binding.twoWay, binding.sourcePath
-            ]));
+            return removedBinding;
+        }
+    },
 
-            return binding;
+    addOwnedObjectEventListener: {
+        value: function (proxy, type, listener, useCapture) {
+            var listener = proxy.addObjectEventListener(type, listener, useCapture);
+
+            if (listener) {
+                if (this._editingController) {
+                    // TODO register the listener on the stage, make sure we can remove it later
+                }
+
+                this.undoManager.register("Add Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listener]));
+            }
+
+            return listener;
+        }
+    },
+
+    removeOwnedObjectEventListener: {
+        value: function (proxy, listener) {
+            var removedListener = proxy.removeObjectEventListener(listener);
+
+            if (removedListener) {
+                if (this._editingController) {
+                    // TODO remove the listener on the stage
+                }
+
+                this.undoManager.register("Remove Listener", Promise.resolve([
+                    this.addOwnedObjectEventListener, this, proxy, removedListener.type, removedListener.listener, removedListener.useCapture
+                ]));
+            }
+
+            return removedListener;
         }
     }
 

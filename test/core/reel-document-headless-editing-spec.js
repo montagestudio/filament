@@ -39,7 +39,13 @@ describe("core/reel-document-headless-editing-spec", function () {
                 },
                 "bindings": {
                     "targetValue": {"<-": "@bar.sourceValue"}
-                }
+                },
+                "listeners": [
+                    {
+                        "type": "fooEvent",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             },
             "bar": {
                 "prototype": "bar-exportId"
@@ -437,5 +443,109 @@ describe("core/reel-document-headless-editing-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
     });
+
+    describe("removing listeners", function () {
+
+        it ("should remove the listener from the specified object", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var targetProxy = reelDocument.editingProxyMap.foo;
+                var listener = targetProxy.listeners[0];
+
+                reelDocument.removeOwnedObjectEventListener(targetProxy, listener);
+
+                expect(targetProxy.listeners.indexOf(listener) === -1).toBeTruthy();
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it ("should register an undoable operation for the removal of a listener", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var targetProxy = reelDocument.editingProxyMap.foo;
+                var listener = targetProxy.listeners[0];
+
+                reelDocument.removeOwnedObjectEventListener(targetProxy, listener);
+                expect(reelDocument.undoManager.undoCount).toBe(1);
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it ("should undo the removal of a listener by defining a similar listener", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var targetProxy = reelDocument.editingProxyMap.foo;
+                var listener = targetProxy.listeners[0];
+
+                reelDocument.removeOwnedObjectEventListener(targetProxy, listener);
+                return reelDocument.undo().then(function (addedListener) {
+                    expect(addedListener.type).toBe(listener.type);
+                    expect(addedListener.listener).toBe(listener.listener);
+                    expect(addedListener.useCapture).toBe(listener.useCapture);
+                });
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+    });
+
+    describe("defining bindings", function () {
+
+        var type, useCapture;
+
+        beforeEach(function () {
+            type = "someEvent";
+            useCapture = false;
+        });
+
+        it ("should add a listener with the expected properties", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var targetProxy = reelDocument.editingProxyMap.foo;
+                var eventHandler = reelDocument.editingProxyMap.owner;
+
+                var listener = reelDocument.addOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture);
+
+                expect(listener.type).toBe(type);
+                expect(listener.listener).toBe(eventHandler);
+                expect(listener.useCapture).toBe(useCapture);
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it ("should add an event listener on the specified object", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var targetProxy = reelDocument.editingProxyMap.foo;
+                var eventHandler = reelDocument.editingProxyMap.owner;
+                var listener = reelDocument.addOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture);
+
+                expect(targetProxy.listeners.indexOf(listener) === -1).toBeFalsy();
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+
+        it ("should register an undoable operation for the adding an event listener", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var targetProxy = reelDocument.editingProxyMap.foo;
+                var eventHandler = reelDocument.editingProxyMap.owner;
+                var listener = reelDocument.addOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture);
+
+                expect(reelDocument.undoManager.undoCount).toBe(1);
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it ("should undo the adding of a listener by removing that listener", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var targetProxy = reelDocument.editingProxyMap.foo;
+                var eventHandler = reelDocument.editingProxyMap.owner;
+                var listener = reelDocument.addOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture);
+
+                return reelDocument.undo().then(function (removedListener) {
+                    expect(removedListener).toBe(listener);
+                    expect(targetProxy.listeners.indexOf(removedListener) === -1).toBeTruthy();
+                });
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+    });
+
 
 });
