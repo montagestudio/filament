@@ -220,15 +220,6 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
     setObjectProperty: {
         value: function (property, value) {
             this.properties.set(property, value);
-
-            if (this.stageObject) {
-                //TODO how do we know what to do on the other side? Objects may not react well to setting values at runtime
-                if (this.stageObject.setPath) {
-                    this.stageObject.setPath(property, value);
-                } else if (this.stageObject.setProperty) {
-                    this.stageObject.setProperty(property, value);
-                }
-            }
         }
     },
 
@@ -241,14 +232,6 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
     deleteObjectProperty: {
         value: function (property) {
             this.properties.delete(property);
-
-            if (this.stageObject) {
-                if (this.stageObject.setPath) {
-                    this.stageObject.setPath(property, null);
-                } else if (this.stageObject.setProperty) {
-                    this.stageObject.setProperty(property, null);
-                }
-            }
         }
     },
 

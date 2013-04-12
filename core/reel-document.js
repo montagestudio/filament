@@ -722,22 +722,20 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 return;
             }
 
-            //TODO maybe the proxy shouldn't be involved in doing this as we hand out the proxies
-            // throughout the editingEnvironment, I don't want to expose accessible editing APIs
-            // that do not go through the editingDocument...or do I?
 
-            // Might be nice to have an editing API that avoids undoability and event dispatching?
             proxy.setObjectProperty(property, value);
 
-            this._buildSerialization();
+            if (this._editingController) {
 
-//            this.dispatchEventNamed("didSetObjectProperty", true, true, {
-//                object: proxy,
-//                property: property,
-//                value: value,
-//                undone: undoManager.isUndoing,
-//                redone: undoManager.isRedoing
-//            });
+                //TODO clean this up, the editingController should probably be involved
+                if (proxy.stageObject) {
+                    if (proxy.stageObject.setPath) {
+                        proxy.stageObject.setPath(property, null);
+                    } else if (this.stageObject.setProperty) {
+                        proxy.stageObject.setProperty(property, null);
+                    }
+                }
+            }
 
             undoManager.register("Set Property", Promise.resolve([this.setOwnedObjectProperty, this, proxy, property, undoneValue]));
 
