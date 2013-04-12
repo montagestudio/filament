@@ -370,7 +370,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                 reelDocument.cancelOwnedObjectBinding(targetProxy, binding);
                 return reelDocument.undo().then(function (definedBinding) {
                     expect(definedBinding).not.toBe(binding);
-                    expect(definedBinding.type).toBe(binding.type);
+                    expect(definedBinding.targetPath).toBe(binding.targetPath);
                     expect(definedBinding.oneway).toBe(binding.oneway);
                     expect(definedBinding.sourcePath).toBe(binding.sourcePath);
                 });
