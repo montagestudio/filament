@@ -8,7 +8,7 @@
 var Montage = require("montage").Montage,
     Inspector = require("contextual-inspectors/base/ui/inspector.reel").Inspector;
 
-var Deserializer = require("montage/core/serialization").Deserializer;
+var Template = require("montage/core/template").Template;
 var MimeTypes = require("core/mime-types");
 
 var INSPECTOR_HEIGHT = 200;
@@ -85,9 +85,12 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             var self = this;
             var object = this._object.stageObject;
 
-            object.innerTemplate.instantiate(document).then(function (part) {
+            // Convert the inner template to use the Application require
+            var innerTemplate = Template.clone.call(object.innerTemplate);
+            innerTemplate._require = require;
+
+            innerTemplate.instantiate(document).then(function (part) {
                 part.childComponents.forEach(function (component) {
-                    // set stageObject of child components?
                     self.templateObjects.innerTemplate.addChildComponent(component);
                 });
                 if (self.selectedObject && self.selectedObject.label in part.objects) {
@@ -95,12 +98,7 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
                 }
                 return part.loadComponentTree().then(function() {
                     self.part = part;
-                    // Originally there was a `self.needsDraw = true` here but
-                    // for some reason, I do not know why, it would cause the
-                    // event manager of the frame and of our window to get
-                    // mixed together, so that the delegate of the event
-                    // manager in thw frame would get called for events in our
-                    // window.
+                    self.needsDraw = true;
                 });
             }).done();
         }
@@ -164,7 +162,6 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
 
     updateInnerTemplate: {
         value: function () {
-
             // adapted from montage/ui/component.js innerTemplate.get
             var innerTemplate,
                 ownerDocumentPart,
@@ -182,7 +179,14 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             ownerTemplate = this.documentEditor.editingDocument._template;
 
             elementId = this.object.stageObject.getElementId();
-            innerTemplate = ownerTemplate.createTemplateFromElementContents(elementId);
+
+            // Use the Template from the stage, so that it uses the Stage
+            // Window object. Note: we're using the Template prototype, not
+            // the instance.
+            innerTemplate = ownerDocumentPart.template.createTemplateFromElementContents.call(ownerTemplate, elementId);
+            // ownerTemplate._templateFromElementContentsCache = void 0;
+            // Also need to make sure we're using the Stage require
+            innerTemplate._require = ownerDocumentPart.template._require;
 
             serialization = innerTemplate.getSerialization();
             externalObjectLabels = serialization.getExternalObjectLabels();
