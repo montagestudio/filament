@@ -56,6 +56,19 @@
             "bindings": {
                 "value": {"<-": "@owner.binding.sourcePath"}
             }
+        },
+
+        "removeButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "removeButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>

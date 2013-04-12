@@ -15,6 +15,20 @@ exports.BindingEntry = Montage.create(Component, /** @lends module:"./binding-en
 
     binding: {
         value: null
+    },
+
+    targetObject: {
+        value: null
+    },
+
+    handleRemoveButtonAction: {
+        value: function (evt) {
+            evt.stop();
+            this.dispatchEventNamed("cancelBinding", true, true, {
+                targetObject: this.targetObject,
+                binding: this.binding
+            });
+        }
     }
 
 });

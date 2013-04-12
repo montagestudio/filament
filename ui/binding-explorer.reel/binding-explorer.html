@@ -44,7 +44,8 @@
                 "element": {"#": "bindingList"}
             },
             "bindings": {
-                "content": {"<-": "@objectList.objectAtCurrentIteration.bindings"}
+                "content": {"<-": "@objectList.objectAtCurrentIteration.bindings"},
+                "targetObject": {"<-": "@objectList.objectAtCurrentIteration"}
             }
         },
 
@@ -54,6 +55,7 @@
                 "element": {"#": "bindingEntry"}
             },
             "bindings": {
+                "targetObject": {"<-": "@bindingList.targetObject"},
                 "binding": {"<-": "@bindingList.objectAtCurrentIteration"}
             }
         }
