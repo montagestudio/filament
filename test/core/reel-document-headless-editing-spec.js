@@ -344,14 +344,98 @@ describe("core/reel-document-headless-editing-spec", function () {
                 var targetProxy = reelDocument.editingProxyMap.foo;
                 var binding = targetProxy.bindings[0];
 
-                reelDocument.cancelObjectBinding(targetProxy, binding);
+                reelDocument.cancelOwnedObjectBinding(targetProxy, binding);
 
                 expect(targetProxy.bindings.indexOf(binding) === -1).toBeTruthy();
-
 
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
+        it ("should register an undoable operation for the removal of a binding", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var targetProxy = reelDocument.editingProxyMap.foo;
+                var binding = targetProxy.bindings[0];
+
+                reelDocument.cancelOwnedObjectBinding(targetProxy, binding);
+                expect(reelDocument.undoManager.undoCount).toBe(1);
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it ("should undo the removal of a binding by defining a similar binding", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var targetProxy = reelDocument.editingProxyMap.foo;
+                var binding = targetProxy.bindings[0];
+
+                reelDocument.cancelOwnedObjectBinding(targetProxy, binding);
+                return reelDocument.undo().then(function (definedBinding) {
+                    expect(definedBinding).not.toBe(binding);
+                    expect(definedBinding.type).toBe(binding.type);
+                    expect(definedBinding.oneway).toBe(binding.oneway);
+                    expect(definedBinding.sourcePath).toBe(binding.sourcePath);
+                });
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+    });
+
+    describe("defining bindings", function () {
+
+        var targetPath, oneway, sourcePath;
+
+        beforeEach(function () {
+            targetPath = "a.Target.Path";
+            oneway = true;
+            sourcePath = "a.Source.Path";
+        });
+
+        it ("should define the binding with the expected properties", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var targetProxy = reelDocument.editingProxyMap.foo;
+
+                var binding = reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath);
+
+                expect(binding.targetPath).toBe(targetPath);
+                expect(binding.oneway).toBe(oneway);
+                expect(binding.targetPath).toBe(targetPath);
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it ("should define the binding on the specified  object", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var targetProxy = reelDocument.editingProxyMap.foo;
+                var binding = reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath);
+
+                expect(targetProxy.bindings.indexOf(binding) === -1).toBeFalsy();
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+
+        it ("should register an undoable operation for the defining of a binding", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var targetProxy = reelDocument.editingProxyMap.foo;
+                var binding = reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath);
+
+                expect(reelDocument.undoManager.undoCount).toBe(1);
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it ("should undo the defining of a binding by removing that binding", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var targetProxy = reelDocument.editingProxyMap.foo;
+                var binding = reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath);
+
+                return reelDocument.undo().then(function (deletedBinding) {
+                    expect(deletedBinding).toBe(binding);
+                    expect(targetProxy.bindings.indexOf(binding) === -1).toBeTruthy();
+                });
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
     });
 
 });

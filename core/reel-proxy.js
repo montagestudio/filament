@@ -246,6 +246,8 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
             binding.oneway = oneway;
             binding.sourcePath = sourcePath;
 
+            this.bindings.push(binding);
+
             return binding;
         }
     },

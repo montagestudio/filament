@@ -142,7 +142,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
     handleCancelBinding: {
         value: function (evt) {
             var detail = evt.detail;
-            this.cancelObjectBinding(detail.targetObject, detail.binding);
+            this.cancelOwnedObjectBinding(detail.targetObject, detail.binding);
         }
     },
 
@@ -753,29 +753,33 @@ exports.ReelDocument = Montage.create(EditingDocument, {
         }
     },
 
-    defineObjectBinding: {
-        value: function (targetObject, targetPath, oneway, sourcePath) {
-            var binding = targetObject.defineObjectBinding(targetPath, oneway, sourcePath);
+    defineOwnedObjectBinding: {
+        value: function (proxy, targetPath, oneway, sourcePath) {
+            var binding = proxy.defineObjectBinding(targetPath, oneway, sourcePath);
 
             if (this._editingController) {
                 // TODO define the binding on the stage, make sure we can cancel it later
             }
 
-            this.undoManager.register("Define Binding", Promise.resolve([this.cancelObjectBinding, this, binding]));
+            this.undoManager.register("Define Binding", Promise.resolve([this.cancelOwnedObjectBinding, this, proxy, binding]));
+
+            return binding;
         }
     },
 
-    cancelObjectBinding: {
-        value: function (targetObject, binding) {
-            targetObject.cancelObjectBinding(binding);
+    cancelOwnedObjectBinding: {
+        value: function (proxy, binding) {
+            proxy.cancelObjectBinding(binding);
 
             if (this._editingController) {
                 // TODO cancel the binding in the stage
             }
 
             this.undoManager.register("Cancel Binding", Promise.resolve([
-                this.defineObjectBinding, this, targetObject, binding.targetPath, !binding.twoWay, binding.sourcePath
+                this.defineOwnedObjectBinding, this, proxy, binding.targetPath, !binding.twoWay, binding.sourcePath
             ]));
+
+            return binding;
         }
     }
 
