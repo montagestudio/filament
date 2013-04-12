@@ -52,6 +52,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             if (this._editor) {
                 this._editor.removeEventListener("menuValidate", this);
                 this._editor.removeEventListener("menuAction", this);
+                this._editor.removeEventListener("cancelBinding", this);
             }
 
             this._editor = value;
@@ -59,6 +60,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             if (this._editor) {
                 this._editor.addEventListener("menuValidate", this);
                 this._editor.addEventListener("menuAction", this);
+                this._editor.addEventListener("cancelBinding", this);
             }
         }
     },
@@ -134,6 +136,13 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 }
                 evt.stop();
             }
+        }
+    },
+
+    handleCancelBinding: {
+        value: function (evt) {
+            var detail = evt.detail;
+            this.cancelObjectBinding(detail.targetObject, detail.binding);
         }
     },
 
@@ -743,73 +752,28 @@ exports.ReelDocument = Montage.create(EditingDocument, {
     },
 
     defineObjectBinding: {
-        value: function (sourceObject, sourceObjectPropertyPath, boundObject, boundObjectPropertyPath, oneWay, converter) {
-            // TODO locaize
-            this.undoManager.register("Define Binding", Promise.resolve([this.deleteBinding, this, sourceObject, sourceObjectPropertyPath]));
+        value: function (targetObject, targetPath, oneway, sourcePath) {
+            var binding = targetObject.defineObjectBinding(targetPath, oneway, sourcePath);
 
-            //Similar concerns above, where does this API belong?
-            sourceObject.defineObjectBinding(sourceObjectPropertyPath, boundObject, boundObjectPropertyPath, oneWay, converter);
+            if (this._editingController) {
+                // TODO define the binding on the stage, make sure we can cancel it later
+            }
 
-            this._buildSerialization();
-
-//            this.dispatchEventNamed("didDefineBinding", true, true, {
-//                sourceObject: sourceObject,
-//                sourceObjectPropertyPath: sourceObjectPropertyPath,
-//                boundObject: boundObject,
-//                boundObjectPropertyPath: boundObjectPropertyPath,
-//                oneWay: oneWay,
-//                converter: converter
-//            });
-
+            this.undoManager.register("Define Binding", Promise.resolve([this.cancelObjectBinding, this, binding]));
         }
     },
 
     cancelObjectBinding: {
-        value: function (sourceObject, sourceObjectPropertyPath) {
-            var binding = sourceObject.bindings ? sourceObject.bindings[sourceObjectPropertyPath] : null,
-                bindingString,
-                converterEntry,
-                boundObjectLabel,
-                boundObject,
-                boundObjectPropertyPath,
-                oneWay,
-                converter;
+        value: function (targetObject, binding) {
+            targetObject.cancelObjectBinding(binding);
 
-            if (!binding) {
-                throw new Error("Cannot remove binding that does not exist");
+            if (this._editingController) {
+                // TODO cancel the binding in the stage
             }
 
-            //TODO what if we can't find an object with the label?
-            //TODO rely on a deserializer from the package to help us decode this string
-            oneWay = !!binding["<-"];
-            bindingString = oneWay ? binding["<-"] : binding["<->"];
-            bindingString.match(/^@([^\.]+)\.?(.*)$/);
-
-            boundObjectLabel = RegExp.$1;
-            boundObjectPropertyPath = RegExp.$2;
-
-            //TODO what if boundObjectLabel and boundObjectPropertyPath are malformed?
-
-            boundObject = this.editingProxyMap[boundObjectLabel];
-
-            converterEntry = binding.converter;
-            if (converterEntry) {
-                converter = this.editingProxyMap[converterEntry["@"]];
-            }
-
-            // TODO localize
-            this.undoManager.register("Delete Binding", Promise.resolve([this.defineBinding, this, sourceObject, sourceObjectPropertyPath, boundObject, boundObjectPropertyPath, oneWay, converter]));
-
-            sourceObject.cancelObjectBinding(sourceObjectPropertyPath);
-
-            this._buildSerialization();
-
-//            this.dispatchEventNamed("didDeleteBinding", true, true, {
-//                sourceObject: sourceObject,
-//                sourceObjectPropertyPath: sourceObjectPropertyPath,
-//                boundObject: boundObject,
-//                boundObjectPropertyPath: boundObjectPropertyPath
-//            });
+            this.undoManager.register("Cancel Binding", Promise.resolve([
+                this.defineObjectBinding, this, targetObject, binding.targetPath, !binding.twoWay, binding.sourcePath
+            ]));
         }
     }
 

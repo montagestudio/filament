@@ -36,6 +36,9 @@ describe("core/reel-document-headless-editing-spec", function () {
                 "prototype": "ui/foo.reel",
                 "properties": {
                     "element": {"#": "foo"}
+                },
+                "bindings": {
+                    "targetValue": {"<-": "@bar.sourceValue"}
                 }
             },
             "bar": {
@@ -330,6 +333,23 @@ describe("core/reel-document-headless-editing-spec", function () {
 
                 expect(templateSerialization[labelInOwner].properties.prop).toBe("myValue");
             });
+        });
+
+    });
+
+    describe("removing bindings", function () {
+
+        it ("should remove the binding from the specified object", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var targetProxy = reelDocument.editingProxyMap.foo;
+                var binding = targetProxy.bindings[0];
+
+                reelDocument.cancelObjectBinding(targetProxy, binding);
+
+                expect(targetProxy.bindings.indexOf(binding) === -1).toBeTruthy();
+
+
+            }).timeout(WAITSFOR_TIMEOUT);
         });
 
     });
