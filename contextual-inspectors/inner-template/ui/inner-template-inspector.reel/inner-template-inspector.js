@@ -6,7 +6,8 @@
 /*global WebKitMutationObserver */
 
 var Montage = require("montage").Montage,
-    Inspector = require("contextual-inspectors/base/ui/inspector.reel").Inspector;
+    Inspector = require("contextual-inspectors/base/ui/inspector.reel").Inspector,
+    Promise = require("montage/core/promise").Promise;
 
 var Template = require("montage/core/template").Template;
 var MimeTypes = require("core/mime-types");
@@ -29,12 +30,6 @@ var MUTATION_OBSERVER_CONFIG = {
 */
 exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui//inner-template-inspector.reel".InnerTemplateInspector# */ {
 
-    didCreate: {
-        value: function () {
-            this.defineBinding("objectElement", {"<-": "object.properties.get('element')"});
-        }
-    },
-
     _innerTemplateInstancePromise: {
         value: null
     },
@@ -52,23 +47,31 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             }
 
             this._object = value;
-            this._instantiateInnerTemplate();
+            if (value) {
+                this._instantiateInnerTemplate();
+            }
         }
     },
 
-    _objectElement: {
+    _selectedObject: {
         value: null
     },
-    objectElement: {
+    selectedObject: {
         get: function() {
-            return this._objectElement;
+            return this._selectedObject;
         },
         set: function(value) {
-            if (this._objectElement === value) {
+            if (this._selectedObject === value) {
                 return;
             }
 
-            this._objectElement = value;
+            if (this._selectedObject) {
+                this._object.properties.removeMapChangeListener(this, "objectProperties");
+            }
+            this._selectedObject = value;
+            if (value) {
+                this._selectedObject.properties.addMapChangeListener(this, "objectProperties");
+            }
         }
     },
 
@@ -160,8 +163,48 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
         }
     },
 
+    handleObjectPropertiesMapChange: {
+        value: function () {
+            console.log("handleObjectPropertiesMapChange");
+            var self = this;
+            // need to wait until the next tick so that the serialization
+            // can be rebuilt
+            Promise.nextTick(function () {
+                self.updateInnerTemplate();
+            });
+        }
+    },
+
     updateInnerTemplate: {
         value: function () {
+
+            // START HACK //
+            // Avoid bug where setting innerTemplate multiple times in
+            // one draw cycle causes the repetition to break
+            if (this._waitingForObjectDraw) {
+                // if this function is called while we're waiting for a draw
+                // wait until after the draw to trigger it again
+                this._needsUpdateInnerTemplate = true;
+                return;
+            }
+            this._waitingForObjectDraw = true;
+            var self = this;
+            var oldDraw = this.object.stageObject.draw;
+            this.object.stageObject.draw = function () {
+                self._waitingForObjectDraw = false;
+                // replace original draw
+                self.object.stageObject.draw = oldDraw;
+                oldDraw.apply(this, arguments);
+                // now the draw is happened we can update the inner template
+                // again
+                if (self._needsUpdateInnerTemplate) {
+                    self.updateInnerTemplate();
+                }
+            };
+            this._needsUpdateInnerTemplate = false;
+            // END HACK //
+
+
             // adapted from montage/ui/component.js innerTemplate.get
             var innerTemplate,
                 ownerDocumentPart,
@@ -183,6 +226,7 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             // Use the Template from the stage, so that it uses the Stage
             // Window object. Note: we're using the Template prototype, not
             // the instance.
+            ownerTemplate.clearTemplateFromElementContentsCache();
             innerTemplate = ownerDocumentPart.template.createTemplateFromElementContents.call(ownerTemplate, elementId);
             // ownerTemplate._templateFromElementContentsCache = void 0;
             // Also need to make sure we're using the Stage require

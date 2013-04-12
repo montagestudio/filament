@@ -724,7 +724,6 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
     setOwnedObjectProperty: {
         value: function (proxy, property, value) {
-
             var undoManager = this.undoManager,
                 undoneValue = proxy.getObjectProperty(property);
 
@@ -732,7 +731,6 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 // The values are identical no need to do anything.
                 return;
             }
-
 
             proxy.setObjectProperty(property, value);
 
@@ -747,6 +745,10 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                     }
                 }
             }
+
+            // Need to rebuild the serialization here so that the template
+            // updates, ready for the inner template inspector
+            this._buildSerialization();
 
             undoManager.register("Set Property", Promise.resolve([this.setOwnedObjectProperty, this, proxy, property, undoneValue]));
 
