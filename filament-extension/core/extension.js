@@ -1,6 +1,7 @@
-var Montage = require("montage/core/core").Montage;
+var Montage = require("montage/core/core").Montage,
+    Target = require("montage/core/target").Target;
 
-exports.Extension = Montage.create(Montage, {
+exports.Extension = Montage.create(Target, {
 
     extensionRequire: {
         value: null
