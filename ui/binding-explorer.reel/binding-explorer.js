@@ -21,6 +21,15 @@ exports.BindingExplorer = Montage.create(Component, /** @lends module:"./binding
 
     templateObjectsController: {
         value: null
+    },
+
+    handleDefineBindingButtonAction: {
+        value: function (evt) {
+            evt.stop();
+            this.dispatchEventNamed("defineBinding", true, true, {
+                targetObject: evt.target.targetObject
+            });
+        }
     }
 
 });

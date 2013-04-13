@@ -58,6 +58,22 @@
                 "targetObject": {"<-": "@bindingList.targetObject"},
                 "binding": {"<-": "@bindingList.objectAtCurrentIteration"}
             }
+        },
+
+        "defineBindingButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "addButton"}
+            },
+            "bindings": {
+                "targetObject": {"<-": "@objectList.objectAtCurrentIteration"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>
