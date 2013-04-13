@@ -8,6 +8,9 @@
         "owner": {
             "properties": {
                 "element": {"#": "documentTab"}
+            },
+            "bindings": {
+                "classList.has('document-dirty')" : { "<-" : "@owner.document.isDirty"}
             }
         },
 
@@ -17,8 +20,7 @@
                 "element": {"#": "label"}
             },
             "bindings": {
-                "value": {"<-": "@owner.document.title"},
-                "classList.has('document-dirty')" : { "<-" : "@owner.document.isDirty"}
+                "value": {"<-": "@owner.document.title"}
             }
         },
 
