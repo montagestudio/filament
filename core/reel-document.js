@@ -312,8 +312,6 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             editController.frame = frame;
             editController.owner = owner;
 
-            var ownerProxy = this.editingProxyForObject(owner);
-
             labels.forEach(function (label) {
                 proxy = self.editingProxyMap[label];
                 var stageObject = owner.templateObjects[label];
@@ -331,26 +329,27 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                         return;
                     }
                     stageObject = stageObject[0];
-                    var component = stageObject;
-                    // HACK: because ownerComponent is broken for components sucked up by
-                    // data-param, loop upwards until we find an editing proxy, indicating
-                    // that it's in the current reel
-                    while ((component = component.parentComponent) !== null) {
-                        try {
-                            proxy.parentProxy = this.editingProxyForObject(component);
-                        } catch (e) {}
-                    }
-                    if (!proxy.parentProxy) {
-                        proxy.parentProxy = ownerProxy;
-                    }
                 } else {
+                    // Only set stage object if component is not repeated
                     proxy.stageObject = stageObject;
-                    try {
-                        proxy.parentProxy = this.editingProxyForObject(stageObject.parentComponent);
-                    } catch (e) {
-                        proxy.parentProxy =  ownerProxy;
+                }
+
+                // Owner has no parent
+                if (stageObject === owner) return;
+
+                // Loop up parents until we find one which is in this reel, or
+                // we hit the owner. Use as parent.
+                var parent = stageObject;
+                while ((parent = parent.parentComponent) !== owner && parent) {
+                    if (parent.ownerComponent === owner) {
+                        break;
                     }
                 }
+
+                // Object did not have parentComponent (i.e. was a plain
+                // object, not a component)
+                if (!parent) parent = owner;
+                proxy.parentProxy =  this.editingProxyForObject(parent);
             }, this);
         }
     },
@@ -424,23 +423,12 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             ) {
                 var component = currentElement.component;
                 if (component) {
-                    // HACK: because the ownerComponent isn't correct for
-                    // components sucked up using data-param, this work-around
-                    // checks if this component is in the reel by checking if
-                    // it is in our editing proxy map
-                    try {
-                        // Errors when no proxy, and so the selectionCandidate
-                        // doesn't get updated
-                        this.editingProxyForObject(component);
-                        selectionCandidate = component;
-                    } catch (e) {}
-
                     // Correct code:
-                    // if (component.ownerComponent === ownerComponent) {
-                    //     // Only update the selection candidate if the component
-                    //     // is in this reel
-                    //     selectionCandidate = component;
-                    // }
+                    if (component.ownerComponent === ownerComponent) {
+                        // Only update the selection candidate if the component
+                        // is in this reel
+                        selectionCandidate = component;
+                    }
 
                 }
                 currentElement = currentElement.parentElement;
