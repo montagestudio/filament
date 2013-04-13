@@ -798,7 +798,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                     // TODO register the listener on the stage, make sure we can remove it later
                 }
 
-                this.undoManager.register("Add Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listener]));
+                this.undoManager.register("Add Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listenerEntry]));
             }
 
             return listenerEntry;
