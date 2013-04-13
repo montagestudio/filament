@@ -52,7 +52,6 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             if (this._editor) {
                 this._editor.removeEventListener("menuValidate", this);
                 this._editor.removeEventListener("menuAction", this);
-                this._editor.removeEventListener("cancelBinding", this);
             }
 
             this._editor = value;
@@ -60,7 +59,6 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             if (this._editor) {
                 this._editor.addEventListener("menuValidate", this);
                 this._editor.addEventListener("menuAction", this);
-                this._editor.addEventListener("cancelBinding", this);
             }
         }
     },

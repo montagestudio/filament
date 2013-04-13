@@ -23,12 +23,22 @@ exports.BindingExplorer = Montage.create(Component, /** @lends module:"./binding
         value: null
     },
 
+    editingDocument: {
+        value: null
+    },
+
     handleDefineBindingButtonAction: {
         value: function (evt) {
+            // TODO bring up the UI for creating a binding on this object
+        }
+    },
+
+    handleCancelBindingButtonAction: {
+        value: function (evt) {
             evt.stop();
-            this.dispatchEventNamed("defineBinding", true, true, {
-                targetObject: evt.target.targetObject
-            });
+            var targetObject = evt.detail.get("targetObject");
+            var binding = evt.detail.get("binding");
+            this.editingDocument.cancelOwnedObjectBinding(targetObject, binding);
         }
     }
 

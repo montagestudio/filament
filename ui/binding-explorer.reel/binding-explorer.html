@@ -8,7 +8,13 @@
         "owner": {
             "properties": {
                 "element": {"#": "binding-explorer"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
         
         "addButton": {
@@ -66,14 +72,8 @@
                 "element": {"#": "addButton"}
             },
             "bindings": {
-                "targetObject": {"<-": "@objectList.objectAtCurrentIteration"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
+                "detail.get('targetObject')": {"<-": "@objectList.objectAtCurrentIteration"}
+            }
         }
     }
     </script>

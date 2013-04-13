@@ -58,17 +58,15 @@
             }
         },
 
-        "removeButton": {
+        "cancelBindingButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {
                 "element": {"#": "removeButton"}
             },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
+            "bindings": {
+                "detail.get('binding')": {"<-": "@owner.binding"},
+                "detail.get('targetObject')": {"<-": "@owner.targetObject"}
+            }
         }
     }
     </script>
