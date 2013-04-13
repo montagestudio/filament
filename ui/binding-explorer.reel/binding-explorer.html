@@ -74,6 +74,16 @@
             "bindings": {
                 "detail.get('targetObject')": {"<-": "@objectList.objectAtCurrentIteration"}
             }
+        },
+
+        "bindingCreator": {
+            "prototype": "ui/binding-jig.reel",
+            "properties": {
+                "element": {"#": "bindingCreator"}
+            },
+            "bindings": {
+                "targetObject": {"<-": "@objectList.objectAtCurrentIteration"}
+            }
         }
     }
     </script>
@@ -87,6 +97,7 @@
                     <li data-montage-id="bindingEntry"></li>
                 </ul>
                 <button data-montage-id="addButton" class="BindingExplorer-addButton">+</button>
+                <div data-montage-id="bindingCreator"></div>
             </li>
         </ul>
     </div>

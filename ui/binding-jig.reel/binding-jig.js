@@ -64,34 +64,6 @@ exports.BindingJig = Montage.create(Component, {
                 this.oneWay
             );
         }
-    },
-
-    // TODO: Proper implementation, probably as an own component
-    enterDocument: {
-        value: function(firstTime) {
-            var BindingJigContent,
-                BindingJigToggle;
-
-            if (firstTime) {
-                var BindingJigContent = document.getElementById('BindingJigContent'),
-                    BindingJigToggle = document.getElementById('BindingJigToggle');
-
-                BindingJigToggle.onclick = function() {
-                    BindingJigToggle.classList.toggle('selected');
-                    BindingJigContent.classList.toggle('show');
-                };
-            }
-        }
-    },
-
-
-    handleDeleteBindingButtonAction: {
-        value: function (evt) {
-            this.editingDocument.cancelObjectBinding(
-                this.sourceObject,
-                this.sourceObjectPropertyPath
-            );
-        }
     }
 
 });

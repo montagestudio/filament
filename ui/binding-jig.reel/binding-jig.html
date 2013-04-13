@@ -12,31 +12,6 @@
             }
         },
 
-        "setSourceObjectButton": {
-            "prototype": "matte/ui/button.reel",
-            "properties": {"label":"Set SourceObject",
-                "identifier": "setSourceObjectButton",
-                "element": {"#":"setSourceObjectButton"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
-        "sourceObjectIdentifier": {
-            "prototype": "montage/ui/text.reel",
-            "properties": {
-                "identifier": "sourceObjectIdentifier",
-                "element": {"#": "sourceObjectIdentifier"}
-            },
-            "bindings": {
-                "value": {"<-": "@owner.sourceObject.properties.identifier"}
-            }
-        },
-
         "sourceObjectPropertyPath": {
             "prototype": "matte/ui/input-text.reel",
             "properties": {
@@ -48,31 +23,6 @@
             }
         },
 
-        "setBoundObjectButton": {
-            "prototype": "matte/ui/button.reel",
-            "properties": {"label":"Set BoundObject",
-                "identifier": "setBoundObjectButton",
-                "element": {"#":"setBoundObjectButton"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
-        "boundObjectIdentifier": {
-            "prototype": "montage/ui/text.reel",
-            "properties": {
-                "identifier": "boundObjectIdentifier",
-                "element": {"#": "boundObjectIdentifier"}
-            },
-            "bindings": {
-                "value": {"<-": "@owner.boundObject.properties.identifier"}
-            }
-        },
-
         "boundObjectPropertyPath": {
             "prototype": "matte/ui/input-text.reel",
             "properties": {
@@ -81,17 +31,6 @@
             },
             "bindings": {
                 "value": {"<->": "@owner.boundObjectPropertyPath"}
-            }
-        },
-
-        "oneWayCheckbox": {
-            "prototype": "matte/ui/input-checkbox.reel",
-            "properties": {
-                "identifier": "oneWayBindingCheckbox",
-                "element": {"#": "oneWayBindingCheckbox"}
-            },
-            "bindings": {
-                "checked": {"<->": "@owner.oneWay"}
             }
         },
 
@@ -109,11 +48,11 @@
             ]
         },
 
-        "deleteBindingButton": {
+        "cancelButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {
-                "label":"Delete Binding",
-                "element": {"#":"deleteBindingButton"}
+                "label":"Cancel",
+                "element": {"#":"cancelButton"}
             },
             "listeners": [
                 {
@@ -121,20 +60,6 @@
                     "listener": {"@": "owner"}
                 }
             ]
-        },
-
-        "BindingJigToggle": {
-            "prototype": "matte/ui/button.reel",
-            "properties": {
-                "element": {"#":"BindingJigToggle"}
-            }
-        },
-        
-        "select": {
-            "prototype": "matte/ui/select.reel",
-            "properties": {
-                "element": {"#":"select"}
-            }
         },
         
         "undirectional": {
@@ -158,53 +83,26 @@
 
     <div data-montage-id="binding-jig" class="BindingJig">
         
-        <div style="display: none;">
-            <menu class="BindingJig-tabs">
-                <button id="BindingJigToggle" data-montage-id="BindingJigToggle" class="BindingJig-tabs-tab">Bindings</button>
-            </menu>
-
-            <div id="BindingJigContent" class="BindingJig-content">
-        
-                <section class="BindingJig-section">
-                    SourceObject: <span data-montage-id="sourceObjectIdentifier" class="BindingJig-sourceObject">testObject</span>
-                    <button data-montage-id="setSourceObjectButton" class="Button BindingJig-button"></button>
-                </section>
-        
-                <section class="BindingJig-section">
-                    Bound Object: <span data-montage-id="boundObjectIdentifier" class="BindingJig-sourceObject">test2Object</span>
-                    <button data-montage-id="setBoundObjectButton" class="Button BindingJig-button"></button>
-                </section>
-                
-                <input data-montage-id="oneWayBindingCheckbox" class="BindingJig-checkbox" type="checkbox">
-                
-            </div>
-        
-        </div>
-        
-        <!-- Above can probably get removed -->
-        
-        
         <section class="BindingJig-section">
-            <label class="BindingJig-label">Source Object:</label>
+            <label class="BindingJig-label">Target Path</label>
             <input data-montage-id="sourceObjectPropertyPath" class="BindingJig-input" type="text">
         </section>
         
         <section class="BindingJig-section">
-            <label class="BindingJig-label">Direction:</label>
+            <label class="BindingJig-label">Direction</label>
             <span class="BindingJig-direction">
                 <input data-montage-id="undirectional" class="BindingJig-radio BindingJig-radio--undirectional" type="radio" name="direction">
                 <input data-montage-id="bidirectional" class="BindingJig-radio BindingJig-radio--bidirectional" type="radio" name="direction">
             </span>
-            <select data-montage-id="select"></select>
         </section>
         
         <section class="BindingJig-section">
-            <label class="BindingJig-label">Bound Object:</label>
+            <label class="BindingJig-label">Source Path</label>
             <input data-montage-id="boundObjectPropertyPath" class="BindingJig-input" type="text">
         </section>
 
         <footer class="BindingJig-footer">
-            <button data-montage-id="deleteBindingButton"></button>
+            <button data-montage-id="cancelButton"></button>
             <button data-montage-id="defineBindingButton" class="Button--action"></button>
         </footer>
         
