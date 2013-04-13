@@ -85,6 +85,9 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             this.viewController.registerContextualInspectorForObjectTypeMatcher(InnerTemplateInspector, function (object) {
                 return object && object.moduleId && (/montage\/ui\/repetition\.reel/).test(object.moduleId);
             });
+            this.viewController.registerContextualInspectorForObjectTypeMatcher(InnerTemplateInspector, function (object) {
+                return object && object.stageObject && object.stageObject._template && object.stageObject._template.hasParameters();
+            });
 
             this.previewController = PreviewController.create().init(this);
 
