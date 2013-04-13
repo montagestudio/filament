@@ -76,13 +76,24 @@
             }
         },
 
+        "bindingCreatorCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "bindingCreatorCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@bindingCreator.bindingModel"}
+            }
+        },
+
         "bindingCreator": {
             "prototype": "ui/binding-jig.reel",
             "properties": {
                 "element": {"#": "bindingCreator"}
             },
             "bindings": {
-                "targetObject": {"<-": "@objectList.objectAtCurrentIteration"}
+                "editingDocument": {"<-": "@owner.editingDocument"}
             }
         }
     }
@@ -90,6 +101,11 @@
 </head>
 <body>
     <div data-montage-id="binding-explorer" class="BindingExplorer">
+
+        <div data-montage-id="bindingCreatorCondition">
+            <div data-montage-id="bindingCreator"></div>
+        </div>
+
         <ul data-montage-id="objectList" class="BindingExplorer-objectList">
             <li class="BindingExplorer-objectList-item">
                 <span data-montage-id="objectLabel" class="BindingExplorer-objectLabel"></span>
@@ -97,7 +113,6 @@
                     <li data-montage-id="bindingEntry"></li>
                 </ul>
                 <button data-montage-id="addButton" class="BindingExplorer-addButton">+</button>
-                <div data-montage-id="bindingCreator"></div>
             </li>
         </ul>
     </div>

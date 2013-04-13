@@ -29,7 +29,11 @@ exports.BindingExplorer = Montage.create(Component, /** @lends module:"./binding
 
     handleDefineBindingButtonAction: {
         value: function (evt) {
-            // TODO bring up the UI for creating a binding on this object
+            //TODO not wipe out content if open/already has a bindingModel
+            var bindingModel = Object.create(null);
+            bindingModel.targetObject = evt.detail.get("targetObject");
+            this.templateObjects.bindingCreator.bindingModel = bindingModel;
+            //TODO reveal the creator
         }
     },
 

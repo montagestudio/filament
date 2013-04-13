@@ -12,32 +12,59 @@
             }
         },
 
-        "sourceObjectPropertyPath": {
-            "prototype": "matte/ui/input-text.reel",
+        "targetObjectLabel": {
+            "prototype": "montage/ui/text.reel",
             "properties": {
-                "identifier": "sourceObjectPropertyPath",
-                "element": {"#": "sourceObjectPropertyPath"}
+                "element": {"#": "targetObjectLabel"}
             },
             "bindings": {
-                "value": {"<->": "@owner.sourceObjectPropertyPath"}
+                "value": {"<-": "@owner.bindingModel.targetObject.label"}
             }
         },
 
-        "boundObjectPropertyPath": {
+        "targetPath": {
             "prototype": "matte/ui/input-text.reel",
             "properties": {
-                "identifier": "boundObjectPropertyPath",
-                "element": {"#": "boundObjectPropertyPath"}
+                "element": {"#": "targetPath"}
             },
             "bindings": {
-                "value": {"<->": "@owner.boundObjectPropertyPath"}
+                "value": {"<->": "@owner.bindingModel.targetPath"}
+            }
+        },
+
+        "unidirectional": {
+            "prototype": "matte/ui/input-radio.reel",
+            "properties": {
+                "element": {"#":"unidirectional"}
+            },
+            "bindings": {
+                "checked": {"<->": "@owner.bindingModel.oneway"}
+            }
+        },
+
+        "bidirectional": {
+            "prototype": "matte/ui/input-radio.reel",
+            "properties": {
+                "element": {"#":"bidirectional"}
+            },
+            "bindings": {
+                "checked": {"<->": "!@owner.bindingModel.oneway"}
+            }
+        },
+
+        "sourcePath": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "sourcePath"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.bindingModel.sourcePath"}
             }
         },
 
         "defineBindingButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {"label":"Define Binding",
-                "identifier": "defineBindingButton",
                 "element": {"#":"defineBindingButton"}
             },
             "listeners": [
@@ -60,20 +87,6 @@
                     "listener": {"@": "owner"}
                 }
             ]
-        },
-        
-        "undirectional": {
-            "prototype": "matte/ui/input-radio.reel",
-            "properties": {
-                "element": {"#":"undirectional"}
-            }
-        },
-        
-        "bidirectional": {
-            "prototype": "matte/ui/input-radio.reel",
-            "properties": {
-                "element": {"#":"bidirectional"}
-            }
         }
 
     }
@@ -82,23 +95,25 @@
 <body>
 
     <div data-montage-id="binding-jig" class="BindingJig">
-        
+
+        <span data-montage-id="targetObjectLabel"></span>
+
         <section class="BindingJig-section">
             <label class="BindingJig-label">Target Path</label>
-            <input data-montage-id="sourceObjectPropertyPath" class="BindingJig-input" type="text">
+            <input data-montage-id="targetPath" class="BindingJig-input" type="text">
         </section>
         
         <section class="BindingJig-section">
             <label class="BindingJig-label">Direction</label>
             <span class="BindingJig-direction">
-                <input data-montage-id="undirectional" class="BindingJig-radio BindingJig-radio--undirectional" type="radio" name="direction">
+                <input data-montage-id="unidirectional" class="BindingJig-radio BindingJig-radio--unidirectional" type="radio" name="direction">
                 <input data-montage-id="bidirectional" class="BindingJig-radio BindingJig-radio--bidirectional" type="radio" name="direction">
             </span>
         </section>
         
         <section class="BindingJig-section">
             <label class="BindingJig-label">Source Path</label>
-            <input data-montage-id="boundObjectPropertyPath" class="BindingJig-input" type="text">
+            <input data-montage-id="sourcePath" class="BindingJig-input" type="text">
         </section>
 
         <footer class="BindingJig-footer">

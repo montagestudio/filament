@@ -82,12 +82,12 @@
     background-color: hsla(210,100%,60%,0.1);
 }
 
-.BindingJig-radio--undirectional {
+.BindingJig-radio--unidirectional {
     border-radius: 3px 0 0 3px;
     background-image: url(/assets/icons/binding.svg),
                         -webkit-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
 }
-.BindingJig-radio--undirectional:checked {
+.BindingJig-radio--unidirectional:checked {
     background-image: url(/assets/icons/binding.svg);
 }
 
