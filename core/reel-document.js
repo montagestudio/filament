@@ -20,11 +20,21 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             var self = this,
                 objectName = MontageReviver.parseObjectLocationId(fileUrl).objectName;
 
+            // require.async() expect moduleId not URLs
+            var componentModuleId = fileUrl;
+            if (fileUrl.indexOf(packageUrl) > -1) {
+                componentModuleId = fileUrl.substring(packageUrl.length + 1);
+            }
+
             return require.loadPackage(packageUrl).then(function (packageRequire) {
-                return packageRequire.async(fileUrl).get(objectName).then(function (componentPrototype) {
+                return packageRequire.async(componentModuleId).get(objectName).then(function (componentPrototype) {
                     return Template.getTemplateWithModuleId(componentPrototype.templateModuleId, packageRequire);
+                }, function (error) {
+                    return Promise.reject(new Error("Cannot load component template.", error))
                 }).then(function (template) {
                         return self.create().init(fileUrl, template, packageRequire);
+                    }, function (error) {
+                        return Promise.reject(new Error("cannot initialize document for template.", error))
                     });
             });
         }
