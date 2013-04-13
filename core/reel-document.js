@@ -332,10 +332,26 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                         proxy.parentComponent = null;
                         return;
                     }
-                    proxy.parentProxy = this.editingProxyForObject(stageObject[0].parentComponent);
+                    stageObject = stageObject[0];
+                    var component = stageObject;
+                    // HACK: because ownerComponent is broken for components sucked up by
+                    // data-param, loop upwards until we find an editing proxy, indicating
+                    // that it's in the current reel
+                    while ((component = component.parentComponent) !== null) {
+                        try {
+                            proxy.parentProxy = this.editingProxyForObject(component);
+                        } catch (e) {}
+                    }
+                    if (!proxy.parentProxy) {
+                        proxy.parentProxy = ownerProxy;
+                    }
                 } else {
                     proxy.stageObject = stageObject;
-                    proxy.parentProxy = this.editingProxyForObject(stageObject.parentComponent) || ownerProxy;
+                    try {
+                        proxy.parentProxy = this.editingProxyForObject(stageObject.parentComponent);
+                    } catch (e) {
+                        proxy.parentProxy =  ownerProxy;
+                    }
                 }
             }, this);
         }
@@ -405,18 +421,29 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             // Select the highest component inside the current selection
             while (
                 currentElement !== ownerElement &&
-                    selectedElements.indexOf(currentElement) === -1  &&
-                    currentElement != null
-                ) {
+                selectedElements.indexOf(currentElement) === -1  &&
+                currentElement != null
+            ) {
                 var component = currentElement.component;
                 if (component) {
-                    if (component.ownerComponent !== ownerComponent) {
-                        // We've hit a component that isn't in the edited reel,
-                        // so stop going up and use the last selection
-                        // candidate.
-                        break;
-                    }
-                    selectionCandidate = component;
+                    // HACK: because the ownerComponent isn't correct for
+                    // components sucked up using data-param, this work-around
+                    // checks if this component is in the reel by checking if
+                    // it is in our editing proxy map
+                    try {
+                        // Errors when no proxy, and so the selectionCandidate
+                        // doesn't get updated
+                        this.editingProxyForObject(component);
+                        selectionCandidate = component;
+                    } catch (e) {}
+
+                    // Correct code:
+                    // if (component.ownerComponent === ownerComponent) {
+                    //     // Only update the selection candidate if the component
+                    //     // is in this reel
+                    //     selectionCandidate = component;
+                    // }
+
                 }
                 currentElement = currentElement.parentElement;
             }
