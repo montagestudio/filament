@@ -88,9 +88,11 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             var self = this;
             var object = this._object.stageObject;
 
-            // Convert the inner template to use the Application require
+            // Convert the inner template to use the Application Window object
             var innerTemplate = Template.clone.call(object.innerTemplate);
-            innerTemplate._require = require;
+            // Use the package require that has a reference to the application
+            // window
+            innerTemplate._require = this.documentEditor.editingDocument.packageRequire;
 
             innerTemplate.instantiate(document).then(function (part) {
                 part.childComponents.forEach(function (component) {
