@@ -3,7 +3,6 @@
     @requires montage
     @requires montage/ui/component
 */
-/*global WebKitMutationObserver */
 
 var Montage = require("montage").Montage,
     Inspector = require("contextual-inspectors/base/ui/inspector.reel").Inspector,
@@ -11,17 +10,6 @@ var Montage = require("montage").Montage,
 
 var Template = require("montage/core/template").Template;
 var MimeTypes = require("core/mime-types");
-
-var INSPECTOR_HEIGHT = 200;
-var INSPECTOR_PADDING = 16;
-
-// configuration of the observer:
-var MUTATION_OBSERVER_CONFIG = {
-    attributes: true,
-    childList: true,
-    characterData: true,
-    subtree: true
-};
 
 /**
     Description TODO
@@ -265,9 +253,8 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
 
             var rect = this._getBounds(el);
 
-            this._top = rect.top - INSPECTOR_HEIGHT - INSPECTOR_PADDING;
+            this._top = rect.top;
             this._left = rect.left;
-            this._height = INSPECTOR_HEIGHT;
             this._width = rect.right - rect.left;
         }
     },
