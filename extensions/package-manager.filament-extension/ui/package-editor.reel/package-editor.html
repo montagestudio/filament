@@ -9,13 +9,77 @@
             "properties": {
                 "element": {"#": "package-editor"}
             }
+        },
+
+        "packageName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "packageName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.currentDocument.packageName"}
+            }
+        },
+
+        "packageVersion": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "packageVersion"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.currentDocument.packageVersion"}
+            }
+        },
+
+        "dependencyList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "dependencyList"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.currentDocument.dependencies.items()"}
+            }
+        },
+
+        "dependencyName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "dependencyName"}
+            },
+            "bindings": {
+                "value": {"<-": "@dependencyList.objectAtCurrentIteration.0"}
+            }
+        },
+
+        "dependencyVersionSpecified": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "dependencyVersionSpecified"}
+            },
+            "bindings": {
+                "value": {"<-": "@dependencyList.objectAtCurrentIteration.1"}
+            }
         }
     }
     </script>
 </head>
 <body>
     <div data-montage-id="package-editor" class="PackageEditor">
-        PackageEditor
+        <h1 data-montage-id="packageName"></h1>
+        <table>
+            <tr>
+                <th>Version</th>
+                <td><span data-montage-id="packageVersion"></span></td>
+            </tr>
+        </table>
+
+        <h2>Dependencies</h2>
+        <ul data-montage-id="dependencyList">
+            <li>
+                <h3 data-montage-id="dependencyName"></h3>
+                <p>Specified Version <em data-montage-id="dependencyVersionSpecified"></em></p>
+            </li>
+        </ul>
     </div>
 </body>
 </html>

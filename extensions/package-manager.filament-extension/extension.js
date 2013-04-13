@@ -14,6 +14,7 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
 
     activate: {
         value: function (application, projectController, viewController) {
+            PackageDocument.sharedProjectController = projectController;
             projectController.registerUrlMatcherForDocumentType(this.editorFileMatchFunction, PackageDocument);
             return Promise.resolve(this);
         }
@@ -21,6 +22,7 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
 
     deactivate: {
         value: function (application, projectController, viewController) {
+            PackageDocument.sharedProjectController = null;
             projectController.unregisterUrlMatcherForDocumentType(this.editorFileMatchFunction, PackageDocument);
             return Promise.resolve(this);
         }
