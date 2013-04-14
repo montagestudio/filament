@@ -96,25 +96,29 @@
 
     <div data-montage-id="binding-jig" class="BindingJig">
 
-        <span data-montage-id="targetObjectLabel"></span>
-
-        <section class="BindingJig-section">
-            <label class="BindingJig-label">Target Path</label>
-            <input data-montage-id="targetPath" class="BindingJig-input" type="text">
-        </section>
-        
-        <section class="BindingJig-section">
-            <label class="BindingJig-label">Direction</label>
-            <span class="BindingJig-direction">
-                <input data-montage-id="unidirectional" class="BindingJig-radio BindingJig-radio--unidirectional" type="radio" name="direction">
-                <input data-montage-id="bidirectional" class="BindingJig-radio BindingJig-radio--bidirectional" type="radio" name="direction">
-            </span>
-        </section>
-        
-        <section class="BindingJig-section">
-            <label class="BindingJig-label">Source Path</label>
-            <input data-montage-id="sourcePath" class="BindingJig-input" type="text">
-        </section>
+        <div class="BindingJig-row">
+            
+            <span data-montage-id="targetObjectLabel" class="BindingJig-targetObjectLabel"></span>
+            
+            <section class="BindingJig-section BindingJig-section--target">
+                <label class="BindingJig-label">Target Path</label>
+                <input data-montage-id="targetPath" class="BindingJig-input" type="text">
+            </section>
+            
+            <section class="BindingJig-section">
+                <label class="BindingJig-label">Direction</label>
+                <span class="BindingJig-direction">
+                    <input data-montage-id="unidirectional" class="BindingJig-radio BindingJig-radio--unidirectional" type="radio" name="direction">
+                    <input data-montage-id="bidirectional" class="BindingJig-radio BindingJig-radio--bidirectional" type="radio" name="direction">
+                </span>
+            </section>
+            
+            <section class="BindingJig-section BindingJig-section--source">
+                <label class="BindingJig-label">Source Path</label>
+                <input data-montage-id="sourcePath" class="BindingJig-input" type="text">
+            </section>
+            
+        </div>
 
         <footer class="BindingJig-footer">
             <button data-montage-id="cancelButton"></button>
