@@ -125,7 +125,7 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
         // that
         value: function (label, serialization, exportId, editingDocument) {
 
-            if (!exportId && !serialization.prototype && !serialization.object) {
+            if (label !== "owner" && !exportId && !serialization.prototype && !serialization.object) {
                 throw new Error("No exportId provided or found for template object with label '" + label + "'");
             }
 

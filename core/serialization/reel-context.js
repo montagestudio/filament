@@ -22,7 +22,7 @@ exports.ReelContext = Montage.create(Context.prototype, {
 
     ownerExportId: {
         get: function () {
-            return this._reviver.parseObjectLocationId(this.editingDocument.url).moduleId;
+            return void 0;
         }
     },
 
