@@ -10,7 +10,7 @@ var ActionSheetLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/action-sheet.reel",
+            "prototype": "digit/ui/action-sheet.reel",
             "properties": {
                 "element": {"#": "anchor"},
                 "value": "Link"
@@ -40,7 +40,7 @@ var AudioLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/audio.reel",
+            "prototype": "digit/ui/audio.reel",
             "properties": {
                 "element": {"#": "audio"}
             }
@@ -69,7 +69,7 @@ var ButtonGroupLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/button-group.reel",
+            "prototype": "digit/ui/button-group.reel",
             "properties": {
                 "element": {"#": "buttonGroup"}
             }
@@ -98,7 +98,7 @@ var ButtonLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/button.reel",
+            "prototype": "digit/ui/button.reel",
             "properties": {
                 "element": {"#": "button"},
                 label: "Button",
@@ -129,7 +129,7 @@ var HeaderLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/header.reel",
+            "prototype": "digit/ui/header.reel",
             "properties": {
                 "element": {"#": "header"}
             }
@@ -158,7 +158,7 @@ var InputCheckboxLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/input-checkbox.reel",
+            "prototype": "digit/ui/input-checkbox.reel",
             "properties": {
                 "element": {"#": "checkbox"},
                 "checked": true
@@ -188,7 +188,7 @@ var InputDateLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/input-date.reel",
+            "prototype": "digit/ui/input-date.reel",
             "properties": {
                 "element": {"#": "date"},
                 "value": "2013-02-28"
@@ -218,7 +218,7 @@ var InputNumberLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/input-number.reel",
+            "prototype": "digit/ui/input-number.reel",
             "properties": {
                 "element": {"#": "number"},
                 "value": 100
@@ -248,7 +248,7 @@ var InputRadioLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/input-radio.reel",
+            "prototype": "digit/ui/input-radio.reel",
             "properties": {
                 "element": {"#": "radio"},
                 "checked": true
@@ -278,7 +278,7 @@ var InputRangeLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/input-range.reel",
+            "prototype": "digit/ui/input-range.reel",
             "properties": {
                 "element": {"#": "inputRange"},
                 "minValue": 0,
@@ -310,7 +310,7 @@ var InputTextLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/input-text.reel",
+            "prototype": "digit/ui/input-text.reel",
             "properties": {
                 "element": {"#": "inputText"},
                 "value": "Text"
@@ -340,7 +340,7 @@ var ListLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/list.reel",
+            "prototype": "digit/ui/list.reel",
             "properties": {
                 "element": {"#": "list"}
             }
@@ -368,7 +368,7 @@ var MapLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/map.reel",
+            "prototype": "digit/ui/map.reel",
             "properties": {
                 "element": {"#": "map"}
             }
@@ -397,7 +397,7 @@ var ModalLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/popup/modal.reel",
+            "prototype": "digit/ui/popup/modal.reel",
             "properties": {
                 "element": {"#": "popup"}
             }
@@ -426,7 +426,7 @@ var NotificationLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/popup/notification.reel",
+            "prototype": "digit/ui/popup/notification.reel",
             "properties": {
                 "element": {"#": "notification"}
             }
@@ -455,7 +455,7 @@ var ProgressLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/progress.reel",
+            "prototype": "digit/ui/progress.reel",
             "properties": {
                 "element": {"#": "progress"},
                 "max": 100,
@@ -486,7 +486,7 @@ var SelectLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/select.reel",
+            "prototype": "digit/ui/select.reel",
             "properties": {
                 "element": {"#": "select"}
             }
@@ -515,7 +515,7 @@ var SplitViewLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/split-view.reel",
+            "prototype": "digit/ui/split-view.reel",
             "properties": {
                 "element": {"#": "splitView"}
             }
@@ -544,7 +544,7 @@ var TabBarLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/popup/tab-bar.reel",
+            "prototype": "digit/ui/popup/tab-bar.reel",
             "properties": {
                 "element": {"#": "tabBar"}
             }
@@ -573,7 +573,7 @@ var TextareaLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/textarea.reel",
+            "prototype": "digit/ui/textarea.reel",
             "properties": {
                 "element": {"#": "textarea"},
                 "value": "Textarea"
@@ -603,7 +603,7 @@ var ToggleLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/toggle.reel",
+            "prototype": "digit/ui/toggle.reel",
             "properties": {
                 "element": {"#": "toggle"}
             }
@@ -632,7 +632,7 @@ var ToolBarLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/popup/tool-bar.reel",
+            "prototype": "digit/ui/popup/tool-bar.reel",
             "properties": {
                 "element": {"#": "toolBar"}
             }
@@ -661,7 +661,7 @@ var VideoLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "digit/video.reel",
+            "prototype": "digit/ui/video.reel",
             "properties": {
                 "element": {"#": "video"}
             }
@@ -690,28 +690,28 @@ var VideoLibraryItem = Montage.create(LibraryItem, {
 //TODO build this automatically
 exports.libraryItems = {
 
-    "digit/action-sheet.reel": ActionSheetLibraryItem,
-    "digit/audio.reel": AudioLibraryItem,
-    "digit/button-group.reel": ButtonGroupLibraryItem,
-    "digit/button.reel": ButtonLibraryItem,
-    "digit/header.reel": HeaderLibraryItem,
-    "digit/input-checkbox.reel": InputCheckboxLibraryItem,
-    "digit/input-number.reel": InputNumberLibraryItem,
-    "digit/input-radio.reel": InputRadioLibraryItem,
-    "digit/input-range.reel": InputRangeLibraryItem,
-    "digit/input-text.reel": InputTextLibraryItem,
-    "digit/list.reel": ListLibraryItem,
-    "digit/map.reel": MapLibraryItem,
-    "digit/modal.reel": ModalLibraryItem,
-    "digit/notification.reel": NotificationLibraryItem,
-    "digit/progress.reel": ProgressLibraryItem,
-    "digit/select.reel": SelectLibraryItem,
-    "digit/split-view.reel": SplitViewLibraryItem,
-    "digit/tab-bar.reel": TabBarLibraryItem,
-    "digit/textarea.reel": TextareaLibraryItem,
-    "digit/toggle.reel": ToggleLibraryItem,
-    "digit/tool-bar.reel": ToolBarLibraryItem,
-    "digit/video.reel": VideoLibraryItem
+    "digit/ui/action-sheet.reel": ActionSheetLibraryItem,
+    "digit/ui/audio.reel": AudioLibraryItem,
+    "digit/ui/button-group.reel": ButtonGroupLibraryItem,
+    "digit/ui/button.reel": ButtonLibraryItem,
+    "digit/ui/header.reel": HeaderLibraryItem,
+    "digit/ui/input-checkbox.reel": InputCheckboxLibraryItem,
+    "digit/ui/input-number.reel": InputNumberLibraryItem,
+    "digit/ui/input-radio.reel": InputRadioLibraryItem,
+    "digit/ui/input-range.reel": InputRangeLibraryItem,
+    "digit/ui/input-text.reel": InputTextLibraryItem,
+    "digit/ui/list.reel": ListLibraryItem,
+    "digit/ui/map.reel": MapLibraryItem,
+    "digit/ui/modal.reel": ModalLibraryItem,
+    "digit/ui/notification.reel": NotificationLibraryItem,
+    "digit/ui/progress.reel": ProgressLibraryItem,
+    "digit/ui/select.reel": SelectLibraryItem,
+    "digit/ui/split-view.reel": SplitViewLibraryItem,
+    "digit/ui/tab-bar.reel": TabBarLibraryItem,
+    "digit/ui/textarea.reel": TextareaLibraryItem,
+    "digit/ui/toggle.reel": ToggleLibraryItem,
+    "digit/ui/tool-bar.reel": ToolBarLibraryItem,
+    "digit/ui/video.reel": VideoLibraryItem
 
 };
 
