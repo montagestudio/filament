@@ -28,6 +28,7 @@ exports.Main = Montage.create(Component, {
             if (firstTime) {
                 application.addEventListener("asyncActivity", this, false);
                 application.addEventListener("enterModalEditor", this);
+                application.addEventListener("exitModalEditor", this);
                 application.addEventListener("addFile", this);
 
                 document.addEventListener("save", this, false);
@@ -164,6 +165,19 @@ exports.Main = Montage.create(Component, {
 
     handleExitModalEditorKeyPress: {
         enumerable: false,
+        value: function () {
+            this.exitModalEditor();
+        }
+    },
+
+    handleExitModalEditor: {
+        enumerable: false,
+        value: function (event) {
+            this.exitModalEditor();
+        }
+    },
+
+    exitModalEditor: {
         value: function () {
             this.modalEditorComponent = null;
             this.palettesVisible = true;
