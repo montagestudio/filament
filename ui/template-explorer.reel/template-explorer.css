@@ -1,0 +1,16 @@
+.TemplateExplorer.Panel {
+    min-width: 500px;
+}
+
+.TemplateExplorer-list.List {
+    background: none;
+}
+
+.TemplateExplorer-viewport {
+    overflow: hidden;
+    position: absolute;
+    top: 36px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}

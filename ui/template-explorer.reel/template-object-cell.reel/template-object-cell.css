@@ -1,13 +1,48 @@
+.TemplateObjectCell {
+    display: inline-block;
+    position: relative;
+
+    max-width: 15em;
+
+    border-radius: 8px;
+    -webkit-box-shadow: 0 2px 5px hsl(0,0%,50%);
+    z-index: 10;
+}
 
 .TemplateObjectCell.selected {
-    text-shadow: 0 1px 0 hsla(0,0%,0%,.2);
-    color: hsl(0,0%,90%);
     border-top-color: transparent;
     border-bottom-color: transparent;
-    background: hsl(0,0%,50%);
+    background: hsl(209,100%,90%);
+    z-index: 100;
+    border-color: hsl(207,75%,55%);
+    border-top-color: hsl(207,75%,85%);
+}
+
+.TemplateObjectCell:hover {
+    z-index: 101;
 }
 
 .TemplateObjectCell.selected:hover {
-    background: hsl(0,0%,50%);
+    background: hsl(209,100%,91%);
 }
+
+.TemplateObjectCell--label {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.TemplateObjectCell--comment {
+    display: block;
+    padding: 0.5em;
+
+    border: 1px solid hsl(44,40%,91%);
+    border-width: 1px 1px 2px;
+    border-color-top: hsl(44,40%,98%);
+    border-color-bottom: hsl(44,40%,87%);
+
+    white-space: normal;
+    font-style: italic;
+    background-color: hsl(42,83%,95%);
+}
+
 

@@ -94,6 +94,19 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
         }
     },
 
+    // Schematic Information
+    x: {
+        value: null
+    },
+
+    y: {
+        value: null
+    },
+
+    comment: {
+        value: null
+    },
+
     /**
      * The live object this editingProxy is representing
      * @note Edits made to the proxy are set on the live objects, this may not be the case forever
@@ -182,6 +195,12 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
                 });
             }
             this._listeners = listeners;
+
+            if (serialization.lumieres) {
+                this.comment = serialization.lumieres.comment;
+                this.x = serialization.lumieres.x;
+                this.y = serialization.lumieres.y;
+            }
         }
     },
 

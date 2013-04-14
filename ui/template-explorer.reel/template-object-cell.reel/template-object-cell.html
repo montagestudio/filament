@@ -8,7 +8,32 @@
         "owner": {
             "properties": {
                 "element": {"#": "template-object-cell"}
+            },
+            "bindings": {
+                "x": {"<->": "@owner.templateObject.x"},
+                "y": {"<->": "@owner.templateObject.y"}
             }
+        },
+
+        "translateComposer": {
+            "prototype": "montage/composer/translate-composer",
+            "properties": {
+                "component": {"@": "owner"},
+                "hasMomentum": false
+            },
+            "bindings": {
+                "pointerSpeedMultiplier": {"<-": "1/@owner.zoom"}
+            },
+            "listeners": [
+                {
+                    "type": "translateStart",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "translate",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "templateObjectLabel": {
@@ -19,13 +44,37 @@
             "bindings": {
                 "value": {"<-": "@owner.templateObject.label"}
             }
+        },
+
+        "commentCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "commentCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.templateObject.comment"}
+            }
+        },
+
+        "templateObjectComment": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "templateObjectComment"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.comment"}
+            }
         }
     }
     </script>
 </head>
 <body>
     <li data-montage-id="template-object-cell" class="List-item TemplateObjectCell">
-        <span data-montage-id="templateObjectLabel"></span>
+        <span data-montage-id="templateObjectLabel" class="TemplateObjectCell--label"></span>
+        <div data-montage-id="commentCondition">
+            <p data-montage-id="templateObjectComment" class="TemplateObjectCell--comment"></p>
+        </div>
     </li>
 </body>
 </html>
