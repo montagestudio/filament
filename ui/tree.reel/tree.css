@@ -1,5 +1,8 @@
 .Tree-list {
     overflow-x: auto;
+    
+    /* TODO: Remove the first item so the minus margin is not needed */
+    margin: -20px 0 0 -12px;
 }
 
 .Tree-list-row {
