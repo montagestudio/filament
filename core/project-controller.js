@@ -601,10 +601,19 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
             if (libraryEntry) {
                 item = libraryEntry.create();
             } else if (typeof libraryEntry === "undefined") {
+                var montageId = objectName.replace(/(^.)/, function (_, firstChar) {
+                    return firstChar.toLowerCase();
+                });
+
                 item = LibraryItem.create();
-                item.serialization = {prototype: moduleId};
+                item.serialization = {
+                    prototype: moduleId,
+                    properties: {
+                        element: {"#": montageId}
+                    }
+                };
                 item.name = objectName;
-                item.html = '<div></div>';
+                item.html = '<div data-montage-id="' + montageId + '"></div>';
             }
 
             return item;
