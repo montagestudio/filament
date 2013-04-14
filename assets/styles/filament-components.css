@@ -38,7 +38,8 @@
 /* Button Action --------------------------------- */
 
 .Button--action,
-.matte-Confirm-actions > .submit {    
+.matte-Confirm-actions > .submit,
+.BoundPropertyEditor .BoundPropertyEditor-boundButton {    
     color: hsla(0,0%,100%,1);
     text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
     border-color: hsl(210,100%,50%);
@@ -48,19 +49,22 @@
 }
 
 .Button--action:hover,
-.matte-Confirm-actions > .submit:hover {
+.matte-Confirm-actions > .submit:hover,
+.BoundPropertyEditor .BoundPropertyEditor-boundButton:hover {
     color: hsla(0,0%,100%,1);
     background-image: -webkit-linear-gradient(top, hsl(210,100%,70%), hsl(210,100%,60%) );
 }
 
 .Button--action.active,
-.matte-Confirm-actions > .submit.active {
+.matte-Confirm-actions > .submit.active,
+.BoundPropertyEditor .BoundPropertyEditor-boundButton.active {
     background-image: -webkit-linear-gradient(top, hsl(210,100%,56%), hsl(210,100%,56%) );
     box-shadow: 0 1px 0 hsla(0,0%,100%,.6);
 }
 
 .Button--action:focus,
-.matte-Confirm-actions > .submit:focus {
+.matte-Confirm-actions > .submit:focus,
+.BoundPropertyEditor .BoundPropertyEditor-boundButton:focus {
     border-color: hsl(210,100%,20%);
 }
 

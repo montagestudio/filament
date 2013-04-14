@@ -107,11 +107,11 @@
 
 .BindingJig-radio--unidirectional {
     border-radius: 3px 0 0 3px;
-    background-image: url(/assets/icons/binding.svg),
+    background-image: url(/assets/icons/binding-un.svg),
                         -webkit-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
 }
 .BindingJig-radio--unidirectional:checked {
-    background-image: url(/assets/icons/binding.svg);
+    background-image: url(/assets/icons/binding-un.svg);
 }
 
 .BindingJig-radio--bidirectional {
