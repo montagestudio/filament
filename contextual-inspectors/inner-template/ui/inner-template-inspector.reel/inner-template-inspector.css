@@ -6,12 +6,14 @@
     background: hsl(0,0%,96%);
     border: 3px solid hsl(0,0%,30%);
     border-top: none;
+    -webkit-transform: translate(100%,0);
+    margin-left: 16px;
     -webkit-animation: InnerTemplateInspector_slidein .24s cubic-bezier(.3,.3,0,1);
 }
 
 @-webkit-keyframes InnerTemplateInspector_slidein {
     0% {
-        -webkit-transform: translate3d(0,20px,0);
+        -webkit-transform: translate3d(90%,0,0);
         opacity: 0;
     }
 }
@@ -21,11 +23,11 @@
     position: absolute;
     width: 16px;
     height: 16px;
-    margin-left: -8px;
-    left: 50%;
-    bottom: -8px;
+    margin-top: -8px;
+    top: 50%;
+    left: -9px;
     background: -webkit-linear-gradient(45deg, hsla(0,0%,30%,1) 50%, hsla(0,0%,30%,0) 50% );
-    -webkit-transform: rotate(-45deg);
+    -webkit-transform: rotate(45deg);
 }
 
 .InnerTemplateInspector-header {
