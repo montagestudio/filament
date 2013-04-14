@@ -30,7 +30,7 @@ var Montage = require("montage").Montage,
  * even this usage is not currently advised.
  * @type {ReelProxy}
  */
-exports.ReelProxy = Montage.create(EditingProxy,  {
+exports.ReelProxy = Montage.create(EditingProxy, {
 
     /**
      * The identifier of the representedObject
@@ -72,7 +72,18 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
     moduleId: {
         get: function () {
             if (!this._moduleId && this._exportId) {
-                this._moduleId = MontageReviver.parseObjectLocationId(this._exportId).moduleId;
+                var fileUrl = this.editingDocument.url;
+                var packageUrl = this.editingDocument.packageRequire.location;
+                var baseModuleId = "";
+                if (fileUrl.indexOf(packageUrl) > -1) {
+                    baseModuleId = fileUrl.substring(packageUrl.length);
+                }
+
+                var moduleId = MontageReviver.parseObjectLocationId(this._exportId).moduleId;
+                if (moduleId[0] === "." && (moduleId[1] === "." || moduleId[1] === "/")) {
+                    moduleId = this.editingDocument.packageRequire.resolve(baseModuleId + "/" + moduleId, baseModuleId)
+                }
+                this._moduleId = moduleId;
             }
             return this._moduleId;
         }
@@ -147,7 +158,7 @@ exports.ReelProxy = Montage.create(EditingProxy,  {
             }
 
             if (serialization.object && serialization.prototype) {
-                throw new Error("Serialization for object with label '" + label +  "' cannot have both 'prototype' and 'object' attributes");
+                throw new Error("Serialization for object with label '" + label + "' cannot have both 'prototype' and 'object' attributes");
             }
 
             //TODO make sure that if the serialization specifically had no prototype, we don't go and write one in when saving
