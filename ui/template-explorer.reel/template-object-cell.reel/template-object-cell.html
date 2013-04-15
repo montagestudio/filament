@@ -77,12 +77,19 @@
     </script>
 </head>
 <body>
-    <li data-montage-id="template-object-cell" class="List-item TemplateObjectCell">
-        <img data-montage-id="icon" class="TemplateObjectCell-icon" draggable="true" src="../../../assets/img/library-icon.png">
-        <span data-montage-id="templateObjectLabel" class="TemplateObjectCell--label"></span>
-        <div data-montage-id="commentCondition">
-            <p data-montage-id="templateObjectComment" class="TemplateObjectCell--comment"></p>
-        </div>
+    <li data-montage-id="template-object-cell" class="TemplateObjectCell">
+        <header class="TemplateObjectCell-header">
+            <img data-montage-id="icon" class="TemplateObjectCell-icon" src="../../../assets/img/library-icon.png">
+            <h3 data-montage-id="templateObjectLabel" class="TemplateObjectCell-title"></h3>
+        </header>
+        
+        <div class="TemplateObjectCell-content"></div>
+        
+        <footer class="TemplateObjectCell-footer">
+            <div data-montage-id="commentCondition">
+                <p data-montage-id="templateObjectComment" class="TemplateObjectCell--comment"></p>
+            </div>
+        </footer>
     </li>
 </body>
 </html>

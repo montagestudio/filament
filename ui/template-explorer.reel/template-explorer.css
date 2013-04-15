@@ -59,6 +59,7 @@
     background: hsl(0, 0%, 80%);
 }
 
-.TemplateExplorer-list.List {
-    background: none;
+.TemplateExplorer-list {
+    margin: 0;
+    padding: 6px;
 }
