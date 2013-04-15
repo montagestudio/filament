@@ -45,7 +45,15 @@
                 "value": {"<->": "@owner.zoomFactor"}
             }
         },
-
+        
+        "decreaseZoomFactorButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "decreaseZoomFactorButton"},
+                "label": "-"
+            }
+        },
+        
         "clearZoomFactorButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {
@@ -58,15 +66,27 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
+        
+        "increaseZoomFactorButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "increaseZoomFactorButton"},
+                "label": "+"
+            }
         }
     }
     </script>
 </head>
 <body>
     <div data-montage-id="template-explorer" class="TemplateExplorer">
-        <header class="TemplateExplorer-bar">
-            <span data-montage-id="zoomSlider"></span>
-            <input type="button" data-montage-id="clearZoomFactorButton">
+        <header class="TemplateExplorer-bar TemplateExplorerTools">
+            <span data-montage-id="zoomSlider" class="TemplateExplorerTools-zoomSlider"></span>
+            <div class="matte-ButtonGroup">
+                <button data-montage-id="decreaseZoomFactorButton" class="Button TemplateExplorerTools-button">-</button>
+                <button data-montage-id="clearZoomFactorButton" class="Button TemplateExplorerTools-button"></button>
+                <button data-montage-id="increaseZoomFactorButton" class="Button TemplateExplorerTools-button">+</button>
+            </div>
         </header>
         <section class="TemplateExplorer-viewport">
             <div data-montage-id="schematics">
