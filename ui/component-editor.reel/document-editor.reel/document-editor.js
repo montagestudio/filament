@@ -142,7 +142,8 @@ exports.DocumentEditor = Montage.create(Component, {
                 } else if (isRemovingFromSelection) {
                     editingDocument.deselectObject(selectionCandidate);
                 } else {
-                    editingDocument.selectedObjects = [selectionCandidate];
+                    var selectedObjects = editingDocument.selectedObjects;
+                    selectedObjects.splice(0, selectedObjects.length, selectionCandidate);
                 }
             } else {
                 editingDocument.clearSelectedObjects();
