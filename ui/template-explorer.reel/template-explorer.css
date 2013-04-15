@@ -1,5 +1,13 @@
-.TemplateExplorer.Panel {
-    min-width: 500px;
+
+.TemplateExplorer {
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+}
+
+.TemplateExplorer-bar {
+    padding: 10px;
+    border-bottom: 1px solid hsla(0,0%,0%,.2);
+    background: hsl(0, 0%, 90%);
 }
 
 .TemplateExplorer-list.List {
@@ -7,10 +15,7 @@
 }
 
 .TemplateExplorer-viewport {
+    -webkit-flex: 1;
     overflow: hidden;
-    position: absolute;
-    top: 36px;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    background: hsl(0, 0%, 80%);
 }
