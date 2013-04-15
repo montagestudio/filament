@@ -65,6 +65,35 @@ var AudioLibraryItem = Montage.create(LibraryItem, {
 
 });
 
+var BadgeLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "digit/ui/badge.reel",
+            "properties": {
+                "element": {"#": "badge"}
+            }
+        }
+    },
+
+    name: {
+        value: "Badge"
+    },
+
+    label: {
+        value: "Badge"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/badge.png"
+    },
+
+    html: {
+        value: '<output data-montage-id="badge"></output>'
+    }
+
+});
+
 var ButtonGroupLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
@@ -336,6 +365,34 @@ var InputTextLibraryItem = Montage.create(LibraryItem, {
 
 });
 
+var ListItemLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "digit/ui/list-item.reel",
+            "properties": {
+                "element": {"#": "ListItem"}
+            }
+        }
+    },
+
+    name: {
+        value: "ListItem"
+    },
+
+    label: {
+        value: "ListItem"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/list-item.png"
+    },
+
+    html: {
+        value: '<li data-montage-id="listItem">List Item</li>'
+    }
+});
+
 var ListLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
@@ -569,6 +626,36 @@ var TabBarLibraryItem = Montage.create(LibraryItem, {
 
 });
 
+var TextLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "digit/ui/text.reel",
+            "properties": {
+                "element": {"#": "text"},
+                "value": "Text"
+            }
+        }
+    },
+
+    name: {
+        value: "Text"
+    },
+
+    label: {
+        value: "Text"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/text.png"
+    },
+
+    html: {
+        value: '<span data-montage-id="text"></span>'
+    }
+
+});
+
 var TextareaLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
@@ -595,6 +682,36 @@ var TextareaLibraryItem = Montage.create(LibraryItem, {
 
     html: {
         value: '<textarea data-montage-id="textarea"></textarea>'
+    }
+
+});
+
+var TitleLibraryItem = Montage.create(LibraryItem, {
+
+    serialization: {
+        value: {
+            "prototype": "digit/ui/title.reel",
+            "properties": {
+                "element": {"#": "title"},
+                "value": "Title"
+            }
+        }
+    },
+
+    name: {
+        value: "Title"
+    },
+
+    label: {
+        value: "Title"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/title.png"
+    },
+
+    html: {
+        value: '<h3 data-montage-id="title"></h3>'
     }
 
 });
@@ -692,6 +809,7 @@ exports.libraryItems = {
 
     "digit/ui/action-sheet.reel": ActionSheetLibraryItem,
     "digit/ui/audio.reel": AudioLibraryItem,
+    "digit/ui/badge.reel": BadgeLibraryItem,
     "digit/ui/button-group.reel": ButtonGroupLibraryItem,
     "digit/ui/button.reel": ButtonLibraryItem,
     "digit/ui/header.reel": HeaderLibraryItem,
@@ -700,6 +818,7 @@ exports.libraryItems = {
     "digit/ui/input-radio.reel": InputRadioLibraryItem,
     "digit/ui/input-range.reel": InputRangeLibraryItem,
     "digit/ui/input-text.reel": InputTextLibraryItem,
+    "digit/ui/list-item.reel": ListItemLibraryItem,
     "digit/ui/list.reel": ListLibraryItem,
     "digit/ui/map.reel": MapLibraryItem,
     "digit/ui/modal.reel": ModalLibraryItem,
@@ -708,7 +827,9 @@ exports.libraryItems = {
     "digit/ui/select.reel": SelectLibraryItem,
     "digit/ui/split-view.reel": SplitViewLibraryItem,
     "digit/ui/tab-bar.reel": TabBarLibraryItem,
+    "digit/ui/text.reel": TextLibraryItem,
     "digit/ui/textarea.reel": TextareaLibraryItem,
+    "digit/ui/title.reel": TitleLibraryItem,
     "digit/ui/toggle.reel": ToggleLibraryItem,
     "digit/ui/tool-bar.reel": ToolBarLibraryItem,
     "digit/ui/video.reel": VideoLibraryItem
