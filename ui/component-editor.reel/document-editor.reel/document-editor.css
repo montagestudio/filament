@@ -14,4 +14,5 @@
 	-webkit-flex: 1;
 	border-left: 6px solid hsl(0,0%,20%);
 	border-right: 6px solid hsl(0,0%,20%);
+	border-bottom: 6px solid hsl(0,0%,20%);
 }

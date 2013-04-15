@@ -7,17 +7,8 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "template-explorer"}
-            }
-        },
-
-        "title": {
-            "prototype": "montage/ui/text.reel",
-            "properties": {
-                "element": {"#": "title"}
-            },
-            "localizations": {
-                "value": {"key": "template_explorer"}
+                "element": {"#": "template-explorer"},
+                "schematicsElement": {"#": "schematics"}
             }
         },
 
@@ -38,21 +29,52 @@
                 "element": {"#": "templateObjectCell"}
             },
             "bindings": {
-                "templateObject": {"<-": "@templateObjectList.objectAtCurrentIteration"}
+                "templateObject": {"<-": "@templateObjectList.objectAtCurrentIteration"},
+                "zoom": {"<-": "@owner.zoom"}
             }
+        },
+
+        "zoomSlider": {
+            "prototype": "matte/ui/input-range.reel",
+            "properties": {
+                "element": {"#": "zoomSlider"},
+                "min": 0,
+                "max": 200
+            },
+            "bindings": {
+                "value": {"<->": "@owner.zoomFactor"}
+            }
+        },
+
+        "clearZoomFactorButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "clearZoomFactorButton"},
+                "label": "100%"
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>
 </head>
 <body>
-    <div data-montage-id="template-explorer" class="Panel TemplateExplorer">
-        <h2 data-montage-id="title" class="Panel-title">Template Explorer</h2>
-        <div class="Panel-content">
-            <ul data-montage-id="templateObjectList" class="List TemplateExplorer-list" >
-                <li data-montage-id="templateObjectCell"></li>
-            </ul>
-        </div>
-        <div class="Panel-shadow"></div>
+    <div data-montage-id="template-explorer" class="TemplateExplorer">
+        <header class="TemplateExplorer-bar">
+            <span data-montage-id="zoomSlider"></span>
+            <input type="button" data-montage-id="clearZoomFactorButton">
+        </header>
+        <section class="TemplateExplorer-viewport">
+            <div data-montage-id="schematics">
+                <ul data-montage-id="templateObjectList" class="List TemplateExplorer-list" >
+                    <li data-montage-id="templateObjectCell"></li>
+                </ul>
+            </div>
+        </section>
     </div>
 </body>
 </html>

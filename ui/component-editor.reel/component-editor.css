@@ -5,14 +5,24 @@
     -webkit-flex-direction: row;
 }
 
-.Filament-view {
+.ComponentEditor-column {
     -webkit-flex: 1;
     display: -webkit-flex;
     -webkit-flex-direction: column;
 }
 
-.documentEditorSlot {
+.ComponentEditor-column-fill {
     -webkit-flex: 1;
+}
+
+.ComponentEditor-column-fill.documentEditorSlot {
     display: -webkit-flex;
-    -webkit-flex-direction: column;
+}
+
+.ComponentEditor-column-fixed {
+    max-height: 240px;
+    overflow-y: auto;
+    font-size: 12px;
+    text-shadow: 0 1px 0 hsla(0,0%,100%,0.4);
+    background: hsl(0,0%,96%);
 }

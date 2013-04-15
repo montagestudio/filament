@@ -1,0 +1,21 @@
+
+.TemplateExplorer {
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+}
+
+.TemplateExplorer-bar {
+    padding: 10px;
+    border-bottom: 1px solid hsla(0,0%,0%,.2);
+    background: hsl(0, 0%, 90%);
+}
+
+.TemplateExplorer-list.List {
+    background: none;
+}
+
+.TemplateExplorer-viewport {
+    -webkit-flex: 1;
+    overflow: hidden;
+    background: hsl(0, 0%, 80%);
+}
