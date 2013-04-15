@@ -20,6 +20,13 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
         }
     },
 
+    enterDocument: {
+        value: function (firstTime) {
+            if (!firstTime) return;
+            this.templateObjects.icon.element.addEventListener("dragstart", this, false);
+        }
+    },
+
     templateObject: {
         value: null
     },
@@ -35,6 +42,12 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
     scheduleDraw: {
         value: function () {
             this.needsDraw = true;
+        }
+    },
+
+    handleDragstart: {
+        value: function (evt) {
+            event.dataTransfer.setData("text/plain", "@" + this.templateObject.label);
         }
     },
 

@@ -18,7 +18,7 @@
         "translateComposer": {
             "prototype": "montage/composer/translate-composer",
             "properties": {
-                "component": {"@": "owner"},
+                "component": {"@": "templateObjectLabel"},
                 "hasMomentum": false
             },
             "bindings": {
@@ -34,6 +34,13 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
+
+        "icon": {
+            "prototype": "matte/ui/image.reel",
+            "properties": {
+                "element": {"#": "icon"}
+            }
         },
 
         "templateObjectLabel": {
@@ -71,6 +78,7 @@
 </head>
 <body>
     <li data-montage-id="template-object-cell" class="List-item TemplateObjectCell">
+        <img data-montage-id="icon" class="TemplateObjectCell-icon" draggable="true" src="../../../assets/img/library-icon.png">
         <span data-montage-id="templateObjectLabel" class="TemplateObjectCell--label"></span>
         <div data-montage-id="commentCondition">
             <p data-montage-id="templateObjectComment" class="TemplateObjectCell--comment"></p>

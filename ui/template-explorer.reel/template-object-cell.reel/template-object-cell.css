@@ -26,6 +26,10 @@
     background: hsl(209,100%,91%);
 }
 
+.TemplateObjectCell-icon {
+    height: 1.5em;
+}
+
 .TemplateObjectCell--label {
     font-weight: bold;
     font-size: 1.5em;
