@@ -74,6 +74,16 @@
             }
         },
 
+        "elementTagName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "elementTagName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.properties.get('element').tagName"}
+            }
+        },
+
         "elementId": {
             "prototype": "montage/ui/text.reel",
             "properties": {
@@ -138,7 +148,10 @@
         <ul class="TemplateObjectCell-list">
             <li class="TemplateObjectCell-list-item TemplateObjectTag">
                 <img class="TemplateObject-list-icon" src="/assets/icons/tag.png">
-                <span class="TemplateObjectTag-label" data-montage-id="elementId"></span>
+                <span class="TemplateObjectTag-label">
+                    <span data-montage-id="elementTagName"></span>
+                    <em  data-montage-id="elementId"></em>
+                </span>
             </li>
             <li class="TemplateObjectCell-list-item TemplateObjectEvent">
                 <img class="TemplateObject-list-icon" src="/assets/icons/event.png">
