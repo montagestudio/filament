@@ -1,0 +1,33 @@
+.SplitControl {
+    -webkit-flex: 0 0 0px;
+    min-width: 10;
+    z-index: 100;
+    display: -webkit-flex;
+    position: relative;
+    background: hsl(301, 56%, 46%);
+}
+
+.SplitControl.SplitControl--vertical {
+}
+
+.SplitControl.SplitControl--horizontal {
+}
+
+.SplitControl .SplitControl-slider {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+}
+.SplitControl.SplitControl--vertical .SplitControl-slider {
+    left: -10px;
+    width: 20px;
+    cursor: col-resize;
+}
+
+.SplitControl.SplitControl--horizontal .SplitControl-slider {
+    top: -10px;
+    height: 20px;
+    cursor: row-resize;
+}

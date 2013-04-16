@@ -147,6 +147,15 @@
                 "bindings": {
                     "document": {"<-": "@openDocumentList.objectAtCurrentIteration"}
                 }
+            },
+            "split": {
+                "prototype": "ui/split-control.reel",
+                "properties": {
+                    "element": {"#": "split"},
+                    "splitAxis": "vertical",
+                    "containerElement": {"#": "containerElement"},
+                    "controlledComponent": {"@": "packageExplorer"}
+                }
             }
 
         }
@@ -159,12 +168,12 @@
 
         <div data-montage-id="tasksInfobar"></div>
 
-        <div class="Main">
+        <div data-montage-id="containerElement" class="Main">
             <div data-montage-id="extensionsPanelCondition">
                 <aside data-montage-id="extensionPanel"></aside>
             </div>
             <aside data-montage-id="packageExplorer" class="palette"></aside>
-
+            <div data-montage-id="split"></div>
             <section class="editor">
                 <ul data-montage-id="openDocumentList" class="Tabs palette">
                     <li data-montage-id="documentTab"></li>

@@ -94,6 +94,26 @@
                     "templateObjectsController": {"<-": "@owner.templateObjectsController"},
                     "editingDocument": {"<-": "@owner.projectController.currentDocument"}
                 }
+            },
+
+            "bindingSplit": {
+                "prototype": "ui/split-control.reel",
+                "properties": {
+                    "element": {"#": "bindingSplit"},
+                    "splitAxis": "horizontal",
+                    "containerElement": {"#": "templateExplorerColumn"},
+                    "controlledComponent": {"@": "bindingExplorer"}
+                }
+            },
+
+            "domSplit": {
+                "prototype": "ui/split-control.reel",
+                "properties": {
+                    "element": {"#": "domSplit"},
+                    "splitAxis": "horizontal",
+                    "containerElement": {"#": "documentEditorExplorerColumn"},
+                    "controlledComponent": {"@": "domExplorer"}
+                }
             }
 
         }
@@ -103,12 +123,14 @@
 <body>
 
     <section data-montage-id="componentEditor" class="ComponentEditor">
-        <section class="ComponentEditor-column">
+        <section data-montage-id="templateExplorerColumn" class="ComponentEditor-column">
             <div data-montage-id="templateExplorer" class="ComponentEditor-column-fill"></div>
+            <div data-montage-id="bindingSplit"></div>
             <footer data-montage-id="bindingExplorer" class="ComponentEditor-column-fixed"></footer>
         </section>
-        <section class="ComponentEditor-column">
+        <section data-montage-id="documentEditorExplorerColumn" class="ComponentEditor-column">
             <div data-montage-id="documentEditorSlot" class="ComponentEditor-column-fill documentEditorSlot"></div>
+            <div data-montage-id="domSplit"></div>
             <footer data-montage-id="domExplorer" class="ComponentEditor-column-fixed"></footer>
         </section>
         <aside data-montage-id="configurator" class="palette"></aside>

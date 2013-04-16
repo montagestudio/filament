@@ -12,7 +12,8 @@
 }
 
 .ComponentEditor-column-fill {
-    -webkit-flex: 1;
+    min-height: 50px;
+    -webkit-flex: 1 1 250px;
 }
 
 .ComponentEditor-column-fill.documentEditorSlot {
@@ -20,7 +21,8 @@
 }
 
 .ComponentEditor-column-fixed {
-    max-height: 240px;
+    -webkit-flex: 0 1 200px;
+    min-height: 50px;
     overflow-y: auto;
     font-size: 12px;
     text-shadow: 0 1px 0 hsla(0,0%,100%,0.4);
