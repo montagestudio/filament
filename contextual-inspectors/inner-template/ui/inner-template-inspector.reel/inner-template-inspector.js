@@ -181,6 +181,8 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
 
     updateInnerTemplate: {
         value: function () {
+            return;
+            // console.error("updateInnerTemplate");
             // START HACK //
             // Avoid bug where setting innerTemplate multiple times in
             // one draw cycle causes the repetition to break
@@ -217,6 +219,11 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
                 externalObjects;
 
             var oldObject = this.object.stageObject;
+
+            if (!oldObject.element.parentNode) {
+                console.warn("Stage object does not have a parent, aborting inner template update");
+                return;
+            }
 
             var ownerDocument = oldObject.element.ownerDocument;
             ownerDocumentPart = oldObject._ownerDocumentPart;

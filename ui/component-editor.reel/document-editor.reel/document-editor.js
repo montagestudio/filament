@@ -84,45 +84,45 @@ exports.DocumentEditor = Montage.create(Component, {
 
     handleSelectedObjectsRangeChange: {
         value: function (plus, minus, index) {
-            var self = this;
-            var selectedObjects = this.getPath("editingDocument.selectedObjects");
-            if (selectedObjects && selectedObjects.length === 1) {
-                var selectedObject = selectedObjects[0];
-                var inspectors = this.viewController.contextualInspectorsForObject(selectedObject);
+            // var self = this;
+            // var selectedObjects = this.getPath("editingDocument.selectedObjects");
+            // if (selectedObjects && selectedObjects.length === 1) {
+            //     var selectedObject = selectedObjects[0];
+            //     var inspectors = this.viewController.contextualInspectorsForObject(selectedObject);
 
-                Promise.all(inspectors.map(function (component) {
-                    var inspector = component.create();
-                    inspector.object = selectedObject;
-                    inspector.documentEditor = self;
-                    return inspector;
-                })).then(function (inspectors) {
-                    self.contextualInspectors = inspectors;
-                }).done();
+            //     Promise.all(inspectors.map(function (component) {
+            //         var inspector = component.create();
+            //         inspector.object = selectedObject;
+            //         inspector.documentEditor = self;
+            //         return inspector;
+            //     })).then(function (inspectors) {
+            //         self.contextualInspectors = inspectors;
+            //     }).done();
 
-                if (!selectedObject.parentProxy) {
-                    return;
-                }
+            //     if (!selectedObject.parentProxy) {
+            //         return;
+            //     }
 
-                // TODO make a loop
-                var parentObject = selectedObject.parentProxy;
-                var parentInspectors = this.viewController.contextualInspectorsForObject(parentObject).filter(function (inspector) {
-                    return inspector.showForChildComponents;
-                });
-                Promise.all(parentInspectors.map(function (component) {
-                    var inspector = component.create();
-                    inspector.object = parentObject;
-                    inspector.documentEditor = self;
-                    inspector.selectedObject = selectedObject;
-                    return inspector;
-                })).then(function (inspectors) {
-                    self.contextualInspectors.push.apply(self.contextualInspectors, inspectors);
-                }).done();
+            //     // TODO make a loop
+            //     var parentObject = selectedObject.parentProxy;
+            //     var parentInspectors = this.viewController.contextualInspectorsForObject(parentObject).filter(function (inspector) {
+            //         return inspector.showForChildComponents;
+            //     });
+            //     Promise.all(parentInspectors.map(function (component) {
+            //         var inspector = component.create();
+            //         inspector.object = parentObject;
+            //         inspector.documentEditor = self;
+            //         inspector.selectedObject = selectedObject;
+            //         return inspector;
+            //     })).then(function (inspectors) {
+            //         self.contextualInspectors.push.apply(self.contextualInspectors, inspectors);
+            //     }).done();
 
-            } else {
-                if (this.contextualInspectors) {
-                    this.contextualInspectors.clear();
-                }
-            }
+            // } else {
+            //     if (this.contextualInspectors) {
+            //         this.contextualInspectors.clear();
+            //     }
+            // }
         }
     },
 
