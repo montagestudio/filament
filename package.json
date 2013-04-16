@@ -19,7 +19,7 @@
         "npm": "1.1.70",
         "watchr": "2.3.3",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git",
-        "minit": "0.2.0-alpha",
+        "minit": "0.3.0-alpha",
         "minimatch": "0.2.9"
     },
     "devDependencies": {
