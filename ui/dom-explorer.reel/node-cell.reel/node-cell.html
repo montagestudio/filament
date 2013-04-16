@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="node-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "node-cell"}
+            }
+        },
+
+        "nodeTagName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "nodeTagName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.nodeInfo.tagName"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="node-cell" class="NodeCell">
+        TagName: <span data-montage-id="nodeTagName"></span>
+    </div>
+</body>
+</html>

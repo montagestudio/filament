@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="dom-explorer.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "dom-explorer"},
+                "nodeTreeController": {"@": "nodeTreeController"}
+            }
+        },
+
+        "nodeTreeController": {
+            "prototype": "montage/core/tree-controller",
+            "properties": {
+                "childrenPath": "children"
+            },
+            "bindings": {
+                "content": {"<-": "@owner.editingDocument.templateBodyNode"}
+            }
+        },
+
+        "nodeList": {
+            "prototype": "ui/tree.reel",
+            "properties": {
+                "element": {"#": "nodeList"},
+                "isSelectionEnabled": true
+            },
+            "bindings": {
+                "treeController": {"<-": "@owner.nodeTreeController"}
+            }
+        },
+
+        "nodeCell": {
+            "prototype": "./node-cell.reel",
+            "properties": {
+                "element": {"#": "nodeCell"}
+            },
+            "bindings": {
+                "nodeInfo": {"<-": "@nodeCell.parentComponent.object"},
+                "iteration": {"<-": "@nodeCell.parentComponent.iteration"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="dom-explorer" class="DomExplorer">
+        <div data-montage-id="nodeList">
+            <span data-montage-id="nodeCell" data-arg="treeNode"></span>
+        </div>
+    </div>
+</body>
+</html>

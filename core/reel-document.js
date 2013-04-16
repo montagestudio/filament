@@ -10,7 +10,8 @@ var Montage = require("montage").Montage,
     ReelSerializer = require("core/serialization/reel-serializer").ReelSerializer,
     ReelVisitor = require("core/serialization/reel-visitor").ReelVisitor,
     ReelReviver = require("core/serialization/reel-reviver").ReelReviver,
-    ReelContext = require("core/serialization/reel-context").ReelContext;
+    ReelContext = require("core/serialization/reel-context").ReelContext,
+    NodeProxy = require("core/node-proxy").NodeProxy;
 
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = Montage.create(EditingDocument, {
@@ -174,6 +175,17 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
     _template: {
         value: null
+    },
+
+    templateBodyNode: {
+        get: function () {
+            if (this.htmlDocument && this.htmlDocument.body) {
+                return NodeProxy.create().initWithNode(this.htmlDocument.body);
+//                return this.htmlDocument.body;
+            } else {
+                return null;
+            }
+        }
     },
 
     _buildSerialization: {

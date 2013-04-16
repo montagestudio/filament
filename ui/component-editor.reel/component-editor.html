@@ -83,6 +83,17 @@
                     "templateObjectsController": {"<-": "@owner.templateObjectsController"},
                     "editingDocument": {"<-": "@owner.projectController.currentDocument"}
                 }
+            },
+
+            "domExplorer": {
+                "prototype": "ui/dom-explorer.reel",
+                "properties": {
+                    "element": {"#": "domExplorer"}
+                },
+                "bindings": {
+                    "templateObjectsController": {"<-": "@owner.templateObjectsController"},
+                    "editingDocument": {"<-": "@owner.projectController.currentDocument"}
+                }
             }
 
         }
@@ -98,7 +109,7 @@
         </section>
         <section class="ComponentEditor-column">
             <div data-montage-id="documentEditorSlot" class="ComponentEditor-column-fill documentEditorSlot"></div>
-            <footer data-montage-id="domTree" class="ComponentEditor-column-fixed">DOM Tree</footer>
+            <footer data-montage-id="domExplorer" class="ComponentEditor-column-fixed"></footer>
         </section>
         <aside data-montage-id="configurator" class="palette"></aside>
         <aside data-montage-id="library" class="palette"></aside>
