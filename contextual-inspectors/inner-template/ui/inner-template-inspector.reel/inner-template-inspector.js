@@ -18,10 +18,6 @@ var MimeTypes = require("core/mime-types");
 */
 exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui//inner-template-inspector.reel".InnerTemplateInspector# */ {
 
-    _innerTemplateInstancePromise: {
-        value: null
-    },
-
     _object: {
         value: null
     },
@@ -166,7 +162,6 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
 
     updateInnerTemplate: {
         value: function () {
-
             // START HACK //
             // Avoid bug where setting innerTemplate multiple times in
             // one draw cycle causes the repetition to break
@@ -193,10 +188,8 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             this._needsUpdateInnerTemplate = false;
             // END HACK //
 
-
             // adapted from montage/ui/component.js innerTemplate.get
-            var innerTemplate,
-                ownerDocumentPart,
+            var ownerDocumentPart,
                 ownerTemplate,
                 elementId,
                 serialization,
@@ -204,24 +197,40 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
                 ownerTemplateObjects,
                 externalObjects;
 
-            // is this the correct _ownerDocumentPart? We're kind of using a
-            // hybrid of our internal template and the stage's template...
-            ownerDocumentPart = this.object.stageObject._ownerDocumentPart;
+            var oldObject = this.object.stageObject;
 
+            var ownerDocument = oldObject.element.ownerDocument;
+            ownerDocumentPart = oldObject._ownerDocumentPart;
             ownerTemplate = this.documentEditor.editingDocument._template;
 
-            elementId = this.object.stageObject.getElementId();
+            elementId = oldObject.getElementId();
 
-            // Use the Template from the stage, so that it uses the Stage
-            // Window object. Note: we're using the Template prototype, not
-            // the instance.
-            ownerTemplate.clearTemplateFromElementContentsCache();
-            innerTemplate = ownerDocumentPart.template.createTemplateFromElementContents.call(ownerTemplate, elementId);
+            // SLIGHT HACK:
+            // We need a new template with the Template prototype from the
+            // stage so that it uses the stage Window object.
+            // Originally this was doing a .call on ownerDocumentPart.template.createTemplateFromElement
+            // however this can breaks in a hard to detect way if that method
+            // calls another method, because it will use the prototype of the
+            // this, the incorrect prototype.
+            // Hence it is safer to swap out the __proto__.
+            // NOTE: taking the __proto__ directly off of ownerDocumentPart.template
+            // is also slightly dangerous because it might not be the Template
+            // object, and instead an instance prototype. However this is
+            // a) still safer than the .call method, and
+            // b) unlikely that the instance proto is going to override any
+            //    of the 'static-ish' methods that we are using.
+            //jshint -W103, -W106
+            var oldProto = ownerTemplate.__proto__;
+            ownerTemplate.__proto__ = ownerDocumentPart.template.__proto__;
+            var outerTemplate = ownerTemplate.createTemplateFromElement(elementId);
+            ownerTemplate.__proto__ = oldProto;
+            //jshint +W103, +W106
+
             // ownerTemplate._templateFromElementContentsCache = void 0;
             // Also need to make sure we're using the Stage require
-            innerTemplate._require = ownerDocumentPart.template._require;
+            outerTemplate._require = ownerDocumentPart.template._require;
 
-            serialization = innerTemplate.getSerialization();
+            serialization = outerTemplate.getSerialization();
             externalObjectLabels = serialization.getExternalObjectLabels();
             ownerTemplateObjects = ownerDocumentPart.objects;
             externalObjects = Object.create(null);
@@ -229,9 +238,31 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             for (var i = 0, label; (label = externalObjectLabels[i]); i++) {
                 externalObjects[label] = ownerTemplateObjects[label];
             }
-            innerTemplate.setInstances(externalObjects);
+            outerTemplate.setInstances(externalObjects);
 
-            this.object.stageObject.innerTemplate = innerTemplate;
+            oldObject.detachFromParentComponent();
+
+            outerTemplate.instantiate(ownerDocument).then(function (part) {
+                var ownerObjects = oldObject.ownerComponent._templateDocumentPart.objects;
+                var newObjects = part.objects;
+                var newObject = newObjects[self.object.label];
+
+                // Add new instances to the owner objects
+                for (var newObjectLabel in newObjects) {
+                    if (!(newObjectLabel in ownerObjects) || newObjectLabel === self.object.label) {
+                        ownerObjects[newObjectLabel] = newObjects[newObjectLabel];
+                    }
+                }
+
+                // Replace the existing element with the newly instantiated one
+                oldObject.element.parentNode.replaceChild(newObject.element, oldObject.element);
+                newObject.attachToParentComponent();
+
+                self.object.stageObject = newObject;
+
+                return newObject.loadComponentTree();
+            }).done();
+
         }
     },
 
