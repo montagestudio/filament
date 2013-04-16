@@ -180,8 +180,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
     templateBodyNode: {
         get: function () {
             if (this.htmlDocument && this.htmlDocument.body) {
-                return NodeProxy.create().initWithNode(this.htmlDocument.body);
-//                return this.htmlDocument.body;
+                return NodeProxy.create().init(this.htmlDocument.body, this);
             } else {
                 return null;
             }
@@ -409,6 +408,24 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             }
 
             return proxy;
+        }
+    },
+
+    componentProxyForElement: {
+        value: function (element) {
+            var proxies = this.editingProxies,
+                i = 0,
+                iProxy,
+                foundProxy;
+
+            while (!foundProxy && (iProxy = proxies[i])) {
+                i++;
+                if (element === iProxy.properties.get("element")) {
+                    foundProxy = iProxy;
+                }
+            }
+
+            return foundProxy;
         }
     },
 

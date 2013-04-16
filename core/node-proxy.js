@@ -3,13 +3,18 @@ var Montage = require("montage").Montage,
 
 exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
 
+    _editingDocument: {
+        value: null
+    },
+
     _templateNode: {
         value: null
     },
 
-    initWithNode: {
-        value: function (node) {
+    init: {
+        value: function (node, editingDocument) {
             this._templateNode = node;
+            this._editingDocument = editingDocument;
             return this;
         }
     },
@@ -27,7 +32,7 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
                     i;
 
                 for (i = 0; (iChildNode = children.item(i)); i++) {
-                    childrenProxies.push(NodeProxy.create().initWithNode(iChildNode));
+                    childrenProxies.push(NodeProxy.create().init(iChildNode, this._editingDocument));
                 }
 
                 this._children = childrenProxies;
@@ -53,6 +58,13 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
                 }
             }
             return snippet;
+        }
+    },
+
+    component: {
+        get: function () {
+            //TODO cache this and listen to see if it changes
+            return this._editingDocument.componentProxyForElement(this._templateNode);
         }
     }
 

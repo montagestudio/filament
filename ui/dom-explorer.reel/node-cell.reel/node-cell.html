@@ -19,6 +19,27 @@
             "bindings": {
                 "value": {"<-": "@owner.nodeInfo.snippet"}
             }
+        },
+
+        "componentCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "componentCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.nodeInfo.component"}
+            }
+        },
+
+        "componentLabel": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "componentLabel"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.nodeInfo.component.label"}
+            }
         }
     }
     </script>
@@ -26,6 +47,9 @@
 <body>
     <div data-montage-id="node-cell" class="NodeCell">
         <span data-montage-id="nodeSnippet"></span>
+        <span data-montage-id="componentCondition">
+            <em data-montage-id="componentLabel" class="NodeCell-label"></em>
+        </span>
     </div>
 </body>
 </html>
