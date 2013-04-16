@@ -23,8 +23,20 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         value: null
     },
 
+    minZoomFactor: {
+        value: 0
+    },
+
     _zoomFactor: {
         value: 100
+    },
+
+    maxZoomFactor: {
+        value: 200
+    },
+
+    zoomFactorStep: {
+        value: 25
     },
 
     zoomFactor: {
@@ -32,6 +44,13 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             return this._zoomFactor;
         },
         set: function (value) {
+
+            if (value > this.maxZoomFactor) {
+                value = this.maxZoomFactor;
+            } else if (value < this.minZoomFactor) {
+                value = this.minZoomFactor;
+            }
+
             this._zoomFactor = value;
             this.zoom = Math.pow(2, (this._zoomFactor - 100)/50);
         }
@@ -44,6 +63,18 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     handleClearZoomFactorButtonAction: {
         value: function (evt) {
             this.zoomFactor = 100;
+        }
+    },
+
+    handleDecreaseZoomFactorButtonAction: {
+        value: function (evt) {
+            this.zoomFactor = this.zoomFactor - this.zoomFactorStep;
+        }
+    },
+
+    handleIncreaseZoomFactorButtonAction: {
+        value: function (evt) {
+            this.zoomFactor = this.zoomFactor + this.zoomFactorStep;
         }
     },
 

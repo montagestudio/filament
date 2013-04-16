@@ -37,12 +37,12 @@
         "zoomSlider": {
             "prototype": "matte/ui/input-range.reel",
             "properties": {
-                "element": {"#": "zoomSlider"},
-                "min": 0,
-                "max": 200
+                "element": {"#": "zoomSlider"}
             },
             "bindings": {
-                "value": {"<->": "@owner.zoomFactor"}
+                "value": {"<->": "@owner.zoomFactor"},
+                "min": {"<-": "@owner.minZoomFactor"},
+                "max": {"<-": "@owner.maxZoomFactor"}
             }
         },
         
@@ -51,7 +51,13 @@
             "properties": {
                 "element": {"#": "decreaseZoomFactorButton"},
                 "label": "-"
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
         
         "clearZoomFactorButton": {
@@ -73,7 +79,13 @@
             "properties": {
                 "element": {"#": "increaseZoomFactorButton"},
                 "label": "+"
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>
