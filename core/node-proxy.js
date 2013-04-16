@@ -40,6 +40,20 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
         get: function () {
             return this._templateNode ? this._templateNode.tagName : null;
         }
+    },
+
+    snippet: {
+        get: function () {
+            var snippet = "";
+            if (this._templateNode) {
+                snippet = this._templateNode.outerHTML;
+                if (this._templateNode.innerHTML.length) {
+                    var contentStart = snippet.indexOf(this._templateNode.innerHTML);
+                    snippet = snippet.substring(0, contentStart);
+                }
+            }
+            return snippet;
+        }
     }
 
 });

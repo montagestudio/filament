@@ -11,13 +11,13 @@
             }
         },
 
-        "nodeTagName": {
+        "nodeSnippet": {
             "prototype": "montage/ui/text.reel",
             "properties": {
-                "element": {"#": "nodeTagName"}
+                "element": {"#": "nodeSnippet"}
             },
             "bindings": {
-                "value": {"<-": "@owner.nodeInfo.tagName"}
+                "value": {"<-": "@owner.nodeInfo.snippet"}
             }
         }
     }
@@ -25,7 +25,7 @@
 </head>
 <body>
     <div data-montage-id="node-cell" class="NodeCell">
-        TagName: <span data-montage-id="nodeTagName"></span>
+        <span data-montage-id="nodeSnippet"></span>
     </div>
 </body>
 </html>
