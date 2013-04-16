@@ -16,7 +16,7 @@
     min-height: 50px;
     -webkit-flex: 1 1 250px;
     overflow: scroll;
-    padding: 8px;
+    padding: 8px 4px 8px 8px;
     border-bottom: 1px solid hsl(0, 0%, 75%);
     background: hsl(0, 0%, 86%);
 }
@@ -32,6 +32,6 @@
     font-size: 12px;
     text-shadow: 0 1px 0 hsla(0,0%,100%,0.4);
     overflow: scroll;
-    padding: 8px;
-    background: hsl(0, 0%, 86%);
+    padding: 0;
+    background: hsl(0, 0%, 96%);
 }

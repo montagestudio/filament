@@ -13,10 +13,6 @@
     padding: 4px 0;
 }
 
-.BindingExplorer-objectList-item:nth-child(odd) {
-    background: hsla(0,0%,100%,.8);
-}
-
 .BindingExplorer-objectLabel {
     -webkit-flex: .25;
     min-width: 100px;
