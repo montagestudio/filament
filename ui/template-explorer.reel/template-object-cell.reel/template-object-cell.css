@@ -121,7 +121,7 @@
     vertical-align: middle;
 }
 
-.TemplateObject-input {
+.TemplateObject-input.matte-InputText {
     width: 120px;
     height: 24px;
     border-color: hsl(0, 0%, 77%);
