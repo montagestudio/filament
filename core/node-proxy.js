@@ -15,30 +15,24 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
         value: function (node, editingDocument) {
             this._templateNode = node;
             this._editingDocument = editingDocument;
-            return this;
-        }
-    },
 
-    _children: {
-        value: null
-    },
-
-    children: {
-        get: function () {
-            if (!this._children && this._templateNode) {
-                var children = this._templateNode.children,
+            var children = this._templateNode.children,
                     childrenProxies = [],
                     iChildNode,
                     i;
 
-                for (i = 0; (iChildNode = children.item(i)); i++) {
-                    childrenProxies.push(NodeProxy.create().init(iChildNode, this._editingDocument));
-                }
-
-                this._children = childrenProxies;
+            for (i = 0; (iChildNode = children.item(i)); i++) {
+                childrenProxies.push(NodeProxy.create().init(iChildNode, this._editingDocument));
             }
-            return this._children;
+
+            this.children = childrenProxies;
+
+            return this;
         }
+    },
+
+    children: {
+        value: null
     },
 
     tagName: {

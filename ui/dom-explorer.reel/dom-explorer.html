@@ -13,23 +13,20 @@
         },
 
         "nodeTreeController": {
-            "prototype": "montage/core/tree-controller",
-            "properties": {
-                "childrenPath": "children"
-            },
+            "prototype": "montage/core/range-controller",
             "bindings": {
-                "content": {"<-": "@owner.editingDocument.templateBodyNode"}
+                "content": {"<-": "@owner.editingDocument.templateNodes"}
             }
         },
 
         "nodeList": {
-            "prototype": "ui/tree.reel",
+            "prototype": "montage/ui/repetition.reel",
             "properties": {
                 "element": {"#": "nodeList"},
                 "isSelectionEnabled": true
             },
             "bindings": {
-                "treeController": {"<-": "@owner.nodeTreeController"}
+                "contentController": {"<-": "@owner.nodeTreeController"}
             }
         },
 
@@ -39,9 +36,7 @@
                 "element": {"#": "nodeCell"}
             },
             "bindings": {
-                "nodeInfo": {"<-": "@nodeCell.parentComponent.object"},
-                "iteration": {"<-": "@nodeCell.parentComponent.iteration"},
-                "iteration.expanded": {"<-": "true"}
+                "nodeInfo": {"<-": "@nodeList.objectAtCurrentIteration"}
             }
         }
     }
@@ -50,7 +45,7 @@
 <body>
     <div data-montage-id="dom-explorer" class="DomExplorer">
         <div data-montage-id="nodeList">
-            <span data-montage-id="nodeCell" data-arg="treeNode"></span>
+            <span data-montage-id="nodeCell"></span>
         </div>
     </div>
 </body>

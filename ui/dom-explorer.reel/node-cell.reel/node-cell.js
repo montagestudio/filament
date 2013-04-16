@@ -17,8 +17,22 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: null
     },
 
-    iteration: {
-        value: null
+    didCreate: {
+        value: function () {
+            this.addOwnPropertyChangeListener("nodeInfo.depth", this);
+        }
+    },
+
+    handleDepthChange: {
+        value: function () {
+            this.needsDraw = true;
+        }
+    },
+
+    draw: {
+        value: function () {
+            this.element.style.paddingLeft = (20 * this.getPath("nodeInfo.depth")) + 'px';
+        }
     }
 
 });

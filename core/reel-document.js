@@ -177,13 +177,56 @@ exports.ReelDocument = Montage.create(EditingDocument, {
         value: null
     },
 
+    _templateBodyNode: {
+        value: null
+    },
+
     templateBodyNode: {
         get: function () {
-            if (this.htmlDocument && this.htmlDocument.body) {
-                return NodeProxy.create().init(this.htmlDocument.body, this);
-            } else {
-                return null;
+            if (!this._templateBodyNode && this.htmlDocument && this.htmlDocument.body) {
+                this._templateBodyNode = NodeProxy.create().init(this.htmlDocument.body, this);
             }
+            return this._templateBodyNode;
+        }
+    },
+
+    _templateNodes: {
+        value: null
+    },
+
+    // TODO super quick demo implementation to build a repetition friendly "tree"
+    _children: {
+        value: function (node, depth) {
+            if (!depth) {
+                depth = 0;
+            }
+
+            if (!node) {
+                return;
+            } else  {
+                node.depth = depth;
+                if (node.children) {
+
+                    var array = [node];
+
+                    var grandChildren = node.children.forEach(function (child) {
+                        array = array.concat(this._children(child, depth + 1));
+                    }, this);
+
+                    return array;
+                } else {
+                    return [node];
+                }
+            }
+        }
+    },
+
+    templateNodes: {
+        get: function () {
+            if (!this._templateNodes && this.templateBodyNode) {
+                this._templateNodes = this._children(this.templateBodyNode);
+            }
+            return this._templateNodes;
         }
     },
 
@@ -819,10 +862,6 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 this.undoManager.register("Define Binding", Promise.resolve([this.cancelOwnedObjectBinding, this, proxy, binding]));
             }
 
-            // Need to rebuild the serialization here so that the template
-            // updates, ready for the inner template inspector
-            this._buildSerialization();
-
             return binding;
         }
     },
@@ -840,10 +879,6 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                     this.defineOwnedObjectBinding, this, proxy, binding.targetPath, binding.oneway, binding.sourcePath
                 ]));
             }
-
-            // Need to rebuild the serialization here so that the template
-            // updates, ready for the inner template inspector
-            this._buildSerialization();
 
             return removedBinding;
         }
