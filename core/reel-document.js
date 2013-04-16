@@ -819,6 +819,10 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 this.undoManager.register("Define Binding", Promise.resolve([this.cancelOwnedObjectBinding, this, proxy, binding]));
             }
 
+            // Need to rebuild the serialization here so that the template
+            // updates, ready for the inner template inspector
+            this._buildSerialization();
+
             return binding;
         }
     },
@@ -836,6 +840,10 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                     this.defineOwnedObjectBinding, this, proxy, binding.targetPath, binding.oneway, binding.sourcePath
                 ]));
             }
+
+            // Need to rebuild the serialization here so that the template
+            // updates, ready for the inner template inspector
+            this._buildSerialization();
 
             return removedBinding;
         }

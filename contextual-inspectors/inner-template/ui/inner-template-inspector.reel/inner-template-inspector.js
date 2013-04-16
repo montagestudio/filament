@@ -30,9 +30,15 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
                 return;
             }
 
+            if (this._object) {
+                this._object.properties.removeMapChangeListener(this, "object");
+                this._object.bindings.removeRangeChangeListener(this, "object");
+            }
             this._object = value;
             if (value) {
                 this._instantiateInnerTemplate();
+                value.properties.addMapChangeListener(this, "object");
+                value.bindings.addRangeChangeListener(this, "object");
             }
         }
     },
@@ -50,11 +56,13 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             }
 
             if (this._selectedObject) {
-                this._object.properties.removeMapChangeListener(this, "objectProperties");
+                this._selectedObject.properties.removeMapChangeListener(this, "object");
+                this._selectedObject.bindings.removeRangeChangeListener(this, "object");
             }
             this._selectedObject = value;
             if (value) {
-                this._selectedObject.properties.addMapChangeListener(this, "objectProperties");
+                value.properties.addMapChangeListener(this, "object");
+                value.bindings.addRangeChangeListener(this, "object");
             }
         }
     },
@@ -149,11 +157,22 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
         }
     },
 
-    handleObjectPropertiesMapChange: {
+    handleObjectMapChange: {
         value: function () {
-            var self = this;
             // need to wait until the next tick so that the serialization
             // can be rebuilt
+            var self = this;
+            Promise.nextTick(function () {
+                self.updateInnerTemplate();
+            });
+        }
+    },
+
+    handleObjectRangeChange: {
+        value: function () {
+            // need to wait until the next tick so that the serialization
+            // can be rebuilt
+            var self = this;
             Promise.nextTick(function () {
                 self.updateInnerTemplate();
             });
