@@ -124,7 +124,6 @@ exports.SplitControl = Montage.create(AbstractInputRange, /** @lends SplitContro
     
     handleSplitAxisChange: {
         value: function() {
-            console.log("handleAxisChange", this.splitAxis)
             if(this.splitAxis === "vertical") {
                 this.classList.add("SplitControl--vertical");
                 this.classList.remove("SplitControl--horizontal");
