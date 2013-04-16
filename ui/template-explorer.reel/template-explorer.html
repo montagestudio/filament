@@ -63,8 +63,10 @@
         "clearZoomFactorButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {
-                "element": {"#": "clearZoomFactorButton"},
-                "label": "100%"
+                "element": {"#": "clearZoomFactorButton"}
+            },
+            "bindings": {
+                "label": {"<->": "@owner.roundedZoom + '×'"}
             },
             "listeners": [
                 {

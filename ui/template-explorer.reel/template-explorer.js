@@ -52,12 +52,20 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             }
 
             this._zoomFactor = value;
+            this.dispatchBeforeOwnPropertyChange("roundedZoom", this.roundedZoom);
             this.zoom = Math.pow(2, (this._zoomFactor - 100)/50);
+            this.dispatchOwnPropertyChange("roundedZoom", this.roundedZoom);
         }
     },
 
     zoom: {
-        value: null
+        value: 1
+    },
+
+    roundedZoom: {
+        get: function() {
+            return this.zoom.toFixed(2);
+        }
     },
 
     handleClearZoomFactorButtonAction: {
