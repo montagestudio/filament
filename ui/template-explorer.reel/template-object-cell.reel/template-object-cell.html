@@ -79,6 +79,36 @@
             "properties": {
                 "element": {"#": "templateObjectEvent"}
             }
+        },
+
+        "listenerList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "listenerList"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.templateObject.listeners"}
+            }
+        },
+
+        "eventType": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "eventType"}
+            },
+            "bindings": {
+                "value": {"<-": "@listenerList.objectAtCurrentIteration.type"}
+            }
+        },
+
+        "listenerLabel": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "listenerLabel"}
+            },
+            "bindings": {
+                "value": {"<-": "'@' + @listenerList.objectAtCurrentIteration.listener.label"}
+            }
         }
     }
     </script>
@@ -99,6 +129,9 @@
             <li class="TemplateObjectCell-list-item">
                 <img class="TemplateObject-list-icon" src="/assets/icons/event.png">
                 <input data-montage-id="templateObjectEvent" class="TemplateObject-input" type="text">
+                <ul data-montage-id="listenerList">
+                    <li><em data-montage-id="eventType"></em> <strong data-montage-id="listenerLabel"></strong></li>
+                </ul>
             </li>
         </ul>
         
