@@ -1,7 +1,10 @@
 
+.PackageExplorer {
+    border-right: 1px solid hsl(0,0%,75%);
+}
+
 .PackageExplorer .Panel-title {
     padding: 12px 8px 0 8px;
-    border-right: 1px solid hsla(0,0%,0%,.2);
     height: 65px;
 }
 

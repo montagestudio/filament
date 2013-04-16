@@ -29,7 +29,7 @@ body {
     -webkit-appearance: none;
     width: 3px;
     height: 0px;
-    background-color: hsla(0,0%,0%,.05);
+    background-color: hsla(0,0%,0%,0);
 }
 
 ::-webkit-scrollbar-thumb {

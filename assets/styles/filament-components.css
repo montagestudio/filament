@@ -139,7 +139,7 @@
     display: -webkit-flex;
     -webkit-flex-flow: column;
     position: relative;
-    background: hsl(0, 0%, 80%);
+    background: hsl(0, 0%, 86%);
     -webkit-transition: -webkit-flex .3s cubic-bezier(.26, .06, .08, 1);
 }
 
