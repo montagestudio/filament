@@ -41,6 +41,12 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
         }
     },
 
+    montageId: {
+        get: function () {
+            return this._templateNode ? this._templateNode.getAttribute("data-montage-id") : null;
+        }
+    },
+
     snippet: {
         get: function () {
             var snippet = "";

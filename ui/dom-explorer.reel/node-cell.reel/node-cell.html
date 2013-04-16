@@ -21,6 +21,16 @@
             }
         },
 
+        "montageId": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "montageId"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.nodeInfo.montageId"}
+            }
+        },
+
         "componentCondition": {
             "prototype": "montage/ui/condition.reel",
             "properties": {
@@ -47,8 +57,9 @@
 <body>
     <div data-montage-id="node-cell" class="NodeCell">
         <span data-montage-id="tagName"></span>
+        <em data-montage-id="montageId"></em>
         <span data-montage-id="componentCondition">
-            <em data-montage-id="componentLabel" class="NodeCell-label"></em>
+            <strong data-montage-id="componentLabel" class="NodeCell-label"></strong>
         </span>
     </div>
 </body>
