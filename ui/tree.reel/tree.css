@@ -1,8 +1,10 @@
-.Tree-list {
-    overflow-x: auto;
-    
+.PackageExplorer .Tree-list {
     /* TODO: Remove the first item so the minus margin is not needed */
     margin: -20px 0 0 -12px;
+}
+
+.Tree-list {
+    overflow-x: auto;
 }
 
 .Tree-list-row {
