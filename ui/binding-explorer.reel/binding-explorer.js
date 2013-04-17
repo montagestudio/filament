@@ -4,7 +4,9 @@
     @requires montage/ui/component
 */
 var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+    Component = require("montage/ui/component").Component,
+    application = require("montage/core/application").application;
+
 
 /**
     Description TODO
@@ -29,6 +31,8 @@ exports.BindingExplorer = Montage.create(Component, /** @lends module:"./binding
 
             this._element.addEventListener("dragover", this, false);
             this._element.addEventListener("drop", this, false);
+
+            application.addEventListener("editBindingForObject", this, false);
         }
     },
 
@@ -83,6 +87,20 @@ exports.BindingExplorer = Montage.create(Component, /** @lends module:"./binding
             var targetObject = evt.detail.get("targetObject");
             var binding = evt.detail.get("binding");
             this.editingDocument.cancelOwnedObjectBinding(targetObject, binding);
+        }
+    },
+
+    handleEditBindingForObject: {
+        value: function (evt) {
+            var bindingModel = evt.detail.bindingModel;
+            var existingBinding = evt.detail.existingBinding;
+            if (bindingModel) {
+                if (existingBinding) {
+                    this.templateObjects.bindingCreator.existingBinding = existingBinding;
+                }
+                this.templateObjects.bindingCreator.bindingModel = bindingModel;
+            }
+            //TODO reveal the creator
         }
     }
 

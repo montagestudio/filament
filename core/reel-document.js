@@ -886,6 +886,30 @@ exports.ReelDocument = Montage.create(EditingDocument, {
         }
     },
 
+    updateOwnedObjectBinding: {
+        value: function (proxy, existingBinding, targetPath, oneway, sourcePath) {
+            var removedBinding = proxy.cancelObjectBinding(existingBinding);
+            var binding = proxy.defineObjectBinding(targetPath, oneway, sourcePath);
+
+            if (removedBinding && binding) {
+                if (this._editingController) {
+                    // TODO cancel the binding in the stage
+                    // TODO define the binding on the stage, make sure we can cancel it later
+                }
+
+                this.undoManager.register("Cancel Binding", Promise.resolve([
+                    this.updateOwnedObjectBinding, this, proxy, binding, removedBinding.targetPath, removedBinding.oneway, removedBinding.sourcePath
+                ]));
+            }
+
+            // Need to rebuild the serialization here so that the template
+            // updates, ready for the inner template inspector
+            this._buildSerialization();
+
+            return removedBinding;
+        }
+    },
+
     addOwnedObjectEventListener: {
         value: function (proxy, type, listener, useCapture) {
             var listenerEntry = proxy.addObjectEventListener(type, listener, useCapture);

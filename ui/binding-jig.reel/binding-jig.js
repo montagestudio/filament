@@ -11,6 +11,10 @@ exports.BindingJig = Montage.create(Component, {
         value: null
     },
 
+    existingBinding: {
+        value: null
+    },
+
     handleDefineBindingButtonAction: {
         value: function (evt) {
             evt.stop();
@@ -20,9 +24,14 @@ exports.BindingJig = Montage.create(Component, {
                 oneway = model.oneway,
                 sourcePath = model.sourcePath;
 
-            this.editingDocument.defineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath);
+            if (this.existingBinding) {
+                this.editingDocument.updateOwnedObjectBinding(proxy, this.existingBinding, targetPath, oneway, sourcePath);
+             } else {
+                this.editingDocument.defineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath);
+            }
+            this.existingBinding = null;
             this.bindingModel = null;
-            //TODO close the jig
+             //TODO close the jig
         }
     },
 
