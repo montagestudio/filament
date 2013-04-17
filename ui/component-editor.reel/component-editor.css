@@ -16,9 +16,23 @@
     min-height: 50px;
     -webkit-flex: 1 1 250px;
     overflow: scroll;
-    padding: 8px 4px 8px 8px;
+    padding: 8px 0 8px 8px;
     border-bottom: 1px solid hsl(0, 0%, 75%);
     background: hsl(0, 0%, 86%);
+}
+
+.ComponentEditor-column-fill::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 8px;
+    height: 0px;
+    background-color: hsla(0,0%,0%,0);
+}
+
+.ComponentEditor-column-fill::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    border: 3px solid hsla(0,0%,0%,0);
+    background-clip: padding-box;
+    background-color: hsla(0,0%,0%,.15);
 }
 
 .ComponentEditor-column-fill.documentEditorSlot {
