@@ -64,7 +64,8 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             var data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
                 transferObject = JSON.parse(data),
                 parentProxy = null,
-                stageElement = null;
+                stageElement = null,
+                nodeInfo = this.nodeInfo;
 
             //TODO well this is pretty bad
             stageElement = this.nodeInfo._editingDocument._editingController.owner.element.ownerDocument.querySelector("[data-montage-id=" + this.nodeInfo.montageId + "]");
@@ -72,7 +73,10 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                 return;
             }
 
-            this.nodeInfo._editingDocument.DEMOinsertLibraryItem(transferObject.serializationFragment, this.nodeInfo._templateNode, stageElement).done();
+            nodeInfo.dispatchBeforeOwnPropertyChange("component", nodeInfo.component);
+            this.nodeInfo._editingDocument.DEMOinsertLibraryItem(transferObject.serializationFragment, this.nodeInfo._templateNode, stageElement).then(function (addedObjects) {
+                nodeInfo.dispatchOwnPropertyChange("component", nodeInfo.component);
+            }).done();
         }
     }
 
