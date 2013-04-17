@@ -72,8 +72,6 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                 return;
             }
 
-            debugger
-
             this.nodeInfo._editingDocument.DEMOinsertLibraryItem(transferObject.serializationFragment, this.nodeInfo._templateNode, stageElement).done();
         }
     }
