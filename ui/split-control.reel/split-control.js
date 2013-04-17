@@ -21,23 +21,17 @@ exports.SplitControl = Montage.create(AbstractInputRange, /** @lends SplitContro
             AbstractInputRange.didCreate.apply(this, arguments);
             this.addOwnPropertyChangeListener("splitAxis", this);
             this.axis = "horizontal";
-
+            window.addEventListener("resize", this, false);
         }
     },
 
     enterDocument: {
         value: function (firstTime) {
-//            this._thumbSliderElement = this.element;
             AbstractInputRange.enterDocument.apply(this, arguments);
             if (firstTime) {
                 this.defineBinding("axis",
                     {"<-": "splitAxis == 'horizontal' ? 'vertical' : 'horizontal'", source: this});
-                // value is from 0 to 100
-                if(this.splitAxis === "vertical") {
-                    this.value = (this.controlledElement.offsetWidth/this.containerElement.offsetWidth)*100;
-                } else {
-                    this.value = (this.controlledElement.offsetHeight/this.containerElement.offsetHeight)*100;
-                }
+                this._updateValueFromDom();
             }
         }
     },
@@ -87,6 +81,15 @@ exports.SplitControl = Montage.create(AbstractInputRange, /** @lends SplitContro
         }
     },
 
+    // Event Handlers
+
+    handleResize: {
+        value: function(event) {
+            this._updateValueFromDom();
+        }
+    },
+
+
     // Properties
 
     splitAxis: {
@@ -120,8 +123,19 @@ exports.SplitControl = Montage.create(AbstractInputRange, /** @lends SplitContro
 
     // Stuff
 
+    _updateValueFromDom: {
+        value: function() {
+                // value is from 0 to 100
+                if(this.splitAxis === "vertical") {
+                    this.value = (this.controlledElement.offsetWidth/this.containerElement.offsetWidth)*100;
+                } else {
+                    this.value = (this.controlledElement.offsetHeight/this.containerElement.offsetHeight)*100;
+                }
 
-    
+        }
+    },
+
+
     handleSplitAxisChange: {
         value: function() {
             if(this.splitAxis === "vertical") {
