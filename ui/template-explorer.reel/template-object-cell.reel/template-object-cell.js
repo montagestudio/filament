@@ -81,6 +81,21 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
 
             this.element.style.webkitTransform = "translate3d(" + x + "px," + y + "px, 0)";
         }
+    },
+
+    handlePress: {
+        value: function(event) {
+            console.log("handleBindAction")
+            var bindingModel = Object.create(null);
+            bindingModel.targetObject = this.templateObject;
+            bindingModel.targetPath = "";
+            bindingModel.oneway = true;
+            bindingModel.sourcePath = "";
+
+            this.dispatchEventNamed("editBindingForObject", true, false, {
+                bindingModel: bindingModel
+            });
+        }
     }
 
 });

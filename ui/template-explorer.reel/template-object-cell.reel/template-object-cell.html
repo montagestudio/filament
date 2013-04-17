@@ -136,7 +136,22 @@
             "bindings": {
                 "value": {"<-": "'@' + @listenerList.objectAtCurrentIteration.listener.label"}
             }
+        },
+
+        "bind": {
+            "prototype": "montage/composer/press-composer",
+            "properties": {
+                "component": {"@": "owner"},
+                "element": {"#": "bindButton"}
+            },
+            "listeners": [
+                {
+                    "type": "press",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
+
     }
     </script>
 </head>
@@ -161,7 +176,7 @@
                 </span>
             </li>
             <li class="TemplateObjectCell-list-item TemplateObjectEvent">
-                <img class="TemplateObject-list-icon" src="/assets/icons/event.png">
+                <img data-montage-id="bindButton" class="TemplateObject-list-icon" src="/assets/icons/event.png">
                 <input data-montage-id="templateObjectEvent" class="TemplateObject-input" type="text">
                 <ul data-montage-id="listenerList" class="TemplateObjectEvent-list">
                     <li><em data-montage-id="eventType"></em> <strong data-montage-id="listenerLabel"></strong></li>
