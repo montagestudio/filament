@@ -62,7 +62,12 @@ exports.BindingExplorer = Montage.create(Component, /** @lends module:"./binding
     handleDrop: {
         value: function (evt) {
             var data = evt.dataTransfer.getData("text/plain");
-            if (data.substr(0, 1) !== "@") { return; }
+            if (
+                this.templateObjects.defineBindingButton.indexOf(event.target.component) === -1 ||
+                data.substr(0, 1) !== "@"
+            ) {
+                return;
+            }
 
             var bindingModel = Object.create(null);
             bindingModel.targetObject = evt.target.component.detail.get("targetObject");
