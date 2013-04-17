@@ -25,7 +25,15 @@
             },
             "bindings": {
                 "value": {"<-": "@owner.binding.targetPath"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "mouseup",
+                    "listener": {
+                        "@": "owner"
+                    }
+                }
+            ]
         },
 
         "unidirectionalCondition": {
@@ -55,7 +63,15 @@
             },
             "bindings": {
                 "value": {"<-": "@owner.binding.sourcePath"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "mouseup",
+                    "listener": {
+                        "@": "owner"
+                    }
+                }
+            ]
         },
 
         "cancelBindingButton": {
