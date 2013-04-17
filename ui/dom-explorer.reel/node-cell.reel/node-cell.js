@@ -63,14 +63,17 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             // TODO: security issues?
             var data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
                 transferObject = JSON.parse(data),
-                parentProxy = null,
                 stageElement = null,
                 nodeInfo = this.nodeInfo;
 
-            //TODO well this is pretty bad
-            stageElement = this.nodeInfo._editingDocument._editingController.owner.element.ownerDocument.querySelector("[data-montage-id=" + this.nodeInfo.montageId + "]");
-            if (!stageElement) {
-                return;
+            // The parent element to "append" the new html to. This actually
+            // already contains the element we want to use, so we just have
+            // to change the serializationFragment to match the montageId
+            stageElement = this.nodeInfo._editingDocument._editingController.owner.element;
+
+            var properties = transferObject.serializationFragment.properties;
+            if (properties && properties.element) {
+                properties.element["#"] = this.nodeInfo._templateNode.dataset.montageId;
             }
 
             nodeInfo.dispatchBeforeOwnPropertyChange("component", nodeInfo.component);

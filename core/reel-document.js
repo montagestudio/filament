@@ -654,7 +654,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 doc,
                 serializationElement;
 
-            templateSerialization [labelInOwner] = serializationFragment;
+            templateSerialization[labelInOwner] = serializationFragment;
 
             doc = document.implementation.createHTMLDocument();
             serializationElement = doc.createElement("script");
@@ -696,14 +696,14 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             });
 
             // Introduce the revised template into the stage
-            if (false && this._editingController) {
+            if (this._editingController) {
 
                 //TODO not sneak this in through the editingController
                 // Make the owner component in the stage look like we expect before trying to install objects
                 this._editingController.owner._template.objectsString = destinationTemplate.objectsString;
                 this._editingController.owner._template.setDocument(destinationTemplate.document);
 
-                return self._editingController.DEMOaddObjectsFromTemplate(revisedTemplate, stageElement).then(function (objects) {
+                return self._editingController.addObjectsFromTemplate(revisedTemplate, stageElement).then(function (objects) {
                     for (var label in objects) {
                         if (objects.hasOwnProperty !== "function" || objects.hasOwnProperty(label)) {
                             self._editingProxyMap[label].stageObject = objects[label];
