@@ -63,6 +63,7 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             if (value) {
                 value.properties.addMapChangeListener(this, "object");
                 value.bindings.addRangeChangeListener(this, "object");
+                this.documentEditor.editingDocument.addEventListener("objectRemoved", this, false);
             }
         }
     },
@@ -176,6 +177,19 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             Promise.nextTick(function () {
                 self.updateInnerTemplate();
             });
+        }
+    },
+
+    handleObjectRemoved: {
+        value: function (event) {
+            if (event.detail.proxy === this._selectedObject) {
+                // need to wait until the next tick so that the serialization
+                // can be rebuilt
+                var self = this;
+                Promise.nextTick(function () {
+                    self.updateInnerTemplate();
+                });
+            }
         }
     },
 
