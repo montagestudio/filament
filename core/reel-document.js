@@ -851,7 +851,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             sourceContentFragment = sourceContentRange.cloneContents();
 
             // Merge markup
-            idsCollisionTable = destinationTemplate.insertNodeBefore(sourceContentFragment, (templateElement || this._ownerElement).lastChild);
+            idsCollisionTable = destinationTemplate.appendNode(sourceContentFragment, (templateElement || this._ownerElement));
             if (idsCollisionTable) {
                 serializationToMerge.renameElementReferences(idsCollisionTable);
             }
