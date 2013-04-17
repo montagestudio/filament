@@ -11,7 +11,10 @@
             },
             "bindings": {
                 "x": {"<->": "@owner.templateObject.x"},
-                "y": {"<->": "@owner.templateObject.y"}
+                "y": {"<->": "@owner.templateObject.y"},
+                "classList.has('TemplateObjectCell--owner')": {
+                    "<-": "@owner.templateObject.label == 'owner'"
+                }
             }
         },
 

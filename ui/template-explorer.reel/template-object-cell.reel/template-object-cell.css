@@ -60,6 +60,10 @@
     cursor: move;
 }
 
+.TemplateObjectCell--owner .TemplateObjectCell-header {
+    background: rgb(245, 220, 141);
+}
+
 .TemplateObjectCell-icon {
     display: block;
     height: 14px;
