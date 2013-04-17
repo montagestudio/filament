@@ -342,7 +342,7 @@ var InputTextLibraryItem = Montage.create(LibraryItem, {
             "prototype": "digit/ui/input-text.reel",
             "properties": {
                 "element": {"#": "inputText"},
-                "value": "Text"
+                "placeholder": "Text"
             }
         }
     },
