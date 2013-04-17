@@ -32,7 +32,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
 
     draw: {
         value: function () {
-            this.element.style.paddingLeft = (20 * this.getPath("nodeInfo.depth")) + 'px';
+            this.element.style.marginLeft = (20 * this.getPath("nodeInfo.depth")) + 'px';
         }
     },
 

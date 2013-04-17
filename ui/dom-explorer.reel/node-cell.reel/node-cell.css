@@ -1,37 +1,36 @@
 .NodeCell {
-    font-size: 0;
-    margin: 4px 0;
-}
-
-.NodeCell-segment:first-child {
-    border-radius: 11px 0 0 11px;
+    display: -webkit-flex;
 }
 
 .NodeCell-segment {
-    display: inline-block;
-    padding: 0 10px;
+    padding: 0 10px 0 3px;
     font-size: 11px;
     color: hsl(0, 0%, 30%);
     line-height: 22px;
-    box-shadow: inset 0 1px 2px hsla(0, 0%, 0%, 0.2), 0 1px 0 hsla(0, 0%, 100%, 0.6);
-    background: hsla(0, 0%, 0%, .06);
+    border-bottom: 1px dotted hsl(0, 0%, 85%);
+    background: hsl(0,0%,96%);
 }
-
-.NodeCell-segment:last-child {
-    border-radius: 0 11px 11px 0;
-}
-
 
 .NodeCell-segment--tag {
-    
+    color: hsl(0,0%,60%);
+    text-transform: lowercase;
+}
+.NodeCell-segment--tag:before,
+.NodeCell-segment--tag:after {
+    color: hsl(0,0%, 80%);
 }
 
+.NodeCell-segment--tag:before { content: "<"; margin-right: 2px; }
+.NodeCell-segment--tag:after { content: ">"; margin-left: 2px; }
+
 .NodeCell-segment--montageId {
+    -webkit-flex: 1;
+    font-weight: bold;
     font-style: italic;
-    //border-left: 1px solid hsla(0,0%,0%,.06);
 }
 
 .NodeCell-segment--component {
+    padding-left: 10px;
     font-weight: bold;
     color: hsla(0, 0%, 0%, 0.64);
     background: hsl(210, 100%, 90%);
