@@ -195,31 +195,21 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
 
     updateInnerTemplate: {
         value: function () {
-            // START HACK //
-            // Avoid bug where setting innerTemplate multiple times in
-            // one draw cycle causes the repetition to break
-            if (this._waitingForObjectDraw) {
-                // if this function is called while we're waiting for a draw
-                // wait until after the draw to trigger it again
-                this._needsUpdateInnerTemplate = true;
+            var self = this;
+            // Make sure we don't try to update the inner template when an
+            // update is already in progress.
+            // Queue up another call to this function when the previous update
+            // has completed.
+            if (this._templateInitPromise) {
+                if (!this._queuedUpdate) {
+                    this._queuedUpdate = true;
+                    this._templateInitPromise.then(function () {
+                        self._queuedUpdate = false;
+                        self.updateInnerTemplate();
+                    });
+                }
                 return;
             }
-            this._waitingForObjectDraw = true;
-            var self = this;
-            var oldDraw = this.object.stageObject.draw;
-            this.object.stageObject.draw = function () {
-                self._waitingForObjectDraw = false;
-                // replace original draw
-                self.object.stageObject.draw = oldDraw;
-                oldDraw.apply(this, arguments);
-                // now the draw is happened we can update the inner template
-                // again
-                if (self._needsUpdateInnerTemplate) {
-                    self.updateInnerTemplate();
-                }
-            };
-            this._needsUpdateInnerTemplate = false;
-            // END HACK //
 
             // adapted from montage/ui/component.js innerTemplate.get
             var ownerDocumentPart,
@@ -273,9 +263,14 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             }
             outerTemplate.setInstances(externalObjects);
 
-            oldObject.detachFromParentComponent();
+            this._templateInitPromise = outerTemplate.instantiate(ownerDocument).then(function (part) {
+                if (!oldObject.element.parentNode) {
+                    console.warn("Stage object does not have a parent, aborting inner template update");
+                    return;
+                }
 
-            outerTemplate.instantiate(ownerDocument).then(function (part) {
+                oldObject.detachFromParentComponent();
+
                 var ownerObjects = oldObject.ownerComponent._templateDocumentPart.objects;
                 var newObjects = part.objects;
                 var newObject = newObjects[self.object.label];
@@ -294,8 +289,10 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
                 self.object.stageObject = newObject;
 
                 return newObject.loadComponentTree();
-            }).done();
-
+            }).then(function () {
+                self._templateInitPromise = null;
+            });
+            this._templateInitPromise.done();
         }
     },
 
