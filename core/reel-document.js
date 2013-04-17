@@ -646,6 +646,129 @@ exports.ReelDocument = Montage.create(EditingDocument, {
         }
     },
 
+    DEMOinsertLibraryItem: {
+        value: function (serializationFragment, templateElement, stageElement) {
+            var labelInOwner = this._generateLabel(serializationFragment),
+                templateSerialization = {},
+                self = this,
+                doc,
+                serializationElement;
+
+            templateSerialization [labelInOwner] = serializationFragment;
+
+            doc = document.implementation.createHTMLDocument();
+            serializationElement = doc.createElement("script");
+            serializationElement.setAttribute("type", "text/montage-serialization");
+            serializationElement.appendChild(document.createTextNode(JSON.stringify(templateSerialization)));
+            doc.head.appendChild(serializationElement);
+
+            return Template.create().initWithDocument(doc, this._packageRequire).then(function(template) {
+                return self.DEMOinsertObjectsFromTemplate(template, templateElement, stageElement);
+            });
+        }
+    },
+
+    DEMOinsertObjectsFromTemplate: {
+        value: function (sourceTemplate, templateElement, stageElement) {
+            // Ensure backing template is up to date
+            this._buildSerialization();
+
+            var destinationTemplate = this._template,
+                context,
+                proxy,
+                addedProxies = [],
+                self = this,
+                revisedTemplate,
+                ownerProxy;
+
+            revisedTemplate = this.DEMOmerge(destinationTemplate, sourceTemplate, templateElement);
+            ownerProxy = this.editingProxyMap.owner;
+
+            // Prepare a context that knows about the existing editing proxies prior to
+            // creating new editing proxies
+            context = this.deserializationContext(destinationTemplate.getSerialization().getSerializationObject(), this._editingProxyMap);
+
+            revisedTemplate.getSerialization().getSerializationLabels().forEach(function (label) {
+                proxy = context.getObject(label);
+                proxy.parentProxy = ownerProxy;
+                self._addProxies(proxy);
+                addedProxies.push(proxy);
+            });
+
+            // Introduce the revised template into the stage
+            if (false && this._editingController) {
+
+                //TODO not sneak this in through the editingController
+                // Make the owner component in the stage look like we expect before trying to install objects
+                this._editingController.owner._template.objectsString = destinationTemplate.objectsString;
+                this._editingController.owner._template.setDocument(destinationTemplate.document);
+
+                return self._editingController.DEMOaddObjectsFromTemplate(revisedTemplate, stageElement).then(function (objects) {
+                    for (var label in objects) {
+                        if (objects.hasOwnProperty !== "function" || objects.hasOwnProperty(label)) {
+                            self._editingProxyMap[label].stageObject = objects[label];
+                        }
+                    }
+
+                    return addedProxies;
+                });
+            } else {
+                return Promise.resolve(addedProxies);
+            }
+        }
+    },
+
+    DEMOmerge: {
+        value: function(destinationTemplate, sourceTemplate, templateElement) {
+            var serializationToMerge = sourceTemplate.getSerialization(),
+                sourceContentRange,
+                sourceContentFragment,
+                sourceDocument = sourceTemplate.document,
+                templateSerialization = destinationTemplate.getSerialization(),
+                labelsCollisionTable,
+                idsCollisionTable;
+
+            sourceContentRange = sourceDocument.createRange();
+            sourceContentRange.selectNodeContents(sourceDocument.body);
+            sourceContentFragment = sourceContentRange.cloneContents();
+
+            //Replace element reference with node we're using
+            var serializationObject = serializationToMerge.getSerializationObject();
+            var objectLabels = Object.keys(serializationObject);
+            var propertiesEntry = serializationObject[objectLabels[0]].properties;
+            var elementEntry = propertiesEntry ? propertiesEntry.element : null;
+
+            if (elementEntry) {
+                elementEntry["#"] = templateElement.getAttribute("data-montage-id");
+            }
+
+            // Merge serialization
+            labelsCollisionTable = templateSerialization.mergeSerialization(serializationToMerge);
+
+            //Update underlying template string
+            destinationTemplate.objectsString = templateSerialization.getSerializationString();
+
+            // Revise the sourceSerialization
+            var revisedTemplate = sourceTemplate.clone(),
+                revisedSerialization = revisedTemplate.getSerialization();
+
+            if (labelsCollisionTable) {
+                revisedSerialization.renameSerializationLabels(labelsCollisionTable);
+            }
+
+            revisedTemplate.objectsString = revisedSerialization.getSerializationString();
+
+            for (var id in idsCollisionTable) {
+                if (typeof idsCollisionTable.hasOwnProperty !== "function" || idsCollisionTable.hasOwnProperty(id)) {
+                    var element = revisedTemplate.getElementById(id);
+                    revisedTemplate.setElementId(element, idsCollisionTable[id]);
+                }
+            }
+
+            return revisedTemplate;
+        }
+    },
+
     /**
      * Merges content from the specified template into the Template being edited
      *
