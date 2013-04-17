@@ -797,6 +797,8 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                     deferredUndo.resolve([self.addObjectsFromTemplate, self, restorationTemplate]);
                 }).done();
 
+                self.dispatchEventNamed("objectRemoved", true, false, { proxy: proxy });
+
                 return proxy;
             });
         }
