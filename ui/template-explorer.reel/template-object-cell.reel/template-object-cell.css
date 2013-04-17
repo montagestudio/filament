@@ -41,6 +41,9 @@
     border-color: hsl(210,100%,50%);
 }
 
+.TemplateObjectCell--dragging {
+    z-index: 102;
+}
 
 /* Header ---------------------------- */
 

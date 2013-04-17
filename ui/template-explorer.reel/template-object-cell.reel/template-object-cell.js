@@ -6,6 +6,8 @@
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component;
 
+var CLASS_PREFIX = "TemplateObjectCell";
+
 /**
     Description TODO
     @class module:"ui/template-object-cell.reel".TemplateObjectCell
@@ -55,9 +57,16 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
         value: function (evt) {
             this.templateObjects.translateComposer.translateX = this.x;
             this.templateObjects.translateComposer.translateY = this.y;
+            this.classList.add(CLASS_PREFIX + "--dragging");
         }
     },
 
+    handleTranslateEnd: {
+        value: function() {
+            this.classList.remove(CLASS_PREFIX + "--dragging");
+        }
+    },
+    
     handleTranslate: {
         value: function (evt) {
             this.x = evt.translateX;
