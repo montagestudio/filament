@@ -1,37 +1,39 @@
 .NodeCell {
-    display: -webkit-flex;
-}
-
-.NodeCell-segment {
-    padding: 0 10px 0 3px;
-    font-size: 11px;
-    color: hsl(0, 0%, 30%);
-    line-height: 22px;
-    border-bottom: 1px dotted hsl(0, 0%, 85%);
     background: hsl(0,0%,96%);
 }
 
-.NodeCell-segment--tag {
+.NodeCell-segment {
+    display: inline-block;
+    margin: 2px 0;
+    font-size: 0;
+    border-radius: 22px;
+    background: hsl(0,0%,90%);
+}
+
+.NodeCell-segment-item {
+    display: inline-block;
+    padding: 0 12px;
+    font-size: 11px;
+    line-height: 22px;
+    color: hsl(0, 0%, 30%);
+}
+
+.NodeCell-segment-item--tag {
     color: hsl(0,0%,60%);
     text-transform: lowercase;
 }
-.NodeCell-segment--tag:before,
-.NodeCell-segment--tag:after {
-    color: hsl(0,0%, 80%);
-}
 
-.NodeCell-segment--tag:before { content: "<"; margin-right: 2px; }
-.NodeCell-segment--tag:after { content: ">"; margin-left: 2px; }
-
-.NodeCell-segment--montageId {
-    -webkit-flex: 1;
+.NodeCell-segment-item--montageId {
+    border-left: 1px solid hsla(0,0%,0%,.1);
     font-weight: bold;
     font-style: italic;
 }
 
-.NodeCell-segment--component {
+.NodeCell-segment-item--component {
     padding-left: 10px;
+    border-radius: 0 11px 11px 0;
     font-weight: bold;
     color: hsla(0, 0%, 0%, 0.64);
+    border-left: 1px solid hsl(210, 100%, 84%);
     background: hsl(210, 100%, 90%);
 }

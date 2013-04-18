@@ -5,7 +5,7 @@
 .NodeList {
     padding: 8px;
     font-size: 11px;
-    background: -webkit-linear-gradient( left, hsla(0,0%,0%,.15) 0px, hsla(0,0%,0%,.15) 1px, hsla(0,0%,0%,0) 1px );
+    background: -webkit-linear-gradient( left, hsl(0,0%,90%) 0px, hsl(0,0%,90%) 1px, hsla(0,0%,90%,0) 1px );
     background-size: 20px;
     background-clip: content-box;
 }
