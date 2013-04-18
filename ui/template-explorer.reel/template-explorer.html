@@ -12,6 +12,31 @@
             }
         },
 
+        "panningComposer": {
+            "prototype": "montage/composer/translate-composer",
+            "properties": {
+                "component": {"@": "owner"},
+                "hasMomentum": false
+            },
+            "bindings": {
+                "pointerSpeedMultiplier": {"<-": "1/@owner.zoom"}
+            },
+            "listeners": [
+                {
+                    "type": "translateStart",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "translateEnd",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "translate",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
         "templateObjectList": {
             "prototype": "montage/ui/repetition.reel",
             "properties": {

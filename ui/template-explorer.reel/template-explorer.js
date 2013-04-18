@@ -16,6 +16,8 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     didCreate: {
         value: function () {
             this.addPathChangeListener("zoom", this, "scheduleDraw");
+            this.addPathChangeListener("offsetX", this, "scheduleDraw");
+            this.addPathChangeListener("offsetY", this, "scheduleDraw");
         }
     },
 
@@ -68,6 +70,14 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         }
     },
 
+    offsetX: {
+        value: 0
+    },
+
+    offsetY: {
+        value: 0
+    },
+
     handleClearZoomFactorButtonAction: {
         value: function (evt) {
             this.zoomFactor = 100;
@@ -95,7 +105,26 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     draw: {
         value: function () {
             var z = this.zoom;
-            this.schematicsElement.style.webkitTransform = "scale3d(" + [z, z, z] + ")";
+            this.schematicsElement.style.webkitTransform = "scale3d(" + [z, z, z] + ") translate(" + this.offsetX + "px ," + this.offsetY + "px)";
+        }
+    },
+
+    handleTranslateStart: {
+        value: function (evt) {
+            this.templateObjects.panningComposer.translateX = this.offsetX;
+            this.templateObjects.panningComposer.translateY = this.offsetY;
+        }
+    },
+
+    handleTranslateEnd: {
+        value: function() {
+        }
+    },
+
+    handleTranslate: {
+        value: function (evt) {
+            this.offsetX = evt.translateX;
+            this.offsetY = evt.translateY;
         }
     }
 
