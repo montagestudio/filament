@@ -35,6 +35,10 @@
 
 .Intro-logo {
     width: 180px;
+    height: 195px;
+    /* Using background image to fix Flexbox + Image resize issue. */
+    background: url(../../../assets/img/logo.png) no-repeat center;
+    background-size: auto 100%;
 }
 
 .Intro-version {
