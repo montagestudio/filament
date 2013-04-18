@@ -81,6 +81,10 @@
     color: hsl(0, 0%, 50%);
 }
 
+TemplateObjectCell-exportName {
+    font-size: 8px;
+}
+
 .TemplateObjectCell-commentButton {
     display: block;
     margin-left: 10px;

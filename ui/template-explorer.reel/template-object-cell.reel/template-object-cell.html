@@ -60,6 +60,16 @@
             }
         },
 
+        "templateObjectExportName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "templateObjectExportName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.exportName"}
+            }
+        },
+
         "commentCondition": {
             "prototype": "montage/ui/condition.reel",
             "properties": {
@@ -160,6 +170,7 @@
         <header class="TemplateObjectCell-header">
             <img data-montage-id="icon" class="TemplateObjectCell-icon" src="../../../assets/img/library-icon.png">
             <h3 data-montage-id="templateObjectLabel" class="TemplateObjectCell-title"></h3>
+            <span class="TemplateObjectCell-exportName" data-montage-id="templateObjectExportName"></span>
             <i class="TemplateObjectCell-commentButton"></i>
         </header>
         
