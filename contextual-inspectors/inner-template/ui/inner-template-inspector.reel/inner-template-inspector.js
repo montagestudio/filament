@@ -195,6 +195,12 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
 
     updateInnerTemplate: {
         value: function () {
+            // DEMO HACK, don't update the inner template for the flow because
+            // it flickers
+            if (this._object.moduleId.match(/flow.reel$/)) {
+                return;
+            }
+
             var self = this;
             // Make sure we don't try to update the inner template when an
             // update is already in progress.
