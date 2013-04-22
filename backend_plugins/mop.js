@@ -1,4 +1,4 @@
-var Q = require("Q");
+var Q = require("q");
 var optimize = require("mop");
 
 exports.optimize = function(location, config) {
