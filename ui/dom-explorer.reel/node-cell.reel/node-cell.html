@@ -21,6 +21,17 @@
             }
         },
 
+        "montageIdCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "montageIdCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.nodeInfo.montageId"}
+            }
+        },
+
         "montageId": {
             "prototype": "montage/ui/text.reel",
             "properties": {
@@ -58,7 +69,11 @@
     <div data-montage-id="node-cell" class="NodeCell">
         <span class="NodeCell-segment">
             <span data-montage-id="tagName" class="NodeCell-segment-item NodeCell-segment-item--tag"></span>
-            <span data-montage-id="montageId" class="NodeCell-segment-item NodeCell-segment-item--montageId"></span>
+
+            <span data-montage-id="montageIdCondition">
+                <span data-montage-id="montageId" class="NodeCell-segment-item NodeCell-segment-item--montageId"></span>
+            </span>
+
             <span data-montage-id="componentCondition" class="NodeCell-segment-item NodeCell-segment-item--component">
                 <strong data-montage-id="componentLabel" class="NodeCell-label"></strong>
             </span>
