@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="editor.css">
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "editor"}
+                }
+            },
+
+            "contentEditor": {
+                "prototype": "matte/ui/textarea.reel",
+                "properties": {
+                    "element": {"#": "content"}
+                },
+                "bindings": {
+                    "value": {"<->": "@owner.currentDocument.content"}
+                }
+            },
+
+            "preview": {
+                "prototype": "matte/ui/dynamic-element.reel",
+                "properties": {
+                    "element": {"#": "preview"}
+                },
+                "bindings": {
+                    "innerHTML": {"<-": "@owner.currentDocument.markup"},
+                    "allowedTagNames": {"<-": "@owner.allowedTagNames"}
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+<div data-montage-id="editor" class="Editor">
+    <div class="Editor-content">
+        <textarea data-montage-id="content"></textarea>
+    </div>
+    <div data-montage-id="preview" class="Editor-preview"></div>
+</div>
+</body>
+</html>
