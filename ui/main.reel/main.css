@@ -12,6 +12,7 @@
 
 .Main .editor {
     -webkit-flex: 1;
+    min-width: 0;
     display: -webkit-flex;
     -webkit-flex-direction: column;
     position: relative;
