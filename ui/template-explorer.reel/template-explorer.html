@@ -9,6 +9,10 @@
             "properties": {
                 "element": {"#": "template-explorer"},
                 "schematicsElement": {"#": "schematics"}
+            },
+            "bindings": {
+                "classList.has('shouldStartPanning')": {"<-": "@owner.shouldStartPanning"},
+                "classList.has('isPanning')": {"<-": "@owner.isPanning"}
             }
         },
 
@@ -32,6 +36,39 @@
                 },
                 {
                     "type": "translate",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "application": {
+            "prototype": "montage/core/application",
+            "listeners": [
+                {
+                    "type": "keyPress",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "keyRelease",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "panningKeyComposer": {
+            "prototype": "montage/composer/key-composer",
+            "properties": {
+                "keys": "space",
+                "identifier": "panningKeyComposer",
+                "component": {"@": "application"}
+            },
+            "listeners": [
+                {
+                    "type": "keyPress",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "keyRelease",
                     "listener": {"@": "owner"}
                 }
             ]

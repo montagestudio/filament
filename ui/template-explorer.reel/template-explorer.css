@@ -4,6 +4,13 @@
     -webkit-flex-direction: column;
 }
 
+.TemplateExplorer.shouldStartPanning {
+    cursor: -webkit-grab;
+}
+
+.TemplateExplorer.isPanning {
+    cursor: -webkit-grabbing;
+}
 
 /* Bar --------------------------------- */
 
