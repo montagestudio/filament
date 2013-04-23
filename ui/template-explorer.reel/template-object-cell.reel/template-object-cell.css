@@ -59,6 +59,7 @@
     box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 1);
     background: -webkit-linear-gradient( hsl(0, 0%, 99%), whiteSmoke );
     cursor: move;
+    resize: none;
 }
 
 .TemplateObjectCell--owner .TemplateObjectCell-header {
@@ -75,6 +76,7 @@
 
 .TemplateObjectCell-header-flex {
     -webkit-flex: 1;
+    min-width: 0;
 }
 
 .TemplateObjectCell-title {
@@ -82,6 +84,9 @@
     font-size: 12px;
     line-height: 14px;
     color: hsl(0, 0%, 30%);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .TemplateObjectCell-exportName {
@@ -90,6 +95,9 @@
     font-size: 10px;
     line-height: 12px;
     color: hsl(0, 0%, 60%);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .TemplateObjectCell-commentButton {
