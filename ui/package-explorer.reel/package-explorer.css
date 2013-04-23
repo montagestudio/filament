@@ -4,7 +4,7 @@
 }
 
 .PackageExplorer .Panel-title {
-    padding: 12px 8px 0 8px;
+    padding: 10px 8px 0 8px;
     height: 71px;
 }
 
@@ -13,8 +13,11 @@
     padding: 0;
     color: hsl(0,0%,30%);
     font-family: Titillium Web, Open Sans, sans-serif;
-    font-size: 24px;
-    line-height: 20px;
+    font-size: 22px;
+    line-height: 26px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .PackageExplorer .Panel-title-version {
