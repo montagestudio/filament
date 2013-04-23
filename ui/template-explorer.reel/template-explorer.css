@@ -13,6 +13,7 @@
     -webkit-align-items: center;
     height: 34px;
     border-radius: 4px 4px 0 0;
+    padding-bottom: 1px; /* Fixes vertical centering */
     border-top: 1px solid hsla(0, 0%, 100%, 1);
     background: -webkit-linear-gradient( hsl(0, 0%, 98%), hsl(0, 0%, 94%) );
 }
@@ -22,8 +23,10 @@
 /* Zoom Slider */
 
 .TemplateExplorerTools .TemplateExplorerTools-zoomSlider {
+    -webkit-flex: 1 1 auto;
+    min-width: 0;
     margin: 0 8px;
-    width: 200px;
+    max-width: 200px;
     height: 16px;
     border-radius: 8px;
     border-color: hsl(0, 0%, 74%);
@@ -42,6 +45,7 @@
 /* Zoom Button */
 
 .TemplateExplorerTools .matte-ButtonGroup {
+    display: -webkit-flex;
     margin: 0 6px;
     line-height: 0;
 }
