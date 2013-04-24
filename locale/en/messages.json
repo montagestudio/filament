@@ -86,44 +86,37 @@
             "welcome/ui/main.reel/main.html"
         ]
     },
-    "welcome_message": {
-        "message": "Welcome to Montage Builder",
-        "description": "",
-        "locations": [
-            "welcome/ui/main.reel/main.html"
-        ]
-    },
     "forhelpandsupportpleasevisitthe": {
-        "message": "For help and support, please visit the",
+        "message": "For help and support, visit the",
         "description": "TODO",
         "locations": [
             "welcome/ui/main.reel/main.html"
         ]
     },
     "docs": {
-        "message": "Docs",
+        "message": "Documentation",
         "description": "",
         "locations": [
             "welcome/ui/main.reel/main.html"
         ]
     },
     "copyright": {
-        "message": "© 2012-2013 Declarativ Inc.",
+        "message": "© 2012–2013 Declarativ Inc.",
         "description": "",
         "locations": [
             "welcome/ui/main.reel/main.html"
         ]
     },
-    "new_project": {
-        "message": "New Project",
-        "description": "Title for a group of buttons to start a new project",
+    "new_application": {
+        "message": "New",
+        "description": "Button to create a new application",
         "locations": [
             "welcome/ui/main.reel/main.html"
         ]
     },
-    "new_application": {
-        "message": "New Application…",
-        "description": "Button to create a new application",
+    "open_application": {
+        "message": "Open",
+        "description": "Button to open an application",
         "locations": [
             "welcome/ui/main.reel/main.html"
         ]

@@ -6,10 +6,11 @@
     height: 100%;
     padding: 40px;
     text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
-    background: hsl(0,0%,95%);
+    background: hsl(0,0%,95%) -webkit-radial-gradient( hsl(0,0%,98%), hsl(0,0%,90%) );
     -webkit-user-select: none;
     cursor: default;
 }
+
 
 /* Intro --------------------------------- */
 
@@ -49,11 +50,6 @@
     cursor: text;
 }
 
-.Intro-title {
-    margin: 20px 0;
-    font-size: 24px;
-}
-
 .Intro-help {
     max-width: 400px;
     margin: 20px 0 0 0;
@@ -75,33 +71,110 @@
     max-width: 340px;
     display: -webkit-flex;
     -webkit-flex-direction: column;
-    padding: 20px;
+    -webkit-justify-content: center;
+    padding: 0 20px;
 }
 
 .Launcher-section {
     margin: 10px 0;
     padding: 15px;
     border-radius: 6px;
-    border: 1px solid hsla(0, 0%, 0%, .06);
-    background: hsl(0, 0%, 92%);
+    border: 1px solid hsla(0, 0%, 0%, .1);
+    background: hsla(0,0%,0%,.04);
+    box-shadow: inset 0 1px 5px hsla(0,0%,0%,0.06), 0 1px 0 hsla(0,0%,100%,1);
 }
 
 .Launcher-title {
     margin: 0 0 12px 0;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: normal;
     color: hsl(0, 0%, 50%);
     text-shadow: 0 1px 0 hsla(0, 0%, 100%, .3);
 }
 
-/* New --------------------------------- */
+/* Action --------------------------------- */
 
-.isFirstRun .New {
+.isFirstRun .Action {
     margin: auto;
 }
 
-.New-button {
-    margin: 0;
+.Launcher-section.Action {
+    display: -webkit-flex;
+    padding: 15px 7px;
+}
+
+.Action-button {
+    -webkit-flex: 1;
+    position: relative;
+    margin: 0 8px;
+    padding-left: 3.2em;
+    font-size: 16px;
+    color: hsla(0,0%,100%,1);
+    text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
+    border-radius: 4px;
+    background-color: hsl(210,100%,56%);
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,.15), 0 1px 0 hsla(0,0%,100%,.6);
+}
+
+.Action-button:hover {
+    color: hsla(0,0%,100%,1);
+}
+
+.Action-button.active {
+    box-shadow: 0 1px 0 hsla(0,0%,100%,.6);
+}
+
+.Action-button:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 2.5em;
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+    border-right: 1px solid hsla(0,0%,0%,.06);
+    background: hsla(0,0%,0%,.06) no-repeat center;
+}
+
+
+/* New */ 
+
+.Action-button--new {
+    border-color: hsl(210,100%,56%);
+    background-image: -webkit-linear-gradient(top, hsl(210,100%,72%), hsl(210,100%,62%) );
+}
+
+.Action-button--new:hover {
+    background-image: -webkit-linear-gradient(top, hsl(210,100%,76%), hsl(210,100%,64%) );
+}
+
+.Action-button--new.active {
+    background-image: -webkit-linear-gradient(top, hsl(210,100%,66%), hsl(210,100%,56%) );
+}
+
+.Action-button--new:before {
+    background-image: url(../../assets/images/plus.svg);
+}
+
+
+/* Open */ 
+
+.Action-button--open {
+    border-color: hsl(170,80%,40%);
+    background-image: -webkit-linear-gradient(top, hsl(170,80%,48%), hsl(170,80%,42%) );
+}
+
+.Action-button--open:hover {
+    background-image: -webkit-linear-gradient(top, hsl(170,80%,50%), hsl(170,80%,44%) );
+}
+
+.Action-button--open.active {
+    background-image: -webkit-linear-gradient(top, hsl(170,80%,44%), hsl(170,80%,38%) );
+}
+
+.Action-button--open:before {
+    background-image: url(../../assets/images/open.svg);
 }
 
 
@@ -125,16 +198,15 @@
     overflow-y: scroll;
     -webkit-flex: 1 1 0;
     min-height: 0;
-    background-color: hsl(0, 0%, 85%);
 }
 
 .History-list-item {
     padding: 8px 16px;
-    font-size: 16px;
-    line-height: 28px;
+    font-size: 14px;
+    line-height: 24px;
     border-top: 1px solid hsla(0, 0%, 100%, .5);
     border-bottom: 1px solid hsla(0, 0%, 0%, .1);
-    background: hsl(0, 0%, 95%);
+    background-color: hsla(0,0%,100%,.6);
     cursor: pointer;    
     display: block;
     text-overflow: ellipsis;
@@ -143,10 +215,28 @@
 }
 
 .History-list-item:hover {
-    background: hsl(0, 0%, 97%);
+    background-color: hsla(0,0%,100%,.8);
 }
 
 .History-list-item:active {
     border-top: 1px solid hsla(0, 0%, 100%, .1);
-    background: hsl(0, 0%, 90%);
+    background-color: hsla(210,100%,50%,.1);
 }
+
+
+
+/* Show At Startup --------------------------------- */
+
+.ShowAtStartup {
+    font-size: 12px;
+    color: hsl(0,0%,60%);
+}
+
+.ShowAtStartup .matte-InputCheckbox {
+    margin: 0 4px 0 0;
+    vertical-align: bottom;
+    border: 1px solid hsla(0, 0%, 0%, .1);
+    background-color: hsla(0,0%,0%,.04);
+    box-shadow: inset 0 1px 5px hsla(0,0%,0%,0.06), 0 1px 0 hsla(0,0%,100%,.6);
+}
+
