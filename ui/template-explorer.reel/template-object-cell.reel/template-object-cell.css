@@ -34,6 +34,7 @@
 .TemplateObjectCell.selected {
     z-index: 100;
     border-color: hsl(210,100%,60%);
+    box-shadow: 0 0 3px 1px hsla(210,100%,70%,0.7);
 }
 
 .TemplateObjectCell.selected:hover {
