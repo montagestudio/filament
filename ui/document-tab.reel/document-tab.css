@@ -75,6 +75,10 @@
     white-space: nowrap;
 }
 
+.DocumentTab.document-error .DocumentTab-label {
+    color: red;
+}
+
 .DocumentTab .DocumentTab-close {
     width: 20px;
     height: 20px;

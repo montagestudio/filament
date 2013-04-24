@@ -10,7 +10,8 @@
                 "element": {"#": "documentTab"}
             },
             "bindings": {
-                "classList.has('document-dirty')" : { "<-" : "@owner.document.isDirty"}
+                "classList.has('document-dirty')" : { "<-" : "@owner.document.isDirty"},
+                "classList.has('document-error')": {"<-": "!!@owner.document.errors.length"}
             }
         },
 

@@ -80,17 +80,34 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
             self._template = template;
             self.selectedObjects = [];
+            self._editingProxyMap = {};
+            self.errors = [];
 
             //TODO handle external serializations
-            var serialization = JSON.parse(template.getInlineObjectsString(template.document));
-            var context = this.deserializationContext(serialization);
+            try {
+                var serialization = JSON.parse(template.getInlineObjectsString(template.document));
+                var context = this.deserializationContext(serialization);
+                self._addProxies(context.getObjects());
+            } catch (e) {
 
-            //TODO make a real map
-            self._editingProxyMap = {};
-            self._addProxies(context.getObjects());
+                var error = {
+                    file: self.fileUrl,
+                    error: {
+                        id: "serializationError",
+                        reason: e.message
+                    }
+                };
+
+                self.errors.push(error);
+            }
 
             return self;
         }
+    },
+
+    //TODO this will probably be actually discovered at the project level, maybe stored here? or is this just an accessor?
+    errors: {
+        value: null
     },
 
     deserializationContext: {
