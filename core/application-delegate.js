@@ -1,10 +1,10 @@
 /* global lumieres */
 var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
-    ExtensionController = require("core/extension-controller.js").ExtensionController,
-    ViewController = require("core/view-controller.js").ViewController,
-    PreviewController = require("core/preview-controller.js").PreviewController,
-    ProjectController = require("core/project-controller.js").ProjectController,
+    ExtensionController = require("core/extension-controller").ExtensionController,
+    ViewController = require("core/view-controller").ViewController,
+    PreviewController = require("core/preview-controller").PreviewController,
+    ProjectController = require("core/project-controller").ProjectController,
     ReelDocument = require("core/reel-document").ReelDocument,
     IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 

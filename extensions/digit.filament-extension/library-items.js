@@ -1,5 +1,5 @@
 var Montage = require("montage").Montage;
-var LibraryItem = require("filament-extension/core/library-item.js").LibraryItem;
+var LibraryItem = require("filament-extension/core/library-item").LibraryItem;
 
 //TODO assets like the icons for use in library items should be versioned with the extensions themselves
 //TODO each extension really should be its own package, anticipate consuming extensions from elsewhere
