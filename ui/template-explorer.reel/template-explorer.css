@@ -12,6 +12,10 @@
     cursor: -webkit-grabbing;
 }
 
+.TemplateExplorer.error .TemplateExplorer-viewport {
+    border-color: red;
+}
+
 /* Bar --------------------------------- */
 
 .TemplateExplorer-bar {
