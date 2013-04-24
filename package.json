@@ -16,7 +16,7 @@
         "qs": "0.5.2",
         "palette": "git+ssh://git@github.com:declarativ/palette.git",
         "mop": "git+ssh://git@github.com:montagejs/mop.git#edge",
-        "npm": "1.1.70",
+        "npm": "1.2.18",
         "watchr": "2.3.3",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git",
         "minit": "0.3.0-alpha",
