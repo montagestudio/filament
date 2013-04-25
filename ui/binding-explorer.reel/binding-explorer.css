@@ -3,7 +3,7 @@
 }
 
 .BindingExplorer-objectList {
-    margin: 0;
+    margin: 6px 0 0 0;
     padding: 0;
     list-style: none;
 }
@@ -14,8 +14,7 @@
 }
 
 .BindingExplorer-objectLabel {
-    -webkit-flex: .25;
-    min-width: 100px;
+    width: 100px;
     margin: 0 0 0 6px;
     font-weight: bold;
     vertical-align: top;
@@ -29,6 +28,7 @@
 
 .BindingExplorer-bindingList {
     -webkit-flex: 1;
+    min-width: 0;
     margin: 0 0 0 10px;
     padding: 0;
     list-style: none;
@@ -38,9 +38,10 @@
 /* Remove Button ---------------------------- */
 
 .BindingExplorer .BindingExplorer-addButton {
+    -webkit-align-self: flex-end;
     width: 22px;
     height: 22px;
-    min-width: 0;
+    min-width: 22px;
     margin: 0 6px 0 0;
     padding: 0;
     line-height: 0;

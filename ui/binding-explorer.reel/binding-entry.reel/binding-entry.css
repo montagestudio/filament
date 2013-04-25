@@ -1,6 +1,7 @@
 .BindingEntry {
     margin-bottom: 4px;
     display: -webkit-flex;
+    cursor: pointer;
 }
 
 .BindingEntry:last-child {
@@ -8,27 +9,33 @@
 }
 
 .BindingEntry-pill {
-    width: -webkit-calc(50% - 20px);
-    padding: 0 10px;
+    padding: 0 8px;
     font-size: 11px;
     color: hsl(0,0%,30%);
     line-height: 22px;
     background: hsl(0,0%,90%);
-    vertical-align: middle;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
 }
 
+.BindingEntry:hover .BindingEntry-pill {
+    background: hsl(0,0%,86%);
+}
+
+.BindingEntry:active .BindingEntry-pill {
+    background: hsl(0,0%,84%);
+}
+
 .BindingEntry-pill:first-of-type {
-    -webkit-flex: .3;
+    width: 80px;
     text-align: right;
     border-radius: 11px 4px 4px 11px;
 }
 
 .BindingEntry-pill:last-of-type {
     -webkit-flex: 1;
-    //width: -webkit-calc(70% - 80px);
+    min-width: 0;
     border-radius: 4px 11px 11px 4px;
 }
 
