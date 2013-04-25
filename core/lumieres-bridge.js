@@ -366,5 +366,12 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         value: function (state) {
             lumieres.document.dirty = state;
         }
+    },
+
+    openFileWithDefaultApplication: {
+        value: function (url) {
+            return this.backend.get("application").invoke("openFileWithDefaultApplication", url);
+        }
     }
+
 });

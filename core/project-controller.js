@@ -324,8 +324,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                     return doc;
                 });
             } else {
-                //TODO do something more appropriate if there's no editor available for this document
-                return Promise.resolve(null);
+                return this.environmentBridge.openFileWithDefaultApplication(fileUrl);
             }
         }
     },
