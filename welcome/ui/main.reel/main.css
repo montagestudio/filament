@@ -21,6 +21,14 @@
     -webkit-align-items: center;
     -webkit-justify-content: center;
     padding: 20px;
+    -webkit-animation: Intro-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
+}
+
+@-webkit-keyframes Intro-fade {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateX(60px);
+    }
 }
 
 .Intro a,
@@ -73,6 +81,14 @@
     -webkit-flex-direction: column;
     -webkit-justify-content: center;
     padding: 0 20px;
+    -webkit-animation: Launcher-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
+}
+
+@-webkit-keyframes Launcher-fade {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateX(-60px);
+    }
 }
 
 .Launcher-section {
