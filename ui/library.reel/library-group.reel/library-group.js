@@ -33,6 +33,14 @@ exports.LibraryGroup = Montage.create(Component, /** @lends module:"ui/library.r
         value: function() {
             this.element.open = this._open;
         }
+    },
+
+    details: {
+        value: null
+    },
+
+    filterPath: {
+        value: null
     }
 
 });

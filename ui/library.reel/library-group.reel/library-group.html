@@ -31,13 +31,21 @@
             }
         },
 
+        "libraryItemController": {
+            "prototype": "montage/core/range-controller",
+            "bindings": {
+                "content": {"<-": "@owner.details.libraryItems"},
+                "filterPath": {"<-": "@owner.filterPath"}
+            }
+        },
+
         "libraryItemList": {
             "prototype": "montage/ui/repetition.reel",
             "properties": {
                 "element": {"#": "libraryItemList"}
             },
             "bindings": {
-                "content": {"<-": "@owner.details.libraryItems"}
+                "contentController": {"<-": "@owner.templateObjects.libraryItemController"}
             }
         },
 

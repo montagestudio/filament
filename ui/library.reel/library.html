@@ -38,7 +38,19 @@
                     "element": {"#": "group"}
                 },
                 "bindings": {
-                    "details": {"<-": "@groupList.objectAtCurrentIteration"}
+                    "details": {"<-": "@groupList.objectAtCurrentIteration"},
+                    "filterPath": {"<-": "@owner.filterPath"}
+                }
+            },
+
+            "filterInput": {
+                "prototype": "matte/ui/input-text.reel",
+                "properties": {
+                    "element": {"#": "filterInput"},
+                    "placeholder": "Search"
+                },
+                "bindings": {
+                    "value": {"<->": "@owner.filterTerm"}
                 }
             }
 
@@ -48,6 +60,7 @@
 </head>
 <body>
     <aside data-montage-id="library" class="Panel Library">
+        <input type="text" data-montage-id="filterInput">
 		<div data-montage-id="groupList" class="Library-list">
 		    <details data-montage-id="group"></details>
 		</div>
