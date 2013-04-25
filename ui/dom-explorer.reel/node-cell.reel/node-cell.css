@@ -3,7 +3,7 @@
 }
 
 .NodeCell-segment {
-    display: inline-block;
+    display: -webkit-inline-flex;
     margin: 2px 0;
     font-size: 0;
     border-radius: 22px;
@@ -11,7 +11,7 @@
 }
 
 .NodeCell-segment-item {
-    display: inline-block;
+    display: block;
     padding: 0 12px;
     font-size: 11px;
     line-height: 22px;

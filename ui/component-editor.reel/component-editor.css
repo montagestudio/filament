@@ -12,6 +12,11 @@
     border-right: 1px solid hsl(0, 0%, 75%);
 }
 
+.ComponentEditor-column:nth-child(2) {
+    /* 2nd column (stage) is shrinkable */
+    min-width: 0;
+}
+
 .ComponentEditor-column-fill {
     min-height: 50px;
     -webkit-flex: 1 1 250px;
@@ -42,10 +47,9 @@
 .ComponentEditor-column-fixed {
     -webkit-flex: 0 1 200px;
     min-height: 50px;
-    overflow-y: auto;
+    overflow: scroll;
     font-size: 12px;
     text-shadow: 0 1px 0 hsla(0,0%,100%,0.4);
-    overflow: scroll;
     padding: 0;
     background: hsl(0, 0%, 96%);
 }
