@@ -42,7 +42,6 @@ exports.Library = Montage.create(Panel, {
             this.dispatchBeforeOwnPropertyChange("filterPath", this.filterPath);
             this._filterPath = null;
             this._filterTerm = value;
-            console.log("term", this.filterTerm, "path", this.filterPath);
             this.dispatchOwnPropertyChange("filterPath", this.filterPath);
         }
     },
