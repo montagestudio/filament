@@ -94,10 +94,6 @@
 
 /* Action --------------------------------- */
 
-.isFirstRun .Action {
-    margin: auto;
-}
-
 .Launcher-section.Action {
     display: -webkit-flex;
     padding: 15px 7px;
