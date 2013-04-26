@@ -7,6 +7,6 @@
         "filament":"*",
         "filament-asset-compiler":"*",
         "q-connection": "*"
-        
+
     }
 }

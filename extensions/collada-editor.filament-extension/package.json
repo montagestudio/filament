@@ -5,7 +5,6 @@
     "dependencies": {
         "montage": "*",
         "filament-extension": "*",
-        "filament-asset-compiler": "*",
         "palette": "*",
         "matte": "*",
         "glTF-webgl-viewer": "*"

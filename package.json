@@ -38,10 +38,6 @@
         "filament-asset-compiler": {
             "name": "filament-asset-compiler",
             "location": "filament-asset-compiler"
-        },
-        "asset-compilers": {
-            "name": "asset-compilers",
-            "location": "asset-compilers"
         }
     },
     "scripts": {
