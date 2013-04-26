@@ -659,6 +659,13 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
             return Template.create().initWithDocument(doc, this._packageRequire).then(function(template) {
                 return self.addObjectsFromTemplate(template, parentProxy, stageElement);
+            })
+            .then(function (objects) {
+                // only if there's only one object?
+                if (objects.length && self.selectObjectsOnAddition) {
+                    self.clearSelectedObjects();
+                    self.selectObject(objects[0]);
+                }
             });
         }
     },
