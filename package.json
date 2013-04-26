@@ -21,7 +21,7 @@
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git",
         "minit": "0.3.0-alpha",
         "minimatch": "0.2.9",
-        "glTF-node-module":"git+ssh://git@github.com:declarativ/glTF-node-module.git"
+        "glTF-webgl-viewer":"git+ssh://git@github.com:fabrobinet/glTF-webgl-viewer.git"
     },
     "devDependencies": {
         "jasmine-node": "1.2.2",
