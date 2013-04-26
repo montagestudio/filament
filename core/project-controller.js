@@ -313,13 +313,15 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                 this.currentEditor = editor;
 
                 this.dispatchEventNamed("willOpenDocument", true, false, {
-                    url: fileUrl
+                    url: fileUrl,
+                    alreadyOpened: !!alreadyOpenedDoc
                 });
 
                 return this.openUrl(fileUrl).then(function (doc) {
                     self.dispatchEventNamed("didOpenDocument", true, false, {
                         document: doc,
-                        isCurrentDocument: doc === self.currentDocument
+                        isCurrentDocument: doc === self.currentDocument,
+                        alreadyOpened: !!alreadyOpenedDoc
                     });
                     return doc;
                 });
