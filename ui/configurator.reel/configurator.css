@@ -90,10 +90,10 @@
 
 /* Property List ------------------------- */
 
-.PropertyEditor {
+.Configurator .PropertyEditor {
     background: hsl(0,0%,94%);
 }
 
-.PropertyEditor:last-child {
+.Configurator .PropertyEditor:last-child {
     border-radius: 0 0 4px 4px;
 }

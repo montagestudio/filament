@@ -7,9 +7,21 @@
 
 .BlueprintEditor .BlueprintInspector {
     -webkit-box-shadow: 0 2px 5px hsl(0,0%,20%);
+    padding: 8px;
+    border-radius: 6px;
+    background: hsl(0, 0%, 86%);
+}
+
+.BlueprintEditor .Editor-header {
+    border-radius: 4px;
+    margin-bottom: 8px;
 }
 
 .BlueprintEditor .Blueprint-inspectorCondition {
     margin: 0;
     padding: 0;
+}
+
+.BlueprintEditor .PropertyEditor {
+    background: hsl(0,0%,94%);
 }
