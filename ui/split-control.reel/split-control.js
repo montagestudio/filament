@@ -38,7 +38,7 @@ exports.SplitControl = Montage.create(AbstractInputRange, /** @lends SplitContro
     
     // AbstractInputRange overides
     
-    calculateSliderMagnitude: {
+    _calculateSliderMagnitude: {
         value: function() {
             if(this.splitAxis === "vertical") {
                 return this.containerElement.offsetWidth;
