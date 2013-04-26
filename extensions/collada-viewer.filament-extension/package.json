@@ -8,11 +8,6 @@
         "filament-asset-compiler": "*",
         "palette": "*",
         "matte": "*",
-        "glTF-node-module": "*"
-        
-    },
-    "mappings":{
-        "runtime":"glTF-node-module/glTF/webgl/runtime",
-        "c2j" : "glTF-node-module/glTF/webgl"
+        "glTF-webgl-viewer": "*"
     }
 }
