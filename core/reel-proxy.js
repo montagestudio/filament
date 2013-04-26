@@ -123,6 +123,10 @@ exports.ReelProxy = Montage.create(EditingProxy, {
      * @note Edits made to the proxy are set on the live objects, this may not be the case forever
      * as there's really no way to know whether setting properties in a declaration translates
      * to setting values at runtime without issue.
+     * @deprecated Don't use this for anything. I intend to remove this property to further decouple
+     * the editing model from the live representation with the intent of being able to have a single
+     * editingModel presented by several live presentations in different contexts at the same time;
+     * there will be no definitive live representation to supply the editing model with.
      */
     stageObject: {
         value: null
