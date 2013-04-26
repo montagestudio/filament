@@ -1,12 +1,12 @@
 var Montage = require("montage").Montage,
     Promise = require("montage/core/promise").Promise,
-    mockReelDocument = require("test/mocks/reel-document-mocks").mockReelDocument,
+    reelDocumentMock = require("test/mocks/reel-document-mocks").reelDocumentMock,
     ReelProxy = require("core/reel-proxy").ReelProxy,
     WAITSFOR_TIMEOUT = 2500;
 
 describe("core/reel-proxy-spec", function () {
 
-    var proxy, label, serialization, exportId;
+    var proxy, label, serialization, exportId, editingDocument;
 
     beforeEach(function () {
         exportId = "foo/bar/baz";
@@ -15,7 +15,9 @@ describe("core/reel-proxy-spec", function () {
             prototype: exportId,
             properties: {}
         };
-        proxy = ReelProxy.create().init(label, serialization, exportId);
+        editingDocument = reelDocumentMock();
+
+        proxy = ReelProxy.create().init(label, serialization, exportId, editingDocument);
     });
 
     describe("initialization", function () {
