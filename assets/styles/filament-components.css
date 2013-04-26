@@ -126,6 +126,14 @@
     -webkit-transition: -webkit-flex .3s cubic-bezier(.26, .06, .08, 1);
 }
 
+.Panel-header {
+    padding: 0 8px;
+    margin: 0;
+    border-top: 1px solid hsla(0,0%,100%,1);
+    border-bottom: 1px solid hsla(0,0%,0%,.2);
+    background: -webkit-linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
+}
+
 .Panel-title {
     text-align: left;
     height: 32px;

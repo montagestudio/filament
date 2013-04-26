@@ -1,8 +1,35 @@
-.Panel.Library {
+.Library.Panel {
     -webkit-user-select: none;
     border-left: 1px solid hsl(0, 0%, 75%);
     background: hsl(0, 0%, 86%);
 }
+
+.Library-search.matte-InputText {
+    -webkit-appearance: none;
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+    padding-right: 0; /* space for cancel button */
+    color: hsl(0,0%,30%);
+    border-color: hsl(0,0%,77%);
+    border-radius: 20px;
+    background-color: hsla(0,0%,0%,.04);
+    box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.08), 0 1px 0 hsla(0,0%,100%,.6);
+}
+
+.Library-search.matte-InputText:hover {
+    background-color: hsla(0,0%,0%,.02);
+}
+
+.Library-search.matte-InputText:focus {
+    border-color: hsl(210,100%,70%);
+    background-color: hsla(210,100%,60%,0.1);
+}
+
+.Library-search::-webkit-search-cancel-button {
+    margin: 0 6px 0 8px;
+}
+
 
 .Library-list {
     -webkit-flex: 1;
