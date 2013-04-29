@@ -166,3 +166,6 @@
     list-style: none;
 }
 
+.TemplateObjectTag-label--invalid {
+    color: red;
+}

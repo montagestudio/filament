@@ -247,6 +247,26 @@ exports.ReelDocument = Montage.create(EditingDocument, {
         }
     },
 
+    nodeProxyForNode: {
+        value: function (node) {
+            var nodes = this.templateNodes,
+                i = 0,
+                iNode = nodes ? nodes[i] : null,
+                foundNode;
+
+            while (!foundNode && iNode) {
+                if (node === iNode._templateNode) {
+                    foundNode = iNode;
+                } else {
+                    i++;
+                    iNode = nodes[i];
+                }
+            }
+
+            return foundNode;
+        }
+    },
+
     _buildSerialization: {
         value: function () {
             var template = this._template,
@@ -1096,6 +1116,32 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             }
 
             return removedListener;
+        }
+    },
+
+    //Template Node Editing API
+
+    removeTemplateNode: {
+        value: function (nodeProxy) {
+            //Remove from template DOM
+            var node = nodeProxy._templateNode;
+            node.parentElement.removeChild(node);
+
+            //Remove from Editing Model
+            var index = this.templateNodes.indexOf(nodeProxy);
+            if (index >= 0) {
+                this.templateNodes.splice(index, 1);
+            }
+
+            //Mark as removed throughout editing Model
+            //TODO manage this with a binding?
+            nodeProxy.isInTemplate = false;
+
+            nodeProxy.children.forEach(function (childProxy) {
+                this.removeTemplateNode(childProxy);
+            }, this);
+
+            return nodeProxy;
         }
     }
 

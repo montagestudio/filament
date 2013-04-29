@@ -61,13 +61,29 @@
             "bindings": {
                 "value": {"<-": "@owner.nodeInfo.component.label"}
             }
+        },
+
+        "removeNodeButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "removeNodeButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>
 </head>
 <body>
     <div data-montage-id="node-cell" class="NodeCell">
+        <button title="Insert New Node Before">⥆</button>
         <span class="NodeCell-segment">
+            <button title="Remove Node" data-montage-id="removeNodeButton">⨂</button>
+
             <span data-montage-id="tagName" class="NodeCell-segment-item NodeCell-segment-item--tag"></span>
 
             <span data-montage-id="montageIdCondition">
@@ -77,7 +93,9 @@
             <span data-montage-id="componentCondition" class="NodeCell-segment-item NodeCell-segment-item--component">
                 <strong data-montage-id="componentLabel" class="NodeCell-label"></strong>
             </span>
+            <button title="Append New Node As Last Child">⤸</button>
         </span>
+        <button title="Insert New Node After">⥅</button>
     </div>
 </body>
 </html>

@@ -9,7 +9,13 @@
             "properties": {
                 "element": {"#": "dom-explorer"},
                 "nodeTreeController": {"@": "nodeTreeController"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "removeNode",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "nodeTreeController": {
