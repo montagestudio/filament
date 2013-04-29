@@ -38,7 +38,14 @@ describe("core/reel-context-spec", function () {
 
         describe("exportId", function () {
 
-            it("should have the expected exportId when representing the owner", function () {
+            it("TODO should have the expected exportId when representing the owner", function () {
+
+                // TODO we need to actually look into the JS file to more accurately determine what is exported
+                // and which exportName the owner is using.
+
+                // The owner should probably know its prototype within lumieres, but we shouldn't write it out
+                // into the serialization unless explicitly instructed.
+
                 var serialization = {
                     "owner": {
                         "properties": {
