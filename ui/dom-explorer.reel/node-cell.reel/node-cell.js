@@ -81,6 +81,12 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                 nodeInfo.dispatchOwnPropertyChange("component", nodeInfo.component);
             }).done();
         }
+    },
+
+    handleRemoveNodeButtonAction: {
+        value: function (evt) {
+            this.dispatchEventNamed("removeNode", true, true, this.nodeInfo);
+        }
     }
 
 });

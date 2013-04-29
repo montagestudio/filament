@@ -66,6 +66,10 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
             //TODO cache this and listen to see if it changes
             return this._editingDocument.componentProxyForElement(this._templateNode);
         }
+    },
+
+    isInTemplate: {
+        value: false
     }
 
 });

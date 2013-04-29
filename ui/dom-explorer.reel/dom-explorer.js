@@ -23,6 +23,12 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
     nodeTreeController: {
         value: null
+    },
+
+    handleRemoveNode: {
+        value: function (evt) {
+            this.editingDocument.removeTemplateNode(evt.detail);
+        }
     }
 
 });
