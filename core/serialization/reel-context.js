@@ -28,7 +28,8 @@ exports.ReelContext = Montage.create(Context.prototype, {
 
     getElementById: {
         value: function(id) {
-            return this.editingDocument.htmlDocument.querySelector("[data-montage-id='" + id + "']");
+            var element = this.editingDocument.htmlDocument.querySelector("[data-montage-id='" + id + "']");
+            return element ? this.editingDocument.nodeProxyForNode(element) : null;
         }
     },
 

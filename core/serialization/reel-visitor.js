@@ -5,11 +5,20 @@ exports.ReelVisitor = Montage.create(MontageVisitor, {
 
     getTypeOf: {
         value: function (object) {
+            //TODO make these checks more robust
             if ("stageObject" in object) {
                 return "ProxyObject";
+            } else if ("_templateNode" in object) {
+                return "NodeProxy";
             } else {
                 return MontageVisitor.getTypeOf.call(this, object);
             }
+        }
+    },
+
+    visitNodeProxy: {
+        value: function(malker, nodeProxy, name) {
+            malker.visit(nodeProxy._templateNode, name);
         }
     },
 
