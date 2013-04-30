@@ -64,12 +64,13 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
     component: {
         get: function () {
             //TODO cache this and listen to see if it changes
-            return this._editingDocument.componentProxyForElement(this._templateNode);
+            return this._editingDocument.componentProxyForElement(this);
         }
     },
 
+    //TODO populate this with a binding to !!_templateNode.parentNode or something
     isInTemplate: {
-        value: false
+        value: true
     }
 
 });
