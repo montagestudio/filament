@@ -31,11 +31,11 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 return packageRequire.async(componentModuleId).get(objectName).then(function (componentPrototype) {
                     return Template.getTemplateWithModuleId(componentPrototype.templateModuleId, packageRequire);
                 }, function (error) {
-                    return Promise.reject(new Error("Cannot load component template.", error))
+                    return Promise.reject(new Error("Cannot load component template.", error));
                 }).then(function (template) {
                         return self.create().init(fileUrl, template, packageRequire);
                     }, function (error) {
-                        return Promise.reject(new Error("cannot initialize document for template.", error))
+                        return Promise.reject(new Error("cannot initialize document for template.", error));
                     });
             });
         }
@@ -436,7 +436,9 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 }
 
                 // Owner has no parent
-                if (stageObject === owner) return;
+                if (stageObject === owner) {
+                    return;
+                }
 
                 // Loop up parents until we find one which is in this reel, or
                 // we hit the owner. Use as parent.
