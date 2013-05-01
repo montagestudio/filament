@@ -100,6 +100,19 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
+
+        "insertAfterNodeButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "insertAfterNodeButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>
@@ -121,7 +134,7 @@
             </span>
             <button data-montage-id="appendNodeButton" title="Append New Node As Last Child">⤸</button>
         </span>
-        <button title="Insert New Node After">⥅</button>
+        <button data-montage-id="insertAfterNodeButton" title="Insert New Node After">⥅</button>
     </div>
 </body>
 </html>

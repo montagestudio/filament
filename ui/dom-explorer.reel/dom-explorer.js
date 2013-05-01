@@ -43,6 +43,13 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
             var newNode = this.editingDocument.createTemplateNode(evt.detail.tagName);
             this.editingDocument.insertNodeBeforeTemplateNode(newNode, evt.detail.nextSibling);
         }
+    },
+
+    handleInsertAfterNode: {
+        value: function (evt) {
+            var newNode = this.editingDocument.createTemplateNode(evt.detail.tagName);
+            this.editingDocument.insertNodeAfterTemplateNode(newNode, evt.detail.previousSibling);
+        }
     }
 
 });

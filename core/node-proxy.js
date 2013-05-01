@@ -44,6 +44,15 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
         value: null
     },
 
+    nextSibling: {
+        get: function () {
+            var parentsChildren = this.parentNode.children;
+            var indexInParent = parentsChildren.indexOf(this);
+            return parentsChildren[indexInParent + 1];
+
+        }
+    },
+
     tagName: {
         get: function () {
             return this._templateNode ? this._templateNode.tagName : null;
@@ -107,14 +116,19 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
     insertBefore: {
         value: function (nodeProxy, nextSiblingProxy) {
 
-            this._templateNode.insertBefore(nodeProxy._templateNode, nextSiblingProxy._templateNode);
+            if (nextSiblingProxy) {
+                this._templateNode.insertBefore(nodeProxy._templateNode, nextSiblingProxy._templateNode);
 
-            var index = this.children.indexOf(nextSiblingProxy);
-            if (index >= 0) {
-                this.children.splice(index, 0, nodeProxy);
+                var index = this.children.indexOf(nextSiblingProxy);
+                if (index >= 0) {
+                    this.children.splice(index, 0, nodeProxy);
+                }
+
+                nodeProxy.parentNode = this;
+            } else {
+                this.appendChild(nodeProxy);
             }
 
-            nodeProxy.parentNode = this;
             return nodeProxy;
         }
     }

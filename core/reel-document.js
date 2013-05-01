@@ -1225,6 +1225,22 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             this.__addNodeProxy(nodeProxy);
             return nodeProxy;
         }
+    },
+
+    /**
+     * Insert the specified nodeProxy after the specified sibling proxy
+     *
+     * @param {NodeProxy} nodeProxy The nodeProxy to insert
+     * @param {NodeProxy} nextSiblingProxy The nodeProxy to insert after
+     * @return {NodeProxy} The node proxy that was inserted in the template
+     */
+    insertNodeAfterTemplateNode: {
+        value: function (nodeProxy, previousSiblingProxy) {
+            var parentProxy = previousSiblingProxy.parentNode;
+            parentProxy.insertBefore(nodeProxy, previousSiblingProxy.nextSibling);
+            this.__addNodeProxy(nodeProxy);
+            return nodeProxy;
+        }
     }
 
 });
