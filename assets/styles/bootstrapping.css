@@ -1,5 +1,4 @@
-.montage-app-bootstrapping .logo,
-.montage-app-loading .logo {
+.LoaderWrapper {
     position: absolute;
     top: 0;
     right: 0;
@@ -8,29 +7,62 @@
     display: -webkit-box;
     -webkit-box-align: center;
     -webkit-box-pack: center;
-    background: url(../img/logo.png) no-repeat center center;
-    background-size: 180px;
 }
 
-.montage-app-bootstrapping .logo > .spinner,
-.montage-app-loading .logo > .spinner {
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    margin: 6px 0 0 1px;
-    background: url(../img/icon.svg) no-repeat center center;
-    background-size: 100%;
-    -webkit-animation: spin 3.6s linear infinite;
+.Loader {
+    position: relative;
+    font-size: 0;
+    -webkit-animation: loader 12s 1.4s linear infinite;
+}
+@-webkit-keyframes loader { 100% { -webkit-transform: rotate(-360deg); } }
+
+
+.montage-app-bootstrapping .Loader-cube,
+.montage-app-loading .Loader-cube {
+    display: block;
 }
 
-@-webkit-keyframes spin {
-    0% {
-        -webkit-transform: rotate(0);
-    }
-    100% {
-        -webkit-transform: rotate(-360deg);
-    }
+.Loader-cube {
+    display: none;
+    position: absolute;
+    margin: -20px;
+    width: 40px;
+    height: 40px;
+    -webkit-mask: url(../img/icon.svg) no-repeat center center;
+    -webkit-mask-size: 100%;
+    -webkit-transform-origin: 22px 22px;
 }
+
+.Loader-cube:nth-child(1) {
+    top: -16px;
+    left: 0px;
+    background-color: #B8CE36;
+    -webkit-transform: rotate(90deg);
+    -webkit-animation: loader1 1.2s 0s cubic-bezier(.4,0,0,1) infinite;
+}
+@-webkit-keyframes loader1 { 100% { -webkit-transform: rotate(-270deg); } }
+
+
+.Loader-cube:nth-child(2) {
+    top: 24px;
+    left: -24px;
+    background-color: #F47E18;
+    -webkit-transform: rotate(-35deg);
+    -webkit-animation: loader2 1.2s .4s cubic-bezier(.4,0,0,1) infinite;
+}
+@-webkit-keyframes loader2 { 100% { -webkit-transform: rotate(-395deg); } }
+
+
+.Loader-cube:nth-child(3) {
+    top: 24px;
+    left: 24px;
+    background-color: #56AAF6; 
+    -webkit-transform: rotate(-145deg);
+    -webkit-animation: loader3 1.2s .8s cubic-bezier(.4,0,0,1) infinite;
+}
+@-webkit-keyframes loader3 { 100% { -webkit-transform: rotate(-505deg); } }
+
+
 
 .montage-app-bootstrapping .main,
 .montage-app-loading .main {
