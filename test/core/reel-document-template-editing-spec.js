@@ -237,4 +237,32 @@ describe("core/reel-document-headless-editing-spec", function () {
 
     });
 
+    describe("inserting a non-component leaf node before another node", function () {
+
+        it("should consider the nodeProxy as part of the template", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("p");
+                var fooNode = reelDocument.editingProxyMap.foo.properties.get('element');
+
+                reelDocument.insertNodeBeforeTemplateNode(nodeProxy, fooNode);
+                expect(nodeProxy.isInTemplate).toBeTruthy();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should insert the nodeProxy before the specified sibling", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("p");
+                var fooNode = reelDocument.editingProxyMap.foo.properties.get('element');
+                var fooParent = fooNode.parentNode;
+
+                var fooIndex = fooParent.children.indexOf(fooNode);
+
+                reelDocument.insertNodeBeforeTemplateNode(nodeProxy, fooNode);
+                expect(fooParent.children.indexOf(nodeProxy)).toBe(fooIndex);
+                expect(fooParent.children.indexOf(fooNode)).toBe(fooIndex + 1);
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+    });
+
 });

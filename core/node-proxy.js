@@ -36,6 +36,10 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
         }
     },
 
+    parentNode: {
+        value: null
+    },
+
     children: {
         value: null
     },
@@ -96,6 +100,21 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
             }
 
             nodeProxy.parentNode = null;
+            return nodeProxy;
+        }
+    },
+
+    insertBefore: {
+        value: function (nodeProxy, nextSiblingProxy) {
+
+            this._templateNode.insertBefore(nodeProxy._templateNode, nextSiblingProxy._templateNode);
+
+            var index = this.children.indexOf(nextSiblingProxy);
+            if (index >= 0) {
+                this.children.splice(index, 0, nodeProxy);
+            }
+
+            nodeProxy.parentNode = this;
             return nodeProxy;
         }
     }
