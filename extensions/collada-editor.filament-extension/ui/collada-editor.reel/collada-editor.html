@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="collada-editor.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "colladaEditor"}
+            }
+        },
+        "colladaView": {
+            "prototype": "glTF-webgl-viewer/ui/view.reel",
+            "properties": {
+                "element": {"#": "colladaView"}
+            },
+        "bindings": {
+            "scenePath": {"<-": "@owner.currentDocument.compiledFileURL"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="colladaEditor" class="ColladaEditor">
+
+                <div data-montage-id="colladaView" class=" ColladaView">
+            </div>
+        </div>
+        </body>
+</html>
