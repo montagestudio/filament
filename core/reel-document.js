@@ -83,6 +83,9 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             self._editingProxyMap = {};
             self.errors = [];
 
+            self._templateBodyNode = NodeProxy.create().init(this.htmlDocument.body, this);
+            self.templateNodes = this._children(self._templateBodyNode);
+
             //TODO handle external serializations
             try {
                 var serialization = JSON.parse(template.getInlineObjectsString(template.document));
@@ -200,15 +203,8 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
     templateBodyNode: {
         get: function () {
-            if (!this._templateBodyNode && this.htmlDocument && this.htmlDocument.body) {
-                this._templateBodyNode = NodeProxy.create().init(this.htmlDocument.body, this);
-            }
             return this._templateBodyNode;
         }
-    },
-
-    _templateNodes: {
-        value: null
     },
 
     // TODO super quick demo implementation to build a repetition friendly "tree"
@@ -239,12 +235,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
     },
 
     templateNodes: {
-        get: function () {
-            if (!this._templateNodes && this.templateBodyNode) {
-                this._templateNodes = this._children(this.templateBodyNode);
-            }
-            return this._templateNodes;
-        }
+        value: null
     },
 
     nodeProxyForNode: {
@@ -399,6 +390,18 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             if (proxy.element && (parentNode = proxy.element.parentNode)) {
                 parentNode.removeChild(proxy.element);
             }
+        }
+    },
+
+    __addNodeProxy: {
+        value: function (proxy) {
+            this.templateNodes.push(proxy);
+            proxy.children.forEach(function (child) {
+                this.__addNodeProxy(child);
+            }, this);
+
+            //TODO this is a hack to refresh the dpeth of everythign on a change
+            this.templateNodes = this._children(this._templateBodyNode);
         }
     },
 
@@ -648,7 +651,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             doc.head.appendChild(serializationElement);
 
             if (proxyElement) {
-                importedNode = doc.importNode(proxyElement, true);
+                importedNode = doc.importNode(proxyElement._templateNode, true);
                 doc.body.appendChild(importedNode);
             }
 
@@ -830,7 +833,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 proxy,
                 addedProxies = [],
                 self = this,
-                templateElement = (parentProxy) ? parentProxy.getObjectProperty("element") : void 0,
+                templateElement = (parentProxy) ? parentProxy.getObjectProperty("element")._templateNode : void 0,
                 revisedTemplate,
                 ownerProxy;
 
@@ -890,17 +893,32 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 sourceDocument = sourceTemplate.document,
                 templateSerialization = destinationTemplate.getSerialization(),
                 labelsCollisionTable,
-                idsCollisionTable;
+                idsCollisionTable,
+                newChildNodes,
+                i,
+                iChild,
+                insertionParent = templateElement || this._ownerElement;
 
             sourceContentRange = sourceDocument.createRange();
             sourceContentRange.selectNodeContents(sourceDocument.body);
             sourceContentFragment = sourceContentRange.cloneContents();
 
+            newChildNodes = [];
+            for (i = 0; (iChild = sourceContentFragment.childNodes[i]); i++) {
+                newChildNodes.push(iChild);
+            }
+
             // Merge markup
-            idsCollisionTable = destinationTemplate.appendNode(sourceContentFragment, (templateElement || this._ownerElement));
+            idsCollisionTable = destinationTemplate.appendNode(sourceContentFragment, insertionParent._templateNode);
             if (idsCollisionTable) {
                 serializationToMerge.renameElementReferences(idsCollisionTable);
             }
+
+            // Add nodeProxies for newly added nodes
+            newChildNodes.forEach(function (newChild) {
+                var nodeProxy = NodeProxy.create().init(newChild, this);
+                this.__addNodeProxy(nodeProxy);
+            }, this);
 
             // Merge serialization
             labelsCollisionTable = templateSerialization.mergeSerialization(serializationToMerge);
@@ -940,18 +958,16 @@ exports.ReelDocument = Montage.create(EditingDocument, {
     removeObject: {
         value: function (proxy) {
 
+            //TODO add options to remove child components and/or the DOM tree under this component
+            //TODO this warrants some minor forking of removingObject vs removingComponent though I don't want seperata API if I can help it
+
             var self = this,
                 removalPromise,
-                deferredUndo = Promise.defer();
+                deferredUndo = Promise.defer(),
+                body,
+                bodyRange;
 
             this.undoManager.register("Remove", deferredUndo.promise);
-
-            //TODO handle removing any child proxies
-
-            var element = proxy.properties.get("element");
-            if (element) {
-                element.parentNode.removeChild(element);
-            }
 
             if (this._editingController) {
                 removalPromise = this._editingController.removeObject(proxy.stageObject);
@@ -963,6 +979,16 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 self._removeProxies(proxy);
 
                 self._templateForProxy(proxy).then(function (restorationTemplate) {
+
+                    // For now, with no option to remove the DOM node, we leave them behind;
+                    // the restoration template should assume that its original element is
+                    // still in place in the template DOM. We clear out the body of the
+                    // restoration template to not reintrouce the component's element.
+                    body = restorationTemplate.document.getElementsByTagName("body")[0];
+                    bodyRange = restorationTemplate.document.createRange();
+                    bodyRange.selectNodeContents(body);
+                    bodyRange.deleteContents();
+
                     deferredUndo.resolve([self.addObjectsFromTemplate, self, restorationTemplate]);
                 }).done();
 
@@ -1143,6 +1169,41 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 this.removeTemplateNode(childProxy);
             }, this);
 
+            return nodeProxy;
+        }
+    },
+
+    /**
+     * Create a node proxy for a new element of the specified tagName.
+     * This node proxy is not part of the template until it is explicitly
+     * added to the template through one of the available methods.
+     *
+     * @see appendChildToTemplateNode
+     *
+     * @param {String} tagName The tagName of the element this nodeProxy will represent
+     * @return {NodeProxy} A proxy for the newly created element.
+     */
+    createTemplateNode: {
+        value: function (tagName) {
+            var element = this.htmlDocument.createElement(tagName);
+            return NodeProxy.create().init(element, this);
+        }
+    },
+
+    /**
+     * Append the specified nodeProxy to the template
+     *
+     * @param {NodeProxy} nodeProxy The nodeProxy to introduce to the template
+     * @param {NodeProxy} parentNodeProxy The optional parent proxy for the incoming nodeProxy
+     * If not specified, the nodeProxy associated with the owner component will be used.
+     * @return {NodeProxy} The node proxy that was inserted in the template
+     */
+    appendChildToTemplateNode: {
+        value: function (nodeProxy, parentNodeProxy) {
+            parentNodeProxy = parentNodeProxy || this._ownerElement;
+
+            parentNodeProxy.appendChild(nodeProxy);
+            this.__addNodeProxy(nodeProxy);
             return nodeProxy;
         }
     }

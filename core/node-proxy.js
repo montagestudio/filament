@@ -27,6 +27,8 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
 
             this.children = childrenProxies;
 
+            this.defineBinding("isInTemplate", {"<-": "_editingDocument.templateNodes.has($)", parameters: this});
+
             return this;
         }
     },
@@ -68,9 +70,17 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
         }
     },
 
-    //TODO populate this with a binding to !!_templateNode.parentNode or something
     isInTemplate: {
-        value: true
+        value: false
+    },
+
+    appendChild: {
+        value: function (nodeProxy) {
+            //TODO make this guard against edgecases e.g. transplanting nodes
+            //TODO not actually update the underlying DOM live on edits?
+            this._templateNode.appendChild(nodeProxy._templateNode);
+            this.children.push(nodeProxy);
+        }
     }
 
 });
