@@ -917,7 +917,8 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             // Add nodeProxies for newly added nodes
             newChildNodes.forEach(function (newChild) {
                 var nodeProxy = NodeProxy.create().init(newChild, this);
-                this.__addNodeProxy(nodeProxy);
+                insertionParent.appendChild(nodeProxy); // Add as child to parent
+                this.__addNodeProxy(nodeProxy); // Add to general collection of known proxies (temporarily)
             }, this);
 
             // Merge serialization
