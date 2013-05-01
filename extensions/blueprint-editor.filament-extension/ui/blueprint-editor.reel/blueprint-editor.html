@@ -11,25 +11,42 @@
             }
         },
 
-        "blueprintCondition": {
-            "prototype": "montage/ui/condition.reel",
+        "schematicsContainer": {
+            "prototype": "filament/ui/schematics-container.reel",
             "properties": {
-                "element": {"#": "blueprint-condition"},
-                "removalStrategy": "hide"
+                "element": {"#": "schematics-container"}
             },
             "bindings": {
-                "condition": {"<-": "@owner.currentDocument.isBlueprint"}
+                "editingDocument": {"<-": "@owner.currentDocument"}
+            }
+        },
+               
+        "blueprintObjectList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "blueprintObjectList"},
+                "contentController": {"@": "blueprintObjectsController"},
+                "isSelectionEnabled": true
             }
         },
 
-        "blueprintInspector": {
-            "prototype": "palette/ui/inspector/blueprint/editor.reel",
+        "blueprintObjectsController": {
+            "prototype": "montage/core/range-controller",
+            "bindings": {
+                "content": {"<-": "@owner.currentDocument.editingProxies"},
+                "selection": {"<->": "@owner.currentDocument.selectedObjects"}
+            }
+        },
+
+        "blueprintObjectCell": {
+            "prototype": "./blueprint-object-cell.reel",
             "properties": {
-                "element": {"#": "blueprint-inspector"}
+                "element": {"#": "blueprintObjectCell"}
             },
             "bindings": {
-                "object": {"<-": "@owner.currentDocument.currentProxyObject"},
-                "editingDocument": {"<-": "@owner.currentDocument"}
+                "blueprintObject": {"<-": "@blueprintObjectList.objectAtCurrentIteration"},
+                "editingDocument": {"<-": "@owner.currentDocument"},
+                "zoom": {"<-": "@schematicsContainer.zoom"}
             }
         }
 
@@ -38,9 +55,11 @@
 </head>
 <body>
     <div data-montage-id="blueprint-editor" class="BlueprintEditor">
-        <div data-montage-id="blueprint-condition" class="Blueprint-inspectorCondition">
-            <div data-montage-id="blueprint-inspector" class="BlueprintInspector"></div>
-        </div>
+        <div data-montage-id="schematics-container">
+            <ul data-montage-id="blueprintObjectList" class="BlueprintExplorer-list" >
+                <li data-montage-id="blueprintObjectCell" class="BlueprintExplorer-cell"></li>
+            </ul>
+         </div>
     </div>
 </body>
 </html>

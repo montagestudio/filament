@@ -1,8 +1,8 @@
 var Montage = require("montage").Montage,
     ProxyReviver = require("palette/core/serialization/proxy-reviver").ProxyReviver,
-    ReelProxy = require("core/reel-proxy").ReelProxy;
+    BlueprintObjectProxy = require("../blueprint-object-proxy").BlueprintObjectProxy;
 
-exports.ReelReviver = Montage.create(ProxyReviver, {
+exports.BlueprintReviver = Montage.create(ProxyReviver, {
 
     reviveMontageObject: {
         value: function(value, context, label) {
@@ -12,13 +12,13 @@ exports.ReelReviver = Montage.create(ProxyReviver, {
             }
 
             var exportId,
-                proxyObject = ReelProxy.create(),
+                proxyObject = BlueprintObjectProxy.create(),
                 revivedSerialization;
 
             context.setObjectLabel(proxyObject, label);
             revivedSerialization = this.reviveObjectLiteral(value, context);
 
-            if ("owner" === label) {
+            if ("root" === label) {
                 exportId = context.ownerExportId;
             }
 

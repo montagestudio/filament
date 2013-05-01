@@ -3,6 +3,12 @@ var Montage = require("montage").Montage,
 
 exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
 
+    proxyType: {
+        get: function() {
+            return "NodeProxy"
+        }
+    },
+
     _editingDocument: {
         value: null
     },

@@ -1,15 +1,15 @@
 var Montage = require("montage").Montage;
-var ReelVisitor = require("./reel-visitor").ReelVisitor;
+var BlueprintVisitor = require("./blueprint-visitor").BlueprintVisitor;
 var ProxySerializer = require("palette/core/serialization/proxy-serializer").ProxySerializer;
 
-exports.ReelSerializer = Montage.create(ProxySerializer, {
+exports.BlueprintSerializer = Montage.create(ProxySerializer, {
 
     /*
      * Return a newly created visitor for the proxies
      */
     newVisitor: {
         get: function () {
-            return ReelVisitor.create();
+            return BlueprintVisitor.create();
         }
     }
 

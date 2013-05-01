@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="blueprint-object-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "blueprint-object-cell"}
+            }
+        },
+
+        "schematicsCell": {
+            "prototype": "filament/ui/schematics-cell.reel",
+            "properties": {
+                "element": {"#": "schematics-cell"}
+            },
+            "bindings": {
+                "proxyObject": {"<-": "@owner.blueprintObjectProxy"},
+                "zoom": {"<-": "@owner.zoom"}
+            }
+        },
+
+        "blueprintInspector": {
+            "prototype": "palette/ui/inspector/blueprint/editor.reel",
+            "properties": {
+                "element": {"#": "blueprint-inspector"}
+            },
+            "bindings": {
+                "object": {"<-": "@owner.blueprintObjectProxy"},
+                "editingDocument": {"<-": "@owner.editingDocument"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="blueprint-object-cell" class="BlueprintObjectCell">
+        <div data-montage-id="schematics-cell">
+            <div data-montage-id="blueprint-inspector"></div>
+        </div>
+    </div>
+</body>
+</html>

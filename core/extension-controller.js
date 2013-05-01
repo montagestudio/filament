@@ -53,15 +53,21 @@ exports.ExtensionController = Montage.create(Target, {
             return bridge.availableExtensions.then(function (extensionUrls) {
                 return Promise.all(extensionUrls.map(function (entry) {
                     return self.loadExtension(entry.url);
-                }));
+                }), function (error) {
+                    console.log("Could not load extensions");
+                    return Promise.reject(new Error("Could not load extensions", error));
+                });
             }).then(function (extensions) {
-                self.loadedExtensions = extensions;
+                    self.loadedExtensions = extensions;
 
-                application.addEventListener("activateExtension", self);
-                application.addEventListener("deactivateExtension", self);
+                    application.addEventListener("activateExtension", self);
+                    application.addEventListener("deactivateExtension", self);
 
-                return extensions;
-            });
+                    return extensions;
+                }, function (error) {
+                    console.log("Could not load extensions", error);
+                    return [];
+                });
         }
     },
 
@@ -97,7 +103,10 @@ exports.ExtensionController = Montage.create(Target, {
             // TODO npm install?
             return require.loadPackage(extensionUrl).then(function (packageRequire) {
                 return packageRequire.async("extension");
-            }).then(function (exports) {
+            }, function (error) {
+                console.log("Could not load extension package at: " + extensionUrl);
+                return Promise.reject(new Error("Could not load extension package at: " + extensionUrl, error));
+             }).then(function (exports) {
                     var extension = exports.Extension;
 
                     if (!extension) {
@@ -111,7 +120,7 @@ exports.ExtensionController = Montage.create(Target, {
                     return extension;
                 }, function(error) {
                     console.log("Could not load extension at: " + extensionUrl);
-                    throw new Error("Could not load extension at " + extensionUrl +": " + error);
+                    return Promise.reject(new Error("Could not load extension at: " + extensionUrl, error));
                 });
         }
     },
@@ -124,6 +133,9 @@ exports.ExtensionController = Montage.create(Target, {
      */
     activateExtension: {
         value: function (extension) {
+            if (!extension) {
+                return
+            }
             var activationPromise;
 
             if (-1 === this.activeExtensions.indexOf(extension)) {
@@ -154,6 +166,10 @@ exports.ExtensionController = Montage.create(Target, {
      */
     deactivateExtension: {
         value: function (extension) {
+            if (!extension) {
+                return
+            }
+
             var deactivationPromise,
                 index = this.activeExtensions.indexOf(extension);
 

@@ -3,11 +3,11 @@ var Montage = require("montage").Montage,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver;
 
 
-exports.BlueprintProxy = Montage.create(EditingProxy, {
+exports.BlueprintObjectProxy = Montage.create(EditingProxy, {
 
     init:{
-        value:function (label, editingDocument, proxiedObject) {
-            var self = EditingProxy.init.call(this, label, editingDocument);
+        value:function (label, proxiedObject, exportId, editingDocument) {
+            var self = EditingProxy.init.call(this, label, proxiedObject, exportId, editingDocument);
 
             self._proxiedObject = proxiedObject;
             self._exportId = proxiedObject.blueprintInstanceModuleId;
@@ -80,24 +80,6 @@ exports.BlueprintProxy = Montage.create(EditingProxy, {
     packageRequire:{
         get:function () {
             return this.editingDocument.packageRequire;
-        }
-    },
-
-    getObjectProperty: {
-        value: function (property) {
-            return Montage.getPath.call(this.properties, property);
-        }
-    },
-
-    setObjectProperty: {
-        value: function (property, value) {
-            Montage.setPath.call(this.properties, property, value);
-        }
-    },
-
-    properties: {
-        get: function () {
-            return this._proxiedObject;
         }
     }
 

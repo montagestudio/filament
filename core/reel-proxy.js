@@ -105,19 +105,6 @@ exports.ReelProxy = Montage.create(EditingProxy, {
         }
     },
 
-    // Schematic Information
-    x: {
-        value: null
-    },
-
-    y: {
-        value: null
-    },
-
-    comment: {
-        value: null
-    },
-
     /**
      * The live object this editingProxy is representing
      * @note Edits made to the proxy are set on the live objects, this may not be the case forever
@@ -167,10 +154,8 @@ exports.ReelProxy = Montage.create(EditingProxy, {
 
             //TODO make sure that if the serialization specifically had no prototype, we don't go and write one in when saving
 
-            var self = EditingProxy.init.call(this, label, editingDocument);
+            var self = EditingProxy.init.call(this, label, serialization, exportId, editingDocument);
             self._exportId = exportId || serialization.prototype || serialization.object;
-
-            this._populateWithSerialization(serialization);
 
             return self;
         }
@@ -219,15 +204,6 @@ exports.ReelProxy = Montage.create(EditingProxy, {
         }
     },
 
-    /**
-     * The map of properties that should be applied to the object this proxy represents
-     */
-    properties: {
-        get: function () {
-            return this._properties;
-        }
-    },
-
     _bindings: {
         value: null
     },
@@ -251,24 +227,6 @@ exports.ReelProxy = Montage.create(EditingProxy, {
     listeners: {
         get: function () {
             return this._listeners;
-        }
-    },
-
-    setObjectProperty: {
-        value: function (property, value) {
-            this.properties.set(property, value);
-        }
-    },
-
-    getObjectProperty: {
-        value: function (property) {
-            return this.properties.get(property);
-        }
-    },
-
-    deleteObjectProperty: {
-        value: function (property) {
-            this.properties.delete(property);
         }
     },
 

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="schematics-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "schematics-cell"}
+            },
+            "bindings": {
+                "x": {"<->": "@owner.proxyObject.x"},
+                "y": {"<->": "@owner.proxyObject.y"},
+                "classList.has('SchematicsCell--owner')": {
+                    "<-": "@owner.proxyObject.label == 'owner'"
+                }
+            }
+        },
+
+        "proxyHeaderHandle": {
+            "prototype": "montage/ui/component",
+            "properties": {
+                "element": {"#": "proxyHeaderHandle"},
+                "hasTemplate": false
+            }
+        },
+
+        "translateComposer": {
+            "prototype": "montage/composer/translate-composer",
+            "properties": {
+                "component": {"@": "proxyHeaderHandle"},
+                "hasMomentum": false
+            },
+            "bindings": {
+                "pointerSpeedMultiplier": {"<-": "1/@owner.zoom"}
+            },
+            "listeners": [
+                {
+                    "type": "translateStart",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "translateEnd",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "translate",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "icon": {
+            "prototype": "matte/ui/image.reel",
+            "properties": {
+                "element": {"#": "icon"}
+            }
+        },
+
+        "proxyObjectLabel": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "proxyObjectLabel"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.proxyObject.label"}
+            }
+        },
+
+        "proxyObjectExportName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "proxyObjectExportName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.proxyObject.exportName"}
+            }
+        },
+
+        "commentCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "commentCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.proxyObject.comment"}
+            }
+        },
+
+        "proxyObjectComment": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "proxyObjectComment"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.proxyObject.comment"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <li data-montage-id="schematics-cell" class="SchematicsCell">
+        <header data-montage-id="proxyHeaderHandle" class="SchematicsCell-header">
+            <img data-montage-id="icon" class="SchematicsCell-icon" src="../../assets/img/library-icon.png">
+            <div class="SchematicsCell-header-flex">
+                <h3 data-montage-id="proxyObjectLabel" class="SchematicsCell-title"></h3>
+                <label data-montage-id="proxyObjectExportName" class="SchematicsCell-exportName"></label>
+            </div>
+            <i class="SchematicsCell-commentButton"></i>
+        </header>
+
+        <div data-montage-id="commentCondition">
+            <p data-montage-id="proxyObjectComment" class="SchematicsCell-comment"></p>
+        </div>
+        <div data-param="*"></div>
+    </li>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="schematics-container.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "schematics-container"},
+                "schematicsElement": {"#": "schematics"}
+            },
+            "bindings": {
+                "classList.has('shouldStartPanning')": {"<-": "@owner.shouldStartPanning"},
+                "classList.has('isPanning')": {"<-": "@owner.isPanning"},
+                "classList.has('error')": {"<-": "!!@owner.editingDocument.errors.length"}
+            }
+        },
+        
+
+        "panningComposer": {
+            "prototype": "montage/composer/translate-composer",
+            "properties": {
+                "component": {"@": "owner"},
+                "hasMomentum": false
+            },
+            "bindings": {
+                "pointerSpeedMultiplier": {"<-": "1/@owner.zoom"}
+            },
+            "listeners": [
+                {
+                    "type": "translateStart",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "translateEnd",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "translate",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "application": {
+            "prototype": "montage/core/application",
+            "listeners": [
+                {
+                    "type": "keyPress",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "keyRelease",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "panningKeyComposer": {
+            "prototype": "montage/composer/key-composer",
+            "properties": {
+                "keys": "space",
+                "identifier": "panningKeyComposer",
+                "component": {"@": "application"}
+            },
+            "listeners": [
+                {
+                    "type": "keyPress",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "keyRelease",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "zoomSlider": {
+            "prototype": "matte/ui/input-range.reel",
+            "properties": {
+                "element": {"#": "zoomSlider"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.zoomFactor"},
+                "min": {"<-": "@owner.minZoomFactor"},
+                "max": {"<-": "@owner.maxZoomFactor"}
+            }
+        },
+        
+        "decreaseZoomFactorButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "decreaseZoomFactorButton"},
+                "label": "-"
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+        
+        "clearZoomFactorButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "clearZoomFactorButton"}
+            },
+            "bindings": {
+                "label": {"<->": "@owner.roundedZoom + '×'"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+        
+        "increaseZoomFactorButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "increaseZoomFactorButton"},
+                "label": "+"
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+        
+        
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="schematics-container" class="SchematicsContainer">
+        <header class="SchematicsContainer-bar SchematicsContainerTools">
+            <span data-montage-id="zoomSlider" class="SchematicsContainerTools-zoomSlider"></span>
+            <div class="matte-ButtonGroup">
+                <button data-montage-id="decreaseZoomFactorButton" class="Button SchematicsContainerTools-button">-</button>
+                <button data-montage-id="clearZoomFactorButton" class="Button SchematicsContainerTools-button"></button>
+                <button data-montage-id="increaseZoomFactorButton" class="Button SchematicsContainerTools-button">+</button>
+            </div>
+        </header>
+        <section class="SchematicsContainer-viewport">
+            <div data-montage-id="schematics" data-param="*"></div>
+        </section>
+    </div>
+</body>
+</html>

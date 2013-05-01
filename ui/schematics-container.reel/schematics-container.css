@@ -1,0 +1,83 @@
+.SchematicsContainer {
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+}
+
+.SchematicsContainer.shouldStartPanning {
+    cursor: -webkit-grab;
+}
+
+.SchematicsContainer.isPanning {
+    cursor: -webkit-grabbing;
+}
+
+.SchematicsContainer.error .SchematicsContainer-viewport {
+    border-color: red;
+}
+
+/* Bar --------------------------------- */
+
+.SchematicsContainer-bar {
+    display: -webkit-flex;
+    -webkit-justify-content: space-between;
+    -webkit-align-items: center;
+    height: 34px;
+    border-radius: 4px 4px 0 0;
+    padding-bottom: 1px; /* Fixes vertical centering */
+    border-top: 1px solid hsla(0, 0%, 100%, 1);
+    background: -webkit-linear-gradient( hsl(0, 0%, 98%), hsl(0, 0%, 94%) );
+}
+
+/* Tools --------------------------------- */
+
+/* Zoom Slider */
+
+.SchematicsContainerTools .SchematicsContainerTools-zoomSlider {
+    -webkit-flex: 1 1 auto;
+    min-width: 0;
+    margin: 0 8px;
+    max-width: 200px;
+    height: 16px;
+    border-radius: 8px;
+    border-color: hsl(0, 0%, 74%);
+    box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, 0.1), 0 1px 0 hsla(0, 0%, 100%, .6);
+}
+
+.SchematicsContainerTools .SchematicsContainerTools-zoomSlider .matte-InputRange-thumb {
+    height: 16px;
+    margin: -8px 0 0 -1px;
+    border-color: hsl(0, 0%, 74%);
+    background-image: -webkit-linear-gradient(top, hsl(0, 0%, 98%), hsl(0, 0%, 90%) );
+    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, .8), inset 0 -1px 1px hsla(0, 0%, 0%, .04);
+}
+
+
+/* Zoom Button */
+
+.SchematicsContainerTools .matte-ButtonGroup {
+    display: -webkit-flex;
+    margin: 0 7px;
+    line-height: 0;
+}
+
+.SchematicsContainerTools .SchematicsContainerTools-button {
+    height: 20px;
+    font-size: 10px;
+}
+
+
+/* Viewport --------------------------------- */
+
+.SchematicsContainer-viewport {
+    -webkit-flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 0 0 4px 4px;
+    border: 1px solid hsl(0, 0%, 76%);
+    background: hsl(0, 0%, 80%);
+}
+
+.SchematicsContainer-list {
+    margin: 0;
+    padding: 6px;
+}

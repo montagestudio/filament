@@ -1,11 +1,10 @@
-var Montage = require("montage/core/core").Montage,
-    CoreExtension = require("filament-extension/core/extension").Extension,
-    defaultMenu = require("filament/ui/native-menu/menu").defaultMenu,
-    MenuItem = require("filament/ui/native-menu/menu-item").MenuItem,
-    Promise = require("montage/core/promise").Promise,
-    BlueprintDocument = require("core/blueprint-document").BlueprintDocument;
+var Montage = require("montage").Montage;
+var CoreExtension = require("filament-extension/core/extension").Extension;
+var defaultMenu = require("filament/ui/native-menu/menu").defaultMenu;
+var MenuItem = require("filament/ui/native-menu/menu-item").MenuItem;
+var Promise = require("montage/core/promise").Promise;
+var BlueprintDocument = require("core/blueprint-document").BlueprintDocument;
 var Blueprint = require("montage/core/meta/blueprint").Blueprint;
-
 
 var PARENT_MENU = "Tools";
 
@@ -14,7 +13,7 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
     editorFileMatchFunction:{
         enumerable:false,
         value:function (fileUrl) {
-            return (/blueprint\.json\/?$/).test(fileUrl);
+            return (/\.meta\/?$/).test(fileUrl);
         }
     },
 
