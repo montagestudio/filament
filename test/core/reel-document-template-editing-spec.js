@@ -74,6 +74,25 @@ describe("core/reel-document-headless-editing-spec", function () {
 
     });
 
+    describe("creating a node proxy for a new element", function () {
+
+        it("should create the node proxy with the expected element", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("div");
+                expect(nodeProxy).toBeTruthy();
+                expect(nodeProxy.tagName.toLowerCase()).toBe("div");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("must not consider the nodeProxy part of the template", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("div");
+                expect(nodeProxy.isInTemplate).toBeFalsy();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+    });
+
     describe("removing a non-component leaf node", function () {
 
         it("should remove the node from the template's DOM", function () {
@@ -189,6 +208,18 @@ describe("core/reel-document-headless-editing-spec", function () {
                 expect(reelDocument.templateNodes.indexOf(fooProxy)).toBe(-1);
                 expect(fooProxy.isInTemplate).toBeFalsy();
 
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+    });
+
+    describe("appending a non-component leaf node", function () {
+
+        it("should consider the nodeProxy as part of the template", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("p");
+                reelDocument.appendChildToTemplateNode(nodeProxy);
+                expect(nodeProxy.isInTemplate).toBeTruthy();
             }).timeout(WAITSFOR_TIMEOUT);
         });
 

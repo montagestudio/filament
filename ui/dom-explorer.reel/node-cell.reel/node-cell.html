@@ -74,6 +74,19 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
+
+        "appendNodeButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "appendNodeButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>
@@ -93,7 +106,7 @@
             <span data-montage-id="componentCondition" class="NodeCell-segment-item NodeCell-segment-item--component">
                 <strong data-montage-id="componentLabel" class="NodeCell-label"></strong>
             </span>
-            <button title="Append New Node As Last Child">⤸</button>
+            <button data-montage-id="appendNodeButton" title="Append New Node As Last Child">⤸</button>
         </span>
         <button title="Insert New Node After">⥅</button>
     </div>

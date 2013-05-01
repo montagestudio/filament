@@ -148,14 +148,15 @@ describe("core/reel-document-headless-editing-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
-        it("should remove the component's element from the htmlDocument of the editing document", function () {
+        it("should not remove the component's element from the htmlDocument of the editing document", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxyToRemove = reelDocument.editingProxyMap[labelInOwner],
                     removalPromise = reelDocument.removeObject(proxyToRemove);
 
                 return removalPromise.then(function () {
-                    var removedElement = reelDocument.htmlDocument.querySelector("[data-montage-id=foo]");
-                    expect(removedElement).toBeNull();
+                    var disconnectedElement = reelDocument.htmlDocument.querySelector("[data-montage-id=foo]");
+                    expect(disconnectedElement).toBeTruthy();
+                    expect(disconnectedElement).toBe(proxyToRemove.properties.get("element")._templateNode);
                 });
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -199,8 +200,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                     expect(addedProxy).toBeTruthy();
 
                     expect(addedProxy).not.toBe(proxyToRemove);
-
-                    expect(addedProxy.properties.get("element").getAttribute("data-montage-id")).toBe("foo");
+                    expect(addedProxy.properties.get("element")._templateNode.getAttribute("data-montage-id")).toBe("foo");
                     expect(addedProxy.exportId).toBe("ui/foo.reel");
                     expect(addedProxy.exportName).toBe("Foo");
                     expect(addedProxy.identifier).toBe(labelInOwner);

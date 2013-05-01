@@ -87,6 +87,16 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function (evt) {
             this.dispatchEventNamed("removeNode", true, true, this.nodeInfo);
         }
+    },
+
+    handleAppendNodeButtonAction: {
+        value: function (evt) {
+            //TODO prompt for tagName
+            this.dispatchEventNamed("appendNode", true, true, {
+                parentNode: this.nodeInfo,
+                tagName: "div"
+            });
+        }
     }
 
 });

@@ -29,6 +29,13 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         value: function (evt) {
             this.editingDocument.removeTemplateNode(evt.detail);
         }
+    },
+
+    handleAppendNode: {
+        value: function (evt) {
+            var newNode = this.editingDocument.createTemplateNode(evt.detail.tagName);
+            this.editingDocument.appendChildToTemplateNode(newNode, evt.detail.parentNode);
+        }
     }
 
 });
