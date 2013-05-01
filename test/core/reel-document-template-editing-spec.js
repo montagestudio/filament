@@ -119,6 +119,18 @@ describe("core/reel-document-headless-editing-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
+        it("should remove the node from the parent nodeProxy", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("removeMe");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+                var parentProxy = reelDocument.nodeProxyForNode(element.parentElement);
+
+                var removedNodeProxy = reelDocument.removeTemplateNode(nodeProxy);
+                expect(parentProxy.children.indexOf(removedNodeProxy)).toBe(-1);
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
     });
 
     describe("removing a component-associated leaf node", function () {

@@ -1162,12 +1162,14 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 this.templateNodes.splice(index, 1);
             }
 
-            //Mark as removed throughout editing Model
-            //TODO manage this with a binding?
-            nodeProxy.isInTemplate = false;
+            nodeProxy.parentNode.removeChild(nodeProxy);
 
+            //Remove children from EditingModel (temporary until this happens automatically)
             nodeProxy.children.forEach(function (childProxy) {
-                this.removeTemplateNode(childProxy);
+                index = this.templateNodes.indexOf(childProxy);
+                if (index >= 0) {
+                    this.templateNodes.splice(index, 1);
+                }
             }, this);
 
             return nodeProxy;

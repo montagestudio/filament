@@ -19,10 +19,13 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
             var children = this._templateNode.children,
                     childrenProxies = [],
                     iChildNode,
-                    i;
+                i,
+                childProxy;
 
             for (i = 0; (iChildNode = children.item(i)); i++) {
-                childrenProxies.push(NodeProxy.create().init(iChildNode, this._editingDocument));
+                childProxy = NodeProxy.create().init(iChildNode, this._editingDocument);
+                childrenProxies.push(childProxy);
+                childProxy.parentNode = this;
             }
 
             this.children = childrenProxies;
@@ -80,6 +83,20 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
             //TODO not actually update the underlying DOM live on edits?
             this._templateNode.appendChild(nodeProxy._templateNode);
             this.children.push(nodeProxy);
+            nodeProxy.parentNode = this;
+        }
+    },
+
+    removeChild: {
+        value: function (nodeProxy) {
+            //TODO ensure child is actually a child
+            var index = this.children.indexOf(nodeProxy);
+            if (index >= 0) {
+                this.children.splice(index, 1);
+            }
+
+            nodeProxy.parentNode = null;
+            return nodeProxy;
         }
     }
 
