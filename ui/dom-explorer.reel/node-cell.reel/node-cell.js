@@ -97,6 +97,16 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                 tagName: "div"
             });
         }
+    },
+
+    handleInsertBeforeNodeButtonAction: {
+        value: function (evt) {
+            //TODO prompt for tagName
+            this.dispatchEventNamed("insertBeforeNode", true, true, {
+                nextSibling: this.nodeInfo,
+                tagName: "div"
+            });
+        }
     }
 
 });
