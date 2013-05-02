@@ -1,5 +1,5 @@
 /**
-    @module "./binding-explorer.reel"
+    @module "./connection-explorer.reel"
     @requires montage
     @requires montage/ui/component
 */
@@ -10,10 +10,10 @@ var Montage = require("montage").Montage,
 
 /**
     Description TODO
-    @class module:"./binding-explorer.reel".BindingExplorer
+    @class module:"./connection-explorer.reel".ConnectionExplorer
     @extends module:montage/ui/component.Component
 */
-exports.BindingExplorer = Montage.create(Component, /** @lends module:"./binding-explorer.reel".BindingExplorer# */ {
+exports.ConnectionExplorer = Montage.create(Component, /** @lends module:"./connection-explorer.reel".ConnectionExplorer# */ {
 
     didCreate: {
         value: function () {

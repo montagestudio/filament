@@ -2,12 +2,12 @@
 <html>
 <head>
     <title></title>
-    <link rel="stylesheet" type="text/css" href="binding-explorer.css">
+    <link rel="stylesheet" type="text/css" href="connection-explorer.css">
     <script type="text/montage-serialization">
     {
         "owner": {
             "properties": {
-                "element": {"#": "binding-explorer"}
+                "element": {"#": "connection-explorer"}
             },
             "listeners": [
                 {
@@ -93,19 +93,19 @@
     </script>
 </head>
 <body>
-    <div data-montage-id="binding-explorer" class="BindingExplorer">
+    <div data-montage-id="connection-explorer" class="ConnectionExplorer">
 
         <div data-montage-id="bindingCreatorCondition">
             <div data-montage-id="bindingCreator"></div>
         </div>
 
-        <ul data-montage-id="objectList" class="BindingExplorer-objectList">
-            <li class="BindingExplorer-objectList-item">
-                <span data-montage-id="objectLabel" class="BindingExplorer-objectLabel"></span>
-                <ul data-montage-id="bindingList" class="BindingExplorer-bindingList">
+        <ul data-montage-id="objectList" class="ConnectionExplorer-objectList">
+            <li class="ConnectionExplorer-objectList-item">
+                <span data-montage-id="objectLabel" class="ConnectionExplorer-objectLabel"></span>
+                <ul data-montage-id="bindingList" class="ConnectionExplorer-bindingList">
                     <li data-montage-id="bindingEntry"></li>
                 </ul>
-                <button data-montage-id="addButton" class="BindingExplorer-addButton">+</button>
+                <button data-montage-id="addButton" class="ConnectionExplorer-addButton">+</button>
             </li>
         </ul>
     </div>

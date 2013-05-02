@@ -75,10 +75,10 @@
                 }
             },
 
-            "bindingExplorer": {
-                "prototype": "ui/binding-explorer.reel",
+            "connectionExplorer": {
+                "prototype": "ui/connection-explorer.reel",
                 "properties": {
-                    "element": {"#": "bindingExplorer"}
+                    "element": {"#": "connectionExplorer"}
                 },
                 "bindings": {
                     "templateObjectsController": {"<-": "@owner.templateObjectsController"},
@@ -103,7 +103,7 @@
                     "element": {"#": "bindingSplit"},
                     "splitAxis": "horizontal",
                     "containerElement": {"#": "templateExplorerColumn"},
-                    "controlledComponent": {"@": "bindingExplorer"}
+                    "controlledComponent": {"@": "connectionExplorer"}
                 }
             },
 
@@ -127,7 +127,7 @@
         <section data-montage-id="templateExplorerColumn" class="ComponentEditor-column palette">
             <div data-montage-id="templateExplorer" class="ComponentEditor-column-fill"></div>
             <div data-montage-id="bindingSplit"></div>
-            <footer data-montage-id="bindingExplorer" class="ComponentEditor-column-fixed palette"></footer>
+            <footer data-montage-id="connectionExplorer" class="ComponentEditor-column-fixed palette"></footer>
         </section>
         <section data-montage-id="documentEditorExplorerColumn" class="ComponentEditor-column">
             <div data-montage-id="documentEditorSlot" class="ComponentEditor-column-fill documentEditorSlot"></div>
