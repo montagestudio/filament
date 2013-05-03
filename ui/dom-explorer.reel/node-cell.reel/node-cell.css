@@ -42,8 +42,12 @@
 
 /* Buttons ---------------------------- */
 
+.NodeCell:hover .NodeCell-button {
+    display: inline-block;
+}
+
 .NodeCell .NodeCell-button {
-    -webkit-align-self: flex-end;
+    display: none;    
     width: 22px;
     height: 22px;
     min-width: 22px;
