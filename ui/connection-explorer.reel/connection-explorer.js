@@ -107,6 +107,24 @@ exports.ConnectionExplorer = Montage.create(Component, /** @lends module:"./conn
             }
             //TODO reveal the creator
         }
-    }
+    },
+
+    handleAddListenerButtonAction: {
+        value: function (evt) {
+            var listenerModel = Object.create(null);
+            listenerModel.targetObject = evt.detail.get("targetObject");
+            listenerModel.useCapture = false;
+            this.templateObjects.listenerCreator.listenerModel = listenerModel;
+        }
+    },
+
+    handleRemoveListenerButtonAction: {
+        value: function (evt) {
+            evt.stop();
+            var targetObject = evt.detail.get("targetObject");
+            var listener = evt.detail.get("listener");
+            this.editingDocument.removeOwnedObjectEventListener(targetObject, listener);
+        }
+    },
 
 });

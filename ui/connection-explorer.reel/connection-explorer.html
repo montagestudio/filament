@@ -88,6 +88,59 @@
             "bindings": {
                 "editingDocument": {"<-": "@owner.editingDocument"}
             }
+        },
+
+        "listenerList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "listenerList"}
+            },
+            "bindings": {
+                "content": {"<-": "@objectList.objectAtCurrentIteration.listeners"},
+                "targetObject": {"<-": "@objectList.objectAtCurrentIteration"}
+            }
+        },
+
+        "listenerEntry": {
+            "prototype": "./listener-entry.reel",
+            "properties": {
+                "element": {"#": "listenerEntry"}
+            },
+            "bindings": {
+                "targetObject": {"<-": "@listenerList.targetObject"},
+                "listenerInfo": {"<-": "@listenerList.objectAtCurrentIteration"}
+            }
+        },
+
+        "addListenerButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "addListenerButton"}
+            },
+            "bindings": {
+                "detail.get('targetObject')": {"<-": "@objectList.objectAtCurrentIteration"}
+            }
+        },
+
+        "listenerCreatorCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "listenerCreatorCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@listenerCreator.listenerModel"}
+            }
+        },
+
+        "listenerCreator": {
+            "prototype": "ui/listener-jig.reel",
+            "properties": {
+                "element": {"#": "listenerCreator"}
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"}
+            }
         }
     }
     </script>
@@ -99,13 +152,28 @@
             <div data-montage-id="bindingCreator"></div>
         </div>
 
+        <div data-montage-id="listenerCreatorCondition">
+            <div data-montage-id="listenerCreator"></div>
+        </div>
+
         <ul data-montage-id="objectList" class="ConnectionExplorer-objectList">
             <li class="ConnectionExplorer-objectList-item">
                 <span data-montage-id="objectLabel" class="ConnectionExplorer-objectLabel"></span>
-                <ul data-montage-id="bindingList" class="ConnectionExplorer-bindingList">
-                    <li data-montage-id="bindingEntry"></li>
-                </ul>
-                <button data-montage-id="addButton" class="ConnectionExplorer-addButton">+</button>
+                    <section>
+                        <h2>Bindings</h2>
+                        <ul data-montage-id="bindingList" class="ConnectionExplorer-bindingList">
+                            <li data-montage-id="bindingEntry"></li>
+                        </ul>
+                        <button data-montage-id="addButton" class="ConnectionExplorer-addButton">+</button>
+                    </section>
+                    <section>
+                        <h2>Listeners</h2>
+                        <ul data-montage-id="listenerList">
+                            <li data-montage-id="listenerEntry"></li>
+                        </ul>
+                        <button data-montage-id="addListenerButton" class="ConnectionExplorer-addButton">+</button>
+                    </section>
+                </div>
             </li>
         </ul>
     </div>

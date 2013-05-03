@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="listener-entry.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "listener-entry"}
+            }
+        },
+
+        "eventType": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "eventType"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.listenerInfo.type"}
+            }
+        },
+
+        "listener": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "listener"}
+            },
+            "bindings": {
+                "value": {"<-": "'@' + @owner.listenerInfo.listener.label"}
+            }
+        },
+
+        "phase": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "phase"}
+            },
+            "bindings": {
+                "value": {"<-": "!!@owner.listenerInfo.useCapture ? 'Capture' : 'Bubble'"}
+            }
+        },
+
+        "removeListenerButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "removeButton"}
+            },
+            "bindings": {
+                "detail.get('listener')": {"<-": "@owner.listenerInfo"},
+                "detail.get('targetObject')": {"<-": "@owner.targetObject"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="listener-entry" class="ListenerEntry">
+        <span data-montage-id="eventType"></span>
+        <span data-montage-id="listener"></span>
+        <span data-montage-id="phase"></span>
+        <button data-montage-id="removeButton">-</button>
+    </div>
+</body>
+</html>
