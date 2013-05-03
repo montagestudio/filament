@@ -24,6 +24,18 @@ exports.Indent = Montage.create(Component, {
         }
     },
 
+    iteration: {
+        value: null
+    },
+
+    depth: {
+        value: 0
+    },
+
+    object: {
+        value: null
+    },
+
     indentValue: {
         value: 20
     },
