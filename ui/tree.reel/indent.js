@@ -24,9 +24,17 @@ exports.Indent = Montage.create(Component, {
         }
     },
 
+    indentValue: {
+        value: 20
+    },
+
+    indentUnit: {
+        value: "px"
+    },
+
     draw: {
         value: function () {
-            this.element.style.paddingLeft = (20 * this.depth) + 'px';
+            this.element.style.paddingLeft = (this.indentValue * this.depth) + this.indentUnit;
         }
     }
 
