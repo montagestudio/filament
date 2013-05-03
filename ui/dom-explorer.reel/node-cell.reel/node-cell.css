@@ -37,3 +37,69 @@
     border-left: 1px solid hsl(210, 100%, 84%);
     background: hsl(210, 100%, 90%);
 }
+
+
+
+/* Buttons ---------------------------- */
+
+.NodeCell .NodeCell-button {
+    -webkit-align-self: flex-end;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    margin: 0;
+    padding: 0;
+    line-height: 0;
+    font-size: 12px;
+    color: hsl(0,0%,60%);
+    text-shadow: 0 1px hsla(0,0%,100%,0.4);
+    border-radius: 11px;
+    border-color: hsl(0,0%,80%);
+    background: -webkit-linear-gradient( hsl(120,0%,96%), hsl(120,0%,86%) );
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,.6), 0 1px 2px hsla(0,0%,0%,.06);
+}
+
+.NodeCell .NodeCell-button:hover {
+    border-color: hsl(0,0%,76%);
+    background: -webkit-linear-gradient( hsl(120,0%,97%), hsl(120,0%,88%) );
+}
+
+.NodeCell .NodeCell-button.active {
+    background: hsl(0,0%,84%);
+    box-shadow: 0 1px 2px hsla(0,0%,0%,.06);
+}
+
+
+/* Icons ---------------------------- */
+
+.NodeCell-button-icon {
+    display: inline-block;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 20px;
+}
+
+.NodeCell-button-icon--before {
+    background-image: url(../../../assets/icons/dom-before.png);
+}
+
+.NodeCell-button-icon--child {
+    background-image: url(../../../assets/icons/dom-child.png);
+}
+
+.NodeCell-button-icon--after {
+    background-image: url(../../../assets/icons/dom-after.png);
+}
+
+
+.NodeCell .NodeCell-button--remove {
+    color: hsl(0,0%,60%);
+    border-color: hsl(0,0%,90%);
+    background: transparent;
+    box-shadow: none;
+}
+
+
