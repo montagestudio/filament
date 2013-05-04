@@ -5,20 +5,20 @@
  * @requires composer/translate-composer
  */
 var Montage = require("montage").Montage,
-    AbstractInputRange = require("montage/ui/base/abstract-input-range").AbstractInputRange;
+    AbstractSlider = require("montage/ui/base/abstract-slider").AbstractSlider;
 
 /**
  * @class SplitControl
- * @extends AbstractInputRange
+ * @extends AbstractSlider
  */
-exports.SplitControl = Montage.create(AbstractInputRange, /** @lends SplitControl# */ {
+exports.SplitControl = Montage.create(AbstractSlider, /** @lends SplitControl# */ {
     
     
 
     // Lifecycle
     didCreate: {
         value: function () {
-            AbstractInputRange.didCreate.apply(this, arguments);
+            AbstractSlider.didCreate.apply(this, arguments);
             this.addOwnPropertyChangeListener("splitAxis", this);
             this.axis = "horizontal";
             window.addEventListener("resize", this, false);
@@ -27,7 +27,7 @@ exports.SplitControl = Montage.create(AbstractInputRange, /** @lends SplitContro
 
     enterDocument: {
         value: function (firstTime) {
-            AbstractInputRange.enterDocument.apply(this, arguments);
+            AbstractSlider.enterDocument.apply(this, arguments);
             if (firstTime) {
                 this.defineBinding("axis",
                     {"<-": "splitAxis == 'horizontal' ? 'vertical' : 'horizontal'", source: this});
@@ -36,7 +36,7 @@ exports.SplitControl = Montage.create(AbstractInputRange, /** @lends SplitContro
         }
     },
     
-    // AbstractInputRange overides
+    // AbstractSlider overides
     
     _calculateSliderMagnitude: {
         value: function() {
@@ -61,13 +61,13 @@ exports.SplitControl = Montage.create(AbstractInputRange, /** @lends SplitContro
             if(this.controlledComponent) {
                 this.controlledComponent.classList.add("Panel--noAnimation");
             }
-            AbstractInputRange.handleThumbTranslateStart.apply(this, arguments);
+            AbstractSlider.handleThumbTranslateStart.apply(this, arguments);
         }
     },
 
     handleThumbTranslate: {
         value: function (event) {
-            AbstractInputRange.handleThumbTranslate.apply(this, arguments);
+            AbstractSlider.handleThumbTranslate.apply(this, arguments);
         }
     },
 
@@ -77,7 +77,7 @@ exports.SplitControl = Montage.create(AbstractInputRange, /** @lends SplitContro
             if(this.controlledComponent) {
                 this.controlledComponent.classList.remove("Panel--noAnimation");
             }
-            AbstractInputRange.handleThumbTranslateEnd.apply(this, arguments);
+            AbstractSlider.handleThumbTranslateEnd.apply(this, arguments);
         }
     },
 
