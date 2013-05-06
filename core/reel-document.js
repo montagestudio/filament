@@ -1208,6 +1208,13 @@ exports.ReelDocument = Montage.create(EditingDocument, {
         }
     },
 
+    canAppendToTemplateNode: {
+        value: function (nodeProxy) {
+            var isBody = "body" === nodeProxy.tagName.toLowerCase();
+            return !isBody;
+        }
+    },
+
     /**
      * Append the specified nodeProxy to the template
      *
@@ -1218,6 +1225,11 @@ exports.ReelDocument = Montage.create(EditingDocument, {
      */
     appendChildToTemplateNode: {
         value: function (nodeProxy, parentNodeProxy) {
+
+            if (parentNodeProxy && !this.canAppendToTemplateNode(parentNodeProxy)) {
+                return;
+            }
+
             parentNodeProxy = parentNodeProxy || this._ownerElement;
 
             parentNodeProxy.appendChild(nodeProxy);

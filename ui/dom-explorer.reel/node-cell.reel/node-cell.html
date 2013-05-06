@@ -87,6 +87,17 @@
             ]
         },
 
+        "canAppendNodeCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "canAppendNodeCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.nodeInfo.canAppendToNode"}
+            }
+        },
+
         "appendNodeButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {
@@ -154,10 +165,12 @@
         <button data-montage-id="insertAfterNodeButton"
             class="NodeCell-button NodeCell-button--after"
             title="Insert new node after"><i class="NodeCell-button-icon NodeCell-button-icon--after"></i></button>
-        
+
+        <span data-montage-id="canAppendNodeCondition">
         <button data-montage-id="appendNodeButton"
             class="NodeCell-button NodeCell-button--child"
             title="Append new node as last child"><i class="NodeCell-button-icon NodeCell-button-icon--child"></i></button>
+        </span>
         
     </div>
 </body>

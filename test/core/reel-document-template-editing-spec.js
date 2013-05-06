@@ -261,6 +261,18 @@ describe("core/reel-document-headless-editing-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
+        it("must not allow appending to the body element", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("p");
+
+                var bodyElement = reelDocument.htmlDocument.getElementsByTagName("body")[0];
+                var bodyProxy = reelDocument.nodeProxyForNode(bodyElement);
+
+                reelDocument.appendChildToTemplateNode(nodeProxy, bodyProxy);
+                expect(nodeProxy.isInTemplate).toBeFalsy();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
     });
 
     describe("inserting a non-component leaf node before another node", function () {

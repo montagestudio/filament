@@ -86,6 +86,12 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
         }
     },
 
+    canAppendToNode: {
+        get: function () {
+            return this._editingDocument.canAppendToTemplateNode(this);
+        }
+    },
+
     component: {
         get: function () {
             //TODO cache this and listen to see if it changes
