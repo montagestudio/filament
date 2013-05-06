@@ -50,7 +50,7 @@ describe("core/reel-document-headless-editing-spec", function () {
             "bar": {
                 "prototype": "bar-exportId"
             }
-        }, '<div data-montage-id="ownerElement"><section id="removeSubTree"><p id="removeMe"></p><div id="foo" data-montage-id="foo"></div></section></div>');
+        }, '<div id="ownerElement" data-montage-id="ownerElement"><section id="removeSubTree"><p id="removeMe"></p><div id="foo" data-montage-id="foo"></div></section></div>');
     });
 
     describe("finding a node proxy for a node", function () {
@@ -172,6 +172,32 @@ describe("core/reel-document-headless-editing-spec", function () {
     });
 
     describe("removing a subtree", function () {
+
+        it("must not allow removing the body element", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementsByTagName("body")[0];
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                var removedNodeProxy = reelDocument.removeTemplateNode(nodeProxy);
+                expect(reelDocument.htmlDocument.getElementsByTagName("body")[0]).toBe(element);
+                expect(reelDocument.htmlDocument.getElementById("removeSubTree")).toBeTruthy();
+                expect(reelDocument.htmlDocument.getElementById("removeMe")).toBeTruthy();
+                expect(reelDocument.htmlDocument.getElementById("foo")).toBeTruthy();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("must not allow removing the owner's element", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("ownerElement");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                var removedNodeProxy = reelDocument.removeTemplateNode(nodeProxy);
+                expect(reelDocument.htmlDocument.getElementById("ownerElement")).toBe(element);
+                expect(reelDocument.htmlDocument.getElementById("removeSubTree")).toBeTruthy();
+                expect(reelDocument.htmlDocument.getElementById("removeMe")).toBeTruthy();
+                expect(reelDocument.htmlDocument.getElementById("foo")).toBeTruthy();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
 
         it("should remove the subtree root and all children from the template's DOM", function () {
             return reelDocumentPromise.then(function (reelDocument) {

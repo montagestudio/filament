@@ -1152,6 +1152,13 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
     removeTemplateNode: {
         value: function (nodeProxy) {
+
+            // Don't allow removing the body or the owner's element
+            if ("body" === nodeProxy.tagName.toLowerCase() ||
+                (nodeProxy.component && "owner" === nodeProxy.component.label)) {
+                return;
+            }
+
             //Remove from template DOM
             var node = nodeProxy._templateNode;
             node.parentElement.removeChild(node);
