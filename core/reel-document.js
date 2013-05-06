@@ -1238,6 +1238,15 @@ exports.ReelDocument = Montage.create(EditingDocument, {
         }
     },
 
+    canInsertBeforeTemplateNode: {
+        value: function (nodeProxy) {
+            var isBody = "body" === nodeProxy.tagName.toLowerCase(),
+                isOwner = !!(nodeProxy.component && "owner" === nodeProxy.component.label);
+
+            return !(isBody || isOwner);
+        }
+    },
+
     /**
      * Insert the specified nodeProxy before the specified sibling proxy
      *
@@ -1247,10 +1256,24 @@ exports.ReelDocument = Montage.create(EditingDocument, {
      */
     insertNodeBeforeTemplateNode: {
         value: function (nodeProxy, nextSiblingProxy) {
+
+            if (!this.canInsertBeforeTemplateNode(nextSiblingProxy)) {
+                return;
+            }
+
             var parentProxy = nextSiblingProxy.parentNode;
             parentProxy.insertBefore(nodeProxy, nextSiblingProxy);
             this.__addNodeProxy(nodeProxy);
             return nodeProxy;
+        }
+    },
+
+    canInsertAfterTemplateNode: {
+        value: function (nodeProxy) {
+            var isBody = "body" === nodeProxy.tagName.toLowerCase(),
+                isOwner = !!(nodeProxy.component && "owner" === nodeProxy.component.label);
+
+            return !(isBody || isOwner);
         }
     },
 
@@ -1263,6 +1286,11 @@ exports.ReelDocument = Montage.create(EditingDocument, {
      */
     insertNodeAfterTemplateNode: {
         value: function (nodeProxy, previousSiblingProxy) {
+
+            if (!this.canInsertAfterTemplateNode(previousSiblingProxy)) {
+                return;
+            }
+
             var parentProxy = previousSiblingProxy.parentNode;
             parentProxy.insertBefore(nodeProxy, previousSiblingProxy.nextSibling);
             this.__addNodeProxy(nodeProxy);

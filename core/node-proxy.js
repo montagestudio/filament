@@ -92,6 +92,18 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
         }
     },
 
+    canInsertBeforeNode: {
+        get: function () {
+            return this._editingDocument.canInsertBeforeTemplateNode(this);
+        }
+    },
+
+    canInsertAfterNode: {
+        get: function () {
+            return this._editingDocument.canInsertAfterTemplateNode(this);
+        }
+    },
+
     component: {
         get: function () {
             //TODO cache this and listen to see if it changes

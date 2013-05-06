@@ -111,6 +111,17 @@
             ]
         },
 
+        "canInsertBeforeNodeCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "canInsertBeforeNodeCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.nodeInfo.canInsertBeforeNode"}
+            }
+        },
+
         "insertBeforeNodeButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {
@@ -122,6 +133,17 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
+
+        "canInsertAfterNodeCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "canInsertAfterNodeCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.nodeInfo.canInsertAfterNode"}
+            }
         },
 
         "insertAfterNodeButton": {
@@ -157,19 +179,23 @@
         <span data-montage-id="canRemoveNodeCondition">
             <button data-montage-id="removeNodeButton" class="NodeCell-removeButton" title="Remove node">-</button>
         </span>
-        
-        <button data-montage-id="insertBeforeNodeButton" 
-            class="NodeCell-button NodeCell-button--before" 
-            title="Insert new node before"><i class="NodeCell-button-icon NodeCell-button-icon--before"></i></button>
-        
-        <button data-montage-id="insertAfterNodeButton"
-            class="NodeCell-button NodeCell-button--after"
-            title="Insert new node after"><i class="NodeCell-button-icon NodeCell-button-icon--after"></i></button>
+
+        <span data-montage-id="canInsertBeforeNodeCondition">
+            <button data-montage-id="insertBeforeNodeButton"
+                class="NodeCell-button NodeCell-button--before"
+                title="Insert new node before"><i class="NodeCell-button-icon NodeCell-button-icon--before"></i></button>
+        </span>
+
+        <span data-montage-id="canInsertAfterNodeCondition">
+            <button data-montage-id="insertAfterNodeButton"
+                class="NodeCell-button NodeCell-button--after"
+                title="Insert new node after"><i class="NodeCell-button-icon NodeCell-button-icon--after"></i></button>
+        </span>
 
         <span data-montage-id="canAppendNodeCondition">
-        <button data-montage-id="appendNodeButton"
-            class="NodeCell-button NodeCell-button--child"
-            title="Append new node as last child"><i class="NodeCell-button-icon NodeCell-button-icon--child"></i></button>
+            <button data-montage-id="appendNodeButton"
+                class="NodeCell-button NodeCell-button--child"
+                title="Append new node as last child"><i class="NodeCell-button-icon NodeCell-button-icon--child"></i></button>
         </span>
         
     </div>

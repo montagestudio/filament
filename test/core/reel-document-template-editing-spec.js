@@ -277,6 +277,30 @@ describe("core/reel-document-headless-editing-spec", function () {
 
     describe("inserting a non-component leaf node before another node", function () {
 
+        it("must not allow inserting before the body element", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("p");
+
+                var bodyElement = reelDocument.htmlDocument.getElementsByTagName("body")[0];
+                var bodyProxy = reelDocument.nodeProxyForNode(bodyElement);
+
+                reelDocument.insertNodeBeforeTemplateNode(nodeProxy, bodyProxy);
+                expect(nodeProxy.isInTemplate).toBeFalsy();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("must not allow inserting before the owner element", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("p");
+
+                var ownerElement = reelDocument.htmlDocument.getElementById("ownerElement");
+                var ownerNodeProxy = reelDocument.nodeProxyForNode(ownerElement);
+
+                reelDocument.insertNodeBeforeTemplateNode(nodeProxy, ownerNodeProxy);
+                expect(nodeProxy.isInTemplate).toBeFalsy();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
         it("should consider the nodeProxy as part of the template", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var nodeProxy = reelDocument.createTemplateNode("p");
@@ -304,6 +328,30 @@ describe("core/reel-document-headless-editing-spec", function () {
     });
 
     describe("inserting a non-component leaf node after another node", function () {
+
+        it("must not allow inserting after the body element", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("p");
+
+                var bodyElement = reelDocument.htmlDocument.getElementsByTagName("body")[0];
+                var bodyProxy = reelDocument.nodeProxyForNode(bodyElement);
+
+                reelDocument.insertNodeAfterTemplateNode(nodeProxy, bodyProxy);
+                expect(nodeProxy.isInTemplate).toBeFalsy();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("must not allow inserting after the owner element", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("p");
+
+                var ownerElement = reelDocument.htmlDocument.getElementById("ownerElement");
+                var ownerNodeProxy = reelDocument.nodeProxyForNode(ownerElement);
+
+                reelDocument.insertNodeAfterTemplateNode(nodeProxy, ownerNodeProxy);
+                expect(nodeProxy.isInTemplate).toBeFalsy();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
 
         it("should consider the nodeProxy as part of the template", function () {
             return reelDocumentPromise.then(function (reelDocument) {
