@@ -13,7 +13,6 @@ exports.ObjectLabelConverter = Montage.create(Converter, {
 
     convert: {
         value: function (object) {
-            console.log("convert object", object);
             var value;
             if (object) {
                 value = "@" + object.label;
