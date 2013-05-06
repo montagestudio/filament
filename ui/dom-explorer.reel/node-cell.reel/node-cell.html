@@ -120,14 +120,6 @@
 <body>
     <div data-montage-id="node-cell" class="NodeCell">
         
-        <button data-montage-id="insertBeforeNodeButton" 
-            class="NodeCell-button" 
-            title="Insert New Node Before"><i class="NodeCell-button-icon NodeCell-button-icon--before"></i></button>
-            
-        <button data-montage-id="appendNodeButton"
-            class="NodeCell-button"
-            title="Append New Node As Last Child"><i class="NodeCell-button-icon NodeCell-button-icon--child"></i></button>
-        
         <span class="NodeCell-segment">
             <span data-montage-id="tagName" class="NodeCell-segment-item NodeCell-segment-item--tag"></span>
 
@@ -140,13 +132,20 @@
             </span>
         </span>
         
-        <button data-montage-id="removeNodeButton"
-            class="NodeCell-button NodeCell-button--remove"
-            title="Remove Node">-</button>
+        <button data-montage-id="removeNodeButton" class="NodeCell-removeButton" title="Remove Node">-</button>
+        
+        <button data-montage-id="insertBeforeNodeButton" 
+            class="NodeCell-button NodeCell-button--before" 
+            title="Insert New Node Before"><i class="NodeCell-button-icon NodeCell-button-icon--before"></i></button>
         
         <button data-montage-id="insertAfterNodeButton"
-            class="NodeCell-button"
+            class="NodeCell-button NodeCell-button--after"
             title="Insert New Node After"><i class="NodeCell-button-icon NodeCell-button-icon--after"></i></button>
+        
+        <button data-montage-id="appendNodeButton"
+            class="NodeCell-button NodeCell-button--child"
+            title="Append New Node As Last Child"><i class="NodeCell-button-icon NodeCell-button-icon--child"></i></button>
+        
     </div>
 </body>
 </html>

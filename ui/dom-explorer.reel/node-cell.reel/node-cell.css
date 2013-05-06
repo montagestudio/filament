@@ -1,5 +1,10 @@
 .NodeCell {
+    position: relative;
     background: hsl(0,0%,96%);
+}
+
+.NodeCell:hover .NodeCell-segment {
+    background: hsl(0,0%,86%);
 }
 
 .NodeCell-segment {
@@ -39,15 +44,14 @@
 }
 
 
+/* Remove Button ---------------------------- */
 
-/* Buttons ---------------------------- */
+.NodeCell:hover .NodeCell-removeButton {
+    visibility: visible;
+}   
 
-.NodeCell:hover .NodeCell-button {
-    display: inline-block;
-}
-
-.NodeCell .NodeCell-button {
-    display: none;    
+.NodeCell .NodeCell-removeButton {
+    visibility: hidden;
     width: 22px;
     height: 22px;
     min-width: 22px;
@@ -58,52 +62,77 @@
     color: hsl(0,0%,60%);
     text-shadow: 0 1px hsla(0,0%,100%,0.4);
     border-radius: 11px;
-    border-color: hsl(0,0%,80%);
-    background: -webkit-linear-gradient( hsl(120,0%,96%), hsl(120,0%,86%) );
-    box-shadow: inset 0 1px 0 hsla(0,0%,100%,.6), 0 1px 2px hsla(0,0%,0%,.06);
+    border: 1px solid hsl(0,0%,90%);
+    background: transparent;
 }
 
-.NodeCell .NodeCell-button:hover {
+.NodeCell .NodeCell-removeButton:hover {
     border-color: hsl(0,0%,76%);
     background: -webkit-linear-gradient( hsl(120,0%,97%), hsl(120,0%,88%) );
 }
 
-.NodeCell .NodeCell-button.active {
+.NodeCell .NodeCell-removeButton.active {
     background: hsl(0,0%,84%);
     box-shadow: 0 1px 2px hsla(0,0%,0%,.06);
 }
 
 
+
+/* Add Buttons ---------------------------- */
+
+.NodeCell .NodeCell-button:hover {
+    background: transparent;
+    opacity: 1;
+}
+
+.NodeCell .NodeCell-button {
+    opacity: 0;
+    position: absolute;
+    width: 200px;
+    height: 12px;
+    border-radius: 0;
+    border: none;
+    background: transparent;
+}
+
+.NodeCell .NodeCell-button--before {
+    left: 4px;
+    top: -6px;
+    z-index: 1;
+}
+
+.NodeCell .NodeCell-button--after {
+    left: 4px;
+    top: 20px;
+    z-index: 2;
+}
+
+.NodeCell .NodeCell-button--child {
+    left: 24px;
+    top: 20px;
+    z-index: 3;
+}
+
 /* Icons ---------------------------- */
 
 .NodeCell-button-icon {
-    display: inline-block;
-    vertical-align: middle;
-    width: 20px;
-    height: 20px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;    
+    width: 12px;
+    height: 12px;
+    box-sizing: border-box;
+    border-radius: 6px;
+    background: hsl(208,100%,50%) url(../../../assets/icons/dom-add.png) no-repeat center;
+    background-size: 12px;
 }
 
-.NodeCell-button-icon--before {
-    background-image: url(../../../assets/icons/dom-before.png);
+.NodeCell-button-icon:after {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 5px;
+    width: 180px;
+    height: 2px;
+    background: -webkit-linear-gradient(left, hsl(208,100%,50%), hsla(208,100%,50%,0) );
 }
-
-.NodeCell-button-icon--child {
-    background-image: url(../../../assets/icons/dom-child.png);
-}
-
-.NodeCell-button-icon--after {
-    background-image: url(../../../assets/icons/dom-after.png);
-}
-
-
-.NodeCell .NodeCell-button--remove {
-    color: hsl(0,0%,60%);
-    border-color: hsl(0,0%,90%);
-    background: transparent;
-    box-shadow: none;
-}
-
-
