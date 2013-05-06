@@ -1150,12 +1150,20 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
     //Template Node Editing API
 
+    canRemoveTemplateNode: {
+        value: function (nodeProxy) {
+            var isBody = "body" === nodeProxy.tagName.toLowerCase(),
+                isOwner = !!(nodeProxy.component && "owner" === nodeProxy.component.label);
+
+            return !(isBody || isOwner);
+        }
+    },
+
     removeTemplateNode: {
         value: function (nodeProxy) {
 
             // Don't allow removing the body or the owner's element
-            if ("body" === nodeProxy.tagName.toLowerCase() ||
-                (nodeProxy.component && "owner" === nodeProxy.component.label)) {
+            if (!this.canRemoveTemplateNode(nodeProxy)) {
                 return;
             }
 

@@ -79,6 +79,13 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
         }
     },
 
+    //TODO make react to changes in underlying computed function…not sure how to do that without knowing underlying implementation
+    canRemoveNode: {
+        get: function () {
+            return this._editingDocument.canRemoveTemplateNode(this);
+        }
+    },
+
     component: {
         get: function () {
             //TODO cache this and listen to see if it changes
