@@ -18,10 +18,18 @@
             }
         },
 
+        "templateHeaderHandle": {
+            "prototype": "montage/ui/component",
+            "properties": {
+                "element": {"#": "templateHeaderHandle"},
+                "hasTemplate": false
+            }
+        },
+
         "translateComposer": {
             "prototype": "montage/composer/translate-composer",
             "properties": {
-                "component": {"@": "templateObjectLabel"},
+                "component": {"@": "templateHeaderHandle"},
                 "hasMomentum": false
             },
             "bindings": {
@@ -178,7 +186,7 @@
 </head>
 <body>
     <li data-montage-id="template-object-cell" class="TemplateObjectCell">
-        <header class="TemplateObjectCell-header">
+        <header data-montage-id="templateHeaderHandle" class="TemplateObjectCell-header">
             <img data-montage-id="icon" class="TemplateObjectCell-icon" src="../../../assets/img/library-icon.png">
             <div class="TemplateObjectCell-header-flex">
                 <h3 data-montage-id="templateObjectLabel" class="TemplateObjectCell-title"></h3>
