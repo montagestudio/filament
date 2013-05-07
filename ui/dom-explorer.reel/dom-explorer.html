@@ -8,7 +8,8 @@
         "owner": {
             "properties": {
                 "element": {"#": "dom-explorer"},
-                "nodeTreeController": {"@": "nodeTreeController"}
+                "nodeTreeController": {"@": "nodeTreeController"},
+                "_elementCreationForm": {"#": "elementCreationForm"}
             },
             "listeners": [
                 {
@@ -28,6 +29,27 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
+
+        "isCreatingElementCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "isCreatingElementCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.isCreatingElement"}
+            }
+        },
+
+        "tagNameField": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "tagNameField"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.tagName"}
+            }
         },
 
         "nodeTreeController": {
@@ -62,6 +84,14 @@
 </head>
 <body>
     <div data-montage-id="dom-explorer" class="DomExplorer">
+        <span data-montage-id="isCreatingElementCondition">
+            <form data-montage-id="elementCreationForm">
+                <input type="text" data-montage-id="tagNameField">
+                <button type="reset">⨂</button>
+                <button type="submit">✓</button>
+            </form>
+        </span>
+
         <div data-montage-id="nodeList" class="NodeList">
             <div data-montage-id="nodeCell"></div>
         </div>

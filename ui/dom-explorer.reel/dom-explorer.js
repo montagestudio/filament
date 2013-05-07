@@ -4,7 +4,8 @@
     @requires montage/ui/component
 */
 var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+    Component = require("montage/ui/component").Component,
+    Promise = require("montage/core/promise").Promise;
 
 /**
     Description TODO
@@ -25,30 +26,138 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         value: null
     },
 
+    tagName: {
+        value: null
+    },
+
+    _elementCreationForm: {
+        value: null
+    },
+
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this._elementCreationForm.addEventListener("submit", this);
+                this._elementCreationForm.addEventListener("reset", this);
+            }
+        }
+    },
+
+    isCreatingElement: {
+        get: function () {
+            return !!this._deferredElement;
+        }
+    },
+
+    __deferredElement: {
+        value: null
+    },
+
+    _deferredElement : {
+        get: function () {
+            return this.__deferredElement;
+        },
+        set: function(value) {
+            if (value === this.__deferredElement) {
+                return;
+            }
+
+            this.dispatchBeforeOwnPropertyChange("isCreatingElement", this.isCreatingElement);
+            this.__deferredElement = value;
+            this.dispatchOwnPropertyChange("isCreatingElement", this.isCreatingElement);
+        }
+    },
+
     handleRemoveNode: {
         value: function (evt) {
             this.editingDocument.removeTemplateNode(evt.detail);
         }
     },
 
+    _insertElement: {
+        value: function (insertionFunction) {
+            var self = this;
+
+            if (this._deferredElement) {
+                // Was in the middle of inserting a node, forget about that one now
+                this._deferredElement.resolve(null);
+                this._deferredElement = null;
+            }
+
+            this._deferredElement = Promise.defer();
+
+            setTimeout(function () {
+                self.templateObjects.tagNameField.focus();
+            }, 100);
+
+            this._deferredElement.promise.then(function (newNode) {
+                if (newNode) {
+                    insertionFunction(newNode);
+                    self._deferredElement = null;
+                    self.tagName = null;
+                }
+            }).done();
+        }
+    },
+
+    handleSubmit: {
+        value: function (evt) {
+
+            if (this._elementCreationForm === evt.target) {
+                evt.stop();
+                if (this.tagName) {
+                    var newNode = this.editingDocument.createTemplateNode(this.tagName);
+                    this._deferredElement.resolve(newNode);
+                }
+            }
+        }
+    },
+
+    //TODO handle esc to cancel as well
+    handleReset: {
+        value: function (evt) {
+            if (this._elementCreationForm === evt.target) {
+                evt.stop();
+
+                if (this._deferredElement) {
+                    this._deferredElement.resolve(null);
+                    this._deferredElement = null;
+                    this.tagName = null;
+                }
+            }
+        }
+    },
+
     handleAppendNode: {
         value: function (evt) {
-            var newNode = this.editingDocument.createTemplateNode(evt.detail.tagName);
-            this.editingDocument.appendChildToTemplateNode(newNode, evt.detail.parentNode);
+            var self =  this;
+            var insertionFunction = function (newNode) {
+                self.editingDocument.appendChildToTemplateNode(newNode, evt.detail.parentNode);
+            };
+
+            this._insertElement(insertionFunction);
         }
     },
 
     handleInsertBeforeNode: {
         value: function (evt) {
-            var newNode = this.editingDocument.createTemplateNode(evt.detail.tagName);
-            this.editingDocument.insertNodeBeforeTemplateNode(newNode, evt.detail.nextSibling);
+            var self =  this;
+            var insertionFunction = function (newNode) {
+                self.editingDocument.insertNodeBeforeTemplateNode(newNode, evt.detail.nextSibling);
+            };
+
+            this._insertElement(insertionFunction);
         }
     },
 
     handleInsertAfterNode: {
         value: function (evt) {
-            var newNode = this.editingDocument.createTemplateNode(evt.detail.tagName);
-            this.editingDocument.insertNodeAfterTemplateNode(newNode, evt.detail.previousSibling);
+            var self =  this;
+            var insertionFunction = function (newNode) {
+                self.editingDocument.insertNodeAfterTemplateNode(newNode, evt.detail.previousSibling);
+            };
+
+            this._insertElement(insertionFunction);
         }
     }
 
