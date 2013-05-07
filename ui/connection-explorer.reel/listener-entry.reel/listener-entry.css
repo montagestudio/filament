@@ -4,10 +4,6 @@
     cursor: pointer;
 }
 
-.ListenerEntry:last-child {
-    //margin-bottom: 0;
-}
-
 .ListenerEntry-pill {
     padding: 0 8px;
     font-size: 11px;
@@ -28,7 +24,8 @@
 }
 
 .ListenerEntry-pill--eventType {
-    width: 80px;
+    -webkit-flex: 1;
+    min-width: 0;
     text-align: right;
     border-radius: 11px 4px 4px 11px;
     font-style: italic;

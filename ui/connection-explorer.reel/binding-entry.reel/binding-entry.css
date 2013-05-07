@@ -24,7 +24,8 @@
 }
 
 .BindingEntry-pill:first-of-type {
-    width: 80px;
+    -webkit-flex: .6;
+    min-width: 0;
     text-align: right;
     border-radius: 11px 4px 4px 11px;
 }
