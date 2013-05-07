@@ -24,8 +24,14 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
 
     enterDocument: {
         value: function (firstTime) {
-            if (!firstTime) return;
-            this.templateObjects.icon.element.addEventListener("dragstart", this, false);
+            if (!firstTime) {
+                return;
+            }
+
+            var icon = this.templateObjects.icon.element;
+            icon.addEventListener("dragstart", this, false);
+            icon.addEventListener("mousedown", this, false);
+            icon.addEventListener("dragend", this, false);
         }
     },
 
@@ -47,9 +53,27 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
         }
     },
 
+    handleMousedown: {
+        value: function () {
+            this.eventManager.claimPointer("mouse", this);
+        }
+    },
+
+    surrenderPointer: {
+        value: function (pointer, component) {
+            return false;
+        }
+    },
+
     handleDragstart: {
         value: function (evt) {
             event.dataTransfer.setData("text/plain", "@" + this.templateObject.label);
+        }
+    },
+
+    handleDragend: {
+        value: function () {
+            this.eventManager.forfeitAllPointers(this);
         }
     },
 
