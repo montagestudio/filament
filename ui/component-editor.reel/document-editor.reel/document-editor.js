@@ -62,9 +62,23 @@ exports.DocumentEditor = Montage.create(Component, {
             document.editor = self;
 
             return this._deferredWorkbench.promise.then(function(workbench) {
-                return workbench.load(document.fileUrl, document.packageRequire.location);
-            }).then(function (liveStageInfo) {
-                document.associateWithLiveRepresentations(liveStageInfo.owner, liveStageInfo.template, liveStageInfo.frame);
+                var TEMPLATE = true, promise;
+                if (!TEMPLATE) {
+                    promise = workbench.load(document.fileUrl, document.packageRequire.location);
+                } else {
+                    var module = document.fileUrl.replace(document.packageRequire.location, "");
+                    promise = document.packageRequire.async(module).then(function (component) {
+                        // HACK
+                        return component.Main._loadTemplate();
+                    }).then(function (template) {
+                        template.setBaseUrl(document.fileUrl);
+                        return workbench.loadTemplate(template, module);
+                    });
+                }
+
+                return promise.then(function (liveStageInfo) {
+                    document.associateWithLiveRepresentations(liveStageInfo.owner, liveStageInfo.template, liveStageInfo.frame);
+                });
             });
         }
     },
