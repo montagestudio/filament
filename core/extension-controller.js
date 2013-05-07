@@ -111,7 +111,7 @@ exports.ExtensionController = Montage.create(Target, {
                     return extension;
                 }, function(error) {
                     console.log("Could not load extension at: " + extensionUrl);
-                    Promise.reject(new Error("Could not load extension at: " + extensionUrl, error));
+                    throw new Error("Could not load extension at " + extensionUrl +": " + error);
                 });
         }
     },

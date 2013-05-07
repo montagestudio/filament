@@ -31,12 +31,12 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 return packageRequire.async(componentModuleId).get(objectName).then(function (componentPrototype) {
                     return Template.getTemplateWithModuleId(componentPrototype.templateModuleId, packageRequire);
                 }, function (error) {
-                    return Promise.reject(new Error("Cannot load component template.", error));
+                    throw new Error("Cannot load component template: " + error);
                 }).then(function (template) {
-                        return self.create().init(fileUrl, template, packageRequire);
-                    }, function (error) {
-                        return Promise.reject(new Error("cannot initialize document for template.", error));
-                    });
+                    return self.create().init(fileUrl, template, packageRequire);
+                }, function (error) {
+                    throw new Error("cannot initialize document for template: " + error);
+                });
             });
         }
     },
