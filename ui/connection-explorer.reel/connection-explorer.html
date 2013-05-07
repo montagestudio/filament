@@ -156,24 +156,23 @@
             <div data-montage-id="listenerCreator"></div>
         </div>
 
-        <ul data-montage-id="objectList" class="ConnectionExplorer-objectList">
-            <li class="ConnectionExplorer-objectList-item">
-                <span data-montage-id="objectLabel" class="ConnectionExplorer-objectLabel"></span>
-                    <section>
-                        <h2>Bindings</h2>
-                        <ul data-montage-id="bindingList" class="ConnectionExplorer-bindingList">
-                            <li data-montage-id="bindingEntry"></li>
-                        </ul>
-                        <button data-montage-id="addButton" class="ConnectionExplorer-addButton">+</button>
-                    </section>
-                    <section>
-                        <h2>Listeners</h2>
-                        <ul data-montage-id="listenerList">
-                            <li data-montage-id="listenerEntry"></li>
-                        </ul>
-                        <button data-montage-id="addListenerButton" class="ConnectionExplorer-addButton">+</button>
-                    </section>
-                </div>
+        <ul data-montage-id="objectList" class="ConnectionExplorer-list">
+            <li class="ConnectionExplorer-list-item Connection">
+                <header data-montage-id="objectLabel" class="Connection-label"></header>
+                <section class="Connection-type Connection-type--bindings">
+                    <h2 class="Connection-type-title">Bindings</h2>
+                    <ul data-montage-id="bindingList" class="Connection-type-list">
+                        <li data-montage-id="bindingEntry"></li>
+                    </ul>
+                    <button data-montage-id="addButton" class="Connection-type-addButton">+</button>
+                </section>
+                <section class="Connection-type Connection-type--listeners">
+                    <h2 class="Connection-type-title">Listeners</h2>
+                    <ul data-montage-id="listenerList" class="Connection-type-list">
+                        <li data-montage-id="listenerEntry"></li>
+                    </ul>
+                    <button data-montage-id="addListenerButton" class="Connection-type-addButton">+</button>
+                </section>
             </li>
         </ul>
     </div>

@@ -1,3 +1,78 @@
 .ListenerEntry {
+    margin-bottom: 4px;
+    display: -webkit-flex;
+    cursor: pointer;
+}
 
+.ListenerEntry:last-child {
+    //margin-bottom: 0;
+}
+
+.ListenerEntry-pill {
+    padding: 0 8px;
+    font-size: 11px;
+    color: hsl(0,0%,30%);
+    line-height: 22px;
+    background: hsl(0,0%,90%);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.ListenerEntry:hover .ListenerEntry-pill {
+    background: hsl(0,0%,86%);
+}
+
+.ListenerEntry:active .ListenerEntry-pill {
+    background: hsl(0,0%,84%);
+}
+
+.ListenerEntry-pill--eventType {
+    width: 80px;
+    text-align: right;
+    border-radius: 11px 4px 4px 11px;
+    font-style: italic;
+}
+
+.ListenerEntry-pill--listener {
+    -webkit-flex: 1;
+    min-width: 0;
+    margin-left: 4px;
+    border-radius: 4px 11px 11px 4px;
+    font-weight: bold;
+}
+
+
+.ListenerEntry-phase {
+    margin-left: 4px;
+    font-size: 10px;
+    line-height: 22px;
+    color: hsl(0,0%,50%);
+}
+
+
+/* Remove Button ---------------------------- */
+
+.ListenerEntry .ListenerEntry-removeButton {
+    width: 22px;
+    height: 22px;
+    min-width: 0;
+    margin: 0 4px;
+    padding: 0;
+    line-height: 0;
+    font-size: 12px;
+    color: hsl(0,0%,60%);
+    border-radius: 11px;
+    border-color: hsl(0,0%,90%);
+    background-color: transparent;
+}
+
+.ListenerEntry .ListenerEntry-removeButton:hover {
+    border-color: hsl(0,0%,76%);
+    background: -webkit-linear-gradient( hsl(120,0%,97%), hsl(120,0%,88%) );
+}
+
+.ListenerEntry .ListenerEntry-removeButton.active {
+    background: hsl(0,0%,84%);
+    box-shadow: 0 1px 2px hsla(0,0%,0%,.06);
 }

@@ -4,10 +4,6 @@
     cursor: pointer;
 }
 
-.BindingEntry:last-child {
-    margin-bottom: 0;
-}
-
 .BindingEntry-pill {
     padding: 0 8px;
     font-size: 11px;
