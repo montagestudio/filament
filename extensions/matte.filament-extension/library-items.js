@@ -187,11 +187,11 @@ var InputCheckboxLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var InputRadioLibraryItem = Montage.create(LibraryItem, {
+var RadioButtonLibraryItem = Montage.create(LibraryItem, {
 
     serialization: {
         value: {
-            "prototype": "matte/ui/input-radio.reel",
+            "prototype": "matte/ui/radio-button.reel",
             "properties": {
                 "element": {"#": "radio"},
                 "checked": true
@@ -200,7 +200,7 @@ var InputRadioLibraryItem = Montage.create(LibraryItem, {
     },
 
     name: {
-        value: "InputRadio"
+        value: "RadioButton"
     },
 
     label: {
@@ -208,7 +208,7 @@ var InputRadioLibraryItem = Montage.create(LibraryItem, {
     },
 
     icon: {
-        value: packageLocation + "assets/components/input-radio.png"
+        value: packageLocation + "assets/components/radio-button.png"
     },
 
     html: {
@@ -849,7 +849,7 @@ exports.libraryItems = {
     "matte/ui/toggle-button.reel": ToggleButtonLibraryItem,
     "matte/ui/toggle-switch.reel": ToggleSwitchLibraryItem,
     "matte/ui/input-checkbox.reel": InputCheckboxLibraryItem,
-    "matte/ui/input-radio.reel": InputRadioLibraryItem,
+    "matte/ui/radio-button.reel": RadioButtonLibraryItem,
     "matte/ui/input-date.reel": InputDateLibraryItem,
     "matte/ui/input-number.reel": InputNumberLibraryItem,
     "matte/ui/input-range.reel": InputRangeLibraryItem,
