@@ -1,3 +1,70 @@
 .ListenerJig {
+    font-size: 12px;
+    background: white;
+    margin: 8px 6px 8px 8px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.1);
+}
 
+
+.ListenerJig-row {
+    display: -webkit-flex;
+    -webkit-justify-content: flex-end;
+    padding: 0 5px;
+    border: none;
+}
+
+.ListenerJig-targetObjectLabel {
+    -webkit-flex: .25;
+    min-width: 100px;
+    margin: 0 6px 0 0;
+    font-weight: bold;
+    vertical-align: top;
+    text-align: right;
+    line-height: 38px;
+    color: hsl(0,0%,40%);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+
+/* ListenerJig sections ---------------------- */
+
+.ListenerJig-section {
+    margin: 10px 5px;
+    -webkit-flex: 1;
+}
+
+.ListenerJig-label {
+    display: block;
+    margin-bottom: 4px;
+    color: hsl(0,0%,50%);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.ListenerJig-input {
+    width: 100%;
+}
+
+
+/* Phase ---------------------- */
+
+.ListenerJig-phase {
+    position: relative;
+    margin: 0 10px 10px 0;
+}
+
+
+/* Footer ---------------------- */
+
+.ListenerJig-footer {
+    padding: 0px 9px 10px 10px;
+    text-align: right;
+}
+
+.ListenerJig-footer .ListenerJig-button {
+    margin: 0 0 0 10px;
 }

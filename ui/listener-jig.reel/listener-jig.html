@@ -1,112 +1,133 @@
-<html><head>
+<!DOCTYPE html>
+<html>
+<head>
     <title></title>
-    <link rel="stylesheet" type="text/css" href="listener-jig.css">
+    <link href="../../assets/styles/jig-skin.css" rel="stylesheet">
+    <link href="listener-jig.css" rel="stylesheet">
     
-<script type="text/montage-serialization">{
-    "owner": {
-        "properties": {
-            "element": {"#": "listener-jig"}
-        }
-    },
-
-    "targetObjectLabel": {
-        "prototype": "montage/ui/text.reel",
-        "properties": {
-            "element": {"#": "targetObjectLabel"}
-        },
-        "bindings": {
-            "value": {"<-": "@owner.listenerModel.targetObject.label"}
-        }
-    },
-
-    "typeField": {
-        "prototype": "matte/ui/input-text.reel",
-        "properties": {
-            "element": {"#": "typeField"}
-        },
-        "bindings": {
-            "value": {"<->": "@owner.listenerModel.type"}
-        }
-    },
-
-    "objectLabelConverter": {
-        "prototype": "core/object-label-converter",
-        "bindings": {
-            "editingDocument": {"<-": "@owner.editingDocument"}
-        }
-    },
-
-    "listenerField": {
-        "prototype": "matte/ui/input-text.reel",
-        "properties": {
-            "element": {"#": "listenerField"}
-        },
-        "bindings": {
-            "value": {"<->": "@owner.listenerModel.listener", "converter": {"@": "objectLabelConverter"}}
-        }
-    },
-
-    "useCapture": {
-        "prototype": "matte/ui/input-radio.reel",
-        "properties": {
-            "element": {"#":"useCapture"}
-        },
-        "bindings": {
-            "checked": {"<->": "@owner.listenerModel.useCapture"}
-        }
-    },
-
-    "useBubble": {
-        "prototype": "matte/ui/input-radio.reel",
-        "properties": {
-            "element": {"#":"useBubble"}
-        },
-        "bindings": {
-            "checked": {"<->": "!@owner.listenerModel.useCapture"}
-        }
-    },
-
-    "addListenerButton": {
-        "prototype": "matte/ui/button.reel",
-        "properties": {"label":"Add Listener",
-            "element": {"#":"addListenerButton"}
-        },
-        "listeners": [
-            {
-                "type": "action",
-                "listener": {"@": "owner"}
+    <script type="text/montage-serialization">{
+        "owner": {
+            "properties": {
+                "element": {"#": "listener-jig"}
             }
-        ]
-    },
-
-    "cancelButton": {
-        "prototype": "matte/ui/button.reel",
-        "properties": {
-            "label": "Cancel",
-            "element": {"#":"cancelButton"}
         },
-        "listeners": [
-            {
-                "type": "action",
-                "listener": {"@": "owner"}
+    
+        "targetObjectLabel": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "targetObjectLabel"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.listenerModel.targetObject.label"}
             }
-        ]
+        },
+    
+        "typeField": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "typeField"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.listenerModel.type"}
+            }
+        },
+    
+        "objectLabelConverter": {
+            "prototype": "core/object-label-converter",
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"}
+            }
+        },
+    
+        "listenerField": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "listenerField"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.listenerModel.listener", "converter": {"@": "objectLabelConverter"}}
+            }
+        },
+    
+        "useCapture": {
+            "prototype": "matte/ui/input-radio.reel",
+            "properties": {
+                "element": {"#":"useCapture"}
+            },
+            "bindings": {
+                "checked": {"<->": "@owner.listenerModel.useCapture"}
+            }
+        },
+    
+        "useBubble": {
+            "prototype": "matte/ui/input-radio.reel",
+            "properties": {
+                "element": {"#":"useBubble"}
+            },
+            "bindings": {
+                "checked": {"<->": "!@owner.listenerModel.useCapture"}
+            }
+        },
+    
+        "addListenerButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {"label":"Add Listener",
+                "element": {"#":"addListenerButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+    
+        "cancelButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "label": "Cancel",
+                "element": {"#":"cancelButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
     }
-}
-</script></head>
+    </script>
+</head>
 <body>
-    <div data-montage-id="listener-jig" class="ListenerJig">
-        <span data-montage-id="targetObjectLabel"></span>
-        <label>Event Type <input data-montage-id="typeField" type="text"></label>
-        <label>Listener <input data-montage-id="listenerField" type="text"></label>
-        <fieldset>
-            <label>Capture <input data-montage-id="useCapture" type="radio" name="phase"></label>
-            <label>Bubble <input data-montage-id="useBubble" type="radio" name="phase"></label>
-        </fieldset>
-
-        <input data-montage-id="cancelButton" type="button">
-        <input data-montage-id="addListenerButton" type="button">
+    <div data-montage-id="listener-jig" class="Jig ListenerJig">
+        
+        <div class="ListenerJig-row">
+            
+            <span data-montage-id="targetObjectLabel" class="ListenerJig-targetObjectLabel"></span>
+            
+            <section class="ListenerJig-section">
+                <label class="ListenerJig-label">Event Type</label>
+                <input data-montage-id="typeField" class="ListenerJig-input" type="text">
+            </section>
+            
+            <section class="ListenerJig-section">
+                <label class="ListenerJig-label">Listener</label>
+                <input data-montage-id="listenerField" class="ListenerJig-input" type="text">
+            </section>
+            
+        </div>
+        
+        <div  class="ListenerJig-row">
+            <label class="ListenerJig-phase"><input data-montage-id="useCapture" type="radio" name="phase"> Capture</label>
+            <label class="ListenerJig-phase"><input data-montage-id="useBubble" type="radio" name="phase"> Bubble</label>
+        </div>
+        
+        <footer class="ListenerJig-footer">
+            <button data-montage-id="cancelButton"></button>
+            <button data-montage-id="addListenerButton" class="Button--action"></button>
+        </footer>
+        
     </div>
-
-
-</body></html>
+    
+</body>
+</html>
