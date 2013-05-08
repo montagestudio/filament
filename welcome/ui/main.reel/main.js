@@ -66,9 +66,11 @@ exports.Main = Montage.create(Component, {
         value: function () {
             var self = this;
             this.environmentBridge.promptForOpen({canChooseDirectories: true}).then(function (url) {
-                return self.environmentBridge.open(url);
-            }).then(function () {
-                window.close();
+                if (url) {
+                    return self.environmentBridge.open(url).then(function () {
+                        window.close();
+                    });
+                }
             }).done();
         }
     },
