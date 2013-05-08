@@ -142,6 +142,18 @@ exports.DocumentEditor = Montage.create(Component, {
         }
     },
 
+    handleRefreshAction: {
+        value: function () {
+            var self = this;
+            this.workbench.refresh(this.editingDocument._template)
+            .then(function (liveStageInfo) {
+                self.editingDocument.associateWithLiveRepresentations(
+                    liveStageInfo.owner, liveStageInfo.template, liveStageInfo.frame
+                );
+            }).done();
+        }
+    },
+
     handleSelect: {
         value: function (evt) {
             var detail = evt.detail,

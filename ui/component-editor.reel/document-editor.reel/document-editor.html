@@ -15,6 +15,16 @@
                 }
             },
 
+            "refresh": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "refresh"}
+                },
+                "listeners": [
+                    {"type": "action", "listener": {"@": "owner"}}
+                ]
+            },
+
             "workbench": {
                 "prototype": "palette/ui/workbench.reel",
                 "properties": {
@@ -56,6 +66,13 @@
 <body>
 
     <div data-montage-id="documentEditor" class="DocumentEditor">
+        <!--
+        This is very similar to TemplateExplorer-bar TemplateExplorerTools.
+        Maybe we want a global class/new component?
+        -->
+        <header class="">
+            <button data-montage-id="refresh" class="">Refresh</button>
+        </header>
         <div data-montage-id="workbench">
             <div data-arg="overlay">
                 <div data-montage-id="contextualInspectors"></div>
