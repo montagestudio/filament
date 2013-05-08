@@ -2,7 +2,8 @@ var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
     ReelDocument = require("core/reel-document").ReelDocument,
     MimeTypes = require("core/mime-types"),
-    Promise = require("montage/core/promise").Promise;
+    Promise = require("montage/core/promise").Promise,
+    MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver;
 
 exports.DocumentEditor = Montage.create(Component, {
 
@@ -67,9 +68,10 @@ exports.DocumentEditor = Montage.create(Component, {
                     promise = workbench.load(document.fileUrl, document.packageRequire.location);
                 } else {
                     var module = document.fileUrl.replace(document.packageRequire.location, "");
+                    var name = MontageReviver.parseObjectLocationId(module).objectName;
+
                     promise = document.packageRequire.async(module).then(function (component) {
-                        // HACK
-                        return component.Main._loadTemplate();
+                        return component[name]._loadTemplate();
                     }).then(function (template) {
                         template.setBaseUrl(document.fileUrl);
                         return workbench.loadTemplate(template, module);
