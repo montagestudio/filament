@@ -680,7 +680,9 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             serializationElement.setAttribute("type", "text/montage-serialization");
             serializationElement.appendChild(document.createTextNode(JSON.stringify(templateSerialization)));
             doc.head.appendChild(serializationElement);
-            doc.body.innerHTML = htmlFragment;
+            if (htmlFragment) {
+                doc.body.innerHTML = htmlFragment;
+            }
 
             return Template.create().initWithDocument(doc, this._packageRequire).then(function(template) {
                 return self.addObjectsFromTemplate(template, parentProxy, stageElement);
