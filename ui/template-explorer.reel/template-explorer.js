@@ -4,7 +4,8 @@
     @requires montage/ui/component
 */
 var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+    Component = require("montage/ui/component").Component,
+    MimeTypes = require("core/mime-types");
 
 /**
     Description TODO
@@ -19,6 +20,10 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             this.addPathChangeListener("offsetX", this, "scheduleDraw");
             this.addPathChangeListener("offsetY", this, "scheduleDraw");
         }
+    },
+
+    editingDocument: {
+        value: null
     },
 
     templateObjectsController: {
@@ -157,6 +162,41 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                 this.offsetX = evt.translateX;
                 this.offsetY = evt.translateY;
             }
+        }
+    },
+
+    enterDocument: {
+        value: function (firstTime) {
+            if (!firstTime) {
+                return;
+            }
+
+            this._element.addEventListener("dragover", this, false);
+            this._element.addEventListener("drop", this, false);
+        }
+    },
+
+    handleDragover: {
+        enumerable: false,
+        value: function (event) {
+            if (event.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1) {
+                // allows us to drop
+                event.preventDefault();
+                event.dataTransfer.dropEffect = "copy";
+            } else {
+                event.dataTransfer.dropEffect = "none";
+            }
+        }
+    },
+
+    handleDrop: {
+        enumerable: false,
+        value: function (event) {
+            // TODO: security issues?
+            var data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
+                transferObject = JSON.parse(data);
+
+            this.editingDocument.addLibraryItemFragments(transferObject.serializationFragment).done();
         }
     }
 
