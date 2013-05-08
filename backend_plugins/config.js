@@ -117,7 +117,7 @@ exports.menusAddOns = function() {
             identifier: "help",
             keyEquivalent: "command+option+?",
             location: {insertBefore: "7.1"},
-            action: {openWindow: {url:"http://montagejs.org/docs/", width:650, height:800, canResize:true, showToolbar:true, canOpenMultiple: false}}
+            action: {openWindow: {url:"http://client/docs/index.html", width:650, height:800, canResize:true, showToolbar:true, canOpenMultiple: false}}
         }
     ];
 };

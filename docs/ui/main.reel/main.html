@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+    <title>Main</title>
+    <meta charset="utf-8">
+
+    <link href="main.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "localizer": {
+                "object": "montage/core/localizer[defaultLocalizer]"
+            },
+
+            "owner": {
+                "properties": {
+                    "element": {"#": "main"}
+                },
+                "listeners": [
+                    {
+                        "type": "openDocument",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            }
+
+        }
+    </script>
+
+</head>
+<body>
+
+    <div data-montage-id="main" class="main Docs">
+
+        <header class="Header">
+            <div class="Header-logo"></div>
+            <h1 class="Header-title">Documentation &amp; Help</h1>
+        </header>
+        
+        <article class="Article">
+            <p class="Note">Thanks for testing Montage Builder. During our <strong>Alpha release period</strong>, proper Documentation is <strong>still missing</strong>.</p>
+            <p>For help and feedback, please <strong>get in touch</strong>! We're happy to hear how you're using the tool and if you encounter any problems.</p>
+            <p>Email us: <a href="mailto:builder@declarativ.com">builder@declarativ.com</a></p>
+        </article>
+
+        <footer class="Footer">&copy; 2012–2013 Declarativ Inc.</footer>
+        
+    </div>
+
+</body>
+</html>

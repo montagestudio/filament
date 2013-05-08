@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+    <title>Docs</title>
+    <meta charset="utf-8">
+    
+    <link href="../assets/fonts/fonts.css" rel="stylesheet" />
+    <link href="../assets/styles/bootstrapping.css" rel="stylesheet" />
+    <link href="../assets/styles/filament.css" rel="stylesheet" />
+    
+    <script src="../node_modules/montage/montage.js" data-package=".."></script>
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "prototype": "montage/ui/loader.reel",
+                "properties": {
+                    "mainModule": "docs/ui/main.reel"
+                }
+            }
+        }
+    </script>
+
+</head>
+<body>
+    <div class="LoaderWrapper">
+        <div class="Loader">
+            <div class="Loader-cube"></div>
+            <div class="Loader-cube"></div>
+            <div class="Loader-cube"></div>
+        </div>
+    </div>
+</body>
+</html>
