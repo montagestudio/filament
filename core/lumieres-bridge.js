@@ -205,6 +205,22 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         }
     },
 
+    promptForOpen: {
+        value: function (options) {
+            var deferredOpen = Promise.defer();
+
+            lumieres.openFileDialog(options, function (error, file) {
+                if (!error) {
+                    deferredOpen.resolve(file);
+                } else {
+                    deferredOpen.resolve(null);
+                }
+            });
+
+            return deferredOpen.promise;
+        }
+    },
+
     openNewApplication: {
         value: function () {
             return this.backend.get("application").invoke("openDocument", {type: "application"});

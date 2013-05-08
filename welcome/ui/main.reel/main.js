@@ -58,7 +58,18 @@ exports.Main = Montage.create(Component, {
         value: function (evt) {
             this.environmentBridge.open(evt.detail.url).then(function () {
                 window.close();
-            });
+            }).done();
+        }
+    },
+
+    handleOpenAppButtonAction: {
+        value: function () {
+            var self = this;
+            this.environmentBridge.promptForOpen({canChooseDirectories: true}).then(function (url) {
+                return self.environmentBridge.open(url);
+            }).then(function () {
+                window.close();
+            }).done();
         }
     },
 
@@ -66,7 +77,7 @@ exports.Main = Montage.create(Component, {
         value: function () {
             this.environmentBridge.openNewApplication().then(function () {
                 window.close();
-            });
+            }).done();
         }
     },
 
