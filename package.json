@@ -27,7 +27,8 @@
         "sandboxed-module": "0.1.4",
         "montage-testing": "git+ssh://git@github.com:montagejs/montage-testing.git#edge",
         "shelljs": "0.1.2",
-        "jshint": "1.1.0"
+        "jshint": "1.1.0",
+        "complexity-report": "~0.10.3"
     },
     "mappings": {
         "filament-extension": {
@@ -37,7 +38,8 @@
     },
     "scripts": {
         "test": "node test/run.js",
-        "lint": "node test/lint.js"
+        "lint": "node test/lint.js",
+        "complexity": "node test/complexity.js"
     },
     "manifest": true
 }
