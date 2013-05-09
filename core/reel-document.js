@@ -835,7 +835,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                 proxy,
                 addedProxies = [],
                 self = this,
-                templateElement = (parentProxy) ? parentProxy.getObjectProperty("element")._templateNode : void 0,
+                templateElement = (parentProxy) ? parentProxy.getObjectProperty("element") : void 0,
                 revisedTemplate,
                 ownerProxy;
 
@@ -911,7 +911,7 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             }
 
             // Merge markup
-            idsCollisionTable = destinationTemplate.appendNode(sourceContentFragment, insertionParent._templateNode);
+            idsCollisionTable = destinationTemplate.appendNode(sourceContentFragment, insertionParent);
             if (idsCollisionTable) {
                 serializationToMerge.renameElementReferences(idsCollisionTable);
             }
