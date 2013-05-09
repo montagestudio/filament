@@ -15,6 +15,10 @@
     background: hsl(0,0%,90%);
 }
 
+.NodeCell--owner .NodeCell-segment {
+    background: hsl(43, 100%, 85%);
+}
+
 .NodeCell-segment-item {
     display: block;
     padding: 0 12px;
