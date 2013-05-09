@@ -35,6 +35,17 @@
                 }
             },
 
+            "previewLink": {
+                "prototype": "matte/ui/anchor.reel",
+                "properties": {
+                    "element": {"#": "previewLink"},
+                    "target": "_blank"
+                },
+                "bindings": {
+                    "href": {"<-": "@owner.previewController.previewUrl"}
+                }
+            },
+
             "fileTreeController": {
                 "prototype": "montage/core/tree-controller",
                 "properties": {
@@ -100,6 +111,7 @@
         <header class="Panel-title">
             <h2 data-montage-id="packageName" class="Panel-title-name"></h2>
             <span data-montage-id="packageVersion" class="Panel-title-version"></span>
+            <a data-montage-id="previewLink" title="Preview">►</a>
         </header>
         <div data-montage-id="fileList" class="Panel-content List PackageExplorer-list">
             <span data-montage-id="file-cell" data-arg="treeNode"></span>

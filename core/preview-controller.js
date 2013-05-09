@@ -30,6 +30,12 @@ exports.PreviewController = Montage.create(Target, {
         }
     },
 
+    previewUrl: {
+        get: function () {
+            return this._previewId ? "http://localhost:8080/" + this._previewId + "/" : null;
+        }
+    },
+
     init: {
         value: function (appDelegate) {
             this._applicationDelegate = appDelegate;
@@ -49,7 +55,9 @@ exports.PreviewController = Montage.create(Target, {
         value: function (name, url) {
             var self = this;
             return this.environmentBridge.registerPreview(name, url).then(function (previewId) {
+                self.dispatchBeforeOwnPropertyChange("previewUrl", self.previewUrl);
                 self._previewId = previewId;
+                self.dispatchOwnPropertyChange("previewUrl", self.previewUrl);
                 self.dispatchEventNamed("didRegisterPreview", true, false);
                 return name;
             });
@@ -96,6 +104,9 @@ exports.PreviewController = Montage.create(Target, {
             var self = this;
             return this.environmentBridge.unregisterPreview(this._previewId).then(function () {
                 //TODO pass along url for preview in event
+                self.dispatchBeforeOwnPropertyChange("previewUrl", self.previewUrl);
+                self._previewId = null;
+                self.dispatchOwnPropertyChange("previewUrl", self.previewUrl);
                 self.dispatchEventNamed("didUnregisterPreview", true, false);
             });
         }

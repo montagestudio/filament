@@ -7,6 +7,10 @@ exports.PackageExplorer = Montage.create(Component, {
         value: null
     },
 
+    previewController: {
+        value: null
+    },
+
     fileTreeController: {
         value: null
     },
