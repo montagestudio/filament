@@ -116,7 +116,7 @@ exports.menusAddOns = function() {
             title: "Documentation and API Reference",
             identifier: "help",
             keyEquivalent: "command+option+?",
-            location: {insertBefore: "7.1"},
+            location: {insertBefore: "6.1"},
             action: {openWindow: {url:"http://client/docs/index.html", width:650, height:800, canResize:true, showToolbar:true, canOpenMultiple: false}}
         }
     ];
