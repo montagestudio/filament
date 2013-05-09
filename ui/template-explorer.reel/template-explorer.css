@@ -71,6 +71,7 @@
 
 .TemplateExplorer-viewport {
     -webkit-flex: 1;
+    min-height: 0;
     overflow: hidden;
     border-radius: 0 0 4px 4px;
     border: 1px solid hsl(0, 0%, 76%);

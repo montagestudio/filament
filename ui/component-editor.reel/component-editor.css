@@ -14,10 +14,10 @@
 }
 
 .ComponentEditor-column-fill {
-    min-height: 50px;
-    -webkit-flex: 1 1 250px;
-    overflow: scroll;
-    padding: 8px 0 8px 8px;
+    min-height: 80px;
+    -webkit-flex: 1 1 auto;
+    overflow: hidden;
+    padding: 8px;
     border-bottom: 1px solid hsl(0, 0%, 75%);
     background: hsl(0, 0%, 86%);
 }
