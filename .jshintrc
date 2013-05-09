@@ -13,7 +13,6 @@
     "indent": 4,
     "boss": true,
     "eqnull": true,
-    "es5": true,
     "browser": true,
     "globals": {
         "CustomEvent": true,

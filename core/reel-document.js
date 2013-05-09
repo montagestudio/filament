@@ -454,7 +454,9 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
                 // Object did not have parentComponent (i.e. was a plain
                 // object, not a component)
-                if (!parent) parent = owner;
+                if (!parent) {
+                    parent = owner;
+                }
                 proxy.parentProxy =  this.editingProxyForObject(parent);
             }, this);
         }
@@ -1055,9 +1057,9 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             var binding = proxy.defineObjectBinding(targetPath, oneway, sourcePath);
 
             if (binding) {
-                if (this._editingController) {
-                    // TODO define the binding on the stage, make sure we can cancel it later
-                }
+                // if (this._editingController) {
+                //     // TODO define the binding on the stage, make sure we can cancel it later
+                // }
 
                 this.undoManager.register("Define Binding", Promise.resolve([this.cancelOwnedObjectBinding, this, proxy, binding]));
             }
@@ -1075,9 +1077,9 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             var removedBinding = proxy.cancelObjectBinding(binding);
 
             if (removedBinding) {
-                if (this._editingController) {
-                    // TODO cancel the binding in the stage
-                }
+                // if (this._editingController) {
+                //     // TODO cancel the binding in the stage
+                // }
 
                 this.undoManager.register("Cancel Binding", Promise.resolve([
                     this.defineOwnedObjectBinding, this, proxy, binding.targetPath, binding.oneway, binding.sourcePath
@@ -1098,10 +1100,10 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             var binding = proxy.defineObjectBinding(targetPath, oneway, sourcePath);
 
             if (removedBinding && binding) {
-                if (this._editingController) {
-                    // TODO cancel the binding in the stage
-                    // TODO define the binding on the stage, make sure we can cancel it later
-                }
+                // if (this._editingController) {
+                //     // TODO cancel the binding in the stage
+                //     // TODO define the binding on the stage, make sure we can cancel it later
+                // }
 
                 this.undoManager.register("Cancel Binding", Promise.resolve([
                     this.updateOwnedObjectBinding, this, proxy, binding, removedBinding.targetPath, removedBinding.oneway, removedBinding.sourcePath
@@ -1121,9 +1123,9 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             var listenerEntry = proxy.addObjectEventListener(type, listener, useCapture);
 
             if (listenerEntry) {
-                if (this._editingController) {
-                    // TODO register the listener on the stage, make sure we can remove it later
-                }
+                // if (this._editingController) {
+                //     // TODO register the listener on the stage, make sure we can remove it later
+                // }
 
                 this.undoManager.register("Add Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listenerEntry]));
             }
@@ -1137,9 +1139,9 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             var removedListener = proxy.removeObjectEventListener(listener);
 
             if (removedListener) {
-                if (this._editingController) {
-                    // TODO remove the listener on the stage
-                }
+                // if (this._editingController) {
+                //     // TODO remove the listener on the stage
+                // }
 
                 this.undoManager.register("Remove Listener", Promise.resolve([
                     this.addOwnedObjectEventListener, this, proxy, removedListener.type, removedListener.listener, removedListener.useCapture

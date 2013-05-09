@@ -26,7 +26,7 @@ exports.BindingJig = Montage.create(Component, {
 
             if (this.existingBinding) {
                 this.editingDocument.updateOwnedObjectBinding(proxy, this.existingBinding, targetPath, oneway, sourcePath);
-             } else {
+            } else {
                 this.editingDocument.defineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath);
             }
             this.existingBinding = null;

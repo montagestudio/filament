@@ -12,8 +12,6 @@ var Montage = require("montage").Montage,
  * @extends AbstractSlider
  */
 exports.SplitControl = Montage.create(AbstractSlider, /** @lends SplitControl# */ {
-    
-    
 
     // Lifecycle
     didCreate: {
@@ -35,9 +33,9 @@ exports.SplitControl = Montage.create(AbstractSlider, /** @lends SplitControl# *
             }
         }
     },
-    
+
     // AbstractSlider overides
-    
+
     _calculateSliderMagnitude: {
         value: function() {
             if(this.splitAxis === "vertical") {
@@ -48,7 +46,7 @@ exports.SplitControl = Montage.create(AbstractSlider, /** @lends SplitControl# *
 
         }
     },
-    
+
     draw: {
         value: function () {
             this.controlledElement.style.webkitFlexBasis = (this._valuePercentage/100)*this._sliderMagnitude + "px";
@@ -125,13 +123,12 @@ exports.SplitControl = Montage.create(AbstractSlider, /** @lends SplitControl# *
 
     _updateValueFromDom: {
         value: function() {
-                // value is from 0 to 100
-                if(this.splitAxis === "vertical") {
-                    this.value = (this.controlledElement.offsetWidth/this.containerElement.offsetWidth)*100;
-                } else {
-                    this.value = (this.controlledElement.offsetHeight/this.containerElement.offsetHeight)*100;
-                }
-
+            // value is from 0 to 100
+            if(this.splitAxis === "vertical") {
+                this.value = (this.controlledElement.offsetWidth/this.containerElement.offsetWidth)*100;
+            } else {
+                this.value = (this.controlledElement.offsetHeight/this.containerElement.offsetHeight)*100;
+            }
         }
     },
 

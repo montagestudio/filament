@@ -90,7 +90,7 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
             this.classList.remove(CLASS_PREFIX + "--dragging");
         }
     },
-    
+
     handleTranslate: {
         value: function (evt) {
             this.x = evt.translateX;
@@ -109,7 +109,6 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
 
     handlePress: {
         value: function(event) {
-            console.log("handleBindAction")
             var bindingModel = Object.create(null);
             bindingModel.targetObject = this.templateObject;
             bindingModel.targetPath = "";

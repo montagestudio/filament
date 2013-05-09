@@ -81,7 +81,7 @@ exports.ReelProxy = Montage.create(EditingProxy, {
 
                 var moduleId = MontageReviver.parseObjectLocationId(this._exportId).moduleId;
                 if (moduleId[0] === "." && (moduleId[1] === "." || moduleId[1] === "/")) {
-                    moduleId = this.editingDocument.packageRequire.resolve(baseModuleId + "/" + moduleId, baseModuleId)
+                    moduleId = this.editingDocument.packageRequire.resolve(baseModuleId + "/" + moduleId, baseModuleId);
                 }
                 this._moduleId = moduleId;
             }

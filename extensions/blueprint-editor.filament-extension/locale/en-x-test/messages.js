@@ -48,6 +48,7 @@ var lookup = {
 var messageFormat = new MessageFormat("en-x-test");
 var original = require("../en/messages.json");
 
+//jshint -W089
 for (var key in original) {
     var message = original[key].message || original[key];
     exports[key] = translate(message);
@@ -64,6 +65,7 @@ function translate(message) {
         }
     });
 
+    //jshint -W054
     return (new Function( 'MessageFormat',
       'return ' + messageFormat.precompile(ast)
     ))(MessageFormat);
