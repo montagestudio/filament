@@ -117,6 +117,11 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
 
     appendChild: {
         value: function (nodeProxy) {
+            // HACK
+            if (nodeProxy instanceof Node) {
+                return;
+            }
+
             //TODO make this guard against edgecases e.g. transplanting nodes
             //TODO not actually update the underlying DOM live on edits?
             this._templateNode.appendChild(nodeProxy._templateNode);
