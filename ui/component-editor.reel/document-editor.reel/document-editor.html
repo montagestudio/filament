@@ -15,16 +15,6 @@
                 }
             },
 
-            "refresh": {
-                "prototype": "matte/ui/button.reel",
-                "properties": {
-                    "element": {"#": "refresh"}
-                },
-                "listeners": [
-                    {"type": "action", "listener": {"@": "owner"}}
-                ]
-            },
-
             "workbench": {
                 "prototype": "palette/ui/workbench.reel",
                 "properties": {
@@ -66,9 +56,6 @@
 <body>
 
     <div data-montage-id="documentEditor" class="DocumentEditor">
-        <header class="DocumentEditor-bar">
-            <button data-montage-id="refresh" class="Button DocumentEditor-bar-button">Refresh</button>
-        </header>
         <div data-montage-id="workbench">
             <div data-arg="overlay">
                 <div data-montage-id="contextualInspectors"></div>
