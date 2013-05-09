@@ -70,7 +70,7 @@ exports.rootURLForFileURL = function(object) {
 };
 
 exports.aboutPageInfo = function() {
-    return {url: "http://client/about/index.html", width:906, height:540};
+    return {url: "http://client/about/index.html", width:906, height:540, showToolbar: false};
 };
 
 exports.welcomePageInfo = function() {
