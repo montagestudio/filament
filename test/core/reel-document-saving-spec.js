@@ -56,18 +56,28 @@ describe("core/reel-document-saving-spec", function () {
                 "foo": {
                     "prototype": "fooExportId",
                     "bindings": {
-                        "value": {"<-": "@owner.aProperty"}
+                        "value": {"<-": "@owner.aProperty"},
+                        "anotherValue": {"<->": "@owner.anotherProperty"}
                     }
                 }
             });
         });
 
-        it("should serialize a binding correctly", function () {
+        it("should serialize a one-way binding correctly", function () {
             return promisedDocument.then(function (reelDocument) {
                 var serialization = reelDocument._buildSerialization();
                 expect(serialization.foo.bindings).toBeTruthy();
                 expect(serialization.foo.bindings.value).toBeTruthy();
                 expect(serialization.foo.bindings.value["<-"]).toBe("@owner.aProperty");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should serialize a two-way binding correctly", function () {
+            return promisedDocument.then(function (reelDocument) {
+                var serialization = reelDocument._buildSerialization();
+                expect(serialization.foo.bindings).toBeTruthy();
+                expect(serialization.foo.bindings.anotherValue).toBeTruthy();
+                expect(serialization.foo.bindings.anotherValue["<->"]).toBe("@owner.anotherProperty");
             }).timeout(WAITSFOR_TIMEOUT);
         });
     });

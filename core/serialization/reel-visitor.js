@@ -147,11 +147,11 @@ exports.ReelVisitor = Montage.create(MontageVisitor, {
             var outputs = {};
             var hasBindings;
 
-            bindings.forEach(function (value) {
+            bindings.forEach(function (binding) {
                 var output = {};
-                var sourcePath = value.sourcePath;
+                var sourcePath = binding.sourcePath;
 
-                if (value.twoWay) {
+                if (!binding.oneway) {
                     output["<->"] = sourcePath;
                 } else {
                     output["<-"] = sourcePath;
@@ -159,11 +159,11 @@ exports.ReelVisitor = Montage.create(MontageVisitor, {
 
                 //TODO support converters
 
-                if (value.trace) {
+                if (binding.trace) {
                     output.trace = true;
                 }
 
-                outputs[value.targetPath] = output;
+                outputs[binding.targetPath] = output;
                 hasBindings = true;
             });
 
