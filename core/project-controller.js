@@ -170,15 +170,21 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
             // Add in components from the package being edited itself
             this.dependencies.unshift({dependency: "", url: this.environmentBridge.convertBackendUrlToPath(this.packageUrl)});
 
-            this.watchForFileChanges();
-
-            return Promise.all([this.populateFiles(), this.populateLibrary()])
-                .then(function () {
-                    self.dispatchEventNamed("didOpenPackage", true, false, {
-                        packageUrl: self.packageUrl
-                    });
-                    return packageUrl;
+            // Do these operations sequentially because populateLibrary and
+            // watchForFileChanges send a lot of data across the websocket,
+            // preventing the file list from appearing in a timely manner.
+            return this.populateFiles()
+            .then(function() {
+                // don't need to wait for this to complete
+                self.watchForFileChanges();
+                // want to wait for the library though
+                return self.populateLibrary();
+            }).then(function () {
+                self.dispatchEventNamed("didOpenPackage", true, false, {
+                    packageUrl: self.packageUrl
                 });
+                return packageUrl;
+            });
         }
     },
 
