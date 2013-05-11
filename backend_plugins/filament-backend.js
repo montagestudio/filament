@@ -9,6 +9,9 @@ var path = require("path"),
     PATH = require('path'),
     minimatch = require('minimatch');
 
+// Faster promises
+Q.longStackJumpLimit = 0;
+
 exports.getExtensions = function() {
     var extensionFolder = path.join(global.clientPath, "extensions");
     console.log("getExtensions from " + extensionFolder);
