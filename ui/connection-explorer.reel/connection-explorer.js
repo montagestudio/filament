@@ -125,6 +125,6 @@ exports.ConnectionExplorer = Montage.create(Component, /** @lends module:"./conn
             var listener = evt.detail.get("listener");
             this.editingDocument.removeOwnedObjectEventListener(targetObject, listener);
         }
-    },
+    }
 
 });
