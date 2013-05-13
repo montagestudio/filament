@@ -42,7 +42,8 @@
                     "target": "_blank"
                 },
                 "bindings": {
-                    "href": {"<-": "@owner.previewController.previewUrl"}
+                    "href": {"<-": "@owner.previewController.previewUrl"},
+                    "title": {"<-": "'Preview ' + @owner.previewController.previewUrl"}
                 }
             },
 
