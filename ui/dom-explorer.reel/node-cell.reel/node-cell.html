@@ -8,6 +8,11 @@
         "owner": {
             "properties": {
                 "element": {"#": "node-cell"}
+            },
+            "bindings": {
+                "classList.has('NodeCell--owner')": {
+                    "<-": "nodeInfo.component.label == 'owner'"
+                }
             }
         },
 
@@ -163,7 +168,7 @@
 </head>
 <body>
     <div data-montage-id="node-cell" class="NodeCell">
-        
+
         <span class="NodeCell-segment">
             <span data-montage-id="tagName" class="NodeCell-segment-item NodeCell-segment-item--tag"></span>
 
@@ -197,7 +202,7 @@
                 class="NodeCell-button NodeCell-button--child"
                 title="Append new node as last child"><i class="NodeCell-button-icon NodeCell-button-icon--child"></i></button>
         </span>
-        
+
     </div>
 </body>
 </html>
