@@ -44,6 +44,14 @@ exports.ConnectionExplorer = Montage.create(Component, /** @lends module:"./conn
         value: null
     },
 
+    showListeners: {
+        value: true
+    },
+
+    showBindings: {
+        value: true
+    },
+
     handleDragover: {
         enumerable: false,
         value: function (event) {

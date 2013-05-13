@@ -76,7 +76,7 @@
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "@bindingCreator.bindingModel"}
+                "condition": {"<-": "@bindingCreator.bindingModel && @owner.showBindings"}
             }
         },
 
@@ -129,7 +129,7 @@
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "@listenerCreator.listenerModel"}
+                "condition": {"<-": "@listenerCreator.listenerModel && @owner.showListeners"}
             }
         },
 
@@ -141,12 +141,59 @@
             "bindings": {
                 "editingDocument": {"<-": "@owner.editingDocument"}
             }
+        },
+
+        "showBindings": {
+            "prototype": "matte/ui/input-checkbox.reel",
+            "properties": {
+                "element": {"#": "showBindings"}
+            },
+            "bindings": {
+                "checked": {"<->": "@owner.showBindings"}
+            }
+        },
+
+        "bindingsCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "bindingsCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.showBindings"}
+            }
+        },
+
+        "showListeners": {
+            "prototype": "matte/ui/input-checkbox.reel",
+            "properties": {
+                "element": {"#": "showListeners"}
+            },
+            "bindings": {
+                "checked": {"<->": "@owner.showListeners"}
+            }
+        },
+
+        "listenersCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "listenersCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.showListeners"}
+            }
         }
     }
     </script>
 </head>
 <body>
     <div data-montage-id="connection-explorer" class="ConnectionExplorer">
+
+        <form>
+            <label><input data-montage-id="showBindings" type="checkbox">Show Bindings</label>
+            <label><input data-montage-id="showListeners" type="checkbox">Show Listeners</label>
+        </form>
 
         <div data-montage-id="bindingCreatorCondition">
             <div data-montage-id="bindingCreator"></div>
@@ -159,14 +206,14 @@
         <ul data-montage-id="objectList" class="ConnectionExplorer-list">
             <li class="ConnectionExplorer-list-item Connection">
                 <header data-montage-id="objectLabel" class="Connection-label"></header>
-                <section class="Connection-type Connection-type--bindings">
+                <section class="Connection-type Connection-type--bindings" data-montage-id="bindingsCondition">
                     <h2 class="Connection-type-title">Bindings</h2>
                     <ul data-montage-id="bindingList" class="Connection-type-list">
                         <li data-montage-id="bindingEntry"></li>
                     </ul>
                     <button data-montage-id="addButton" class="Connection-type-addButton">+</button>
                 </section>
-                <section class="Connection-type Connection-type--listeners">
+                <section class="Connection-type Connection-type--listeners" data-montage-id="listenersCondition">
                     <h2 class="Connection-type-title">Listeners</h2>
                     <ul data-montage-id="listenerList" class="Connection-type-list">
                         <li data-montage-id="listenerEntry"></li>
