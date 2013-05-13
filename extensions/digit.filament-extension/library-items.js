@@ -310,8 +310,8 @@ var InputRangeLibraryItem = Montage.create(LibraryItem, {
             "prototype": "digit/ui/input-range.reel",
             "properties": {
                 "element": {"#": "inputRange"},
-                "minValue": 0,
-                "maxValue": 100,
+                "min": 0,
+                "max": 100,
                 "value": 50
             }
         }
