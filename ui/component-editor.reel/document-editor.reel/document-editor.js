@@ -63,7 +63,7 @@ exports.DocumentEditor = Montage.create(Component, {
             document.editor = self;
 
             return this._deferredWorkbench.promise.then(function(workbench) {
-                var TEMPLATE = false, promise;
+                var TEMPLATE = true, promise;
                 if (!TEMPLATE) {
                     promise = workbench.load(document.fileUrl, document.packageRequire.location);
                 } else {
