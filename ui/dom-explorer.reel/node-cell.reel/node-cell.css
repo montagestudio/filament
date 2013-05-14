@@ -15,10 +15,6 @@
     background: hsl(0,0%,90%);
 }
 
-.NodeCell--owner .NodeCell-segment {
-    background: hsl(43, 100%, 85%);
-}
-
 .NodeCell-segment-item {
     display: block;
     padding: 0 12px;
@@ -30,6 +26,12 @@
 .NodeCell-segment-item--tag {
     color: hsl(0,0%,60%);
     text-transform: lowercase;
+}
+
+.NodeCell--owner .NodeCell-segment-item--tag {
+    background: hsl(43, 100%, 85%);
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
 }
 
 .NodeCell-segment-item--montageId {
