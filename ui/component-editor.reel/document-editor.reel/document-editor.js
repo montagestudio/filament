@@ -73,7 +73,12 @@ exports.DocumentEditor = Montage.create(Component, {
                     promise = document.packageRequire.async(module).then(function (component) {
                         return component[name]._loadTemplate();
                     }).then(function (template) {
-                        template.setBaseUrl(document.fileUrl);
+                        var fileUrl = document.fileUrl;
+                        // ensure trailing slash
+                        if (fileUrl.charAt(fileUrl.length -1) !== "/") {
+                            fileUrl += "/";
+                        }
+                        template.setBaseUrl(fileUrl);
                         return workbench.loadTemplate(template, module);
                     });
                 }
