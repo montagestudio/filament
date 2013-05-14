@@ -8,10 +8,10 @@ var Montage = require("montage").Montage,
     SORTERS = require("palette/core/sorters"),
     ComponentEditor = require("ui/component-editor.reel").ComponentEditor,
     ReelSerializer = require("core/serialization/reel-serializer").ReelSerializer,
-    ReelVisitor = require("core/serialization/reel-visitor").ReelVisitor,
     ReelReviver = require("core/serialization/reel-reviver").ReelReviver,
     ReelContext = require("core/serialization/reel-context").ReelContext,
-    NodeProxy = require("core/node-proxy").NodeProxy;
+    NodeProxy = require("core/node-proxy").NodeProxy,
+    SERIALIZATION_SCRIPT_TYPE = require("montage/core/template").Template._SERIALIZATON_SCRIPT_TYPE;
 
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = Montage.create(EditingDocument, {
@@ -301,18 +301,153 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             var filenameMatch = location.match(/.+\/(.+)\.reel/),
                 path,
                 template = this._template,
-                doc = this._template.document,
-                serializationElement;
+                html;
 
             if (!(filenameMatch && filenameMatch[1])) {
                 throw new Error('Components can only be saved into ".reel" directories');
             }
 
-            path = location + "/" + filenameMatch[1] + ".html";
-
             this._buildSerialization();
+            path = location + "/" + filenameMatch[1] + ".html";
+            html = this._getFormattedTemplateHtml(template);
 
-            return dataWriter(template.html, path);
+            return dataWriter(html, path);
+        }
+    },
+
+    _getFormattedTemplateHtml: {
+        value: function(template) {
+            var rootNode = template.document.documentElement,
+                html = getDoctypeString() + "\n",
+                indent = "    ";
+
+            function getIndentSpace(depth) {
+                return new Array(depth).join(indent);
+            }
+
+            function getDoctypeString() {
+                var doctype = template.document.doctype;
+
+                return "<!DOCTYPE " +
+                    doctype.name +
+                    (doctype.publicId ? ' PUBLIC "' + doctype.publicId + '"' : '') +
+                    (!doctype.publicId && doctype.systemId ? ' SYSTEM' : '') +
+                    (doctype.systemId ? ' "' + doctype.systemId + '"' : '') +
+                    '>';
+            }
+
+            function walkDom(rootNode, depth) {
+                depth = depth || 0;
+
+                if (rootNode.nodeType === Node.ELEMENT_NODE) {
+                    if (rootNode.tagName === "SCRIPT" &&
+                        rootNode.type === SERIALIZATION_SCRIPT_TYPE) {
+                        // skip serialization
+                    } else {
+                        walkElement(rootNode, depth);
+                    }
+                } else if (rootNode.nodeType === Node.TEXT_NODE) {
+                    walkText(rootNode, depth);
+                } else if (rootNode.nodeType === Node.COMMENT_NODE) {
+                    walkComment(rootNode, depth);
+                }
+            }
+
+            function walkElement(node, depth) {
+                var indentSpace = getIndentSpace(depth);
+
+                html += indentSpace;
+                openTag(node);
+                if (node.childNodes.length > 0) {
+                    html += "\n";
+                    walkChildNodes(node, depth);
+                    html += indentSpace;
+                }
+
+                // Add the serialization script as the last element of the head.
+                if (node.tagName === "HEAD") {
+                    addSerialization(depth + 1);
+                }
+
+                closeTag(node);
+            }
+
+            function walkText(node, depth) {
+                var indentSpace = getIndentSpace(depth),
+                    text;
+
+                // Trim the text.
+                text = node.nodeValue.replace(/^\s*|\s*$/g, "");
+                if (text) {
+                    html += indentSpace + text + "\n";
+                }
+            }
+
+            function walkComment(node, depth) {
+                var indentSpace = getIndentSpace(depth);
+
+                html += indentSpace + "<!--" + node.nodeValue + "-->\n";
+            }
+
+            function openTag(node) {
+                var tagName = node.tagName.toLowerCase(),
+                    attributes = walkAttributes(node.attributes);
+
+                html += "<" + tagName;
+                if (attributes) {
+                    html += " " + attributes;
+                }
+                html += ">";
+            }
+
+            function closeTag(node) {
+                var tagName = node.tagName.toLowerCase();
+
+                html += "</" + tagName + ">\n";
+            }
+
+            function walkChildNodes(node, depth) {
+                var childNodes = node.childNodes;
+
+                if (childNodes.length > 0) {
+                    for (var i = 0, childNode; childNode = childNodes[i]; i++) {
+                        walkDom(childNode, depth + 1);
+                    }
+                }
+            }
+
+            function walkAttributes(attributes) {
+                var attributeList = [];
+
+                for (var i = 0, attribute; attribute = attributes[i]; i++) {
+                    attributeList.push(attribute.nodeName + '="' + attribute.nodeValue + '"');
+                }
+
+                return attributeList.join(" ");
+            }
+
+            function addSerialization(depth) {
+                var indentSpace = getIndentSpace(depth);
+                html += indentSpace + '<script type="' + SERIALIZATION_SCRIPT_TYPE + '">\n' +
+                    formatSerialization(template.objectsString, depth) + "\n" +
+                    indentSpace + '</script>\n';
+            }
+
+            function formatSerialization(serialization, depth) {
+                var indentSpace = getIndentSpace(depth);
+
+                return serialization
+                    // Format element and object references into a single line
+                    .replace(/\{\s*(\"[#@]\")\s*:\s*(\"[^\"]+\")\s*\}/g, "{$1: $2}")
+                    // Format binding declarations into a single line
+                    .replace(/\{\s*(\"(?:<-|<->)\")\s*:\s*(\"[^\"]+\"\s*(?:,\s*\"converter\"\s*:\s*\{\s*\"@\"\s*:\s*\"[^\"]+\"\s*\}\s*|,\s*\"deferred\"\s*:\s*(true|false)\s*)*)\}/g, function(_, g1, g2) {
+                        return "{" + g1 + ": " + g2.replace(/,\s*/, ", ").replace(/\n\s*/, "") + "}";
+                    }).replace(/^/gm, indentSpace);
+            }
+
+            walkDom(rootNode);
+
+            return html;
         }
     },
 
