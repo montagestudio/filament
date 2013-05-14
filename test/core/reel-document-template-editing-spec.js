@@ -78,7 +78,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
         it("should create the node proxy with the expected element", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                var nodeProxy = reelDocument.createTemplateNode("div");
+                var nodeProxy = reelDocument.createTemplateNode("<div>");
                 expect(nodeProxy).toBeTruthy();
                 expect(nodeProxy.tagName.toLowerCase()).toBe("div");
             }).timeout(WAITSFOR_TIMEOUT);
@@ -86,7 +86,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
         it("must not consider the nodeProxy part of the template", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                var nodeProxy = reelDocument.createTemplateNode("div");
+                var nodeProxy = reelDocument.createTemplateNode("<div>");
                 expect(nodeProxy.isInTemplate).toBeFalsy();
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -255,7 +255,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
         it("should consider the nodeProxy as part of the template", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                var nodeProxy = reelDocument.createTemplateNode("p");
+                var nodeProxy = reelDocument.createTemplateNode("<p>");
                 reelDocument.appendChildToTemplateNode(nodeProxy);
                 expect(nodeProxy.isInTemplate).toBeTruthy();
             }).timeout(WAITSFOR_TIMEOUT);
@@ -263,7 +263,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
         it("must not allow appending to the body element", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                var nodeProxy = reelDocument.createTemplateNode("p");
+                var nodeProxy = reelDocument.createTemplateNode("<p>");
 
                 var bodyElement = reelDocument.htmlDocument.getElementsByTagName("body")[0];
                 var bodyProxy = reelDocument.nodeProxyForNode(bodyElement);
@@ -279,7 +279,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
         it("must not allow inserting before the body element", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                var nodeProxy = reelDocument.createTemplateNode("p");
+                var nodeProxy = reelDocument.createTemplateNode("<p>");
 
                 var bodyElement = reelDocument.htmlDocument.getElementsByTagName("body")[0];
                 var bodyProxy = reelDocument.nodeProxyForNode(bodyElement);
@@ -291,7 +291,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
         it("must not allow inserting before the owner element", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                var nodeProxy = reelDocument.createTemplateNode("p");
+                var nodeProxy = reelDocument.createTemplateNode("<p>");
 
                 var ownerElement = reelDocument.htmlDocument.getElementById("ownerElement");
                 var ownerNodeProxy = reelDocument.nodeProxyForNode(ownerElement);
@@ -303,7 +303,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
         it("should consider the nodeProxy as part of the template", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                var nodeProxy = reelDocument.createTemplateNode("p");
+                var nodeProxy = reelDocument.createTemplateNode("<p>");
                 var fooNode = reelDocument.editingProxyMap.foo.properties.get('element');
 
                 reelDocument.insertNodeBeforeTemplateNode(nodeProxy, fooNode);
@@ -313,7 +313,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
         it("should insert the nodeProxy before the specified sibling", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                var nodeProxy = reelDocument.createTemplateNode("p");
+                var nodeProxy = reelDocument.createTemplateNode("<p>");
                 var fooNode = reelDocument.editingProxyMap.foo.properties.get('element');
                 var fooParent = fooNode.parentNode;
 
@@ -331,7 +331,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
         it("must not allow inserting after the body element", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                var nodeProxy = reelDocument.createTemplateNode("p");
+                var nodeProxy = reelDocument.createTemplateNode("<p>");
 
                 var bodyElement = reelDocument.htmlDocument.getElementsByTagName("body")[0];
                 var bodyProxy = reelDocument.nodeProxyForNode(bodyElement);
@@ -343,7 +343,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
         it("must not allow inserting after the owner element", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                var nodeProxy = reelDocument.createTemplateNode("p");
+                var nodeProxy = reelDocument.createTemplateNode("<p>");
 
                 var ownerElement = reelDocument.htmlDocument.getElementById("ownerElement");
                 var ownerNodeProxy = reelDocument.nodeProxyForNode(ownerElement);
@@ -355,7 +355,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
         it("should consider the nodeProxy as part of the template", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                var nodeProxy = reelDocument.createTemplateNode("p");
+                var nodeProxy = reelDocument.createTemplateNode("<p>");
                 var fooNode = reelDocument.editingProxyMap.foo.properties.get('element');
 
                 reelDocument.insertNodeAfterTemplateNode(nodeProxy, fooNode);
@@ -365,7 +365,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
         it("should insert the nodeProxy before the specified sibling", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                var nodeProxy = reelDocument.createTemplateNode("p");
+                var nodeProxy = reelDocument.createTemplateNode("<p>");
                 var fooNode = reelDocument.editingProxyMap.foo.properties.get('element');
                 var fooParent = fooNode.parentNode;
 

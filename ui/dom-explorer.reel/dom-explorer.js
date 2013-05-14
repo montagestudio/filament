@@ -5,7 +5,8 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
-    Promise = require("montage/core/promise").Promise;
+    Promise = require("montage/core/promise").Promise,
+    emmet = require("core/filament-emmet");
 
 /**
     Description TODO
@@ -26,7 +27,7 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         value: null
     },
 
-    tagName: {
+    tag: {
         value: null
     },
 
@@ -87,14 +88,14 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
             this._deferredElement = Promise.defer();
 
             setTimeout(function () {
-                self.templateObjects.tagNameField.focus();
+                self.templateObjects.tagField.focus();
             }, 100);
 
             this._deferredElement.promise.then(function (newNode) {
                 if (newNode) {
                     insertionFunction(newNode);
                     self._deferredElement = null;
-                    self.tagName = null;
+                    self.tag = null;
                 }
             }).done();
         }
@@ -102,11 +103,11 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
     handleSubmit: {
         value: function (evt) {
-
             if (this._elementCreationForm === evt.target) {
                 evt.stop();
-                if (this.tagName) {
-                    var newNode = this.editingDocument.createTemplateNode(this.tagName);
+                if (this.tag) {
+                    var html = emmet.expandAbbreviation(this.tag);
+                    var newNode = this.editingDocument.createTemplateNode(html);
                     this._deferredElement.resolve(newNode);
                 }
             }
@@ -122,7 +123,7 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
                 if (this._deferredElement) {
                     this._deferredElement.resolve(null);
                     this._deferredElement = null;
-                    this.tagName = null;
+                    this.tag = null;
                 }
             }
         }

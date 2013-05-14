@@ -42,13 +42,13 @@
             }
         },
 
-        "tagNameField": {
+        "tagField": {
             "prototype": "matte/ui/input-text.reel",
             "properties": {
-                "element": {"#": "tagNameField"}
+                "element": {"#": "tagField"}
             },
             "bindings": {
-                "value": {"<->": "@owner.tagName"}
+                "value": {"<->": "@owner.tag"}
             }
         },
 
@@ -86,7 +86,7 @@
     <div data-montage-id="dom-explorer" class="DomExplorer">
         <span data-montage-id="isCreatingElementCondition">
             <form data-montage-id="elementCreationForm">
-                <input type="text" data-montage-id="tagNameField">
+                <input type="text" data-montage-id="tagField">
                 <button type="reset">⨂</button>
                 <button type="submit">✓</button>
             </form>

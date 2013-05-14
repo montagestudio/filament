@@ -20,7 +20,8 @@
         "watchr": "2.3.3",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#matte-edge",
         "minit": "0.3.0-alpha",
-        "minimatch": "0.2.9"
+        "minimatch": "0.2.9",
+        "underscore": "1.4.4"
     },
     "devDependencies": {
         "jasmine-node": "1.2.2",

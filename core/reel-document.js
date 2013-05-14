@@ -1196,7 +1196,8 @@ exports.ReelDocument = Montage.create(EditingDocument, {
     },
 
     /**
-     * Create a node proxy for a new element of the specified tagName.
+     * Create a node proxy for a new element with the given HTML. The given
+     * HTML must be a single element with no children.
      * This node proxy is not part of the template until it is explicitly
      * added to the template through one of the available methods.
      *
@@ -1206,8 +1207,13 @@ exports.ReelDocument = Montage.create(EditingDocument, {
      * @return {NodeProxy} A proxy for the newly created element.
      */
     createTemplateNode: {
-        value: function (tagName) {
-            var element = this.htmlDocument.createElement(tagName);
+        value: function (html) {
+            var container = this.htmlDocument.createElement("div");
+            container.innerHTML = html;
+            var element = container.firstChild;
+            if (element.children.length) {
+                throw new Error("Cannot create template node for element with children");
+            }
             return NodeProxy.create().init(element, this);
         }
     },
