@@ -8,15 +8,23 @@ var TOP_COUNT = 5;
 // The highest acceptable cyclomatic-complexity
 var MAX_CYCLOMATIC = 10;
 
-FS.listTree(".", function (path, stat) {
-    if (/node_modules|test/.test(path)) {
-        return null;
-    }
-    if (stat.isDirectory()) {
-        return false;
-    }
+// Ignore the same files as when linting
+FS.read(".jshintignore")
+.then(function (content) {
+    // do some naive parsing of the globs to regex
+    return new RegExp(content.trim().replace(/\*\*/g, ".*").replace(/\n/g, "|"));
+})
+.then(function (ignoreRe) {
+    return FS.listTree(".", function (path, stat) {
+        if (ignoreRe.test(path)) {
+            return null;
+        }
+        if (stat.isDirectory()) {
+            return false;
+        }
 
-    return (/.js$/).test(path);
+        return (/.js$/).test(path);
+    });
 })
 .then(function (tree) {
     return Q.all(tree.map(function (filename) {
@@ -31,7 +39,7 @@ FS.listTree(".", function (path, stat) {
                 });
             });
         }).fail(function (error) {
-            throw new Error("Can't analyse " + filename + " because: " + error.message);
+            console.error("Can't analyse " + filename + " because: " + error.message);
         });
     }));
 })
