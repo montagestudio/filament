@@ -1,7 +1,68 @@
-/* Jig Skin
+/* Jig
  * Overrides Matte 
  * Used for: binding-jig.reel, listener-jig.reel
  * -------------------------------- */
+
+
+.Jig {
+    font-size: 12px;
+    background: white;
+    margin: 8px 6px 8px 8px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.1);
+}
+
+.Jig-row {
+    display: -webkit-flex;
+    -webkit-justify-content: flex-end;
+    padding: 0 5px;
+}
+
+.Jig-section {
+    margin: 10px 5px;
+    -webkit-flex: 1;
+}
+
+.Jig-targetObjectLabel {
+    -webkit-flex: .25;
+    min-width: 100px;
+    margin: 0 6px 0 0;
+    font-weight: bold;
+    vertical-align: top;
+    text-align: right;
+    line-height: 38px;
+    color: hsl(0,0%,40%);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.Jig-label {
+    display: block;
+    margin-bottom: 4px;
+    color: hsl(0,0%,50%);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.Jig-input {
+    width: 100%;
+}
+
+.Jig-footer {
+    padding: 0px 9px 10px 10px;
+    text-align: right;
+}
+
+.Jig-footer .matte-Button {
+    margin: 0 0 0 10px;
+}
+
+
+
+
+
 
 
 /* Button */

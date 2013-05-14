@@ -1,76 +1,14 @@
-.BindingJig {
-    font-size: 12px;
-    background: white;
-    margin: 8px 6px 8px 8px;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.1);
-}
-
-
-.BindingJig-row {
-    display: -webkit-flex;
-    padding: 0 5px;
-}
-
-.BindingJig-targetObjectLabel {
-    -webkit-flex: .25;
-    min-width: 100px;
-    margin: 0 6px 0 0;
-    font-weight: bold;
-    vertical-align: top;
-    text-align: right;
-    line-height: 38px;
-    color: hsl(0,0%,40%);
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-}
 
 /* BindingJig sections ---------------------- */
-
-.BindingJig-section {
-    margin: 10px 5px;
-}
 
 .BindingJig-section--target {
     -webkit-flex: .5;
 }
 
-.BindingJig-section--source {
-    -webkit-flex: 1;
+.BindingJig-section--direction {
+    -webkit-flex: none;
 }
 
-.BindingJig-label {
-    display: block;
-    margin-bottom: 4px;
-    color: hsl(0,0%,50%);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.BindingJig-input {
-    width: 100%;
-}
-
-.BindingJig .matte-Select {
-    margin: 0;
-    height: 24px;
-    padding: 0 16px 0 6px;
-}
-
-.BindingJig .matte-InputCheckbox {
-    margin: 0 10px 0 0;
-}
-
-.BindingJig-footer {
-    padding: 0px 9px 10px 10px;
-    text-align: right;
-}
-
-.BindingJig-footer .BindingJig-button {
-    margin: 0 0 0 10px;
-}
 
 
 /* BindingJig direction ---------------------- */
@@ -78,15 +16,15 @@
 .BindingJig-direction {
     position: relative;
     padding-left: 1px;
-    margin: 0 6px 0 0;
+    margin: 0 -1px 0 0;
     font-size: 0;
 }
 
 .BindingJig-radio {
     margin: 0 0 0 -1px;
-    width: 24px;
-    height: 24px;
-    background-position: center 1px, center;
+    width: 30px;
+    height: 30px;
+    background-position: center;
     background-repeat: no-repeat;
     border-color: hsl(0,0%,80%);
     background-color: hsl(0,0%,94%);

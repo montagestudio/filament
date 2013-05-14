@@ -2,7 +2,6 @@
 <html>
 <head>
     <title></title>
-    <link href="../../assets/styles/jig-skin.css" rel="stylesheet">
     <link href="listener-jig.css" rel="stylesheet">
     
     <script type="text/montage-serialization">{
@@ -106,28 +105,28 @@
 <body>
     <div data-montage-id="listener-jig" class="Jig ListenerJig">
         
-        <div class="ListenerJig-row">
+        <div class="Jig-row">
             
-            <span data-montage-id="targetObjectLabel" class="ListenerJig-targetObjectLabel"></span>
+            <span data-montage-id="targetObjectLabel" class="Jig-targetObjectLabel"></span>
             
-            <section class="ListenerJig-section">
-                <label class="ListenerJig-label">Event Type</label>
-                <input data-montage-id="typeField" class="ListenerJig-input" type="text">
+            <section class="Jig-section">
+                <label class="Jig-label">Event Type</label>
+                <input data-montage-id="typeField" class="Jig-input" type="text">
             </section>
             
-            <section class="ListenerJig-section">
-                <label class="ListenerJig-label">Listener</label>
-                <input data-montage-id="listenerField" class="ListenerJig-input" type="text">
+            <section class="Jig-section">
+                <label class="Jig-label">Listener</label>
+                <input data-montage-id="listenerField" class="Jig-input" type="text">
             </section>
             
         </div>
         
-        <div  class="ListenerJig-row">
+        <div  class="Jig-row">
             <label class="ListenerJig-phase"><input data-montage-id="useCapture" type="radio" name="phase"> Capture</label>
             <label class="ListenerJig-phase"><input data-montage-id="useBubble" type="radio" name="phase"> Bubble</label>
         </div>
         
-        <footer class="ListenerJig-footer">
+        <footer class="Jig-footer">
             <button data-montage-id="cancelButton"></button>
             <button data-montage-id="addListenerButton" class="Button--action"></button>
         </footer>
