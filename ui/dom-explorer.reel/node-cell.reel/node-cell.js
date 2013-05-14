@@ -14,13 +14,29 @@ var Montage = require("montage").Montage,
 */
 exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel".NodeCell# */ {
 
-    nodeInfo: {
+    _nodeInfo: {
         value: null
     },
+    nodeInfo: {
+        get: function() {
+            return this._nodeInfo;
+        },
+        set: function(value) {
+            if (this._nodeInfo === value) {
+                return;
+            }
 
-    didCreate: {
-        value: function () {
-            this.addOwnPropertyChangeListener("nodeInfo.depth", this);
+            if (this._nodeInfo) {
+                this._nodeInfo.removeOwnPropertyChangeListener("depth", this);
+            }
+
+            this._nodeInfo = value;
+
+            if (value) {
+                value.addOwnPropertyChangeListener("depth", this);
+            }
+
+            this.needsDraw = true;
         }
     },
 
