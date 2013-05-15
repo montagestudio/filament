@@ -402,6 +402,8 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
             //TODO this is a hack to refresh the dpeth of everythign on a change
             this.templateNodes = this._children(this._templateBodyNode);
+
+            this.dispatchEventNamed("domModified", true, false);
         }
     },
 

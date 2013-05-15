@@ -62,6 +62,8 @@ exports.DocumentEditor = Montage.create(Component, {
             self.editingDocument = document;
             document.editor = self;
 
+            document.addEventListener("domModified", this, false);
+
             return this._deferredWorkbench.promise.then(function(workbench) {
                 var TEMPLATE = true, promise;
                 if (!TEMPLATE) {
@@ -86,6 +88,19 @@ exports.DocumentEditor = Montage.create(Component, {
                 return promise.then(function (liveStageInfo) {
                     document.associateWithLiveRepresentations(liveStageInfo.owner, liveStageInfo.template, liveStageInfo.frame);
                 });
+            });
+        }
+    },
+
+    refresh: {
+        value: function () {
+            var self = this;
+
+            return this.workbench.refresh(this.editingDocument._template)
+            .then(function (liveStageInfo) {
+                self.editingDocument.associateWithLiveRepresentations(
+                    liveStageInfo.owner, liveStageInfo.template, liveStageInfo.frame
+                );
             });
         }
     },
@@ -147,15 +162,16 @@ exports.DocumentEditor = Montage.create(Component, {
         }
     },
 
+    handleDomModified: {
+        value: function () {
+            console.log("handleDomModified");
+            this.refresh().done();
+        }
+    },
+
     handleRefreshAction: {
         value: function () {
-            var self = this;
-            this.workbench.refresh(this.editingDocument._template)
-            .then(function (liveStageInfo) {
-                self.editingDocument.associateWithLiveRepresentations(
-                    liveStageInfo.owner, liveStageInfo.template, liveStageInfo.frame
-                );
-            }).done();
+            this.refresh().done();
         }
     },
 
