@@ -190,19 +190,6 @@
 <body>
     <div data-montage-id="connection-explorer" class="ConnectionExplorer">
 
-        <form>
-            <label><input data-montage-id="showBindings" type="checkbox">Show Bindings</label>
-            <label><input data-montage-id="showListeners" type="checkbox">Show Listeners</label>
-        </form>
-
-        <div data-montage-id="bindingCreatorCondition">
-            <div data-montage-id="bindingCreator"></div>
-        </div>
-
-        <div data-montage-id="listenerCreatorCondition">
-            <div data-montage-id="listenerCreator"></div>
-        </div>
-
         <ul data-montage-id="objectList" class="ConnectionExplorer-list">
             <li class="ConnectionExplorer-list-item Connection">
                 <header data-montage-id="objectLabel" class="Connection-label"></header>
@@ -222,6 +209,22 @@
                 </section>
             </li>
         </ul>
+
+        <footer class="ConnectionExplorer-footer">
+            <div data-montage-id="bindingCreatorCondition">
+                <div data-montage-id="bindingCreator"></div>
+            </div>
+    
+            <div data-montage-id="listenerCreatorCondition">
+                <div data-montage-id="listenerCreator"></div>
+            </div>
+            
+            <form>
+                <label><input data-montage-id="showBindings" type="checkbox">Show Bindings</label>
+                <label><input data-montage-id="showListeners" type="checkbox">Show Listeners</label>
+            </form>
+        </footer>
+        
     </div>
 </body>
 </html>

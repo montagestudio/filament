@@ -13,8 +13,11 @@
     border-right: 1px solid hsl(0, 0%, 75%);
 }
 
-.ComponentEditor-column-fill {
+.ComponentEditor-column-row {
     min-height: 80px;
+}
+
+.ComponentEditor-column-row--fill {
     -webkit-flex: 1 1 auto;
     overflow: hidden;
     padding: 8px;
@@ -22,28 +25,12 @@
     background: hsl(0, 0%, 86%);
 }
 
-.ComponentEditor-column-fill::-webkit-scrollbar {
-    -webkit-appearance: none;
-    width: 8px;
-    height: 0px;
-    background-color: hsla(0,0%,0%,0);
-}
-
-.ComponentEditor-column-fill::-webkit-scrollbar-thumb {
-    border-radius: 2px;
-    border: 3px solid hsla(0,0%,0%,0);
-    background-clip: padding-box;
-    background-color: hsla(0,0%,0%,.15);
-}
-
-.ComponentEditor-column-fill.documentEditorSlot {
+.ComponentEditor-column-row--documentEditor {
     display: -webkit-flex;
 }
 
-.ComponentEditor-column-fixed {
+.ComponentEditor-column-row--fixed {
     -webkit-flex: 0 1 200px;
-    min-height: 50px;
-    overflow: scroll;
     font-size: 12px;
     text-shadow: 0 1px 0 hsla(0,0%,100%,0.4);
     padding: 0;

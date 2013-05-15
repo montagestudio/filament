@@ -1,9 +1,13 @@
 .ConnectionExplorer {
-    
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
 }
 
 .ConnectionExplorer-list {
-    margin: 6px 0 0 0;
+    -webkit-flex: 1;
+    min-height: 0;
+    overflow: scroll;
+    margin: 0;
     padding: 0;
     list-style: none;
 }
