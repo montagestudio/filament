@@ -407,6 +407,22 @@ exports.ReelDocument = Montage.create(EditingDocument, {
         }
     },
 
+    __removeNodeProxy: {
+        value: function (proxy) {
+            //Remove from Editing Model
+            var index = this.templateNodes.indexOf(proxy);
+            if (index >= 0) {
+                this.templateNodes.splice(index, 1);
+            }
+
+            proxy.children.forEach(function (child) {
+                this.__removeNodeProxy(child);
+            }, this);
+
+            this.dispatchEventNamed("domModified", true, false);
+        }
+    },
+
     associateWithLiveRepresentations: {
         value: function (owner, template, frame) {
             var labels = Object.keys(owner.templateObjects),
@@ -1167,32 +1183,13 @@ exports.ReelDocument = Montage.create(EditingDocument, {
 
     removeTemplateNode: {
         value: function (nodeProxy) {
-
             // Don't allow removing the body or the owner's element
             if (!this.canRemoveTemplateNode(nodeProxy)) {
                 return;
             }
 
-            //Remove from template DOM
-            var node = nodeProxy._templateNode;
-            node.parentElement.removeChild(node);
-
-            //Remove from Editing Model
-            var index = this.templateNodes.indexOf(nodeProxy);
-            if (index >= 0) {
-                this.templateNodes.splice(index, 1);
-            }
-
             nodeProxy.parentNode.removeChild(nodeProxy);
-
-            //Remove children from EditingModel (temporary until this happens automatically)
-            nodeProxy.children.forEach(function (childProxy) {
-                index = this.templateNodes.indexOf(childProxy);
-                if (index >= 0) {
-                    this.templateNodes.splice(index, 1);
-                }
-            }, this);
-
+            this.__removeNodeProxy(nodeProxy);
             return nodeProxy;
         }
     },

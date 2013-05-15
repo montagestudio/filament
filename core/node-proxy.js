@@ -132,6 +132,8 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
 
     removeChild: {
         value: function (nodeProxy) {
+            this._templateNode.removeChild(nodeProxy._templateNode);
+
             //TODO ensure child is actually a child
             var index = this.children.indexOf(nodeProxy);
             if (index >= 0) {
