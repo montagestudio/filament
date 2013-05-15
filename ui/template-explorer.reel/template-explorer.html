@@ -82,7 +82,7 @@
                 "isSelectionEnabled": true
             },
             "bindings": {
-                "contentController": {"<-": "@owner.templateObjectsController"}
+                "contentController": {"<-": "@owner.templateObjectsControllerWithoutOwner"}
             }
         },
 
@@ -94,6 +94,16 @@
             "bindings": {
                 "templateObject": {"<-": "@templateObjectList.objectAtCurrentIteration"},
                 "zoom": {"<-": "@owner.zoom"}
+            }
+        },
+
+        "ownerCell": {
+            "prototype": "./owner-cell.reel",
+            "properties": {
+                "element": {"#": "ownerCell"}
+            },
+            "bindings": {
+                "templateObject": {"<-": "@owner.editingDocument.editingProxyMap.owner"}
             }
         },
 
@@ -165,6 +175,9 @@
                 <button data-montage-id="increaseZoomFactorButton" class="Button TemplateExplorerTools-button">+</button>
             </div>
         </header>
+
+        <section data-montage-id="ownerCell"></section>
+
         <section class="TemplateExplorer-viewport">
             <div data-montage-id="schematics">
                 <ul data-montage-id="templateObjectList" class="TemplateExplorer-list" >

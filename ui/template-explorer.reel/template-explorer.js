@@ -5,7 +5,8 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
-    MimeTypes = require("core/mime-types");
+    MimeTypes = require("core/mime-types"),
+    RangeController = require("montage/core/range-controller").RangeController;
 
 /**
     Description TODO
@@ -19,6 +20,10 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             this.addPathChangeListener("zoom", this, "scheduleDraw");
             this.addPathChangeListener("offsetX", this, "scheduleDraw");
             this.addPathChangeListener("offsetY", this, "scheduleDraw");
+
+            this.templateObjectsControllerWithoutOwner = RangeController.create();
+            this.templateObjectsControllerWithoutOwner.defineBinding("content", {"<-": "templateObjectsController.organizedContent.filter{label != 'owner'}", source: this});
+            this.templateObjectsControllerWithoutOwner.defineBinding("selection", {"<->": "templateObjectsController.selection", source: this});
         }
     },
 
@@ -27,6 +32,10 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     },
 
     templateObjectsController: {
+        value: null
+    },
+
+    templateObjectsControllerWithoutOwner: {
         value: null
     },
 

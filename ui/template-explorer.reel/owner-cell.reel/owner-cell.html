@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="owner-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner-cell"}
+            },
+            "bindings": {
+                "classList.has('TemplateObjectCell--owner')": {
+                    "<-": "@owner.templateObject.label == 'owner'"
+                }
+            }
+        },
+
+        "icon": {
+            "prototype": "matte/ui/image.reel",
+            "properties": {
+                "element": {"#": "icon"}
+            }
+        },
+
+        "templateObjectLabel": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "templateObjectLabel"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.label"}
+            }
+        },
+
+        "templateObjectExportName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "templateObjectExportName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.exportName"}
+            }
+        },
+
+        "commentCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "commentCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.templateObject.comment"}
+            }
+        },
+
+        "templateObjectComment": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "templateObjectComment"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.comment"}
+            }
+        },
+
+        "templateObjectTag": {
+            "prototype": "montage/ui/component",
+            "properties": {
+                "element": {"#": "templateObjectTag"},
+                "hasTemplate": false
+            },
+            "bindings": {
+                "classList.has('TemplateObjectTag-label--invalid')": {"<-": "!@owner.templateObject.properties.get('element').isInTemplate"}
+            }
+        },
+
+        "elementTagName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "elementTagName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.properties.get('element').tagName"}
+            }
+        },
+
+        "elementId": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "elementId"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.properties.get('element').montageId"}
+            }
+        },
+
+        "templateObjectEvent": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "templateObjectEvent"}
+            }
+        },
+
+        "listenerList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "listenerList"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.templateObject.listeners"}
+            }
+        },
+
+        "eventType": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "eventType"}
+            },
+            "bindings": {
+                "value": {"<-": "@listenerList.objectAtCurrentIteration.type"}
+            }
+        },
+
+        "listenerLabel": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "listenerLabel"}
+            },
+            "bindings": {
+                "value": {"<-": "'@' + @listenerList.objectAtCurrentIteration.listener.label"}
+            }
+        },
+
+        "bind": {
+            "prototype": "montage/composer/press-composer",
+            "properties": {
+                "component": {"@": "owner"},
+                "element": {"#": "bindButton"}
+            },
+            "listeners": [
+                {
+                    "type": "press",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner-cell" class="OwnerCell">
+        <header>
+            <img data-montage-id="icon" class="TemplateObjectCell-icon" src="../../../assets/img/library-icon.png">
+            <div class="TemplateObjectCell-header-flex">
+                <h3 data-montage-id="templateObjectLabel"></h3>
+                <label data-montage-id="templateObjectExportName"></label>
+            </div>
+        </header>
+        
+        <div data-montage-id="commentCondition">
+            <p data-montage-id="templateObjectComment"></p>
+        </div>
+
+        <section>
+            <h2>Owner Blueprint Property Editor</h2>
+        </section>
+
+        <ul class="TemplateObjectCell-list">
+            <li data-montage-id="templateObjectTag" class="TemplateObjectCell-list-item TemplateObjectTag">
+                <img class="TemplateObject-list-icon" src="/assets/icons/tag.png">
+                <span class="TemplateObjectTag-label">
+                    <span data-montage-id="elementTagName"></span>
+                    <em  data-montage-id="elementId"></em>
+                </span>
+            </li>
+            <li class="TemplateObjectCell-list-item TemplateObjectEvent">
+                <img data-montage-id="bindButton" class="TemplateObject-list-icon" src="/assets/icons/event.png">
+                <input data-montage-id="templateObjectEvent" class="TemplateObject-input" type="text">
+                <ul data-montage-id="listenerList" class="TemplateObjectEvent-list">
+                    <li><em data-montage-id="eventType"></em> <strong data-montage-id="listenerLabel"></strong></li>
+                </ul>
+            </li>
+        </ul>
+        
+    </div>
+</body>
+</html>
