@@ -28,12 +28,6 @@
     text-transform: lowercase;
 }
 
-.NodeCell--owner .NodeCell-segment-item--tag {
-    background: hsl(43, 100%, 85%);
-    border-top-left-radius: inherit;
-    border-bottom-left-radius: inherit;
-}
-
 .NodeCell-segment-item--montageId {
     border-left: 1px solid hsla(0,0%,0%,.1);
     font-weight: bold;
@@ -47,6 +41,11 @@
     color: hsla(0, 0%, 0%, 0.64);
     border-left: 1px solid hsl(210, 100%, 84%);
     background: hsl(210, 100%, 90%);
+}
+
+.NodeCell--owner .NodeCell-segment-item--component {
+    background: hsl(43, 100%, 85%);
+    border-left-color: hsl(43, 100%, 65%);
 }
 
 
