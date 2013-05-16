@@ -6,13 +6,11 @@ var Montage = require("montage").Montage,
 exports.BlueprintObjectProxy = Montage.create(EditingProxy, {
 
     init:{
-        value:function (label, proxiedObject, exportId, editingDocument) {
-            var self = EditingProxy.init.call(this, label, proxiedObject, exportId, editingDocument);
+        value:function (label, serialization, exportId, editingDocument) {
+            var self = EditingProxy.init.call(this, label, serialization, exportId, editingDocument);
 
-            self._proxiedObject = proxiedObject;
-            self._exportId = proxiedObject.blueprintInstanceModuleId;
-            self._moduleId = proxiedObject.moduleId;
-            self._exportName = proxiedObject.prototypeName;
+            self._proxiedObject = serialization;
+            self._exportId = exportId || serialization.prototype;
 
             return self;
         }

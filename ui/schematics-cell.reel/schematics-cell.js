@@ -28,7 +28,7 @@ exports.SchematicsCell = Montage.create(Component, /** @lends module:"./schemati
                 return;
             }
 
-            var icon = this.proxyObjects.icon.element;
+            var icon = this.proxyObject.icon.element;
             icon.addEventListener("dragstart", this, false);
             icon.addEventListener("mousedown", this, false);
             icon.addEventListener("dragend", this, false);
@@ -79,8 +79,8 @@ exports.SchematicsCell = Montage.create(Component, /** @lends module:"./schemati
 
     handleTranslateStart: {
         value: function (evt) {
-            this.proxyObjects.translateComposer.translateX = this.x;
-            this.proxyObjects.translateComposer.translateY = this.y;
+            this.proxyObject.translateComposer.translateX = this.x;
+            this.proxyObject.translateComposer.translateY = this.y;
             this.classList.add(CLASS_PREFIX + "--dragging");
         }
     },
