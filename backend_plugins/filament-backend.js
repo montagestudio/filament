@@ -27,7 +27,7 @@ exports.getExtensions = function() {
 };
 
 exports.createApplication = function(name, packageHome) {
-    return minitCreate("app", {name: name, "packageHome": packageHome});
+    return minitCreate("digit", {name: name, "packageHome": packageHome});
 };
 
 exports.createComponent = function(name, packageHome, destination) {
