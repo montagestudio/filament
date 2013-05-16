@@ -1,6 +1,7 @@
 var Montage = require("montage").Montage,
     EditingDocument = require("palette/core/editing-document").EditingDocument,
     EditingController = require("palette/core/controller/editing-controller").EditingController,
+    TemplateFormatter = require("palette/core/template-formatter").TemplateFormatter,
     Template = require("montage/core/template").Template,
     Promise = require("montage/core/promise").Promise,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
@@ -280,18 +281,17 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             var filenameMatch = location.match(/.+\/(.+)\.reel/),
                 path,
                 template = this._template,
-                doc = this._template.document,
-                serializationElement;
+                html;
 
             if (!(filenameMatch && filenameMatch[1])) {
                 throw new Error('Components can only be saved into ".reel" directories');
             }
 
-            path = location + "/" + filenameMatch[1] + ".html";
-
             this._buildSerializationObjects();
+            path = location + "/" + filenameMatch[1] + ".html";
+            html = TemplateFormatter.create().init(template).getHtml();
 
-            return dataWriter(template.html, path);
+            return dataWriter(html, path);
         }
     },
 
