@@ -3,6 +3,7 @@
     text-shadow: 0 1px 0 hsla(0, 0%, 100%, 0.5);
     background: hsl(43, 100%, 85%);
     border-top: 1px solid hsla(0,0%,0%,.1);
+    cursor: default;
 }
 
 
