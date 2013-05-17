@@ -167,16 +167,8 @@
 </head>
 <body>
     <div data-montage-id="template-explorer" class="TemplateExplorer">
-        <header class="TemplateExplorer-bar TemplateExplorerTools">
-            <span data-montage-id="zoomSlider" class="TemplateExplorerTools-zoomSlider"></span>
-            <div class="matte-ButtonGroup">
-                <button data-montage-id="decreaseZoomFactorButton" class="Button TemplateExplorerTools-button">-</button>
-                <button data-montage-id="clearZoomFactorButton" class="Button TemplateExplorerTools-button"></button>
-                <button data-montage-id="increaseZoomFactorButton" class="Button TemplateExplorerTools-button">+</button>
-            </div>
-        </header>
 
-        <section data-montage-id="ownerCell"></section>
+        <header data-montage-id="ownerCell"></header>
 
         <section class="TemplateExplorer-viewport">
             <div data-montage-id="schematics">
@@ -185,6 +177,16 @@
                 </ul>
             </div>
         </section>
+        
+        <footer class="TemplateExplorer-bar TemplateExplorerTools">
+            <span data-montage-id="zoomSlider" class="TemplateExplorerTools-zoomSlider"></span>
+            <div class="matte-ButtonGroup">
+                <button data-montage-id="decreaseZoomFactorButton" class="Button TemplateExplorerTools-button">-</button>
+                <button data-montage-id="clearZoomFactorButton" class="Button TemplateExplorerTools-button"></button>
+                <button data-montage-id="increaseZoomFactorButton" class="Button TemplateExplorerTools-button">+</button>
+            </div>
+        </footer>
+        
     </div>
 </body>
 </html>
