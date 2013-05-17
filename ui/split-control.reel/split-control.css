@@ -5,6 +5,7 @@
     display: -webkit-flex;
     position: relative;
     background: hsl(301, 56%, 46%);
+    outline: none;
 }
 
 .SplitControl.SplitControl--vertical {
