@@ -46,65 +46,6 @@ exports.ReelProxy = Montage.create(EditingProxy, {
         }
     },
 
-    _exportId: {
-        value: null
-    },
-
-    /**
-     * The exportId of the object this proxy represents
-     * @note An exportId is comprised of a moduleId and either an explicit or implicit exportName
-     * @example "foo/bar/baz[Baz]"
-     */
-    exportId: {
-        get: function () {
-            return this._exportId;
-        }
-    },
-
-    _moduleId: {
-        value: null
-    },
-
-    /**
-     * The moduleId portion of the exportId string
-     * @example "foo/bar/baz"
-     */
-    moduleId: {
-        get: function () {
-            if (!this._moduleId && this._exportId) {
-                var fileUrl = this.editingDocument.url;
-                var packageUrl = this.editingDocument.packageRequire.location;
-                var baseModuleId = "";
-                if (fileUrl.indexOf(packageUrl) > -1) {
-                    baseModuleId = fileUrl.substring(packageUrl.length);
-                }
-
-                var moduleId = MontageReviver.parseObjectLocationId(this._exportId).moduleId;
-                if (moduleId[0] === "." && (moduleId[1] === "." || moduleId[1] === "/")) {
-                    moduleId = this.editingDocument.packageRequire.resolve(baseModuleId + "/" + moduleId, baseModuleId);
-                }
-                this._moduleId = moduleId;
-            }
-            return this._moduleId;
-        }
-    },
-
-    _exportName: {
-        value: null
-    },
-
-    /**
-     * The exportName portion of the exportId
-     */
-    exportName: {
-        get: function () {
-            if (!this._exportName && this._exportId) {
-                this._exportName = MontageReviver.parseObjectLocationId(this._exportId).objectName;
-            }
-            return this._exportName;
-        }
-    },
-
     /**
      * The live object this editingProxy is representing
      * @note Edits made to the proxy are set on the live objects, this may not be the case forever
