@@ -1,0 +1,19 @@
+.OwnerCell .TemplateObjectCell-header {
+    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.5);
+    text-shadow: 0 1px 0 hsla(0, 0%, 100%, 0.5);
+    background: hsl(43, 100%, 85%);
+    border-top: 1px solid hsla(0,0%,0%,.1);
+}
+
+
+.OwnerCell .TemplateObjectCell-list {
+    display: -webkit-flex;
+}
+
+.OwnerCell .TemplateObjectCell-list-item {
+    -webkit-flex: 1;
+}
+
+.OwnerCell .TemplateObjectEvent {
+    border-left: 1px solid hsla(0, 0%, 0%, .1);
+}

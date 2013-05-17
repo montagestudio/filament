@@ -151,19 +151,20 @@
 </head>
 <body>
     <div data-montage-id="owner-cell" class="OwnerCell">
-        <header>
+        
+        <header class="TemplateObjectCell-header">
             <img data-montage-id="icon" class="TemplateObjectCell-icon" src="../../../assets/img/library-icon.png">
             <div class="TemplateObjectCell-header-flex">
-                <h3 data-montage-id="templateObjectLabel"></h3>
-                <label data-montage-id="templateObjectExportName"></label>
+                <h3 data-montage-id="templateObjectLabel" class="TemplateObjectCell-title"></h3>
+                <label data-montage-id="templateObjectExportName" class="TemplateObjectCell-exportName"></label>
             </div>
         </header>
         
         <div data-montage-id="commentCondition">
-            <p data-montage-id="templateObjectComment"></p>
+            <p data-montage-id="templateObjectComment" class="TemplateObjectCell-comment"></p>
         </div>
 
-        <section>
+        <section style="display: none;">
             <h2>Owner Blueprint Property Editor</h2>
         </section>
 
