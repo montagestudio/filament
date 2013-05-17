@@ -5,7 +5,7 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
 
     proxyType: {
         get: function() {
-            return "NodeProxy"
+            return "NodeProxy";
         }
     },
 

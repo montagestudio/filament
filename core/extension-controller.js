@@ -103,10 +103,10 @@ exports.ExtensionController = Montage.create(Target, {
             // TODO npm install?
             return require.loadPackage(extensionUrl).then(function (packageRequire) {
                 return packageRequire.async("extension");
-            }, function (error) {
+            },function (error) {
                 console.log("Could not load extension package at: " + extensionUrl);
                 return Promise.reject(new Error("Could not load extension package at: " + extensionUrl, error));
-             }).then(function (exports) {
+            }).then(function (exports) {
                     var extension = exports.Extension;
 
                     if (!extension) {
@@ -118,7 +118,7 @@ exports.ExtensionController = Montage.create(Target, {
                     }
 
                     return extension;
-                }, function(error) {
+                }, function (error) {
                     console.log("Could not load extension at: " + extensionUrl);
                     return Promise.reject(new Error("Could not load extension at: " + extensionUrl, error));
                 });
@@ -134,7 +134,7 @@ exports.ExtensionController = Montage.create(Target, {
     activateExtension: {
         value: function (extension) {
             if (!extension) {
-                return
+                return;
             }
             var activationPromise;
 
@@ -167,7 +167,7 @@ exports.ExtensionController = Montage.create(Target, {
     deactivateExtension: {
         value: function (extension) {
             if (!extension) {
-                return
+                return;
             }
 
             var deactivationPromise,
