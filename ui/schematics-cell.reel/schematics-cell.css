@@ -1,4 +1,7 @@
 .SchematicsCell {
+}
+
+.SchematicsCellParent {
     display: -webkit-inline-flex;
     -webkit-flex-direction: column;
     position: relative;
@@ -14,7 +17,7 @@
     background: hsl(0, 0%, 94%);
 }
 
-.SchematicsCell:after {
+.SchematicsCellParent:after {
     content: "";
     pointer-events: none;
     position: absolute;
@@ -25,24 +28,24 @@
     background: -webkit-linear-gradient(-45deg, hsla(0,0%,0%,0) 50%, hsla(0,0%,0%,.1) 50% );
 }
 
-.SchematicsCell:hover {
+.SchematicsCellParent:hover {
     z-index: 101;
     box-shadow: 0 2px 3px hsla(0,0%,0%,.3);
     border-color: hsl(0,0%,50%);
 }
 
-.SchematicsCell.selected {
+.SchematicsCellParent.selected {
     z-index: 100;
     border-color: hsl(210,100%,60%);
     box-shadow: 0 0 3px 1px hsla(210,100%,70%,0.7);
 }
 
-.SchematicsCell.selected:hover {
+.SchematicsCellParent.selected:hover {
     z-index: 101;
     border-color: hsl(210,100%,50%);
 }
 
-.SchematicsCell--dragging {
+.SchematicsCellParent--dragging {
     z-index: 102;
 }
 

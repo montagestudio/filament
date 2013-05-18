@@ -7,29 +7,46 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "blueprint-object-cell"}
+                "element": {
+                    "#": "blueprint-object-cell"
+                }
             }
         },
 
         "schematicsCell": {
             "prototype": "filament/ui/schematics-cell.reel",
             "properties": {
-                "element": {"#": "schematics-cell"}
+                "element": {
+                    "#": "schematics-cell"
+                }
             },
             "bindings": {
-                "proxyObject": {"<-": "@owner.blueprintObjectProxy"},
-                "zoom": {"<-": "@owner.zoom"}
+                "proxyObject": {
+                    "<-": "@owner.blueprintObjectProxy"
+                },
+                "zoom": {
+                    "<-": "@owner.zoom"
+                }
             }
         },
 
         "blueprintInspector": {
             "prototype": "palette/ui/inspector/blueprint/editor.reel",
             "properties": {
-                "element": {"#": "blueprint-inspector"}
+                "element": {
+                    "#": "blueprint-inspector"
+                }
             },
             "bindings": {
-                "object": {"<-": "@owner.blueprintObjectProxy"},
-                "editingDocument": {"<-": "@owner.editingDocument"}
+                "object": {
+                    "<-": "@owner.blueprintObjectProxy"
+                },
+                "objectBlueprint": {
+                    "<-": "@owner.objectBlueprint"
+                },
+                "editingDocument": {
+                    "<-": "@owner.editingDocument"
+                }
             }
         }
 
@@ -37,10 +54,10 @@
     </script>
 </head>
 <body>
-    <div data-montage-id="blueprint-object-cell" class="BlueprintObjectCell">
+    <li data-montage-id="blueprint-object-cell" class="BlueprintObjectCell">
         <div data-montage-id="schematics-cell">
             <div data-montage-id="blueprint-inspector"></div>
         </div>
-    </div>
+    </li>
 </body>
 </html>

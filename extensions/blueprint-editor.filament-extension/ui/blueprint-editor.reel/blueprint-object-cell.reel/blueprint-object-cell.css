@@ -1,3 +1,19 @@
 .BlueprintObjectCell {
 
 }
+
+.BlueprintObjectCell .BlueprintInspector {
+    -webkit-box-shadow: 0 2px 5px hsl(0,0%,20%);
+    padding: 8px;
+    border-radius: 6px;
+    background: hsl(0, 0%, 86%);
+}
+
+.BlueprintObjectCell .Editor-header {
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.BlueprintObjectCell .PropertyEditor {
+    background: hsl(0,0%,94%);
+}

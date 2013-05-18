@@ -5,25 +5,48 @@ var Montage = require("montage").Montage,
 
 exports.BlueprintObjectProxy = Montage.create(EditingProxy, {
 
-    init:{
-        value:function (label, serialization, exportId, editingDocument) {
+    init: {
+        value: function (label, serialization, exportId, editingDocument) {
             var self = EditingProxy.init.call(this, label, serialization, exportId, editingDocument);
 
             self._proxiedObject = serialization;
             self._exportId = exportId || serialization.prototype;
 
+
+            if (self.moduleId && (self.moduleId !== "") && self.exportName && (self.exportName !== "")) {
+                self.editingDocument.packageRequire.async(self.moduleId).get(self.exportName).get("blueprint").then(function (blueprint) {
+                    self.objectBlueprint = blueprint;
+                },function () {
+                    throw(new Error("Could not load blueprint for: " + self.moduleId + "[" + self.exportName + "]", error));
+                }).done();
+            } else {
+                debugger;
+                self.objectBlueprint = null;
+            }
+
             return self;
         }
     },
 
-    _proxiedObject:{
-        value:null
+    _proxiedObject: {
+        value: null
     },
 
 
-    proxiedObject:{
-        get: function() {
+    proxiedObject: {
+        get: function () {
             return this._proxiedObject;
+        }
+    },
+
+    _objectBlueprint: {
+        value: null
+    },
+
+
+    objectBlueprint: {
+        get: function () {
+            return this._objectBlueprint;
         }
     },
 
@@ -75,10 +98,11 @@ exports.BlueprintObjectProxy = Montage.create(EditingProxy, {
         }
     },
 
-    packageRequire:{
-        get:function () {
+    packageRequire: {
+        get: function () {
             return this.editingDocument.packageRequire;
         }
     }
 
-});
+})
+;

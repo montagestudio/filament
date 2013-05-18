@@ -28,10 +28,12 @@ exports.SchematicsCell = Montage.create(Component, /** @lends module:"./schemati
                 return;
             }
 
-            var icon = this.proxyObject.icon.element;
+            var icon = this.templateObjects.icon.element;
             icon.addEventListener("dragstart", this, false);
             icon.addEventListener("mousedown", this, false);
             icon.addEventListener("dragend", this, false);
+
+            this.element.parentElement.classList.add("SchematicsCellParent")
         }
     },
 
@@ -79,8 +81,8 @@ exports.SchematicsCell = Montage.create(Component, /** @lends module:"./schemati
 
     handleTranslateStart: {
         value: function (evt) {
-            this.proxyObject.translateComposer.translateX = this.x;
-            this.proxyObject.translateComposer.translateY = this.y;
+            this.templateObjects.translateComposer.translateX = this.x;
+            this.templateObjects.translateComposer.translateY = this.y;
             this.classList.add(CLASS_PREFIX + "--dragging");
         }
     },
@@ -103,7 +105,7 @@ exports.SchematicsCell = Montage.create(Component, /** @lends module:"./schemati
             var x = this.x ? this.x : 0,
                 y = this.y ? this.y : 0;
 
-            this.element.style.webkitTransform = "translate3d(" + x + "px," + y + "px, 0)";
+            this.element.parentElement.style.webkitTransform = "translate3d(" + x + "px," + y + "px, 0)";
         }
     }
 

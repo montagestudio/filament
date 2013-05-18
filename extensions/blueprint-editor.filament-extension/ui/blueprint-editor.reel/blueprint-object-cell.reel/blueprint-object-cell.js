@@ -13,7 +13,6 @@ var Montage = require("montage").Montage,
 */
 exports.BlueprintObjectCell = Montage.create(Component, /** @lends module:"./blueprint-object-cell.reel".BlueprintObjectCell# */ {
 
-
     zoom: {
         value: 1
     },
