@@ -31,7 +31,7 @@
         },
 
         "blueprintInspector": {
-            "prototype": "palette/ui/inspector/blueprint/editor.reel",
+            "prototype": "palette/ui/inspector/blueprint/blueprint-editor.reel",
             "properties": {
                 "element": {
                     "#": "blueprint-inspector"
@@ -42,7 +42,7 @@
                     "<-": "@owner.blueprintObjectProxy"
                 },
                 "objectBlueprint": {
-                    "<-": "@owner.objectBlueprint"
+                    "<-": "@owner.blueprintObjectProxy.objectBlueprint"
                 },
                 "editingDocument": {
                     "<-": "@owner.editingDocument"

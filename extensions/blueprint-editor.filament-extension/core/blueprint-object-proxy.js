@@ -12,15 +12,24 @@ exports.BlueprintObjectProxy = Montage.create(EditingProxy, {
             self._proxiedObject = serialization;
             self._exportId = exportId || serialization.prototype;
 
-
             if (self.moduleId && (self.moduleId !== "") && self.exportName && (self.exportName !== "")) {
-                self.editingDocument.packageRequire.async(self.moduleId).get(self.exportName).get("blueprint").then(function (blueprint) {
-                    self.objectBlueprint = blueprint;
-                },function () {
-                    throw(new Error("Could not load blueprint for: " + self.moduleId + "[" + self.exportName + "]", error));
+                self.editingDocument.packageRequire.async(self.moduleId).get(self.exportName).then(function (target) {
+                    if (target && target.blueprint) {
+                        target.blueprint.then(function (blueprint) {
+                            self.dispatchBeforeOwnPropertyChange("objectBlueprint", self._objectBlueprint);
+                            self._objectBlueprint = blueprint;
+                            self.dispatchOwnPropertyChange("objectBlueprint", blueprint);
+                        },function (error) {
+                            throw(new Error("Could not load blueprint for: " + self.moduleId + "[" + self.exportName + "]", error));
+                        }).done();
+                    } else {
+                        // We say nothing. There could be reference that are implicitily created
+                        throw(new Error("Target module has no blueprint: " + self.moduleId + "[" + self.exportName + "]"));
+                    }
+                },function (error) {
+                    throw(new Error("Could not load module: " + self.moduleId + "[" + self.exportName + "]", error));
                 }).done();
             } else {
-                debugger;
                 self.objectBlueprint = null;
             }
 
