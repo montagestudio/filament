@@ -621,6 +621,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                 };
                 item.name = objectName;
                 item.html = '<div data-montage-id="' + montageId + '"></div>';
+                item.icon = "http://client/assets/img/library-icon.png";
             }
 
             return item;
