@@ -64,6 +64,7 @@ exports.ComponentEditor = Montage.create(Editor, {
 
                 if (!editor) {
                     editor = DocumentEditor.create();
+                    editor.projectController = this.projectController;
                     editor.viewController = this.viewController;
                     editor.load(document).done();
                     this._documentEditorMap.set(document, editor);

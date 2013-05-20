@@ -55,6 +55,9 @@
             "prototype": "matte/ui/image.reel",
             "properties": {
                 "element": {"#": "icon"}
+            },
+            "bindings": {
+                "src": {"<-": "@owner.templateObject.editingDocument.editor.projectController.libraryItemForModuleId(@owner.templateObject.moduleId, @owner.templateObject.exportName).icon"}
             }
         },
 
@@ -187,18 +190,18 @@
 <body>
     <li data-montage-id="template-object-cell" class="TemplateObjectCell">
         <header data-montage-id="templateHeaderHandle" class="TemplateObjectCell-header">
-            <img data-montage-id="icon" class="TemplateObjectCell-icon" src="../../../assets/img/library-icon.png">
+            <img data-montage-id="icon" class="TemplateObjectCell-icon" src="">
             <div class="TemplateObjectCell-header-flex">
                 <h3 data-montage-id="templateObjectLabel" class="TemplateObjectCell-title"></h3>
                 <label data-montage-id="templateObjectExportName" class="TemplateObjectCell-exportName"></label>
             </div>
             <i class="TemplateObjectCell-commentButton"></i>
         </header>
-        
+
         <div data-montage-id="commentCondition">
             <p data-montage-id="templateObjectComment" class="TemplateObjectCell-comment"></p>
         </div>
-        
+
         <ul class="TemplateObjectCell-list">
             <li data-montage-id="templateObjectTag" class="TemplateObjectCell-list-item TemplateObjectTag">
                 <img class="TemplateObject-list-icon" src="/assets/icons/tag.png">
@@ -215,7 +218,7 @@
                 </ul>
             </li>
         </ul>
-        
+
     </li>
 </body>
 </html>
