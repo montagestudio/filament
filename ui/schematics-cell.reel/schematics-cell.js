@@ -33,7 +33,7 @@ exports.SchematicsCell = Montage.create(Component, /** @lends module:"./schemati
             icon.addEventListener("mousedown", this, false);
             icon.addEventListener("dragend", this, false);
 
-            this.element.parentElement.classList.add("SchematicsCellParent")
+            this.element.parentElement.classList.add("SchematicsCellParent");
         }
     },
 
