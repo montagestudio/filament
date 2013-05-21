@@ -12,7 +12,7 @@ describe("core/reel-document-saving-spec", function () {
         it("should have all the expected labels", function () {
             return mockReelDocument("foo/bar/mock.reel", {"owner": {"properties": {}}, "foo": {"prototype": "foo.reel"}})
                 .then(function (reelDocument) {
-                    var serialization = reelDocument._buildSerialization();
+                    var serialization = reelDocument._buildSerializationObjects();
                     expect(serialization.owner).toBeTruthy();
                     expect(serialization.foo).toBeTruthy();
                 }).timeout(WAITSFOR_TIMEOUT);
@@ -21,7 +21,7 @@ describe("core/reel-document-saving-spec", function () {
         it("must have the owner label before any other labels", function () {
             return mockReelDocument("foo/bar/mock.reel", {"owner": {"properties": {}}, "alpha": {"prototype": "alpha.reel"}})
                 .then(function (reelDocument) {
-                    var serializationString = JSON.stringify(reelDocument._buildSerialization()),
+                    var serializationString = JSON.stringify(reelDocument._buildSerializationObjects()),
                         ownerLabelIndex = serializationString.indexOf('"owner":'),
                         alphaLabelIndex = serializationString.indexOf('"alpha":');
 
@@ -32,7 +32,7 @@ describe("core/reel-document-saving-spec", function () {
         it("should have labels in alphabetical order", function () {
             return mockReelDocument("foo/bar/mock.reel", {"beta": {"prototype": "beta.reel"}, "owner": {"properties": {}}, "alpha": {"prototype": "alpha.reel"}})
                 .then(function (reelDocument) {
-                    var serializationString = JSON.stringify(reelDocument._buildSerialization()),
+                    var serializationString = JSON.stringify(reelDocument._buildSerializationObjects()),
                         ownerLabelIndex = serializationString.indexOf('"owner":'),
                         alphaLabelIndex = serializationString.indexOf('"alpha":'),
                         betaLabelIndex = serializationString.indexOf('"beta":');
@@ -65,7 +65,7 @@ describe("core/reel-document-saving-spec", function () {
 
         it("should serialize a one-way binding correctly", function () {
             return promisedDocument.then(function (reelDocument) {
-                var serialization = reelDocument._buildSerialization();
+                var serialization = reelDocument._buildSerializationObjects();
                 expect(serialization.foo.bindings).toBeTruthy();
                 expect(serialization.foo.bindings.value).toBeTruthy();
                 expect(serialization.foo.bindings.value["<-"]).toBe("@owner.aProperty");
@@ -74,7 +74,7 @@ describe("core/reel-document-saving-spec", function () {
 
         it("should serialize a two-way binding correctly", function () {
             return promisedDocument.then(function (reelDocument) {
-                var serialization = reelDocument._buildSerialization();
+                var serialization = reelDocument._buildSerializationObjects();
                 expect(serialization.foo.bindings).toBeTruthy();
                 expect(serialization.foo.bindings.anotherValue).toBeTruthy();
                 expect(serialization.foo.bindings.anotherValue["<->"]).toBe("@owner.anotherProperty");
@@ -102,7 +102,7 @@ describe("core/reel-document-saving-spec", function () {
             });
 
             return promisedDocument.then(function (reelDocument) {
-                var serialization = reelDocument._buildSerialization();
+                var serialization = reelDocument._buildSerializationObjects();
                 expect(serialization.foo.listeners).toBeTruthy();
                 expect(serialization.foo.listeners[0].type).toBe("fooEvent");
                 expect(serialization.foo.listeners[0].listener["@"]).toBe("owner");
@@ -129,7 +129,7 @@ describe("core/reel-document-saving-spec", function () {
             });
 
             return promisedDocument.then(function (reelDocument) {
-                var serialization = reelDocument._buildSerialization();
+                var serialization = reelDocument._buildSerializationObjects();
                 expect(serialization.foo.listeners).toBeTruthy();
                 expect(serialization.foo.listeners[0].type).toBe("fooEvent");
                 expect(serialization.foo.listeners[0].listener["@"]).toBe("owner");

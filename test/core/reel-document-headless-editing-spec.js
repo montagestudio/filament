@@ -93,7 +93,7 @@ describe("core/reel-document-headless-editing-spec", function () {
         it("should add the component to the serialization of the editing document", function () {
             return readyPromise.spread(function (reelDocument, insertionTemplate) {
                 return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (proxies) {
-                    var templateSerialization = reelDocument._buildSerialization();
+                    var templateSerialization = reelDocument._buildSerializationObjects();
                     expect(templateSerialization.myComponent).toBeTruthy();
                 });
             }).timeout(WAITSFOR_TIMEOUT);
@@ -142,7 +142,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                     templateSerialization;
 
                 return removalPromise.then(function () {
-                    templateSerialization = reelDocument._buildSerialization();
+                    templateSerialization = reelDocument._buildSerializationObjects();
                     expect(templateSerialization[labelInOwner]).toBeUndefined();
                 });
             }).timeout(WAITSFOR_TIMEOUT);
@@ -169,7 +169,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
                 return removalPromise.then(function () {
                     expect(reelDocument.editingProxies.length).toBe(2);
-                    templateSerialization = reelDocument._buildSerialization();
+                    templateSerialization = reelDocument._buildSerializationObjects();
                     expect(templateSerialization.owner).toBeTruthy();
                     expect(templateSerialization.bar).toBeTruthy();
                 });
@@ -249,7 +249,7 @@ describe("core/reel-document-headless-editing-spec", function () {
         it("should add the component to the serialization of the editing document", function () {
             return readyPromise.spread(function (reelDocument, insertionTemplate) {
                 return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (addedObjects) {
-                    var templateSerialization = reelDocument._buildSerialization();
+                    var templateSerialization = reelDocument._buildSerializationObjects();
                     expect(templateSerialization.myController).toBeTruthy();
                 });
             }).timeout(WAITSFOR_TIMEOUT);
@@ -292,7 +292,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                     templateSerialization;
 
                 return removalPromise.then(function () {
-                    templateSerialization = reelDocument._buildSerialization();
+                    templateSerialization = reelDocument._buildSerializationObjects();
                     expect(templateSerialization[labelInOwner]).toBeUndefined();
                 });
             }).timeout(WAITSFOR_TIMEOUT);
@@ -306,7 +306,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
                 return removalPromise.then(function () {
                     expect(reelDocument.editingProxies.length).toBe(2);
-                    templateSerialization = reelDocument._buildSerialization();
+                    templateSerialization = reelDocument._buildSerializationObjects();
                     expect(templateSerialization.owner).toBeTruthy();
                     expect(templateSerialization.foo).toBeTruthy();
                 });
@@ -335,7 +335,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                     templateSerialization;
 
                 reelDocument.setOwnedObjectProperty(proxyToEdit, "prop", "myValue");
-                templateSerialization = reelDocument._buildSerialization();
+                templateSerialization = reelDocument._buildSerializationObjects();
 
                 expect(templateSerialization[labelInOwner].properties.prop).toBe("myValue");
             });
