@@ -57,40 +57,18 @@
 
 .NodeCell .NodeCell-removeButton {
     visibility: hidden;
-    width: 22px;
-    height: 22px;
-    min-width: 22px;
-    margin: 0;
-    padding: 0;
-    line-height: 0;
-    font-size: 12px;
-    color: hsl(0,0%,60%);
-    text-shadow: 0 1px hsla(0,0%,100%,0.4);
-    border-radius: 11px;
-    border: 1px solid hsl(0,0%,90%);
-    background: transparent;
-}
-
-.NodeCell .NodeCell-removeButton:hover {
-    border-color: hsl(0,0%,76%);
-    background: -webkit-linear-gradient( hsl(120,0%,97%), hsl(120,0%,88%) );
-}
-
-.NodeCell .NodeCell-removeButton.active {
-    background: hsl(0,0%,84%);
-    box-shadow: 0 1px 2px hsla(0,0%,0%,.06);
 }
 
 
 
 /* Add Buttons ---------------------------- */
 
-.NodeCell .NodeCell-button:hover {
+.NodeCell .matte-Button.NodeCell-button:hover {
     background: transparent;
     opacity: 1;
 }
 
-.NodeCell .NodeCell-button {
+.NodeCell .matte-Button.NodeCell-button {
     opacity: 0;
     position: absolute;
     width: 200px;
@@ -98,6 +76,7 @@
     border-radius: 0;
     border: none;
     background: transparent;
+    box-shadow: none;
 }
 
 .NodeCell .NodeCell-button--before {
