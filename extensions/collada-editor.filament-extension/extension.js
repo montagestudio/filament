@@ -105,6 +105,7 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
     handleWillCloseDocument:{
         value:function (evt) {
             var location = evt.detail.url;
+            var self = this;
             //consider using event.detail.isCurrentDocument
             if (this.editorFileMatchFunction(location)) {
                 self.projectController.currentDocument.compiledFileURL = null;

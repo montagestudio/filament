@@ -1,3 +1,4 @@
+/*global lumieres */
 var Montage = require("montage/core/core").Montage,
     CoreAssetCompiler = require("filament-asset-compiler/core/asset-compiler").AssetCompiler,
     Promise = require("montage/core/promise").Promise,
@@ -37,7 +38,7 @@ var AssetCompiler = exports.AssetCompiler = Montage.create(CoreAssetCompiler, {
                 filePathURL).then (function(outputPath) {
                     console.log("outputPath:"+outputPath);
                     deferred.resolve(preURL+outputPath);
-            }, function(e) {
+                }, function(e)  {
                 deferred.reject(e);
             }).done ();
             return deferred.promise;
