@@ -8,7 +8,7 @@
 /* Button --------------------------------- */
 
 .matte-Button.Button,
-.matte-Confirm-actions > .cancel {    
+.matte-Popup-footer .matte-Button {    
     white-space: nowrap;
     color: hsla(0,0%,0%,.7);
     text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
@@ -18,25 +18,26 @@
 }
 
 .matte-Button.Button:hover,
-.matte-Confirm-actions > .cancel:hover {
+.matte-Popup-footer .matte-Button:hover {
     background-image: -webkit-linear-gradient(top, hsl(0,0%,100%), hsl(0,0%,92%) );
 }
 
 .matte-Button.Button.active,
-.matte-Confirm-actions > .cancel.active {
+.matte-Popup-footer .matte-Button.active {
     background-image: -webkit-linear-gradient(top, hsl(0,0%,90%), hsl(0,0%,90%) );
     box-shadow: inset 0 -1px 1px hsla(0,0%,0%,.04), 0 1px 0 hsla(0,0%,100%,.6);
 }
 
 .matte-Button.Button:focus,
-.matte-Confirm-actions > .cancel:focus {
+.matte-Popup-footer .matte-Button:focus {
     border-color: #7f7f7f;
 }
 
 
 /* Button Action --------------------------------- */
 
-.matte-Button.Button--action {    
+.matte-Button.Button--action,
+.matte-Popup-footer .matte-Button.submit {    
     color: hsla(0,0%,100%,1);
     text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
     border-color: hsl(210,100%,50%);
@@ -45,17 +46,20 @@
     box-shadow: inset 0 1px 0 hsla(0,0%,100%,.15), 0 1px 0 hsla(0,0%,100%,.6);
 }
 
-.matte-Button.Button--action:hover {
+.matte-Button.Button--action:hover,
+.matte-Popup-footer .matte-Button.submit:hover {
     color: hsla(0,0%,100%,1);
     background-image: -webkit-linear-gradient(top, hsl(210,100%,70%), hsl(210,100%,60%) );
 }
 
-.matte-Button.Button--action.active {
+.matte-Button.Button--action.active,
+.matte-Popup-footer .matte-Button.submit.active {
     background-image: -webkit-linear-gradient(top, hsl(210,100%,56%), hsl(210,100%,56%) );
     box-shadow: 0 1px 0 hsla(0,0%,100%,.6);
 }
 
-.matte-Button.Button--action:focus {
+.matte-Button.Button--action:focus,
+.matte-Popup-footer .matte-Button.submit:focus {
     border-color: hsl(210,100%,20%);
 }
 
