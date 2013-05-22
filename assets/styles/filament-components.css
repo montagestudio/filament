@@ -142,3 +142,62 @@
     border-color: transparent;
 	background: hsl(0,0%,85%);
 }
+
+
+
+/* Toolbar --------------------------------- */
+
+.Toolbar {
+    display: -webkit-flex;
+    -webkit-justify-content: space-between;
+    -webkit-align-items: center;
+    height: 34px;
+    padding-bottom: 1px; /* Fixes vertical centering */
+    border-top: 1px solid hsla(0, 0%, 100%, 1);
+    background: -webkit-linear-gradient( hsl(0, 0%, 98%), hsl(0, 0%, 94%) );
+}
+
+.Toolbar--top {
+    border-radius: 4px 4px 0 0;
+}
+
+.Toolbar--bottom {
+    border-radius: 0 0 4px 4px;
+}
+
+
+/* Toolbar Button */
+
+.Toolbar-button {
+    height: 20px;
+    font-size: 10px;
+    margin: 0 7px;
+}
+
+.Toolbar .matte-ButtonGroup {
+    display: -webkit-flex;
+    margin: 0 7px;
+    line-height: 0;
+}
+
+
+/* Toolbar Slider */
+
+.Toolbar-slider {
+    -webkit-flex: 1 1 auto;
+    min-width: 0;
+    margin: 0 8px;
+    max-width: 200px;
+    height: 16px;
+    border-radius: 8px;
+    border-color: hsl(0, 0%, 74%);
+    box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, 0.1), 0 1px 0 hsla(0, 0%, 100%, .6);
+}
+
+.Toolbar-slider .matte-InputRange-thumb {
+    height: 16px;
+    margin: -8px 0 0 -1px;
+    border-color: hsl(0, 0%, 74%);
+    background-image: -webkit-linear-gradient(top, hsl(0, 0%, 98%), hsl(0, 0%, 90%) );
+    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, .8), inset 0 -1px 1px hsla(0, 0%, 0%, .04);
+}

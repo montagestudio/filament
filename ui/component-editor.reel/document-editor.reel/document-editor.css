@@ -10,27 +10,6 @@
     position: relative;
 }
 
-
-/* Bar --------------------------------- */
-
-.DocumentEditor-bar {
-    display: -webkit-flex;
-    -webkit-justify-content: space-between;
-    -webkit-align-items: center;
-    height: 34px;
-    border-radius: 4px 4px 0 0;
-    padding-bottom: 1px; /* Fixes vertical centering */
-    border-top: 1px solid hsla(0, 0%, 100%, 1);
-    background: -webkit-linear-gradient( hsl(0, 0%, 98%), hsl(0, 0%, 94%) );
-}
-
-.DocumentEditor-bar .DocumentEditor-bar-button {
-    height: 20px;
-    font-size: 10px;
-    margin: 0 7px;
-}
-
-
 /* Workbench --------------------------------- */
 
 .DocumentEditor .Workbench {
