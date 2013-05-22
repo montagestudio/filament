@@ -12,10 +12,7 @@
 .Loader {
     position: relative;
     font-size: 0;
-    -webkit-animation: loader 12s 1.4s linear infinite;
 }
-@-webkit-keyframes loader { 100% { -webkit-transform: rotate(-360deg); } }
-
 
 .montage-app-bootstrapping .Loader-cube,
 .montage-app-loading .Loader-cube {
@@ -28,39 +25,35 @@
     margin: -20px;
     width: 40px;
     height: 40px;
+    opacity: .5;
     -webkit-mask: url(../img/icon.svg) no-repeat center center;
     -webkit-mask-size: 100%;
-    -webkit-transform-origin: 22px 22px;
+    -webkit-animation: blink 1.2s 0s steps(1) infinite;
 }
+
+@-webkit-keyframes blink { 50% { opacity: 1; } }
 
 .Loader-cube:nth-child(1) {
-    top: -16px;
+    top: -24px;
     left: 0px;
     background-color: #B8CE36;
-    -webkit-transform: rotate(90deg);
-    -webkit-animation: loader1 1.2s 0s cubic-bezier(.4,0,0,1) infinite;
+    -webkit-transform: rotate(70deg);
 }
-@-webkit-keyframes loader1 { 100% { -webkit-transform: rotate(-270deg); } }
-
 
 .Loader-cube:nth-child(2) {
     top: 24px;
     left: -24px;
     background-color: #F47E18;
-    -webkit-transform: rotate(-35deg);
-    -webkit-animation: loader2 1.2s .4s cubic-bezier(.4,0,0,1) infinite;
+    -webkit-animation-delay: .4s;
 }
-@-webkit-keyframes loader2 { 100% { -webkit-transform: rotate(-395deg); } }
-
 
 .Loader-cube:nth-child(3) {
     top: 24px;
     left: 24px;
     background-color: #56AAF6; 
     -webkit-transform: rotate(-145deg);
-    -webkit-animation: loader3 1.2s .8s cubic-bezier(.4,0,0,1) infinite;
+    -webkit-animation-delay: .8s;
 }
-@-webkit-keyframes loader3 { 100% { -webkit-transform: rotate(-505deg); } }
 
 
 
