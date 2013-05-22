@@ -1,0 +1,6 @@
+.ColladaEditor {
+    display: -webkit-flex;
+    -webkit-flex: auto;
+    -webkit-justify-content: center;
+    -webkit-align-items: center;
+}
