@@ -202,7 +202,6 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
                 undoneValue = proxy.getObjectProperty(property);
 
             if (undoneValue !== value) {
-                console.log("setOwnedObjectProperty " + property + "  " + value);
 
                 //TODO maybe the proxy shouldn't be involved in doing this as we hand out the proxies
                 // throughout the editingEnvironment, I don't want to expose accessible editing APIs

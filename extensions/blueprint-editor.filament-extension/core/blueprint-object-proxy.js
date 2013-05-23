@@ -9,12 +9,12 @@ exports.BlueprintObjectProxy = Montage.create(EditingProxy, {
         value: function (label, serialization, exportId, editingDocument) {
             var self = EditingProxy.init.call(this, label, serialization, exportId, editingDocument);
 
-            self._proxiedObject = serialization;
             self._exportId = exportId || serialization.prototype;
 
             if (self.moduleId && (self.moduleId !== "") && self.exportName && (self.exportName !== "")) {
                 self.editingDocument.packageRequire.async(self.moduleId).get(self.exportName).then(function (target) {
                     if (target && target.blueprint) {
+                        self._proxiedObject = target;
                         target.blueprint.then(function (blueprint) {
                             self.dispatchBeforeOwnPropertyChange("objectBlueprint", self._objectBlueprint);
                             self._objectBlueprint = blueprint;
@@ -56,6 +56,16 @@ exports.BlueprintObjectProxy = Montage.create(EditingProxy, {
     objectBlueprint: {
         get: function () {
             return this._objectBlueprint;
+        }
+    },
+
+    getObjectProperty: {
+        value: function (property) {
+            var value = this.properties.get(property);
+            if ((typeof value === "undefined") && this.proxiedObject) {
+                value = this.proxiedObject[property];
+            }
+            return value;
         }
     },
 
