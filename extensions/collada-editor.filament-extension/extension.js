@@ -72,7 +72,7 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
             this.projectController = projectController;
 
             application.addEventListener("didOpenDocument", this, false);
-            application.addEventListener("willOpenDocument", this, false);
+            application.addEventListener("willCloseDocument", this, false);
 
             projectController.registerUrlMatcherForDocumentType(this.editorFileMatchFunction, ColladaDocument);
 
@@ -92,12 +92,13 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
             var self = this;
             var location = evt.detail.document.fileUrl;
             //consider using event.detail.isCurrentDocument
-            if (this.editorFileMatchFunction(location)) {
-                //console.log("convert file a location file location:"+location);
-                this.assetCompiler.convert(location).then(function(outputURL) {
-                    self.projectController.currentDocument.compiledFileURL = outputURL;
-                }, function(e) {}).done();
-
+            if (evt.detail.alreadyOpened === false) {
+                if (this.editorFileMatchFunction(location)) {
+                    //console.log("convert file a location file location:"+location);
+                    this.assetCompiler.convert(location).then(function(outputURL) {
+                        self.projectController.currentDocument.compiledFileURL = outputURL;
+                    }, function(e) {}).done();
+                }
             }
         }
     },
