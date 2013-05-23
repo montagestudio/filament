@@ -17,3 +17,7 @@
 .BlueprintObjectCell .PropertyEditor {
     background: hsl(0,0%,94%);
 }
+
+.BlueprintObjectCell .PropertyGroup-toggle {
+    display: none; /* Removes the toggle, since it doesn't neet to get collapsed. */
+}
