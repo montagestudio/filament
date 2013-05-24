@@ -55,8 +55,21 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     enterDocument: {
         value: function (firstTime) {
             if (!firstTime) { return; }
+            this._element.addEventListener("dragstart", this);
             this._element.addEventListener("dragover", this, false);
             this._element.addEventListener("drop", this, false);
+        }
+    },
+
+    handleDragstart: {
+        value: function (event) {
+            var montageId = this.nodeInfo.montageId;
+            if (montageId) {
+                event.dataTransfer.effectAllowed = 'all';
+
+                event.dataTransfer.setData(MimeTypes.MONTAGE_TEMPLATE_ELEMENT, montageId);
+                event.dataTransfer.setData("text/plain", '{"#": "' + montageId + '"}');
+            }
         }
     },
 
