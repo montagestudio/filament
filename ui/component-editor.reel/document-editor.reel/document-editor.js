@@ -96,6 +96,8 @@ exports.DocumentEditor = Montage.create(Component, {
         value: function () {
             var self = this;
 
+            self.editingDocument._buildSerializationObjects();
+
             return this.workbench.refresh(this.editingDocument._template)
             .then(function (liveStageInfo) {
                 self.editingDocument.associateWithLiveRepresentations(
@@ -164,7 +166,6 @@ exports.DocumentEditor = Montage.create(Component, {
 
     handleDomModified: {
         value: function () {
-            console.log("handleDomModified");
             this.refresh().done();
         }
     },
