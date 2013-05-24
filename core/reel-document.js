@@ -247,6 +247,21 @@ exports.ReelDocument = Montage.create(EditingDocument, {
         }
     },
 
+    nodeProxyForMontageId: {
+        value: function (montageId) {
+            var nodes = this.templateNodes;
+            var element;
+            for (var i = 0, len = nodes.length; i < len; i++) {
+                if (nodes[i].montageId === montageId) {
+                    element = nodes[i];
+                    break;
+                }
+            }
+
+            return element;
+        }
+    },
+
     _buildSerializationObjects: {
         value: function () {
             var template = this._template,
