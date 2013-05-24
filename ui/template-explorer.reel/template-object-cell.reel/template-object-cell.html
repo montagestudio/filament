@@ -119,7 +119,7 @@
                 "element": {"#": "elementTagName"}
             },
             "bindings": {
-                "value": {"<-": "@owner.templateObject.properties.get('element').tagName"}
+                "value": {"<-": "@owner.templateObject.properties.get('element').tagName || 'Drop element here'"}
             }
         },
 
