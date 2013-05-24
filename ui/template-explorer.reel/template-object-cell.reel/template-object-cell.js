@@ -4,7 +4,9 @@
     @requires montage/ui/component
 */
 var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+    Component = require("montage/ui/component").Component,
+    Promise = require("montage/core/promise").Promise,
+    MimeTypes = require("core/mime-types");
 
 var CLASS_PREFIX = "TemplateObjectCell";
 
@@ -32,6 +34,9 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
             icon.addEventListener("dragstart", this, false);
             icon.addEventListener("mousedown", this, false);
             icon.addEventListener("dragend", this, false);
+
+            this._templateObjectTagEl.addEventListener("dragover", this, false);
+            this._templateObjectTagEl.addEventListener("drop", this, false);
         }
     },
 
@@ -95,6 +100,49 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
         value: function (evt) {
             this.x = evt.translateX;
             this.y = evt.translateY;
+        }
+    },
+
+    handleDragover: {
+        value: function (event) {
+            var element = this.templateObject.properties.get("element");
+
+            if (event.dataTransfer.types &&
+                event.dataTransfer.types.indexOf(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) !== -1 &&
+                (!element || !element.isInTemplate)
+            ) {
+                // allows us to drop
+                event.preventDefault();
+                event.stopPropagation();
+                event.dataTransfer.dropEffect = "link";
+            } else {
+                event.dataTransfer.dropEffect = "none";
+            }
+        }
+    },
+    handleDrop: {
+        value: function (event) {
+            event.stopPropagation();
+            var montageId = event.dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_ELEMENT);
+
+            var templateObject = this.templateObject;
+            var editingDocument = templateObject.editingDocument;
+            var element = editingDocument.nodeProxyForMontageId(montageId);
+
+            if (!element) {
+                throw new Error("Dropped montageId, " + montageId + " not found in templateNodes");
+            }
+
+            editingDocument.undoManager.register("Change element", Promise.resolve([
+                this.setElement, this, templateObject.properties.get("element")
+            ]));
+            this.setElement(element);
+        }
+    },
+
+    setElement: {
+        value: function (element) {
+            this.templateObject.properties.set("element", element);
         }
     },
 
