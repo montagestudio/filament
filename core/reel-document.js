@@ -715,33 +715,36 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             // creating new editing proxies
             context = this.deserializationContext(destinationTemplate.getSerialization().getSerializationObject(), this._editingProxyMap);
 
-            revisedTemplate.getSerialization().getSerializationLabels().forEach(function (label) {
-                proxy = context.getObject(label);
-                proxy.parentProxy = parentProxy || ownerProxy;
-                self._addProxies(proxy);
-                addedProxies.push(proxy);
-            });
-
-            // Introduce the revised template into the stage
-            if (this._editingController) {
-
-                //TODO not sneak this in through the editingController
-                // Make the owner component in the stage look like we expect before trying to install objects
-                this._editingController.owner._template.objectsString = destinationTemplate.objectsString;
-                this._editingController.owner._template.setDocument(destinationTemplate.document);
-
-                return self._editingController.addObjectsFromTemplate(revisedTemplate, stageElement).then(function (objects) {
-                    for (var label in objects) {
-                        if (objects.hasOwnProperty !== "function" || objects.hasOwnProperty(label)) {
-                            self._editingProxyMap[label].stageObject = objects[label];
-                        }
-                    }
-
-                    return addedProxies;
+            return Promise.all(revisedTemplate.getSerialization().getSerializationLabels().map(function (label) {
+                return Promise(context.getObject(label))
+                .then(function (proxy) {
+                    proxy.parentProxy = parentProxy || ownerProxy;
+                    self._addProxies(proxy);
+                    addedProxies.push(proxy);
                 });
-            } else {
-                return Promise.resolve(addedProxies);
-            }
+            }))
+            .then(function () {
+                // Introduce the revised template into the stage
+                if (this._editingController) {
+
+                    //TODO not sneak this in through the editingController
+                    // Make the owner component in the stage look like we expect before trying to install objects
+                    this._editingController.owner._template.objectsString = destinationTemplate.objectsString;
+                    this._editingController.owner._template.setDocument(destinationTemplate.document);
+
+                    return self._editingController.addObjectsFromTemplate(revisedTemplate, stageElement).then(function (objects) {
+                        for (var label in objects) {
+                            if (objects.hasOwnProperty !== "function" || objects.hasOwnProperty(label)) {
+                                self._editingProxyMap[label].stageObject = objects[label];
+                            }
+                        }
+
+                        return addedProxies;
+                    });
+                } else {
+                    return addedProxies;
+                }
+            });
         }
     },
 
