@@ -203,7 +203,7 @@ exports.DocumentEditor = Montage.create(Component, {
     handleDragover: {
         enumerable: false,
         value: function (event) {
-            if (event.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1) {
+            if (event.dataTransfer.types && event.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1) {
                 // allows us to drop
                 event.preventDefault();
                 event.dataTransfer.dropEffect = "copy";

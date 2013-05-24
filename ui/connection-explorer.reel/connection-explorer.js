@@ -57,6 +57,7 @@ exports.ConnectionExplorer = Montage.create(Component, /** @lends module:"./conn
         value: function (event) {
             if (
                 this.templateObjects.defineBindingButton.indexOf(event.target.component) !== -1 &&
+                event.dataTransfer.types &&
                 event.dataTransfer.types.indexOf("text/plain") !== -1
             ) {
                 // allows us to drop
