@@ -40,8 +40,32 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
         }
     },
 
-    templateObject: {
+    _templateObject: {
         value: null
+    },
+    templateObject: {
+        get: function() {
+            return this._templateObject;
+        },
+        set: function(value) {
+            if (this._templateObject === value) {
+                return;
+            }
+            this._templateObject = value;
+            if (value) {
+                var self = this;
+                value.editingDocument.packageRequire.async(value.moduleId)
+                .get(value.exportName)
+                .then(function (object) {
+                    self.hasElementProperty = !!Object.getPropertyDescriptor(object, "element");
+                }).fail(Function.noop);
+            }
+
+        }
+    },
+
+    hasElementProperty: {
+        value: true
     },
 
     x: {
