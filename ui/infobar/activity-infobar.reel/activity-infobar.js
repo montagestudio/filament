@@ -16,8 +16,9 @@ var CLASS_PREFIX = "ActivityInfobar";
 */
 exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activity-infobar.reel".ActivityInfobar# */ {
 
-    didCreate: {
-        value: function() {
+    constructor: {
+        value: function ActivityInfobar() {
+            this.super();
             this.runningActivities = Set();
             this.completedActivities = Set();
             this.failedActivities = Set();

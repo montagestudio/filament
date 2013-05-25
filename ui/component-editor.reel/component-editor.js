@@ -46,8 +46,9 @@ exports.ComponentEditor = Montage.create(Editor, {
         }
     },
 
-    didCreate: {
-        value: function () {
+    constructor: {
+        value: function ComponentEditor() {
+            this.super();
             this._editorsToInsert = [];
             this._editorsToRemove = [];
             this._openEditors = [];

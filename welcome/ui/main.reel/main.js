@@ -19,8 +19,9 @@ exports.Main = Montage.create(Component, {
         value: true
     },
 
-    didCreate: {
-        value: function () {
+    constructor: {
+        value: function Main() {
+            this.super();
 
             var self = this;
             if (IS_IN_LUMIERES) {

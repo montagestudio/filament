@@ -15,8 +15,9 @@ var Montage = require("montage").Montage,
 */
 exports.ConnectionExplorer = Montage.create(Component, /** @lends module:"./connection-explorer.reel".ConnectionExplorer# */ {
 
-    didCreate: {
-        value: function () {
+    constructor: {
+        value: function ConnectionExplorer() {
+            this.super();
             window.foo = this;
         }
     },

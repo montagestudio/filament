@@ -32,8 +32,9 @@ exports.DocumentEditor = Montage.create(Component, {
         value: null
     },
 
-    didCreate: {
-        value: function () {
+    constructor: {
+        value: function DocumentEditor() {
+            this.super();
             this.defineBinding("fileUrl", {"<-": "editingDocument.fileUrl"});
             this._deferredWorkbench = Promise.defer();
 

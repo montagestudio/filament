@@ -15,8 +15,9 @@ var CLASS_PREFIX = "SchematicsCell";
 */
 exports.SchematicsCell = Montage.create(Component, /** @lends module:"./schematics-cell.reel".SchematicsCell# */ {
 
-    didCreate: {
-        value: function () {
+    constructor: {
+        value: function SchematicsCell() {
+            this.super();
             this.addPathChangeListener("x", this, "scheduleDraw");
             this.addPathChangeListener("y", this, "scheduleDraw");
         }

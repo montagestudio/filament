@@ -13,8 +13,9 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-    didCreate: {
-        value: function () {
+    constructor: {
+        value: function Main() {
+            this.super();
             this._editorsToInsert = [];
             this._openEditors = [];
 

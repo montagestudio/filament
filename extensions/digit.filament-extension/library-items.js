@@ -5,8 +5,13 @@ var LibraryItem = require("filament-extension/core/library-item").LibraryItem;
 //TODO each extension really should be its own package, anticipate consuming extensions from elsewhere
 var packageLocation = require.location;
 
+var ActionSheetLibraryItem = LibraryItem.specialize( {
 
-var ActionSheetLibraryItem = Montage.create(LibraryItem, {
+    constructor: {
+        value: function ActionSheetLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -36,7 +41,13 @@ var ActionSheetLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var AudioLibraryItem = Montage.create(LibraryItem, {
+var AudioLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function AudioLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -65,7 +76,13 @@ var AudioLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var BadgeLibraryItem = Montage.create(LibraryItem, {
+var BadgeLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function BadgeLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -94,7 +111,13 @@ var BadgeLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var ButtonGroupLibraryItem = Montage.create(LibraryItem, {
+var ButtonGroupLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function ButtonGroupLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -123,7 +146,13 @@ var ButtonGroupLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var ButtonLibraryItem = Montage.create(LibraryItem, {
+var ButtonLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function ButtonLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -154,7 +183,13 @@ var ButtonLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var HeaderLibraryItem = Montage.create(LibraryItem, {
+var HeaderLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function HeaderLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -183,7 +218,13 @@ var HeaderLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var InputCheckboxLibraryItem = Montage.create(LibraryItem, {
+var InputCheckboxLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function InputCheckboxLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -213,7 +254,13 @@ var InputCheckboxLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var InputDateLibraryItem = Montage.create(LibraryItem, {
+var InputDateLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function InputDateLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -243,7 +290,13 @@ var InputDateLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var InputNumberLibraryItem = Montage.create(LibraryItem, {
+var InputNumberLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function InputNumberLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -273,7 +326,13 @@ var InputNumberLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var InputRadioLibraryItem = Montage.create(LibraryItem, {
+var InputRadioLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function InputRadioLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -303,7 +362,13 @@ var InputRadioLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var InputRangeLibraryItem = Montage.create(LibraryItem, {
+var InputRangeLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function InputRangeLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -335,7 +400,13 @@ var InputRangeLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var InputTextLibraryItem = Montage.create(LibraryItem, {
+var InputTextLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function InputTextLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -365,7 +436,13 @@ var InputTextLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var ListItemLibraryItem = Montage.create(LibraryItem, {
+var ListItemLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function ListItemLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -393,7 +470,13 @@ var ListItemLibraryItem = Montage.create(LibraryItem, {
     }
 });
 
-var ListLibraryItem = Montage.create(LibraryItem, {
+var ListLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function ListLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -421,7 +504,13 @@ var ListLibraryItem = Montage.create(LibraryItem, {
     }
 });
 
-var MapLibraryItem = Montage.create(LibraryItem, {
+var MapLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function MapLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -450,7 +539,13 @@ var MapLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var ModalLibraryItem = Montage.create(LibraryItem, {
+var ModalLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function ModalLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -479,7 +574,13 @@ var ModalLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var NotificationLibraryItem = Montage.create(LibraryItem, {
+var NotificationLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function NotificationLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -508,7 +609,13 @@ var NotificationLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var ProgressLibraryItem = Montage.create(LibraryItem, {
+var ProgressLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function ProgressLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -539,7 +646,13 @@ var ProgressLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var SelectLibraryItem = Montage.create(LibraryItem, {
+var SelectLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function SelectLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -568,7 +681,13 @@ var SelectLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var SplitViewLibraryItem = Montage.create(LibraryItem, {
+var SplitViewLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function SplitViewLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -597,7 +716,13 @@ var SplitViewLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var TabBarLibraryItem = Montage.create(LibraryItem, {
+var TabBarLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function TabBarLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -626,7 +751,13 @@ var TabBarLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var TextLibraryItem = Montage.create(LibraryItem, {
+var TextLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function TextLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -656,7 +787,13 @@ var TextLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var TextareaLibraryItem = Montage.create(LibraryItem, {
+var TextareaLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function TextareaLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -686,7 +823,13 @@ var TextareaLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var TitleLibraryItem = Montage.create(LibraryItem, {
+var TitleLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function TitleLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -716,7 +859,13 @@ var TitleLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var ToggleLibraryItem = Montage.create(LibraryItem, {
+var ToggleLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function ToggleLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -745,7 +894,13 @@ var ToggleLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var ToolBarLibraryItem = Montage.create(LibraryItem, {
+var ToolBarLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function ToolBarLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -774,7 +929,13 @@ var ToolBarLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var VideoLibraryItem = Montage.create(LibraryItem, {
+var VideoLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function VideoLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {

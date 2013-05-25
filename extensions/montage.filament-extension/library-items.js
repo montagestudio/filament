@@ -5,7 +5,13 @@ var LibraryItem = require("filament-extension/core/library-item").LibraryItem;
 //TODO each extension really should be its own package, anticipate consuming extensions from elsewhere
 var packageLocation = require.location;
 
-var ConditionLibraryItem = Montage.create(LibraryItem, {
+var ConditionLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function ConditionLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -34,7 +40,147 @@ var ConditionLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var RepetitionLibraryItem = Montage.create(LibraryItem, {
+var FlowLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function FlowLibraryItem() {
+            this.super();
+        }
+    },
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/flow.reel",
+            "properties": {
+                "element": {"#": "flow"},
+                "objects": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+                "cameraPosition": [0, 0, 1500],
+                "paths": [
+                    {
+                        "knots": [
+                            {
+                                "knotPosition": [-2400, 0, -1],
+                                "nextHandlerPosition": [-800, 0, -1],
+                                "previousDensity": 10,
+                                "nextDensity": 10
+                            },
+                            {
+                                "knotPosition": [2400, 0, -1],
+                                "previousHandlerPosition": [800, 0, -1],
+                                "previousDensity": 10,
+                                "nextDensity": 10
+                            }
+                        ],
+                        "headOffset": 0,
+                        "tailOffset": 0,
+                        "units": {}
+                    }
+                ]
+            }
+        }
+    },
+
+    name: {
+        value: "Flow"
+    },
+
+    label: {
+        value: "Flow"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/flow.png"
+    },
+
+    html: {
+        value: '<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0" data-montage-id="flow"></div>'
+    },
+
+    // Action to take after addedTo the template
+    //TODO rename didAddToTemplate?
+    //TODO if you really want to add child components...should they be part of the component you're adding itself?
+    postProcess: {
+        value: function (editingProxy, editingDocument) {
+
+            var flowImageSerialization = Object.clone(ImageLibraryItem.serialization),
+                flowElement = editingProxy.stageObject.element,
+                imageElement,
+                imageIdentifier = "flowImage";
+
+            if (!flowImageSerialization.bindings) {
+                flowImageSerialization.bindings = {};
+            }
+
+            // XXX FIXME HACK WTF is going on here?
+            flowImageSerialization.bindings.src = {
+                boundObject: {"<-": "@" + editingProxy.label},
+                boundObjectPropertyPath: "objectAtCurrentIteration",
+                oneway: true
+            };
+
+            //TODO while this will work it's probably sub-optimal and we do need a way to specify the destination
+            // of an element when adding a Component probably, though this works...
+            imageElement = flowElement.appendChild(flowElement.ownerDocument.createElement("img"));
+            imageElement.setAttribute("data-montage-id", imageIdentifier);
+            imageElement.style.minWidth = "400px";
+            imageElement.style.minHeight = "400px";
+            imageElement.style.background = "white";
+            imageElement.style.webkitTransform = "translate3d(-50%, -50%, 0)";
+            imageElement.style.borderRadius = "12px";
+
+            editingDocument.addComponent(
+                null,
+                flowImageSerialization,
+                ImageLibraryItem.html,
+                imageIdentifier
+            ).done();
+        }
+    }
+
+});
+
+var OverlayLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function OverlayLibraryItem() {
+            this.super();
+        }
+    },
+
+    serialization: {
+        value: {
+            "prototype": "montage/ui/overlay.reel",
+            "properties": {
+                "element": {"#": "overlay"}
+            }
+        }
+    },
+
+    name: {
+        value: "Overlay"
+    },
+
+    label: {
+        value: "Overlay"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/overlay.png"
+    },
+
+    html: {
+        value: '<div data-montage-id="overlay"></div>'
+    }
+
+});
+
+var RepetitionLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function RepetitionLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -64,7 +210,13 @@ var RepetitionLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var SlotLibraryItem = Montage.create(LibraryItem, {
+var SlotLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function SlotLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -93,7 +245,13 @@ var SlotLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var SubstitutionLibraryItem = Montage.create(LibraryItem, {
+var SubstitutionLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function SubstitutionLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -122,7 +280,13 @@ var SubstitutionLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var DynamicTextLibraryItem = Montage.create(LibraryItem, {
+var DynamicTextLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function DynamicTextLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -156,6 +320,8 @@ var DynamicTextLibraryItem = Montage.create(LibraryItem, {
 //TODO build this automatically
 exports.libraryItems = {
     "montage/ui/condition.reel": ConditionLibraryItem,
+    "montage/ui/flow.reel": FlowLibraryItem,
+    "montage/ui/overlay.reel": OverlayLibraryItem,
     "montage/ui/repetition.reel": RepetitionLibraryItem,
     "montage/ui/slot.reel": SlotLibraryItem,
     "montage/ui/substitution.reel": SubstitutionLibraryItem,
@@ -164,7 +330,13 @@ exports.libraryItems = {
     "montage/ui/loader.reel": null
 };
 
-var RangeControllerLibraryItem = Montage.create(LibraryItem, {
+var RangeControllerLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function RangeControllerLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {

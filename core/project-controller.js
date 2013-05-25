@@ -606,13 +606,13 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                 item;
 
             if (libraryEntry) {
-                item = libraryEntry.create();
+                item = new libraryEntry();
             } else if (typeof libraryEntry === "undefined") {
                 var montageId = objectName.replace(/(^.)/, function (_, firstChar) {
                     return firstChar.toLowerCase();
                 });
 
-                item = LibraryItem.create();
+                item = new LibraryItem();
                 item.serialization = {
                     prototype: moduleId,
                     properties: {
@@ -634,6 +634,9 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
 
     registerLibraryItemForPackageName: {
         value: function (libraryItem, packageName) {
+            if (! libraryItem) {
+                return;
+            }
             var addedLibraryItems = this._packageNameLibraryItemsMap.get(packageName);
 
             if (!addedLibraryItems) {
@@ -641,7 +644,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                 this._packageNameLibraryItemsMap.set(packageName, addedLibraryItems);
             }
 
-            addedLibraryItems.push(libraryItem);
+            addedLibraryItems.push(new libraryItem());
 
             //TODO don't refresh the library each time
             if (this.dependencies) {

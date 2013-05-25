@@ -5,10 +5,16 @@ var Montage = require("montage/core/core").Montage,
 
 var Extension = exports.Extension = Montage.create(CoreExtension, {
 
+    constructor: {
+        value: function Extension() {
+            this.super();
+        }
+    },
+
     editorObjectMatchFunction: {
         enumerable: false,
         value : function (object) {
-            return object && object.moduleId && (/matte\/ui\/flow\.reel/).test(object.moduleId);
+            return object && object.moduleId && (/montage\/ui\/flow\.reel/).test(object.moduleId);
         }
     },
 
@@ -27,4 +33,3 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
     }
 
 });
-Extension.extensionRequire = require;

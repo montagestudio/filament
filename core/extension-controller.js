@@ -30,7 +30,7 @@ exports.ExtensionController = Montage.create(Target, {
         value: null
     },
 
-    didCreate: {
+    constructor: {
         value: function () {
             this.loadedExtensions = [];
             this.activeExtensions = [];
@@ -102,12 +102,13 @@ exports.ExtensionController = Montage.create(Target, {
 
             // TODO npm install?
             return require.loadPackage(extensionUrl).then(function (packageRequire) {
-                return packageRequire.async("extension");
-            },function (error) {
+                return Promise.all([packageRequire.async("extension"), Promise.resolve(packageRequire)]);
+             },function (error) {
                 console.log("Could not load extension package at: " + extensionUrl);
                 return Promise.reject(new Error("Could not load extension package at: " + extensionUrl, error));
-            }).then(function (exports) {
-                    var extension = exports.Extension;
+            }).spread(function (exports, require) {
+                    var extension = new exports.Extension();
+                    extension.extensionRequire = require;
 
                     if (!extension) {
                         throw new Error("Malformed extension. Expected '" + extensionUrl + "' to export 'Extension'");

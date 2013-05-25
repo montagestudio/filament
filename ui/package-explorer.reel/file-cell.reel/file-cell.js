@@ -16,8 +16,9 @@ exports.FileCell = Montage.create(Component, {
         value: null
     },
 
-    didCreate: {
-        value: function () {
+    constructor: {
+        value: function FileCell() {
+            this.super();
             this.addPathChangeListener("iteration", this);
             this.addPathChangeListener("fileInfo", this);
             this.addPathChangeListener("iteration.expanded", this, "handleExpandedChange");

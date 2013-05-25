@@ -8,7 +8,13 @@ var Montage = require("montage/core/core").Montage,
 
 var PARENT_MENU = "tools";
 
-var Extension = exports.Extension = Montage.create(CoreExtension, {
+var Extension = exports.Extension = CoreExtension.specialize( {
+
+    constructor: {
+        value: function Extension() {
+            this.super();
+        }
+    },
 
     name:{
         get:function () {
@@ -126,5 +132,3 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
         }
     }
 });
-
-Extension.extensionRequire = require;

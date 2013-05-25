@@ -7,8 +7,9 @@ exports.PreviewHome = Montage.create(Montage, {
         value: []
     },
 
-    didCreate: {
-        value: function() {
+    constructor: {
+        value: function PreviewHome() {
+            this.super();
             this.doRefresh();
             window.addEventListener("lumieresRefresh", this);
         }

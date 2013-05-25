@@ -62,7 +62,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
         value: null
     },
 
-    didCreate: {
+    constructor: {
         value: function () {
             // Make stack traces from promise errors easily available in the
             // console. Otherwise you need to manually inspect the error.stack
@@ -105,6 +105,9 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                     extensionController = self.extensionController = ExtensionController.create().init(self);
                     return extensionController.loadExtensions();
 
+                }, function(error) {
+                    console.log("Cannot load the extensions ", error);
+                    return [];
                 });
 
             Promise.all([promisedMainComponent, promisedLoadedExtensions])

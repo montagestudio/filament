@@ -13,8 +13,9 @@ var Montage = require("montage").Montage,
  */
 exports.SchematicsContainer = Montage.create(Component, /** @lends module:"./schematics-container.reel".SchematicsContainer# */ {
 
-    didCreate: {
-        value: function () {
+    constructor: {
+        value: function SchematicsContainer() {
+            this.super();
             this.addPathChangeListener("zoom", this, "scheduleDraw");
             this.addPathChangeListener("offsetX", this, "scheduleDraw");
             this.addPathChangeListener("offsetY", this, "scheduleDraw");

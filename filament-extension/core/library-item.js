@@ -3,7 +3,13 @@ var Montage = require("montage").Montage;
 //This is a straight transfer from the original components.js dictionary
 //TODO replace this with a component perhaps? it would make for a natural container for the default
 // template...when we are actually inserting a component
-exports.LibraryItem = Montage.create(Montage, {
+exports.LibraryItem = Montage.specialize( {
+
+    constructor: {
+        value: function LibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: null

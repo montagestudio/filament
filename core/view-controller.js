@@ -3,7 +3,7 @@ var Montage = require("montage/core/core").Montage,
 
 exports.ViewController = Montage.create(Montage, {
 
-    didCreate: {
+    constructor: {
         value: function () {
             this.editorMatchers = [];
             this.matcherEditorTypeMap = new WeakMap();

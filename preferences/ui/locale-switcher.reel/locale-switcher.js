@@ -16,8 +16,9 @@ var Montage = require("montage").Montage,
 */
 exports.LocaleSwitcher = Montage.create(Component, /** @lends module:"ui/locale-switcher.reel".LocaleSwitcher# */ {
 
-    didCreate: {
-        value: function() {
+    constructor: {
+        value: function LocaleSwitcher() {
+            this.super();
             var self = this;
 
             this.defineBinding("locale", {"<->": "locale", source: defaultLocalizer});

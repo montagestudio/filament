@@ -4,8 +4,9 @@ var Montage = require("montage/core/core").Montage,
 
 exports.Configurator = Montage.create(Panel, {
 
-    didCreate: {
-        value: function () {
+    constructor: {
+        value: function Configurator() {
+            this.super();
             //TODO handle multiple selection better
             this.addPathChangeListener("editingDocument.selectedObjects.0", this);
         }

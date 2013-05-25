@@ -16,8 +16,9 @@ var Montage = require("montage").Montage,
 */
 exports.ActivityList = Montage.create(Component, /** @lends module:"ui/activity-list.reel".ActivityList# */ {
 
-    didCreate: {
-        value: function() {
+    constructor: {
+        value: function ActivityList() {
+            this.super();
             defaultLocalizer.localize("activity", "Activity").then(function (message) {
                 document.title = message;
             }).done();

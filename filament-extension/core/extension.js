@@ -1,7 +1,13 @@
 var Montage = require("montage/core/core").Montage,
     Target = require("montage/core/target").Target;
 
-exports.Extension = Montage.create(Target, {
+exports.Extension = Target.specialize( {
+
+    constructor: {
+        value: function Extension() {
+            this.super();
+        }
+    },
 
     extensionRequire: {
         value: null

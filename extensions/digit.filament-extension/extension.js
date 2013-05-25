@@ -4,7 +4,13 @@ var Montage = require("montage/core/core").Montage,
     libraryItems = require("library-items").libraryItems,
     libraryAdditions = require("library-items").libraryAdditions;
 
-var Extension = exports.Extension = Montage.create(CoreExtension, {
+var Extension = exports.Extension = CoreExtension.specialize( {
+
+    constructor: {
+        value: function Extension() {
+            this.super();
+        }
+    },
 
     activate: {
         value: function (application, projectController) {
@@ -14,7 +20,7 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
             });
 
             libraryAdditions.forEach(function (libraryItem) {
-                projectController.registerLibraryItemForPackageName(libraryItem, "montage");
+                projectController.registerLibraryItemForPackageName(libraryItem, "digit");
             });
 
             return Promise.resolve(this);
@@ -38,4 +44,3 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
     }
 
 });
-Extension.extensionRequire = require;

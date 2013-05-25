@@ -3,7 +3,13 @@ var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
     PackageDocument = require("core/package-document").PackageDocument;
 
-var Extension = exports.Extension = Montage.create(CoreExtension, {
+var Extension = exports.Extension = CoreExtension.specialize( {
+
+    constructor: {
+        value: function Extension() {
+            this.super();
+        }
+    },
 
     editorFileMatchFunction: {
         enumerable: false,
@@ -29,4 +35,3 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
     }
 
 });
-Extension.extensionRequire = require;

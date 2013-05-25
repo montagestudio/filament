@@ -17,8 +17,9 @@ var CLASS_PREFIX = "TemplateObjectCell";
 */
 exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/template-object-cell.reel".TemplateObjectCell# */ {
 
-    didCreate: {
-        value: function () {
+    constructor: {
+        value: function TemplateObjectCell() {
+            this.super();
             this.addPathChangeListener("x", this, "scheduleDraw");
             this.addPathChangeListener("y", this, "scheduleDraw");
         }

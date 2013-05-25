@@ -15,8 +15,9 @@ var Montage = require("montage").Montage,
 */
 exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./template-explorer.reel".TemplateExplorer# */ {
 
-    didCreate: {
-        value: function () {
+    constructor: {
+        value: function TemplateExplorer() {
+            this.super();
             this.addPathChangeListener("zoom", this, "scheduleDraw");
             this.addPathChangeListener("offsetX", this, "scheduleDraw");
             this.addPathChangeListener("offsetY", this, "scheduleDraw");

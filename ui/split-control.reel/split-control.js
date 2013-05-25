@@ -14,9 +14,9 @@ var Montage = require("montage").Montage,
 exports.SplitControl = Montage.create(AbstractSlider, /** @lends SplitControl# */ {
 
     // Lifecycle
-    didCreate: {
-        value: function () {
-            AbstractSlider.didCreate.apply(this, arguments);
+    constructor: {
+        value: function SplitControl() {
+            this.super();
             this.addOwnPropertyChangeListener("splitAxis", this);
             this.axis = "horizontal";
             window.addEventListener("resize", this, false);

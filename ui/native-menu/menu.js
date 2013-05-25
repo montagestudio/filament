@@ -94,9 +94,9 @@ var Menu = exports.Menu = Montage.create(Montage, {
         }
     },
 
-    didCreate: {
-        enumerable: false,
-        value: function() {
+    constructor: {
+        value: function Menu() {
+            this.super();
             var thisRef = this;
 
             if (lumieres) {

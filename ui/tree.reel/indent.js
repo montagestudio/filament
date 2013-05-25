@@ -5,8 +5,9 @@ exports.Indent = Montage.create(Component, {
 
     hasTemplate: { value: false },
 
-    didCreate: {
-        value: function () {
+    constructor: {
+        value: function Indent() {
+            this.super();
             this.depth = null;
             this.addOwnPropertyChangeListener("depth", this);
         }

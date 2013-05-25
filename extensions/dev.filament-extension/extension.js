@@ -2,7 +2,13 @@ var Montage = require("montage/core/core").Montage,
     CoreExtension = require("filament-extension/core/extension").Extension,
     Promise = require("montage/core/promise").Promise;
 
-var Extension = exports.Extension = Montage.create(CoreExtension, {
+var Extension = exports.Extension = CoreExtension.specialize( {
+
+    constructor: {
+        value: function Extension() {
+            this.super();
+        }
+    },
 
     supportsFilamentVersion: {
         value: function () {
@@ -62,5 +68,3 @@ var Extension = exports.Extension = Montage.create(CoreExtension, {
     }
 
 });
-
-Extension.extensionRequire = require;

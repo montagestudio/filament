@@ -5,7 +5,13 @@ var LibraryItem = require("filament-extension/core/library-item").LibraryItem;
 //TODO each extension really should be its own package, anticipate consuming extensions from elsewhere
 var packageLocation = require.location;
 
-var RssControllerLibraryItem = Montage.create(LibraryItem, {
+var RssControllerLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function RssControllerLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -26,7 +32,13 @@ var RssControllerLibraryItem = Montage.create(LibraryItem, {
     }
 });
 
-var RssViewLibraryItem = Montage.create(LibraryItem, {
+var RssViewLibraryItem =  LibraryItem.specialize(  {
+
+    constructor: {
+        value: function RssViewLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {

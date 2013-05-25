@@ -6,7 +6,7 @@ var LibraryItem = require("filament-extension/core/library-item").LibraryItem;
 var packageLocation = require.location;
 
 
-var AnchorLibraryItem = Montage.create(LibraryItem, {
+var AnchorLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -36,7 +36,7 @@ var AnchorLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var AutocompleteLibraryItem = Montage.create(LibraryItem, {
+var AutocompleteLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -65,7 +65,7 @@ var AutocompleteLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var ButtonLibraryItem = Montage.create(LibraryItem, {
+var ButtonLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -96,7 +96,7 @@ var ButtonLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var ToggleButtonLibraryItem = Montage.create(LibraryItem, {
+var ToggleButtonLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -128,7 +128,7 @@ var ToggleButtonLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var ToggleSwitchLibraryItem = Montage.create(LibraryItem, {
+var ToggleSwitchLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -157,7 +157,7 @@ var ToggleSwitchLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var InputCheckboxLibraryItem = Montage.create(LibraryItem, {
+var InputCheckboxLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -187,7 +187,7 @@ var InputCheckboxLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var RadioButtonLibraryItem = Montage.create(LibraryItem, {
+var RadioButtonLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -217,7 +217,7 @@ var RadioButtonLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var InputDateLibraryItem = Montage.create(LibraryItem, {
+var InputDateLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -247,7 +247,7 @@ var InputDateLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var InputNumberLibraryItem = Montage.create(LibraryItem, {
+var InputNumberLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -277,7 +277,7 @@ var InputNumberLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var InputRangeLibraryItem = Montage.create(LibraryItem, {
+var InputRangeLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -309,7 +309,7 @@ var InputRangeLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var SelectLibraryItem = Montage.create(LibraryItem, {
+var SelectLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -338,7 +338,7 @@ var SelectLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var InputTextLibraryItem = Montage.create(LibraryItem, {
+var InputTextLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -368,7 +368,7 @@ var InputTextLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var TextareaLibraryItem = Montage.create(LibraryItem, {
+var TextareaLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -398,7 +398,7 @@ var TextareaLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var ImageLibraryItem = Montage.create(LibraryItem, {
+var ImageLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -429,7 +429,7 @@ var ImageLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var ProgressLibraryItem = Montage.create(LibraryItem, {
+var ProgressLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -460,100 +460,7 @@ var ProgressLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var FlowLibraryItem = Montage.create(LibraryItem, {
-
-    serialization: {
-        value: {
-            "prototype": "matte/ui/flow.reel",
-            "properties": {
-                "element": {"#": "flow"},
-                "objects": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-                "cameraPosition": [0, 0, 1500],
-                "paths": [
-                    {
-                        "knots": [
-                            {
-                                "knotPosition": [-2400, 0, -1],
-                                "nextHandlerPosition": [-800, 0, -1],
-                                "previousDensity": 10,
-                                "nextDensity": 10
-                            },
-                            {
-                                "knotPosition": [2400, 0, -1],
-                                "previousHandlerPosition": [800, 0, -1],
-                                "previousDensity": 10,
-                                "nextDensity": 10
-                            }
-                        ],
-                        "headOffset": 0,
-                        "tailOffset": 0,
-                        "units": {}
-                    }
-                ]
-            }
-        }
-    },
-
-    name: {
-        value: "Flow"
-    },
-
-    label: {
-        value: "Flow"
-    },
-
-    icon: {
-        value: packageLocation + "assets/components/flow.png"
-    },
-
-    html: {
-        value: '<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0" data-montage-id="flow"></div>'
-    },
-
-    // Action to take after addedTo the template
-    //TODO rename didAddToTemplate?
-    //TODO if you really want to add child components...should they be part of the component you're adding itself?
-    postProcess: {
-        value: function (editingProxy, editingDocument) {
-
-            var flowImageSerialization = Object.clone(ImageLibraryItem.serialization),
-                flowElement = editingProxy.stageObject.element,
-                imageElement,
-                imageIdentifier = "flowImage";
-
-            if (!flowImageSerialization.bindings) {
-                flowImageSerialization.bindings = {};
-            }
-
-            // XXX FIXME HACK WTF is going on here?
-            flowImageSerialization.bindings.src = {
-                boundObject: {"<-": "@" + editingProxy.label},
-                boundObjectPropertyPath: "objectAtCurrentIteration",
-                oneway: true
-            };
-
-            //TODO while this will work it's probably sub-optimal and we do need a way to specify the destination
-            // of an element when adding a Component probably, though this works...
-            imageElement = flowElement.appendChild(flowElement.ownerDocument.createElement("img"));
-            imageElement.setAttribute("data-montage-id", imageIdentifier);
-            imageElement.style.minWidth = "400px";
-            imageElement.style.minHeight = "400px";
-            imageElement.style.background = "white";
-            imageElement.style.webkitTransform = "translate3d(-50%, -50%, 0)";
-            imageElement.style.borderRadius = "12px";
-
-            editingDocument.addComponent(
-                null,
-                flowImageSerialization,
-                ImageLibraryItem.html,
-                imageIdentifier
-            ).done();
-        }
-    }
-
-});
-
-var VideoPlayerLibraryItem = Montage.create(LibraryItem, {
+var VideoPlayerLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -582,7 +489,7 @@ var VideoPlayerLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var TokenFieldLibraryItem = Montage.create(LibraryItem, {
+var TokenFieldLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -611,7 +518,7 @@ var TokenFieldLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var RichTextEditorLibraryItem = Montage.create(LibraryItem, {
+var RichTextEditorLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -639,7 +546,7 @@ var RichTextEditorLibraryItem = Montage.create(LibraryItem, {
     }
 });
 
-var ScrollerLibraryItem = Montage.create(LibraryItem, {
+var ScrollerLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -667,7 +574,7 @@ var ScrollerLibraryItem = Montage.create(LibraryItem, {
     }
 });
 
-var ListLibraryItem = Montage.create(LibraryItem, {
+var ListLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -695,7 +602,7 @@ var ListLibraryItem = Montage.create(LibraryItem, {
     }
 });
 
-var TextSliderLibraryItem = Montage.create(LibraryItem, {
+var TextSliderLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -724,7 +631,7 @@ var TextSliderLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var PopupLibraryItem = Montage.create(LibraryItem, {
+var PopupLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -753,7 +660,7 @@ var PopupLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var AlertLibraryItem = Montage.create(LibraryItem, {
+var AlertLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -782,7 +689,7 @@ var AlertLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var NotifierLibraryItem = Montage.create(LibraryItem, {
+var NotifierLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -811,7 +718,7 @@ var NotifierLibraryItem = Montage.create(LibraryItem, {
 
 });
 
-var ConfirmLibraryItem = Montage.create(LibraryItem, {
+var ConfirmLibraryItem = LibraryItem.specialize( {
 
     serialization: {
         value: {
@@ -861,7 +768,6 @@ exports.libraryItems = {
     "matte/ui/textarea.reel": TextareaLibraryItem,
     "matte/ui/image.reel": ImageLibraryItem,
     "matte/ui/progress.reel": ProgressLibraryItem,
-    "matte/ui/flow.reel": FlowLibraryItem,
     "matte/ui/token-field/token-field.reel": TokenFieldLibraryItem,
     "matte/ui/text-slider.reel": TextSliderLibraryItem,
     "matte/ui/video-player.reel": VideoPlayerLibraryItem,

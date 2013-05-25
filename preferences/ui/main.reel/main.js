@@ -16,8 +16,9 @@ exports.Main = Montage.create(Component, {
         value: {}
     },
 
-    didCreate: {
-        value: function() {
+    constructor: {
+        value: function Main() {
+            this.super();
             if (lumieres !== undefined && lumieres.getUserPreferences) {
                 var thisRef = this;
                 lumieres.getUserPreferences(function(error, result) {

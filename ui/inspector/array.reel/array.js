@@ -36,8 +36,9 @@ var converter = {
 */
 exports.Array = Montage.create(Component, /** @lends module:"ui/array.reel".Array# */ {
 
-    didCreate: {
-        value: function() {
+    constructor: {
+        value: function Array() {
+            this.super();
             this.defineBinding("array", {"<->": "string", converter: converter});
         }
     },
