@@ -45,7 +45,17 @@ function sanitize(tree) {
     var id = child.attribute("id");
     if (id) {
         child.attribute("data-montage-id", id);
-        child.attribute("id", void 0);
+        // Sadly there's no API to delete an attribute, so we've got to poke
+        // inside
+        var attributes = child._attributes;
+        for (var i = 0, len = attributes.length; i < len; i++) {
+            if (attributes[i].name === "id") {
+                break;
+            }
+        }
+        if (i !== len) {
+            attributes.splice(i, 1);
+        }
     }
 
     // remove all children
