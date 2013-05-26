@@ -5,7 +5,7 @@ var LibraryItem = require("filament-extension/core/library-item").LibraryItem;
 //TODO each extension really should be its own package, anticipate consuming extensions from elsewhere
 var packageLocation = require.location;
 
-var ConditionLibraryItem = LibraryItem.specialize( {
+var ConditionLibraryItem = LibraryItem.specialize({
 
     constructor: {
         value: function ConditionLibraryItem() {
@@ -40,7 +40,7 @@ var ConditionLibraryItem = LibraryItem.specialize( {
 
 });
 
-var FlowLibraryItem = LibraryItem.specialize( {
+var FlowLibraryItem = LibraryItem.specialize({
 
     constructor: {
         value: function FlowLibraryItem() {
@@ -99,10 +99,21 @@ var FlowLibraryItem = LibraryItem.specialize( {
     // Action to take after addedTo the template
     //TODO rename didAddToTemplate?
     //TODO if you really want to add child components...should they be part of the component you're adding itself?
+    imageSerialization: {
+        value: {
+            "prototype": "matte/ui/image.reel",
+            "properties": {
+                "element": {"#": "image"},
+                //TODO this should not be hardcoded in palette of all places
+                "src": "http://client/node_modules/palette/assets/image/placeholder.png"
+            }
+        }
+    },
+
     postProcess: {
         value: function (editingProxy, editingDocument) {
 
-            var flowImageSerialization = Object.clone(ImageLibraryItem.serialization),
+            var flowImageSerialization = Object.clone(this.imageSerialization),
                 flowElement = editingProxy.stageObject.element,
                 imageElement,
                 imageIdentifier = "flowImage";
@@ -131,7 +142,7 @@ var FlowLibraryItem = LibraryItem.specialize( {
             editingDocument.addComponent(
                 null,
                 flowImageSerialization,
-                ImageLibraryItem.html,
+                '<img data-montage-id="image">',
                 imageIdentifier
             ).done();
         }
@@ -139,7 +150,7 @@ var FlowLibraryItem = LibraryItem.specialize( {
 
 });
 
-var OverlayLibraryItem = LibraryItem.specialize( {
+var OverlayLibraryItem = LibraryItem.specialize({
 
     constructor: {
         value: function OverlayLibraryItem() {
@@ -174,7 +185,7 @@ var OverlayLibraryItem = LibraryItem.specialize( {
 
 });
 
-var RepetitionLibraryItem = LibraryItem.specialize( {
+var RepetitionLibraryItem = LibraryItem.specialize({
 
     constructor: {
         value: function RepetitionLibraryItem() {
@@ -210,7 +221,7 @@ var RepetitionLibraryItem = LibraryItem.specialize( {
 
 });
 
-var SlotLibraryItem = LibraryItem.specialize( {
+var SlotLibraryItem = LibraryItem.specialize({
 
     constructor: {
         value: function SlotLibraryItem() {
@@ -245,7 +256,7 @@ var SlotLibraryItem = LibraryItem.specialize( {
 
 });
 
-var SubstitutionLibraryItem = LibraryItem.specialize( {
+var SubstitutionLibraryItem = LibraryItem.specialize({
 
     constructor: {
         value: function SubstitutionLibraryItem() {
@@ -280,7 +291,7 @@ var SubstitutionLibraryItem = LibraryItem.specialize( {
 
 });
 
-var DynamicTextLibraryItem = LibraryItem.specialize( {
+var DynamicTextLibraryItem = LibraryItem.specialize({
 
     constructor: {
         value: function DynamicTextLibraryItem() {
@@ -330,7 +341,7 @@ exports.libraryItems = {
     "montage/ui/loader.reel": null
 };
 
-var RangeControllerLibraryItem = LibraryItem.specialize( {
+var RangeControllerLibraryItem = LibraryItem.specialize({
 
     constructor: {
         value: function RangeControllerLibraryItem() {
