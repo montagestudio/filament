@@ -36,7 +36,7 @@ var Extension = exports.Extension = CoreExtension.specialize( {
 
 
             libraryAdditions.forEach(function (libraryItem) {
-                projectController.unregisterLibraryItemForPackageName(libraryItem, "montage");
+                projectController.unregisterLibraryItemForPackageName(libraryItem, "matte");
             });
 
             return Promise.resolve(this);
