@@ -189,41 +189,6 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
         }
     },
 
-    getOwnedObjectProperty: {
-        value: function (proxy, property) {
-            return proxy.getObjectProperty(property);
-        }
-    },
-
-    setOwnedObjectProperty: {
-        value: function (proxy, property, value) {
-
-            var undoManager = this.undoManager,
-                undoneValue = proxy.getObjectProperty(property);
-
-            if (undoneValue !== value) {
-
-                //TODO maybe the proxy shouldn't be involved in doing this as we hand out the proxies
-                // throughout the editingEnvironment, I don't want to expose accessible editing APIs
-                // that do not go through the editingDocument...or do I?
-
-                // Might be nice to have an editing API that avoids undoability and event dispatching?
-                proxy.setObjectProperty(property, value);
-
-                this.dispatchEventNamed("didSetObjectProperty", true, true, {
-                    object: proxy,
-                    property: property,
-                    value: value,
-                    undone: undoManager.isUndoing,
-                    redone: undoManager.isRedoing
-                });
-
-                undoManager.register("Set Property", Promise.resolve([this.setOwnedObjectProperty, this, proxy, property, undoneValue]));
-            }
-
-        }
-    },
-
     title: {
         dependencies: ["url"],
         get: function () {
