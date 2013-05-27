@@ -30,7 +30,14 @@ var Montage = require("montage").Montage,
  * even this usage is not currently advised.
  * @type {ReelProxy}
  */
-exports.ReelProxy = Montage.create(EditingProxy, {
+exports.ReelProxy = EditingProxy.specialize( {
+
+
+    constructor: {
+        value: function ReelProxy() {
+            this.super();
+        }
+    },
 
     /**
      * The identifier of the representedObject
@@ -59,6 +66,21 @@ exports.ReelProxy = Montage.create(EditingProxy, {
     stageObject: {
         value: null
     },
+
+
+    setObjectProperty: {
+        value: function (property, value) {
+            this.properties.set(property, value);
+            if (this.stageObject) {
+                if (this.stageObject.setPath) {
+                    this.stageObject.setPath(property, value);
+                } else if (this.stageObject.setProperty) {
+                    this.stageObject.setProperty(property, value);
+                }
+            }
+        }
+    },
+
 
     /**
      * The parent component of this object. For non-component objects this is

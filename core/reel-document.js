@@ -14,7 +14,13 @@ var Montage = require("montage").Montage,
     NodeProxy = require("core/node-proxy").NodeProxy;
 
 // The ReelDocument is used for editing Montage Reels
-exports.ReelDocument = Montage.create(EditingDocument, {
+exports.ReelDocument = EditingDocument.specialize( {
+
+    constructor: {
+        value: function ReelDocument() {
+            this.super();
+        }
+    },
 
     load: {
         value: function (fileUrl, packageUrl) {
@@ -901,54 +907,6 @@ exports.ReelDocument = Montage.create(EditingDocument, {
             }
 
             return result;
-        }
-    },
-
-    setOwnedObjectProperty: {
-        value: function (proxy, property, value) {
-
-            this.super(proxy, property, value);
-
-            if (this._editingController) {
-
-                //TODO clean this up, the editingController should probably be involved
-                if (proxy.stageObject) {
-                    if (proxy.stageObject.setPath) {
-                        proxy.stageObject.setPath(property, value);
-                    } else if (this.stageObject.setProperty) {
-                        proxy.stageObject.setProperty(property, value);
-                    }
-                }
-            }
-
-            // Need to rebuild the serialization here so that the template
-            // updates, ready for the inner template inspector
-            this._buildSerializationObjects();
-        }
-    },
-
-    setOwnedObjectProperties: {
-        value: function (proxy, values, previousValues) {
-
-            this.super(proxy, values, previousValues);
-
-            if (this._editingController) {
-
-                //TODO clean this up, the editingController should probably be involved
-                if (proxy.stageObject) {
-                    if (proxy.stageObject.setPath) {
-                        for (var property in values) {
-                            proxy.stageObject.setPath(property, values[property]);
-                        }
-                    } else if (this.stageObject.setProperty) {
-                        for (var property in values) {
-                            proxy.stageObject.setProperty(property, values[property]);
-                        }
-                    }
-                }
-            }
-            this._buildSerializationObjects();
-
         }
     },
 
