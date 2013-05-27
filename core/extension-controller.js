@@ -103,7 +103,7 @@ exports.ExtensionController = Montage.create(Target, {
             // TODO npm install?
             return require.loadPackage(extensionUrl).then(function (packageRequire) {
                 return Promise.all([packageRequire.async("extension"), Promise.resolve(packageRequire)]);
-             },function (error) {
+            },function (error) {
                 console.log("Could not load extension package at: " + extensionUrl);
                 return Promise.reject(new Error("Could not load extension package at: " + extensionUrl, error));
             }).spread(function (exports, require) {
