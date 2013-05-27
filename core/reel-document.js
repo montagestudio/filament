@@ -939,11 +939,11 @@ exports.ReelDocument = Montage.create(EditingDocument, {
                     if (proxy.stageObject.setPath) {
                         for (var property in values) {
                             proxy.stageObject.setPath(property, values[property]);
-                         }
+                        }
                     } else if (this.stageObject.setProperty) {
                         for (var property in values) {
                             proxy.stageObject.setProperty(property, values[property]);
-                         }
+                        }
                     }
                 }
             }
