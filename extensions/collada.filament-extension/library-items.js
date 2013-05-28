@@ -8,6 +8,12 @@ var packageLocation = require.location;
 
 var ColladaViewLibraryItem = LibraryItem.specialize( {
 
+    constructor: {
+        value: function ColladaViewLibraryItem() {
+            this.super();
+        }
+    },
+
     serialization: {
         value: {
             "prototype": "glTF-webgl-viewer/ui/view.reel",
@@ -32,7 +38,7 @@ var ColladaViewLibraryItem = LibraryItem.specialize( {
     },
 
     html: {
-        value: '<div data-montage-id="component"><canvas data-montage-id="canvas"></canvas></div> '
+        value: '<div data-montage-id="component"><canvas data-montage-id="canvas"></canvas></div>'
     }
 
 });
@@ -40,7 +46,7 @@ var ColladaViewLibraryItem = LibraryItem.specialize( {
 
 //TODO build this automatically
 exports.libraryItems = {
-    "glTF-webgl-viewer/ui/view.reel": ColladaViewLibraryItem,
+    "glTF-webgl-viewer/ui/view.reel": ColladaViewLibraryItem
 };
 
 exports.libraryAdditions = [];
