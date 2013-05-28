@@ -8,6 +8,12 @@ var packageLocation = require.location;
 
 var AnchorLibraryItem = LibraryItem.specialize( {
 
+    constructor: {
+        value: function AnchorLibraryItem() {
+            this.super();
+        }
+    },
+
     serialization: {
         value: {
             "prototype": "matte/ui/anchor.reel",
@@ -38,6 +44,12 @@ var AnchorLibraryItem = LibraryItem.specialize( {
 
 var AutocompleteLibraryItem = LibraryItem.specialize( {
 
+    constructor: {
+        value: function AutocompleteLibraryItem() {
+            this.super();
+        }
+    },
+
     serialization: {
         value: {
             "prototype": "matte/ui/autocomplete/autocomplete.reel",
@@ -66,6 +78,12 @@ var AutocompleteLibraryItem = LibraryItem.specialize( {
 });
 
 var ButtonLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function ButtonLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -97,6 +115,12 @@ var ButtonLibraryItem = LibraryItem.specialize( {
 });
 
 var ToggleButtonLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function ToggleButtonLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -130,6 +154,12 @@ var ToggleButtonLibraryItem = LibraryItem.specialize( {
 
 var ToggleSwitchLibraryItem = LibraryItem.specialize( {
 
+    constructor: {
+        value: function ToggleSwitchLibraryItem() {
+            this.super();
+        }
+    },
+
     serialization: {
         value: {
             "prototype": "matte/ui/toggle-switch.reel",
@@ -158,6 +188,12 @@ var ToggleSwitchLibraryItem = LibraryItem.specialize( {
 });
 
 var InputCheckboxLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function InputCheckboxLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -189,6 +225,12 @@ var InputCheckboxLibraryItem = LibraryItem.specialize( {
 
 var RadioButtonLibraryItem = LibraryItem.specialize( {
 
+    constructor: {
+        value: function RadioButtonLibraryItem() {
+            this.super();
+        }
+    },
+
     serialization: {
         value: {
             "prototype": "matte/ui/radio-button.reel",
@@ -218,6 +260,12 @@ var RadioButtonLibraryItem = LibraryItem.specialize( {
 });
 
 var InputDateLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function InputDateLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -249,6 +297,12 @@ var InputDateLibraryItem = LibraryItem.specialize( {
 
 var InputNumberLibraryItem = LibraryItem.specialize( {
 
+    constructor: {
+        value: function InputNumberLibraryItem() {
+            this.super();
+        }
+    },
+
     serialization: {
         value: {
             "prototype": "matte/ui/input-number.reel",
@@ -278,6 +332,12 @@ var InputNumberLibraryItem = LibraryItem.specialize( {
 });
 
 var InputRangeLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function InputRangeLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -311,6 +371,12 @@ var InputRangeLibraryItem = LibraryItem.specialize( {
 
 var SelectLibraryItem = LibraryItem.specialize( {
 
+    constructor: {
+        value: function SelectLibraryItem() {
+            this.super();
+        }
+    },
+
     serialization: {
         value: {
             "prototype": "matte/ui/select.reel",
@@ -339,6 +405,12 @@ var SelectLibraryItem = LibraryItem.specialize( {
 });
 
 var InputTextLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function InputTextLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -370,6 +442,12 @@ var InputTextLibraryItem = LibraryItem.specialize( {
 
 var TextareaLibraryItem = LibraryItem.specialize( {
 
+    constructor: {
+        value: function TextareaLibraryItem() {
+            this.super();
+        }
+    },
+
     serialization: {
         value: {
             "prototype": "matte/ui/textarea.reel",
@@ -399,6 +477,12 @@ var TextareaLibraryItem = LibraryItem.specialize( {
 });
 
 var ImageLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function ImageLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -431,6 +515,12 @@ var ImageLibraryItem = LibraryItem.specialize( {
 
 var ProgressLibraryItem = LibraryItem.specialize( {
 
+    constructor: {
+        value: function ProgressLibraryItem() {
+            this.super();
+        }
+    },
+
     serialization: {
         value: {
             "prototype": "matte/ui/progress.reel",
@@ -462,6 +552,12 @@ var ProgressLibraryItem = LibraryItem.specialize( {
 
 var VideoPlayerLibraryItem = LibraryItem.specialize( {
 
+    constructor: {
+        value: function VideoPlayerLibraryItem() {
+            this.super();
+        }
+    },
+
     serialization: {
         value: {
             "prototype": "matte/ui/video-player.reel",
@@ -490,6 +586,12 @@ var VideoPlayerLibraryItem = LibraryItem.specialize( {
 });
 
 var TokenFieldLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function TokenFieldLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -520,6 +622,12 @@ var TokenFieldLibraryItem = LibraryItem.specialize( {
 
 var RichTextEditorLibraryItem = LibraryItem.specialize( {
 
+    constructor: {
+        value: function RichTextEditorLibraryItem() {
+            this.super();
+        }
+    },
+
     serialization: {
         value: {
             "prototype": "matte/ui/rich-text-editor/rich-text-editor.reel",
@@ -547,6 +655,12 @@ var RichTextEditorLibraryItem = LibraryItem.specialize( {
 });
 
 var ScrollerLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function ScrollerLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -576,6 +690,12 @@ var ScrollerLibraryItem = LibraryItem.specialize( {
 
 var ListLibraryItem = LibraryItem.specialize( {
 
+    constructor: {
+        value: function ListLibraryItem() {
+            this.super();
+        }
+    },
+
     serialization: {
         value: {
             "prototype": "matte/ui/list.reel",
@@ -603,6 +723,12 @@ var ListLibraryItem = LibraryItem.specialize( {
 });
 
 var TextSliderLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function TextSliderLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -633,6 +759,12 @@ var TextSliderLibraryItem = LibraryItem.specialize( {
 
 var PopupLibraryItem = LibraryItem.specialize( {
 
+    constructor: {
+        value: function PopupLibraryItem() {
+            this.super();
+        }
+    },
+
     serialization: {
         value: {
             "prototype": "matte/ui/popup/popup.reel",
@@ -661,6 +793,12 @@ var PopupLibraryItem = LibraryItem.specialize( {
 });
 
 var AlertLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function AlertLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
@@ -691,6 +829,12 @@ var AlertLibraryItem = LibraryItem.specialize( {
 
 var NotifierLibraryItem = LibraryItem.specialize( {
 
+    constructor: {
+        value: function NotifierLibraryItem() {
+            this.super();
+        }
+    },
+
     serialization: {
         value: {
             "prototype": "matte/ui/popup/notifier.reel",
@@ -719,6 +863,12 @@ var NotifierLibraryItem = LibraryItem.specialize( {
 });
 
 var ConfirmLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function ConfirmLibraryItem() {
+            this.super();
+        }
+    },
 
     serialization: {
         value: {
