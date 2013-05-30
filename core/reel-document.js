@@ -369,15 +369,17 @@ exports.ReelDocument = EditingDocument.specialize( {
     },
 
     associateWithLiveRepresentations: {
-        value: function (owner, template, frame) {
-            var labels = Object.keys(owner.templateObjects),
+        value: function (documentPart, template, frame) {
+            var labels = Object.keys(documentPart.objects),
                 self = this,
                 proxy,
-                serialization = template.getSerialization().getSerializationObject();
+                serialization = template.getSerialization().getSerializationObject(),
+                owner;
 
             var editController = this._editingController = EditingController.create();
             editController.frame = frame;
-            editController.owner = owner;
+            editController.template = template;
+            editController.owner = owner = documentPart.objects.owner;
 
             labels.forEach(function (label) {
                 proxy = self.editingProxyMap[label];

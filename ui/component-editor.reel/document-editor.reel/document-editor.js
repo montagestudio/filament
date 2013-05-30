@@ -87,7 +87,7 @@ exports.DocumentEditor = Montage.create(Component, {
                 }
 
                 return promise.then(function (liveStageInfo) {
-                    document.associateWithLiveRepresentations(liveStageInfo.owner, liveStageInfo.template, liveStageInfo.frame);
+                    document.associateWithLiveRepresentations(liveStageInfo.documentPart, liveStageInfo.template, liveStageInfo.frame);
                 });
             });
         }
