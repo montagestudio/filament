@@ -102,7 +102,7 @@ exports.DocumentEditor = Montage.create(Component, {
             return this.workbench.refresh(this.editingDocument._template)
             .then(function (liveStageInfo) {
                 self.editingDocument.associateWithLiveRepresentations(
-                    liveStageInfo.owner, liveStageInfo.template, liveStageInfo.frame
+                    liveStageInfo.documentPart, liveStageInfo.template, liveStageInfo.frame
                 );
             });
         }
