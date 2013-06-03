@@ -643,8 +643,8 @@ exports.ReelDocument = EditingDocument.specialize( {
 
                 //TODO not sneak this in through the editingController
                 // Make the owner component in the stage look like we expect before trying to install objects
-                this._editingController.owner._template.objectsString = destinationTemplate.objectsString;
-                this._editingController.owner._template.setDocument(destinationTemplate.document);
+                this._editingController.template.objectsString = destinationTemplate.objectsString;
+                this._editingController.template.setDocument(destinationTemplate.document);
 
                 return self._editingController.addObjectsFromTemplate(revisedTemplate, stageElement).then(function (objects) {
                     for (var label in objects) {
