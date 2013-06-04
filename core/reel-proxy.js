@@ -32,7 +32,6 @@ var Montage = require("montage").Montage,
  */
 exports.ReelProxy = EditingProxy.specialize( {
 
-
     constructor: {
         value: function ReelProxy() {
             this.super();

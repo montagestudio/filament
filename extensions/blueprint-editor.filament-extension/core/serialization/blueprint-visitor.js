@@ -1,6 +1,11 @@
-var Montage = require("montage").Montage,
-    ProxyVisitor = require("palette/core/serialization/proxy-visitor").ProxyVisitor;
+var ProxyVisitor = require("palette/core/serialization/proxy-visitor").ProxyVisitor;
 
-exports.BlueprintVisitor = Montage.create(ProxyVisitor, {
+exports.BlueprintVisitor = ProxyVisitor.specialize({
+
+    constructor: {
+        value: function BlueprintVisitor() {
+            this.super();
+        }
+    }
 
 });

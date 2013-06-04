@@ -1,6 +1,11 @@
-var Montage = require("montage").Montage,
-    ProxyContext = require("palette/core/serialization/proxy-context").ProxyContext;
+var ProxyContext = require("palette/core/serialization/proxy-context").ProxyContext;
 
-exports.BlueprintContext = Montage.create(ProxyContext, {
+exports.BlueprintContext = ProxyContext.specialize({
+
+    constructor: {
+        value: function BlueprintContext() {
+            this.super();
+        }
+    }
 
 });

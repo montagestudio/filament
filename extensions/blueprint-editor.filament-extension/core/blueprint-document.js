@@ -11,7 +11,13 @@ var BlueprintSerializer = require("core/serialization/blueprint-serializer").Blu
 var BlueprintReviver = require("core/serialization/blueprint-reviver").BlueprintReviver;
 var BlueprintContext = require("core/serialization/blueprint-context").BlueprintContext;
 
-var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocument, {
+var BlueprintDocument = exports.BlueprintDocument = EditingDocument.specialize({
+
+    constructor: {
+        value: function BlueprintDocument() {
+            this.super();
+        }
+    },
 
     __existOnDisk: {
         value: true
@@ -108,22 +114,16 @@ var BlueprintDocument = exports.BlueprintDocument = Montage.create(EditingDocume
         }
     },
 
-    newReviver: {
-        get: function () {
-            return BlueprintReviver.create();
-        }
+    reviverConstructor: {
+        value: BlueprintReviver
     },
 
-    newContext: {
-        get: function () {
-            return BlueprintContext.create();
-        }
+    contextConstructor: {
+        value: BlueprintContext
     },
 
-    newSerializer: {
-        get: function () {
-            return BlueprintSerializer.create();
-        }
+    serializerConstructor: {
+        value: BlueprintSerializer
     },
 
     _buildSerializationObjects: {

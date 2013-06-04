@@ -1,36 +1,21 @@
-var Montage = require("montage").Montage,
-    Promise = require("montage/core/promise").Promise,
+var Promise = require("montage/core/promise").Promise,
     ProxyReviver = require("palette/core/serialization/proxy-reviver").ProxyReviver,
     ReelProxy = require("core/reel-proxy").ReelProxy;
 
-exports.ReelReviver = Montage.create(ProxyReviver, {
+exports.ReelReviver = ProxyReviver.specialize({
 
-    reviveMontageObject: {
-        value: function(value, context, label) {
-
-            if (context.hasUserObject(label)) {
-                return context.getUserObject(label);
-            }
-
-            var exportId,
-                proxyObject = ReelProxy.create(),
-                revivedSerialization;
-
-            context.setObjectLabel(proxyObject, label);
-            revivedSerialization = this.reviveObjectLiteral(value, context);
-
-            if ("owner" === label) {
-                exportId = context.ownerExportId;
-            }
-
-            if (Promise.isPromise(revivedSerialization)) {
-                return revivedSerialization.then(function (revivedSerialization) {
-                    return proxyObject.init(label, revivedSerialization, exportId, context.editingDocument);
-                });
-            } else {
-                return proxyObject.init(label, revivedSerialization, exportId, context.editingDocument);
-            }
+    constructor: {
+        value: function ReelReviver() {
+            this.super();
         }
+    },
+
+    rootObjectLabel: {
+        value: "owner"
+    },
+
+    proxyConstructor: {
+        value: ReelProxy
     },
 
     // We want to be forgiving if an element can't be found, so that the
@@ -49,7 +34,7 @@ exports.ReelReviver = Montage.create(ProxyReviver, {
 
     // Stop MontageReviver from didReviveObjects
     didReviveObjects: {
-        value: function(objects, context) {
+        value: function (objects, context) {
         }
     }
 });

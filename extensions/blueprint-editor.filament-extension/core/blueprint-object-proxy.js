@@ -3,7 +3,13 @@ var Montage = require("montage").Montage,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver;
 
 
-exports.BlueprintObjectProxy = Montage.create(EditingProxy, {
+exports.BlueprintObjectProxy = EditingProxy.specialize({
+
+    constructor: {
+        value: function BlueprintObjectProxy() {
+            this.super();
+        }
+    },
 
     init: {
         value: function (label, serialization, exportId, editingDocument) {

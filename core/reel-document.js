@@ -99,22 +99,16 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    newReviver: {
-        get: function() {
-            return ReelReviver.create();
-        }
+    reviverConstructor: {
+        value: ReelReviver
     },
 
-    newContext: {
-        get: function() {
-            return ReelContext.create();
-        }
+    contextConstructor: {
+        value: ReelContext
     },
 
-    newSerializer: {
-        get: function() {
-            return ReelSerializer.create();
-        }
+    serializerConstructor: {
+        value: ReelSerializer
     },
 
     handleMenuValidate: {

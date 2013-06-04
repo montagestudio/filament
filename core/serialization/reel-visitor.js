@@ -1,16 +1,21 @@
-var Montage = require("montage").Montage,
-    ProxyVisitor = require("palette/core/serialization/proxy-visitor").ProxyVisitor;
+var ProxyVisitor = require("palette/core/serialization/proxy-visitor").ProxyVisitor;
 
-exports.ReelVisitor = Montage.create(ProxyVisitor, {
+exports.ReelVisitor = ProxyVisitor.specialize({
+
+    constructor: {
+        value: function ReelVisitor() {
+            this.super();
+        }
+    },
 
     visitNodeProxy: {
-        value: function(malker, nodeProxy, name) {
+        value: function (malker, nodeProxy, name) {
             malker.visit(nodeProxy._templateNode, name);
         }
     },
 
     setObjectCustomUnit: {
-        value: function(malker, object, unitName) {
+        value: function (malker, object, unitName) {
             var value;
 
             if ("bindings" === unitName) {
