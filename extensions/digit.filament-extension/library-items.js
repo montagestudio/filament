@@ -5,77 +5,6 @@ var LibraryItem = require("filament-extension/core/library-item").LibraryItem;
 //TODO each extension really should be its own package, anticipate consuming extensions from elsewhere
 var packageLocation = require.location;
 
-var ActionSheetLibraryItem = LibraryItem.specialize( {
-
-    constructor: {
-        value: function ActionSheetLibraryItem() {
-            this.super();
-        }
-    },
-
-    serialization: {
-        value: {
-            "prototype": "digit/ui/action-sheet.reel",
-            "properties": {
-                "element": {"#": "anchor"},
-                "value": "Link"
-            }
-        }
-    },
-
-    name: {
-        value: "ActionSheet"
-    },
-
-    label: {
-        value: "Action Sheet"
-    },
-
-    icon: {
-        value: packageLocation + "assets/components/action-sheet.png"
-    },
-
-    html: {
-        value: '<a data-montage-id="anchor"></a>'
-    }
-
-});
-
-var AudioLibraryItem = LibraryItem.specialize( {
-
-    constructor: {
-        value: function AudioLibraryItem() {
-            this.super();
-        }
-    },
-
-    serialization: {
-        value: {
-            "prototype": "digit/ui/audio.reel",
-            "properties": {
-                "element": {"#": "audio"}
-            }
-        }
-    },
-
-    name: {
-        value: "AudioPlayer"
-    },
-
-    label: {
-        value: "Audio"
-    },
-
-    icon: {
-        value: packageLocation + "assets/components/audio.png"
-    },
-
-    html: {
-        value: '<audio data-montage-id="audio"></audio>'
-    }
-
-});
-
 var BadgeLibraryItem = LibraryItem.specialize( {
 
     constructor: {
@@ -107,41 +36,6 @@ var BadgeLibraryItem = LibraryItem.specialize( {
 
     html: {
         value: '<output data-montage-id="badge"></output>'
-    }
-
-});
-
-var ButtonGroupLibraryItem = LibraryItem.specialize( {
-
-    constructor: {
-        value: function ButtonGroupLibraryItem() {
-            this.super();
-        }
-    },
-
-    serialization: {
-        value: {
-            "prototype": "digit/ui/button-group.reel",
-            "properties": {
-                "element": {"#": "buttonGroup"}
-            }
-        }
-    },
-
-    name: {
-        value: "ButtonGroup"
-    },
-
-    label: {
-        value: "ButtonGroup"
-    },
-
-    icon: {
-        value: packageLocation + "assets/components/button-group.png"
-    },
-
-    html: {
-        value: '<div data-montage-id="buttonGroup"></div>'
     }
 
 });
@@ -179,41 +73,6 @@ var ButtonLibraryItem = LibraryItem.specialize( {
 
     html: {
         value: '<button data-montage-id="button"></button>'
-    }
-
-});
-
-var HeaderLibraryItem = LibraryItem.specialize( {
-
-    constructor: {
-        value: function HeaderLibraryItem() {
-            this.super();
-        }
-    },
-
-    serialization: {
-        value: {
-            "prototype": "digit/ui/header.reel",
-            "properties": {
-                "element": {"#": "header"}
-            }
-        }
-    },
-
-    name: {
-        value: "Header"
-    },
-
-    label: {
-        value: "Header"
-    },
-
-    icon: {
-        value: packageLocation + "assets/components/header.png"
-    },
-
-    html: {
-        value: '<div data-montage-id="header"></div>'
     }
 
 });
@@ -468,148 +327,6 @@ var ListLibraryItem = LibraryItem.specialize( {
     }
 });
 
-var MapLibraryItem = LibraryItem.specialize( {
-
-    constructor: {
-        value: function MapLibraryItem() {
-            this.super();
-        }
-    },
-
-    serialization: {
-        value: {
-            "prototype": "digit/ui/map.reel",
-            "properties": {
-                "element": {"#": "map"}
-            }
-        }
-    },
-
-    name: {
-        value: "Map"
-    },
-
-    label: {
-        value: "Map"
-    },
-
-    icon: {
-        value: packageLocation + "assets/components/map.png"
-    },
-
-    html: {
-        value: '<div data-montage-id="map"></div>'
-    }
-
-});
-
-var ModalLibraryItem = LibraryItem.specialize( {
-
-    constructor: {
-        value: function ModalLibraryItem() {
-            this.super();
-        }
-    },
-
-    serialization: {
-        value: {
-            "prototype": "digit/ui/popup/modal.reel",
-            "properties": {
-                "element": {"#": "popup"}
-            }
-        }
-    },
-
-    name: {
-        value: "Modal"
-    },
-
-    label: {
-        value: "Modal"
-    },
-
-    icon: {
-        value: packageLocation + "assets/components/modal.png"
-    },
-
-    html: {
-        value: '<div data-montage-id="popup"></div>'
-    }
-
-});
-
-var NotificationLibraryItem = LibraryItem.specialize( {
-
-    constructor: {
-        value: function NotificationLibraryItem() {
-            this.super();
-        }
-    },
-
-    serialization: {
-        value: {
-            "prototype": "digit/ui/popup/notification.reel",
-            "properties": {
-                "element": {"#": "notification"}
-            }
-        }
-    },
-
-    name: {
-        value: "Notification"
-    },
-
-    label: {
-        value: "Notification"
-    },
-
-    icon: {
-        value: packageLocation + "assets/components/notification.png"
-    },
-
-    html: {
-        value: '<div data-montage-id="notification"></div>'
-    }
-
-});
-
-var ProgressLibraryItem = LibraryItem.specialize( {
-
-    constructor: {
-        value: function ProgressLibraryItem() {
-            this.super();
-        }
-    },
-
-    serialization: {
-        value: {
-            "prototype": "digit/ui/progress.reel",
-            "properties": {
-                "element": {"#": "progress"},
-                "max": 100,
-                "value": 50
-            }
-        }
-    },
-
-    name: {
-        value: "Progress"
-    },
-
-    label: {
-        value: "Progress"
-    },
-
-    icon: {
-        value: packageLocation + "assets/components/progress.png"
-    },
-
-    html: {
-        value: '<progress data-montage-id="progress"></progress>'
-    }
-
-});
-
 var SelectLibraryItem = LibraryItem.specialize( {
 
     constructor: {
@@ -641,76 +358,6 @@ var SelectLibraryItem = LibraryItem.specialize( {
 
     html: {
         value: '<select data-montage-id="select"><option value="">Select</option></select>'
-    }
-
-});
-
-var SplitViewLibraryItem = LibraryItem.specialize( {
-
-    constructor: {
-        value: function SplitViewLibraryItem() {
-            this.super();
-        }
-    },
-
-    serialization: {
-        value: {
-            "prototype": "digit/ui/split-view.reel",
-            "properties": {
-                "element": {"#": "splitView"}
-            }
-        }
-    },
-
-    name: {
-        value: "SplitView"
-    },
-
-    label: {
-        value: "SplitView"
-    },
-
-    icon: {
-        value: packageLocation + "assets/components/split-view.png"
-    },
-
-    html: {
-        value: '<div data-montage-id="splitView"></div>'
-    }
-
-});
-
-var TabBarLibraryItem = LibraryItem.specialize( {
-
-    constructor: {
-        value: function TabBarLibraryItem() {
-            this.super();
-        }
-    },
-
-    serialization: {
-        value: {
-            "prototype": "digit/ui/popup/tab-bar.reel",
-            "properties": {
-                "element": {"#": "tabBar"}
-            }
-        }
-    },
-
-    name: {
-        value: "TabBar"
-    },
-
-    label: {
-        value: "TabBar"
-    },
-
-    icon: {
-        value: packageLocation + "assets/components/tab-bar.png"
-    },
-
-    html: {
-        value: '<div data-montage-id="tabBar"></div>'
     }
 
 });
@@ -823,142 +470,21 @@ var TitleLibraryItem = LibraryItem.specialize( {
 
 });
 
-var ToggleLibraryItem = LibraryItem.specialize( {
-
-    constructor: {
-        value: function ToggleLibraryItem() {
-            this.super();
-        }
-    },
-
-    serialization: {
-        value: {
-            "prototype": "digit/ui/toggle.reel",
-            "properties": {
-                "element": {"#": "toggle"}
-            }
-        }
-    },
-
-    name: {
-        value: "Toggle"
-    },
-
-    label: {
-        value: "Toggle"
-    },
-
-    icon: {
-        value: packageLocation + "assets/components/toggle.png"
-    },
-
-    html: {
-        value: '<div data-montage-id="toggle"></div>'
-    }
-
-});
-
-var ToolBarLibraryItem = LibraryItem.specialize( {
-
-    constructor: {
-        value: function ToolBarLibraryItem() {
-            this.super();
-        }
-    },
-
-    serialization: {
-        value: {
-            "prototype": "digit/ui/popup/tool-bar.reel",
-            "properties": {
-                "element": {"#": "toolBar"}
-            }
-        }
-    },
-
-    name: {
-        value: "ToolBar"
-    },
-
-    label: {
-        value: "ToolBar"
-    },
-
-    icon: {
-        value: packageLocation + "assets/components/tool-bar.png"
-    },
-
-    html: {
-        value: '<div data-montage-id="toolBar"></div>'
-    }
-
-});
-
-var VideoLibraryItem = LibraryItem.specialize( {
-
-    constructor: {
-        value: function VideoLibraryItem() {
-            this.super();
-        }
-    },
-
-    serialization: {
-        value: {
-            "prototype": "digit/ui/video.reel",
-            "properties": {
-                "element": {"#": "video"}
-            }
-        }
-    },
-
-    name: {
-        value: "Video"
-    },
-
-    label: {
-        value: "Video"
-    },
-
-    icon: {
-        value: packageLocation + "assets/components/video.png"
-    },
-
-    html: {
-        value: '<video data-montage-id="video"></video>'
-    }
-
-});
-
-
 //TODO build this automatically
 exports.libraryItems = {
-
-    "digit/ui/action-sheet.reel": ActionSheetLibraryItem,
-    "digit/ui/audio.reel": AudioLibraryItem,
     "digit/ui/badge.reel": BadgeLibraryItem,
-    "digit/ui/button-group.reel": ButtonGroupLibraryItem,
     "digit/ui/button.reel": ButtonLibraryItem,
-    "digit/ui/header.reel": HeaderLibraryItem,
     "digit/ui/checkbox.reel": CheckboxLibraryItem,
-    "digit/ui/number-field.reel": NumberFieldLibraryItem,
-    "digit/ui/radio-button.reel": RadioButtonLibraryItem,
-    "digit/ui/slider.reel": SliderLibraryItem,
-    "digit/ui/text-field.reel": TextFieldLibraryItem,
     "digit/ui/list-item.reel": ListItemLibraryItem,
     "digit/ui/list.reel": ListLibraryItem,
-    "digit/ui/map.reel": MapLibraryItem,
-    "digit/ui/modal.reel": ModalLibraryItem,
-    "digit/ui/notification.reel": NotificationLibraryItem,
-    "digit/ui/progress.reel": ProgressLibraryItem,
+    "digit/ui/number-field.reel": NumberFieldLibraryItem,
+    "digit/ui/radio-button.reel": RadioButtonLibraryItem,
     "digit/ui/select.reel": SelectLibraryItem,
-    "digit/ui/split-view.reel": SplitViewLibraryItem,
-    "digit/ui/tab-bar.reel": TabBarLibraryItem,
-    "digit/ui/text.reel": TextLibraryItem,
+    "digit/ui/slider.reel": SliderLibraryItem,
     "digit/ui/text-area.reel": TextAreaLibraryItem,
-    "digit/ui/title.reel": TitleLibraryItem,
-    "digit/ui/toggle.reel": ToggleLibraryItem,
-    "digit/ui/tool-bar.reel": ToolBarLibraryItem,
-    "digit/ui/video.reel": VideoLibraryItem
-
+    "digit/ui/text-field.reel": TextFieldLibraryItem,
+    "digit/ui/text.reel": TextLibraryItem,
+    "digit/ui/title.reel": TitleLibraryItem
 };
 
 exports.libraryAdditions = [];
