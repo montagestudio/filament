@@ -607,7 +607,10 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
 
             if (libraryEntry) {
                 item = new libraryEntry();
-            } else if (typeof libraryEntry === "undefined") {
+            } else if (typeof libraryEntry === "undefined" && (/^ui\//).test(moduleId)) {
+                // Only create default entries for component within the current package
+                // TODO this regex is not exactly how we'll want this done in the future but it keeps things from getting too cluttered
+
                 var montageId = objectName.replace(/(^.)/, function (_, firstChar) {
                     return firstChar.toLowerCase();
                 });
