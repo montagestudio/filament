@@ -133,8 +133,7 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
             var element = this.templateObject.properties.get("element");
 
             if (event.dataTransfer.types &&
-                event.dataTransfer.types.indexOf(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) !== -1 &&
-                (!element || !element.isInTemplate)
+                event.dataTransfer.types.indexOf(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) !== -1
             ) {
                 // allows us to drop
                 event.preventDefault();
