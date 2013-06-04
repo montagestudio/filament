@@ -867,7 +867,7 @@ exports.ReelDocument = EditingDocument.specialize( {
 
             this.undoManager.register("Remove", deferredUndo.promise);
 
-            if (this._editingController) {
+            if (this._editingController && proxy.stageObject) {
                 removalPromise = this._editingController.removeObject(proxy.stageObject);
             } else {
                 removalPromise = Promise.resolve(proxy);
