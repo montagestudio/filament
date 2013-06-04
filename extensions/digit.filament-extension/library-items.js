@@ -218,17 +218,17 @@ var HeaderLibraryItem = LibraryItem.specialize( {
 
 });
 
-var InputCheckboxLibraryItem = LibraryItem.specialize( {
+var CheckboxLibraryItem = LibraryItem.specialize( {
 
     constructor: {
-        value: function InputCheckboxLibraryItem() {
+        value: function CheckboxLibraryItem() {
             this.super();
         }
     },
 
     serialization: {
         value: {
-            "prototype": "digit/ui/input-checkbox.reel",
+            "prototype": "digit/ui/checkbox.reel",
             "properties": {
                 "element": {"#": "checkbox"},
                 "checked": true
@@ -237,7 +237,7 @@ var InputCheckboxLibraryItem = LibraryItem.specialize( {
     },
 
     name: {
-        value: "InputCheckbox"
+        value: "Checkbox"
     },
 
     label: {
@@ -245,7 +245,7 @@ var InputCheckboxLibraryItem = LibraryItem.specialize( {
     },
 
     icon: {
-        value: packageLocation + "assets/components/input-checkbox.png"
+        value: packageLocation + "assets/components/checkbox.png"
     },
 
     html: {
@@ -254,53 +254,17 @@ var InputCheckboxLibraryItem = LibraryItem.specialize( {
 
 });
 
-var InputDateLibraryItem = LibraryItem.specialize( {
+var NumberFieldLibraryItem = LibraryItem.specialize( {
 
     constructor: {
-        value: function InputDateLibraryItem() {
+        value: function NumberFieldLibraryItem() {
             this.super();
         }
     },
 
     serialization: {
         value: {
-            "prototype": "digit/ui/input-date.reel",
-            "properties": {
-                "element": {"#": "date"},
-                "value": "2013-02-28"
-            }
-        }
-    },
-
-    name: {
-        value: "InputDate"
-    },
-
-    label: {
-        value: "Date Input"
-    },
-
-    icon: {
-        value: packageLocation + "assets/components/input-date.png"
-    },
-
-    html: {
-        value: '<input type="date" data-montage-id="date">'
-    }
-
-});
-
-var InputNumberLibraryItem = LibraryItem.specialize( {
-
-    constructor: {
-        value: function InputNumberLibraryItem() {
-            this.super();
-        }
-    },
-
-    serialization: {
-        value: {
-            "prototype": "digit/ui/input-number.reel",
+            "prototype": "digit/ui/number-field.reel",
             "properties": {
                 "element": {"#": "number"},
                 "value": 100
@@ -309,15 +273,15 @@ var InputNumberLibraryItem = LibraryItem.specialize( {
     },
 
     name: {
-        value: "InputNumber"
+        value: "NumberField"
     },
 
     label: {
-        value: "Number Input"
+        value: "Number Field"
     },
 
     icon: {
-        value: packageLocation + "assets/components/input-number.png"
+        value: packageLocation + "assets/components/number-field.png"
     },
 
     html: {
@@ -326,17 +290,17 @@ var InputNumberLibraryItem = LibraryItem.specialize( {
 
 });
 
-var InputRadioLibraryItem = LibraryItem.specialize( {
+var RadioButtonLibraryItem = LibraryItem.specialize( {
 
     constructor: {
-        value: function InputRadioLibraryItem() {
+        value: function RadioButtonLibraryItem() {
             this.super();
         }
     },
 
     serialization: {
         value: {
-            "prototype": "digit/ui/input-radio.reel",
+            "prototype": "digit/ui/radio-button.reel",
             "properties": {
                 "element": {"#": "radio"},
                 "checked": true
@@ -345,15 +309,15 @@ var InputRadioLibraryItem = LibraryItem.specialize( {
     },
 
     name: {
-        value: "InputRadio"
+        value: "RadioButton"
     },
 
     label: {
-        value: "Radio"
+        value: "Radio Button"
     },
 
     icon: {
-        value: packageLocation + "assets/components/input-radio.png"
+        value: packageLocation + "assets/components/radio-button.png"
     },
 
     html: {
@@ -362,19 +326,19 @@ var InputRadioLibraryItem = LibraryItem.specialize( {
 
 });
 
-var InputRangeLibraryItem = LibraryItem.specialize( {
+var SliderLibraryItem = LibraryItem.specialize( {
 
     constructor: {
-        value: function InputRangeLibraryItem() {
+        value: function SliderLibraryItem() {
             this.super();
         }
     },
 
     serialization: {
         value: {
-            "prototype": "digit/ui/input-range.reel",
+            "prototype": "digit/ui/slider.reel",
             "properties": {
-                "element": {"#": "inputRange"},
+                "element": {"#": "slider"},
                 "min": 0,
                 "max": 100,
                 "value": 50
@@ -383,51 +347,51 @@ var InputRangeLibraryItem = LibraryItem.specialize( {
     },
 
     name: {
-        value: "InputRange"
+        value: "Slider"
     },
 
     label: {
-        value: "Range Input"
+        value: "Slider"
     },
 
     icon: {
-        value: packageLocation + "assets/components/input-range.png"
+        value: packageLocation + "assets/components/slider.png"
     },
 
     html: {
-        value: '<input type="range" data-montage-id="inputRange">'
+        value: '<div data-montage-id="slider"></div>'
     }
 
 });
 
-var InputTextLibraryItem = LibraryItem.specialize( {
+var TextFieldLibraryItem = LibraryItem.specialize( {
 
     constructor: {
-        value: function InputTextLibraryItem() {
+        value: function TextFieldLibraryItem() {
             this.super();
         }
     },
 
     serialization: {
         value: {
-            "prototype": "digit/ui/input-text.reel",
+            "prototype": "digit/ui/text-field.reel",
             "properties": {
-                "element": {"#": "inputText"},
+                "element": {"#": "textField"},
                 "placeholder": "Text"
             }
         }
     },
 
     name: {
-        value: "InputText"
+        value: "TextField"
     },
 
     label: {
-        value: "Text Input"
+        value: "TextField"
     },
 
     icon: {
-        value: packageLocation + "assets/components/input-text.png"
+        value: packageLocation + "assets/components/text-field.png"
     },
 
     html: {
@@ -787,17 +751,17 @@ var TextLibraryItem = LibraryItem.specialize( {
 
 });
 
-var TextareaLibraryItem = LibraryItem.specialize( {
+var TextAreaLibraryItem = LibraryItem.specialize( {
 
     constructor: {
-        value: function TextareaLibraryItem() {
+        value: function TextAreaLibraryItem() {
             this.super();
         }
     },
 
     serialization: {
         value: {
-            "prototype": "digit/ui/textarea.reel",
+            "prototype": "digit/ui/text-area.reel",
             "properties": {
                 "element": {"#": "textarea"},
                 "value": "Textarea"
@@ -974,11 +938,11 @@ exports.libraryItems = {
     "digit/ui/button-group.reel": ButtonGroupLibraryItem,
     "digit/ui/button.reel": ButtonLibraryItem,
     "digit/ui/header.reel": HeaderLibraryItem,
-    "digit/ui/input-checkbox.reel": InputCheckboxLibraryItem,
-    "digit/ui/input-number.reel": InputNumberLibraryItem,
-    "digit/ui/input-radio.reel": InputRadioLibraryItem,
-    "digit/ui/input-range.reel": InputRangeLibraryItem,
-    "digit/ui/input-text.reel": InputTextLibraryItem,
+    "digit/ui/checkbox.reel": CheckboxLibraryItem,
+    "digit/ui/number-field.reel": NumberFieldLibraryItem,
+    "digit/ui/radio-button.reel": RadioButtonLibraryItem,
+    "digit/ui/slider.reel": SliderLibraryItem,
+    "digit/ui/text-field.reel": TextFieldLibraryItem,
     "digit/ui/list-item.reel": ListItemLibraryItem,
     "digit/ui/list.reel": ListLibraryItem,
     "digit/ui/map.reel": MapLibraryItem,
@@ -989,7 +953,7 @@ exports.libraryItems = {
     "digit/ui/split-view.reel": SplitViewLibraryItem,
     "digit/ui/tab-bar.reel": TabBarLibraryItem,
     "digit/ui/text.reel": TextLibraryItem,
-    "digit/ui/textarea.reel": TextareaLibraryItem,
+    "digit/ui/text-area.reel": TextAreaLibraryItem,
     "digit/ui/title.reel": TitleLibraryItem,
     "digit/ui/toggle.reel": ToggleLibraryItem,
     "digit/ui/tool-bar.reel": ToolBarLibraryItem,
