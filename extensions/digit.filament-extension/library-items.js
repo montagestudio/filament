@@ -113,6 +113,41 @@ var CheckboxLibraryItem = LibraryItem.specialize( {
 
 });
 
+var ImageLibraryItem = LibraryItem.specialize( {
+
+    constructor: {
+        value: function ImageLibraryItem() {
+            this.super();
+        }
+    },
+
+    serialization: {
+        value: {
+            "prototype": "digit/ui/image.reel",
+            "properties": {
+                "element": {"#": "image"}
+            }
+        }
+    },
+
+    name: {
+        value: "Image"
+    },
+
+    label: {
+        value: "Image"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/image.png"
+    },
+
+    html: {
+        value: '<img data-montage-id="image">'
+    }
+
+});
+
 var NumberFieldLibraryItem = LibraryItem.specialize( {
 
     constructor: {
@@ -475,6 +510,7 @@ exports.libraryItems = {
     "digit/ui/badge.reel": BadgeLibraryItem,
     "digit/ui/button.reel": ButtonLibraryItem,
     "digit/ui/checkbox.reel": CheckboxLibraryItem,
+    "digit/ui/image.reel": ImageLibraryItem,
     "digit/ui/list-item.reel": ListItemLibraryItem,
     "digit/ui/list.reel": ListLibraryItem,
     "digit/ui/number-field.reel": NumberFieldLibraryItem,
