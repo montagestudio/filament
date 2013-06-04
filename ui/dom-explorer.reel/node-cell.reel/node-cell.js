@@ -76,7 +76,11 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     handleDragover: {
         enumerable: false,
         value: function (event) {
-            if (event.dataTransfer.types && event.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1) {
+            if (
+                event.dataTransfer.types &&
+                event.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 &&
+                !this.nodeInfo.component
+            ) {
                 // allows us to drop
                 event.preventDefault();
                 event.dataTransfer.dropEffect = "copy";
