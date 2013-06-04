@@ -167,7 +167,19 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
 
     setElement: {
         value: function (element) {
-            this.templateObject.properties.set("element", element);
+            var templateObject = this.templateObject,
+                properties = templateObject.properties;
+
+            var oldElement = properties.get("element");
+
+            properties.set("element", element);
+
+            if (oldElement) {
+                oldElement.dispatchOwnPropertyChange("component", void 0);
+            }
+            if (element) {
+                element.dispatchOwnPropertyChange("component", templateObject);
+            }
         }
     },
 
