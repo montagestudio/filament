@@ -70,7 +70,7 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                 if (!error) {
                     deferredPrefs.resolve(result);
                 } else {
-                    deferredPrefs.reject();
+                    deferredPrefs.reject(error);
                 }
             });
 
