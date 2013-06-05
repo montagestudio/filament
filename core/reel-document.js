@@ -35,6 +35,9 @@ exports.ReelDocument = EditingDocument.specialize( {
 
             return require.loadPackage(packageUrl).then(function (packageRequire) {
                 return packageRequire.async(componentModuleId).get(objectName).then(function (componentPrototype) {
+                    if (!componentPrototype) {
+                        throw new Error("Cannot load component: Syntax error in " + componentModuleId + "[" + objectName + "] implementation");
+                    }
                     return Template.getTemplateWithModuleId(componentPrototype.templateModuleId, packageRequire);
                 }, function (error) {
                     throw new Error("Cannot load component template: " + error);
