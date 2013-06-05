@@ -10,10 +10,15 @@ exports.Main = Montage.create(Component, {
         value: "X"
     },
 
+    buildVersion: {
+        value: "X"
+    },
+
     constructor: {
         value: function () {
             if (IS_IN_LUMIERES) {
                 this.version = lumieres.version;
+                this.buildVersion = lumieres.buildVersion;
             }
         }
     }

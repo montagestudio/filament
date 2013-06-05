@@ -86,6 +86,13 @@
             "welcome/ui/main.reel/main.html"
         ]
     },
+    "build_version": {
+        "message": "Build {number}",
+        "description": "Shows the build version number of the application",
+        "locations": [
+            "welcome/ui/main.reel/main.html"
+        ]
+    },
     "forhelpandsupportpleasevisitthe": {
         "message": "For help and support, visit the",
         "description": "TODO",

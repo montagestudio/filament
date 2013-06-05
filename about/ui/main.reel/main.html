@@ -37,6 +37,21 @@
                         }
                     }
                 }
+            },
+
+            "buildText": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "buildText"}
+                },
+                "localizations": {
+                    "value": {
+                        "key": "build_version",
+                        "data": {
+                            "number": {"<-": "@owner.buildVersion"}
+                        }
+                    }
+                }
             }
 
         }
@@ -50,6 +65,7 @@
         <section class="Intro">
             <div class="Intro-logo"></div>
             <p class="Intro-version" data-montage-id="versionText"></p>
+            <p class="Intro-version" data-montage-id="buildText"></p>
             <p class="Intro-meta" data-montage-id="introMeta">&copy; 2012–2013 Declarativ Inc.</p>
         </section>
 
