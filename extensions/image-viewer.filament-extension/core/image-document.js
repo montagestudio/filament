@@ -4,6 +4,7 @@ var Montage = require("montage").Montage,
 
 exports.ImageDocument = Montage.create(EditingDocument, {
 
+}, {
     editorType: {
         get: function () {
             return Viewer;

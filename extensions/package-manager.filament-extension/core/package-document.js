@@ -11,22 +11,6 @@ exports.PackageDocument = Montage.create(EditingDocument, {
         value: null
     },
 
-    editorType: {
-        get: function () {
-            return PackageEditor;
-        }
-    },
-
-    load:{
-        value:function (fileUrl, packageUrl) {
-            var self = this;
-
-            return require.loadPackage(packageUrl).then(function (packageRequire) {
-                return self.create().init(fileUrl, packageRequire);
-            });
-        }
-    },
-
     _packageDescription: {
         value: null
     },
@@ -58,6 +42,24 @@ exports.PackageDocument = Montage.create(EditingDocument, {
     dependencies: {
         get: function () {
             return this._dependencies;
+        }
+    }
+
+}, {
+
+    load: {
+        value: function (fileUrl, packageUrl) {
+            var self = this;
+
+            return require.loadPackage(packageUrl).then(function (packageRequire) {
+                return self.create().init(fileUrl, packageRequire);
+            });
+        }
+    },
+
+    editorType: {
+        get: function () {
+            return PackageEditor;
         }
     }
 

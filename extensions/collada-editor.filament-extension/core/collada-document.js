@@ -6,6 +6,7 @@ exports.ColladaDocument = Montage.create(EditingDocument, {
 
     compiledFileURL: { value: null, writable: true },
 
+}, {
     editorType: {
         get: function () {
             return ColladaEditor;

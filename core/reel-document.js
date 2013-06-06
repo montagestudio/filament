@@ -22,12 +22,6 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    editorType: {
-        get: function () {
-            return ComponentEditor;
-        }
-    },
-
     _editor: {
         value: null
     },
@@ -193,7 +187,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             if (!node) {
                 return;
-            } else  {
+            } else {
                 node.depth = depth;
                 if (node.children) {
 
@@ -295,8 +289,7 @@ exports.ReelDocument = EditingDocument.specialize({
             path = location + "/" + filenameMatch[1] + ".html";
             html = TemplateFormatter.create().init(template).getHtml();
 
-            return dataWriter(html, path)
-            .then(function (value) {
+            return dataWriter(html, path).then(function (value) {
                 self._changeCount = 0;
                 return value;
             });
@@ -409,7 +402,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 if (!parent) {
                     parent = owner;
                 }
-                proxy.parentProxy =  this.editingProxyForObject(parent);
+                proxy.parentProxy = this.editingProxyForObject(parent);
             }, this);
         }
     },
@@ -452,9 +445,9 @@ exports.ReelDocument = EditingDocument.specialize({
             // Select the highest component inside the current selection
             while (
                 currentElement !== ownerElement &&
-                selectedElements.indexOf(currentElement) === -1  &&
-                currentElement != null
-            ) {
+                    selectedElements.indexOf(currentElement) === -1 &&
+                    currentElement != null
+                ) {
                 var component = currentElement.component;
                 if (component) {
                     // Correct code:
@@ -563,18 +556,17 @@ exports.ReelDocument = EditingDocument.specialize({
                 doc.body.innerHTML = htmlFragment;
             }
 
-            return Template.create().initWithDocument(doc, this._packageRequire).then(function(template) {
+            return Template.create().initWithDocument(doc, this._packageRequire).then(function (template) {
                 return self.addObjectsFromTemplate(template, parentElement, nextSiblingElement, stageElement);
-            })
-            .then(function (objects) {
-                // only if there's only one object?
-                if (objects.length && self.selectObjectsOnAddition) {
-                    self.clearSelectedObjects();
-                    self.selectObject(objects[0]);
-                }
+            }).then(function (objects) {
+                    // only if there's only one object?
+                    if (objects.length && self.selectObjectsOnAddition) {
+                        self.clearSelectedObjects();
+                        self.selectObject(objects[0]);
+                    }
 
-                return objects;
-            });
+                    return objects;
+                });
         }
     },
 
@@ -583,15 +575,13 @@ exports.ReelDocument = EditingDocument.specialize({
             var self = this;
             this.undoManager.openBatch("Add component to element");
 
-            return this.addLibraryItemFragments(serializationFragment)
-            .then(function (objects) {
+            return this.addLibraryItemFragments(serializationFragment).then(function (objects) {
                 if (objects.length === 1) {
                     self.setOwnedObjectElement(objects[0], montageId);
                 }
-            })
-            .finally(function () {
-                self.undoManager.closeBatch();
-            });
+            }).finally(function () {
+                    self.undoManager.closeBatch();
+                });
         }
     },
 
@@ -606,7 +596,7 @@ exports.ReelDocument = EditingDocument.specialize({
             var aParentNode;
 
             if (element) {
-                while(!ownerComponent && (aParentNode = element.parentNode)) {
+                while (!ownerComponent && (aParentNode = element.parentNode)) {
                     ownerComponent = element.component;
                     element = aParentNode;
                 }
@@ -648,37 +638,36 @@ exports.ReelDocument = EditingDocument.specialize({
             context = this.deserializationContext(destinationTemplate.getSerialization().getSerializationObject(), this._editingProxyMap);
 
             return Promise.all(revisedTemplate.getSerialization().getSerializationLabels().map(function (label) {
-                return Promise(context.getObject(label))
-                .then(function (proxy) {
-                    var parentProxy = self._nearestComponent(parentElement);
-                    return self.addObject(proxy, parentProxy || ownerProxy);
-                });
-            }))
-            .then(function (addedProxies) {
-
-                self.undoManager.closeBatch();
-
-                // Introduce the revised template into the stage
-                if (this._editingController) {
-
-                    //TODO not sneak this in through the editingController
-                    // Make the owner component in the stage look like we expect before trying to install objects
-                    this._editingController.owner._template.objectsString = destinationTemplate.objectsString;
-                    this._editingController.owner._template.setDocument(destinationTemplate.document);
-
-                    return self._editingController.addObjectsFromTemplate(revisedTemplate, stageElement).then(function (objects) {
-                        for (var label in objects) {
-                            if (objects.hasOwnProperty !== "function" || objects.hasOwnProperty(label)) {
-                                self._editingProxyMap[label].stageObject = objects[label];
-                            }
-                        }
-
-                        return addedProxies;
+                    return Promise(context.getObject(label)).then(function (proxy) {
+                        var parentProxy = self._nearestComponent(parentElement);
+                        return self.addObject(proxy, parentProxy || ownerProxy);
                     });
-                } else {
-                    return addedProxies;
-                }
-            });
+                }))
+                .then(function (addedProxies) {
+
+                    self.undoManager.closeBatch();
+
+                    // Introduce the revised template into the stage
+                    if (this._editingController) {
+
+                        //TODO not sneak this in through the editingController
+                        // Make the owner component in the stage look like we expect before trying to install objects
+                        this._editingController.owner._template.objectsString = destinationTemplate.objectsString;
+                        this._editingController.owner._template.setDocument(destinationTemplate.document);
+
+                        return self._editingController.addObjectsFromTemplate(revisedTemplate, stageElement).then(function (objects) {
+                            for (var label in objects) {
+                                if (objects.hasOwnProperty !== "function" || objects.hasOwnProperty(label)) {
+                                    self._editingProxyMap[label].stageObject = objects[label];
+                                }
+                            }
+
+                            return addedProxies;
+                        });
+                    } else {
+                        return addedProxies;
+                    }
+                });
         }
     },
 
@@ -696,7 +685,7 @@ exports.ReelDocument = EditingDocument.specialize({
      * @private
      */
     _merge: {
-        value: function(destinationTemplate, sourceTemplate, parentElement, nextSiblingElement) {
+        value: function (destinationTemplate, sourceTemplate, parentElement, nextSiblingElement) {
             var serializationToMerge = sourceTemplate.getSerialization(),
                 sourceContentRange,
                 sourceContentFragment,
@@ -1165,7 +1154,7 @@ exports.ReelDocument = EditingDocument.specialize({
                         throw new Error("Cannot load component: Syntax error in " + componentModuleId + "[" + objectName + "] implementation");
                     }
                     return Template.getTemplateWithModuleId(componentPrototype.templateModuleId, packageRequire);
-                }, function (error) {
+                },function (error) {
                     throw new Error("Cannot load component template: " + error);
                 }).then(function (template) {
                         return self.create().init(fileUrl, template, packageRequire);
@@ -1175,5 +1164,12 @@ exports.ReelDocument = EditingDocument.specialize({
                     });
             });
         }
+    },
+
+    editorType: {
+        get: function () {
+            return ComponentEditor;
+        }
     }
+
 });

@@ -23,59 +23,6 @@ var BlueprintDocument = exports.BlueprintDocument = EditingDocument.specialize({
         value: true
     },
 
-    editorType: {
-        get: function () {
-            return BlueprintEditor;
-        }
-    },
-
-    load: {
-        value: function (fileUrl, packageUrl) {
-            var deferredDoc = Promise.defer();
-            var blueprintModuleId = fileUrl;
-            if (fileUrl.indexOf(packageUrl) > -1) {
-                blueprintModuleId = fileUrl.substring(packageUrl.length + 1);
-            }
-
-            require.loadPackage(packageUrl).then(function (packageRequire) {
-                packageRequire.async(blueprintModuleId).then(function (serializationObjects) {
-                    if (serializationObjects.root && serializationObjects.root.prototype) {
-                        if (serializationObjects.root.prototype.indexOf("blueprint") > -1) {
-                            Blueprint.getBlueprintWithModuleId(blueprintModuleId, packageRequire).then(function (blueprint) {
-                                deferredDoc.resolve(BlueprintDocument.create().init(fileUrl, packageRequire, blueprint, true));
-                            }, function () {
-                                deferredDoc.reject(new Error("Could not open file at " + fileUrl));
-                            });
-                        } else {
-                            Binder.getBinderWithModuleId(blueprintModuleId, packageRequire).then(function (binder) {
-                                deferredDoc.resolve(BlueprintDocument.create().init(fileUrl, packageRequire, binder, false));
-                            }, function () {
-                                deferredDoc.reject(new Error("Could not open file at " + fileUrl));
-                            });
-                        }
-                    } else {
-                        // The blueprint file is invalid lets use the default blueprint.
-                        var desc = BlueprintReviver.parseObjectLocationId(blueprintModuleId.substring(0, blueprintModuleId.lastIndexOf("/")));
-                        packageRequire.async(desc.moduleId).get(desc.objectName).get("blueprint").then(function (blueprint) {
-                            deferredDoc.resolve(BlueprintDocument.create().init(fileUrl, packageRequire, blueprint, true, true));
-                        }, function () {
-                            deferredDoc.reject(new Error("Could not open file at " + fileUrl));
-                        });
-                    }
-                }, function (error) {
-                    // The blueprint file does not exist yet lets use the default blueprint.
-                    var desc = BlueprintReviver.parseObjectLocationId(blueprintModuleId.substring(0, blueprintModuleId.lastIndexOf("/")));
-                    packageRequire.async(desc.moduleId).get(desc.objectName).get("blueprint").then(function (blueprint) {
-                        deferredDoc.resolve(BlueprintDocument.create().init(fileUrl, packageRequire, blueprint, true, true));
-                    }, function () {
-                        deferredDoc.reject(new Error("Could not open file at " + fileUrl));
-                    });
-                });
-            });
-            return deferredDoc.promise;
-        }
-    },
-
     init: {
         value: function (fileUrl, packageRequire, currentObject, isBlueprint, needsSave) {
             var self = EditingDocument.init.call(this, fileUrl, packageRequire);
@@ -193,6 +140,61 @@ var BlueprintDocument = exports.BlueprintDocument = EditingDocument.specialize({
         dependencies: ["url"],
         get: function () {
             return this.url.substring(this.url.lastIndexOf("/") + 1, this.url.lastIndexOf("."));
+        }
+    }
+
+}, {
+
+    load: {
+        value: function (fileUrl, packageUrl) {
+            var deferredDoc = Promise.defer();
+            var blueprintModuleId = fileUrl;
+            if (fileUrl.indexOf(packageUrl) > -1) {
+                blueprintModuleId = fileUrl.substring(packageUrl.length + 1);
+            }
+
+            require.loadPackage(packageUrl).then(function (packageRequire) {
+                packageRequire.async(blueprintModuleId).then(function (serializationObjects) {
+                    if (serializationObjects.root && serializationObjects.root.prototype) {
+                        if (serializationObjects.root.prototype.indexOf("blueprint") > -1) {
+                            Blueprint.getBlueprintWithModuleId(blueprintModuleId, packageRequire).then(function (blueprint) {
+                                deferredDoc.resolve(BlueprintDocument.create().init(fileUrl, packageRequire, blueprint, true));
+                            }, function () {
+                                deferredDoc.reject(new Error("Could not open file at " + fileUrl));
+                            });
+                        } else {
+                            Binder.getBinderWithModuleId(blueprintModuleId, packageRequire).then(function (binder) {
+                                deferredDoc.resolve(BlueprintDocument.create().init(fileUrl, packageRequire, binder, false));
+                            }, function () {
+                                deferredDoc.reject(new Error("Could not open file at " + fileUrl));
+                            });
+                        }
+                    } else {
+                        // The blueprint file is invalid lets use the default blueprint.
+                        var desc = BlueprintReviver.parseObjectLocationId(blueprintModuleId.substring(0, blueprintModuleId.lastIndexOf("/")));
+                        packageRequire.async(desc.moduleId).get(desc.objectName).get("blueprint").then(function (blueprint) {
+                            deferredDoc.resolve(BlueprintDocument.create().init(fileUrl, packageRequire, blueprint, true, true));
+                        }, function () {
+                            deferredDoc.reject(new Error("Could not open file at " + fileUrl));
+                        });
+                    }
+                }, function (error) {
+                    // The blueprint file does not exist yet lets use the default blueprint.
+                    var desc = BlueprintReviver.parseObjectLocationId(blueprintModuleId.substring(0, blueprintModuleId.lastIndexOf("/")));
+                    packageRequire.async(desc.moduleId).get(desc.objectName).get("blueprint").then(function (blueprint) {
+                        deferredDoc.resolve(BlueprintDocument.create().init(fileUrl, packageRequire, blueprint, true, true));
+                    }, function () {
+                        deferredDoc.reject(new Error("Could not open file at " + fileUrl));
+                    });
+                });
+            });
+            return deferredDoc.promise;
+        }
+    },
+
+    editorType: {
+        get: function () {
+            return BlueprintEditor;
         }
     }
 
