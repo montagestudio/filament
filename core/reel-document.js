@@ -44,7 +44,8 @@ exports.ReelDocument = EditingDocument.specialize( {
                 }).then(function (template) {
                     return self.create().init(fileUrl, template, packageRequire);
                 }, function (error) {
-                    throw new Error("cannot initialize document for template: " + error);
+                    console.log(error);
+                    return self.create().init(fileUrl, null, packageRequire);
                 });
             });
         }
@@ -85,25 +86,38 @@ exports.ReelDocument = EditingDocument.specialize( {
 
     init: {
         value: function (fileUrl, template, packageRequire) {
-            var self = EditingDocument.init.call(this, fileUrl, packageRequire);
+            var self = EditingDocument.init.call(this, fileUrl, packageRequire),
+                error;
 
             self._template = template;
 
-            self._templateBodyNode = NodeProxy.create().init(this.htmlDocument.body, this);
-            self.templateNodes = this._children(self._templateBodyNode);
+            if (template) {
+                self._templateBodyNode = NodeProxy.create().init(this.htmlDocument.body, this);
+                self.templateNodes = this._children(self._templateBodyNode);
 
-            //TODO handle external serializations
-            try {
-                var serialization = JSON.parse(template.getInlineObjectsString(template.document));
-                var context = this.deserializationContext(serialization);
-                self._addProxies(context.getObjects());
-            } catch (e) {
+                //TODO handle external serializations
+                try {
+                    var serialization = JSON.parse(template.getInlineObjectsString(template.document));
+                    var context = this.deserializationContext(serialization);
+                    self._addProxies(context.getObjects());
+                } catch (e) {
 
-                var error = {
+                    error = {
+                        file: self.fileUrl,
+                        error: {
+                            id: "serializationError",
+                            reason: e.message
+                        }
+                    };
+
+                    self.errors.push(error);
+                }
+            } else {
+                error = {
                     file: self.fileUrl,
                     error: {
-                        id: "serializationError",
-                        reason: e.message
+                        id: "syntaxError",
+                        reason: "Template was not found or was invalid"
                     }
                 };
 
