@@ -83,10 +83,25 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             this.viewController = ViewController.create();
 
             this.viewController.registerContextualInspectorForObjectTypeMatcher(InnerTemplateInspector, function (object) {
-                return object && object.moduleId && (/montage\/ui\/repetition\.reel/).test(object.moduleId);
+                return (
+                    object &&
+                    object.moduleId &&
+                    (/montage\/ui\/repetition\.reel/).test(object.moduleId)
+                );
             });
             this.viewController.registerContextualInspectorForObjectTypeMatcher(InnerTemplateInspector, function (object) {
-                return object && object.stageObject && object.stageObject._template && object.stageObject._template.hasParameters();
+                return (
+                    object &&
+                    object.stageObject &&
+                    object.stageObject._template &&
+                    object.stageObject._template.hasParameters() &&
+                    // HACK: Don't show the inner template inspector for the
+                    // flow because it interupts the modal editor
+                    !(
+                        object.moduleId ||
+                        (/montage\/ui\/flow\.reel/).test(object.moduleId)
+                    )
+                );
             });
 
             this.previewController = PreviewController.create().init(this);
