@@ -14,40 +14,11 @@ var Montage = require("montage").Montage,
     NodeProxy = require("core/node-proxy").NodeProxy;
 
 // The ReelDocument is used for editing Montage Reels
-exports.ReelDocument = EditingDocument.specialize( {
+exports.ReelDocument = EditingDocument.specialize({
 
     constructor: {
         value: function ReelDocument() {
             this.super();
-        }
-    },
-
-    load: {
-        value: function (fileUrl, packageUrl) {
-            var self = this,
-                objectName = MontageReviver.parseObjectLocationId(fileUrl).objectName;
-
-            // require.async() expect moduleId not URLs
-            var componentModuleId = fileUrl;
-            if (fileUrl.indexOf(packageUrl) > -1) {
-                componentModuleId = fileUrl.substring(packageUrl.length + 1);
-            }
-
-            return require.loadPackage(packageUrl).then(function (packageRequire) {
-                return packageRequire.async(componentModuleId).get(objectName).then(function (componentPrototype) {
-                    if (!componentPrototype) {
-                        throw new Error("Cannot load component: Syntax error in " + componentModuleId + "[" + objectName + "] implementation");
-                    }
-                    return Template.getTemplateWithModuleId(componentPrototype.templateModuleId, packageRequire);
-                }, function (error) {
-                    throw new Error("Cannot load component template: " + error);
-                }).then(function (template) {
-                    return self.create().init(fileUrl, template, packageRequire);
-                }, function (error) {
-                    console.log(error);
-                    return self.create().init(fileUrl, null, packageRequire);
-                });
-            });
         }
     },
 
@@ -1166,4 +1137,33 @@ exports.ReelDocument = EditingDocument.specialize( {
         }
     }
 
+}, {
+    load: {
+        value: function (fileUrl, packageUrl) {
+            var self = this,
+                objectName = MontageReviver.parseObjectLocationId(fileUrl).objectName;
+
+            // require.async() expect moduleId not URLs
+            var componentModuleId = fileUrl;
+            if (fileUrl.indexOf(packageUrl) > -1) {
+                componentModuleId = fileUrl.substring(packageUrl.length + 1);
+            }
+
+            return require.loadPackage(packageUrl).then(function (packageRequire) {
+                return packageRequire.async(componentModuleId).get(objectName).then(function (componentPrototype) {
+                    if (!componentPrototype) {
+                        throw new Error("Cannot load component: Syntax error in " + componentModuleId + "[" + objectName + "] implementation");
+                    }
+                    return Template.getTemplateWithModuleId(componentPrototype.templateModuleId, packageRequire);
+                }, function (error) {
+                    throw new Error("Cannot load component template: " + error);
+                }).then(function (template) {
+                        return self.create().init(fileUrl, template, packageRequire);
+                    }, function (error) {
+                        console.log(error);
+                        return self.create().init(fileUrl, null, packageRequire);
+                    });
+            });
+        }
+    }
 });
