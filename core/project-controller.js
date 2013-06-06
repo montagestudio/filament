@@ -284,10 +284,11 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                 editor,
                 alreadyOpenedDoc,
                 documentType,
-                editorType;
+                editorType,
+                lastDocument = this.currentDocument;
 
-            if (this.currentDocument && fileUrl === this.currentDocument.url) {
-                return Promise.resolve(this.currentDocument);
+            if (lastDocument && fileUrl === lastDocument.url) {
+                return Promise.resolve(lastDocument);
             }
 
             // Find editor to make frontmost
@@ -330,6 +331,16 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                         alreadyOpened: !!alreadyOpenedDoc
                     });
                     return doc;
+                }, function (error) {
+
+                    self.dispatchEventNamed("asyncActivity", true, false, {
+                        promise: Promise.reject(error),
+                        title: "Open " + fileUrl // TODO localize
+                    });
+
+                    if (lastDocument) {
+                        return self.openUrlForEditing(lastDocument.url);
+                    }
                 });
             } else {
                 return this.environmentBridge.openFileWithDefaultApplication(fileUrl);
