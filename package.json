@@ -28,7 +28,6 @@
         "jasmine-node": "1.2.2",
         "sandboxed-module": "0.1.4",
         "montage-testing": "git+ssh://git@github.com:montagejs/montage-testing.git#edge",
-        "shelljs": "0.1.2",
         "jshint": "~2.0.1",
         "complexity-report": "~0.10.3"
     },
