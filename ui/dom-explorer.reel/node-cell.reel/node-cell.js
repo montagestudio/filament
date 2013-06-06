@@ -150,6 +150,14 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                 tagName: "div"
             });
         }
+    },
+
+    handlePress: {
+        value: function () {
+            this.dispatchEventNamed("select", true, true, {
+                templateObject: this.nodeInfo.component
+            });
+        }
     }
 
 });

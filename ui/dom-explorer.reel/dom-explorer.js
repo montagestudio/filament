@@ -160,6 +160,12 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
             this._insertElement(insertionFunction);
         }
+    },
+
+    handleSelect: {
+        value: function (evt) {
+            this.editingDocument.selectObject(evt.detail.templateObject);
+        }
     }
 
 });

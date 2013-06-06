@@ -68,6 +68,19 @@
             }
         },
 
+        "select": {
+            "prototype": "montage/composer/press-composer",
+            "properties": {
+                "component": {"@": "componentLabel"}
+            },
+            "listeners": [
+                {
+                    "type": "press",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
         "canRemoveNodeCondition": {
             "prototype": "montage/ui/condition.reel",
             "properties": {
