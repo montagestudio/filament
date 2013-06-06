@@ -84,17 +84,16 @@
 </head>
 <body>
     <div data-montage-id="dom-explorer" class="DomExplorer">
-        <span data-montage-id="isCreatingElementCondition">
-            <form data-montage-id="elementCreationForm">
-                <input type="text" data-montage-id="tagField">
-                <button type="reset">⨂</button>
-                <button type="submit">✓</button>
-            </form>
-        </span>
-
         <div data-montage-id="nodeList" class="NodeList">
             <div data-montage-id="nodeCell"></div>
         </div>
+        <footer data-montage-id="isCreatingElementCondition" class="DomExplorer-footer">
+            <form data-montage-id="elementCreationForm" class="AddElement">
+                <input data-montage-id="tagField" class="AddElement-input" type="text">
+                <button type="submit" class="matte-Button Button AddElement-submit">Add</button>
+                <button type="reset" class="AddElement-reset">×</button>
+            </form>
+        </footer>
     </div>
 </body>
 </html>
