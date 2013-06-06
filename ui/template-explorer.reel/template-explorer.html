@@ -14,7 +14,13 @@
                 "classList.has('shouldStartPanning')": {"<-": "@owner.shouldStartPanning"},
                 "classList.has('isPanning')": {"<-": "@owner.isPanning"},
                 "classList.has('error')": {"<-": "!!@owner.editingDocument.errors.length"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "select",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "panningComposer": {

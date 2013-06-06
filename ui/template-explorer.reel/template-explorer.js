@@ -208,6 +208,12 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
 
             this.editingDocument.addLibraryItemFragments(transferObject.serializationFragment).done();
         }
+    },
+
+    handleSelect: {
+        value: function (evt) {
+            this.editingDocument.selectObject(evt.detail.templateObject);
+        }
     }
 
 });

@@ -50,7 +50,7 @@ exports.OwnerCell = Montage.create(Component, {
         }
     },
 
-    handlePress: {
+    handleBindButtonAction: {
         value: function(event) {
             var bindingModel = Object.create(null);
             bindingModel.targetObject = this.templateObject;
@@ -60,6 +60,14 @@ exports.OwnerCell = Montage.create(Component, {
 
             this.dispatchEventNamed("editBindingForObject", true, false, {
                 bindingModel: bindingModel
+            });
+        }
+    },
+
+    handlePress: {
+        value: function () {
+            this.dispatchEventNamed("select", true, true, {
+                templateObject: this.templateObject
             });
         }
     }

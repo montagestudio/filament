@@ -172,15 +172,14 @@
             }
         },
 
-        "bind": {
-            "prototype": "montage/composer/press-composer",
+        "bindButton": {
+            "prototype": "matte/ui/button.reel",
             "properties": {
-                "component": {"@": "owner"},
                 "element": {"#": "bindButton"}
             },
             "listeners": [
                 {
-                    "type": "press",
+                    "type": "action",
                     "listener": {"@": "owner"}
                 }
             ]

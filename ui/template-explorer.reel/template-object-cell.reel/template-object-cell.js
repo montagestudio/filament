@@ -191,7 +191,7 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
         }
     },
 
-    handlePress: {
+    handleBindButtonAction: {
         value: function(event) {
             var bindingModel = Object.create(null);
             bindingModel.targetObject = this.templateObject;

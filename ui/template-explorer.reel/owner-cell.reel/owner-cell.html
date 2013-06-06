@@ -132,11 +132,23 @@
             }
         },
 
-        "bind": {
+        "bindButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "bindButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "select": {
             "prototype": "montage/composer/press-composer",
             "properties": {
-                "component": {"@": "owner"},
-                "element": {"#": "bindButton"}
+                "component": {"@": "owner"}
             },
             "listeners": [
                 {
@@ -173,7 +185,7 @@
                 </span>
             </li>
             <li class="TemplateObjectCell-list-item TemplateObjectEvent">
-                <img data-montage-id="bindButton" class="TemplateObject-list-icon" src="/assets/icons/event.png">
+                <img data-montage-id="bindButton" class="TemplateObject-list-icon" src="/assets/icons/binding.png">
                 <input data-montage-id="templateObjectEvent" class="TemplateObject-input" type="text">
                 <ul data-montage-id="listenerList" class="TemplateObjectEvent-list">
                     <li><em data-montage-id="eventType"></em> <strong data-montage-id="listenerLabel"></strong></li>
