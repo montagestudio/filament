@@ -717,10 +717,13 @@ exports.ReelDocument = EditingDocument.specialize({
                 self = this,
                 templateElement = (parentProxy) ? parentProxy.getObjectProperty("element") : void 0,
                 revisedTemplate,
-                ownerProxy;
+                ownerProxy,
+                deferredUndoOperation = Promise.defer();
 
             revisedTemplate = this._merge(destinationTemplate, sourceTemplate, templateElement);
             ownerProxy = this.editingProxyMap.owner;
+
+            this.undoManager.register("Add Objects", deferredUndoOperation.promise);
 
             // Prepare a context that knows about the existing editing proxies prior to
             // creating new editing proxies
@@ -735,6 +738,9 @@ exports.ReelDocument = EditingDocument.specialize({
                 });
             }))
             .then(function () {
+
+                deferredUndoOperation.resolve([self.removeObjects, self, addedProxies]);
+
                 // Introduce the revised template into the stage
                 if (this._editingController) {
 
@@ -833,6 +839,32 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return revisedTemplate;
+        }
+    },
+
+    /**
+     * Remove the specified proxies from the editing model object graph
+     * @param {Array} proxies The editing proxies to remove from the editing model
+     * @return {Promise} A promise for the removal of the proxies
+     */
+    removeObjects: {
+        value: function (proxies) {
+            var undoLabel = "Remove Objects",
+                self = this;
+
+            if (1 === proxies.length) {
+                undoLabel = "Remove";
+            }
+
+            this.undoManager.openBatch(undoLabel);
+
+            var removalPromises = proxies.map(function (p) {
+                return self.removeObject(p);
+            });
+
+            this.undoManager.closeBatch();
+
+            return Promise.all(removalPromises);
         }
     },
 
