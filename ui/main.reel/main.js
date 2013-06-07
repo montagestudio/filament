@@ -147,6 +147,18 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    handleCloseDocumentKeyPress: {
+        value: function (event) {
+            var document = this.projectController.currentDocument;
+            if (document) {
+                event.preventDefault();
+                this.dispatchEventNamed("closeDocument", true, true, document);
+            } else {
+                window.close();
+            }
+        }
+    },
+
     handleTogglePaletteKeyPress: {
         enumerable: false,
         value: function () {
@@ -190,12 +202,19 @@ exports.Main = Montage.create(Component, {
     handleKeyPress: {
         value: function (evt) {
             var identifier = evt.identifier;
-            if ("exitModalEditor" === identifier) {
+
+            switch (identifier) {
+            case "exitModalEditor":
                 this.handleExitModalEditorKeyPress(evt);
-            } else if ("toggleExtensions" === identifier) {
+                break;
+            case "toggleExtensions":
                 this.handleToggleExtensionsKeyPress(evt);
-            } else if ("togglePalette" === identifier) {
+                break;
+            case "togglePalette":
                 this.handleTogglePaletteKeyPress(evt);
+                break;
+            case "closeDocument":
+                this.handleCloseDocumentKeyPress(evt);
             }
         }
     },

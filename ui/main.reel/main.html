@@ -3,7 +3,7 @@
 <head>
     <title>Main</title>
     <meta charset="utf-8">
-    
+
     <link href="../../assets/fonts/fonts.css" rel="stylesheet">
     <link href="../../assets/icons/style.css" rel="stylesheet">
     <link href="../../assets/styles/filament-matte.css" rel="stylesheet">
@@ -28,13 +28,28 @@
                 }
             },
 
+            "closeDocument": {
+                "prototype": "montage/composer/key-composer",
+                "properties": {
+                    "keys": "command+w",
+                    "identifier": "closeDocument",
+                    "component": {"@": "application"}
+                },
+                "listeners": [
+                    {
+                        "type": "keyPress",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
             "tasksInfobar": {
                 "prototype": "ui/infobar/activity-infobar.reel",
                 "properties": {
                     "element": {"#": "tasksInfobar"}
                 }
             },
-            
+
             "extensionPanel": {
                 "prototype": "ui/extension-panel.reel",
                 "properties": {
