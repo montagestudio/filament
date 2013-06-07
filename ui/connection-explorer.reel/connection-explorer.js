@@ -25,10 +25,6 @@ exports.ConnectionExplorer = Montage.create(Component, /** @lends module:"./conn
     enterDocument: {
         value: function (firstTime) {
             if (!firstTime) { return; }
-            // templateObjects.addButton
-            this._defineBindingElements = this.templateObjects.defineBindingButton.map(function (component) {
-                return component.element;
-            });
 
             this._element.addEventListener("dragover", this, false);
             this._element.addEventListener("drop", this, false);
