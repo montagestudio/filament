@@ -141,12 +141,32 @@
 
 .TemplateObject-list-icon {
     height: 14px;
-    margin: 0 4px 0 7px;
+    margin: 0 6px 0 12px;
     vertical-align: middle;
 }
 
+.TemplateObject-button.matte-Button {
+    min-width: 24px;
+    height: 24px;
+    padding: 0 0 0 4px;
+    margin: 0 2px 0 7px;
+    vertical-align: middle;
+}
+
+.TemplateObject-button-icon {
+    display: block;
+    width: 14px;
+    height: 14px;
+}
+
+.TemplateObject-button--bind .TemplateObject-button-icon {
+    background: url(/assets/icons/binding.png) no-repeat center;
+    background-size: auto 14px;
+}
+
+
 .TemplateObject-input.matte-InputText {
-    width: 120px;
+    width: 116px;
     height: 24px;
     border-color: hsl(0, 0%, 77%);
     background-color: hsla(0, 0%, 0%, .04);
