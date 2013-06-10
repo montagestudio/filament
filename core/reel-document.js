@@ -709,9 +709,14 @@ exports.ReelDocument = EditingDocument.specialize({
      * Merges content from the specified template into the Template being edited
      *
      * @param {Template} template A Montage template
+     * @param {ReelProxy} parentProxy The proxy that will serve as the parent for inserted objects
+     * @param {NodeProxy} nextNode The proxy representing the node to insert before in the DOM
+     * @param {Element} nextSiblingElement TODO
+     *
+     * @return {Promise} A promise for the proxies inserted into the template being edited
      */
     addObjectsFromTemplate: {
-        value: function (sourceTemplate, parentProxy, stageElement) {
+        value: function (sourceTemplate, parentProxy, nextSiblingElement, stageElement) {
             // Ensure backing template is up to date
             this._buildSerializationObjects();
 
@@ -719,12 +724,12 @@ exports.ReelDocument = EditingDocument.specialize({
                 context,
                 proxy,
                 self = this,
-                templateElement = (parentProxy) ? parentProxy.getObjectProperty("element") : void 0,
+                parentElement = (parentProxy) ? parentProxy.getObjectProperty("element") : void 0,
                 revisedTemplate,
                 ownerProxy,
                 deferredUndoOperation = Promise.defer();
 
-            revisedTemplate = this._merge(destinationTemplate, sourceTemplate, templateElement);
+            revisedTemplate = this._merge(destinationTemplate, sourceTemplate, parentElement, nextSiblingElement);
             ownerProxy = this.editingProxyMap.owner;
 
             this.undoManager.openBatch("Add Objects");
@@ -774,12 +779,14 @@ exports.ReelDocument = EditingDocument.specialize({
      *
      * @param {Template} destinationTemplate The template to merge the sourceTemplate content into
      * @param {Template} sourceTemplate The template to merge into the destination template
+     * @param {Element} parentElement The optional element to insert the content of the template inside of
+     * @param {Element} nextSiblingElement The optional element to insert the content of the template before
      *
      * @returns {Template} The revised template that was logically used to introduce the sourceTemplate into the destinationTemplate
      * @private
      */
     _merge: {
-        value: function(destinationTemplate, sourceTemplate, templateElement) {
+        value: function(destinationTemplate, sourceTemplate, parentElement, nextSiblingElement) {
             var serializationToMerge = sourceTemplate.getSerialization(),
                 sourceContentRange,
                 sourceContentFragment,
@@ -790,7 +797,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 newChildNodes,
                 i,
                 iChild,
-                insertionParent = templateElement || this._ownerElement;
+                insertionParent = parentElement || this._ownerElement;
 
             sourceContentRange = sourceDocument.createRange();
             sourceContentRange.selectNodeContents(sourceDocument.body);
@@ -802,15 +809,28 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             // Merge markup
-            idsCollisionTable = destinationTemplate.appendNode(sourceContentFragment, insertionParent);
+            // NOTE operations are performed on the template with real template DOM nodes
+            //TODO this is a it mof a mess where we perform the merge with the template DOM, but then do the "same" operation to associate the nodeProxies with their parent right afterwards
+            if (nextSiblingElement) {
+                idsCollisionTable = destinationTemplate.insertNodeBefore(sourceContentFragment, nextSiblingElement._templateNode);
+            } else {
+                idsCollisionTable = destinationTemplate.appendNode(sourceContentFragment, insertionParent._templateNode);
+            }
+
             if (idsCollisionTable) {
                 serializationToMerge.renameElementReferences(idsCollisionTable);
             }
 
-            // Add nodeProxies for newly added nodes
+            // Add nodeProxies for newly added node
             newChildNodes.forEach(function (newChild) {
                 var nodeProxy = NodeProxy.create().init(newChild, this);
-                insertionParent.appendChild(nodeProxy); // Add as child to parent
+
+                if (nextSiblingElement) {
+                    insertionParent.insertBefore(nodeProxy, nextSiblingElement); // Add as last child to parent
+                } else {
+                    insertionParent.appendChild(nodeProxy); // Add as last child to parent
+                }
+
                 this.__addNodeProxy(nodeProxy); // Add to general collection of known proxies (temporarily)
             }, this);
 

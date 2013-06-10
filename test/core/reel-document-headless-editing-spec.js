@@ -50,7 +50,7 @@ describe("core/reel-document-headless-editing-spec", function () {
             "bar": {
                 "prototype": "bar-exportId"
             }
-        }, '<div data-montage-id="ownerElement"><div data-montage-id="foo"></div></div>');
+        }, '<div data-montage-id="ownerElement"><div data-montage-id="foo"><span data-montage-id="a"></span><span data-montage-id="b"></span></div></div>');
     });
 
     describe("adding a single component", function () {
@@ -104,6 +104,29 @@ describe("core/reel-document-headless-editing-spec", function () {
                 return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (proxies) {
                     var addedElement = reelDocument.htmlDocument.querySelector("[data-montage-id=myComponent]");
                     expect(addedElement).toBeTruthy();
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should add the component's element as the last child of the specified object when no next sibling is specified", function () {
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                var parentProxy = reelDocument.editingProxyMap.foo;
+                return reelDocument.addObjectsFromTemplate(insertionTemplate, parentProxy).then(function (proxies) {
+                    var addedElement = reelDocument.htmlDocument.querySelector("[data-montage-id=myComponent]");
+                    expect(reelDocument.nodeProxyForNode(addedElement.parentNode)).toBe(parentProxy.properties.get('element'));
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should add the component's element as a child of the specified object before the specified next sibling", function () {
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                var parentProxy = reelDocument.editingProxyMap.foo;
+                var nextSibling = reelDocument.nodeProxyForMontageId("b");
+                return reelDocument.addObjectsFromTemplate(insertionTemplate, parentProxy, nextSibling).then(function (proxies) {
+                    //should be inserted as a child of foo, between a and b
+                    var addedElement = reelDocument.nodeProxyForMontageId("myComponent");
+                    expect(addedElement.parentNode).toBe(parentProxy.properties.get('element'));
+                    expect(addedElement.nextSibling).toBe(nextSibling);
                 });
             }).timeout(WAITSFOR_TIMEOUT);
         });
