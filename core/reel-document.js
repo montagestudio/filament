@@ -286,6 +286,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
     save: {
         value: function (location, dataWriter) {
+            var self = this;
             //TODO I think I've made this regex many times...and probably differently
             var filenameMatch = location.match(/.+\/(.+)\.reel/),
                 path,
@@ -300,7 +301,11 @@ exports.ReelDocument = EditingDocument.specialize({
             path = location + "/" + filenameMatch[1] + ".html";
             html = TemplateFormatter.create().init(template).getHtml();
 
-            return dataWriter(html, path);
+            return dataWriter(html, path)
+            .then(function (value) {
+                self.changeCount = 0;
+                return value;
+            });
         }
     },
 
