@@ -303,7 +303,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             return dataWriter(html, path)
             .then(function (value) {
-                self.changeCount = 0;
+                self._changeCount = 0;
                 return value;
             });
         }
