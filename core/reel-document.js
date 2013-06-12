@@ -718,7 +718,6 @@ exports.ReelDocument = EditingDocument.specialize({
             var destinationTemplate = this._template,
                 context,
                 proxy,
-                addedProxies = [],
                 self = this,
                 templateElement = (parentProxy) ? parentProxy.getObjectProperty("element") : void 0,
                 revisedTemplate,
@@ -728,7 +727,7 @@ exports.ReelDocument = EditingDocument.specialize({
             revisedTemplate = this._merge(destinationTemplate, sourceTemplate, templateElement);
             ownerProxy = this.editingProxyMap.owner;
 
-            this.undoManager.register("Add Objects", deferredUndoOperation.promise);
+            this.undoManager.openBatch("Add Objects");
 
             // Prepare a context that knows about the existing editing proxies prior to
             // creating new editing proxies
@@ -737,14 +736,12 @@ exports.ReelDocument = EditingDocument.specialize({
             return Promise.all(revisedTemplate.getSerialization().getSerializationLabels().map(function (label) {
                 return Promise(context.getObject(label))
                 .then(function (proxy) {
-                    proxy.parentProxy = parentProxy || ownerProxy;
-                    self._addProxies(proxy);
-                    addedProxies.push(proxy);
+                    return self.addObject(proxy, parentProxy, ownerProxy);
                 });
             }))
-            .then(function () {
+            .then(function (addedProxies) {
 
-                deferredUndoOperation.resolve([self.removeObjects, self, addedProxies]);
+                self.undoManager.closeBatch();
 
                 // Introduce the revised template into the stage
                 if (this._editingController) {
@@ -847,6 +844,17 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    addObject: {
+        value: function (proxy, parentProxy, ownerProxy) {
+            proxy.parentProxy = parentProxy || ownerProxy;
+            this._addProxies(proxy);
+
+            this.undoManager.register("Add object", Promise.resolve([this.removeObject, this, proxy]));
+
+            return proxy;
+        }
+    },
+
     /**
      * Remove the specified proxies from the editing model object graph
      * @param {Array} proxies The editing proxies to remove from the editing model
@@ -901,19 +909,7 @@ exports.ReelDocument = EditingDocument.specialize({
             return removalPromise.then(function () {
                 self._removeProxies(proxy);
 
-                self._templateForProxy(proxy).then(function (restorationTemplate) {
-
-                    // For now, with no option to remove the DOM node, we leave them behind;
-                    // the restoration template should assume that its original element is
-                    // still in place in the template DOM. We clear out the body of the
-                    // restoration template to not reintrouce the component's element.
-                    body = restorationTemplate.document.getElementsByTagName("body")[0];
-                    bodyRange = restorationTemplate.document.createRange();
-                    bodyRange.selectNodeContents(body);
-                    bodyRange.deleteContents();
-
-                    deferredUndo.resolve([self.addObjectsFromTemplate, self, restorationTemplate]);
-                }).done();
+                deferredUndo.resolve([self.addObject, self, proxy]);
 
                 self.dispatchEventNamed("objectRemoved", true, false, { proxy: proxy });
 
