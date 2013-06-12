@@ -148,37 +148,9 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
         value: function (event) {
             event.stopPropagation();
             var montageId = event.dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_ELEMENT);
-
             var templateObject = this.templateObject;
-            var editingDocument = templateObject.editingDocument;
-            var element = editingDocument.nodeProxyForMontageId(montageId);
 
-            if (!element) {
-                throw new Error("Dropped montageId, " + montageId + " not found in templateNodes");
-            }
-
-            editingDocument.undoManager.register("Change element", Promise.resolve([
-                this.setElement, this, templateObject.properties.get("element")
-            ]));
-            this.setElement(element);
-        }
-    },
-
-    setElement: {
-        value: function (element) {
-            var templateObject = this.templateObject,
-                properties = templateObject.properties;
-
-            var oldElement = properties.get("element");
-
-            properties.set("element", element);
-
-            if (oldElement) {
-                oldElement.dispatchOwnPropertyChange("component", void 0);
-            }
-            if (element) {
-                element.dispatchOwnPropertyChange("component", templateObject);
-            }
+            templateObject.editingDocument.setOwnedObjectElement(templateObject, montageId);
         }
     },
 

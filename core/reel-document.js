@@ -1033,6 +1033,35 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    setOwnedObjectElement: {
+        value: function (proxy, montageId) {
+            var element;
+            if (montageId) {
+                element = this.nodeProxyForMontageId(montageId);
+
+                if (!element) {
+                    throw new Error(montageId + " not found in templateNodes");
+                }
+            }
+
+            var properties = proxy.properties;
+            var oldElement = properties.get("element");
+
+            properties.set("element", element);
+            this.undoManager.register("Set element", Promise.resolve([
+                this.setOwnedObjectElement, this, proxy, (oldElement) ? oldElement.montageId : void 0
+            ]));
+
+            if (oldElement) {
+                oldElement.dispatchOwnPropertyChange("component", void 0);
+            }
+            if (element) {
+                element.dispatchOwnPropertyChange("component", proxy);
+            }
+        }
+    },
+
+
     //Template Node Editing API
 
     canRemoveTemplateNode: {
