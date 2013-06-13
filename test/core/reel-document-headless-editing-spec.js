@@ -211,7 +211,7 @@ describe("core/reel-document-headless-editing-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
-        it("should undo removal operation by adding a similar component", function () {
+        it("should undo removal operation by adding the removed component", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxyToRemove = reelDocument.editingProxyMap[labelInOwner];
                 var removalPromise = reelDocument.removeObject(proxyToRemove);
@@ -222,7 +222,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                     var addedProxy = reelDocument._editingProxyMap[labelInOwner];
                     expect(addedProxy).toBeTruthy();
 
-                    expect(addedProxy).not.toBe(proxyToRemove);
+                    expect(addedProxy).toBe(proxyToRemove);
                     expect(addedProxy.properties.get("element")._templateNode.getAttribute("data-montage-id")).toBe("foo");
                     expect(addedProxy.exportId).toBe("ui/foo.reel");
                     expect(addedProxy.exportName).toBe("Foo");
