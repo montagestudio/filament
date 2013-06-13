@@ -4,6 +4,7 @@
 
 .NodeList {
     padding: 8px;
+    padding-bottom: 4em;
     font-size: 11px;
     background: -webkit-linear-gradient( left, hsl(0,0%,90%) 0px, hsl(0,0%,90%) 1px, hsla(0,0%,90%,0) 1px );
     background-size: 20px;

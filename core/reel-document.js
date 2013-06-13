@@ -551,7 +551,7 @@ exports.ReelDocument = EditingDocument.specialize({
      * This will be replaced with an addTemplate or insertTemplate or mergeTemplate
      */
     addLibraryItemFragments: {
-        value: function (serializationFragment, htmlFragment, parentProxy, stageElement) {
+        value: function (serializationFragment, htmlFragment, parentElement, nextSiblingElement, stageElement) {
             var labelInOwner = this._generateLabel(serializationFragment),
                 templateSerialization = {},
                 self = this,
@@ -570,7 +570,7 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return Template.create().initWithDocument(doc, this._packageRequire).then(function(template) {
-                return self.addObjectsFromTemplate(template, parentProxy, stageElement);
+                return self.addObjectsFromTemplate(template, parentElement, nextSiblingElement, stageElement);
             })
             .then(function (objects) {
                 // only if there's only one object?
@@ -706,6 +706,27 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     /**
+     * Finds the component closest to the specified element
+     * @private
+     */
+    _nearestComponent: {
+        value: function (element) {
+
+            var ownerComponent;
+            var aParentNode;
+
+            if (element) {
+                while(!ownerComponent && (aParentNode = element.parentNode)) {
+                    ownerComponent = element.component;
+                    element = aParentNode;
+                }
+            }
+
+            return ownerComponent;
+        }
+    },
+
+    /**
      * Merges content from the specified template into the Template being edited
      *
      * @param {Template} template A Montage template
@@ -716,7 +737,7 @@ exports.ReelDocument = EditingDocument.specialize({
      * @return {Promise} A promise for the proxies inserted into the template being edited
      */
     addObjectsFromTemplate: {
-        value: function (sourceTemplate, parentProxy, nextSiblingElement, stageElement) {
+        value: function (sourceTemplate, parentElement, nextSiblingElement, stageElement) {
             // Ensure backing template is up to date
             this._buildSerializationObjects();
 
@@ -724,7 +745,6 @@ exports.ReelDocument = EditingDocument.specialize({
                 context,
                 proxy,
                 self = this,
-                parentElement = (parentProxy) ? parentProxy.getObjectProperty("element") : void 0,
                 revisedTemplate,
                 ownerProxy,
                 deferredUndoOperation = Promise.defer();
@@ -741,7 +761,8 @@ exports.ReelDocument = EditingDocument.specialize({
             return Promise.all(revisedTemplate.getSerialization().getSerializationLabels().map(function (label) {
                 return Promise(context.getObject(label))
                 .then(function (proxy) {
-                    return self.addObject(proxy, parentProxy, ownerProxy);
+                    var parentProxy = self._nearestComponent(parentElement);
+                    return self.addObject(proxy, parentProxy || ownerProxy);
                 });
             }))
             .then(function (addedProxies) {
@@ -865,8 +886,8 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     addObject: {
-        value: function (proxy, parentProxy, ownerProxy) {
-            proxy.parentProxy = parentProxy || ownerProxy;
+        value: function (proxy, parentProxy) {
+            proxy.parentProxy = parentProxy;
             this._addProxies(proxy);
 
             this.undoManager.register("Add object", Promise.resolve([this.removeObject, this, proxy]));

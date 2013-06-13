@@ -52,10 +52,26 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
 
     nextSibling: {
         get: function () {
+            if (!this.parentNode) {
+                return null;
+            }
+
             var parentsChildren = this.parentNode.children;
             var indexInParent = parentsChildren.indexOf(this);
             return parentsChildren[indexInParent + 1];
 
+        }
+    },
+
+    lastChild: {
+        get: function () {
+            var lastChild = null;
+
+            if (this.children.length) {
+                lastChild = this.children[this.children.length - 1];
+            }
+
+            return lastChild;
         }
     },
 

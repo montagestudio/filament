@@ -7,11 +7,15 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "node-cell"}
+                "element": {"#": "node-cell"},
+                "_nodeSegment": {"#": "nodeSegment"}
             },
             "bindings": {
                 "classList.has('NodeCell--owner')": {
                     "<-": "nodeInfo.component.label == 'owner'"
+                },
+                "classList.has('NodeCell--dropTarget')": {
+                    "<-": "isDropTarget"
                 }
             }
         },
@@ -112,18 +116,22 @@
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "@owner.nodeInfo.canAppendToNode"}
+                "condition": {"<-": "0 == @owner.nodeInfo.children.length && @owner.nodeInfo.canAppendToNode"}
             }
         },
 
         "appendNodeButton": {
-            "prototype": "matte/ui/button.reel",
+            "prototype": "./insertion-button.reel",
             "properties": {
                 "element": {"#": "appendNodeButton"}
             },
             "listeners": [
                 {
                     "type": "action",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "insertTemplateAction",
                     "listener": {"@": "owner"}
                 }
             ]
@@ -141,13 +149,17 @@
         },
 
         "insertBeforeNodeButton": {
-            "prototype": "matte/ui/button.reel",
+            "prototype": "./insertion-button.reel",
             "properties": {
                 "element": {"#": "insertBeforeNodeButton"}
             },
             "listeners": [
                 {
                     "type": "action",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "insertTemplateAction",
                     "listener": {"@": "owner"}
                 }
             ]
@@ -160,18 +172,22 @@
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "@owner.nodeInfo.canInsertAfterNode"}
+                "condition": {"<-": "!@owner.nodeInfo.nextSibling &&  @owner.nodeInfo.canInsertAfterNode"}
             }
         },
 
         "insertAfterNodeButton": {
-            "prototype": "matte/ui/button.reel",
+            "prototype": "./insertion-button.reel",
             "properties": {
                 "element": {"#": "insertAfterNodeButton"}
             },
             "listeners": [
                 {
                     "type": "action",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "insertTemplateAction",
                     "listener": {"@": "owner"}
                 }
             ]
@@ -182,7 +198,7 @@
 <body>
     <div data-montage-id="node-cell" class="NodeCell">
 
-        <span class="NodeCell-segment"  draggable="true">
+        <span data-montage-id="nodeSegment" class="NodeCell-segment"  draggable="true">
             <span data-montage-id="tagName" class="NodeCell-segment-item NodeCell-segment-item--tag"></span>
 
             <span data-montage-id="montageIdCondition">

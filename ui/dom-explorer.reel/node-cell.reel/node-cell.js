@@ -14,9 +14,14 @@ var Montage = require("montage").Montage,
 */
 exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel".NodeCell# */ {
 
+    _nodeSegment: {
+        value: null
+    },
+
     _nodeInfo: {
         value: null
     },
+
     nodeInfo: {
         get: function() {
             return this._nodeInfo;
@@ -55,9 +60,12 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     enterDocument: {
         value: function (firstTime) {
             if (!firstTime) { return; }
-            this._element.addEventListener("dragstart", this);
-            this._element.addEventListener("dragover", this, false);
-            this._element.addEventListener("drop", this, false);
+
+            this._nodeSegment.addEventListener("dragstart", this);
+            this._nodeSegment.addEventListener("dragover", this, false);
+            this._nodeSegment.addEventListener("dragenter", this, false);
+            this._nodeSegment.addEventListener("dragleave", this, false);
+            this._nodeSegment.addEventListener("drop", this, false);
         }
     },
 
@@ -73,15 +81,24 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
+    isDropTarget: {
+        value: false
+    },
+
+    acceptsDrop: {
+        value: function (event) {
+            return 0 !== this.nodeInfo.depth &&
+                event.dataTransfer.types &&
+                event.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 &&
+                !this.nodeInfo.component &&
+                this.nodeInfo.montageId; //TODO remove this when we allow dropping on non-montageId'd elements
+        }
+    },
+
     handleDragover: {
         enumerable: false,
         value: function (event) {
-            if (
-                event.dataTransfer.types &&
-                event.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 &&
-                !this.nodeInfo.component
-            ) {
-                // allows us to drop
+            if (this.acceptsDrop(event)) {
                 event.preventDefault();
                 event.dataTransfer.dropEffect = "copy";
             } else {
@@ -90,14 +107,34 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
+    handleDragenter: {
+        enumerable: false,
+        value: function (evt) {
+            if (this.acceptsDrop(evt) && (this._nodeSegment === evt.target || this._nodeSegment.parentOf(evt.target))) {
+                this.isDropTarget = true;
+            }
+        }
+    },
+
+    handleDragleave: {
+        value: function (evt) {
+            if (this.acceptsDrop(evt) && (this._nodeSegment === evt.target || this._nodeSegment.parentOf(evt.target))) {
+                this.isDropTarget = false;
+            }
+        }
+    },
+
     handleDrop: {
         enumerable: false,
         value: function (event) {
+            event.stop();
+
             // TODO: security issues?
             var data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
                 transferObject = JSON.parse(data),
                 stageElement = null,
-                nodeInfo = this.nodeInfo;
+                nodeInfo = this.nodeInfo,
+                self = this;
 
             // The parent element to "append" the new html to. This actually
             // already contains the element we want to use, so we just have
@@ -112,6 +149,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             nodeInfo.dispatchBeforeOwnPropertyChange("component", nodeInfo.component);
             this.nodeInfo._editingDocument.DEMOinsertLibraryItem(transferObject.serializationFragment, this.nodeInfo._templateNode, stageElement).then(function (addedObjects) {
                 nodeInfo.dispatchOwnPropertyChange("component", nodeInfo.component);
+                self.isDropTarget = false;
             }).done();
         }
     },
@@ -124,20 +162,34 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
 
     handleAppendNodeButtonAction: {
         value: function (evt) {
-            //TODO prompt for tagName
+            this.dispatchEventNamed("appendNode", true, true, {
+                parentNode: this.nodeInfo
+            });
+        }
+    },
+
+    handleAppendNodeButtonInsertTemplateAction: {
+        value: function (evt) {
             this.dispatchEventNamed("appendNode", true, true, {
                 parentNode: this.nodeInfo,
-                tagName: "div"
+                transferObject: evt.detail.transferObject
             });
         }
     },
 
     handleInsertBeforeNodeButtonAction: {
         value: function (evt) {
-            //TODO prompt for tagName
+            this.dispatchEventNamed("insertBeforeNode", true, true, {
+                nextSibling: this.nodeInfo
+            });
+        }
+    },
+
+    handleInsertBeforeNodeButtonInsertTemplateAction: {
+        value: function (evt) {
             this.dispatchEventNamed("insertBeforeNode", true, true, {
                 nextSibling: this.nodeInfo,
-                tagName: "div"
+                transferObject: evt.detail.transferObject
             });
         }
     },
@@ -146,8 +198,16 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function (evt) {
             //TODO prompt for tagName
             this.dispatchEventNamed("insertAfterNode", true, true, {
+                previousSibling: this.nodeInfo
+            });
+        }
+    },
+
+    handleInsertAfterNodeButtonInsertTemplateAction: {
+        value: function (evt) {
+            this.dispatchEventNamed("insertAfterNode", true, true, {
                 previousSibling: this.nodeInfo,
-                tagName: "div"
+                transferObject: evt.detail.transferObject
             });
         }
     },

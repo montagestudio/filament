@@ -110,22 +110,24 @@ describe("core/reel-document-headless-editing-spec", function () {
 
         it("should add the component's element as the last child of the specified object when no next sibling is specified", function () {
             return readyPromise.spread(function (reelDocument, insertionTemplate) {
-                var parentProxy = reelDocument.editingProxyMap.foo;
-                return reelDocument.addObjectsFromTemplate(insertionTemplate, parentProxy).then(function (proxies) {
+                var parentElement = reelDocument.editingProxyMap.foo.properties.get('element');
+
+                return reelDocument.addObjectsFromTemplate(insertionTemplate, parentElement).then(function (proxies) {
                     var addedElement = reelDocument.htmlDocument.querySelector("[data-montage-id=myComponent]");
-                    expect(reelDocument.nodeProxyForNode(addedElement.parentNode)).toBe(parentProxy.properties.get('element'));
+                    var addedElementParent = reelDocument.nodeProxyForNode(addedElement.parentNode);
+                    expect(addedElementParent).toBe(parentElement);
                 });
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
         it("should add the component's element as a child of the specified object before the specified next sibling", function () {
             return readyPromise.spread(function (reelDocument, insertionTemplate) {
-                var parentProxy = reelDocument.editingProxyMap.foo;
+                var parentElement = reelDocument.editingProxyMap.foo.properties.get('element');
                 var nextSibling = reelDocument.nodeProxyForMontageId("b");
-                return reelDocument.addObjectsFromTemplate(insertionTemplate, parentProxy, nextSibling).then(function (proxies) {
+                return reelDocument.addObjectsFromTemplate(insertionTemplate, parentElement, nextSibling).then(function (proxies) {
                     //should be inserted as a child of foo, between a and b
                     var addedElement = reelDocument.nodeProxyForMontageId("myComponent");
-                    expect(addedElement.parentNode).toBe(parentProxy.properties.get('element'));
+                    expect(addedElement.parentNode).toBe(parentElement);
                     expect(addedElement.nextSibling).toBe(nextSibling);
                 });
             }).timeout(WAITSFOR_TIMEOUT);

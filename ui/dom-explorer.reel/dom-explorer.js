@@ -6,7 +6,8 @@
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
-    emmet = require("core/filament-emmet");
+    emmet = require("core/filament-emmet"),
+    MimeTypes = require("core/mime-types");
 
 /**
     Description TODO
@@ -131,34 +132,74 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
     handleAppendNode: {
         value: function (evt) {
-            var self =  this;
-            var insertionFunction = function (newNode) {
-                self.editingDocument.appendChildToTemplateNode(newNode, evt.detail.parentNode);
-            };
 
-            this._insertElement(insertionFunction);
+            var detail = evt.detail,
+                transferObject;
+
+            if (transferObject = detail.transferObject) {
+
+                var serializationFragment = transferObject.serializationFragment;
+                var htmlFragment = transferObject.htmlFragment;
+                var parentNode = detail.parentNode;
+
+                this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, null, null).done();
+
+            } else {
+                var self =  this;
+                var insertionFunction = function (newNode) {
+                    self.editingDocument.appendChildToTemplateNode(newNode, evt.detail.parentNode);
+                };
+
+                this._insertElement(insertionFunction);
+            }
         }
     },
 
     handleInsertBeforeNode: {
         value: function (evt) {
-            var self =  this;
-            var insertionFunction = function (newNode) {
-                self.editingDocument.insertNodeBeforeTemplateNode(newNode, evt.detail.nextSibling);
-            };
+            var detail = evt.detail,
+                transferObject;
 
-            this._insertElement(insertionFunction);
+            if (transferObject = detail.transferObject) {
+                var serializationFragment = transferObject.serializationFragment;
+                var htmlFragment = transferObject.htmlFragment;
+                var nextSibling = detail.nextSibling;
+                var parentNode = nextSibling.parentNode;
+
+                this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, nextSibling, null).done();
+
+            } else {
+                var self =  this;
+                var insertionFunction = function (newNode) {
+                    self.editingDocument.insertNodeBeforeTemplateNode(newNode, evt.detail.nextSibling);
+                };
+
+                this._insertElement(insertionFunction);
+            }
         }
     },
 
     handleInsertAfterNode: {
         value: function (evt) {
-            var self =  this;
-            var insertionFunction = function (newNode) {
-                self.editingDocument.insertNodeAfterTemplateNode(newNode, evt.detail.previousSibling);
-            };
+            var detail = evt.detail,
+                transferObject;
 
-            this._insertElement(insertionFunction);
+            if (transferObject = detail.transferObject) {
+                var serializationFragment = transferObject.serializationFragment;
+                var htmlFragment = transferObject.htmlFragment;
+                var nextSibling = detail.previousSibling.nextSibling;
+                var parentNode = detail.previousSibling.parentNode;
+
+                this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, nextSibling, null).done();
+
+            } else {
+                var self =  this;
+                var insertionFunction = function (newNode) {
+                    self.editingDocument.insertNodeAfterTemplateNode(newNode, evt.detail.previousSibling);
+                };
+
+                this._insertElement(insertionFunction);
+            }
         }
     },
 
