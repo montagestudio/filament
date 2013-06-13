@@ -136,12 +136,17 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                 montageId = nodeInfo.montageId,
                 self  = this;
 
+            editingDocument.undoManager.openBatch("Add component to element");
+
             editingDocument.addLibraryItemFragments(transferObject.serializationFragment)
             .then(function (objects) {
                 self.isDropTarget = false;
                 if (objects.length === 1) {
                     editingDocument.setOwnedObjectElement(objects[0], montageId);
                 }
+            })
+            .finally(function () {
+                editingDocument.undoManager.closeBatch();
             })
             .done();
         }
