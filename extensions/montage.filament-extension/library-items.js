@@ -53,7 +53,7 @@ var FlowLibraryItem = LibraryItem.specialize({
             "prototype": "montage/ui/flow.reel",
             "properties": {
                 "element": {"#": "flow"},
-                "objects": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+                "content": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
                 "cameraPosition": [0, 0, 1500],
                 "paths": [
                     {
