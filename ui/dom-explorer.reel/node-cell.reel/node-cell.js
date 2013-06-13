@@ -128,29 +128,22 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         enumerable: false,
         value: function (event) {
             event.stop();
-
             // TODO: security issues?
             var data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
                 transferObject = JSON.parse(data),
-                stageElement = null,
                 nodeInfo = this.nodeInfo,
-                self = this;
+                editingDocument = nodeInfo._editingDocument,
+                montageId = nodeInfo.montageId,
+                self  = this;
 
-            // The parent element to "append" the new html to. This actually
-            // already contains the element we want to use, so we just have
-            // to change the serializationFragment to match the montageId
-            stageElement = this.nodeInfo._editingDocument._editingController.owner.element;
-
-            var properties = transferObject.serializationFragment.properties;
-            if (properties && properties.element) {
-                properties.element["#"] = this.nodeInfo._templateNode.dataset.montageId;
-            }
-
-            nodeInfo.dispatchBeforeOwnPropertyChange("component", nodeInfo.component);
-            this.nodeInfo._editingDocument.DEMOinsertLibraryItem(transferObject.serializationFragment, this.nodeInfo._templateNode, stageElement).then(function (addedObjects) {
-                nodeInfo.dispatchOwnPropertyChange("component", nodeInfo.component);
+            editingDocument.addLibraryItemFragments(transferObject.serializationFragment)
+            .then(function (objects) {
                 self.isDropTarget = false;
-            }).done();
+                if (objects.length === 1) {
+                    editingDocument.setOwnedObjectElement(objects[0], montageId);
+                }
+            })
+            .done();
         }
     },
 
