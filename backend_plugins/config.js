@@ -59,7 +59,7 @@ exports.validateFileURL = function(object) {
     called to retrieve the root URL of a File URL or null if it's not a valid document
 */
 exports.rootURLForFileURL = function(object) {
-    var filePath = PATH.normalize(decodeURI(URL.parse(object.url).path)),
+    var filePath = PATH.normalize(URL.parse(object.url).path),
         packagePath = findPackage(filePath);
 
     if (packagePath) {
