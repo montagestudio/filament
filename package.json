@@ -1,35 +1,35 @@
 {
     "name": "filament",
-    "version": "0.6.0",
+    "version": "0.10.0",
     "private": true,
     "repository": {
         "type": "git",
         "url": "git@github.com:declarativ/filament.git"
     },
     "dependencies": {
-        "montage": "0.13.0-alpha",
-        "matte": "0.1.1-alpha",
+        "montage": "git@github.com:montagejs/montage.git#6096b96573e7f1ea35761d38cd9c5d8b8f6cf36f",
+        "matte": "0.1.1",
         "mousse": "0.1.2",
         "q": "0.9.2",
         "q-connection": "0.5.0",
         "q-io": "1.5.4",
         "qs": "0.5.2",
-        "palette": "git+ssh://git@github.com:declarativ/palette.git",
-        "mop": "git+ssh://git@github.com:montagejs/mop.git#edge",
+        "palette": "git+ssh://git@github.com:declarativ/palette.git#800804226b28ccffd8aabff597332b6b907247d1",
+        "mop": "0.13.0",
         "npm": "1.2.18",
         "watchr": "2.3.3",
-        "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#edge-matte",
-        "minit": "0.3.0-alpha",
+        "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#9c940fc5f9cffaa8886abb6e8b5d801e2847873e",
+        "minit": "0.3.1",
         "minimatch": "0.2.9",
-        "underscore": "1.4.4",
-        "glTF-webgl-viewer":"git+ssh://git@github.com:fabrobinet/glTF-webgl-viewer.git"
+        "underscore": "1.4.4"
     },
     "devDependencies": {
         "jasmine-node": "1.2.2",
         "sandboxed-module": "0.1.4",
-        "montage-testing": "git+ssh://git@github.com:montagejs/montage-testing.git#edge",
+        "montage-testing": "0.2.0",
         "jshint": "~2.0.1",
-        "complexity-report": "~0.10.3"
+        "complexity-report": "~0.10.3",
+        "glTF-webgl-viewer":"git+ssh://git@github.com:fabrobinet/glTF-webgl-viewer.git"
     },
     "mappings": {
         "filament-extension": {
