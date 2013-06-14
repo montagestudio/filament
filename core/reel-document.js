@@ -584,6 +584,23 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    addAndAssignLibraryItemFragment: {
+        value: function (serializationFragment, montageId) {
+            var self = this;
+            this.undoManager.openBatch("Add component to element");
+
+            return this.addLibraryItemFragments(serializationFragment)
+            .then(function (objects) {
+                if (objects.length === 1) {
+                    self.setOwnedObjectElement(objects[0], montageId);
+                }
+            })
+            .finally(function () {
+                self.undoManager.closeBatch();
+            });
+        }
+    },
+
     /**
      * Finds the component closest to the specified element
      * @private
