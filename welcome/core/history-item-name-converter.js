@@ -7,16 +7,8 @@ exports.HistoryItemNameConverter = Montage.create(Converter, {
         value: false
     },
 
-    convert: {
-        value: function (name) {
-            //alternatively, decod the url
-            return decodeURI(name);
-        }
-    },
-
-    revert: {
-        value: function (name) {
-            return encodeURI(name);
-        }
+    convert: {value: decodeURI},
+    revert: {value: encodeURI}
+    
     }
 });

@@ -2,7 +2,6 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
     HistoryItemConverter = require("welcome/core/history-item-converter").HistoryItemConverter;
-    HistoryItemNameConverter = require("welcome/core/history-item-name-converter").HistoryItemNameConverter;
 
 var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
