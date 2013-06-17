@@ -120,6 +120,8 @@ exports.ReelProxy = EditingProxy.specialize( {
             var self = EditingProxy.init.call(this, label, serialization, exportId, editingDocument);
             self._exportId = exportId || serialization.prototype || serialization.object;
 
+            this.defineBinding("isInTemplate", {"<-": "_editingDocument.editingProxies.has($)", parameters: this});
+
             return self;
         }
     },
@@ -165,6 +167,15 @@ exports.ReelProxy = EditingProxy.specialize( {
                 this.y = serialization.lumieres.y;
             }
         }
+    },
+
+    /**
+     * Whether this is currently in the template. Will be false if it has
+     * been deleted. Updated through a binding.
+     * @type {boolean}
+     */
+    isInTemplate: {
+        value: false
     },
 
     _bindings: {
