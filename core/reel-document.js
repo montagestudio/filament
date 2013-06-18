@@ -835,6 +835,8 @@ exports.ReelDocument = EditingDocument.specialize({
                 body,
                 bodyRange;
 
+            this.undoManager.openBatch("Remove");
+
             this.undoManager.register("Remove", deferredUndo.promise);
 
             if (this._editingController && proxy.stageObject) {
@@ -844,11 +846,18 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return removalPromise.then(function () {
+                var element = proxy.properties.get("element");
+                if (element) {
+                    self.setOwnedObjectElement(proxy, void 0);
+                }
+
                 self._removeProxies(proxy);
 
                 deferredUndo.resolve([self.addObject, self, proxy]);
 
                 self.dispatchEventNamed("objectRemoved", true, false, { proxy: proxy });
+
+                self.undoManager.closeBatch();
 
                 return proxy;
             });
