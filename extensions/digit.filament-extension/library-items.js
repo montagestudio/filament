@@ -289,7 +289,7 @@ var TextFieldLibraryItem = LibraryItem.specialize( {
     },
 
     html: {
-        value: '<input data-montage-id="inputText" type="text">'
+        value: '<input data-montage-id="textField" type="text">'
     }
 
 });
@@ -306,7 +306,7 @@ var ListItemLibraryItem = LibraryItem.specialize( {
         value: {
             "prototype": "digit/ui/list-item.reel",
             "properties": {
-                "element": {"#": "ListItem"}
+                "element": {"#": "listItem"}
             }
         }
     },
