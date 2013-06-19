@@ -25,13 +25,20 @@
                 ]
             },
 
+            "historyItemNameConverter": {
+                "prototype": "welcome/core/history-item-name-converter"
+            },
+
             "documentName": {
                 "prototype": "montage/ui/text.reel",
                 "properties": {
                     "element": {"#": "name"}
                 },
                 "bindings": {
-                    "value": {"<-": "@owner.historyItem.filename"}
+                    "value": {
+                        "<-": "@owner.historyItem.filename",
+                        "converter": {"@": "historyItemNameConverter"}
+                    }
                 }
             }
         }
