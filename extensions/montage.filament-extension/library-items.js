@@ -369,4 +369,32 @@ var RangeControllerLibraryItem = LibraryItem.specialize({
 
 });
 
-exports.libraryAdditions = [RangeControllerLibraryItem];
+var ActionEventListenerLibraryItem = LibraryItem.specialize({
+
+    constructor: {
+        value: function ActionEventListenerLibraryItem() {
+            this.super();
+        }
+    },
+
+    serialization: {
+        value: {
+            "prototype": "montage/core/event/action-event-listener"
+        }
+    },
+
+    name: {
+        value: "ActionEventListener"
+    },
+
+    label: {
+        value: "ActionEventListener"
+    },
+
+    icon: {
+        value: packageLocation + "assets/components/event.png"
+    }
+
+});
+
+exports.libraryAdditions = [RangeControllerLibraryItem, ActionEventListenerLibraryItem];
