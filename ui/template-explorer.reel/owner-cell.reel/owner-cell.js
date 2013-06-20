@@ -64,6 +64,17 @@ exports.OwnerCell = Montage.create(Component, {
         }
     },
 
+    handleListenButtonAction: {
+        value: function(event) {
+            var listenerModel = Object.create(null);
+            listenerModel.targetObject = this.templateObject;
+
+            this.dispatchEventNamed("addListenerForObject", true, false, {
+                listenerModel: listenerModel
+            });
+        }
+    },
+
     handlePress: {
         value: function () {
             this.dispatchEventNamed("select", true, true, {

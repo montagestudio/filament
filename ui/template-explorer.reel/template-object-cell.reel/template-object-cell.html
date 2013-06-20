@@ -176,6 +176,19 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
+
+        "listenButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "listenButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
 
     }
@@ -206,6 +219,9 @@
             </li>
             <li class="TemplateObjectCell-list-item TemplateObjectEvent">
                 <button data-montage-id="bindButton" class="TemplateObject-button TemplateObject-button--bind Button">
+                    <i class="TemplateObject-button-icon"></i>
+                </button>
+                <button data-montage-id="listenButton" class="TemplateObject-button TemplateObject-button--listen Button">
                     <i class="TemplateObject-button-icon"></i>
                 </button>
                 <ul data-montage-id="listenerList" class="TemplateObjectEvent-list">

@@ -175,6 +175,17 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
                 bindingModel: bindingModel
             });
         }
+    },
+
+    handleListenButtonAction: {
+        value: function(event) {
+            var listenerModel = Object.create(null);
+            listenerModel.targetObject = this.templateObject;
+
+            this.dispatchEventNamed("addListenerForObject", true, false, {
+                listenerModel: listenerModel
+            });
+        }
     }
 
 });

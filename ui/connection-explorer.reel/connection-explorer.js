@@ -30,6 +30,7 @@ exports.ConnectionExplorer = Montage.create(Component, /** @lends module:"./conn
             this._element.addEventListener("drop", this, false);
 
             application.addEventListener("editBindingForObject", this, false);
+            application.addEventListener("addListenerForObject", this, false);
         }
     },
 
@@ -112,6 +113,13 @@ exports.ConnectionExplorer = Montage.create(Component, /** @lends module:"./conn
                 this.templateObjects.bindingCreator.bindingModel = bindingModel;
             }
             //TODO reveal the creator
+        }
+    },
+
+    handleAddListenerForObject: {
+        value: function (evt) {
+            var listenerModel = evt.detail.listenerModel;
+            this.templateObjects.listenerCreator.listenerModel = listenerModel;
         }
     },
 
