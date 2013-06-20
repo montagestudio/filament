@@ -1,0 +1,295 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }
+
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>todo.sikuli</h2> <a href="todo.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="kw">def</span> findLumieres():
+    <span class="kw">if</span> exists(<img src="1371596756905.png" />):
+        <span class="skw">click</span>(getLastMatch())
+
+    <span class="kw">elif</span> exists(Pattern(<img src="1371597952876.png" />).similar(<span class="dig">0.66</span>)):
+        <span class="skw">doubleClick</span>(Pattern(<img src="1371625485554.png" />).targetOffset(-<span class="dig">9</span>,<span class="dig">0</span>))
+
+    <span class="kw">elif</span> exists(<img src="1371599372730.png" />):
+        <span class="skw">doubleClick</span>(Pattern(<img src="1371625510803.png" />).targetOffset(-<span class="dig">8</span>,-<span class="dig">1</span>))
+
+<span class="cmt">#TODO use cmd-s to save, or have an option to do so
+</span><span class="kw">def</span> save():
+    <span class="skw">click</span>(<img src="1371628194913.png" />)
+    <span class="skw">click</span>(<img src="1371628226102.png" />)
+    <span class="skw">sleep</span>(<span class="dig">1</span>)
+
+<span class="cmt">#TODO make a method for binding
+</span>
+<span class="cmt"># Begin Actual Application
+</span>
+findLumieres()
+
+<span class="cmt"># Create a new application
+</span><span class="skw">click</span>(<img src="1371596763802.png" />)
+<span class="skw">wait</span>(<img src="1371596821051.png" />, <span class="dig">10</span>)
+<span class="skw">type</span>(<span class="str">"d"</span>, Key.META)
+<span class="skw">type</span>(<span class="str">"todo"</span>)
+
+<span class="skw">click</span>(<img src="1371596907226.png" />)
+<span class="kw">if</span> exists(<img src="1371598405282.png" />):
+    overwriteSheet = getLastMatch()
+    overwriteSheet.nearby(<span class="dig">100</span>).<span class="skw">click</span>(<img src="1371598422707.png" />)
+    waitVanish(overwriteSheet, <span class="dig">2</span>)
+
+<span class="skw">wait</span>(<img src="1371596971575.png" />, <span class="dig">20</span>)
+<span class="skw">sleep</span>(<span class="dig">1</span>)
+explorer = <span class="skw">find</span>(Pattern(<img src="1371631581983.png" />).similar(<span class="dig">0.60</span>))
+explorer.below(<span class="dig">500</span>).<span class="skw">click</span>(Pattern(<img src="1371631430977.png" />).similar(<span class="dig">0.88</span>).targetOffset(-<span class="dig">23</span>,<span class="dig">1</span>))
+
+<span class="skw">wait</span>(<img src="1371597025466.png" />)
+<span class="skw">click</span>(Pattern(<img src="1371597060927.png" />).targetOffset(-<span class="dig">26</span>,-<span class="dig">2</span>))
+
+<span class="skw">sleep</span>(<span class="dig">1</span>)
+
+<span class="cmt"># Remove the placeholder text
+</span>
+hover(<img src="1371599934383.png" />)
+<span class="skw">click</span>(Pattern(<img src="1371599999573.png" />).targetOffset(<span class="dig">23</span>,<span class="dig">0</span>))
+
+<span class="cmt"># Press and hold to toggle the library open
+</span><span class="skw">wait</span>(Pattern(<img src="1371599767730.png" />).similar(<span class="dig">0.89</span>), <span class="dig">2</span>)
+
+hover(Pattern(<img src="1371599860465.png" />).targetOffset(<span class="dig">10</span>,<span class="dig">24</span>))
+
+mouseDown(Button.LEFT)
+<span class="skw">sleep</span>(<span class="dig">3</span>)
+mouseUp(Button.LEFT)
+
+<span class="cmt"># Add a title
+</span>
+<span class="skw">dragDrop</span>(<img src="1371600498976.png" />, <img src="1371600526337.png" />)
+<span class="skw">doubleClick</span>(Pattern(<img src="1371600653629.png" />).targetOffset(<span class="dig">20</span>,<span class="dig">12</span>))
+<span class="skw">type</span>(<span class="str">"Things Worth Doing"</span>)
+
+<span class="skw">dragDrop</span>(<img src="1371600714176.png" />, <img src="1371600751835.png" />)
+
+<span class="cmt"># Add a rangeController to manage the collection of the owner's tasks
+</span>
+rangeControllerCard = <span class="skw">find</span>(<img src="1371630604848.png" />)
+rangeControllerCard.inside().<span class="skw">click</span>(<img src="1371630630447.png" />)
+
+bindingJig = <span class="skw">find</span>(<img src="1371630762945.png" />)
+bindingJig.inside().<span class="skw">type</span>(<img src="1371630794567.png" />, <span class="str">"content"</span>)
+bindingJig.inside().<span class="skw">type</span>(<img src="1371630820987.png" />, <span class="str">"@owner.tasks"</span>)
+bindingJig.inside().<span class="skw">click</span>(<img src="1371630842870.png" />)
+
+<span class="cmt"># Add a list to present the tasks
+</span>
+<span class="skw">dragDrop</span>(<img src="1371600782704.png" />, Pattern(<img src="1371600794675.png" />).targetOffset(-<span class="dig">60</span>,<span class="dig">7</span>))
+
+<span class="cmt"># TODO there's no list component in place, this next step is temporary
+</span>
+<span class="skw">dragDrop</span>(<img src="1371600919841.png" />, Pattern(<img src="1371632397402.png" />).targetOffset(<span class="dig">14</span>,-<span class="dig">16</span>))
+hover(<img src="1371601037797.png" />)
+<span class="cmt">#Remove the placeholder list content
+</span><span class="skw">click</span>(<img src="1371601059276.png" />)
+
+<span class="cmt">#Set the list to receive its content from the rangeController we created
+</span><span class="skw">dragDrop</span>(Pattern(<img src="1371601090297.png" />).targetOffset(-<span class="dig">60</span>,-<span class="dig">23</span>), <img src="1371601115096.png" />)
+
+<span class="cmt"># Create a component to encapsulate the presentation of a task in the list
+</span><span class="cmt">#TODO why does click not work?
+</span><span class="skw">click</span>(<img src="1371601177036.png" />)
+<span class="skw">sleep</span>(<span class="dig">1</span>)
+mouseDown(Button.LEFT)
+mouseUp(Button.LEFT)
+
+
+<span class="skw">wait</span>(<img src="1371612473343.png" />, <span class="dig">2</span>)
+<span class="skw">type</span>(<span class="str">"task"</span>)
+
+<span class="skw">click</span>(<img src="1371601213234.png" />)
+
+<span class="skw">sleep</span>(<span class="dig">1</span>)
+
+explorer.below(<span class="dig">500</span>).<span class="skw">click</span>(Pattern(<img src="1371631748330.png" />).exact().targetOffset(-<span class="dig">22</span>,<span class="dig">0</span>))
+
+<span class="skw">sleep</span>(<span class="dig">1</span>)
+
+<span class="skw">wait</span>(<img src="1371626266866.png" />, <span class="dig">1</span>)
+<span class="skw">click</span>(Pattern(<img src="1371626282274.png" />).targetOffset(-<span class="dig">7</span>,<span class="dig">18</span>))
+
+<span class="skw">wait</span>(<img src="1371626327890.png" />, <span class="dig">2</span>)
+
+<span class="cmt">#Add a checkbox to complete tasks
+</span><span class="skw">dragDrop</span>(<img src="1371626348331.png" />, <img src="1371626362160.png" />)
+checkboxCard = <span class="skw">find</span>(<img src="1371626902768.png" />)
+
+<span class="cmt"># Bind the checkbox to the task's completed state
+</span>checkboxCard.inside().<span class="skw">click</span>(<img src="1371626918284.png" />)
+
+<span class="skw">sleep</span>(<span class="dig">1</span>)
+
+checkboxBindingJig = <span class="skw">find</span>(<img src="1371627465823.png" />)
+checkboxBindingJig.inside().<span class="skw">type</span>(<img src="1371627497475.png" />, <span class="str">"checked"</span>)
+checkboxBindingJig.inside().<span class="skw">click</span>(<img src="1371627538325.png" />)
+checkboxBindingJig.inside().<span class="skw">type</span>(Pattern(<img src="1371627577807.png" />).targetOffset(-<span class="dig">1</span>,<span class="dig">8</span>), <span class="str">"@owner.task.completed"</span>)
+checkboxBindingJig.inside().<span class="skw">click</span>(<img src="1371627635301.png" />)
+
+<span class="skw">sleep</span>(<span class="dig">1</span>)
+
+
+<span class="cmt"># Add a textfiled to edit the title of the task
+</span><span class="skw">dragDrop</span>(<img src="1371709458142.png" />, Pattern(<img src="1371627827353.png" />).targetOffset(-<span class="dig">5</span>,-<span class="dig">9</span>))
+
+taskTitleCard = <span class="skw">find</span>(<img src="1371709574949.png" />)
+taskTitleCard.inside().<span class="skw">click</span>(<img src="1371627930530.png" />)
+taskTitleBindingJig = <span class="skw">find</span>(<img src="1371709621783.png" />)
+
+taskTitleBindingJig.inside().<span class="skw">type</span>(<img src="1371627997603.png" />, <span class="str">"value"</span>)
+taskTitleBindingJig.inside().<span class="skw">click</span>(<img src="1371628013900.png" />)
+taskTitleBindingJig.inside().<span class="skw">type</span>(Pattern(<img src="1371629918488.png" />).targetOffset(<span class="dig">19</span>,<span class="dig">5</span>), <span class="str">"@owner.task.title"</span>)
+taskTitleBindingJig.inside().<span class="skw">click</span>(<img src="1371628091766.png" />)
+
+<span class="skw">sleep</span>(<span class="dig">1</span>)
+
+<span class="cmt">#save this component so we can use it in the main component
+</span>
+save()
+
+<span class="cmt">#switch back to the main component
+</span>
+<span class="skw">click</span>(<img src="1371628279454.png" />)
+
+<span class="skw">sleep</span>(<span class="dig">2</span>)
+<span class="cmt">#add our task component to the list
+</span><span class="skw">dragDrop</span>(Pattern(<img src="1371628340381.png" />).similar(<span class="dig">0.73</span>).targetOffset(<span class="dig">1</span>,-<span class="dig">6</span>), Pattern(<img src="1371632573099.png" />).targetOffset(-<span class="dig">33</span>,<span class="dig">10</span>))
+<span class="skw">sleep</span>(<span class="dig">1</span>)
+
+taskCard = <span class="skw">find</span>(<img src="1371628434865.png" />)
+taskCard.inside().<span class="skw">click</span>(<img src="1371628453231.png" />)
+
+<span class="skw">sleep</span>(<span class="dig">1</span>)
+
+<span class="cmt">#bind the task property of the task component to the list's current iteration
+</span>
+taskBindingJig = <span class="skw">find</span>(<img src="1371628482036.png" />)
+
+taskBindingJig.inside().<span class="skw">type</span>(<img src="1371628516679.png" />, <span class="str">"task"</span>)
+sourceField = taskBindingJig.inside().<span class="skw">find</span>(Pattern(<img src="1371628597662.png" />).targetOffset(<span class="dig">13</span>,<span class="dig">9</span>))
+<span class="skw">dragDrop</span>(Pattern(<img src="1371628641092.png" />).targetOffset(-<span class="dig">18</span>,<span class="dig">2</span>), sourceField)
+
+<span class="skw">click</span>(sourceField)
+<span class="skw">type</span>(<span class="str">".objectAtCurrentIteration"</span>)
+
+taskBindingJig.inside().<span class="skw">click</span>(<img src="1371628814715.png" />)
+
+
+save()
+
+<span class="cmt">#click(Pattern("1371628769466.png").targetOffset(71,3))
+</span>
+<span class="cmt">#Add a new task button
+</span><span class="skw">dragDrop</span>(<img src="1371708733359.png" />, <img src="1371708794806.png" />)
+<span class="skw">doubleClick</span>(<img src="1371708858768.png" />)
+<span class="skw">type</span>(<span class="str">"New Task"</span>)
+
+<span class="cmt">#add an actionEventListener to call the addContent method on the rangeController
+</span>
+<span class="skw">dragDrop</span>(<img src="1371708937502.png" />, <img src="1371708956807.png" />)
+<span class="skw">dragDrop</span>(Pattern(<img src="1371709357887.png" />).targetOffset(-<span class="dig">54</span>,-<span class="dig">1</span>), <img src="1371709006343.png" />)
+<span class="skw">type</span>(<img src="1371709026331.png" />, <span class="str">"addContent"</span>)
+
+<span class="cmt"># Add the actionEventListener as listener of new Task button
+</span>
+wheel(<img src="1371710306724.png" />, WHEEL_DOWN, <span class="dig">50</span>)
+<span class="skw">click</span>(Pattern(<img src="1371710345995.png" />).targetOffset(<span class="dig">205</span>,<span class="dig">21</span>))
+
+<span class="skw">type</span>(<img src="1371710393901.png" />, <span class="str">"action"</span>)
+<span class="skw">dragDrop</span>(Pattern(<img src="1371710416220.png" />).targetOffset(-<span class="dig">61</span>,-<span class="dig">1</span>), <img src="1371710422598.png" />)
+<span class="skw">click</span>(<img src="1371710441914.png" />)
+
+<span class="cmt">#add a badge to count the remaining tasks
+</span><span class="skw">dragDrop</span>(<img src="1371711022203.png" />, <img src="1371711073673.png" />)
+
+wheel(<img src="1371711149027.png" />, WHEEL_DOWN, <span class="dig">50</span>)
+<span class="skw">click</span>(Pattern(<img src="1371711173305.png" />).targetOffset(<span class="dig">201</span>,<span class="dig">8</span>))
+
+badgeBindingJig = <span class="skw">find</span>(<img src="1371709621783.png" />)
+
+badgeBindingJig.inside().<span class="skw">type</span>(<img src="1371627997603.png" />, <span class="str">"value"</span>)
+badgeBindingJig.inside().<span class="skw">type</span>(Pattern(<img src="1371629918488.png" />).targetOffset(<span class="dig">19</span>,<span class="dig">5</span>), <span class="str">"@rangeController1.organizedContent.filter{!completed}.length"</span>)
+badgeBindingJig.inside().<span class="skw">click</span>(<img src="1371628091766.png" />)
+
+save()
+
+<span class="cmt">#TODO insert incomplete count
+</span><span class="cmt">#TODO insert completed toggle
+</span><span class="cmt">#TODO insert hr's for formatting
+</span><span class="cmt">#TODO wire up a remove button</span>
+</pre>
+</body>
+</html>
