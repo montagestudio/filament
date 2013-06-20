@@ -22,23 +22,27 @@ findLumieres()
 
 # Create a new application
 click("1371596763802.png")
-wait("1371596821051.png", 10)
+
+wait("1371769499689.png", 10)
+
+lumieresRegion = getLastMatch().nearby(2)
+
 type("d", Key.META)
 type("todo")
 
-click("1371596907226.png")
+lumieresRegion.click("1371596907226.png")
 if exists("1371598405282.png"):
     overwriteSheet = getLastMatch()
     overwriteSheet.nearby(100).click("1371598422707.png")
     waitVanish(overwriteSheet, 2)           
 
-wait("1371596971575.png", 20)
-sleep(1)
-explorer = find(Pattern("1371631581983.png").similar(0.60))
-explorer.below(500).click(Pattern("1371631430977.png").similar(0.88).targetOffset(-23,1))
+sleep(2)
+lumieresRegion.wait("1371596971575.png", 20)
+explorer = lumieresRegion.find(Pattern("1371631581983.png").similar(0.60)).below(500)
+explorer.click(Pattern("1371631430977.png").similar(0.88).targetOffset(-23,1))
 
-wait("1371597025466.png")
-click(Pattern("1371597060927.png").targetOffset(-26,-2))
+explorer.wait("1371597025466.png")
+explorer.click(Pattern("1371597060927.png").targetOffset(-26,-2))
 
 sleep(1)
 
@@ -56,13 +60,16 @@ mouseDown(Button.LEFT)
 sleep(3)
 mouseUp(Button.LEFT)
 
-# Add a title
+templateExplorer = lumieresRegion.find("1371770030185.png")
 
-dragDrop("1371600498976.png", "1371600526337.png")
+digitPackageRegion = lumieresRegion.find("1371770190411.png")
+
+# Add a title
+dragDrop(digitPackageRegion.find("1371600498976.png"), "1371600526337.png")
 doubleClick(Pattern("1371600653629.png").targetOffset(20,12))
 type("Things Worth Doing")
 
-dragDrop("1371600714176.png", "1371600751835.png")
+dragDrop("1371600714176.png", templateExplorer)
 
 # Add a rangeController to manage the collection of the owner's tasks
 
@@ -71,6 +78,9 @@ dragDrop("1371600714176.png", "1371600751835.png")
 #TODO ideally this would rely on a binding to the @owner.tasks, but we have no UI to set that property right now
 rangeControllerInspector = find("1371745473281.png").below()
 rangeControllerInspector.find("1371745547975.png").right(100).nearby(10).click("1371745557967.png")
+# Remove the default content, we want an empty list
+rangeControllerInspector.click(Pattern("1371770852843.png").targetOffset(59,13))
+
 
 # Add a list to present the tasks
 
@@ -84,7 +94,7 @@ hover("1371601037797.png")
 click("1371601059276.png")
 
 #Set the list to receive its content from the rangeController we created
-dragDrop(Pattern("1371601090297.png").targetOffset(-60,-23), "1371601115096.png")
+dragDrop(templateExplorer.find(Pattern("1371770469846.png").exact().targetOffset(-62,-1)), "1371601115096.png")
 
 # Create a component to encapsulate the presentation of a task in the list
 #TODO why does click not work?
@@ -101,12 +111,12 @@ click("1371601213234.png")
 
 sleep(1)
 
-explorer.below(500).click(Pattern("1371631748330.png").exact().targetOffset(-22,0))
+explorer.click(Pattern("1371631748330.png").exact().targetOffset(-22,0))
 
 sleep(1)
 
-wait("1371626266866.png", 1)
-click(Pattern("1371626282274.png").targetOffset(-7,18))
+explorer.wait("1371626266866.png", 1)
+explorer.click(Pattern("1371626282274.png").targetOffset(-7,18))
 
 wait("1371626327890.png", 2)
 
