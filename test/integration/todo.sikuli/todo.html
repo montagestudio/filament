@@ -138,13 +138,11 @@ mouseUp(Button.LEFT)
 
 <span class="cmt"># Add a rangeController to manage the collection of the owner's tasks
 </span>
-rangeControllerCard = <span class="skw">find</span>(<img src="1371630604848.png" />)
-rangeControllerCard.inside().<span class="skw">click</span>(<img src="1371630630447.png" />)
 
-bindingJig = <span class="skw">find</span>(<img src="1371630762945.png" />)
-bindingJig.inside().<span class="skw">type</span>(<img src="1371630794567.png" />, <span class="str">"content"</span>)
-bindingJig.inside().<span class="skw">type</span>(<img src="1371630820987.png" />, <span class="str">"@owner.tasks"</span>)
-bindingJig.inside().<span class="skw">click</span>(<img src="1371630842870.png" />)
+<span class="cmt">#TODO this is a temporary thing to create an array in the declaration
+</span><span class="cmt">#TODO ideally this would rely on a binding to the @owner.tasks, but we have no UI to set that property right now
+</span>rangeControllerInspector = <span class="skw">find</span>(<img src="1371745473281.png" />).below()
+rangeControllerInspector.<span class="skw">find</span>(<img src="1371745547975.png" />).right(<span class="dig">100</span>).nearby(<span class="dig">10</span>).<span class="skw">click</span>(<img src="1371745557967.png" />)
 
 <span class="cmt"># Add a list to present the tasks
 </span>

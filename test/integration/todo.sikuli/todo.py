@@ -66,13 +66,11 @@ dragDrop("1371600714176.png", "1371600751835.png")
 
 # Add a rangeController to manage the collection of the owner's tasks
 
-rangeControllerCard = find("1371630604848.png")
-rangeControllerCard.inside().click("1371630630447.png")
 
-bindingJig = find("1371630762945.png")
-bindingJig.inside().type("1371630794567.png", "content")
-bindingJig.inside().type("1371630820987.png", "@owner.tasks")
-bindingJig.inside().click("1371630842870.png")
+#TODO this is a temporary thing to create an array in the declaration
+#TODO ideally this would rely on a binding to the @owner.tasks, but we have no UI to set that property right now
+rangeControllerInspector = find("1371745473281.png").below()
+rangeControllerInspector.find("1371745547975.png").right(100).nearby(10).click("1371745557967.png")
 
 # Add a list to present the tasks
 
