@@ -482,9 +482,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     handlePathChange: {
         value: function (value, property, object) {
             switch (property) {
-                case "undoCount":
-                    this.environmentBridge.setDocumentDirtyState(null != value && value > 0);
-                    break;
+            case "undoCount":
+                this.environmentBridge.setDocumentDirtyState(null != value && value > 0);
+                break;
             }
         }
     },
@@ -494,18 +494,18 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             var menuItem = evt.detail;
 
             switch (menuItem.identifier) {
-                case "newComponent":
-                    evt.preventDefault();
-                    evt.stopPropagation();
+            case "newComponent":
+                evt.preventDefault();
+                evt.stopPropagation();
 
-                    menuItem.enabled = this.canCreateComponent;
-                    break;
-                case "newModule":
-                    evt.preventDefault();
-                    evt.stopPropagation();
+                menuItem.enabled = this.canCreateComponent;
+                break;
+            case "newModule":
+                evt.preventDefault();
+                evt.stopPropagation();
 
-                    menuItem.enabled = this.canCreateModule;
-                    break;
+                menuItem.enabled = this.canCreateModule;
+                break;
             }
 
         }
@@ -515,22 +515,22 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         enumerable: false,
         value: function (evt) {
             switch (evt.detail.identifier) {
-                case "newComponent":
-                    evt.preventDefault();
-                    evt.stopPropagation();
+            case "newComponent":
+                evt.preventDefault();
+                evt.stopPropagation();
 
-                    if (this.canCreateComponent) {
-                        this.createComponent().done();
-                    }
-                    break;
-                case "newModule":
-                    evt.preventDefault();
-                    evt.stopPropagation();
+                if (this.canCreateComponent) {
+                    this.createComponent().done();
+                }
+                break;
+            case "newModule":
+                evt.preventDefault();
+                evt.stopPropagation();
 
-                    if (this.canCreateModule) {
-                        this.createModule().done();
-                    }
-                    break;
+                if (this.canCreateModule) {
+                    this.createModule().done();
+                }
+                break;
             }
         }
     },
