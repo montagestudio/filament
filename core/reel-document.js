@@ -545,7 +545,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 doc,
                 serializationElement;
 
-            templateSerialization [labelInOwner] = serializationFragment;
+            templateSerialization[labelInOwner] = serializationFragment;
 
             doc = document.implementation.createHTMLDocument();
             serializationElement = doc.createElement("script");
@@ -559,14 +559,14 @@ exports.ReelDocument = EditingDocument.specialize({
             return Template.create().initWithDocument(doc, this._packageRequire).then(function (template) {
                 return self.addObjectsFromTemplate(template, parentElement, nextSiblingElement, stageElement);
             }).then(function (objects) {
-                    // only if there's only one object?
-                    if (objects.length && self.selectObjectsOnAddition) {
-                        self.clearSelectedObjects();
-                        self.selectObject(objects[0]);
-                    }
+                // only if there's only one object?
+                if (objects.length && self.selectObjectsOnAddition) {
+                    self.clearSelectedObjects();
+                    self.selectObject(objects[0]);
+                }
 
-                    return objects;
-                });
+                return objects;
+            });
         }
     },
 
