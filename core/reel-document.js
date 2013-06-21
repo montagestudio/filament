@@ -51,8 +51,8 @@ exports.ReelDocument = EditingDocument.specialize({
 
     init: {
         value: function (fileUrl, template, packageRequire) {
-            var self = EditingDocument.init.call(this, fileUrl, packageRequire),
-                error;
+            var self = this.super(fileUrl, packageRequire);
+            var error;
 
             self._template = template;
 
@@ -1155,11 +1155,12 @@ exports.ReelDocument = EditingDocument.specialize({
                     }
                     return Template.getTemplateWithModuleId(componentPrototype.templateModuleId, packageRequire);
                 },function (error) {
-                    throw new Error("Cannot load component template: " + error);
+                    throw new Error("Cannot load component: " + error);
                 }).then(function (template) {
                         return self.create().init(fileUrl, template, packageRequire);
                     }, function (error) {
-                        console.log(error);
+                        // There is no template. This could still be a valid component…
+                        console.log("Cannot load component template.". error);
                         return self.create().init(fileUrl, null, packageRequire);
                     });
             });

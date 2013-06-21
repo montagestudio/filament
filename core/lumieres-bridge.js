@@ -9,7 +9,13 @@ var Montage = require("montage/core/core").Montage,
     FileDescriptor = require("core/file-descriptor").FileDescriptor,
     defaultLocalizer = require("montage/core/localizer").defaultLocalizer;
 
-exports.LumiereBridge = Montage.create(EnvironmentBridge, {
+exports.LumiereBridge = EnvironmentBridge.specialize({
+
+    constructor: {
+        value: function LumiereBridge() {
+            this.super();
+        }
+    },
 
     _undoMessagePromise: {
         value: defaultLocalizer.localize("undo_label", "Undo {label}")
@@ -145,8 +151,8 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
                 return fileDescriptors.filter(function (fd) {
                     return (/\.reel$/).test(fd.url);
                 }).map(function (fd) {
-                    return fd.url;
-                });
+                        return fd.url;
+                    });
             });
 
         }
@@ -231,24 +237,24 @@ exports.LumiereBridge = Montage.create(EnvironmentBridge, {
         value: function (name, packageHome) {
             var self = this,
                 packagePath = this.convertBackendUrlToPath(packageHome),
-                //TODO use fs join to make all these
+            //TODO use fs join to make all these
                 applicationPath = packagePath + "/" + name,
-                applicationUrl =  packageHome + "/" + name;
+                applicationUrl = packageHome + "/" + name;
 
             return self.backend.get("fs").invoke("exists", applicationPath).then(function (result) {
                 if (result) {
                     return self.backend.get("application").invoke("moveToTrash", applicationUrl);
                 }
             }).then(function () {
-                return self.backend.get("filament-backend").invoke("createApplication", name, packagePath)
-                    .then(function () {
-                        lumieres.document.setFileURL(applicationUrl);
-                        return applicationUrl;
-                    }, function(error) {
-                        console.log("Could not create the application " + name + " at " + packagePath, error);
-                        return "";
-                    });
-            });
+                    return self.backend.get("filament-backend").invoke("createApplication", name, packagePath)
+                        .then(function () {
+                            lumieres.document.setFileURL(applicationUrl);
+                            return applicationUrl;
+                        }, function (error) {
+                            console.log("Could not create the application " + name + " at " + packagePath, error);
+                            return "";
+                        });
+                });
         }
     },
 

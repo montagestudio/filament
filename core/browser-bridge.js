@@ -2,7 +2,13 @@ var Montage = require("montage/core/core").Montage,
     EnvironmentBridge = require("core/environment-bridge").EnvironmentBridge,
     Promise = require("montage/core/promise").Promise;
 
-exports.BrowserBridge = Montage.create(EnvironmentBridge, {
+exports.BrowserBridge = EnvironmentBridge.specialize({
+
+    constructor: {
+        value: function BrowserBridge() {
+            this.super();
+        }
+    },
 
     projectInfo: {
         get: function () {

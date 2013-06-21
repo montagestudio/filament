@@ -12,7 +12,13 @@ var Montage = require("montage/core/core").Montage,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     ProjectController;
 
-exports.ProjectController = ProjectController = Montage.create(DocumentController, {
+exports.ProjectController = ProjectController = DocumentController.specialize({
+
+    constructor: {
+        value: function ProjectController() {
+            this.super();
+        }
+    },
 
     // PROPERTIES
 
@@ -174,17 +180,17 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
             // watchForFileChanges send a lot of data across the websocket,
             // preventing the file list from appearing in a timely manner.
             return this.populateFiles()
-            .then(function() {
-                // don't need to wait for this to complete
-                self.watchForFileChanges();
-                // want to wait for the library though
-                return self.populateLibrary();
-            }).then(function () {
-                self.dispatchEventNamed("didOpenPackage", true, false, {
-                    packageUrl: self.packageUrl
+                .then(function () {
+                    // don't need to wait for this to complete
+                    self.watchForFileChanges();
+                    // want to wait for the library though
+                    return self.populateLibrary();
+                }).then(function () {
+                    self.dispatchEventNamed("didOpenPackage", true, false, {
+                        packageUrl: self.packageUrl
+                    });
+                    return packageUrl;
                 });
-                return packageUrl;
-            });
         }
     },
 
@@ -476,9 +482,9 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
     handlePathChange: {
         value: function (value, property, object) {
             switch (property) {
-            case "undoCount":
-                this.environmentBridge.setDocumentDirtyState(null != value && value > 0);
-                break;
+                case "undoCount":
+                    this.environmentBridge.setDocumentDirtyState(null != value && value > 0);
+                    break;
             }
         }
     },
@@ -488,18 +494,18 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
             var menuItem = evt.detail;
 
             switch (menuItem.identifier) {
-            case "newComponent":
-                evt.preventDefault();
-                evt.stopPropagation();
+                case "newComponent":
+                    evt.preventDefault();
+                    evt.stopPropagation();
 
-                menuItem.enabled = this.canCreateComponent;
-                break;
-            case "newModule":
-                evt.preventDefault();
-                evt.stopPropagation();
+                    menuItem.enabled = this.canCreateComponent;
+                    break;
+                case "newModule":
+                    evt.preventDefault();
+                    evt.stopPropagation();
 
-                menuItem.enabled = this.canCreateModule;
-                break;
+                    menuItem.enabled = this.canCreateModule;
+                    break;
             }
 
         }
@@ -509,22 +515,22 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
         enumerable: false,
         value: function (evt) {
             switch (evt.detail.identifier) {
-            case "newComponent":
-                evt.preventDefault();
-                evt.stopPropagation();
+                case "newComponent":
+                    evt.preventDefault();
+                    evt.stopPropagation();
 
-                if (this.canCreateComponent) {
-                    this.createComponent().done();
-                }
-                break;
-            case "newModule":
-                evt.preventDefault();
-                evt.stopPropagation();
+                    if (this.canCreateComponent) {
+                        this.createComponent().done();
+                    }
+                    break;
+                case "newModule":
+                    evt.preventDefault();
+                    evt.stopPropagation();
 
-                if (this.canCreateModule) {
-                    this.createModule().done();
-                }
-                break;
+                    if (this.canCreateModule) {
+                        this.createModule().done();
+                    }
+                    break;
             }
         }
     },
@@ -562,8 +568,8 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                                 objectName = MontageReviver.parseObjectLocationId(moduleId).objectName;
                                 return self.libraryItemForModuleId(moduleId, objectName);
                             }).filter(function (libraryItem) {
-                                return libraryItem;
-                            });
+                                    return libraryItem;
+                                });
                         } else {
                             dependencyLibraryEntry.libraryItems = [];
                         }
@@ -584,7 +590,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
 
     moduleLibraryItemMap: {
         enumerable: false,
-        value : null
+        value: null
     },
 
     //TODO handle multiple extensions possibly registering for the same moduleId, latest one wins?
@@ -648,7 +654,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
 
     registerLibraryItemForPackageName: {
         value: function (libraryItem, packageName) {
-            if (! libraryItem) {
+            if (!libraryItem) {
                 return;
             }
             var addedLibraryItems = this._packageNameLibraryItemsMap.get(packageName);
@@ -718,7 +724,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
         value: function () {
             var self = this,
                 config = {
-                    prefix : this.environmentBridge.convertBackendUrlToPath(this.packageUrl)
+                    prefix: this.environmentBridge.convertBackendUrlToPath(this.packageUrl)
                 };
 
             this.environmentBridge.installDependencies(config).then(function () {
@@ -757,8 +763,8 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
 
                 return promise;
             }).then(function (applicationUrl) {
-                return self.loadProject(applicationUrl);
-            });
+                    return self.loadProject(applicationUrl);
+                });
         }
     },
 
@@ -786,7 +792,7 @@ exports.ProjectController = ProjectController = Montage.create(DocumentControlle
                     destination = destination.replace(/\/$/, "");
                     var destinationDividerIndex = destination.lastIndexOf("/"),
                         name = destination.substring(destinationDividerIndex + 1),
-                        //TODO complain if packageHome does not match this.packageUrl?
+                    //TODO complain if packageHome does not match this.packageUrl?
                         packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", ""),
                         relativeDestination = destination.substring(0, destinationDividerIndex).replace(packageHome, "").replace(/^\//, ""),
                         promise = fn(name, packageHome, relativeDestination);

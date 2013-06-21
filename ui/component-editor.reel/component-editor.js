@@ -5,7 +5,7 @@ var Montage = require("montage/core/core").Montage,
     WeakMap = require("montage/collections/weak-map"),
     Editor = require("palette/ui/editor.reel").Editor;
 
-exports.ComponentEditor = Montage.create(Editor, {
+exports.ComponentEditor = Editor.specialize({
 
     projectController: {
         value: null

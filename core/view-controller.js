@@ -1,10 +1,10 @@
 var Montage = require("montage/core/core").Montage,
     WeakMap = require("montage/collections/weak-map");
 
-exports.ViewController = Montage.create(Montage, {
+exports.ViewController = Montage.specialize({
 
     constructor: {
-        value: function () {
+        value: function ViewController() {
             this.editorMatchers = [];
             this.matcherEditorTypeMap = new WeakMap();
 
@@ -161,8 +161,8 @@ exports.ViewController = Montage.create(Montage, {
             return this.contextualInspectorMatchers.filter(function (matcher) {
                 return matcher(object) ? matcher : false;
             }).map(function (match) {
-                return this.matcherContextualInspectorMap.get(match);
-            }, this);
+                    return this.matcherContextualInspectorMap.get(match);
+                }, this);
         }
     },
 
