@@ -381,7 +381,6 @@ describe("core/reel-document-headless-editing-spec", function () {
 
     describe("adding library item with an element property", function () {
         it("doesn't use an existing element", function () {
-            debugger;
             return reelDocumentPromise.then(function (reelDocument) {
                 // setup
                 var nodeProxy = reelDocument.createTemplateNode('<p data-montage-id="test">');
