@@ -50,7 +50,7 @@ describe("core/reel-document-headless-editing-spec", function () {
             "bar": {
                 "prototype": "bar-exportId"
             }
-        }, '<div id="ownerElement" data-montage-id="ownerElement"><section id="removeSubTree"><p id="removeMe"></p><div id="foo" data-montage-id="foo"></div></section></div>');
+        }, '<div id="ownerElement" data-montage-id="ownerElement"><section id="removeSubTree"><p id="removeMe"></p><div id="foo" data-montage-id="foo"><p id="removeLastNode"></p></div></section></div>');
     });
 
     describe("finding a node proxy for a node", function () {
@@ -131,6 +131,57 @@ describe("core/reel-document-headless-editing-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
+        it("should add an undo operation for removing a node with a next sibling", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("removeMe"),
+                    nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                reelDocument.removeTemplateNode(nodeProxy);
+
+                expect(reelDocument.undoManager.undoCount).toBe(1);
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should undo the removal of a template node with a next sibling by adding it back", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("removeMe");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                reelDocument.removeTemplateNode(nodeProxy);
+
+                return reelDocument.undoManager.undo().then(function() {
+                    expect(reelDocument.htmlDocument.getElementById("removeMe")).toBeTruthy();
+                    expect(reelDocument.templateNodes.indexOf(nodeProxy)).toBeGreaterThan(-1);
+                    expect(nodeProxy.isInTemplate).toBeTruthy();
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should add an undo operation for removing a node without a next sibling", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("removeLastNode"),
+                    nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                reelDocument.removeTemplateNode(nodeProxy);
+
+                expect(reelDocument.undoManager.undoCount).toBe(1);
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should undo the removal of a template node without a next sibling by adding it back", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("removeLastNode");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                reelDocument.removeTemplateNode(nodeProxy);
+
+                return reelDocument.undoManager.undo().then(function() {
+                    expect(reelDocument.htmlDocument.getElementById("removeLastNode")).toBeTruthy();
+                    expect(reelDocument.templateNodes.indexOf(nodeProxy)).toBeGreaterThan(-1);
+                    expect(nodeProxy.isInTemplate).toBeTruthy();
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
     });
 
     describe("removing a component-associated leaf node", function () {
@@ -183,6 +234,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                 expect(reelDocument.htmlDocument.getElementById("removeSubTree")).toBeTruthy();
                 expect(reelDocument.htmlDocument.getElementById("removeMe")).toBeTruthy();
                 expect(reelDocument.htmlDocument.getElementById("foo")).toBeTruthy();
+                expect(reelDocument.htmlDocument.getElementById("removeLastNode")).toBeTruthy();
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
@@ -196,6 +248,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                 expect(reelDocument.htmlDocument.getElementById("removeSubTree")).toBeTruthy();
                 expect(reelDocument.htmlDocument.getElementById("removeMe")).toBeTruthy();
                 expect(reelDocument.htmlDocument.getElementById("foo")).toBeTruthy();
+                expect(reelDocument.htmlDocument.getElementById("removeLastNode")).toBeTruthy();
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
@@ -208,6 +261,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                 expect(reelDocument.htmlDocument.getElementById("removeSubTree")).toBeFalsy();
                 expect(reelDocument.htmlDocument.getElementById("removeMe")).toBeFalsy();
                 expect(reelDocument.htmlDocument.getElementById("foo")).toBeFalsy();
+                expect(reelDocument.htmlDocument.getElementById("removeLastNode")).toBeFalsy();
 
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -273,6 +327,26 @@ describe("core/reel-document-headless-editing-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
+        it("should add an undo operation for appending a non-component leaf node", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("<p>");
+                reelDocument.appendChildToTemplateNode(nodeProxy);
+
+                expect(reelDocument.undoManager.undoCount).toBe(1);
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should undo appending a non-component leaf node by removing it", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("<p>");
+                reelDocument.appendChildToTemplateNode(nodeProxy);
+
+                return reelDocument.undoManager.undo().then(function() {
+                    expect(nodeProxy.isInTemplate).toBeFalsy();
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
     });
 
     describe("inserting a non-component leaf node before another node", function () {
@@ -325,6 +399,29 @@ describe("core/reel-document-headless-editing-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
+        it("should add an undo operation for inserting a non-component leaf node before another node", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("<p>");
+                var fooNode = reelDocument.editingProxyMap.foo.properties.get('element');
+
+                reelDocument.insertNodeBeforeTemplateNode(nodeProxy, fooNode);
+
+                expect(reelDocument.undoManager.undoCount).toBe(1);
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should undo inserting a non-component leaf node before another node by removing it", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("<p>");
+                var fooNode = reelDocument.editingProxyMap.foo.properties.get('element');
+
+                reelDocument.insertNodeBeforeTemplateNode(nodeProxy, fooNode);
+                return reelDocument.undoManager.undo().then(function() {
+                    expect(nodeProxy.isInTemplate).toBeFalsy();
+                    expect(fooNode.parentNode.children.indexOf(nodeProxy)).toBe(-1);
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
     });
 
     describe("inserting a non-component leaf node after another node", function () {
@@ -377,6 +474,29 @@ describe("core/reel-document-headless-editing-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
+        it("should add an undo operation for inserting a non-component leaf node after another node", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("<p>");
+                var fooNode = reelDocument.editingProxyMap.foo.properties.get('element');
+
+                reelDocument.insertNodeAfterTemplateNode(nodeProxy, fooNode);
+
+                expect(reelDocument.undoManager.undoCount).toBe(1);
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should undo inserting a non-component leaf node after another node", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("<p>");
+                var fooNode = reelDocument.editingProxyMap.foo.properties.get('element');
+
+                reelDocument.insertNodeAfterTemplateNode(nodeProxy, fooNode);
+                return reelDocument.undoManager.undo().then(function() {
+                    expect(nodeProxy.isInTemplate).toBeFalsy();
+                    expect(fooNode.parentNode.children.indexOf(nodeProxy)).toBe(-1);
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
     });
 
     describe("adding library item with an element property", function () {

@@ -645,15 +645,14 @@ exports.ReelDocument = EditingDocument.specialize({
 
             var destinationTemplate = this._template,
                 context,
-                proxy,
                 self = this,
                 revisedTemplate,
                 ownerProxy;
 
+            this.undoManager.openBatch("Add Objects");
+
             revisedTemplate = this._merge(destinationTemplate, sourceTemplate, parentElement, nextSiblingElement);
             ownerProxy = this.editingProxyMap.owner;
-
-            this.undoManager.openBatch("Add Objects");
 
             // Prepare a context that knows about the existing editing proxies prior to
             // creating new editing proxies
@@ -747,12 +746,10 @@ exports.ReelDocument = EditingDocument.specialize({
                 var nodeProxy = NodeProxy.create().init(newChild, this);
 
                 if (nextSiblingElement) {
-                    insertionParent.insertBefore(nodeProxy, nextSiblingElement); // Add as last child to parent
+                    this.insertNodeBeforeTemplateNode(nodeProxy, nextSiblingElement);
                 } else {
-                    insertionParent.appendChild(nodeProxy); // Add as last child to parent
+                    this.appendChildToTemplateNode(nodeProxy, insertionParent);
                 }
-
-                this.__addNodeProxy(nodeProxy); // Add to general collection of known proxies (temporarily)
             }, this);
 
             // Merge serialization
@@ -1039,6 +1036,11 @@ exports.ReelDocument = EditingDocument.specialize({
                 return;
             }
 
+            if (nodeProxy.nextSibling) {
+                this.undoManager.register("Remove Node", Promise.resolve([this.insertNodeBeforeTemplateNode, this, nodeProxy, nodeProxy.nextSibling]));
+            } else {
+                this.undoManager.register("Remove Node", Promise.resolve([this.appendChildToTemplateNode, this, nodeProxy, nodeProxy.parentNode]));
+            }
             nodeProxy.parentNode.removeChild(nodeProxy);
             this.__removeNodeProxy(nodeProxy);
             return nodeProxy;
@@ -1094,6 +1096,9 @@ exports.ReelDocument = EditingDocument.specialize({
 
             parentNodeProxy.appendChild(nodeProxy);
             this.__addNodeProxy(nodeProxy);
+
+            this.undoManager.register("Append Node", Promise.resolve([this.removeTemplateNode, this, nodeProxy]));
+
             return nodeProxy;
         }
     },
@@ -1124,6 +1129,9 @@ exports.ReelDocument = EditingDocument.specialize({
             var parentProxy = nextSiblingProxy.parentNode;
             parentProxy.insertBefore(nodeProxy, nextSiblingProxy);
             this.__addNodeProxy(nodeProxy);
+
+            this.undoManager.register("Insert Node Before", Promise.resolve([this.removeTemplateNode, this, nodeProxy]));
+
             return nodeProxy;
         }
     },
@@ -1154,6 +1162,9 @@ exports.ReelDocument = EditingDocument.specialize({
             var parentProxy = previousSiblingProxy.parentNode;
             parentProxy.insertBefore(nodeProxy, previousSiblingProxy.nextSibling);
             this.__addNodeProxy(nodeProxy);
+
+            this.undoManager.register("Insert Node After", Promise.resolve([this.removeTemplateNode, this, nodeProxy]));
+
             return nodeProxy;
         }
     }
