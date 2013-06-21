@@ -500,7 +500,7 @@ var TitleLibraryItem = LibraryItem.specialize( {
     },
 
     html: {
-        value: '<h3 data-montage-id="title"></h3>'
+        value: '<h1 data-montage-id="title"></h1>'
     }
 
 });
