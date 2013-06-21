@@ -74,7 +74,7 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
 
     _instantiateInnerTemplate: {
         value: function () {
-            if (!this.templateObjects || !this._object) {
+            if (!this.templateObjects || !this._object || !this._object.stageObject) {
                 return;
             }
 
