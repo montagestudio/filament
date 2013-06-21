@@ -132,6 +132,33 @@ describe("core/reel-document-headless-editing-spec", function () {
                 });
             }).timeout(WAITSFOR_TIMEOUT);
         });
+
+        it("should add an undo operation for this adition", function () {
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (proxies) {
+                    expect(reelDocument.undoManager.undoCount).toBe(1);
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should undo this adding operation by removing the added component and element", function () {
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (proxies) {
+                    reelDocument.undoManager.undo().then(function() {
+                        var templateSerialization = reelDocument._buildSerializationObjects(),
+                            addedElement;
+
+                        expect(reelDocument.editingProxyMap.myComponent).toBeUndefined();
+                        expect(reelDocument.editingProxies.indexOf(proxies[0])).toBe(-1);
+                        expect(templateSerialization.myComponent).toBeUndefined();
+
+                        addedElement = reelDocument.htmlDocument.querySelector("[data-montage-id=myComponent]");
+                        expect(addedElement).toBeFalsy();
+                        reelDocument.templateNodes.indexOf(addedElement).toBe(-1);
+                    });
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
     });
 
     describe("removing a component", function () {
