@@ -657,7 +657,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
                         return self._editingController.addObjectsFromTemplate(revisedTemplate, stageElement).then(function (objects) {
                             for (var label in objects) {
-                                if (objects.hasOwnProperty !== "function" || objects.hasOwnProperty(label)) {
+                                if (typeof objects.hasOwnProperty !== "function" || objects.hasOwnProperty(label)) {
                                     self._editingProxyMap[label].stageObject = objects[label];
                                 }
                             }
