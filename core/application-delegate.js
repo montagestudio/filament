@@ -18,11 +18,11 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
             if (IS_IN_LUMIERES) {
                 bridgePromise = require.async("core/lumieres-bridge").then(function (exported) {
-                    return exported.LumiereBridge.create();
+                    return new exported.LumiereBridge();
                 });
             } else {
                 bridgePromise = require.async("core/browser-bridge").then(function (exported) {
-                    return exported.BrowserBridge.create();
+                    return new exported.BrowserBridge();
                 });
             }
 
@@ -104,15 +104,16 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                 );
             });
 
-            this.previewController = PreviewController.create().init(this);
+            this.previewController = (new PreviewController()).init(this);
 
             var self = this,
                 promisedApplication = this._deferredApplication.promise,
                 promisedMainComponent = this._deferredMainComponent.promise,
+                promisedBridge = this.detectEnvironmentBridge(),
                 promisedLoadedExtensions,
                 extensionController;
 
-            promisedLoadedExtensions = Promise.all([promisedApplication, this.detectEnvironmentBridge()])
+            promisedLoadedExtensions = Promise.all([promisedApplication, promisedBridge])
                 .spread(function (app, bridge) {
                     self.application = app;
                     self.environmentBridge = bridge;
@@ -121,6 +122,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                     return extensionController.loadExtensions();
 
                 }, function(error) {
+                    //TODO improve handling if the application or the environment are rejected
                     console.log("Cannot load the extensions ", error);
                     return [];
                 });

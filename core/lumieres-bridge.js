@@ -14,6 +14,16 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
     constructor: {
         value: function LumiereBridge() {
             this.super();
+
+            var self = this;
+
+            Montage.addPathChangeListener.call(lumieres, "previewPort", function() {
+                self.dispatchBeforeOwnPropertyChange("previewUrl", self.previewUrl);
+            }, null, true);
+
+            Montage.addPathChangeListener.call(lumieres, "previewPort", function() {
+                self.dispatchOwnPropertyChange("previewUrl", self.previewUrl);
+            });
         }
     },
 
@@ -65,6 +75,12 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
     convertBackendUrlToPath: {
         value: function (url) {
             return url.replace(/^\w+:\/\/\w*/m, "");
+        }
+    },
+
+    previewUrl: {
+        get: function () {
+            return "http://localhost:" + lumieres.previewPort;
         }
     },
 

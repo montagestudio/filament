@@ -2,7 +2,40 @@ var Montage = require("montage/core/core").Montage,
     Target = require("montage/core/target").Target,
     Promise = require("montage/core/promise").Promise;
 
-exports.PreviewController = Montage.create(Target, {
+exports.PreviewController = Target.specialize({
+
+    constructor: {
+        value: function PreviewController () {
+            this.super();
+        }
+    },
+
+    init: {
+        value: function (appDelegate) {
+            this._applicationDelegate = appDelegate;
+
+            var self = this;
+
+            // TODO replace all this with propertyPath dependencies
+            this.addBeforePathChangeListener("_applicationDelegate.environmentBridge", function () {
+                self.dispatchBeforeOwnPropertyChange("environmentBridge", self.environmentBridge);
+            }, null, true);
+
+            this.addPathChangeListener("_applicationDelegate.environmentBridge", function () {
+                self.dispatchOwnPropertyChange("environmentBridge", self.environmentBridge);
+            });
+
+            this.addBeforePathChangeListener("environmentBridge.previewUrl", function () {
+                self.dispatchBeforeOwnPropertyChange("previewUrl", self.previewUrl);
+            }, null, true);
+
+            this.addPathChangeListener("environmentBridge.previewUrl", function () {
+                self.dispatchOwnPropertyChange("previewUrl", self.previewUrl);
+            });
+
+            return this;
+        }
+    },
 
     _applicationDelegate: {
         value: null
@@ -32,14 +65,7 @@ exports.PreviewController = Montage.create(Target, {
 
     previewUrl: {
         get: function () {
-            return this._previewId ? "http://localhost:8080/" + this._previewId + "/" : null;
-        }
-    },
-
-    init: {
-        value: function (appDelegate) {
-            this._applicationDelegate = appDelegate;
-            return this;
+            return this._previewId ? this.environmentBridge.previewUrl + "/" + this._previewId + "/" : null;
         }
     },
 
