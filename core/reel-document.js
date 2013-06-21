@@ -642,8 +642,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 proxy,
                 self = this,
                 revisedTemplate,
-                ownerProxy,
-                deferredUndoOperation = Promise.defer();
+                ownerProxy;
 
             revisedTemplate = this._merge(destinationTemplate, sourceTemplate, parentElement, nextSiblingElement);
             ownerProxy = this.editingProxyMap.owner;
