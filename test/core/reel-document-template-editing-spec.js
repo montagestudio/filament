@@ -379,4 +379,27 @@ describe("core/reel-document-headless-editing-spec", function () {
 
     });
 
+    describe("adding library item with an element property", function () {
+        it("doesn't use an existing element", function () {
+            debugger;
+            return reelDocumentPromise.then(function (reelDocument) {
+                // setup
+                var nodeProxy = reelDocument.createTemplateNode('<p data-montage-id="test">');
+                reelDocument.appendChildToTemplateNode(nodeProxy);
+                expect(nodeProxy.isInTemplate).toBeTruthy();
+
+                // test
+                return reelDocument.addLibraryItemFragments({
+                    "prototype": "ui/foo.reel",
+                    "properties": {
+                        "element": {"#": "test"}
+                    }
+                }).then(function (objects) {
+                    expect(objects[0].properties.get("element")).not.toBe(nodeProxy);
+                });
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+    });
+
 });
