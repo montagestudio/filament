@@ -11,7 +11,8 @@ var Montage = require("montage").Montage,
     ReelSerializer = require("core/serialization/reel-serializer").ReelSerializer,
     ReelReviver = require("core/serialization/reel-reviver").ReelReviver,
     ReelContext = require("core/serialization/reel-context").ReelContext,
-    NodeProxy = require("core/node-proxy").NodeProxy;
+    NodeProxy = require("core/node-proxy").NodeProxy,
+    visit = require("montage/mousse/serialization/malker").visit;
 
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = EditingDocument.specialize({
@@ -544,6 +545,27 @@ exports.ReelDocument = EditingDocument.specialize({
                 self = this,
                 doc,
                 serializationElement;
+
+            // If there's no htmlFragment given then none of the element
+            // references in the serialization are valid, and they might end up
+            // capturing elements from the current template, which we don't
+            // want. Solution: just remove all element references.
+            if (serializationFragment && !htmlFragment) {
+                var parent = serializationFragment;
+                visit(serializationFragment, {
+                    enterObject: function (walker, object, name) {
+                        parent = object;
+                    },
+                    willEnterObject: function (walker, object, name) {
+                        if (object.hasOwnProperty("#")) {
+                            // remove element referenece
+                            delete parent[name];
+                            // don't enter this object
+                            return false;
+                        }
+                    }
+                });
+            }
 
             templateSerialization[labelInOwner] = serializationFragment;
 
