@@ -1,7 +1,15 @@
 var Montage = require("montage").Montage,
     NodeProxy;
 
-exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
+exports.NodeProxy = NodeProxy = Montage.specialize({
+
+    constructor: {
+        value: function NodeProxy() {
+            this.super();
+
+            this.addPathChangeListener("_editingDocument.editingProxies", this, "handleEditingProxiesChange");
+        }
+    },
 
     proxyType: {
         get: function() {
@@ -127,10 +135,7 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
     },
 
     component: {
-        get: function () {
-            //TODO cache this and listen to see if it changes
-            return this._editingDocument.componentProxyForElement(this);
-        }
+        value: null
     },
 
     isInTemplate: {
@@ -185,6 +190,17 @@ exports.NodeProxy = NodeProxy = Montage.create(Montage,  {
 
             return nodeProxy;
         }
-    }
+    },
 
+    handleEditingProxiesChange: {
+        value: function() {
+            if (this._editingDocument) {
+                var component = this._editingDocument.componentProxyForElement(this);
+
+                if (component !== this.component) {
+                    this.component = component;
+                }
+            }
+        }
+    }
 });
