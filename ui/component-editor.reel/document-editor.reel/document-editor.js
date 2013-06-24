@@ -5,7 +5,7 @@ var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver;
 
-exports.DocumentEditor = Montage.create(Component, {
+exports.DocumentEditor = Component.specialize({
 
     workbench: {
         enumerable: false,
