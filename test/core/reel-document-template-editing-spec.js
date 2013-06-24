@@ -50,7 +50,15 @@ describe("core/reel-document-headless-editing-spec", function () {
             "bar": {
                 "prototype": "bar-exportId"
             }
-        }, '<div id="ownerElement" data-montage-id="ownerElement"><section id="removeSubTree"><p id="removeMe"></p><div id="foo" data-montage-id="foo"><p id="removeLastNode"></p></div></section></div>');
+        },
+        '<div id="ownerElement" data-montage-id="ownerElement">'+
+        '   <section id="removeSubTree">'+
+        '       <p id="removeMe"></p>'+
+        '       <div id="foo" data-montage-id="foo">'+
+        '           <p id="removeLastNode"></p>'+
+        '       </div>'+
+        '   </section>'+
+        '</div>');
     });
 
     describe("finding a node proxy for a node", function () {
