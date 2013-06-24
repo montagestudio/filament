@@ -86,10 +86,6 @@ rangeControllerInspector.click(Pattern("1371770852843.png").targetOffset(59,13))
 
 dragDrop("1371600782704.png", Pattern("1371600794675.png").targetOffset(-60,7))
 
-# TODO there's no list component in place, this next step is temporary
-
-dragDrop("1371600919841.png", Pattern("1371632397402.png").targetOffset(14,-16))
-hover("1371601037797.png")
 #Remove the placeholder list content
 click("1371601059276.png")
 
