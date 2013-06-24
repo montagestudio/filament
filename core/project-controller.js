@@ -301,7 +301,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             alreadyOpenedDoc = this.documentForUrl(fileUrl);
 
             if (alreadyOpenedDoc) {
-                editorType = alreadyOpenedDoc.editorType;
+                editorType = alreadyOpenedDoc.constructor.editorType;
             } else {
                 documentType = this.documentTypeForUrl(fileUrl);
 
