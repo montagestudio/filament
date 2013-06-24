@@ -208,7 +208,6 @@ describe("core/reel-document-headless-editing-spec", function () {
                 return removalPromise.then(function () {
                     var disconnectedElement = reelDocument.htmlDocument.querySelector("[data-montage-id=foo]");
                     expect(disconnectedElement).toBeTruthy();
-                    expect(disconnectedElement).toBe(proxyToRemove.properties.get("element")._templateNode);
                 });
             }).timeout(WAITSFOR_TIMEOUT);
         });
