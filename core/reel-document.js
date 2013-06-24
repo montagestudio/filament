@@ -341,6 +341,12 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.templateNodes.splice(index, 1);
             }
 
+            // If a component is using the node as an element then remove the
+            // element reference.
+            if (proxy.component) {
+                this.setOwnedObjectElement(proxy.component, void 0);
+            }
+
             proxy.children.forEach(function (child) {
                 this.__removeNodeProxy(child);
             }, this);
@@ -1036,13 +1042,22 @@ exports.ReelDocument = EditingDocument.specialize({
                 return;
             }
 
-            if (nodeProxy.nextSibling) {
-                this.undoManager.register("Remove Node", Promise.resolve([this.insertNodeBeforeTemplateNode, this, nodeProxy, nodeProxy.nextSibling]));
-            } else {
-                this.undoManager.register("Remove Node", Promise.resolve([this.appendChildToTemplateNode, this, nodeProxy, nodeProxy.parentNode]));
-            }
+            var nextSibling = nodeProxy.nextSibling,
+                parentNode = nodeProxy.parentNode;
+
+            this.undoManager.openBatch("Remove Node");
+
             nodeProxy.parentNode.removeChild(nodeProxy);
             this.__removeNodeProxy(nodeProxy);
+
+            if (nextSibling) {
+                this.undoManager.register("Remove Node", Promise.resolve([this.insertNodeBeforeTemplateNode, this, nodeProxy, nextSibling]));
+            } else {
+                this.undoManager.register("Remove Node", Promise.resolve([this.appendChildToTemplateNode, this, nodeProxy, parentNode]));
+            }
+
+            this.undoManager.closeBatch();
+
             return nodeProxy;
         }
     },
