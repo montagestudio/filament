@@ -251,6 +251,7 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
 
     createApplication: {
         value: function (name, packageHome) {
+            name = decodeURI(name);
             var self = this,
                 packagePath = this.convertBackendUrlToPath(packageHome),
             //TODO use fs join to make all these
@@ -276,12 +277,14 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
 
     createComponent: {
         value: function (name, packageHome, destination) {
+            name = decodeURI(name);
             return this.backend.get("filament-backend").invoke("createComponent", name, this.convertBackendUrlToPath(packageHome), destination);
         }
     },
 
     createModule: {
         value: function (name, packageHome, destination) {
+            name = decodeURI(name);
             return this.backend.get("filament-backend").invoke("createModule", name, this.convertBackendUrlToPath(packageHome), destination);
         }
     },
