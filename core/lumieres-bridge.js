@@ -7,8 +7,19 @@ var Montage = require("montage/core/core").Montage,
     qs = require("qs"),
     mainMenu = require("ui/native-menu/menu").defaultMenu,
     FileDescriptor = require("core/file-descriptor").FileDescriptor,
-    defaultLocalizer = require("montage/core/localizer").defaultLocalizer;
+    defaultLocalizer = require("montage/core/localizer").defaultLocalizer,
+    removeDiacritics = require("diacritics").remove;
 
+var _fromCamelToDashes = function(name) {
+    var s1 = name.replace(/([A-Z])/g, function (g) { return "-"+g.toLowerCase(); });
+    s1 = s1.replace(/--/g, "-").replace(/^-/, "");
+    return s1;
+};
+var _fromDashesToCamel = function(name) {
+    var s1 = name.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+    s1 = s1[0].toUpperCase() + s1.slice(1);
+    return s1;
+};
 exports.LumiereBridge = EnvironmentBridge.specialize({
 
     constructor: {
@@ -216,6 +227,9 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
             var deferredSave = Promise.defer();
 
             lumieres.saveFileDialog(options, function (error, file) {
+                // Make file names follow montage conventions and use web safe urls
+                file = removeDiacritics(decodeURI(file).replace(/ /g, "-"));
+                file = _fromDashesToCamel(file));
                 if (!error) {
                     deferredSave.resolve(file);
                 } else {
