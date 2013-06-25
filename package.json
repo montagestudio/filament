@@ -18,7 +18,7 @@
         "mop": "0.13.1",
         "npm": "1.2.18",
         "watchr": "2.3.3",
-        "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#487f2d70c7b70b6a43a652f9cb36083f8bab2cdd",
+        "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#e36e426adbc39ad2f4957b370c6215aa9857a094",
         "minit": "0.3.1",
         "minimatch": "0.2.9",
         "underscore": "1.4.4"
