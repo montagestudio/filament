@@ -151,6 +151,7 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
             var templateObject = this.templateObject;
 
             templateObject.editingDocument.setOwnedObjectElement(templateObject, montageId);
+            templateObject.editingDocument.editor.refresh();
         }
     },
 

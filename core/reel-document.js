@@ -593,6 +593,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 }
             }).finally(function () {
                 self.undoManager.closeBatch();
+                self.editor.refresh();
             });
         }
     },
@@ -786,6 +787,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             this.undoManager.register("Add object", Promise.resolve([this.removeObject, this, proxy]));
 
+            this.editor.refresh();
             return proxy;
         }
     },
@@ -857,6 +859,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
                 self.undoManager.closeBatch();
 
+                self.editor.refresh();
                 return proxy;
             });
         }
