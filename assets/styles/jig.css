@@ -19,14 +19,13 @@
 }
 
 .Jig-section {
-    margin: 10px 5px;
-    -webkit-flex: 1;
+    margin: 0 5px 10px;
 }
 
 .Jig-targetObjectLabel {
     -webkit-flex: .25;
     min-width: 100px;
-    margin: 0 6px 0 0;
+    margin: 0 0 0 6px;
     font-weight: bold;
     vertical-align: top;
     text-align: right;
