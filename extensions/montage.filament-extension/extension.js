@@ -19,8 +19,8 @@ var Extension = exports.Extension = CoreExtension.specialize( {
                 projectController.registerLibraryItemForModuleId(libraryItems[moduleId], moduleId);
             });
 
-            libraryAdditions.forEach(function (libraryItem) {
-                projectController.registerLibraryItemForPackageName(libraryItem, "montage");
+            Object.keys(libraryAdditions).forEach(function (moduleId) {
+                projectController.addLibraryItemWithModuleIdForPackage(libraryAdditions[moduleId], moduleId, "montage");
             });
 
             return Promise.resolve(this);
@@ -34,9 +34,8 @@ var Extension = exports.Extension = CoreExtension.specialize( {
                 projectController.unregisterLibraryItemForModuleId(moduleId);
             });
 
-
-            libraryAdditions.forEach(function (libraryItem) {
-                projectController.unregisterLibraryItemForPackageName(libraryItem, "montage");
+            Object.keys(libraryAdditions).forEach(function (moduleId) {
+                projectController.removeLibraryItemWithModuleIdForPackage(libraryAdditions[moduleId], moduleId, "montage");
             });
 
             return Promise.resolve(this);

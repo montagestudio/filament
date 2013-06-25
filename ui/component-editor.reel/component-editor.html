@@ -26,8 +26,7 @@
                     "element": {"#": "library"}
                 },
                 "bindings": {
-                    "groups": {"<->": "@owner.projectController.libraryGroups"},
-                    "state": {"<->": "@nav.libraryPanelState"}
+                    "groups": {"<->": "@owner.projectController.libraryGroups"}
                 },
                 "listeners": [
                     {
@@ -56,6 +55,14 @@
                 }
             },
 
+            "HIDDEN_STATE": {
+                "object": "ui/panel.reel[HIDDEN_STATE]"
+            },
+
+            "LOCKED_STATE": {
+                "object": "ui/panel.reel[LOCKED_STATE]"
+            },
+
             "configurator": {
                 "prototype": "ui/configurator.reel",
                 "properties": {
@@ -64,14 +71,7 @@
                 "bindings": {
                     "editingDocument": {"<-": "@owner.projectController.currentDocument"},
                     "viewController": {"<-": "@owner.viewController"},
-                    "state": {"<->": "@nav.configuratorPanelState"}
-                }
-            },
-
-            "nav": {
-                "prototype": "ui/nav.reel",
-                "properties": {
-                    "element": {"#": "nav"}
+                    "state": {"<-": "@owner.currentDocument.selectedObjects.length == 1 ? @LOCKED_STATE : @HIDDEN_STATE"}
                 }
             },
 
@@ -136,7 +136,6 @@
         </section>
         <aside data-montage-id="configurator" class="palette"></aside>
         <aside data-montage-id="library" class="palette"></aside>
-        <nav data-montage-id="nav" class="palette"></nav>
     </section>
 
 </body>

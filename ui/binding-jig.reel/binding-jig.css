@@ -1,12 +1,13 @@
 
 /* BindingJig sections ---------------------- */
 
+.BindingJig-section--source,
 .BindingJig-section--target {
-    -webkit-flex: .5;
+    -webkit-flex: 1 1 auto;
 }
 
 .BindingJig-section--direction {
-    -webkit-flex: none;
+    -webkit-flex: 0 0 auto;
 }
 
 

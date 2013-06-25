@@ -1,7 +1,13 @@
 var Montage = require("montage").Montage,
     Editor = require("palette/ui/editor.reel").Editor;
 
-exports.ColladaEditor = Montage.create(Editor, {
+exports.ColladaEditor = Editor.specialize ({
+
+    constructor: {
+        value: function ColladaEditor () {
+            this.super();
+        }
+    },
 
     captureResize: {
         value: function(evt) {

@@ -65,10 +65,26 @@ describe("core/project-controller-file-spec", function () {
                     close: Function.noop
                 });
 
-                openedDocument = Montage.create();
-                openedDocument.url = "opened";
-                openedDocument.editorType = editorType;
-                openedDocument.canClose = Function.noop;
+                openedDocument = new (Montage.specialize({
+
+                    constructor: {
+                        value: function mockDocument() {
+                            this.super();
+                        }
+                    },
+
+                    url: {
+                        value: "opened"
+                    },
+
+                    canClose: {
+                        value: Function.noop
+                    }
+                }, {
+                    editorType: {
+                        value: editorType
+                    }
+                }))();
 
                 // Sneaky mock "opening"
                 projectController._editorTypeInstanceMap.set(editorType, editor);
@@ -111,16 +127,50 @@ describe("core/project-controller-file-spec", function () {
                 beforeEach(function () {
                     var editorType = editorMock;
 
-                    fooDocument = Montage.create();
-                    fooDocument.url = "other";
-                    fooDocument.editorType = editorType;
-                    fooDocument.canClose = Function.noop;
+                    fooDocument = new (Montage.specialize({
+
+                        constructor: {
+                            value: function mockDocument() {
+                                this.super();
+                            }
+                        },
+
+                        url: {
+                            value: "other"
+                        },
+
+                        canClose: {
+                            value: Function.noop
+                        }
+                    }, {
+                        editorType: {
+                            value: editorType
+                        }
+                    }))();
+
                     projectController.addDocument(fooDocument);
 
-                    barDocument = Montage.create();
-                    barDocument.url = "current";
-                    barDocument.editorType = editorType;
-                    barDocument.canClose = Function.noop;
+                    barDocument = new (Montage.specialize({
+
+                        constructor: {
+                            value: function mockDocument() {
+                                this.super();
+                            }
+                        },
+
+                        url: {
+                            value: "current"
+                        },
+
+                        canClose: {
+                            value: Function.noop
+                        }
+                    }, {
+                        editorType: {
+                            value: editorType
+                        }
+                    }))();
+
                     projectController.addDocument(barDocument);
                     //Note currentDocument needs to be opened as part of each test
                 });

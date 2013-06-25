@@ -341,6 +341,12 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.templateNodes.splice(index, 1);
             }
 
+            // If a component is using the node as an element then remove the
+            // element reference.
+            if (proxy.component) {
+                this.setOwnedObjectElement(proxy.component, void 0);
+            }
+
             proxy.children.forEach(function (child) {
                 this.__removeNodeProxy(child);
             }, this);
@@ -388,22 +394,6 @@ exports.ReelDocument = EditingDocument.specialize({
                 if (stageObject === owner) {
                     return;
                 }
-
-                // Loop up parents until we find one which is in this reel, or
-                // we hit the owner. Use as parent.
-                var parent = stageObject;
-                while ((parent = parent.parentComponent) !== owner && parent) {
-                    if (parent.ownerComponent === owner) {
-                        break;
-                    }
-                }
-
-                // Object did not have parentComponent (i.e. was a plain
-                // object, not a component)
-                if (!parent) {
-                    parent = owner;
-                }
-                proxy.parentProxy = this.editingProxyForObject(parent);
             }, this);
         }
     },
@@ -602,29 +592,38 @@ exports.ReelDocument = EditingDocument.specialize({
                     self.setOwnedObjectElement(objects[0], montageId);
                 }
             }).finally(function () {
-                    self.undoManager.closeBatch();
-                });
+                self.undoManager.closeBatch();
+            });
         }
     },
 
     /**
-     * Finds the component closest to the specified element
+     * Finds the component closest to the specified element in the current
+     * reel
+     * @param {NodeProxy} element
      * @private
      */
-    _nearestComponent: {
+    nearestComponent: {
         value: function (element) {
-
-            var ownerComponent;
+            var owner = this.editingProxyMap.owner;
+            var nearestComponent;
             var aParentNode;
 
             if (element) {
-                while (!ownerComponent && (aParentNode = element.parentNode)) {
-                    ownerComponent = element.component;
+                while (
+                    (
+                        !nearestComponent ||
+                        nearestComponent.ownerComponent !== owner ||
+                        nearestComponent !== owner
+                    ) &&
+                    (aParentNode = element.parentNode)
+                ) {
+                    nearestComponent = element.component;
                     element = aParentNode;
                 }
             }
 
-            return ownerComponent;
+            return nearestComponent || owner;
         }
     },
 
@@ -660,8 +659,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             return Promise.all(revisedTemplate.getSerialization().getSerializationLabels().map(function (label) {
                     return Promise(context.getObject(label)).then(function (proxy) {
-                        var parentProxy = self._nearestComponent(parentElement);
-                        return self.addObject(proxy, parentProxy || ownerProxy);
+                        return self.addObject(proxy);
                     });
                 }))
                 .then(function (addedProxies) {
@@ -783,8 +781,7 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     addObject: {
-        value: function (proxy, parentProxy) {
-            proxy.parentProxy = parentProxy;
+        value: function (proxy) {
             this._addProxies(proxy);
 
             this.undoManager.register("Add object", Promise.resolve([this.removeObject, this, proxy]));
@@ -1036,13 +1033,22 @@ exports.ReelDocument = EditingDocument.specialize({
                 return;
             }
 
-            if (nodeProxy.nextSibling) {
-                this.undoManager.register("Remove Node", Promise.resolve([this.insertNodeBeforeTemplateNode, this, nodeProxy, nodeProxy.nextSibling]));
-            } else {
-                this.undoManager.register("Remove Node", Promise.resolve([this.appendChildToTemplateNode, this, nodeProxy, nodeProxy.parentNode]));
-            }
+            var nextSibling = nodeProxy.nextSibling,
+                parentNode = nodeProxy.parentNode;
+
+            this.undoManager.openBatch("Remove Node");
+
             nodeProxy.parentNode.removeChild(nodeProxy);
             this.__removeNodeProxy(nodeProxy);
+
+            if (nextSibling) {
+                this.undoManager.register("Remove Node", Promise.resolve([this.insertNodeBeforeTemplateNode, this, nodeProxy, nextSibling]));
+            } else {
+                this.undoManager.register("Remove Node", Promise.resolve([this.appendChildToTemplateNode, this, nodeProxy, parentNode]));
+            }
+
+            this.undoManager.closeBatch();
+
             return nodeProxy;
         }
     },

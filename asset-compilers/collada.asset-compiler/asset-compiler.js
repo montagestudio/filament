@@ -6,7 +6,14 @@ var Montage = require("montage/core/core").Montage,
     AdaptConnection = require("filament/q-connection/adapt"),
     Q = require("filament/q");
 
-var AssetCompiler = exports.AssetCompiler = Montage.create(CoreAssetCompiler, {
+var AssetCompiler = exports.AssetCompiler = CoreAssetCompiler.specialize ({
+
+    constructor: {
+        value: function AssetCompiler () {
+            this.super();
+        }
+    }
+}, {
 
     _backend: {
         value: null

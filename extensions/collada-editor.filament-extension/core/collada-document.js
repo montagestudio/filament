@@ -2,9 +2,15 @@ var Montage = require("montage").Montage,
     EditingDocument = require("palette/core/editing-document").EditingDocument,
     ColladaEditor = require("ui/collada-editor.reel").ColladaEditor;
 
-exports.ColladaDocument = Montage.create(EditingDocument, {
+exports.ColladaDocument = EditingDocument.specialize ({
 
     compiledFileURL: { value: null, writable: true },
+
+    constructor: {
+        value: function ColladaDocument () {
+            this.super();
+        }
+    }
 
 }, {
     editorType: {

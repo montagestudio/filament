@@ -148,7 +148,8 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             this.documentEditor.editingDocument.addLibraryItemFragments(
                 transferObject.serializationFragment,
                 transferObject.htmlFragment,
-                self.object,
+                self.object.properties.get("element"),
+                void 0,
                 self.templateObjects.innerTemplate.element
             )
             .then(function () {
@@ -228,6 +229,9 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
 
             var oldObject = this.object.stageObject;
 
+            if (!oldObject) {
+                return;
+            }
             var ownerDocument = oldObject.element.ownerDocument;
             ownerDocumentPart = oldObject._ownerDocumentPart;
             ownerTemplate = this.documentEditor.editingDocument._template;

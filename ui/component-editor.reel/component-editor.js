@@ -64,7 +64,7 @@ exports.ComponentEditor = Editor.specialize({
                 editor = this._documentEditorMap.get(document);
 
                 if (!editor) {
-                    editor = DocumentEditor.create();
+                    editor = new DocumentEditor();
                     editor.projectController = this.projectController;
                     editor.viewController = this.viewController;
                     editor.load(document).done();

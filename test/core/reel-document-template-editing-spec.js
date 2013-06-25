@@ -50,7 +50,15 @@ describe("core/reel-document-headless-editing-spec", function () {
             "bar": {
                 "prototype": "bar-exportId"
             }
-        }, '<div id="ownerElement" data-montage-id="ownerElement"><section id="removeSubTree"><p id="removeMe"></p><div id="foo" data-montage-id="foo"><p id="removeLastNode"></p></div></section></div>');
+        },
+        '<div id="ownerElement" data-montage-id="ownerElement">'+
+        '   <section id="removeSubTree">'+
+        '       <p id="removeMe"></p>'+
+        '       <div id="foo" data-montage-id="foo">'+
+        '           <p id="removeLastNode"></p>'+
+        '       </div>'+
+        '   </section>'+
+        '</div>');
     });
 
     describe("finding a node proxy for a node", function () {
@@ -157,6 +165,25 @@ describe("core/reel-document-headless-editing-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
+        it("should undo the removal of a template node with a next sibling by adding it back on the position", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("removeMe");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                var parentNode = nodeProxy.parentNode;
+                var nextSibling = nodeProxy.nextSibling;
+                var previousSibling = nodeProxy.previousSibling;
+
+                reelDocument.removeTemplateNode(nodeProxy);
+
+                return reelDocument.undoManager.undo().then(function() {
+                    expect(nodeProxy.parentNode).toBe(parentNode);
+                    expect(nodeProxy.nextSibling).toBe(nextSibling);
+                    expect(nodeProxy.previousSibling).toBe(previousSibling);
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
         it("should add an undo operation for removing a node without a next sibling", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var element = reelDocument.htmlDocument.getElementById("removeLastNode"),
@@ -220,6 +247,17 @@ describe("core/reel-document-headless-editing-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
+        it("should remove the component reference to the node", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("foo");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+                var component = nodeProxy.component;
+
+                reelDocument.removeTemplateNode(nodeProxy);
+
+                expect(component.properties.get("element")).toBeUndefined();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
     });
 
     describe("removing a subtree", function () {

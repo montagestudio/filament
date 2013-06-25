@@ -33,6 +33,9 @@
 
         "libraryItemController": {
             "prototype": "montage/core/range-controller",
+            "properties": {
+                "sortPath": "name"
+            },
             "bindings": {
                 "content": {"<-": "@owner.details.libraryItems"},
                 "filterPath": {"<-": "@owner.filterPath"}

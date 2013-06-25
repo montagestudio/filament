@@ -4,7 +4,7 @@ var Montage = require("montage").Montage,
     Promise = require("montage/core/promise").Promise,
     Map = require("montage/collections/map");
 
-exports.PackageDocument = Montage.create(EditingDocument, {
+exports.PackageDocument = EditingDocument.specialize({
 
     // The documents can rely on the projectcontroller to provide information about dependencies within the project
     sharedProjectController: {
@@ -15,9 +15,15 @@ exports.PackageDocument = Montage.create(EditingDocument, {
         value: null
     },
 
+    constructor: {
+        value: function PackageDocument () {
+            this.super();
+        }
+    },
+
     init: {
         value: function (fileUrl, packageRequire) {
-            var self = EditingDocument.init.call(this, fileUrl, packageRequire);
+            var self = this.super.call(this, fileUrl, packageRequire);
             this._packageDescription = packageRequire.packageDescription;
 
             this._dependencies = new Map(this._packageDescription.dependencies);

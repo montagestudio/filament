@@ -301,7 +301,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             alreadyOpenedDoc = this.documentForUrl(fileUrl);
 
             if (alreadyOpenedDoc) {
-                editorType = alreadyOpenedDoc.editorType;
+                editorType = alreadyOpenedDoc.constructor.editorType;
             } else {
                 documentType = this.documentTypeForUrl(fileUrl);
 
@@ -413,7 +413,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             var self = this;
             return canCancelPromise.promise.then(function () {
 
-                var editorType = document.editorType,
+                var editorType = document.constructor.editorType,
                     editor = self._editorTypeInstanceMap.get(editorType),
                     nextDocument = null,
                     closedPromise,
@@ -577,7 +577,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         // add libraryItems any extensions offered for this package
                         offeredLibraryItems = self._packageNameLibraryItemsMap.get(dependency.dependency);
                         if (offeredLibraryItems) {
-                            dependencyLibraryEntry.libraryItems.push.apply(dependencyLibraryEntry.libraryItems, offeredLibraryItems);
+
+                            offeredLibraryItems.forEach(function (item) {
+                                dependencyLibraryEntry.libraryItems.push(new item());
+                            });
                         }
 
                         return dependencyLibraryEntry;
@@ -652,8 +655,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: null
     },
 
-    registerLibraryItemForPackageName: {
-        value: function (libraryItem, packageName) {
+    addLibraryItemWithModuleIdForPackage: {
+        value: function (libraryItem, moduleId, packageName) {
             if (!libraryItem) {
                 return;
             }
@@ -664,17 +667,13 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 this._packageNameLibraryItemsMap.set(packageName, addedLibraryItems);
             }
 
-            addedLibraryItems.push(new libraryItem());
-
-            //TODO don't refresh the library each time
-            if (this.dependencies) {
-                this.populateLibrary().done();
-            }
+            this.registerLibraryItemForModuleId(libraryItem, moduleId);
+            addedLibraryItems.push(libraryItem);
         }
     },
 
-    unregisterLibraryItemForPackageName: {
-        value: function (libraryItem, packageName) {
+    removeLibraryItemWithModuleIdForPackage: {
+        value: function (libraryItem, moduleId, packageName) {
             var addedLibraryItems = this._packageNameLibraryItemsMap.get(packageName),
                 index;
 
@@ -682,10 +681,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 index = addedLibraryItems.indexOf(libraryItem);
                 if (index >= 0) {
                     addedLibraryItems.splice(index, 1);
-                    //TODO don't refresh the library each time
-                    if (this.dependencies) {
-                        this.populateLibrary().done();
-                    }
+                    this.unregisterLibraryItemForModuleId(moduleId);
                 }
             }
         }
