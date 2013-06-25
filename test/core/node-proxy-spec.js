@@ -33,7 +33,7 @@ describe("core/node-proxy-spec", function () {
         it("should reference the component that references the node as the element property", function() {
             return reelDocumentPromise.then(function (reelDocument) {
                 var nodeProxy = reelDocument.nodeProxyForMontageId("foo"),
-                    reelProxy = reelDocument.editingProxyMap["foo"];
+                    reelProxy = reelDocument.editingProxyMap.foo;
 
                 expect(reelProxy.properties.get("element")).toBe(nodeProxy);
             }).timeout(WAITSFOR_TIMEOUT);
@@ -42,7 +42,7 @@ describe("core/node-proxy-spec", function () {
         it("should update when the component stops referencing the node", function() {
             return reelDocumentPromise.then(function (reelDocument) {
                 var nodeProxy = reelDocument.nodeProxyForMontageId("foo"),
-                    reelProxy = reelDocument.editingProxyMap["foo"],
+                    reelProxy = reelDocument.editingProxyMap.foo,
                     barNodeProxy = reelDocument.nodeProxyForMontageId("bar");
 
                 reelProxy.properties.set("element", barNodeProxy);
@@ -54,7 +54,7 @@ describe("core/node-proxy-spec", function () {
         it("should update when the a component starts referencing the node", function() {
             return reelDocumentPromise.then(function (reelDocument) {
                 var nodeProxy = reelDocument.nodeProxyForMontageId("bar"),
-                    reelProxy = reelDocument.editingProxyMap["bar"];
+                    reelProxy = reelDocument.editingProxyMap.bar;
 
                 reelProxy.properties.set("element", nodeProxy);
 
