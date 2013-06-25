@@ -228,8 +228,10 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
 
             lumieres.saveFileDialog(options, function (error, file) {
                 // Make file names follow montage conventions and use web safe urls
-                file = removeDiacritics(decodeURI(file).replace(/ /g, "-"));
-                file = _fromDashesToCamel(file));
+                var originalFileName = file.replace(/^.*[\\\/]/, '');
+                var standardizedFileName = removeDiacritics(decodeURI(originalFileName).replace(/ /g, "-"));
+                standardizedFileName = _fromDashesToCamel(standardizedFileName);
+                file = file.replace(originalFileName, standardizedFileName);
                 if (!error) {
                     deferredSave.resolve(file);
                 } else {
