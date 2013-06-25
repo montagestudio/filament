@@ -1,5 +1,5 @@
 
-/* 
+/*
  * CSS-Only components used in Filament
  * Could be moved into "real" reels.
  */
@@ -38,6 +38,7 @@
     position: relative;
     background: hsl(0, 0%, 86%);
     -webkit-transition: -webkit-flex .3s cubic-bezier(.26, .06, .08, 1);
+    -webkit-transition-delay: 200ms;
 }
 
 .Panel-header {
@@ -81,7 +82,7 @@
     position: absolute;
     pointer-events: none;
     height: 4px;
-    top: 32px; left: 0; right: 0;    
+    top: 32px; left: 0; right: 0;
     background-image: -webkit-radial-gradient(center 0%, ellipse farthest-side, hsla(0,0%,0%,0.1), hsla(0,0%,0%,.02) 110% );
 }
 
