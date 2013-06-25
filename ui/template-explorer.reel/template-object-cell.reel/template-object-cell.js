@@ -133,7 +133,8 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
             var element = this.templateObject.properties.get("element");
 
             if (event.dataTransfer.types &&
-                event.dataTransfer.types.indexOf(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) !== -1
+                event.dataTransfer.types.indexOf(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) !== -1 ||
+                event.dataTransfer.types.indexOf(MimeTypes.MONTAGE_TEMPLATE_XPATH) !== -1
             ) {
                 // allows us to drop
                 event.preventDefault();
@@ -148,10 +149,27 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
         value: function (event) {
             event.stopPropagation();
             var montageId = event.dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_ELEMENT);
-            var templateObject = this.templateObject;
+            var templateObject = this.templateObject,
+                editingDocument = templateObject.editingDocument;
 
-            templateObject.editingDocument.setOwnedObjectElement(templateObject, montageId);
-            templateObject.editingDocument.editor.refresh();
+            if (!montageId) {
+                var xpath = event.dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_XPATH);
+                // get element from template
+                var element = editingDocument.htmlDocument.evaluate(
+                    xpath,
+                    editingDocument.htmlDocument,
+                    null,
+                    XPathResult.FIRST_ORDERED_NODE_TYPE,
+                    null
+                ).singleNodeValue;
+                // get node proxy
+                var nodeProxy = editingDocument.nodeProxyForNode(element);
+                // generate montageId
+                montageId = editingDocument.createMontageIdForProxy(templateObject.label, templateObject.moduleId, nodeProxy);
+            }
+
+            editingDocument.setOwnedObjectElement(templateObject, montageId);
+            editingDocument.editor.refresh();
         }
     },
 
