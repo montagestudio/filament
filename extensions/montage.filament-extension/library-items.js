@@ -397,4 +397,7 @@ var ActionEventListenerLibraryItem = LibraryItem.specialize({
 
 });
 
-exports.libraryAdditions = [RangeControllerLibraryItem, ActionEventListenerLibraryItem];
+exports.libraryAdditions = {
+    "montage/core/range-controller": RangeControllerLibraryItem,
+    "montage/core/event/action-event-listener": ActionEventListenerLibraryItem
+};
