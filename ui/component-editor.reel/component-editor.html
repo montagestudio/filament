@@ -71,7 +71,7 @@
                 "bindings": {
                     "editingDocument": {"<-": "@owner.projectController.currentDocument"},
                     "viewController": {"<-": "@owner.viewController"},
-                    "state": {"<-": "@owner.currentDocument.selectedObjects.length == 1 ? @LOCKED_STATE : @HIDDEN_STATE"}
+                    "state": {"<-": "@owner.currentDocument.selectedObjects.length > 0 ? @LOCKED_STATE : @HIDDEN_STATE"}
                 }
             },
 

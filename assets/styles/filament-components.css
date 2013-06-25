@@ -38,9 +38,6 @@
     position: relative;
     background: hsl(0, 0%, 86%);
     -webkit-transition: -webkit-flex .3s cubic-bezier(.26, .06, .08, 1);
-    /* FIXME:; hides the "bounce" when changing selection through the template
-    explorer */
-    -webkit-transition-delay: 200ms;
 }
 
 .Panel-header {
