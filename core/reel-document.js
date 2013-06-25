@@ -394,13 +394,6 @@ exports.ReelDocument = EditingDocument.specialize({
                 if (stageObject === owner) {
                     return;
                 }
-
-                // Loop up parents until we find one which is in this reel, or
-                // we hit the owner. Use as parent.
-                var elementProxy = this.editingProxyForObject(stageObject.element.parentElement);
-                var parent = this.nearestComponent(elementProxy);
-
-                proxy.parentProxy = this.editingProxyForObject(parent);
             }, this);
         }
     },
@@ -666,8 +659,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             return Promise.all(revisedTemplate.getSerialization().getSerializationLabels().map(function (label) {
                     return Promise(context.getObject(label)).then(function (proxy) {
-                        var parentProxy = self.nearestComponent(parentElement);
-                        return self.addObject(proxy, parentProxy || ownerProxy);
+                        return self.addObject(proxy);
                     });
                 }))
                 .then(function (addedProxies) {
@@ -789,8 +781,7 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     addObject: {
-        value: function (proxy, parentProxy) {
-            proxy.parentProxy = parentProxy;
+        value: function (proxy) {
             this._addProxies(proxy);
 
             this.undoManager.register("Add object", Promise.resolve([this.removeObject, this, proxy]));

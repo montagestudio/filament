@@ -80,15 +80,6 @@ exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
-
-    /**
-     * The parent component of this object. For non-component objects this is
-     * the owner.
-     */
-    parentProxy: {
-        value: null
-    },
-
     /**
      * Initialize an ReelProxy suitable for editing
      *
