@@ -90,7 +90,7 @@ dragDrop("1371600782704.png", Pattern("1371600794675.png").targetOffset(-60,7))
 click("1371601059276.png")
 
 #Set the list to receive its content from the rangeController we created
-dragDrop(templateExplorer.find(Pattern("1371770469846.png").exact().targetOffset(-62,-1)), "1371601115096.png")
+dragDrop(templateExplorer.find(Pattern("1372134591642.png").targetOffset(-57,2)), "1371601115096.png")
 
 # Create a component to encapsulate the presentation of a task in the list
 #TODO why does click not work?
@@ -201,7 +201,7 @@ wheel("1371710306724.png", WHEEL_DOWN, 50)
 click(Pattern("1371710345995.png").targetOffset(205,21))
 
 type("1371710393901.png", "action")
-dragDrop(Pattern("1371710416220.png").targetOffset(-61,-1), "1371710422598.png")
+dragDrop(Pattern("1372134859539.png").targetOffset(-59,2), "1371710422598.png")
 click("1371710441914.png")
 
 #add a badge to count the remaining tasks
