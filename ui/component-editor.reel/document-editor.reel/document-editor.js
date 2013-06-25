@@ -1,6 +1,5 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
-    ReelDocument = require("core/reel-document").ReelDocument,
     MimeTypes = require("core/mime-types"),
     Promise = require("montage/core/promise").Promise,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver;
@@ -138,12 +137,16 @@ exports.DocumentEditor = Component.specialize({
                     self.contextualInspectors = inspectors;
                 }).done();
 
-                if (!selectedObject.parentProxy) {
+                var element = selectedObject.properties.get("element");
+                if (!element) {
+                    return;
+                }
+                var parentObject = this.editingDocument.nearestComponent(element.parentNode);
+                if (!parentObject) {
                     return;
                 }
 
                 // TODO make a loop
-                var parentObject = selectedObject.parentProxy;
                 var parentInspectors = this.viewController.contextualInspectorsForObject(parentObject).filter(function (inspector) {
                     return inspector.showForChildComponents;
                 });
