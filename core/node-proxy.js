@@ -7,7 +7,15 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
         value: function NodeProxy() {
             this.super();
 
-            this.addPathChangeListener("_editingDocument.editingProxies", this, "handleEditingProxiesChange");
+            this.defineBindings({
+                // The node proxy's component is the editing proxy that has this
+                // node as an element.
+                "component": {"<-": "_editingDocument.editingProxies.filter{properties.get('element') == $self}[0]"}
+            }, {
+                parameters: {
+                    self: this
+                }
+            });
         }
     },
 
@@ -189,18 +197,6 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
             }
 
             return nodeProxy;
-        }
-    },
-
-    handleEditingProxiesChange: {
-        value: function() {
-            if (this._editingDocument) {
-                var component = this._editingDocument.componentProxyForElement(this);
-
-                if (component !== this.component) {
-                    this.component = component;
-                }
-            }
         }
     }
 });
