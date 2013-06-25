@@ -27,31 +27,6 @@
             }
         },
 
-        "translateComposer": {
-            "prototype": "montage/composer/translate-composer",
-            "properties": {
-                "component": {"@": "templateHeaderHandle"},
-                "hasMomentum": false
-            },
-            "bindings": {
-                "pointerSpeedMultiplier": {"<-": "1/@owner.zoom"}
-            },
-            "listeners": [
-                {
-                    "type": "translateStart",
-                    "listener": {"@": "owner"}
-                },
-                {
-                    "type": "translateEnd",
-                    "listener": {"@": "owner"}
-                },
-                {
-                    "type": "translate",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
         "icon": {
             "prototype": "matte/ui/image.reel",
             "properties": {
