@@ -20,6 +20,7 @@
         "watchr": "2.3.3",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#e36e426adbc39ad2f4957b370c6215aa9857a094",
         "minit": "0.3.3",
+        "diacritics": "0.1.0",
         "minimatch": "0.2.9",
         "underscore": "1.4.4"
     },
