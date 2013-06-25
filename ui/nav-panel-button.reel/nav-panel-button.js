@@ -80,7 +80,7 @@ exports.NavPanelButton = Montage.create(Button, /** @lends module:"ui/nav-panel-
     handleAction: {
         value: function (event) {
             if (this._state === panel.HIDDEN_STATE && !this._dontFloatOnNextAction) {
-                this.state = panel.FLOATING_STATE;
+                this.state = panel.LOCKED_STATE;
             } else {
                 this.state = panel.HIDDEN_STATE;
             }
