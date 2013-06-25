@@ -148,7 +148,8 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
             this.documentEditor.editingDocument.addLibraryItemFragments(
                 transferObject.serializationFragment,
                 transferObject.htmlFragment,
-                self.object,
+                self.object.properties.get("element"),
+                void 0,
                 self.templateObjects.innerTemplate.element
             )
             .then(function () {
