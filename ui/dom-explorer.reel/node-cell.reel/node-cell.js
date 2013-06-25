@@ -90,8 +90,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             return 0 !== this.nodeInfo.depth &&
                 event.dataTransfer.types &&
                 event.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 &&
-                !this.nodeInfo.component &&
-                this.nodeInfo.montageId; //TODO remove this when we allow dropping on non-montageId'd elements
+                !this.nodeInfo.component;
         }
     },
 
@@ -133,10 +132,9 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                 transferObject = JSON.parse(data),
                 nodeInfo = this.nodeInfo,
                 editingDocument = nodeInfo._editingDocument,
-                montageId = nodeInfo.montageId,
-                self  = this;
+                self = this;
 
-            editingDocument.addAndAssignLibraryItemFragment(transferObject.serializationFragment, montageId)
+            editingDocument.addAndAssignLibraryItemFragment(transferObject.serializationFragment, nodeInfo)
             .finally(function () {
                 self.isDropTarget = false;
             })

@@ -557,6 +557,92 @@ describe("core/reel-document-headless-editing-spec", function () {
 
             }).timeout(WAITSFOR_TIMEOUT);
         });
+
+        it("uses an existing element with a data-montage-id", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                // setup
+                var nodeProxy = reelDocument.createTemplateNode('<p data-montage-id="test">');
+                reelDocument.appendChildToTemplateNode(nodeProxy);
+                expect(nodeProxy.isInTemplate).toBeTruthy();
+
+                // test
+                return reelDocument.addAndAssignLibraryItemFragment({
+                    "prototype": "ui/foo.reel",
+                    "properties": {
+                        "element": {"#": "unexistingId"}
+                    }
+                }, nodeProxy).then(function (objects) {
+                    expect(objects[0].properties.get("element")).toBe(nodeProxy);
+                });
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("uses an existing element without a data-montage-id", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                // setup
+                var nodeProxy = reelDocument.createTemplateNode('<p>');
+                reelDocument.appendChildToTemplateNode(nodeProxy);
+                expect(nodeProxy.isInTemplate).toBeTruthy();
+
+                // test
+                return reelDocument.addAndAssignLibraryItemFragment({
+                    "prototype": "ui/foo.reel",
+                    "properties": {
+                        "element": {"#": "unexistingId"}
+                    }
+                }, nodeProxy).then(function (objects) {
+                    expect(objects[0].properties.get("element")).toBe(nodeProxy);
+                });
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
     });
 
+    describe("setting a node's data-montage-id", function() {
+
+        it("should change the data-montage-id attribute", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("foo");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                reelDocument.setNodeProxyMontageId(nodeProxy, "newFoo");
+                expect(element.getAttribute("data-montage-id")).toBe("newFoo");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should remove it when it is set to a falsy value", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("foo");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                reelDocument.setNodeProxyMontageId(nodeProxy, null);
+                expect(element.hasAttribute("data-montage-id")).toBeFalsy();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should add an undo operation for changing it", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("foo");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                reelDocument.setNodeProxyMontageId(nodeProxy, "newFoo");
+                expect(reelDocument.undoManager.undoCount).toBe(1);
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should undo the setting by reverting to the previous value", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("foo");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                reelDocument.setNodeProxyMontageId(nodeProxy, "newFoo");
+
+                return reelDocument.undoManager.undo().then(function() {
+                    expect(element.getAttribute("data-montage-id")).toBe("foo");
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+    });
 });
