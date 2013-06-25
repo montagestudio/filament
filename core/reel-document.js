@@ -491,8 +491,8 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     _generateMontageId: {
-        value: function (serialization) {
-            var name = MontageReviver.parseObjectLocationId(serialization.prototype).objectName,
+        value: function (moduleId) {
+            var name = MontageReviver.parseObjectLocationId(moduleId).objectName,
                 id = name.substring(0, 1).toLowerCase() + name.substring(1),
                 idSelector = '[data-montage-id^="' + id + '"]',
                 elements = this.htmlDocument.querySelectorAll(idSelector),
@@ -544,6 +544,34 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return Template.create().initWithDocument(doc, this._packageRequire);
+        }
+    },
+
+    /**
+     * Creates a montageId based on the suggestedId or, if already taken,
+     * generates a new ID, and assigns it to the nodeProxy.
+     * @param  {string} suggestedId   A prefered ID, usually the label of
+     * the template object.
+     * @param {string} moduleId The module ID to base the montage ID off if
+     * the suggestedId isn't available.
+     * @param  {NodeProxy} nodeProxy The nodeProxy to assign the ID to
+     * @return {string}              The new montageId
+     */
+    createMontageIdForProxy: {
+        value: function (suggestedId, moduleId, nodeProxy) {
+            var montageId;
+            if (this.nodeProxyForMontageId(suggestedId)) {
+                montageId = this._generateMontageId(moduleId);
+            } else {
+                // If the generated component label can be used as
+                // a montage id then there is no need to generate
+                // another name, it is also clear for the user
+                // that they are "bound" together.
+                montageId = suggestedId;
+            }
+            this.setNodeProxyMontageId(nodeProxy, montageId);
+
+            return montageId;
         }
     },
 
@@ -620,16 +648,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 if (objects.length === 1) {
                     label = objects[0].label;
                     if (!montageId) {
-                        if (self.nodeProxyForMontageId(label)) {
-                            montageId = self._generateMontageId(serializationFragment);
-                        } else {
-                            // If the generated component label can be used as
-                            // a montage id then there is no need to generate
-                            // another name, it is also clear for the user
-                            // that they are "bound" together.
-                            montageId = label;
-                        }
-                        self.setNodeProxyMontageId(nodeProxy, montageId);
+                        montageId = self.createMontageIdForProxy(label, serializationFragment.prototype, nodeProxy);
                     }
                     self.setOwnedObjectElement(objects[0], montageId);
                 }
