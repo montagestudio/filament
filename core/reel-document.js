@@ -397,18 +397,9 @@ exports.ReelDocument = EditingDocument.specialize({
 
                 // Loop up parents until we find one which is in this reel, or
                 // we hit the owner. Use as parent.
-                var parent = stageObject;
-                while ((parent = parent.parentComponent) !== owner && parent) {
-                    if (parent.ownerComponent === owner) {
-                        break;
-                    }
-                }
+                var elementProxy = this.editingProxyForObject(stageObject.element.parentElement);
+                var parent = this.nearestComponent(elementProxy);
 
-                // Object did not have parentComponent (i.e. was a plain
-                // object, not a component)
-                if (!parent) {
-                    parent = owner;
-                }
                 proxy.parentProxy = this.editingProxyForObject(parent);
             }, this);
         }
@@ -608,29 +599,38 @@ exports.ReelDocument = EditingDocument.specialize({
                     self.setOwnedObjectElement(objects[0], montageId);
                 }
             }).finally(function () {
-                    self.undoManager.closeBatch();
-                });
+                self.undoManager.closeBatch();
+            });
         }
     },
 
     /**
-     * Finds the component closest to the specified element
+     * Finds the component closest to the specified element in the current
+     * reel
+     * @param {NodeProxy} element
      * @private
      */
-    _nearestComponent: {
+    nearestComponent: {
         value: function (element) {
-
-            var ownerComponent;
+            var owner = this.editingProxyMap.owner;
+            var nearestComponent;
             var aParentNode;
 
             if (element) {
-                while (!ownerComponent && (aParentNode = element.parentNode)) {
-                    ownerComponent = element.component;
+                while (
+                    (
+                        !nearestComponent ||
+                        nearestComponent.ownerComponent !== owner ||
+                        nearestComponent !== owner
+                    ) &&
+                    (aParentNode = element.parentNode)
+                ) {
+                    nearestComponent = element.component;
                     element = aParentNode;
                 }
             }
 
-            return ownerComponent;
+            return nearestComponent || owner;
         }
     },
 
@@ -666,7 +666,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             return Promise.all(revisedTemplate.getSerialization().getSerializationLabels().map(function (label) {
                     return Promise(context.getObject(label)).then(function (proxy) {
-                        var parentProxy = self._nearestComponent(parentElement);
+                        var parentProxy = self.nearestComponent(parentElement);
                         return self.addObject(proxy, parentProxy || ownerProxy);
                     });
                 }))
