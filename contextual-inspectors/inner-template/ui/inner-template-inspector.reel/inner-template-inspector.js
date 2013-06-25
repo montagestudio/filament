@@ -229,6 +229,9 @@ exports.InnerTemplateInspector = Montage.create(Inspector, /** @lends module:"ui
 
             var oldObject = this.object.stageObject;
 
+            if (!oldObject) {
+                return;
+            }
             var ownerDocument = oldObject.element.ownerDocument;
             ownerDocumentPart = oldObject._ownerDocumentPart;
             ownerTemplate = this.documentEditor.editingDocument._template;
