@@ -232,6 +232,7 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
                 var standardizedFileName = removeDiacritics(decodeURI(originalFileName).replace(/ /g, "-"));
                 standardizedFileName = _fromDashesToCamel(standardizedFileName);
                 file = file.replace(originalFileName, standardizedFileName);
+                file = decodeURI(file);
                 if (!error) {
                     deferredSave.resolve(file);
                 } else {
