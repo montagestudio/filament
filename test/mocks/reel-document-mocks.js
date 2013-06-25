@@ -18,6 +18,13 @@ exports.mockReelDocument = function (fileUrl, serialization, bodyMarkup) {
 
     return Template.create().initWithDocument(mockDocument, require).then(function (template) {
         return ReelDocument.create().init(fileUrl, template, require);
+    }).then(function (reelDocument) {
+        // Mini mock for ui/component-editor/document-editor.reel
+        // use _editor to avoid setter
+        reelDocument._editor = {
+            refresh: function () {}
+        };
+        return reelDocument;
     });
 };
 
