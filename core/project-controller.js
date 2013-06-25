@@ -583,7 +583,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                             });
                         }
 
-                        // TODO sort the entries by name
                         return dependencyLibraryEntry;
                     });
             });
