@@ -458,37 +458,62 @@ exports.ReelDocument = EditingDocument.specialize({
 
     // Editing API
 
+    _generateUniqueName: {
+        value: function(baseName, existingNames) {
+            var nameRegex = new RegExp("^" + baseName + "(\\d+)$", "i"),
+                match,
+                lastUsedIndex;
+
+            lastUsedIndex = existingNames.map(function(name) {
+                match = name.match(nameRegex);
+                return match && match[1] ? match[1] : null;
+            }).reduce(function (lastFoundIndex, index) {
+                if (null == index) {
+                    return lastFoundIndex;
+                } else {
+                    index = parseInt(index, 10);
+
+                    if (null == lastFoundIndex) {
+                        return index;
+                        //TODO should we fill in gaps? or find the highest used index?
+                    } else if (index > lastFoundIndex) {
+                        return index;
+                    } else {
+                        return lastFoundIndex;
+                    }
+                }
+            }, 0);
+
+            lastUsedIndex = lastUsedIndex || 0;
+
+            return baseName + (lastUsedIndex + 1);
+        }
+    },
+
+    _generateMontageId: {
+        value: function (serialization) {
+            var name = MontageReviver.parseObjectLocationId(serialization.prototype).objectName,
+                id = name.substring(0, 1).toLowerCase() + name.substring(1),
+                idSelector = '[data-montage-id^="' + id + '"]',
+                elements = this.htmlDocument.querySelectorAll(idSelector),
+                arrayMap = Array.prototype.map,
+                existingIds;
+
+            existingIds = arrayMap.call(elements, function(element) {
+                return element.getAttribute("data-montage-id");
+            });
+
+            return this._generateUniqueName(id, existingIds);
+        }
+    },
+
     _generateLabel: {
         value: function (serialization) {
             var name = MontageReviver.parseObjectLocationId(serialization.prototype).objectName,
                 label = name.substring(0, 1).toLowerCase() + name.substring(1),
-                labelRegex = new RegExp("^" + label + "(\\d+)$", "i"),
-                match,
-                lastUsedIndex;
+                existingLabels = Object.keys(this.editingProxyMap);
 
-            lastUsedIndex = Object.keys(this.editingProxyMap).map(function (existingLabel) {
-                match = existingLabel.match(labelRegex);
-                return match && match[1] ? match[1] : null;
-            }).reduce(function (lastFoundIndex, index) {
-                    if (null == index) {
-                        return lastFoundIndex;
-                    } else {
-                        index = parseInt(index, 10);
-
-                        if (null == lastFoundIndex) {
-                            return index;
-                            //TODO should we fill in gaps? or find the highest used index?
-                        } else if (index > lastFoundIndex) {
-                            return index;
-                        } else {
-                            return lastFoundIndex;
-                        }
-                    }
-                });
-
-            lastUsedIndex = lastUsedIndex || 0;
-
-            return label + (lastUsedIndex + 1);
+            return this._generateUniqueName(label, existingLabels);
         }
     },
 
@@ -583,14 +608,33 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     addAndAssignLibraryItemFragment: {
-        value: function (serializationFragment, montageId) {
-            var self = this;
+        value: function (serializationFragment, nodeProxy) {
+            var self = this,
+                montageId = nodeProxy.montageId;
+
             this.undoManager.openBatch("Add component to element");
 
             return this.addLibraryItemFragments(serializationFragment).then(function (objects) {
+                var label;
+
                 if (objects.length === 1) {
+                    label = objects[0].label;
+                    if (!montageId) {
+                        if (self.nodeProxyForMontageId(label)) {
+                            montageId = self._generateMontageId(serializationFragment);
+                        } else {
+                            // If the generated component label can be used as
+                            // a montage id then there is no need to generate
+                            // another name, it is also clear for the user
+                            // that they are "bound" together.
+                            montageId = label;
+                        }
+                        self.setNodeProxyMontageId(nodeProxy, montageId);
+                    }
                     self.setOwnedObjectElement(objects[0], montageId);
                 }
+
+                return objects;
             }).finally(function () {
                 self.undoManager.closeBatch();
                 self.editor.refresh();
@@ -977,6 +1021,23 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return removedListener;
+        }
+    },
+
+    setNodeProxyMontageId: {
+        value: function(nodeProxy, montageId) {
+            this.undoManager.register("Add Montage Id", Promise.resolve([this.setNodeProxyMontageId, this, nodeProxy, nodeProxy.montageId]));
+
+            // TODO Kind of reaching into NodeProxy's domain but this will
+            // have to do until we figure out the data model for the node
+            // proxy.
+            if (montageId) {
+                nodeProxy._templateNode.setAttribute("data-montage-id", montageId);
+            } else {
+                nodeProxy._templateNode.removeAttribute("data-montage-id");
+            }
+
+            nodeProxy.dispatchOwnPropertyChange("montageId", montageId);
         }
     },
 

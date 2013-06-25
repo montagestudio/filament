@@ -154,7 +154,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
                         addedElement = reelDocument.htmlDocument.querySelector("[data-montage-id=myComponent]");
                         expect(addedElement).toBeFalsy();
-                        reelDocument.templateNodes.indexOf(addedElement).toBe(-1);
+                        expect(reelDocument.templateNodes.indexOf(addedElement)).toBe(-1);
                     });
                 });
             }).timeout(WAITSFOR_TIMEOUT);
@@ -172,7 +172,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
                 expect(Promise.isPromiseAlike(removalPromise)).toBeTruthy();
                 removalPromise.done();
-            }).timeout(WAITSFOR_TIMEOUT).done();
+            }).timeout(WAITSFOR_TIMEOUT);
         });
 
         it("should remove the proxy from the editing document", function () {
