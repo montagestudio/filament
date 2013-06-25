@@ -413,7 +413,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             var self = this;
             return canCancelPromise.promise.then(function () {
 
-                var editorType = document.editorType,
+                var editorType = document.constructor.editorType,
                     editor = self._editorTypeInstanceMap.get(editorType),
                     nextDocument = null,
                     closedPromise,
