@@ -598,5 +598,35 @@ describe("core/reel-document-headless-editing-spec", function () {
         });
     });
 
+    describe("createMontageIdForProxy", function () {
+        it("uses the suggested id if there are no other elements with that id", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.createTemplateNode("<div></div>");
+                reelDocument.appendChildToTemplateNode(nodeProxy);
+
+                var montageId = reelDocument.createMontageIdForProxy("pass", "fail", nodeProxy);
+
+                expect(montageId).toBe("pass");
+                expect(nodeProxy.montageId).toBe(montageId);
+            });
+        });
+
+        it("generates an id based on the prototype if the label is taken", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var existingNodeProxy = reelDocument.createTemplateNode('<div data-montage-id="fail"></div>');
+                reelDocument.appendChildToTemplateNode(existingNodeProxy);
+
+                var nodeProxy = reelDocument.createTemplateNode('<div></div>');
+                reelDocument.appendChildToTemplateNode(nodeProxy);
+
+                var montageId = reelDocument.createMontageIdForProxy("fail", "pass", nodeProxy);
+
+                expect(montageId).toBe("pass");
+                expect(nodeProxy.montageId).toBe(montageId);
+            });
+
+        });
+    });
+
 
 });
