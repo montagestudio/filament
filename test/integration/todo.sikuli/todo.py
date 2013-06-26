@@ -45,10 +45,6 @@ explorer.click(Pattern("1371597060927.png").targetOffset(-26,-2))
 
 sleep(1)
 
-# Remove the placeholder text
-
-hover("1371599934383.png")
-click(Pattern("1371599999573.png").targetOffset(23,0))
 templateExplorer = lumieresRegion.find("1372141940872.png")
 
 digitPackageRegion = lumieresRegion.find("1372142584813.png")
