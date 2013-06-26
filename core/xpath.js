@@ -8,10 +8,11 @@
  */
 exports.getElementXPath = function (element)
 {
-    if (element && element.id)
+    if (element && element.id) {
         return '//*[@id="' + element.id + '"]';
-    else
+    } else {
         return exports.getElementTreeXPath(element);
+    }
 };
 
 exports.getElementTreeXPath = function (element)
@@ -19,17 +20,17 @@ exports.getElementTreeXPath = function (element)
     var paths = [];
 
     // Use nodeName (instead of localName) so namespace prefix is included (if any).
-    for (; element && element.nodeType == 1; element = element.parentNode)
-    {
+    for (; element && element.nodeType === 1; element = element.parentNode) {
         var index = 0;
-        for (var sibling = element.previousSibling; sibling; sibling = sibling.previousSibling)
-        {
+        for (var sibling = element.previousSibling; sibling; sibling = sibling.previousSibling) {
             // Ignore document type declaration.
-            if (sibling.nodeType == Node.DOCUMENT_TYPE_NODE)
+            if (sibling.nodeType === Node.DOCUMENT_TYPE_NODE) {
                 continue;
+            }
 
-            if (sibling.nodeName == element.nodeName)
+            if (sibling.nodeName === element.nodeName) {
                 ++index;
+            }
         }
 
         var tagName = element.nodeName.toLowerCase();
