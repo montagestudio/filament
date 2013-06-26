@@ -19,6 +19,7 @@ exports.Main = Montage.create(Component, {
             if (IS_IN_LUMIERES) {
                 this.version = lumieres.version;
                 this.buildVersion = lumieres.buildVersion;
+                this.buildNumber = lumieres.buildNumber;
             }
         }
     }

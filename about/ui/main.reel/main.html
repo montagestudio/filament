@@ -52,6 +52,16 @@
                         }
                     }
                 }
+            },
+
+            "buildNumber": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "buildNumber"}
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.buildNumber"}
+                }
             }
 
         }
@@ -65,7 +75,7 @@
         <section class="Intro">
             <div class="Intro-logo"></div>
             <p class="Intro-version" data-montage-id="versionText"></p>
-            <p class="Intro-version" data-montage-id="buildText"></p>
+            <p class="Intro-version"><span data-montage-id="buildText"></span> <span data-montage-id="buildNumber"></span></p>
             <p class="Intro-meta" data-montage-id="introMeta">&copy; 2012–2013 Declarativ Inc.</p>
         </section>
 
@@ -74,10 +84,10 @@
             <section class="Info-section">
                 <h2 class="Info-title">Credits</h2>
             </section>
-            
+
         </aside>
-        
-        
+
+
 
     </div>
 
