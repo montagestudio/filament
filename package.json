@@ -1,6 +1,6 @@
 {
     "name": "filament",
-    "version": "0.10.1",
+    "version": "0.11.0",
     "private": true,
     "repository": {
         "type": "git",
@@ -14,11 +14,11 @@
         "q-connection": "0.5.0",
         "q-io": "1.7.2",
         "qs": "0.5.2",
-        "palette": "git+ssh://git@github.com:declarativ/palette.git#133ae7e47edb8b84613ffc9a95bade04bc45f5f6",
+        "palette": "git+ssh://git@github.com:declarativ/palette.git#v0.11.0",
         "mop": "0.13.1",
         "npm": "1.2.18",
         "watchr": "2.3.3",
-        "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#e36e426adbc39ad2f4957b370c6215aa9857a094",
+        "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#v0.11.0",
         "minit": "0.3.4",
         "minimatch": "0.2.9",
         "underscore": "1.4.4"
