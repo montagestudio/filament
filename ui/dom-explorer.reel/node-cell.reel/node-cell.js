@@ -5,7 +5,8 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
-    MimeTypes = require("core/mime-types");
+    MimeTypes = require("core/mime-types"),
+    getElementXPath = require("core/xpath").getElementXPath;
 
 /**
     Description TODO
@@ -71,12 +72,14 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
 
     handleDragstart: {
         value: function (event) {
+            event.dataTransfer.effectAllowed = 'all';
+
             var montageId = this.nodeInfo.montageId;
             if (montageId) {
-                event.dataTransfer.effectAllowed = 'all';
-
                 event.dataTransfer.setData(MimeTypes.MONTAGE_TEMPLATE_ELEMENT, montageId);
                 event.dataTransfer.setData("text/plain", '{"#": "' + montageId + '"}');
+            } else {
+                event.dataTransfer.setData(MimeTypes.MONTAGE_TEMPLATE_XPATH, getElementXPath(this.nodeInfo._templateNode));
             }
         }
     },
