@@ -124,57 +124,6 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         }
     },
 
-    shouldStartPanning: {
-        value: false
-    },
-
-    isPanning: {
-        value: false
-    },
-
-    handleKeyPress: {
-        value: function (evt) {
-            if ("panningKeyComposer" === evt.identifier && !this.shouldStartPanning) {
-                this.shouldStartPanning = true;
-            }
-        }
-    },
-
-    handleKeyRelease: {
-        value: function (evt) {
-            if ("panningKeyComposer" === evt.identifier && this.shouldStartPanning) {
-                this.shouldStartPanning = false;
-            }
-        }
-    },
-
-    handleTranslateStart: {
-        value: function (evt) {
-            if (this.shouldStartPanning) {
-                this.isPanning = true;
-                this.templateObjects.panningComposer.translateX = this.offsetX;
-                this.templateObjects.panningComposer.translateY = this.offsetY;
-            }
-        }
-    },
-
-    handleTranslateEnd: {
-        value: function() {
-            if (this.isPanning) {
-                this.isPanning = false;
-            }
-        }
-    },
-
-    handleTranslate: {
-        value: function (evt) {
-            if (this.isPanning) {
-                this.offsetX = evt.translateX;
-                this.offsetY = evt.translateY;
-            }
-        }
-    },
-
     enterDocument: {
         value: function (firstTime) {
             if (!firstTime) {

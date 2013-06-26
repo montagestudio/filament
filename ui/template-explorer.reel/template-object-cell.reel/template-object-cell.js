@@ -33,8 +33,6 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
 
             var icon = this.templateObjects.icon.element;
             icon.addEventListener("dragstart", this, false);
-            icon.addEventListener("mousedown", this, false);
-            icon.addEventListener("dragend", this, false);
 
             this._templateObjectTagEl.addEventListener("dragover", this, false);
             this._templateObjectTagEl.addEventListener("drop", this, false);
@@ -83,27 +81,9 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
         }
     },
 
-    handleMousedown: {
-        value: function () {
-            this.eventManager.claimPointer("mouse", this);
-        }
-    },
-
-    surrenderPointer: {
-        value: function (pointer, component) {
-            return false;
-        }
-    },
-
     handleDragstart: {
         value: function (evt) {
             event.dataTransfer.setData("text/plain", "@" + this.templateObject.label);
-        }
-    },
-
-    handleDragend: {
-        value: function () {
-            this.eventManager.forfeitAllPointers(this);
         }
     },
 
