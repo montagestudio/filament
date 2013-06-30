@@ -291,10 +291,10 @@ var SubstitutionLibraryItem = LibraryItem.specialize({
 
 });
 
-var DynamicTextLibraryItem = LibraryItem.specialize({
+var TextLibraryItem = LibraryItem.specialize({
 
     constructor: {
-        value: function DynamicTextLibraryItem() {
+        value: function TextLibraryItem() {
             this.super();
         }
     },
@@ -310,11 +310,11 @@ var DynamicTextLibraryItem = LibraryItem.specialize({
     },
 
     name: {
-        value: "DynamicText"
+        value: "Text"
     },
 
     label: {
-        value: "DynamicText"
+        value: "Text"
     },
 
     icon: {
@@ -336,7 +336,7 @@ exports.libraryItems = {
     "montage/ui/repetition.reel": RepetitionLibraryItem,
     "montage/ui/slot.reel": SlotLibraryItem,
     "montage/ui/substitution.reel": SubstitutionLibraryItem,
-    "montage/ui/text.reel": DynamicTextLibraryItem,
+    "montage/ui/text.reel": TextLibraryItem,
 
     "montage/ui/loader.reel": null
 };
