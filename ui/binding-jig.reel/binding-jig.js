@@ -1,7 +1,16 @@
 var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+    Component = require("montage/ui/component").Component,
+    MimeTypes = require("core/mime-types"),
+    replaceDroppedTextPlain = require("ui/drag-and-drop").replaceDroppedTextPlain,
+    Promise = require("montage/core/promise").Promise;
 
 exports.BindingJig = Montage.create(Component, {
+
+    enterDocument: {
+        value: function () {
+            this.templateObjects.sourcePath.element.addEventListener("drop", this, false);
+        }
+    },
 
     editingDocument: {
         value: null
@@ -13,6 +22,17 @@ exports.BindingJig = Montage.create(Component, {
 
     existingBinding: {
         value: null
+    },
+
+    handleDrop: {
+        value: function (event) {
+            if (event.dataTransfer.types.indexOf(MimeTypes.SERIALIZATION_OBJECT_LABEL) !== -1) {
+                var element = this.inputEl;
+                var plain = event.dataTransfer.getData("text/plain");
+                var rich = "@" + event.dataTransfer.getData(MimeTypes.SERIALIZATION_OBJECT_LABEL);
+                replaceDroppedTextPlain(plain, rich, this.templateObjects.sourcePath.element);
+            }
+        }
     },
 
     handleDefineBindingButtonAction: {

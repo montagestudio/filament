@@ -74,7 +74,14 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function (event) {
             event.dataTransfer.effectAllowed = 'all';
 
-            var montageId = this.nodeInfo.montageId;
+            var nodeInfo = this.nodeInfo;
+
+            var component = nodeInfo.component;
+            if (component) {
+                event.dataTransfer.setData(MimeTypes.SERIALIZATION_OBJECT_LABEL, component.label);
+            }
+
+            var montageId = nodeInfo.montageId;
             if (montageId) {
                 event.dataTransfer.setData(MimeTypes.MONTAGE_TEMPLATE_ELEMENT, montageId);
                 event.dataTransfer.setData("text/plain", '{"#": "' + montageId + '"}');
