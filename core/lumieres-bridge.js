@@ -263,13 +263,13 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
                 }
             }).then(function () {
                     return self.backend.get("filament-backend").invoke("createApplication", name, packagePath)
-                        .then(function () {
-                            lumieres.document.setFileURL(applicationUrl);
-                            return applicationUrl;
-                        }, function (error) {
-                            console.log("Could not create the application " + name + " at " + packagePath, error);
-                            return "";
-                        });
+                    .then(function () {
+                        lumieres.document.setFileURL(applicationUrl);
+                        return applicationUrl;
+                    }, function (error) {
+                        console.log("Could not create the application " + name + " at " + packagePath, error);
+                        throw error;
+                    });
                 });
         }
     },
