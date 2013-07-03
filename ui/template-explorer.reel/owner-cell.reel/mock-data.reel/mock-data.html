@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="mock-data.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "mock-data"}
+            }
+        },
+
+        "input": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "input"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.ownerObject.stageObject.email"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="mock-data" class="MockData PropertyEditor">
+        <div class="MockData-list">
+            <button class="MockData-config">☃</button>
+            <div class="MockData-property">
+                email
+            </div>
+            <div class="MockData-value">
+                <input type="text" data-montage-id="input">
+            </div>
+        </div>
+        <button data-montage-id="addProperty">Add property</button>
+    </div>
+</body>
+</html>

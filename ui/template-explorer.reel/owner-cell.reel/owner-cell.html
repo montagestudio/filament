@@ -82,6 +82,16 @@
             }
         },
 
+        "mockData": {
+            "prototype": "./mock-data.reel",
+            "properties": {
+                "element": {"#": "mockData"}
+            },
+            "bindings": {
+                "ownerObject": {"<-": "@owner.templateObject"}
+            }
+        },
+
         "templateObjectTag": {
             "prototype": "montage/ui/component",
             "properties": {
@@ -204,7 +214,7 @@
         </div>
 
         <div data-montage-id="mockDataCondition">
-            yo
+            <div data-montage-id="mockData"></div>
         </div>
 
         <ul class="TemplateObjectCell-list">

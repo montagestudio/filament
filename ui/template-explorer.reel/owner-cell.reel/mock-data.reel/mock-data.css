@@ -1,0 +1,22 @@
+.MockData {
+    padding: 5px;
+    font-size: 12px;
+
+    box-shadow: inset 0 1px 3px 0px rgba(0, 0, 0, 0.1)
+}
+
+.MockData-list {
+    display: -webkit-flex;
+}
+
+.MockData-config {
+    width: 2em;
+}
+
+.MockData-property, .MockData-value {
+    -webkit-flex: 1;
+}
+
+.MockData-property {
+    line-height: 24px;
+}
