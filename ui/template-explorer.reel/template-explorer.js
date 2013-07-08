@@ -132,6 +132,8 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
 
             this._element.addEventListener("dragover", this, false);
             this._element.addEventListener("drop", this, false);
+
+            this.schematicsElement.addEventListener("click", this, false);
         }
     },
 
@@ -162,6 +164,15 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     handleSelect: {
         value: function (evt) {
             this.editingDocument.selectObject(evt.detail.templateObject);
+        }
+    },
+
+    handleClick: {
+        value: function (evt) {
+            var target = evt.target;
+            if (target === this.schematicsElement || this.schematicsElement === target.parentNode) {
+                this.editingDocument.clearSelectedObjects();
+            }
         }
     }
 
