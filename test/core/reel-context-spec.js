@@ -10,6 +10,7 @@ var getContextFor = function (ownerExportId, serialization, markup) {
         .then(function (reelDocument) {
             var reviver = ReelReviver.create();
             var context = ReelContext.create().init(serialization, reviver);
+            context.ownerExportId = ownerExportId;
             context.editingDocument = reelDocument;
             return context;
         });
@@ -38,7 +39,7 @@ describe("core/reel-context-spec", function () {
 
         describe("exportId", function () {
 
-            it("TODO should have the expected exportId when representing the owner", function () {
+            it("should have the expected exportId when representing the owner", function () {
 
                 // TODO we need to actually look into the JS file to more accurately determine what is exported
                 // and which exportName the owner is using.

@@ -51,7 +51,7 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     init: {
-        value: function (fileUrl, template, packageRequire) {
+        value: function (fileUrl, template, packageRequire, moduleId) {
             var self = this.super(fileUrl, packageRequire);
             var error;
 
@@ -65,6 +65,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 try {
                     var serialization = JSON.parse(template.getInlineObjectsString(template.document));
                     var context = this.deserializationContext(serialization);
+                    context.ownerExportId = moduleId;
                     self._addProxies(context.getObjects());
                 } catch (e) {
 
