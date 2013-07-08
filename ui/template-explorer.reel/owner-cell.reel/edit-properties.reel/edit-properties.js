@@ -1,5 +1,5 @@
 /**
-    @module "ui/mock-data.reel"
+    @module "ui/edit-properties.reel"
     @requires montage
     @requires montage/ui/component
 */
@@ -8,9 +8,9 @@ var Montage = require("montage").Montage,
 
 /**
     Description TODO
-    @class module:"ui/mock-data.reel".MockData
+    @class module:"ui/edit-properties.reel".EditProperties
     @extends module:montage/ui/component.Component
 */
-exports.MockData = Montage.create(Component, /** @lends module:"ui/mock-data.reel".MockData# */ {
+exports.EditProperties = Montage.create(Component, /** @lends module:"ui/edit-properties.reel".EditProperties# */ {
 
 });

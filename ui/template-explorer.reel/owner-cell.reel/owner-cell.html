@@ -64,28 +64,28 @@
             }
         },
 
-        "mockDataCondition": {
+        "editPropertiesCondition": {
             "prototype": "montage/ui/condition.reel",
             "properties": {
-                "element": {"#": "mockDataCondition"},
+                "element": {"#": "editPropertiesCondition"},
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "@mockDataButton.pressed"}
+                "condition": {"<-": "@editPropertiesButton.pressed"}
             }
         },
 
-        "mockDataButton": {
+        "editPropertiesButton": {
             "prototype": "matte/ui/toggle-button.reel",
             "properties": {
-                "element": {"#": "mockDataButton"}
+                "element": {"#": "editPropertiesButton"}
             }
         },
 
-        "mockData": {
-            "prototype": "./mock-data.reel",
+        "editProperties": {
+            "prototype": "./edit-properties.reel",
             "properties": {
-                "element": {"#": "mockData"}
+                "element": {"#": "editProperties"}
             },
             "bindings": {
                 "ownerObject": {"<-": "@owner.templateObject"}
@@ -205,7 +205,7 @@
                 <label data-montage-id="templateObjectExportName" class="TemplateObjectCell-exportName"></label>
             </div>
             <div>
-                <button data-montage-id="mockDataButton" class="Button Toolbar-button">Mock data</button>
+                <button data-montage-id="editPropertiesButton" class="Button Toolbar-button">Edit properties</button>
             </div>
         </header>
 
@@ -213,8 +213,8 @@
             <p data-montage-id="templateObjectComment" class="TemplateObjectCell-comment"></p>
         </div>
 
-        <div data-montage-id="mockDataCondition">
-            <div data-montage-id="mockData"></div>
+        <div data-montage-id="editPropertiesCondition">
+            <div data-montage-id="editProperties"></div>
         </div>
 
         <ul class="TemplateObjectCell-list">
