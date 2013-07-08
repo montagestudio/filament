@@ -9,16 +9,36 @@
             "properties": {
                 "element": {"#": "edit-properties"}
             }
+        },
+
+        "properties": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "properties"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.properties"}
+            }
+        },
+
+        "name": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "name"}
+            },
+            "bindings": {
+                "value": {"<-": "@properties.objectAtCurrentIteration.name"}
+            }
         }
     }
     </script>
 </head>
 <body>
     <div data-montage-id="edit-properties" class="EditProperties PropertyEditor">
-        <div class="EditProperties-list">
-            <button class="EditProperties-config">☃</button>
-            <div class="EditProperties-property">
-                email
+        <div data-montage-id="properties" class="EditProperties-list">
+            <div>
+                <input type="text" data-montage-id="name" class="EditProperties-property">
+                <div class="EditProperties-value"></div>
             </div>
         </div>
         <button data-montage-id="addProperty">Add property</button>
