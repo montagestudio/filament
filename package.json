@@ -8,7 +8,7 @@
     },
     "dependencies": {
         "montage": "git://github.com/montagejs/montage.git#v0.13.1",
-        "palette": "git+ssh://git@github.com:declarativ/palette.git#54b61e0ac5d065b5340053d5d505aeceacfa01fe",
+        "palette": "git+ssh://git@github.com:declarativ/palette.git#f03e2f01b6cd3f335341082da44a1498bd78d92d",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#d425e372f14df391bb47039440914e67c9da5249",
         "matte": "0.1.1",
         "mousse": "0.1.2",
