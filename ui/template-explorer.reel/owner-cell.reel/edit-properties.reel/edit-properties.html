@@ -17,22 +17,12 @@
                 "element": {"#": "properties"}
             },
             "bindings": {
-                "content": {"<-": "@owner.properties"}
+                "contentController": {"<-": "@owner.propertiesController"}
             }
         },
 
         "cardinalityConverter": {
             "prototype": "./cardinality-converter"
-        },
-
-        "remove": {
-            "prototype": "matte/ui/button.reel",
-            "properties": {
-                "element": {"#": "remove"}
-            },
-            "bindings": {
-                "detail.property": {"<-": "@properties.objectAtCurrentIteration.name"}
-            }
         },
 
         "name": {
@@ -68,11 +58,27 @@
             }
         },
 
+        "removeProperty": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "removeProperty"}
+            },
+            "bindings": {
+                "detail.get('propertyBlueprint')": {"<-": "@properties.objectAtCurrentIteration"}
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
+        },
+
         "addProperty": {
             "prototype": "matte/ui/button.reel",
             "properties": {
                 "element": {"#": "addProperty"}
-            }
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
         }
     }
     </script>
@@ -82,7 +88,7 @@
 
         <div data-montage-id="properties" class="EditProperties-list">
             <div>
-                <button data-montage-id="remove">-</button>
+                <button data-montage-id="removeProperty">-</button>
                 <input type="text" data-montage-id="name" class="EditProperties-property">
                 <select data-montage-id="valueType">
                     <option value="string">string</option>
