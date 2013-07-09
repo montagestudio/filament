@@ -58,6 +58,27 @@
             }
         },
 
+        "collectionCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "collectionCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@multiple.checked"}
+            }
+        },
+
+        "collectionValueType": {
+            "prototype": "matte/ui/select.reel",
+            "properties": {
+                "element": {"#": "collectionValueType"}
+            },
+            "bindings": {
+                "value": {"<->": "@properties.objectAtCurrentIteration.collectionValueType"}
+            }
+        },
+
         "removeProperty": {
             "prototype": "matte/ui/button.reel",
             "properties": {
@@ -100,6 +121,13 @@
                     <option value="object">object</option>
                 </select>
                 <label>multi <input type="checkbox" data-montage-id="multiple"></label>
+                <div data-montage-id="collectionCondition">
+                    <select data-montage-id="collectionValueType">
+                        <option value="list">list</option>
+                        <option value="set">set</option>
+                        <option value="map">map</option>
+                    </select>
+                </div>
             </div>
         </div>
         <button data-montage-id="addProperty">+ Add property</button>
