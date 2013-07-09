@@ -21,6 +21,17 @@
             }
         },
 
+
+        "remove": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "remove"}
+            },
+            "bindings": {
+                "detail.property": {"<-": "@properties.objectAtCurrentIteration.name"}
+            }
+        },
+
         "name": {
             "prototype": "matte/ui/input-text.reel",
             "properties": {
@@ -29,19 +40,51 @@
             "bindings": {
                 "value": {"<-": "@properties.objectAtCurrentIteration.name"}
             }
+        },
+
+        "valueType": {
+            "prototype": "matte/ui/select.reel",
+            "properties": {
+                "element": {"#": "valueType"}
+            }
+        },
+
+        "multiple": {
+            "prototype": "matte/ui/input-checkbox.reel",
+            "properties": {
+                "element": {"#": "multiple"}
+            }
+        },
+
+        "addProperty": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "addProperty"}
+            }
         }
     }
     </script>
 </head>
 <body>
-    <div data-montage-id="edit-properties" class="EditProperties PropertyEditor">
+    <div data-montage-id="edit-properties" class="EditProperties">
+
         <div data-montage-id="properties" class="EditProperties-list">
             <div>
+                <button data-montage-id="remove">-</button>
                 <input type="text" data-montage-id="name" class="EditProperties-property">
-                <div class="EditProperties-value"></div>
+                <select data-montage-id="valueType">
+                    <option value="string">string</option>
+                    <option value="number">number</option>
+                    <option value="boolean">boolean</option>
+                    <option value="date">date</option>
+                    <option value="enum">enum</option>
+                    <option value="url">url</option>
+                    <option value="object">object</option>
+                </select>
+                <label>multi <input type="checkbox" data-montage-id="multiple"></label>
             </div>
         </div>
-        <button data-montage-id="addProperty">Add property</button>
+        <button data-montage-id="addProperty">+ Add property</button>
     </div>
 </body>
 </html>
