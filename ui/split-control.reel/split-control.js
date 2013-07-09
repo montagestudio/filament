@@ -29,7 +29,6 @@ exports.SplitControl = Montage.create(AbstractSlider, /** @lends SplitControl# *
             if (firstTime) {
                 this.defineBinding("axis",
                     {"<-": "splitAxis == 'horizontal' ? 'vertical' : 'horizontal'", source: this});
-                this._updateValueFromDom();
             }
         }
     },
@@ -44,6 +43,15 @@ exports.SplitControl = Montage.create(AbstractSlider, /** @lends SplitControl# *
                 return this.containerElement.offsetHeight;
             }
 
+        }
+    },
+
+    willDraw: {
+        value: function () {
+            if (!this._completedFirstDraw) {
+                this._updateValueFromDom();
+            }
+            this.super();
         }
     },
 
