@@ -21,6 +21,9 @@
             }
         },
 
+        "cardinalityConverter": {
+            "prototype": "./cardinality-converter"
+        },
 
         "remove": {
             "prototype": "matte/ui/button.reel",
@@ -46,6 +49,9 @@
             "prototype": "matte/ui/select.reel",
             "properties": {
                 "element": {"#": "valueType"}
+            },
+            "bindings": {
+                "value": {"<->": "@properties.objectAtCurrentIteration.valueType"}
             }
         },
 
@@ -53,6 +59,12 @@
             "prototype": "matte/ui/input-checkbox.reel",
             "properties": {
                 "element": {"#": "multiple"}
+            },
+            "bindings": {
+                "checked": {
+                    "<->": "@properties.objectAtCurrentIteration.cardinality",
+                    "converter": {"@": "cardinalityConverter"}
+                }
             }
         },
 
