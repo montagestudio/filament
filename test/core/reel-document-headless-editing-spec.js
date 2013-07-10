@@ -621,7 +621,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
                 var montageId = reelDocument.createMontageIdForProxy("fail", "pass", nodeProxy);
 
-                expect(montageId).toBe("pass");
+                expect(montageId).toBe("pass1");
                 expect(nodeProxy.montageId).toBe(montageId);
             });
 
