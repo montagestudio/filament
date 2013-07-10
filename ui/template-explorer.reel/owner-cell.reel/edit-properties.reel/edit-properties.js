@@ -15,7 +15,7 @@ var Component = require("montage/ui/component").Component,
 exports.EditProperties = Component.specialize({
 
     constructor: {
-        value: function () {
+        value: function EditProperties() {
             var propertiesController =  RangeController.create();
             propertiesController.contentConstructor = PropertyBlueprint;
             propertiesController.organizedContent.addRangeChangeListener(this, "properties");
