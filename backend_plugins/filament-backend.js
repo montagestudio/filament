@@ -92,28 +92,19 @@ exports.listTree = function (path) {
     return QFS.listTree(path, guard([
             "node_modules",
             ".*"
-        ])).then(function (paths) {
-            return Q.all(paths.map(function (path) {
-                return QFS.stat(path).then(function (stat) {
-                    return {url: "fs://localhost" + path, stat: stat};
-                });
-            }));
-        });
+        ])).then(pathsToUrlStatArray);
 };
 
 exports.list = function (path) {
     return QFS.list(path).then(function (filenames) {
 
-        filenames = filenames.filter(function (name) {
+        var paths = filenames.filter(function (name) {
             return !(/^\./).test(name);
+        }).map(function (filename) {
+            return PATH.join(path, filename);
         });
 
-        return Q.all(filenames.map(function (filename) {
-            var fullPath = PATH.join(path, filename);
-            return QFS.stat(fullPath).then(function (stat) {
-                return {url: "fs://localhost" + fullPath, stat: stat};
-            });
-        }));
+        return pathsToUrlStatArray(paths);
     });
 };
 
@@ -132,12 +123,24 @@ exports.listPackage = function (path) {
     }, function (err) {
         return guard(exclude);
     }).then(function (guard) {
-        return QFS.listTree(path, guard).then(function (paths) {
-            return Q.all(paths.map(function (path) {
-                return QFS.stat(path).then(function (stat) {
-                    return {url: "fs://localhost" + path, stat: stat};
-                });
-            }));
-        });
+        return QFS.listTree(path, guard).then(pathsToUrlStatArray);
     });
 };
+
+/**
+ * Converts an array of (absolute) paths to an array of objects with `url`
+ * and `stat` properties.
+ * @param  {Array.<string>} paths Absolute paths.
+ * @return {Promise.<Array.<{url, stat}>>}
+ */
+function pathsToUrlStatArray(paths) {
+    return Q.all(paths.map(function (path) {
+        return QFS.stat(path).then(function (stat) {
+            // Directories in URLs must have a trailing slash
+            if (stat.isDirectory()) {
+                path += "/";
+            }
+            return {url: "fs://localhost" + path, stat: stat};
+        });
+    }));
+}
