@@ -12,7 +12,8 @@ var Montage = require("montage").Montage,
     ReelReviver = require("core/serialization/reel-reviver").ReelReviver,
     ReelContext = require("core/serialization/reel-context").ReelContext,
     NodeProxy = require("core/node-proxy").NodeProxy,
-    visit = require("montage/mousse/serialization/malker").visit;
+    visit = require("montage/mousse/serialization/malker").visit,
+    URL = require("core/node/url");
 
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = EditingDocument.specialize({
@@ -325,15 +326,17 @@ exports.ReelDocument = EditingDocument.specialize({
                 promise;
 
             if (!(filenameMatch && filenameMatch[1])) {
-                throw new Error('Components can only be saved into ".reel" directories');
+                throw new Error('Components can only be saved into directories with a ".reel" extension');
             }
 
             if (!registeredFiles) {
                 promise = Promise.resolve();
             } else {
+                if (location.charAt(location.length - 1) !== "/") {
+                    location += "/";
+                }
                 promise = Promise.all(Object.map(registeredFiles, function (info, extension) {
-                    // location has a trailing slash
-                    var fileLocation = location + filenameMatch[1] + "." + extension;
+                    var fileLocation = URL.resolve(location, filenameMatch[1] + "." + extension);
                     return info.callback.call(info.thisArg, fileLocation, dataWriter);
                 }));
             }

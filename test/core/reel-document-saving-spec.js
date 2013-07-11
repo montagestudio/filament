@@ -165,7 +165,7 @@ describe("core/reel-document-saving-spec", function () {
             .then(function () {
                 spec.fail("Expected error about not saving to reel dir");
             }, function (error) {
-                expect(error.message).toEqual('Components can only be saved into ".reel" directories');
+                expect(error.message).toEqual('Components can only be saved into directories with a ".reel" extension');
             });
         });
 
@@ -200,6 +200,20 @@ describe("core/reel-document-saving-spec", function () {
                 reelDocument.registerFile("pass", savePassFile);
 
                 return reelDocument.save("foo/bar/mock.reel/", dataWriter);
+            })
+            .then(function () {
+                // toHaveBeenCalledWith is buggy
+                expect(savePassFile.mostRecentCall.args).toEqual(['foo/bar/mock.reel/mock.pass', dataWriter]);
+            });
+        });
+
+        it("calls dataWriter with the correct file location if original location doesn't have trailing slash", function () {
+            var dataWriter = function () {};
+            var savePassFile = jasmine.createSpy('savePassFile');
+            return promisedDocument.then(function (reelDocument) {
+                reelDocument.registerFile("pass", savePassFile);
+
+                return reelDocument.save("foo/bar/mock.reel", dataWriter);
             })
             .then(function () {
                 // toHaveBeenCalledWith is buggy
