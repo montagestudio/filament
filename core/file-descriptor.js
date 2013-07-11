@@ -10,12 +10,17 @@ exports.FileDescriptor = Montage.create(Montage, {
     initWithUrlAndStat: {
         value: function (url, stat) {
             this.fileUrl = url;
-            // TODO improve name detection
-            this.name = url.substring(url.lastIndexOf("/") + 1);
-
-            //TODO have accessors for hidden directory, children etc.
 
             this._stat = stat;
+
+            var isDirectory = this.isDirectory;
+            if (isDirectory && url.charAt(url.length -1) !== "/") {
+                throw new Error("URLs for directories must have a trailing '/'");
+            }
+
+            var parts = url.split("/");
+            // Directories have a trailing slash, and so the last part is empty
+            this.name = this.isDirectory ? parts[parts.length - 2] : parts[parts.length - 1];
 
             return this;
         }
@@ -41,45 +46,23 @@ exports.FileDescriptor = Montage.create(Montage, {
 
     isReel: {
         get: function () {
-            return (this.isDirectory && (/\.reel$/).test(this.fileUrl));
-        }
-    },
-
-    isJson: {
-        get: function () {
-            return (!this.isDirectory && (/\.json$/).test(this.fileUrl));
+            return (this.isDirectory && (/\.reel$/).test(this.name));
         }
     },
 
     isPackage: {
         get: function () {
-            return (!this.isDirectory && (/\/package\.json$/).test(this.fileUrl));
-        }
-    },
-
-    isHtml: {
-        get: function () {
-            return (!this.isDirectory && (/\.html/).test(this.fileUrl));
-        }
-    },
-
-    isCss: {
-        get: function () {
-            return (!this.isDirectory && (/\.css/).test(this.fileUrl));
-        }
-    },
-
-    isJavaScript: {
-        get: function () {
-            return (!this.isDirectory && (/\.js/).test(this.fileUrl));
+            return (!this.isDirectory && this.name === "package.json");
         }
     },
 
     isImage: {
         get: function () {
-            return (!this.isDirectory && (/\.png|jpg/).test(this.fileUrl));
+            return (!this.isDirectory && (/\.(png|jpe?g)$/).test(this.name));
         }
     },
+
+    // more `is*` functions defined below
 
     associatedDocument: {
         value: null
@@ -91,4 +74,20 @@ exports.FileDescriptor = Montage.create(Montage, {
         }
     }
 
+});
+
+// All of these `is*` functions just check that the FileDescriptor is a file,
+// not a directory, and that the extension matches.
+Object.map({
+    Json: "json",
+    Html: "html",
+    Css: "css",
+    JavaScript: "js"
+}, function (extension, type) {
+    var regex = new RegExp("\\." + extension + "$");
+    Montage.defineProperty(exports.FileDescriptor.prototype, "is" + type, {
+        get: function () {
+            return (!this.isDirectory && regex.test(this.name));
+        }
+    });
 });
