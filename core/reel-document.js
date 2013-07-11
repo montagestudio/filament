@@ -58,6 +58,8 @@ exports.ReelDocument = EditingDocument.specialize({
             self._template = template;
 
             if (template) {
+                this.registerFile("html", this._saveHtml, this);
+
                 self._templateBodyNode = NodeProxy.create().init(this.htmlDocument.body, this);
                 self.templateNodes = this._children(self._templateBodyNode);
 
@@ -274,24 +276,69 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    _registeredFiles: {
+        value: null
+    },
+
+    /**
+     * Registers a new file to save when the document is saved.
+     *
+     * @param  {string}   extension The extension of the file.
+     * @param  {function(location, dataWriter): Promise} saveCallback
+     * A function to call to save the file. Passed the location of the file
+     * created by taking the reel location, extracting the basename and
+     * suffixing the extensions. Must return a promise for the saving of the
+     * file.
+     */
+    registerFile: {
+        value: function (extension, saveCallback, thisArg) {
+            var registeredFiles = this._registeredFiles = this._registeredFiles || {};
+            registeredFiles[extension] = {callback: saveCallback, thisArg: thisArg};
+        }
+    },
+
+    unregisterFile: {
+        value: function (extension) {
+            var registeredFiles = this._registeredFiles;
+            if (registeredFiles) {
+                delete registeredFiles[extension];
+            }
+        }
+    },
+
+    _saveHtml: {
+        value: function (location, dataWriter) {
+            this._buildSerializationObjects();
+            var html = TemplateFormatter.create().init(this._template).getHtml();
+
+            return dataWriter(html, location);
+        }
+    },
+
     save: {
         value: function (location, dataWriter) {
             var self = this;
             //TODO I think I've made this regex many times...and probably differently
             var filenameMatch = location.match(/.+\/(.+)\.reel/),
                 path,
-                template = this._template,
-                html;
+                registeredFiles = this._registeredFiles,
+                promise;
 
             if (!(filenameMatch && filenameMatch[1])) {
                 throw new Error('Components can only be saved into ".reel" directories');
             }
 
-            this._buildSerializationObjects();
-            path = location + "/" + filenameMatch[1] + ".html";
-            html = TemplateFormatter.create().init(template).getHtml();
+            if (!registeredFiles) {
+                promise = Promise.resolve();
+            } else {
+                promise = Promise.all(Object.map(registeredFiles, function (info, extension) {
+                    // location has a trailing slash
+                    var fileLocation = location + filenameMatch[1] + "." + extension;
+                    return info.callback.call(info.thisArg, fileLocation, dataWriter);
+                }));
+            }
 
-            return dataWriter(html, path).then(function (value) {
+            return promise.then(function (value) {
                 self._changeCount = 0;
                 return value;
             });

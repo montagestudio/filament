@@ -138,4 +138,74 @@ describe("core/reel-document-saving-spec", function () {
         });
     });
 
+    describe("save", function () {
+
+        var promisedDocument;
+
+        beforeEach(function () {
+            promisedDocument = mockReelDocument("foo/bar/mock.reel", {
+                "owner": {
+                    "properties": {}
+                },
+                "foo": {
+                    "prototype": "fooExportId",
+                    "bindings": {
+                        "value": {"<-": "@owner.aProperty"},
+                        "anotherValue": {"<->": "@owner.anotherProperty"}
+                    }
+                }
+            });
+        });
+
+        it("only saves to reel directories", function () {
+            var spec = this;
+            return promisedDocument.then(function (reelDocument) {
+                return reelDocument.save("foo/bar/mock/", function () {});
+            })
+            .then(function () {
+                spec.fail("Expected error about not saving to reel dir");
+            }, function (error) {
+                expect(error.message).toEqual('Components can only be saved into ".reel" directories');
+            });
+        });
+
+        it("calls dataWriter", function () {
+            var dataWriter = jasmine.createSpy('dataWriter');
+            return promisedDocument.then(function (reelDocument) {
+                return reelDocument.save("foo/bar/mock.reel/", dataWriter);
+            })
+            .then(function () {
+                expect(dataWriter).toHaveBeenCalled();
+            });
+        });
+
+        it("calls callback for each type of file", function () {
+            var dataWriter = function (){};
+            var savePassFile = jasmine.createSpy('savePassFile');
+
+            return promisedDocument.then(function (reelDocument) {
+                reelDocument.registerFile("pass", savePassFile);
+
+                return reelDocument.save("foo/bar/mock.reel/", dataWriter);
+            })
+            .then(function () {
+                expect(savePassFile).toHaveBeenCalled();
+            });
+        });
+
+        it("calls dataWriter with the file location", function () {
+            var dataWriter = function () {};
+            var savePassFile = jasmine.createSpy('savePassFile');
+            return promisedDocument.then(function (reelDocument) {
+                reelDocument.registerFile("pass", savePassFile);
+
+                return reelDocument.save("foo/bar/mock.reel/", dataWriter);
+            })
+            .then(function () {
+                // toHaveBeenCalledWith is buggy
+                expect(savePassFile.mostRecentCall.args).toEqual(['foo/bar/mock.reel/mock.pass', dataWriter]);
+            });
+        });
+    });
+
 });
