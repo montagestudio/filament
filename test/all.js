@@ -2,6 +2,7 @@ require("montage-testing").run(require, [
     // Please keep in alphabetical order
     "test/core/node-proxy-spec",
     "test/core/project-controller-file-spec",
+    "test/core/project-controller-filesystem-spec",
     "test/core/project-controller-spec",
     "test/core/reel-context-spec",
     "test/core/reel-document-headless-editing-spec",

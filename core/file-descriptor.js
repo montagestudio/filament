@@ -7,6 +7,12 @@ var constants = {
 
 exports.FileDescriptor = Montage.create(Montage, {
 
+    constructor: {
+        value: function FileDescriptor () {
+            this.super();
+        }
+    },
+
     initWithUrlAndStat: {
         value: function (url, stat) {
             this.fileUrl = url;
@@ -87,7 +93,9 @@ exports.FileDescriptor = Montage.create(Montage, {
 
     _checkModeProperty: {
         value: function (property) {
-            return ((this._stat.node.mode & constants.S_IFMT) === property);
+            var stat = this._stat,
+                mode = stat.node ? stat.node.mode : stat.mode;
+            return ((mode & constants.S_IFMT) === property);
         }
     }
 

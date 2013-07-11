@@ -54,7 +54,7 @@ exports.installDependencies = function (config) {
         });
 };
 
-exports.watch = function (path, ignoreSubPaths, changeHandler) {
+exports.watch = function (path, ignoreSubPaths, handlers) {
     var ignorePaths = ignoreSubPaths.map(function (ignorePath) {
         return PATH.resolve(path, ignorePath) + PATH.sep;
     });
@@ -66,7 +66,16 @@ exports.watch = function (path, ignoreSubPaths, changeHandler) {
         ignoreCommonPatterns: true,
         listeners: {
             change: function(changeType, filePath, fileCurrentStat, filePreviousStat) {
-                changeHandler.invoke("handleChange", changeType, filePath);
+                handlers.invoke("handleChange", changeType, "fs://localhost" + filePath, fileCurrentStat, filePreviousStat).fail(function (err) {
+                    console.log(err);
+                    throw err;
+                }).done();
+            },
+            error: function(err) {
+                handlers.invoke("handleError", err).then(function (err) {
+                    console.log(err);
+                    throw err;
+                }).done();
             }
         }
     });

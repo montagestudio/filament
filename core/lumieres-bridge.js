@@ -331,10 +331,13 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
     },
 
     watch: {
-        value: function (path, ignoreSubPaths, changeHandler) {
+        value: function (path, ignoreSubPaths, changeHandler, errorHandler) {
             var local = {
-                    handleChange: function (changeType, filePath) {
-                        changeHandler(changeType, filePath);
+                    handleChange: function () {
+                        changeHandler.apply(this, arguments);
+                    },
+                    handleError: function () {
+                        errorHandler.apply(this, arguments);
                     }
                 },
                 backend = Connection(new WebSocket("ws://localhost:" + lumieres.nodePort), local);

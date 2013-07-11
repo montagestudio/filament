@@ -10,7 +10,8 @@ var Montage = require("montage/core/core").Montage,
     Map = require("montage/collections/map"),
     Confirm = require("matte/ui/popup/confirm.reel").Confirm,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
-    ProjectController;
+    ProjectController,
+    FileDescriptor = require("core/file-descriptor").FileDescriptor;
 
 exports.ProjectController = ProjectController = DocumentController.specialize({
 
@@ -854,11 +855,24 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         enumerable: false,
         value: function () {
             var self = this,
-                changeHandler = function (changeType, filePath) {
-                    self.handleFileSystemChange(changeType, filePath);
+                changeHandler = function (changeType) {
+                    switch (changeType) {
+                    case "update":
+                        self.handleFileSystemUpdate.apply(self, Array.prototype.slice.call(arguments, 1));
+                        break;
+                    case "create":
+                        self.handleFileSystemCreate.apply(self, Array.prototype.slice.call(arguments, 1));
+                        break;
+                    case "delete":
+                        self.handleFileSystemDelete.apply(self, Array.prototype.slice.call(arguments, 1));
+                        break;
+                    }
+                },
+                errorHandler = function (err) {
+                    throw err;
                 };
 
-            this.environmentBridge.watch(this.packageUrl, ["builds/"], changeHandler).done();
+            this.environmentBridge.watch(this.packageUrl, ["builds/"], changeHandler, errorHandler).done();
         }
     },
 
@@ -866,17 +880,66 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: true
     },
 
-    handleFileSystemChange: {
-        value: function (change, filePath) {
+    handleFileSystemCreate: {
+        value: function (fileUrl, currentStat, previousStat) {
+            var parentUrl = fileUrl.substring(0, fileUrl.replace(/\/$/, "").lastIndexOf("/")),
+                parent = this.fileInTreeAtUrl(parentUrl),
+                newFile;
+
+            if (parent && parent.children) {
+                newFile = FileDescriptor.create().initWithUrlAndStat(fileUrl, currentStat);
+                //TODO account for some sort of sorting at this point?
+                parent.children.push(newFile);
+            }
 
             this.dispatchEventNamed("fileSystemChange", true, false, {
-                change: change,
-                filePath: filePath
+                change: "create",
+                fileUrl: fileUrl,
+                currentStat: currentStat,
+                previousStat: previousStat
+            });
+        }
+    },
+
+    handleFileSystemDelete: {
+        value: function (fileUrl, currentStat, previousStat) {
+            var parentUrl = fileUrl.substring(0, fileUrl.replace(/\/$/, "").lastIndexOf("/")),
+                parent = this.fileInTreeAtUrl(parentUrl),
+                children,
+                childrenByUrl,
+                child;
+
+            if (parent && (children = parent.children)) {
+                // NOTE I'd capture the index while reducing, but I don't want to create
+                // more objects, it's usually going to be fast enough to find it in the
+                // collection again
+                childrenByUrl = children.reduce(function (urlMap, child) {
+                    urlMap[child.fileUrl] = child;
+                    return urlMap;
+                }, {});
+                child = childrenByUrl[fileUrl];
+
+                children.splice(children.indexOf(child), 1);
+            }
+
+            this.dispatchEventNamed("fileSystemChange", true, false, {
+                change: "delete",
+                fileUrl: fileUrl,
+                currentStat: currentStat,
+                previousStat: previousStat
             });
 
-            if (this.repopulateOnFileSystemChanges) {
-                this.populateFromFileSystem().done();
-            }
+        }
+    },
+
+    handleFileSystemUpdate: {
+        value: function (fileUrl, currentStat, previousStat) {
+            this.dispatchEventNamed("fileSystemChange", true, false, {
+                change: "update",
+                fileUrl: fileUrl,
+                currentStat: currentStat,
+                previousStat: previousStat
+            });
         }
     },
 
@@ -901,6 +964,55 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+    /**
+     * Finds the file descriptor at the specified URL if it's known within
+     * the explored tree of files within the project
+     * @param {Url} fileUrl The URL of the file to find
+     */
+    fileInTreeAtUrl: {
+        value: function (fileUrl) {
+            if (fileUrl === this.projectUrl) {
+                return this.files;
+            }
+
+            var relativePathInProject = fileUrl.replace(this.projectUrl + "/", "");
+            var hierarchy = relativePathInProject.split("/");
+
+            var root = this.files,
+                foundFile = null,
+                segmentCount = hierarchy.length,
+                segmentIndex = 0,
+                pathSegment,
+                collectChildrenByName = function (nameMap, child) {
+                    nameMap[child.name] = child;
+                    return nameMap;
+                },
+                childrenByName;
+
+            while (segmentIndex < segmentCount) {
+                pathSegment = hierarchy[segmentIndex];
+                childrenByName = root.children.reduce(collectChildrenByName, {});
+                root = childrenByName[pathSegment];
+
+                if (root) {
+                    segmentIndex++;
+                }
+
+            }
+
+            if (segmentIndex === segmentCount && root) {
+                foundFile = root;
+            }
+
+            return foundFile;
+        }
+    },
+
+    /**
+     * The collection of immediate children within the specified url
+     *
+     * @param {url} url The URL to find children within
+     */
     filesAtUrl: {
         value: function (url) {
             var path = this.environmentBridge.convertBackendUrlToPath(url);
