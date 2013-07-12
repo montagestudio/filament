@@ -1,3 +1,4 @@
+/*jshint node:true */
 module.exports = require("core/node/url");
 
 module.exports.toModuleId = urlToModuleId;
