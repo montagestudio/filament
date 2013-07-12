@@ -38,6 +38,7 @@ var AssetCompiler = exports.AssetCompiler = CoreAssetCompiler.specialize ({
 
     convert: {
         value: function(fileURL) {
+            // FIXME: Convert fs:// URLs to paths on the backend
             var preURL = "fs://localhost";
             var filePathURL = fileURL.substring(preURL.length);
             var deferred = Q.defer();
