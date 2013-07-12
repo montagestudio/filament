@@ -11,5 +11,6 @@ require("montage-testing").run(require, [
     "test/core/reel-document-saving-spec",
     "test/core/reel-document-spec",
     "test/core/reel-document-template-editing-spec",
-    "test/core/reel-proxy-spec"
+    "test/core/reel-proxy-spec",
+    "test/core/url-spec"
 ]);
