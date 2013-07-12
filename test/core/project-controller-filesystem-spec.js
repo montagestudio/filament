@@ -30,7 +30,7 @@ describe("core/project-controller-spec", function () {
                 var files = [];
                 files.push(FileDescriptor.create().initWithUrlAndStat("projectUrl/package.json", {mode: 0}));
                 files.push(FileDescriptor.create().initWithUrlAndStat("projectUrl/README", {mode: 0}));
-                files.push(FileDescriptor.create().initWithUrlAndStat("projectUrl/ui", {mode: 16384}));
+                files.push(FileDescriptor.create().initWithUrlAndStat("projectUrl/ui/", {mode: 16384}));
                 return Promise.resolve(files);
             },
 
@@ -63,7 +63,7 @@ describe("core/project-controller-spec", function () {
             var fullPath, currentStat, previousStat;
 
             beforeEach(function () {
-                fullPath = "projectUrl/foo";
+                fullPath = "projectUrl/foo/";
                 currentStat = {};
                 previousStat = null;
             });
@@ -105,7 +105,7 @@ describe("core/project-controller-spec", function () {
             var fullPath, currentStat, previousStat;
 
             beforeEach(function () {
-                fullPath = "projectUrl/ui/foo";
+                fullPath = "projectUrl/ui/foo/";
                 currentStat = {};
                 previousStat = null;
             });
@@ -135,7 +135,7 @@ describe("core/project-controller-spec", function () {
 
             beforeEach(function () {
                 parentPath = "projectUrl/ui";
-                fullPath = "projectUrl/ui/foo";
+                fullPath = "projectUrl/ui/foo/";
                 currentStat = {};
                 previousStat = null;
             });
