@@ -5,7 +5,8 @@
 */
 var Component = require("montage/ui/component").Component,
     RangeController = require("montage/core/range-controller").RangeController,
-    PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint;
+    PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint,
+    Serializer = require("montage/core/serialization").Serializer;
 
 /**
     Description TODO
@@ -35,10 +36,17 @@ exports.EditProperties = Component.specialize({
             if (this._ownerObject === value) {
                 return;
             }
+
+            if (this._ownerObject) {
+                this._ownerObject.editingDocument.unregisterFile("meta");
+            }
+
             this._ownerObject = value;
 
             if (value) {
                 var self = this;
+
+                value.editingDocument.registerFile("meta", this._saveMeta, this);
 
                 value.packageRequire.async(value.moduleId)
                 .get(value.exportName)
@@ -68,6 +76,14 @@ exports.EditProperties = Component.specialize({
             if (value) {
                 this.propertiesController.content = value.propertyBlueprintGroupForName("default");
             }
+        }
+    },
+
+    _saveMeta: {
+        value: function (location, dataWriter) {
+            var serializer = Serializer.create().initWithRequire(this.ownerObject.editingDocument._packageRequire);
+            var serializedDescription = serializer.serializeObject(this.ownerBlueprint);
+            return dataWriter(serializedDescription, location);
         }
     },
 
