@@ -16,11 +16,13 @@ var FileNode = {
     ctime: new Date()
 };
 
+//jshint -W016
 var DirNode = Object.create(FileNode, {
     mode: {
         value: FileNode | 16384
     }
 });
+//jshint +W016
 
 var FileStat = {
     node: FileNode,
