@@ -79,7 +79,7 @@ describe("filament backend", function () {
             return filamentBackend.listTree("/simple/a")
             .then(function (fileDescriptors) {
                 expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
-                    "fs://localhost/simple/a", "fs://localhost/simple/a/b.js", "fs://localhost/simple/a/c", "fs://localhost/simple/a/c/d.js"
+                    "fs://localhost/simple/a/", "fs://localhost/simple/a/b.js", "fs://localhost/simple/a/c/", "fs://localhost/simple/a/c/d.js"
                 ]);
 
             });
@@ -89,7 +89,7 @@ describe("filament backend", function () {
             return filamentBackend.listTree("/ignore")
             .then(function (fileDescriptors) {
                 expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
-                    "fs://localhost/ignore", "fs://localhost/ignore/ok.js"
+                    "fs://localhost/ignore/", "fs://localhost/ignore/ok.js"
                 ]);
             });
         });
@@ -99,7 +99,7 @@ describe("filament backend", function () {
             .then(function (fileDescriptors) {
                 return filamentBackend.listPackage("/root/a").then(function (fileDescriptors) {
                     expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
-                        "fs://localhost/ignore/node_modules/x", "fs://localhost/ignore/node_modules/x/index.js"
+                        "fs://localhost/ignore/node_modules/x/", "fs://localhost/ignore/node_modules/x/index.js"
                     ]);
                 });
             });
@@ -133,7 +133,7 @@ describe("filament backend", function () {
 
             return filamentBackend.listPackage("/root/a").then(function (fileDescriptors) {
                 expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
-                    "fs://localhost/root/a", "fs://localhost/root/a/ok.js"
+                    "fs://localhost/root/a/", "fs://localhost/root/a/ok.js"
                 ]);
             });
         });
@@ -157,7 +157,7 @@ describe("filament backend", function () {
 
             return filamentBackend.listPackage("/root/a").then(function (fileDescriptors) {
                 expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
-                    "fs://localhost/root/a", "fs://localhost/root/a/ok.js"
+                    "fs://localhost/root/a/", "fs://localhost/root/a/ok.js"
                 ]);
             });
         });
@@ -189,7 +189,7 @@ describe("filament backend", function () {
 
             return filamentBackend.listPackage("/root/a").then(function (fileDescriptors) {
                 expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
-                    "fs://localhost/root/a", "fs://localhost/root/a/ok.js", "fs://localhost/root/a/package.json"
+                    "fs://localhost/root/a/", "fs://localhost/root/a/ok.js", "fs://localhost/root/a/package.json"
                 ]);
             });
         });
@@ -240,7 +240,7 @@ describe("filament backend", function () {
             return filamentBackend.list("/simple/a")
                 .then(function (fileDescriptors) {
                     expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
-                        "fs://localhost/simple/a/b.js", "fs://localhost/simple/a/c"
+                        "fs://localhost/simple/a/b.js", "fs://localhost/simple/a/c/"
                     ]);
 
                 });
@@ -250,7 +250,7 @@ describe("filament backend", function () {
             return filamentBackend.list("/ignore")
                 .then(function (fileDescriptors) {
                     expect(fileDescriptors.map(function (desc) { return desc.url; })).toEqual([
-                        "fs://localhost/ignore/node_modules", "fs://localhost/ignore/ok.js"
+                        "fs://localhost/ignore/node_modules/", "fs://localhost/ignore/ok.js"
                     ]);
 
                 });

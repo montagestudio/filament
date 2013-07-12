@@ -179,7 +179,8 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
             window.addEventListener("openRelatedFile", function (evt) {
                 var url = evt.detail;
-                self.openFileUrl(url.replace("file://localhost/", "fs://localhost/").replace(/\/$/, "")).done();
+                // FIXME: this method does not exist
+                self.openFileUrl(url.replace("file://localhost/", "fs://localhost/")).done();
             });
 
             window.addEventListener("beforeunload", function () {

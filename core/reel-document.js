@@ -1261,14 +1261,15 @@ exports.ReelDocument = EditingDocument.specialize({
 }, {
     load: {
         value: function (fileUrl, packageUrl) {
-            var self = this,
-                objectName = MontageReviver.parseObjectLocationId(fileUrl).objectName;
+            var self = this;
 
             // require.async() expect moduleId not URLs
             var componentModuleId = fileUrl;
             if (fileUrl.indexOf(packageUrl) > -1) {
-                componentModuleId = fileUrl.substring(packageUrl.length + 1);
+                componentModuleId = fileUrl.substring(packageUrl.length + 1, fileUrl.length - 1);
             }
+
+            var objectName = MontageReviver.parseObjectLocationId(componentModuleId).objectName;
 
             return require.loadPackage(packageUrl).then(function (packageRequire) {
                 return packageRequire.async(componentModuleId).get(objectName).then(function (componentPrototype) {
@@ -1279,12 +1280,12 @@ exports.ReelDocument = EditingDocument.specialize({
                 },function (error) {
                     throw new Error("Cannot load component: " + error);
                 }).then(function (template) {
-                        return self.create().init(fileUrl, template, packageRequire);
-                    }, function (error) {
-                        // There is no template. This could still be a valid component…
-                        console.log("Cannot load component template.". error);
-                        return self.create().init(fileUrl, null, packageRequire);
-                    });
+                    return self.create().init(fileUrl, template, packageRequire, componentModuleId);
+                }, function (error) {
+                    // There is no template. This could still be a valid component…
+                    console.log("Cannot load component template.", error);
+                    return self.create().init(fileUrl, null, packageRequire, componentModuleId);
+                });
             });
         }
     },

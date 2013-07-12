@@ -69,7 +69,7 @@ exports.DocumentEditor = Component.specialize({
                 if (!TEMPLATE) {
                     promise = workbench.load(document.fileUrl, document.packageRequire.location);
                 } else {
-                    var module = document.fileUrl.replace(document.packageRequire.location, "");
+                    var module = document.fileUrl.substring(document.packageRequire.location + 1, document.fileUrl.length - 1);
                     var name = MontageReviver.parseObjectLocationId(module).objectName;
 
                     promise = document.packageRequire.async(module).then(function (component) {
