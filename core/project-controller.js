@@ -11,7 +11,8 @@ var Montage = require("montage/core/core").Montage,
     Confirm = require("matte/ui/popup/confirm.reel").Confirm,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     ProjectController,
-    FileDescriptor = require("core/file-descriptor").FileDescriptor;
+    FileDescriptor = require("core/file-descriptor").FileDescriptor,
+    URL = require("core/url");
 
 exports.ProjectController = ProjectController = DocumentController.specialize({
 
@@ -175,7 +176,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             }).done();
 
             // Add in components from the package being edited itself
-            this.dependencies.unshift({dependency: "", url: this.environmentBridge.convertBackendUrlToPath(this.packageUrl)});
+            this.dependencies.unshift({dependency: "", url: this.packageUrl});
 
             // Do these operations sequentially because populateLibrary and
             // watchForFileChanges send a lot of data across the websocket,
@@ -561,10 +562,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                                 if (/\/node_modules\//.test(componentUrl)) {
                                     // It's a module inside a node_modules dependency
                                     //TODO be able to handle dependencies from mappings?
-                                    moduleId = componentUrl.replace(/\S+\/node_modules\//, "");
+                                    moduleId = dependency.dependency + "/" + URL.toModuleId(componentUrl, dependency.url);
                                 } else {
-                                    //It's a module that's part of the current package being edited
-                                    moduleId = componentUrl.replace(new RegExp(".+" + dependency.url + "\/"), "");
+                                    // It's a module that's part of the current package being edited
+                                    moduleId = URL.toModuleId(componentUrl, dependency.url);
                                 }
                                 objectName = MontageReviver.parseObjectLocationId(moduleId).objectName;
                                 return self.libraryItemForModuleId(moduleId, objectName);

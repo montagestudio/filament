@@ -7,7 +7,8 @@ var Montage = require("montage/core/core").Montage,
     qs = require("qs"),
     mainMenu = require("ui/native-menu/menu").defaultMenu,
     FileDescriptor = require("core/file-descriptor").FileDescriptor,
-    defaultLocalizer = require("montage/core/localizer").defaultLocalizer;
+    defaultLocalizer = require("montage/core/localizer").defaultLocalizer,
+    PATH = require("core/path");
 
 exports.LumiereBridge = EnvironmentBridge.specialize({
 
@@ -118,21 +119,16 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
             var self = this;
 
             return this.findPackage(this.convertBackendUrlToPath(projectUrl))
-                .then(function (packageUrl) {
-                    return self.dependenciesInPackage(packageUrl)
-                        .then(function (dependencies) {
-
-                            if (packageUrl) {
-                                packageUrl = "fs://localhost" + packageUrl;
-                            }
-
-                            return {
-                                "fileUrl": projectUrl,
-                                "packageUrl": packageUrl,
-                                "dependencies": dependencies
-                            };
-                        });
+            .then(function (packageUrl) {
+                return self.dependenciesInPackage(packageUrl)
+                .then(function (dependencies) {
+                    return {
+                        "fileUrl": projectUrl,
+                        "packageUrl": packageUrl,
+                        "dependencies": dependencies
+                    };
                 });
+            });
         }
     },
 
@@ -148,7 +144,7 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
 
             return self.backend.get("fs").invoke("exists", path + "/package.json").then(function (exists) {
                 if (exists) {
-                    return path;
+                    return "fs://localhost" + path;
                 } else if ("/" === path) {
                     return;
                 } else {
@@ -163,12 +159,12 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
 
     componentsInPackage: {
         value: function (packageUrl) {
-            return this.backend.get("filament-backend").invoke("listPackage", packageUrl, true).then(function (fileDescriptors) {
+            return this.backend.get("filament-backend").invoke("listPackage", this.convertBackendUrlToPath(packageUrl), true).then(function (fileDescriptors) {
                 return fileDescriptors.filter(function (fd) {
-                    return (/\.reel$/).test(fd.url);
+                    return (/\.reel\/$/).test(fd.url);
                 }).map(function (fd) {
-                        return fd.url;
-                    });
+                    return fd.url;
+                });
             });
 
         }
@@ -196,7 +192,7 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
 
     dependenciesInPackage: {
         value: function (packageUrl) {
-            return this.backend.get("fs").invoke("read", packageUrl + "/package.json", {"charset": "utf-8"})
+            return this.backend.get("fs").invoke("read", PATH.join(this.convertBackendUrlToPath(packageUrl), "package.json"), {"charset": "utf-8"})
                 .then(function (content) {
                     var packageInfo = JSON.parse(content),
                         dependencyNames = Object.keys(packageInfo.dependencies);
