@@ -104,7 +104,14 @@ exports.EditProperties = Component.specialize({
 
     handleAddPropertyAction: {
         value: function (event) {
-            this.propertiesController.addContent();
+            var name = this.templateObjects.addName.value;
+            if (!name) {
+                return;
+            }
+            var property = new PropertyBlueprint();
+            property.name = name;
+            this.propertiesController.add(property);
+            this.templateObjects.addName.value = "";
         }
     },
 

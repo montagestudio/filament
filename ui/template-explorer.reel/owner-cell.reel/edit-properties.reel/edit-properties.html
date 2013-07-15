@@ -26,7 +26,7 @@
         },
 
         "name": {
-            "prototype": "matte/ui/input-text.reel",
+            "prototype": "montage/ui/text.reel",
             "properties": {
                 "element": {"#": "name"}
             },
@@ -100,6 +100,12 @@
             "listeners": [
                 {"type": "action", "listener": {"@": "owner"}}
             ]
+        },
+        "addName": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "addName"}
+            }
         }
     }
     </script>
@@ -110,7 +116,7 @@
         <div data-montage-id="properties" class="EditProperties-list">
             <div>
                 <button data-montage-id="removeProperty">-</button>
-                <input type="text" data-montage-id="name" class="EditProperties-property">
+                <span data-montage-id="name" class="EditProperties-name"></span>
                 <select data-montage-id="valueType">
                     <option value="string">string</option>
                     <option value="number">number</option>
@@ -130,6 +136,7 @@
                 </div>
             </div>
         </div>
+        <input type="text" data-montage-id="addName" placeholder="Property name">
         <button data-montage-id="addProperty">+ Add property</button>
     </div>
 </body>
