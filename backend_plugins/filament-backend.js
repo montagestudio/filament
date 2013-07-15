@@ -66,6 +66,13 @@ exports.watch = function (path, ignoreSubPaths, handlers) {
         ignoreCommonPatterns: true,
         listeners: {
             change: function(changeType, filePath, fileCurrentStat, filePreviousStat) {
+
+                //The client expects directories to hav a trailing slash
+                var fileStat = fileCurrentStat || filePreviousStat;
+                if (fileStat.isDirectory() && !/\/$/.test(filePath)) {
+                    filePath += "/";
+                }
+
                 handlers.invoke("handleChange", changeType, "fs://localhost" + filePath, fileCurrentStat, filePreviousStat).fail(function (err) {
                     console.log(err);
                     throw err;
