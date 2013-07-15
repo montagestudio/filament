@@ -68,6 +68,7 @@
     background-color: transparent;
 }
 
+.FileCell .FileCell-button {            background-image: url(/assets/icons/file.png); }
 .FileCell .FileCell-button.folder {     background-image: url(/assets/icons/folder.png); }
 .FileCell .FileCell-button.html {       background-image: url(/assets/icons/file-html.png); }
 .FileCell .FileCell-button.css {        background-image: url(/assets/icons/file-css.png); }
