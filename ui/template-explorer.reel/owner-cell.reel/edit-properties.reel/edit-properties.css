@@ -8,4 +8,13 @@
 .EditProperties-name {
     display: inline-block;
     width: 150px;
+    line-height: 2.5em;
+}
+
+.EditProperties-list > div {
+    display: -webkit-flex;
+}
+
+.EditProperties-list > div > div {
+    -webkit-flex: 1;
 }
