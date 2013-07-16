@@ -12,5 +12,6 @@ require("montage-testing").run(require, [
     "test/core/reel-document-spec",
     "test/core/reel-document-template-editing-spec",
     "test/core/reel-proxy-spec",
-    "test/core/url-spec"
+    "test/core/url-spec",
+    "test/ui/template-explorer/owner-cell/edit-properties-spec.js"
 ]);

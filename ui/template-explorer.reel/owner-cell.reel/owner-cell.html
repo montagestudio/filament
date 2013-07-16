@@ -64,6 +64,34 @@
             }
         },
 
+        "editPropertiesCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "editPropertiesCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@editPropertiesButton.pressed"}
+            }
+        },
+
+        "editPropertiesButton": {
+            "prototype": "matte/ui/toggle-button.reel",
+            "properties": {
+                "element": {"#": "editPropertiesButton"}
+            }
+        },
+
+        "editProperties": {
+            "prototype": "./edit-properties.reel",
+            "properties": {
+                "element": {"#": "editProperties"}
+            },
+            "bindings": {
+                "ownerObject": {"<-": "@owner.templateObject"}
+            }
+        },
+
         "templateObjectTag": {
             "prototype": "montage/ui/component",
             "properties": {
@@ -169,17 +197,24 @@
 </head>
 <body>
     <div data-montage-id="owner-cell" class="OwnerCell">
-        
+
         <header class="TemplateObjectCell-header">
             <img data-montage-id="icon" class="TemplateObjectCell-icon" src="../../../assets/img/library-icon.png">
             <div class="TemplateObjectCell-header-flex">
                 <h3 data-montage-id="templateObjectLabel" class="TemplateObjectCell-title"></h3>
                 <label data-montage-id="templateObjectExportName" class="TemplateObjectCell-exportName"></label>
             </div>
+            <div>
+                <button data-montage-id="editPropertiesButton" class="Button Toolbar-button">Edit properties</button>
+            </div>
         </header>
-        
+
         <div data-montage-id="commentCondition">
             <p data-montage-id="templateObjectComment" class="TemplateObjectCell-comment"></p>
+        </div>
+
+        <div data-montage-id="editPropertiesCondition">
+            <div data-montage-id="editProperties"></div>
         </div>
 
         <ul class="TemplateObjectCell-list">
@@ -202,7 +237,7 @@
                 </ul>
             </li>
         </ul>
-        
+
     </div>
 </body>
 </html>

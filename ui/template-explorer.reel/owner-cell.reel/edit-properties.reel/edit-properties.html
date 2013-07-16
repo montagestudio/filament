@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="edit-properties.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "edit-properties"}
+            }
+        },
+
+        "properties": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "properties"}
+            },
+            "bindings": {
+                "contentController": {"<-": "@owner.propertiesController"}
+            }
+        },
+
+        "cardinalityConverter": {
+            "prototype": "./cardinality-converter"
+        },
+
+        "name": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "name"}
+            },
+            "bindings": {
+                "value": {"<-": "@properties.objectAtCurrentIteration.name"}
+            }
+        },
+
+        "valueType": {
+            "prototype": "matte/ui/select.reel",
+            "properties": {
+                "element": {"#": "valueType"}
+            },
+            "bindings": {
+                "value": {"<->": "@properties.objectAtCurrentIteration.valueType"}
+            }
+        },
+
+        "multiple": {
+            "prototype": "matte/ui/input-checkbox.reel",
+            "properties": {
+                "element": {"#": "multiple"}
+            },
+            "bindings": {
+                "checked": {
+                    "<->": "@properties.objectAtCurrentIteration.cardinality",
+                    "converter": {"@": "cardinalityConverter"}
+                }
+            }
+        },
+
+        "collectionCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "collectionCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@multiple.checked"}
+            }
+        },
+
+        "collectionValueType": {
+            "prototype": "matte/ui/select.reel",
+            "properties": {
+                "element": {"#": "collectionValueType"}
+            },
+            "bindings": {
+                "value": {"<->": "@properties.objectAtCurrentIteration.collectionValueType"}
+            }
+        },
+
+        "removeProperty": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "removeProperty"}
+            },
+            "bindings": {
+                "detail.get('propertyBlueprint')": {"<-": "@properties.objectAtCurrentIteration"}
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
+        },
+
+        "addProperty": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "addProperty"}
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
+        },
+        "addName": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "addName"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="edit-properties" class="EditProperties">
+
+        <div data-montage-id="properties" class="EditProperties-list">
+            <div>
+                <button data-montage-id="removeProperty">-</button>
+                <span data-montage-id="name" class="EditProperties-name"></span>
+                <div>
+                    <select data-montage-id="valueType">
+                        <option value="string">string</option>
+                        <option value="number">number</option>
+                        <option value="boolean">boolean</option>
+                        <option value="date">date</option>
+                        <option value="enum">enum</option>
+                        <option value="url">url</option>
+                        <option value="object">object</option>
+                    </select>
+                    <div data-montage-id="collectionCondition">
+                        <select data-montage-id="collectionValueType">
+                            <option value="list">list</option>
+                            <option value="set">set</option>
+                            <option value="map">map</option>
+                        </select>
+                    </div>
+                </div>
+                <label>multi <input type="checkbox" data-montage-id="multiple"></label>
+            </div>
+        </div>
+        <input type="text" data-montage-id="addName" placeholder="Property name">
+        <button data-montage-id="addProperty">+ Add property</button>
+    </div>
+</body>
+</html>

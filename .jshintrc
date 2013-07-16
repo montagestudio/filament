@@ -21,6 +21,7 @@
         "require": false,
         "exports": false,
 
+        "jasmine": true,
         "beforeEach": false,
         "afterEach": false,
         "describe": false,

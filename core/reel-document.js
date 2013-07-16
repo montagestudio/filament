@@ -12,7 +12,8 @@ var Montage = require("montage").Montage,
     ReelReviver = require("core/serialization/reel-reviver").ReelReviver,
     ReelContext = require("core/serialization/reel-context").ReelContext,
     NodeProxy = require("core/node-proxy").NodeProxy,
-    visit = require("montage/mousse/serialization/malker").visit;
+    visit = require("montage/mousse/serialization/malker").visit,
+    URL = require("core/node/url");
 
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = EditingDocument.specialize({
@@ -51,13 +52,15 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     init: {
-        value: function (fileUrl, template, packageRequire) {
+        value: function (fileUrl, template, packageRequire, moduleId) {
             var self = this.super(fileUrl, packageRequire);
             var error;
 
             self._template = template;
 
             if (template) {
+                this.registerFile("html", this._saveHtml, this);
+
                 self._templateBodyNode = NodeProxy.create().init(this.htmlDocument.body, this);
                 self.templateNodes = this._children(self._templateBodyNode);
 
@@ -65,6 +68,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 try {
                     var serialization = JSON.parse(template.getInlineObjectsString(template.document));
                     var context = this.deserializationContext(serialization);
+                    context.ownerExportId = moduleId;
                     self._addProxies(context.getObjects());
                 } catch (e) {
 
@@ -273,24 +277,71 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    _registeredFiles: {
+        value: null
+    },
+
+    /**
+     * Registers a new file to save when the document is saved.
+     *
+     * @param  {string}   extension The extension of the file.
+     * @param  {function(location, dataWriter): Promise} saveCallback
+     * A function to call to save the file. Passed the location of the file
+     * created by taking the reel location, extracting the basename and
+     * suffixing the extensions. Must return a promise for the saving of the
+     * file.
+     */
+    registerFile: {
+        value: function (extension, saveCallback, thisArg) {
+            var registeredFiles = this._registeredFiles = this._registeredFiles || {};
+            registeredFiles[extension] = {callback: saveCallback, thisArg: thisArg};
+        }
+    },
+
+    unregisterFile: {
+        value: function (extension) {
+            var registeredFiles = this._registeredFiles;
+            if (registeredFiles) {
+                delete registeredFiles[extension];
+            }
+        }
+    },
+
+    _saveHtml: {
+        value: function (location, dataWriter) {
+            this._buildSerializationObjects();
+            var html = TemplateFormatter.create().init(this._template).getHtml();
+
+            return dataWriter(html, location);
+        }
+    },
+
     save: {
         value: function (location, dataWriter) {
             var self = this;
             //TODO I think I've made this regex many times...and probably differently
             var filenameMatch = location.match(/.+\/(.+)\.reel/),
                 path,
-                template = this._template,
-                html;
+                registeredFiles = this._registeredFiles,
+                promise;
 
             if (!(filenameMatch && filenameMatch[1])) {
-                throw new Error('Components can only be saved into ".reel" directories');
+                throw new Error('Components can only be saved into directories with a ".reel" extension');
             }
 
-            this._buildSerializationObjects();
-            path = location + "/" + filenameMatch[1] + ".html";
-            html = TemplateFormatter.create().init(template).getHtml();
+            if (!registeredFiles) {
+                promise = Promise.resolve();
+            } else {
+                if (location.charAt(location.length - 1) !== "/") {
+                    location += "/";
+                }
+                promise = Promise.all(Object.map(registeredFiles, function (info, extension) {
+                    var fileLocation = URL.resolve(location, filenameMatch[1] + "." + extension);
+                    return info.callback.call(info.thisArg, fileLocation, dataWriter);
+                }));
+            }
 
-            return dataWriter(html, path).then(function (value) {
+            return promise.then(function (value) {
                 self._changeCount = 0;
                 return value;
             });
