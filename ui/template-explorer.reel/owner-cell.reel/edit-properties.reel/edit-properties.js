@@ -108,8 +108,7 @@ exports.EditProperties = Component.specialize({
             if (!name) {
                 return;
             }
-            var property = new PropertyBlueprint();
-            property.name = name;
+            var property = new PropertyBlueprint().initWithNameBlueprintAndCardinality(name, this.ownerBlueprint, 1);
             this.propertiesController.add(property);
             this.templateObjects.addName.value = "";
         }
