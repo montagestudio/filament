@@ -74,7 +74,8 @@ exports.EditProperties = Component.specialize({
             }
             this._ownerBlueprint = value;
             if (value) {
-                this.propertiesController.content = value.propertyBlueprintGroupForName("default");
+                // add... returns the existing group if it already exists
+                this.propertiesController.content = value.addPropertyBlueprintGroupNamed("default");
             }
         }
     },

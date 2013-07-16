@@ -50,6 +50,18 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                     expect(editor.templateObjects.addName.value).toBe("");
                 });
             });
+
+            it("adds a default group if one doesn't exist", function () {
+                blueprint = new Blueprint();
+                editor.ownerBlueprint = blueprint;
+
+                editor.templateObjects.addName.value = "pass";
+                testPage.clickOrTouch({target: editor.templateObjects.addProperty.element}, function () {
+                    defaultGroup = blueprint.propertyBlueprintGroupForName("default");
+                    expect(defaultGroup.length).toBe(1);
+                    expect(defaultGroup[0].name).toBe("pass");
+                });
+            });
         });
 
         describe("remove button", function () {
