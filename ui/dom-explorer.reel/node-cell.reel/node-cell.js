@@ -67,6 +67,8 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             this._nodeSegment.addEventListener("dragenter", this, false);
             this._nodeSegment.addEventListener("dragleave", this, false);
             this._nodeSegment.addEventListener("drop", this, false);
+
+            this.templateObjects.montageId.addEventListener("action", this);
         }
     },
 
@@ -215,6 +217,15 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             this.dispatchEventNamed("select", true, true, {
                 templateObject: this.nodeInfo.component
             });
+        }
+    },
+
+    handleMontageIdAction: {
+        value: function (evt) {
+            var newMontageId = evt.target.value,
+                nodeProxy = this._nodeInfo;
+
+            nodeProxy._editingDocument.setNodeProxyMontageId(nodeProxy, newMontageId);
         }
     }
 

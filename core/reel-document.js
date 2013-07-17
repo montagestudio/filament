@@ -1096,7 +1096,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
     setNodeProxyMontageId: {
         value: function(nodeProxy, montageId) {
-            this.undoManager.register("Add Montage Id", Promise.resolve([this.setNodeProxyMontageId, this, nodeProxy, nodeProxy.montageId]));
+            this.undoManager.register("Set Montage Id", Promise.resolve([this.setNodeProxyMontageId, this, nodeProxy, nodeProxy.montageId]));
 
             // TODO Kind of reaching into NodeProxy's domain but this will
             // have to do until we figure out the data model for the node

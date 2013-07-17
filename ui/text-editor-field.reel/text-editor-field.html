@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="text-editor-field.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "TextEditorField"}
+            },
+            "listeners": [
+                {
+                    "type": "keyPress",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+        "inputText": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "inputText"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner._inputValue"}
+            }
+        },
+        "substitution": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "substitution"}
+            },
+            "bindings": {
+                "switchValue": {"<-": "@owner.isEditing ? 'editor' : 'text'"}
+            }
+        },
+        "text": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "text"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.value"}
+            }
+        },
+
+        "cancelKeyComposer": {
+            "prototype": "montage/composer/key-composer",
+            "properties": {
+                "keys": "escape",
+                "identifier": "cancel",
+                "component": {"@": "owner"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="TextEditorField" class="TextEditorField">
+        <div data-montage-id="substitution">
+            <input data-arg="editor" data-montage-id="inputText" type="text">
+            <span data-arg="text" data-montage-id="text"></span>
+        </div>
+    </div>
+</body>
+</html>
