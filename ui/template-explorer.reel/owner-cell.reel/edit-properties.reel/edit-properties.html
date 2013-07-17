@@ -112,33 +112,39 @@
 </head>
 <body>
     <div data-montage-id="edit-properties" class="EditProperties">
-
-        <div data-montage-id="properties" class="EditProperties-list">
-            <div>
-                <button data-montage-id="removeProperty">-</button>
+        
+        <ul data-montage-id="properties" class="EditProperties-list">
+            <li class="EditProperties-listItem">
                 <span data-montage-id="name" class="EditProperties-name"></span>
-                <div>
-                    <select data-montage-id="valueType">
-                        <option value="string">string</option>
-                        <option value="number">number</option>
-                        <option value="boolean">boolean</option>
-                        <option value="date">date</option>
-                        <option value="enum">enum</option>
-                        <option value="url">url</option>
-                        <option value="object">object</option>
-                    </select>
-                    <div data-montage-id="collectionCondition">
-                        <select data-montage-id="collectionValueType">
+                <select data-montage-id="valueType" class="Select">
+                    <option value="string">string</option>
+                    <option value="number">number</option>
+                    <option value="boolean">boolean</option>
+                    <option value="date">date</option>
+                    <option value="enum">enum</option>
+                    <option value="url">url</option>
+                    <option value="object">object</option>
+                </select>
+                
+                <div class="EditProperties-multi">
+                    <label><input type="checkbox" data-montage-id="multiple" class="Checkbox"> multi</label>
+                    <span data-montage-id="collectionCondition">
+                        <select data-montage-id="collectionValueType" class="Select">
                             <option value="list">list</option>
                             <option value="set">set</option>
                         </select>
-                    </div>
+                    </span>
                 </div>
-                <label>multi <input type="checkbox" data-montage-id="multiple"></label>
-            </div>
-        </div>
-        <input type="text" data-montage-id="addName" placeholder="Property name">
-        <button data-montage-id="addProperty">+ Add property</button>
+                
+                <button data-montage-id="removeProperty" class="Button Button--circle">-</button>
+            </li>
+        </ul>
+        
+        <footer class="EditProperties-bar">
+            <input type="text" data-montage-id="addName" class="Input" placeholder="Property name">
+            <button data-montage-id="addProperty" class="Button--action">+ Add property</button>
+        </footer>
+
     </div>
 </body>
 </html>
