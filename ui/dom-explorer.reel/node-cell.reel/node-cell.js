@@ -32,29 +32,9 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                 return;
             }
 
-            if (this._nodeInfo) {
-                this._nodeInfo.removeOwnPropertyChangeListener("depth", this);
-            }
-
             this._nodeInfo = value;
 
-            if (value) {
-                value.addOwnPropertyChangeListener("depth", this);
-            }
-
             this.needsDraw = true;
-        }
-    },
-
-    handleDepthChange: {
-        value: function () {
-            this.needsDraw = true;
-        }
-    },
-
-    draw: {
-        value: function () {
-            this.element.style.marginLeft = (20 * this.getPath("nodeInfo.depth")) + 'px';
         }
     },
 

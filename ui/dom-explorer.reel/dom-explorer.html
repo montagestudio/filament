@@ -57,20 +57,24 @@
         },
 
         "nodeTreeController": {
-            "prototype": "montage/core/range-controller",
+            "prototype": "montage/core/tree-controller",
+            "properties": {
+                "childrenPath": "children",
+                "initiallyExpanded": true
+            },
             "bindings": {
-                "content": {"<-": "@owner.editingDocument.templateNodes"}
+                "content": {"<-": "@owner.editingDocument.templateBodyNode"}
             }
         },
 
         "nodeList": {
-            "prototype": "montage/ui/repetition.reel",
+            "prototype": "ui/tree.reel",
             "properties": {
                 "element": {"#": "nodeList"},
                 "isSelectionEnabled": true
             },
             "bindings": {
-                "contentController": {"<-": "@owner.nodeTreeController"}
+                "treeController": {"<-": "@owner.nodeTreeController"}
             }
         },
 
@@ -80,7 +84,7 @@
                 "element": {"#": "nodeCell"}
             },
             "bindings": {
-                "nodeInfo": {"<-": "@nodeList.objectAtCurrentIteration"}
+                "nodeInfo": {"<-": "@nodeCell.parentComponent.object"}
             }
         }
     }
@@ -89,7 +93,7 @@
 <body>
     <div data-montage-id="dom-explorer" class="DomExplorer">
         <div data-montage-id="nodeList" class="NodeList">
-            <div data-montage-id="nodeCell"></div>
+            <div data-montage-id="nodeCell" data-arg="treeNode"></div>
         </div>
         <footer data-montage-id="isCreatingElementCondition" class="DomExplorer-footer">
             <form data-montage-id="elementCreationForm" class="AddElement">

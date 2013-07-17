@@ -11,6 +11,10 @@
     background-clip: content-box;
 }
 
+.DomExplorer .NodeList .Tree-list-row {
+    padding: 0;
+}
+
 .DomExplorer-footer {
     min-height: 35px;
     background: hsl(0, 0%, 90%);
