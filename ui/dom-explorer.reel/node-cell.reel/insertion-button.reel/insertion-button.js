@@ -1,4 +1,4 @@
-var Button = require("matte/ui/button.reel").Button,
+var Button = require("ui/widgets/button.reel").Button,
     MimeTypes = require("core/mime-types");
 
 exports.InsertionButton = Button.specialize({

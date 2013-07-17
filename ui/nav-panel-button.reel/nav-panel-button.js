@@ -4,7 +4,7 @@
     @requires montage/ui/component
 */
 var Montage = require("montage").Montage,
-    Button = require("matte/ui/button.reel").Button,
+    Button = require("ui/widgets/button.reel").Button,
     panel = require("ui/panel.reel");
 
 /**
