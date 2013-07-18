@@ -211,14 +211,16 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     _modificationsHaveBeenAccepted: {
         value: function () {
-            if (!this._inputTimer) {
-                var self = this;
+            var self = this;
 
-                this._inputTimer = setTimeout(function(){
-                    self._inputTimer = null;
-                    self.saveModification();
-                }, 1000);
+            if (this._saveTimer) {
+                clearTimeout(this._saveTimer);
             }
+
+            this._saveTimer = setTimeout(function(){
+                self._saveTimer = null;
+                self.saveModification();
+            }, 1000);
         }
     },
 
