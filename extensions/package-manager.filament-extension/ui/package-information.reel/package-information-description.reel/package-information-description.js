@@ -2,16 +2,25 @@
  * @module ui/package-information-description.reel
  * @requires montage/ui/component
  */
-var PackageInformationBox = require("../package-information-box.reel").PackageInformationBox;
+var Component = require("montage/ui/component").Component;
 
 /**
  * @class PackageInformationDescription
- * @extends ui/package-information-box.reel.PackageInformationBox
  */
-exports.PackageInformationDescription = PackageInformationBox.specialize(/** @lends PackageInformationDescription# */ {
+exports.PackageInformationDescription = Component.specialize(/** @lends PackageInformationDescription# */ {
     constructor: {
         value: function PackageInformationDescription() {
             this.super();
+        }
+    },
+
+    value: {
+        value: null
+    },
+
+    willDraw: {
+        value: function () {
+            this.element.addEventListener("input", this);
         }
     },
 

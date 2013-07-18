@@ -14,10 +14,8 @@
         "boxTitle": {
             "prototype": "montage/ui/text.reel",
             "properties": {
-                "element": {"#": "packageInformationBoxTitle"}
-            },
-            "bindings": {
-                "value": {"<-": "@owner.title"}
+                "element": {"#": "packageInformationBoxTitle"},
+                "value":  "Description"
             }
         },
 
@@ -35,7 +33,7 @@
 </head>
 <body>
     <div data-montage-id="package-information-description" class="Box">
-        <header data-montage-id="packageInformationBoxTitle" class="Box-title"></header>
+        <h3 data-montage-id="packageInformationBoxTitle" class="Box-title"></h3>
         <div class="BoxContent">
             <textarea data-montage-id="packageInformationBoxValue" type="text" class="matte-Textarea"></textarea>
         </div>

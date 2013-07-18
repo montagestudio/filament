@@ -15,14 +15,16 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
         }
     },
 
-    _author:{
+    _author: {
         value: null
     },
 
     author: {
         set: function (author) {
-            if(typeof author === 'object' && author.hasOwnProperty('name')) {
+            if(typeof author === 'object') {
                 this._author = author;
+            } else {
+                this._author = {};
             }
         },
         get: function () {
@@ -41,12 +43,15 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
             var element = event.target;
 
             if (element && element.validity.valid) {
-                var property = element.getAttribute('data-property');
-                this.author[property] = element.value;
+                var property = element.getAttribute('data-property').toLowerCase();
+                if (property) {
 
-                this.dispatchEventNamed("changed", true, true, {
-                    source: element
-                });
+                    this.author[property] = element.value;
+
+                    this.dispatchEventNamed("changed", true, true, {
+                        source: element
+                    });
+                }
             }
         }
     }
