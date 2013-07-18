@@ -1,10 +1,17 @@
 .DomExplorer {
-    overflow: scroll;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
 }
 
 .NodeList {
+    -webkit-flex: 1;
+    overflow: scroll;
+    min-height: 0;
+}
+
+.NodeList .Tree-list {
     padding: 8px;
-    padding-bottom: 4em;
+    padding-bottom: 30px;
     font-size: 11px;
     background: -webkit-linear-gradient( left, hsl(0,0%,90%) 0px, hsl(0,0%,90%) 1px, hsla(0,0%,90%,0) 1px );
     background-size: 20px;

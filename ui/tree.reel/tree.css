@@ -3,10 +3,6 @@
     margin: -20px 0 0 -12px;
 }
 
-.Tree-list {
-    overflow-x: auto;
-}
-
 .Tree-list-row {
     padding-top: 2px;
     padding-bottom: 2px;
