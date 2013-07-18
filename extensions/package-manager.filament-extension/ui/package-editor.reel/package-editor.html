@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <head>
     <title></title>
     <link rel="stylesheet" type="text/css" href="package-editor.css">
@@ -11,74 +11,27 @@
             }
         },
 
-        "packageName": {
-            "prototype": "montage/ui/text.reel",
+        "packageInformation": {
+            "prototype": "../package-information.reel",
             "properties": {
-                "element": {"#": "packageName"}
+                "element": {"#": "packageInformation"}
             },
             "bindings": {
-                "value": {"<-": "@owner.currentDocument.packageName"}
-            }
-        },
-
-        "packageVersion": {
-            "prototype": "montage/ui/text.reel",
-            "properties": {
-                "element": {"#": "packageVersion"}
-            },
-            "bindings": {
-                "value": {"<-": "@owner.currentDocument.packageVersion"}
-            }
-        },
-
-        "dependencyList": {
-            "prototype": "montage/ui/repetition.reel",
-            "properties": {
-                "element": {"#": "dependencyList"}
-            },
-            "bindings": {
-                "content": {"<-": "@owner.currentDocument.dependencies.items()"}
-            }
-        },
-
-        "dependencyName": {
-            "prototype": "montage/ui/text.reel",
-            "properties": {
-                "element": {"#": "dependencyName"}
-            },
-            "bindings": {
-                "value": {"<-": "@dependencyList.objectAtCurrentIteration.0"}
-            }
-        },
-
-        "dependencyVersionSpecified": {
-            "prototype": "montage/ui/text.reel",
-            "properties": {
-                "element": {"#": "dependencyVersionSpecified"}
-            },
-            "bindings": {
-                "value": {"<-": "@dependencyList.objectAtCurrentIteration.1"}
+                "editingDocument": {"<-": "@owner.currentDocument"}
             }
         }
+
     }
     </script>
 </head>
 <body>
-    <div data-montage-id="package-editor" class="PackageEditor">
-        <h1 data-montage-id="packageName" class="PackageEditor-title"></h1>
-        
-        <dl>
-            <dt class="PackageEditor-versionLabel">Version</dt>
-            <dd class="PackageEditor-version"><span data-montage-id="packageVersion"></span></dd>
-        </dl>
-
-        <h2 class="PackageEditor-titleSub">Dependencies</h2>
-        <ul data-montage-id="dependencyList" class="PackageEditor-dependencyList">
-            <li class="PackageEditor-dependencyList-item">
-                <strong data-montage-id="dependencyName" class="PackageEditor-dependencyLabel"></strong>
-                <span data-montage-id="dependencyVersionSpecified" class="PackageEditor-version"></span>
-            </li>
-        </ul>
+    <div id="packageEditor" data-montage-id="package-editor" class="PackageEditor">
+        <section data-montage-id="packageInformation" class="PackageEditor-column"></section>
+        <section data-montage-id="packageDependencies" class="PackageEditor-column"></section>
+        <aside data-montage-id="packageActions" class="PackageEditor-column">
+            <div data-montage-id="dependencyDetails" class="packageEditorAsideColumn"></div>
+            <div data-montage-id="searchPackages" class="packageEditorAsideColumn"></div>
+        </aside>
     </div>
 </body>
 </html>

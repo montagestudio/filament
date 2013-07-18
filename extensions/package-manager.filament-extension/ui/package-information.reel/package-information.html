@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="package-information.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "package-information"},
+                "privacyButton": {"@": "packagePrivacy"}
+            }
+        },
+
+        "packagePrivacy": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "packageInformationPrivacyButton"},
+                "label": "private"
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "packageName": {
+            "prototype": "./package-information-box.reel",
+            "properties": {
+                "element": {"#": "packageInformationBoxName"},
+                "title": "Name:"
+            },
+            "bindings": {
+                "value": {"<-": "@owner.editingDocument.packageName"},
+                "pattern": {"<-": "@owner.editingDocument.checkPackageName"}
+            },
+            "listeners": [
+                {
+                    "type": "changed",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "packageVersion": {
+            "prototype": "./package-information-box.reel",
+            "properties": {
+                "element": {"#": "packageInformationBoxVersion"},
+                "title": "Version:"
+            },
+            "bindings": {
+                "value": {"<-": "@owner.editingDocument.packageVersion"},
+                "pattern": {"<-": "@owner.editingDocument.checkPackageVersion"}
+            },
+            "listeners": [
+                {
+                    "type": "changed",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "packageAuthor": {
+            "prototype": "./package-information-author.reel",
+            "properties": {
+                "element": {"#": "packageInformationBoxAuthor"}
+            },
+            "bindings": {
+                "author": {"<-": "@owner.editingDocument.packageAuthor"}
+            },
+            "listeners": [
+                {
+                    "type": "changed",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "packageDescription": {
+            "prototype": "./package-information-description.reel",
+            "properties": {
+                "element": {"#": "packageInformationBoxDescription"},
+                "title": "Description:"
+            },
+            "bindings": {
+                "value": {"<-": "@owner.editingDocument.packageDescription"}
+            },
+            "listeners": [
+                {
+                    "type": "changed",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "packageLicense": {
+            "prototype": "./package-information-box.reel",
+            "properties": {
+                "element": {"#": "packageInformationBoxLicense"},
+                "title": "License:"
+            },
+            "bindings": {
+                "value": {"<-": "@owner.editingDocument.packageLicense"}
+            },
+            "listeners": [
+                {
+                    "type": "changed",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+    }
+    </script>
+</head>
+<body>
+    <section data-montage-id="package-information">
+        <header class="Toolbar Toolbar--top Box-title">
+            <span>Package Information</span>
+            <button data-montage-id="packageInformationPrivacyButton" class="PackageInformationColumn-privacyButton"></button>
+        </header>
+        <div class="PackageEditorColumnContent">
+            <div data-montage-id="packageInformationBoxName"></div>
+            <div data-montage-id="packageInformationBoxVersion"></div>
+            <div data-montage-id="packageInformationBoxAuthor"></div>
+            <div data-montage-id="packageInformationBoxDescription"></div>
+            <div data-montage-id="packageInformationBoxLicense"></div>
+        </div>
+    </section>
+</body>
+</html>

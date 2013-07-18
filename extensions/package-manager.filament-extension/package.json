@@ -5,6 +5,7 @@
     "dependencies": {
         "montage": "*",
         "filament-extension": "*",
-        "palette": "*"
+        "palette": "*",
+        "matte": "*"
     }
 }
