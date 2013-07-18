@@ -105,7 +105,7 @@
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "0 == @owner.nodeInfo.children.length && @owner.nodeInfo.canAppendToNode"}
+                "condition": {"<-": "0 == @owner.nodeInfo.children.length && @owner.nodeInfo.canAppendToNode && !@montageId.isEditing"}
             }
         },
 
@@ -133,7 +133,7 @@
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "@owner.nodeInfo.canInsertBeforeNode"}
+                "condition": {"<-": "@owner.nodeInfo.canInsertBeforeNode && && !@montageId.isEditing"}
             }
         },
 
@@ -161,7 +161,7 @@
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "!@owner.nodeInfo.nextSibling &&  @owner.nodeInfo.canInsertAfterNode"}
+                "condition": {"<-": "!@owner.nodeInfo.nextSibling &&  @owner.nodeInfo.canInsertAfterNode && !@montageId.isEditing"}
             }
         },
 
