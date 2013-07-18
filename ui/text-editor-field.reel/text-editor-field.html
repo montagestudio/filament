@@ -14,7 +14,10 @@
                     "type": "keyPress",
                     "listener": {"@": "owner"}
                 }
-            ]
+            ],
+            "bindings": {
+                "classList.has('TextEditorField--editing')": {"<-": "@owner.isEditing"}
+            }
         },
         "inputText": {
             "prototype": "matte/ui/input-text.reel",

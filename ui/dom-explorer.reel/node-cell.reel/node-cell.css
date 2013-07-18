@@ -35,6 +35,10 @@
     font-style: italic;
 }
 
+.NodeCell-segment-item--montageId.TextEditorField--editing {
+    z-index: 10;
+}
+
 .NodeCell-segment-item--component {
     padding-left: 10px;
     border-radius: 0 11px 11px 0;
