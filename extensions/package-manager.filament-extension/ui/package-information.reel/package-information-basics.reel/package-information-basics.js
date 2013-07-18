@@ -16,6 +16,10 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
         }
     },
 
+    title: {
+        value: null
+    },
+
     name: {
         value: null
     },

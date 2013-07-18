@@ -14,6 +14,10 @@ exports.PackageInformationDescription = Component.specialize(/** @lends PackageI
         }
     },
 
+    title: {
+        value: null
+    },
+
     value: {
         value: null
     },

@@ -14,7 +14,8 @@
         "packageBasics": {
             "prototype": "./package-information-basics.reel",
             "properties": {
-                "element": {"#": "packageInformationBoxBasics"}
+                "element": {"#": "packageInformationBoxBasics"},
+                "title": "Basics"
             },
             "bindings": {
                 "name": {"<-": "@owner.editingDocument.packageName"},
@@ -37,7 +38,8 @@
         "packageAuthor": {
             "prototype": "./package-information-author.reel",
             "properties": {
-                "element": {"#": "packageInformationBoxAuthor"}
+                "element": {"#": "packageInformationBoxAuthor"},
+                "title": "Author"
             },
             "bindings": {
                 "author": {"<-": "@owner.editingDocument.packageAuthor"}
@@ -53,7 +55,8 @@
         "packageDescription": {
             "prototype": "./package-information-description.reel",
             "properties": {
-                "element": {"#": "packageInformationBoxDescription"}
+                "element": {"#": "packageInformationBoxDescription"},
+                "title": "Description"
             },
             "bindings": {
                 "value": {"<-": "@owner.editingDocument.packageDescription"}

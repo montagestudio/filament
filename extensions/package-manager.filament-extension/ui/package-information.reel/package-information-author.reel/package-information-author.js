@@ -15,6 +15,10 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
         }
     },
 
+    title: {
+        value: null
+    },
+
     _author: {
         value: null
     },

@@ -11,11 +11,13 @@
             }
         },
 
-        "boxTitle": {
+        "title": {
             "prototype": "montage/ui/text.reel",
             "properties": {
-                "element": {"#": "packageInformationBoxTitle"},
-                "value":  "Description"
+                "element": {"#": "packageInformationBoxTitle"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.title"}
             }
         },
 
