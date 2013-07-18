@@ -11,21 +11,14 @@ var Montage = require("montage").Montage,
  */
 exports.PackageInformation = Montage.create(Component,/** @lends PackageInformation# */ {
 
-
     editingDocument: {
         value: null
     },
 
-    willDraw:{
-        value: function () {
-            this.updatePrivacyState();
-        }
-    },
-
-    handlePackageNameChanged: {
+    handleNameChanged: {
         value: function (event) {
             var element = event.detail.source;
-
+            console.log('yep');
             if (element && PackageTools.isNameValid(element.value)) {
                 this.editingDocument.packageName = element.value;
                 element.setCustomValidity('');
@@ -35,7 +28,7 @@ exports.PackageInformation = Montage.create(Component,/** @lends PackageInformat
         }
     },
 
-    handlePackageVersionChanged: {
+    handleVersionChanged: {
         value: function (event) {
             var element = event.detail.source;
 
@@ -65,35 +58,7 @@ exports.PackageInformation = Montage.create(Component,/** @lends PackageInformat
                 this.editingDocument.packageAuthor = author;
             }
         }
-    },
 
-    handlePackageLicenseChanged: {
-        value: function (event) {
-            var license = event.target.value;
-
-            if (license) {
-                this.editingDocument.packageLicense = license;
-            }
-        }
-    },
-
-    updatePrivacyState: {
-        value: function () {
-            if (this.privacyButton) {
-                if (this.editingDocument.packagePrivacy) {
-                    this.privacyButton.classList.add("privateState");
-                } else {
-                    this.privacyButton.classList.remove("privateState");
-                }
-            }
-        }
-    },
-
-    handlePackagePrivacyAction: {
-        value: function (event) {
-            this.editingDocument.packagePrivacy = !this.editingDocument.packagePrivacy;
-            this.updatePrivacyState(); // display modification
-        }
     }
 
 });

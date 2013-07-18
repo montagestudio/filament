@@ -1,3 +1,38 @@
-.PackageInformationColumn-privacyButton{
-    height: 25px !important;
+.Box {
+    margin-bottom: 10px;
+}
+
+.Box-title {
+    border-radius: 4px 4px 0 0;
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.8);
+    border-bottom: 1px solid hsla(0,0%,0%,.1);
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,1);
+    background: -webkit-linear-gradient( hsl(0,0%,99%), hsl(0,0%,96%) );
+    color: hsl(0,0%,50%);
+    height: 25px;
+    line-height: 25px;
+    font-size: 13px;
+    text-indent: 10px;
+    font-weight: bold;
+}
+
+.BoxContent {
+    padding: 20px;
+    background: hsl(0,0%,94%);
+    border-radius: 0 0 4px 4px;
+    display: -webkit-flex;
+    -webkit-flex: 1;
+    -webkit-flex-direction: column;
+    -webkit-align-items: center;
+    -webkit-justify-content: center;
+}
+
+.BoxContent ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.BoxContent input {
+    text-align: center;
 }
