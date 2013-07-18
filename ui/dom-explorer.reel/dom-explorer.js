@@ -36,15 +36,6 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         value: null
     },
 
-    enterDocument: {
-        value: function (firstTime) {
-            if (firstTime) {
-                this._elementCreationForm.addEventListener("submit", this);
-                this._elementCreationForm.addEventListener("reset", this);
-            }
-        }
-    },
-
     isCreatingElement: {
         get: function () {
             return !!this._deferredElement;
@@ -89,7 +80,7 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
             this._deferredElement = Promise.defer();
 
             setTimeout(function () {
-                self.templateObjects.tagField.focus();
+                self.templateObjects.tagField.element.focus();
             }, 100);
 
             this._deferredElement.promise.then(function (newNode) {
@@ -102,30 +93,35 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
-    handleSubmit: {
+    handleTagFieldAction: {
         value: function (evt) {
-            if (this._elementCreationForm === evt.target) {
-                evt.stop();
-                if (this.tag) {
-                    var html = emmet.expandAbbreviation(this.tag);
-                    var newNode = this.editingDocument.createTemplateNode(html);
-                    this._deferredElement.resolve(newNode);
-                }
+            this._createElement();
+        }
+    },
+
+    handleAddElementButtonAction: {
+        value: function (evt) {
+            this._createElement();
+        }
+    },
+
+    _createElement: {
+        value: function () {
+            if (this.tag) {
+                var html = emmet.expandAbbreviation(this.tag);
+                var newNode = this.editingDocument.createTemplateNode(html);
+                this._deferredElement.resolve(newNode);
             }
         }
     },
 
     //TODO handle esc to cancel as well
-    handleReset: {
+    handleCancelElementButtonAction: {
         value: function (evt) {
-            if (this._elementCreationForm === evt.target) {
-                evt.stop();
-
-                if (this._deferredElement) {
-                    this._deferredElement.resolve(null);
-                    this._deferredElement = null;
-                    this.tag = null;
-                }
+            if (this._deferredElement) {
+                this._deferredElement.resolve(null);
+                this._deferredElement = null;
+                this.tag = null;
             }
         }
     },

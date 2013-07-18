@@ -8,8 +8,7 @@
         "owner": {
             "properties": {
                 "element": {"#": "dom-explorer"},
-                "nodeTreeController": {"@": "nodeTreeController"},
-                "_elementCreationForm": {"#": "elementCreationForm"}
+                "nodeTreeController": {"@": "nodeTreeController"}
             },
             "listeners": [
                 {
@@ -53,7 +52,39 @@
             },
             "bindings": {
                 "value": {"<->": "@owner.tag"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "addElementButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "addElementButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "cancelElementButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "cancelElementButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "nodeTreeController": {
@@ -96,11 +127,11 @@
             <div data-montage-id="nodeCell" data-arg="treeNode"></div>
         </div>
         <footer data-montage-id="isCreatingElementCondition" class="DomExplorer-footer">
-            <form data-montage-id="elementCreationForm" class="AddElement">
+            <div data-montage-id="elementCreationForm" class="AddElement">
                 <input data-montage-id="tagField" class="AddElement-input" type="text">
-                <button type="submit" class="matte-Button Button AddElement-submit">Add</button>
-                <button type="reset" class="AddElement-reset">×</button>
-            </form>
+                <button type="submit" data-montage-id="addElementButton" class="matte-Button Button AddElement-submit">Add</button>
+                <button type="reset" data-montage-id="cancelElementButton" class="AddElement-reset">×</button>
+            </div>
         </footer>
     </div>
 </body>
