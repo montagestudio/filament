@@ -877,10 +877,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
-    repopulateOnFileSystemChanges: {
-        value: true
-    },
-
     handleFileSystemCreate: {
         value: function (fileUrl, currentStat, previousStat) {
             var parentUrl = fileUrl.substring(0, fileUrl.replace(/\/$/, "").lastIndexOf("/")),
@@ -941,12 +937,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 currentStat: currentStat,
                 previousStat: previousStat
             });
-        }
-    },
-
-    populateFromFileSystem: {
-        value: function () {
-            return Promise.all([this.populateFiles(), this.populateLibrary()]);
         }
     },
 
