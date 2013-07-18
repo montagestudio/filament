@@ -889,6 +889,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 parent.children.push(newFile);
             }
 
+            //TODO try to be more focused about this based upon the file that was created
+            this.populateLibrary().done();
+
             this.dispatchEventNamed("fileSystemChange", true, false, {
                 change: "create",
                 fileUrl: fileUrl,
@@ -918,6 +921,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                 children.splice(children.indexOf(child), 1);
             }
+
+            //TODO try to be more focused about this based upon the file that was deleted
+            this.populateLibrary().done();
 
             this.dispatchEventNamed("fileSystemChange", true, false, {
                 change: "delete",
