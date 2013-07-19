@@ -2,8 +2,7 @@
  * @module ui/package-information-basics.reel
  * @requires montage/ui/component
  */
-var Component = require("montage/ui/component").Component,
-    PackageTools = require('....//../core/package-tools').PackageTools;
+var Component = require("montage/ui/component").Component;
 
 /**
  * @class PackageInformationBasics
@@ -14,6 +13,10 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
         value: function PackageInformationBasics() {
             this.super();
         }
+    },
+
+    editingDocument: {
+        value: null
     },
 
     title: {
@@ -36,33 +39,17 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
         value: null
     },
 
-    willDraw: {
-        value: function () {
-            this.element.addEventListener("input", this);
-
-            if (!PackageTools.isNameValid(this.name)) {
-                this.nameInput.element.setCustomValidity('not valid');
-            }
-
-            if (!PackageTools.isNameValid(this.version)) {
-                this.versionInput.element.setCustomValidity('not valid');
-            }
-        }
+    didDraw: {
+       value: function () {
+           this.addOwnPropertyChangeListener("privacy", this);
+       }
     },
 
-    handleInput: {
-        value: function (event) {
-            var element = event.target;
+    handlePrivacyChange: {
+        value: function (value) {
 
-            if (element) {
-                var property = element.getAttribute('data-property').toLowerCase();
-
-                if (property) {
-
-                    this.dispatchEventNamed(property+"Changed", true, true, {
-                        source: element
-                    });
-                }
+            if (this.editingDocument) {
+                this.editingDocument.setPrivacy(value);
             }
         }
     }

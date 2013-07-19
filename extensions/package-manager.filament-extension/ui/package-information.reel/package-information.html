@@ -18,16 +18,12 @@
                 "title": "Basics"
             },
             "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
                 "name": {"<-": "@owner.editingDocument.packageName"},
                 "version": {"<->": "@owner.editingDocument.packageVersion"},
                 "license": {"<->": "@owner.editingDocument.packageLicense"},
-                "privacy": {"<->": "@owner.editingDocument.packagePrivacy"}
-            },
-            "listeners": [
-                {
-                    "type": "nameChanged",
-                    "listener": {"@": "owner"}
-                },
+                "privacy": {"<-": "@owner.editingDocument.packagePrivacy"}
+            }
         },
 
         "packageAuthor": {
