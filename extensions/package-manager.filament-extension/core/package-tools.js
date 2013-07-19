@@ -24,14 +24,41 @@ exports.PackageTools = Object.create(Object.prototype, {
         }
     },
 
+    _validPersonProperties: {
+        get: function () {
+            return [
+                'name',
+                'email',
+                'url'
+            ];
+        }
+    },
+
+    isPersonEqual: {
+        value: function (a, b) {
+            if (a && b && typeof a === 'object' && typeof b === 'object') {
+                var properties = this._validPersonProperties;
+
+                for (var x in properties) {
+                    if (a[properties[x]] !== b[properties[x]]) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            return false;
+        }
+    },
+
     getValidPerson: {
         value: function (person) {
             if (person && typeof person === 'object' && person.hasOwnProperty('name') && typeof person.name === 'string' && person.name.length > 0) {
 
                 return {
                     name: person.name,
-                    url: (typeof person.url === 'string' && this.isUrlValid(person.url)) ? person.url : '' ,
-                    email: (typeof person.email === 'string' && this.isEmailValid(person.email)) ? person.email : ''
+                    email: (typeof person.email === 'string' && this.isEmailValid(person.email)) ? person.email : '',
+                    url: (typeof person.url === 'string' && this.isUrlValid(person.url)) ? person.url : ''
                 };
             }
             return null;
