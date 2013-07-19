@@ -23,35 +23,76 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
         value: null
     },
 
-    _author: {
-        value: null
+    _name: {
+        value: ''
+    },
+
+    name: {
+        set: function (name) {
+            this._name = (typeof name === 'string') ? name : '';
+            this.dispatchOwnPropertyChange('author', this.author);
+        },
+        get: function () {
+            return this._name;
+        }
+    },
+
+    _url: {
+        value: ''
+    },
+
+    url: {
+        set: function (url) {
+            this._url = (typeof url === 'string') ? url : '';
+            this.dispatchOwnPropertyChange('author', this.author);
+        },
+        get: function () {
+            return this._url;
+        }
+    },
+
+    _email: {
+        value: ''
+    },
+
+    email: {
+        set: function (email) {
+            this._email = (typeof email === 'string') ? email : '';
+            this.dispatchOwnPropertyChange('author', this.author);
+        },
+        get: function () {
+            return this._email;
+        }
     },
 
     author: {
         set: function (author) {
-            this._author = (typeof author === 'object') ? author : {
-                name: '',
-                url: '',
-                email: ''
-            };
+            if (author && typeof author === 'object') {
+                this.name = author.name;
+                this.email = author.email;
+                this.url = author.url;
+            }
         },
         get: function () {
-            return this._author;
+            return {
+                name: this.name,
+                email: this.email,
+                url: this.url
+            };
         }
     },
 
     didDraw: {
         value: function () {
-            this.addPathChangeListener("author.name", this.handleAuthorChange);
-            this.addPathChangeListener("author.url", this.handleAuthorChange);
-            this.addPathChangeListener("author.email", this.handleAuthorChange);
+            this.addOwnPropertyChangeListener("author", this);
         }
     },
 
     handleAuthorChange: {
         value: function (value) {
-            if (this.editingDocument && this.urlElement.element.validity.valid && this.emailElement.element.validity.valid) {
-                this.editingDocument.setProperty('author', this.author);
+
+            if (value && this.editingDocument && this.urlElement.element.validity.valid && this.emailElement.element.validity.valid) {
+                this.editingDocument.setProperty('author', value);
             }
         }
     }
