@@ -19,7 +19,7 @@
             },
             "bindings": {
                 "name": {"<-": "@owner.editingDocument.packageName"},
-                "version": {"<-": "@owner.editingDocument.packageVersion"},
+                "version": {"<->": "@owner.editingDocument.packageVersion"},
                 "license": {"<->": "@owner.editingDocument.packageLicense"},
                 "privacy": {"<->": "@owner.editingDocument.packagePrivacy"}
             },
@@ -28,11 +28,6 @@
                     "type": "nameChanged",
                     "listener": {"@": "owner"}
                 },
-                {
-                    "type": "versionChanged",
-                    "listener": {"@": "owner"}
-                }
-            ]
         },
 
         "packageAuthor": {
