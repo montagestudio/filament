@@ -19,10 +19,10 @@
             },
             "bindings": {
                 "editingDocument": {"<-": "@owner.editingDocument"},
-                "name": {"<-": "@owner.editingDocument.packageName"},
-                "version": {"<->": "@owner.editingDocument.packageVersion"},
-                "license": {"<->": "@owner.editingDocument.packageLicense"},
-                "privacy": {"<-": "@owner.editingDocument.packagePrivacy"}
+                "name": {"<-": "@owner.editingDocument.name"},
+                "version": {"<-": "@owner.editingDocument.version"},
+                "license": {"<-": "@owner.editingDocument.license"},
+                "privacy": {"<-": "@owner.editingDocument.privacy"}
             }
         },
 
@@ -33,14 +33,9 @@
                 "title": "Author"
             },
             "bindings": {
-                "author": {"<-": "@owner.editingDocument.packageAuthor"}
-            },
-            "listeners": [
-                {
-                    "type": "changed",
-                    "listener": {"@": "owner"}
-                }
-            ]
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "author": {"<-": "@owner.editingDocument.author"}
+            }
         },
 
         "packageDescription": {
@@ -50,14 +45,9 @@
                 "title": "Description"
             },
             "bindings": {
-                "value": {"<-": "@owner.editingDocument.packageDescription"}
-            },
-            "listeners": [
-                {
-                    "type": "changed",
-                    "listener": {"@": "owner"}
-                }
-            ]
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "description": {"<-": "@owner.editingDocument.description"}
+            }
         }
     }
     </script>

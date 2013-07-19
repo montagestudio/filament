@@ -15,6 +15,10 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
         }
     },
 
+    editingDocument: {
+        value: null
+    },
+
     title: {
         value: null
     },
@@ -25,37 +29,29 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
 
     author: {
         set: function (author) {
-            if(typeof author === 'object') {
-                this._author = author;
-            } else {
-                this._author = {};
-            }
+            this._author = (typeof author === 'object') ? author : {
+                name: '',
+                url: '',
+                email: ''
+            };
         },
         get: function () {
             return this._author;
         }
     },
 
-    willDraw: {
+    didDraw: {
         value: function () {
-            this.element.addEventListener("input", this);
+            this.addPathChangeListener("author.name", this.handleAuthorChange);
+            this.addPathChangeListener("author.url", this.handleAuthorChange);
+            this.addPathChangeListener("author.email", this.handleAuthorChange);
         }
     },
 
-    handleInput: {
-        value: function (event) {
-            var element = event.target;
-
-            if (element && element.validity.valid) {
-                var property = element.getAttribute('data-property').toLowerCase();
-                if (property) {
-
-                    this.author[property] = element.value;
-
-                    this.dispatchEventNamed("changed", true, true, {
-                        source: element
-                    });
-                }
+    handleAuthorChange: {
+        value: function (value) {
+            if (this.editingDocument && this.urlElement.element.validity.valid && this.emailElement.element.validity.valid) {
+                this.editingDocument.setProperty('author', this.author);
             }
         }
     }

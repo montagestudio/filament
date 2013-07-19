@@ -7,7 +7,9 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "package-information-author"}
+                "element": {"#": "package-information-author"},
+                "urlElement": {"@": "authorUrl"},
+                "emailElement": {"@": "authorEmail"}
             }
         },
 
@@ -27,7 +29,7 @@
                 "element": {"#": "packageInformationAuthorName"}
             },
             "bindings": {
-                "value": {"<-": "@owner.author.name"}
+                "value": {"<->": "@owner.author.name"}
             }
         },
 
@@ -37,7 +39,7 @@
                 "element": {"#": "packageInformationAuthorEmail"}
             },
             "bindings": {
-                "value": {"<-": "@owner.author.email"}
+                "value": {"<->": "@owner.author.email"}
             }
         },
 
@@ -47,7 +49,7 @@
                 "element": {"#": "packageInformationAuthorUrl"}
             },
             "bindings": {
-                "value": {"<-": "@owner.author.url"}
+                "value": {"<->": "@owner.author.url"}
             }
         }
     }
@@ -60,15 +62,15 @@
             <ul>
                 <li class="packageInformationAuthor-row">
                     <label for="packageInformationAuthorName">Name:</label>
-                    <input id="packageInformationAuthorName" data-montage-id="packageInformationAuthorName" data-property="name" type="text" class="matte-InputText" />
+                    <input id="packageInformationAuthorName" data-montage-id="packageInformationAuthorName" type="text" class="matte-InputText" />
                 </li>
                 <li class="packageInformationAuthor-row">
                     <label for="packageInformationAuthorEmail">Email:</label>
-                    <input id="packageInformationAuthorEmail" data-montage-id="packageInformationAuthorEmail" data-property="email" type="text" class="matte-InputText" pattern="^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$" />
+                    <input id="packageInformationAuthorEmail" data-montage-id="packageInformationAuthorEmail" type="text" class="matte-InputText" pattern="^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$" />
                 </li>
                 <li class="packageInformationAuthor-row">
                     <label for="packageInformationAuthorUrl">Url:</label>
-                    <input id="packageInformationAuthorUrl" data-montage-id="packageInformationAuthorUrl" data-property="url" type="text" class="matte-InputText" pattern="^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$" />
+                    <input id="packageInformationAuthorUrl" data-montage-id="packageInformationAuthorUrl" type="text" class="matte-InputText" pattern="^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$" />
                 </li>
             </ul>
         </div>

@@ -14,26 +14,30 @@ exports.PackageInformationDescription = Component.specialize(/** @lends PackageI
         }
     },
 
+    editingDocument: {
+        value: null
+    },
+
     title: {
         value: null
     },
 
-    value: {
+    description: {
         value: null
     },
 
-    willDraw: {
+    didDraw: {
         value: function () {
-            this.element.addEventListener("input", this);
+            this.addOwnPropertyChangeListener("description", this);
         }
     },
 
-    handleInput: {
-        value: function (event) {
-            this.value = event.target.value;
-            this.dispatchEventNamed("changed", true, true, {
-                source: event.target
-            });
+    handleDescriptionChange: {
+        value: function (value) {
+            console.log(2);
+            if (this.editingDocument) {
+                this.editingDocument.setProperty('description', value);
+            }
         }
     }
 });

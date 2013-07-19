@@ -40,16 +40,46 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
     },
 
     didDraw: {
-       value: function () {
+        value: function () {
+           this.addOwnPropertyChangeListener("name", this);
+           this.addOwnPropertyChangeListener("version", this);
+           this.addOwnPropertyChangeListener("license", this);
            this.addOwnPropertyChangeListener("privacy", this);
-       }
+        }
+    },
+
+    handleNameChange: {
+        value: function (value) {
+            if (this.editingDocument) {
+                if (this.editingDocument.setProperty('name', value)) {
+                    this.nameElement.element.setCustomValidity('');
+                } else {
+                    this.nameElement.element.setCustomValidity('not valid');
+                }
+            }
+        }
+    },
+
+    handleVersionChange: {
+        value: function (value) {
+            if (this.editingDocument) {
+                this.editingDocument.setProperty('version', value);
+            }
+        }
+    },
+
+    handleLicenseChange: {
+        value: function (value) {
+            if (this.editingDocument) {
+                this.editingDocument.setProperty('license', value);
+            }
+        }
     },
 
     handlePrivacyChange: {
         value: function (value) {
-
             if (this.editingDocument) {
-                this.editingDocument.setPrivacy(value);
+                this.editingDocument.setProperty('privacy', value);
             }
         }
     }
