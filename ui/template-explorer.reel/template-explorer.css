@@ -31,3 +31,8 @@
     margin: 0;
     padding: 6px;
 }
+
+.TemplateExplorerTools .filament-ButtonGroup {
+    height: 26px;
+    margin-right: 8px;
+}
