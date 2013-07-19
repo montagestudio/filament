@@ -34,7 +34,6 @@ exports.PackageInformationDescription = Component.specialize(/** @lends PackageI
 
     handleDescriptionChange: {
         value: function (value) {
-            console.log(2);
             if (this.editingDocument) {
                 this.editingDocument.setProperty('description', value);
             }

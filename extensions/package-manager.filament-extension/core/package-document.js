@@ -101,13 +101,24 @@ exports.PackageDocument = EditingDocument.specialize( {
     setProperty: {
         value: function (key, value) {
             if (typeof key === 'string' && typeof value !== 'undefined' && this._getAllowedKeys.indexOf(key) >= 0) {
-                if (typeof this[key] !== 'undefined') {
+
+                if (this[key] && typeof this[key] === 'object' && !PackageTools.isPersonEqual(this[key], value)) { // case object person
+                    this[key] = value;
+
+                    if (PackageTools.isPersonEqual(this[key], value)) { // if modification has been accepted
+                        this.undoManager.register("Set Property", Promise.resolve([this.setProperty, this, key, value]));
+                        return true;
+                    }
+
+                } else if(this[key] !== value) { // if the new value is different from the old one
                     this[key] = value;
 
                     if (this[key] === value) {
                         this.undoManager.register("Set Property", Promise.resolve([this.setProperty, this, key, value]));
                         return true;
                     }
+                } else { // no need modifications
+                    return true;
                 }
             }
             return false;
