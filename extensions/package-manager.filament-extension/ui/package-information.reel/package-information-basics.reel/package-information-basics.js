@@ -54,9 +54,9 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
     _nameValidity: {
         value: function (valid) {
             if (valid) {
-                this.nameElement.element.setCustomValidity('');
+                this.nameTextField.element.setCustomValidity('');
             } else {
-                this.nameElement.element.setCustomValidity('not valid');
+                this.nameTextField.element.setCustomValidity('not valid');
             }
         }
     },
