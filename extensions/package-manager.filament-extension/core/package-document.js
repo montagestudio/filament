@@ -18,10 +18,6 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    sharedProjectController: {
-        value: null
-    },
-
     editorType: {
         get: function () {
             return PackageEditor;
@@ -38,7 +34,15 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    _package: {
+    init: {
+        value: function (fileUrl, packageRequire) {
+            var self = this.super.call(this, fileUrl, packageRequire);
+            this._package = packageRequire.packageDescription;
+            return self;
+        }
+    },
+
+    sharedProjectController: {
         value: null
     },
 
@@ -67,6 +71,10 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
+    _package: {
+        value: null
+    },
+
     _dependencies: {
         value: null
     },
@@ -77,16 +85,41 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    init: {
-        value: function (fileUrl, packageRequire) {
-            var self = this.super.call(this, fileUrl, packageRequire);
-            this._package = packageRequire.packageDescription;
-
-            return self;
+    _getAllowedKeys: {
+        get: function () {
+            return [
+                'name',
+                'version',
+                'privacy',
+                'license',
+                'description',
+                'author'
+            ];
         }
     },
 
-    packageName: {
+    setProperty: {
+        value: function (key, value) {
+            if (typeof key === 'string' && typeof value !== 'undefined' && this._getAllowedKeys.indexOf(key) >= 0) {
+                if (typeof this[key] !== 'undefined') {
+                    this[key] = value;
+
+                    if (this[key] === value) {
+                        this.undoManager.register("Set Property", Promise.resolve([this.setProperty, this, key, value]));
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    },
+
+    /*
+     * Properties which can be set by the 'setProperty' function
+     *
+     */
+
+    name: {
         set: function (name) {
             if (PackageTools.isNameValid(name)) {
                 this._package.name = name;
@@ -98,7 +131,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    packageVersion: {
+    version: {
         set: function (version) {
             if (PackageTools.isVersionValid(version)) {
                 this._package.version = version;
@@ -110,7 +143,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    packageDescription: {
+    description: {
         set: function (description) {
             if (typeof description === 'string') {
                 this._package.description = description;
@@ -122,7 +155,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    packageAuthor: {
+    author: {
         set: function (author) {
             author = PackageTools.getValidPerson(author);
             if (author){
@@ -135,12 +168,36 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
+    license: {
+        set: function (license) {
+            if (typeof license === 'string') {
+                this._package.license = license;
+                this._modificationsHaveBeenAccepted();
+            }
+        },
+        get: function () {
+            return this._package.license;
+        }
+    },
+
+    privacy: {
+        set: function (privacy) {
+            if (typeof privacy === "boolean") {
+                this._package.private = privacy;
+                this._modificationsHaveBeenAccepted();
+            }
+        },
+        get: function () {
+            return this._package.private;
+        }
+    },
+
     addMaintainer: {
         value: function (maintainer) {
             maintainer = PackageTools.getValidPerson(maintainer);
 
             if (maintainer) {
-                if (this.findMaintainerIndex(maintainer.name) < 0) { // name must be different
+                if (this._findMaintainerIndex(maintainer.name) < 0) { // name must be different
                     if (!this._package.maintainers) {
                         this._package.maintainers = []; // Array of persons
                     }
@@ -151,7 +208,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    findMaintainerIndex: {
+    _findMaintainerIndex: {
         value: function (name) {
             if(this._package.maintainers && name && name.length > 0){
                 var i = this._package.maintainers.length;
@@ -168,7 +225,7 @@ exports.PackageDocument = EditingDocument.specialize( {
     removeMaintainer: {
         value: function (name) {
             if (typeof name === "string"){
-                var index = this.findMaintainerIndex(name);
+                var index = this._findMaintainerIndex(name);
 
                 if (index >= 0) {
                     var response = this._package.maintainers.splice(index, 1);
@@ -185,30 +242,6 @@ exports.PackageDocument = EditingDocument.specialize( {
     packageMaintainers: {
         get: function () {
             return this._package.maintainers;
-        }
-    },
-
-    packageLicense: {
-        set: function (license) {
-            if (typeof license === 'string') {
-                this._package.license = license;
-                this._modificationsHaveBeenAccepted();
-            }
-        },
-        get: function () {
-            return this._package.license;
-        }
-    },
-
-    packagePrivacy: {
-        set: function (privacy) {
-            if (typeof privacy === "boolean") {
-                this._package.private = privacy;
-                this._modificationsHaveBeenAccepted();
-            }
-        },
-        get: function () {
-            return this._package.private;
         }
     },
 
