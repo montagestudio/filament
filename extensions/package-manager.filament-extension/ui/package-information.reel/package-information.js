@@ -18,7 +18,7 @@ exports.PackageInformation = Montage.create(Component,/** @lends PackageInformat
     handleNameChanged: {
         value: function (event) {
             var element = event.detail.source;
-            console.log('yep');
+
             if (element && PackageTools.isNameValid(element.value)) {
                 this.editingDocument.packageName = element.value;
                 element.setCustomValidity('');
@@ -54,6 +54,7 @@ exports.PackageInformation = Montage.create(Component,/** @lends PackageInformat
     handlePackageAuthorChanged: {
         value: function (event) {
             var author = event.target.author;
+
             if (author) {
                 this.editingDocument.packageAuthor = author;
             }

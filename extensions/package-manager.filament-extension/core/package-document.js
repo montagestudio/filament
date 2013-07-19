@@ -18,13 +18,14 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-
     sharedProjectController: {
         value: null
     },
 
-    _packageDescription: {
-        value: null
+    editorType: {
+        get: function () {
+            return PackageEditor;
+        }
     },
 
     load: {
@@ -41,9 +42,15 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: null
     },
 
-    backendPlugin: {
+    _backendPlugin: {
         value: function () {
             return (this.sharedProjectController) ? this.sharedProjectController.environmentBridge.backend.get("package-manager") : null;
+        }
+    },
+
+    backendPlugin: {
+        get: function () {
+            return this._backendPlugin;
         }
     },
 
@@ -242,24 +249,6 @@ exports.PackageDocument = EditingDocument.specialize( {
                     self._changeCount = 0;
                     return value;
                 });
-        }
-    }
-
-}, {
-
-    load: {
-        value: function (fileUrl, packageUrl) {
-            var self = this;
-
-            return require.loadPackage(packageUrl).then(function (packageRequire) {
-                return self.create().init(fileUrl, packageRequire);
-            });
-        }
-    },
-
-    editorType: {
-        get: function () {
-            return PackageEditor;
         }
     }
 
