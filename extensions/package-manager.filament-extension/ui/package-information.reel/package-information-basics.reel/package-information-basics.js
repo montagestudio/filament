@@ -2,7 +2,8 @@
  * @module ui/package-information-basics.reel
  * @requires montage/ui/component
  */
-var Component = require("montage/ui/component").Component;
+var Component = require("montage/ui/component").Component,
+    PackageTools = require('../../../core/package-tools').PackageTools;
 
 /**
  * @class PackageInformationBasics
@@ -41,21 +42,29 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
 
     didDraw: {
         value: function () {
-           this.addOwnPropertyChangeListener("name", this);
-           this.addOwnPropertyChangeListener("version", this);
-           this.addOwnPropertyChangeListener("license", this);
-           this.addOwnPropertyChangeListener("privacy", this);
+            this.addOwnPropertyChangeListener("name", this);
+            this.addOwnPropertyChangeListener("version", this);
+            this.addOwnPropertyChangeListener("license", this);
+            this.addOwnPropertyChangeListener("privacy", this);
+
+            this._nameValidity(PackageTools.isNameValid(this.name)); // If the name has been modified manually within the package.json file
+        }
+    },
+
+    _nameValidity: {
+        value: function (valid) {
+            if (valid) {
+                this.nameElement.element.setCustomValidity('');
+            } else {
+                this.nameElement.element.setCustomValidity('not valid');
+            }
         }
     },
 
     handleNameChange: {
         value: function (value) {
             if (this.editingDocument) {
-                if (this.editingDocument.setProperty('name', value)) {
-                    this.nameElement.element.setCustomValidity('');
-                } else {
-                    this.nameElement.element.setCustomValidity('not valid');
-                }
+                this._nameValidity(this.editingDocument.setProperty('name', value));
             }
         }
     },
