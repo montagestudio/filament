@@ -14,17 +14,17 @@ exports.PackageTools = Object.create(Object.prototype, {
 
     isUrlValid: {
         value: function (url) {
-            return (typeof url === 'string') ? (/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/).test(url) : false;
+            return (typeof url === 'string') ? (/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w\.\-]*)*\/?$/).test(url) : false;
         }
     },
 
     isEmailValid: {
         value: function (email) {
-            return (typeof email === 'string') ? (/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/).test(email) : false;
+            return (typeof email === 'string') ? (/^([a-z0-9_\.\-]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/).test(email) : false;
         }
     },
 
-     getValidPerson: {
+    getValidPerson: {
         value: function (person) {
             if (person && typeof person === 'object' && person.hasOwnProperty('name') && typeof person.name === 'string' && person.name.length > 0) {
 
