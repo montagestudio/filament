@@ -12,6 +12,11 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
     constructor: {
         value: function PackageInformationAuthor() {
             this.super();
+            this._author = {
+                name: '',
+                email: '',
+                url: ''
+            };
         }
     },
 
@@ -23,62 +28,50 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
         value: null
     },
 
-    _name: {
-        value: ''
-    },
-
     name: {
         set: function (name) {
-            this._name = (typeof name === 'string') ? name : '';
+            this._author.name = (typeof name === 'string') ? name : '';
             this.dispatchOwnPropertyChange('author', this.author);
         },
         get: function () {
-            return this._name;
+            return this._author.name;
         }
-    },
-
-    _url: {
-        value: ''
     },
 
     url: {
         set: function (url) {
-            this._url = (typeof url === 'string') ? url : '';
+            this._author.url = (typeof url === 'string') ? url : '';
             this.dispatchOwnPropertyChange('author', this.author);
         },
         get: function () {
-            return this._url;
+            return this._author.url;
         }
-    },
-
-    _email: {
-        value: ''
     },
 
     email: {
         set: function (email) {
-            this._email = (typeof email === 'string') ? email : '';
+            this._author.email = (typeof email === 'string') ? email : '';
             this.dispatchOwnPropertyChange('author', this.author);
         },
         get: function () {
-            return this._email;
+            return this._author.email;
         }
+    },
+
+    _author: {
+        value: null
     },
 
     author: {
         set: function (author) {
             if (author && typeof author === 'object') {
-                this.name = author.name;
-                this.email = author.email;
-                this.url = author.url;
+                this._author.name = author.name;
+                this._author.email = author.email;
+                this._author.url = author.url;
             }
         },
         get: function () {
-            return {
-                name: this.name,
-                email: this.email,
-                url: this.url
-            };
+            return this._author;
         }
     },
 
@@ -90,7 +83,6 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
 
     handleAuthorChange: {
         value: function (value) {
-
             if (value && this.editingDocument && this.urlTextField.element.validity.valid && this.emailTextField.element.validity.valid) {
                 this.editingDocument.setProperty('author', value);
             }
