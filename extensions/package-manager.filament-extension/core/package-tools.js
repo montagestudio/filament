@@ -39,12 +39,11 @@ exports.PackageTools = Object.create(Object.prototype, {
             if (a && b && typeof a === 'object' && typeof b === 'object') {
                 var properties = this._validPersonProperties;
 
-                for (var i = 0; i < properties.length; i++) {
+                for (var i = 0, length = properties.length; i < length; i++) {
                     if (a[properties[i]] !== b[properties[i]]) {
                         return false;
                     }
                 }
-
                 return true;
             }
             return false;

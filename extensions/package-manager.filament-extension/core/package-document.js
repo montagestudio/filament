@@ -3,6 +3,15 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     PackageTools = require('./package-tools').PackageTools,
     Promise = require("montage/core/promise").Promise;
 
+var DEPENDENCY_TYPE_REGULAR = 'regular',
+    DEPENDENCY_TYPE_OPTIONAL = 'optional',
+    DEPENDENCY_TYPE_BUNDLE = 'bundle',
+    DEPENDENCY_TYPE_DEV = 'dev',
+	ERROR_DEPENDENCY_MISSING = 1000,
+    ERROR_VERSION_INVALID = 1001,
+    ERROR_FILE_INVALID = 1002,
+    ERROR_DEPENDENCY_EXTRANEOUS = 1003;
+
 exports.PackageDocument = EditingDocument.specialize( {
 
     constructor: {
@@ -38,6 +47,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function (fileUrl, packageRequire) {
             var self = this.super.call(this, fileUrl, packageRequire);
             this._package = packageRequire.packageDescription;
+            this.getDependencies(); // invoke the custom list command, which check every dependencies installed.
             return self;
         }
     },
@@ -82,6 +92,76 @@ exports.PackageDocument = EditingDocument.specialize( {
     dependencies: {
         get : function () {
             return this._dependencies;
+        }
+    },
+
+    _fixDependencyError: {
+        value: function (dependency) {
+            if (!!dependency.extraneous) { // if this dependency is missing within the package.json file, then fix it.
+                this._package.dependencies[dependency.name] = dependency.versionInstalled;
+
+                for (var i = 0, length = dependency.problems.length; i < length; i++) { // remove the error from the errors containers.
+                    var error = dependency.problems[i];
+
+                    if (error.name === dependency.name && error.type === ERROR_DEPENDENCY_EXTRANEOUS) {
+                        dependency.problems.splice(parseInt(i, 10),1);
+                        break;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+    },
+
+    _classifyDependencies: {
+        value: function (dependencies, fixError) {
+            if (dependencies) {
+                var needSave = false;
+
+                for (var x in dependencies) {
+                    var dependency = dependencies[x];
+
+                    if (fixError === true) {
+                        var found = this._fixDependencyError(dependency);
+
+                        if (!needSave && found) {
+                            needSave = true;
+                        }
+                    }
+
+                    if (dependency.hasOwnProperty('type')) {
+                        if (!dependency.missing && !dependency.extraneous && !dependency.jsonFileMissing && !dependency.jsonFileError) { // Managing errors is coming, display just the valid ones
+                            if (dependency.type === DEPENDENCY_TYPE_DEV) {
+                                this._dependencies.dev.push(dependency);
+                            } else if (dependency.type === DEPENDENCY_TYPE_OPTIONAL) {
+                                this._dependencies.optional.push(dependency);
+                            } else if (dependency.type === DEPENDENCY_TYPE_BUNDLE) {
+                                this._dependencies.bundle.push(dependency);
+                            } else {
+                                this._dependencies.regular.push(dependency);
+                            }
+
+                        }
+                    }
+                }
+
+                if (needSave === true) { // needs to save modification.
+                    this.saveModification();
+                }
+            }
+        }
+    },
+
+    getDependencies: {
+        value: function () {
+            var self = this;
+
+            this.backendPlugin().invoke("listDependencies", this.projectUrl).then(function(dependencies) {
+                self._classifyDependencies(dependencies, false); // classify dependencies
+            }, function (er) {
+                //TODO
+            }).done();
         }
     },
 
@@ -271,7 +351,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             this._saveTimer = setTimeout(function(){
                 self._saveTimer = null;
                 self.saveModification();
-            }, 1000);
+            }, 400);
         }
     },
 
