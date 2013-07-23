@@ -19,6 +19,16 @@
             "bindings": {
                 "editingDocument": {"<-": "@owner.currentDocument"}
             }
+        },
+
+        "packageDependencies": {
+            "prototype": "../package-dependencies.reel",
+            "properties": {
+                "element": {"#": "packageDependencies"}
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.currentDocument"}
+            }
         }
 
     }
