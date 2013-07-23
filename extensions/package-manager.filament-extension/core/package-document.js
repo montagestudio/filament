@@ -130,28 +130,30 @@ exports.PackageDocument = EditingDocument.specialize( {
                 var needSave = false;
 
                 for (var x in dependencies) {
-                    var dependency = dependencies[x];
+                    if (dependencies.hasOwnProperty(x)) {
+                        var dependency = dependencies[x];
 
-                    if (fixError === true) {
-                        var found = this._fixDependencyError(dependency);
+                        if (fixError === true) {
+                            var found = this._fixDependencyError(dependency);
 
-                        if (!needSave && found) {
-                            needSave = true;
-                        }
-                    }
-
-                    if (dependency.hasOwnProperty('type')) {
-                        if (!dependency.missing && !dependency.extraneous && !dependency.jsonFileMissing && !dependency.jsonFileError) { // Managing errors is coming, display just the valid ones
-                            if (dependency.type === DEPENDENCY_TYPE_DEV) {
-                                this._dependencies.dev.push(dependency);
-                            } else if (dependency.type === DEPENDENCY_TYPE_OPTIONAL) {
-                                this._dependencies.optional.push(dependency);
-                            } else if (dependency.type === DEPENDENCY_TYPE_BUNDLE) {
-                                this._dependencies.bundle.push(dependency);
-                            } else {
-                                this._dependencies.regular.push(dependency);
+                            if (!needSave && found) {
+                                needSave = true;
                             }
+                        }
 
+                        if (dependency.hasOwnProperty('type')) {
+                            if (!dependency.missing && !dependency.extraneous && !dependency.jsonFileMissing && !dependency.jsonFileError) { // Managing errors is coming, display just the valid ones
+                                if (dependency.type === DEPENDENCY_TYPE_DEV) {
+                                    this._dependencies.dev.push(dependency);
+                                } else if (dependency.type === DEPENDENCY_TYPE_OPTIONAL) {
+                                    this._dependencies.optional.push(dependency);
+                                } else if (dependency.type === DEPENDENCY_TYPE_BUNDLE) {
+                                    this._dependencies.bundle.push(dependency);
+                                } else {
+                                    this._dependencies.regular.push(dependency);
+                                }
+
+                            }
                         }
                     }
                 }
