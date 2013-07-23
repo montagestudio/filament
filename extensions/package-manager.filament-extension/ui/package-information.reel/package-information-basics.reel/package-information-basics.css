@@ -1,0 +1,8 @@
+.PackageInformationBasics label {
+    display: inline-block;
+    width: 60px;
+}
+
+.PackageInformationBasics-row {
+    padding: 5px;
+}

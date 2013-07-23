@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="package-dependency-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "dependency-cell"}
+            }
+        },
+
+        "dependencyName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "dependencyName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.dependency.name"},
+                "classList.has('invalid-dependency')" : { "<-" : "@owner.errors"}
+            }
+        },
+
+        "dependencyVersion": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "dependencyVersion"}
+            },
+            "bindings": {
+                "value": {"<-": "(@owner.dependency.versionInstalled || @owner.dependency.version)"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <li data-montage-id="dependency-cell" class="DependencyCell">
+        <strong data-montage-id="dependencyName" class="DependencyCellName"></strong>
+        <span data-montage-id="dependencyVersion" class="DependencyCellVersion"></span>
+    </li>
+</body>
+</html>

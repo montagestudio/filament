@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="package-dependencies-group.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "package-dependencies-group"}
+            },
+            "bindings": {
+                "classList.has('hide-group')" : { "<-" : "(@owner.dependencies.length == 0)"}
+            }
+        },
+
+        "title": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "packageDependenciesGroupTitle"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.title"}
+            }
+        },
+
+        "dependencyContentController": {
+            "prototype": "montage/core/range-controller",
+            "bindings": {
+                "content": {"<-": "@owner.dependencies"}
+            }
+        },
+
+         "dependenciesList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "dependenciesList"},
+                "contentController": {"@": "dependencyContentController"}
+            }
+         },
+
+        "dependencyCell": {
+            "prototype": "../package-dependency-cell.reel",
+            "properties": {
+                "element": {"#": "dependencyCell"}
+            },
+            "bindings": {
+                "dependency": {"<-": "@dependenciesList.objectAtCurrentIteration"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="package-dependencies-group" class="PackageDependenciesGroup">
+        <h3 data-montage-id="packageDependenciesGroupTitle" class="Toolbar Toolbar--top Box-title"></h3>
+        <ul data-montage-id="dependenciesList" class="DependenciesList">
+            <li data-montage-id="dependencyCell"></li>
+        </ul>
+    </div>
+</body>
+</html>

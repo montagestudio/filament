@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="package-information-description.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "package-information-description"}
+            }
+        },
+
+        "title": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "packageInformationBoxTitle"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.title"}
+            }
+        },
+
+        "informationValue":{
+            "prototype": "matte/ui/textarea.reel",
+            "properties": {
+                "element": {"#": "packageInformationBoxValue"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.description"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="package-information-description" class="Box">
+        <h3 data-montage-id="packageInformationBoxTitle" class="Box-title"></h3>
+        <div class="BoxContent">
+            <textarea data-montage-id="packageInformationBoxValue" class="matte-Textarea"></textarea>
+        </div>
+    </div>
+</body>
+</html>

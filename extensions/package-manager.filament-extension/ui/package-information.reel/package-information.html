@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="package-information.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "package-information"}
+            }
+        },
+
+        "packageBasics": {
+            "prototype": "./package-information-basics.reel",
+            "properties": {
+                "element": {"#": "packageInformationBoxBasics"},
+                "title": "Basics"
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "name": {"<-": "@owner.editingDocument.name"},
+                "version": {"<-": "@owner.editingDocument.version"},
+                "license": {"<-": "@owner.editingDocument.license"},
+                "privacy": {"<-": "@owner.editingDocument.privacy"}
+            }
+        },
+
+        "packageAuthor": {
+            "prototype": "./package-information-author.reel",
+            "properties": {
+                "element": {"#": "packageInformationBoxAuthor"},
+                "title": "Author"
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "author": {"<-": "@owner.editingDocument.author"}
+            }
+        },
+
+        "packageDescription": {
+            "prototype": "./package-information-description.reel",
+            "properties": {
+                "element": {"#": "packageInformationBoxDescription"},
+                "title": "Description"
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "description": {"<-": "@owner.editingDocument.description"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <section data-montage-id="package-information">
+        <header class="Toolbar Toolbar--top Box-title">
+            <span>Package Information</span>
+        </header>
+        <div class="PackageEditorColumnContent">
+            <div data-montage-id="packageInformationBoxBasics"></div>
+            <div data-montage-id="packageInformationBoxAuthor"></div>
+            <div data-montage-id="packageInformationBoxDescription"></div>
+        </div>
+    </section>
+</body>
+</html>
