@@ -134,7 +134,13 @@ exports.listCommand = Object.create(Object.prototype, {
                         }
 
                         module.path = path;
-                        (!!parent.jsonFileError) ? callBack(module) : self._handleJsonFile(module, parent, callBack); // if no errors, then format results.
+                        if (parent.jsonFileError) {
+                            callBack(module);
+                        } else {
+                            // if no errors, then format results.
+                            self._handleJsonFile(module, parent, callBack);
+                        }
+
                     });
                 } else { // package.json file is missing.
                     parent.jsonFileMissing = true;
