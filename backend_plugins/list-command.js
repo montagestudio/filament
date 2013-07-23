@@ -21,6 +21,7 @@ exports.listCommand = Object.create(Object.prototype, {
                     name: '',
                     version: '',
                     problems: [],
+                    file: null,
                     path: (dirPath.charAt(dirPath.length-1) === '/') ? dirPath : dirPath + '/'
                 };
 
@@ -45,14 +46,15 @@ exports.listCommand = Object.create(Object.prototype, {
                 dependencies[i].parent = dependencies[i].parent.name;
                 delete dependencies[i].dependencies;
             }
-            return dependencies;
+            return this._app;
         }
     },
 
     _complete: {
         value: function () {
             var dependencies = Array.isArray(this._app.dependencies) ? this._app.dependencies : [];
-            return this._getComplete(dependencies);
+            this._app.dependencies = this._getComplete(dependencies);
+            return this._app;
         }
     },
 
@@ -75,7 +77,7 @@ exports.listCommand = Object.create(Object.prototype, {
             var self = this;
 
             // Step 1: get all information
-            this._readJsonFile(this._app.path, this._app, function (module) {
+            this._readJsonFile(this._app.path, this._app, true, function (module) {
                 if ((!self._app.jsonFileMissing && !self._app.jsonFileError)) { // if the App package.json file has no errors
                     self._app.name = module.name;
                     self._app.version = module.version;
@@ -98,9 +100,13 @@ exports.listCommand = Object.create(Object.prototype, {
     // Step 1:
 
     _readJsonFile: {
-        value: function (path, parent, callBack) {
+        value: function (path, parent, root, callBack) {
             var self = this,
                 file = path + 'package.json';
+
+            if (typeof root === 'function') {
+                callBack = root;
+            }
 
             fs.exists (file, function (exists) {
                 var module = {};
@@ -114,6 +120,11 @@ exports.listCommand = Object.create(Object.prototype, {
                                 if (typeof module.name === 'undefined' || typeof module.version === 'undefined') { // if the name or the version field are missing.
                                     parent.jsonFileError = true;
                                 }
+
+                                if (parent.jsonFileError !== true && root === true) {
+                                    parent.file = JSON.parse(data);
+                                }
+
                             } catch (exception) {
                                 parent.jsonFileError = true;
                             }
