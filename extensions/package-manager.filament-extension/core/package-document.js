@@ -37,17 +37,23 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function (fileUrl, packageUrl) {
             var self = this;
 
-            return require.loadPackage(packageUrl).then( function (packageRequire) {
-                return self.create().init(fileUrl, packageRequire);
+            return require.loadPackage(packageUrl).then(function (packageRequire) {
+                return self.getDependencies().then(function(app) { // invoke the custom list command, which check every dependencies installed.
+                    return self.create().init(fileUrl, packageRequire, app);
+                });
+
             });
         }
     },
 
     init: {
-        value: function (fileUrl, packageRequire) {
+        value: function (fileUrl, packageRequire, app) {
             var self = this.super.call(this, fileUrl, packageRequire);
-            this._package = packageRequire.packageDescription;
-            this.getDependencies(); // invoke the custom list command, which check every dependencies installed.
+            this._livePackage = packageRequire.packageDescription;
+            if (app) {
+                this._package = (app.file || {});
+                this._classifyDependencies(app.dependencies, false); // classify dependencies
+            }
             return self;
         }
     },
@@ -79,6 +85,10 @@ exports.PackageDocument = EditingDocument.specialize( {
             }
             return this._projectUrl;
         }
+    },
+
+    _livePackage: {
+        value: null
     },
 
     _package: {
@@ -155,13 +165,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     getDependencies: {
         value: function () {
-            var self = this;
-
-            this.backendPlugin().invoke("listDependencies", this.projectUrl).then(function(dependencies) {
-                self._classifyDependencies(dependencies, false); // classify dependencies
-            }, function (er) {
-                //TODO
-            }).done();
+            return this.backendPlugin().invoke("listDependencies", this.projectUrl);
         }
     },
 
