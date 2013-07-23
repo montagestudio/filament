@@ -14,7 +14,15 @@ def save():
     click("1371628226102.png")
     sleep(1)
 
-#TODO make a method for binding
+def bind(targetPath, oneway, sourcePath):
+    sleep(1)
+    checkboxBindingJig = find("1372142979561.png")
+    checkboxBindingJig.inside().type(Pattern("1374616220841.png").targetOffset(0,6), targetPath)
+    if (not oneway):
+        checkboxBindingJig.inside().click("1371627538325.png")
+    checkboxBindingJig.inside().type(Pattern("1374616197093.png").targetOffset(0,6), sourcePath)
+    checkboxBindingJig.inside().click("1371627635301.png")
+    sleep(1)
 
 # Begin Actual Application
 
@@ -45,7 +53,7 @@ explorer.click(Pattern("1371597060927.png").targetOffset(-26,-2))
 
 sleep(1)
 
-templateExplorer = lumieresRegion.find("1372141940872.png")
+templateExplorer = lumieresRegion.find("1374615070395.png")
 
 digitPackageRegion = lumieresRegion.find("1372142584813.png")
 # Add a title
@@ -58,7 +66,7 @@ type("Things Worth Doing")
 
 # Add a rangeController to manage the collection of the owner's tasks
 
-dragDrop(Pattern("1372142743355.png").similar(0.86), templateExplorer)
+dragDrop("1372142743355.png", templateExplorer)
 
 
 #TODO this is a temporary thing to create an array in the declaration
@@ -71,10 +79,10 @@ rangeControllerInspector.click(Pattern("1371770852843.png").targetOffset(59,13))
 
 # Add a list to present the tasks
 
-dragDrop(digitPackageRegion.find(Pattern("1372142855514.png").exact()), Pattern("1371600794675.png").targetOffset(-60,7))
+dragDrop(digitPackageRegion.find("1372142855514.png"), Pattern("1374615691186.png").targetOffset(-59,11))
 
 #Remove the placeholder list content
-click("1371601059276.png")
+click(Pattern("1374615281648.png").similar(0.69).targetOffset(28,1))
 
 #Set the list to receive its content from the rangeController we created
 dragDrop(templateExplorer.find(Pattern("1372134591642.png").targetOffset(-57,2)), "1371601115096.png")
@@ -85,55 +93,29 @@ click("1371601177036.png")
 sleep(1)
 mouseDown(Button.LEFT)
 mouseUp(Button.LEFT)
-
-
 wait("1371612473343.png", 2)
 type("task")
-
 click("1371601213234.png")
-
 sleep(1)
-
-explorer.click(Pattern("1371631748330.png").exact().targetOffset(-22,0))
-
-sleep(1)
-
 explorer.wait("1371626266866.png", 1)
 explorer.click(Pattern("1371626282274.png").targetOffset(-7,18))
 
 wait("1371626327890.png", 2)
-
 #Add a checkbox to complete tasks
 dragDrop("1371626348331.png", "1371626362160.png")
 checkboxCard = find("1371626902768.png")
 
 # Bind the checkbox to the task's completed state
 checkboxCard.inside().click("1371626918284.png")
-
-sleep(1)
-
-checkboxBindingJig = find("1372142979561.png")
-checkboxBindingJig.inside().type("1372142993066.png", "checked")
-checkboxBindingJig.inside().click("1371627538325.png")
-checkboxBindingJig.inside().type("1372143003066.png", "@owner.task.completed")
-checkboxBindingJig.inside().click("1371627635301.png")
-
-sleep(1)
-
+bind("checked", False, "@owner.task.completed")
 
 # Add a textfiled to edit the title of the task
 dragDrop("1372143026732.png", Pattern("1371627827353.png").targetOffset(-5,-9))
 
 taskTitleCard = find("1372143983577.png")
 taskTitleCard.inside().click("1371627930530.png")
-taskTitleBindingJig = find("1372143970651.png")
+bind("value", False, "@owner.task.title")
 
-taskTitleBindingJig.inside().type(Pattern("1372144274781.png").similar(0.95).targetOffset(1,10), "value")
-taskTitleBindingJig.inside().click("1371628013900.png")
-taskTitleBindingJig.inside().type(Pattern("1372144393393.png").exact().targetOffset(0,8), "@owner.task.title")
-taskTitleBindingJig.inside().click("1371628091766.png")
-
-sleep(1)
 
 #save this component so we can use it in the main component
 
@@ -157,11 +139,12 @@ sleep(1)
 
 taskBindingJig = find("1372143651028.png")
 
-taskBindingJig.inside().type(Pattern("1372143661856.png").targetOffset(-4,9), "task")
-sourceField = taskBindingJig.inside().find(Pattern("1372143672054.png").targetOffset(-3,8))
+taskBindingJig.inside().type(Pattern("1374616564132.png").targetOffset(0,9), "task")
+sourceField = taskBindingJig.inside().find(Pattern("1374616585633.png").targetOffset(26,9))
 dragDrop(Pattern("1371628641092.png").targetOffset(-18,2), sourceField)
 
 click(sourceField)
+type("e", Key.CTRL)
 type(".objectAtCurrentIteration")
 
 taskBindingJig.inside().click("1371628814715.png")
@@ -182,8 +165,7 @@ type("1371709026331.png", "addContent")
 
 # Add the actionEventListener as listener of new Task button
 
-wheel("1371710306724.png", WHEEL_DOWN, 50)
-click(Pattern("1371710345995.png").targetOffset(205,21))
+click(Pattern("1374617441313.png").targetOffset(8,32))
 
 type(Pattern("1371710393901.png").targetOffset(-1,7), "action")
 dragDrop(Pattern("1372134859539.png").targetOffset(-59,2), Pattern("1371710422598.png").targetOffset(4,4))
@@ -192,18 +174,12 @@ click("1371710441914.png")
 #add a badge to count the remaining tasks
 dragDrop("1371711022203.png", "1371711073673.png")
 
-wheel("1371711149027.png", WHEEL_DOWN, 50)
-click(Pattern("1371711173305.png").targetOffset(201,8))
+click(Pattern("1374618058832.png").targetOffset(-31,33))
 
-badgeBindingJig = find("1372144621810.png")
-
-badgeBindingJig.inside().type(Pattern("1372143709362.png").exact().targetOffset(-1,3), "value")
-badgeBindingJig.inside().type(Pattern("1372143725807.png").exact().targetOffset(-4,8), "@rangeController1.organizedContent.filter{!completed}.length")
-badgeBindingJig.inside().click("1371628091766.png")
+bind("value", True, "@rangeController1.organizedContent.filter{!completed}.length")
 
 save()
 
-#TODO insert incomplete count
 #TODO insert completed toggle
 #TODO insert hr's for formatting
 #TODO wire up a remove button
