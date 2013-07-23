@@ -1,90 +1,42 @@
 .PackageEditor {
     -webkit-flex: 1;
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
     background: hsl(0,0%,92%);
-    padding: 20px;
+    padding: 15px 0 15px 15px;
     font-size: 13px;
     color: hsl(0,0%,50%);;
     text-shadow: 0 1px hsla(0,0%,100%,.5);
 }
 
-
-/* Main ----------------------------- */
-
-.PackageEditor-title {
-    margin: 0;
-    font-family: Titillium Web, Open Sans, sans-serif;
-    font-size: 24px;
-    color: hsl(0,0%,30%);
+.PackageEditor-column{
+    -webkit-flex: 1.5;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    margin-right: 15px;
+    min-width: 250px;
+    min-height: 318px;
 }
 
-.PackageEditor-versionLabel {
-    display: inline;
-    margin: 0 0 0 20px;
+.PackageEditorColumnContent{
+    -webkit-flex: 1;
+    overflow-y: scroll;
+    background: #CCC;
+    padding: 10px 7px 0 10px;
 }
 
-.PackageEditor-version {
-    display: inline;
-    margin: 0 0 0 10px;
-    padding: 4px 8px;
-    color: hsla(0, 0%, 0%, .5);
-    font-size: 12px;
-    font-weight: bold;
-    text-shadow: 0 1px 0 hsla(0, 100%, 100%, 0.3);
-    border-radius: 3px;
-    box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, 0.23), 0 1px 0 hsla(0, 0%, 100%, 0.8);
-    background: hsl(134, 82%, 78%);
-}
-
-
-
-/* Sub title ----------------------------- */
-
-.PackageEditor-titleSub {
-    margin: 30px 0 10px 0;
-    font-family: Titillium Web, Open Sans, sans-serif;
-    font-size: 20px;
-    color: hsl(0,0%,30%);;
-}
-
-.PackageEditor-dependencyList {
-    position: relative;
-    margin: 0;
+.PackageEditorColumnContent h3{
     padding: 0;
-    list-style: none;
+    margin: 0;
 }
 
-.PackageEditor-dependencyList-item {
-    padding: 8px 16px;
-    line-height: 28px;
-    border-top: 1px solid hsla(0, 0%, 100%, .5);
-    border-bottom: 1px solid hsla(0, 0%, 0%, .06);
-    //cursor: pointer;    
-    display: block;
-    text-overflow: ellipsis;
+#packageEditor .PackageEditor-column:first-child{
+    -webkit-flex: 1;
+}
+
+.packageEditorAsideColumn{
+    -webkit-flex: 1 0;
     overflow: hidden;
-    white-space: nowrap;
-}
-
-.PackageEditor-dependencyList-item:first-child {
-    border-radius: 6px 6px 0 0;
-}
-
-.PackageEditor-dependencyList-item:last-child {
-    border-radius: 0 0 6px 6px;
-}
-
-.PackageEditor-dependencyList-item:nth-child(odd) {
-    background: hsla(0,0%,100%,.8);
-}
-
-.PackageEditor-dependencyList-item:nth-child(even) {
-    background: hsla(0,0%,100%,.6);
-}
-
-.PackageEditor-dependencyLabel {
-    display: inline-block;
-    color: hsl(0,0%,40%);
-    width: 130px;
-    text-align: right;
-    font-size: 16px;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
 }

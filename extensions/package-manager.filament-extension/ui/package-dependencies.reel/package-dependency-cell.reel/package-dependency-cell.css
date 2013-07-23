@@ -1,0 +1,30 @@
+.DependencyCell {
+    padding: 8px 16px;
+    line-height: 28px;
+    border-top: 1px solid hsla(0, 0%, 100%, .5);
+    border-bottom: 1px solid hsla(0, 0%, 0%, .06);
+    display: -webkit-flex;
+    -webkit-flex: 1;
+    -webkit-justify-content: space-between;
+}
+
+.invalid-dependency {
+    color: #E73525 !important;
+}
+
+.DependencyCell > * {
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    -webkit-flex: 2;
+}
+
+.DependencyCellName {
+    color: hsl(0,0%,40%);
+    font-size: 15px;
+}
+
+.DependencyCellVersion {
+    text-indent: 8px;
+}

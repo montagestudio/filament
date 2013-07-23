@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="package-dependencies.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "package-dependencies"}
+            }
+        },
+
+        "packageDependenciesGroup": {
+            "prototype": "./package-dependencies-group.reel",
+            "properties": {
+                "element": {"#": "packageDependenciesGroup"},
+                "title": "Dependencies"
+            },
+            "bindings": {
+                "dependencies": {"<-": "@owner.editingDocument.dependencies.regular"}
+            }
+        },
+
+        "packageDevDependenciesGroup": {
+            "prototype": "./package-dependencies-group.reel",
+            "properties": {
+                "element": {"#": "packageDevDependenciesGroup"},
+                "title": "Dev Dependencies"
+            },
+            "bindings": {
+                "dependencies": {"<-": "@owner.editingDocument.dependencies.dev"}
+            }
+        },
+
+        "packageOptionalDependenciesGroup": {
+            "prototype": "./package-dependencies-group.reel",
+            "properties": {
+                "element": {"#": "packageOptionalDependenciesGroup"},
+                "title": "Optional Dependencies"
+            },
+            "bindings": {
+                "dependencies": {"<-": "@owner.editingDocument.dependencies.optional"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <section data-montage-id="package-dependencies" id="PackageDependencies">
+        <header class="Toolbar Toolbar--top Box-title"><span>Package Dependencies</span></header>
+        <div class="PackageEditorColumnContent">
+            <div data-montage-id="packageDependenciesGroup"></div>
+            <div data-montage-id="packageDevDependenciesGroup"></div>
+            <div data-montage-id="packageOptionalDependenciesGroup"></div>
+        </div>
+    </section>
+</body>
+</html>

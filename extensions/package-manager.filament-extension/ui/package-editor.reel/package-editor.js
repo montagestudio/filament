@@ -3,4 +3,10 @@ var Montage = require("montage").Montage,
 
 exports.PackageEditor = Montage.create(Editor, {
 
+    constructor: {
+        value: function PackageEditor () {
+            this.super();
+        }
+    }
+
 });
