@@ -127,24 +127,19 @@ exports.PackageDocument = EditingDocument.specialize( {
     _classifyDependencies: {
         value: function (dependencies, fixError) {
             if (dependencies) {
-                var needSave = false,
-                    dependency,
+                var fixedErrors = false,
                     dependencyTypeCollectionMap = {},
-                    dependencyCollection,
-                    i;
+                    dependencyCollection;
 
                 dependencyTypeCollectionMap[DEPENDENCY_TYPE_DEV] = this._dependencies.dev;
                 dependencyTypeCollectionMap[DEPENDENCY_TYPE_OPTIONAL] = this._dependencies.optional;
                 dependencyTypeCollectionMap[DEPENDENCY_TYPE_BUNDLE] = this._dependencies.bundle;
                 dependencyTypeCollectionMap[DEPENDENCY_TYPE_REGULAR] = this._dependencies.regular;
 
-                for (i = 0; (dependency = dependencies[i]); i++) {
-                    if (fixError === true) {
-                        var found = this._fixDependencyError(dependency);
+                fixedErrors = dependencies.reduce(function (fixed, dependency) {
 
-                        if (!needSave && found) {
-                            needSave = true;
-                        }
+                    if (fixError) {
+                        fixed = fixed || this._fixDependencyError(dependency);
                     }
 
                     if (dependency.hasOwnProperty('type') &&
@@ -160,9 +155,12 @@ exports.PackageDocument = EditingDocument.specialize( {
                             throw new Error('Encountered dependency with unexpected type "' + dependency.type +'"');
                         }
                     }
-                }
 
-                if (needSave === true) { // needs to save modification.
+                    return fixed;
+
+                }, fixedErrors);
+
+                if (fixedErrors) {
                     this.saveModification();
                 }
             }
