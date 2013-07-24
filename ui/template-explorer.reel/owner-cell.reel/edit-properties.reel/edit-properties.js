@@ -6,7 +6,8 @@
 var Component = require("montage/ui/component").Component,
     RangeController = require("montage/core/range-controller").RangeController,
     PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint,
-    Serializer = require("montage/core/serialization").Serializer;
+    Serializer = require("montage/core/serialization").Serializer,
+    Promise = require("montage/core/promise").Promise;
 
 /**
     Description TODO
@@ -103,6 +104,26 @@ exports.EditProperties = Component.specialize({
         value: null
     },
 
+    addProperty: {
+        value: function (propertyBlueprint) {
+            this.propertiesController.add(propertyBlueprint);
+            this._ownerObject.editingDocument.undoManager.register(
+                "Add property",
+                Promise.resolve([this.removeProperty, this, propertyBlueprint])
+            );
+        }
+    },
+
+    removeProperty: {
+        value: function (propertyBlueprint) {
+            this.propertiesController.delete(propertyBlueprint);
+            this._ownerObject.editingDocument.undoManager.register(
+                "Remove property",
+                Promise.resolve([this.addProperty, this, propertyBlueprint])
+            );
+        }
+    },
+
     handleAddPropertyAction: {
         value: function (event) {
             var name = this.templateObjects.addName.value;
@@ -110,14 +131,14 @@ exports.EditProperties = Component.specialize({
                 return;
             }
             var property = new PropertyBlueprint().initWithNameBlueprintAndCardinality(name, this.ownerBlueprint, 1);
-            this.propertiesController.add(property);
+            this.addProperty(property);
             this.templateObjects.addName.value = "";
         }
     },
 
     handleRemovePropertyAction: {
         value: function (event) {
-            this.propertiesController.delete(event.detail.get('propertyBlueprint'));
+            this.removeProperty(event.detail.get('propertyBlueprint'));
         }
     }
 
