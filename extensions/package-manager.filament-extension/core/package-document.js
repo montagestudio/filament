@@ -127,33 +127,37 @@ exports.PackageDocument = EditingDocument.specialize( {
     _classifyDependencies: {
         value: function (dependencies, fixError) {
             if (dependencies) {
-                var needSave = false;
+                var needSave = false,
+                    dependency,
+                    dependencyTypeCollectionMap = {},
+                    dependencyCollection,
+                    i;
 
-                for (var x in dependencies) {
-                    if (dependencies.hasOwnProperty(x)) {
-                        var dependency = dependencies[x];
+                dependencyTypeCollectionMap[DEPENDENCY_TYPE_DEV] = this._dependencies.dev;
+                dependencyTypeCollectionMap[DEPENDENCY_TYPE_OPTIONAL] = this._dependencies.optional;
+                dependencyTypeCollectionMap[DEPENDENCY_TYPE_BUNDLE] = this._dependencies.bundle;
+                dependencyTypeCollectionMap[DEPENDENCY_TYPE_REGULAR] = this._dependencies.regular;
 
-                        if (fixError === true) {
-                            var found = this._fixDependencyError(dependency);
+                for (i = 0; (dependency = dependencies[i]); i++) {
+                    if (fixError === true) {
+                        var found = this._fixDependencyError(dependency);
 
-                            if (!needSave && found) {
-                                needSave = true;
-                            }
+                        if (!needSave && found) {
+                            needSave = true;
                         }
+                    }
 
-                        if (dependency.hasOwnProperty('type')) {
-                            if (!dependency.missing && !dependency.extraneous && !dependency.jsonFileMissing && !dependency.jsonFileError) { // Managing errors is coming, display just the valid ones
-                                if (dependency.type === DEPENDENCY_TYPE_DEV) {
-                                    this._dependencies.dev.push(dependency);
-                                } else if (dependency.type === DEPENDENCY_TYPE_OPTIONAL) {
-                                    this._dependencies.optional.push(dependency);
-                                } else if (dependency.type === DEPENDENCY_TYPE_BUNDLE) {
-                                    this._dependencies.bundle.push(dependency);
-                                } else {
-                                    this._dependencies.regular.push(dependency);
-                                }
+                    if (dependency.hasOwnProperty('type') &&
+                        !dependency.missing &&
+                        !dependency.extraneous &&
+                        !dependency.jsonFileMissing &&
+                        !dependency.jsonFileError) { // Managing errors is coming, display just the valid ones
 
-                            }
+                        dependencyCollection = dependencyTypeCollectionMap[dependency.type];
+                        if (dependencyCollection) {
+                            dependencyCollection.push(dependency);
+                        } else {
+                            throw new Error('Encountered dependency with unexpected type "' + dependency.type +'"');
                         }
                     }
                 }
