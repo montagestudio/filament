@@ -1371,10 +1371,7 @@ exports.ReelDocument = EditingDocument.specialize({
             var self = this;
 
             // require.async() expect moduleId not URLs
-            var componentModuleId = fileUrl;
-            if (fileUrl.indexOf(packageUrl) > -1) {
-                componentModuleId = fileUrl.substring(packageUrl.length + 1, fileUrl.length - 1);
-            }
+            var componentModuleId = URL.toModuleId(fileUrl, packageUrl);
 
             var objectName = MontageReviver.parseObjectLocationId(componentModuleId).objectName;
 
