@@ -94,8 +94,18 @@ exports.EditProperties = Component.specialize({
             if (this._ownerBlueprint) {
                 var ownerBlueprint = this._ownerBlueprint;
 
-                plus.forEach(ownerBlueprint.addPropertyBlueprint.bind(ownerBlueprint));
-                minus.forEach(ownerBlueprint.removePropertyBlueprint.bind(ownerBlueprint));
+                plus.forEach(function (property) {
+                    ownerBlueprint.addPropertyBlueprint(property);
+                    property.addBeforeOwnPropertyChangeListener("valueType", this);
+                    property.addBeforeOwnPropertyChangeListener("cardinality", this);
+                    property.addBeforeOwnPropertyChangeListener("collectionValueType", this);
+                }, this);
+                minus.forEach(function (property) {
+                    ownerBlueprint.removePropertyBlueprint(property);
+                    property.removeBeforeOwnPropertyChangeListener("valueType", this);
+                    property.removeBeforeOwnPropertyChangeListener("cardinality", this);
+                    property.removeBeforeOwnPropertyChangeListener("collectionValueType", this);
+                });
             }
         }
     },
@@ -104,11 +114,22 @@ exports.EditProperties = Component.specialize({
         value: null
     },
 
+    modifyProperty: {
+        value: function (propertyBlueprint, property, value) {
+            var previousValue = propertyBlueprint[property];
+            propertyBlueprint[property] = value;
+            this._ownerObject.editingDocument.undoManager.register(
+                "Modify owner property",
+                Promise.resolve([this.modifyProperty, this, propertyBlueprint, property, previousValue])
+            );
+        }
+    },
+
     addProperty: {
         value: function (propertyBlueprint) {
             this.propertiesController.add(propertyBlueprint);
             this._ownerObject.editingDocument.undoManager.register(
-                "Add property",
+                "Add owner property",
                 Promise.resolve([this.removeProperty, this, propertyBlueprint])
             );
         }
@@ -118,9 +139,15 @@ exports.EditProperties = Component.specialize({
         value: function (propertyBlueprint) {
             this.propertiesController.delete(propertyBlueprint);
             this._ownerObject.editingDocument.undoManager.register(
-                "Remove property",
+                "Remove owner property",
                 Promise.resolve([this.addProperty, this, propertyBlueprint])
             );
+        }
+    },
+
+    handlePropertyWillChange: {
+        value: function (value, key, object) {
+            this.modifyProperty(object, key, value);
         }
     },
 
