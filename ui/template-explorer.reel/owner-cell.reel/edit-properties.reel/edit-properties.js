@@ -49,9 +49,7 @@ exports.EditProperties = Component.specialize({
 
                 value.editingDocument.registerFile("meta", this._saveMeta, this);
 
-                value.packageRequire.async(value.moduleId)
-                .get(value.exportName)
-                .get("blueprint")
+                value.editingDocument._ownerBlueprint
                 .then(function (blueprint) {
                     self.ownerBlueprint = blueprint;
                 })
@@ -81,6 +79,10 @@ exports.EditProperties = Component.specialize({
         }
     },
 
+    propertiesController: {
+        value: null
+    },
+
     _saveMeta: {
         value: function (location, dataWriter) {
             var serializer = Serializer.create().initWithRequire(this.ownerObject.editingDocument._packageRequire);
@@ -95,59 +97,22 @@ exports.EditProperties = Component.specialize({
                 var ownerBlueprint = this._ownerBlueprint;
 
                 plus.forEach(function (property) {
-                    ownerBlueprint.addPropertyBlueprint(property);
                     property.addBeforeOwnPropertyChangeListener("valueType", this);
                     property.addBeforeOwnPropertyChangeListener("cardinality", this);
                     property.addBeforeOwnPropertyChangeListener("collectionValueType", this);
                 }, this);
                 minus.forEach(function (property) {
-                    ownerBlueprint.removePropertyBlueprint(property);
                     property.removeBeforeOwnPropertyChangeListener("valueType", this);
                     property.removeBeforeOwnPropertyChangeListener("cardinality", this);
                     property.removeBeforeOwnPropertyChangeListener("collectionValueType", this);
-                });
+                }, this);
             }
-        }
-    },
-
-    propertiesController: {
-        value: null
-    },
-
-    modifyProperty: {
-        value: function (propertyBlueprint, property, value) {
-            var previousValue = propertyBlueprint[property];
-            propertyBlueprint[property] = value;
-            this._ownerObject.editingDocument.undoManager.register(
-                "Modify owner property",
-                Promise.resolve([this.modifyProperty, this, propertyBlueprint, property, previousValue])
-            );
-        }
-    },
-
-    addProperty: {
-        value: function (propertyBlueprint) {
-            this.propertiesController.add(propertyBlueprint);
-            this._ownerObject.editingDocument.undoManager.register(
-                "Add owner property",
-                Promise.resolve([this.removeProperty, this, propertyBlueprint])
-            );
-        }
-    },
-
-    removeProperty: {
-        value: function (propertyBlueprint) {
-            this.propertiesController.delete(propertyBlueprint);
-            this._ownerObject.editingDocument.undoManager.register(
-                "Remove owner property",
-                Promise.resolve([this.addProperty, this, propertyBlueprint])
-            );
         }
     },
 
     handlePropertyWillChange: {
         value: function (value, key, object) {
-            this.modifyProperty(object, key, value);
+            this._ownerObject.editingDocument.modifyOwnerBlueprintProperty(object, key, value);
         }
     },
 
@@ -158,14 +123,14 @@ exports.EditProperties = Component.specialize({
                 return;
             }
             var property = new PropertyBlueprint().initWithNameBlueprintAndCardinality(name, this.ownerBlueprint, 1);
-            this.addProperty(property);
+            this._ownerObject.editingDocument.addOwnerBlueprintProperty(property);
             this.templateObjects.addName.value = "";
         }
     },
 
     handleRemovePropertyAction: {
         value: function (event) {
-            this.removeProperty(event.detail.get('propertyBlueprint'));
+            this._ownerObject.editingDocument.removeOwnerBlueprintProperty(event.detail.get('propertyBlueprint'));
         }
     }
 

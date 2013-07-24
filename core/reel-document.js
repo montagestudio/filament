@@ -57,6 +57,8 @@ exports.ReelDocument = EditingDocument.specialize({
             var error;
 
             self._template = template;
+            this._moduleId = moduleId;
+            this._exportName = MontageReviver.parseObjectLocationId(moduleId).objectName;
 
             if (template) {
                 this.registerFile("html", this._saveHtml, this);
@@ -274,6 +276,19 @@ exports.ReelDocument = EditingDocument.specialize({
         get: function () {
             //TODO patch this up a bit; should the proxies have an element property?
             return this.getPath("_editingProxyMap.owner.properties.get('element')");
+        }
+    },
+
+    __ownerBlueprint: {
+        value: null
+    },
+    _ownerBlueprint: {
+        get: function () {
+            return this.__ownerBlueprint || (
+                this.__ownerBlueprint = this._packageRequire.async(this._moduleId)
+                .get(this._exportName)
+                .get("blueprint")
+            );
         }
     },
 
@@ -1306,6 +1321,47 @@ exports.ReelDocument = EditingDocument.specialize({
             this.undoManager.register("Insert Node After", Promise.resolve([this.removeTemplateNode, this, nodeProxy]));
 
             return nodeProxy;
+        }
+    },
+
+    // Owner blueprint
+
+    addOwnerBlueprintProperty: {
+        value: function (propertyBlueprint) {
+            var self = this;
+            this.undoManager.register(
+                "Add owner property",
+                this._ownerBlueprint.then(function (blueprint) {
+                    blueprint.addPropertyBlueprint(propertyBlueprint);
+                    blueprint.addPropertyBlueprintToGroupNamed(propertyBlueprint, "default");
+                    return [self.removeOwnerBlueprintProperty, self, propertyBlueprint];
+                })
+            ).done();
+        }
+    },
+
+    modifyOwnerBlueprintProperty: {
+        value: function (propertyBlueprint, property, value) {
+            var previousValue = propertyBlueprint[property];
+            propertyBlueprint[property] = value;
+            this.undoManager.register(
+                "Modify owner property",
+                Promise.resolve([this.modifyOwnerBlueprintProperty, this, propertyBlueprint, property, previousValue])
+            ).done();
+        }
+    },
+
+    removeOwnerBlueprintProperty: {
+        value: function (propertyBlueprint) {
+            var self = this;
+            this.undoManager.register(
+                "Remove owner property",
+                this._ownerBlueprint.then(function (blueprint) {
+                    blueprint.removePropertyBlueprint(propertyBlueprint);
+                    blueprint.removePropertyBlueprintFromGroupNamed(propertyBlueprint, "default");
+                    return [self.addOwnerBlueprintProperty, self, propertyBlueprint];
+                })
+            ).done();
         }
     }
 
