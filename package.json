@@ -21,7 +21,8 @@
         "watchr": "2.4.3",
         "minit": "0.3.7",
         "minimatch": "0.2.9",
-        "underscore": "1.4.4"
+        "underscore": "1.4.4",
+        "semver": "2.0.10"
     },
     "devDependencies": {
         "jasmine-node": "1.2.2",

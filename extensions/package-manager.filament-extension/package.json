@@ -6,6 +6,7 @@
         "montage": "*",
         "filament-extension": "*",
         "palette": "*",
-        "matte": "*"
+        "matte": "*",
+        "semver": "*"
     }
 }
