@@ -16,31 +16,31 @@ var Extension = exports.Extension = CoreExtension.specialize( {
         }
     },
 
-    name:{
+    name: {
         get:function () {
             //TODO read the name from the package or something
             return "Mop";
         }
     },
 
-    parentMenu:{
+    parentMenu: {
         value:null
     },
 
-    mopMenu:{
+    mopMenu: {
         value:null
     },
 
-    application:{
+    application: {
         value:null
     },
 
-    projectController:{
+    projectController: {
         value:null
     },
 
-    activate:{
-        value:function (application, projectController) {
+    activate: {
+        value: function (application, projectController) {
             var self = this;
 
             this.application = application;
@@ -71,8 +71,8 @@ var Extension = exports.Extension = CoreExtension.specialize( {
         }
     },
 
-    deactivate:{
-        value:function (application, projectController) {
+    deactivate: {
+        value: function (application, projectController) {
             var self = this;
 
             return Promise.all([this.parentMenu, this.mopMenu]).spread(function (parentMenu, mopMenu) {
@@ -82,17 +82,17 @@ var Extension = exports.Extension = CoreExtension.specialize( {
                     }
                 });
             }).then(function () {
-                    self.parentMenu = null;
-                    self.mopMenu = null;
-                    self.application = null;
-                    self.projectController = null;
-                    return self;
-                });
+                self.parentMenu = null;
+                self.mopMenu = null;
+                self.application = null;
+                self.projectController = null;
+                return self;
+            });
         }
     },
 
-    optimize:{
-        value:function () {
+    optimize: {
+        value: function () {
             var self = this,
                 projectController = this.projectController,
                 bridge = projectController.environmentBridge,
@@ -104,28 +104,28 @@ var Extension = exports.Extension = CoreExtension.specialize( {
             var deferred = Promise.defer();
 
             mop.invoke("optimize", location, {
-                out:{
-                    status:Promise.master(function () {
+                out: {
+                    status: Promise.master(function () {
                         deferred.notify(slice.call(arguments).join(" "));
                     })
                 }
             }).then(deferred.resolve, function (err) {
-                    console.error(err.stack);
-                    deferred.reject(err);
-                });
+                console.error(err.stack);
+                deferred.reject(err);
+            });
 
             this.dispatchEventNamed("asyncActivity", true, false, {
-                promise:deferred.promise,
-                title:"Mop",
-                status:projectController.packageUrl
+                promise: deferred.promise,
+                title: "Mop",
+                status: projectController.packageUrl
             });
 
             return deferred.promise;
         }
     },
 
-    handleMenuAction:{
-        value:function (event) {
+    handleMenuAction: {
+        value: function (event) {
             if (event.detail.identifier === "mop") {
                 this.optimize();
             }
