@@ -37,6 +37,8 @@ Classes to toggle counter
 .ActivityInfobar-title {
     font-weight: bold;
     margin: 0 8px;
+    -webkit-user-select: text;
+    cursor: auto;
 }
 
 .ActivityInfobar-status {
@@ -46,6 +48,8 @@ Classes to toggle counter
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    -webkit-user-select: text;
+    cursor: auto;
 }
 
 
