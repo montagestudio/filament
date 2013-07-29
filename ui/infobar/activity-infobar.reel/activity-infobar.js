@@ -54,7 +54,7 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
             };
 
             promise.then(function (value) {
-                task.status = value;
+                task.status = value || "";
                 self.runningActivities.delete(task);
                 self.completedActivities.add(task);
                 self.mostRecentActivity = task;
@@ -69,13 +69,13 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
                     message = err.toString();
                 }
 
-                task.status = message;
+                task.status = message || "";
                 self.runningActivities.delete(task);
                 self.failedActivities.add(task);
                 self.mostRecentActivity = task;
                 self.needsDraw = true;
             }, function (status) {
-                task.status = status;
+                task.status = status || "";
                 self.mostRecentActivity = task;
                 self.needsDraw = true;
             });
