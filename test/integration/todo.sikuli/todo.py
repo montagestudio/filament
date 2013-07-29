@@ -44,7 +44,7 @@ if exists("1371598405282.png"):
     waitVanish(overwriteSheet, 2)           
 
 sleep(2)
-lumieresRegion.wait("1372143361142.png", 20)
+lumieresRegion.wait("1375135083526.png", 20)
 explorer = lumieresRegion.find(Pattern("1371631581983.png").similar(0.60)).below(500)
 explorer.click(Pattern("1371631430977.png").similar(0.88).targetOffset(-23,1))
 
