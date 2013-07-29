@@ -6,7 +6,7 @@ var Montage = require("montage/core/core").Montage,
 
 /*global lumieres */
 
-var PARENT_MENU = "tools";
+var PARENT_MENU = "Tools";
 
 var Extension = exports.Extension = CoreExtension.specialize( {
 
