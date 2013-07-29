@@ -734,6 +734,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     createApplication: {
         value: function () {
+            var self = this;
             var options = {
                     displayAsSheet: true,
                     prompt: "Create" //TODO localize this
@@ -761,8 +762,22 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                 return promise;
             }).then(function (applicationUrl) {
-                    return self.loadProject(applicationUrl);
-                });
+                // select main.reel
+                var openMainReel = function (evt) {
+                    self.removeEventListener("didOpenPackage", openMainReel, false);
+                    self.dispatchEventNamed("openUrl", true, true, applicationUrl + "/ui/main.reel/");
+
+                    var rootFolder = self.files;
+                    var childrenByName = function (name){
+                        return function (child) {
+                            return child == rootFolder + "/" + name;
+                        };
+                    };
+                };
+                self.addEventListener("didOpenPackage", openMainReel, false);
+
+                return self.loadProject(applicationUrl);
+            });
         }
     },
 
