@@ -2,24 +2,12 @@
     margin-bottom: 10px;
 }
 
-.DependenciesList {
+.PackageDependenciesGroup.hidden {
+    display: none;
+}
+
+.PackageDependenciesGroup-list {
     margin: 0;
     padding: 0;
     list-style: none;
-}
-
-.hide-group {
-    display: none !important;
-}
-
-.DependencyCell:last-child {
-    border-radius: 0 0 6px 6px;
-}
-
-.DependencyCell:nth-child(odd) {
-    background: hsla(0,0%,100%,.8);
-}
-
-.DependencyCell:nth-child(even) {
-    background: hsla(0,0%,100%,.6);
 }

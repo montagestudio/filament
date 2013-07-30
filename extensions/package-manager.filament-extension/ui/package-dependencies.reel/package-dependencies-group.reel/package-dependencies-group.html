@@ -10,7 +10,7 @@
                 "element": {"#": "package-dependencies-group"}
             },
             "bindings": {
-                "classList.has('hide-group')" : { "<-" : "(@owner.dependencies.length == 0)"}
+                "classList.has('hidden')" : { "<-" : "(@owner.dependencies.length == 0)"}
             }
         },
 
@@ -53,8 +53,8 @@
 </head>
 <body>
     <div data-montage-id="package-dependencies-group" class="PackageDependenciesGroup">
-        <h3 data-montage-id="packageDependenciesGroupTitle" class="Toolbar Toolbar--top Box-title"></h3>
-        <ul data-montage-id="dependenciesList" class="DependenciesList">
+        <h3 data-montage-id="packageDependenciesGroupTitle" class="PackageEditorPanel-title"></h3>
+        <ul data-montage-id="dependenciesList" class="PackageDependenciesGroup-list">
             <li data-montage-id="dependencyCell"></li>
         </ul>
     </div>

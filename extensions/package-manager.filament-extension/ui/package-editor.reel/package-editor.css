@@ -3,7 +3,7 @@
     display: -webkit-flex;
     -webkit-flex-direction: row;
     background: hsl(0,0%,92%);
-    padding: 15px 0 15px 15px;
+    padding: 16px 0 16px 16px;
     font-size: 13px;
     color: hsl(0,0%,50%);;
     text-shadow: 0 1px hsla(0,0%,100%,.5);
@@ -13,16 +13,18 @@
     -webkit-flex: 1.5;
     display: -webkit-flex;
     -webkit-flex-direction: column;
-    margin-right: 15px;
+    margin-right: 16px;
     min-width: 250px;
     min-height: 318px;
 }
 
 .PackageEditorColumnContent{
     -webkit-flex: 1;
+    min-height: 0;
     overflow-y: scroll;
     background: #CCC;
-    padding: 10px 7px 0 10px;
+    padding: 8px 4px 0 8px;
+    border-bottom: 1px solid hsla(0,0%,0%,0);
 }
 
 .PackageEditorColumnContent h3{
@@ -39,4 +41,80 @@
     overflow: hidden;
     display: -webkit-flex;
     -webkit-flex-direction: column;
+}
+
+
+
+/*
+ * Note: The Package Editor Panels
+ * are styled here so they don't have to be repeated in all the other reels
+ * that use the same styles.
+ * 
+ * Alternatively we could create some sort of "Package Editor Panel" component that can be reused.
+ */
+
+.PackageEditorPanel {
+    margin-bottom: 10px;
+}
+
+.PackageEditorPanel-title {
+    border-radius: 4px 4px 0 0;
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.8);
+    border-bottom: 1px solid hsla(0,0%,0%,.1);
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,1);
+    background: -webkit-linear-gradient( hsl(0,0%,99%), hsl(0,0%,96%) );
+    color: hsl(0,0%,50%);
+    height: 25px;
+    line-height: 25px;
+    font-size: 13px;
+    text-indent: 10px;
+    font-weight: bold;
+}
+
+.PackageEditorPanel-title--header {
+    font-size: 18px;
+    height: auto;
+    line-height: 2;
+    font-weight: normal;
+    color: hsl(0,0%,30%);
+}
+
+.PackageEditorPanel-content {
+    padding: 8px;
+    background: hsl(0,0%,94%);
+    border-radius: 0 0 4px 4px;
+    display: -webkit-flex;
+    -webkit-flex: 1;
+    -webkit-align-items: center;
+    -webkit-justify-content: center;
+}
+
+.PackageEditorPanel-list {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.PackageEditorPanel-list-item {
+    padding: 5px 3px;
+}
+
+
+/* PackageEditorPanel content overrides ---------------- */
+
+.PackageEditorPanel-content .matte-Textarea {
+    height: 60px;
+    width: 100%;
+    resize: none;
+    margin: 3px;
+}
+
+.PackageEditorPanel-content .matte-InputCheckbox {
+    margin: 0;
+}
+
+.PackageEditorPanel-content label {
+    display: inline-block;
+    width: 60px;
+    margin-right: 6px;
 }

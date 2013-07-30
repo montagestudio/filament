@@ -18,7 +18,7 @@
             },
             "bindings": {
                 "value": {"<-": "@owner.dependency.name"},
-                "classList.has('invalid-dependency')" : { "<-" : "@owner.errors"}
+                "classList.has('invalid')" : { "<-" : "@owner.errors"}
             }
         },
 
@@ -35,9 +35,9 @@
     </script>
 </head>
 <body>
-    <li data-montage-id="dependency-cell" class="DependencyCell">
-        <strong data-montage-id="dependencyName" class="DependencyCellName"></strong>
-        <span data-montage-id="dependencyVersion" class="DependencyCellVersion"></span>
+    <li data-montage-id="dependency-cell" class="PackageDependencyCell">
+        <span data-montage-id="dependencyName" class="PackageDependencyCell-item PackageDependencyCell-item--name"></span>
+        <span data-montage-id="dependencyVersion" class="PackageDependencyCell-item PackageDependencyCell-item--version"></span>
     </li>
 </body>
 </html>

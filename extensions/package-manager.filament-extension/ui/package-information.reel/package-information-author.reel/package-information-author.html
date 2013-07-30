@@ -56,20 +56,20 @@
     </script>
 </head>
 <body>
-    <div data-montage-id="package-information-author" class="Box PackageInformationAuthor">
-        <h3 data-montage-id="packageInformationBoxTitle" class="Box-title">Author</h3>
-        <div class="BoxContent">
-            <ul>
-                <li class="packageInformationAuthor-row">
+    <div data-montage-id="package-information-author" class="PackageInformation--author">
+        <h3 data-montage-id="packageInformationBoxTitle" class="PackageEditorPanel-title">Author</h3>
+        <div class="PackageEditorPanel-content">
+            <ul class="PackageEditorPanel-list">
+                <li class="PackageEditorPanel-list-item">
                     <label for="packageInformationAuthorName">Name:</label>
                     <input id="packageInformationAuthorName" data-montage-id="packageInformationAuthorName" type="text" class="matte-InputText" />
                 </li>
-                <li class="packageInformationAuthor-row">
+                <li class="PackageEditorPanel-list-item">
                     <label for="packageInformationAuthorEmail">Email:</label>
                     <input id="packageInformationAuthorEmail" data-montage-id="packageInformationAuthorEmail" type="text" class="matte-InputText" pattern="^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$" />
                 </li>
-                <li class="packageInformationAuthor-row">
-                    <label for="packageInformationAuthorUrl">Url:</label>
+                <li class="PackageEditorPanel-list-item">
+                    <label for="packageInformationAuthorUrl">URL:</label>
                     <input id="packageInformationAuthorUrl" data-montage-id="packageInformationAuthorUrl" type="text" class="matte-InputText" pattern="^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$" />
                 </li>
             </ul>
