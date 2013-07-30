@@ -30,6 +30,11 @@
                 {
                     "type": "select",
                     "listener": {"@": "owner"}
+                },
+                {
+                    "type": "keyPress",
+                    "listener": {"@": "owner"}
+
                 }
             ]
         },
@@ -82,6 +87,22 @@
             "listeners": [
                 {
                     "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "cancelElementEscape": {
+            "prototype": "montage/composer/key-composer",
+            "properties": {
+                "keys": "escape",
+                "component": {"@": "owner"},
+                "identifier": "cancelElementEscape",
+                "element": {"#": "tagField"}
+            },
+            "listeners": [
+                {
+                    "type": "keyPress",
                     "listener": {"@": "owner"}
                 }
             ]

@@ -16,6 +16,19 @@ var Montage = require("montage").Montage,
 */
 exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explorer.reel".DomExplorer# */ {
 
+    // TODO this is a temporary solution inspired by main.js
+    handleKeyPress: {
+        value: function(evt) {
+            var identifier = evt.identifier;
+
+            switch (identifier) {
+                case "cancelElementEscape":
+                    this._cancelElementCreation();
+                    break;
+            }
+        }
+    },
+
     templateObjectsController: {
         value: null
     },
@@ -115,14 +128,19 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
-    //TODO handle esc to cancel as well
-    handleCancelElementButtonAction: {
-        value: function (evt) {
+    _cancelElementCreation: {
+        value: function () {
             if (this._deferredElement) {
                 this._deferredElement.resolve(null);
                 this._deferredElement = null;
                 this.tag = null;
             }
+        }
+    },
+
+    handleCancelElementButtonAction: {
+        value: function (evt) {
+            this._cancelElementCreation();
         }
     },
 
