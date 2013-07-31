@@ -306,7 +306,7 @@ describe("core/project-controller-spec", function () {
                 projectController.addDocument(fooDocument);
                 projectController.addDocument(barDocument);
                 projectController._setCurrentDocument(fooDocument);
-            })
+            });
 
             it("records file changes", function () {
                 return projectControllerLoadedPromise.then(function () {
