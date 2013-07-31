@@ -31,6 +31,7 @@ exports.Main = Montage.create(Component, {
                 application.addEventListener("enterModalEditor", this);
                 application.addEventListener("exitModalEditor", this);
                 application.addEventListener("addFile", this);
+                application.addEventListener("addModule", this);
 
                 document.addEventListener("save", this, false);
             }
@@ -83,6 +84,14 @@ exports.Main = Montage.create(Component, {
         value: function () {
             //TODO don't call addComponent until we know it's a component we want
             this.projectController.createComponent().done();
+        }
+    },
+
+    handleAddModule: {
+        value: function (evt) {
+            if (this.projectController.canCreateModule) {
+                this.projectController.createModule().done();
+            }
         }
     },
 
