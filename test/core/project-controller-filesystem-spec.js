@@ -50,7 +50,7 @@ describe("core/project-controller-spec", function () {
         editorController = editorControllerMock();
 
         viewController = ViewController.create();
-        projectController = ProjectController.create().init(bridge, viewController, editorController);
+        projectController = new ProjectController().init(bridge, viewController, editorController);
         projectControllerLoadedPromise = projectController.loadProject("projectUrl");
 
         watcher = {};
@@ -206,6 +206,157 @@ describe("core/project-controller-spec", function () {
                     expect(parent.children[0].name).toBe("package.json");
                     expect(parent.children[1].name).toBe("ui");
                 }).timeout(WAITSFOR_TIMEOUT);
+            });
+
+        });
+    });
+
+    describe("file changes", function () {
+
+        var mockFileStat;
+
+        beforeEach(function () {
+            var editorType = editorMock;
+
+            mockFileStat = {
+                node: {
+                    dev: 2114,
+                    ino: 48064969,
+                    mode: 33188,
+                    nlink: 1,
+                    uid: 85,
+                    gid: 100,
+                    rdev: 0,
+                    size: 527,
+                    blksize: 4096,
+                    blocks: 8,
+                    atime: new Date(),
+                    mtime: new Date(),
+                    ctime: new Date()
+                },
+                size: 527
+            };
+        });
+
+        it("doesn't record file changes when no document is opened", function () {
+            return projectControllerLoadedPromise.then(function () {
+                expect(projectController._fileChangesHead).toEqual({next: null});
+                var head = projectController._fileChangesHead;
+
+                watcher.simulateChange("update", "test", mockFileStat, mockFileStat);
+                expect(projectController._fileChangesHead).toBe(head);
+            });
+        });
+
+        describe("when a document is open", function () {
+            var fooDocument, barDocument;
+
+            beforeEach(function () {
+                fooDocument = new (Montage.specialize({
+                    constructor: {
+                        value: function mockDocument() {
+                            this.super();
+                        }
+                    },
+
+                    url: {
+                        value: "other"
+                    },
+
+                    canClose: {
+                        value: Function.noop
+                    },
+
+                    filesDidChange: {
+                        value: function () {}
+                    }
+                }, {
+                    editorType: {
+                        value: editorMock
+                    }
+                }))();
+
+                barDocument = new (Montage.specialize({
+
+                    constructor: {
+                        value: function mockDocument() {
+                            this.super();
+                        }
+                    },
+
+                    url: {
+                        value: "current"
+                    },
+
+                    canClose: {
+                        value: Function.noop
+                    },
+
+                    filesDidChange: {
+                        value: function () {}
+                    }
+                }, {
+                    editorType: {
+                        value: editorMock
+                    }
+                }))();
+
+                projectController.currentEditor = editorMock();
+
+                projectController.addDocument(fooDocument);
+                projectController.addDocument(barDocument);
+                projectController._setCurrentDocument(fooDocument);
+            })
+
+            it("records file changes", function () {
+                return projectControllerLoadedPromise.then(function () {
+                    expect(projectController._fileChangesHead).toEqual({next: null});
+                    var head = projectController._fileChangesHead;
+
+                    watcher.simulateChange("update", "test", mockFileStat, mockFileStat);
+                    expect(projectController._fileChangesHead).not.toBe(head);
+                    expect(projectController._fileChangesHead).toEqual({
+                        change: "update",
+                        fileUrl: "test",
+                        currentStat: mockFileStat,
+                        previousStat: mockFileStat,
+                        next: null
+                    });
+                });
+            });
+
+            it("calls filesDidChange on document", function () {
+                return projectControllerLoadedPromise.then(function () {
+                    spyOn(fooDocument, "filesDidChange");
+                    spyOn(barDocument, "filesDidChange");
+
+                    watcher.simulateChange("update", "test", mockFileStat, mockFileStat);
+
+                    expect(barDocument.filesDidChange).not.toHaveBeenCalled();
+                    expect(fooDocument.filesDidChange).toHaveBeenCalled();
+                    expect(fooDocument.filesDidChange.mostRecentCall.args.length).toBe(1);
+                    expect(Array.isArray(fooDocument.filesDidChange.mostRecentCall.args[0])).toBe(true);
+                    expect(fooDocument.filesDidChange.mostRecentCall.args[0].length).toBe(1);
+                });
+            });
+
+            it("called filesDidChange with queued changes when a document is focused", function () {
+                return projectControllerLoadedPromise.then(function () {
+                    spyOn(barDocument, "filesDidChange");
+
+                    watcher.simulateChange("update", "test1", mockFileStat, mockFileStat);
+                    watcher.simulateChange("update", "test2", mockFileStat, mockFileStat);
+                    watcher.simulateChange("update", "test3", mockFileStat, mockFileStat);
+
+                    expect(barDocument.filesDidChange).not.toHaveBeenCalled();
+
+                    projectController._setCurrentDocument(barDocument);
+
+                    expect(barDocument.filesDidChange).toHaveBeenCalled();
+                    expect(barDocument.filesDidChange.mostRecentCall.args.length).toBe(1);
+                    expect(Array.isArray(barDocument.filesDidChange.mostRecentCall.args[0])).toBe(true);
+                    expect(barDocument.filesDidChange.mostRecentCall.args[0].length).toBe(3);
+                });
             });
 
         });

@@ -19,6 +19,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     constructor: {
         value: function ProjectController() {
             this.super();
+            this._fileChangesHead = { next: null };
+            this._lastFileChangeForDocumentMap = new WeakMap();
         }
     },
 
@@ -90,6 +92,14 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     // The groups of library items available to this package
     libraryGroups: {
+        value: null
+    },
+
+    _fileChangesHead: {
+        value: null
+    },
+
+    _lastFileChangeForDocumentMap: {
         value: null
     },
 
@@ -356,6 +366,14 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+    addDocument: {
+        value: function (document) {
+            var result = this.super(document);
+            this.dispatchFileChanges(document);
+            return result;
+        }
+    },
+
     /**
      * @override
      */
@@ -369,6 +387,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 selection = [];
             }
             this.openDocumentsController.selection = selection;
+            this.dispatchFileChanges(this.currentDocument);
         }
     },
 
@@ -863,7 +882,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         enumerable: false,
         value: function () {
             var self = this,
-                changeHandler = function (changeType) {
+                changeHandler = function (changeType, fileUrl, currentStat, previousStat) {
                     switch (changeType) {
                     case "update":
                         self.handleFileSystemUpdate.apply(self, Array.prototype.slice.call(arguments, 1));
@@ -875,12 +894,42 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         self.handleFileSystemDelete.apply(self, Array.prototype.slice.call(arguments, 1));
                         break;
                     }
+                    if (self.documents && self.documents.length) {
+                        self._fileChangesHead = self._fileChangesHead.next = {
+                            change: changeType,
+                            fileUrl: fileUrl,
+                            currentStat: currentStat,
+                            previousStat: previousStat,
+                            next: null
+                        };
+                        self.dispatchFileChanges(self.currentDocument);
+                    }
                 },
                 errorHandler = function (err) {
                     throw err;
                 };
 
             this.environmentBridge.watch(this.packageUrl, ["builds/"], changeHandler, errorHandler).done();
+        }
+    },
+
+    dispatchFileChanges: {
+        value: function (document) {
+            if (!document || !document.filesDidChange) {
+                return;
+            }
+
+            var changes = this._lastFileChangeForDocumentMap.get(document, this._fileChangesHead)
+            var changeList = [];
+            // skip first change as that has already been dispatched to the
+            // document
+            while (changes = changes.next) {
+                changeList.push(changes) // perhaps clone without .next
+            }
+            this._lastFileChangeForDocumentMap.set(document, this._fileChangesHead)
+            if (changeList.length) {
+                document.filesDidChange(changeList);
+            }
         }
     },
 
