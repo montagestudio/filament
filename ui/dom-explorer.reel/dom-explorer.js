@@ -22,9 +22,9 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
             var identifier = evt.identifier;
 
             switch (identifier) {
-                case "cancelElementEscape":
-                    this._cancelElementCreation();
-                    break;
+            case "cancelElementEscape":
+                this._cancelElementCreation();
+                break;
             }
         }
     },
