@@ -761,8 +761,15 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                 return promise;
             }).then(function (applicationUrl) {
-                    return self.loadProject(applicationUrl);
-                });
+                // select main.reel
+                var openMainReel = function (evt) {
+                    self.removeEventListener("didOpenPackage", openMainReel, false);
+                    self.dispatchEventNamed("openUrl", true, true, applicationUrl + "/ui/main.reel/");
+                };
+                self.addEventListener("didOpenPackage", openMainReel, false);
+
+                return self.loadProject(applicationUrl);
+            });
         }
     },
 
