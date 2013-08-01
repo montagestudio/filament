@@ -16,6 +16,13 @@
             "ui/package-explorer.reel/package-explorer.html"
         ]
     },
+    "add_module": {
+        "message": "Add Module…",
+        "description": "Button to add a module to a package",
+        "locations": [
+            "ui/package-explorer.reel/package-explorer.html"
+        ]
+    },
     "install_dependencies": {
         "message": "Install Dependencies",
         "description": "Button to install the programatic dependencies of the project",
