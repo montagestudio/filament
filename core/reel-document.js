@@ -1329,14 +1329,14 @@ exports.ReelDocument = EditingDocument.specialize({
     addOwnerBlueprintProperty: {
         value: function (propertyBlueprint) {
             var self = this;
-            this.undoManager.register(
+            return this.undoManager.register(
                 "Add owner property",
                 this._ownerBlueprint.then(function (blueprint) {
                     blueprint.addPropertyBlueprint(propertyBlueprint);
                     blueprint.addPropertyBlueprintToGroupNamed(propertyBlueprint, "default");
                     return [self.removeOwnerBlueprintProperty, self, propertyBlueprint];
                 })
-            ).done();
+            );
         }
     },
 
@@ -1344,24 +1344,24 @@ exports.ReelDocument = EditingDocument.specialize({
         value: function (propertyBlueprint, property, value) {
             var previousValue = propertyBlueprint[property];
             propertyBlueprint[property] = value;
-            this.undoManager.register(
+            return this.undoManager.register(
                 "Modify owner property",
                 Promise.resolve([this.modifyOwnerBlueprintProperty, this, propertyBlueprint, property, previousValue])
-            ).done();
+            );
         }
     },
 
     removeOwnerBlueprintProperty: {
         value: function (propertyBlueprint) {
             var self = this;
-            this.undoManager.register(
+            return this.undoManager.register(
                 "Remove owner property",
                 this._ownerBlueprint.then(function (blueprint) {
                     blueprint.removePropertyBlueprint(propertyBlueprint);
                     blueprint.removePropertyBlueprintFromGroupNamed(propertyBlueprint, "default");
                     return [self.addOwnerBlueprintProperty, self, propertyBlueprint];
                 })
-            ).done();
+            );
         }
     }
 
