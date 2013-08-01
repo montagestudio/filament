@@ -35,14 +35,20 @@ exports.BindingJig = Montage.create(Component, {
         }
     },
 
+    escapeDoubleQuotes: {
+        value: function (str) {
+            return str.replace(/"/g, '\"');
+        }
+    },
+
     handleDefineBindingButtonAction: {
         value: function (evt) {
             evt.stop();
             var model = this.bindingModel,
                 proxy = model.targetObject,
-                targetPath = model.targetPath,
+                targetPath = this.escapeDoubleQuotes(model.targetPath),
                 oneway = model.oneway,
-                sourcePath = model.sourcePath;
+                sourcePath = this.escapeDoubleQuotes(model.sourcePath);
 
             if (this.existingBinding) {
                 this.editingDocument.updateOwnedObjectBinding(proxy, this.existingBinding, targetPath, oneway, sourcePath);
