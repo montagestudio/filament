@@ -105,14 +105,17 @@
             "prototype": "matte/ui/input-text.reel",
             "properties": {
                 "element": {"#": "addName"}
-            }
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
         }
     }
     </script>
 </head>
 <body>
     <div data-montage-id="edit-properties" class="EditProperties">
-        
+
         <ul data-montage-id="properties" class="EditProperties-list">
             <li class="EditProperties-listItem">
                 <span data-montage-id="name" class="EditProperties-name"></span>
@@ -125,7 +128,7 @@
                     <option value="url">url</option>
                     <option value="object">object</option>
                 </select>
-                
+
                 <div class="EditProperties-multi">
                     <label><input type="checkbox" data-montage-id="multiple" class="Checkbox"> multi</label>
                     <span data-montage-id="collectionCondition">
@@ -135,11 +138,11 @@
                         </select>
                     </span>
                 </div>
-                
+
                 <button data-montage-id="removeProperty" class="Button Button--circle">-</button>
             </li>
         </ul>
-        
+
         <footer class="EditProperties-bar">
             <input type="text" data-montage-id="addName" class="Input" placeholder="Property name">
             <button data-montage-id="addProperty" class="Button--action">+ Add property</button>

@@ -117,6 +117,18 @@ exports.EditProperties = Component.specialize({
     },
 
     handleAddPropertyAction: {
+        value: function () {
+            this.addProperty();
+        }
+    },
+
+    handleAddNameAction: {
+        value: function () {
+            this.addProperty();
+        }
+    },
+
+    addProperty: {
         value: function (event) {
             var name = this.templateObjects.addName.value;
             if (!name) {
