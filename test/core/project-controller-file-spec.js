@@ -106,6 +106,15 @@ describe("core/project-controller-file-spec", function () {
                 });
             });
 
+            it("should hide the editor when the last document is closed", function () {
+
+                spyOn(editorController, "hideEditors");
+
+                return projectController.closeDocument(openedDocument).then(function (closedDocument) {
+                    expect(editorController.hideEditors).toHaveBeenCalled();
+                });
+            });
+
             it("should resolve the close promise as the specified document", function () {
                 return projectController.closeDocument(openedDocument)
                     .then(function (closedDocument) {
@@ -174,6 +183,17 @@ describe("core/project-controller-file-spec", function () {
                     projectController.addDocument(barDocument);
                     //Note currentDocument needs to be opened as part of each test
                 });
+
+                it("should not hide the editor when a document remains", function () {
+                    spyOn(editorController, "hideEditors");
+
+                    return projectController.openUrlForEditing(fooDocument.url).then(function () {
+                        return projectController.closeDocument(fooDocument);
+                    }).then(function () {
+                        expect(editorController.hideEditors).not.toHaveBeenCalled();
+                    });
+                });
+
 
                 describe("and is not the current document", function () {
 

@@ -5,6 +5,10 @@ var EditorController = Montage.create(Montage, {
 
     bringEditorToFront: {
         value: Function.noop
+    },
+
+    hideEditors: {
+        value: Function.noop
     }
 
 });
