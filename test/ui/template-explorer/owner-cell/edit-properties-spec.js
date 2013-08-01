@@ -66,6 +66,18 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                     expect(editor.templateObjects.addName.value).toBe("");
                 });
             });
+
+            it("cannot be named the same as an existing blueprint", function () {
+                spyOn(editingDocument, "addOwnerBlueprintProperty");
+
+                expect(defaultGroup.length).toBe(2);
+                editor.templateObjects.addName.value = "a";
+                testPage.clickOrTouch({target: editor.templateObjects.addProperty.element}, function () {
+                    expect(editingDocument.addOwnerBlueprintProperty).not.toHaveBeenCalled();
+                    expect(editor.templateObjects.addName.value).toBe("a");
+                });
+            });
+
         });
 
         describe("remove button", function () {

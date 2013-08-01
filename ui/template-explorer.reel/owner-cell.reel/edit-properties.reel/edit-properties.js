@@ -134,6 +134,13 @@ exports.EditProperties = Component.specialize({
             if (!name) {
                 return;
             }
+            // Check if this property name already exists
+            // The check should also be in blueprints, but this way we can
+            // stop sooner and (not) update the UI sooner.
+            if (this.ownerBlueprint.propertyBlueprints.map(function (p) { return p.name; }).indexOf(name) !== -1) {
+                return;
+            }
+
             var property = new PropertyBlueprint().initWithNameBlueprintAndCardinality(name, this.ownerBlueprint, 1);
             this._ownerObject.editingDocument.addOwnerBlueprintProperty(property);
             this.templateObjects.addName.value = "";
