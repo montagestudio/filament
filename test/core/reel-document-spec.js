@@ -11,7 +11,7 @@ describe("core/reel-document-spec", function () {
     describe("loading a data model given a locationId", function () {
 
         beforeEach(function () {
-            reelDocumentPromise = ReelDocument.load("test/mocks/ui/simple.reel", require.location);
+            reelDocumentPromise = ReelDocument.load(require.location + "test/mocks/ui/simple.reel", require.location);
         });
 
         it("should return a promise for the populated document", function () {
