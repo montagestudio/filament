@@ -408,7 +408,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      */
     closeDocument: {
         value: function (document) {
-
             if (!this._urlDocumentMap.get(document.url)) {
                 return Promise.reject(new Error("Cannot close a document that is not open"));
             }
@@ -458,6 +457,11 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 } else {
                     editor.close(document);
                     self.removeDocument(document);
+
+                    // No nextDocument => no more documents and so hide the
+                    // current editor
+                    self._editorController.hideEditors();
+
                     closedPromise = Promise.resolve(document);
                 }
 

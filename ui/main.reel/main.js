@@ -65,6 +65,13 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    hideEditors: {
+        value: function () {
+            this._frontEditor = null;
+            this.needsDraw = true;
+        }
+    },
+
     _openEditors: {
         value: null
     },
