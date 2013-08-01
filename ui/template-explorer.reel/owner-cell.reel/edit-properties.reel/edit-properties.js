@@ -97,20 +97,20 @@ exports.EditProperties = Component.specialize({
                 var ownerBlueprint = this._ownerBlueprint;
 
                 plus.forEach(function (property) {
-                    property.addBeforeOwnPropertyChangeListener("valueType", this);
-                    property.addBeforeOwnPropertyChangeListener("cardinality", this);
-                    property.addBeforeOwnPropertyChangeListener("collectionValueType", this);
+                    property.addOwnPropertyChangeListener("valueType", this);
+                    property.addOwnPropertyChangeListener("cardinality", this);
+                    property.addOwnPropertyChangeListener("collectionValueType", this);
                 }, this);
                 minus.forEach(function (property) {
-                    property.removeBeforeOwnPropertyChangeListener("valueType", this);
-                    property.removeBeforeOwnPropertyChangeListener("cardinality", this);
-                    property.removeBeforeOwnPropertyChangeListener("collectionValueType", this);
+                    property.removeOwnPropertyChangeListener("valueType", this);
+                    property.removeOwnPropertyChangeListener("cardinality", this);
+                    property.removeOwnPropertyChangeListener("collectionValueType", this);
                 }, this);
             }
         }
     },
 
-    handlePropertyWillChange: {
+    handlePropertyChange: {
         value: function (value, key, object) {
             this._ownerObject.editingDocument.modifyOwnerBlueprintProperty(object, key, value);
         }
