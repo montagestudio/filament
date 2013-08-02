@@ -5,6 +5,92 @@ var LibraryItem = require("filament-extension/core/library-item").LibraryItem;
 //TODO each extension really should be its own package, anticipate consuming extensions from elsewhere
 var packageLocation = require.location;
 
+var NodeLibraryItem = LibraryItem.specialize({
+
+    constructor: {
+        value: function NodeLibraryItem() {
+            this.super();
+        }
+    },
+
+    serialization: {
+        value: {
+            "prototype": "glTF-webgl-viewer/runtime/node"
+        }
+    },
+
+    name: {
+        value: "Node"
+    },
+
+    label: {
+        value: "Node"
+    },
+
+    icon: {
+        value: null
+    }
+
+});
+
+var MaterialLibraryItem = LibraryItem.specialize({
+
+    constructor: {
+        value: function MaterialLibraryItem() {
+            this.super();
+        }
+    },
+
+    serialization: {
+        value: {
+            "prototype": "glTF-webgl-viewer/runtime/material"
+        }
+    },
+
+    name: {
+        value: "Material"
+    },
+
+    label: {
+        value: "Material"
+    },
+
+    icon: {
+        value: null
+    }
+
+});
+
+
+var SceneLibraryItem = LibraryItem.specialize({
+
+    constructor: {
+        value: function SceneLibraryItem() {
+            this.super();
+        }
+    },
+
+    serialization: {
+        value: {
+            "prototype": "glTF-webgl-viewer/runtime/scene"
+        }
+    },
+
+    name: {
+        value: "Scene"
+    },
+
+    label: {
+        value: "Scene"
+    },
+
+    icon: {
+        value: null
+    }
+
+});
+
+
 
 var ColladaViewLibraryItem = LibraryItem.specialize( {
 
@@ -49,4 +135,8 @@ exports.libraryItems = {
     "glTF-webgl-viewer/ui/view.reel": ColladaViewLibraryItem
 };
 
-exports.libraryAdditions = [];
+exports.libraryAdditions = {
+    "glTF-webgl-viewer/runtime/scene": SceneLibraryItem,
+    "glTF-webgl-viewer/runtime/node": NodeLibraryItem,
+    "glTF-webgl-viewer/runtime/material": MaterialLibraryItem
+};
