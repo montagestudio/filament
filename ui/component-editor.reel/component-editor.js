@@ -76,6 +76,7 @@ exports.ComponentEditor = Editor.specialize({
                     this._openEditors.push(editor);
                 }
 
+                this.addEventListener("addListenerForObject", this, false);
                 this._frontEditor = editor;
                 this.needsDraw = true;
             }
@@ -144,5 +145,33 @@ exports.ComponentEditor = Editor.specialize({
             });
 
         }
+    },
+
+    handleAddListenerForObject: {
+        value: function (evt) {
+            var listenerModel = evt.detail.listenerModel,
+                listenerJig,
+                overlay;
+
+            listenerJig = this.templateObjects.listenerCreator;
+            listenerJig.listenerModel = listenerModel;
+
+            overlay = this.templateObjects.eventTargetOverlay;
+            overlay.anchor = evt.target.element;
+            overlay.show();
+        }
+    },
+
+    handleListenerCreatorCommit: {
+        value: function (evt) {
+            this.templateObjects.eventTargetOverlay.hide();
+        }
+    },
+
+    handleListenerCreatorDiscard: {
+        value: function (evt) {
+            this.templateObjects.eventTargetOverlay.hide();
+        }
     }
+
 });

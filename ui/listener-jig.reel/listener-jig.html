@@ -8,7 +8,17 @@
         "owner": {
             "properties": {
                 "element": {"#": "listener-jig"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "keyPress",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
     
         "targetObjectLabel": {
@@ -30,7 +40,7 @@
                 "value": {"<->": "@owner.listenerModel.type"}
             }
         },
-    
+
         "objectLabelConverter": {
             "prototype": "core/object-label-converter",
             "bindings": {
@@ -95,6 +105,22 @@
             "listeners": [
                 {
                     "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "cancelEditing": {
+            "prototype": "montage/composer/key-composer",
+            "properties": {
+                "keys": "escape",
+                "component": {"@": "owner"},
+                "identifier": "cancelEditing",
+                "element": {"#": "listener-jig"}
+            },
+            "listeners": [
+                {
+                    "type": "keyPress",
                     "listener": {"@": "owner"}
                 }
             ]

@@ -122,27 +122,6 @@
             }
         },
 
-        "listenerCreatorCondition": {
-            "prototype": "montage/ui/condition.reel",
-            "properties": {
-                "element": {"#": "listenerCreatorCondition"},
-                "removalStrategy": "hide"
-            },
-            "bindings": {
-                "condition": {"<-": "@listenerCreator.listenerModel && @owner.showListeners"}
-            }
-        },
-
-        "listenerCreator": {
-            "prototype": "ui/listener-jig.reel",
-            "properties": {
-                "element": {"#": "listenerCreator"}
-            },
-            "bindings": {
-                "editingDocument": {"<-": "@owner.editingDocument"}
-            }
-        },
-
         "showBindings": {
             "prototype": "matte/ui/input-checkbox.reel",
             "properties": {
@@ -214,11 +193,7 @@
             <div data-montage-id="bindingCreatorCondition">
                 <div data-montage-id="bindingCreator"></div>
             </div>
-    
-            <div data-montage-id="listenerCreatorCondition">
-                <div data-montage-id="listenerCreator"></div>
-            </div>
-            
+
             <form class="ConnectionExplorerFilter">
                 <label class="ConnectionExplorerFilter-label"><input data-montage-id="showBindings" type="checkbox">Show Bindings</label>
                 <label class="ConnectionExplorerFilter-label"><input data-montage-id="showListeners" type="checkbox">Show Listeners</label>

@@ -115,8 +115,34 @@
                     "containerElement": {"#": "documentEditorExplorerColumn"},
                     "controlledComponent": {"@": "domExplorer"}
                 }
-            }
+            },
 
+            "eventTargetOverlay": {
+                "prototype": "montage/ui/overlay.reel",
+                "properties": {
+                    "element": {"#": "eventTargetOverlay"}
+                }
+            },
+
+            "listenerCreator": {
+                "prototype": "ui/listener-jig.reel",
+                "properties": {
+                    "element": {"#": "listenerCreator"}
+                },
+                "bindings": {
+                    "editingDocument": {"<-": "@owner.currentDocument"}
+                },
+                "listeners": [
+                    {
+                        "type": "commit",
+                        "listener": {"@": "owner"}
+                    },
+                    {
+                        "type": "discard",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            }
         }
     </script>
 
@@ -124,6 +150,12 @@
 <body>
 
     <section data-montage-id="componentEditor" class="ComponentEditor">
+
+        <!-- TODO hide overlays by default; they are considered flow items-->
+        <section data-montage-id="eventTargetOverlay">
+            <div data-montage-id="listenerCreator"></div>
+        </section>
+
         <section data-montage-id="templateExplorerColumn" class="ComponentEditor-column palette">
             <div data-montage-id="templateExplorer" class="ComponentEditor-column-row ComponentEditor-column-row--fill"></div>
             <div data-montage-id="bindingSplit"></div>
