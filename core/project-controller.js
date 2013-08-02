@@ -943,10 +943,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 parent = this.fileInTreeAtUrl(parentUrl),
                 newFile;
 
-            if (parent && parent.children) {
+            if (parent && parent.expanded) {
                 newFile = FileDescriptor.create().initWithUrlAndStat(fileUrl, currentStat);
                 //TODO account for some sort of sorting at this point?
-                parent.children.push(newFile);
+                parent.children.add(newFile);
             }
 
             //TODO try to be more focused about this based upon the file that was created
@@ -965,22 +965,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: function (fileUrl, currentStat, previousStat) {
             var parentUrl = fileUrl.substring(0, fileUrl.replace(/\/$/, "").lastIndexOf("/")),
                 parent = this.fileInTreeAtUrl(parentUrl),
-                children,
-                childrenByUrl,
-                child;
+                child = this.fileInTreeAtUrl(fileUrl);
 
-            if (parent && (children = parent.children)) {
-                // NOTE I'd capture the index while reducing, but I don't want to create
-                // more objects, it's usually going to be fast enough to find it in the
-                // collection again
-                childrenByUrl = children.reduce(function (urlMap, child) {
-                    urlMap[child.fileUrl] = child;
-                    return urlMap;
-                }, {});
-                child = childrenByUrl[fileUrl];
-
-                children.splice(children.indexOf(child), 1);
-            }
+            parent.children.delete(child);
 
             //TODO try to be more focused about this based upon the file that was deleted
             this.populateLibrary().done();
@@ -1015,8 +1002,11 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             var self = this;
 
             return this.filesAtUrl(this.packageUrl).then(function (fileDescriptors) {
-                //TODO a bit of a hack here to make a "root node" as list only gives content inside the specified path
-                self.files = {children: fileDescriptors, root: true};
+                var descriptor = new FileDescriptor().initWithUrlAndStat(self.packageUrl + "/", {mode: FileDescriptor.S_IFDIR});
+                descriptor.root = true;
+                descriptor.expanded = true;
+                descriptor.children.addEach(fileDescriptors);
+                self.files = descriptor;
             });
         }
     },

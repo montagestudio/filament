@@ -1,11 +1,8 @@
 /* jshint -W016 */
 var Montage = require("montage").Montage;
-var constants = {
-    S_IFDIR: 16384,
-    S_IFMT: 61440
-};
+var SortedArray = require("montage/collections/sorted-array");
 
-exports.FileDescriptor = Montage.create(Montage, {
+var FileDescriptor = exports.FileDescriptor = Montage.specialize({
 
     constructor: {
         value: function FileDescriptor () {
@@ -25,8 +22,13 @@ exports.FileDescriptor = Montage.create(Montage, {
             }
 
             var parts = url.split("/");
-            // Directories have a trailing slash, and so the last part is empty
-            this.name = this.isDirectory ? parts[parts.length - 2] : parts[parts.length - 1];
+            if (isDirectory) {
+                // Directories have a trailing slash, and so the last part is empty
+                this.name = parts[parts.length - 2];
+                this.children = SortedArray();
+            } else {
+                this.name =  parts[parts.length - 1];
+            }
 
             return this;
         }
@@ -46,7 +48,7 @@ exports.FileDescriptor = Montage.create(Montage, {
 
     isDirectory: {
         get: function () {
-            return this._checkModeProperty(constants.S_IFDIR);
+            return this._checkModeProperty(FileDescriptor.S_IFDIR);
         }
     },
 
@@ -78,10 +80,31 @@ exports.FileDescriptor = Montage.create(Montage, {
         value: function (property) {
             var stat = this._stat,
                 mode = stat.node ? stat.node.mode : stat.mode;
-            return ((mode & constants.S_IFMT) === property);
+            return ((mode & FileDescriptor.S_IFMT) === property);
+        }
+    },
+
+    equals: {
+        value: function (other) {
+            return this.fileUrl === other.fileUrl;
+        }
+    },
+
+    compare: {
+        value: function (other) {
+            if (this.equals(other)) {
+                return 0;
+            }
+            return this.fileUrl < other.fileUrl ? -1 : 1;
         }
     }
-
+}, {
+    S_IFDIR: {
+        value: 16384
+    },
+    S_IFMT: {
+        value: 61440
+    }
 });
 
 // All of these `is*` functions just check that the FileDescriptor is a file,

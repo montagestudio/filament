@@ -9,7 +9,7 @@ var Montage = require("montage").Montage,
     FileDescriptor = require("core/file-descriptor").FileDescriptor,
     WAITSFOR_TIMEOUT = 2500;
 
-describe("core/project-controller-spec", function () {
+describe("core/project-controller-filesystem-spec", function () {
 
     var bridge, viewController, editorController, projectController, mockMenu, textUrl, reelUrl,
         editor, projectControllerLoadedPromise, watcher;
@@ -75,7 +75,7 @@ describe("core/project-controller-spec", function () {
                     var parent = projectController.fileInTreeAtUrl("projectUrl");
 
                     expect(parent.children.length).toBe(4);
-                    expect(parent.children[3].fileUrl).toBe(fullPath);
+                    expect(parent.children.array.get(1).fileUrl).toBe(fullPath);
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
@@ -85,7 +85,7 @@ describe("core/project-controller-spec", function () {
                     watcher.simulateChange("create", fullPath, currentStat, previousStat);
 
                     var parent = projectController.fileInTreeAtUrl("projectUrl");
-                    expect(parent.children[3].isDirectory).toBe(true);
+                    expect(parent.children.array.get(1).isDirectory).toBe(true);
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
@@ -94,7 +94,7 @@ describe("core/project-controller-spec", function () {
                     watcher.simulateChange("create", fullPath, currentStat, previousStat);
 
                     var parent = projectController.fileInTreeAtUrl("projectUrl");
-                    expect(parent.children[3].isDirectory).toBe(false);
+                    expect(parent.children.array.get(1).isDirectory).toBe(false);
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
@@ -123,7 +123,7 @@ describe("core/project-controller-spec", function () {
                     watcher.simulateChange("create", fullPath, currentStat, previousStat);
 
                     var parent = projectController.fileInTreeAtUrl("projectUrl/ui");
-                    expect(parent.children).toBeUndefined();
+                    expect(parent.children.length).toBe(0);
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
@@ -142,7 +142,7 @@ describe("core/project-controller-spec", function () {
 
             var exploreParent = function () {
                 var parent = projectController.fileInTreeAtUrl(parentPath);
-                parent.children = [];
+                parent.expanded = true;
                 return parent;
             };
 
@@ -153,7 +153,7 @@ describe("core/project-controller-spec", function () {
                     watcher.simulateChange("create", fullPath, currentStat, previousStat);
 
                     expect(parent.children.length).toBe(1);
-                    expect(parent.children[0].fileUrl).toBe(fullPath);
+                    expect(parent.children.array.get(0).fileUrl).toBe(fullPath);
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
@@ -164,7 +164,7 @@ describe("core/project-controller-spec", function () {
                     currentStat = {mode: 16384};
                     watcher.simulateChange("create", fullPath, currentStat, previousStat);
 
-                    expect(parent.children[0].isDirectory).toBe(true);
+                    expect(parent.children.array.get(0).isDirectory).toBe(true);
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
@@ -174,7 +174,7 @@ describe("core/project-controller-spec", function () {
 
                     watcher.simulateChange("create", fullPath, currentStat, previousStat);
 
-                    expect(parent.children[0].isDirectory).toBe(false);
+                    expect(parent.children.array.get(0).isDirectory).toBe(false);
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
@@ -203,8 +203,8 @@ describe("core/project-controller-spec", function () {
                     var parent = projectController.fileInTreeAtUrl("projectUrl");
 
                     expect(parent.children.length).toBe(2);
-                    expect(parent.children[0].name).toBe("package.json");
-                    expect(parent.children[1].name).toBe("ui");
+                    expect(parent.children.array.get(0).name).toBe("package.json");
+                    expect(parent.children.array.get(1).name).toBe("ui");
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
