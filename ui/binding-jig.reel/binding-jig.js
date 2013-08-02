@@ -26,7 +26,7 @@ exports.BindingJig = Montage.create(Component, {
 
     handleDrop: {
         value: function (event) {
-            if (event.dataTransfer.types.indexOf(MimeTypes.SERIALIZATION_OBJECT_LABEL) !== -1) {
+            if (event.dataTransfer.types.has(MimeTypes.SERIALIZATION_OBJECT_LABEL)) {
                 var element = this.inputEl;
                 var plain = event.dataTransfer.getData("text/plain");
                 var rich = "@" + event.dataTransfer.getData(MimeTypes.SERIALIZATION_OBJECT_LABEL);
@@ -38,28 +38,61 @@ exports.BindingJig = Montage.create(Component, {
     handleDefineBindingButtonAction: {
         value: function (evt) {
             evt.stop();
-            var model = this.bindingModel,
-                proxy = model.targetObject,
-                targetPath = model.targetPath,
-                oneway = model.oneway,
-                sourcePath = model.sourcePath;
-
-            if (this.existingBinding) {
-                this.editingDocument.updateOwnedObjectBinding(proxy, this.existingBinding, targetPath, oneway, sourcePath);
-            } else {
-                this.editingDocument.defineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath);
-            }
-            this.existingBinding = null;
-            this.bindingModel = null;
-             //TODO close the jig
+            this._commitBindingEdits();
         }
     },
 
     handleCancelButtonAction: {
         value: function (evt) {
             evt.stop();
+            this._discardBindingEdits();
+        }
+    },
+
+    handleKeyPress: {
+        value: function(evt) {
+            if ("cancelEditing" === evt.identifier) {
+                this._discardBindingEdits();
+            }
+        }
+    },
+
+    handleAction: {
+        value: function (evt) {
+            this._commitBindingEdits();
+        }
+    },
+
+    _discardBindingEdits: {
+        value: function () {
             this.bindingModel = null;
-            //TODO close the jig
+            this.existingBinding = null;
+            this.dispatchEventNamed("discard", true, false);
+        }
+    },
+
+    _commitBindingEdits: {
+        value: function () {
+            var model = this.bindingModel,
+                proxy = model.targetObject,
+                targetPath = model.targetPath,
+                oneway = model.oneway,
+                sourcePath = model.sourcePath,
+                bindingEntry;
+
+            if (this.existingBinding) {
+                bindingEntry = this.editingDocument.updateOwnedObjectBinding(proxy, this.existingBinding, targetPath, oneway, sourcePath);
+            } else {
+                bindingEntry = this.editingDocument.defineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath);
+            }
+
+
+            this.dispatchEventNamed("commit", true, false, {
+                bindingEntry: bindingEntry
+            });
+
+            this.existingBinding = null;
+            this.bindingModel = null;
         }
     }
 

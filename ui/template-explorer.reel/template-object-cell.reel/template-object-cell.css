@@ -1,66 +1,30 @@
 .TemplateObjectCell {
-    display: -webkit-inline-flex;
-    -webkit-flex-direction: column;
-    position: relative;
-    z-index: 10;
-    overflow: hidden;
-    resize: both;
-    width: 160px;
-    margin: 6px;
-    padding-bottom: 10px; /* Space for the resizer */
-    border-radius: 4px 4px 2px 4px;
-    border: 1px solid hsl(0, 0%, 65%);
-    box-shadow: 0 1px 2px hsla(0,0%,0%,.1);
-    background: hsl(0, 0%, 94%);
-}
-
-.TemplateObjectCell:after {
-    content: "";
-    pointer-events: none;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    width: 10px;
-    height: 10px;
-    background: -webkit-linear-gradient(-45deg, hsla(0,0%,0%,0) 50%, hsla(0,0%,0%,.1) 50% );
-}
-
-.TemplateObjectCell:hover {
-    z-index: 101;
-    box-shadow: 0 2px 3px hsla(0,0%,0%,.3);
-    border-color: hsl(0,0%,50%);
+    border: 1px solid hsla(0,0%,0%,0);
+    border-left-width: 5px;
 }
 
 .TemplateObjectCell.selected {
-    z-index: 100;
     border-color: hsl(210,100%,60%);
-    box-shadow: 0 0 3px 1px hsla(210,100%,70%,0.7);
+    background-color: hsl(0,0%,98%)
 }
-
-.TemplateObjectCell.selected:hover {
-    z-index: 101;
-    border-color: hsl(210,100%,50%);
-}
-
-.TemplateObjectCell--dragging {
-    z-index: 102;
-}
-
-/* Header ---------------------------- */
 
 .TemplateObjectCell-header {
     display: -webkit-flex;
-    -webkit-align-items: center;
-    padding: 6px 4px;
-    font-size: 12px;
-    border-top-left-radius: inherit;
-    border-top-right-radius: inherit;
-    text-shadow: 0 1px 0 hsla(0, 0%, 100%, .8);
-    border-bottom: 1px solid hsla(0, 0%, 0%, .1);
-    box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 1);
-    background: -webkit-linear-gradient( hsl(0, 0%, 99%), whiteSmoke );
-    cursor: move;
-    resize: none;
+    padding: 0.2em;
+    background-color: hsl(0, 0%, 92%);
+}
+
+.TemplateObjectCell-referenceProxy {
+    display: -webkit-flex;
+}
+
+.TemplateObjectCell-header-flex {
+    -webkit-flex: 1;
+    min-width: 0;
+}
+
+.TemplateObjectCell-header + * {
+    margin-top: 4px;
 }
 
 .TemplateObjectCell-icon {
@@ -69,30 +33,13 @@
     margin: 0 4px 0 0;
 }
 
-.TemplateObjectCell-header-flex {
-    -webkit-flex: 1;
-    min-width: 0;
+.TemplateObjectCell.selected .TemplateObjectCell-header {
+    background-color: hsl(210,100%,92%);
 }
 
-.TemplateObjectCell-title {
-    margin: 0;
-    font-size: 12px;
-    line-height: 14px;
-    color: hsl(0, 0%, 30%);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.TemplateObjectCell-exportName {
-    display: block;
-    font-style: italic;
-    font-size: 10px;
-    line-height: 12px;
-    color: hsl(0, 0%, 60%);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.TemplateObjectCell--owner.selected .TemplateObjectCell-header,
+.TemplateObjectCell--owner .TemplateObjectCell-header {
+    background-color: hsl(43, 100%, 85%);
 }
 
 .TemplateObjectCell-commentButton {
@@ -117,74 +64,75 @@
     background: hsl(42, 83%, 95%);
 }
 
-
-
-/* Content ---------------------------- */
-
-.TemplateObjectCell-list {
-    -webkit-flex: 1;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    overflow: auto;
-    resize: none;
-}
-
-.TemplateObjectCell-list-item {
-    padding: 5px 0;
-    font-size: 11px;
-    color: hsl(0,0%,50%);
-    border-bottom: 1px solid hsla(0, 0%, 0%, .05);
-    background: hsl(0, 0%, 94%);
-}
-
-
-.TemplateObject-list-icon {
-    height: 14px;
-    margin: 0 6px 0 12px;
-    vertical-align: middle;
-}
-
-.TemplateObject-button.matte-Button {
-    min-width: 24px;
-    height: 24px;
-    padding: 0 0 0 4px;
-    margin: 0 2px 0 7px;
-    vertical-align: middle;
-}
-
-.TemplateObject-button-icon {
+.TemplateObjectCell-button-icon {
     display: block;
     width: 14px;
     height: 14px;
 }
 
-.TemplateObject-button--bind .TemplateObject-button-icon,
-.TemplateObject-button--listen .TemplateObject-button-icon {
+.TemplateObjectCell-button-icon.TemplateObjectCell-button--bind ,
+.TemplateObjectCell-button-icon.TemplateObjectCell-button--listen {
     background: url(/assets/icons/binding.png) no-repeat center;
     background-size: auto 14px;
 }
 
-.TemplateObject-button--listen .TemplateObject-button-icon {
+.TemplateObjectCell-button-icon.TemplateObjectCell-button--listen {
     background-image: url(/assets/icons/event.png);
 }
 
-
-.TemplateObject-input.matte-InputText {
-    width: 116px;
-    height: 24px;
-    border-color: hsl(0, 0%, 77%);
-    background-color: hsla(0, 0%, 0%, .04);
-    box-shadow: inset 0 1px 2px hsla(0, 0%, 0%, 0.08), 0 1px 0 hsla(0, 0%, 100%, .6);
+.TemplateObjectCell-title {
+    margin: 0;
+    font-size: 12px;
+    line-height: 14px;
+    color: hsl(0, 0%, 30%);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
+.TemplateObjectCell-exportName {
+    display: block;
+    font-style: italic;
+    font-size: 10px;
+    line-height: 12px;
+    color: hsl(0, 0%, 60%);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
-.TemplateObjectEvent-list {
-    margin: 0 0 0 28px;
+.TemplateObjectElementField-label--invalid {
+    color: red;
+}
+
+/* Connection Type ---------------------------- */
+
+
+.Connection-type {
+    position: relative;
+    -webkit-flex: 1 1 450px;
+    min-width: 0;
+    margin-bottom: 4px;
+    margin-left: 18px;
+    padding: 0 10px 0 10px;
+    border-left: 1px solid hsl(0, 0%, 85%);
+}
+
+.Connection-type-title {
+    margin: 0;
+    font-size: 11px;
+    font-weight: normal;
+    line-height: 22px;
+    color: hsl(0,0%,60%);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.Connection-type-list {
+    -webkit-flex: 1;
+    min-width: 0;
+    margin: 0;
     padding: 0;
     list-style: none;
-}
-
-.TemplateObjectTag-label--invalid {
-    color: red;
 }

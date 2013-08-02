@@ -1,28 +1,25 @@
 /**
-    @module "ui/template-object-cell.reel"
-    @requires montage
-    @requires montage/ui/component
-*/
+ @module "ui/template-object-cell.reel"
+ @requires montage
+ @requires montage/ui/component
+ */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
-    Promise = require("montage/core/promise").Promise,
     MimeTypes = require("core/mime-types");
 
-var CLASS_PREFIX = "TemplateObjectCell";
-
 /**
-    Description TODO
-    @class module:"ui/template-object-cell.reel".TemplateObjectCell
-    @extends module:montage/ui/component.Component
-*/
+ Description TODO
+ @class module:"ui/template-object-cell.reel".TemplateObjectCell
+ @extends module:montage/ui/component.Component
+ */
 exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/template-object-cell.reel".TemplateObjectCell# */ {
 
-    constructor: {
-        value: function TemplateObjectCell() {
-            this.super();
-            this.addPathChangeListener("x", this, "scheduleDraw");
-            this.addPathChangeListener("y", this, "scheduleDraw");
-        }
+    _referenceProxyElement: {
+        value: null
+    },
+
+    _templateObjectElementField: {
+        value: null
     },
 
     enterDocument: {
@@ -32,11 +29,10 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
             }
 
             // Allow proxyIcon to be dragged as an object reference
-            var icon = this.templateObjects.icon.element;
-            icon.addEventListener("dragstart", this, false);
+            this._referenceProxyElement.addEventListener("dragstart", this, false);
 
             // Allow event button to be dragged as a reference ot this as an eventTarget
-            var eventButton = this.templateObjects.listenButton.element;
+            var eventButton = this.templateObjects.addListenerButton.element;
             eventButton.addEventListener("dragstart", this, false);
 
             //Allow dropping object references on the event button
@@ -46,10 +42,6 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
             // Allow dropping events anywhere on the card
             this.element.addEventListener("dragover", this, false);
             this.element.addEventListener("drop", this, false);
-
-            // Allow dropping element references onto the card (in the right area)
-            this._templateObjectTagEl.addEventListener("dragover", this, false);
-            this._templateObjectTagEl.addEventListener("drop", this, false);
         }
     },
 
@@ -68,10 +60,10 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
             if (value) {
                 var self = this;
                 value.editingDocument.packageRequire.async(value.moduleId)
-                .get(value.exportName)
-                .then(function (object) {
-                    self.hasElementProperty = !!Object.getPropertyDescriptor(object, "element");
-                }).fail(Function.noop);
+                    .get(value.exportName)
+                    .then(function (object) {
+                        self.hasElementProperty = !!Object.getPropertyDescriptor(object, "element");
+                    }).fail(Function.noop);
             }
 
         }
@@ -81,75 +73,24 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
         value: true
     },
 
-    x: {
-        value: null
-    },
-
-    y: {
-        value: null
-    },
-
-    scheduleDraw: {
-        value: function () {
-            this.needsDraw = true;
-        }
-    },
-
-    handleDragstart: {
-        value: function (evt) {
-            if (evt.target === this.templateObjects.icon.element) {
-                event.dataTransfer.setData(MimeTypes.SERIALIZATION_OBJECT_LABEL, this.templateObject.label);
-                event.dataTransfer.setData("text/plain", "@" + this.templateObject.label);
-
-            } else if (evt.target === this.templateObjects.listenButton.element) {
-                event.dataTransfer.effectAllowed = 'all';
-
-                var eventType = "action"; //TODO allow this to be inferred from somewhere
-                var transferObject = {
-                    targetLabel: this.templateObject.label,
-                    eventType: eventType
-                };
-
-                event.dataTransfer.setData(MimeTypes.MONTAGE_EVENT_TARGET, JSON.stringify(transferObject));
-                event.dataTransfer.setData("text/plain", eventType);
-            }
-        }
-    },
-
-    handleTranslateStart: {
-        value: function (evt) {
-            this.templateObjects.translateComposer.translateX = this.x;
-            this.templateObjects.translateComposer.translateY = this.y;
-            this.classList.add(CLASS_PREFIX + "--dragging");
-        }
-    },
-
-    handleTranslateEnd: {
-        value: function() {
-            this.classList.remove(CLASS_PREFIX + "--dragging");
-        }
-    },
-
-    handleTranslate: {
-        value: function (evt) {
-            this.x = evt.translateX;
-            this.y = evt.translateY;
-        }
-    },
-
     handleDragover: {
         value: function (event) {
-            var types = event.dataTransfer.types,
+            var availableTypes = event.dataTransfer.types,
                 target = event.target,
-                listenButton = this.templateObjects.listenButton.element;
+                listenButton = this.templateObjects.addListenerButton.element,
+                elementField = this._templateObjectElementField;
 
-            if (!types) {
+            //Accept:
+            // - all events
+            // - objects, if targeting the listenButton
+            // - elements, if targetting the element field
+            if (!availableTypes) {
                 event.dataTransfer.dropEffect = "none";
-            } else if (types.has(MimeTypes.MONTAGE_EVENT_TARGET) ||
-                (types.has(MimeTypes.SERIALIZATION_OBJECT_LABEL) && (target === listenButton || listenButton.contains(target))) ||
-                (target === this._templateObjectTagEl &&
-                    types.has(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) ||
-                    types.has(MimeTypes.MONTAGE_TEMPLATE_XPATH))) {
+            } else if (availableTypes.has(MimeTypes.MONTAGE_EVENT_TARGET) ||
+                (availableTypes.has(MimeTypes.SERIALIZATION_OBJECT_LABEL) && (target === listenButton || listenButton.contains(target))) ||
+                ((target === elementField || elementField.contains(target)) &&
+                    (availableTypes.has(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) ||
+                    availableTypes.has(MimeTypes.MONTAGE_TEMPLATE_XPATH)))) {
 
                 // allows us to drop
                 event.preventDefault();
@@ -161,13 +102,19 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
 
     handleDrop: {
         value: function (event) {
-            event.stopPropagation();
+            var availableTypes = event.dataTransfer.types,
+                target = event.target,
+                listenButton = this.templateObjects.addListenerButton.element,
+                elementField = this._templateObjectElementField,
+                listenerModel;
 
-            //TODO also check target's when necessary just to be safe
+            // Always accept Events
+            if (availableTypes.has(MimeTypes.MONTAGE_EVENT_TARGET)) {
 
-            if (event.dataTransfer.types.has(MimeTypes.MONTAGE_EVENT_TARGET)) {
+                event.stopPropagation();
                 var eventTargetData = JSON.parse(event.dataTransfer.getData(MimeTypes.MONTAGE_EVENT_TARGET));
-                var listenerModel = Object.create(null);
+
+                listenerModel = Object.create(null);
                 listenerModel.targetObject = this.templateObject.editingDocument.editingProxyMap[eventTargetData.targetLabel];
                 listenerModel.type = eventTargetData.eventType;
                 listenerModel.listener = this.templateObject;
@@ -176,9 +123,12 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
                     listenerModel: listenerModel
                 });
 
-            } else if (event.dataTransfer.types.has(MimeTypes.SERIALIZATION_OBJECT_LABEL)) {
+            // Accept objects dropped on listener button
+            } else if (availableTypes.has(MimeTypes.SERIALIZATION_OBJECT_LABEL)) {
+
+                event.stopPropagation();
                 var listenerLabel= event.dataTransfer.getData(MimeTypes.SERIALIZATION_OBJECT_LABEL);
-                var listenerModel = Object.create(null);
+                listenerModel = Object.create(null);
                 listenerModel.targetObject = this.templateObject;
                 listenerModel.listener = this.templateObject.editingDocument.editingProxyMap[listenerLabel];
 
@@ -186,7 +136,12 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
                     listenerModel: listenerModel
                 });
 
-            } else {
+            // Accept elements dropped on element field
+            } else if (availableTypes.has(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) ||
+                availableTypes.has(MimeTypes.MONTAGE_TEMPLATE_XPATH) &&
+                (target === elementField || elementField.contains(target))) {
+
+                event.stopPropagation();
                 var montageId = event.dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_ELEMENT);
                 var templateObject = this.templateObject,
                     editingDocument = templateObject.editingDocument;
@@ -213,37 +168,31 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
         }
     },
 
-    draw: {
-        value: function () {
-            var x = this.x ? this.x : 0,
-                y = this.y ? this.y : 0;
+    handleDragstart: {
+        value: function (evt) {
+            var target = evt.target,
+                referenceProxyElement = this._referenceProxyElement,
+                listenerButtonElement = this.templateObjects.addListenerButton.element,
+                transfer = event.dataTransfer;
 
-            this.element.style.webkitTransform = "translate3d(" + x + "px," + y + "px, 0)";
-        }
-    },
+            // Dragging the templateObject reference
+            if (target === referenceProxyElement) {
+                transfer.setData(MimeTypes.SERIALIZATION_OBJECT_LABEL, this.templateObject.label);
+                transfer.setData("text/plain", "@" + this.templateObject.label);
 
-    handleBindButtonAction: {
-        value: function(event) {
-            var bindingModel = Object.create(null);
-            bindingModel.targetObject = this.templateObject;
-            bindingModel.targetPath = "";
-            bindingModel.oneway = true;
-            bindingModel.sourcePath = "";
+            // Dragging the event icon
+            } else if (target === listenerButtonElement) {
+                transfer.effectAllowed = 'all';
 
-            this.dispatchEventNamed("editBindingForObject", true, false, {
-                bindingModel: bindingModel
-            });
-        }
-    },
+                var eventType = "action"; //TODO allow this to be inferred from somewhere
+                var transferObject = {
+                    targetLabel: this.templateObject.label,
+                    eventType: eventType
+                };
 
-    handleListenButtonAction: {
-        value: function(event) {
-            var listenerModel = Object.create(null);
-            listenerModel.targetObject = this.templateObject;
-
-            this.dispatchEventNamed("addListenerForObject", true, false, {
-                listenerModel: listenerModel
-            });
+                transfer.setData(MimeTypes.MONTAGE_EVENT_TARGET, JSON.stringify(transferObject));
+                transfer.setData("text/plain", eventType);
+            }
         }
     }
 

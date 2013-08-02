@@ -44,17 +44,6 @@
                 }
             },
 
-            "templateExplorer": {
-                "prototype": "ui/template-explorer.reel",
-                "properties": {
-                    "element": {"#": "templateExplorer"}
-                },
-                "bindings": {
-                    "editingDocument": {"<-": "@owner.projectController.currentDocument"},
-                    "templateObjectsController": {"<-": "@owner.templateObjectsController"}
-                }
-            },
-
             "HIDDEN_STATE": {
                 "object": "ui/panel.reel[HIDDEN_STATE]"
             },
@@ -75,10 +64,10 @@
                 }
             },
 
-            "connectionExplorer": {
-                "prototype": "ui/connection-explorer.reel",
+            "templateExplorer": {
+                "prototype": "ui/template-explorer.reel",
                 "properties": {
-                    "element": {"#": "connectionExplorer"}
+                    "element": {"#": "templateExplorer"}
                 },
                 "bindings": {
                     "templateObjectsController": {"<-": "@owner.templateObjectsController"},
@@ -94,16 +83,6 @@
                 "bindings": {
                     "templateObjectsController": {"<-": "@owner.templateObjectsController"},
                     "editingDocument": {"<-": "@owner.projectController.currentDocument"}
-                }
-            },
-
-            "bindingSplit": {
-                "prototype": "ui/split-control.reel",
-                "properties": {
-                    "element": {"#": "bindingSplit"},
-                    "splitAxis": "horizontal",
-                    "containerElement": {"#": "templateExplorerColumn"},
-                    "controlledComponent": {"@": "connectionExplorer"}
                 }
             },
 
@@ -142,6 +121,33 @@
                         "listener": {"@": "owner"}
                     }
                 ]
+            },
+
+            "bindingOverlay": {
+                "prototype": "montage/ui/overlay.reel",
+                "properties": {
+                    "element": {"#": "bindingOverlay"}
+                }
+            },
+
+            "bindingCreator": {
+                "prototype": "ui/binding-jig.reel",
+                "properties": {
+                    "element": {"#": "bindingCreator"}
+                },
+                "bindings": {
+                    "editingDocument": {"<-": "@owner.currentDocument"}
+                },
+                "listeners": [
+                    {
+                        "type": "commit",
+                        "listener": {"@": "owner"}
+                    },
+                    {
+                        "type": "discard",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             }
         }
     </script>
@@ -152,15 +158,18 @@
     <section data-montage-id="componentEditor" class="ComponentEditor">
 
         <!-- TODO hide overlays by default; they are considered flow items-->
-        <section data-montage-id="eventTargetOverlay">
-            <div data-montage-id="listenerCreator"></div>
+        <section>
+            <div data-montage-id="eventTargetOverlay">
+                <div data-montage-id="listenerCreator"></div>
+            </div>
+
+            <div data-montage-id="bindingOverlay">
+                <div data-montage-id="bindingCreator"></div>
+            </div>
         </section>
 
-        <section data-montage-id="templateExplorerColumn" class="ComponentEditor-column palette">
-            <div data-montage-id="templateExplorer" class="ComponentEditor-column-row ComponentEditor-column-row--fill"></div>
-            <div data-montage-id="bindingSplit"></div>
-            <footer data-montage-id="connectionExplorer" class="ComponentEditor-column-row ComponentEditor-column-row--fixed palette"></footer>
-        </section>
+        <section data-montage-id="templateExplorer" class="ComponentEditor-column palette"></section>
+
         <section data-montage-id="documentEditorExplorerColumn" class="ComponentEditor-column">
             <div data-montage-id="documentEditorSlot" class="ComponentEditor-column-row ComponentEditor-column-row--fill ComponentEditor-column-row--documentEditor"></div>
             <div data-montage-id="domSplit"></div>
