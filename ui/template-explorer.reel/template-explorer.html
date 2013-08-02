@@ -65,7 +65,8 @@
                 "element": {"#": "ownerCell"}
             },
             "bindings": {
-                "templateObject": {"<-": "@owner.editingDocument.editingProxyMap.owner"}
+                "templateObject": {"<-": "@owner.editingDocument.editingProxyMap.owner"},
+                "classList.has('selected')": {"<-": "@owner.templateObjectsController.selection.has(templateObject)"}
             }
         },
 
@@ -80,7 +81,7 @@
                 "max": {"<-": "@owner.maxZoomFactor"}
             }
         },
-        
+
         "decreaseZoomFactorButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {
@@ -94,7 +95,7 @@
                 }
             ]
         },
-        
+
         "clearZoomFactorButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {
@@ -110,7 +111,7 @@
                 }
             ]
         },
-        
+
         "increaseZoomFactorButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {
@@ -139,7 +140,7 @@
                 </ul>
             </div>
         </section>
-        
+
         <footer class="TemplateExplorerTools Toolbar Toolbar--bottom">
             <span data-montage-id="zoomSlider" class="Toolbar-slider"></span>
             <div class="matte-ButtonGroup">
@@ -148,7 +149,7 @@
                 <button data-montage-id="increaseZoomFactorButton" class="Button Toolbar-button">+</button>
             </div>
         </footer>
-        
+
     </div>
 </body>
 </html>
