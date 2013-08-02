@@ -40,9 +40,9 @@ exports.BindingJig = Montage.create(Component, {
             evt.stop();
             var model = this.bindingModel,
                 proxy = model.targetObject,
-                targetPath = model.targetPath,
+                targetPath = model.targetPath.replace(/"/g, "'"),
                 oneway = model.oneway,
-                sourcePath = model.sourcePath;
+                sourcePath = model.sourcePath.replace(/"/g, "'");
 
             if (this.existingBinding) {
                 this.editingDocument.updateOwnedObjectBinding(proxy, this.existingBinding, targetPath, oneway, sourcePath);
