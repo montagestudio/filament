@@ -30,7 +30,7 @@ var Montage = require("montage").Montage,
  * even this usage is not currently advised.
  * @type {ReelProxy}
  */
-exports.ReelProxy = EditingProxy.specialize( {
+var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
 
     constructor: {
         value: function ReelProxy() {
@@ -69,8 +69,19 @@ exports.ReelProxy = EditingProxy.specialize( {
 
     setObjectProperty: {
         value: function (property, value) {
+
+            // The value being set here should always be something of worth to the
+            // editingModel, in contrast to what we do later if we have live
+            // representations to update as well
             this.properties.set(property, value);
+
             if (this.stageObject) {
+                // At this point, we're setting values in a live application;
+                // objects need to be part of that application, not the editingModel
+
+                //TODO there are probably other scenarios where this arises and we need to find the non-editingModel value to pass along
+                value = value instanceof ReelProxy ? value.stageObject : value;
+
                 if (this.stageObject.setPath) {
                     this.stageObject.setPath(property, value);
                 } else if (this.stageObject.setProperty) {
