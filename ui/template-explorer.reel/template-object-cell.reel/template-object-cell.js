@@ -31,9 +31,23 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
                 return;
             }
 
+            // Allow proxyIcon to be dragged as an object reference
             var icon = this.templateObjects.icon.element;
             icon.addEventListener("dragstart", this, false);
 
+            // Allow event button to be dragged as a reference ot this as an eventTarget
+            var eventButton = this.templateObjects.listenButton.element;
+            eventButton.addEventListener("dragstart", this, false);
+
+            //Allow dropping object references on the event button
+            eventButton.addEventListener("dragover", this, false);
+            eventButton.addEventListener("drop", this, false);
+
+            // Allow dropping events anywhere on the card
+            this.element.addEventListener("dragover", this, false);
+            this.element.addEventListener("drop", this, false);
+
+            // Allow dropping element references onto the card (in the right area)
             this._templateObjectTagEl.addEventListener("dragover", this, false);
             this._templateObjectTagEl.addEventListener("drop", this, false);
         }
@@ -83,7 +97,22 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
 
     handleDragstart: {
         value: function (evt) {
-            event.dataTransfer.setData("text/plain", "@" + this.templateObject.label);
+            if (evt.target === this.templateObjects.icon.element) {
+                event.dataTransfer.setData(MimeTypes.SERIALIZATION_OBJECT_LABEL, this.templateObject.label);
+                event.dataTransfer.setData("text/plain", "@" + this.templateObject.label);
+
+            } else if (evt.target === this.templateObjects.listenButton.element) {
+                event.dataTransfer.effectAllowed = 'all';
+
+                var eventType = "action"; //TODO allow this to be inferred from somewhere
+                var transferObject = {
+                    targetLabel: this.templateObject.label,
+                    eventType: eventType
+                };
+
+                event.dataTransfer.setData(MimeTypes.MONTAGE_EVENT_TARGET, JSON.stringify(transferObject));
+                event.dataTransfer.setData("text/plain", eventType);
+            }
         }
     },
 
@@ -110,46 +139,77 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
 
     handleDragover: {
         value: function (event) {
-            var element = this.templateObject.properties.get("element");
+            var types = event.dataTransfer.types,
+                target = event.target,
+                listenButton = this.templateObjects.listenButton.element;
 
-            if (event.dataTransfer.types &&
-                event.dataTransfer.types.indexOf(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) !== -1 ||
-                event.dataTransfer.types.indexOf(MimeTypes.MONTAGE_TEMPLATE_XPATH) !== -1
-            ) {
+            if (!types) {
+                event.dataTransfer.dropEffect = "none";
+            } else if (types.has(MimeTypes.MONTAGE_EVENT_TARGET) ||
+                (types.has(MimeTypes.SERIALIZATION_OBJECT_LABEL) && (target === listenButton || listenButton.contains(target))) ||
+                (target === this._templateObjectTagEl &&
+                    types.has(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) ||
+                    types.has(MimeTypes.MONTAGE_TEMPLATE_XPATH))) {
+
                 // allows us to drop
                 event.preventDefault();
                 event.stopPropagation();
                 event.dataTransfer.dropEffect = "link";
-            } else {
-                event.dataTransfer.dropEffect = "none";
             }
         }
     },
+
     handleDrop: {
         value: function (event) {
             event.stopPropagation();
-            var montageId = event.dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_ELEMENT);
-            var templateObject = this.templateObject,
-                editingDocument = templateObject.editingDocument;
 
-            if (!montageId) {
-                var xpath = event.dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_XPATH);
-                // get element from template
-                var element = editingDocument.htmlDocument.evaluate(
-                    xpath,
-                    editingDocument.htmlDocument,
-                    null,
-                    XPathResult.FIRST_ORDERED_NODE_TYPE,
-                    null
-                ).singleNodeValue;
-                // get node proxy
-                var nodeProxy = editingDocument.nodeProxyForNode(element);
-                // generate montageId
-                montageId = editingDocument.createMontageIdForProxy(templateObject.label, templateObject.moduleId, nodeProxy);
+            //TODO also check target's when necessary just to be safe
+
+            if (event.dataTransfer.types.has(MimeTypes.MONTAGE_EVENT_TARGET)) {
+                var eventTargetData = JSON.parse(event.dataTransfer.getData(MimeTypes.MONTAGE_EVENT_TARGET));
+                var listenerModel = Object.create(null);
+                listenerModel.targetObject = this.templateObject.editingDocument.editingProxyMap[eventTargetData.targetLabel];
+                listenerModel.type = eventTargetData.eventType;
+                listenerModel.listener = this.templateObject;
+
+                this.dispatchEventNamed("addListenerForObject", true, false, {
+                    listenerModel: listenerModel
+                });
+
+            } else if (event.dataTransfer.types.has(MimeTypes.SERIALIZATION_OBJECT_LABEL)) {
+                var listenerLabel= event.dataTransfer.getData(MimeTypes.SERIALIZATION_OBJECT_LABEL);
+                var listenerModel = Object.create(null);
+                listenerModel.targetObject = this.templateObject;
+                listenerModel.listener = this.templateObject.editingDocument.editingProxyMap[listenerLabel];
+
+                this.dispatchEventNamed("addListenerForObject", true, false, {
+                    listenerModel: listenerModel
+                });
+
+            } else {
+                var montageId = event.dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_ELEMENT);
+                var templateObject = this.templateObject,
+                    editingDocument = templateObject.editingDocument;
+
+                if (!montageId) {
+                    var xpath = event.dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_XPATH);
+                    // get element from template
+                    var element = editingDocument.htmlDocument.evaluate(
+                        xpath,
+                        editingDocument.htmlDocument,
+                        null,
+                        XPathResult.FIRST_ORDERED_NODE_TYPE,
+                        null
+                    ).singleNodeValue;
+                    // get node proxy
+                    var nodeProxy = editingDocument.nodeProxyForNode(element);
+                    // generate montageId
+                    montageId = editingDocument.createMontageIdForProxy(templateObject.label, templateObject.moduleId, nodeProxy);
+                }
+
+                editingDocument.setOwnedObjectElement(templateObject, montageId);
+                editingDocument.editor.refresh();
             }
-
-            editingDocument.setOwnedObjectElement(templateObject, montageId);
-            editingDocument.editor.refresh();
         }
     },
 
