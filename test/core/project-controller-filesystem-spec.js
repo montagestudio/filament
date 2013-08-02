@@ -68,6 +68,32 @@ describe("core/project-controller-filesystem-spec", function () {
                 previousStat = null;
             });
 
+            describe("insertion order", function () {
+                it("is first if alphabetical ordering is first", function () {
+                    return projectControllerLoadedPromise.then(function () {
+                        watcher.simulateChange("create", "projectUrl/a", currentStat, previousStat);
+
+                        var parent = projectController.fileInTreeAtUrl("projectUrl");
+                        expect(parent.children.length).toBe(4);
+
+                        var file = parent.children.array.get(0);
+                        expect(file.name).toBe("a");
+                    }).timeout(WAITSFOR_TIMEOUT);
+                });
+
+                it("is last if alphabetical ordering is last", function () {
+                    return projectControllerLoadedPromise.then(function () {
+                        watcher.simulateChange("create", "projectUrl/z", currentStat, previousStat);
+
+                        var parent = projectController.fileInTreeAtUrl("projectUrl");
+                        expect(parent.children.length).toBe(4);
+
+                        var file = parent.children.array.get(3);
+                        expect(file.name).toBe("z");
+                    }).timeout(WAITSFOR_TIMEOUT);
+                });
+            });
+
             it("should add the new file as a child of its parent", function () {
                 return projectControllerLoadedPromise.then(function () {
                     watcher.simulateChange("create", fullPath, currentStat, previousStat);
@@ -75,7 +101,7 @@ describe("core/project-controller-filesystem-spec", function () {
                     var parent = projectController.fileInTreeAtUrl("projectUrl");
 
                     expect(parent.children.length).toBe(4);
-                    expect(parent.children.array.get(1).fileUrl).toBe(fullPath);
+                    expect(parent.children.array.get(0).fileUrl).toBe(fullPath);
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
@@ -85,7 +111,8 @@ describe("core/project-controller-filesystem-spec", function () {
                     watcher.simulateChange("create", fullPath, currentStat, previousStat);
 
                     var parent = projectController.fileInTreeAtUrl("projectUrl");
-                    expect(parent.children.array.get(1).isDirectory).toBe(true);
+                    expect(parent.children.array.get(0).fileUrl).toBe(fullPath);
+                    expect(parent.children.array.get(0).isDirectory).toBe(true);
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
@@ -156,6 +183,21 @@ describe("core/project-controller-filesystem-spec", function () {
                     expect(parent.children.array.get(0).fileUrl).toBe(fullPath);
                 }).timeout(WAITSFOR_TIMEOUT);
             });
+
+            it("should be ordered correctly", function () {
+                return projectControllerLoadedPromise.then(function () {
+                    var parent = exploreParent();
+
+                    watcher.simulateChange("create", parentPath + "/z", currentStat, previousStat);
+                    watcher.simulateChange("create", parentPath + "/a", currentStat, previousStat);
+
+                    expect(parent.children.length).toBe(2);
+
+                    var file = parent.children.array.get(0);
+                    expect(file.name).toBe("a");
+                }).timeout(WAITSFOR_TIMEOUT);
+            });
+
 
             it("should be considered a directory if it was a directory", function () {
                 return projectControllerLoadedPromise.then(function () {

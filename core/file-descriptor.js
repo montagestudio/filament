@@ -92,10 +92,11 @@ var FileDescriptor = exports.FileDescriptor = Montage.specialize({
 
     compare: {
         value: function (other) {
-            if (this.equals(other)) {
+            var thisUrl = this.fileUrl.toLowerCase(), otherUrl = other.fileUrl.toLowerCase();
+            if (thisUrl === otherUrl) {
                 return 0;
             }
-            return this.fileUrl < other.fileUrl ? -1 : 1;
+            return thisUrl < otherUrl ? -1 : 1;
         }
     }
 }, {
