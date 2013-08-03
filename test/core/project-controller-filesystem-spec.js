@@ -63,7 +63,7 @@ describe("core/project-controller-filesystem-spec", function () {
             var fullPath, currentStat, previousStat;
 
             beforeEach(function () {
-                fullPath = "projectUrl/foo/";
+                fullPath = "projectUrl/foo";
                 currentStat = {};
                 previousStat = null;
             });
@@ -76,7 +76,7 @@ describe("core/project-controller-filesystem-spec", function () {
                         var parent = projectController.fileInTreeAtUrl("projectUrl");
                         expect(parent.children.length).toBe(4);
 
-                        var file = parent.children.array.get(0);
+                        var file = parent.children.array.get(1);
                         expect(file.name).toBe("a");
                     }).timeout(WAITSFOR_TIMEOUT);
                 });
@@ -101,13 +101,14 @@ describe("core/project-controller-filesystem-spec", function () {
                     var parent = projectController.fileInTreeAtUrl("projectUrl");
 
                     expect(parent.children.length).toBe(4);
-                    expect(parent.children.array.get(0).fileUrl).toBe(fullPath);
+                    expect(parent.children.array.get(1).fileUrl).toBe(fullPath);
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
             it("should be considered a directory if it was a directory", function () {
                 return projectControllerLoadedPromise.then(function () {
                     currentStat = {mode: 16384};
+                    fullPath += "/";
                     watcher.simulateChange("create", fullPath, currentStat, previousStat);
 
                     var parent = projectController.fileInTreeAtUrl("projectUrl");
@@ -245,8 +246,8 @@ describe("core/project-controller-filesystem-spec", function () {
                     var parent = projectController.fileInTreeAtUrl("projectUrl");
 
                     expect(parent.children.length).toBe(2);
-                    expect(parent.children.array.get(0).name).toBe("package.json");
-                    expect(parent.children.array.get(1).name).toBe("ui");
+                    expect(parent.children.array.get(1).name).toBe("package.json");
+                    expect(parent.children.array.get(0).name).toBe("ui");
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
