@@ -21,7 +21,7 @@ describe("core/reel-blueprint-editing-spec", function () {
         blueprint.addPropertyBlueprint(a);
         blueprint.addPropertyBlueprint(b);
 
-        defaultGroup = blueprint.addPropertyBlueprintGroupNamed("default");
+        defaultGroup = blueprint.addPropertyBlueprintGroupNamed("Mock");
         defaultGroup.push(a, b);
 
         reelDocumentPromise = mockReelDocument("foo/bar/mock.reel", {
@@ -51,7 +51,7 @@ describe("core/reel-blueprint-editing-spec", function () {
             });
         });
 
-        it("adds a default group if one doesn't exist", function () {
+        it("adds a group named after the component if one doesn't exist", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 blueprint = new Blueprint();
                 reelDocument.__ownerBlueprint = Promise(blueprint);
@@ -59,7 +59,7 @@ describe("core/reel-blueprint-editing-spec", function () {
                 var property = new PropertyBlueprint().initWithNameBlueprintAndCardinality("pass", blueprint, 1);
                 return reelDocument.addOwnerBlueprintProperty(property)
                 .then(function () {
-                    defaultGroup = blueprint.propertyBlueprintGroupForName("default");
+                    defaultGroup = blueprint.propertyBlueprintGroupForName(reelDocument._exportName);
                     expect(defaultGroup.length).toBe(1);
                     expect(defaultGroup[0].name).toBe("pass");
                 });

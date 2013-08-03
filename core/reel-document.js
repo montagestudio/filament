@@ -1333,7 +1333,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 "Add owner property",
                 this._ownerBlueprint.then(function (blueprint) {
                     blueprint.addPropertyBlueprint(propertyBlueprint);
-                    blueprint.addPropertyBlueprintToGroupNamed(propertyBlueprint, "default");
+                    blueprint.addPropertyBlueprintToGroupNamed(propertyBlueprint, self._exportName);
                     return [self.removeOwnerBlueprintProperty, self, propertyBlueprint];
                 })
             );
@@ -1358,7 +1358,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 "Remove owner property",
                 this._ownerBlueprint.then(function (blueprint) {
                     blueprint.removePropertyBlueprint(propertyBlueprint);
-                    blueprint.removePropertyBlueprintFromGroupNamed(propertyBlueprint, "default");
+                    blueprint.removePropertyBlueprintFromGroupNamed(propertyBlueprint, self._exportName);
                     return [self.addOwnerBlueprintProperty, self, propertyBlueprint];
                 })
             );

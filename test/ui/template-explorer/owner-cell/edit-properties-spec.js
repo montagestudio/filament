@@ -18,10 +18,8 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
             blueprint.addPropertyBlueprint(a);
             blueprint.addPropertyBlueprint(b);
 
-            defaultGroup = blueprint.addPropertyBlueprintGroupNamed("default");
+            defaultGroup = blueprint.addPropertyBlueprintGroupNamed("Mock");
             defaultGroup.push(a, b);
-
-            editor.ownerBlueprint = blueprint;
 
             editingDocument = {
                 addOwnerBlueprintProperty: function () {},
@@ -30,8 +28,11 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
             };
 
             editor._ownerObject = {
-                editingDocument: editingDocument
+                editingDocument: editingDocument,
+                exportName: "Mock"
             };
+
+            editor.ownerBlueprint = blueprint;
 
             testPage.waitForDraw(1, true);
         });
@@ -40,7 +41,6 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
             it("does nothing if no name given", function () {
                 spyOn(editingDocument, "addOwnerBlueprintProperty");
 
-                expect(defaultGroup.length).toBe(2);
                 editor.templateObjects.addName.value = "";
                 testPage.clickOrTouch({target: editor.templateObjects.addProperty.element}, function () {
                     expect(editingDocument.addOwnerBlueprintProperty).not.toHaveBeenCalled();
@@ -50,7 +50,6 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
             it("calls addOwnerBlueprintProperty to add the property", function () {
                 spyOn(editingDocument, "addOwnerBlueprintProperty");
 
-                expect(defaultGroup.length).toBe(2);
                 editor.templateObjects.addName.value = "pass";
                 testPage.clickOrTouch({target: editor.templateObjects.addProperty.element}, function () {
                     expect(editingDocument.addOwnerBlueprintProperty).toHaveBeenCalled();
@@ -60,7 +59,6 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
             });
 
             it("clears the name after adding", function () {
-                expect(defaultGroup.length).toBe(2);
                 editor.templateObjects.addName.value = "fail";
                 testPage.clickOrTouch({target: editor.templateObjects.addProperty.element}, function () {
                     expect(editor.templateObjects.addName.value).toBe("");
@@ -70,7 +68,6 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
             it("cannot be named the same as an existing blueprint", function () {
                 spyOn(editingDocument, "addOwnerBlueprintProperty");
 
-                expect(defaultGroup.length).toBe(2);
                 editor.templateObjects.addName.value = "a";
                 testPage.clickOrTouch({target: editor.templateObjects.addProperty.element}, function () {
                     expect(editingDocument.addOwnerBlueprintProperty).not.toHaveBeenCalled();
@@ -85,7 +82,6 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                 spyOn(editingDocument, "removeOwnerBlueprintProperty");
 
                 runs(function () {
-                    expect(defaultGroup.length).toBe(2);
                     testPage.clickOrTouch({target: editor.templateObjects.removeProperty[0].element}, function () {
                         expect(editingDocument.removeOwnerBlueprintProperty).toHaveBeenCalled();
                         var arg = editingDocument.removeOwnerBlueprintProperty.mostRecentCall.args[0];

@@ -5,6 +5,7 @@ require("montage-testing").run(require, [
     "test/core/project-controller-file-spec",
     "test/core/project-controller-filesystem-spec",
     "test/core/project-controller-spec",
+    "test/core/reel-blueprint-editing-spec",
     "test/core/reel-context-spec",
     "test/core/reel-document-headless-editing-spec",
     "test/core/reel-document-proxy-serialization-spec",
