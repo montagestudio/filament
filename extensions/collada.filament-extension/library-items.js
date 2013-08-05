@@ -28,7 +28,7 @@ var NodeLibraryItem = LibraryItem.specialize({
     },
 
     icon: {
-        value: null
+        value: packageLocation + "assets/components/node.png"
     }
 
 });
@@ -56,7 +56,7 @@ var MaterialLibraryItem = LibraryItem.specialize({
     },
 
     icon: {
-        value: null
+        value: packageLocation + "assets/components/material.png"
     }
 
 });
@@ -85,7 +85,7 @@ var SceneLibraryItem = LibraryItem.specialize({
     },
 
     icon: {
-        value: null
+        value: packageLocation + "assets/components/scene.png"
     }
 
 });
@@ -120,7 +120,7 @@ var ColladaViewLibraryItem = LibraryItem.specialize( {
     },
 
     icon: {
-        value: packageLocation + "assets/components/collada-view.png"
+        value: packageLocation + "assets/components/view.png"
     },
 
     html: {
