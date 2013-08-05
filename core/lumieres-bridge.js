@@ -409,6 +409,15 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
         value: function (url) {
             return this.backend.get("application").invoke("openFileWithDefaultApplication", url);
         }
+    },
+
+    openHttpUrl: {
+        value: function (url) {
+            if (url.indexOf("http") !== 0) {
+                Promise.reject(new Error(url + " does not begin with 'http'"));
+            }
+            return this.backend.get("filament-backend").invoke("open", url);
+        }
     }
 
 });

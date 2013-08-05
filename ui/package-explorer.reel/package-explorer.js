@@ -3,6 +3,14 @@ var Montage = require("montage/core/core").Montage,
 
 exports.PackageExplorer = Montage.create(Component, {
 
+    enterDocument: {
+        value: function () {
+            // there is no action event built into the montage anchor.reel
+            this.templateObjects.previewLink.element.identifier = "previewLink";
+            this.templateObjects.previewLink.element.addEventListener("click", this, false);
+        }
+    },
+
     projectController: {
         value: null
     },
@@ -21,6 +29,14 @@ exports.PackageExplorer = Montage.create(Component, {
 
     files: {
         value: null
+    },
+
+    handlePreviewLinkClick: {
+        value: function (event) {
+            // stop the browser from following the link
+            event.preventDefault();
+            this.projectController.environmentBridge.openHttpUrl(this.previewController.previewUrl).done();
+        }
     },
 
     handleAddFileButtonAction: {

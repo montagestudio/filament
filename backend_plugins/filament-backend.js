@@ -7,7 +7,8 @@ var path = require("path"),
     watchr = require("watchr"),
     QFS = require("q-io/fs"),
     PATH = require('path'),
-    minimatch = require('minimatch');
+    minimatch = require('minimatch'),
+    opener = require("opener");
 
 // Faster promises
 Q.longStackJumpLimit = 0;
@@ -141,6 +142,12 @@ exports.listPackage = function (path) {
     }).then(function (guard) {
         return QFS.listTree(path, guard).then(pathsToUrlStatArray);
     });
+};
+
+exports.open = function (thing) {
+    var done = Q.defer();
+    opener(thing, done.makeNodeResolver());
+    return done.promise;
 };
 
 /**
