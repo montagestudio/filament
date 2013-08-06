@@ -17,6 +17,18 @@
             ]
         },
 
+        "ownerObjectCell": {
+            "prototype": "./template-object-cell.reel",
+            "properties": {
+                "element": {"#": "ownerObjectCell"}
+            },
+            "bindings": {
+                "templateObject": {"<-": "@owner.ownerObject"},
+                "showListeners": {"<-": "@owner.showListeners"},
+                "showBindings": {"<-": "@owner.showBindings"}
+            }
+        },
+
         "objectList": {
             "prototype": "montage/ui/repetition.reel",
             "properties": {
@@ -74,6 +86,8 @@
 </head>
 <body>
     <div data-montage-id="template-explorer" class="TemplateExplorer">
+
+        <section data-montage-id="ownerObjectCell"></section>
 
         <ul data-montage-id="objectList" class="TemplateExplorer-list">
             <li data-montage-id="templateObjectCell" class="TemplateExplorer-list-item"></li>

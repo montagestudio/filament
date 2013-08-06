@@ -45,7 +45,9 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             if (!this._templateObjectFilterPath && term) {
                 // TODO remove manual capitalization once we can specify case insensitivity
                 var capitalizedTerm = term.toCapitalized();
-                this._templateObjectFilterPath = "name.contains('" + term + "') || label.contains('" + term + "') || name.contains('" + capitalizedTerm + "') || label.contains('" + capitalizedTerm + "')";
+                this._templateObjectFilterPath = "!label.contains('owner') && (label.contains('" + term + "') || label.contains('" + capitalizedTerm + "'))";
+            } else {
+                this._templateObjectFilterPath = "!label.contains('owner')";
             }
 
             return this._templateObjectFilterPath;

@@ -70,6 +70,7 @@
                     "element": {"#": "templateExplorer"}
                 },
                 "bindings": {
+                    "ownerObject": {"<-": "@owner.currentDocument.editingProxyMap.owner"},
                     "templateObjectsController": {"<-": "@owner.templateObjectsController"},
                     "editingDocument": {"<-": "@owner.projectController.currentDocument"}
                 }
