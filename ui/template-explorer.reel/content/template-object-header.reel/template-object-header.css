@@ -1,27 +1,28 @@
 .TemplateObjectHeader {
-    display: -webkit-flex;
-    padding: 0.2em;
+    //display: -webkit-flex;
+    //padding: 0.2em;
     background-color: hsl(0, 0%, 92%);
 }
 
 .TemplateObjectHeader-referenceProxy {
     display: -webkit-flex;
-}
-
-.TemplateObjectHeader--flex {
-    -webkit-flex: 1;
-    min-width: 0;
+    padding: 8px;
 }
 
 .TemplateObjectHeader-icon {
-    display: block;
-    height: 21px;
-    margin: 0 4px 0 0;
+    height: 28px;
+    margin: auto 0;
+}
+
+.TemplateObjectHeader-flex {
+    -webkit-flex: 1;
+    min-width: 0;
+    margin-left: 8px;
 }
 
 .TemplateObjectHeader-title {
     margin: 0;
-    font-size: 12px;
+    font-size: 13px;
     line-height: 14px;
     color: hsl(0, 0%, 30%);
     overflow: hidden;
@@ -32,13 +33,16 @@
 .TemplateObjectHeader-exportName {
     display: block;
     font-style: italic;
-    font-size: 10px;
-    line-height: 12px;
+    font-size: 11px;
+    line-height: 14px;
     color: hsl(0, 0%, 60%);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+
+/* Comments are currently unused */
 
 .TemplateObjectHeader-commentButton {
     display: block;
