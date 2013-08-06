@@ -9,10 +9,6 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-    packageExplorer: {
-        value: null
-    },
-
     editorSlot: {
         value: null
     },
@@ -58,25 +54,23 @@ exports.Main = Montage.create(Component, {
     handleExpandTree: {
         value: function (evt) {
             var path = evt.detail;
-            var folder = null;
-            var folders = path.replace(/\/$/, "").replace(/^\//, "").split("/");
-            var fileController = this.packageExplorer.fileTreeController
+            var dir = null;
+            var directories = path.replace(/\/$/, "").replace(/^\//, "").split("/");
+            var nodes = this.templateObjects.packageExplorer.fileTreeController.nodes;
 
-            while (folder = folders.shift()) {
-                var i = 0
-                while (i < fileController.nodes.length) {
-                    var filename = fileController.nodes[i].content.name;
-                    if (filename == folder) {
+            while (dir = directories.shift()) {
+                var i = 0;
+                while (i < nodes.length) {
+                    var filename = nodes[i].content.name;
+                    if (filename === dir) {
                         break;
                     }
                     ++i;
                 }
-                if (!fileController.nodes[i] || (i == fileController.nodes.length) && (fileController.nodes[i].content != folder)) {
+                if (!nodes[i] || (i === nodes.length) && (nodes[i].content !== dir)) {
                     return;
                 }
-
-                fileController.nodes[i].expanded = true;
-                fileTreeController = fileController.nodes[i];
+                nodes[i].expanded = true;
             }
         }
     },

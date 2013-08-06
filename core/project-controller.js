@@ -785,14 +785,19 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 return promise;
             }).then(function (applicationUrl) {
                 // select main.reel
+                var treeExpanded = function (evt) {
+                    application.removeEventListener("treeExpanded", treeExpanded, false);
+                    var file = self.fileInTreeAtUrl("ui/main.reel");
+                    file.associatedDocument = self.currentDocument;
+                };
+
                 var openMainReel = function (evt) {
                     self.removeEventListener("didOpenPackage", openMainReel, false);
-
+                    application.addEventListener("treeExpanded", treeExpanded, false);
                     application.dispatchEventNamed("expandTree", true, true, "ui/");
-
-                    // Need to be replaced by a dispatch on main which also adds an event listener
                     self.dispatchEventNamed("openUrl", true, true, applicationUrl + "/ui/main.reel/");
                 };
+
                 self.addEventListener("didOpenPackage", openMainReel, false);
                 return self.loadProject(applicationUrl);
             });
