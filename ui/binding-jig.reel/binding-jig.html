@@ -8,7 +8,17 @@
         "owner": {
             "properties": {
                 "element": {"#":"binding-jig"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "keyPress",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "targetObjectLabel": {
@@ -91,6 +101,22 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
+
+        "cancelEditing": {
+            "prototype": "montage/composer/key-composer",
+            "properties": {
+                "keys": "escape",
+                "component": {"@": "owner"},
+                "identifier": "cancelEditing",
+                "element": {"#": "binding-jig"}
+            },
+            "listeners": [
+                {
+                    "type": "keyPress",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
 
     }
@@ -101,28 +127,24 @@
     <div data-montage-id="binding-jig" class="Jig BindingJig">
 
         <span data-montage-id="targetObjectLabel" class="Jig-targetObjectLabel"></span>
+            
+        <section class="Jig-section BindingJig-section--target">
+            <label class="Jig-label">Target Path</label>
+            <input data-montage-id="targetPath" class="Jig-input" type="text">
+        </section>
 
-        <div class="Jig-row">
-            
-            <section class="Jig-section BindingJig-section--target">
-                <label class="Jig-label">Target Path</label>
-                <input data-montage-id="targetPath" class="Jig-input" type="text">
-            </section>
-            
-            <section class="Jig-section BindingJig-section--direction">
-                <label class="Jig-label">Direction</label>
-                <span class="BindingJig-direction">
-                    <input data-montage-id="unidirectional" class="BindingJig-radio BindingJig-radio--unidirectional" type="radio" name="direction">
-                    <input data-montage-id="bidirectional" class="BindingJig-radio BindingJig-radio--bidirectional" type="radio" name="direction">
-                </span>
-            </section>
-            
-            <section class="Jig-section BindingJig-section--source">
-                <label class="Jig-label">Source Path</label>
-                <input data-montage-id="sourcePath" class="Jig-input" type="text">
-            </section>
-            
-        </div>
+        <section class="Jig-section BindingJig-section--direction">
+            <label class="Jig-label">Direction</label>
+            <span class="BindingJig-direction">
+                <input data-montage-id="unidirectional" class="BindingJig-radio BindingJig-radio--unidirectional" type="radio" name="direction">
+                <input data-montage-id="bidirectional" class="BindingJig-radio BindingJig-radio--bidirectional" type="radio" name="direction">
+            </span>
+        </section>
+
+        <section class="Jig-section BindingJig-section--source">
+            <label class="Jig-label">Source Path</label>
+            <input data-montage-id="sourcePath" class="Jig-input" type="text">
+        </section>
 
         <footer class="Jig-footer">
             <button data-montage-id="cancelButton" class="Button"></button>

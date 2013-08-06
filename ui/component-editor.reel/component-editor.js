@@ -76,7 +76,9 @@ exports.ComponentEditor = Editor.specialize({
                     this._openEditors.push(editor);
                 }
 
+                //TODO why are these done here and not in the template? not sure they need to be here
                 this.addEventListener("addListenerForObject", this, false);
+                this.addEventListener("addBinding", this, false);
                 this._frontEditor = editor;
                 this.needsDraw = true;
             }
@@ -157,7 +159,7 @@ exports.ComponentEditor = Editor.specialize({
             listenerJig.listenerModel = listenerModel;
 
             overlay = this.templateObjects.eventTargetOverlay;
-            overlay.anchor = evt.target.element;
+//            overlay.anchor = evt.target.element; //TODO when anchoring works well inside this scrollview
             overlay.show();
         }
     },
@@ -171,6 +173,35 @@ exports.ComponentEditor = Editor.specialize({
     handleListenerCreatorDiscard: {
         value: function (evt) {
             this.templateObjects.eventTargetOverlay.hide();
+        }
+    },
+
+    handleAddBinding: {
+        value: function (evt) {
+            var bindingModel = evt.detail.bindingModel,
+                existingBinding = evt.detail.existingBinding,
+                bindingJig,
+                overlay;
+
+            bindingJig = this.templateObjects.bindingCreator;
+            bindingJig.bindingModel = bindingModel;
+            bindingJig.existingBinding = existingBinding;
+
+            overlay = this.templateObjects.bindingOverlay;
+//            overlay.anchor = evt.target.element; //TODO when anchoring works well inside this scrollview
+            overlay.show();
+        }
+    },
+
+    handleBindingCreatorCommit: {
+        value: function (evt) {
+            this.templateObjects.bindingOverlay.hide();
+        }
+    },
+
+    handleBindingCreatorDiscard: {
+        value: function (evt) {
+            this.templateObjects.bindingOverlay.hide();
         }
     }
 

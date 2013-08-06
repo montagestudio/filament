@@ -14,15 +14,6 @@ var Montage = require("montage").Montage,
 */
 exports.BindingEntry = Montage.create(Component, /** @lends module:"./binding-entry.reel".BindingEntry# */ {
 
-
-    enterDocument: {
-        value: function (firstTime) {
-            if (!firstTime) { return; }
-
-            this.element.addEventListener("mouseup", this, false);
-        }
-    },
-
     binding: {
         value: null
     },
@@ -31,7 +22,7 @@ exports.BindingEntry = Montage.create(Component, /** @lends module:"./binding-en
         value: null
     },
 
-    handleMouseup: {
+    handlePress: {
         value: function(evt) {
             if (this.targetObject && this.binding) {
                 var bindingModel = Object.create(null);

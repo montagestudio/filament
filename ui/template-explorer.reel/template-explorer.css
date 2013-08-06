@@ -1,33 +1,55 @@
-
 .TemplateExplorer {
     display: -webkit-flex;
     -webkit-flex-direction: column;
-}
-
-.TemplateExplorer.shouldStartPanning {
-    cursor: -webkit-grab;
-}
-
-.TemplateExplorer.isPanning {
-    cursor: -webkit-grabbing;
-}
-
-.TemplateExplorer.error .TemplateExplorer-viewport {
-    border-color: red;
-}
-
-
-/* Viewport --------------------------------- */
-
-.TemplateExplorer-viewport {
-    -webkit-flex: 1;
-    min-height: 0;
-    overflow: auto;
-    border: 1px solid hsl(0, 0%, 76%);
     background: hsl(0, 0%, 80%);
 }
 
 .TemplateExplorer-list {
+    -webkit-flex: 1;
+    min-height: 0;
+    overflow: scroll;
     margin: 0;
-    padding: 6px;
+    padding: 0;
+    list-style: none;
 }
+
+.TemplateExplorer-list-item {
+    border: 1px solid hsl(0,0%,70%);
+    border-radius: 5px;
+    overflow:hidden;
+    margin: 5px;
+    background-color: hsl(0,0%,96%)
+}
+
+
+
+
+/* Footer ---------------------------- */
+
+.TemplateExplorer-footer {
+    background: hsl(0, 0%, 90%);
+    border-top: 1px solid hsl(0,0%,85%);
+}
+
+.TemplateExplorerFilter {
+    padding: 8px;
+}
+
+.TemplateExplorerFilter .matte-InputText {
+    margin-right: 12px;
+}
+
+.TemplateExplorerFilter-label {
+    margin-right: 12px;
+    vertical-align: middle;
+    font-size: 12px;
+    color: #666;
+    white-space: nowrap;
+}
+
+.TemplateExplorerFilter .matte-InputCheckbox {
+    margin: 0 6px 0 0;
+    vertical-align: middle;
+}
+
+

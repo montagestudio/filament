@@ -2,7 +2,7 @@
 <html>
 <head>
     <title></title>
-    <link rel="stylesheet" type="text/css" href="template-object-cell.css">
+    <link rel="stylesheet" type="text/css" href="owner-object-cell.css">
     <script type="text/montage-serialization">
         {
             "owner": {
@@ -23,6 +23,34 @@
                 },
                 "bindings": {
                     "templateObject": {"<-": "@owner.templateObject"}
+                }
+            },
+
+            "editPropertiesCondition": {
+                "prototype": "montage/ui/condition.reel",
+                "properties": {
+                    "element": {"#": "editPropertiesCondition"},
+                    "removalStrategy": "hide"
+                },
+                "bindings": {
+                    "condition": {"<-": "@editPropertiesButton.pressed"}
+                }
+            },
+
+            "editPropertiesButton": {
+                "prototype": "matte/ui/toggle-button.reel",
+                "properties": {
+                    "element": {"#": "editPropertiesButton"}
+                }
+            },
+
+            "editProperties": {
+                "prototype": "../content/edit-properties.reel",
+                "properties": {
+                    "element": {"#": "editProperties"}
+                },
+                "bindings": {
+                    "ownerObject": {"<-": "@owner.templateObject"}
                 }
             },
 
@@ -87,6 +115,19 @@
                 "bindings": {
                     "templateObject": {"<-": "@owner.templateObject"}
                 }
+            },
+
+            "select": {
+                "prototype": "montage/composer/press-composer",
+                "properties": {
+                    "component": {"@": "owner"}
+                },
+                "listeners": [
+                    {
+                        "type": "press",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             }
 
         }
@@ -95,11 +136,17 @@
 <body>
 <ul>
 
-<li data-montage-id="template-object-cell" class="TemplateObjectCell">
+<header data-montage-id="template-object-cell" class="TemplateObjectCell TemplateObjectCell--owner">
 
     <header data-montage-id="header">
-        <div data-arg="toolbar"></div>
+        <div data-arg="toolbar">
+            <button data-montage-id="editPropertiesButton" class="Button Toolbar-button">Edit properties</button>
+        </div>
     </header>
+
+    <section data-montage-id="editPropertiesCondition" class="TemplateObjectCell-section">
+        <div data-montage-id="editProperties"></div>
+    </section>
 
     <section data-montage-id="elementCondition" class="TemplateObjectCell-section">
         <div data-montage-id="elementField"></div>
@@ -109,10 +156,11 @@
         <div data-montage-id="bindingExplorer"></div>
     </section>
 
-    <section data-montage-id="listenersCondition" class="TemplateObjectCell-section" >
+    <section data-montage-id="listenersCondition" class="TemplateObjectCell-section">
         <div data-montage-id="listenerExplorer"></div>
     </section>
-</li>
+    
+</header>
 
 </ul>
 </body>

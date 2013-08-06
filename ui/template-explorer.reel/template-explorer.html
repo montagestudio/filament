@@ -7,44 +7,46 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "template-explorer"},
-                "schematicsElement": {"#": "schematics"}
+                "element": {"#": "template-explorer"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "ownerObjectCell": {
+            "prototype": "./owner-object-cell.reel",
+            "properties": {
+                "element": {"#": "ownerObjectCell"}
             },
             "bindings": {
-                "classList.has('shouldStartPanning')": {"<-": "@owner.shouldStartPanning"},
-                "classList.has('isPanning')": {"<-": "@owner.isPanning"},
-                "classList.has('error')": {"<-": "!!@owner.editingDocument.errors.length"}
-            },
-            "listeners": [
-                {
-                    "type": "select",
-                    "listener": {"@": "owner"}
-                }
-            ]
+                "templateObject": {"<-": "@owner.ownerObject"},
+                "showListeners": {"<-": "@owner.showListeners"},
+                "showBindings": {"<-": "@owner.showBindings"}
+            }
         },
 
-        "application": {
-            "prototype": "montage/core/application",
-            "listeners": [
-                {
-                    "type": "keyPress",
-                    "listener": {"@": "owner"}
-                },
-                {
-                    "type": "keyRelease",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
-        "templateObjectList": {
+        "objectList": {
             "prototype": "montage/ui/repetition.reel",
             "properties": {
-                "element": {"#": "templateObjectList"},
-                "isSelectionEnabled": true
+                "element": {"#": "objectList"},
+                "isSelectionEnabled": "true"
             },
             "bindings": {
-                "contentController": {"<-": "@owner.templateObjectsControllerWithoutOwner"}
+                "contentController": {"<-": "@owner.templateObjectsController"}
+            }
+        },
+
+        "templateObjectFilter": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "templateObjectFilter"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.templateObjectFilterTerm"}
             }
         },
 
@@ -54,76 +56,30 @@
                 "element": {"#": "templateObjectCell"}
             },
             "bindings": {
-                "templateObject": {"<-": "@templateObjectList.objectAtCurrentIteration"},
-                "zoom": {"<-": "@owner.zoom"}
+                "templateObject": {"<-": "@objectList.objectAtCurrentIteration"},
+                "showListeners": {"<-": "@owner.showListeners"},
+                "showBindings": {"<-": "@owner.showBindings"}
             }
         },
 
-        "ownerCell": {
-            "prototype": "./owner-cell.reel",
+        "showBindings": {
+            "prototype": "matte/ui/input-checkbox.reel",
             "properties": {
-                "element": {"#": "ownerCell"}
+                "element": {"#": "showBindings"}
             },
             "bindings": {
-                "templateObject": {"<-": "@owner.editingDocument.editingProxyMap.owner"},
-                "classList.has('selected')": {"<-": "@owner.templateObjectsController.selection.has(templateObject)"}
+                "checked": {"<->": "@owner.showBindings"}
             }
         },
 
-        "zoomSlider": {
-            "prototype": "matte/ui/input-range.reel",
+        "showListeners": {
+            "prototype": "matte/ui/input-checkbox.reel",
             "properties": {
-                "element": {"#": "zoomSlider"}
+                "element": {"#": "showListeners"}
             },
             "bindings": {
-                "value": {"<->": "@owner.zoomFactor"},
-                "min": {"<-": "@owner.minZoomFactor"},
-                "max": {"<-": "@owner.maxZoomFactor"}
+                "checked": {"<->": "@owner.showListeners"}
             }
-        },
-
-        "decreaseZoomFactorButton": {
-            "prototype": "matte/ui/button.reel",
-            "properties": {
-                "element": {"#": "decreaseZoomFactorButton"},
-                "label": "-"
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
-        "clearZoomFactorButton": {
-            "prototype": "matte/ui/button.reel",
-            "properties": {
-                "element": {"#": "clearZoomFactorButton"}
-            },
-            "bindings": {
-                "label": {"<->": "@owner.roundedZoom + '×'"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
-        "increaseZoomFactorButton": {
-            "prototype": "matte/ui/button.reel",
-            "properties": {
-                "element": {"#": "increaseZoomFactorButton"},
-                "label": "+"
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
         }
     }
     </script>
@@ -131,25 +87,20 @@
 <body>
     <div data-montage-id="template-explorer" class="TemplateExplorer">
 
-        <header data-montage-id="ownerCell"></header>
+        <section data-montage-id="ownerObjectCell"></section>
 
-        <section class="TemplateExplorer-viewport">
-            <div data-montage-id="schematics">
-                <ul data-montage-id="templateObjectList" class="TemplateExplorer-list" >
-                    <li data-montage-id="templateObjectCell"></li>
-                </ul>
-            </div>
-        </section>
+        <ul data-montage-id="objectList" class="TemplateExplorer-list">
+            <li data-montage-id="templateObjectCell" class="TemplateExplorer-list-item"></li>
+        </ul>
 
-        <footer class="TemplateExplorerTools Toolbar Toolbar--bottom">
-            <span data-montage-id="zoomSlider" class="Toolbar-slider"></span>
-            <div class="matte-ButtonGroup">
-                <button data-montage-id="decreaseZoomFactorButton" class="Button Toolbar-button">-</button>
-                <button data-montage-id="clearZoomFactorButton" class="Button Toolbar-button"></button>
-                <button data-montage-id="increaseZoomFactorButton" class="Button Toolbar-button">+</button>
-            </div>
+        <footer class="TemplateExplorer-footer">
+            <form class="TemplateExplorerFilter">
+                <input data-montage-id="templateObjectFilter" class="Input" type="text" placeholder="Search">
+                <label class="TemplateExplorerFilter-label"><input data-montage-id="showBindings" type="checkbox">Show Bindings</label>
+                <label class="TemplateExplorerFilter-label"><input data-montage-id="showListeners" type="checkbox">Show Listeners</label>
+            </form>
         </footer>
-
+        
     </div>
 </body>
 </html>

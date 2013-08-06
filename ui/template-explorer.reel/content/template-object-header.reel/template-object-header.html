@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="template-object-header.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "TemplateObjectHeader"},
+                "_referenceProxyElement": {"#": "referenceProxy"}
+            }
+        },
+
+        "icon": {
+            "prototype": "matte/ui/image.reel",
+            "properties": {
+                "element": {"#": "icon"}
+            },
+            "bindings": {
+                "src": {"<-": "@owner.templateObject.editingDocument.editor.projectController.libraryItemForModuleId(@owner.templateObject.moduleId, @owner.templateObject.exportName).icon"}
+            }
+        },
+
+        "objectLabel": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "objectLabel"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.label"}
+            }
+        },
+
+        "templateObjectExportName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "templateObjectExportName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.exportName"}
+            }
+        },
+
+        "commentCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "commentCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.templateObject.comment"}
+            }
+        },
+
+        "templateObjectComment": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "templateObjectComment"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.comment"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <header data-montage-id="TemplateObjectHeader" class="TemplateObjectHeader">
+
+        <section data-montage-id="referenceProxy" class="TemplateObjectHeader-referenceProxy" draggable="true">
+            <img data-montage-id="icon" class="TemplateObjectHeader-icon" src="" draggable="false">
+            <div class="TemplateObjectHeader-flex">
+                <h3 data-montage-id="objectLabel" class="TemplateObjectHeader-title"></h3>
+                <label data-montage-id="templateObjectExportName" class="TemplateObjectHeader-exportName"></label>
+            </div>
+            <div data-param="toolbar"></div>         
+        </section>
+
+        <div data-montage-id="commentCondition">
+            <p data-montage-id="templateObjectComment" class="TemplateObjectHeader-comment"></p>
+        </div>
+
+    </header>
+</body>
+</html>

@@ -1,6 +1,5 @@
 /**
- @module "ui/template-object-cell.reel"
- @requires montage
+ @module "ui/owner-object-cell.reel"
  @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
@@ -8,13 +7,13 @@ var Component = require("montage/ui/component").Component,
 
 /**
  Description TODO
- @class module:"ui/template-object-cell.reel".TemplateObjectCell
+ @class module:"ui/owner-object-cell.reel".OwnerObjectCell
  @extends module:montage/ui/component.Component
  */
-exports.TemplateObjectCell = Component.specialize({
+exports.OwnerObjectCell = Component.specialize({
 
     constructor: {
-        value: function TemplateObjectCell () {
+        value: function OwnerObjectCell () {
             this.super();
         }
     },
@@ -97,6 +96,14 @@ exports.TemplateObjectCell = Component.specialize({
                 });
 
             }
+        }
+    },
+
+    handlePress: {
+        value: function () {
+            this.dispatchEventNamed("select", true, true, {
+                templateObject: this.templateObject
+            });
         }
     }
 

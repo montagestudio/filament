@@ -1,0 +1,28 @@
+.ElementField {
+    display: -webkit-flex;
+    padding: 8px;
+}
+
+.ElementField-icon {
+    width: 14px;
+    height: 14px;
+    margin: auto 0;
+}
+
+.ElementField-label {
+    margin-left: 8px;
+    font-size: 12px;
+}
+
+.ElementField-tagName {
+    margin-right: 4px;
+    color: hsl(0, 0%, 60%);
+}
+
+.ElementField--invalid .ElementField-tagName {
+    color: red;
+}
+
+.ElementField-id {
+    color: hsl(0, 0%, 40%);
+}

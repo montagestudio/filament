@@ -15,3 +15,7 @@ exports.MONTAGE_TEMPLATE_XPATH = "x-filament/x-montage-template-xpath";
 // ({"@": "label"}) or binding reference ("@label")
 // Value is the label
 exports.SERIALIZATION_OBJECT_LABEL = "x-filament/x-montage-serialization-object-reference";
+
+// Represents an event dispatched from a specific object
+// Value is an object with targetLabel and eventType properties
+exports.MONTAGE_EVENT_TARGET = "x-filament/x-montage-event-target";
