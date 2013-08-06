@@ -3,8 +3,7 @@
  @requires montage
  @requires montage/ui/component
  */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
+var Component = require("montage/ui/component").Component,
     MimeTypes = require("core/mime-types");
 
 /**
@@ -12,7 +11,13 @@ var Montage = require("montage").Montage,
  @class module:"ui/template-object-cell.reel".TemplateObjectCell
  @extends module:montage/ui/component.Component
  */
-exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/template-object-cell.reel".TemplateObjectCell# */ {
+exports.TemplateObjectCell = Component.specialize({
+
+    constructor: {
+        value: function TemplateObjectCell () {
+            this.super();
+        }
+    },
 
     enterDocument: {
         value: function (firstTime) {
