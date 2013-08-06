@@ -9,6 +9,10 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
+    packageExplorer: {
+        value: null
+    },
+
     editorSlot: {
         value: null
     },
@@ -32,6 +36,7 @@ exports.Main = Montage.create(Component, {
                 application.addEventListener("exitModalEditor", this);
                 application.addEventListener("addFile", this);
                 application.addEventListener("addModule", this);
+                application.addEventListener("expandTree", this);
 
                 document.addEventListener("save", this, false);
             }
@@ -45,6 +50,33 @@ exports.Main = Montage.create(Component, {
 
             if (currentFileUrl && (editor = this.componentEditorMap[currentFileUrl])) {
                 editor.addComponent(evt.detail.prototypeObject);
+            }
+        }
+    },
+
+    // Expand a tree according to a given path, will fail if the tree has not been pre-loaded
+    handleExpandTree: {
+        value: function (evt) {
+            var path = evt.detail;
+            var folder = null;
+            var folders = path.replace(/\/$/, "").replace(/^\//, "").split("/");
+            var fileController = this.packageExplorer.fileTreeController
+
+            while (folder = folders.shift()) {
+                var i = 0
+                while (i < fileController.nodes.length) {
+                    var filename = fileController.nodes[i].content.name;
+                    if (filename == folder) {
+                        break;
+                    }
+                    ++i;
+                }
+                if (!fileController.nodes[i] || (i == fileController.nodes.length) && (fileController.nodes[i].content != folder)) {
+                    return;
+                }
+
+                fileController.nodes[i].expanded = true;
+                fileTreeController = fileController.nodes[i];
             }
         }
     },

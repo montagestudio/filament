@@ -769,7 +769,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     return null;
                 }
 
-                // remove traling slash
+                // remove trailing slash
                 destination = destination.replace(/\/$/, "");
                 var destinationDividerIndex = destination.lastIndexOf("/"),
                     appName = destination.substring(destinationDividerIndex + 1),
@@ -787,10 +787,13 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 // select main.reel
                 var openMainReel = function (evt) {
                     self.removeEventListener("didOpenPackage", openMainReel, false);
+
+                    application.dispatchEventNamed("expandTree", true, true, "ui/");
+
+                    // Need to be replaced by a dispatch on main which also adds an event listener
                     self.dispatchEventNamed("openUrl", true, true, applicationUrl + "/ui/main.reel/");
                 };
                 self.addEventListener("didOpenPackage", openMainReel, false);
-
                 return self.loadProject(applicationUrl);
             });
         }
@@ -1046,7 +1049,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 },
                 childrenByName;
 
-            while (segmentIndex < segmentCount) {
+            while (segmentIndex < segmentCount && root.children) {
                 pathSegment = hierarchy[segmentIndex];
                 childrenByName = root.children.reduce(collectChildrenByName, {});
                 root = childrenByName[pathSegment];
