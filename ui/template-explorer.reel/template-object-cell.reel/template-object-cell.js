@@ -14,10 +14,6 @@ var Montage = require("montage").Montage,
  */
 exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/template-object-cell.reel".TemplateObjectCell# */ {
 
-    _referenceProxyElement: {
-        value: null
-    },
-
     _templateObjectElementField: {
         value: null
     },
@@ -27,9 +23,6 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
             if (!firstTime) {
                 return;
             }
-
-            // Allow proxyIcon to be dragged as an object reference
-            this._referenceProxyElement.addEventListener("dragstart", this, false);
 
             // Allow event button to be dragged as a reference ot this as an eventTarget
             var eventButton = this.templateObjects.addListenerButton.element;
@@ -171,17 +164,10 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
     handleDragstart: {
         value: function (evt) {
             var target = evt.target,
-                referenceProxyElement = this._referenceProxyElement,
                 listenerButtonElement = this.templateObjects.addListenerButton.element,
                 transfer = event.dataTransfer;
 
-            // Dragging the templateObject reference
-            if (target === referenceProxyElement) {
-                transfer.setData(MimeTypes.SERIALIZATION_OBJECT_LABEL, this.templateObject.label);
-                transfer.setData("text/plain", "@" + this.templateObject.label);
-
-            // Dragging the event icon
-            } else if (target === listenerButtonElement) {
+            if (target === listenerButtonElement) {
                 transfer.effectAllowed = 'all';
 
                 var eventType = "action"; //TODO allow this to be inferred from somewhere

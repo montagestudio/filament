@@ -8,60 +8,17 @@
     background-color: hsl(0,0%,98%)
 }
 
-.TemplateObjectCell-header {
-    display: -webkit-flex;
-    padding: 0.2em;
-    background-color: hsl(0, 0%, 92%);
+.TemplateObjectCell.selected .TemplateObjectHeader {
+    background-color: hsl(210,100%,92%);
 }
 
-.TemplateObjectCell-referenceProxy {
-    display: -webkit-flex;
-}
-
-.TemplateObjectCell-header-flex {
-    -webkit-flex: 1;
-    min-width: 0;
+.TemplateObjectCell--owner.selected .TemplateObjectHeader,
+.TemplateObjectCell--owner .TemplateObjectHeader {
+    background-color: hsl(43, 100%, 85%);
 }
 
 .TemplateObjectCell-header + * {
     margin-top: 4px;
-}
-
-.TemplateObjectCell-icon {
-    display: block;
-    height: 21px;
-    margin: 0 4px 0 0;
-}
-
-.TemplateObjectCell.selected .TemplateObjectCell-header {
-    background-color: hsl(210,100%,92%);
-}
-
-.TemplateObjectCell--owner.selected .TemplateObjectCell-header,
-.TemplateObjectCell--owner .TemplateObjectCell-header {
-    background-color: hsl(43, 100%, 85%);
-}
-
-.TemplateObjectCell-commentButton {
-    display: block;
-    -webkit-align-self: flex-start;
-    margin-left: 10px;
-    width: 14px;
-    height: 14px;
-    background: url(/assets/icons/comment.png) no-repeat center;
-    background-size: 14px;
-}
-
-.TemplateObjectCell-comment {
-    display: block;
-    margin: 0;
-    padding: 4px 6px;
-    font-size: 11px;
-    font-style: italic;
-    text-shadow: 0 1px 0 hsla(0, 0%, 100%, .3);
-    color: hsl(0, 0%, 30%);
-    border-bottom: 1px solid hsla(0, 0%, 0%, .05);
-    background: hsl(42, 83%, 95%);
 }
 
 .TemplateObjectCell-button-icon {
@@ -78,27 +35,6 @@
 
 .TemplateObjectCell-button-icon.TemplateObjectCell-button--listen {
     background-image: url(/assets/icons/event.png);
-}
-
-.TemplateObjectCell-title {
-    margin: 0;
-    font-size: 12px;
-    line-height: 14px;
-    color: hsl(0, 0%, 30%);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.TemplateObjectCell-exportName {
-    display: block;
-    font-style: italic;
-    font-size: 10px;
-    line-height: 12px;
-    color: hsl(0, 0%, 60%);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .TemplateObjectElementField-label--invalid {

@@ -8,7 +8,6 @@
             "owner": {
                 "properties": {
                     "element": {"#": "template-object-cell"},
-                    "_referenceProxyElement": {"#": "TemplateObjectCell-referenceProxy"},
                     "_templateObjectElementField": {"#": "templateObjectElementField"}
                 },
                 "bindings": {
@@ -18,33 +17,13 @@
                 }
             },
 
-            "icon": {
-                "prototype": "matte/ui/image.reel",
+            "header": {
+                "prototype": "./template-object-header.reel",
                 "properties": {
-                    "element": {"#": "icon"}
+                    "element": {"#": "header"}
                 },
                 "bindings": {
-                    "src": {"<-": "@owner.templateObject.editingDocument.editor.projectController.libraryItemForModuleId(@owner.templateObject.moduleId, @owner.templateObject.exportName).icon"}
-                }
-            },
-
-            "objectLabel": {
-                "prototype": "montage/ui/text.reel",
-                "properties": {
-                    "element": {"#": "objectLabel"}
-                },
-                "bindings": {
-                    "value": {"<-": "@owner.templateObject.label"}
-                }
-            },
-
-            "templateObjectExportName": {
-                "prototype": "montage/ui/text.reel",
-                "properties": {
-                    "element": {"#": "templateObjectExportName"}
-                },
-                "bindings": {
-                    "value": {"<-": "@owner.templateObject.exportName"}
+                    "templateObject": {"<-": "@owner.templateObject"}
                 }
             },
 
@@ -164,27 +143,6 @@
                 "bindings": {
                     "condition": {"<-": "@owner.showListeners"}
                 }
-            },
-
-            "commentCondition": {
-                "prototype": "montage/ui/condition.reel",
-                "properties": {
-                    "element": {"#": "commentCondition"},
-                    "removalStrategy": "hide"
-                },
-                "bindings": {
-                    "condition": {"<-": "@owner.templateObject.comment"}
-                }
-            },
-
-            "templateObjectComment": {
-                "prototype": "montage/ui/text.reel",
-                "properties": {
-                    "element": {"#": "templateObjectComment"}
-                },
-                "bindings": {
-                    "value": {"<-": "@owner.templateObject.comment"}
-                }
             }
 
         }
@@ -194,19 +152,7 @@
 
 <li data-montage-id="template-object-cell" class="TemplateObjectCell">
 
-    <header class="TemplateObjectCell-header">
-        <section draggable="true" class="TemplateObjectCell-referenceProxy" data-montage-id="TemplateObjectCell-referenceProxy">
-            <img data-montage-id="icon" class="TemplateObjectCell-icon" src="" draggable="false">
-            <div class="TemplateObjectCell-header-flex">
-                <h3 data-montage-id="objectLabel" class="TemplateObjectCell-title"></h3>
-                <label data-montage-id="templateObjectExportName" class="TemplateObjectCell-exportName"></label>
-            </div>
-        </section>
-
-        <div data-montage-id="commentCondition">
-            <p data-montage-id="templateObjectComment" class="TemplateObjectCell-comment"></p>
-        </div>
-    </header>
+    <header data-montage-id="header"></header>
 
     <section data-montage-id="templateObjectElementField" class="TemplateObjectElementField">
         <img src="/assets/icons/tag.png">
