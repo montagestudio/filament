@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="binding-explorer.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "BindingExplorer"}
+            }
+        },
+
+        "bindingList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "bindingList"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.templateObject.bindings"},
+                "targetObject": {"<-": "@owner.templateObject"}
+            }
+        },
+
+        "bindingEntry": {
+            "prototype": "./binding-entry.reel",
+            "properties": {
+                "element": {"#": "bindingEntry"}
+            },
+            "bindings": {
+                "targetObject": {"<-": "@bindingList.targetObject"},
+                "binding": {"<-": "@bindingList.objectAtCurrentIteration"}
+            }
+        },
+
+        "defineBindingButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "addButton"}
+            },
+            "bindings": {
+                "detail.get('targetObject')": {"<-": "@owner.templateObject"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="BindingExplorer" class="BindingExplorer">
+            <h2 class="BindingExplorer-title">Bindings</h2>
+            <ul data-montage-id="bindingList" class="BindingExplorer-list">
+                <li data-montage-id="bindingEntry"></li>
+            </ul>
+            <button data-montage-id="addButton" class="BindingExplorer-addButton" draggable="true"></button>
+    </div>
+</body>
+</html>

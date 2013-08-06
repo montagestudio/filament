@@ -59,70 +59,6 @@
                 }
             },
 
-            "bindingList": {
-                "prototype": "montage/ui/repetition.reel",
-                "properties": {
-                    "element": {"#": "bindingList"}
-                },
-                "bindings": {
-                    "content": {"<-": "@owner.templateObject.bindings"},
-                    "targetObject": {"<-": "@owner.templateObject"}
-                }
-            },
-
-            "bindingEntry": {
-                "prototype": "./binding-entry.reel",
-                "properties": {
-                    "element": {"#": "bindingEntry"}
-                },
-                "bindings": {
-                    "targetObject": {"<-": "@bindingList.targetObject"},
-                    "binding": {"<-": "@bindingList.objectAtCurrentIteration"}
-                }
-            },
-
-            "defineBindingButton": {
-                "prototype": "matte/ui/button.reel",
-                "properties": {
-                    "element": {"#": "addButton"}
-                },
-                "bindings": {
-                    "detail.get('targetObject')": {"<-": "@owner.templateObject"}
-                }
-            },
-
-            "listenerList": {
-                "prototype": "montage/ui/repetition.reel",
-                "properties": {
-                    "element": {"#": "listenerList"}
-                },
-                "bindings": {
-                    "content": {"<-": "@owner.templateObject.listeners"},
-                    "targetObject": {"<-": "@owner.templateObject"}
-                }
-            },
-
-            "listenerEntry": {
-                "prototype": "./listener-entry.reel",
-                "properties": {
-                    "element": {"#": "listenerEntry"}
-                },
-                "bindings": {
-                    "targetObject": {"<-": "@listenerList.targetObject"},
-                    "listenerInfo": {"<-": "@listenerList.objectAtCurrentIteration"}
-                }
-            },
-
-            "addListenerButton": {
-                "prototype": "matte/ui/button.reel",
-                "properties": {
-                    "element": {"#": "addListenerButton"}
-                },
-                "bindings": {
-                    "detail.get('targetObject')": {"<-": "@owner.templateObject"}
-                }
-            },
-
             "bindingsCondition": {
                 "prototype": "montage/ui/condition.reel",
                 "properties": {
@@ -131,6 +67,16 @@
                 },
                 "bindings": {
                     "condition": {"<-": "@owner.showBindings"}
+                }
+            },
+
+            "bindingExplorer": {
+                "prototype": "./binding-explorer.reel",
+                "properties": {
+                    "element": {"#": "bindingExplorer"}
+                },
+                "bindings": {
+                    "templateObject": {"<-": "@owner.templateObject"}
                 }
             },
 
@@ -143,12 +89,23 @@
                 "bindings": {
                     "condition": {"<-": "@owner.showListeners"}
                 }
+            },
+
+            "listenerExplorer": {
+                "prototype": "./listener-explorer.reel",
+                "properties": {
+                    "element": {"#": "listenerExplorer"}
+                },
+                "bindings": {
+                    "templateObject": {"<-": "@owner.templateObject"}
+                }
             }
 
         }
     </script>
 </head>
 <body>
+<ul>
 
 <li data-montage-id="template-object-cell" class="TemplateObjectCell">
 
@@ -163,21 +120,14 @@
     </section>
 
     <section class="Connection-type Connection-type--bindings" data-montage-id="bindingsCondition">
-        <h2 class="Connection-type-title">Bindings</h2>
-        <ul data-montage-id="bindingList" class="Connection-type-list">
-            <li data-montage-id="bindingEntry"></li>
-        </ul>
-        <button data-montage-id="addButton" class="TemplateObjectCell-button-icon TemplateObjectCell-button--bind" draggable="true"></button>
+        <div data-montage-id="bindingExplorer"></div>
     </section>
 
     <section class="Connection-type Connection-type--listeners" data-montage-id="listenersCondition">
-        <h2 class="Connection-type-title">Listeners</h2>
-        <ul data-montage-id="listenerList" class="Connection-type-list">
-            <li data-montage-id="listenerEntry"></li>
-        </ul>
-        <button data-montage-id="addListenerButton" class="TemplateObjectCell-button-icon TemplateObjectCell-button--listen" draggable="true"></button>
+        <div data-montage-id="listenerExplorer"></div>
     </section>
 </li>
 
+</ul>
 </body>
 </html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="listener-explorer.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "ListenerExplorer"}
+            }
+        },
+
+        "listenerList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "listenerList"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.templateObject.listeners"},
+                "targetObject": {"<-": "@owner.templateObject"}
+            }
+        },
+
+        "listenerEntry": {
+            "prototype": "./listener-entry.reel",
+            "properties": {
+                "element": {"#": "listenerEntry"}
+            },
+            "bindings": {
+                "targetObject": {"<-": "@listenerList.targetObject"},
+                "listenerInfo": {"<-": "@listenerList.objectAtCurrentIteration"}
+            }
+        },
+
+        "addListenerButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "addListenerButton"}
+            },
+            "bindings": {
+                "detail.get('targetObject')": {"<-": "@owner.templateObject"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="ListenerExplorer" class="ListenerExplorer">
+        <h2 class="ListenerExplorer-title">Listeners</h2>
+        <ul data-montage-id="listenerList" class="ListenerExplorer-list">
+            <li data-montage-id="listenerEntry"></li>
+        </ul>
+        <button data-montage-id="addListenerButton" class="ListenerExplorer-addButton" draggable="true"></button>
+    </div>
+</body>
+</html>

@@ -21,22 +21,6 @@
     margin-top: 4px;
 }
 
-.TemplateObjectCell-button-icon {
-    display: block;
-    width: 14px;
-    height: 14px;
-}
-
-.TemplateObjectCell-button-icon.TemplateObjectCell-button--bind ,
-.TemplateObjectCell-button-icon.TemplateObjectCell-button--listen {
-    background: url(/assets/icons/binding.png) no-repeat center;
-    background-size: auto 14px;
-}
-
-.TemplateObjectCell-button-icon.TemplateObjectCell-button--listen {
-    background-image: url(/assets/icons/event.png);
-}
-
 .TemplateObjectElementField-label--invalid {
     color: red;
 }
