@@ -7,8 +7,7 @@
         {
             "owner": {
                 "properties": {
-                    "element": {"#": "template-object-cell"},
-                    "_templateObjectElementField": {"#": "templateObjectElementField"}
+                    "element": {"#": "template-object-cell"}
                 },
                 "bindings": {
                     "classList.has('TemplateObjectCell--owner')": {
@@ -27,35 +26,24 @@
                 }
             },
 
-            "templateObjectTag": {
+            "elementCondition": {
                 "prototype": "montage/ui/condition.reel",
                 "properties": {
-                    "element": {"#": "templateObjectElementField"},
+                    "element": {"#": "elementCondition"},
                     "removalStrategy": "hide"
                 },
                 "bindings": {
-                    "condition": {"<-": "@owner.hasElementProperty"},
-                    "classList.has('TemplateObjectElementField-label--invalid')": {"<-": "!@owner.templateObject.properties.get('element').isInTemplate"}
+                    "condition": {"<-": "@owner.hasElementProperty"}
                 }
             },
 
-            "elementTagName": {
-                "prototype": "montage/ui/text.reel",
+            "elementField": {
+                "prototype": "./element-field.reel",
                 "properties": {
-                    "element": {"#": "elementTagName"}
+                    "element": {"#": "elementField"}
                 },
                 "bindings": {
-                    "value": {"<-": "@owner.templateObject.properties.get('element').tagName || 'Drop element here'"}
-                }
-            },
-
-            "elementId": {
-                "prototype": "montage/ui/text.reel",
-                "properties": {
-                    "element": {"#": "elementId"}
-                },
-                "bindings": {
-                    "value": {"<-": "@owner.templateObject.properties.get('element').montageId"}
+                    "templateObject": {"<-": "@owner.templateObject"}
                 }
             },
 
@@ -111,12 +99,8 @@
 
     <header data-montage-id="header"></header>
 
-    <section data-montage-id="templateObjectElementField" class="TemplateObjectElementField">
-        <img src="/assets/icons/tag.png">
-        <span class="TemplateObjectElementField-label">
-            <span data-montage-id="elementTagName"></span>
-            <em  data-montage-id="elementId"></em>
-        </span>
+    <section data-montage-id="elementCondition" class="TemplateObjectElementField">
+        <div data-montage-id="elementField"></div>
     </section>
 
     <section class="Connection-type Connection-type--bindings" data-montage-id="bindingsCondition">

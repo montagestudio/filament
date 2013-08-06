@@ -14,10 +14,6 @@ var Montage = require("montage").Montage,
  */
 exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/template-object-cell.reel".TemplateObjectCell# */ {
 
-    _templateObjectElementField: {
-        value: null
-    },
-
     enterDocument: {
         value: function (firstTime) {
             if (!firstTime) {
@@ -60,19 +56,11 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
 
     handleDragover: {
         value: function (event) {
-            var availableTypes = event.dataTransfer.types,
-                target = event.target,
-                elementField = this._templateObjectElementField;
+            var availableTypes = event.dataTransfer.types;
 
-            //Accept:
-            // - all events
-            // - elements, if targetting the element field
             if (!availableTypes) {
                 event.dataTransfer.dropEffect = "none";
-            } else if (availableTypes.has(MimeTypes.MONTAGE_EVENT_TARGET) ||
-                ((target === elementField || elementField.contains(target)) &&
-                    (availableTypes.has(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) ||
-                    availableTypes.has(MimeTypes.MONTAGE_TEMPLATE_XPATH)))) {
+            } else if (availableTypes.has(MimeTypes.MONTAGE_EVENT_TARGET)) {
 
                 // allows us to drop
                 event.preventDefault();
@@ -86,7 +74,6 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
         value: function (event) {
             var availableTypes = event.dataTransfer.types,
                 target = event.target,
-                elementField = this._templateObjectElementField,
                 listenerModel;
 
             // Always accept Events
@@ -104,34 +91,6 @@ exports.TemplateObjectCell = Montage.create(Component, /** @lends module:"ui/tem
                     listenerModel: listenerModel
                 });
 
-            // Accept elements dropped on element field
-            } else if (availableTypes.has(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) ||
-                availableTypes.has(MimeTypes.MONTAGE_TEMPLATE_XPATH) &&
-                (target === elementField || elementField.contains(target))) {
-
-                event.stopPropagation();
-                var montageId = event.dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_ELEMENT);
-                var templateObject = this.templateObject,
-                    editingDocument = templateObject.editingDocument;
-
-                if (!montageId) {
-                    var xpath = event.dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_XPATH);
-                    // get element from template
-                    var element = editingDocument.htmlDocument.evaluate(
-                        xpath,
-                        editingDocument.htmlDocument,
-                        null,
-                        XPathResult.FIRST_ORDERED_NODE_TYPE,
-                        null
-                    ).singleNodeValue;
-                    // get node proxy
-                    var nodeProxy = editingDocument.nodeProxyForNode(element);
-                    // generate montageId
-                    montageId = editingDocument.createMontageIdForProxy(templateObject.label, templateObject.moduleId, nodeProxy);
-                }
-
-                editingDocument.setOwnedObjectElement(templateObject, montageId);
-                editingDocument.editor.refresh();
             }
         }
     }

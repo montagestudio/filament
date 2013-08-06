@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="element-field.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "ElementField"}
+            },
+            "bindings": {
+                "classList.has('ElementField--invalid')": {"<-": "!@owner.templateObject.properties.get('element').isInTemplate"}
+            }
+        },
+
+        "elementTagName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "elementTagName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.properties.get('element').tagName || 'Drop element here'"}
+            }
+        },
+
+        "elementId": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "elementId"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.properties.get('element').montageId"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="ElementField" class="ElementField">
+        <img src="/assets/icons/tag.png">
+        <span class="ElementField-label">
+            <span data-montage-id="elementTagName" class="ElementField-tagName"></span>
+            <em  data-montage-id="elementId"></em>
+        </span>
+    </div>
+</body>
+</html>

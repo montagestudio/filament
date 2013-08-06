@@ -20,39 +20,3 @@
 .TemplateObjectCell-header + * {
     margin-top: 4px;
 }
-
-.TemplateObjectElementField-label--invalid {
-    color: red;
-}
-
-/* Connection Type ---------------------------- */
-
-
-.Connection-type {
-    position: relative;
-    -webkit-flex: 1 1 450px;
-    min-width: 0;
-    margin-bottom: 4px;
-    margin-left: 18px;
-    padding: 0 10px 0 10px;
-    border-left: 1px solid hsl(0, 0%, 85%);
-}
-
-.Connection-type-title {
-    margin: 0;
-    font-size: 11px;
-    font-weight: normal;
-    line-height: 22px;
-    color: hsl(0,0%,60%);
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-.Connection-type-list {
-    -webkit-flex: 1;
-    min-width: 0;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
