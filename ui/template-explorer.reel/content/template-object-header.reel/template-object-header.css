@@ -47,9 +47,6 @@
     white-space: nowrap;
 }
 
-
-/* Comments are currently unused */
-
 .TemplateObjectHeader-commentButton {
     display: block;
     -webkit-align-self: flex-start;
@@ -68,6 +65,5 @@
     font-style: italic;
     text-shadow: 0 1px 0 hsla(0, 0%, 100%, .3);
     color: hsl(0, 0%, 30%);
-    border-bottom: 1px solid hsla(0, 0%, 0%, .05);
     background: hsl(42, 83%, 95%);
 }

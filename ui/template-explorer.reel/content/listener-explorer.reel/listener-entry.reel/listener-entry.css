@@ -1,5 +1,5 @@
 .ListenerEntry {
-    margin-bottom: 4px;
+    margin: 0 4px;
     display: -webkit-flex;
     cursor: pointer;
 }
@@ -41,7 +41,7 @@
 
 
 .ListenerEntry-phase {
-    margin-left: 4px;
+    margin: 0 4px;
     font-size: 10px;
     line-height: 22px;
     color: hsl(0,0%,50%);
