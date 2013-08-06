@@ -2,7 +2,7 @@
 <html>
 <head>
     <title></title>
-    <link rel="stylesheet" type="text/css" href="template-object-cell.css">
+    <link rel="stylesheet" type="text/css" href="owner-object-cell.css">
     <script type="text/montage-serialization">
         {
             "owner": {
@@ -136,7 +136,7 @@
 <body>
 <ul>
 
-<li data-montage-id="template-object-cell" class="TemplateObjectCell">
+<header data-montage-id="template-object-cell" class="TemplateObjectCell TemplateObjectCell--owner">
 
     <header data-montage-id="header">
         <div data-arg="toolbar">
@@ -144,22 +144,23 @@
         </div>
     </header>
 
-    <section data-montage-id="editPropertiesCondition">
+    <section data-montage-id="editPropertiesCondition" class="TemplateObjectCell-section">
         <div data-montage-id="editProperties"></div>
     </section>
 
-    <section data-montage-id="elementCondition" class="TemplateObjectElementField">
+    <section data-montage-id="elementCondition" class="TemplateObjectCell-section">
         <div data-montage-id="elementField"></div>
     </section>
 
-    <section class="Connection-type Connection-type--bindings" data-montage-id="bindingsCondition">
+    <section data-montage-id="bindingsCondition" class="TemplateObjectCell-section">
         <div data-montage-id="bindingExplorer"></div>
     </section>
 
-    <section class="Connection-type Connection-type--listeners" data-montage-id="listenersCondition">
+    <section data-montage-id="listenersCondition" class="TemplateObjectCell-section">
         <div data-montage-id="listenerExplorer"></div>
     </section>
-</li>
+    
+</header>
 
 </ul>
 </body>

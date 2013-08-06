@@ -23,36 +23,6 @@
 
 
 
-/*
-/* Connection ---------------------------- *!/
-
-.Connection {
-    display: -webkit-flex;
-    -webkit-flex-flow: row wrap;
-}
-
-.Connection-label {
-    width: 100%;
-    margin: 0;
-    font-size: 13px;
-    font-weight: bold;
-    line-height: 22px;
-    color: hsl(0,0%,40%);
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-
-/* Buttons ---------------------------- *!/
-
-.Connection .Connection-addButton {
-    position: absolute;
-    right: 10px;
-    top: -4px;
-}*/
-
-
 
 /* Footer ---------------------------- */
 

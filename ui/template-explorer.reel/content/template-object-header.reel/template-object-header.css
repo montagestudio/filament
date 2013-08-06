@@ -1,6 +1,12 @@
+.TemplateObjectCell--owner .TemplateObjectHeader {
+    background-color: hsl(43, 100%, 85%);
+}
+
+.TemplateObjectCell.selected .TemplateObjectHeader {
+    background-color: hsl(210,100%,92%);
+}
+
 .TemplateObjectHeader {
-    //display: -webkit-flex;
-    //padding: 0.2em;
     background-color: hsl(0, 0%, 92%);
 }
 
