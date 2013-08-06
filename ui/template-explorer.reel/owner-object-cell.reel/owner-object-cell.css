@@ -1,0 +1,22 @@
+.TemplateObjectCell {
+    border: 1px solid hsla(0,0%,0%,0);
+    border-left-width: 5px;
+}
+
+.TemplateObjectCell.selected {
+    border-color: hsl(210,100%,60%);
+    background-color: hsl(0,0%,98%)
+}
+
+.TemplateObjectCell.selected .TemplateObjectHeader {
+    background-color: hsl(210,100%,92%);
+}
+
+.TemplateObjectCell--owner.selected .TemplateObjectHeader,
+.TemplateObjectCell--owner .TemplateObjectHeader {
+    background-color: hsl(43, 100%, 85%);
+}
+
+.TemplateObjectCell-header + * {
+    margin-top: 4px;
+}

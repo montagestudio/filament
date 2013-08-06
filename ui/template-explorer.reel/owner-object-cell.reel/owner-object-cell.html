@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="template-object-cell.css">
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "template-object-cell"}
+                },
+                "bindings": {
+                    "classList.has('TemplateObjectCell--owner')": {
+                        "<-": "@owner.templateObject.label == 'owner'"
+                    }
+                }
+            },
+
+            "header": {
+                "prototype": "../content/template-object-header.reel",
+                "properties": {
+                    "element": {"#": "header"}
+                },
+                "bindings": {
+                    "templateObject": {"<-": "@owner.templateObject"}
+                }
+            },
+
+            "editPropertiesCondition": {
+                "prototype": "montage/ui/condition.reel",
+                "properties": {
+                    "element": {"#": "editPropertiesCondition"},
+                    "removalStrategy": "hide"
+                },
+                "bindings": {
+                    "condition": {"<-": "@editPropertiesButton.pressed"}
+                }
+            },
+
+            "editPropertiesButton": {
+                "prototype": "matte/ui/toggle-button.reel",
+                "properties": {
+                    "element": {"#": "editPropertiesButton"}
+                }
+            },
+
+            "editProperties": {
+                "prototype": "../content/edit-properties.reel",
+                "properties": {
+                    "element": {"#": "editProperties"}
+                },
+                "bindings": {
+                    "ownerObject": {"<-": "@owner.templateObject"}
+                }
+            },
+
+            "elementCondition": {
+                "prototype": "montage/ui/condition.reel",
+                "properties": {
+                    "element": {"#": "elementCondition"},
+                    "removalStrategy": "hide"
+                },
+                "bindings": {
+                    "condition": {"<-": "@owner.hasElementProperty"}
+                }
+            },
+
+            "elementField": {
+                "prototype": "../content/element-field.reel",
+                "properties": {
+                    "element": {"#": "elementField"}
+                },
+                "bindings": {
+                    "templateObject": {"<-": "@owner.templateObject"}
+                }
+            },
+
+            "bindingsCondition": {
+                "prototype": "montage/ui/condition.reel",
+                "properties": {
+                    "element": {"#": "bindingsCondition"},
+                    "removalStrategy": "hide"
+                },
+                "bindings": {
+                    "condition": {"<-": "@owner.showBindings"}
+                }
+            },
+
+            "bindingExplorer": {
+                "prototype": "../content/binding-explorer.reel",
+                "properties": {
+                    "element": {"#": "bindingExplorer"}
+                },
+                "bindings": {
+                    "templateObject": {"<-": "@owner.templateObject"}
+                }
+            },
+
+            "listenersCondition": {
+                "prototype": "montage/ui/condition.reel",
+                "properties": {
+                    "element": {"#": "listenersCondition"},
+                    "removalStrategy": "hide"
+                },
+                "bindings": {
+                    "condition": {"<-": "@owner.showListeners"}
+                }
+            },
+
+            "listenerExplorer": {
+                "prototype": "../content/listener-explorer.reel",
+                "properties": {
+                    "element": {"#": "listenerExplorer"}
+                },
+                "bindings": {
+                    "templateObject": {"<-": "@owner.templateObject"}
+                }
+            },
+
+            "select": {
+                "prototype": "montage/composer/press-composer",
+                "properties": {
+                    "component": {"@": "owner"}
+                },
+                "listeners": [
+                    {
+                        "type": "press",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            }
+
+        }
+    </script>
+</head>
+<body>
+<ul>
+
+<li data-montage-id="template-object-cell" class="TemplateObjectCell">
+
+    <header data-montage-id="header">
+        <div data-arg="toolbar">
+            <button data-montage-id="editPropertiesButton" class="Button Toolbar-button">Edit properties</button>
+        </div>
+    </header>
+
+    <section data-montage-id="editPropertiesCondition">
+        <div data-montage-id="editProperties"></div>
+    </section>
+
+    <section data-montage-id="elementCondition" class="TemplateObjectElementField">
+        <div data-montage-id="elementField"></div>
+    </section>
+
+    <section class="Connection-type Connection-type--bindings" data-montage-id="bindingsCondition">
+        <div data-montage-id="bindingExplorer"></div>
+    </section>
+
+    <section class="Connection-type Connection-type--listeners" data-montage-id="listenersCondition">
+        <div data-montage-id="listenerExplorer"></div>
+    </section>
+</li>
+
+</ul>
+</body>
+</html>
