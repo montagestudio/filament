@@ -597,6 +597,46 @@ describe("core/reel-document-headless-editing-spec", function () {
 
             }).timeout(WAITSFOR_TIMEOUT);
         });
+
+        it("uses the label from the element's data-montage-id", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                // setup
+                var nodeProxy = reelDocument.createTemplateNode('<p data-montage-id="pass">');
+                reelDocument.appendChildToTemplateNode(nodeProxy);
+                expect(nodeProxy.isInTemplate).toBeTruthy();
+
+                // test
+                return reelDocument.addAndAssignLibraryItemFragment({
+                    "prototype": "ui/foo.reel",
+                    "properties": {
+                        "element": {"#": "unexistingId"}
+                    }
+                }, nodeProxy).then(function (objects) {
+                    expect(objects[0].label).toBe("pass");
+                });
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("generates a label if the element's data-montage-id is already a label", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                // setup
+                var nodeProxy = reelDocument.createTemplateNode('<p data-montage-id="bar">');
+                reelDocument.appendChildToTemplateNode(nodeProxy);
+                expect(nodeProxy.isInTemplate).toBeTruthy();
+
+                // test
+                return reelDocument.addAndAssignLibraryItemFragment({
+                    "prototype": "ui/pass.reel",
+                    "properties": {
+                        "element": {"#": "unexistingId"}
+                    }
+                }, nodeProxy).then(function (objects) {
+                    expect(objects[0].label).toBe("pass1");
+                });
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
     });
 
     describe("setting a node's data-montage-id", function() {

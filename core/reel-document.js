@@ -648,12 +648,19 @@ exports.ReelDocument = EditingDocument.specialize({
      * This will be replaced with an addTemplate or insertTemplate or mergeTemplate
      */
     addLibraryItemFragments: {
-        value: function (serializationFragment, htmlFragment, parentElement, nextSiblingElement, stageElement) {
-            var labelInOwner = this._generateLabel(serializationFragment),
+        value: function (serializationFragment, htmlFragment, parentElement, nextSiblingElement, stageElement, montageId) {
+            var labelInOwner,
                 templateSerialization = {},
                 self = this,
                 doc,
                 serializationElement;
+
+            // Try and use the montageId as the label, if not generate one from the prototype name
+            if (montageId && Object.keys(this.editingProxyMap).indexOf(montageId) === -1) {
+                labelInOwner = montageId;
+            } else {
+                labelInOwner = this._generateLabel(serializationFragment);
+            }
 
             // If there's no htmlFragment given then none of the element
             // references in the serialization are valid, and they might end up
@@ -708,7 +715,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             this.undoManager.openBatch("Add component to element");
 
-            return this.addLibraryItemFragments(serializationFragment).then(function (objects) {
+            return this.addLibraryItemFragments(serializationFragment, void 0, void 0, void 0, void 0, montageId).then(function (objects) {
                 var label;
 
                 if (objects.length === 1) {
