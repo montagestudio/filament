@@ -1,4 +1,5 @@
-.TemplateObjectCell--owner .TemplateObjectHeader {
+.TemplateObjectCell--owner .TemplateObjectHeader,
+.TemplateObjectCell.TemplateObjectCell--owner.selected .TemplateObjectHeader {
     background-color: hsl(43, 100%, 85%);
 }
 

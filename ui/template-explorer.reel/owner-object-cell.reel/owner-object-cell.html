@@ -12,6 +12,9 @@
                 "bindings": {
                     "classList.has('TemplateObjectCell--owner')": {
                         "<-": "@owner.templateObject.label == 'owner'"
+                    },
+                    "classList.has('selected')": {
+                        "<-": "@owner.templateObjectsController.selection.has(templateObject)"
                     }
                 }
             },
