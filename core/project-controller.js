@@ -164,7 +164,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      */
     loadProject: {
         value: function (url) {
-
             var self = this;
 
             this._projectUrl = url;
@@ -201,6 +200,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 .then(function () {
                     // don't need to wait for this to complete
                     self.watchForFileChanges();
+                    // need these before getting the library items
+                    return self.loadExtensions();
+                }).then(function () {
                     // want to wait for the library though
                     return self.populateLibrary();
                 }).then(function () {
@@ -571,8 +573,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         enumerable: false,
         value: function (dependencies) {
             var self = this,
-                moduleId,
-                objectName,
                 dependencyLibraryPromises,
                 dependencyLibraryEntry,
                 offeredLibraryItems;
@@ -588,6 +588,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                         if (componentUrls) {
                             dependencyLibraryEntry.libraryItems = componentUrls.map(function (componentUrl) {
+                                var moduleId,
+                                    objectName;
                                 if (/\/node_modules\//.test(componentUrl)) {
                                     // It's a module inside a node_modules dependency
                                     //TODO be able to handle dependencies from mappings?
@@ -1070,6 +1072,27 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: function (url) {
             var path = this.environmentBridge.convertBackendUrlToPath(url);
             return this.environmentBridge.list(path);
+        }
+    },
+
+    loadExtensions: {
+        value: function () {
+            var self = this;
+            return Promise.all(this.dependencies.map(function (dependency) {
+                return self.environmentBridge.getExtensionsAt(dependency.url);
+            }))
+            .then(function (extensions) {
+                return Promise.all(extensions.flatten().map(function (extensionDetails) {
+                    // TODO only load if name is the same as dependency?
+                    return self._extensionController.loadExtension(extensionDetails.url)
+                    .then(function (extension) {
+                        self._extensionController.activateExtension(extension);
+                    })
+                    .catch(function (error) {
+                        console.error("Could not load extension at", extensionDetails.url, "because", error.message);
+                    });
+                }));
+            });
         }
     },
 
