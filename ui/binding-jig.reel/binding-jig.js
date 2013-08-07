@@ -88,6 +88,14 @@ exports.BindingJig = Montage.create(Component, {
 
     handleAction: {
         value: function (evt) {
+            var target = evt.target,
+                objects = this.templateObjects;
+
+            if (target === objects.bidirectional ||
+                target === objects.unidirectional) {
+                return;
+            }
+
             this._commitBindingEdits();
         }
     },
