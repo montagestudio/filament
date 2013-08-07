@@ -105,26 +105,23 @@ exports.ExtensionController = Montage.create(Target, {
                 packageRequire.injectMapping({name: "montage", location: require.getPackage({name: "montage"}).location});
                 packageRequire.injectMapping({name: "filament-extension", location: require.getPackage({name: "filament-extension"}).location});
                 return Promise.all([packageRequire.async("extension"), Promise.resolve(packageRequire)]);
-            },function (error) {
-                console.log("Could not load extension package at: " + extensionUrl);
-                return Promise.reject(new Error("Could not load extension package at: " + extensionUrl, error));
             }).spread(function (exports, require) {
-                    var extension = new exports.Extension();
-                    extension.extensionRequire = require;
+                var extension = new exports.Extension();
+                extension.extensionRequire = require;
 
-                    if (!extension) {
-                        throw new Error("Malformed extension. Expected '" + extensionUrl + "' to export 'Extension'");
-                    }
+                if (!extension) {
+                    throw new Error("Malformed extension. Expected '" + extensionUrl + "' to export 'Extension'");
+                }
 
-                    if (self.loadedExtensions) {
-                        self.loadedExtensions.push(extension);
-                    }
+                if (self.loadedExtensions) {
+                    self.loadedExtensions.push(extension);
+                }
 
-                    return extension;
-                }, function (error) {
-                    console.log("Could not load extension at: " + extensionUrl);
-                    return Promise.reject(new Error("Could not load extension at: " + extensionUrl, error));
-                });
+                return extension;
+            }, function (error) {
+                console.log("Could not load extension at", extensionUrl, "because", error.message);
+                throw new Error("Could not load extension at: " + extensionUrl + " because " + error.message);
+            });
         }
     },
 
@@ -148,7 +145,11 @@ exports.ExtensionController = Montage.create(Target, {
 
                 if (typeof extension.activate === "function") {
                     //TODO only pass along the applicationDelegate?
-                    activationPromise = extension.activate(this.applicationDelegate.application, this.applicationDelegate.projectController, this.applicationDelegate.viewController);
+                    activationPromise = Promise(extension.activate(
+                        this.applicationDelegate.application,
+                        this.applicationDelegate.projectController,
+                        this.applicationDelegate.viewController
+                    ));
                 } else {
                     activationPromise = Promise.resolve(extension);
                 }
