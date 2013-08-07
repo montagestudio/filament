@@ -17,7 +17,13 @@
                     "element": {"#": "componentEditor"},
                     "_documentEditorSlot": {"#": "documentEditorSlot"},
                     "templateObjectsController": {"@": "templateObjectsController"}
-                }
+                },
+                "listeners": [
+                    {
+                        "type": "select",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             },
 
             "library": {

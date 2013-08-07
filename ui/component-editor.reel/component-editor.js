@@ -208,6 +208,12 @@ exports.ComponentEditor = Editor.specialize({
         value: function (evt) {
             this.templateObjects.bindingOverlay.hide();
         }
+    },
+
+    handleSelect: {
+        value: function (evt) {
+            this.currentDocument.selectObject(evt.detail.templateObject);
+        }
     }
 
 });
