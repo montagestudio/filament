@@ -44,7 +44,8 @@ exports.environmentBridgeMock = function (options) {
         componentsInPackagePromise = Promise.resolve(),
         registerPreviewPromise = Promise.resolve(),
         launchPreviewPromise = Promise.resolve(),
-        promptForSavePromise = Promise.resolve();
+        promptForSavePromise = Promise.resolve(),
+        getExtensionsAtPromise = Promise([]);
 
     Object.keys(options).forEach(function (key) {
         bridge[key] = options[key];
@@ -53,6 +54,7 @@ exports.environmentBridgeMock = function (options) {
     // Properly set expected promises
     bridge.mainMenu = Promise.resolve(options.mainMenu || null);
     bridge.availableExtensions = Promise.resolve(options.extensionUrls || []);
+    bridge.getExtensionsAt = options.getExtensionsAt || promiseFunction(getExtensionsAtPromise);
 
     bridge.listTreeAtUrl = options.listTreeAtUrl || promiseFunction(listTreePromise);
     bridge.list = options.list || promiseFunction(listPromise);

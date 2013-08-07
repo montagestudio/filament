@@ -138,6 +138,12 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
         }
     },
 
+    getExtensionsAt: {
+        value: function (url) {
+            return this.backend.get("filament-backend").invoke("getExtensions", this.convertBackendUrlToPath(url));
+        }
+    },
+
     findPackage: {
         value: function (path) {
             var self = this;
