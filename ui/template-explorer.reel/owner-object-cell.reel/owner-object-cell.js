@@ -47,15 +47,15 @@ exports.OwnerObjectCell = Component.specialize({
                 value.editingDocument.packageRequire.async(value.moduleId)
                     .get(value.exportName)
                     .then(function (object) {
-                        self.hasElementProperty = !!Object.getPropertyDescriptor(object, "element");
+                        self.isTemplateObjectComponent = object.prototype instanceof Component;
                     }).fail(Function.noop);
             }
 
         }
     },
 
-    hasElementProperty: {
-        value: true
+    isTemplateObjectComponent: {
+        value: false
     },
 
     handleDragover: {
