@@ -102,6 +102,8 @@ exports.ExtensionController = Montage.create(Target, {
 
             // TODO npm install?
             return require.loadPackage(extensionUrl).then(function (packageRequire) {
+                packageRequire.injectMapping({name: "montage", location: require.getPackage({name: "montage"}).location});
+                packageRequire.injectMapping({name: "filament-extension", location: require.getPackage({name: "filament-extension"}).location});
                 return Promise.all([packageRequire.async("extension"), Promise.resolve(packageRequire)]);
             },function (error) {
                 console.log("Could not load extension package at: " + extensionUrl);
