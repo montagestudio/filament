@@ -29,8 +29,7 @@
         "jasmine-node": "1.2.2",
         "sandboxed-module": "0.1.4",
         "montage-testing": "0.2.0",
-        "jshint": "~2.0.1",
-        "complexity-report": "~0.10.3",
+        "jshint": "2.1.9",
         "glTF-webgl-viewer": "git+ssh://git@github.com:fabrobinet/glTF-webgl-viewer.git"
     },
     "mappings": {
@@ -45,8 +44,7 @@
     },
     "scripts": {
         "test": "node test/run.js",
-        "lint": "./node_modules/.bin/jshint --verbose .",
-        "complexity": "node test/complexity.js"
+        "lint": "./node_modules/.bin/jshint --verbose ."
     },
     "manifest": true
 }
