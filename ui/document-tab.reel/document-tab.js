@@ -27,6 +27,12 @@ exports.DocumentTab = Montage.create(Component, /** @lends module:"ui/document-t
         value: function (evt) {
             this.dispatchEventNamed("openUrl", true, true, this.document.url);
         }
+    },
+
+    handleLongPress: {
+        value: function (evt) {
+            this.dispatchEventNamed("expandTree", true, true, this.document.fileUrl);
+        }
     }
 
 });
