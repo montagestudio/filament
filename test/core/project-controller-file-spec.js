@@ -209,7 +209,6 @@ describe("core/project-controller-file-spec", function () {
                         spyOn(editorController, "hideEditors");
 
                         return projectController.openUrlForEditing(fooDocument.url).then(function () {
-                            debugger;
                             return projectController.closeDocument(barDocument);
                         }).then(function () {
                             expect(editorController.hideEditors).not.toHaveBeenCalled();
