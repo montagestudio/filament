@@ -43,6 +43,9 @@
     -webkit-flex-direction: column;
 }
 
+.hide-component {
+    display: none !important;
+}
 
 
 /*

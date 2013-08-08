@@ -1,4 +1,5 @@
-.PackageInformation--maintainers {
+.PackageInformation--maintainers .PackageEditorPanel-content {
+    -webkit-flex-direction: column;
 
 }
 
@@ -16,5 +17,7 @@
 }
 
 .MaintainersList ul {
+    padding: 0;
+    margin: 0;
     width: 100%;
 }
