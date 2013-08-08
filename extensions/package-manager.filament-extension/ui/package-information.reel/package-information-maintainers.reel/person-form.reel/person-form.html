@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="person-form.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "person-form"}
+            }
+        },
+
+        "personName":{
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "personFormNameElement"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.person.name"}
+            }
+        },
+
+        "personEmail":{
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "personFormEmailElement"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.person.email"}
+            }
+        },
+
+        "personUrl":{
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "personFormUrlElement"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.person.url"}
+            }
+        },
+
+        "validButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "label": "valid",
+                "element": {"#": "validAction"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="person-form" class="PersonForm">
+        <ul>
+            <li>
+                <label for="personFormNameElement">Name:</label>
+                <input id="personFormNameElement" data-montage-id="personFormNameElement" type="text" />
+            </li>
+            <li>
+                <label for="personFormEmailElement">Email:</label>
+                <input id="personFormEmailElement" data-montage-id="personFormEmailElement" type="text" pattern="^([a-z0-9_\.\-\+!#$%&'/=?^_`{|}~]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$" />
+            </li>
+            <li>
+                <label for="personFormUrlElement">Url:</label>
+                <input id="personFormUrlElement" data-montage-id="personFormUrlElement" type="text" pattern="^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w\.\-]*)*\/?$" />
+            </li>
+        </ul>
+        <button data-montage-id="validAction"></button>
+    </div>
+</body>
+</html>

@@ -1,3 +1,20 @@
 .PackageInformation--maintainers {
 
 }
+
+.PersonFromOverlay {
+    background: white;
+    border: 1px solid #b3b3b3;
+    padding: 15px;
+    border-radius: 4px;
+    box-shadow: 0 0 2px 1px #a3a3a3;
+}
+
+.MaintainersList {
+    background: #ffffff;
+    margin-top: 15px;
+}
+
+.MaintainersList ul {
+    width: 100%;
+}
