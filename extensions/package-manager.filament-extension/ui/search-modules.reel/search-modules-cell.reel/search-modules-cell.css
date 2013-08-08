@@ -1,0 +1,22 @@
+.SearchModulesCell {
+    margin-bottom: 10px;
+    display: -webkit-flex;
+    -webkit-flex: 1;
+    -webkit-justify-content: space-between;
+}
+
+.SearchModulesCell > * {
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    -webkit-flex: 1;
+}
+
+.SearchModulesCell strong, .SearchPackagesCell em {
+    -webkit-flex: 2;
+}
+
+.SearchModulesCell button {
+    height: 25px;
+}

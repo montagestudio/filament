@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="search-modules.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "search-modules"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "searchInput":{
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "searchModulesInput"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.request"}
+            }
+        },
+
+        "searchButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "searchModulesButton"},
+                "label": "search"
+            }
+        },
+
+        "clear": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "clearListButton"},
+                "label": "clear"
+            }
+        },
+
+        "searchResults": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "searchResults"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.searchResults"},
+                "classList.has('hide-component')" : { "<-" : "@owner.searching"}
+            }
+        },
+
+        "searchResultsCell": {
+            "prototype": "./search-modules-cell.reel",
+            "properties": {
+                "element": {"#": "searchResultsCell"}
+            },
+            "bindings": {
+                "module": {"<-": "@searchResults.objectAtCurrentIteration"}
+            }
+        },
+
+        "loadingSearch": {
+            "prototype": "../spinner.reel",
+            "properties": {
+                "element": {"#": "loadingSearch"}
+            },
+            "bindings": {
+                "loading": {"<-": "@owner.isSearching"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="search-modules" class="SearchModules">
+        <header class="Toolbar Toolbar--top Box-title"><span>Search Packages</span></header>
+        <div class="PackageEditorColumnContent SearchModulesColumnContent">
+            <div class="SearchModulesContent">
+                <div id="searchModulesRequest">
+                    <span>Request:&nbsp;</span>
+                    <input data-montage-id="searchModulesInput" type="text" class="Box-content-data-input" />
+                    <button data-montage-id="searchModulesButton"></button>
+                    <button data-montage-id="clearListButton"></button>
+                </div>
+
+                <div id="searchModulesResults" data-arg="results">
+                    <ul data-montage-id="searchResults" class="SearchModulesList">
+                        <li data-montage-id="searchResultsCell"></li>
+                    </ul>
+                    <div data-montage-id="loadingSearch"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
