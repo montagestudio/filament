@@ -13,4 +13,10 @@
     bottom: 0;
     border: 1px solid hsl(210,100%,60%);
     background: transparent;
+    pointer-events: none;
+}
+
+/* 1. Hides the "Edit properties" button, while dragging." */
+.TemplateObjectCell--owner .TemplateObjectHeader-referenceProxy:active .TemplateObjectCell-editButton  {
+    visibility: hidden; /* 1 */
 }
