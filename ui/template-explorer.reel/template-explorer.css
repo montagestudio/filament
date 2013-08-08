@@ -17,8 +17,8 @@
     min-height: 0;
     overflow: scroll;
     margin: 0;
-    margin-bottom: 150px;
     padding: 0;
+    padding-bottom: 150px;
     border-bottom: 1px solid hsl(0, 0%, 80%);
     list-style: none;
 }
