@@ -456,29 +456,25 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     isCurrentDocument: wasCurrentDocument
                 });
 
+                closedPromise = Promise(document);
+
                 if (nextDocument) {
-                    closedPromise = self.openUrlForEditing(nextDocument.url).then(function () {
-                        editor.close(document);
-                        self.removeDocument(document);
-                        return document;
-                    });
-                } else {
+                    closedPromise = self.openUrlForEditing(nextDocument.url);
+                } else if (self.documents.length === 1) {
+                    // If this is the last remaining document then hide all
+                    // the editors
+                    self._editorController.hideEditors();
+                }
+
+                return closedPromise.then(function () {
                     editor.close(document);
                     self.removeDocument(document);
 
-                    // No nextDocument => no more documents and so hide the
-                    // current editor
-                    self._editorController.hideEditors();
-
-                    closedPromise = Promise.resolve(document);
-                }
-
-                return closedPromise.then(function (doc) {
                     self.dispatchEventNamed("didCloseDocument", true, false, {
-                        document: doc,
-                        wasCurrentDocument: doc === self.currentDocument
+                        document: document,
+                        wasCurrentDocument: document === self.currentDocument
                     });
-                    return doc;
+                    return document;
                 });
             }, Function.noop);
 
