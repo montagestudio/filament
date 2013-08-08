@@ -10,6 +10,7 @@
     overflow: scroll;
     margin: 0;
     padding: 0;
+    border-bottom: 1px solid hsl(0, 0%, 80%);
     list-style: none;
 }
 
@@ -29,10 +30,6 @@
 .TemplateExplorer-footer {
     background: hsl(0, 0%, 90%);
     border-top: 1px solid hsl(0,0%,85%);
-}
-
-.TemplateExplorerFilter {
-    padding: 8px;
 }
 
 .TemplateExplorerFilter .matte-InputText {
