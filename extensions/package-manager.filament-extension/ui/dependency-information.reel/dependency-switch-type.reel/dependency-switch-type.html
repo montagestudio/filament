@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="dependency-switch-type.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "dependency-switch-type"}
+            },
+            "bindings": {
+                "selectedValue": {"<-": "@switchTypesController.value"}
+            }
+        },
+
+        "switchTypesController": {
+            "prototype": "montage/core/radio-button-controller"
+        },
+
+        "regular": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "type-regular"},
+                "value": "regular",
+                "radioButtonController": {"@": "switchTypesController"}
+            },
+            "bindings": {
+                "checked": {"<-": "(@owner.currentDependency.type == value)"}
+            }
+        },
+
+        "dev": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "type-dev"},
+                "value": "dev",
+                "radioButtonController": {"@": "switchTypesController"}
+            },
+            "bindings": {
+                "checked": {"<-": "(@owner.currentDependency.type == value)"}
+            }
+        },
+
+        "optional": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "type-optional"},
+                "value": "optional",
+                "radioButtonController": {"@": "switchTypesController"}
+            },
+            "bindings": {
+                "checked": {"<-": "(@owner.currentDependency.type == value)"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="dependency-switch-type" class="Box">
+        <h3 class="Box-title">Switch Type</h3>
+        <div class="BoxContent">
+            <div data-montage-id="dependencyTypes">
+                <input type="radio" data-montage-id="type-regular"> Regular
+                <input type="radio" data-montage-id="type-dev"> Dev
+                <input type="radio" data-montage-id="type-optional"> Optional
+            </div>
+        </div>
+    </div>
+</body>
+</html>

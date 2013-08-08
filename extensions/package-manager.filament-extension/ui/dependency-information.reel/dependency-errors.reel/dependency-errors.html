@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="dependency-errors.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "dependency-errors"}
+            }
+        },
+
+        "dependencyErrors": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "dependencyErrors"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.currentDependency.problems"}
+            }
+        },
+
+        "dependencyError": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "dependencyError"}
+            },
+            "bindings": {
+                "value": {"<-": "@dependencyErrors.objectAtCurrentIteration.message"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="dependency-errors" class="Box">
+        <h3 class="Box-title">Errors</h3>
+        <div class="BoxContent dependencyDetailsList">
+            <ul data-montage-id="dependencyErrors">
+                <li>
+                    <span data-montage-id="dependencyError" class="dependencyDetails-value"></span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

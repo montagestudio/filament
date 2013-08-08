@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="dependency-information.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "dependency-information"}
+            }
+        },
+
+        "dependencyDetails": {
+            "prototype": "./dependency-details.reel",
+            "properties": {
+                "element": {"#": "dependencyDetails"}
+            },
+            "bindings": {
+                "currentDependency": {"<-": "@owner.currentDependency"}
+            }
+        },
+
+        "dependencyErrors": {
+            "prototype": "./dependency-errors.reel",
+            "properties": {
+                "element": {"#": "dependencyErrors"}
+            },
+            "bindings": {
+                "currentDependency": {"<-": "@owner.currentDependency"},
+                "classList.has('hide-component')" : { "<-" : "!@owner.hasError"}
+            }
+        },
+
+        "dependencySwitchType": {
+            "prototype": "./dependency-switch-type.reel",
+            "properties": {
+                "element": {"#": "dependencySwitchType"}
+            },
+            "bindings": {
+                "currentDependency": {"<-": "@owner.currentDependency"},
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+<div data-montage-id="dependency-information" class="HideBox">
+    <header class="Toolbar Toolbar--top Box-title"><span>Dependency Information</span></header>
+    <div class="PackageEditorColumnContent">
+        <div data-montage-id="dependencyDetails"></div>
+        <div data-montage-id="dependencyErrors"></div>
+        <div data-montage-id="dependencySwitchType"></div>
+    </div>
+</div>
+</body>
+</html>

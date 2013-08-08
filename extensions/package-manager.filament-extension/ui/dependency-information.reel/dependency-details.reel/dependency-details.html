@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="dependency-details.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "dependency-details"}
+            }
+        },
+
+        "packageName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "packageName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.currentDependency.name"}
+            }
+        },
+
+        "packageDescription": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "packageDescription"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.currentDependency.description"}
+            }
+        },
+
+        "packageVersion": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "packageVersion"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.currentDependency.version"}
+            }
+        },
+
+        "packageAuthorName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "packageAuthorName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.currentDependency.author.name"}
+            }
+        },
+
+        "packageMaintainers": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "packageMaintainers"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.currentDependency.maintainers"}
+            }
+        },
+
+        "packageMaintainersName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "packageMaintainersName"}
+            },
+            "bindings": {
+                "value": {"<-": "@packageMaintainers.objectAtCurrentIteration.name"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="dependency-details" class="Box">
+        <h3 class="Box-title">Details</h3>
+        <div class="BoxContent dependencyDetailsList">
+            <ul>
+                <li>
+                    <span class="dependencyDetails-key">Name:</span>
+                    <span data-montage-id="packageName" class="dependencyDetails-value"></span>
+                </li>
+                <li>
+                    <span class="dependencyDetails-key">Version:</span>
+                    <span data-montage-id="packageVersion" class="dependencyDetails-value"></span>
+                </li>
+                <li>
+                    <span class="dependencyDetails-key">Description:</span>
+                    <span data-montage-id="packageDescription" class="dependencyDetails-value"></span>
+                </li>
+                <li>
+                    <span class="dependencyDetails-key">Author:</span>
+                    <span data-montage-id="packageAuthorName" class="dependencyDetails-value"></span>
+                </li>
+                <li>
+                    <span class="dependencyDetails-key">Maintainers:</span>
+                    <ul data-montage-id="packageMaintainers" id="packageMaintainers">
+                        <li>
+                            <span data-montage-id="packageMaintainersName" class="dependencyDetails-value"></span>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
