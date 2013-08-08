@@ -158,11 +158,15 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
 
                 var promise = this.editingDocument.installDependency(module.name).then(function (data) {
                     if (data && typeof data === 'object' && data.hasOwnProperty('name') && module.name === data.name) {
-                        module.installed = true;
+                        if (cell) {
+                            module.installed = true;
+                        }
                         return "The dependency " + module.name + " has been installed";
                     }
                 }, function (error) {
-                    cell.error(true);
+                    if (cell) {
+                        cell.error(true);
+                    }
                     throw error;
                 });
 

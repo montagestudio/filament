@@ -13,7 +13,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
         'digit'
     ],
     DEFAULT_TIME_AUTO_SAVE = 400,
-    DEPENDENCY_TIME_AUTO_SAVE = 150,
+    DEPENDENCY_TIME_AUTO_SAVE = 100,
 	ERROR_DEPENDENCY_MISSING = 1000,
     ERROR_VERSION_INVALID = 1001,
     ERROR_FILE_INVALID = 1002,
