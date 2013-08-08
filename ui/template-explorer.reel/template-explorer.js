@@ -74,6 +74,8 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             this._element.addEventListener("dragleave", this, false);
             this._element.addEventListener("drop", this, false);
 
+            this._element.addEventListener("click", this);
+
             application.addEventListener("editBindingForObject", this, false);
         }
     },
@@ -186,9 +188,14 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         }
     },
 
-    handlePress: {
-        value: function () {
-            this.editingDocument.clearSelectedObjects();
+    handleClick: {
+        value: function (evt) {
+            var target = evt.target;
+
+            if (target === this.element ||
+                target === this.templateObjects.objectList.element) {
+                this.editingDocument.clearSelectedObjects();
+            }
         }
     }
 
