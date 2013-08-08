@@ -184,6 +184,12 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             var listener = evt.detail.get("listener");
             this.editingDocument.removeOwnedObjectEventListener(targetObject, listener);
         }
+    },
+
+    handlePress: {
+        value: function () {
+            this.editingDocument.clearSelectedObjects();
+        }
     }
 
 });

@@ -84,6 +84,19 @@
             "bindings": {
                 "checked": {"<->": "@owner.showListeners"}
             }
+        },
+
+        "deselect": {
+            "prototype": "montage/composer/press-composer",
+            "properties": {
+                "component": {"@": "owner"}
+            },
+            "listeners": [
+                {
+                    "type": "press",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>
