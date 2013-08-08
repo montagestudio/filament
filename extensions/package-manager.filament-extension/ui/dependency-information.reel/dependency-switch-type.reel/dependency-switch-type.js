@@ -70,7 +70,6 @@ exports.DependencySwitchType = Component.specialize(/** @lends DependencySwitchT
                         self.currentDependency.type = type;
                     });
                 }
-                console.log(type);
             }
         }
     }
