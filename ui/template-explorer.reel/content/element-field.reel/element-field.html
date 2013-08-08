@@ -10,7 +10,8 @@
                 "element": {"#": "ElementField"}
             },
             "bindings": {
-                "classList.has('ElementField--invalid')": {"<-": "!@owner.templateObject.properties.get('element').isInTemplate"}
+                "classList.has('ElementField--invalid')": {"<-": "!@owner.templateObject.properties.get('element').isInTemplate"},
+                "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"}
             }
         },
 

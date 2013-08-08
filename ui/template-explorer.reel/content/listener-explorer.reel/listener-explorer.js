@@ -17,6 +17,10 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
         }
     },
 
+    _willAcceptDrop: {
+        value: false
+    },
+
     enterDocument: {
         value: function (firstTime) {
             if (!firstTime) {
@@ -30,6 +34,7 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
             // Allow dropping object references onto this component
             var element = this.element;
             element.addEventListener("dragover", this, false);
+            element.addEventListener("dragleave", this, false);
             element.addEventListener("drop", this, false);
         }
     },
@@ -42,13 +47,21 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
 
             if (!availableTypes) {
                 event.dataTransfer.dropEffect = "none";
+                this._willAcceptDrop = false;
             } else if (availableTypes.has(MimeTypes.SERIALIZATION_OBJECT_LABEL) && (target === element || element.contains(target))) {
 
                 // allows us to drop
                 event.preventDefault();
                 event.stopPropagation();
                 event.dataTransfer.dropEffect = "link";
+                this._willAcceptDrop = true;
             }
+        }
+    },
+
+    handleDragleave: {
+        value: function () {
+            this._willAcceptDrop = false;
         }
     },
 
@@ -71,6 +84,8 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
                     listenerModel: listenerModel
                 });
             }
+
+            this._willAcceptDrop = false;
         }
     },
 

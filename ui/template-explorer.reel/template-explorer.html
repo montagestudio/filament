@@ -9,6 +9,9 @@
             "properties": {
                 "element": {"#": "template-explorer"}
             },
+            "bindings": {
+                "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"}
+            },
             "listeners": [
                 {
                     "type": "action",

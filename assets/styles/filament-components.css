@@ -1,3 +1,8 @@
+/* Filament Utility Styles */
+
+.Filament--willAcceptDrop {
+    outline: 1px solid hsl(210, 100%, 84%);
+}
 
 /*
  * CSS-Only components used in Filament

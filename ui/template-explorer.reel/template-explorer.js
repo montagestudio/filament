@@ -62,11 +62,16 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         }
     },
 
+    _willAcceptDrop: {
+        value: false
+    },
+
     enterDocument: {
         value: function (firstTime) {
             if (!firstTime) { return; }
 
             this._element.addEventListener("dragover", this, false);
+            this._element.addEventListener("dragleave", this, false);
             this._element.addEventListener("drop", this, false);
 
             application.addEventListener("editBindingForObject", this, false);
@@ -99,11 +104,20 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                 // allows us to drop
                 event.preventDefault();
                 event.dataTransfer.dropEffect = "copy";
+                this._willAcceptDrop = true;
             } else {
                 event.dataTransfer.dropEffect = "none";
+                this._willAcceptDrop = false;
             }
         }
     },
+
+    handleDragleave: {
+        value: function () {
+            this._willAcceptDrop = false;
+        }
+    },
+
     handleDrop: {
         value: function (evt) {
             var availableTypes = event.dataTransfer.types;
@@ -113,6 +127,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
 
                 this.editingDocument.addLibraryItemFragments(transferObject.serializationFragment).done();
             }
+            this._willAcceptDrop = false;
         }
     },
 

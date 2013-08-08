@@ -27,8 +27,13 @@ exports.TemplateObjectCell = Component.specialize({
 
             // Allow dropping events anywhere on the card
             this.element.addEventListener("dragover", this, false);
+            this.element.addEventListener("dragleave", this, false);
             this.element.addEventListener("drop", this, false);
         }
+    },
+
+    _willAcceptDrop: {
+        value: false
     },
 
     _templateObject: {
@@ -65,13 +70,21 @@ exports.TemplateObjectCell = Component.specialize({
 
             if (!availableTypes) {
                 event.dataTransfer.dropEffect = "none";
+                this._willAcceptDrop = false;
             } else if (availableTypes.has(MimeTypes.MONTAGE_EVENT_TARGET)) {
 
                 // allows us to drop
                 event.preventDefault();
                 event.stopPropagation();
                 event.dataTransfer.dropEffect = "link";
+                this._willAcceptDrop = true;
             }
+        }
+    },
+
+    handleDragleave: {
+        value: function () {
+            this._willAcceptDrop = false;
         }
     },
 
@@ -97,6 +110,8 @@ exports.TemplateObjectCell = Component.specialize({
                 });
 
             }
+
+            this._willAcceptDrop = false;
         }
     }
 
