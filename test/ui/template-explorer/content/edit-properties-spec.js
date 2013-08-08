@@ -4,7 +4,7 @@ var Blueprint = require("montage/core/meta/blueprint").Blueprint;
 var PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint;
 
 TestPageLoader.queueTest("edit-properties-test", function(testPage) {
-    describe("ui/template-explorer/owner-cell/edit-properties", function() {
+    describe("ui/template-explorer/content/edit-properties", function() {
 
         var test, editor, blueprint, defaultGroup, editingDocument;
         beforeEach(function() {
