@@ -39,3 +39,7 @@
     text-indent: 8px;
     -webkit-flex: 1;
 }
+
+.ActionSpinner {
+    -webkit-flex: 0.35;
+}

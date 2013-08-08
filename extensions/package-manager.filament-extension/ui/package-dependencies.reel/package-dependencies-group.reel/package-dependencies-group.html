@@ -7,10 +7,12 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "package-dependencies-group"}
+                "element": {"#": "package-dependencies-group"},
+                "contentController": {"@": "dependencyContentController"}
             },
             "bindings": {
-                "classList.has('hidden')" : { "<-" : "(@owner.dependencies.length == 0)"}
+                "selectedCell": {"<-": "@dependencyContentController.selection"},
+                "classList.has('hide-group')" : { "<-" : "(@owner.dependencies.length == 0)"}
             }
         },
 
@@ -26,6 +28,9 @@
 
         "dependencyContentController": {
             "prototype": "montage/core/range-controller",
+            "properties": {
+                "sortPath": "name"
+            },
             "bindings": {
                 "content": {"<-": "@owner.dependencies"}
             }
@@ -35,12 +40,13 @@
             "prototype": "montage/ui/repetition.reel",
             "properties": {
                 "element": {"#": "dependenciesList"},
+                "isSelectionEnabled": true,
                 "contentController": {"@": "dependencyContentController"}
             }
          },
 
         "dependencyCell": {
-            "prototype": "../package-dependency-cell.reel",
+            "prototype": "./package-dependency-cell.reel",
             "properties": {
                 "element": {"#": "dependencyCell"}
             },
