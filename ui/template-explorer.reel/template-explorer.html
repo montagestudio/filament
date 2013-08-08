@@ -10,7 +10,8 @@
                 "element": {"#": "template-explorer"}
             },
             "bindings": {
-                "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"}
+                "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"},
+                "templateObjectFilterTerm": {"<->": "editingDocument.templateObjectFilterTerm"}
             },
             "listeners": [
                 {
@@ -117,7 +118,7 @@
                 <label class="TemplateExplorerFilter-label"><input data-montage-id="showListeners" type="checkbox">Show Listeners</label>
             </form>
         </footer>
-        
+
     </div>
 </body>
 </html>
