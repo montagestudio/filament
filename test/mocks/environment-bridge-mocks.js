@@ -36,6 +36,7 @@ var promiseFunction = function (promise) {
     };
 };
 
+/*jshint maxcomplexity:false */
 exports.environmentBridgeMock = function (options) {
     var bridge = Bridge.create(),
         watchPromise = Promise.resolve(),
