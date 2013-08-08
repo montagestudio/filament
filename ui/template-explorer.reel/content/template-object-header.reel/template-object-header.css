@@ -11,6 +11,12 @@
     background-color: hsl(0, 0%, 92%);
 }
 
+.TemplateObjectHeader-bar {
+    display: -webkit-flex;
+    -webkit-justify-content: space-between;
+    -webkit-align-items: center;
+}
+
 .TemplateObjectHeader-referenceProxy {
     display: -webkit-flex;
     padding: 8px;
