@@ -27,9 +27,10 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
             var eventButton = this.templateObjects.addListenerButton.element;
             eventButton.addEventListener("dragstart", this, false);
 
-            // Allow dropping object references on the event button
-            eventButton.addEventListener("dragover", this, false);
-            eventButton.addEventListener("drop", this, false);
+            // Allow dropping object references onto this component
+            var element = this.element;
+            element.addEventListener("dragover", this, false);
+            element.addEventListener("drop", this, false);
         }
     },
 
@@ -37,11 +38,11 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
         value: function (event) {
             var availableTypes = event.dataTransfer.types,
                 target = event.target,
-                listenButton = this.templateObjects.addListenerButton.element;
+                element = this.element;
 
             if (!availableTypes) {
                 event.dataTransfer.dropEffect = "none";
-            } else if (availableTypes.has(MimeTypes.SERIALIZATION_OBJECT_LABEL) && (target === listenButton || listenButton.contains(target))) {
+            } else if (availableTypes.has(MimeTypes.SERIALIZATION_OBJECT_LABEL) && (target === element || element.contains(target))) {
 
                 // allows us to drop
                 event.preventDefault();
@@ -55,10 +56,10 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
         value: function (event) {
             var availableTypes = event.dataTransfer.types,
                 target = event.target,
-                listenButton = this.templateObjects.addListenerButton.element,
+                element = this.element,
                 listenerModel;
 
-            if (availableTypes.has(MimeTypes.SERIALIZATION_OBJECT_LABEL) && (target === listenButton || listenButton.contains(target))) {
+            if (availableTypes.has(MimeTypes.SERIALIZATION_OBJECT_LABEL) && (target === element || element.contains(target))) {
 
                 event.stopPropagation();
                 var listenerLabel= event.dataTransfer.getData(MimeTypes.SERIALIZATION_OBJECT_LABEL);
