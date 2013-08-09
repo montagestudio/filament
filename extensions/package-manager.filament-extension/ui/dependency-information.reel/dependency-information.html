@@ -17,7 +17,8 @@
                 "element": {"#": "dependencyDetails"}
             },
             "bindings": {
-                "currentDependency": {"<-": "@owner.currentDependency"}
+                "currentDependency": {"<-": "@owner.currentDependency"},
+                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency"}
             }
         },
 
