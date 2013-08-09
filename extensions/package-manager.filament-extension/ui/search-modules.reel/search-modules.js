@@ -19,6 +19,20 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
         }
     },
 
+    willDraw: {
+        value: function () {
+            this.templateObjects.searchInput.element.addEventListener("keyup", this, false);
+        }
+    },
+
+    handleKeyup: {
+        value: function (event) {
+            if (event.keyCode === 13) {
+                this.handleSearchButtonAction();
+            }
+        }
+    },
+
     _request: {
         value: null
     },
@@ -83,6 +97,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
         set: function (searching) {
             this._searching = (typeof searching === 'boolean') ? searching : false;
             this.templateObjects.searchButton.enabled = !this._searching;
+            this.templateObjects.searchInput.element.disabled = this._searching;
         },
         get: function () {
             return this._searching;
