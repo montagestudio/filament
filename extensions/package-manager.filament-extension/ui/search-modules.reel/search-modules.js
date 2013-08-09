@@ -82,9 +82,23 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
     searchResults: {
         set: function (results) {
             this._searchResults = Array.isArray(results) ? results : null;
+            this.resultsNumber = (this._searchResults) ? this._searchResults.length : 0;
         },
         get: function () {
             return this._searchResults;
+        }
+    },
+
+    _resultsNumber: {
+        value: null
+    },
+
+    resultsNumber: {
+        set: function (number) {
+            this._resultsNumber = (typeof number === "number") ? number : 0;
+        },
+        get: function () {
+            return this._resultsNumber;
         }
     },
 
@@ -139,7 +153,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
      * @function
      * @param {Object} name
      * @param {boolean} index
-     * @return {Object|integer}
+     * @return {Object|Integer}
      */
     _findResult: {
         value: function (name, index) {

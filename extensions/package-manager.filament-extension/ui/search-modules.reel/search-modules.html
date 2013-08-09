@@ -74,6 +74,16 @@
             "bindings": {
                 "loading": {"<-": "@owner.isSearching"}
             }
+        },
+
+        "resultsNumber": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "resultsNumber"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.resultsNumber"}
+            }
         }
 
     }
@@ -89,6 +99,7 @@
                     <input data-montage-id="searchModulesInput" type="text" class="Box-content-data-input" />
                     <button data-montage-id="searchModulesButton"></button>
                     <button data-montage-id="clearListButton"></button>
+                    <span data-montage-id="resultsNumber" class="ResultsNumber"></span>
                 </div>
 
                 <div id="searchModulesResults" data-arg="results">
