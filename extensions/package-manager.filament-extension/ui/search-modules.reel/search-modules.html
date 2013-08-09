@@ -38,8 +38,10 @@
         "clear": {
             "prototype": "matte/ui/button.reel",
             "properties": {
-                "element": {"#": "clearListButton"},
-                "label": "clear"
+                "element": {"#": "clearListButton"}
+            },
+            "bindings": {
+                "label": {"<-": "@owner.clearButtonLabel"}
             }
         },
 

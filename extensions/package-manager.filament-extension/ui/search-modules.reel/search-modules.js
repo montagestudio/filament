@@ -4,6 +4,8 @@
  */
 var Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
+    CLEAR_BUTTON_DEFAULT_LABEL = 'clear',
+    CLEAR_BUTTON_STOP_LABEL = 'stop',
     REMOVE_DEPENDENCY_ACTION = 1,
     MIN_SEARCH_LENGTH = 1;
 
@@ -60,6 +62,22 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
         value: null
     },
 
+    _clearButtonLabel: {
+        value: null
+    },
+
+    clearButtonLabel: {
+        set: function (label) {
+            this._clearButtonLabel = (typeof label === "string") ? label : CLEAR_BUTTON_DEFAULT_LABEL;
+        },
+        get: function () {
+            if (!this._clearButtonLabel) {
+                this._clearButtonLabel = CLEAR_BUTTON_DEFAULT_LABEL;
+            }
+            return this._clearButtonLabel;
+        }
+    },
+
     _searchResults: {
         value: null
     },
@@ -98,6 +116,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
             this._searching = (typeof searching === 'boolean') ? searching : false;
             this.templateObjects.searchButton.enabled = !this._searching;
             this.templateObjects.searchInput.element.disabled = this._searching;
+            this.clearButtonLabel = (this._searching) ? CLEAR_BUTTON_STOP_LABEL : CLEAR_BUTTON_DEFAULT_LABEL;
         },
         get: function () {
             return this._searching;
