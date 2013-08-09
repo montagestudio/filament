@@ -1,3 +1,7 @@
+.TemplateObjectCell--isInProjectPackage .TemplateObjectHeader {
+    background-color: hsl(28,38%,90%);
+}
+
 .TemplateObjectCell--owner .TemplateObjectHeader,
 .TemplateObjectCell.TemplateObjectCell--owner.selected .TemplateObjectHeader {
     background-color: hsl(43, 100%, 85%);
