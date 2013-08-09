@@ -1,6 +1,8 @@
 var AbstractNpmCommand = require("./abstract-npm-command").AbstractNpmCommand,
     Q = require("q"),
     Tools = require("./package-manager-tools").PackageManagerTools,
+    ERROR_TYPE_NOT_FOUND = 404,
+    ERROR_TYPE_UNKNOWN = -1,
     npm = require("npm");
 
 exports.viewCommand = Object.create(AbstractNpmCommand, {
@@ -53,17 +55,16 @@ exports.viewCommand = Object.create(AbstractNpmCommand, {
                     if (keys.length === 1) {
                         return self._formatModule(module[keys[0]]);
                     }
-                }
-                throw new Error ('An error has occurred');
+                } // Can be null if the version doesn't exists.
             }, function (error) {
                 if (error && typeof error === 'object') {
                     if (error.hasOwnProperty('code') && error.code === 'E404' && error.hasOwnProperty('pkgid')) { // no results
-                        throw new Error('No information for ' + error.pkgid);
+                        throw new Error(ERROR_TYPE_NOT_FOUND);
                     }
                 } else if (error) {
                     throw error;
                 } else {
-                    throw new Error ('An error has occurred');
+                    throw new Error (ERROR_TYPE_UNKNOWN);
                 }
             });
         }

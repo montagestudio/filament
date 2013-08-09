@@ -1,6 +1,7 @@
 var Montage = require("montage").Montage,
     Editor = require("palette/ui/editor.reel").Editor,
     Promise = require("montage/core/promise").Promise,
+    ERROR_TYPE_NOT_FOUND = '404',
     INSTALL_DEPENDENCY_ACTION = 0,
     REMOVE_DEPENDENCY_ACTION = 1;
 
@@ -64,15 +65,19 @@ exports.PackageEditor = Montage.create(Editor, {
                         module.versionInstalled = dependency.versionInstalled;
                         self.dependencyDisplayed = module;
                     } else {
-                        self.dependencyDisplayed = null;
+                        self.dependencyDisplayed = dependency;
                     }
                 }, function (error) {
-                    self.dependencyDisplayed = null;
 
-                    self.dispatchEventNamed("asyncActivity", true, false, {
-                        promise: Promise.reject(error),
-                        title: "Package Manager"
-                    });
+                    if (error && typeof error === 'object' && error.message === ERROR_TYPE_NOT_FOUND) {
+                        self.dependencyDisplayed = dependency;
+                    } else {
+                        self.dependencyDisplayed = null;
+                        self.dispatchEventNamed("asyncActivity", true, false, {
+                            promise: Promise.reject(error),
+                            title: "Package Manager"
+                        });
+                    }
                 });
             }
         }
@@ -91,11 +96,11 @@ exports.PackageEditor = Montage.create(Editor, {
     /**
      * Cleans the information part when the dependencies list change.
      * @function
-     * @param {boolean} boolean
+     * @param {boolean} changed
      */
     handleReloadingListChange: {
-        value: function (boolean) {
-            if (boolean) {
+        value: function (changed) {
+            if (changed) {
                 this.dependencyDisplayed = null;
             }
         }

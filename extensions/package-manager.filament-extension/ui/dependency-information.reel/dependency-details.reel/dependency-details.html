@@ -37,7 +37,7 @@
                 "element": {"#": "packageVersion"}
             },
             "bindings": {
-                "value": {"<-": "@owner.currentDependency.version"}
+                "value": {"<-": "(@owner.currentDependency.versionInstalled || @owner.currentDependency.version)"}
             }
         },
 
