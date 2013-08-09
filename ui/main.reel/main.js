@@ -53,24 +53,24 @@ exports.Main = Montage.create(Component, {
     // Expand a tree according to a given path, will fail if the tree has not been pre-loaded
     handleExpandTree: {
         value: function (evt) {
-            var path = evt.detail;
-            var dir = null;
-            var directories = path.replace(/\/$/, "").replace(/^\//, "").split("/");
-            var nodes = this.templateObjects.packageExplorer.fileTreeController.nodes;
+            var path = evt.detail.replace(this.projectController.projectUrl + "/", ""),
+                dir = null,
+                node = null,
+                directories = path.replace(/\/$/, "").replace(/^\//, "").split("/"),
+                nodes = this.templateObjects.packageExplorer.fileTreeController.nodes,
+                currentPath = this.projectController.projectUrl + "/";
 
             while (dir = directories.shift()) {
-                var i = 0;
-                while (i < nodes.length) {
-                    var filename = nodes[i].content.name;
-                    if (filename === dir) {
-                        break;
-                    }
-                    ++i;
+                var directoryPath = currentPath + dir + "/";
+                for (var i = 0; (node = nodes[i]) && node.content.fileUrl !== directoryPath; ++i) {
+                    continue;
                 }
-                if (!nodes[i] || (i === nodes.length) && (nodes[i].content !== dir)) {
+                if (!node || (node.content.name !== dir)) {
+                    // Directory not found, either not loaded or wrong path
                     return;
                 }
-                nodes[i].expanded = true;
+                node.expanded = true;
+                currentPath += dir + "/";
             }
         }
     },
