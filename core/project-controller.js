@@ -146,6 +146,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this.addPathChangeListener("currentDocument.undoManager.undoCount", this);
 
             application.addEventListener("openUrl", this);
+            application.addEventListener("openModuleId", this);
             application.addEventListener("closeDocument", this);
             application.addEventListener("menuValidate", this);
             application.addEventListener("menuAction", this);
@@ -293,6 +294,14 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     handleOpenUrl: {
         value: function (evt) {
             this.openUrlForEditing(evt.detail).done();
+        }
+    },
+
+    handleOpenModuleId: {
+        value: function (evt) {
+            var moduleId = evt.detail.moduleId;
+            var fileUrl = URL.resolve(this.projectUrl + "/", moduleId + (/\.reel$/.test(moduleId) ? "/" : ""));
+            this.openUrlForEditing(fileUrl).done();
         }
     },
 

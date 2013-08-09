@@ -29,6 +29,8 @@ exports.TemplateObjectCell = Component.specialize({
             this.element.addEventListener("dragover", this, false);
             this.element.addEventListener("dragleave", this, false);
             this.element.addEventListener("drop", this, false);
+
+            this.element.addEventListener("dblclick", this, false);
         }
     },
 
@@ -50,6 +52,11 @@ exports.TemplateObjectCell = Component.specialize({
             this._templateObject = value;
             if (value) {
                 var self = this;
+
+                //TODO this should not be as hardcoded as this...but we can only open components right now
+                // and this is super limited done in time for a demo
+                this.isInProjectPackage = /^ui\//.test(value.moduleId);
+
                 value.editingDocument.packageRequire.async(value.moduleId)
                     .get(value.exportName)
                     .then(function (object) {
@@ -58,6 +65,10 @@ exports.TemplateObjectCell = Component.specialize({
             }
 
         }
+    },
+
+    isInProjectPackage: {
+        value: false
     },
 
     isTemplateObjectComponent: {
@@ -112,6 +123,16 @@ exports.TemplateObjectCell = Component.specialize({
             }
 
             this._willAcceptDrop = false;
+        }
+    },
+
+    handleDblclick: {
+        value: function () {
+            if (this.isInProjectPackage) {
+                this.dispatchEventNamed("openModuleId", true ,true, {
+                    moduleId: this.templateObject.moduleId
+                });
+            }
         }
     }
 
