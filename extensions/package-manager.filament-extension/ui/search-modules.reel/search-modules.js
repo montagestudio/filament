@@ -21,17 +21,9 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
         }
     },
 
-    willDraw: {
-        value: function () {
-            this.templateObjects.searchInput.element.addEventListener("keyup", this, false);
-        }
-    },
-
-    handleKeyup: {
+    handleSearchInputAction: {
         value: function (event) {
-            if (event.keyCode === 13) {
-                this.handleSearchButtonAction();
-            }
+            this._startSearch();
         }
     },
 
@@ -212,11 +204,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
         }
     },
 
-    /**
-     * Handles a research request.
-     * @function {boolean}
-     */
-    handleSearchButtonAction: {
+    _startSearch: {
         value: function () {
             if (!this.isSearching && this.request && this.request.length >= MIN_SEARCH_LENGTH) {
                 var self = this;
@@ -251,6 +239,16 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
                     });
                 });
             }
+        }
+    },
+
+    /**
+     * Handles a research request.
+     * @function {boolean}
+     */
+    handleSearchButtonAction: {
+        value: function (event) {
+            this._startSearch();
         }
     },
 
