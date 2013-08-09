@@ -9,8 +9,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     DEPENDENCY_TYPE_BUNDLE = 'bundle',
     DEPENDENCY_TYPE_DEV = 'dev',
     DEPENDENCIES_REQUIRED = [
-        'montage',
-        'digit'
+        'montage'
     ],
     DEFAULT_TIME_AUTO_SAVE = 400,
     DEPENDENCY_TIME_AUTO_SAVE = 100,
