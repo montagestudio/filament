@@ -61,7 +61,7 @@ exports.listCommand = Object.create(Object.prototype, {
             file.dependencies = (typeof file.dependencies !== 'undefined') ? file.dependencies : {};
             file.optionalDependencies = (typeof file.optionalDependencies !== 'undefined') ? file.optionalDependencies : {};
             file.devDependencies = (typeof file.devDependencies !== 'undefined') ? file.devDependencies : {};
-            file.bundledDependencies = (typeof file.bundledDependencies !== 'undefined') ? file.bundledDependencies : {};
+            file.bundledDependencies = (file.bundleDependencies || file.bundledDependencies || []);
         }
     },
 
@@ -128,7 +128,7 @@ exports.listCommand = Object.create(Object.prototype, {
     /**
      * Run the main process, which takes place in two steps:
      * 1: Getting information form the file system and every package.json file.
-     * @: Finding eventual errors according to previous information gathered.
+     * 2: Finding eventual errors according to previous information gathered.
      * @function
      * @param {Object} deferred, used later to returns the tree.
      * @param {boolean} lite, returns either a lite tree or not.
@@ -244,7 +244,25 @@ exports.listCommand = Object.create(Object.prototype, {
                 this._mergeDependencies(moduleParsed, this._formatDependencies(moduleParsed.devDependencies, currentDependency, moduleParsed.path, DEPENDENCY_TYPE_DEV));
             }
 
+            var bundledDependencies = (moduleParsed.bundleDependencies || moduleParsed.bundledDependencies || null);
+
+            if (bundledDependencies) { // if bundleDependencies exists.
+                this._formatBundledDependencies(currentDependency, bundledDependencies);
+            }
+
             this._readInstalled(moduleParsed, currentDependency, callBack);
+        }
+    },
+
+    _formatBundledDependencies: {
+        value: function (currentDependency, bundledDependencies) {
+
+            if (Array.isArray(bundledDependencies)) {
+                for (var i = 0, length = bundledDependencies.length; i < length; i++) {
+                    currentDependency.bundledDependencies[bundledDependencies[i]] = i;
+                }
+            }
+
         }
     },
 
@@ -271,12 +289,14 @@ exports.listCommand = Object.create(Object.prototype, {
                         version: dependencies[keys[i]],
                         missing: true, // By default all dependencies are missing, later they will be checked whether they are in the file system.
                         dependencies: [],
+                        bundledDependencies: {},
                         parent: parent,
                         path: path,
                         type: type
                     });
                 }
             }
+
             return container;
         }
     },
@@ -367,17 +387,18 @@ exports.listCommand = Object.create(Object.prototype, {
                     });
 
                     for (var i = 0, length = modulesInstalled.length; i < length; i++) {
-                        var index = self._getDependencyIndex(modulesInstalled[i], moduleParsed.dependencies);
+                        var moduleName = modulesInstalled[i],
+                            index = self._getDependencyIndex(moduleName, moduleParsed.dependencies);
 
                         if (index < 0) { // If index < 0, then the dependency is missing within the package.json file.
                             moduleParsed.dependencies.push({
-                                name: modulesInstalled[i],
+                                name: moduleName,
                                 version: '',
                                 missing: false,
                                 dependencies: [],
                                 parent: currentDependency,
                                 path: moduleParsed.path,
-                                type: DEPENDENCY_TYPE_REGULAR,
+                                type: (currentDependency.bundledDependencies && currentDependency.bundledDependencies[moduleName]) ? DEPENDENCY_TYPE_BUNDLE : DEPENDENCY_TYPE_REGULAR,
                                 extraneous: true
                             });
                         } else { // not missing
@@ -575,7 +596,7 @@ exports.listCommand = Object.create(Object.prototype, {
 
             if (Array.isArray(problems)) {
                 for (var i = 0, length = problems.length; i < length; i++) {
-                    if (problems[i].name === error.name && problems[i].type === error.type) {
+                    if (problems[i] && problems[i].name === error.name && problems[i].type === error.type) {
                         return true;
                     }
                 }
@@ -638,7 +659,7 @@ exports.listCommand = Object.create(Object.prototype, {
                             this._reportTopLevel(dependency, ERROR_VERSION_INVALID, dependency.name + ' version is invalid.');
                         }
                     }
-                } else if (dependency.extraneous) { // If not within the package.json file.
+                } else if (dependency.extraneous && dependency.type !== DEPENDENCY_TYPE_BUNDLE) { // If not within the package.json file.
                     this._reportTopLevel(dependency, ERROR_DEPENDENCY_EXTRANEOUS, dependency.name + ' is extraneous.');
                 } else if (!dependency.missing && dependency.type !== DEPENDENCY_TYPE_DEV && semver.validRange(dependency.version) && !semver.satisfies(dependency.versionInstalled, dependency.version, true)) { // Check the version requirement.
                     dependency.invalid = true;

@@ -502,7 +502,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     _addDependencyToFile: {
         value: function (dependency, type) {
-            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name')) {
+            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name') && dependency.hasOwnProperty('type')) {
 
                 if (typeof type === 'string') {
                     dependency.type = type;
@@ -526,7 +526,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     replaceDependency: {
         value: function (dependency, type) {
-            if (dependency.type !== type && this._removeDependencyFromFile(dependency, false) && this._addDependencyToFile(dependency, type)) {
+            if (dependency && dependency.type !== type && this._removeDependencyFromFile(dependency, false) && this._addDependencyToFile(dependency, type)) {
                 var self = this;
 
                 return this.saveModification().then(function () {
