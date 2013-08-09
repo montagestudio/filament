@@ -197,6 +197,12 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                 this.editingDocument.clearSelectedObjects();
             }
         }
+    },
+
+    handleRemoveElementAction: {
+        value: function (evt) {
+            this.editingDocument.setOwnedObjectElement(evt.detail.get('templateObject'), null);
+        }
     }
 
 });
