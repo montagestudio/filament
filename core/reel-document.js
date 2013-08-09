@@ -1144,6 +1144,13 @@ exports.ReelDocument = EditingDocument.specialize({
                 }
             }
 
+            var existingComponent = element ? element.component : null;
+
+            if (existingComponent) {
+                this.undoManager.openBatch("Set element");
+                this.setOwnedObjectElement(existingComponent, null);
+            }
+
             // HACK to give the flow height so that it can been seen and edited
             if (element && proxy.moduleId === "montage/ui/flow.reel") {
                 var template = this.editor.projectController.libraryItemForModuleId(proxy.moduleId, proxy.exportName).html;
@@ -1160,6 +1167,10 @@ exports.ReelDocument = EditingDocument.specialize({
             this.undoManager.register("Set element", Promise.resolve([
                 this.setOwnedObjectElement, this, proxy, (oldElement) ? oldElement.montageId : void 0
             ]));
+
+            if (existingComponent) {
+                this.undoManager.closeBatch();
+            }
 
             if (oldElement) {
                 oldElement.dispatchOwnPropertyChange("component", void 0);
