@@ -26,7 +26,6 @@
 
 .LibraryCell .LibraryCell-button:hover {
 	background: hsl(0,0%,98%);
-	cursor: move;
 }
 
 .LibraryCell:last-child .LibraryCell-button {
