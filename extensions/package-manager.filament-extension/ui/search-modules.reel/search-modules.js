@@ -196,7 +196,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
             if (this.editingDocument && module && typeof module === 'object' && module.hasOwnProperty('name')) {
                 cell.installing(true);
 
-                var promise = this.editingDocument.installDependency(module.name).then(function (data) {
+                var promise = this.editingDocument.installDependency(module.name, module.version).then(function (data) {
                     if (data && typeof data === 'object' && data.hasOwnProperty('name') && module.name === data.name) {
                         if (cell) {
                             module.installed = true;
