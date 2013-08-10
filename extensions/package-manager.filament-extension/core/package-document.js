@@ -448,6 +448,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             var module = {
                     name: name,
                     version: (version || ''),
+                    versionInstalled: (version || ''),
                     type: (type || DEPENDENCY_TYPE_REGULAR),
                     isInstalling: true
                 };
