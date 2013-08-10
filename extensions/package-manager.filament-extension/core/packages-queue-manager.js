@@ -2,6 +2,7 @@ var Tools = require('./package-tools').PackageTools,
     Promise = require("montage/core/promise").Promise,
     ACTION_INSTALLING = 0,
     ACTION_REMOVING = 1,
+    TIME_WAITING_BEFORE_NEXT = 50,
     DEPENDENCY_TYPE_REGULAR = 'regular';
 
 exports.PackageQueueManager = Object.create(Object.prototype, {
@@ -140,7 +141,11 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
         value: function (module) {
             this._modulesModified.push(module);
             this._queue.shift();
-            this._next();
+            var self = this;
+
+            setTimeout(function () {
+                self._next();
+            }, TIME_WAITING_BEFORE_NEXT);
         }
     },
 

@@ -336,14 +336,22 @@ exports.PackageDocument = EditingDocument.specialize( {
     _handleDependenciesListChange: {
         value: function (modules) {
             if (Array.isArray(modules) && modules.length > 0) {
-                if (this._saveTimer) {
+                if (this._saveTimer) { // A saving request has been scheduled, need to save the package.json file before invoking the list command.
                     clearTimeout(this._saveTimer);
-                    this._saveTimer = null;
                     var self = this;
 
-                    this.saveModification().then(function () {
-                        self._updateDependenciesList();
-                    });
+                    if (!this._savingInProgress) {
+                        this._saveTimer = null;
+
+                        this.saveModification().then(function () {
+                            self._updateDependenciesList();
+                        });
+                    } else {
+                        this._savingInProgress.then(function () {
+                            self._updateDependenciesList();
+                            self._savingInProgress = null;
+                        });
+                    }
                 } else {
                     this._updateDependenciesList();
                 }
@@ -598,9 +606,11 @@ exports.PackageDocument = EditingDocument.specialize( {
             }
 
             this._saveTimer = setTimeout(function () {
-                self.saveModification().then(function () {
-                    self._saveTimer = null;
-                });
+                if (!self._savingInProgress) {
+                    self.saveModification().then(function () {
+                        self._saveTimer = null;
+                    });
+                }
             }, time);
         }
     },
@@ -611,17 +621,24 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
+    _savingInProgress: {
+        value: null
+    },
+
     save: {
         value: function (url, dataWriter) {
-            var self = this;
-            var jsonPackage = JSON.stringify(this._package, function (key, value) {
+            var self = this,
+                jsonPackage = JSON.stringify(this._package, function (key, value) {
                     return (key !== "directories" && value !== null) ?  value : undefined;
-            }, '\t');
+                }, '\t');
 
-            return Promise.when(dataWriter(jsonPackage, url)).then(function (value) {
+            this._savingInProgress = Promise.when(dataWriter(jsonPackage, url)).then(function (value) {
                 self._changeCount = 0;
+                self._savingInProgress = null;
                 return value;
             });
+
+            return this._savingInProgress;
         }
     }
 
