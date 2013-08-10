@@ -782,7 +782,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     return null;
                 }
 
-                // remove traling slash
+                // remove trailing slash
                 destination = destination.replace(/\/$/, "");
                 var destinationDividerIndex = destination.lastIndexOf("/"),
                     appName = destination.substring(destinationDividerIndex + 1),
@@ -798,12 +798,20 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 return promise;
             }).then(function (applicationUrl) {
                 // select main.reel
+                var treeExpanded = function (evt) {
+                    application.removeEventListener("treeExpanded", treeExpanded, false);
+                    var file = self.fileInTreeAtUrl("ui/main.reel");
+                    file.associatedDocument = self.currentDocument;
+                };
+
                 var openMainReel = function (evt) {
                     self.removeEventListener("didOpenPackage", openMainReel, false);
+                    application.addEventListener("treeExpanded", treeExpanded, false);
+                    application.dispatchEventNamed("expandTree", true, true, "ui/");
                     self.dispatchEventNamed("openUrl", true, true, applicationUrl + "/ui/main.reel/");
                 };
-                self.addEventListener("didOpenPackage", openMainReel, false);
 
+                self.addEventListener("didOpenPackage", openMainReel, false);
                 return self.loadProject(applicationUrl);
             });
         }
@@ -1049,7 +1057,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 },
                 childrenByName;
 
-            while (segmentIndex < segmentCount) {
+            while (segmentIndex < segmentCount && root.children) {
                 pathSegment = hierarchy[segmentIndex];
                 childrenByName = root.children.reduce(collectChildrenByName, {});
                 root = childrenByName[pathSegment];
