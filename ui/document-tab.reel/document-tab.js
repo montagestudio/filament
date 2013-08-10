@@ -4,7 +4,8 @@
     @requires montage/ui/component
 */
 var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+    Component = require("montage/ui/component").Component,
+    URL = require("core/url");
 
 /**
     Description TODO
@@ -31,7 +32,8 @@ exports.DocumentTab = Montage.create(Component, /** @lends module:"ui/document-t
 
     handleLongPress: {
         value: function (evt) {
-            this.dispatchEventNamed("expandTree", true, true, this.document.fileUrl);
+            var parentDirectory = URL.resolve(this.document.fileUrl, "..");
+            this.dispatchEventNamed("expandTree", true, true, parentDirectory);
         }
     }
 
