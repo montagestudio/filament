@@ -336,7 +336,7 @@ exports.PackageDocument = EditingDocument.specialize( {
     _handleDependenciesListChange: {
         value: function (modules) {
             if (Array.isArray(modules) && modules.length > 0) {
-                if (this._saveTimer) { // A saving request has been scheduled, need to save the package.json file before invoking the list command.
+                if (this._saveTimer || this._savingInProgress) { // A saving request has been scheduled, need to save the package.json file before invoking the list command.
                     clearTimeout(this._saveTimer);
                     var self = this;
 
@@ -607,11 +607,9 @@ exports.PackageDocument = EditingDocument.specialize( {
             }
 
             this._saveTimer = setTimeout(function () {
-                if (!self._savingInProgress) {
-                    self.saveModification().then(function () {
-                        self._saveTimer = null;
-                    });
-                }
+                self.saveModification().then(function () {
+                    self._saveTimer = null;
+                });
             }, time);
         }
     },

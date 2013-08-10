@@ -2,7 +2,7 @@ var Tools = require('./package-tools').PackageTools,
     Promise = require("montage/core/promise").Promise,
     ACTION_INSTALLING = 0,
     ACTION_REMOVING = 1,
-    TIME_WAITING_BEFORE_NEXT = 50,
+    TIME_WAITING_BEFORE_NEXT = 75,
     DEPENDENCY_TYPE_REGULAR = 'regular';
 
 exports.PackageQueueManager = Object.create(Object.prototype, {
