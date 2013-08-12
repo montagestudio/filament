@@ -187,17 +187,22 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this.packageUrl = packageUrl;
             this.dependencies = dependencies;
 
-            require.loadPackage(this.packageUrl).then(function (packageRequire) {
-                self.packageDescription = packageRequire.packageDescription;
-            }).done();
+            var packagePromise = require.loadPackage(this.packageUrl).then(function (packageRequire) {
+                var packageDescription = packageRequire.packageDescription;
+                self.packageDescription = packageDescription;
 
-            // Add in components from the package being edited itself
-            this.dependencies.unshift({dependency: "", url: this.packageUrl});
+                // Add a dependency entry for this package so that the
+                // we pick up its extensions and components later
+                self.dependencies.unshift({
+                    dependency: packageDescription.name,
+                    url: self.packageUrl
+                });
+            });
 
             // Do these operations sequentially because populateLibrary and
             // watchForFileChanges send a lot of data across the websocket,
             // preventing the file list from appearing in a timely manner.
-            return this.populateFiles()
+            return Promise.all([this.populateFiles(), packagePromise])
                 .then(function () {
                     // don't need to wait for this to complete
                     self.watchForFileChanges();
