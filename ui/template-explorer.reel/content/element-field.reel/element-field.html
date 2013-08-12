@@ -10,7 +10,8 @@
                 "element": {"#": "ElementField"}
             },
             "bindings": {
-                "classList.has('ElementField--invalid')": {"<-": "!@owner.templateObject.properties.get('element').isInTemplate"}
+                "classList.has('ElementField--invalid')": {"<-": "!@owner.templateObject.properties.get('element').isInTemplate"},
+                "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"}
             }
         },
 
@@ -32,17 +33,33 @@
             "bindings": {
                 "value": {"<-": "@owner.templateObject.properties.get('element').montageId"}
             }
+        },
+
+        "removeElement": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "removeElement"}
+            },
+            "bindings": {
+                "enabled": {"<-": "@owner.templateObject.properties.get('element')"},
+                "classList.has('montage-invisible')": {"<-": "(@owner.templateObject.label == 'owner') || !@owner.templateObject.properties.get('element')"},
+                "detail.get('templateObject')": {"<-": "@owner.templateObject"}
+            }
         }
     }
     </script>
 </head>
 <body>
     <div data-montage-id="ElementField" class="ElementField">
-        <img class="ElementField-icon" src="/assets/icons/tag.png">
-        <label class="ElementField-label">
-            <span data-montage-id="elementTagName" class="ElementField-tagName"></span>
-            <em data-montage-id="elementId" class="ElementField-id"></em>
-        </label>
+        <div>
+            <img class="ElementField-icon" src="/assets/icons/tag.png">
+            <label class="ElementField-label">
+                <span data-montage-id="elementTagName" class="ElementField-tagName"></span>
+                <em data-montage-id="elementId" class="ElementField-id"></em>
+            </label>
+        </div>
+
+        <button data-montage-id="removeElement" class="Button Button--circle">-</button>
     </div>
 </body>
 </html>

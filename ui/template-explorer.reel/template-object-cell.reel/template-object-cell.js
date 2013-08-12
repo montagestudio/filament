@@ -27,8 +27,15 @@ exports.TemplateObjectCell = Component.specialize({
 
             // Allow dropping events anywhere on the card
             this.element.addEventListener("dragover", this, false);
+            this.element.addEventListener("dragleave", this, false);
             this.element.addEventListener("drop", this, false);
+
+            this.element.addEventListener("dblclick", this, false);
         }
+    },
+
+    _willAcceptDrop: {
+        value: false
     },
 
     _templateObject: {
@@ -45,18 +52,27 @@ exports.TemplateObjectCell = Component.specialize({
             this._templateObject = value;
             if (value) {
                 var self = this;
+
+                //TODO this should not be as hardcoded as this...but we can only open components right now
+                // and this is super limited done in time for a demo
+                this.isInProjectPackage = /^ui\//.test(value.moduleId);
+
                 value.editingDocument.packageRequire.async(value.moduleId)
                     .get(value.exportName)
                     .then(function (object) {
-                        self.hasElementProperty = !!Object.getPropertyDescriptor(object, "element");
+                        self.isTemplateObjectComponent = object.prototype instanceof Component;
                     }).fail(Function.noop);
             }
 
         }
     },
 
-    hasElementProperty: {
-        value: true
+    isInProjectPackage: {
+        value: false
+    },
+
+    isTemplateObjectComponent: {
+        value: false
     },
 
     handleDragover: {
@@ -65,13 +81,21 @@ exports.TemplateObjectCell = Component.specialize({
 
             if (!availableTypes) {
                 event.dataTransfer.dropEffect = "none";
+                this._willAcceptDrop = false;
             } else if (availableTypes.has(MimeTypes.MONTAGE_EVENT_TARGET)) {
 
                 // allows us to drop
                 event.preventDefault();
                 event.stopPropagation();
                 event.dataTransfer.dropEffect = "link";
+                this._willAcceptDrop = true;
             }
+        }
+    },
+
+    handleDragleave: {
+        value: function () {
+            this._willAcceptDrop = false;
         }
     },
 
@@ -96,6 +120,18 @@ exports.TemplateObjectCell = Component.specialize({
                     listenerModel: listenerModel
                 });
 
+            }
+
+            this._willAcceptDrop = false;
+        }
+    },
+
+    handleDblclick: {
+        value: function () {
+            if (this.isInProjectPackage) {
+                this.dispatchEventNamed("openModuleId", true ,true, {
+                    moduleId: this.templateObject.moduleId
+                });
             }
         }
     }

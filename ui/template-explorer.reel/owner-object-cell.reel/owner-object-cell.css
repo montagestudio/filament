@@ -13,4 +13,5 @@
     bottom: 0;
     border: 1px solid hsl(210,100%,60%);
     background: transparent;
+    pointer-events: none;
 }

@@ -26,8 +26,13 @@ exports.OwnerObjectCell = Component.specialize({
 
             // Allow dropping events anywhere on the card
             this.element.addEventListener("dragover", this, false);
+            this.element.addEventListener("dragleave", this, false);
             this.element.addEventListener("drop", this, false);
         }
+    },
+
+    _willAcceptDrop: {
+        value: false
     },
 
     _templateObject: {
@@ -47,15 +52,15 @@ exports.OwnerObjectCell = Component.specialize({
                 value.editingDocument.packageRequire.async(value.moduleId)
                     .get(value.exportName)
                     .then(function (object) {
-                        self.hasElementProperty = !!Object.getPropertyDescriptor(object, "element");
+                        self.isTemplateObjectComponent = object.prototype instanceof Component;
                     }).fail(Function.noop);
             }
 
         }
     },
 
-    hasElementProperty: {
-        value: true
+    isTemplateObjectComponent: {
+        value: false
     },
 
     handleDragover: {
@@ -64,13 +69,21 @@ exports.OwnerObjectCell = Component.specialize({
 
             if (!availableTypes) {
                 event.dataTransfer.dropEffect = "none";
+                this._willAcceptDrop = false;
             } else if (availableTypes.has(MimeTypes.MONTAGE_EVENT_TARGET)) {
 
                 // allows us to drop
                 event.preventDefault();
                 event.stopPropagation();
                 event.dataTransfer.dropEffect = "link";
+                this._willAcceptDrop = true;
             }
+        }
+    },
+
+    handleDragleave: {
+        value: function () {
+            this._willAcceptDrop = false;
         }
     },
 
@@ -96,6 +109,8 @@ exports.OwnerObjectCell = Component.specialize({
                 });
 
             }
+
+            this._willAcceptDrop = false;
         }
     },
 

@@ -8,7 +8,17 @@
         "owner": {
             "properties": {
                 "element": {"#": "package-editor"}
-            }
+            },
+            "bindings": {
+                "selectedDependency": {"<-": "@packageDependencies.selectedCell"},
+                "reloadingList": {"<-": "@owner.currentDocument.isReloadingList"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "packageInformation": {
@@ -29,6 +39,28 @@
             "bindings": {
                 "editingDocument": {"<-": "@owner.currentDocument"}
             }
+        },
+
+        "dependencyInformation": {
+            "prototype": "../dependency-information.reel",
+            "properties": {
+                "element": {"#": "dependencyInformation"}
+            },
+            "bindings": {
+                "currentDependency": {"<-": "@owner.dependencyDisplayed"},
+                "editingDocument": {"<-": "@owner.currentDocument"}
+            }
+        },
+
+        "searchModules": {
+            "prototype": "../search-modules.reel",
+            "properties": {
+                "element": {"#": "searchModules"}
+            },
+            "bindings": {
+                "searchResults": {"<->": "@owner.searchResults"},
+                "editingDocument": {"<-": "@owner.currentDocument"}
+            }
         }
 
     }
@@ -39,8 +71,8 @@
         <section data-montage-id="packageInformation" class="PackageEditor-column"></section>
         <section data-montage-id="packageDependencies" class="PackageEditor-column"></section>
         <aside data-montage-id="packageActions" class="PackageEditor-column">
-            <div data-montage-id="dependencyDetails" class="packageEditorAsideColumn"></div>
-            <div data-montage-id="searchPackages" class="packageEditorAsideColumn"></div>
+            <div data-montage-id="dependencyInformation" class="packageEditorAsideColumn"></div>
+            <div data-montage-id="searchModules" class="packageEditorAsideColumn"></div>
         </aside>
     </div>
 </body>

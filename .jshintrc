@@ -14,6 +14,7 @@
     "boss": true,
     "eqnull": true,
     "browser": true,
+    "maxcomplexity": 10,
     "globals": {
         "CustomEvent": true,
         "WebSocket": false,

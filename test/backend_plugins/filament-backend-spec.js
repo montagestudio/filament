@@ -29,8 +29,8 @@ describe("filament backend", function () {
         it("lists files with .filament-extension in extensions directory", function () {
             return filamentBackend.getExtensions().then(function (extensions) {
                 expect(extensions.length).toBe(2);
-                expect(extensions[0].url).toBe("http://client/extensions/a.filament-extension");
-                expect(extensions[1].url).toBe("http://client/extensions/b.filament-extension");
+                expect(extensions[0].url).toBe("fs://localhost/root/extensions/a.filament-extension");
+                expect(extensions[1].url).toBe("fs://localhost/root/extensions/b.filament-extension");
             });
         });
     });

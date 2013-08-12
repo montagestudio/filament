@@ -8,6 +8,7 @@ var Component = require("montage/ui/component").Component;
  * @class PackageInformationDescription
  */
 exports.PackageInformationDescription = Component.specialize(/** @lends PackageInformationDescription# */ {
+
     constructor: {
         value: function PackageInformationDescription() {
             this.super();
@@ -39,4 +40,5 @@ exports.PackageInformationDescription = Component.specialize(/** @lends PackageI
             }
         }
     }
+
 });

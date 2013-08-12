@@ -43,6 +43,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: null
     },
 
+    _extensionController: {
+        value: null
+    },
+
     _projectUrl: {
         value: null
     },
@@ -114,7 +118,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      * @return {ProjectController} An initialized instance of a ProjectController
      */
     init: {
-        value: function (bridge, viewController, editorController) {
+        value: function (bridge, viewController, editorController, extensionController) {
             bridge.setDocumentDirtyState(false);
 
             var self = this;
@@ -122,6 +126,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._environmentBridge = bridge;
             this._viewController = viewController;
             this._editorController = editorController;
+            this._extensionController = extensionController;
+
             this.moduleLibraryItemMap = new Map();
             this._packageNameLibraryItemsMap = new Map();
 
@@ -140,6 +146,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this.addPathChangeListener("currentDocument.undoManager.undoCount", this);
 
             application.addEventListener("openUrl", this);
+            application.addEventListener("openModuleId", this);
             application.addEventListener("closeDocument", this);
             application.addEventListener("menuValidate", this);
             application.addEventListener("menuAction", this);
@@ -158,7 +165,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      */
     loadProject: {
         value: function (url) {
-
             var self = this;
 
             this._projectUrl = url;
@@ -181,20 +187,28 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this.packageUrl = packageUrl;
             this.dependencies = dependencies;
 
-            require.loadPackage(this.packageUrl).then(function (packageRequire) {
-                self.packageDescription = packageRequire.packageDescription;
-            }).done();
+            var packagePromise = require.loadPackage(this.packageUrl).then(function (packageRequire) {
+                var packageDescription = packageRequire.packageDescription;
+                self.packageDescription = packageDescription;
 
-            // Add in components from the package being edited itself
-            this.dependencies.unshift({dependency: "", url: this.packageUrl});
+                // Add a dependency entry for this package so that the
+                // we pick up its extensions and components later
+                self.dependencies.unshift({
+                    dependency: packageDescription.name,
+                    url: self.packageUrl
+                });
+            });
 
             // Do these operations sequentially because populateLibrary and
             // watchForFileChanges send a lot of data across the websocket,
             // preventing the file list from appearing in a timely manner.
-            return this.populateFiles()
+            return Promise.all([this.populateFiles(), packagePromise])
                 .then(function () {
                     // don't need to wait for this to complete
                     self.watchForFileChanges();
+                    // need these before getting the library items
+                    return self.loadExtensions();
+                }).then(function () {
                     // want to wait for the library though
                     return self.populateLibrary();
                 }).then(function () {
@@ -285,6 +299,14 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     handleOpenUrl: {
         value: function (evt) {
             this.openUrlForEditing(evt.detail).done();
+        }
+    },
+
+    handleOpenModuleId: {
+        value: function (evt) {
+            var moduleId = evt.detail.moduleId;
+            var fileUrl = URL.resolve(this.projectUrl + "/", moduleId + (/\.reel$/.test(moduleId) ? "/" : ""));
+            this.openUrlForEditing(fileUrl).done();
         }
     },
 
@@ -448,29 +470,25 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     isCurrentDocument: wasCurrentDocument
                 });
 
+                closedPromise = Promise(document);
+
                 if (nextDocument) {
-                    closedPromise = self.openUrlForEditing(nextDocument.url).then(function () {
-                        editor.close(document);
-                        self.removeDocument(document);
-                        return document;
-                    });
-                } else {
+                    closedPromise = self.openUrlForEditing(nextDocument.url);
+                } else if (self.documents.length === 1) {
+                    // If this is the last remaining document then hide all
+                    // the editors
+                    self._editorController.hideEditors();
+                }
+
+                return closedPromise.then(function () {
                     editor.close(document);
                     self.removeDocument(document);
 
-                    // No nextDocument => no more documents and so hide the
-                    // current editor
-                    self._editorController.hideEditors();
-
-                    closedPromise = Promise.resolve(document);
-                }
-
-                return closedPromise.then(function (doc) {
                     self.dispatchEventNamed("didCloseDocument", true, false, {
-                        document: doc,
-                        wasCurrentDocument: doc === self.currentDocument
+                        document: document,
+                        wasCurrentDocument: document === self.currentDocument
                     });
-                    return doc;
+                    return document;
                 });
             }, Function.noop);
 
@@ -565,8 +583,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         enumerable: false,
         value: function (dependencies) {
             var self = this,
-                moduleId,
-                objectName,
                 dependencyLibraryPromises,
                 dependencyLibraryEntry,
                 offeredLibraryItems;
@@ -582,6 +598,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                         if (componentUrls) {
                             dependencyLibraryEntry.libraryItems = componentUrls.map(function (componentUrl) {
+                                var moduleId,
+                                    objectName;
                                 if (/\/node_modules\//.test(componentUrl)) {
                                     // It's a module inside a node_modules dependency
                                     //TODO be able to handle dependencies from mappings?
@@ -769,7 +787,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     return null;
                 }
 
-                // remove traling slash
+                // remove trailing slash
                 destination = destination.replace(/\/$/, "");
                 var destinationDividerIndex = destination.lastIndexOf("/"),
                     appName = destination.substring(destinationDividerIndex + 1),
@@ -785,12 +803,20 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 return promise;
             }).then(function (applicationUrl) {
                 // select main.reel
+                var treeExpanded = function (evt) {
+                    application.removeEventListener("treeExpanded", treeExpanded, false);
+                    var file = self.fileInTreeAtUrl("ui/main.reel");
+                    file.associatedDocument = self.currentDocument;
+                };
+
                 var openMainReel = function (evt) {
                     self.removeEventListener("didOpenPackage", openMainReel, false);
+                    application.addEventListener("treeExpanded", treeExpanded, false);
+                    application.dispatchEventNamed("expandTree", true, true, "ui/");
                     self.dispatchEventNamed("openUrl", true, true, applicationUrl + "/ui/main.reel/");
                 };
-                self.addEventListener("didOpenPackage", openMainReel, false);
 
+                self.addEventListener("didOpenPackage", openMainReel, false);
                 return self.loadProject(applicationUrl);
             });
         }
@@ -1036,7 +1062,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 },
                 childrenByName;
 
-            while (segmentIndex < segmentCount) {
+            while (segmentIndex < segmentCount && root.children) {
                 pathSegment = hierarchy[segmentIndex];
                 childrenByName = root.children.reduce(collectChildrenByName, {});
                 root = childrenByName[pathSegment];
@@ -1064,6 +1090,27 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: function (url) {
             var path = this.environmentBridge.convertBackendUrlToPath(url);
             return this.environmentBridge.list(path);
+        }
+    },
+
+    loadExtensions: {
+        value: function () {
+            var self = this;
+            return Promise.all(this.dependencies.map(function (dependency) {
+                return self.environmentBridge.getExtensionsAt(dependency.url);
+            }))
+            .then(function (extensions) {
+                return Promise.all(extensions.flatten().map(function (extensionDetails) {
+                    // TODO only load if name is the same as dependency?
+                    return self._extensionController.loadExtension(extensionDetails.url)
+                    .then(function (extension) {
+                        self._extensionController.activateExtension(extension);
+                    })
+                    .catch(function (error) {
+                        console.error("Could not load extension at", extensionDetails.url, "because", error.message);
+                    });
+                }));
+            });
         }
     },
 

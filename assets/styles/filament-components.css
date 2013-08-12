@@ -1,9 +1,37 @@
+/* Filament Utility Styles */
+
+.Filament--willAcceptDrop {
+    outline: 1px solid hsl(210, 100%, 84%);
+}
 
 /*
  * CSS-Only components used in Filament
  * Could be moved into "real" reels.
  */
 
+
+.Search.matte-InputText {
+    -webkit-appearance: none;
+    padding-right: 0; /* space for cancel button */
+    color: hsl(0,0%,30%);
+    border-color: hsl(0,0%,77%);
+    border-radius: 20px;
+    background-color: hsla(0,0%,0%,.04);
+    box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.08), 0 1px 0 hsla(0,0%,100%,.6);
+}
+
+.Search.matte-InputText:hover {
+    background-color: hsla(0,0%,0%,.02);
+}
+
+.Search.matte-InputText:focus {
+    border-color: hsl(210,100%,70%);
+    background-color: hsla(210,100%,60%,0.1);
+}
+
+.Search::-webkit-search-cancel-button {
+    margin: 0 6px 0 8px;
+}
 
 
 /* Panel --------------------------------- */
@@ -40,8 +68,8 @@
     -webkit-transition: -webkit-flex .3s cubic-bezier(.26, .06, .08, 1);
 }
 
-.Panel-header {
-    padding: 0 8px;
+.Panel-bar {
+    padding: 8px;
     margin: 0;
     border-top: 1px solid hsla(0,0%,100%,1);
     border-bottom: 1px solid hsla(0,0%,0%,.2);

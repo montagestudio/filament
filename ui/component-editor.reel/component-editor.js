@@ -3,7 +3,8 @@ var Montage = require("montage/core/core").Montage,
     DocumentEditor = require("./document-editor.reel").DocumentEditor,
     Promise = require("montage/core/promise").Promise,
     WeakMap = require("montage/collections/weak-map"),
-    Editor = require("palette/ui/editor.reel").Editor;
+    Editor = require("palette/ui/editor.reel").Editor,
+    defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
 exports.ComponentEditor = Editor.specialize({
 
@@ -80,6 +81,10 @@ exports.ComponentEditor = Editor.specialize({
                 this.addEventListener("addListenerForObject", this, false);
                 this.addEventListener("addBinding", this, false);
                 this._frontEditor = editor;
+                if (editor.acceptsActiveTarget) {
+                    defaultEventManager.activeTarget = editor;
+                }
+
                 this.needsDraw = true;
             }
         }
@@ -202,6 +207,12 @@ exports.ComponentEditor = Editor.specialize({
     handleBindingCreatorDiscard: {
         value: function (evt) {
             this.templateObjects.bindingOverlay.hide();
+        }
+    },
+
+    handleSelect: {
+        value: function (evt) {
+            this.currentDocument.selectObject(evt.detail.templateObject);
         }
     }
 

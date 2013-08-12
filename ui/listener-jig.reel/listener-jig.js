@@ -4,7 +4,8 @@
     @requires montage/ui/component
 */
 var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+    Component = require("montage/ui/component").Component,
+    defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
 /**
     Description TODO
@@ -19,6 +20,37 @@ exports.ListenerJig = Montage.create(Component, /** @lends module:"./listener-ji
 
     listenerModel: {
         value: null
+    },
+
+    _focusTimeout: {
+        value: null
+    },
+
+    acceptsActiveTarget: {
+        value: true
+    },
+
+    enterDocument: {
+        value: function () {
+
+            // We enter the document prior to the overlay presenting it
+            if (!this.listenerModel) {
+                return;
+            }
+
+            defaultEventManager.activeTarget = this;
+
+            var self = this;
+            this._focusTimeout = setTimeout(function () {
+                self.templateObjects.typeField.element.focus();
+            }, 100);
+        }
+    },
+
+    exitDocument: {
+        value: function () {
+            clearTimeout(this._focusTimeout);
+        }
     },
 
     handleAddListenerButtonAction: {

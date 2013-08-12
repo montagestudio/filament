@@ -2,13 +2,42 @@ var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     MimeTypes = require("core/mime-types"),
     replaceDroppedTextPlain = require("ui/drag-and-drop").replaceDroppedTextPlain,
-    Promise = require("montage/core/promise").Promise;
+    Promise = require("montage/core/promise").Promise,
+    defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
 exports.BindingJig = Montage.create(Component, {
 
+    _focusTimeout: {
+        value: null
+    },
+
+    acceptsActiveTarget: {
+        value: true
+    },
+
     enterDocument: {
         value: function () {
+
+            // We enter the document prior to the overlay presenting it
+            if (!this.bindingModel) {
+                return;
+            }
+
             this.templateObjects.sourcePath.element.addEventListener("drop", this, false);
+
+            defaultEventManager.activeTarget = this;
+
+            var self = this;
+            this._focusTimeout = setTimeout(function () {
+                self.templateObjects.targetPath.element.focus();
+            }, 100);
+        }
+    },
+
+    exitDocument: {
+        value: function () {
+            this.templateObjects.sourcePath.element.removeEventListener("drop", this, false);
+            clearTimeout(this._focusTimeout);
         }
     },
 
@@ -59,6 +88,14 @@ exports.BindingJig = Montage.create(Component, {
 
     handleAction: {
         value: function (evt) {
+            var target = evt.target,
+                objects = this.templateObjects;
+
+            if (target === objects.bidirectional ||
+                target === objects.unidirectional) {
+                return;
+            }
+
             this._commitBindingEdits();
         }
     },

@@ -48,6 +48,7 @@ exports.FileCell = Montage.create(Component, {
                 this.projectController.filesAtUrl(this.fileInfo.fileUrl).then(function (fileDescriptors) {
                     self.fileInfo.expanded = true;
                     self.fileInfo.children.addEach(fileDescriptors);
+                    application.dispatchEventNamed("treeExpanded", true, true);
                 }).done();
             }
         }

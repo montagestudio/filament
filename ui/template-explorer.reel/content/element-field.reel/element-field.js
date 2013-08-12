@@ -28,6 +28,7 @@ exports.ElementField = Component.specialize(/** @lends ElementField# */ {
             }
 
             this.element.addEventListener("dragover", this, false);
+            this.element.addEventListener("dragleave", this, false);
             this.element.addEventListener("drop", this, false);
         }
     },
@@ -38,14 +39,26 @@ exports.ElementField = Component.specialize(/** @lends ElementField# */ {
 
             if (!availableTypes) {
                 event.dataTransfer.dropEffect = "none";
+                this._willAcceptDrop = false;
             } else if (availableTypes.has(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) || availableTypes.has(MimeTypes.MONTAGE_TEMPLATE_XPATH)) {
 
                 // allows us to drop
                 event.preventDefault();
                 event.stopPropagation();
                 event.dataTransfer.dropEffect = "link";
+                this._willAcceptDrop = true;
             }
         }
+    },
+
+    handleDragleave: {
+        value: function () {
+            this._willAcceptDrop = false;
+        }
+    },
+
+    _willAcceptDrop: {
+        value: false
     },
 
     handleDrop: {
@@ -81,6 +94,8 @@ exports.ElementField = Component.specialize(/** @lends ElementField# */ {
                 editingDocument.setOwnedObjectElement(templateObject, montageId);
                 editingDocument.editor.refresh();
             }
+
+            this._willAcceptDrop = false;
         }
     }
 });

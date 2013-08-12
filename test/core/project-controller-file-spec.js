@@ -184,7 +184,7 @@ describe("core/project-controller-file-spec", function () {
                     //Note currentDocument needs to be opened as part of each test
                 });
 
-                it("should not hide the editor when a document remains", function () {
+                it("should not hide the editor when closed and a document remains", function () {
                     spyOn(editorController, "hideEditors");
 
                     return projectController.openUrlForEditing(fooDocument.url).then(function () {
@@ -193,7 +193,6 @@ describe("core/project-controller-file-spec", function () {
                         expect(editorController.hideEditors).not.toHaveBeenCalled();
                     });
                 });
-
 
                 describe("and is not the current document", function () {
 
@@ -204,6 +203,16 @@ describe("core/project-controller-file-spec", function () {
                             }).then(function () {
                                 expect(projectController.currentDocument).toBe(barDocument);
                             });
+                    });
+
+                    it("should not hide the editor when closed and a document remains", function () {
+                        spyOn(editorController, "hideEditors");
+
+                        return projectController.openUrlForEditing(fooDocument.url).then(function () {
+                            return projectController.closeDocument(barDocument);
+                        }).then(function () {
+                            expect(editorController.hideEditors).not.toHaveBeenCalled();
+                        });
                     });
 
                 });

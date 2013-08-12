@@ -48,6 +48,17 @@
                 "editingDocument": {"<-": "@owner.editingDocument"},
                 "description": {"<-": "@owner.editingDocument.description"}
             }
+        },
+
+        "packageMaintainers": {
+            "prototype": "./package-information-maintainers.reel",
+            "properties": {
+                "element": {"#": "packageInformationBoxMaintainers"},
+                "title": "Maintainers"
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"}
+            }
         }
     }
     </script>
@@ -59,6 +70,7 @@
             <div data-montage-id="packageInformationBoxBasics" class="PackageEditorPanel"></div>
             <div data-montage-id="packageInformationBoxAuthor" class="PackageEditorPanel"></div>
             <div data-montage-id="packageInformationBoxDescription" class="PackageEditorPanel"></div>
+            <div data-montage-id="packageInformationBoxMaintainers" class="PackageEditorPanel"></div>
         </div>
     </section>
 </body>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="person-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "person-cell"}
+            }
+        },
+
+        "personName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "personName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.person.name"}
+            }
+        },
+
+        "personEmail": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "personEmail"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.person.email"}
+            }
+        },
+
+        "personUrl": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "personUrl"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.person.url"}
+            }
+        },
+
+        "deletePerson": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "deletePersonButton"},
+                "label": "-"
+            },
+            "bindings": {
+                "detail.get('maintainer')": {"<-": "@owner.person"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <li data-montage-id="person-cell" class="PersonCell">
+        <strong data-montage-id="personName" class="PersonCellName"></strong>
+        <span data-montage-id="personEmail" class="PersonCellEmail"></span>
+        <span data-montage-id="personUrl" class="PersonCellUrl"></span>
+        <button data-montage-id="deletePersonButton"></button>
+    </li>
+</body>
+</html>

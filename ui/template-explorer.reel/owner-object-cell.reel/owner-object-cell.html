@@ -12,7 +12,11 @@
                 "bindings": {
                     "classList.has('TemplateObjectCell--owner')": {
                         "<-": "@owner.templateObject.label == 'owner'"
-                    }
+                    },
+                    "classList.has('selected')": {
+                        "<-": "@owner.templateObjectsController.selection.has(templateObject)"
+                    },
+                    "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"}
                 }
             },
 
@@ -61,7 +65,7 @@
                     "removalStrategy": "hide"
                 },
                 "bindings": {
-                    "condition": {"<-": "@owner.hasElementProperty"}
+                    "condition": {"<-": "@owner.isTemplateObjectComponent"}
                 }
             },
 
@@ -137,10 +141,10 @@
 <ul>
 
 <header data-montage-id="template-object-cell" class="TemplateObjectCell TemplateObjectCell--owner">
-
+    
     <header data-montage-id="header">
         <div data-arg="toolbar">
-            <button data-montage-id="editPropertiesButton" class="Button Toolbar-button">Edit properties</button>
+            <button data-montage-id="editPropertiesButton" class="TemplateObjectCell-editButton Button Toolbar-button">Edit properties</button>
         </div>
     </header>
 

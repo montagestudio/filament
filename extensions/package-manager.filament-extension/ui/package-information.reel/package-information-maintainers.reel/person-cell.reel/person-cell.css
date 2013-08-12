@@ -1,0 +1,22 @@
+.PersonCell {
+    padding: 8px 16px;
+    line-height: 28px;
+    border: 1px solid hsla(0, 0%, 0%, .06);
+    border-top: 1px solid hsla(0, 0%, 100%, .5);
+    display: -webkit-flex;
+    -webkit-flex: 1;
+    -webkit-justify-content: space-between;
+}
+
+.PersonCell * {
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    -webkit-flex: 2;
+}
+
+.PersonCell > button {
+    height: 25px;
+    -webkit-flex: 0.5;
+}

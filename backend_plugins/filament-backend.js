@@ -13,15 +13,16 @@ var path = require("path"),
 // Faster promises
 Q.longStackJumpLimit = 0;
 
-exports.getExtensions = function() {
-    var extensionFolder = path.join(global.clientPath, "extensions");
+exports.getExtensions = function(extensionFolder) {
+    extensionFolder = extensionFolder || path.join(global.clientPath, "extensions");
+
     console.log("getExtensions from " + extensionFolder);
     return QFS.listTree(extensionFolder, function (filePath) {
         return path.extname(filePath).toLowerCase() === ".filament-extension" ? true : (filePath ===  extensionFolder ? false : null); // if false return null so directories aren't traversed
     }).then(function (filePaths) {
         return Q.all(filePaths.map(function (filePath) {
             return QFS.stat(filePath).then(function (stat) {
-                return {url: "http://client/extensions" + filePath.substring(extensionFolder.length), stat: stat};
+                return {url: "fs://localhost" + filePath, stat: stat};
             });
         }));
     });

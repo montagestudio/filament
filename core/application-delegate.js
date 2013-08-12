@@ -129,7 +129,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
             Promise.all([promisedMainComponent, promisedLoadedExtensions])
                 .spread(function (mainComponent, loadedExtensions) {
-                    self.projectController = ProjectController.create().init(self.environmentBridge, self.viewController, mainComponent);
+                    self.projectController = ProjectController.create().init(self.environmentBridge, self.viewController, mainComponent, extensionController);
 
                     self.projectController.registerUrlMatcherForDocumentType(function (fileUrl) {
                         return (/\.reel\/?$/).test(fileUrl);
