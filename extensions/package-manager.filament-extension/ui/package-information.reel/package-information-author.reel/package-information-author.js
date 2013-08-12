@@ -65,9 +65,9 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
     author: {
         set: function (author) {
             if (author && typeof author === 'object') {
-                this._author.name = author.name;
-                this._author.email = author.email;
-                this._author.url = author.url;
+                this.name = (author.name || '');
+                this.email = (author.email || '');
+                this.url = (author.url || '');
             }
         },
         get: function () {

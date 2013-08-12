@@ -7,7 +7,88 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "package-information-maintainers"}
+                "element": {"#": "package-information-maintainers"},
+                "createPersonOverlay": {"@": "overlay"}
+            }
+        },
+
+        "title": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "packageInformationBoxTitle"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.title"}
+            }
+        },
+
+        "overlay": {
+            "prototype": "montage/ui/overlay.reel",
+            "properties": {
+                "element": {"#": "maintainerFormOverlay"},
+                "content": {"@": "personCreate"},
+                "anchor": {"#": "addMaintainerButton"}
+            }
+        },
+
+        "personCreate": {
+            "prototype": "./person-form.reel",
+            "properties": {
+                "element": {"#": "maintainerFormOverlayContent"}
+            },
+            "listeners": [
+                {
+                    "type": "CreateMaintainer",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "addMaintainer": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "label": "Add Maintainer",
+                "element": {"#": "addMaintainerButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "maintainersContentController": {
+            "prototype": "montage/core/range-controller",
+            "properties": {
+                "sortPath": "name"
+            },
+            "bindings": {
+                "content": {"<-": "@owner.editingDocument.packageMaintainers"}
+            }
+        },
+
+        "maintainersList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "maintainersList"},
+                "contentController": {"@": "maintainersContentController"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "maintainerCell": {
+            "prototype": "./person-cell.reel",
+            "properties": {
+                "element": {"#": "maintainerCell"}
+            },
+            "bindings": {
+                "person": {"<-": "@maintainersList.objectAtCurrentIteration"}
             }
         }
     }
@@ -15,6 +96,20 @@
 </head>
 <body>
     <div data-montage-id="package-information-maintainers" class="PackageInformation--maintainers">
+        <h3 data-montage-id="packageInformationBoxTitle" class="PackageEditorPanel-title"></h3>
+        <div class="PackageEditorPanel-content">
+            <div>
+                <button data-montage-id="addMaintainerButton"></button>
+                <div data-montage-id="maintainerFormOverlay" class="PersonFromOverlay">
+                    <div data-montage-id="maintainerFormOverlayContent"></div>
+                </div>
+            </div>
+            <div class="MaintainersList">
+                <ul data-montage-id="maintainersList">
+                    <li data-montage-id="maintainerCell"></li>
+                </ul>
+            </div>
+        </div>
     </div>
 </body>
 </html>

@@ -46,7 +46,6 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
             this.addOwnPropertyChangeListener("version", this);
             this.addOwnPropertyChangeListener("license", this);
             this.addOwnPropertyChangeListener("privacy", this);
-
             this._nameValidity(PackageTools.isNameValid(this.name)); // If the name has been modified manually within the package.json file
         }
     },
@@ -62,9 +61,9 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
     },
 
     handleNameChange: {
-        value: function (value) {
+        value: function () {
             if (this.editingDocument) {
-                this._nameValidity(this.editingDocument.setProperty('name', value));
+                this._nameValidity(this.editingDocument.setProperty('name', this.name));
             }
         }
     },

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="search-modules-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "search-modules-cell"}
+            },
+            "bindings": {
+                "installed": {"<-": "@owner.module.installed"}
+            }
+        },
+
+        "moduleName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "moduleName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.module.name"}
+            }
+        },
+
+        "moduleVersion": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "moduleVersion"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.module.version"}
+            }
+        },
+
+        "moduleDescription": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "moduleDescription"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.module.description"}
+            }
+        },
+
+        "moduleInstall": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "moduleInstall"}
+            },
+            "bindings": {
+                "label": {"<-": "@owner.label"},
+                "detail.get('cell')": {"<-": "@owner"},
+                "enabled": {"<-": "@owner.enabled"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <li data-montage-id="search-modules-cell" class="SearchModulesCell">
+        <strong data-montage-id="moduleName"></strong>
+        <span data-montage-id="moduleVersion"></span>
+        <em data-montage-id="moduleDescription"></em>
+        <button data-montage-id="moduleInstall"></button>
+    </li>
+</body>
+</html>

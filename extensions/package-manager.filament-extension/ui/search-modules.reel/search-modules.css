@@ -1,0 +1,41 @@
+.SearchModulesContent {
+    background: hsl(0,0%,94%);
+    border-radius: 4px;
+    -webkit-flex: 1;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.SearchModulesColumnContent {
+    -webkit-flex: 1;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+}
+
+#searchModulesRequest {
+    border-bottom: 1px solid hsla(0,0%,0%,.1);
+    padding: 20px;
+}
+
+#searchModulesResults {
+    padding: 20px 20px 10px 20px;
+    overflow-y: scroll;
+    display: -webkit-flex;
+    -webkit-flex: 1;
+    -webkit-flex-direction: column;
+    background-color: #fff;
+}
+
+.SearchModulesList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ResultsNumber{
+    float: right;
+    color: hsl(0,0%,30%);
+    font-size: 16px;
+    font-weight: bold;
+}

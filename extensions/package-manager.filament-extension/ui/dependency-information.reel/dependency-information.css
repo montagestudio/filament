@@ -1,0 +1,37 @@
+.dependencyDetailsList{
+    -webkit-align-items: flex-start;
+    -webkit-flex-direction: row;
+}
+
+.dependencyDetailsList ul{
+    width: 100%;
+}
+
+.dependencyDetailsList > ul > li{
+    overflow-x: hidden;
+    display: -webkit-flex;
+    -webkit-flex: 1;
+    -webkit-justify-content: space-between;
+}
+
+#packageMaintainers{
+    -webkit-flex: 3;
+}
+
+.dependencyDetails-key{
+    font-weight: 600;
+    color: hsl(0,0%,40%);
+    -webkit-flex: 1;
+    min-width: 80px;
+}
+
+.dependencyDetails-value{
+    font-size: 11px;
+    text-indent: 30px;
+    display: inline-block;
+    font-style: italic;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    -webkit-flex: 3;
+}
