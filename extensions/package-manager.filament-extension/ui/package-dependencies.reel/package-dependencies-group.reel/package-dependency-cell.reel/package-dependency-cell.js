@@ -35,7 +35,7 @@ exports.PackageDependencyCell = Component.specialize(/** @lends PackageDependenc
                 this._dependency = module;
                 this.hasError = (this._dependency && Array.isArray(this._dependency.problems) && this._dependency.problems.length > 0);
 
-                 if (this._dependency.type !== DEPENDENCY_TYPE_REGULAR && this._dependency.missing) {
+                if (this._dependency.type !== DEPENDENCY_TYPE_REGULAR && this._dependency.missing) {
                     this.canInstall = true;
                 } else {
                     this.buttonLabel = DEFAULT_LABEL;
