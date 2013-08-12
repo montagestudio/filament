@@ -57,20 +57,20 @@
 </head>
 <body>
     <div data-montage-id="package-information-author" class="PackageInformation--author">
-        <h3 data-montage-id="packageInformationBoxTitle" class="PackageEditorPanel-title">Author</h3>
+        <h3 data-montage-id="packageInformationBoxTitle" class="PackageEditorPanel-title"></h3>
         <div class="PackageEditorPanel-content">
             <ul class="PackageEditorPanel-list">
                 <li class="PackageEditorPanel-list-item">
                     <label for="packageInformationAuthorName">Name:</label>
-                    <input id="packageInformationAuthorName" data-montage-id="packageInformationAuthorName" type="text" class="matte-InputText" />
+                    <input id="packageInformationAuthorName" data-montage-id="packageInformationAuthorName" type="text" />
                 </li>
                 <li class="PackageEditorPanel-list-item">
                     <label for="packageInformationAuthorEmail">Email:</label>
-                    <input id="packageInformationAuthorEmail" data-montage-id="packageInformationAuthorEmail" type="text" class="matte-InputText" pattern="^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$" />
+                    <input id="packageInformationAuthorEmail" data-montage-id="packageInformationAuthorEmail" type="text" pattern="^([a-z0-9_\.\-\+!#$%&'/=?^_`{|}~]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$" />
                 </li>
                 <li class="PackageEditorPanel-list-item">
-                    <label for="packageInformationAuthorUrl">URL:</label>
-                    <input id="packageInformationAuthorUrl" data-montage-id="packageInformationAuthorUrl" type="text" class="matte-InputText" pattern="^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$" />
+                    <label for="packageInformationAuthorUrl">Url:</label>
+                    <input id="packageInformationAuthorUrl" data-montage-id="packageInformationAuthorUrl" type="text" pattern="^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w\.\-]*)*\/?$" />
                 </li>
             </ul>
         </div>

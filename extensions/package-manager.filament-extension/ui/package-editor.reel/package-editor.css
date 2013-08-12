@@ -43,13 +43,16 @@
     -webkit-flex-direction: column;
 }
 
+.hide-component {
+    display: none !important;
+}
 
 
 /*
  * Note: The Package Editor Panels
  * are styled here so they don't have to be repeated in all the other reels
  * that use the same styles.
- * 
+ *
  * Alternatively we could create some sort of "Package Editor Panel" component that can be reused.
  */
 
