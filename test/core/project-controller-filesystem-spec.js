@@ -49,6 +49,10 @@ describe("core/project-controller-filesystem-spec", function () {
 
         editorController = editorControllerMock();
 
+        require.injectPackageDescription(require.location + "projectUrl/" , {
+            name: "test"
+        });
+
         viewController = ViewController.create();
         projectController = new ProjectController().init(bridge, viewController, editorController);
         projectControllerLoadedPromise = projectController.loadProject("projectUrl");

@@ -17,10 +17,10 @@ describe("core/project-controller-extensions-spec", function () {
     beforeEach(function () {
         bridge = environmentBridgeMock({
             componentsInPackage: function () {
-                return Promise(["packageUrl/ui/pass.reel"]);
+                return Promise(["projectUrl/ui/pass.reel"]);
             },
             getExtensionsAt: function () {
-                return Promise([{url: "fs:///packageUrl/packageUrl.filament-extension"}]);
+                return Promise([{url: "fs:///projectUrl/projectUrl.filament-extension"}]);
             }
         });
 
@@ -30,14 +30,18 @@ describe("core/project-controller-extensions-spec", function () {
 
         viewController = ViewController.create();
         projectController = ProjectController.create().init(bridge, viewController, editorController, extensionController);
+
+        require.injectPackageDescription(require.location + "projectUrl/" , {
+            name: "test"
+        });
     });
 
     it("loads extensions in the package", function () {
         spyOn(extensionController, "loadExtension").andCallThrough();
 
-        return projectController.loadProject("pacakgeUrl").then(function () {
+        return projectController.loadProject("projectUrl").then(function () {
             expect(extensionController.loadExtension).toHaveBeenCalled();
-            expect(extensionController.loadExtension.mostRecentCall.args[0]).toBe("fs:///packageUrl/packageUrl.filament-extension");
+            expect(extensionController.loadExtension.mostRecentCall.args[0]).toBe("fs:///projectUrl/projectUrl.filament-extension");
         });
     });
 
