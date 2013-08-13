@@ -24,7 +24,7 @@ var Bridge = Montage.create(EnvironmentBridge, {
 
     projectInfo: {
         value: function (url) {
-            return Promise.resolve({packageUrl: "packageUrl", dependencies: []});
+            return Promise.resolve({packageUrl: "projectUrl", dependencies: []});
         }
     }
 

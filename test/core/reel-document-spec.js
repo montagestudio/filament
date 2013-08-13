@@ -44,7 +44,7 @@ describe("core/reel-document-spec", function () {
             mockDocument.getElementsByTagName("head")[0].appendChild(serializationNode);
 
             reelDocumentPromise = Template.initWithDocument(mockDocument).then(function (template) {
-                return ReelDocument.create().init("test/mocks/ui/simple.reel", template);
+                return ReelDocument.create().init("test/mocks/ui/simple.reel", template, void 0, "test/mocks/ui/simple.reel");
             });
         });
 
