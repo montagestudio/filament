@@ -12,7 +12,13 @@
                 "properties": {
                     "element": {"#": "library"},
                     "groupsController": {"@": "groupsController"}
-                }
+                },
+                "listeners": [
+                    {
+                        "type": "keyPress",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             },
 
             "groupsController": {
@@ -52,6 +58,22 @@
                 "bindings": {
                     "value": {"<->": "@owner.filterTerm"}
                 }
+            },
+
+            "filterEscape": {
+                "prototype": "montage/composer/key-composer",
+                "properties": {
+                    "keys": "escape",
+                    "component": {"@": "owner"},
+                    "identifier": "filterEscape",
+                    "element": {"#": "filterInput"}
+                },
+                "listeners": [
+                    {
+                        "type": "keyPress",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             }
 
         }

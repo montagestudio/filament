@@ -12,6 +12,19 @@ exports.Library = Montage.create(Panel, {
         value: null
     },
 
+    // TODO this is a temporary solution inspired by main.js
+    handleKeyPress: {
+        value: function (evt) {
+            var identifier = evt.identifier;
+
+            switch (identifier) {
+            case "filterEscape":
+                this.handleFilterEscapeKeyPress(evt);
+                break;
+            }
+        }
+    },
+
     prepareForActivationEvents: {
         value: function () {
             this._element.addEventListener("dragstart", this, false);
@@ -23,6 +36,12 @@ exports.Library = Montage.create(Panel, {
             if (this.state === panel.FLOATING_STATE) {
                 this.state = panel.HIDDEN_STATE;
             }
+        }
+    },
+
+    handleFilterEscapeKeyPress: {
+        value: function (evt) {
+            this.filterTerm = "";
         }
     },
 
