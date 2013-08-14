@@ -2,6 +2,7 @@
 var TestPageLoader = require("montage-testing/testpageloader").TestPageLoader;
 var Blueprint = require("montage/core/meta/blueprint").Blueprint;
 var PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint;
+var Promise = require("montage/core/promise").Promise;
 
 TestPageLoader.queueTest("edit-properties-test", function(testPage) {
     describe("ui/template-explorer/content/edit-properties", function() {
@@ -22,9 +23,9 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
             defaultGroup.push(a, b);
 
             editingDocument = {
-                addOwnerBlueprintProperty: function () {},
-                modifyOwnerBlueprintProperty: function () {},
-                removeOwnerBlueprintProperty: function () {}
+                addOwnerBlueprintProperty: function (name) { return Promise(); },
+                modifyOwnerBlueprintProperty: function (name, property, value) { return Promise(); },
+                removeOwnerBlueprintProperty: function (name) { return Promise(); }
             };
 
             editor._ownerObject = {
@@ -39,7 +40,7 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
 
         describe("add property button", function () {
             it("does nothing if no name given", function () {
-                spyOn(editingDocument, "addOwnerBlueprintProperty");
+                spyOn(editingDocument, "addOwnerBlueprintProperty").andCallThrough();
 
                 editor.templateObjects.addName.value = "";
                 testPage.clickOrTouch({target: editor.templateObjects.addProperty.element}, function () {
@@ -48,13 +49,13 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
             });
 
             it("calls addOwnerBlueprintProperty to add the property", function () {
-                spyOn(editingDocument, "addOwnerBlueprintProperty");
+                spyOn(editingDocument, "addOwnerBlueprintProperty").andCallThrough();
 
                 editor.templateObjects.addName.value = "pass";
                 testPage.clickOrTouch({target: editor.templateObjects.addProperty.element}, function () {
                     expect(editingDocument.addOwnerBlueprintProperty).toHaveBeenCalled();
-                    var arg = editingDocument.addOwnerBlueprintProperty.mostRecentCall.args[0];
-                    expect(arg.name).toBe("pass");
+                    var args = editingDocument.addOwnerBlueprintProperty.mostRecentCall.args;
+                    expect(args[0]).toBe("pass");
                 });
             });
 
@@ -66,7 +67,7 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
             });
 
             it("cannot be named the same as an existing blueprint", function () {
-                spyOn(editingDocument, "addOwnerBlueprintProperty");
+                spyOn(editingDocument, "addOwnerBlueprintProperty").andCallThrough();
 
                 editor.templateObjects.addName.value = "a";
                 testPage.clickOrTouch({target: editor.templateObjects.addProperty.element}, function () {
@@ -79,13 +80,13 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
 
         describe("remove button", function () {
             it("removes the property", function () {
-                spyOn(editingDocument, "removeOwnerBlueprintProperty");
+                spyOn(editingDocument, "removeOwnerBlueprintProperty").andCallThrough();
 
                 runs(function () {
                     testPage.clickOrTouch({target: editor.templateObjects.removeProperty[0].element}, function () {
                         expect(editingDocument.removeOwnerBlueprintProperty).toHaveBeenCalled();
-                        var arg = editingDocument.removeOwnerBlueprintProperty.mostRecentCall.args[0];
-                        expect(arg.name).toBe("a");
+                        var args = editingDocument.removeOwnerBlueprintProperty.mostRecentCall.args;
+                        expect(args[0]).toBe("a");
                     });
                 });
             });
@@ -93,7 +94,7 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
 
         describe("valueType select", function () {
             it("changes to valueType of the property", function () {
-                spyOn(editingDocument, "modifyOwnerBlueprintProperty");
+                spyOn(editingDocument, "modifyOwnerBlueprintProperty").andCallThrough();
 
                 runs(function () {
                     expect(defaultGroup[0].valueType).toBe("string");
@@ -104,9 +105,29 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
 
                     expect(editingDocument.modifyOwnerBlueprintProperty).toHaveBeenCalled();
                     var args = editingDocument.modifyOwnerBlueprintProperty.mostRecentCall.args;
-                    expect(args[0].name).toBe("a");
+                    expect(args[0]).toBe("a");
                     expect(args[1]).toBe("valueType");
                     expect(args[2]).toBe("number");
+                });
+            });
+
+            it("calls modifyOwnerBlueprintProperty before the change is made", function () {
+                spyOn(editingDocument, "modifyOwnerBlueprintProperty")
+                .andCallFake(function (name, property, value) {
+                    var propertyBlueprint = blueprint.propertyBlueprintForName(name);
+                    expect(propertyBlueprint[property]).toBe("string");
+                    expect(value).toBe("number");
+                    return Promise();
+                });
+
+                runs(function () {
+                    expect(defaultGroup[0].valueType).toBe("string");
+
+                    // simulate select
+                    editor.templateObjects.valueType[0].element.value = "number";
+                    editor.templateObjects.valueType[0].handleChange();
+
+                    expect(editingDocument.modifyOwnerBlueprintProperty).toHaveBeenCalled();
                 });
             });
         });

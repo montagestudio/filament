@@ -42,8 +42,7 @@ describe("core/reel-blueprint-editing-spec", function () {
 
         it("works", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                var property = new PropertyBlueprint().initWithNameBlueprintAndCardinality("pass", blueprint, 1);
-                return reelDocument.addOwnerBlueprintProperty(property)
+                return reelDocument.addOwnerBlueprintProperty("pass")
                 .then(function () {
                     expect(defaultGroup.length).toBe(3);
                     expect(defaultGroup[2].name).toBe("pass");
@@ -56,8 +55,7 @@ describe("core/reel-blueprint-editing-spec", function () {
                 blueprint = new Blueprint();
                 reelDocument.__ownerBlueprint = Promise(blueprint);
 
-                var property = new PropertyBlueprint().initWithNameBlueprintAndCardinality("pass", blueprint, 1);
-                return reelDocument.addOwnerBlueprintProperty(property)
+                return reelDocument.addOwnerBlueprintProperty("pass")
                 .then(function () {
                     defaultGroup = blueprint.propertyBlueprintGroupForName(reelDocument._exportName);
                     expect(defaultGroup.length).toBe(1);
@@ -71,7 +69,7 @@ describe("core/reel-blueprint-editing-spec", function () {
     describe("modifying a blueprint property", function () {
         it("works", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                return reelDocument.modifyOwnerBlueprintProperty(a, "valueType", "number")
+                return reelDocument.modifyOwnerBlueprintProperty("a", "valueType", "number")
                 .then(function () {
                     expect(a.valueType).toBe("number");
                 });
@@ -83,7 +81,7 @@ describe("core/reel-blueprint-editing-spec", function () {
 
         it("works", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                return reelDocument.removeOwnerBlueprintProperty(a)
+                return reelDocument.removeOwnerBlueprintProperty("a")
                 .then(function () {
                     expect(defaultGroup.length).toBe(1);
                     expect(defaultGroup[0].name).toBe("b");

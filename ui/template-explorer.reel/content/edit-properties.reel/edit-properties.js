@@ -9,6 +9,18 @@ var Component = require("montage/ui/component").Component,
     Serializer = require("montage/core/serialization").Serializer,
     Promise = require("montage/core/promise").Promise;
 
+function clone(propertyBlueprints) {
+    return propertyBlueprints.map(function (propertyBlueprint) {
+        var clone = new PropertyBlueprint();
+        clone.deserializeSelf({
+            getProperty: function (name) {
+                return propertyBlueprint[name];
+            }
+        });
+        return clone;
+    });
+}
+
 /**
     Description TODO
     @class module:"ui/edit-properties.reel".EditProperties
@@ -74,7 +86,7 @@ exports.EditProperties = Component.specialize({
             this._ownerBlueprint = value;
             if (value) {
                 // add... returns the existing group if it already exists
-                this.propertiesController.content = value.addPropertyBlueprintGroupNamed(this.ownerObject.exportName);
+                this.propertiesController.content = clone(value.addPropertyBlueprintGroupNamed(this.ownerObject.exportName));
             }
         }
     },
@@ -112,7 +124,7 @@ exports.EditProperties = Component.specialize({
 
     handlePropertyChange: {
         value: function (value, key, object) {
-            this._ownerObject.editingDocument.modifyOwnerBlueprintProperty(object, key, value);
+            this._ownerObject.editingDocument.modifyOwnerBlueprintProperty(object.name, key, value).done();
         }
     },
 
@@ -141,15 +153,14 @@ exports.EditProperties = Component.specialize({
                 return;
             }
 
-            var property = new PropertyBlueprint().initWithNameBlueprintAndCardinality(name, this.ownerBlueprint, 1);
-            this._ownerObject.editingDocument.addOwnerBlueprintProperty(property);
+            this._ownerObject.editingDocument.addOwnerBlueprintProperty(name).done();
             this.templateObjects.addName.value = "";
         }
     },
 
     handleRemovePropertyAction: {
         value: function (event) {
-            this._ownerObject.editingDocument.removeOwnerBlueprintProperty(event.detail.get('propertyBlueprint'));
+            this._ownerObject.editingDocument.removeOwnerBlueprintProperty(event.detail.get('name')).done();
         }
     }
 

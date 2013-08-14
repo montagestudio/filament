@@ -13,7 +13,8 @@ var Montage = require("montage").Montage,
     ReelContext = require("core/serialization/reel-context").ReelContext,
     NodeProxy = require("core/node-proxy").NodeProxy,
     visit = require("montage/mousse/serialization/malker").visit,
-    URL = require("core/node/url");
+    URL = require("core/node/url"),
+    PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint;
 
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = EditingDocument.specialize({
@@ -1369,11 +1370,12 @@ exports.ReelDocument = EditingDocument.specialize({
     // Owner blueprint
 
     addOwnerBlueprintProperty: {
-        value: function (propertyBlueprint) {
+        value: function (name) {
             var self = this;
             return this.undoManager.register(
                 "Add owner property",
                 this._ownerBlueprint.then(function (blueprint) {
+                    var propertyBlueprint = new PropertyBlueprint().initWithNameBlueprintAndCardinality(name, blueprint, 1);
                     blueprint.addPropertyBlueprint(propertyBlueprint);
                     blueprint.addPropertyBlueprintToGroupNamed(propertyBlueprint, self._exportName);
                     return [self.removeOwnerBlueprintProperty, self, propertyBlueprint];
@@ -1383,27 +1385,35 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     modifyOwnerBlueprintProperty: {
-        value: function (propertyBlueprint, property, value) {
-            var previousValue = propertyBlueprint[property];
-            propertyBlueprint[property] = value;
-            return this.undoManager.register(
-                "Modify owner property",
-                Promise.resolve([this.modifyOwnerBlueprintProperty, this, propertyBlueprint, property, previousValue])
-            );
+        value: function (name, property, value) {
+            var self = this;
+            return this._ownerBlueprint.then(function (blueprint) {
+                var propertyBlueprint = blueprint.propertyBlueprintForName(name);
+                var previousValue = propertyBlueprint[property];
+                if (value === previousValue) {
+                    return Promise();
+                }
+                propertyBlueprint[property] = value;
+                return self.undoManager.register(
+                    "Modify owner property",
+                    Promise.resolve([self.modifyOwnerBlueprintProperty, self, propertyBlueprint, property, previousValue])
+                );
+            });
         }
     },
 
     removeOwnerBlueprintProperty: {
-        value: function (propertyBlueprint) {
+        value: function (name) {
             var self = this;
-            return this.undoManager.register(
-                "Remove owner property",
-                this._ownerBlueprint.then(function (blueprint) {
-                    blueprint.removePropertyBlueprint(propertyBlueprint);
-                    blueprint.removePropertyBlueprintFromGroupNamed(propertyBlueprint, self._exportName);
-                    return [self.addOwnerBlueprintProperty, self, propertyBlueprint];
-                })
-            );
+            return this._ownerBlueprint.then(function (blueprint) {
+                var propertyBlueprint = blueprint.propertyBlueprintForName(name);
+                blueprint.removePropertyBlueprint(propertyBlueprint);
+                blueprint.removePropertyBlueprintFromGroupNamed(propertyBlueprint, self._exportName);
+                return self.undoManager.register(
+                    "Remove owner property",
+                    Promise.resolve([self.addOwnerBlueprintProperty, self, propertyBlueprint])
+                );
+            });
         }
     }
 

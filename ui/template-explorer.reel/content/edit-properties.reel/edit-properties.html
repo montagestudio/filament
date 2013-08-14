@@ -85,7 +85,7 @@
                 "element": {"#": "removeProperty"}
             },
             "bindings": {
-                "detail.get('propertyBlueprint')": {"<-": "@properties.objectAtCurrentIteration"}
+                "detail.get('name')": {"<-": "@properties.objectAtCurrentIteration.name"}
             },
             "listeners": [
                 {"type": "action", "listener": {"@": "owner"}}
