@@ -35,6 +35,120 @@ describe("filament backend", function () {
         });
     });
 
+    describe("createApplication", function () {
+        var mockFS, filamentBackend;
+
+        beforeEach(function () {
+            mockFS = QFSMock({
+                "root": {
+                    "extensions": {
+                        "a.filament-extension": 1,
+                        "b.filament-extension": 1
+                    }
+                }
+            });
+
+            filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
+                requires: {"q-io/fs": mockFS},
+                globals: {clientPath: "/root"}
+            });
+        });
+
+        it("creates an app with a space in its name", function () {
+            var timestamp = Date.now();
+            return filamentBackend.createApplication("my app" + timestamp, "/tmp/")
+            .then(function (minitResults) {
+                expect(minitResults.name).toEqual("my-app" + timestamp);
+            });
+        });
+
+        it("creates an app with a non-ascii characters in its name", function () {
+            var timestamp = Date.now();
+            return filamentBackend.createApplication("râțéăü" + timestamp, "/tmp/")
+            .then(function (minitResults) {
+                expect(minitResults.name).toEqual("rateau" + timestamp);
+            });
+        });
+    });
+
+    describe("createComponent", function () {
+        var mockFS, filamentBackend;
+
+        beforeEach(function () {
+            mockFS = QFSMock({
+                "root": {
+                    "extensions": {
+                        "a.filament-extension": 1,
+                        "b.filament-extension": 1
+                    }
+                }
+            });
+
+            filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
+                requires: {"q-io/fs": mockFS},
+                globals: {clientPath: "/root"}
+            });
+        });
+
+        it("creates an component with a space in its name", function () {
+            var timestamp = Date.now();
+            return filamentBackend.createComponent("my component" + timestamp, "/tmp/", "")
+            .then(function (path) {
+                var pieces = path.split("/");
+                expect(pieces[pieces.length -1]).toEqual("my-component" + timestamp);
+            });
+        });
+
+        it("creates an component with a non-ascii characters in its name", function () {
+            var timestamp = Date.now();
+            return filamentBackend.createComponent("føø" + timestamp, "/tmp/", "")
+            .then(function (path) {
+                var pieces = path.split("/");
+                expect(pieces[pieces.length -1]).toEqual("foo" + timestamp);
+            });
+        });
+    });
+   
+    describe("createModule", function () {
+        var mockFS, filamentBackend;
+
+        beforeEach(function () {
+            mockFS = QFSMock({
+                "root": {
+                    "extensions": {
+                        "a.filament-extension": 1,
+                        "b.filament-extension": 1
+                    }
+                }
+            });
+
+            filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
+                requires: {"q-io/fs": mockFS},
+                globals: {clientPath: "/root"}
+            });
+        });
+
+        it("creates an module with a space in its name", function () {
+            var timestamp = Date.now();
+            return filamentBackend.createModule("my module" + timestamp, "/tmp/", "")
+            .then(function (path) {
+                var pieces = path.split("/");
+                expect(pieces[pieces.length -1]).toEqual("my-module" + timestamp);
+            });
+        });
+
+        it("creates an module with a non-ascii characters in its name", function () {
+            var timestamp = Date.now();
+            return filamentBackend.createModule("bär" + timestamp, "/tmp/", "")
+            .then(function (path) {
+                var pieces = path.split("/");
+                expect(pieces[pieces.length -1]).toEqual("bar" + timestamp);
+            });
+        });
+    });
+   
+    
+
     describe("listTree", function () {
         var mockFS, filamentBackend;
 

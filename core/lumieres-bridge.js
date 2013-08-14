@@ -218,6 +218,7 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
             var deferredSave = Promise.defer();
 
             lumieres.saveFileDialog(options, function (error, file) {
+                file = decodeURI(file);
                 if (!error) {
                     deferredSave.resolve(file);
                 } else {
@@ -264,15 +265,21 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
                     return self.backend.get("application").invoke("moveToTrash", applicationUrl);
                 }
             }).then(function () {
-                    return self.backend.get("filament-backend").invoke("createApplication", name, packagePath)
-                    .then(function () {
+                return self.backend.get("filament-backend").invoke("createApplication", name, packagePath)
+                    .then(function (minitResults) {
+                        if (!minitResults || !minitResults.name) {
+                            console.log("TODO: remove this error checking when minit returns promises: (see pull request montagejs/minit/pull/47), using the name entered by user.");
+                        }else{
+                            // Use the name from minit normalization
+                            applicationUrl = packageHome + "/" + minitResults.name;
+                        }
                         lumieres.document.setFileURL(applicationUrl);
                         return applicationUrl;
                     }, function (error) {
                         console.log("Could not create the application " + name + " at " + packagePath, error);
                         throw error;
                     });
-                });
+            });
         }
     },
 

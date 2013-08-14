@@ -11,7 +11,7 @@ jasmine.Block.prototype.execute = function (onComplete) {
         // It seems Jasmine likes to return the suite if you pass it anything.
         // So make sure it's a promise first.
         if (result && typeof result.then === "function") {
-            Q.timeout(result, 500).then(function () {
+            Q.timeout(result, 3000).then(function () {
                 onComplete();
             }, function (error) {
                 spec.fail(error);
