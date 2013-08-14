@@ -118,6 +118,15 @@ exports.menusAddOns = function() {
             keyEquivalent: "command+option+?",
             location: {insertBefore: "6.1"},
             action: {openWindow: {url:"http://client/docs/index.html", width:650, height:800, canResize:true, showToolbar:true, canOpenMultiple: false}}
+        },
+
+        {
+            location: {"insertBefore": "performClose"},
+            title: "Import…",
+            keyEquivalent: "command+I",
+            enabled: false,
+            identifier: "importDocument",
+//            action: {openWindow: {url:"http://client/import/index.html", width:400, height:600, showWindow: false, canResize:true, showToolbar:false, canOpenMultiple: true}}
         }
     ];
 };

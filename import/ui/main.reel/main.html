@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>
+    <title>Import</title>
+    <meta charset="utf-8">
+
+    <link href="main.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "localizer": {
+                "object": "montage/core/localizer[defaultLocalizer]"
+            },
+
+            "owner": {
+                "properties": {
+                    "element": {"#": "main"}
+                },
+                "listeners": [
+                    {
+                        "type": "openDocument",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "closeButton": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {
+                        "#": "close-button"
+                    },
+                    "enabled": true
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ],
+                "bindings": {
+                    "detail.get('associatedObject')": {"<-": "@owner.item"}
+                }
+
+            },
+            "name": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {
+                        "#": "name"
+                    }
+                },
+                "bindings": {
+                    "value": {
+                        "<-": "@owner.name"
+                    }
+                }
+            },
+            "progress": {
+                "prototype": "matte/ui/progress.reel",
+                "properties": {
+                    "element": {
+                        "#": "progress"
+                    },
+                    "max": 0,
+                    "value": 0
+                },
+                "bindings": {
+                    "max": {
+                        "<-": "@owner.numberOfPages"
+                    },
+                    "value": {
+                        "<-": "@owner.pageNumber"
+                    }
+                }
+            },
+            "status": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {
+                        "#": "status"
+                    }
+                },
+                "bindings": {
+                    "value": {
+                        "<-": "@owner.statusLabel"
+                    }
+                }
+            }
+
+        }
+    </script>
+
+</head>
+<body>
+
+    <div data-montage-id="main" class="main Import">
+
+        <section>
+            <span data-montage-id="name" class="Import-name"></span>
+            <span>&nbsp;</span>
+        </section>
+        <section>
+            <progress data-montage-id="progress" class="Import-progress"></progress>
+            <button data-montage-id="close-button" class="Import-close-button">x</button>
+        </section>
+        <section>
+            <span data-montage-id="status" class="Import-status">Waiting...</span>
+            <span>&nbsp;</span>
+        </section>
+
+        <!-- element used for rendering the pages, should not be visible to the user -->
+        <canvas id="canvas"></canvas>
+        <div id="output"></div>
+    </div>
+
+</body>
+</html>

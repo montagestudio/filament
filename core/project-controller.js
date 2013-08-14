@@ -538,6 +538,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             switch (menuItem.identifier) {
             case "newComponent":
+            case "importDocument":
                 evt.preventDefault();
                 evt.stopPropagation();
 
@@ -572,6 +573,14 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                 if (this.canCreateModule) {
                     this.createModule().done();
+                }
+                break;
+            case "importDocument":
+                evt.preventDefault();
+                evt.stopPropagation();
+
+                if (this.canCreateComponent) {
+                    this.importDocument().done();
                 }
                 break;
             }
@@ -872,6 +881,61 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: function () {
             return this._create("component", "ui",
                 this.environmentBridge.createComponent.bind(this.environmentBridge));
+        }
+    },
+
+    importDocument: {
+        value: function () {
+            var self = this,
+                packagePath = this.environmentBridge.convertBackendUrlToPath(this.packageUrl),
+                options = {
+                    canChooseDirectories: false,
+                    fileTypes: ["com.adobe.pdf"]
+                },
+                self = this;
+
+            return this.environmentBridge.promptForOpen(options).then(function(url) {
+                if (url) {
+                    var windowParams = {
+                        url: "http://client/import/index.html?source=" + encodeURIComponent(url) + "&dest=" + encodeURIComponent(self.packageUrl),
+                        showWindow: true,
+                        canResize: false,
+                        height: 96,
+                        width: 420
+                    };
+
+                    var application = self.environmentBridge.backend.get("application");
+                    application.invoke("windowList").then(function(result) {
+                        var windows = result.windows,
+                            promises = [];
+
+                        windows.forEach(function(url) {
+                            if (decodeURI(url).indexOf("http://client/pdf-converter/index.html") === 0) {
+                                var params = {};
+                                url.substr(url.indexOf("?") + 1).split("&").forEach(function(query) {
+                                    var param = query.split("=", 2);
+                                    params[param[0]] = param[1] !== undefined ? decodeURIComponent(param[1]) : null;
+                                });
+                                if (params.source === windowParams.url) {
+                                    promises.push(application.invoke("closeWindow", url));
+                                }
+                            }
+                        });
+
+                        return Promise.allSettled(promises).then(function() {
+                            return application.invoke("openWindow", windowParams).then(function() {
+                                console.log("PDF Converter for", windowParams.url, "launched");
+                            });
+                        });
+                    }, function(e) {
+                        console.log("ERROR:", e.message, e.stack);
+                    });
+
+                }
+
+                return false;
+            })
+
         }
     },
 

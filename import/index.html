@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+    <title>Import</title>
+    <meta charset="utf-8">
+    
+    <link href="../assets/fonts/fonts.css" rel="stylesheet" />
+    <link href="../assets/styles/bootstrapping.css" rel="stylesheet" />
+    <link href="../assets/styles/filament.css" rel="stylesheet" />
+    
+    <!-- In production, only one script (pdf.js) is necessary -->
+    <!-- In production, change the content of PDFJS.workerSrc below -->
+    <script type="text/javascript" src="../node_modules/pdf.js/src/network.js"></script>            <!-- only when worker is disabled -->
+    <script type="text/javascript" src="../node_modules/pdf.js/src/core.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/util.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/api.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/canvas.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/obj.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/function.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/charsets.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/cidmaps.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/colorspace.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/crypto.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/evaluator.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/fonts.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/font_renderer.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/glyphlist.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/image.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/metrics.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/parser.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/pattern.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/stream.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/chunked_stream.js"></script>     <!-- only when worker is disabled -->
+    <script type="text/javascript" src="../node_modules/pdf.js/src/pdf_manager.js"></script>        <!-- only when worker is disabled -->
+    <script type="text/javascript" src="../node_modules/pdf.js/src/worker.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/external/jpgjs/jpg.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/jpx.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/jbig2.js"></script>
+    <script type="text/javascript" src="../node_modules/pdf.js/src/metadata.js"></script>
+
+    <script type="text/javascript">
+      // Specify the main script used to create a new PDF.JS web worker.
+      // In production, change this to point to the combined `pdf.js` file.
+      PDFJS.workerSrc = '../node_modules/pdf.js/src/worker_loader.js';
+//      PDFJS.disableWorker = true;
+//      globalScope.verbosity = INFOS;
+
+      PDFJS.disableAutoFetch = true;
+      PDFJS.disableImagePrescale = true;
+      PDFJS.useExternalDiskCache = true;     // Needed in order to be able to cache/save to disk all images
+    </script>
+
+    <script src="../node_modules/montage/montage.js" data-package=".."></script>
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "prototype": "montage/ui/loader.reel",
+                "properties": {
+                    "mainModule": "import/ui/main.reel"
+                }
+            }
+        }
+    </script>
+
+</head>
+<body>
+    <div class="LoaderWrapper">
+        <div class="Loader">
+            <div class="Loader-cube"></div>
+            <div class="Loader-cube"></div>
+            <div class="Loader-cube"></div>
+        </div>
+    </div>
+</body>
+</html>
