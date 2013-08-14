@@ -36,16 +36,16 @@ exports.createComponent = function(name, packageHome, destination) {
     destination = destination || ".";
     name = name.replace(/\.reel$/, "");
     return minitCreate("component", {name: name, packageHome: packageHome, destination: destination})
-    .then(function () {
-        return path.join(packageHome, destination, name);
+    .then(function (minitResults) {
+        return path.join(packageHome, destination, minitResults.name);
     });
 };
 
 exports.createModule = function(name, packageHome, destination) {
     destination = destination || ".";
     return minitCreate("module", {name: name, packageHome: packageHome, destination: destination})
-    .then(function () {
-        return path.join(packageHome, destination, name);
+    .then(function (minitResults) {
+        return path.join(packageHome, destination, minitResults.name);
     });
 };
 
