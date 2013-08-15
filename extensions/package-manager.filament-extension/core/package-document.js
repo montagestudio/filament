@@ -8,15 +8,24 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     DEPENDENCY_TYPE_OPTIONAL = 'optional',
     DEPENDENCY_TYPE_BUNDLE = 'bundle',
     DEPENDENCY_TYPE_DEV = 'dev',
-    DEPENDENCIES_REQUIRED = [
-        'montage'
-    ],
+    DEPENDENCIES_REQUIRED = [ 'montage' ],
+    DEPENDENCIES_NAME_CACHE = {
+        regular: 'dependencies',
+        optional: 'optionalDependencies',
+        dev: 'devDependencies',
+        bundle: 'bundledDependencies'
+    },
+
     DEFAULT_TIME_AUTO_SAVE = 400,
     DEPENDENCY_TIME_AUTO_SAVE = 100,
-	ERROR_DEPENDENCY_MISSING = 1000,
-    ERROR_VERSION_INVALID = 1001,
-    ERROR_FILE_INVALID = 1002,
-    ERROR_DEPENDENCY_EXTRANEOUS = 1003;
+
+    ERROR_LIST_CMD_DEPENDENCY_MISSING = 1000,
+    ERROR_LIST_CMD_VERSION_INVALID = 1001,
+    ERROR_LIST_CMD_FILE_INVALID = 1002,
+    ERROR_LIST_CMD_DEPENDENCY_EXTRANEOUS = 1003,
+
+    ERROR_INSTALL_CMD_NOT_FOUND = 2001,
+    ERROR_INSTALL_CMD_VERSION_NOT_FOUND = 2002;
 
 exports.PackageDocument = EditingDocument.specialize( {
 

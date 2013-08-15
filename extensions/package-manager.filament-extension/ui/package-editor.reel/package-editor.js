@@ -1,7 +1,7 @@
 var Montage = require("montage").Montage,
     Editor = require("palette/ui/editor.reel").Editor,
     Promise = require("montage/core/promise").Promise,
-    ERROR_TYPE_NOT_FOUND = '404',
+    ERROR_VIEW_CMD_NOT_FOUND = 3001,
     INSTALL_DEPENDENCY_ACTION = 0,
     REMOVE_DEPENDENCY_ACTION = 1;
 

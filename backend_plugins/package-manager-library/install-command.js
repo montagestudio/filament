@@ -1,7 +1,10 @@
 var AbstractNpmCommand = require("./abstract-npm-command").AbstractNpmCommand,
     Q = require("q"),
     Tools = require("./package-manager-tools").PackageManagerTools,
-    npm = require("npm");
+    npm = require("npm"),
+
+    ERROR_NOT_FOUND = 2001,
+    ERROR_VERSION_NOT_FOUND = 2002;
 
 exports.installCommand = Object.create(AbstractNpmCommand, {
 
