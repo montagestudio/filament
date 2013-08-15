@@ -351,18 +351,35 @@ exports.PackageDocument = EditingDocument.specialize( {
                         this._saveTimer = null;
 
                         this.saveModification().then(function () {
-                            self._updateDependenciesList();
+                            self._updateDependenciesAfterSaving();
                         });
                     } else {
-                        this._savingInProgress.then(function () {
-                            self._updateDependenciesList();
-                            self._savingInProgress = null;
+                        this._savingInProgress.then(function () { // saving in progress, can take some time
+                            self._updateDependenciesAfterSaving();
                         });
                     }
                 } else {
-                    this._updateDependenciesList();
+                    this._updateDependenciesAfterSaving();
                 }
             }
+        }
+    },
+
+    _updateDependenciesAfterSaving: {
+        value: function () {
+            this._updateDependenciesList();
+            this._updateLibraryGroups().done();
+        }
+    },
+
+    _updateLibraryGroups: {
+        value: function () {
+            var self = this;
+
+            return this.sharedProjectController.environmentBridge.projectInfo(this.projectUrl).then(function (projectInfo) {
+                self.sharedProjectController.dependencies = projectInfo.dependencies;
+                return self.sharedProjectController.populateLibrary();
+            });
         }
     },
 
