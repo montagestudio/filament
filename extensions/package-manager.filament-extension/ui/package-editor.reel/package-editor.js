@@ -180,18 +180,17 @@ exports.PackageEditor = Montage.create(Editor, {
      * @private
      */
     _installDependency: {
-            value: function (name, version, type) {
-                var self = this,
+        value: function (name, version, type) {
+            var self = this,
                 promise = this.currentDocument.installDependency(name, version, type).then(function (data) {
-                    if (data && typeof data === 'object' && data.hasOwnProperty('name') && name === data.name) {
+                    if (data && typeof data === 'object' && data.hasOwnProperty('name')) {
+                        self._dependenciesListChange(data.name, INSTALL_DEPENDENCY_ACTION);
+                        return 'The dependency ' + data.name + ' has been installed.';
+                    }
 
-                            self._dependenciesListChange(name, INSTALL_DEPENDENCY_ACTION);
-                            return 'The dependency ' + name + ' has been installed.';
-                        }
-
-                        throw new Error('An error has occurred while installing the dependency ' + name);
-                    }, function (error) {
-                        throw error;
+                    throw new Error('An error has occurred while installing the dependency ' + name);
+                }, function (error) {
+                    throw error;
                 });
 
             self.dispatchEventNamed("asyncActivity", true, false, {
