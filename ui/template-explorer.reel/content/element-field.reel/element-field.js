@@ -75,6 +75,10 @@ exports.ElementField = Component.specialize(/** @lends ElementField# */ {
                 var templateObject = this.templateObject,
                     editingDocument = templateObject.editingDocument;
 
+                // Because editingDocument.createMontageIdForProxy is undoAble
+                // and so is editingDocument.setOwnedObjectElement
+                editingDocument.undoManager.openBatch("Set element");
+
                 if (!montageId) {
                     var xpath = event.dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_XPATH);
                     // get element from template
@@ -93,6 +97,7 @@ exports.ElementField = Component.specialize(/** @lends ElementField# */ {
 
                 editingDocument.setOwnedObjectElement(templateObject, montageId);
                 editingDocument.editor.refresh();
+                editingDocument.undoManager.closeBatch();
             }
 
             this._willAcceptDrop = false;
