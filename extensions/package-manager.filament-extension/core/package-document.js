@@ -594,7 +594,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                 var self = this;
 
                 return this.saveModification().then(function () {
-                    return self._updateDependenciesList();
+                    return self._updateDependenciesAfterSaving();
                 });
             }
         }
