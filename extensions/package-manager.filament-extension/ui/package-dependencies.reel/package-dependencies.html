@@ -7,13 +7,20 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "package-dependencies"}
+                "element": {"#": "package-dependencies"},
+                "installDependencyOverlay": {"@": "installDependencyOverlay"}
             },
             "bindings": {
                 "dependencyCell": {"<-": "@packageDependenciesGroup.selectedCell.0"},
                 "devDependencyCell": {"<-": "@packageDevDependenciesGroup.selectedCell.0"},
                 "optionalDependencyCell": {"<-": "@packageOptionalDependenciesGroup.selectedCell.0"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "packageDependenciesGroup": {
@@ -47,18 +54,39 @@
             "bindings": {
                 "dependencies": {"<-": "@owner.editingDocument.dependencies.optional"}
             }
+        },
+
+        "addDependencyButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "addDependencyButton"},
+                "label": "+"
+            }
+        },
+
+        "installDependencyOverlay": {
+            "prototype": "./add-dependency-overlay.reel",
+            "properties": {
+                "element": {"#": "installDependencyOverlay"},
+                "anchor": {"#": "addDependencyButton"}
+            },
+            "bindings": {
+                "packageEditor": {"<-": "@owner.packageEditor"}
+            }
         }
     }
     </script>
 </head>
 <body>
     <section data-montage-id="package-dependencies" id="PackageDependencies">
-        <header class="PackageEditorPanel-title PackageEditorPanel-title--header">Package Dependencies</header>
+        <header class="PackageEditorPanel-title PackageEditorPanel-title--header">Package Dependencies<button data-montage-id="addDependencyButton" class="PackageEditorPanel-title--button"></button></header>
         <div class="PackageEditorColumnContent">
             <div data-montage-id="packageDependenciesGroup" class="PackageEditorPanel ListDependencies"></div>
             <div data-montage-id="packageDevDependenciesGroup" class="PackageEditorPanel ListDependencies"></div>
             <div data-montage-id="packageOptionalDependenciesGroup" class="PackageEditorPanel ListDependencies"></div>
         </div>
+
+        <div data-montage-id="installDependencyOverlay"></div>
     </section>
 </body>
 </html>

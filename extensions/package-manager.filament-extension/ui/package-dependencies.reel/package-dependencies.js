@@ -27,12 +27,16 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
         }
     },
 
+    editingDocument: {
+        value: null
+    },
+
     /**
-     * Reference to the packageDocument.
+     * Reference to the packageEditor.
      * @type {Object}
      * @default null
      */
-    editingDocument: {
+    packageEditor: {
         value: null
     },
 
@@ -125,6 +129,16 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
     devDependencyCell: {
         set: function (cell) {
             this._manualChange(cell);
+        }
+    },
+
+    /**
+     * Displays the install dependency overlay form.
+     * @function
+     */
+    handleAddDependencyButtonAction: {
+        value: function() {
+            this.installDependencyOverlay.show();
         }
     }
 

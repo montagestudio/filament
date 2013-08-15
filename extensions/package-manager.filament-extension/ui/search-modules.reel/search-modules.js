@@ -137,9 +137,9 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
      * @param {string} action
      */
     handleDependenciesListChange: {
-        value: function (dependency, action) {
-            if (dependency && Array.isArray(this.searchResults) && this.searchResults.length > 0) {
-                var result = this._findResult(dependency.name);
+        value: function (name, action) {
+            if (name && Array.isArray(this.searchResults) && this.searchResults.length > 0) {
+                var result = this._findResult(name);
 
                 if (result) {
                     result.installed = (action !== REMOVE_DEPENDENCY_ACTION);

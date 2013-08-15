@@ -69,7 +69,7 @@ exports.PackageEditor = Montage.create(Editor, {
                     }
                 }, function (error) {
 
-                    if (error && typeof error === 'object' && error.message === ERROR_TYPE_NOT_FOUND) {
+                    if (error && typeof error === 'object' && error.message === ERROR_VIEW_CMD_NOT_FOUND.toString()) {
                         self.dependencyDisplayed = dependency;
                     } else {
                         self.dependencyDisplayed = null;
@@ -118,9 +118,9 @@ exports.PackageEditor = Montage.create(Editor, {
                 var source = event.detail.get('source');
 
                 if (source && typeof source === 'object' && !source.canInstall) { // remove request
-                    this._handleRemoveDependency(source, source.dependency);
+                    this._removeDependency(source, source.dependency);
                 } else { // install request
-                    this._handleInstallDependency(source, source.dependency);
+                    this._installDependency(source.dependency);
                 }
             }
         }
@@ -132,7 +132,7 @@ exports.PackageEditor = Montage.create(Editor, {
      * @param {Object} source, the cell which raised the action.
      * @param {Object} dependency, the dependency owns by the cell.
      */
-    _handleRemoveDependency: {
+    _removeDependency: {
         value: function (source, dependency) {
             var self = this;
 
@@ -142,7 +142,7 @@ exports.PackageEditor = Montage.create(Editor, {
                 var promise = this.currentDocument.uninstallDependency(dependency.name).then(function (success) {
 
                     if (success) {
-                        self._dependenciesListChange(dependency, REMOVE_DEPENDENCY_ACTION);
+                        self._dependenciesListChange(dependency.name, REMOVE_DEPENDENCY_ACTION);
                         return 'The dependency ' + dependency.name + ' has been removed';
                     }
                     source.performingAction = false;
@@ -161,53 +161,59 @@ exports.PackageEditor = Montage.create(Editor, {
         }
     },
 
+    installDependency: {
+        value: function (dependency, version, type) {
+            if (dependency && typeof dependency === "object" && dependency.name) {
+                version = dependency.version;
+                type = dependency.type;
+                dependency = dependency.name;
+            }
+
+            this._installDependency(dependency, version, type);
+        }
+    },
+
     /**
      * Invokes the install dependency process.
      * @function
-     * @param {Object} source, the cell which raised the action.
      * @param {Object} dependency, the dependency owns by the cell.
      * @private
      */
-    _handleInstallDependency: {
-        value: function (source, dependency) {
-            var self = this;
+    _installDependency: {
+            value: function (name, version, type) {
+                var self = this,
+                promise = this.currentDocument.installDependency(name, version, type).then(function (data) {
+                    if (data && typeof data === 'object' && data.hasOwnProperty('name') && name === data.name) {
 
-            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name')) {
-                var promise = this.currentDocument.installDependency(dependency.name, (dependency.version || null), dependency.type).then(function (data) {
-                    if (data && typeof data === 'object' && data.hasOwnProperty('name') && dependency.name === data.name) {
-                        source.canInstall = false;
+                            self._dependenciesListChange(name, INSTALL_DEPENDENCY_ACTION);
+                            return 'The dependency ' + name + ' has been installed.';
+                        }
 
-                        self._dependenciesListChange(dependency, INSTALL_DEPENDENCY_ACTION);
-                        return 'The dependency ' + dependency.name + ' has been installed.';
-                    }
-
-                    throw new Error('An error has occurred while installing the dependency ' + dependency.name);
-
-                }, function (error) {
-                    throw error;
+                        throw new Error('An error has occurred while installing the dependency ' + name);
+                    }, function (error) {
+                        throw error;
                 });
 
-                self.dispatchEventNamed("asyncActivity", true, false, {
-                    promise: promise,
-                    title: "Installing"
-                });
-            }
+            self.dispatchEventNamed("asyncActivity", true, false, {
+                promise: promise,
+                title: "Installing"
+            });
         }
     },
 
     /**
      * Notifies to the search part that the dependencies list has changed.
      * @function
-     * @param {Object} dependency, the dependency which has been modified.
+     * @param {String} dependencyName, the dependency name which has been modified.
      * @param {String} action, specifies which action has been applied.
      * @private
      */
     _dependenciesListChange: {
-        value: function (dependency, action) {
-            if (dependency && action) {
-                this.templateObjects.searchModules.handleDependenciesListChange(dependency, action);
+        value: function (dependencyName, action) {
+            if (dependencyName && action >= 0) {
+                this.templateObjects.searchModules.handleDependenciesListChange(dependencyName, action);
 
-                if (action === REMOVE_DEPENDENCY_ACTION && this.dependencyDisplayed && this.dependencyDisplayed.name === dependency.name) { // Need to clean the view part, if the dependency deleted is also the dependency displayed
+                if (action === REMOVE_DEPENDENCY_ACTION && this.dependencyDisplayed && this.dependencyDisplayed.name === dependencyName) { // Need to clean the view part, if the dependency deleted is also the dependency displayed
                     this.dependencyDisplayed = null;
                 }
 

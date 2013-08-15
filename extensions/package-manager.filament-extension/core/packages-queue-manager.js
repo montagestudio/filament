@@ -265,18 +265,28 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
 
             if (this._queueManagerLoaded) {
                 if (typeof module === 'string' && module.length > 0) {
-                    module = Tools.getModuleFromString(module);
+                    var moduleName = Tools.findModuleNameFormGitUrl(module);
+
+                    if (moduleName) {
+                        module = {
+                            name: moduleName,
+                            version: module
+                        };
+                    } else {
+                        module = Tools.getModuleFromString(module);
+                    }
                 }
 
-                if (module && typeof module === 'object' && module.hasOwnProperty('name') && Tools.isNameValid(module.name)) {
-                    module.version = (Tools.isVersionValid(module.version)) ? module.version : null;
+                if (module && typeof module === 'object' && Tools.isNameValid(module.name)) {
+                    var version = Tools.isVersionValid(module.version) ? module.version : null,
+                        request = Tools.isGitUrl(module.version) ? module.version : version ? module.name + '@' + version : module.name;
 
                     this._queue.push({
                         name: module.name,
                         type: (typeof module.type === 'string' && module.type.length > 0) ? module.type : DEPENDENCY_TYPE_REGULAR,
-                        version: module.version,
+                        version: version,
                         deferred: deferred,
-                        request: (module.version) ? module.name + '@' + module.version : module.name,
+                        request: request,
                         strict: (typeof strict === 'boolean') ? strict : true,
                         action: action
                     });

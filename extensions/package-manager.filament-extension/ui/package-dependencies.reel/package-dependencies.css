@@ -1,3 +1,10 @@
 .ListDependencies .selected {
     background: hsl(210,100%,92%) !important;
 }
+
+.PackageEditorPanel-title--button {
+    float: right;
+    height: 25px !important;
+    padding: 0 !important;
+    margin: 5px 5px 0 0 !important;
+}
