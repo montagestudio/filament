@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="add-dependency-overlay.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "add-dependency-overlay"}
+            },
+            "bindings": {
+                "type": {"<-": "@typesController.value"}
+            }
+        },
+
+        "installDependencyName":{
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "installDependencyName"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.name"}
+            }
+        },
+
+        "installDependencyVersion":{
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "installDependencyVersion"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.version"}
+            }
+        },
+
+        "installDependencyUrl":{
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "installDependencyUrl"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.url"}
+            }
+        },
+
+        "typesController": {
+            "prototype": "montage/core/radio-button-controller"
+        },
+
+        "regular": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "type-regular"},
+                "value": "regular",
+                "radioButtonController": {"@": "typesController"},
+                "checked": true
+            }
+        },
+
+        "dev": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "type-dev"},
+                "value": "dev",
+                "radioButtonController": {"@": "typesController"}
+            }
+        },
+
+        "optional": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "type-optional"},
+                "value": "optional",
+                "radioButtonController": {"@": "typesController"}
+            }
+        },
+
+        "installManuallyDependency": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "label": "Install",
+                "element": {"#": "installManuallyDependencyAction"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="add-dependency-overlay" class="montage-Overlay AddDependencyOverlay">
+        <ul>
+            <li>
+                <label for="installDependencyName">Name:</label>
+                <input id="installDependencyName" data-montage-id="installDependencyName" type="text" pattern="^[0-9a-zA-Z~]([\w\-\.~])*$" />
+            </li>
+            <li>
+                <label for="installDependencyVersion">Version:</label>
+                <input id="installDependencyVersion" data-montage-id="installDependencyVersion" type="text" pattern="^(v?([0-9]+\.){2}[0-9]+(\-?[a-zA-Z0-9])*|latest)$" />
+            </li>
+            <li class="AddDependencyOverlay-item--choice">
+                <em>OR</em>
+            </li>
+            <li>
+                <label for="installDependencyUrl">Git Url:</label>
+                <input id="installDependencyUrl" data-montage-id="installDependencyUrl" type="text" pattern="^git(\+https?|\+ssh)?:\/\/([\w\-\.~]+@)?[\/\w\.\-:~\?]*\/([\w\-\.~]+){1}\.git(#[\w\-\.~]*)?$" />
+            </li>
+            <li>
+                <input type="radio" data-montage-id="type-regular"> Regular
+                <input type="radio" data-montage-id="type-dev"> Dev
+                <input type="radio" data-montage-id="type-optional"> Optional
+            </li>
+        </ul>
+        <button data-montage-id="installManuallyDependencyAction"></button>
+    </div>
+</body>
+</html>

@@ -75,9 +75,12 @@ exports.searchCommand = Object.create(AbstractNpmCommand, {
     _formatElementFromResearch: {
         value: function (element) {
             return {
-                name: (element.name || ''),
-                version: (element.version || ''),
-                description: (element.description || '')
+                name: (element.name || null),
+                version: (element.version || null),
+                description: (element.description || null),
+                maintainers: (element.maintainers || []),
+                time: (element.time || null),
+                url: (element.url || null)
             };
         }
     },

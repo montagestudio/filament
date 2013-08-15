@@ -1,8 +1,8 @@
 var AbstractNpmCommand = require("./abstract-npm-command").AbstractNpmCommand,
     Q = require("q"),
     Tools = require("./package-manager-tools").PackageManagerTools,
-    ERROR_TYPE_NOT_FOUND = 404,
-    ERROR_TYPE_UNKNOWN = -1,
+    ERROR_TYPE_UNKNOWN = 3000,
+    ERROR_TYPE_NOT_FOUND = 3001,
     npm = require("npm");
 
 exports.viewCommand = Object.create(AbstractNpmCommand, {

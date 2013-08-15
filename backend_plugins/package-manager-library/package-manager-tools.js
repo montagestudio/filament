@@ -24,6 +24,12 @@ exports.PackageManagerTools = Object.create(Object.prototype, {
         }
     },
 
+    isGitUrl: {
+        value: function (url) {
+            return (typeof url === 'string') ? (/^git(\+https?|\+ssh)?:\/\/([\w\-\.~]+@)?[\/\w\.\-:~\?]*\/([\w\-\.~]+){1}\.git(#[\w\-\.~]*)?$/).exec(url) : false;
+        }
+    },
+
     /**
      * Checks if a string respects the following format: "name[@version]".
      * @function
@@ -32,13 +38,16 @@ exports.PackageManagerTools = Object.create(Object.prototype, {
      */
     isRequestValid: {
         value: function (request) {
+            if (this.isGitUrl(request)) {
+                return true;
+            }
+
             if (typeof request === 'string') {
+
                 var data = request.split('@'),
                     version = data[1];
 
-                if (data.length > 0 && data.length < 3 && this.isNameValid(data[0]) && (typeof version === 'undefined' || (typeof version !== 'undefined' && this.isVersionValid(version)))) {
-                    return true;
-                }
+                return (data.length > 0 && data.length < 3 && (this.isNameValid(data[0])) && (typeof version === 'undefined' || (typeof version !== 'undefined' && this.isVersionValid(version))));
             }
             return false;
         }
@@ -58,8 +67,8 @@ exports.PackageManagerTools = Object.create(Object.prototype, {
                     name = tmp[0],
                     version = tmp[1];
 
-                module.name = (this.isNameValid(name)) ? name : '';
-                module.version = (this.isVersionValid(version)) ? version : null;
+                module.name = (this.isNameValid(name)) ? name : null;
+                module.version = (this.isVersionValid(version) && module.name) ? version : null;
 
                 return module;
             }

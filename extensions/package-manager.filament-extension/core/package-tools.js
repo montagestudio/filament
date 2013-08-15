@@ -36,6 +36,22 @@ exports.PackageTools = Object.create(Object.prototype, {
         }
     },
 
+    isGitUrl: {
+        value: function (url) {
+            return (typeof url === 'string') ? (/^git(\+https?|\+ssh)?:\/\/([\w\-\.~]+@)?[\/\w\.\-:~\?]*\/([\w\-\.~]+){1}\.git(#[\w\-\.~]*)?$/).exec(url) : false;
+        }
+    },
+
+    findModuleNameFormGitUrl: {
+        value: function  (url) {
+            var results = this.isGitUrl(url);
+
+            if (Array.isArray(results) && results.length > 0) {
+                return results[3];
+            }
+        }
+    },
+
     /**
      * Checks if an email is valid.
      * @function
