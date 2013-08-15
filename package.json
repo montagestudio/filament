@@ -11,7 +11,7 @@
         "matte": "0.1.3",
         "palette": "git+ssh://git@github.com:declarativ/palette.git#v0.13.0",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#v0.13.0",
-        "minit": "git://github.com/montagejs/minit.git#1864004b0bb98f31bf13aa25face0b03f7b7ace1",
+        "minit": "git://github.com/montagejs/minit.git#3960fc864ad77e9ad799a848d82e23ef424b82b6",
         "mousse": "0.1.2",
         "q": "0.9.6",
         "q-connection": "0.5.3",
