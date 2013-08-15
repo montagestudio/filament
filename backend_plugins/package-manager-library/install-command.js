@@ -34,7 +34,7 @@ exports.installCommand = Object.create(AbstractNpmCommand, {
                     return this._invokeInstallCommand(request, where, deeply);
                 }
             } else {
-                throw new Error("The request should be a string and respect the following format: name[@version].");
+                throw new Error("The request should be a string and respect the following format: name[@version] | or git url");
             }
         }
     },
@@ -57,8 +57,12 @@ exports.installCommand = Object.create(AbstractNpmCommand, {
                     return self._formatResponse(data[1], deeply);
                 }
             }, function (error) {
-                if (typeof error === 'object' && error.code === 'E404') {
-                    throw new Error(request + " doesn't exist.");
+                if (typeof error === 'object') {
+                    if (error.code === 'E404') {
+                        throw new Error(ERROR_NOT_FOUND);
+                    } else {
+                        throw ((/version not found/).test(error.message)) ? new Error(ERROR_VERSION_NOT_FOUND) : error;
+                    }
                 } else {
                     throw error;
                 }
