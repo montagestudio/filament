@@ -74,9 +74,21 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
+    prepareForActivationEvents: {
+        value: function () {
+            this.element.addEventListener("focusout", this, false);
+        }
+    },
+
     handleRemoveNode: {
         value: function (evt) {
             this.editingDocument.removeTemplateNode(evt.detail);
+        }
+    },
+
+    handleFocusout: {
+        value: function (evt) {
+            this._cancelElementCreation();
         }
     },
 
