@@ -49,6 +49,8 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             this._nodeSegment.addEventListener("drop", this, false);
 
             this.templateObjects.montageId.addEventListener("action", this);
+            this.element.addEventListener("mouseover", this);
+            this.element.addEventListener("mouseout", this);
         }
     },
 
@@ -206,6 +208,26 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                 nodeProxy = this._nodeInfo;
 
             nodeProxy._editingDocument.setNodeProxyMontageId(nodeProxy, newMontageId);
+        }
+    },
+
+    handleMouseover: {
+        value: function (evt) {
+            var nodeProxy = this._nodeInfo;
+
+            if ( nodeProxy && nodeProxy.component) {
+                nodeProxy._editingDocument.selectObject(nodeProxy.component);
+            }
+        }
+    },
+
+    handleMouseout: {
+        value: function (evt) {
+            var nodeProxy = this._nodeInfo;
+
+            if ( nodeProxy && nodeProxy.component) {
+                nodeProxy._editingDocument.deselectObject(nodeProxy.component);
+            }
         }
     }
 
