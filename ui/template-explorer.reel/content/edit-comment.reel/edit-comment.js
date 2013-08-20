@@ -2,15 +2,14 @@
  * @module ui/template-explorer.reel/content/edit-comment.reel
  * @requires montage/ui/component
  */
-var Montage = require("montage").Montage,
-    RichTextEditor = require("matte/ui/rich-text-editor/rich-text-editor.reel").RichTextEditor;
+var RichTextEditor = require("matte/ui/rich-text-editor/rich-text-editor.reel").RichTextEditor;
 
 /**
  * @class EditComment
  * @extends module:matte/ui/rich-text-editor/rich-text-editor.reel.RichTextEditor
  
  */
-exports.EditComment = Montage.create(RichTextEditor, /** @lends EditComment# */ {
+exports.EditComment = RichTextEditor.specialize( /** @lends EditComment# */ {
 
     templateModuleId: {
         value: "matte/ui/rich-text-editor/rich-text-editor.reel/rich-text-editor.html"
