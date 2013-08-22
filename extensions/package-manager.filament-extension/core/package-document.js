@@ -204,10 +204,12 @@ exports.PackageDocument = EditingDocument.specialize( {
 
             if (maintainer) {
                 if (this._findMaintainerIndex(maintainer.name) < 0) { // name must be different
-                    var length = this._package.maintainers.length;
-                    this._package.maintainers.push(maintainer);
+                    var maintainers = this.packageMaintainers,
+                        length = maintainers.length;
 
-                    if (this._package.maintainers.length > length) {
+                    maintainers.push(maintainer);
+
+                    if (maintainers.length > length) {
                         this.saveModification();
                         return true;
                     }
@@ -219,9 +221,11 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     _findMaintainerIndex: {
         value: function (name) {
-            if (this._package.maintainers && name && name.length > 0) {
-                for (var i = 0, length = this._package.maintainers.length; i < length; i++) {
-                    if (this._package.maintainers[i].name === name) {
+            var maintainers = this.packageMaintainers;
+
+            if (maintainers && typeof name === 'string' && name.length > 0) {
+                for (var i = 0, length = maintainers.length; i < length; i++) {
+                    if (maintainers[i].name === name) {
                         return i;
                     }
                 }
@@ -235,7 +239,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             var index  = (typeof maintainer === "string") ? this._findMaintainerIndex(maintainer) :
                 (maintainer && typeof maintainer === 'object' && maintainer.hasOwnProperty('name')) ? this._findMaintainerIndex(maintainer.name) : -1;
 
-            if (index >= 0 && this._package.maintainers.splice(index, 1).length > 0) {
+            if (index >= 0 && this.packageMaintainers.splice(index, 1).length > 0) {
                 this.saveModification();
                 return true;
             }
