@@ -143,7 +143,6 @@ describe("list command", function () {
         });
 
         it('should detect when the project package.json file shows some errors.', function() {
-
             mockFS = QFSMock(ProjectFSMocksFactory.build({
                 name: DEFAULT_PROJECT_APP,
                 version: '0.1.1',
@@ -167,6 +166,21 @@ describe("list command", function () {
                 return Q.invoke(listCommand, 'run', 1, true).then(null, function (error) {
                     expect(error.message).toEqual(ErrorsCodes.pathMissing.toString());
                 });
+            });
+        });
+
+        it('should not complain if no dependencies are required.', function() {
+            mockFS = QFSMock(ProjectFSMocksFactory.build({
+                name: DEFAULT_PROJECT_APP,
+                version: '0.1.1'
+            }));
+
+            listCommand = SandboxedModule.require('../../../backend_plugins/package-manager-library/list-command', {
+                requires: {"q-io/fs": mockFS}
+            }).listCommand;
+
+            return Q.invoke(listCommand, 'run', DEFAULT_PROJECT_APP, true).then(function (tree) {
+                expect((Array.isArray(tree.dependencies) && tree.dependencies.length === 0)).toEqual(true);
             });
         });
 
