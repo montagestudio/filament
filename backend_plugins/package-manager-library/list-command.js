@@ -1,10 +1,10 @@
-var fs = require('fs'),
-    semver = require("semver"),
+var semver = require("semver"),
     Q = require("q"),
     DEPENDENCY_TYPE_REGULAR = 'regular',
     DEPENDENCY_TYPE_OPTIONAL = 'optional',
     DEPENDENCY_TYPE_BUNDLE = 'bundle',
     DEPENDENCY_TYPE_DEV = 'dev',
+    QFS = require("q-io/fs"),
     ERROR_DEPENDENCY_MISSING = 1000,
     ERROR_VERSION_INVALID = 1001,
     ERROR_FILE_INVALID = 1002,
@@ -175,30 +175,25 @@ exports.listCommand = Object.create(Object.prototype, {
                 root = false;
             }
 
-            fs.exists(file, function (exists) {
+            QFS.exists(file).then(function (exists) {
                 var moduleParsed = {};
 
                 if (exists) {
-                    fs.readFile(file, function (error, data) {
-                        if (!error) { // If no errors has been detected while reading the file.
-                            try {
-                                moduleParsed = JSON.parse(data);
+                    QFS.read(file).then(function (data) {
+                        try {
+                            moduleParsed = JSON.parse(data);
 
-                                if (typeof moduleParsed.name === 'undefined' || typeof moduleParsed.version === 'undefined' || (!root && moduleParsed.name !== currentDependency.name)) { // If the name or the version field are missing.
-                                    currentDependency.jsonFileError = true;
-                                }
-
-                                if (currentDependency.jsonFileError !== true && root === true) {
-                                    currentDependency.file = JSON.parse(data);
-                                    currentDependency.name = moduleParsed.name;
-                                    currentDependency.version = moduleParsed.version;
-                                }
-
-                            } catch (exception) {
+                            if (typeof moduleParsed.name === 'undefined' || typeof moduleParsed.version === 'undefined' || (!root && moduleParsed.name !== currentDependency.name)) { // If the name or the version field are missing.
                                 currentDependency.jsonFileError = true;
                             }
 
-                        } else { // The file has some errors.
+                            if (currentDependency.jsonFileError !== true && root === true) {
+                                currentDependency.file = JSON.parse(data);
+                                currentDependency.name = moduleParsed.name;
+                                currentDependency.version = moduleParsed.version;
+                            }
+
+                        } catch (exception) {
                             currentDependency.jsonFileError = true;
                         }
 
@@ -211,6 +206,9 @@ exports.listCommand = Object.create(Object.prototype, {
                             self._handleJsonFile(moduleParsed, currentDependency, callBack); // If no errors, then format results.
                         }
 
+                    }, function () {
+                        currentDependency.jsonFileError = true;
+                        callBack();
                     });
                 } else { // The package.json file is missing.
                     currentDependency.jsonFileMissing = true;
@@ -244,25 +242,24 @@ exports.listCommand = Object.create(Object.prototype, {
                 this._mergeDependencies(moduleParsed, this._formatDependencies(moduleParsed.devDependencies, currentDependency, moduleParsed.path, DEPENDENCY_TYPE_DEV));
             }
 
-            var bundledDependencies = (moduleParsed.bundleDependencies || moduleParsed.bundledDependencies || null);
-
-            if (bundledDependencies) { // if bundleDependencies exists.
-                this._formatBundledDependencies(currentDependency, bundledDependencies);
-            }
-
+            this._formatBundledDependencies(currentDependency, (moduleParsed.bundleDependencies || moduleParsed.bundledDependencies || null));
             this._readInstalled(moduleParsed, currentDependency, callBack);
         }
     },
 
     _formatBundledDependencies: {
         value: function (currentDependency, bundledDependencies) {
+            if (bundledDependencies) { // if bundleDependencies exists.
+                if (!currentDependency.bundledDependencies) {
+                    currentDependency.bundledDependencies = {};
+                }
 
-            if (Array.isArray(bundledDependencies)) {
-                for (var i = 0, length = bundledDependencies.length; i < length; i++) {
-                    currentDependency.bundledDependencies[bundledDependencies[i]] = i;
+                if (Array.isArray(bundledDependencies)) {
+                    for (var i = 0, length = bundledDependencies.length; i < length; i++) {
+                        currentDependency.bundledDependencies[bundledDependencies[i]] = i;
+                    }
                 }
             }
-
         }
     },
 
@@ -363,6 +360,49 @@ exports.listCommand = Object.create(Object.prototype, {
         }
     },
 
+    _shouldKeepFile: {
+        value: function (element, path) {
+            var deferred = Q.defer();
+
+            if (element.charAt(0) !== '.') {
+                QFS.stat(path + element).then(function (stats) {
+                    deferred.resolve([stats.isDirectory(), element]);
+                });
+            } else {
+                deferred.resolve([false]);
+            }
+
+            return deferred.promise;
+        }
+    },
+
+    _filterListFiles: {
+        value: function (list, path) {
+            var deferred = Q.defer(),
+                container = [];
+
+            if (Array.isArray(list) && list.length > 0) {
+                var queue = this._keepDependenciesLength(list.length);
+
+                for (var i = 0, length = list.length; i < length; i++) {
+                    this._shouldKeepFile(list[i], path).then(function (data) {
+                        if (data[0]) {
+                            container.push(data[1]);
+                        }
+
+                        if (queue() < 1) {
+                            deferred.resolve(container);
+                        }
+                    });
+                }
+            } else {
+                deferred.resolve(container);
+            }
+
+            return deferred.promise;
+        }
+    },
+
     /**
      * Reads dependencies in the file system, in order to make sure the dependency are well installed,
      * Besides, sets as extraneous every dependency which are not within the package.json file.
@@ -377,16 +417,11 @@ exports.listCommand = Object.create(Object.prototype, {
             var self = this,
                 path = moduleParsed.path + "node_modules/";
 
-            fs.readdir(path, function (error, files) {
-                if (files) { // If no errors.
-                    var modulesInstalled = files.filter(function (element) { // Doesn't keep invisible folders or any kind of files.
-                        var currentPath = path + element,
-                            stats = fs.lstatSync(currentPath),
-                            isDirectory = (stats.isSymbolicLink()) ? fs.lstatSync(fs.realpathSync(currentPath)).isDirectory() : stats.isDirectory();
-                        return (element.charAt(0) !== '.' && isDirectory);
-                    });
+            QFS.list(path).then(function (files) {
+                self._filterListFiles(files, path).then(function (modulesInstalled) {
 
                     for (var i = 0, length = modulesInstalled.length; i < length; i++) {
+
                         var moduleName = modulesInstalled[i],
                             index = self._getDependencyIndex(moduleName, moduleParsed.dependencies);
 
@@ -405,10 +440,15 @@ exports.listCommand = Object.create(Object.prototype, {
                             moduleParsed.dependencies[index].missing = false;
                         }
                     }
-                }
 
+                    currentDependency.dependencies = moduleParsed.dependencies.sort(self._sortDependencies);
+
+                    self._findChildren(currentDependency, function () { // Tries to find some children.
+                        callBack();
+                    });
+                });
+            }, function () {
                 currentDependency.dependencies = moduleParsed.dependencies.sort(self._sortDependencies);
-
                 self._findChildren(currentDependency, function () { // Tries to find some children.
                     callBack();
                 });
