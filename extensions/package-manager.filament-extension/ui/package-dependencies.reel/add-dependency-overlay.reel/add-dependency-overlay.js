@@ -3,7 +3,7 @@
  * @requires montage/ui/component
  */
 var Overlay = require("montage/ui/overlay.reel/").Overlay,
-    Tools = require('../../../core/package-tools').PackageTools;
+    Tools = require('../../../core/package-tools').ToolsBox;
 
 /**
  * @class AddDependencyOverlay

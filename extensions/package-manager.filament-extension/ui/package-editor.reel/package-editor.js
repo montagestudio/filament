@@ -1,7 +1,7 @@
 var Montage = require("montage").Montage,
     Editor = require("palette/ui/editor.reel").Editor,
     Promise = require("montage/core/promise").Promise,
-    ERROR_VIEW_CMD_NOT_FOUND = 3001,
+    ErrorsCommands = require('../../core/package-tools').Errors.commands,
     INSTALL_DEPENDENCY_ACTION = 0,
     REMOVE_DEPENDENCY_ACTION = 1;
 
@@ -69,7 +69,7 @@ exports.PackageEditor = Montage.create(Editor, {
                     }
                 }, function (error) {
 
-                    if (error && typeof error === 'object' && error.message === ERROR_VIEW_CMD_NOT_FOUND.toString()) {
+                    if (error && typeof error === 'object' && error.message === ErrorsCommands.view.codes.dependencyNotFound.toString()) {
                         self.dependencyDisplayed = dependency;
                     } else {
                         self.dependencyDisplayed = null;
@@ -120,7 +120,7 @@ exports.PackageEditor = Montage.create(Editor, {
                 if (source && typeof source === 'object' && !source.canInstall) { // remove request
                     this._removeDependency(source, source.dependency);
                 } else { // install request
-                    this._installDependency(source.dependency);
+                    this.installDependency(source.dependency);
                 }
             }
         }

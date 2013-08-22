@@ -23,12 +23,11 @@ describe("search command", function () {
 
             return Q.invoke(searchCommand, 'run', 'montage%').then(null, function (error) {
                 expect(error).toBeError();
-            });
 
-            return Q.invoke(searchCommand, 'run', 4).then(null, function (error) {
-                expect(error).toBeTypeError();
+                return Q.invoke(searchCommand, 'run', 4).then(null, function (error) {
+                    expect(error).toBeTypeError();
+                });
             });
-
         });
 
         it("should return an array when there are some results", function() {

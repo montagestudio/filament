@@ -3,7 +3,7 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    DEPENDENCY_TYPE_REGULAR = 'regular',
+    DEPENDENCY_TYPE_REGULAR = 'dependencies',
     DETAILS_ERROR_LABEL = 'errors',
     CAN_INSTALL_LABEL = 'Install',
     DEFAULT_LABEL = '-';

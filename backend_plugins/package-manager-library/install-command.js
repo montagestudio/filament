@@ -3,8 +3,10 @@ var AbstractNpmCommand = require("./abstract-npm-command").AbstractNpmCommand,
     Tools = require("./package-manager-tools").PackageManagerTools,
     npm = require("npm"),
 
-    ERROR_NOT_FOUND = 2001,
-    ERROR_VERSION_NOT_FOUND = 2002;
+    ERROR_NOT_FOUND = 2000,
+    ERROR_VERSION_NOT_FOUND = 2001,
+    ERROR_INVALID_REQUEST = 2002,
+    ERROR_WRONG_FORMAT = 2003;
 
 exports.installCommand = Object.create(AbstractNpmCommand, {
 
@@ -21,7 +23,7 @@ exports.installCommand = Object.create(AbstractNpmCommand, {
             if (typeof request === 'string' && request.length > 0) {
                 request = request.trim();
             } else {
-                throw new TypeError("The request value should be a string or not empty.");
+                throw new Error(ERROR_INVALID_REQUEST);
             }
 
             if (Tools.isRequestValid(request)) {
@@ -34,7 +36,7 @@ exports.installCommand = Object.create(AbstractNpmCommand, {
                     return this._invokeInstallCommand(request, where, deeply);
                 }
             } else {
-                throw new Error("The request should be a string and respect the following format: name[@version] | or git url");
+                throw new Error(ERROR_WRONG_FORMAT);
             }
         }
     },

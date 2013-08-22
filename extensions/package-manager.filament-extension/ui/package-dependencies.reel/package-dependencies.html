@@ -30,7 +30,7 @@
                 "title": "Dependencies"
             },
             "bindings": {
-                "dependencies": {"<-": "@owner.editingDocument.dependencies.regular"}
+                "dependencies": {"<-": "@owner.editingDocument.dependencyCollection.dependencies"}
             }
         },
 
@@ -41,7 +41,7 @@
                 "title": "Dev Dependencies"
             },
             "bindings": {
-                "dependencies": {"<-": "@owner.editingDocument.dependencies.dev"}
+                "dependencies": {"<-": "@owner.editingDocument.dependencyCollection.devDependencies"}
             }
         },
 
@@ -52,7 +52,7 @@
                 "title": "Optional Dependencies"
             },
             "bindings": {
-                "dependencies": {"<-": "@owner.editingDocument.dependencies.optional"}
+                "dependencies": {"<-": "@owner.editingDocument.dependencyCollection.optionalDependencies"}
             }
         },
 

@@ -1,4 +1,4 @@
-var PackageTools = require("../../../extensions/package-manager.filament-extension/core/package-tools").PackageTools;
+var PackageTools = require("../../../extensions/package-manager.filament-extension/core/package-tools").ToolsBox;
 
 describe("package-tools", function () {
 

@@ -4,9 +4,7 @@
  */
 var Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
-    DEPENDENCY_TYPE_REGULAR = 'regular',
-    DEPENDENCY_TYPE_OPTIONAL = 'optional',
-    DEPENDENCY_TYPE_DEV = 'dev';
+    DependencyNames = require('../../core/package-tools').DependencyNames;
 
 /**
  * @class PackageDependencies
@@ -67,11 +65,11 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
     handleSelectedDependencyWillChange: {
         value: function (cell) {
             if (this._selectedCell && cell && cell.type !== this._selectedCell.type) { // Needs manual change.
-                if (this._selectedCell.type === DEPENDENCY_TYPE_REGULAR) {
+                if (this._selectedCell.type === DependencyNames.dependencies) {
                     this.templateObjects.packageDependenciesGroup.contentController.clearSelection();
-                } else if (this._selectedCell.type === DEPENDENCY_TYPE_OPTIONAL) {
+                } else if (this._selectedCell.type === DependencyNames.optionalDependencies) {
                     this.templateObjects.packageOptionalDependenciesGroup.contentController.clearSelection();
-                } else if (this._selectedCell.type === DEPENDENCY_TYPE_DEV) {
+                } else if (this._selectedCell.type === DependencyNames.devDependencies) {
                     this.templateObjects.packageDevDependenciesGroup.contentController.clearSelection();
                 }
             }

@@ -1,5 +1,9 @@
 var QFS = require("q-io/fs"),
-    Tools = require("./package-manager-tools").PackageManagerTools;
+    Tools = require("./package-manager-tools").PackageManagerTools,
+    ERROR_DEPENDENCY_NAME_NOT_VALID = 4000,
+    ERROR_PROJECT_PATH_NOT_VALID = 4001,
+    ERROR_FS_PERMISSION = 4002,
+    ERROR_DEPENDENCY_NOT_FOUND = 4003;
 
 exports.removeCommand = Object.create(Object.prototype, {
 
@@ -14,11 +18,15 @@ exports.removeCommand = Object.create(Object.prototype, {
         value: function (name, where) {
             if (typeof name === 'string' && name.length > 0) {
                 name = name.trim();
+
+                if (!Tools.isNameValid(name)) {
+                    throw new Error(ERROR_DEPENDENCY_NAME_NOT_VALID);
+                }
             } else {
-                throw new TypeError("The dependency name should be a string or not empty.");
+                throw new Error(ERROR_DEPENDENCY_NAME_NOT_VALID);
             }
 
-            if (typeof where === 'string' && where.length > 0 && Tools.isNameValid(name)) {
+            if (typeof where === 'string' && where.length > 0) {
                 if (where.charAt(where.length - 1) !== '/') {
                     where +=  '/';
                 }
@@ -31,15 +39,15 @@ exports.removeCommand = Object.create(Object.prototype, {
 					return { name: name };
                 }, function (error) {
                     if (error.errno === 3) {
-                        throw new Error('File system permission error while removing the ' + name + ' dependency.');
+                        throw new Error(ERROR_FS_PERMISSION);
                     } else if (error.errno === 34) {
-                        throw new Error('No dependency named ' + name + ' has been found.');
+                        throw new Error(ERROR_DEPENDENCY_NOT_FOUND);
                     } else {
                         throw error;
                     }
                 });
             } else {
-                throw new Error('The path or dependency name are missing or invalid.');
+                throw new Error(ERROR_PROJECT_PATH_NOT_VALID);
             }
         }
     }

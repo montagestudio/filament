@@ -1,39 +1,49 @@
 var EditingDocument = require("palette/core/editing-document").EditingDocument,
-    PackageEditor = require("ui/package-editor.reel").PackageEditor,
-    PackageTools = require('./package-tools').PackageTools,
+    PackageEditor = require("../ui/package-editor.reel").PackageEditor,
+    Tools = require('./package-tools'),
     PackageQueueManager = require('./packages-queue-manager').PackageQueueManager,
     Promise = require("montage/core/promise").Promise,
-
-    DEPENDENCY_TYPE_REGULAR = 'regular',
-    DEPENDENCY_TYPE_OPTIONAL = 'optional',
-    DEPENDENCY_TYPE_BUNDLE = 'bundle',
-    DEPENDENCY_TYPE_DEV = 'dev',
-    DEPENDENCIES_REQUIRED = [ 'montage' ],
-    DEPENDENCIES_NAME_CACHE = {
-        regular: 'dependencies',
-        optional: 'optionalDependencies',
-        dev: 'devDependencies',
-        bundle: 'bundledDependencies'
-    },
-
+    PackageTools = Tools.ToolsBox,
+    ErrorsCommands = Tools.Errors.commands,
+    DependencyNames = Tools.DependencyNames,
     DEFAULT_TIME_AUTO_SAVE = 400,
     DEPENDENCY_TIME_AUTO_SAVE = 100,
-
-    ERROR_LIST_CMD_DEPENDENCY_MISSING = 1000,
-    ERROR_LIST_CMD_VERSION_INVALID = 1001,
-    ERROR_LIST_CMD_FILE_INVALID = 1002,
-    ERROR_LIST_CMD_DEPENDENCY_EXTRANEOUS = 1003,
-
-    ERROR_INSTALL_CMD_NOT_FOUND = 2001,
-    ERROR_INSTALL_CMD_VERSION_NOT_FOUND = 2002;
+    DEPENDENCIES_REQUIRED = ['montage'],
+    ALLOWED_PROPERTIES_KEYS = [
+        'name',
+        'version',
+        'privacy',
+        'license',
+        'description',
+        'author'
+    ];
 
 exports.PackageDocument = EditingDocument.specialize( {
 
-    constructor: {
-        value: function PackageDocument () {
-            this.super();
-            this.sharedProjectController = PackageDocument.sharedProjectController;
+    load: {
+        value: function (fileUrl, packageUrl) {
+            var self = this;
+
+            return require.loadPackage(packageUrl).then(function (packageRequire) {
+                return self.listDependencies().then(function(app) { // invoke the custom list command, which check every dependencies installed.
+                    return self.create().init(fileUrl, packageRequire, self.sharedProjectController, app);
+                });
+            });
+        }
+    },
+
+    init: {
+        value: function (fileUrl, packageRequire, projectController, app) {
+            var self = this.super.call(this, fileUrl, packageRequire);
             PackageQueueManager.load(this, '_handleDependenciesListChange');
+            this._livePackage = packageRequire.packageDescription;
+            this.sharedProjectController = projectController;
+
+            if (app) {
+                this._package = app.file || {};
+                this._classifyDependencies(app.dependencies, false); // classify dependencies
+            }
+            return self;
         }
     },
 
@@ -43,45 +53,8 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    load: {
-        value: function (fileUrl, packageUrl) {
-            var self = this;
-
-            return require.loadPackage(packageUrl).then(function (packageRequire) {
-                return self.listDependencies().then(function(app) { // invoke the custom list command, which check every dependencies installed.
-                    return self.create().init(fileUrl, packageRequire, app);
-                });
-            });
-        }
-    },
-
-    init: {
-        value: function (fileUrl, packageRequire, app) {
-            var self = this.super.call(this, fileUrl, packageRequire);
-            this._livePackage = packageRequire.packageDescription;
-            if (app) {
-                this._package = (app.file || {});
-                this._classifyDependencies(app.dependencies, false); // classify dependencies
-            }
-            return self;
-        }
-    },
-
     sharedProjectController: {
         value: null
-    },
-
-    _backend: {
-        value: null
-    },
-
-    backend: {
-        get: function () {
-            if (!this._backend && this.sharedProjectController) {
-                this._backend = this.sharedProjectController.environmentBridge.backend;
-            }
-            return this._backend;
-        }
     },
 
     _packageManagerPlugin: {
@@ -90,8 +63,8 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     packageManagerPlugin: {
         get: function () {
-            if (!this._packageManagerPlugin) {
-                this._packageManagerPlugin = this.backend.get("package-manager");
+            if (!this._packageManagerPlugin && this.sharedProjectController) {
+                this._packageManagerPlugin = this.sharedProjectController.environmentBridge.backend.get("package-manager");
             }
             return  this._packageManagerPlugin;
         }
@@ -118,39 +91,28 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: null
     },
 
-    _getAllowedKeys: {
-        get: function () {
-            return [
-                'name',
-                'version',
-                'privacy',
-                'license',
-                'description',
-                'author'
-            ];
-        }
-    },
-
     setProperty: {
         value: function (key, value) {
-            if (typeof key === 'string' && typeof value !== 'undefined' && this._getAllowedKeys.indexOf(key) >= 0) {
-
-                if (this[key] && typeof this[key] === 'object' && !PackageTools.isPersonEqual(this[key], value)) { // case object person
+            if (typeof key === 'string' && typeof value !== 'undefined' && ALLOWED_PROPERTIES_KEYS.indexOf(key) >= 0) {
+                if (this[key] && typeof this[key] === 'object' && !PackageTools.isPersonEqual(this[key], value)) { // case person object.
                     this[key] = value;
 
-                    if (PackageTools.isPersonEqual(this[key], value)) { // if modification has been accepted
-                        this.undoManager.register("Set Property", Promise.resolve([this.setProperty, this, key, value]));
+                    if (PackageTools.isPersonEqual(this[key], value)) { // modification has been accepted.
+                        if (this.undoManager) {
+                            this.undoManager.register("Set Property", Promise.resolve([this.setProperty, this, key, value]));
+                        }
                         return true;
                     }
-
-                } else if(this[key] !== value) { // if the new value is different from the old one
+                } else if(this[key] !== value) { // new value is different from the old one.
                     this[key] = value;
 
                     if (this[key] === value) {
-                        this.undoManager.register("Set Property", Promise.resolve([this.setProperty, this, key, value]));
+                        if (this.undoManager) {
+                            this.undoManager.register("Set Property", Promise.resolve([this.setProperty, this, key, value]));
+                        }
                         return true;
                     }
-                } else { // no need modifications
+                } else { // no need modifications.
                     return true;
                 }
             }
@@ -295,13 +257,13 @@ exports.PackageDocument = EditingDocument.specialize( {
      *
      */
 
-    _dependencies: {
+    _dependencyCollection: {
         value: null
     },
 
-    dependencies: {
+    dependencyCollection: {
         get : function () {
-            return this._dependencies;
+            return this._dependencyCollection;
         }
     },
 
@@ -325,14 +287,13 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     _resetDependencies: {
         value: function () {
-            if (!this._dependencies) {
-                this._dependencies = {};
+            if (!this._dependencyCollection) {
+                this._dependencyCollection = {};
             }
 
-            this._dependencies.regular = [];
-            this._dependencies.bundle = [];
-            this._dependencies.dev = [];
-            this._dependencies.optional = [];
+            this._dependencyCollection.dependencies = [];
+            this._dependencyCollection.devDependencies = [];
+            this._dependencyCollection.optionalDependencies = [];
         }
     },
 
@@ -391,7 +352,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                 for (var i = 0, length = dependency.problems.length; i < length; i++) { // remove the error from the errors containers.
                     var error = dependency.problems[i];
 
-                    if (error.name === dependency.name && error.type === ERROR_LIST_CMD_DEPENDENCY_EXTRANEOUS) {
+                    if (error.name === dependency.name && error.type === ErrorsCommands.list.codes.extraneous) {
                         dependency.problems.splice(parseInt(i, 10),1);
                         break;
                     }
@@ -406,32 +367,24 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function (dependencies, fixError) {
             if (dependencies) {
                 this._resetDependencies();
-
                 var fixedErrors = false,
-                    dependencyTypeCollectionMap = {},
-                    dependencyCollection;
-
-                dependencyTypeCollectionMap[DEPENDENCY_TYPE_DEV] = this._dependencies.dev;
-                dependencyTypeCollectionMap[DEPENDENCY_TYPE_OPTIONAL] = this._dependencies.optional;
-                dependencyTypeCollectionMap[DEPENDENCY_TYPE_BUNDLE] = this._dependencies.bundle;
-                dependencyTypeCollectionMap[DEPENDENCY_TYPE_REGULAR] = this._dependencies.regular;
+                    type = null,
+                    dependencyCollection = this._dependencyCollection;
 
                 fixedErrors = dependencies.reduce(function (fixed, dependency) {
-
                     if (fixError) {
                         fixed = fixed || this._fixDependencyError(dependency);
                     }
 
                     if (dependency.hasOwnProperty('type')) {
+                        type = DependencyNames[dependency.type];
 
-                        dependencyCollection = dependencyTypeCollectionMap[dependency.type];
-                        if (dependencyCollection) {
-                            dependencyCollection.push(dependency);
+                        if (type) {
+                            dependencyCollection[type].push(dependency);
                         } else {
                             throw new Error('Encountered dependency with unexpected type "' + dependency.type +'"');
                         }
                     }
-
                     return fixed;
 
                 }, fixedErrors);
@@ -446,7 +399,7 @@ exports.PackageDocument = EditingDocument.specialize( {
     _findDependency: {
         value: function (name, type) {
             if (!type) { // if type not specified, search inside any
-                var keys = Object.keys(this._dependencies);
+                var keys = Object.keys(this._dependencyCollection);
 
                 for (var i = 0, length = keys.length; i < length; i++) {
                     var response = this._findDependency(name, keys[i]);
@@ -454,9 +407,9 @@ exports.PackageDocument = EditingDocument.specialize( {
                         return response;
                     }
                 }
-            } else if (this._dependencies.hasOwnProperty(type)) {
-                var dependencies = this._dependencies[type];
-                for (var k = 0, len = this._dependencies[type].length; k < len; k++) {
+            } else if (this._dependencyCollection.hasOwnProperty(type)) {
+                var dependencies = this._dependencyCollection[type];
+                for (var k = 0, len = this._dependencyCollection[type].length; k < len; k++) {
                     if (dependencies[k].name === name) {
                         return {
                             key: k,
@@ -488,7 +441,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                     name: name,
                     version: (version || ''),
                     versionInstalled: PackageTools.isVersionValid(version) ? version : null,
-                    type: (type || DEPENDENCY_TYPE_REGULAR),
+                    type: (type || DependencyNames.dependencies),
                     isInstalling: true
                 };
 
@@ -516,20 +469,11 @@ exports.PackageDocument = EditingDocument.specialize( {
                     };
                 }
                 throw new Error('An error has occurred while installing the dependency ' + name);
+
             }, function (error) {
                 module.isInstalling = false;
-
-                if (typeof error === "object") {
-                    if (error.message === ERROR_INSTALL_CMD_NOT_FOUND.toString()) {
-                        throw new Error('The dependency named ' + name + ' does not exist.');
-                    } else if (error.message === ERROR_INSTALL_CMD_VERSION_NOT_FOUND.toString()) {
-                        throw new Error('The version ' + version + ' for the dependency named ' + name + ' does not exist.');
-                    } else {
-                        throw error;
-                    }
-                } else {
-                    throw new Error('An error has occurred while installing the dependency ' + name + ', error: ' + error);
-                }
+                var message = ErrorsCommands.install.messages[error.message];
+                throw new Error(message ? message : error.message ? error.message : error);
             });
         }
     },
@@ -540,21 +484,12 @@ exports.PackageDocument = EditingDocument.specialize( {
                 var self = this;
 
                 this.findDependency(module.name, null, function (index, dependency) {
-
                     if (index >= 0) { // already within the dependencies list.
-                        self._dependencies[dependency.type].splice(index, 1);
+                        self._dependencyCollection[dependency.type].splice(index, 1);
                     }
 
-                    if (module.type === DEPENDENCY_TYPE_DEV) {
-                        self._dependencies.dev.push(module);
-                    } else if (module.type === DEPENDENCY_TYPE_OPTIONAL) {
-                        self._dependencies.optional.push(module);
-                    } else if (module.type === DEPENDENCY_TYPE_BUNDLE) {
-                        self._dependencies.bundle.push(module);
-                    } else {
-                        module.type = DEPENDENCY_TYPE_REGULAR;
-                        self._dependencies.regular.push(module);
-                    }
+                    module.type = module.type || DependencyNames.dependencies;
+                    self._dependencyCollection[module.type].push(module);
 
                     if (!!save) {
                         if (index >= 0) {
@@ -564,7 +499,6 @@ exports.PackageDocument = EditingDocument.specialize( {
                         self._addDependencyToFile(module);
                         self._modificationsAccepted(DEPENDENCY_TIME_AUTO_SAVE);
                     }
-
                 });
             }
         }
@@ -577,7 +511,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             }
 
             if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name') && dependency.hasOwnProperty('type')) {
-                type = DEPENDENCIES_NAME_CACHE[dependency.type];
+                type = DependencyNames[dependency.type];
 
                 if (type) {
                     this._package[type][dependency.name] = (dependency.versionInstalled || dependency.version);
@@ -607,7 +541,12 @@ exports.PackageDocument = EditingDocument.specialize( {
 
                 if (dependency && typeof dependency === "object") {
                     this._removeDependencyFromFile(dependency, true);
-                    return PackageQueueManager.uninstallModule(name, !dependency.missing);
+                    return PackageQueueManager.uninstallModule(name, !dependency.missing).then(function (data) {
+                        return data;
+                    }, function (error) {
+                        var message = ErrorsCommands.remove.messages[error.message];
+                        throw new Error(message ? message : error.message ? error.message : error);
+                    });
                 }
 
                 return Promise.reject(new Error('An error has occurred'));
@@ -623,14 +562,15 @@ exports.PackageDocument = EditingDocument.specialize( {
                 dependency = this.findDependency(dependency); // try to find the dependency related to this name
             }
 
-            var type = DEPENDENCIES_NAME_CACHE[dependency.type];
+            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name') && dependency.hasOwnProperty('type') && !dependency.extraneous) {
+                var type = DependencyNames[dependency.type];
 
-            if (dependency && type && typeof dependency === 'object' && dependency.hasOwnProperty('name') && dependency.hasOwnProperty('type') && !dependency.extraneous ) {
-                if (!!save) {
-                    this._modificationsAccepted(DEPENDENCY_TIME_AUTO_SAVE); // TODO return promise if error during saving
+                if (type) {
+                    if (!!save) {
+                        this._modificationsAccepted(DEPENDENCY_TIME_AUTO_SAVE);
+                    }
+                    return delete this._package[type][dependency.name];
                 }
-
-                return delete this._package[type][dependency.name];
             }
             return false;
         }
@@ -679,7 +619,6 @@ exports.PackageDocument = EditingDocument.specialize( {
                 self._savingInProgress = null;
                 return value;
             });
-
             return this._savingInProgress;
         }
     }

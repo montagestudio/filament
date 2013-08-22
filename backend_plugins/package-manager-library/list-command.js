@@ -1,14 +1,16 @@
 var semver = require("semver"),
     Q = require("q"),
-    DEPENDENCY_TYPE_REGULAR = 'regular',
-    DEPENDENCY_TYPE_OPTIONAL = 'optional',
-    DEPENDENCY_TYPE_BUNDLE = 'bundle',
-    DEPENDENCY_TYPE_DEV = 'dev',
     QFS = require("q-io/fs"),
+    DEPENDENCY_TYPE_REGULAR = 'dependencies',
+    DEPENDENCY_TYPE_OPTIONAL = 'optionalDependencies',
+    DEPENDENCY_TYPE_BUNDLE = 'bundledDependencies',
+    DEPENDENCY_TYPE_DEV = 'devDependencies',
     ERROR_DEPENDENCY_MISSING = 1000,
     ERROR_VERSION_INVALID = 1001,
     ERROR_FILE_INVALID = 1002,
-    ERROR_DEPENDENCY_EXTRANEOUS = 1003;
+    ERROR_DEPENDENCY_EXTRANEOUS = 1003,
+    ERROR_PROJECT_FILE = 1004,
+    ERROR_PATH_MISSING = 1005;
 
 exports.listCommand = Object.create(Object.prototype, {
 
@@ -33,7 +35,7 @@ exports.listCommand = Object.create(Object.prototype, {
 
                 this._runProcess(deferred, lite);
             } else {
-                deferred.reject(new Error("Path is missing"));
+                deferred.reject(new Error(ERROR_PATH_MISSING));
             }
             return deferred.promise;
         }
@@ -148,7 +150,7 @@ exports.listCommand = Object.create(Object.prototype, {
                     deferred.resolve((!!lite) ? self._lite() : self._complete());
 
                 } else {
-                    deferred.reject(new Error("Json file is missing or shows a few errors"));
+                    deferred.reject(new Error(ERROR_PROJECT_FILE));
                 }
             });
         }
@@ -690,7 +692,7 @@ exports.listCommand = Object.create(Object.prototype, {
                     var substituteDependency = this._isParentHasDependency(dependency); // Check if one of its parents have it.
 
                     if (!substituteDependency) { // Parents don't have it.
-                        this._reportTopLevel(dependency, ERROR_DEPENDENCY_MISSING, dependency.name + ' is missing' + ((parent.name && parent.name !== this._app.name) ? ', required by ' + parent.name : ''));
+                        this._reportTopLevel(dependency, ERROR_DEPENDENCY_MISSING, dependency.name + ' is missing' + ((parent.name && parent.name !== this._app.name) ? ', required by ' + parent.name : '.'));
                     } else { // Parents have it.
                         dependency.versionInstalled = substituteDependency.versionInstalled;
 
@@ -703,7 +705,7 @@ exports.listCommand = Object.create(Object.prototype, {
                     this._reportTopLevel(dependency, ERROR_DEPENDENCY_EXTRANEOUS, dependency.name + ' is extraneous.');
                 } else if (!dependency.missing && dependency.type !== DEPENDENCY_TYPE_DEV && semver.validRange(dependency.version) && !semver.satisfies(dependency.versionInstalled, dependency.version, true)) { // Check the version requirement.
                     dependency.invalid = true;
-                    this._reportTopLevel(dependency, ERROR_VERSION_INVALID, dependency.name + ' version is invalid');
+                    this._reportTopLevel(dependency, ERROR_VERSION_INVALID, dependency.name + ' version is invalid.');
                 }
             } else {
                 this._reportTopLevel(dependency, ERROR_FILE_INVALID,'the package.json file ' + ((!!dependency.jsonFileError) ? 'shows a few errors' : ' is missing.'));
