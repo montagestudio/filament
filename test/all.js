@@ -1,5 +1,8 @@
 require("montage-testing").run(require, [
     // Please keep in alphabetical order
+    "extensions/package-manager.filament-extension/test/package-document-spec.js",
+    "extensions/package-manager.filament-extension/test/package-tools-spec.js",
+    "extensions/package-manager.filament-extension/test/package-queue-manager-spec.js",
     "test/core/file-descriptor-spec",
     "test/core/node-proxy-spec",
     "test/core/project-controller-file-spec",
