@@ -3,21 +3,20 @@ var PackageQueueManager = require("../../../extensions/package-manager.filament-
     ACTION_REMOVING = 1;
 
 describe("package queue manager", function () {
-    var packageDocument;
+    var packageDocument, installed;
 
     beforeEach(function() {
         packageDocument = {
             projectUrl: '/',
             packageManagerPlugin: {}
         };
-    });
-
-    it("should be able to install several packages and returns information about them", function() {
-        var installed = null;
-
+        installed = null;
         packageDocument.done = function (elements) {
             installed = elements;
         };
+    });
+
+    it("should be able to install several packages and returns information about them.", function() {
 
         runs(function() {
             PackageQueueManager.load(packageDocument, 'done');
@@ -31,7 +30,7 @@ describe("package queue manager", function () {
 
         waitsFor(function() {
             return !!installed;
-        }, "The PackageQueueManager should call the done function", 750);
+        }, "The PackageQueueManager should call the function 'done'", 750);
 
 
         runs(function() {
@@ -50,17 +49,11 @@ describe("package queue manager", function () {
                 expect(element.action).toEqual(ACTION_INSTALLING);
                 expect(element.error).toEqual(false);
             }
-
         });
 
     });
 
-    it("should be able to remove several packages and returns information about them", function() {
-        var installed = null;
-
-        packageDocument.done = function (elements) {
-            installed = elements;
-        };
+    it("should be able to remove several packages and returns information about them.", function() {
 
         runs(function() {
             PackageQueueManager.load(packageDocument, 'done');
@@ -70,7 +63,7 @@ describe("package queue manager", function () {
 
         waitsFor(function() {
             return !!installed;
-        }, "The PackageQueueManager should call the done function", 750);
+        }, "The PackageQueueManager should call the function 'done'", 750);
 
 
         runs(function() {
@@ -82,18 +75,12 @@ describe("package queue manager", function () {
                 expect(element.action).toEqual(ACTION_REMOVING);
                 expect(element.error).toEqual(false);
             }
-
         });
 
     });
 
 
-    it("should be able to remove and install several packages and returns information about them", function() {
-        var installed = null;
-
-        packageDocument.done = function (elements) {
-            installed = elements;
-        };
+    it("should be able to remove and install several packages and returns information about them.", function() {
 
         runs(function() {
             PackageQueueManager.load(packageDocument, 'done');

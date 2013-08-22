@@ -4,13 +4,13 @@ describe("package-tools", function () {
 
     describe("name validation", function () {
 
-        it("should not begins with a dot or an underscore", function() {
+        it("should not begins with a dot or an underscore.", function() {
 
             expect(PackageTools.isNameValid('_hello_world')).toEqual(false);
             expect(PackageTools.isNameValid('.hello_world')).toEqual(false);
         });
 
-        it("should not be node or js", function() {
+        it("should not be node or js.", function() {
 
             expect(PackageTools.isNameValid('node')).toEqual(false);
             expect(PackageTools.isNameValid('NODE')).toEqual(false);
@@ -30,20 +30,20 @@ describe("package-tools", function () {
             expect(PackageTools.isNameValid('a!#@+=')).toEqual(false);
         });
 
-        it("can contains number", function() {
+        it("can contains number.", function() {
 
             expect(PackageTools.isNameValid('hello_world_42')).toEqual(true);
             expect(PackageTools.isNameValid('13h37')).toEqual(true);
             expect(PackageTools.isNameValid('v1.2.3')).toEqual(true);
         });
 
-        it("should have at least one character", function() {
+        it("should have at least one character.", function() {
 
             expect(PackageTools.isNameValid('')).toEqual(false);
             expect(PackageTools.isNameValid('a')).toEqual(true);
         });
 
-        it("should contains just characters from the Unicode block (Basic Latin)", function() {
+        it("should contains just characters from the Unicode block (Basic Latin).", function() {
 
             expect(PackageTools.isNameValid('jean-françois')).toEqual(false);
             expect(PackageTools.isNameValid('你好')).toEqual(false);
@@ -53,7 +53,7 @@ describe("package-tools", function () {
 
     });
 
-    describe("version validation", function () {
+    describe("version validation.", function () {
 
         it("should respect at least this format: [number].[number].[number]", function() {
 
@@ -67,13 +67,13 @@ describe("package-tools", function () {
             expect(PackageTools.isRequestValid(42)).toEqual(false);
         });
 
-        it("can begin with the character v", function() {
+        it("can begin with the character v.", function() {
 
             expect(PackageTools.isVersionValid('v1.2.3')).toEqual(true);
             expect(PackageTools.isVersionValid('t1.2.3')).toEqual(false);
         });
 
-        it("can have a valid tag", function() {
+        it("can have a valid tag.", function() {
 
             expect(PackageTools.isVersionValid('v1.2.3-alpha')).toEqual(true);
             expect(PackageTools.isVersionValid('v1.2.3-pre-')).toEqual(false);
@@ -87,8 +87,7 @@ describe("package-tools", function () {
 
     });
 
-
-    describe("request format", function () {
+    describe("request format.", function () {
 
         it("should respect the following format: name[@version]", function() {
 
@@ -105,7 +104,7 @@ describe("package-tools", function () {
             expect(PackageTools.isRequestValid(42)).toEqual(false);
         });
 
-        it("should accept valid git urls", function() {
+        it("should accept valid git urls.", function() {
 
             expect(PackageTools.isRequestValid('git://git@github.com:declarativ/palette.git')).toEqual(true);
             expect(PackageTools.isRequestValid('git+ssh://git@github.com:declarativ/palette.git')).toEqual(true);
@@ -118,9 +117,9 @@ describe("package-tools", function () {
 
     });
 
-    describe("getting a Module Object", function () {
+    describe("getting a Module Object.", function () {
 
-        it("from the following format: name[@version]", function() {
+        it("from the following format: name[@version].", function() {
             var montage = PackageTools.getModuleFromString('montage@1.2.3'),
                 filament = PackageTools.getModuleFromString('filament@'),
                 wrongModuleName = PackageTools.getModuleFromString('.filament@1.2.3'),
@@ -144,7 +143,7 @@ describe("package-tools", function () {
 
     });
 
-    describe("person format", function () {
+    describe("person format.", function () {
 
         it("should format correctly a string into an object, which respect the following format: 'name <email> (url)'", function() {
             var person = PackageTools.formatPersonFromString('pierre frisch <pierre.frisch@declarativ.com> (montage.com)');
@@ -156,7 +155,7 @@ describe("package-tools", function () {
 
     });
 
-    describe("person containers", function () {
+    describe("person containers.", function () {
         var containerArray;
 
         beforeEach(function() {
@@ -171,7 +170,7 @@ describe("package-tools", function () {
             ];
         });
 
-        it("should format correctly a set of persons", function() {
+        it("should format correctly a set of persons.", function() {
             var containerFormatted = PackageTools.formatPersonsContainer(containerArray);
 
             for (var i = 0, length = containerFormatted.length; i < length; i++) {
@@ -181,7 +180,7 @@ describe("package-tools", function () {
             }
         });
 
-        it("should remove wrong person format", function() {
+        it("should remove wrong person format.", function() {
             containerArray.push(true);
             containerArray.push({});
 
@@ -194,4 +193,4 @@ describe("package-tools", function () {
 
     });
 
-});
+})

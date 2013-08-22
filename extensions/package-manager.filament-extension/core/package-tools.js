@@ -1,3 +1,9 @@
+var VALID_PERSON_PROPERTIES = [
+    'name',
+    'email',
+    'url'
+];
+
 exports.ToolsBox = Object.create(Object.prototype, {
 
     /**
@@ -38,7 +44,7 @@ exports.ToolsBox = Object.create(Object.prototype, {
 
     isGitUrl: {
         value: function (url) {
-            return (typeof url === 'string') ? (/^git(\+https?|\+ssh)?:\/\/([\w\-\.~]+@)?[\/\w\.\-:~\?]*\/([\w\-\.~]+){1}\.git(#[\w\-\.~]*)?$/).exec(url) : false;
+            return (typeof url === 'string') ? (/^git(\+https?|\+ssh)?:\/\/([\w\-\.~]+@)?[\/\w\.\-:~\?]*\/([0-9a-zA-Z~][\w\-\.~]*)\.git(#[\w\-\.~]*)?$/).exec(url) : null;
         }
     },
 
@@ -89,22 +95,6 @@ exports.ToolsBox = Object.create(Object.prototype, {
     },
 
     /**
-     * Returns the allowed Person properties.
-     * @type {Array}
-     * @default allowed Person properties.
-     * @private
-     */
-    _validPersonProperties: {
-        get: function () {
-            return [
-                'name',
-                'email',
-                'url'
-            ];
-        }
-    },
-
-    /**
      * Checks if two Person objects are equal.
      * @function
      * @param {Object} a, person A.
@@ -114,10 +104,8 @@ exports.ToolsBox = Object.create(Object.prototype, {
     isPersonEqual: {
         value: function (a, b) {
             if (a && b && typeof a === 'object' && typeof b === 'object') {
-                var properties = this._validPersonProperties;
-
-                for (var i = 0, length = properties.length; i < length; i++) {
-                    if (a[properties[i]] !== b[properties[i]]) {
+                for (var i = 0, length = VALID_PERSON_PROPERTIES.length; i < length; i++) {
+                    if (a[VALID_PERSON_PROPERTIES[i]] !== b[VALID_PERSON_PROPERTIES[i]]) {
                         return false;
                     }
                 }
@@ -208,6 +196,16 @@ exports.Errors = {
                 4001: 'dependency path invalid',
                 4002: 'error filesystem permissions',
                 4003: 'dependency missing'
+            }
+        },
+        search: {
+            codes: {
+                requestType: 5000,
+                requestInvalid: 5001
+            },
+            messages: {
+                5000: 'should be a string',
+                5001: 'the request is invalid'
             }
         }
     }

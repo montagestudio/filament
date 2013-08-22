@@ -11,7 +11,7 @@ jasmine.Block.prototype.execute = function (onComplete) {
         // It seems Jasmine likes to return the suite if you pass it anything.
         // So make sure it's a promise first.
         if (result && typeof result.then === "function") {
-            Q.timeout(result, 3000).then(function () {
+            Q.timeout(result, 5000).then(function () {
                 onComplete();
             }, function (error) {
                 spec.fail(error);
@@ -28,7 +28,7 @@ jasmine.Block.prototype.execute = function (onComplete) {
 
 jasmine.executeSpecsInFolder({
     specFolder: __dirname,
-    regExpSpec: /backend-spec\.js$/i,
+    regExpSpec: /package-tools-spec\.js$/i,
     showColors: true,
     // isVerbose: true,
     onComplete: function(runner, log){

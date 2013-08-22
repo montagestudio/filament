@@ -41,8 +41,12 @@ exports.ProjectFSMocks = function (name, error) {
                             {
                                 name: 'q',
                                 version: '0.9.0',
-                                missing: true,
-                                invalid: (!!error) ? error : false
+                                missing: true
+                            },
+                            {
+                                name: 'zip',
+                                version: '0.0.3',
+                                missing: (!!error) ? error : false
                             }
                         ]
                     }

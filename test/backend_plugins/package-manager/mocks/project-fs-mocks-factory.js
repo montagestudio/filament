@@ -21,7 +21,7 @@ exports.ProjectFSMocksFactory = Object.create(Object.prototype, {
     _browseTree: {
         value: function (project) {
             this._fs = {};
-            this._fs[project.name] = this._getModule(project)
+            this._fs[project.name] = this._getModule(project);
         }
     },
 

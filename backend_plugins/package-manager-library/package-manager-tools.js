@@ -26,7 +26,7 @@ exports.PackageManagerTools = Object.create(Object.prototype, {
 
     isGitUrl: {
         value: function (url) {
-            return (typeof url === 'string') ? (/^git(\+https?|\+ssh)?:\/\/([\w\-\.~]+@)?[\/\w\.\-:~\?]*\/([\w\-\.~]+){1}\.git(#[\w\-\.~]*)?$/).exec(url) : false;
+            return (typeof url === 'string') ? (/^git(\+https?|\+ssh)?:\/\/([\w\-\.~]+@)?[\/\w\.\-:~\?]*\/([0-9a-zA-Z~][\w\-\.~]*)\.git(#[\w\-\.~]*)?$/).exec(url) : null;
         }
     },
 

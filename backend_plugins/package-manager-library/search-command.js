@@ -1,7 +1,9 @@
 var AbstractNpmCommand = require("./abstract-npm-command").AbstractNpmCommand,
     Q = require("q"),
     Tools = require("./package-manager-tools").PackageManagerTools,
-    npm = require("npm");
+    npm = require("npm"),
+    ERROR_NAME_TYPE = 5000,
+    ERROR_INVALID_REQUEST = 5001;
 
 exports.searchCommand = Object.create(AbstractNpmCommand, {
 
@@ -17,7 +19,7 @@ exports.searchCommand = Object.create(AbstractNpmCommand, {
             if (typeof name === 'string' && name.length > 0) {
                 name = name.trim();
             } else {
-                throw new TypeError("The request value should be a string or not empty.");
+                throw new Error(ERROR_NAME_TYPE);
             }
 
             if (Tools.isNameValid(name)) {
@@ -32,7 +34,7 @@ exports.searchCommand = Object.create(AbstractNpmCommand, {
                     return this._invokeSearchCommand(name);
                 }
             } else {
-                throw new Error("The request should be a string and respect the following format: name.");
+                throw new Error(ERROR_INVALID_REQUEST);
             }
         }
     },

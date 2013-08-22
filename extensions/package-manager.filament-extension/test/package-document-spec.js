@@ -42,59 +42,59 @@ describe("package document", function () {
         spyOn(packageDocument, '_modificationsAccepted');
     });
 
-    it('should be able to save a valid package name value', function () {
+    it('should be able to save a valid package name value.', function () {
 
         expect(packageDocument.setProperty('name', 'MyApp')).toEqual(true);
         expect(packageDocument._modificationsAccepted).toHaveBeenCalled();
         expect(packageDocument.name).toEqual('MyApp');
     });
 
-    it('should reject a invalid package version value', function () {
+    it('should reject a invalid package version value.', function () {
 
         expect(packageDocument.setProperty('name', '.MyApp')).toEqual(false);
         expect(packageDocument._modificationsAccepted).not.toHaveBeenCalled();
     });
 
-    it('should be able to save a valid package version value', function () {
+    it('should be able to save a valid package version value.', function () {
 
         expect(packageDocument.setProperty('version', '1.2.3')).toEqual(true);
         expect(packageDocument._modificationsAccepted).toHaveBeenCalled();
         expect(packageDocument.version).toEqual('1.2.3');
     });
 
-    it('should reject a invalid package version value', function () {
+    it('should reject a invalid package version value.', function () {
 
         expect(packageDocument.setProperty('version', '#1.2.3')).toEqual(false);
         expect(packageDocument._modificationsAccepted).not.toHaveBeenCalled();
     });
 
-    it('should be able to save a valid package privacy value', function () {
+    it('should be able to save a valid package privacy value.', function () {
 
         expect(packageDocument.setProperty('privacy', true)).toEqual(true);
         expect(packageDocument._modificationsAccepted).toHaveBeenCalled();
         expect(packageDocument.privacy).toEqual(true);
     });
 
-    it('should reject a invalid package privacy value', function () {
+    it('should reject a invalid package privacy value.', function () {
 
         expect(packageDocument.setProperty('privacy', null)).toEqual(false);
         expect(packageDocument._modificationsAccepted).not.toHaveBeenCalled();
     });
 
-    it('should be able to save a valid package license value', function () {
+    it('should be able to save a valid package license value.', function () {
 
         expect(packageDocument.setProperty('license', 'mit')).toEqual(true);
         expect(packageDocument._modificationsAccepted).toHaveBeenCalled();
         expect(packageDocument.license).toEqual('mit');
     });
 
-    it('should reject a invalid package license value', function () {
+    it('should reject a invalid package license value.', function () {
 
         expect(packageDocument.setProperty('license', 1)).toEqual(false);
         expect(packageDocument._modificationsAccepted).not.toHaveBeenCalled();
     });
 
-    it('should be able to save a valid package author value', function () {
+    it('should be able to save a valid package author value.', function () {
 
         packageDocument.setProperty('author', {
             name: 'bob',
@@ -108,27 +108,26 @@ describe("package document", function () {
         expect(packageDocument._modificationsAccepted).toHaveBeenCalled();
     });
 
-    it('should reject a invalid package author value', function () {
+    it('should reject a invalid package author value.', function () {
 
         expect(packageDocument.setProperty('author', 'bill')).toEqual(false);
         expect(packageDocument._modificationsAccepted).not.toHaveBeenCalled();
     });
 
-    it('should be able to save a valid package description value', function () {
+    it('should be able to save a valid package description value.', function () {
 
         expect(packageDocument.setProperty('description', 'hello world')).toEqual(true);
         expect(packageDocument._modificationsAccepted).toHaveBeenCalled();
         expect(packageDocument.description).toEqual('hello world');
     });
 
-    it('should reject a invalid package description value', function () {
+    it('should reject a invalid package description value.', function () {
 
         expect(packageDocument.setProperty('description', {})).toEqual(false);
         expect(packageDocument._modificationsAccepted).not.toHaveBeenCalled();
     });
 
-    it('should be able to add a maintainer and remove it', function () {
-
+    it('should be able to add a maintainer and remove it.', function () {
         packageDocument.addMaintainer(
             {
                 name: 'bob',
@@ -142,7 +141,7 @@ describe("package document", function () {
         expect(packageDocument.packageMaintainers.length).toEqual(0);
     });
 
-    it('should be able to find a dependency', function () {
+    it('should be able to find a dependency.', function () {
         var digit = packageDocument.findDependency('digit'),
             montage = packageDocument.findDependency('montage', DependencyNames.devDependencies),
             montageTestingIndex = packageDocument.findDependency('montage-testing', DependencyNames.devDependencies, true);
@@ -158,15 +157,14 @@ describe("package document", function () {
         })
     });
 
-    it('Should be able to reset any dependency types', function () {
+    it('Should be able to reset any dependency types.', function () {
 
         packageDocument._resetDependencies();
         expect(packageDocument.dependencyCollection.dependencies.length).toEqual(0);
     });
 
-    it('Should be able to add a dependency according to its type', function () {
+    it('Should be able to add a dependency according to its type.', function () {
         var oldLength = packageDocument.dependencyCollection.dependencies.length;
-
         packageDocument._insertDependency({
             name: 'joey',
             version: '1.2.3'
@@ -196,9 +194,8 @@ describe("package document", function () {
         expect(packageDocument.findDependency('matte', DependencyNames.devDependencies)).toEqual(null);
     });
 
-    it('Should be able to add a dependency according to its type and save it', function () {
+    it('Should be able to add a dependency according to its type and save it.', function () {
         var oldLength = Object.keys(packageDocument._package.dependencies).length;
-
         packageDocument._insertDependency({
             name: 'joey',
             version: '1.2.3'
@@ -208,7 +205,7 @@ describe("package document", function () {
         expect(packageDocument._modificationsAccepted).toHaveBeenCalled();
     });
 
-    it('Should be able to remove a dependency from the file and save it', function () {
+    it('Should be able to remove a dependency from the file and save it.', function () {
         packageDocument._insertDependency({
             name: 'joey',
             version: '1.2.3',
@@ -222,7 +219,7 @@ describe("package document", function () {
         expect(packageDocument._modificationsAccepted.calls.length).toEqual(2);
     });
 
-    it('Should sort correctly dependencies according to their type', function () {
+    it('Should sort correctly dependencies according to their type.', function () {
         packageDocument._classifyDependencies([ // reset dependencies
             {
                 name: 'matte',
