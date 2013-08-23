@@ -185,11 +185,14 @@ exports.listCommand = Object.create(Object.prototype, {
                         try {
                             moduleParsed = JSON.parse(data);
 
-                            if (typeof moduleParsed.name === 'undefined' || typeof moduleParsed.version === 'undefined' || (!root && moduleParsed.name !== currentDependency.name)) { // If the name or the version field are missing.
+                            if (typeof moduleParsed.name === 'undefined' ||
+                                typeof moduleParsed.version === 'undefined' ||
+                                (!root && moduleParsed.name !== currentDependency.name)) { // If the name or the version field are missing.
+
                                 currentDependency.jsonFileError = true;
                             }
 
-                            if (currentDependency.jsonFileError !== true && root === true) {
+                            if (!currentDependency.jsonFileError && root) {
                                 currentDependency.file = JSON.parse(data);
                                 currentDependency.name = moduleParsed.name;
                                 currentDependency.version = moduleParsed.version;
