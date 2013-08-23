@@ -35,6 +35,9 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
 
             //Listen for editing to finish
             this.templateObjects.inputText.addEventListener("action", this);
+
+            //Listen for the user canceling (onblur does not bubble, onfocus does)
+            this.element.addEventListener("focusout", this);
         }
     },
 
@@ -66,6 +69,15 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
         }
     },
 
+    _cancelEditing: {
+        value: function () {
+            if (this.isEditing) {
+                this._inputValue = null;
+                this.isEditing = false;
+            }
+        }
+    },
+
     /**
      * Handler the escape key
      * @private
@@ -73,10 +85,13 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
     handleKeyPress: {
         enumerable: false,
         value: function (evt) {
-            if (this.isEditing) {
-                this._inputValue = null;
-                this.isEditing = false;
-            }
+            this._cancelEditing();
+        }
+    },
+
+    handleFocusout: {
+        value: function (evt) {
+            this._stopEditing();
         }
     }
 
