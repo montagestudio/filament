@@ -47,6 +47,17 @@
                 }
             },
 
+            "highlights": {
+                "prototype": "palette/ui/selection/highlights.reel",
+                "properties": {
+                    "element": {"#": "highlights"}
+                },
+                "bindings": {
+                    "contentComponent": {"<-": "@workbench.editingFrame"},
+                    "highlightedElements": {"<-": "@owner.editingDocument.highlightedElements"}
+                }
+            },
+
             "contextualInspectors": {
                 "prototype": "ui/contextual-inspectors.reel",
                 "properties": {
@@ -73,6 +84,7 @@
             <div data-arg="overlay">
                 <div data-montage-id="contextualInspectors"></div>
                 <div data-montage-id="selections"></div>
+                <div data-montage-id="highlights"></div>
             </div>
         </div>
     </div>

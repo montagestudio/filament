@@ -487,13 +487,18 @@ exports.ReelDocument = EditingDocument.specialize({
     updateSelectionCandidate: {
         value: function (currentElement) {
             if (!currentElement) {
-                return;
+                return void 0;
             }
 
             var selectedObjects = this.selectedObjects;
             var selectionCandidate = currentElement.component;
-
+            if (!selectionCandidate) {
+                return void 0;
+            }
             var ownerComponent = this.editingProxyMap.owner.stageObject;
+            if (!ownerComponent) {
+                return void 0;
+            }
             var ownerElement = ownerComponent.element;
             var selectedElements = selectedObjects.map(function (object) {
                 return object.getPath("stageObject.element");

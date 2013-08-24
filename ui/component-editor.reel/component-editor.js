@@ -86,6 +86,9 @@ exports.ComponentEditor = Editor.specialize({
                 }
 
                 this.needsDraw = true;
+
+                this.addEventListener("highlight", this, false);
+                this.addEventListener("highlightStageElement", this, false);
             }
         }
     },
@@ -214,6 +217,62 @@ exports.ComponentEditor = Editor.specialize({
         value: function (evt) {
             this.currentDocument.selectObject(evt.detail.templateObject);
         }
-    }
+    },
+
+    // Event dispatched on stage hover
+    handleHighlight: {
+        value: function (evt) {
+            var detail = evt.detail,
+                highlight = detail.highlight,
+                documentEditor = this.currentDocument;
+            
+            var element = documentEditor.htmlDocument.evaluate(
+                evt.detail.xpath,
+                    documentEditor.htmlDocument,
+                    null,
+                    XPathResult.FIRST_ORDERED_NODE_TYPE,
+                    null
+                ).singleNodeValue;
+            var nodeProxy = documentEditor.nodeProxyForNode(element);
+
+            for (var i = 0; i < documentEditor.templateNodes.length; i++) {
+                documentEditor.templateNodes[i].isHighlighted = false;
+            }
+
+            nodeProxy.isHighlighted = highlight;
+        }
+    },
+
+    highlightStageElement:{
+        value: function (highlight, xpath) {
+            var documentEditor = this.currentDocument,
+                stageDocument = documentEditor._editingController.frame.iframe.contentDocument;
+
+            var element = documentEditor.htmlDocument.evaluate(
+                xpath,
+                stageDocument,
+                null,
+                XPathResult.FIRST_ORDERED_NODE_TYPE,
+                null
+            ).singleNodeValue;
+
+            if (highlight) {
+                documentEditor.hightlightElement(element);
+            }
+            else {
+                documentEditor.deHighlightElement(element);
+            }
+        }
+    },
+
+    // Event dispatched on DOM Explorer hover
+    handleHighlightStageElement: {
+        value: function (evt) {
+            var detail = evt.detail,
+                highlight = detail.highlight,
+                xpath = detail.xpath;
+            this.highlightStageElement(highlight, xpath);
+        }
+    },
 
 });

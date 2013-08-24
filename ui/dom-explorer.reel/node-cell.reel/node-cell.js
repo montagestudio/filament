@@ -213,21 +213,19 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
 
     handleMouseover: {
         value: function (evt) {
-            var nodeProxy = this._nodeInfo;
-
-            if ( nodeProxy && nodeProxy.component) {
-                nodeProxy._editingDocument.selectObject(nodeProxy.component);
-            }
+            this.dispatchEventNamed("highlightStageElement", true, true, {
+                xpath: getElementXPath(this.nodeInfo._templateNode),
+                highlight: true
+            });
         }
     },
 
     handleMouseout: {
         value: function (evt) {
-            var nodeProxy = this._nodeInfo;
-
-            if ( nodeProxy && nodeProxy.component) {
-                nodeProxy._editingDocument.deselectObject(nodeProxy.component);
-            }
+            this.dispatchEventNamed("highlightStageElement", true, true, {
+                xpath: getElementXPath(this.nodeInfo._templateNode),
+                highlight: false
+            });
         }
     }
 

@@ -33,6 +33,10 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
         value: null
     },
 
+    isHighlighted: {
+        value: false
+    },
+
     init: {
         value: function (node, editingDocument) {
             this._templateNode = node;
