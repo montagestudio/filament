@@ -42,24 +42,14 @@
             }
         },
 
-        "commentCondition": {
-            "prototype": "montage/ui/condition.reel",
-            "properties": {
-                "element": {"#": "commentCondition"},
-                "removalStrategy": "hide"
-            },
-            "bindings": {
-                "condition": {"<-": "@owner.templateObject.comment"}
-            }
-        },
-
         "templateObjectComment": {
-            "prototype": "montage/ui/text.reel",
+            "prototype": "matte/ui/rich-text-editor/rich-text-editor.reel",
             "properties": {
                 "element": {"#": "templateObjectComment"}
             },
             "bindings": {
-                "value": {"<-": "@owner.templateObject.comment"}
+                "value": {"<->": "@owner.templateObject.comment"},
+                "undoManager": {"<-": "@owner.templateObject._editingDocument.undoManager"}
             }
         }
     }
@@ -79,7 +69,7 @@
             <section data-param="toolbar"></section>
         </section>
 
-        <div data-montage-id="commentCondition">
+        <div>
             <p data-montage-id="templateObjectComment" class="TemplateObjectHeader-comment"></p>
         </div>
 
