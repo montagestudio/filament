@@ -87,7 +87,9 @@ exports.ComponentEditor = Editor.specialize({
 
                 this.needsDraw = true;
 
+                // Element highlight stage -> DOM Explorer
                 this.addEventListener("highlight", this, false);
+                // Element highlight DOM Explorer -> stage
                 this.addEventListener("highlightStageElement", this, false);
             }
         }
@@ -219,15 +221,17 @@ exports.ComponentEditor = Editor.specialize({
         }
     },
 
-    // Event dispatched on stage hover
+    // Event dispatched on stage element hover
     handleHighlight: {
         value: function (evt) {
             var detail = evt.detail,
                 highlight = detail.highlight,
+                xpath = detail.xpath,
+                stageElement = detail.element,
                 documentEditor = this.currentDocument;
             
             var element = documentEditor.htmlDocument.evaluate(
-                evt.detail.xpath,
+                    xpath,
                     documentEditor.htmlDocument,
                     null,
                     XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -240,13 +244,18 @@ exports.ComponentEditor = Editor.specialize({
             }
 
             nodeProxy.isHighlighted = highlight;
+
+            // highlight the stageElement to simulate a hover
+            documentEditor.clearHighlightedElements();
+            documentEditor.hightlightElement(stageElement);
         }
     },
 
+    // highlight or dehighlight a stage element given as an xpath
     highlightStageElement:{
         value: function (highlight, xpath) {
             var documentEditor = this.currentDocument,
-                stageDocument = documentEditor._editingController.frame.iframe.contentDocument;
+                stageDocument = documentEditor._editingController.frame.iframe.contentDocument; // FIXME _editingController can be undefined
 
             var element = documentEditor.htmlDocument.evaluate(
                 xpath,
@@ -271,6 +280,7 @@ exports.ComponentEditor = Editor.specialize({
             var detail = evt.detail,
                 highlight = detail.highlight,
                 xpath = detail.xpath;
+
             this.highlightStageElement(highlight, xpath);
         }
     },

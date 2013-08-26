@@ -3,11 +3,9 @@
     background: hsl(0,0%,96%);
 }
 
-.NodeCell--highlighted .NodeCell-segment {
+.NodeCell--highlighted .NodeCell-segment,
+.NodeCell:hover .NodeCell-segment {
     background: hsl(210,100%,90%);
-}
-.NodeCell:hover .NodeCell-segment  {
-    background: hsl(0,0%,86%);
 }
 
 .NodeCell-segment {
