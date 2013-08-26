@@ -54,21 +54,23 @@ describe("filament backend", function () {
             });
         });
 
-        it("creates an app with a space in its name", function () {
+        it("creates an app with a space in its name", function (done) {
             var timestamp = Date.now();
-            return filamentBackend.createApplication("my app" + timestamp, "/tmp/")
+            filamentBackend.createApplication("my app" + timestamp, "/tmp/")
             .then(function (minitResults) {
                 expect(minitResults.name).toEqual("my-app" + timestamp);
-            });
-        });
+            })
+            .then(done, done);
+        }, 5000);
 
-        it("creates an app with a non-ascii characters in its name", function () {
+        it("creates an app with a non-ascii characters in its name", function (done) {
             var timestamp = Date.now();
             return filamentBackend.createApplication("râțéăü" + timestamp, "/tmp/")
             .then(function (minitResults) {
                 expect(minitResults.name).toEqual("rateau" + timestamp);
-            });
-        });
+            })
+            .then(done, done);
+        }, 5000);
     });
 
     describe("createComponent", function () {
@@ -108,7 +110,7 @@ describe("filament backend", function () {
             });
         });
     });
-   
+
     describe("createModule", function () {
         var mockFS, filamentBackend;
 
@@ -146,8 +148,8 @@ describe("filament backend", function () {
             });
         });
     });
-   
-    
+
+
 
     describe("listTree", function () {
         var mockFS, filamentBackend;
