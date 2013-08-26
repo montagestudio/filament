@@ -3,7 +3,6 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    RichTextEditor = require("matte/ui/rich-text-editor/rich-text-editor.reel").RichTextEditor,
     MimeTypes = require("core/mime-types");
 
 /**
@@ -19,37 +18,6 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
     constructor: {
         value: function TemplateObjectHeader() {
             this.super();
-
-            /*
-            Two attempts to try to " bind the undoManager property in the declaration where you setup the editor."
-            */
-            if (trycreate) {
-                var commentsText = RichTextEditor.create();
-                commentsText.element = document.getElementById("templateObjectComment");
-                commentsText.undoManager = {
-                    enumerable: true,
-                    get: function() {
-                        return this.ownerComponent.templateObject._editingDocument.undoManager;
-                    },
-                    set: function(value) {
-                        this._undoManager = this.ownerComponent.templateObject._editingDocument.undoManager;
-                    }
-                };
-            } else {
-                var commentsText = RichTextEditor.specialize({
-                    undoManager: {
-                        enumerable: true,
-                        get: function() {
-                            return this.templateObject._editingDocument.undoManager;
-                        },
-                        set: function(value) {
-                            this._undoManager = this.templateObject._editingDocument.undoManager;
-                        }
-                    }
-                });
-                commentsText.element = document.getElementById("templateObjectComment");
-            }
-
         }
     },
 
