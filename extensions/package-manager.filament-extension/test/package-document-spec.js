@@ -171,7 +171,9 @@ describe("package document", function () {
         });
 
         expect(packageDocument.dependencyCollection.dependencies.length).toBeGreaterThan(oldLength);
-        expect(packageDocument.dependencyCollection.dependencies[packageDocument.findDependency('joey', DependencyNames.dependencies, true)].name).toEqual('joey');
+        expect(packageDocument.dependencyCollection.dependencies[
+            packageDocument.findDependency('joey', DependencyNames.dependencies, true)
+            ].name).toEqual('joey');
 
         oldLength = packageDocument.dependencyCollection.devDependencies.length;
 

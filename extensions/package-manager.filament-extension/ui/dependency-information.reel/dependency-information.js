@@ -39,7 +39,8 @@ exports.DependencyInformation = Component.specialize(/** @lends DependencyInform
         set: function (module) {
             if (module && typeof module === "object") {
                 this._currentDependency = module;
-                this.hasError = (this.currentDependency && Array.isArray(this.currentDependency.problems) && this.currentDependency.problems.length > 0);
+                this.hasError = (this.currentDependency && Array.isArray(this.currentDependency.problems)
+                    && this.currentDependency.problems.length > 0);
             } else { // Can be null
                 this._currentDependency = null;
                 this.hasError =  false;

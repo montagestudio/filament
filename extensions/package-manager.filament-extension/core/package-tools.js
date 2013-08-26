@@ -14,7 +14,8 @@ exports.ToolsBox = Object.create(Object.prototype, {
      */
     isNameValid: {
         value: function (name) {
-            return (typeof name === 'string') ? (/^(?!(js|node|node_modules|favicon\.ico)$)(?=([0-9a-zA-Z~]([\w\-\.~]){0,})$)/i).test(name) : false;
+            return (typeof name === 'string') ?
+                (/^(?!(js|node|node_modules|favicon\.ico)$)(?=([0-9a-zA-Z~]([\w\-\.~]){0,})$)/i).test(name) : false;
         }
     },
 
@@ -38,13 +39,15 @@ exports.ToolsBox = Object.create(Object.prototype, {
      */
     isUrlValid: {
         value: function (url) {
-            return (typeof url === 'string') ? (/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w\.\-]*)*\/?$/).test(url) : false;
+            return (typeof url === 'string') ?
+                (/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w\.\-]*)*\/?$/).test(url) : false;
         }
     },
 
     isGitUrl: {
         value: function (url) {
-            return (typeof url === 'string') ? (/^git(\+https?|\+ssh)?:\/\/([\w\-\.~]+@)?[\/\w\.\-:~\?]*\/([0-9a-zA-Z~][\w\-\.~]*)\.git(#[\w\-\.~]*)?$/).exec(url) : null;
+            return (typeof url === 'string') ?
+                (/^git(\+https?|\+ssh)?:\/\/([\w\-\.~]+@)?[\/\w\.\-:~\?]*\/([0-9a-zA-Z~][\w\-\.~]*)\.git(#[\w\-\.~]*)?$/).exec(url) : null;
         }
     },
 
@@ -66,7 +69,8 @@ exports.ToolsBox = Object.create(Object.prototype, {
      */
     isEmailValid: {
         value: function (email) {
-            return (typeof email === 'string') ? (/^([a-z0-9_\.\-\+!#$%&'/=?^_`{|}~]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/).test(email) : false;
+            return (typeof email === 'string') ?
+                (/^([a-z0-9_\.\-\+!#$%&'/=?^_`{|}~]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/).test(email) : false;
         }
     },
 
@@ -124,7 +128,8 @@ exports.ToolsBox = Object.create(Object.prototype, {
      */
     getValidPerson: {
         value: function (person) {
-            if (person && typeof person === 'object' && person.hasOwnProperty('name') && typeof person.name === 'string' && person.name.length > 0) {
+            if (person && typeof person === 'object' && person.hasOwnProperty('name')
+                && typeof person.name === 'string' && person.name.length > 0) {
 
                 return {
                     name: person.name,

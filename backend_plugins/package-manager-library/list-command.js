@@ -151,7 +151,9 @@ exports.listCommand = Object.create(Object.prototype, {
                     deferred.resolve((!!lite) ? self._lite() : self._complete());
 
                 } else {
-                    deferred.reject(new PackageManagerError("The Project package.json file shows errors.", ERROR_PROJECT_FILE));
+                    deferred.reject(
+                        new PackageManagerError("The Project package.json file shows errors.", ERROR_PROJECT_FILE)
+                    );
                 }
             });
         }
@@ -237,18 +239,28 @@ exports.listCommand = Object.create(Object.prototype, {
         value: function (moduleParsed, currentDependency, callBack) {
 
             if (moduleParsed.optionalDependencies) { // if optionalDependencies exists
-                var temp = {dependencies: this._formatDependencies(moduleParsed.optionalDependencies, currentDependency, moduleParsed.path, DEPENDENCY_TYPE_OPTIONAL) };
-                this._mergeDependencies(temp, (moduleParsed.dependencies) ? this._formatDependencies(moduleParsed.dependencies, currentDependency, moduleParsed.path, DEPENDENCY_TYPE_REGULAR) : []);
+                var temp = {dependencies: this._formatDependencies(moduleParsed.optionalDependencies,
+                    currentDependency, moduleParsed.path, DEPENDENCY_TYPE_OPTIONAL) };
+
+                this._mergeDependencies(temp, (moduleParsed.dependencies) ? this._formatDependencies(
+                    moduleParsed.dependencies, currentDependency, moduleParsed.path, DEPENDENCY_TYPE_REGULAR) : []
+                );
+
                 moduleParsed.dependencies = temp.dependencies;
             } else {
-                moduleParsed.dependencies = (moduleParsed.dependencies) ? this._formatDependencies(moduleParsed.dependencies, currentDependency, moduleParsed.path, DEPENDENCY_TYPE_REGULAR) : [];
+                moduleParsed.dependencies = (moduleParsed.dependencies) ? this._formatDependencies(
+                    moduleParsed.dependencies, currentDependency, moduleParsed.path, DEPENDENCY_TYPE_REGULAR) : [];
             }
 
             if (moduleParsed.devDependencies) { // if devDependencies exists.
-                this._mergeDependencies(moduleParsed, this._formatDependencies(moduleParsed.devDependencies, currentDependency, moduleParsed.path, DEPENDENCY_TYPE_DEV));
+                this._mergeDependencies(moduleParsed,
+                    this._formatDependencies(moduleParsed.devDependencies,
+                        currentDependency, moduleParsed.path, DEPENDENCY_TYPE_DEV));
             }
 
-            this._formatBundledDependencies(currentDependency, (moduleParsed.bundleDependencies || moduleParsed.bundledDependencies || null));
+            this._formatBundledDependencies(currentDependency,
+                (moduleParsed.bundleDependencies || moduleParsed.bundledDependencies || null));
+
             this._readInstalled(moduleParsed, currentDependency, callBack);
         }
     },
@@ -290,7 +302,8 @@ exports.listCommand = Object.create(Object.prototype, {
                     container.push({
                         name: keys[i],
                         version: dependencies[keys[i]],
-                        missing: true, // By default all dependencies are missing, later they will be checked whether they are in the file system.
+                        missing: true, // By default all dependencies are missing,
+                        // later they will be checked whether they are in the file system.
                         dependencies: [],
                         bundledDependencies: {},
                         parent: parent,
@@ -439,7 +452,9 @@ exports.listCommand = Object.create(Object.prototype, {
                                 dependencies: [],
                                 parent: currentDependency,
                                 path: moduleParsed.path,
-                                type: (currentDependency.bundledDependencies && currentDependency.bundledDependencies[moduleName]) ? DEPENDENCY_TYPE_BUNDLE : DEPENDENCY_TYPE_REGULAR,
+                                type: (currentDependency.bundledDependencies &&
+                                    currentDependency.bundledDependencies[moduleName]) ?
+                                    DEPENDENCY_TYPE_BUNDLE : DEPENDENCY_TYPE_REGULAR,
                                 extraneous: true
                             });
                         } else { // not missing
@@ -518,7 +533,8 @@ exports.listCommand = Object.create(Object.prototype, {
             if (!child.missing) {
                 var self = this;
 
-                this._readJsonFile(child.path + 'node_modules/' + child.name + '/', child, function () { // Examines the package.json file of the current child
+                // Examines the package.json file of the current child
+                this._readJsonFile(child.path + 'node_modules/' + child.name + '/', child, function () {
                     self._childHasBeenExamined(queue, callBack); // Notifies a child has been examined
                 });
             } else {
@@ -586,7 +602,8 @@ exports.listCommand = Object.create(Object.prototype, {
      */
     _findTopParent: {
         value: function (element, previous) {
-            return (element.parent) ? this._findTopParent(element.parent, element) : (typeof previous === 'undefined') ? element : previous;
+            return (element.parent) ? this._findTopParent(element.parent, element) :
+                (typeof previous === 'undefined') ? element : previous;
         }
     },
 
@@ -625,7 +642,8 @@ exports.listCommand = Object.create(Object.prototype, {
      */
     _isParentHasDependency: {
         value: function (dependency) {
-            return this._searchDependencyFromParent(dependency.parent, dependency.name); // At least one parent, The deepest "parent level" has already been checked by the readInstalled function.
+            return this._searchDependencyFromParent(dependency.parent, dependency.name); // At least one parent,
+            // The deepest "parent level" has already been checked by the readInstalled function.
         }
     },
 
@@ -696,23 +714,30 @@ exports.listCommand = Object.create(Object.prototype, {
                     var substituteDependency = this._isParentHasDependency(dependency); // Check if one of its parents have it.
 
                     if (!substituteDependency) { // Parents don't have it.
-                        this._reportTopLevel(dependency, ERROR_DEPENDENCY_MISSING, dependency.name + ' is missing' + ((parent.name && parent.name !== this._app.name) ? ', required by ' + parent.name : '.'));
+                        this._reportTopLevel(dependency, ERROR_DEPENDENCY_MISSING, dependency.name + ' is missing' +
+                            ((parent.name && parent.name !== this._app.name) ? ', required by ' + parent.name : '.'));
                     } else { // Parents have it.
                         dependency.versionInstalled = substituteDependency.versionInstalled;
 
-                        if (semver.validRange(dependency.version) && !semver.satisfies(dependency.versionInstalled, dependency.version, true)) {
+                        if (semver.validRange(dependency.version) &&
+                            !semver.satisfies(dependency.versionInstalled, dependency.version, true)) {
+
                             dependency.invalid = true;
                             this._reportTopLevel(dependency, ERROR_VERSION_INVALID, dependency.name + ' version is invalid.');
                         }
                     }
                 } else if (dependency.extraneous && dependency.type !== DEPENDENCY_TYPE_BUNDLE) { // If not within the package.json file.
                     this._reportTopLevel(dependency, ERROR_DEPENDENCY_EXTRANEOUS, dependency.name + ' is extraneous.');
-                } else if (!dependency.missing && dependency.type !== DEPENDENCY_TYPE_DEV && semver.validRange(dependency.version) && !semver.satisfies(dependency.versionInstalled, dependency.version, true)) { // Check the version requirement.
+                } else if (!dependency.missing && dependency.type !== DEPENDENCY_TYPE_DEV &&
+                    semver.validRange(dependency.version) &&
+                    !semver.satisfies(dependency.versionInstalled, dependency.version, true)) { // Check the version requirement.
+
                     dependency.invalid = true;
                     this._reportTopLevel(dependency, ERROR_VERSION_INVALID, dependency.name + ' version is invalid.');
                 }
             } else {
-                this._reportTopLevel(dependency, ERROR_FILE_INVALID,'the package.json file ' + ((!!dependency.jsonFileError) ? 'shows a few errors' : ' is missing.'));
+                this._reportTopLevel(dependency, ERROR_FILE_INVALID,'the package.json file ' +
+                    ((!!dependency.jsonFileError) ? 'shows a few errors' : ' is missing.'));
             }
         }
     }

@@ -52,7 +52,9 @@ exports.PersonForm = Component.specialize(/** @lends PersonForm# */ {
      */
     handleValidButtonAction: {
         value: function () {
-            if (this.person.name.length > MIN_NAME_LENGTH && this.templateObjects.personEmail.element.validity.valid && this.templateObjects.personUrl.element.validity.valid) {
+            if (this.person.name.length > MIN_NAME_LENGTH && this.templateObjects.personEmail.element.validity.valid
+                && this.templateObjects.personUrl.element.validity.valid) {
+
                 this.dispatchEventNamed("CreateMaintainer", true, true, {
                     maintainer: this.person
                 });

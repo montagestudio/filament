@@ -237,7 +237,8 @@ exports.PackageDocument = EditingDocument.specialize( {
     removeMaintainer: {
         value: function (maintainer) {
             var index  = (typeof maintainer === "string") ? this._findMaintainerIndex(maintainer) :
-                (maintainer && typeof maintainer === 'object' && maintainer.hasOwnProperty('name')) ? this._findMaintainerIndex(maintainer.name) : -1;
+                (maintainer && typeof maintainer === 'object' && maintainer.hasOwnProperty('name')) ?
+                    this._findMaintainerIndex(maintainer.name) : -1;
 
             if (index >= 0 && this.packageMaintainers.splice(index, 1).length > 0) {
                 this.saveModification();
@@ -308,7 +309,9 @@ exports.PackageDocument = EditingDocument.specialize( {
     _handleDependenciesListChange: {
         value: function (modules) {
             if (Array.isArray(modules) && modules.length > 0) {
-                if (this._saveTimer || this._savingInProgress) { // A saving request has been scheduled, need to save the package.json file before invoking the list command.
+                if (this._saveTimer || this._savingInProgress) { // A saving request has been scheduled,
+                // need to save the package.json file before invoking the list command.
+
                     clearTimeout(this._saveTimer);
                     var self = this;
 
@@ -527,7 +530,8 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     replaceDependency: {
         value: function (dependency, type) {
-            if (dependency && dependency.type !== type && this._removeDependencyFromFile(dependency, false) && this._addDependencyToFile(dependency, type)) {
+            if (dependency && dependency.type !== type
+                && this._removeDependencyFromFile(dependency, false) && this._addDependencyToFile(dependency, type)) {
                 var self = this;
 
                 return this.saveModification().then(function () {
@@ -562,7 +566,8 @@ exports.PackageDocument = EditingDocument.specialize( {
                 dependency = this.findDependency(dependency); // try to find the dependency related to this name
             }
 
-            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name') && dependency.hasOwnProperty('type') && !dependency.extraneous) {
+            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name')
+                && dependency.hasOwnProperty('type') && !dependency.extraneous) {
                 var type = DependencyNames[dependency.type];
 
                 if (type) {

@@ -82,7 +82,8 @@ exports.viewCommand = Object.create(AbstractNpmCommand, {
                 name: (module.name || ''),
                 version: (module.version || ''),
                 versions: (Array.isArray(module.versions)) ? module.versions : [],
-                author: (typeof module.author === 'string') ? Tools.formatPersonFromString(module.author) : (module.author && typeof module.author === 'object') ? module.author : '',
+                author: (typeof module.author === 'string') ? Tools.formatPersonFromString(module.author) :
+                    (module.author && typeof module.author === 'object') ? module.author : '',
                 description: (module.description || ''),
                 maintainers: Tools.formatPersonsContainer(module.maintainers),
                 contributors: Tools.formatPersonsContainer(module.contributors),

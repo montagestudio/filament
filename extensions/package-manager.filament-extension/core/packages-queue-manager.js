@@ -289,11 +289,13 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
 
                 if (module && typeof module === 'object' && Tools.isNameValid(module.name)) {
                     var version = Tools.isVersionValid(module.version) ? module.version : null,
-                        request = Tools.isGitUrl(module.version) ? module.version : version ? module.name + '@' + version : module.name;
+                        request = Tools.isGitUrl(module.version) ? module.version :
+                            version ? module.name + '@' + version : module.name;
 
                     this._queue.push({
                         name: module.name,
-                        type: (typeof module.type === 'string' && module.type.length > 0) ? module.type : DependencyNames.dependencies,
+                        type: (typeof module.type === 'string' && module.type.length > 0) ?
+                            module.type : DependencyNames.dependencies,
                         version: version,
                         deferred: deferred,
                         request: request,

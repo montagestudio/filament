@@ -56,7 +56,8 @@ exports.PackageEditor = Montage.create(Editor, {
         value: function (dependency) {
             if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name')) {
                 var self = this,
-                    search = (dependency.versionInstalled) ? dependency.name + "@" + dependency.versionInstalled : dependency.name;
+                    search = (dependency.versionInstalled) ?
+                        dependency.name + "@" + dependency.versionInstalled : dependency.name;
 
                 this._backendPlugin.invoke("viewDependency", search).then(function (module) {
                     if (module && typeof module === 'object' && module.hasOwnProperty('name')) {
@@ -210,7 +211,8 @@ exports.PackageEditor = Montage.create(Editor, {
             if (dependencyName && action >= 0) {
                 this.templateObjects.searchModules.handleDependenciesListChange(dependencyName, action);
 
-                if (action === REMOVE_DEPENDENCY_ACTION && this.dependencyDisplayed && this.dependencyDisplayed.name === dependencyName) { // Need to clean the view part, if the dependency deleted is also the dependency displayed
+                if (action === REMOVE_DEPENDENCY_ACTION && this.dependencyDisplayed
+                    && this.dependencyDisplayed.name === dependencyName) { // Need to clean the view part, if the dependency deleted is also the dependency displayed
                     this.dependencyDisplayed = null;
                 }
 
