@@ -60,20 +60,22 @@ exports.PackageEditor = Montage.create(Editor, {
                         dependency.name + "@" + dependency.versionInstalled : dependency.name;
 
                 this._backendPlugin.invoke("viewDependency", search).then(function (module) {
-                    if (module && typeof module === 'object' && module.hasOwnProperty('name')) {
-                        module.problems = dependency.problems;
-                        module.type = dependency.type;
-                        module.versionInstalled = dependency.versionInstalled;
-                        self.dependencyDisplayed = module;
-                    } else {
-                        self.dependencyDisplayed = dependency;
+                    if (self.selectedDependency) {
+                        if (module && typeof module === 'object' && module.hasOwnProperty('name')) {
+                            module.problems = dependency.problems;
+                            module.type = dependency.type;
+                            module.versionInstalled = dependency.versionInstalled;
+                            self.dependencyDisplayed = module;
+                        } else {
+                            self.dependencyDisplayed = dependency;
+                        }
                     }
                 }, function (error) {
 
                     if (error && typeof error === 'object' && error.code === ErrorsCommands.view.codes.dependencyNotFound) {
-                        self.dependencyDisplayed = dependency;
+                        self.dependencyDisplayed = (self.selectedDependency) ? dependency : null;
                     } else {
-                        self.dependencyDisplayed = null;
+                        self._clearSelection();
                         self.dispatchEventNamed("asyncActivity", true, false, {
                             promise: Promise.reject(error),
                             title: "Package Manager"
@@ -199,6 +201,13 @@ exports.PackageEditor = Montage.create(Editor, {
         }
     },
 
+    _clearSelection: {
+        value: function () {
+            this.dependencyDisplayed = null;
+            this.selectedDependency = null;
+        }
+    },
+
     /**
      * Notifies to the search part that the dependencies list has changed.
      * @function
@@ -213,7 +222,7 @@ exports.PackageEditor = Montage.create(Editor, {
 
                 if (action === REMOVE_DEPENDENCY_ACTION && this.dependencyDisplayed
                     && this.dependencyDisplayed.name === dependencyName) { // Need to clean the view part, if the dependency deleted is also the dependency displayed
-                    this.dependencyDisplayed = null;
+                    this._clearSelection();
                 }
 
             }
