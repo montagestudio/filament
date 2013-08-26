@@ -43,12 +43,13 @@
         },
 
         "templateObjectComment": {
-            "prototype": "ui/template-explorer.reel/content/edit-comment.reel",
+            "prototype": "matte/ui/rich-text-editor/rich-text-editor.reel",
             "properties": {
                 "element": {"#": "templateObjectComment"}
             },
             "bindings": {
-                "value": {"<->": "@owner.templateObject.comment"}
+                "value": {"<->": "@owner.templateObject.comment"},
+                "undoManager": {"<-": "@owner.templateObject._editingDocument.undoManager"}
             }
         }
     }
