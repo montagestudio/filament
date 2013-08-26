@@ -1,4 +1,5 @@
 var QFS = require("q-io/fs"),
+    PackageManagerError = require("./core").PackageManagerError,
     Tools = require("./package-manager-tools").PackageManagerTools,
     ERROR_DEPENDENCY_NAME_NOT_VALID = 4000,
     ERROR_PROJECT_PATH_NOT_VALID = 4001,
@@ -20,10 +21,10 @@ exports.removeCommand = Object.create(Object.prototype, {
                 name = name.trim();
 
                 if (!Tools.isNameValid(name)) {
-                    throw new Error(ERROR_DEPENDENCY_NAME_NOT_VALID);
+                    throw new PackageManagerError("Dependency name invalid.", ERROR_DEPENDENCY_NAME_NOT_VALID);
                 }
             } else {
-                throw new Error(ERROR_DEPENDENCY_NAME_NOT_VALID);
+                throw new PackageManagerError("Dependency name invalid.", ERROR_DEPENDENCY_NAME_NOT_VALID);
             }
 
             if (typeof where === 'string' && where.length > 0) {
@@ -36,18 +37,17 @@ exports.removeCommand = Object.create(Object.prototype, {
                 }
 
                 return QFS.removeTree(where+name).then(function () {
-					return { name: name };
+                    return { name: name };
                 }, function (error) {
                     if (error.errno === 3) {
-                        throw new Error(ERROR_FS_PERMISSION);
+                        throw new PackageManagerError("Error filesystem permissions.", ERROR_FS_PERMISSION);
                     } else if (error.errno === 34) {
-                        throw new Error(ERROR_DEPENDENCY_NOT_FOUND);
-                    } else {
-                        throw error;
+                        throw new PackageManagerError("Dependency missing.", ERROR_DEPENDENCY_NOT_FOUND);
                     }
+                    throw error;
                 });
             } else {
-                throw new Error(ERROR_PROJECT_PATH_NOT_VALID);
+                throw new PackageManagerError("Dependency path invalid.", ERROR_PROJECT_PATH_NOT_VALID);
             }
         }
     }

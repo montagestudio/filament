@@ -1,4 +1,6 @@
-var AbstractNpmCommand = require("./abstract-npm-command").AbstractNpmCommand,
+var Core = require("./core"),
+    AbstractNpmCommand = Core.AbstractNpmCommand,
+    PackageManagerError = Core.PackageManagerError,
     Q = require("q"),
     Tools = require("./package-manager-tools").PackageManagerTools,
     npm = require("npm"),
@@ -19,7 +21,7 @@ exports.searchCommand = Object.create(AbstractNpmCommand, {
             if (typeof name === 'string' && name.length > 0) {
                 name = name.trim();
             } else {
-                throw new Error(ERROR_NAME_TYPE);
+                throw new PackageManagerError("Dependency name invalid.", ERROR_NAME_TYPE);
             }
 
             if (Tools.isNameValid(name)) {
@@ -34,7 +36,7 @@ exports.searchCommand = Object.create(AbstractNpmCommand, {
                     return this._invokeSearchCommand(name);
                 }
             } else {
-                throw new Error(ERROR_INVALID_REQUEST);
+                throw new PackageManagerError("The request is invalid.", ERROR_INVALID_REQUEST);
             }
         }
     },

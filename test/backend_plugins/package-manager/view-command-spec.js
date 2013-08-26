@@ -8,15 +8,15 @@ describe("view command", function () {
 
         return Q.invoke(viewCommand, 'run', 'montage@').then(null, function (error) {
             expect(error instanceof Error).toEqual(true);
-            expect(error.message).toEqual(ErrorsCodes.wrongRequestFormat.toString());
+            expect(error.code).toEqual(ErrorsCodes.wrongRequestFormat);
 
             return Q.invoke(viewCommand, 'run', 'montage@1.0').then(null, function (error) {
                 expect(error instanceof Error).toEqual(true);
-                expect(error.message).toEqual(ErrorsCodes.wrongRequestFormat.toString());
+                expect(error.code).toEqual(ErrorsCodes.wrongRequestFormat);
 
                 return Q.invoke(viewCommand, 'run', 45).then(null, function (error) {
                     expect(error instanceof Error).toEqual(true);
-                    expect(error.message).toEqual(ErrorsCodes.requestInvalid.toString());
+                    expect(error.code).toEqual(ErrorsCodes.requestInvalid);
                 });
             });
         });
@@ -26,7 +26,7 @@ describe("view command", function () {
 
         return Q.invoke(viewCommand, 'run', 'ducem').then(null, function (error) {
             expect(error instanceof Error).toEqual(true);
-            expect(error.message).toEqual(ErrorsCodes.dependencyNotFound.toString());
+            expect(error.code).toEqual(ErrorsCodes.dependencyNotFound);
         });
     });
 

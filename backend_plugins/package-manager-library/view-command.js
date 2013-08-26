@@ -1,4 +1,6 @@
-var AbstractNpmCommand = require("./abstract-npm-command").AbstractNpmCommand,
+var Core = require("./core"),
+    AbstractNpmCommand = Core.AbstractNpmCommand,
+    PackageManagerError = Core.PackageManagerError,
     Q = require("q"),
     Tools = require("./package-manager-tools").PackageManagerTools,
     ERROR_NOT_FOUND = 3000,
@@ -20,7 +22,7 @@ exports.viewCommand = Object.create(AbstractNpmCommand, {
             if (typeof request === 'string' && request.length > 0) {
                 request = request.trim();
             } else {
-                throw new Error(ERROR_REQUEST_INVALID);
+                throw new PackageManagerError("Request invalid.", ERROR_REQUEST_INVALID);
             }
 
             if (Tools.isRequestValid(request)) {
@@ -32,7 +34,7 @@ exports.viewCommand = Object.create(AbstractNpmCommand, {
                 }
                 return this._invokeViewCommand(request);
             }
-            throw new Error(ERROR_WRONG_FORMAT);
+            throw new PackageManagerError("Should respect the following format: name[@version].", ERROR_WRONG_FORMAT);
         }
     },
 
@@ -58,7 +60,7 @@ exports.viewCommand = Object.create(AbstractNpmCommand, {
             }, function (error) {
                 if (error && typeof error === 'object') {
                     if (error.hasOwnProperty('code') && error.code === 'E404') { // no results
-                        throw new Error(ERROR_NOT_FOUND);
+                        throw new PackageManagerError("Dependency not found.", ERROR_NOT_FOUND);
                     }
                 } else {
                     throw error;

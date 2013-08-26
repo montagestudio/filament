@@ -148,14 +148,6 @@ exports.Errors = {
                 extraneous: 1003,
                 projectFileErrors: 1004,
                 pathMissing: 1005
-            },
-            messages: {
-                1000: 'dependency missing',
-                1001: 'version not valid',
-                1002: 'package json file shows errors',
-                1003: 'dependency is extraneous',
-                1004: 'project package.json file shows errors',
-                1005: 'the project path is missing'
             }
         },
         install: {
@@ -164,12 +156,6 @@ exports.Errors = {
                 versionNotFound: 2001,
                 requestInvalid: 2002,
                 wrongRequestFormat: 2003
-            },
-            messages: {
-                2000: 'dependency not found',
-                2001: 'version not found',
-                2002: 'request invalid',
-                2003: 'wrong format, should respect the following format: name[@version] | or a git url'
             }
         },
         view: {
@@ -177,11 +163,6 @@ exports.Errors = {
                 dependencyNotFound: 3000,
                 requestInvalid: 3001,
                 wrongRequestFormat: 3002
-            },
-            messages: {
-                3000: 'dependency not found',
-                3001: 'request invalid',
-                3002: 'wrong format, should respect the following format: name[@version].'
             }
         },
         remove: {
@@ -190,22 +171,12 @@ exports.Errors = {
                 pathInvalid: 4001,
                 fsErrors: 4002,
                 dependencyMissing: 4003
-            },
-            messages: {
-                4000: 'dependency name invalid',
-                4001: 'dependency path invalid',
-                4002: 'error filesystem permissions',
-                4003: 'dependency missing'
             }
         },
         search: {
             codes: {
                 requestType: 5000,
                 requestInvalid: 5001
-            },
-            messages: {
-                5000: 'should be a string',
-                5001: 'the request is invalid'
             }
         }
     }

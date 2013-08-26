@@ -476,8 +476,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
             }, function (error) {
                 module.isInstalling = false;
-                var message = ErrorsCommands.install.messages[error.message];
-                throw new Error(message ? message : error.message ? error.message : error);
+                throw error;
             });
         }
     },
@@ -547,9 +546,6 @@ exports.PackageDocument = EditingDocument.specialize( {
                     this._removeDependencyFromFile(dependency, true);
                     return PackageQueueManager.uninstallModule(name, !dependency.missing).then(function (data) {
                         return data;
-                    }, function (error) {
-                        var message = ErrorsCommands.remove.messages[error.message];
-                        throw new Error(message ? message : error.message ? error.message : error);
                     });
                 }
 

@@ -1,4 +1,5 @@
 var semver = require("semver"),
+    PackageManagerError = require("./core").PackageManagerError,
     Q = require("q"),
     QFS = require("q-io/fs"),
     DEPENDENCY_TYPE_REGULAR = 'dependencies',
@@ -35,7 +36,7 @@ exports.listCommand = Object.create(Object.prototype, {
 
                 this._runProcess(deferred, lite);
             } else {
-                deferred.reject(new Error(ERROR_PATH_MISSING));
+                deferred.reject(new PackageManagerError("The project path is missing.", ERROR_PATH_MISSING));
             }
             return deferred.promise;
         }
@@ -150,7 +151,7 @@ exports.listCommand = Object.create(Object.prototype, {
                     deferred.resolve((!!lite) ? self._lite() : self._complete());
 
                 } else {
-                    deferred.reject(new Error(ERROR_PROJECT_FILE));
+                    deferred.reject(new PackageManagerError("The Project package.json file shows errors.", ERROR_PROJECT_FILE));
                 }
             });
         }

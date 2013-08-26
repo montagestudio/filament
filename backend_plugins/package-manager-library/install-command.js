@@ -1,4 +1,6 @@
-var AbstractNpmCommand = require("./abstract-npm-command").AbstractNpmCommand,
+var Core = require("./core"),
+    AbstractNpmCommand = Core.AbstractNpmCommand,
+    PackageManagerError = Core.PackageManagerError,
     Q = require("q"),
     Tools = require("./package-manager-tools").PackageManagerTools,
     npm = require("npm"),
@@ -23,7 +25,7 @@ exports.installCommand = Object.create(AbstractNpmCommand, {
             if (typeof request === 'string' && request.length > 0) {
                 request = request.trim();
             } else {
-                throw new Error(ERROR_INVALID_REQUEST);
+                throw new PackageManagerError("Request invalid.", ERROR_INVALID_REQUEST);
             }
 
             if (Tools.isRequestValid(request)) {
@@ -32,12 +34,11 @@ exports.installCommand = Object.create(AbstractNpmCommand, {
                     return this._loadNpm().then(function () {
                         return self._invokeInstallCommand(request, where, deeply);
                     });
-                } else {
-                    return this._invokeInstallCommand(request, where, deeply);
                 }
-            } else {
-                throw new Error(ERROR_WRONG_FORMAT);
+                return this._invokeInstallCommand(request, where, deeply);
             }
+
+            throw new PackageManagerError("Should respect the following format: name[@version], gitUrl.", ERROR_WRONG_FORMAT);
         }
     },
 
@@ -61,13 +62,14 @@ exports.installCommand = Object.create(AbstractNpmCommand, {
             }, function (error) {
                 if (typeof error === 'object') {
                     if (error.code === 'E404') {
-                        throw new Error(ERROR_NOT_FOUND);
+                        error = new PackageManagerError("dependency not found.", ERROR_NOT_FOUND);
                     } else {
-                        throw ((/version not found/).test(error.message)) ? new Error(ERROR_VERSION_NOT_FOUND) : error;
+                        if ((/version not found/).test(error.message)) {
+                            error = new PackageManagerError("version not found.", ERROR_VERSION_NOT_FOUND);
+                        }
                     }
-                } else {
-                    throw error;
                 }
+                throw error;
             });
         }
     },

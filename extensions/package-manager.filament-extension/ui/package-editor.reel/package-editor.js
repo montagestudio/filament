@@ -69,7 +69,7 @@ exports.PackageEditor = Montage.create(Editor, {
                     }
                 }, function (error) {
 
-                    if (error && typeof error === 'object' && error.message === ErrorsCommands.view.codes.dependencyNotFound.toString()) {
+                    if (error && typeof error === 'object' && error.code === ErrorsCommands.view.codes.dependencyNotFound) {
                         self.dependencyDisplayed = dependency;
                     } else {
                         self.dependencyDisplayed = null;
@@ -189,8 +189,6 @@ exports.PackageEditor = Montage.create(Editor, {
                     }
 
                     throw new Error('An error has occurred while installing the dependency ' + name);
-                }, function (error) {
-                    throw error;
                 });
 
             self.dispatchEventNamed("asyncActivity", true, false, {

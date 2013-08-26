@@ -154,17 +154,17 @@ describe("list command", function () {
             }).listCommand;
 
             return Q.invoke(listCommand, 'run', DEFAULT_PROJECT_APP, true).then(null, function (error) {
-                expect(error.message).toEqual(ErrorsCodes.projectFileErrors.toString());
+                expect(error.code).toEqual(ErrorsCodes.projectFileErrors);
             });
         });
 
         it('should handle wrong project paths.', function() {
 
             return Q.invoke(listCommand, 'run', '/root/', true).then(null, function (error) {
-                expect(error.message).toEqual(ErrorsCodes.projectFileErrors.toString());
+                expect(error.code).toEqual(ErrorsCodes.projectFileErrors);
 
                 return Q.invoke(listCommand, 'run', 1, true).then(null, function (error) {
-                    expect(error.message).toEqual(ErrorsCodes.pathMissing.toString());
+                    expect(error.code).toEqual(ErrorsCodes.pathMissing);
                 });
             });
         });

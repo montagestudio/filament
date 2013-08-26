@@ -8,11 +8,11 @@ describe("search command", function () {
 
         return Q.invoke(searchCommand, 'run', 'montage%').then(null, function (error) {
             expect(error instanceof Error).toEqual(true);
-            expect(error.message).toEqual(ErrorsCodes.requestInvalid.toString());
+            expect(error.code).toEqual(ErrorsCodes.requestInvalid);
 
             return Q.invoke(searchCommand, 'run', 4).then(null, function (error) {
                 expect(error instanceof Error).toEqual(true);
-                expect(error.message).toEqual(ErrorsCodes.requestType.toString());
+                expect(error.code).toEqual(ErrorsCodes.requestType);
             });
         });
     });
