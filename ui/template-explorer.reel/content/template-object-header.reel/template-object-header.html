@@ -42,6 +42,19 @@
             }
         },
 
+        "editCommentButton": {
+            "prototype": "matte/ui/toggle-button.reel",
+            "properties": {
+                "element": {"#": "editCommentButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
         "commentCondition": {
             "prototype": "montage/ui/condition.reel",
             "properties": {
@@ -49,17 +62,43 @@
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "@owner.templateObject.comment"}
+                "condition": {"<-": "@editCommentButton.pressed"}
             }
         },
 
+        "saveCommentButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "saveCommentButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "discardCommentButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "discardCommentButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
         "templateObjectComment": {
-            "prototype": "montage/ui/text.reel",
+            "prototype": "matte/ui/textarea.reel",
             "properties": {
                 "element": {"#": "templateObjectComment"}
             },
             "bindings": {
-                "value": {"<-": "@owner.templateObject.comment"}
+                "value": {"<->": "@owner.templateObject.comment"}
             }
         }
     }
@@ -79,8 +118,12 @@
             <section data-param="toolbar"></section>
         </section>
 
+        <button data-montage-id="editCommentButton" class="TemplateObjectHeader-commentButton Button Toolbar-button"></button>
         <div data-montage-id="commentCondition">
-            <p data-montage-id="templateObjectComment" class="TemplateObjectHeader-comment"></p>
+            <label>Comment: </label>
+            <textarea data-montage-id="templateObjectComment" class="TemplateObjectHeader-comment"></textarea>
+            <button data-montage-id="saveCommentButton" class="TemplateObjectHeader-editButton Button Toolbar-button">Save</button>
+            <button data-montage-id="discardCommentButton" class="TemplateObjectHeader-editButton Button Toolbar-button">Discard</button>
         </div>
 
     </header>

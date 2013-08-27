@@ -74,8 +74,12 @@
 
 .TemplateObjectHeader-comment {
     display: block;
+    width: 100%;
     margin: 0;
     padding: 4px 6px;
+    border-radius: 0;
+    border: none;
+    border-top: hsla(0,0%,100%,.1);
     font-size: 11px;
     font-style: italic;
     text-shadow: 0 1px 0 hsla(0, 0%, 100%, .3);
