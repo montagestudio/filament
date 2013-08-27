@@ -1378,7 +1378,7 @@ exports.ReelDocument = EditingDocument.specialize({
                     var propertyBlueprint = new PropertyBlueprint().initWithNameBlueprintAndCardinality(name, blueprint, 1);
                     blueprint.addPropertyBlueprint(propertyBlueprint);
                     blueprint.addPropertyBlueprintToGroupNamed(propertyBlueprint, self._exportName);
-                    return [self.removeOwnerBlueprintProperty, self, propertyBlueprint];
+                    return [self.removeOwnerBlueprintProperty, self, name];
                 })
             );
         }
@@ -1396,7 +1396,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 propertyBlueprint[property] = value;
                 return self.undoManager.register(
                     "Modify owner property",
-                    Promise.resolve([self.modifyOwnerBlueprintProperty, self, propertyBlueprint, property, previousValue])
+                    Promise.resolve([self.modifyOwnerBlueprintProperty, self, name, property, previousValue])
                 );
             });
         }
@@ -1411,7 +1411,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 blueprint.removePropertyBlueprintFromGroupNamed(propertyBlueprint, self._exportName);
                 return self.undoManager.register(
                     "Remove owner property",
-                    Promise.resolve([self.addOwnerBlueprintProperty, self, propertyBlueprint])
+                    Promise.resolve([self.addOwnerBlueprintProperty, self, name])
                 );
             });
         }
