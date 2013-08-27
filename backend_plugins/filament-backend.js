@@ -37,7 +37,7 @@ exports.createComponent = function(name, packageHome, destination) {
     name = name.replace(/\.reel$/, "");
     return minitCreate("component", {name: name, packageHome: packageHome, destination: destination})
     .then(function (minitResults) {
-        return path.join(packageHome, destination, minitResults.name);
+        return minitResults.resultPath;
     });
 };
 

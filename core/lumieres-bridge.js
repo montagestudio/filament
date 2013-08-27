@@ -285,7 +285,10 @@ exports.LumiereBridge = EnvironmentBridge.specialize({
 
     createComponent: {
         value: function (name, packageHome, destination) {
-            return this.backend.get("filament-backend").invoke("createComponent", name, this.convertBackendUrlToPath(packageHome), destination);
+            return this.backend.get("filament-backend").invoke("createComponent", name, this.convertBackendUrlToPath(packageHome), destination)
+                .then(function (path) {
+                    return "fs://localhost" + path + "/";
+                });
         }
     },
 

@@ -868,10 +868,19 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+    /**
+     * Triggers the creation of a component in the project's `ui` directory
+     * It's up to the environment to facilitate this creation
+     *
+     * @returns {Promise} A Promise for the url of the created component
+     */
     createComponent: {
         value: function () {
+            var self = this;
             return this._create("component", "ui",
-                this.environmentBridge.createComponent.bind(this.environmentBridge));
+                this.environmentBridge.createComponent.bind(this.environmentBridge)).then(function (componentUrl) {
+                    return self.openUrlForEditing(componentUrl).thenResolve(componentUrl);
+                });
         }
     },
 
