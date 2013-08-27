@@ -530,7 +530,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     replaceDependency: {
         value: function (dependency, type) {
-            if (dependency && dependency.type !== type
+            if (dependency && dependency.type !== type && !PackageQueueManager.isRunning && !this.isReloadingList
                 && this._removeDependencyFromFile(dependency, false) && this._addDependencyToFile(dependency, type)) {
                 var self = this;
 
