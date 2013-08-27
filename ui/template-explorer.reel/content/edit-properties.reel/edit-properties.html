@@ -38,7 +38,16 @@
         "valueType": {
             "prototype": "matte/ui/select.reel",
             "properties": {
-                "element": {"#": "valueType"}
+                "element": {"#": "valueType"},
+                "content": [
+                    {"text": "string", "value": "string"},
+                    {"text": "number", "value": "number"},
+                    {"text": "boolean", "value": "boolean"},
+                    {"text": "date", "value": "date"},
+                    {"text": "enum", "value": "enum"},
+                    {"text": "url", "value": "url"},
+                    {"text": "object", "value": "object"}
+                ]
             },
             "bindings": {
                 "value": {"<->": "@properties.objectAtCurrentIteration.valueType"}
@@ -72,7 +81,11 @@
         "collectionValueType": {
             "prototype": "matte/ui/select.reel",
             "properties": {
-                "element": {"#": "collectionValueType"}
+                "element": {"#": "collectionValueType"},
+                "content": [
+                    {"text": "list", "value": "list"},
+                    {"text": "set", "value": "set"}
+                ]
             },
             "bindings": {
                 "value": {"<->": "@properties.objectAtCurrentIteration.collectionValueType"}
@@ -119,23 +132,12 @@
         <ul data-montage-id="properties" class="EditProperties-list">
             <li class="EditProperties-listItem">
                 <span data-montage-id="name" class="EditProperties-name"></span>
-                <select data-montage-id="valueType" class="Select">
-                    <option value="string">string</option>
-                    <option value="number">number</option>
-                    <option value="boolean">boolean</option>
-                    <option value="date">date</option>
-                    <option value="enum">enum</option>
-                    <option value="url">url</option>
-                    <option value="object">object</option>
-                </select>
+                <select data-montage-id="valueType" class="Select"></select>
 
                 <div class="EditProperties-multi">
                     <label><input type="checkbox" data-montage-id="multiple" class="Checkbox"> multi</label>
                     <span data-montage-id="collectionCondition">
-                        <select data-montage-id="collectionValueType" class="Select">
-                            <option value="list">list</option>
-                            <option value="set">set</option>
-                        </select>
+                        <select data-montage-id="collectionValueType" class="Select"></select>
                     </span>
                 </div>
 
