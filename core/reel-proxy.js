@@ -209,6 +209,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         value: function (targetPath, oneway, sourcePath) {
             var binding = Object.create(null);
 
+            //TODO guard against binding to the exact same targetPath twice
             binding.targetPath = targetPath;
             binding.oneway = oneway;
             binding.sourcePath = sourcePath;
@@ -219,17 +220,74 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
-    cancelObjectBinding: {
-        value: function (binding) {
-            var removedBinding,
+    /**
+     * Update an existing binding with new parameters
+     *
+     * All parameters are required, currently you cannot update a single
+     * property of the existing binding without affecting the others.
+     *
+     * @param {Object} binding The existing binding to update
+     * @param {string} targetPath The targetPath to set on the binding
+     * @param {boolean} oneway Whether or not to set the binding as being oneway
+     * @param {string} sourcePath The sourcePath to set on the binding
+     */
+    updateObjectBinding: {
+        value: function (binding, targetPath, oneway, sourcePath) {
+            var existingBinding,
                 bindingIndex = this.bindings.indexOf(binding);
 
             if (bindingIndex > -1) {
-                this.bindings.splice(bindingIndex, 1);
-                removedBinding = binding;
+                existingBinding = binding;
+            } else {
+                throw new Error("Cannot update a binding that's not associated with this proxy.");
             }
 
-            return removedBinding;
+            binding.targetPath = targetPath;
+            binding.oneway = oneway;
+            binding.sourcePath = sourcePath;
+
+            return binding;
+        }
+    },
+
+    /**
+     * Add a a specified binding object to the proxy at a specific index
+     * in the bindings collection
+     */
+    addBinding: {
+        value: function (binding, insertionIndex) {
+            var bindingIndex = this.bindings.indexOf(binding);
+
+            if (-1 === bindingIndex) {
+                if (isNaN(insertionIndex)) {
+                    this.bindings.push(binding);
+                } else {
+                    this.bindings.splice(insertionIndex, 0, binding);
+                }
+            } else {
+                //TODO guard against adding exact same binding to multiple proxies
+                throw new Error("Cannot add the same binding to a proxy more than once");
+            }
+
+            return binding;
+        }
+    },
+
+    /**
+     * Remove the specific binding from the set of active bindings on this proxy
+     *
+     * @return {Object} an object with two keys index and removedBinding
+     */
+    cancelObjectBinding: {
+        value: function (binding) {
+            var bindingIndex = this.bindings.indexOf(binding);
+
+            if (bindingIndex > -1) {
+                this.bindings.splice(bindingIndex, 1);
+                return {index: bindingIndex, removedBinding: binding};
+            } else {
+                throw new Error("Cannot cancel a binding that's not associated with this proxy");
+            }
         }
     },
 

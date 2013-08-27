@@ -1036,9 +1036,29 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    _addOwnedObjectBinding: {
+        value: function (proxy, binding, insertionIndex) {
+
+            var addedBinding = proxy.addBinding(binding, insertionIndex);
+
+            if (addedBinding) {
+                this.undoManager.register("Define Binding", Promise.resolve([this.cancelOwnedObjectBinding, this, proxy, binding]));
+            }
+
+            return addedBinding;
+
+        }
+    },
+
     cancelOwnedObjectBinding: {
         value: function (proxy, binding) {
-            var removedBinding = proxy.cancelObjectBinding(binding);
+            var removedBinding,
+                removedIndex,
+                removedInfo;
+
+            removedInfo = proxy.cancelObjectBinding(binding);
+            removedBinding = removedInfo.removedBinding;
+            removedIndex = removedInfo.index;
 
             if (removedBinding) {
                 // if (this._editingController) {
@@ -1046,7 +1066,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 // }
 
                 this.undoManager.register("Cancel Binding", Promise.resolve([
-                    this.defineOwnedObjectBinding, this, proxy, binding.targetPath, binding.oneway, binding.sourcePath
+                    this._addOwnedObjectBinding, this, proxy, removedBinding, removedIndex
                 ]));
             }
 
@@ -1060,17 +1080,21 @@ exports.ReelDocument = EditingDocument.specialize({
 
     updateOwnedObjectBinding: {
         value: function (proxy, existingBinding, targetPath, oneway, sourcePath) {
-            var removedBinding = proxy.cancelObjectBinding(existingBinding);
-            var binding = proxy.defineObjectBinding(targetPath, oneway, sourcePath);
+            var originalTargetPath = existingBinding.targetPath,
+                originalOneway = existingBinding.oneway,
+                originalSourcePath = existingBinding.sourcePath,
+                updatedBinding;
 
-            if (removedBinding && binding) {
+            updatedBinding = proxy.updateObjectBinding(existingBinding, targetPath, oneway, sourcePath);
+
+            if (updatedBinding) {
                 // if (this._editingController) {
                 //     // TODO cancel the binding in the stage
                 //     // TODO define the binding on the stage, make sure we can cancel it later
                 // }
 
                 this.undoManager.register("Edit Binding", Promise.resolve([
-                    this.updateOwnedObjectBinding, this, proxy, binding, removedBinding.targetPath, removedBinding.oneway, removedBinding.sourcePath
+                    this.updateOwnedObjectBinding, this, proxy, updatedBinding, originalTargetPath, originalOneway, originalSourcePath
                 ]));
             }
 
@@ -1078,7 +1102,7 @@ exports.ReelDocument = EditingDocument.specialize({
             // updates, ready for the inner template inspector
             this._buildSerializationObjects();
 
-            return removedBinding;
+            return updatedBinding;
         }
     },
 
