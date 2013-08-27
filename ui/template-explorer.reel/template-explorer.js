@@ -77,6 +77,8 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             this._element.addEventListener("click", this);
 
             application.addEventListener("editBindingForObject", this, false);
+
+            this.addRangeAtPathChangeListener("editingDocument.selectedObjects", this, "handleSelectedObjectsChange");
         }
     },
 
@@ -202,6 +204,39 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     handleRemoveElementAction: {
         value: function (evt) {
             this.editingDocument.setOwnedObjectElement(evt.detail.get('templateObject'), null);
+        }
+    },
+
+    handleSelectedObjectsChange: {
+        value: function (selectedObjects, oldSelectedObjects) {
+            if (!selectedObjects || 0 === selectedObjects.length || selectedObjects.length > 1) {
+                return;
+            }
+
+            //TODO do something sane if multiple objects are selected
+            var selectedObject = selectedObjects[0];
+            var iterations = this.templateObjects.objectList.iterations;
+            var iterationIndex = iterations.map(function(iteration) {
+                return iteration.object;
+            }).indexOf(selectedObject);
+
+            if (iterationIndex > -1) {
+                this._scrollToElement = iterations[iterationIndex].firstElement;
+                this.needsDraw = true;
+            }
+        }
+    },
+
+    _scrollToElement: {
+        value: null
+    },
+
+    draw: {
+        value: function () {
+            if (this._scrollToElement) {
+                this._scrollToElement.scrollIntoViewIfNeeded();
+                this._scrollToElement = null;
+            }
         }
     }
 
