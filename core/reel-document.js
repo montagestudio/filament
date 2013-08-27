@@ -1387,6 +1387,8 @@ exports.ReelDocument = EditingDocument.specialize({
     modifyOwnerBlueprintProperty: {
         value: function (name, property, value) {
             var self = this;
+            // get the owner blueprint first so that we can bail if the new
+            // and previous value are the same
             return this._ownerBlueprint.then(function (blueprint) {
                 var propertyBlueprint = blueprint.propertyBlueprintForName(name);
                 var previousValue = propertyBlueprint[property];
@@ -1405,15 +1407,15 @@ exports.ReelDocument = EditingDocument.specialize({
     removeOwnerBlueprintProperty: {
         value: function (name) {
             var self = this;
-            return this._ownerBlueprint.then(function (blueprint) {
-                var propertyBlueprint = blueprint.propertyBlueprintForName(name);
-                blueprint.removePropertyBlueprint(propertyBlueprint);
-                blueprint.removePropertyBlueprintFromGroupNamed(propertyBlueprint, self._exportName);
-                return self.undoManager.register(
-                    "Remove owner property",
-                    Promise.resolve([self.addOwnerBlueprintProperty, self, name])
-                );
-            });
+            return self.undoManager.register(
+                "Remove owner property",
+                this._ownerBlueprint.then(function (blueprint) {
+                    var propertyBlueprint = blueprint.propertyBlueprintForName(name);
+                    blueprint.removePropertyBlueprint(propertyBlueprint);
+                    blueprint.removePropertyBlueprintFromGroupNamed(propertyBlueprint, self._exportName);
+                    return [self.addOwnerBlueprintProperty, self, name];
+                })
+            );
         }
     }
 
