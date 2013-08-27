@@ -228,7 +228,23 @@ exports.ComponentEditor = Editor.specialize({
                 highlight = detail.highlight,
                 xpath = detail.xpath,
                 stageElement = detail.element,
+                firstIterationXPath = detail.firstIterationXPath,
                 documentEditor = this.currentDocument;
+
+            // de-highlight all DOM Elements
+            for (var i = 0; i < documentEditor.templateNodes.length; i++) {
+                documentEditor.templateNodes[i].isHighlighted = false;
+            }
+
+            // Ignore body
+            if (xpath === "/html/body") {
+                return;
+            }
+
+            // Repetition hack
+            if (firstIterationXPath) {
+                xpath = firstIterationXPath;
+            }
             
             var element = documentEditor.htmlDocument.evaluate(
                     xpath,
@@ -238,11 +254,6 @@ exports.ComponentEditor = Editor.specialize({
                     null
                 ).singleNodeValue;
             var nodeProxy = documentEditor.nodeProxyForNode(element);
-
-            for (var i = 0; i < documentEditor.templateNodes.length; i++) {
-                documentEditor.templateNodes[i].isHighlighted = false;
-            }
-
             nodeProxy.isHighlighted = highlight;
 
             // highlight the stageElement to simulate a hover
