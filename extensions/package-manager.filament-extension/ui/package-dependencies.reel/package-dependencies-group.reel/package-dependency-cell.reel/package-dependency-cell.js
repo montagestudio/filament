@@ -20,6 +20,14 @@ exports.PackageDependencyCell = Component.specialize(/** @lends PackageDependenc
         }
     },
 
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this._element.addEventListener("dragstart", this, true);
+            }
+        }
+    },
+
     _dependency: {
         value: null
     },
@@ -123,6 +131,15 @@ exports.PackageDependencyCell = Component.specialize(/** @lends PackageDependenc
         },
         get: function () {
             return this._canInstall;
+        }
+    },
+
+    captureDragstart: {
+        value: function (event) {
+            var dataTransfer = event.dataTransfer;
+            dataTransfer.effectAllowed = 'move';
+            dataTransfer.setData("application/json", JSON.stringify(this._dependency));
+            dataTransfer.setData("text/plain", this._dependency.type);
         }
     }
 

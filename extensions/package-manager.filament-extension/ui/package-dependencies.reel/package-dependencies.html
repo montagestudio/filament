@@ -27,10 +27,12 @@
             "prototype": "./package-dependencies-group.reel",
             "properties": {
                 "element": {"#": "packageDependenciesGroup"},
-                "title": "Dependencies"
+                "title": "Dependencies",
+                "type": "dependencies"
             },
             "bindings": {
-                "dependencies": {"<-": "@owner.editingDocument.dependencyCollection.dependencies"}
+                "dependencies": {"<-": "@owner.editingDocument.dependencyCollection.dependencies"},
+                "editingDocument": {"<-": "@owner.editingDocument"}
             }
         },
 
@@ -38,10 +40,12 @@
             "prototype": "./package-dependencies-group.reel",
             "properties": {
                 "element": {"#": "packageDevDependenciesGroup"},
-                "title": "Dev Dependencies"
+                "title": "Dev Dependencies",
+                "type": "devDependencies"
             },
             "bindings": {
-                "dependencies": {"<-": "@owner.editingDocument.dependencyCollection.devDependencies"}
+                "dependencies": {"<-": "@owner.editingDocument.dependencyCollection.devDependencies"},
+                "editingDocument": {"<-": "@owner.editingDocument"}
             }
         },
 
@@ -49,10 +53,12 @@
             "prototype": "./package-dependencies-group.reel",
             "properties": {
                 "element": {"#": "packageOptionalDependenciesGroup"},
-                "title": "Optional Dependencies"
+                "title": "Optional Dependencies",
+                "type": "optionalDependencies"
             },
             "bindings": {
-                "dependencies": {"<-": "@owner.editingDocument.dependencyCollection.optionalDependencies"}
+                "dependencies": {"<-": "@owner.editingDocument.dependencyCollection.optionalDependencies"},
+                "editingDocument": {"<-": "@owner.editingDocument"}
             }
         },
 

@@ -25,6 +25,15 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
         }
     },
 
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this.element.addEventListener("dragstart", this, false);
+                this.element.addEventListener("dragend", this, false);
+            }
+        }
+    },
+
     editingDocument: {
         value: null
     },
@@ -137,6 +146,62 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
     handleAddDependencyButtonAction: {
         value: function() {
             this.installDependencyOverlay.show();
+        }
+    },
+
+    _forceDisplayGroup: {
+        value: function (force) {
+            var templateObjects = this.templateObjects;
+            templateObjects.packageOptionalDependenciesGroup.forceDisplay =
+                templateObjects.packageDevDependenciesGroup.forceDisplay =
+                templateObjects.packageDependenciesGroup.forceDisplay = !!force;
+        }
+    },
+
+    _groupCanAcceptDrop: {
+        value: function (type, accept) {
+            var response = null,
+                templateObjects = this.templateObjects;
+
+            if (type === DependencyNames.dependencies) {
+                response = templateObjects.packageDependenciesGroup.canAcceptDrop = !!accept;
+            } else if (type === DependencyNames.optionalDependencies) {
+                response = templateObjects.packageOptionalDependenciesGroup.canAcceptDrop = !!accept;
+            } else if (type === DependencyNames.devDependencies) {
+                response = templateObjects.packageDevDependenciesGroup.canAcceptDrop = !!accept;
+            }
+
+            return (response !== null);
+        }
+    },
+
+    _groupDoesNoAcceptDrop: {
+        value: null
+    },
+
+    handleDragstart: {
+        value: function (event) {
+            var dataTransfer = event.dataTransfer,
+                availableTypes = dataTransfer.types;
+
+            if (availableTypes && availableTypes.has("text/plain")) {
+                var type = dataTransfer.getData("text/plain");
+                if (this._groupCanAcceptDrop(type, false)) {
+                    this._groupDoesNoAcceptDrop = type;
+                    this._forceDisplayGroup(true);
+                    event.stopPropagation();
+                }
+            }
+        }
+    },
+
+    handleDragend: {
+        value: function (event) {
+            if (this._groupDoesNoAcceptDrop && this._groupCanAcceptDrop(this._groupDoesNoAcceptDrop, true)) {
+                this._groupDoesNoAcceptDrop = null;
+                this._forceDisplayGroup(false);
+                event.stopPropagation();
+            }
         }
     }
 
