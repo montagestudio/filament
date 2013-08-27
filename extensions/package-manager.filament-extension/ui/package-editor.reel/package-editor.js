@@ -104,7 +104,7 @@ exports.PackageEditor = Montage.create(Editor, {
     handleReloadingListChange: {
         value: function (changed) {
             if (changed) {
-                this.dependencyDisplayed = null;
+                this._clearSelection();
             }
         }
     },
