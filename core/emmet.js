@@ -106,7 +106,7 @@ var emmet = (function(global) {
 		/**
 		 * Simple, AMD-like module definition. The module will be added into
 		 * <code>emmet</code> object and will be available via
-		 * <code>emmet.require(name)</code> or <code>emmet[name]</code>
+		 * <code>emmet.emmetRequire(name)</code> or <code>emmet[name]</code>
 		 * @param {String} name
 		 * @param {Function} factory
 		 * @memberOf emmet
@@ -249,7 +249,7 @@ if (typeof define !== 'undefined') {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('abbreviationParser', function(require, _) {
+emmet.define('abbreviationParser', function(emmetRequire, _) {
 	var reValidName = /^[\w\-\$\:@\!%]+\+?$/i;
 	var reWord = /[\w\-:\$@]/;
 
@@ -442,12 +442,12 @@ emmet.define('abbreviationParser', function(require, _) {
 			if (arguments.length == 2) {
 				this._data[name] = value;
 
-				if (name == 'resource' && require('elements').is(value, 'snippet')) {
+				if (name == 'resource' && emmetRequire('elements').is(value, 'snippet')) {
 					// setting snippet as matched resource: update `content`
 					// property with snippet value
 					this.content = value.data;
 					if (this._text) {
-						this.content = require('abbreviationUtils')
+						this.content = emmetRequire('abbreviationUtils')
 							.insertChildContent(value.data, this._text);
 					}
 				}
@@ -462,7 +462,7 @@ emmet.define('abbreviationParser', function(require, _) {
 		 */
 		name: function() {
 			var res = this.matchedResource();
-			if (require('elements').is(res, 'element')) {
+			if (emmetRequire('elements').is(res, 'element')) {
 				return res.name;
 			}
 
@@ -477,7 +477,7 @@ emmet.define('abbreviationParser', function(require, _) {
 			var attrs = [];
 
 			var res = this.matchedResource();
-			if (require('elements').is(res, 'element') && _.isArray(res.attributes)) {
+			if (emmetRequire('elements').is(res, 'element') && _.isArray(res.attributes)) {
 				attrs = attrs.concat(res.attributes);
 			}
 
@@ -580,7 +580,7 @@ emmet.define('abbreviationParser', function(require, _) {
 		 * @return {String}
 		 */
 		valueOf: function() {
-			var utils = require('utils');
+			var utils = emmetRequire('utils');
 
 			var start = this.start;
 			var end = this.end;
@@ -599,7 +599,7 @@ emmet.define('abbreviationParser', function(require, _) {
 				return child.valueOf();
 			}).join('');
 
-			content = require('abbreviationUtils').insertChildContent(content, innerContent, {
+			content = emmetRequire('abbreviationUtils').insertChildContent(content, innerContent, {
 				keepVariable: false
 			});
 
@@ -717,13 +717,13 @@ emmet.define('abbreviationParser', function(require, _) {
 	 * @returns {AbbreviationNode}
 	 */
 	function parseAbbreviation(abbr) {
-		abbr = require('utils').trim(abbr);
+		abbr = emmetRequire('utils').trim(abbr);
 
 		var root = new AbbreviationNode();
 		var context = root.addChild(), ch;
 
 		/** @type StringStream */
-		var stream = require('stringStream').create(abbr);
+		var stream = emmetRequire('stringStream').create(abbr);
 		var loopProtector = 1000, multiplier;
 		var addChild = function(child) {
 			context.addChild(child);
@@ -807,11 +807,11 @@ emmet.define('abbreviationParser', function(require, _) {
 	 * @returns {Array}
 	 */
 	function extractAttributes(attrSet, attrs) {
-		attrSet = require('utils').trim(attrSet);
+		attrSet = emmetRequire('utils').trim(attrSet);
 		var result = [];
 
 		/** @type StringStream */
-		var stream = require('stringStream').create(attrSet);
+		var stream = emmetRequire('stringStream').create(attrSet);
 		stream.eatSpace();
 
 		while (!stream.eol()) {
@@ -875,7 +875,7 @@ emmet.define('abbreviationParser', function(require, _) {
 		var nameEnd = null;
 
 		/** @type StringStream */
-		var stream = require('stringStream').create(abbr);
+		var stream = emmetRequire('stringStream').create(abbr);
 		while (!stream.eol()) {
 			switch (stream.peek()) {
 				case '#': // id
@@ -960,7 +960,7 @@ emmet.define('abbreviationParser', function(require, _) {
 			return null;
 
 		/** @type StringStream */
-		var stream = require('stringStream').create(abbr);
+		var stream = emmetRequire('stringStream').create(abbr);
 		while (!stream.eol()) {
 			switch (stream.peek()) {
 				case '[':
@@ -1044,7 +1044,7 @@ emmet.define('abbreviationParser', function(require, _) {
 
 	// XXX add counter replacer function as output processor
 	outputProcessors.push(function(text, node) {
-		return require('utils').replaceCounter(text, node.counter, node.maxCount);
+		return emmetRequire('utils').replaceCounter(text, node.counter, node.maxCount);
 	});
 
 	return {
@@ -1179,7 +1179,7 @@ emmet.define('abbreviationParser', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
+emmet.exec(function(emmetRequire, _) {
 	/**
 	 * Finds matched resources for child nodes of passed <code>node</code>
 	 * element. A matched resource is a reference to <i>snippets.json</i> entry
@@ -1188,9 +1188,9 @@ emmet.exec(function(require, _) {
 	 * @param {String} syntax
 	 */
 	function matchResources(node, syntax) {
-		var resources = require('resources');
-		var elements = require('elements');
-		var parser = require('abbreviationParser');
+		var resources = emmetRequire('resources');
+		var elements = emmetRequire('elements');
+		var parser = emmetRequire('abbreviationParser');
 
 		// do a shallow copy because the children list can be modified during
 		// resource matching
@@ -1248,7 +1248,7 @@ emmet.exec(function(require, _) {
 	/**
 	 * @param {AbbreviationNode} tree
 	 */
-	require('abbreviationParser').addPreprocessor(function(tree, options) {
+	emmetRequire('abbreviationParser').addPreprocessor(function(tree, options) {
 		var syntax = options.syntax || emmet.defaultSyntax();
 		matchResources(tree, syntax);
 	});
@@ -1260,8 +1260,8 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
-	var parser = require('abbreviationParser');
+emmet.exec(function(emmetRequire, _) {
+	var parser = emmetRequire('abbreviationParser');
 	var outputPlaceholder = '$#';
 
 	/**
@@ -1270,11 +1270,11 @@ emmet.exec(function(require, _) {
 	 * @returns {Array} Array of ranges of output placeholder in text
 	 */
 	function locateOutputPlaceholder(text) {
-		var range = require('range');
+		var range = emmetRequire('range');
 		var result = [];
 
 		/** @type StringStream */
-		var stream = require('stringStream').create(text);
+		var stream = emmetRequire('stringStream').create(text);
 
 		while (!stream.eol()) {
 			if (stream.peek() == '\\') {
@@ -1300,7 +1300,7 @@ emmet.exec(function(require, _) {
 	 * @returns {String}
 	 */
 	function replaceOutputPlaceholders(source, value) {
-		var utils = require('utils');
+		var utils = emmetRequire('utils');
 		var ranges = locateOutputPlaceholder(source);
 
 		ranges.reverse();
@@ -1356,7 +1356,7 @@ emmet.exec(function(require, _) {
 			if (overwrite) {
 				deepest.content = content;
 			} else {
-				deepest.content = require('abbreviationUtils').insertChildContent(deepest.content, content);
+				deepest.content = emmetRequire('abbreviationUtils').insertChildContent(deepest.content, content);
 			}
 		}
 	}
@@ -1367,7 +1367,7 @@ emmet.exec(function(require, _) {
 	 */
 	parser.addPreprocessor(function(tree, options) {
 		if (options.pastedContent) {
-			var utils = require('utils');
+			var utils = emmetRequire('utils');
 			var lines = _.map(utils.splitByLines(options.pastedContent, true), utils.trim);
 
 			// set repeat count for implicitly repeated elements before
@@ -1415,13 +1415,13 @@ emmet.exec(function(require, _) {
 });/**
  * Resolves tag names in abbreviations with implied name
  */
-emmet.exec(function(require, _) {
+emmet.exec(function(emmetRequire, _) {
 	/**
 	 * Resolves implicit node names in parsed tree
 	 * @param {AbbreviationNode} tree
 	 */
 	function resolveNodeNames(tree) {
-		var tagName = require('tagName');
+		var tagName = emmetRequire('tagName');
 		_.each(tree.children, function(node) {
 			if (node.hasImplicitName() || node.data('forceNameResolving')) {
 				node._name = tagName.resolve(node.parent.name());
@@ -1432,13 +1432,13 @@ emmet.exec(function(require, _) {
 		return tree;
 	}
 
-	require('abbreviationParser').addPostprocessor(resolveNodeNames);
+	emmetRequire('abbreviationParser').addPostprocessor(resolveNodeNames);
 });/**
  * @author Stoyan Stefanov
  * @link https://github.com/stoyan/etc/tree/master/cssex
  */
 
-emmet.define('cssParser', function(require, _) {
+emmet.define('cssParser', function(emmetRequire, _) {
 var walker, tokens = [], isOp, isNameChar, isDigit;
 
 	// walks around the source
@@ -1877,7 +1877,7 @@ var walker, tokens = [], isOp, isNameChar, isDigit;
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('xmlParser', function(require, _) {
+emmet.define('xmlParser', function(emmetRequire, _) {
 	var Kludges = {
 		autoSelfClosers : {},
 		implicitlyClosed : {},
@@ -2187,7 +2187,7 @@ emmet.define('xmlParser', function(require, _) {
 		parse: function(data, offset) {
 			offset = offset || 0;
 			var state = startState();
-			var stream = require('stringStream').create(data);
+			var stream = emmetRequire('stringStream').create(data);
 			var tokens = [];
 			while (!stream.eol()) {
 				tokens.push({
@@ -2220,7 +2220,7 @@ emmet.define('xmlParser', function(require, _) {
  *  'Hello World'.score('he');     //=> 0.5931818181818181
  *  'Hello World'.score('Hello');  //=> 0.7318181818181818
  */
-emmet.define('string-score', function(require, _) {
+emmet.define('string-score', function(emmetRequire, _) {
 	return {
 		score: function(string, abbreviation, fuzziness) {
 			// If the string is equal to the abbreviation, perfect match.
@@ -2325,7 +2325,7 @@ emmet.define('string-score', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('utils', function(require, _) {
+emmet.define('utils', function(emmetRequire, _) {
 	/**
 	 * Special token used as a placeholder for caret positions inside
 	 * generated output
@@ -2372,7 +2372,7 @@ emmet.define('utils', function(require, _) {
 		 * @returns {String}
 		 */
 		getNewline: function() {
-			var res = require('resources');
+			var res = emmetRequire('resources');
 			if (!res) {
 				return '\n';
 			}
@@ -2386,7 +2386,7 @@ emmet.define('utils', function(require, _) {
 		 * @param {String} str
 		 */
 		setNewline: function(str) {
-			var res = require('resources');
+			var res = emmetRequire('resources');
 			res.setVariable('newline', str);
 			res.setVariable('nl', str);
 		},
@@ -2469,7 +2469,7 @@ emmet.define('utils', function(require, _) {
 		 */
 		padString: function(text, pad) {
 			var padStr = (_.isNumber(pad))
-				? this.repeatString(require('resources').getVariable('indentation') || '\t', pad)
+				? this.repeatString(emmetRequire('resources').getVariable('indentation') || '\t', pad)
 				: pad;
 
 			var result = [];
@@ -2577,8 +2577,8 @@ emmet.define('utils', function(require, _) {
 				return p1 in vars ? vars[p1] : null;
 			};
 
-			var res = require('resources');
-			return require('tabStops').processText(str, {
+			var res = emmetRequire('resources');
+			return emmetRequire('tabStops').processText(str, {
 				variable: function(data) {
 					var newValue = resolver(data.token, data.name, data);
 					if (newValue === null) {
@@ -2774,7 +2774,7 @@ emmet.define('utils', function(require, _) {
 		 * @return {Range}
 		 */
 		narrowToNonSpace: function(text, start, end) {
-			var range = require('range').create(start, end);
+			var range = emmetRequire('range').create(start, end);
 
 			var reSpace = /[\s\n\r\u00a0]/;
 			// narrow down selection until first non-space character
@@ -2825,7 +2825,7 @@ emmet.define('utils', function(require, _) {
 				}
 			}
 
-			return require('range').create(start, end - start);
+			return emmetRequire('range').create(start, end - start);
 		},
 
 		/**
@@ -2889,7 +2889,7 @@ emmet.define('utils', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('range', function(require, _) {
+emmet.define('range', function(emmetRequire, _) {
 	function cmp(a, b, op) {
 		switch (op) {
 			case 'eq':
@@ -3127,7 +3127,7 @@ emmet.define('range', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('handlerList', function(require, _) {
+emmet.define('handlerList', function(emmetRequire, _) {
 	/**
 	 * @type HandlerList
 	 * @constructor
@@ -3214,7 +3214,7 @@ emmet.define('handlerList', function(require, _) {
 });/**
  * Helper class for convenient token iteration
  */
-emmet.define('tokenIterator', function(require, _) {
+emmet.define('tokenIterator', function(emmetRequire, _) {
 	/**
 	 * @type TokenIterator
 	 * @param {Array} tokens
@@ -3291,7 +3291,7 @@ emmet.define('tokenIterator', function(require, _) {
 });/**
  * A trimmed version of CodeMirror's StringStream module for string parsing
  */
-emmet.define('stringStream', function(require, _) {
+emmet.define('stringStream', function(emmetRequire, _) {
 	/**
 	 * @type StringStream
 	 * @constructor
@@ -3501,7 +3501,7 @@ emmet.define('stringStream', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('resources', function(require, _) {
+emmet.define('resources', function(emmetRequire, _) {
 	var VOC_SYSTEM = 'system';
 	var VOC_USER = 'user';
 
@@ -3514,7 +3514,7 @@ emmet.define('resources', function(require, _) {
 	var userSettings = {};
 
 	/** @type HandlerList List of registered abbreviation resolvers */
-	var resolvers = require('handlerList').create();
+	var resolvers = emmetRequire('handlerList').create();
 
 	/**
 	 * Normalizes caret plceholder in passed text: replaces | character with
@@ -3523,7 +3523,7 @@ emmet.define('resources', function(require, _) {
 	 * @returns {String}
 	 */
 	function normalizeCaretPlaceholder(text) {
-		var utils = require('utils');
+		var utils = emmetRequire('utils');
 		return utils.replaceUnescapedSymbol(text, '|', utils.getCaretPlaceholder());
 	}
 
@@ -3531,7 +3531,7 @@ emmet.define('resources', function(require, _) {
 		value = normalizeCaretPlaceholder(value);
 
 		if (type == 'snippets') {
-			return require('elements').create('snippet', value);
+			return emmetRequire('elements').create('snippet', value);
 		}
 
 		if (type == 'abbreviations') {
@@ -3546,8 +3546,8 @@ emmet.define('resources', function(require, _) {
 	 * @return {Object}
 	 */
 	function parseAbbreviation(key, value) {
-		key = require('utils').trim(key);
-		var elements = require('elements');
+		key = emmetRequire('utils').trim(key);
+		var elements = emmetRequire('elements');
 		var m;
 		if ((m = reTag.exec(value))) {
 			return elements.create('element', m[1], m[2], m[4] == '/');
@@ -3663,7 +3663,7 @@ emmet.define('resources', function(require, _) {
 				return null;
 
 			if (!(name in cache)) {
-				cache[name] = require('utils').deepMerge({}, systemSettings[name], userSettings[name]);
+				cache[name] = emmetRequire('utils').deepMerge({}, systemSettings[name], userSettings[name]);
 			}
 
 			var data = cache[name], subsections = _.rest(arguments), key;
@@ -3745,7 +3745,7 @@ emmet.define('resources', function(require, _) {
 			minScore = minScore || 0.3;
 
 			var payload = this.getAllSnippets(syntax);
-			var sc = require('string-score');
+			var sc = emmetRequire('string-score');
 
 			name = normalizeName(name);
 			var scores = _.map(payload, function(value, key) {
@@ -3811,7 +3811,7 @@ emmet.define('resources', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('actions', function(require, _) {
+emmet.define('actions', function(emmetRequire, _) {
 	var actions = {};
 
 	/**
@@ -3820,7 +3820,7 @@ emmet.define('actions', function(require, _) {
 	 * @return Humanized name (like 'Expand Abbreviation')
 	 */
 	function humanizeActionName(name) {
-		return require('utils').trim(name.charAt(0).toUpperCase()
+		return emmetRequire('utils').trim(name.charAt(0).toUpperCase()
 			+ name.substring(1).replace(/_[a-z]/g, function(str) {
 				return ' ' + str.charAt(1).toUpperCase();
 			}));
@@ -3871,8 +3871,8 @@ emmet.define('actions', function(require, _) {
 		 * @returns {Boolean} Status of performed operation, <code>true</code>
 		 * means action was performed successfully.
 		 * @example
-		 * emmet.require('actions').run('expand_abbreviation', editor);
-		 * emmet.require('actions').run('wrap_with_abbreviation', [editor, 'div']);
+		 * emmet.emmetRequire('actions').run('expand_abbreviation', editor);
+		 * emmet.emmetRequire('actions').run('wrap_with_abbreviation', [editor, 'div']);
 		 */
 		run: function(name, args) {
 			if (!_.isArray(args)) {
@@ -3981,7 +3981,7 @@ emmet.define('actions', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('profile', function(require, _) {
+emmet.define('profile', function(emmetRequire, _) {
 	var profiles = {};
 
 	var defaultProfile = {
@@ -4072,7 +4072,7 @@ emmet.define('profile', function(require, _) {
 		 * @returns {String}
 		 */
 		cursor: function() {
-			return this.place_cursor ? require('utils').getCaretPlaceholder() : '';
+			return this.place_cursor ? emmetRequire('utils').getCaretPlaceholder() : '';
 		}
 	};
 
@@ -4141,7 +4141,7 @@ emmet.define('profile', function(require, _) {
 		get: function(name, syntax) {
 			if (!name && syntax) {
 				// search in user resources first
-				var profile = require('resources').findItem(syntax, 'profile');
+				var profile = emmetRequire('resources').findItem(syntax, 'profile');
 				if (profile) {
 					name = profile;
 				}
@@ -4196,7 +4196,7 @@ emmet.define('profile', function(require, _) {
  * @param {Underscore} _
  * @author Sergey Chikuyonok (serge.che@gmail.com) <http://chikuyonok.ru>
  */
-emmet.define('editorUtils', function(require, _) {
+emmet.define('editorUtils', function(emmetRequire, _) {
 	return  {
 		/**
 		 * Check if cursor is placed inside XHTML tag
@@ -4252,7 +4252,7 @@ emmet.define('editorUtils', function(require, _) {
 		 * @return {String}
 		 */
 		unindent: function(editor, text) {
-			return require('utils').unindentString(text, this.getCurrentLinePadding(editor));
+			return emmetRequire('utils').unindentString(text, this.getCurrentLinePadding(editor));
 		},
 
 		/**
@@ -4261,7 +4261,7 @@ emmet.define('editorUtils', function(require, _) {
 		 * @return {String}
 		 */
 		getCurrentLinePadding: function(editor) {
-			return require('utils').getLinePadding(editor.getCurrentLine());
+			return emmetRequire('utils').getLinePadding(editor.getCurrentLine());
 		}
 	};
 });
@@ -4271,7 +4271,7 @@ emmet.define('editorUtils', function(require, _) {
  * @param {Underscore} _
  * @author Sergey Chikuyonok (serge.che@gmail.com) <http://chikuyonok.ru>
  */
-emmet.define('actionUtils', function(require, _) {
+emmet.define('actionUtils', function(emmetRequire, _) {
 	return {
 		mimeTypes: {
 			'gif' : 'image/gif',
@@ -4296,8 +4296,8 @@ emmet.define('actionUtils', function(require, _) {
 			var braceCount = 0;
 			var textCount = 0;
 
-			var utils = require('utils');
-			var parser = require('abbreviationParser');
+			var utils = emmetRequire('utils');
+			var parser = emmetRequire('abbreviationParser');
 
 			while (true) {
 				curOffset--;
@@ -4422,7 +4422,7 @@ emmet.define('actionUtils', function(require, _) {
 			var syntax = String(editor.getSyntax());
 			if (syntax in allowedSyntaxes) {
 				var content = String(editor.getContent());
-				var tag = require('htmlMatcher').find(content, editor.getCaretPos());
+				var tag = emmetRequire('htmlMatcher').find(content, editor.getCaretPos());
 
 				if (tag && tag.type == 'tag') {
 					var startTag = tag.open;
@@ -4432,7 +4432,7 @@ emmet.define('actionUtils', function(require, _) {
 					};
 
 					// parse attributes
-					var tagTree = require('xmlEditTree').parse(startTag.range.substring(content));
+					var tagTree = emmetRequire('xmlEditTree').parse(startTag.range.substring(content));
 					if (tagTree) {
 						contextNode.attributes = _.map(tagTree.getAll(), function(item) {
 							return {
@@ -4471,7 +4471,7 @@ emmet.define('actionUtils', function(require, _) {
 			while (exprEnd < il && fn(content.charAt(exprEnd), exprEnd, content)) exprEnd++;
 
 			if (exprEnd > exprStart) {
-				return require('range').create([++exprStart, exprEnd]);
+				return emmetRequire('range').create([++exprStart, exprEnd]);
 			}
 		},
 
@@ -4502,7 +4502,7 @@ emmet.define('actionUtils', function(require, _) {
 		detectSyntax: function(editor, hint) {
 			var syntax = hint || 'html';
 
-			if (!require('resources').hasSyntax(syntax)) {
+			if (!emmetRequire('resources').hasSyntax(syntax)) {
 				syntax = 'html';
 			}
 
@@ -4526,7 +4526,7 @@ emmet.define('actionUtils', function(require, _) {
 			var syntax = editor.getSyntax();
 
 			// get profile from syntax definition
-			var profile = require('resources').findItem(syntax, 'profile');
+			var profile = emmetRequire('resources').findItem(syntax, 'profile');
 			if (profile) {
 				return profile;
 			}
@@ -4541,7 +4541,7 @@ emmet.define('actionUtils', function(require, _) {
 					}
 					break;
 				case 'html':
-					profile = require('resources').getVariable('profile');
+					profile = emmetRequire('resources').getVariable('profile');
 					if (!profile) { // no forced profile, guess from content
 						// html or xhtml?
 						profile = this.isXHTML(editor) ? 'xhtml': 'html';
@@ -4570,7 +4570,7 @@ emmet.define('actionUtils', function(require, _) {
 		isStyle: function(editor) {
 			var content = String(editor.getContent());
 			var caretPos = editor.getCaretPos();
-			var tag = require('htmlMatcher').tag(content, caretPos);
+			var tag = emmetRequire('htmlMatcher').tag(content, caretPos);
 			return tag && tag.open.name.toLowerCase() == 'style'
 				&& tag.innerRange.cmp(caretPos, 'lte', 'gte');
 		},
@@ -4584,7 +4584,7 @@ emmet.define('actionUtils', function(require, _) {
 		isInlineCSS: function(editor) {
 			var content = String(editor.getContent());
 			var caretPos = editor.getCaretPos();
-			var tree = require('xmlEditTree').parseFromPosition(content, caretPos, true);
+			var tree = emmetRequire('xmlEditTree').parseFromPosition(content, caretPos, true);
 			if (tree) {
 				var attr = tree.itemFromPosition(caretPos, true);
 				return attr && attr.name().toLowerCase() == 'style'
@@ -4599,7 +4599,7 @@ emmet.define('actionUtils', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('abbreviationUtils', function(require, _) {
+emmet.define('abbreviationUtils', function(emmetRequire, _) {
 	return {
 		/**
 		 * Test if passed node is unary (no closing tag)
@@ -4623,7 +4623,7 @@ emmet.define('abbreviationUtils', function(require, _) {
 		isInline: function(node) {
 			return node.isTextNode()
 				|| !node.name()
-				|| require('tagName').isInlineLevel(node.name());
+				|| emmetRequire('tagName').isInlineLevel(node.name());
 		},
 
 		/**
@@ -4641,7 +4641,7 @@ emmet.define('abbreviationUtils', function(require, _) {
 		 * @return {Boolean}
 		 */
 		isSnippet: function(node) {
-			return require('elements').is(node.matchedResource(), 'snippet');
+			return emmetRequire('elements').is(node.matchedResource(), 'snippet');
 		},
 
 		/**
@@ -4651,7 +4651,7 @@ emmet.define('abbreviationUtils', function(require, _) {
 		 * @returns {Boolean}
 		 */
 		hasTagsInContent: function(node) {
-			return require('utils').matchesTag(node.content);
+			return emmetRequire('utils').matchesTag(node.content);
 		},
 
 		/**
@@ -4681,7 +4681,7 @@ emmet.define('abbreviationUtils', function(require, _) {
 			}, options || {});
 
 			var childVariableReplaced = false;
-			var utils = require('utils');
+			var utils = emmetRequire('utils');
 			text = utils.replaceVariables(text, function(variable, name, data) {
 				var output = variable;
 				if (name == 'child') {
@@ -4706,7 +4706,7 @@ emmet.define('abbreviationUtils', function(require, _) {
  * @author Sergey Chikuyonok (serge.che@gmail.com)
  * @link http://chikuyonok.ru
  */
-emmet.define('base64', function(require, _) {
+emmet.define('base64', function(emmetRequire, _) {
 	var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 
 	return {
@@ -4800,7 +4800,7 @@ emmet.define('base64', function(require, _) {
  * @constructor
  * @memberOf __htmlMatcherDefine
  */
-emmet.define('htmlMatcher', function(require, _) {
+emmet.define('htmlMatcher', function(emmetRequire, _) {
 	// Regular Expressions for parsing tags and attributes
 	var reOpenTag = /^<([\w\:\-]+)((?:\s+[\w\-:]+(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 	var reCloseTag = /^<\/([\w\:\-]+)[^>]*>/;
@@ -4810,7 +4810,7 @@ emmet.define('htmlMatcher', function(require, _) {
 			name: match[1],
 			selfClose: !!match[3],
 			/** @type Range */
-			range: require('range').create(i, match[0]),
+			range: emmetRequire('range').create(i, match[0]),
 			type: 'open'
 		};
 	}
@@ -4819,7 +4819,7 @@ emmet.define('htmlMatcher', function(require, _) {
 		return {
 			name: match[1],
 			/** @type Range */
-			range: require('range').create(i, match[0]),
+			range: emmetRequire('range').create(i, match[0]),
 			type: 'close'
 		};
 	}
@@ -4827,7 +4827,7 @@ emmet.define('htmlMatcher', function(require, _) {
 	function comment(i, match) {
 		return {
 			/** @type Range */
-			range: require('range').create(i, _.isNumber(match) ? match - i : match[0]),
+			range: emmetRequire('range').create(i, _.isNumber(match) ? match - i : match[0]),
 			type: 'comment'
 		};
 	}
@@ -4958,7 +4958,7 @@ emmet.define('htmlMatcher', function(require, _) {
 		 * @returns {Object}
 		 */
 		find: function(text, pos) {
-			var range = require('range');
+			var range = emmetRequire('range');
 			var matcher = createMatcher(text);
 			var open = null, close = null;
 			var j, jl;
@@ -5080,7 +5080,7 @@ emmet.define('htmlMatcher', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('tabStops', function(require, _) {
+emmet.define('tabStops', function(emmetRequire, _) {
 	/**
 	 * Global placeholder value, automatically incremented by
 	 * <code>variablesResolver()</code> function
@@ -5104,10 +5104,10 @@ emmet.define('tabStops', function(require, _) {
 
 	// XXX register output processor that will upgrade tabstops of parsed node
 	// in order to prevent tabstop index conflicts
-	require('abbreviationParser').addOutputProcessor(function(text, node, type) {
+	emmetRequire('abbreviationParser').addOutputProcessor(function(text, node, type) {
 		var maxNum = 0;
-		var tabstops = require('tabStops');
-		var utils = require('utils');
+		var tabstops = emmetRequire('tabStops');
+		var utils = emmetRequire('utils');
 
 		var tsOptions = {
 			tabstop: function(data) {
@@ -5171,7 +5171,7 @@ emmet.define('tabStops', function(require, _) {
 		 */
 		extract: function(text, options) {
 			// prepare defaults
-			var utils = require('utils');
+			var utils = emmetRequire('utils');
 			var placeholders = {carets: ''};
 			var marks = [];
 
@@ -5253,7 +5253,7 @@ emmet.define('tabStops', function(require, _) {
 
 			var buf = '';
 			/** @type StringStream */
-			var stream = require('stringStream').create(text);
+			var stream = emmetRequire('stringStream').create(text);
 			var ch, m, a;
 
 			while ((ch = stream.next())) {
@@ -5348,7 +5348,7 @@ emmet.define('tabStops', function(require, _) {
 		 */
 		variablesResolver: function(node) {
 			var placeholderMemo = {};
-			var res = require('resources');
+			var res = emmetRequire('resources');
 			return function(str, varName) {
 				// do not mark `child` variable as placeholder – it‘s a reserved
 				// variable name
@@ -5356,7 +5356,7 @@ emmet.define('tabStops', function(require, _) {
 					return str;
 
 				if (varName == 'cursor')
-					return require('utils').getCaretPlaceholder();
+					return emmetRequire('utils').getCaretPlaceholder();
 
 				var attr = node.attribute(varName);
 				if (!_.isUndefined(attr) && attr !== str) {
@@ -5406,7 +5406,7 @@ emmet.define('tabStops', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('preferences', function(require, _) {
+emmet.define('preferences', function(emmetRequire, _) {
 	var preferences = {};
 	var defaults = {};
 	var _dbgDefaults = null;
@@ -5522,7 +5522,7 @@ emmet.define('preferences', function(require, _) {
 				return null;
 			}
 
-			val = _.map(val.split(','), require('utils').trim);
+			val = _.map(val.split(','), emmetRequire('utils').trim);
 			if (!val.length) {
 				return null;
 			}
@@ -5637,7 +5637,7 @@ emmet.define('preferences', function(require, _) {
  * @param {Underscore} _
  * @author Sergey Chikuyonok (serge.che@gmail.com) <http://chikuyonok.ru>
  */
-emmet.define('filters', function(require, _) {
+emmet.define('filters', function(emmetRequire, _) {
 	/** List of registered filters */
 	var registeredFilters = {};
 
@@ -5676,8 +5676,8 @@ emmet.define('filters', function(require, _) {
 		 * @returns {AbbreviationNode}
 		 */
 		apply: function(tree, filters, profile) {
-			var utils = require('utils');
-			profile = require('profile').get(profile);
+			var utils = emmetRequire('utils');
+			profile = emmetRequire('profile').get(profile);
 
 			_.each(list(filters), function(filter) {
 				var name = utils.trim(filter.toLowerCase());
@@ -5699,8 +5699,8 @@ emmet.define('filters', function(require, _) {
 		 * @returns {Array}
 		 */
 		composeList: function(syntax, profile, additionalFilters) {
-			profile = require('profile').get(profile);
-			var filters = list(profile.filters || require('resources').findItem(syntax, 'filters') || basicFilters);
+			profile = emmetRequire('profile').get(profile);
+			var filters = list(profile.filters || emmetRequire('resources').findItem(syntax, 'filters') || basicFilters);
 
 			if (profile.extraFilters) {
 				filters = filters.concat(list(profile.extraFilters));
@@ -5739,7 +5739,7 @@ emmet.define('filters', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('elements', function(require, _) {
+emmet.define('elements', function(emmetRequire, _) {
 	var factories = {};
 	var reAttrs = /([\w\-:]+)\s*=\s*(['"])(.*?)\2/g;
 
@@ -5864,7 +5864,7 @@ emmet.define('elements', function(require, _) {
  *
  * @example
  * <pre><code>
- * var MyClass = require('editTree').EditElement.extend({
+ * var MyClass = emmetRequire('editTree').EditElement.extend({
  *     initialize: function() {
  *     // constructor code here
  *   }
@@ -5879,8 +5879,8 @@ emmet.define('elements', function(require, _) {
  * @constructor
  * @memberOf __editTreeDefine
  */
-emmet.define('editTree', function(require, _, core) {
-	var range = require('range').create;
+emmet.define('editTree', function(emmetRequire, _, core) {
+	var range = emmetRequire('range').create;
 
 	/**
 	 * Named container of edited source
@@ -5952,7 +5952,7 @@ emmet.define('editTree', function(require, _, core) {
 				update(item._positions);
 			});
 
-			this.source = require('utils').replaceSubstring(this.source, value, r);
+			this.source = emmetRequire('utils').replaceSubstring(this.source, value, r);
 		},
 
 
@@ -6302,7 +6302,7 @@ emmet.define('editTree', function(require, _, core) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('cssEditTree', function(require, _) {
+emmet.define('cssEditTree', function(emmetRequire, _) {
 	var defaultOptions = {
 		styleBefore: '\n\t',
 		styleSeparator: ': ',
@@ -6319,7 +6319,7 @@ emmet.define('cssEditTree', function(require, _) {
 	 * @returns {Range}
 	 */
 	function range(start, len) {
-		return require('range').create(start, len);
+		return emmetRequire('range').create(start, len);
 	}
 
 	/**
@@ -6422,7 +6422,7 @@ emmet.define('cssEditTree', function(require, _) {
 	 */
 	function findParts(str) {
 		/** @type StringStream */
-		var stream = require('stringStream').create(str);
+		var stream = emmetRequire('stringStream').create(str);
 		var ch;
 		var result = [];
 		var sep = /[\s\u00a0,]/;
@@ -6494,14 +6494,14 @@ emmet.define('cssEditTree', function(require, _) {
 	 * @class
 	 * @extends EditContainer
 	 */
-	var CSSEditContainer = require('editTree').EditContainer.extend({
+	var CSSEditContainer = emmetRequire('editTree').EditContainer.extend({
 		initialize: function(source, options) {
 			_.defaults(this.options, defaultOptions);
-			var editTree = require('editTree');
+			var editTree = emmetRequire('editTree');
 
 			/** @type TokenIterator */
-			var it = require('tokenIterator').create(
-					require('cssParser').parse(source));
+			var it = emmetRequire('tokenIterator').create(
+					emmetRequire('cssParser').parse(source));
 
 			var selectorRange = findSelectorRange(it);
 			this._positions.name = selectorRange.start;
@@ -6539,7 +6539,7 @@ emmet.define('cssEditTree', function(require, _) {
 		_saveStyle: function() {
 			var start = this._positions.contentStart;
 			var source = this.source;
-			var utils = require('utils');
+			var utils = emmetRequire('utils');
 
 			_.each(this.list(), /** @param {CSSEditProperty} p */ function(p) {
 				p.styleBefore = source.substring(start, p.namePosition());
@@ -6577,7 +6577,7 @@ emmet.define('cssEditTree', function(require, _) {
 			var list = this.list();
 			var start = this._positions.contentStart;
 			var styles = _.pick(this.options, 'styleBefore', 'styleSeparator');
-			var editTree = require('editTree');
+			var editTree = emmetRequire('editTree');
 
 			if (_.isUndefined(pos))
 				pos = list.length;
@@ -6618,7 +6618,7 @@ emmet.define('cssEditTree', function(require, _) {
 	 * @type CSSEditElement
 	 * @constructor
 	 */
-	var CSSEditElement = require('editTree').EditElement.extend({
+	var CSSEditElement = emmetRequire('editTree').EditElement.extend({
 		initialize: function(rule, name, value, end) {
 			this.styleBefore = rule.options.styleBefore;
 			this.styleSeparator = rule.options.styleSeparator;
@@ -6761,7 +6761,7 @@ emmet.define('cssEditTree', function(require, _) {
 
 				// also trim whitespace
 				selector = content.substring(offset + 1, bracePos).replace(/^[\s\n\r]+/m, '');
-				return require('range').create(bracePos - selector.length, result.length + selector.length);
+				return emmetRequire('range').create(bracePos - selector.length, result.length + selector.length);
 			}
 
 			return null;
@@ -6793,7 +6793,7 @@ emmet.define('cssEditTree', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('xmlEditTree', function(require, _) {
+emmet.define('xmlEditTree', function(emmetRequire, _) {
 	var defaultOptions = {
 		styleBefore: ' ',
 		styleSeparator: '=',
@@ -6803,14 +6803,14 @@ emmet.define('xmlEditTree', function(require, _) {
 
 	var startTag = /^<([\w\:\-]+)((?:\s+[\w\-:]+(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/m;
 
-	var XMLEditContainer = require('editTree').EditContainer.extend({
+	var XMLEditContainer = emmetRequire('editTree').EditContainer.extend({
 		initialize: function(source, options) {
 			_.defaults(this.options, defaultOptions);
 			this._positions.name = 1;
 
 			var attrToken = null;
-			var tokens = require('xmlParser').parse(source);
-			var range = require('range');
+			var tokens = emmetRequire('xmlParser').parse(source);
+			var range = emmetRequire('range');
 
 			_.each(tokens, function(token) {
 				token.value = range.create(token).substring(source);
@@ -6873,7 +6873,7 @@ emmet.define('xmlEditTree', function(require, _) {
 		add: function(name, value, pos) {
 			var list = this.list();
 			var start = this.nameRange().end;
-			var editTree = require('editTree');
+			var editTree = emmetRequire('editTree');
 			var styles = _.pick(this.options, 'styleBefore', 'styleSeparator', 'styleQuote');
 
 			if (_.isUndefined(pos))
@@ -6911,7 +6911,7 @@ emmet.define('xmlEditTree', function(require, _) {
 		}
 	});
 
-	var XMLEditElement = require('editTree').EditElement.extend({
+	var XMLEditElement = emmetRequire('editTree').EditElement.extend({
 		initialize: function(parent, nameToken, valueToken) {
 			this.styleBefore = parent.options.styleBefore;
 			this.styleSeparator = parent.options.styleSeparator;
@@ -6994,7 +6994,7 @@ emmet.define('xmlEditTree', function(require, _) {
 		 */
 		extractTag: function(content, pos, isBackward) {
 			var len = content.length, i;
-			var range = require('range');
+			var range = emmetRequire('range');
 
 			// max extraction length. I don't think there may be tags larger
 			// than 2000 characters length
@@ -7041,16 +7041,16 @@ emmet.define('xmlEditTree', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('expandAbbreviation', function(require, _) {
+emmet.define('expandAbbreviation', function(emmetRequire, _) {
 	/**
 	 * @type HandlerList List of registered handlers
 	 */
-	var handlers = require('handlerList').create();
+	var handlers = emmetRequire('handlerList').create();
 
 	/** Back-reference to module */
 	var module = null;
 
-	var actions = require('actions');
+	var actions = emmetRequire('actions');
 	/**
 	 * 'Expand abbreviation' editor action
 	 * @param {IEmmetEditor} editor Editor instance
@@ -7063,7 +7063,7 @@ emmet.define('expandAbbreviation', function(require, _) {
 		var args = _.toArray(arguments);
 
 		// normalize incoming arguments
-		var info = require('editorUtils').outputInfo(editor, syntax, profile);
+		var info = emmetRequire('editorUtils').outputInfo(editor, syntax, profile);
 		args[1] = info.syntax;
 		args[2] = info.profile;
 
@@ -7079,15 +7079,15 @@ emmet.define('expandAbbreviation', function(require, _) {
 	 */
 	actions.add('expand_abbreviation_with_tab', function(editor, syntax, profile) {
 		var sel = editor.getSelection();
-		var indent = require('resources').getVariable('indentation');
+		var indent = emmetRequire('resources').getVariable('indentation');
 		if (sel) {
 			// indent selection
-			var utils = require('utils');
-			var selRange = require('range').create(editor.getSelectionRange());
+			var utils = emmetRequire('utils');
+			var selRange = emmetRequire('range').create(editor.getSelectionRange());
 			var content = utils.padString(sel, indent);
 
 			editor.replaceContent(indent + '${0}', editor.getCaretPos());
-			var replaceRange = require('range').create(editor.getCaretPos(), selRange.length());
+			var replaceRange = emmetRequire('range').create(editor.getCaretPos(), selRange.length());
 			editor.replaceContent(content, replaceRange.start, replaceRange.end, true);
 			editor.createSelection(replaceRange.start, replaceRange.start + content.length);
 			return true;
@@ -7116,7 +7116,7 @@ emmet.define('expandAbbreviation', function(require, _) {
 
 		if (abbr) {
 			var content = emmet.expandAbbreviation(abbr, syntax, profile,
-					require('actionUtils').captureContext(editor));
+					emmetRequire('actionUtils').captureContext(editor));
 			if (content) {
 				editor.replaceContent(content, caretPos - abbr.length, caretPos);
 				return true;
@@ -7157,7 +7157,7 @@ emmet.define('expandAbbreviation', function(require, _) {
 		 */
 		findAbbreviation: function(editor) {
 			/** @type Range */
-			var range = require('range').create(editor.getSelectionRange());
+			var range = emmetRequire('range').create(editor.getSelectionRange());
 			var content = String(editor.getContent());
 			if (range.length()) {
 				// abbreviation is selected by user
@@ -7166,7 +7166,7 @@ emmet.define('expandAbbreviation', function(require, _) {
 
 			// search for new abbreviation from current caret position
 			var curLine = editor.getCurrentLineRange();
-			return require('actionUtils').extractAbbreviation(content.substring(curLine.start, range.start));
+			return emmetRequire('actionUtils').extractAbbreviation(content.substring(curLine.start, range.start));
 		}
 	};
 });/**
@@ -7175,7 +7175,7 @@ emmet.define('expandAbbreviation', function(require, _) {
  * @constructor
  * @memberOf __wrapWithAbbreviationDefine
  */
-emmet.define('wrapWithAbbreviation', function(require, _) {
+emmet.define('wrapWithAbbreviation', function(emmetRequire, _) {
 	/** Back-references to current module */
 	var module = null;
 
@@ -7186,11 +7186,11 @@ emmet.define('wrapWithAbbreviation', function(require, _) {
 	 * @param {String} syntax Syntax type (html, css, etc.)
 	 * @param {String} profile Output profile name (html, xml, xhtml)
 	 */
-	require('actions').add('wrap_with_abbreviation', function (editor, abbr, syntax, profile) {
-		var info = require('editorUtils').outputInfo(editor, syntax, profile);
-		var utils = require('utils');
+	emmetRequire('actions').add('wrap_with_abbreviation', function (editor, abbr, syntax, profile) {
+		var info = emmetRequire('editorUtils').outputInfo(editor, syntax, profile);
+		var utils = emmetRequire('utils');
 		/** @type emmet.editorUtils */
-		var editorUtils = require('editorUtils');
+		var editorUtils = emmetRequire('editorUtils');
 		abbr = abbr || editor.prompt("Enter abbreviation");
 
 		if (!abbr)
@@ -7198,11 +7198,11 @@ emmet.define('wrapWithAbbreviation', function(require, _) {
 
 		abbr = String(abbr);
 
-		var range = require('range').create(editor.getSelectionRange());
+		var range = emmetRequire('range').create(editor.getSelectionRange());
 
 		if (!range.length()) {
 			// no selection, find tag pair
-			var match = require('htmlMatcher').tag(info.content, range.start);
+			var match = emmetRequire('htmlMatcher').tag(info.content, range.start);
 			if (!match) {  // nothing to wrap
 				return false;
 			}
@@ -7213,7 +7213,7 @@ emmet.define('wrapWithAbbreviation', function(require, _) {
 		var newContent = utils.escapeText(range.substring(info.content));
 		var result = module
 			.wrap(abbr, editorUtils.unindent(editor, newContent), info.syntax,
-					info.profile, require('actionUtils').captureContext(editor));
+					info.profile, emmetRequire('actionUtils').captureContext(editor));
 
 		if (result) {
 			editor.replaceContent(result, range.start, range.end);
@@ -7238,17 +7238,17 @@ emmet.define('wrapWithAbbreviation', function(require, _) {
 		 */
 		wrap: function(abbr, text, syntax, profile, contextNode) {
 			/** @type emmet.filters */
-			var filters = require('filters');
+			var filters = emmetRequire('filters');
 			/** @type emmet.utils */
-			var utils = require('utils');
+			var utils = emmetRequire('utils');
 
 			syntax = syntax || emmet.defaultSyntax();
-			profile = require('profile').get(profile, syntax);
+			profile = emmetRequire('profile').get(profile, syntax);
 
-			require('tabStops').resetTabstopIndex();
+			emmetRequire('tabStops').resetTabstopIndex();
 
 			var data = filters.extractFromAbbreviation(abbr);
-			var parsedTree = require('abbreviationParser').parse(data[0], {
+			var parsedTree = emmetRequire('abbreviationParser').parse(data[0], {
 				syntax: syntax,
 				pastedContent: text,
 				contextNode: contextNode
@@ -7272,8 +7272,8 @@ emmet.define('wrapWithAbbreviation', function(require, _) {
  * @memberOf __toggleCommentAction
  * @constructor
  */
-emmet.exec(function(require, _) {
-	var prefs = require('preferences');
+emmet.exec(function(emmetRequire, _) {
+	var prefs = emmetRequire('preferences');
 
 	/**
 	 * Toggle HTML comment on current selection or tag
@@ -7282,12 +7282,12 @@ emmet.exec(function(require, _) {
 	 */
 	function toggleHTMLComment(editor) {
 		/** @type Range */
-		var range = require('range').create(editor.getSelectionRange());
-		var info = require('editorUtils').outputInfo(editor);
+		var range = emmetRequire('range').create(editor.getSelectionRange());
+		var info = emmetRequire('editorUtils').outputInfo(editor);
 
 		if (!range.length()) {
 			// no selection, find matching tag
-			var tag = require('htmlMatcher').tag(info.content, editor.getCaretPos());
+			var tag = emmetRequire('htmlMatcher').tag(info.content, editor.getCaretPos());
 			if (tag) { // found pair
 				range = tag.outerRange;
 			}
@@ -7303,25 +7303,25 @@ emmet.exec(function(require, _) {
 	 */
 	function toggleCSSComment(editor) {
 		/** @type Range */
-		var range = require('range').create(editor.getSelectionRange());
-		var info = require('editorUtils').outputInfo(editor);
+		var range = emmetRequire('range').create(editor.getSelectionRange());
+		var info = emmetRequire('editorUtils').outputInfo(editor);
 
 		if (!range.length()) {
 			// no selection, try to get current rule
 			/** @type CSSRule */
-			var rule = require('cssEditTree').parseFromPosition(info.content, editor.getCaretPos());
+			var rule = emmetRequire('cssEditTree').parseFromPosition(info.content, editor.getCaretPos());
 			if (rule) {
 				var property = cssItemFromPosition(rule, editor.getCaretPos());
 				range = property
 					? property.range(true)
-					: require('range').create(rule.nameRange(true).start, rule.source);
+					: emmetRequire('range').create(rule.nameRange(true).start, rule.source);
 			}
 		}
 
 		if (!range.length()) {
 			// still no selection, get current line
-			range = require('range').create(editor.getCurrentLineRange());
-			require('utils').narrowToNonSpace(info.content, range);
+			range = emmetRequire('range').create(editor.getCurrentLineRange());
+			emmetRequire('utils').narrowToNonSpace(info.content, range);
 		}
 
 		return genericCommentToggle(editor, '/*', '*/', range);
@@ -7387,7 +7387,7 @@ emmet.exec(function(require, _) {
 		}
 
 		return (commentStart != -1 && commentEnd != -1)
-			? require('range').create(commentStart, commentEnd - commentStart)
+			? emmetRequire('range').create(commentStart, commentEnd - commentStart)
 			: null;
 	}
 
@@ -7400,12 +7400,12 @@ emmet.exec(function(require, _) {
 	 * @return {Boolean}
 	 */
 	function genericCommentToggle(editor, commentStart, commentEnd, range) {
-		var editorUtils = require('editorUtils');
+		var editorUtils = emmetRequire('editorUtils');
 		var content = editorUtils.outputInfo(editor).content;
 		var caretPos = editor.getCaretPos();
 		var newContent = null;
 
-		var utils = require('utils');
+		var utils = emmetRequire('utils');
 
 		/**
 		 * Remove comment markers from string
@@ -7455,14 +7455,14 @@ emmet.exec(function(require, _) {
 	 * Toggle comment on current editor's selection or HTML tag/CSS rule
 	 * @param {IEmmetEditor} editor
 	 */
-	require('actions').add('toggle_comment', function(editor) {
-		var info = require('editorUtils').outputInfo(editor);
+	emmetRequire('actions').add('toggle_comment', function(editor) {
+		var info = emmetRequire('editorUtils').outputInfo(editor);
 		if (info.syntax == 'css') {
 			// in case our editor is good enough and can recognize syntax from
 			// current token, we have to make sure that cursor is not inside
 			// 'style' attribute of html element
 			var caretPos = editor.getCaretPos();
-			var tag = require('htmlMatcher').tag(info.content, caretPos);
+			var tag = emmetRequire('htmlMatcher').tag(info.content, caretPos);
 			if (tag && tag.open.range.inside(caretPos)) {
 				info.syntax = 'html';
 			}
@@ -7484,7 +7484,7 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
+emmet.exec(function(emmetRequire, _) {
 	/**
 	 * Search for new caret insertion point
 	 * @param {IEmmetEditor} editor Editor instance
@@ -7551,7 +7551,7 @@ emmet.exec(function(require, _) {
 	}
 
 	/** @type emmet.actions */
-	var actions = require('actions');
+	var actions = emmetRequire('actions');
 
 	/**
 	 * Move caret to previous edit point
@@ -7595,7 +7595,7 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
+emmet.exec(function(emmetRequire, _) {
 	var startTag = /^<([\w\:\-]+)((?:\s+[\w\-:]+(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 
 	/**
@@ -7606,8 +7606,8 @@ emmet.exec(function(require, _) {
 	 * @param {Function} rangeFn Function that search for next token range
 	 */
 	function findItem(editor, isBackward, extractFn, rangeFn) {
-		var range = require('range');
-		var content = require('editorUtils').outputInfo(editor).content;
+		var range = emmetRequire('range');
+		var content = emmetRequire('editorUtils').outputInfo(editor).content;
 
 		var contentLength = content.length;
 		var itemRange, rng;
@@ -7678,7 +7678,7 @@ emmet.exec(function(require, _) {
 	 */
 	function makePossibleRangesHTML(source, tokens, offset) {
 		offset = offset || 0;
-		var range = require('range');
+		var range = emmetRequire('range');
 		var result = [];
 		var attrStart = -1, attrName = '', attrValue = '', attrValueRange, tagName;
 		_.each(tokens, function(tok) {
@@ -7747,8 +7747,8 @@ emmet.exec(function(require, _) {
 		offset = offset || 0;
 		var result = [];
 		/** @type StringStream */
-		var stream = require('stringStream').create(className);
-		var range = require('range');
+		var stream = emmetRequire('stringStream').create(className);
+		var range = emmetRequire('range');
 
 		// skip whitespace
 		stream.eatSpace();
@@ -7775,7 +7775,7 @@ emmet.exec(function(require, _) {
 	 * @return {Range} Returns range if next item was found, <code>null</code> otherwise
 	 */
 	function getRangeForHTMLItem(tag, offset, selRange, isBackward) {
-		var ranges = makePossibleRangesHTML(tag, require('xmlParser').parse(tag), offset);
+		var ranges = makePossibleRangesHTML(tag, emmetRequire('xmlParser').parse(tag), offset);
 
 		if (isBackward)
 			ranges.reverse();
@@ -7845,7 +7845,7 @@ emmet.exec(function(require, _) {
 	function getOpeningTagFromPosition(html, pos) {
 		var m;
 		if (html.charAt(pos) == '<' && (m = html.substring(pos, html.length).match(startTag))) {
-			return require('range').create(pos, m[0]);
+			return emmetRequire('range').create(pos, m[0]);
 		}
 	}
 
@@ -7862,9 +7862,9 @@ emmet.exec(function(require, _) {
 		// find all possible ranges, sorted by position and size
 		var valueRange = property.valueRange(true);
 		var result = [property.range(true), valueRange];
-		var stringStream = require('stringStream');
-		var cssEditTree = require('cssEditTree');
-		var range = require('range');
+		var stringStream = emmetRequire('stringStream');
+		var cssEditTree = emmetRequire('cssEditTree');
+		var range = emmetRequire('range');
 
 		// locate parts of complex values.
 		// some examples:
@@ -7980,11 +7980,11 @@ emmet.exec(function(require, _) {
 	}
 
 	function findNextCSSItem(editor) {
-		return findItem(editor, false, require('cssEditTree').extractRule, getRangeForNextItemInCSS);
+		return findItem(editor, false, emmetRequire('cssEditTree').extractRule, getRangeForNextItemInCSS);
 	}
 
 	function findPrevCSSItem(editor) {
-		return findItem(editor, true, require('cssEditTree').extractRule, getRangeForPrevItemInCSS);
+		return findItem(editor, true, emmetRequire('cssEditTree').extractRule, getRangeForPrevItemInCSS);
 	}
 
 	/**
@@ -7996,7 +7996,7 @@ emmet.exec(function(require, _) {
 	 * @return {Range} Returns range if next item was found, <code>null</code> otherwise
 	 */
 	function getRangeForNextItemInCSS(rule, offset, selRange) {
-		var tree = require('cssEditTree').parse(rule, {
+		var tree = emmetRequire('cssEditTree').parse(rule, {
 			offset: offset
 		});
 
@@ -8018,7 +8018,7 @@ emmet.exec(function(require, _) {
 	 * @return {Range} Returns range if previous item was found, <code>null</code> otherwise
 	 */
 	function getRangeForPrevItemInCSS(rule, offset, selRange) {
-		var tree = require('cssEditTree').parse(rule, {
+		var tree = emmetRequire('cssEditTree').parse(rule, {
 			offset: offset
 		});
 
@@ -8036,7 +8036,7 @@ emmet.exec(function(require, _) {
 	}
 
 	// XXX register actions
-	var actions = require('actions');
+	var actions = emmetRequire('actions');
 	actions.add('select_next_item', function(editor){
 		if (editor.getSyntax() == 'css')
 			return findNextCSSItem(editor);
@@ -8057,10 +8057,10 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
+emmet.exec(function(emmetRequire, _) {
 	/** @type emmet.actions */
-	var actions = require('actions');
-	var matcher = require('htmlMatcher');
+	var actions = emmetRequire('actions');
+	var matcher = emmetRequire('htmlMatcher');
 	var lastMatch = null;
 
 	/**
@@ -8071,9 +8071,9 @@ emmet.exec(function(require, _) {
 	 */
 	function matchPair(editor, direction) {
 		direction = String((direction || 'out').toLowerCase());
-		var info = require('editorUtils').outputInfo(editor);
+		var info = emmetRequire('editorUtils').outputInfo(editor);
 
-		var range = require('range');
+		var range = emmetRequire('range');
 		/** @type Range */
 		var sel = range.create(editor.getSelectionRange());
 		var content = info.content;
@@ -8093,7 +8093,7 @@ emmet.exec(function(require, _) {
 					if (lastMatch.range.equal(lastMatch.outerRange)) {
 						lastMatch.range = lastMatch.innerRange;
 					} else {
-						var narrowed = require('utils').narrowToNonSpace(content, lastMatch.innerRange);
+						var narrowed = emmetRequire('utils').narrowToNonSpace(content, lastMatch.innerRange);
 						lastMatch = matcher.find(content, narrowed.start + 1);
 						if (lastMatch && lastMatch.range.equal(sel) && lastMatch.outerRange.equal(sel)) {
 							lastMatch.range = lastMatch.innerRange;
@@ -8166,13 +8166,13 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
-	require('actions').add('remove_tag', function(editor) {
-		var utils = require('utils');
-		var info = require('editorUtils').outputInfo(editor);
+emmet.exec(function(emmetRequire, _) {
+	emmetRequire('actions').add('remove_tag', function(editor) {
+		var utils = emmetRequire('utils');
+		var info = emmetRequire('editorUtils').outputInfo(editor);
 
 		// search for tag
-		var tag = require('htmlMatcher').tag(info.content, editor.getCaretPos());
+		var tag = emmetRequire('htmlMatcher').tag(info.content, editor.getCaretPos());
 		if (tag) {
 			if (!tag.close) {
 				// simply remove unary tag
@@ -8205,7 +8205,7 @@ emmet.exec(function(require, _) {
  * @memberOf __splitJoinTagAction
  * @constructor
  */
-emmet.exec(function(require, _) {
+emmet.exec(function(emmetRequire, _) {
 	/**
 	 * @param {IEmmetEditor} editor
 	 * @param {Object} profile
@@ -8213,7 +8213,7 @@ emmet.exec(function(require, _) {
 	 */
 	function joinTag(editor, profile, tag) {
 		/** @type emmet.utils */
-		var utils = require('utils');
+		var utils = emmetRequire('utils');
 
 		// empty closing slash is a nonsense for this action
 		var slash = profile.selfClosing() || ' /';
@@ -8234,10 +8234,10 @@ emmet.exec(function(require, _) {
 
 	function splitTag(editor, profile, tag) {
 		/** @type emmet.utils */
-		var utils = require('utils');
+		var utils = emmetRequire('utils');
 
 		var nl = utils.getNewline();
-		var pad = require('resources').getVariable('indentation');
+		var pad = emmetRequire('resources').getVariable('indentation');
 		var caretPos = editor.getCaretPos();
 
 		// define tag content depending on profile
@@ -8252,11 +8252,11 @@ emmet.exec(function(require, _) {
 		return true;
 	}
 
-	require('actions').add('split_join_tag', function(editor, profileName) {
-		var matcher = require('htmlMatcher');
+	emmetRequire('actions').add('split_join_tag', function(editor, profileName) {
+		var matcher = emmetRequire('htmlMatcher');
 
-		var info = require('editorUtils').outputInfo(editor, null, profileName);
-		var profile = require('profile').get(info.profile);
+		var info = emmetRequire('editorUtils').outputInfo(editor, null, profileName);
+		var profile = emmetRequire('profile').get(info.profile);
 
 		// find tag at current position
 		var tag = matcher.tag(info.content, editor.getCaretPos());
@@ -8276,22 +8276,22 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('reflectCSSValue', function(require, _) {
+emmet.define('reflectCSSValue', function(emmetRequire, _) {
 	/**
 	 * @type HandlerList List of registered handlers
 	 */
-	var handlers = require('handlerList').create();
+	var handlers = emmetRequire('handlerList').create();
 
-	require('actions').add('reflect_css_value', function(editor) {
+	emmetRequire('actions').add('reflect_css_value', function(editor) {
 		if (editor.getSyntax() != 'css') return false;
 
-		return require('actionUtils').compoundUpdate(editor, doCSSReflection(editor));
+		return emmetRequire('actionUtils').compoundUpdate(editor, doCSSReflection(editor));
 	}, {label: 'CSS/Reflect Value'});
 
 	function doCSSReflection(editor) {
 		/** @type emmet.cssEditTree */
-		var cssEditTree = require('cssEditTree');
-		var outputInfo = require('editorUtils').outputInfo(editor);
+		var cssEditTree = emmetRequire('cssEditTree');
+		var outputInfo = emmetRequire('editorUtils').outputInfo(editor);
 		var caretPos = editor.getCaretPos();
 
 		var cssRule = cssEditTree.parseFromPosition(outputInfo.content, caretPos);
@@ -8323,7 +8323,7 @@ emmet.define('reflectCSSValue', function(require, _) {
 	 * @return {RegExp}
 	 */
 	function getReflectedCSSName(name) {
-		name = require('cssEditTree').baseName(name);
+		name = emmetRequire('cssEditTree').baseName(name);
 		var vendorPrefix = '^(?:\\-\\w+\\-)?', m;
 
 		if (name == 'opacity' || name == 'filter') {
@@ -8367,8 +8367,8 @@ emmet.define('reflectCSSValue', function(require, _) {
 	 * @return {String} New value for receiver property
 	 */
 	function getReflectedValue(curName, curValue, refName, refValue) {
-		var cssEditTree = require('cssEditTree');
-		var utils = require('utils');
+		var cssEditTree = emmetRequire('cssEditTree');
+		var utils = emmetRequire('utils');
 		curName = cssEditTree.baseName(curName);
 		refName = cssEditTree.baseName(refName);
 
@@ -8418,16 +8418,16 @@ emmet.define('reflectCSSValue', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
-	require('actions').add('evaluate_math_expression', function(editor) {
-		var actionUtils = require('actionUtils');
-		var utils = require('utils');
+emmet.exec(function(emmetRequire, _) {
+	emmetRequire('actions').add('evaluate_math_expression', function(editor) {
+		var actionUtils = emmetRequire('actionUtils');
+		var utils = emmetRequire('utils');
 
 		var content = String(editor.getContent());
 		var chars = '.+-*/\\';
 
 		/** @type Range */
-		var sel = require('range').create(editor.getSelectionRange());
+		var sel = emmetRequire('range').create(editor.getSelectionRange());
 		if (!sel.length()) {
 			sel = actionUtils.findExpressionBounds(editor, function(ch) {
 				return utils.isNumeric(ch) || chars.indexOf(ch) != -1;
@@ -8456,7 +8456,7 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
+emmet.exec(function(emmetRequire, _) {
 	/**
 	 * Extract number from current caret position of the <code>editor</code> and
 	 * increment it by <code>step</code>
@@ -8464,8 +8464,8 @@ emmet.exec(function(require, _) {
 	 * @param {Number} step Increment step (may be negative)
 	 */
 	function incrementNumber(editor, step) {
-		var utils = require('utils');
-		var actionUtils = require('actionUtils');
+		var utils = emmetRequire('utils');
+		var actionUtils = emmetRequire('actionUtils');
 
 		var hasSign = false;
 		var hasDecimal = false;
@@ -8527,7 +8527,7 @@ emmet.exec(function(require, _) {
 		return num.length;
 	}
 
-	var actions = require('actions');
+	var actions = emmetRequire('actions');
 	_.each([1, -1, 10, -10, 0.1, -0.1], function(num) {
 		var prefix = num > 0 ? 'increment' : 'decrement';
 
@@ -8541,10 +8541,10 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
-	var actions = require('actions');
+emmet.exec(function(emmetRequire, _) {
+	var actions = emmetRequire('actions');
 	/** @type emmet.preferences */
-	var prefs = require('preferences');
+	var prefs = emmetRequire('preferences');
 
 	// setup default preferences
 	prefs.define('css.closeBraceIndentation', '\n',
@@ -8562,11 +8562,11 @@ emmet.exec(function(require, _) {
 	 * @return {Boolean} Returns <code>true</code> if line break was inserted
 	 */
 	actions.add('insert_formatted_line_break_only', function(editor) {
-		var utils = require('utils');
+		var utils = emmetRequire('utils');
 		/** @type emmet.resources */
-		var res = require('resources');
+		var res = emmetRequire('resources');
 
-		var info = require('editorUtils').outputInfo(editor);
+		var info = emmetRequire('editorUtils').outputInfo(editor);
 		var caretPos = editor.getCaretPos();
 		var nl = utils.getNewline();
 		var pad;
@@ -8574,7 +8574,7 @@ emmet.exec(function(require, _) {
 		if (_.include(['html', 'xml', 'xsl'], info.syntax)) {
 			pad = res.getVariable('indentation');
 			// let's see if we're breaking newly created tag
-			var tag = require('htmlMatcher').tag(info.content, caretPos);
+			var tag = emmetRequire('htmlMatcher').tag(info.content, caretPos);
 			if (tag && !tag.innerRange.length()) {
 				editor.replaceContent(nl + pad + utils.getCaretPlaceholder() + nl, caretPos);
 				return true;
@@ -8629,9 +8629,9 @@ emmet.exec(function(require, _) {
 	 */
 	actions.add('insert_formatted_line_break', function(editor) {
 		if (!actions.run('insert_formatted_line_break_only', editor)) {
-			var utils = require('utils');
+			var utils = emmetRequire('utils');
 
-			var curPadding = require('editorUtils').getCurrentLinePadding(editor);
+			var curPadding = emmetRequire('editorUtils').getCurrentLinePadding(editor);
 			var content = String(editor.getContent());
 			var caretPos = editor.getCaretPos();
 			var len = content.length;
@@ -8662,15 +8662,15 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
-	require('actions').add('merge_lines', function(editor) {
-		var matcher = require('htmlMatcher');
-		var utils = require('utils');
-		var editorUtils = require('editorUtils');
+emmet.exec(function(emmetRequire, _) {
+	emmetRequire('actions').add('merge_lines', function(editor) {
+		var matcher = emmetRequire('htmlMatcher');
+		var utils = emmetRequire('utils');
+		var editorUtils = emmetRequire('editorUtils');
 		var info = editorUtils.outputInfo(editor);
 
 		/** @type Range */
-		var selection = require('range').create(editor.getSelectionRange());
+		var selection = emmetRequire('range').create(editor.getSelectionRange());
 		if (!selection.length()) {
 			// find matching tag
 			var pair = matcher.find(info.content, editor.getCaretPos());
@@ -8709,8 +8709,8 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
-	require('actions').add('encode_decode_data_url', function(editor) {
+emmet.exec(function(emmetRequire, _) {
+	emmetRequire('actions').add('encode_decode_data_url', function(editor) {
 		var data = String(editor.getSelection());
 		var caretPos = editor.getCaretPos();
 
@@ -8767,8 +8767,8 @@ emmet.exec(function(require, _) {
 	 * @return {Boolean}
 	 */
 	function encodeToBase64(editor, imgPath, pos) {
-		var file = require('file');
-		var actionUtils = require('actionUtils');
+		var file = emmetRequire('file');
+		var actionUtils = emmetRequire('actionUtils');
 
 		var editorFile = editor.getFilePath();
 		var defaultMimeType = 'application/octet-stream';
@@ -8788,7 +8788,7 @@ emmet.exec(function(require, _) {
 				throw 'Unable to read ' + realImgPath + ': ' + err;
 			}
 
-			var b64 = require('base64').encode(String(content));
+			var b64 = emmetRequire('base64').encode(String(content));
 			if (!b64) {
 				throw "Can't encode file content to base64";
 			}
@@ -8815,13 +8815,13 @@ emmet.exec(function(require, _) {
 		if (!filePath)
 			return false;
 
-		var file = require('file');
+		var file = emmetRequire('file');
 		var absPath = file.createPath(editor.getFilePath(), filePath);
 		if (!absPath) {
 			throw "Can't save file";
 		}
 
-		file.save(absPath, require('base64').decode( data.replace(/^data\:.+?;.+?,/, '') ));
+		file.save(absPath, emmetRequire('base64').decode( data.replace(/^data\:.+?;.+?,/, '') ));
 		editor.replaceContent('$0' + filePath, pos, pos + data.length);
 		return true;
 	}
@@ -8834,7 +8834,7 @@ emmet.exec(function(require, _) {
  * @constructor
  * @memberOf __updateImageSizeAction
  */
-emmet.exec(function(require, _) {
+emmet.exec(function(emmetRequire, _) {
 	/**
 	 * Updates image size of &lt;img src=""&gt; tag
 	 * @param {IEmmetEditor} editor
@@ -8843,8 +8843,8 @@ emmet.exec(function(require, _) {
 		var offset = editor.getCaretPos();
 
 		// find tag from current caret position
-		var info = require('editorUtils').outputInfo(editor);
-		var xmlElem = require('xmlEditTree').parseFromPosition(info.content, offset, true);
+		var info = emmetRequire('editorUtils').outputInfo(editor);
+		var xmlElem = emmetRequire('xmlEditTree').parseFromPosition(info.content, offset, true);
 		if (xmlElem && (xmlElem.name() || '').toLowerCase() == 'img') {
 			getImageSizeForSource(editor, xmlElem.value('src'), function(size) {
 				if (size) {
@@ -8852,7 +8852,7 @@ emmet.exec(function(require, _) {
 					xmlElem.value('width', size.width);
 					xmlElem.value('height', size.height, xmlElem.indexOf('width') + 1);
 
-					require('actionUtils').compoundUpdate(editor, _.extend(compoundData, {
+					emmetRequire('actionUtils').compoundUpdate(editor, _.extend(compoundData, {
 						data: xmlElem.toString(),
 						caret: offset
 					}));
@@ -8869,8 +8869,8 @@ emmet.exec(function(require, _) {
 		var offset = editor.getCaretPos();
 
 		// find tag from current caret position
-		var info = require('editorUtils').outputInfo(editor);
-		var cssRule = require('cssEditTree').parseFromPosition(info.content, offset, true);
+		var info = emmetRequire('editorUtils').outputInfo(editor);
+		var cssRule = emmetRequire('cssEditTree').parseFromPosition(info.content, offset, true);
 		if (cssRule) {
 			// check if there is property with image under caret
 			var prop = cssRule.itemFromPosition(offset, true), m;
@@ -8881,7 +8881,7 @@ emmet.exec(function(require, _) {
 						cssRule.value('width', size.width + 'px');
 						cssRule.value('height', size.height + 'px', cssRule.indexOf('width') + 1);
 
-						require('actionUtils').compoundUpdate(editor, _.extend(compoundData, {
+						emmetRequire('actionUtils').compoundUpdate(editor, _.extend(compoundData, {
 							data: cssRule.toString(),
 							caret: offset
 						}));
@@ -8898,15 +8898,15 @@ emmet.exec(function(require, _) {
 	 */
 	function getImageSizeForSource(editor, src, callback) {
 		var fileContent;
-		var au = require('actionUtils');
+		var au = emmetRequire('actionUtils');
 		if (src) {
 			// check if it is data:url
 			if (/^data:/.test(src)) {
-				fileContent = require('base64').decode( src.replace(/^data\:.+?;.+?,/, '') );
+				fileContent = emmetRequire('base64').decode( src.replace(/^data\:.+?;.+?,/, '') );
 				return callback(au.getImageSize(fileContent));
 			}
 
-			var file = require('file');
+			var file = emmetRequire('file');
 			var absPath = file.locateFile(editor.getFilePath(), src);
 			if (absPath === null) {
 				throw "Can't find " + src + ' file';
@@ -8923,7 +8923,7 @@ emmet.exec(function(require, _) {
 		}
 	}
 
-	require('actions').add('update_image_size', function(editor) {
+	emmetRequire('actions').add('update_image_size', function(editor) {
 		// this action will definitely won’t work in SASS dialect,
 		// but may work in SCSS or LESS
 		if (_.include(['css', 'less', 'scss'], String(editor.getSyntax()))) {
@@ -8983,7 +8983,7 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('cssResolver', function(require, _) {
+emmet.define('cssResolver', function(emmetRequire, _) {
 	/** Back-reference to module */
 	var module = null;
 
@@ -9033,7 +9033,7 @@ emmet.define('cssResolver', function(require, _) {
 	var defaultValue = '${1};';
 
 	// XXX module preferences
-	var prefs = require('preferences');
+	var prefs = emmetRequire('preferences');
 	prefs.define('css.valueSeparator', ': ',
 			'Defines a symbol that should be placed between CSS property and '
 			+ 'value when expanding CSS abbreviations.');
@@ -9146,7 +9146,7 @@ emmet.define('cssResolver', function(require, _) {
 	 * @returns {Boolean}
 	 */
 	function isSingleProperty(snippet) {
-		var utils = require('utils');
+		var utils = emmetRequire('utils');
 		snippet = utils.trim(snippet);
 
 		// check if it doesn't contain a comment and a newline
@@ -9159,7 +9159,7 @@ emmet.define('cssResolver', function(require, _) {
 			return false;
 		}
 
-		snippet = require('tabStops').processText(snippet, {
+		snippet = emmetRequire('tabStops').processText(snippet, {
 			replaceCarets: true,
 			tabstop: function() {
 				return 'value';
@@ -9192,7 +9192,7 @@ emmet.define('cssResolver', function(require, _) {
 			return 'transparent';
 		}
 
-		var repeat = require('utils').repeatString;
+		var repeat = emmetRequire('utils').repeatString;
 		var color = null;
 		switch (hex.length) {
 			case 1:
@@ -9322,7 +9322,7 @@ emmet.define('cssResolver', function(require, _) {
 		var ix = property.indexOf(':');
 		property = property.substring(0, ix).replace(/\s+$/, '')
 			+ getSyntaxPreference('valueSeparator', syntax)
-			+ require('utils').trim(property.substring(ix + 1));
+			+ emmetRequire('utils').trim(property.substring(ix + 1));
 
 		return property.replace(/\s*;\s*$/, getSyntaxPreference('propertyEnd', syntax));
 	}
@@ -9394,7 +9394,7 @@ emmet.define('cssResolver', function(require, _) {
 	 * @param {TreeNode} node
 	 * @param {String} syntax
 	 */
-	require('resources').addResolver(function(node, syntax) {
+	emmetRequire('resources').addResolver(function(node, syntax) {
 		var cssSyntaxes = prefs.getArray('css.syntaxes');
 		if (_.include(cssSyntaxes, syntax) && node.isElement()) {
 			return module.expandToSnippet(node.abbreviation, syntax);
@@ -9403,7 +9403,7 @@ emmet.define('cssResolver', function(require, _) {
 		return null;
 	});
 
-	var ea = require('expandAbbreviation');
+	var ea = emmetRequire('expandAbbreviation');
 	/**
 	 * For CSS-like syntaxes, we need to handle a special use case. Some editors
 	 * (like Sublime Text 2) may insert semicolons automatically when user types
@@ -9570,7 +9570,7 @@ emmet.define('cssResolver', function(require, _) {
 
 			// try to find keywords in abbreviation
 			var property = abbr.substring(0, abbr.length - value.length);
-			var res = require('resources');
+			var res = emmetRequire('resources');
 			var keywords = [];
 			// try to extract some commonly-used properties
 			while (~property.indexOf('-') && !res.findSnippet(syntax, property)) {
@@ -9589,7 +9589,7 @@ emmet.define('cssResolver', function(require, _) {
 
 		parseValues: function(str) {
 			/** @type StringStream */
-			var stream = require('stringStream').create(str);
+			var stream = emmetRequire('stringStream').create(str);
 			var values = [];
 			var ch = null;
 
@@ -9669,7 +9669,7 @@ emmet.define('cssResolver', function(require, _) {
 		 */
 		expand: function(abbr, value, syntax) {
 			syntax = syntax || 'css';
-			var resources = require('resources');
+			var resources = emmetRequire('resources');
 			var autoInsertPrefixes = prefs.get('css.autoInsertVendorPrefixes');
 
 			// check if snippet should be transformed to !important
@@ -9740,7 +9740,7 @@ emmet.define('cssResolver', function(require, _) {
 			names.push(snippetObj.name);
 
 			if (prefs.get('css.alignVendor')) {
-				var pads = require('utils').getStringsPads(names);
+				var pads = emmetRequire('utils').getStringsPads(names);
 				result = _.map(result, function(prop, i) {
 					return pads[i] + prop;
 				});
@@ -9773,7 +9773,7 @@ emmet.define('cssResolver', function(require, _) {
 		 * @param {String} snippet
 		 */
 		splitSnippet: function(snippet) {
-			var utils = require('utils');
+			var utils = emmetRequire('utils');
 			snippet = utils.trim(snippet);
 			if (snippet.indexOf(':') == -1) {
 				return {
@@ -9804,7 +9804,7 @@ emmet.define('cssResolver', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('cssGradient', function(require, _) {
+emmet.define('cssGradient', function(emmetRequire, _) {
 	var defaultLinearDirections = ['top', 'to bottom', '0deg'];
 	/** Back-reference to current module */
 	var module = null;
@@ -9816,7 +9816,7 @@ emmet.define('cssGradient', function(require, _) {
 
 	// XXX define preferences
 	/** @type preferences */
-	var prefs = require('preferences');
+	var prefs = emmetRequire('preferences');
 	prefs.define('css.gradient.prefixes', 'webkit, moz, o',
 			'A comma-separated list of vendor-prefixes for which values should '
 			+ 'be generated.');
@@ -9837,7 +9837,7 @@ emmet.define('cssGradient', function(require, _) {
 			+ 'as fallback for old browsers.');
 
 	function normalizeSpace(str) {
-		return require('utils').trim(str).replace(/\s+/g, ' ');
+		return emmetRequire('utils').trim(str).replace(/\s+/g, ' ');
 	}
 
 	/**
@@ -9849,7 +9849,7 @@ emmet.define('cssGradient', function(require, _) {
 
 		// extract tokens
 		/** @type StringStream */
-		var stream = require('stringStream').create(require('utils').trim(gradient));
+		var stream = emmetRequire('stringStream').create(emmetRequire('utils').trim(gradient));
 		var colorStops = [], ch;
 		while ((ch = stream.next())) {
 			if (stream.peek() == ',') {
@@ -9931,8 +9931,8 @@ emmet.define('cssGradient', function(require, _) {
 	 * 'resources' and returns new name of matched property
 	 */
 	function resolvePropertyName(name, syntax) {
-		var res = require('resources');
-		var prefs = require('preferences');
+		var res = emmetRequire('resources');
+		var prefs = emmetRequire('preferences');
 		var snippet = res.findSnippet(syntax, name);
 
 		if (!snippet && prefs.get('css.fuzzySearch')) {
@@ -9945,7 +9945,7 @@ emmet.define('cssGradient', function(require, _) {
 				snippet = snippet.data;
 			}
 
-			return require('cssResolver').splitSnippet(snippet).name;
+			return emmetRequire('cssResolver').splitSnippet(snippet).name;
 		}
 	}
 
@@ -10035,7 +10035,7 @@ emmet.define('cssGradient', function(require, _) {
 	 */
 	function getPropertiesForGradient(gradient, propertyName) {
 		var props = [];
-		var css = require('cssResolver');
+		var css = emmetRequire('cssResolver');
 
 		if (prefs.get('css.gradient.fallback') && ~propertyName.toLowerCase().indexOf('background')) {
 			props.push({
@@ -10076,8 +10076,8 @@ emmet.define('cssGradient', function(require, _) {
 	 */
 	function pasteGradient(property, gradient, valueRange) {
 		var rule = property.parent;
-		var utils = require('utils');
-		var alignVendor = require('preferences').get('css.alignVendor');
+		var utils = emmetRequire('utils');
+		var alignVendor = emmetRequire('preferences').get('css.alignVendor');
 
 		// we may have aligned gradient definitions: find the smallest value
 		// separator
@@ -10115,7 +10115,7 @@ emmet.define('cssGradient', function(require, _) {
 
 		var value = property.value();
 		if (!valueRange)
-			valueRange = require('range').create(0, property.value());
+			valueRange = emmetRequire('range').create(0, property.value());
 
 		var val = function(v) {
 			return utils.replaceSubstring(value, v, valueRange);
@@ -10190,7 +10190,7 @@ emmet.define('cssGradient', function(require, _) {
 		// do a simplified parsing
 		var content = String(editor.getContent());
 		/** @type Range */
-		var lineRange = require('range').create(editor.getCurrentLineRange());
+		var lineRange = emmetRequire('range').create(editor.getCurrentLineRange());
 
 		// get line content and adjust range with padding
 		var line = lineRange.substring(content)
@@ -10203,7 +10203,7 @@ emmet.define('cssGradient', function(require, _) {
 				return '';
 			});
 
-		var css = require('cssResolver');
+		var css = emmetRequire('cssResolver');
 		var gradient = module.parse(line);
 		if (gradient) {
 			var props = getPropertiesForGradient(gradient, propertyName);
@@ -10215,8 +10215,8 @@ emmet.define('cssGradient', function(require, _) {
 			var sep = css.getSyntaxPreference('valueSeparator', syntax);
 			var end = css.getSyntaxPreference('propertyEnd', syntax);
 
-			if (require('preferences').get('css.alignVendor')) {
-				var pads = require('utils').getStringsPads(_.map(props, function(prop) {
+			if (emmetRequire('preferences').get('css.alignVendor')) {
+				var pads = emmetRequire('utils').getStringsPads(_.map(props, function(prop) {
 					return prop.value.substring(0, prop.value.indexOf('('));
 				}));
 				_.each(props, function(prop, i) {
@@ -10244,7 +10244,7 @@ emmet.define('cssGradient', function(require, _) {
 	function findGradientFromPosition(content, pos) {
 		var cssProp = null;
 		/** @type EditContainer */
-		var cssRule = require('cssEditTree').parseFromPosition(content, pos, true);
+		var cssRule = emmetRequire('cssEditTree').parseFromPosition(content, pos, true);
 
 		if (cssRule) {
 			cssProp = cssRule.itemFromPosition(pos, true);
@@ -10269,8 +10269,8 @@ emmet.define('cssGradient', function(require, _) {
 	 * @param {String} syntax
 	 * @param {String} profile
 	 */
-	require('expandAbbreviation').addHandler(function(editor, syntax, profile) {
-		var info = require('editorUtils').outputInfo(editor, syntax, profile);
+	emmetRequire('expandAbbreviation').addHandler(function(editor, syntax, profile) {
+		var info = emmetRequire('editorUtils').outputInfo(editor, syntax, profile);
 		if (!_.include(cssSyntaxes, info.syntax))
 			return false;
 
@@ -10295,7 +10295,7 @@ emmet.define('cssGradient', function(require, _) {
 				if (/[\n\r]/.test(css.property.value())) {
 					// insert semicolon at the end of gradient definition
 					var insertPos = css.property.valueRange(true).start + g.valueRange.end;
-					content = require('utils').replaceSubstring(content, ';', insertPos);
+					content = emmetRequire('utils').replaceSubstring(content, ';', insertPos);
 					var newCss = findGradientFromPosition(content, caret);
 					if (newCss.property) {
 						g = findGradient(newCss.property);
@@ -10325,8 +10325,8 @@ emmet.define('cssGradient', function(require, _) {
 	/**
 	 * @param {EditElement} property
 	 */
-	require('reflectCSSValue').addHandler(function(property) {
-		var utils = require('utils');
+	emmetRequire('reflectCSSValue').addHandler(function(property) {
+		var utils = emmetRequire('utils');
 
 		var g = findGradient(property);
 		if (!g)
@@ -10363,7 +10363,7 @@ emmet.define('cssGradient', function(require, _) {
 		 */
 		parse: function(gradient) {
 			var result = null;
-			require('utils').trim(gradient).replace(/^([\w\-]+)\((.+?)\)$/, function(str, type, definition) {
+			emmetRequire('utils').trim(gradient).replace(/^([\w\-]+)\((.+?)\)$/, function(str, type, definition) {
 				// remove vendor prefix
 				type = type.toLowerCase().replace(/^\-[a-z]+\-/, '');
 				if (type == 'linear-gradient' || type == 'lg') {
@@ -10457,10 +10457,10 @@ emmet.define('cssGradient', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
+emmet.exec(function(emmetRequire, _) {
 	/** @type HandlerList */
-	var generators = require('handlerList').create();
-	var resources = require('resources');
+	var generators = emmetRequire('handlerList').create();
+	var resources = emmetRequire('resources');
 
 	_.extend(resources, {
 		/**
@@ -10498,7 +10498,7 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.define('tagName', function(require, _) {
+emmet.define('tagName', function(emmetRequire, _) {
 	var elementTypes = {
 //		empty: 'area,base,basefont,br,col,frame,hr,img,input,isindex,link,meta,param,embed,keygen,command'.split(','),
 		empty: [],
@@ -10653,8 +10653,8 @@ emmet.define('tagName', function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
-	var prefs = require('preferences');
+emmet.exec(function(emmetRequire, _) {
+	var prefs = emmetRequire('preferences');
 	prefs.define('bem.elementSeparator', '__', 'Class name’s element separator.');
 	prefs.define('bem.modifierSeparator', '_', 'Class name’s modifier separator.');
 	prefs.define('bem.shortElementPrefix', '-',
@@ -10676,7 +10676,7 @@ emmet.exec(function(require, _) {
 	 * @param {AbbreviationNode} item
 	 */
 	function bemParse(item) {
-		if (require('abbreviationUtils').isSnippet(item))
+		if (emmetRequire('abbreviationUtils').isSnippet(item))
 			return item;
 
 		// save BEM stuff in cache for faster lookups
@@ -10720,7 +10720,7 @@ emmet.exec(function(require, _) {
 	 * @returns {String}
 	 */
 	function normalizeClassName(className) {
-		var utils = require('utils');
+		var utils = emmetRequire('utils');
 		className = (' ' + (className || '') + ' ').replace(/\s+/g, ' ');
 
 		var shortSymbol = prefs.get('bem.shortElementPrefix');
@@ -10877,7 +10877,7 @@ emmet.exec(function(require, _) {
 		if (tree.name)
 			bemParse(tree, profile);
 
-		var abbrUtils = require('abbreviationUtils');
+		var abbrUtils = emmetRequire('abbreviationUtils');
 		_.each(tree.children, function(item) {
 			process(item, profile);
 			if (!abbrUtils.isSnippet(item) && item.start)
@@ -10887,13 +10887,13 @@ emmet.exec(function(require, _) {
 		return tree;
 	}
 
-	require('filters').add('bem', function(tree, profile) {
+	emmetRequire('filters').add('bem', function(tree, profile) {
 		shouldRunHtmlFilter = false;
 		tree = process(tree, profile);
 		// in case 'bem' filter is applied after 'html' filter: run it again
 		// to update output
 		if (shouldRunHtmlFilter) {
-			tree = require('filters').apply(tree, 'html', profile);
+			tree = emmetRequire('filters').apply(tree, 'html', profile);
 		}
 
 		return tree;
@@ -10909,10 +10909,10 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
+emmet.exec(function(emmetRequire, _) {
 	// define some preferences
 	/** @type emmet.preferences */
-	var prefs = require('preferences');
+	var prefs = emmetRequire('preferences');
 
 	prefs.define('filter.commentAfter',
 			'\n<!-- /<%= attr("id", "#") %><%= attr("class", ".") %> -->',
@@ -10954,7 +10954,7 @@ emmet.exec(function(require, _) {
 	 * @param {AbbreviationNode} node
 	 */
 	function addComments(node, templateBefore, templateAfter) {
-		var utils = require('utils');
+		var utils = emmetRequire('utils');
 
 		// check if comments should be added
 		var trigger = prefs.get('filter.commentTrigger');
@@ -10987,7 +10987,7 @@ emmet.exec(function(require, _) {
 	}
 
 	function process(tree, before, after) {
-		var abbrUtils = require('abbreviationUtils');
+		var abbrUtils = emmetRequire('abbreviationUtils');
 		_.each(tree.children, function(item) {
 			if (abbrUtils.isBlock(item))
 				addComments(item, before, after);
@@ -10998,7 +10998,7 @@ emmet.exec(function(require, _) {
 		return tree;
 	}
 
-	require('filters').add('c', function(tree) {
+	emmetRequire('filters').add('c', function(tree) {
 		var templateBefore = _.template(prefs.get('filter.commentBefore'));
 		var templateAfter = _.template(prefs.get('filter.commentAfter'));
 
@@ -11010,7 +11010,7 @@ emmet.exec(function(require, _) {
  * @author Sergey Chikuyonok (serge.che@gmail.com)
  * @link http://chikuyonok.ru
  */
-emmet.exec(function(require, _) {
+emmet.exec(function(emmetRequire, _) {
 	var charMap = {
 		'<': '&lt;',
 		'>': '&gt;',
@@ -11023,7 +11023,7 @@ emmet.exec(function(require, _) {
 		});
 	}
 
-	require('filters').add('e', function process(tree) {
+	emmetRequire('filters').add('e', function process(tree) {
 		_.each(tree.children, function(item) {
 			item.start = escapeChars(item.start);
 			item.end = escapeChars(item.end);
@@ -11046,11 +11046,11 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _){
+emmet.exec(function(emmetRequire, _){
 	var placeholder = '%s';
 
 	/** @type preferences */
-	var prefs = require('preferences');
+	var prefs = emmetRequire('preferences');
 	prefs.define('format.noIndentTags', 'html',
 			'A comma-separated list of tag names that should not get inner indentation.');
 
@@ -11067,7 +11067,7 @@ emmet.exec(function(require, _){
 			return '';
 		}
 
-		return require('resources').getVariable('indentation');
+		return emmetRequire('resources').getVariable('indentation');
 	}
 
 	/**
@@ -11076,7 +11076,7 @@ emmet.exec(function(require, _){
 	 * @return {Boolean}
 	 */
 	function hasBlockSibling(item) {
-		return item.parent && require('abbreviationUtils').hasBlockChildren(item.parent);
+		return item.parent && emmetRequire('abbreviationUtils').hasBlockChildren(item.parent);
 	}
 
 	/**
@@ -11094,7 +11094,7 @@ emmet.exec(function(require, _){
 	 * @return {Boolean}
 	 */
 	function shouldAddLineBreak(node, profile) {
-		var abbrUtils = require('abbreviationUtils');
+		var abbrUtils = emmetRequire('abbreviationUtils');
 		if (profile.tag_nl === true || abbrUtils.isBlock(node))
 			return true;
 
@@ -11118,7 +11118,7 @@ emmet.exec(function(require, _){
 
 	function shouldFormatInline(node, profile) {
 		var nodeCount = 0;
-		var abbrUtils = require('abbreviationUtils');
+		var abbrUtils = emmetRequire('abbreviationUtils');
 		return !!_.find(node.children, function(child) {
 			if (child.isTextNode() || !abbrUtils.isInline(child))
 				nodeCount = 0;
@@ -11143,8 +11143,8 @@ emmet.exec(function(require, _){
 		item.start = item.end = '';
 		if (!isVeryFirstChild(item) && profile.tag_nl !== false && shouldAddLineBreak(item, profile)) {
 			// check if we’re not inside inline element
-			if (isRoot(item.parent) || !require('abbreviationUtils').isInline(item.parent)) {
-				item.start = require('utils').getNewline() + item.start;
+			if (isRoot(item.parent) || !emmetRequire('abbreviationUtils').isInline(item.parent)) {
+				item.start = emmetRequire('utils').getNewline() + item.start;
 			}
 		}
 
@@ -11158,7 +11158,7 @@ emmet.exec(function(require, _){
 	 * @return {Boolean}
 	 */
 	function shouldBreakInsideInline(node, profile) {
-		var abbrUtils = require('abbreviationUtils');
+		var abbrUtils = emmetRequire('abbreviationUtils');
 		var hasBlockElems = _.any(node.children, function(child) {
 			if (abbrUtils.isSnippet(child))
 				return false;
@@ -11180,8 +11180,8 @@ emmet.exec(function(require, _){
 	 */
 	function processTag(item, profile) {
 		item.start = item.end = placeholder;
-		var utils = require('utils');
-		var abbrUtils = require('abbreviationUtils');
+		var utils = emmetRequire('utils');
+		var abbrUtils = emmetRequire('abbreviationUtils');
 		var isUnary = abbrUtils.isUnary(item);
 		var nl = utils.getNewline();
 		var indent = getIndentation(item);
@@ -11225,9 +11225,9 @@ emmet.exec(function(require, _){
 	 * @param {OutputProfile} profile
 	 * @param {Number} level Depth level
 	 */
-	require('filters').add('_format', function process(tree, profile, level) {
+	emmetRequire('filters').add('_format', function process(tree, profile, level) {
 		level = level || 0;
-		var abbrUtils = require('abbreviationUtils');
+		var abbrUtils = emmetRequire('abbreviationUtils');
 
 		_.each(tree.children, function(item) {
 			if (abbrUtils.isSnippet(item))
@@ -11249,9 +11249,9 @@ emmet.exec(function(require, _){
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
+emmet.exec(function(emmetRequire, _) {
 	function transformClassName(className) {
-		return require('utils').trim(className).replace(/\s+/g, '.');
+		return emmetRequire('utils').trim(className).replace(/\s+/g, '.');
 	}
 
 	/**
@@ -11297,8 +11297,8 @@ emmet.exec(function(require, _) {
 			// looks like it's root element
 			return item;
 
-		var abbrUtils = require('abbreviationUtils');
-		var utils = require('utils');
+		var abbrUtils = emmetRequire('abbreviationUtils');
+		var utils = emmetRequire('utils');
 
 		var attrs = makeAttributesString(item, profile);
 		var cursor = profile.cursor();
@@ -11333,12 +11333,12 @@ emmet.exec(function(require, _) {
 	 * @param {Object} profile
 	 * @param {Number} level Depth level
 	 */
-	require('filters').add('haml', function process(tree, profile, level) {
+	emmetRequire('filters').add('haml', function process(tree, profile, level) {
 		level = level || 0;
-		var abbrUtils = require('abbreviationUtils');
+		var abbrUtils = emmetRequire('abbreviationUtils');
 
 		if (!level) {
-			tree = require('filters').apply(tree, '_format', profile);
+			tree = emmetRequire('filters').apply(tree, '_format', profile);
 		}
 
 		_.each(tree.children, function(item) {
@@ -11359,7 +11359,7 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
+emmet.exec(function(emmetRequire, _) {
 	/**
 	 * Creates HTML attributes string from tag according to profile settings
 	 * @param {AbbreviationNode} node
@@ -11384,8 +11384,8 @@ emmet.exec(function(require, _) {
 		if (!item.parent) // looks like it's root element
 			return item;
 
-		var abbrUtils = require('abbreviationUtils');
-		var utils = require('utils');
+		var abbrUtils = emmetRequire('abbreviationUtils');
+		var utils = emmetRequire('utils');
 
 		var attrs = makeAttributesString(item, profile);
 		var cursor = profile.cursor();
@@ -11417,7 +11417,7 @@ emmet.exec(function(require, _) {
 				!item.children.length
 				&& !isUnary
 				&& !~item.content.indexOf(cursor)
-				&& !require('tabStops').extract(item.content).tabstops.length
+				&& !emmetRequire('tabStops').extract(item.content).tabstops.length
 			) {
 			item.start += cursor;
 		}
@@ -11431,12 +11431,12 @@ emmet.exec(function(require, _) {
 	 * @param {Object} profile
 	 * @param {Number} level Depth level
 	 */
-	require('filters').add('html', function process(tree, profile, level) {
+	emmetRequire('filters').add('html', function process(tree, profile, level) {
 		level = level || 0;
-		var abbrUtils = require('abbreviationUtils');
+		var abbrUtils = emmetRequire('abbreviationUtils');
 
 		if (!level) {
-			tree = require('filters').apply(tree, '_format', profile);
+			tree = emmetRequire('filters').apply(tree, '_format', profile);
 		}
 
 		_.each(tree.children, function(item) {
@@ -11457,12 +11457,12 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
+emmet.exec(function(emmetRequire, _) {
 	var rePad = /^\s+/;
 	var reNl = /[\n\r]/g;
 
-	require('filters').add('s', function process(tree) {
-		var abbrUtils = require('abbreviationUtils');
+	emmetRequire('filters').add('s', function process(tree) {
+		var abbrUtils = emmetRequire('abbreviationUtils');
 
 		_.each(tree.children, function(item) {
 			if (!abbrUtils.isSnippet(item)) {
@@ -11496,8 +11496,8 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
-	require('preferences').define('filter.trimRegexp', '[\\s|\\u00a0]*[\\d|#|\\-|\*|\\u2022]+\\.?\\s*',
+emmet.exec(function(emmetRequire, _) {
+	emmetRequire('preferences').define('filter.trimRegexp', '[\\s|\\u00a0]*[\\d|#|\\-|\*|\\u2022]+\\.?\\s*',
 			'Regular expression used to remove list markers (numbers, dashes, '
 			+ 'bullets, etc.) in <code>t</code> (trim) filter. The trim filter '
 			+ 'is useful for wrapping with abbreviation lists, pased from other '
@@ -11514,8 +11514,8 @@ emmet.exec(function(require, _) {
 		return tree;
 	}
 
-	require('filters').add('t', function(tree) {
-		var re = new RegExp(require('preferences').get('filter.trimRegexp'));
+	emmetRequire('filters').add('t', function(tree) {
+		var re = new RegExp(emmetRequire('preferences').get('filter.trimRegexp'));
 		return process(tree, re);
 	});
 });
@@ -11530,7 +11530,7 @@ emmet.exec(function(require, _) {
  * @param {Function} require
  * @param {Underscore} _
  */
-emmet.exec(function(require, _) {
+emmet.exec(function(emmetRequire, _) {
 	var tags = {
 		'xsl:variable': 1,
 		'xsl:with-param': 1
@@ -11544,8 +11544,8 @@ emmet.exec(function(require, _) {
 		node.start = node.start.replace(/\s+select\s*=\s*(['"]).*?\1/, '');
 	}
 
-	require('filters').add('xsl', function process(tree) {
-		var abbrUtils = require('abbreviationUtils');
+	emmetRequire('filters').add('xsl', function process(tree) {
+		var abbrUtils = emmetRequire('abbreviationUtils');
 		_.each(tree.children, function(item) {
 			if (!abbrUtils.isSnippet(item)
 					&& (item.name() || '').toLowerCase() in tags
@@ -11574,7 +11574,7 @@ emmet.exec(function(require, _) {
  * @constructor
  * @memberOf __loremIpsumGeneratorDefine
  */
-emmet.define('lorem', function(require, _) {
+emmet.define('lorem', function(emmetRequire, _) {
 	var langs = {
 		en: {
 			common: ['lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipisicing', 'elit'],
@@ -11639,13 +11639,13 @@ emmet.define('lorem', function(require, _) {
 		}
 	};
 
-	var prefs = require('preferences');
+	var prefs = emmetRequire('preferences');
 	prefs.define('lorem.defaultLang', 'en');
 
 	/**
 	 * @param {AbbreviationNode} tree
 	 */
-	require('abbreviationParser').addPreprocessor(function(tree) {
+	emmetRequire('abbreviationParser').addPreprocessor(function(tree) {
 		var re = /^(?:lorem|lipsum)([a-z]{2})?(\d*)$/i, match;
 
 		/** @param {AbbreviationNode} node */
