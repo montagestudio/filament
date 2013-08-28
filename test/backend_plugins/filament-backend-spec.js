@@ -93,12 +93,20 @@ describe("filament backend", function () {
             });
         });
 
+        it("resolves as the path to the created component", function () {
+            var timestamp = Date.now();
+            return filamentBackend.createComponent("foo" + timestamp, "/tmp", "bar")
+                .then(function (path) {
+                    expect(path).toEqual("/tmp/bar/foo" + timestamp + ".reel");
+                });
+        });
+
         it("creates an component with a space in its name", function () {
             var timestamp = Date.now();
             return filamentBackend.createComponent("my component" + timestamp, "/tmp/", "")
             .then(function (path) {
                 var pieces = path.split("/");
-                expect(pieces[pieces.length -1]).toEqual("my-component" + timestamp);
+                expect(pieces[pieces.length -1]).toEqual("my-component" + timestamp + ".reel");
             });
         });
 
@@ -107,7 +115,7 @@ describe("filament backend", function () {
             return filamentBackend.createComponent("føø" + timestamp, "/tmp/", "")
             .then(function (path) {
                 var pieces = path.split("/");
-                expect(pieces[pieces.length -1]).toEqual("foo" + timestamp);
+                expect(pieces[pieces.length -1]).toEqual("foo" + timestamp + ".reel");
             });
         });
     });
