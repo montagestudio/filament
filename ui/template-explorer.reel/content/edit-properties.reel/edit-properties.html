@@ -50,8 +50,12 @@
                 ]
             },
             "bindings": {
-                "value": {"<->": "@properties.objectAtCurrentIteration.valueType"}
-            }
+                "propertyBlueprint": {"<-": "@properties.objectAtCurrentIteration"},
+                "value": {"<-": "@properties.objectAtCurrentIteration.valueType"}
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
         },
 
         "multiple": {
@@ -60,11 +64,15 @@
                 "element": {"#": "multiple"}
             },
             "bindings": {
+                "propertyBlueprint": {"<-": "@properties.objectAtCurrentIteration"},
                 "checked": {
-                    "<->": "@properties.objectAtCurrentIteration.cardinality",
+                    "<-": "@properties.objectAtCurrentIteration.cardinality",
                     "converter": {"@": "cardinalityConverter"}
                 }
-            }
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
         },
 
         "collectionCondition": {
@@ -88,8 +96,12 @@
                 ]
             },
             "bindings": {
-                "value": {"<->": "@properties.objectAtCurrentIteration.collectionValueType"}
-            }
+                "propertyBlueprint": {"<-": "@properties.objectAtCurrentIteration"},
+                "value": {"<-": "@properties.objectAtCurrentIteration.collectionValueType"}
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
         },
 
         "removeProperty": {

@@ -9,18 +9,6 @@ var Component = require("montage/ui/component").Component,
     Serializer = require("montage/core/serialization").Serializer,
     Promise = require("montage/core/promise").Promise;
 
-function clone(propertyBlueprints) {
-    return propertyBlueprints.map(function (propertyBlueprint) {
-        var clone = new PropertyBlueprint();
-        clone.deserializeSelf({
-            getProperty: function (name) {
-                return propertyBlueprint[name];
-            }
-        });
-        return clone;
-    });
-}
-
 /**
     Description TODO
     @class module:"ui/edit-properties.reel".EditProperties
@@ -30,11 +18,7 @@ exports.EditProperties = Component.specialize({
 
     constructor: {
         value: function EditProperties() {
-            var propertiesController =  RangeController.create();
-            propertiesController.contentConstructor = PropertyBlueprint;
-            propertiesController.organizedContent.addRangeChangeListener(this, "properties");
-
-            this.propertiesController = propertiesController;
+            this.propertiesController =  RangeController.create();
         }
     },
 
@@ -86,7 +70,7 @@ exports.EditProperties = Component.specialize({
             this._ownerBlueprint = value;
             if (value) {
                 // add... returns the existing group if it already exists
-                this.propertiesController.content = clone(value.addPropertyBlueprintGroupNamed(this.ownerObject.exportName));
+                this.propertiesController.content = value.addPropertyBlueprintGroupNamed(this.ownerObject.exportName);
             }
         }
     },
@@ -103,28 +87,30 @@ exports.EditProperties = Component.specialize({
         }
     },
 
-    handlePropertiesRangeChange: {
-        value: function (plus, minus) {
-            if (this._ownerBlueprint) {
-                var ownerBlueprint = this._ownerBlueprint;
-
-                plus.forEach(function (property) {
-                    property.addOwnPropertyChangeListener("valueType", this);
-                    property.addOwnPropertyChangeListener("cardinality", this);
-                    property.addOwnPropertyChangeListener("collectionValueType", this);
-                }, this);
-                minus.forEach(function (property) {
-                    property.removeOwnPropertyChangeListener("valueType", this);
-                    property.removeOwnPropertyChangeListener("cardinality", this);
-                    property.removeOwnPropertyChangeListener("collectionValueType", this);
-                }, this);
-            }
+    handleValueTypeAction: {
+        value: function (event) {
+            var target = event.target;
+            var name = target.propertyBlueprint.name;
+            var value = target.value;
+            this._ownerObject.editingDocument.modifyOwnerBlueprintProperty(name, "valueType", value).done();
         }
     },
 
-    handlePropertyChange: {
-        value: function (value, key, object) {
-            this._ownerObject.editingDocument.modifyOwnerBlueprintProperty(object.name, key, value).done();
+    handleCollectionValueTypeAction: {
+        value: function (event) {
+            var target = event.target;
+            var name = target.propertyBlueprint.name;
+            var value = target.value;
+            this._ownerObject.editingDocument.modifyOwnerBlueprintProperty(name, "collectionValueType", value).done();
+        }
+    },
+
+    handleMultipleAction: {
+        value: function (event) {
+            var target = event.target;
+            var name = target.propertyBlueprint.name;
+            var value = target.checked ? Infinity : 1;
+            this._ownerObject.editingDocument.modifyOwnerBlueprintProperty(name, "cardinality", value).done();
         }
     },
 

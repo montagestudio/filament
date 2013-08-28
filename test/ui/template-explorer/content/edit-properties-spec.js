@@ -76,9 +76,25 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                 });
             });
 
+            it("adds a row", function () {
+                runs(function () {
+                    expect(editor.templateObjects.properties.element.children.length).toBe(2);
+                    testPage.clickOrTouch({target: editor.templateObjects.addProperty.element}, function () {
+                        expect(editor.templateObjects.properties.element.children.length).toBe(3);
+                    });
+                });
+            });
         });
 
         describe("remove button", function () {
+            it("removes the row", function () {
+                runs(function () {
+                    testPage.clickOrTouch({target: editor.templateObjects.removeProperty[0].element}, function () {
+                        expect(editor.templateObjects.properties.element.children.length).toBe(1);
+                    });
+                });
+            });
+
             it("removes the property", function () {
                 spyOn(editingDocument, "removeOwnerBlueprintProperty").andCallThrough();
 
@@ -128,6 +144,26 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                     editor.templateObjects.valueType[0].handleChange();
 
                     expect(editingDocument.modifyOwnerBlueprintProperty).toHaveBeenCalled();
+                });
+            });
+        });
+
+        describe("multi checkbox", function () {
+            it("changes cardinality of the property", function () {
+                spyOn(editingDocument, "modifyOwnerBlueprintProperty").andCallThrough();
+
+                runs(function () {
+                    expect(defaultGroup[0].cardinality).toBe(1);
+
+                    // simulate select
+                    editor.templateObjects.multiple[0].element.checked = true;
+                    editor.templateObjects.multiple[0].handleChange();
+
+                    expect(editingDocument.modifyOwnerBlueprintProperty).toHaveBeenCalled();
+                    var args = editingDocument.modifyOwnerBlueprintProperty.mostRecentCall.args;
+                    expect(args[0]).toBe("a");
+                    expect(args[1]).toBe("cardinality");
+                    expect(args[2]).toBe(Infinity);
                 });
             });
         });
