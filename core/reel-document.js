@@ -1370,12 +1370,23 @@ exports.ReelDocument = EditingDocument.specialize({
     // Owner blueprint
 
     addOwnerBlueprintProperty: {
-        value: function (name) {
+        value: function (name, valueType, cardinality, collectionValueType) {
             var self = this;
             return this.undoManager.register(
                 "Add owner property",
                 this._ownerBlueprint.then(function (blueprint) {
-                    var propertyBlueprint = new PropertyBlueprint().initWithNameBlueprintAndCardinality(name, blueprint, 1);
+                    var propertyBlueprint = new PropertyBlueprint().initWithNameBlueprintAndCardinality(
+                        name,
+                        blueprint,
+                        cardinality || 1
+                    );
+                    if (valueType) {
+                        propertyBlueprint.valueType = valueType;
+                    }
+                    if (collectionValueType) {
+                        propertyBlueprint.collectionValueType = collectionValueType;
+                    }
+
                     blueprint.addPropertyBlueprint(propertyBlueprint);
                     blueprint.addPropertyBlueprintToGroupNamed(propertyBlueprint, self._exportName);
                     return [self.removeOwnerBlueprintProperty, self, name];
@@ -1413,7 +1424,7 @@ exports.ReelDocument = EditingDocument.specialize({
                     var propertyBlueprint = blueprint.propertyBlueprintForName(name);
                     blueprint.removePropertyBlueprint(propertyBlueprint);
                     blueprint.removePropertyBlueprintFromGroupNamed(propertyBlueprint, self._exportName);
-                    return [self.addOwnerBlueprintProperty, self, name];
+                    return [self.addOwnerBlueprintProperty, self, name, propertyBlueprint.valueType, propertyBlueprint.cardinality, propertyBlueprint.collectionValueType];
                 })
             );
         }

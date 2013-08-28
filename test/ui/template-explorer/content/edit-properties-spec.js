@@ -75,26 +75,9 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                     expect(editor.templateObjects.addName.value).toBe("a");
                 });
             });
-
-            it("adds a row", function () {
-                runs(function () {
-                    expect(editor.templateObjects.properties.element.children.length).toBe(2);
-                    testPage.clickOrTouch({target: editor.templateObjects.addProperty.element}, function () {
-                        expect(editor.templateObjects.properties.element.children.length).toBe(3);
-                    });
-                });
-            });
         });
 
         describe("remove button", function () {
-            it("removes the row", function () {
-                runs(function () {
-                    testPage.clickOrTouch({target: editor.templateObjects.removeProperty[0].element}, function () {
-                        expect(editor.templateObjects.properties.element.children.length).toBe(1);
-                    });
-                });
-            });
-
             it("removes the property", function () {
                 spyOn(editingDocument, "removeOwnerBlueprintProperty").andCallThrough();
 

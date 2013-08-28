@@ -87,7 +87,21 @@ describe("core/reel-blueprint-editing-spec", function () {
                     expect(defaultGroup[0].name).toBe("b");
                 });
             });
+        });
 
+        it("correctly undos", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                defaultGroup[1].valueType = "number";
+                return reelDocument.removeOwnerBlueprintProperty("b")
+                .then(function () {
+                    return reelDocument.undoManager.undo();
+                })
+                .then(function () {
+                    expect(defaultGroup.length).toBe(2);
+                    expect(defaultGroup[1].name).toBe("b");
+                    expect(defaultGroup[1].valueType).toBe("number");
+                });
+            });
         });
 
     });
