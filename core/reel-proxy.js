@@ -163,7 +163,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             this._listeners = listeners;
 
             if (serialization.lumieres) {
-                this.comment = serialization.lumieres.comment;
+                this._comment = serialization.lumieres.comment;
                 this.x = serialization.lumieres.x;
                 this.y = serialization.lumieres.y;
             }

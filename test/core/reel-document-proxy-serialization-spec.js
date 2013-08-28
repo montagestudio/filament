@@ -16,6 +16,9 @@ describe("core/reel-document-proxy-serialization-spec", function () {
             "owner": {
                 "properties": {
                     "element": {"#": "ownerElement"}
+                },
+                "lumieres" : {
+                    "comment" : "This comment should be deserializable."
                 }
             },
             "foo": {
@@ -46,6 +49,35 @@ describe("core/reel-document-proxy-serialization-spec", function () {
                 var proxy = reelDocument.editingProxyMap.foo;
                 var serialization = reelDocument.serializationForProxy(proxy);
                 expect(Array.isArray(serialization.listeners)).toBeTruthy();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+    });
+
+    describe("serialization of lumieres comment", function () {
+
+        it("should deserialize the lumieres comment", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var proxy = reelDocument.editingProxyMap.owner;
+                expect(proxy._comment).toEqual("This comment should be deserializable.");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should serialize the comment in the lumieres property", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var proxy = reelDocument.editingProxyMap.owner;
+                proxy._comment = "Updated the comment";
+                var serialization = reelDocument.serializationForProxy(proxy);
+                expect(serialization.lumieres.comment).toEqual("Updated the comment");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should not serialize lumieres property if comment is empty", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var proxy = reelDocument.editingProxyMap.owner;
+                proxy._comment = "";
+                var serialization = reelDocument.serializationForProxy(proxy);
+                expect(serialization.lumieres).toBeUndefined();
             }).timeout(WAITSFOR_TIMEOUT);
         });
 

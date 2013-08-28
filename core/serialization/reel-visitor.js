@@ -31,6 +31,19 @@ exports.ReelVisitor = ProxyVisitor.specialize({
         }
     },
 
+    serializeProxyObject: {
+        value: function (malker, proxyObject, builderObject) {
+            this.super(malker, proxyObject, builderObject);
+
+            // TODO add support for other lumieres properties than just comment
+            if (proxyObject._comment) {
+                builderObject.setProperty("lumieres", {"comment": proxyObject._comment});
+            } else {
+                builderObject.clearProperty("lumieres");
+            }
+        }
+    },
+
     serializeListenerProxies: {
         value: function (listeners) {
             var outputs = [];
