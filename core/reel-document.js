@@ -1146,7 +1146,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 //     // TODO cancel the binding in the stage
                 //     // TODO define the binding on the stage, make sure we can cancel it later
                 // }
-                
+
                 this.undoManager.register("Edit Binding", Promise.resolve([
                     this.updateOwnedObjectBinding, this, proxy, updatedBinding, originalTargetPath, originalOneway, originalSourcePath
                 ]));
