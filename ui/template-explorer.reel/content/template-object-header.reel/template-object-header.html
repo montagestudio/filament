@@ -47,6 +47,9 @@
             "properties": {
                 "element": {"#": "editCommentButton"}
             },
+            "bindings": {
+                "classList.has('TemplateObjectHeader--active')": {"<-": "@owner.isEditingComment"}
+            },
             "listeners": [
                 {
                     "type": "action",

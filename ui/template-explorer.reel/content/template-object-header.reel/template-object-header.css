@@ -77,7 +77,7 @@
     background-color: transparent;
 }
 
-.TemplateObjectHeader-commentButton.pressed {
+.TemplateObjectHeader-commentButton.TemplateObjectHeader--active{
     background-color: hsl(42, 83%, 95%);
     border-color: hsl(0,0%,80%);
 }
