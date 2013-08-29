@@ -378,22 +378,6 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
                 throw new Error("Cannot remove a listener that's not associated with this proxy");
             }
         }
-    },
-
-    addObjectEventListener: {
-        value: function (type, listener, useCapture) {
-            var listenerModel = Object.create(null);
-
-            //TODO check for duplicate entry already registered
-
-            listenerModel.type = type;
-            listenerModel.listener = listener;
-            listenerModel.useCapture = useCapture;
-
-            this.listeners.push(listenerModel);
-
-            return listenerModel;
-        }
     }
 
 });
