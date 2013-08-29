@@ -77,6 +77,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             this._element.addEventListener("click", this);
 
             application.addEventListener("editBindingForObject", this, false);
+            application.addEventListener("editListenerForObject", this, false);
 
             this.addRangeAtPathChangeListener("editingDocument.selectedObjects", this, "handleSelectedObjectsChange");
         }
@@ -180,6 +181,21 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             });
         }
     },
+
+    handleEditListenerForObject: {
+        value: function (evt) {
+            var listenerModel = evt.detail.listenerModel;
+            var existingListener = evt.detail.existingListener;
+
+            this.dispatchEventNamed("addListenerForObject", true, false, {
+                listenerModel: listenerModel,
+                existingListener: existingListener
+            });
+        }
+    },
+
+
+    //TODO handleEditListenerButtonAction
 
     handleRemoveListenerButtonAction: {
         value: function (evt) {

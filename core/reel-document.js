@@ -1037,6 +1037,25 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+
+
+    //TODO this is basically a rename of the add one, it already looks like the binding...
+    defineOwnedObjectEventListener: {
+        value: function (proxy, type, listener, useCapture) {
+            var listenerEntry = proxy.addObjectEventListener(type, listener, useCapture);
+            if (listenerEntry) {
+                // if (this._editingController) {
+                //     // TODO register the listener on the stage, make sure we can remove it later
+                // }
+
+                this.undoManager.register("Define Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listenerEntry]));
+            }
+
+            return listenerEntry;
+        }
+    },
+
+    /* TODO whats the diference between this _addOwnedObjectBinding and defineOwnedObjectBinding*/
     _addOwnedObjectBinding: {
         value: function (proxy, binding, insertionIndex) {
 
@@ -1089,11 +1108,6 @@ exports.ReelDocument = EditingDocument.specialize({
             updatedBinding = proxy.updateObjectBinding(existingBinding, targetPath, oneway, sourcePath);
 
             if (updatedBinding) {
-                // if (this._editingController) {
-                //     // TODO cancel the binding in the stage
-                //     // TODO define the binding on the stage, make sure we can cancel it later
-                // }
-
                 this.undoManager.register("Edit Binding", Promise.resolve([
                     this.updateOwnedObjectBinding, this, proxy, updatedBinding, originalTargetPath, originalOneway, originalSourcePath
                 ]));
@@ -1107,6 +1121,27 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+
+    // make this similar updateOwnedObjectBinding 
+    updateOwnedObjectEventListener: {
+        value: function (proxy, existingListener, type, listener, useCapture) {
+            var originalType = existingListener.type,
+                originalListener = existingListener.listener,
+                originalUseCapture = existingListener.useCapture,
+                updatedListener;
+
+            updatedListener = proxy.updateObjectEventListener(existingListener, type, listener, useCapture);
+
+            if (updatedListener) {
+                this.undoManager.register("Edit Listener", Promise.resolve([this.updateOwnedObjectEventListener, this, proxy, updatedListener, originalType, originalListener, originalUseCapture]));
+            }
+
+            return updatedListener;
+        }
+    },
+
+
+    //@deprecated
     addOwnedObjectEventListener: {
         value: function (proxy, type, listener, useCapture) {
             var listenerEntry = proxy.addObjectEventListener(type, listener, useCapture);

@@ -205,6 +205,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
+    /* TODO whats the differnece between this and addBinding ? */
     defineObjectBinding: {
         value: function (targetPath, oneway, sourcePath) {
             var binding = Object.create(null);
@@ -288,6 +289,56 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             } else {
                 throw new Error("Cannot cancel a binding that's not associated with this proxy");
             }
+        }
+    },
+
+    /* 
+    TODO decide if i should provide the two define and add like in the binding... 
+    look at commit history to see if it was on purpose that they are both here for bindings
+    */ 
+    defineObjectEventListener: {
+        value: function (type, listener, useCapture) {
+            var listenerModel = Object.create(null);
+
+            //TODO check for duplicate entry already registered
+
+            listenerModel.type = type;
+            listenerModel.listener = listener;
+            listenerModel.useCapture = useCapture;
+
+            this.listeners.push(listenerModel);
+
+            return listenerModel;
+        }
+    },
+
+    /**
+     * Update an existing listener with new parameters
+     *
+     * All parameters are required, currently you cannot update a single
+     * property of the existing listener without affecting the others.
+     *
+     * @param {Object} listener The existing listener to update
+     * @param {string} type TODO
+     * @param {Object} itsListener TODO
+     * @param {string} useCapture TODO
+     */
+    updateObjectEventListener: {
+        value: function (listener, type, itsListener, useCapture) {
+            var existinglistener,
+                listenerIndex = this.listeners.indexOf(listener);
+
+            if (listenerIndex > -1) {
+                existinglistener = listener;
+            } else {
+                throw new Error("Cannot update a listener that's not associated with this proxy.");
+            }
+
+            listener.type = type;
+            listener.listener = itsListener;
+            listener.useCapture = useCapture;
+
+            return listener;
         }
     },
 

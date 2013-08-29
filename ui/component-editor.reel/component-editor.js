@@ -154,14 +154,17 @@ exports.ComponentEditor = Editor.specialize({
         }
     },
 
+    //TODO make it pass existing listeners so it can handle both edit and add events (like the binding one)
     handleAddListenerForObject: {
         value: function (evt) {
             var listenerModel = evt.detail.listenerModel,
+                existingListener = evt.detail.existingListener,
                 listenerJig,
                 overlay;
 
             listenerJig = this.templateObjects.listenerCreator;
             listenerJig.listenerModel = listenerModel;
+            listenerJig.existingListener = existingListener;
 
             overlay = this.templateObjects.eventTargetOverlay;
 //            overlay.anchor = evt.target.element; //TODO when anchoring works well inside this scrollview
