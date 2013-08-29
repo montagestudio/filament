@@ -194,9 +194,6 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         }
     },
 
-
-    //TODO handleEditListenerButtonAction
-
     handleRemoveListenerButtonAction: {
         value: function (evt) {
             evt.stop();

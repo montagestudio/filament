@@ -57,7 +57,6 @@ exports.ListenerJig = Montage.create(Component, /** @lends module:"./listener-ji
         }
     },
 
-    //TODO rename to defineListener to match binding? add suport for existing listeners
     handleDefineListenerButtonAction: {
         value: function (evt) {
             evt.stop();
@@ -97,15 +96,11 @@ exports.ListenerJig = Montage.create(Component, /** @lends module:"./listener-ji
                 useCapture = model.useCapture,
                 listenerEntry;
 
-            //TODO provide support for updating an listener entry
-            // listenerEntry = this.editingDocument.addOwnedObjectEventListener(proxy, type, listener, useCapture);
-
             if (this.existingListener) {
                 listenerEntry = this.editingDocument.updateOwnedObjectEventListener(proxy, this.existingListener, type, listener, useCapture);
             } else {
                 listenerEntry = this.editingDocument.defineOwnedObjectEventListener(proxy, type, listener, useCapture);
             }
-
 
             this.dispatchEventNamed("commit", true, false, {
                 listenerEntry: listenerEntry

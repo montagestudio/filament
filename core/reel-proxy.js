@@ -205,7 +205,6 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
-    /* TODO whats the differnece between this and addBinding ? */
     defineObjectBinding: {
         value: function (targetPath, oneway, sourcePath) {
             var binding = Object.create(null);
@@ -276,8 +275,8 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
 
 
     /**
-     * Add a a specified listener object to the proxy at a specific index
-     * in the listeners collection
+     * Add a specified listener object to the proxy at a specific index
+     * in the listeners collection, used for undoability not new listeners
      */
     addEventListener: {
         value: function (listener, insertionIndex) {
@@ -335,10 +334,6 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
-    /* 
-    TODO decide if i should provide the two define and add like in the binding... 
-    look at commit history to see if it was on purpose that they are both here for bindings
-    */ 
     defineObjectEventListener: {
         value: function (type, listener, useCapture) {
             var listenerModel = Object.create(null);
@@ -362,9 +357,9 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
      * property of the existing listener without affecting the others.
      *
      * @param {Object} listener The existing listener to update
-     * @param {string} type TODO
-     * @param {Object} itsListener TODO
-     * @param {string} useCapture TODO
+     * @param {string} type 
+     * @param {Object} itsListener 
+     * @param {string} useCapture 
      */
     updateObjectEventListener: {
         value: function (listener, type, itsListener, useCapture) {
