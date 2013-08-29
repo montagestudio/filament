@@ -315,25 +315,6 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
-    /**
-     * Remove the specific listener from the set of active listeners on this proxy
-     *
-     * @return {Object} an object with two keys index and removedListener
-     */
-    removeObjectEventListener: {
-        value: function (listener) {
-            var removedListener,
-                listenerIndex = this.listeners.indexOf(listener);
-
-            if (listenerIndex > -1) {
-                this.listeners.splice(listenerIndex, 1);
-                return {index: listenerIndex, removedListener: listener};
-            } else {
-                throw new Error("Cannot remove a listener that's not associated with this proxy");
-            }
-        }
-    },
-
     defineObjectEventListener: {
         value: function (type, listener, useCapture) {
             var listenerModel = Object.create(null);
@@ -380,6 +361,25 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
+    /**
+     * Remove the specific listener from the set of active listeners on this proxy
+     *
+     * @return {Object} an object with two keys index and removedListener
+     */
+    removeObjectEventListener: {
+        value: function (listener) {
+            var removedListener,
+                listenerIndex = this.listeners.indexOf(listener);
+
+            if (listenerIndex > -1) {
+                this.listeners.splice(listenerIndex, 1);
+                return {index: listenerIndex, removedListener: listener};
+            } else {
+                throw new Error("Cannot remove a listener that's not associated with this proxy");
+            }
+        }
+    },
+
     addObjectEventListener: {
         value: function (type, listener, useCapture) {
             var listenerModel = Object.create(null);
@@ -395,6 +395,5 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             return listenerModel;
         }
     }
-
 
 });

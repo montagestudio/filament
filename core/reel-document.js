@@ -1037,21 +1037,6 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    defineOwnedObjectEventListener: {
-        value: function (proxy, type, listener, useCapture) {
-            var listenerEntry = proxy.addObjectEventListener(type, listener, useCapture);
-            if (listenerEntry) {
-                // if (this._editingController) {
-                //     // TODO register the listener on the stage, make sure we can remove it later
-                // }
-
-                this.undoManager.register("Define Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listenerEntry]));
-            }
-
-            return listenerEntry;
-        }
-    },
-
     _addOwnedObjectBinding: {
         value: function (proxy, binding, insertionIndex) {
 
@@ -1108,30 +1093,6 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    removeOwnedObjectEventListener: {
-        value: function (proxy, listener) {
-            var removedListener,
-                removedIndex,
-                removedInfo;
-
-            removedInfo = proxy.removeObjectEventListener(listener);
-            removedListener = removedInfo.removedListener;
-            removedIndex = removedInfo.index;
-
-            if (removedListener) {
-                // if (this._editingController) {
-                //     // TODO remove the listener on the stage
-                // }
-
-                this.undoManager.register("Remove Listener", Promise.resolve([
-                    this._addOwnedObjectEventListener, this, proxy, removedListener, removedIndex
-                ]));
-            }
-
-            return removedListener;
-        }
-    },
-
     updateOwnedObjectBinding: {
         value: function (proxy, existingBinding, targetPath, oneway, sourcePath) {
             var originalTargetPath = existingBinding.targetPath,
@@ -1160,6 +1121,21 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    defineOwnedObjectEventListener: {
+        value: function (proxy, type, listener, useCapture) {
+            var listenerEntry = proxy.addObjectEventListener(type, listener, useCapture);
+            if (listenerEntry) {
+                // if (this._editingController) {
+                //     // TODO register the listener on the stage, make sure we can remove it later
+                // }
+
+                this.undoManager.register("Define Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listenerEntry]));
+            }
+
+            return listenerEntry;
+        }
+    },
+
     updateOwnedObjectEventListener: {
         value: function (proxy, existingListener, type, listener, useCapture) {
             var originalType = existingListener.type,
@@ -1174,6 +1150,30 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return updatedListener;
+        }
+    },
+
+    removeOwnedObjectEventListener: {
+        value: function (proxy, listener) {
+            var removedListener,
+                removedIndex,
+                removedInfo;
+
+            removedInfo = proxy.removeObjectEventListener(listener);
+            removedListener = removedInfo.removedListener;
+            removedIndex = removedInfo.index;
+
+            if (removedListener) {
+                // if (this._editingController) {
+                //     // TODO remove the listener on the stage
+                // }
+
+                this.undoManager.register("Remove Listener", Promise.resolve([
+                    this._addOwnedObjectEventListener, this, proxy, removedListener, removedIndex
+                ]));
+            }
+
+            return removedListener;
         }
     },
 
