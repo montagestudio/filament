@@ -16,6 +16,10 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
         value: null
     },
 
+    isEditingComment: {
+        value: false
+    },
+
     constructor: {
         value: function TemplateObjectHeader() {
             this.super();
@@ -44,42 +48,37 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
 
     handleEditCommentButtonAction: {
         value: function () {
-            if(!this.templateObject.comment){
-                this.templateObject.comment = this.templateObject._comment;
-            }
+            var commentField = this.templateObjects.commentField;
+            commentField.value = this.templateObject.getEditorMetadata('comment');
+            this.isEditingComment = true;
         }
     },
 
     handleSaveCommentButtonAction: {
         value: function () {
-            this.setUndoableComment(this.templateObject, this.templateObject.comment);
+            this._commitComment(this.templateObjects.commentField.value);
         }
     },
 
     handleDiscardCommentButtonAction: {
         value: function () {
-            var discardedTyping = this.templateObject.comment;
-            var lastSavedPoint = this.templateObject._comment;
-            this.setUndoableComment(this.templateObject, discardedTyping);
-            this.setUndoableComment(this.templateObject, lastSavedPoint);
+            this._discardComment();
         }
     },
 
-    setUndoableComment: {
-        value: function (proxy, value) {
+    _commitComment: {
+        value: function (commentValue) {
+            var proxy = this.templateObject,
+                editingDocument = proxy._editingDocument;
 
-            var undoManager = this.templateObject.editingDocument.undoManager,
-                undoneValue = proxy._comment;
+            editingDocument.setOwnedObjectEditorMetadata(proxy, "comment", commentValue);
+            this.isEditingComment = false;
+        }
+    },
 
-            if (value === undoneValue) {
-                // The values are identical no need to do anything.
-                return;
-            }
-
-            this.templateObject.comment = value;
-            proxy._comment = value;
-            undoManager.register("Set Comment", Promise.resolve([this.setUndoableComment, this, proxy, undoneValue]));
-        
+    _discardComment: {
+        value: function () {
+            this.isEditingComment = false;
         }
     }
 

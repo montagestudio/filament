@@ -1157,6 +1157,18 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    setOwnedObjectEditorMetadata: {
+        value: function (proxy, property, value) {
+            var previousValue =  proxy.getEditorMetadata(property);
+            proxy.setEditorMetadata(property, value);
+
+            //TODO improve humanization of the undo name
+            this.undoManager.register("Set " + property, Promise.resolve([
+                this.setOwnedObjectEditorMetadata, this, proxy, property, previousValue
+            ]));
+        }
+    },
+
     setOwnedObjectElement: {
         value: function (proxy, montageId) {
             var element;

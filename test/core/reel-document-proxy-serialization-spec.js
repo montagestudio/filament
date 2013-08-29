@@ -59,14 +59,14 @@ describe("core/reel-document-proxy-serialization-spec", function () {
         it("should deserialize the builder comment", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxy = reelDocument.editingProxyMap.owner;
-                expect(proxy._comment).toEqual("This comment should be deserializable.");
+                expect(proxy.editorMetadata.get('comment')).toEqual("This comment should be deserializable.");
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
         it("should serialize the comment in the builder serialization unit", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxy = reelDocument.editingProxyMap.owner;
-                proxy._comment = "Updated the comment";
+                reelDocument.setOwnedObjectEditorMetadata(proxy, "comment", "Updated the comment");
                 var serialization = reelDocument.serializationForProxy(proxy);
                 expect(serialization._dev.comment).toEqual("Updated the comment");
             }).timeout(WAITSFOR_TIMEOUT);
@@ -75,7 +75,7 @@ describe("core/reel-document-proxy-serialization-spec", function () {
         it("should not serialize a builder serialization unit if comment is empty", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxy = reelDocument.editingProxyMap.owner;
-                proxy._comment = "";
+                reelDocument.setOwnedObjectEditorMetadata(proxy, "comment", "");
                 var serialization = reelDocument.serializationForProxy(proxy);
                 expect(serialization._dev).toBeUndefined();
             }).timeout(WAITSFOR_TIMEOUT);

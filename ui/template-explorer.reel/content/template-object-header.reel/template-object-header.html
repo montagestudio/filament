@@ -62,7 +62,7 @@
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "@editCommentButton.pressed"}
+                "condition": {"<-": "@owner.isEditingComment"}
             }
         },
 
@@ -92,13 +92,13 @@
             ]
         },
 
-        "templateObjectComment": {
+        "commentField": {
             "prototype": "matte/ui/textarea.reel",
             "properties": {
-                "element": {"#": "templateObjectComment"}
+                "element": {"#": "commentField"}
             },
             "bindings": {
-                "value": {"<->": "@owner.templateObject.comment"}
+                "value": {"<-": "@owner.templateObject.editorMetadata.get('comment')"}
             }
         }
     }
@@ -120,9 +120,9 @@
         </section>
 
         <div data-montage-id="commentCondition">
-            <textarea data-montage-id="templateObjectComment" class="TemplateObjectHeader-comment" placeholder="Add a comment.."></textarea>
+            <textarea data-montage-id="commentField" class="TemplateObjectHeader-comment" placeholder="Add a comment.."></textarea>
             <footer class="TemplateObjectHeader-commentFooter">
-                <button data-montage-id="discardCommentButton" class="TemplateObjectHeader-editButton Button Toolbar-button">Discard</button>
+                <button data-montage-id="discardCommentButton" class="TemplateObjectHeader-editButton Button Toolbar-button">Cancel</button>
                 <button data-montage-id="saveCommentButton" class="TemplateObjectHeader-editButton Button--action Toolbar-button">Save</button>
             </footer>
         </div>

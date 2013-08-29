@@ -92,6 +92,26 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
+    editorMetadata: {
+        value: null
+    },
+
+    setEditorMetadata: {
+        value: function (property, value) {
+            if ("comment" === property && !value) {
+                this.editorMetadata.delete(property);
+            } else {
+                this.editorMetadata.set(property, value);
+            }
+        }
+    },
+
+    getEditorMetadata: {
+        value: function (property) {
+            return this.editorMetadata.get(property);
+        }
+    },
+
     /**
      * Initialize an ReelProxy suitable for editing
      *
@@ -163,9 +183,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             }
             this._listeners = listeners;
 
-            if (serialization[BUILDER_UNIT_LABEL]) {
-                this._comment = serialization[BUILDER_UNIT_LABEL].comment;
-            }
+            this.editorMetadata = new Map(serialization[BUILDER_UNIT_LABEL]);
         }
     },
 

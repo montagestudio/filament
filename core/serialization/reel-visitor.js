@@ -37,12 +37,21 @@ exports.ReelVisitor = ProxyVisitor.specialize({
         value: function (malker, proxyObject, builderObject) {
             this.super(malker, proxyObject, builderObject);
 
-            // TODO add support for other builder properties than just comment
-            if (proxyObject._comment) {
-                builderObject.setProperty(BUILDER_UNIT_LABEL, {"comment": proxyObject._comment});
+            var metadataProperties = proxyObject.editorMetadata;
+
+            if (metadataProperties.keys().length) {
+                var metadataSerializationObject = {};
+
+                metadataProperties.forEach(function (value, key) {
+                    metadataSerializationObject[key] = value;
+                });
+
+                builderObject.setProperty(BUILDER_UNIT_LABEL, metadataSerializationObject);
             } else {
                 builderObject.clearProperty(BUILDER_UNIT_LABEL);
             }
+
+
         }
     },
 
