@@ -48,9 +48,7 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
 
     handleEditCommentButtonAction: {
         value: function () {
-            var commentField = this.templateObjects.commentField;
-            commentField.value = this.templateObject.getEditorMetadata('comment');
-            this.isEditingComment = true;
+            this.isEditingComment = !this.isEditingComment;
         }
     },
 
@@ -78,6 +76,8 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
 
     _discardComment: {
         value: function () {
+            var commentField = this.templateObjects.commentField;
+            commentField.value = this.templateObject.getEditorMetadata('comment');
             this.isEditingComment = false;
         }
     }
