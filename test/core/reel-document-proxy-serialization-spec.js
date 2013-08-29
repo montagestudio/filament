@@ -17,7 +17,7 @@ describe("core/reel-document-proxy-serialization-spec", function () {
                 "properties": {
                     "element": {"#": "ownerElement"}
                 },
-                "lumieres" : {
+                "_dev" : {
                     "comment" : "This comment should be deserializable."
                 }
             },
@@ -54,30 +54,30 @@ describe("core/reel-document-proxy-serialization-spec", function () {
 
     });
 
-    describe("serialization of lumieres comment", function () {
+    describe("serialization of builder comment", function () {
 
-        it("should deserialize the lumieres comment", function () {
+        it("should deserialize the builder comment", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxy = reelDocument.editingProxyMap.owner;
                 expect(proxy._comment).toEqual("This comment should be deserializable.");
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
-        it("should serialize the comment in the lumieres property", function () {
+        it("should serialize the comment in the builder serialization unit", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxy = reelDocument.editingProxyMap.owner;
                 proxy._comment = "Updated the comment";
                 var serialization = reelDocument.serializationForProxy(proxy);
-                expect(serialization.lumieres.comment).toEqual("Updated the comment");
+                expect(serialization._dev.comment).toEqual("Updated the comment");
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
-        it("should not serialize lumieres property if comment is empty", function () {
+        it("should not serialize a builder serialization unit if comment is empty", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxy = reelDocument.editingProxyMap.owner;
                 proxy._comment = "";
                 var serialization = reelDocument.serializationForProxy(proxy);
-                expect(serialization.lumieres).toBeUndefined();
+                expect(serialization._dev).toBeUndefined();
             }).timeout(WAITSFOR_TIMEOUT);
         });
 

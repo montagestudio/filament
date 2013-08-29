@@ -1,4 +1,5 @@
 var ProxyVisitor = require("palette/core/serialization/proxy-visitor").ProxyVisitor;
+var BUILDER_UNIT_LABEL = "_dev";
 
 exports.ReelVisitor = ProxyVisitor.specialize({
 
@@ -7,6 +8,7 @@ exports.ReelVisitor = ProxyVisitor.specialize({
             this.super();
         }
     },
+
 
     visitNodeProxy: {
         value: function (malker, nodeProxy, name) {
@@ -35,11 +37,11 @@ exports.ReelVisitor = ProxyVisitor.specialize({
         value: function (malker, proxyObject, builderObject) {
             this.super(malker, proxyObject, builderObject);
 
-            // TODO add support for other lumieres properties than just comment
+            // TODO add support for other builder properties than just comment
             if (proxyObject._comment) {
-                builderObject.setProperty("lumieres", {"comment": proxyObject._comment});
+                builderObject.setProperty(BUILDER_UNIT_LABEL, {"comment": proxyObject._comment});
             } else {
-                builderObject.clearProperty("lumieres");
+                builderObject.clearProperty(BUILDER_UNIT_LABEL);
             }
         }
     },

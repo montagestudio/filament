@@ -2,7 +2,8 @@ var Montage = require("montage").Montage,
     Bindings = require("montage/core/bindings").Bindings,
     EditingProxy = require("palette/core/editing-proxy").EditingProxy,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
-    Map = require("montage/collections/map");
+    Map = require("montage/collections/map"),
+    BUILDER_UNIT_LABEL = "_dev";
 
 /**
  * The ReelProxy is an EditingProxy for objects that can be declared in a component's template.
@@ -162,10 +163,8 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             }
             this._listeners = listeners;
 
-            if (serialization.lumieres) {
-                this._comment = serialization.lumieres.comment;
-                this.x = serialization.lumieres.x;
-                this.y = serialization.lumieres.y;
+            if (serialization[BUILDER_UNIT_LABEL]) {
+                this._comment = serialization[BUILDER_UNIT_LABEL].comment;
             }
         }
     },
