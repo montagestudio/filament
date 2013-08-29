@@ -42,6 +42,19 @@
             }
         },
 
+        "editCommentButton": {
+            "prototype": "matte/ui/toggle-button.reel",
+            "properties": {
+                "element": {"#": "editCommentButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
         "commentCondition": {
             "prototype": "montage/ui/condition.reel",
             "properties": {
@@ -49,17 +62,43 @@
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "@owner.templateObject.comment"}
+                "condition": {"<-": "@owner.isEditingComment"}
             }
         },
 
-        "templateObjectComment": {
-            "prototype": "montage/ui/text.reel",
+        "saveCommentButton": {
+            "prototype": "matte/ui/button.reel",
             "properties": {
-                "element": {"#": "templateObjectComment"}
+                "element": {"#": "saveCommentButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "discardCommentButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "discardCommentButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "commentField": {
+            "prototype": "matte/ui/textarea.reel",
+            "properties": {
+                "element": {"#": "commentField"}
             },
             "bindings": {
-                "value": {"<-": "@owner.templateObject.comment"}
+                "value": {"<-": "@owner.templateObject.editorMetadata.get('comment')"}
             }
         }
     }
@@ -77,10 +116,15 @@
                 </div>
             </div>
             <section data-param="toolbar"></section>
+            <button data-montage-id="editCommentButton" class="TemplateObjectHeader-commentButton"></button>
         </section>
 
         <div data-montage-id="commentCondition">
-            <p data-montage-id="templateObjectComment" class="TemplateObjectHeader-comment"></p>
+            <textarea data-montage-id="commentField" class="TemplateObjectHeader-comment" placeholder="Add a comment.."></textarea>
+            <footer class="TemplateObjectHeader-commentFooter">
+                <button data-montage-id="discardCommentButton" class="TemplateObjectHeader-editButton Button Toolbar-button">Cancel</button>
+                <button data-montage-id="saveCommentButton" class="TemplateObjectHeader-editButton Button--action Toolbar-button">Save</button>
+            </footer>
         </div>
 
     </header>

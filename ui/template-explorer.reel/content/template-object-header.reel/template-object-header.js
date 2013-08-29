@@ -3,6 +3,7 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
+    Promise = require("montage/core/promise").Promise,
     MimeTypes = require("core/mime-types");
 
 /**
@@ -13,6 +14,10 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
 
     _referenceProxyElement: {
         value: null
+    },
+
+    isEditingComment: {
+        value: false
     },
 
     constructor: {
@@ -38,6 +43,42 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
                 transfer.setData(MimeTypes.SERIALIZATION_OBJECT_LABEL, this.templateObject.label);
                 transfer.setData("text/plain", "@" + this.templateObject.label);
             }
+        }
+    },
+
+    handleEditCommentButtonAction: {
+        value: function () {
+            var commentField = this.templateObjects.commentField;
+            commentField.value = this.templateObject.getEditorMetadata('comment');
+            this.isEditingComment = true;
+        }
+    },
+
+    handleSaveCommentButtonAction: {
+        value: function () {
+            this._commitComment(this.templateObjects.commentField.value);
+        }
+    },
+
+    handleDiscardCommentButtonAction: {
+        value: function () {
+            this._discardComment();
+        }
+    },
+
+    _commitComment: {
+        value: function (commentValue) {
+            var proxy = this.templateObject,
+                editingDocument = proxy._editingDocument;
+
+            editingDocument.setOwnedObjectEditorMetadata(proxy, "comment", commentValue);
+            this.isEditingComment = false;
+        }
+    },
+
+    _discardComment: {
+        value: function () {
+            this.isEditingComment = false;
         }
     }
 

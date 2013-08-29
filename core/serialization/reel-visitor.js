@@ -1,4 +1,5 @@
 var ProxyVisitor = require("palette/core/serialization/proxy-visitor").ProxyVisitor;
+var BUILDER_UNIT_LABEL = "_dev";
 
 exports.ReelVisitor = ProxyVisitor.specialize({
 
@@ -7,6 +8,7 @@ exports.ReelVisitor = ProxyVisitor.specialize({
             this.super();
         }
     },
+
 
     visitNodeProxy: {
         value: function (malker, nodeProxy, name) {
@@ -28,6 +30,28 @@ exports.ReelVisitor = ProxyVisitor.specialize({
             if (value != null) {
                 malker.visit(value, unitName);
             }
+        }
+    },
+
+    serializeProxyObject: {
+        value: function (malker, proxyObject, builderObject) {
+            this.super(malker, proxyObject, builderObject);
+
+            var metadataProperties = proxyObject.editorMetadata;
+
+            if (metadataProperties.keys().length) {
+                var metadataSerializationObject = {};
+
+                metadataProperties.forEach(function (value, key) {
+                    metadataSerializationObject[key] = value;
+                });
+
+                builderObject.setProperty(BUILDER_UNIT_LABEL, metadataSerializationObject);
+            } else {
+                builderObject.clearProperty(BUILDER_UNIT_LABEL);
+            }
+
+
         }
     },
 

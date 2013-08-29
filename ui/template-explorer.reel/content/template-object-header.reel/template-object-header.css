@@ -62,23 +62,53 @@
     white-space: nowrap;
 }
 
-.TemplateObjectHeader-commentButton {
+
+/* Comments ------------------------------ */
+
+.TemplateObjectHeader-commentButton.matte-Button {
     display: block;
-    -webkit-align-self: flex-start;
-    margin-left: 10px;
-    width: 14px;
-    height: 14px;
-    background: url(/assets/icons/comment.png) no-repeat center;
+    margin: 0 7px;
+    border-color: transparent;
+    background: transparent url(/assets/icons/comment.png) no-repeat center;
     background-size: 14px;
+}
+
+.TemplateObjectHeader-commentButton.matte-Button:hover {
+    background-color: transparent;
+}
+
+.TemplateObjectHeader-commentButton.pressed {
+    background-color: hsl(42, 83%, 95%);
+    border-color: hsl(0,0%,80%);
 }
 
 .TemplateObjectHeader-comment {
     display: block;
+    width: 100%;
+    min-height: 62px;
     margin: 0;
     padding: 4px 6px;
+    border-radius: 0;
+    border: none;
+    border-top: 1px solid hsla(0,0%,0%,.1);
+    border-bottom: 1px solid hsla(0,0%,0%,.1);
     font-size: 11px;
-    font-style: italic;
     text-shadow: 0 1px 0 hsla(0, 0%, 100%, .3);
     color: hsl(0, 0%, 30%);
     background: hsl(42, 83%, 95%);
+}
+
+.TemplateObjectHeader-comment:focus {
+    border-color: hsla(0,0%,0%,.2);
+    background: hsl(42, 83%, 98%);
+}
+
+.TemplateObjectHeader-commentFooter {
+    padding: 8px;
+    text-align: right;
+    background: hsl(42, 83%, 95%);
+}
+
+.TemplateObjectHeader-commentFooter .Toolbar-button {
+    margin: 0;
 }
