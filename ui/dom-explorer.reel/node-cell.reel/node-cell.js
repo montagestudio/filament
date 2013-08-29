@@ -38,6 +38,10 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
+    isHighlighted : {
+        value: false
+    },
+
     enterDocument: {
         value: function (firstTime) {
             if (!firstTime) { return; }

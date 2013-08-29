@@ -229,12 +229,13 @@ exports.ComponentEditor = Editor.specialize({
                 xpath = detail.xpath,
                 stageElement = detail.element,
                 firstIterationXPath = detail.firstIterationXPath,
-                documentEditor = this.currentDocument;
+                documentEditor = this.currentDocument,
+                tree = this.templateObjects.domExplorer.nodeTreeController;
 
             // de-highlight all DOM Elements
-            for (var i = 0; i < documentEditor.templateNodes.length; i++) {
-                documentEditor.templateNodes[i].isHighlighted = false;
-            }
+            tree.preOrderWalk(function(node) {
+                node.isHighlighted = false;
+            });
 
             // Ignore body
             if (xpath === "/html/body") {
@@ -253,8 +254,9 @@ exports.ComponentEditor = Editor.specialize({
                     XPathResult.FIRST_ORDERED_NODE_TYPE,
                     null
                 ).singleNodeValue;
-            var nodeProxy = documentEditor.nodeProxyForNode(element);
-            nodeProxy.isHighlighted = highlight;
+            var nodeProxy = documentEditor.nodeProxyForNode(element),
+                node = tree.findNodeByContent(nodeProxy);
+            node.isHighlighted = highlight;
 
             // highlight the stageElement to simulate a hover
             documentEditor.clearHighlightedElements();
