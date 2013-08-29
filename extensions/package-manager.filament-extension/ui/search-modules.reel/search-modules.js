@@ -170,6 +170,14 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
         }
     },
 
+    clearSearch: {
+        value: function () {
+            this.searchResults = null;
+            this.request = null;
+            this.isSearching = false;
+        }
+    },
+
     /**
      * Clears the results list and
      * @function {boolean}
@@ -177,9 +185,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
      */
     handleClearAction: {
         value: function () {
-            this.searchResults = null;
-            this.request = null;
-            this.isSearching = false;
+            this.clearSearch();
         }
     },
 
@@ -272,7 +278,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
      */
     _terminateSearch: {
         value: function (results) {
-            this.searchResults = results;
+            this.searchResults = results || null;
             this.isSearching = false;
         }
     }

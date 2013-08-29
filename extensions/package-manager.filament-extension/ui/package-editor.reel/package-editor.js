@@ -2,6 +2,7 @@ var Montage = require("montage").Montage,
     Editor = require("palette/ui/editor.reel").Editor,
     Promise = require("montage/core/promise").Promise,
     ErrorsCommands = require('../../core/package-tools').Errors.commands,
+    application = require("montage/core/application").application,
     INSTALL_DEPENDENCY_ACTION = 0,
     REMOVE_DEPENDENCY_ACTION = 1;
 
@@ -13,10 +14,29 @@ exports.PackageEditor = Montage.create(Editor, {
         }
     },
 
-    didDraw: {
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this.addOwnPropertyChangeListener("selectedDependency", this);
+                this.addOwnPropertyChangeListener("reloadingList", this, true);
+                application.addEventListener("didOpenDocument", this);
+            }
+        }
+    },
+
+    closeDocument: {
         value: function () {
-            this.addOwnPropertyChangeListener("selectedDependency", this);
-            this.addOwnPropertyChangeListener("reloadingList", this);
+            this._clearSelection();
+            this.templateObjects.searchModules.clearSearch();
+        }
+    },
+
+    handleDidOpenDocument: {
+        value: function (evt) {
+            var openedDocument = evt.detail.document;
+            if (this.currentDocument === openedDocument) {
+                this._updateSelection();
+            }
         }
     },
 
@@ -44,6 +64,10 @@ exports.PackageEditor = Montage.create(Editor, {
      * @default null
      */
     selectedDependency: {
+        value: null
+    },
+
+    previousSelectedDependency: {
         value: null
     },
 
@@ -96,15 +120,24 @@ exports.PackageEditor = Montage.create(Editor, {
         value: false
     },
 
-    /**
-     * Cleans the information part when the dependencies list change.
-     * @function
-     * @param {boolean} changed
-     */
-    handleReloadingListChange: {
-        value: function (changed) {
-            if (changed) {
-                this._clearSelection();
+    _updateSelection: {
+        value: function () {
+            if (this.dependencyDisplayed && this.currentDocument) {
+                this.previousSelectedDependency = this.currentDocument.findDependency(this.dependencyDisplayed.name, null, false);
+
+                if (!this.previousSelectedDependency) {
+                    this._clearSelection();
+                } else {
+                    this.templateObjects.packageDependencies.updateSelection(this.previousSelectedDependency);
+                }
+            }
+        }
+    },
+
+    handleReloadingListWillChange: {
+        value: function () {
+            if (this.reloadingList) {
+                this._updateSelection();
             }
         }
     },
@@ -204,6 +237,7 @@ exports.PackageEditor = Montage.create(Editor, {
     _clearSelection: {
         value: function () {
             this.dependencyDisplayed = null;
+            this.previousSelectedDependency = null;
             this.selectedDependency = null;
         }
     },

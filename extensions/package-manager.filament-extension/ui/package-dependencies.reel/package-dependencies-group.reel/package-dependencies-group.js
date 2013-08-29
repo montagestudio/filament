@@ -54,9 +54,9 @@ exports.PackageDependenciesGroup = Component.specialize(/** @lends PackageDepend
     enterDocument: {
         value: function (firstTime) {
             if (firstTime) {
-                this.element.addEventListener("dragover", this, false);
-                this.element.addEventListener("dragleave", this, false);
-                this.element.addEventListener("drop", this, false);
+                this._element.addEventListener("dragleave", this, false);
+                this._element.addEventListener("dragover", this, false);
+                this._element.addEventListener("drop", this, false);
             }
         }
     },
@@ -74,7 +74,6 @@ exports.PackageDependenciesGroup = Component.specialize(/** @lends PackageDepend
     },
 
     handleDragover: {
-        enumerable: false,
         value: function (event) {
             var dataTransfer = event.dataTransfer,
                 availableTypes = dataTransfer.types;

@@ -18,18 +18,13 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
         }
     },
 
-    didDraw: {
-        value: function () {
-            this.addOwnPropertyChangeListener("selectedDependency", this, true);
-            this.addOwnPropertyChangeListener("selectedDependency", this, false);
-        }
-    },
-
     enterDocument: {
         value: function (firstTime) {
             if (firstTime) {
                 this.element.addEventListener("dragstart", this, false);
                 this.element.addEventListener("dragend", this, false);
+                this.addOwnPropertyChangeListener("selectedDependency", this, true);
+                this.addOwnPropertyChangeListener("selectedDependency", this, false);
             }
         }
     },
@@ -136,6 +131,23 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
     devDependencyCell: {
         set: function (cell) {
             this._manualChange(cell);
+        }
+    },
+
+    updateSelection: {
+        value: function (dependency) {
+            if (dependency && dependency.hasOwnProperty("type")) {
+                var templateObjects = this.templateObjects,
+                    type = dependency.type;
+
+                if (type === DependencyNames.dependencies) {
+                    templateObjects.packageDependenciesGroup.contentController.select(dependency);
+                } else if (type === DependencyNames.optionalDependencies) {
+                    templateObjects.packageOptionalDependenciesGroup.contentController.select(dependency);
+                } else if (type === DependencyNames.devDependencies) {
+                    templateObjects.packageDevDependenciesGroup.contentController.select(dependency);
+                }
+            }
         }
     },
 
