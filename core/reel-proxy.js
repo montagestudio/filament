@@ -274,6 +274,30 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
+
+    /**
+     * Add a a specified listener object to the proxy at a specific index
+     * in the listeners collection
+     */
+    addEventListener: {
+        value: function (listener, insertionIndex) {
+            var listenerIndex = this.listeners.indexOf(listener);
+
+            if (-1 === listenerIndex) {
+                if (isNaN(insertionIndex)) {
+                    this.listeners.push(listener);
+                } else {
+                    this.listeners.splice(insertionIndex, 0, listener);
+                }
+            } else {
+                //TODO guard against adding exact same listener to multiple proxies
+                throw new Error("Cannot add the same listener to a proxy more than once");
+            }
+
+            return listener;
+        }
+    },
+
     /**
      * Remove the specific binding from the set of active bindings on this proxy
      *
@@ -288,6 +312,25 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
                 return {index: bindingIndex, removedBinding: binding};
             } else {
                 throw new Error("Cannot cancel a binding that's not associated with this proxy");
+            }
+        }
+    },
+
+    /**
+     * Remove the specific listener from the set of active listeners on this proxy
+     *
+     * @return {Object} an object with two keys index and removedListener
+     */
+    removeObjectEventListener: {
+        value: function (listener) {
+            var removedListener,
+                listenerIndex = this.listeners.indexOf(listener);
+
+            if (listenerIndex > -1) {
+                this.listeners.splice(listenerIndex, 1);
+                return {index: listenerIndex, removedListener: listener};
+            } else {
+                throw new Error("Cannot remove a listener that's not associated with this proxy");
             }
         }
     },
@@ -356,20 +399,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
 
             return listenerModel;
         }
-    },
-
-    removeObjectEventListener: {
-        value: function (listener) {
-            var removedListener,
-                listenerIndex = this.listeners.indexOf(listener);
-
-            if (listenerIndex > -1) {
-                this.listeners.splice(listenerIndex, 1);
-                removedListener = listener;
-            }
-
-            return removedListener;
-        }
     }
+
 
 });

@@ -1055,7 +1055,6 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    /* TODO whats the diference between this _addOwnedObjectBinding and defineOwnedObjectBinding*/
     _addOwnedObjectBinding: {
         value: function (proxy, binding, insertionIndex) {
 
@@ -1066,6 +1065,20 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return addedBinding;
+
+        }
+    },
+
+    _addOwnedObjectEventListener: {
+        value: function (proxy, listener, insertionIndex) {
+
+            var addedListener = proxy.addEventListener(listener, insertionIndex);
+
+            if (addedListener) {
+                this.undoManager.register("Define Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listener]));
+            }
+
+            return addedListener;
 
         }
     },
@@ -1095,6 +1108,31 @@ exports.ReelDocument = EditingDocument.specialize({
             this._buildSerializationObjects();
 
             return removedBinding;
+        }
+    },
+
+    removeOwnedObjectEventListener: {
+        value: function (proxy, listener) {
+            var removedListener,
+                removedIndex,
+                removedInfo;
+            
+            removedInfo = proxy.removeObjectEventListener(listener);
+            removedListener = removedInfo.removedListener;
+            removedIndex = removedInfo.index;
+
+
+            if (removedListener) {
+                // if (this._editingController) {
+                //     // TODO remove the listener on the stage
+                // }
+
+                this.undoManager.register("Remove Listener", Promise.resolve([
+                    this._addOwnedObjectEventListener, this, proxy, removedListener, removedIndex
+                ]));
+            }
+
+            return removedListener;
         }
     },
 
@@ -1155,24 +1193,6 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return listenerEntry;
-        }
-    },
-
-    removeOwnedObjectEventListener: {
-        value: function (proxy, listener) {
-            var removedListener = proxy.removeObjectEventListener(listener);
-
-            if (removedListener) {
-                // if (this._editingController) {
-                //     // TODO remove the listener on the stage
-                // }
-
-                this.undoManager.register("Remove Listener", Promise.resolve([
-                    this.addOwnedObjectEventListener, this, proxy, removedListener.type, removedListener.listener, removedListener.useCapture
-                ]));
-            }
-
-            return removedListener;
         }
     },
 
