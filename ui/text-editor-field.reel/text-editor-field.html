@@ -52,8 +52,15 @@
             "properties": {
                 "keys": "escape",
                 "identifier": "cancel",
-                "component": {"@": "owner"}
-            }
+                "component": {"@": "owner"},
+                "element": {"#": "inputText"}
+            },
+            "listeners": [
+                {
+                    "type": "keyPress",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>

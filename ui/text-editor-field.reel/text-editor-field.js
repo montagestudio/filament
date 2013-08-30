@@ -74,13 +74,13 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
     },
 
     /**
-     * Handler the escape key
+     * Handle the escape key
      * @private
      */
-    handleKeyPress: {
+    handleInputTextKeyPress: {
         enumerable: false,
         value: function (evt) {
-            if (this.isEditing) {
+            if (evt.identifier === "cancel" && this.isEditing) {
                 this._inputValue = null;
                 this.isEditing = false;
             }
