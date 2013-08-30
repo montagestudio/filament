@@ -16,7 +16,7 @@ var templateWithSerializationAndBodyContent = function (serializationObject, htm
     return Template.create().initWithDocument(doc);
 };
 
-describe("core/reel-document-headless-editing-spec", function () {
+describe("core/reel-document-template-editing-spec", function () {
 
     var reelDocumentPromise;
 
@@ -646,8 +646,20 @@ describe("core/reel-document-headless-editing-spec", function () {
                 var element = reelDocument.htmlDocument.getElementById("foo");
                 var nodeProxy = reelDocument.nodeProxyForNode(element);
 
-                reelDocument.setNodeProxyMontageId(nodeProxy, "newFoo");
+                var ok = reelDocument.setNodeProxyMontageId(nodeProxy, "newFoo");
+                expect(ok).toBe(true);
                 expect(element.getAttribute("data-montage-id")).toBe("newFoo");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should not change the data-montage-id attribute if it's a duplicate", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("removeMe");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                var ok = reelDocument.setNodeProxyMontageId(nodeProxy, "foo");
+                expect(ok).toBe(false);
+                expect(element.getAttribute("data-montage-id")).not.toBe("foo");
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
