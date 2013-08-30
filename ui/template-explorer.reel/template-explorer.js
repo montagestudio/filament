@@ -214,14 +214,21 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             }
 
             //TODO do something sane if multiple objects are selected
-            var selectedObject = selectedObjects[0];
-            var iterations = this.templateObjects.objectList.iterations;
-            var iterationIndex = iterations.map(function(iteration) {
-                return iteration.object;
-            }).indexOf(selectedObject);
+            var selectedObject = selectedObjects[0],
+                iterations = this.templateObjects.objectList.iterations,
+                iterationCount,
+                iteration,
+                i,
+                selectedIteration;
 
-            if (iterationIndex > -1) {
-                this._scrollToElement = iterations[iterationIndex].firstElement;
+            for (i = 0, iterationCount = iterations.length; (!selectedIteration && (iteration = iterations[i])); i++) {
+                if (selectedObject === iteration.object) {
+                    selectedIteration = iteration;
+                }
+            }
+
+            if (selectedIteration) {
+                this._scrollToElement = selectedIteration.firstElement;
                 this.needsDraw = true;
             }
         }
@@ -234,8 +241,15 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     draw: {
         value: function () {
             if (this._scrollToElement) {
-                this._scrollToElement.scrollIntoViewIfNeeded();
-                this._scrollToElement = null;
+                // NOTE we need to wait for the drawing of the repetition to settle down
+                // before we scroll to the iteration element we determeind we need to go to
+                // this check for the selected class feel a little brittle but works well enough right now
+                if (this._scrollToElement.classList.contains('selected')) {
+                    this._scrollToElement.scrollIntoViewIfNeeded();
+                    this._scrollToElement = null;
+                } else {
+                    this.needsDraw = true;
+                }
             }
         }
     }
