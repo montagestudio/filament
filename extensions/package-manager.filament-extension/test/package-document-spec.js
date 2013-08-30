@@ -1,5 +1,5 @@
 var PackageDocument = require("../../../extensions/package-manager.filament-extension/core/package-document").PackageDocument,
-    DependencyNames = require("../../../extensions/package-manager.filament-extension/core/package-tools").DependencyNames;
+    DependencyNames = require("../../../extensions/package-manager.filament-extension/core/package-tools").DependencyNames,
     Promise = require("montage/core/promise").Promise;
 
 describe("package document", function () {
@@ -154,7 +154,7 @@ describe("package document", function () {
         packageDocument.findDependency('montage', DependencyNames.dependencies, function (index, element) {
             expect(index).toBeGreaterThan(-1);
             expect(element.name).toEqual('montage');
-        })
+        });
     });
 
     it('Should be able to reset any dependency types.', function () {

@@ -4,6 +4,7 @@
  */
 var Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
+    MIME_TYPES = require("../../core/mime-types"),
     DependencyNames = require('../../core/package-tools').DependencyNames;
 
 /**
@@ -196,8 +197,8 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
             var dataTransfer = event.dataTransfer,
                 availableTypes = dataTransfer.types;
 
-            if (availableTypes && availableTypes.has("text/plain")) {
-                var type = dataTransfer.getData("text/plain");
+            if (availableTypes && availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_DEPENDENCY_TYPE)) {
+                var type = dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_DEPENDENCY_TYPE);
                 if (this._groupCanAcceptDrop(type, false)) {
                     this._groupDoesNoAcceptDrop = type;
                     this._forceDisplayGroup(true);

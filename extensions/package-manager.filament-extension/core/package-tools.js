@@ -128,8 +128,8 @@ exports.ToolsBox = Object.create(Object.prototype, {
      */
     getValidPerson: {
         value: function (person) {
-            if (person && typeof person === 'object' && person.hasOwnProperty('name')
-                && typeof person.name === 'string' && person.name.length > 0) {
+            if (person && typeof person === 'object' && person.hasOwnProperty('name') &&
+                typeof person.name === 'string' && person.name.length > 0) {
 
                 return {
                     name: person.name,
@@ -160,7 +160,8 @@ exports.Errors = {
                 dependencyNotFound: 2000,
                 versionNotFound: 2001,
                 requestInvalid: 2002,
-                wrongRequestFormat: 2003
+                wrongRequestFormat: 2003,
+                unknown: 2004
             }
         },
         view: {

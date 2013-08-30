@@ -205,26 +205,14 @@ exports.PackageEditor = Montage.create(Editor, {
                 dependency = dependency.name;
             }
 
-            this._installDependency(dependency, version, type);
-        }
-    },
-
-    /**
-     * Invokes the install dependency process.
-     * @function
-     * @param {Object} dependency, the dependency owns by the cell.
-     * @private
-     */
-    _installDependency: {
-        value: function (name, version, type) {
             var self = this,
-                promise = this.currentDocument.installDependency(name, version, type).then(function (data) {
+                promise = this.currentDocument.installDependency(dependency, version, type).then(function (data) {
                     if (data && typeof data === 'object' && data.hasOwnProperty('name')) {
                         self._dependenciesListChange(data.name, INSTALL_DEPENDENCY_ACTION);
                         return 'The dependency ' + data.name + ' has been installed.';
                     }
 
-                    throw new Error('An error has occurred while installing the dependency ' + name);
+                    throw new Error('An error has occurred while installing the dependency ' + dependency);
                 });
 
             self.dispatchEventNamed("asyncActivity", true, false, {
@@ -254,8 +242,8 @@ exports.PackageEditor = Montage.create(Editor, {
             if (dependencyName && action >= 0) {
                 this.templateObjects.searchModules.handleDependenciesListChange(dependencyName, action);
 
-                if (action === REMOVE_DEPENDENCY_ACTION && this.dependencyDisplayed
-                    && this.dependencyDisplayed.name === dependencyName) { // Need to clean the view part, if the dependency deleted is also the dependency displayed
+                if (action === REMOVE_DEPENDENCY_ACTION && this.dependencyDisplayed &&
+                    this.dependencyDisplayed.name === dependencyName) { // Need to clean the view part, if the dependency deleted is also the dependency displayed
                     this._clearSelection();
                 }
 

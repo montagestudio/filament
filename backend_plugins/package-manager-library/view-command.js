@@ -22,7 +22,7 @@ exports.viewCommand = Object.create(AbstractNpmCommand, {
             if (typeof request === 'string' && request.length > 0) {
                 request = request.trim();
             } else {
-                throw new PackageManagerError("Request invalid.", ERROR_REQUEST_INVALID);
+                throw new PackageManagerError("Request invalid", ERROR_REQUEST_INVALID);
             }
 
             if (Tools.isRequestValid(request)) {
@@ -34,7 +34,7 @@ exports.viewCommand = Object.create(AbstractNpmCommand, {
                 }
                 return this._invokeViewCommand(request);
             }
-            throw new PackageManagerError("Should respect the following format: name[@version].", ERROR_WRONG_FORMAT);
+            throw new PackageManagerError("Should respect the following format: name[@version]", ERROR_WRONG_FORMAT);
         }
     },
 
@@ -60,7 +60,7 @@ exports.viewCommand = Object.create(AbstractNpmCommand, {
             }, function (error) {
                 if (error && typeof error === 'object') {
                     if (error.hasOwnProperty('code') && error.code === 'E404') { // no results
-                        throw new PackageManagerError("Dependency not found.", ERROR_NOT_FOUND);
+                        throw new PackageManagerError("Dependency not found", ERROR_NOT_FOUND);
                     }
                 } else {
                     throw error;
@@ -79,16 +79,16 @@ exports.viewCommand = Object.create(AbstractNpmCommand, {
     _formatModule: {
         value: function (module) {
             return {
-                name: (module.name || ''),
-                version: (module.version || ''),
-                versions: (Array.isArray(module.versions)) ? module.versions : [],
-                author: (typeof module.author === 'string') ? Tools.formatPersonFromString(module.author) :
-                    (module.author && typeof module.author === 'object') ? module.author : '',
-                description: (module.description || ''),
+                name: module.name || '',
+                version: module.version || '',
+                versions: Array.isArray(module.versions) ? module.versions : [],
+                author:  typeof module.author === 'string' ? Tools.formatPersonFromString(module.author) :
+                    module.author && typeof module.author === 'object' ? module.author : '',
+                description: module.description || '',
                 maintainers: Tools.formatPersonsContainer(module.maintainers),
                 contributors: Tools.formatPersonsContainer(module.contributors),
-                time: (module.time) ? module.time : null,
-                homepage: (module.homepage || '')
+                time: module.time ? module.time : null,
+                homepage: module.homepage || ''
             };
         }
     }

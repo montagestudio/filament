@@ -1,7 +1,8 @@
 var semver = require("semver"),
     PackageManagerError = require("./core").PackageManagerError,
     Q = require("q"),
-    QFS = require("q-io/fs"),
+    PATH = require("path"),
+    FS = require("q-io/fs"),
     DEPENDENCY_TYPE_REGULAR = 'dependencies',
     DEPENDENCY_TYPE_OPTIONAL = 'optionalDependencies',
     DEPENDENCY_TYPE_BUNDLE = 'bundledDependencies',
@@ -24,21 +25,18 @@ exports.listCommand = Object.create(Object.prototype, {
      */
     run: {
         value: function (dirPath, lite) {
-            var deferred = Q.defer();
-
             if (typeof dirPath === "string" && dirPath.length > 0) {
                 this._app = {
                     name: '',
                     version: '',
                     file: null,
-                    path: (dirPath.charAt(dirPath.length-1) === '/') ? dirPath : dirPath + '/'
+                    path: (dirPath.charAt(dirPath.length-1) === '/') ? dirPath : PATH.join(dirPath, '/')
                 };
 
-                this._runProcess(deferred, lite);
+                return this._runProcess(lite);
             } else {
-                deferred.reject(new PackageManagerError("The project path is missing.", ERROR_PATH_MISSING));
+                return Q.reject(new PackageManagerError("The project path is missing", ERROR_PATH_MISSING));
             }
-            return deferred.promise;
         }
     },
 
@@ -138,23 +136,20 @@ exports.listCommand = Object.create(Object.prototype, {
      * @private
      */
     _runProcess: {
-        value: function (deferred, lite) {
+        value: function (lite) {
             var self = this;
 
             // Step 1: Get information.
-            this._readJsonFile(this._app.path, this._app, true, function () {
+            return this._readJsonFile(this._app.path, this._app, true).then(function () {
                 if (!self._app.jsonFileMissing && !self._app.jsonFileError) {
                     delete self._app.parent; // Cleaning up.
 
                     // Step 2: Find eventual errors.
                     self._findEventualErrors();
-                    deferred.resolve((!!lite) ? self._lite() : self._complete());
-
-                } else {
-                    deferred.reject(
-                        new PackageManagerError("The Project package.json file shows errors.", ERROR_PROJECT_FILE)
-                    );
+                    return !!lite ? self._lite() : self._complete();
                 }
+
+                throw new PackageManagerError("The Project package.json file shows errors", ERROR_PROJECT_FILE);
             });
         }
     },
@@ -171,27 +166,20 @@ exports.listCommand = Object.create(Object.prototype, {
      * @private
      */
     _readJsonFile: {
-        value: function (path, currentDependency, root, callBack) {
+        value: function (path, currentDependency, root) {
             var self = this,
-                file = path + 'package.json';
+                file = PATH.join(path, 'package.json');
 
-            if (typeof root === 'function') {
-                callBack = root;
-                root = false;
-            }
-
-            QFS.exists(file).then(function (exists) {
+            return FS.exists(file).then(function (exists) {
                 var moduleParsed = {};
 
                 if (exists) {
-                    QFS.read(file).then(function (data) {
+                    return FS.read(file).then(function (data) {
                         try {
                             moduleParsed = JSON.parse(data);
 
-                            if (typeof moduleParsed.name === 'undefined' ||
-                                typeof moduleParsed.version === 'undefined' ||
-                                (!root && moduleParsed.name !== currentDependency.name)) { // If the name or the version field are missing.
-
+                            if (typeof moduleParsed.name === 'undefined' || typeof moduleParsed.version === 'undefined' || (!root && moduleParsed.name !== currentDependency.name) ) {
+                                // If the name or the version field are missing.
                                 currentDependency.jsonFileError = true;
                             }
 
@@ -207,20 +195,17 @@ exports.listCommand = Object.create(Object.prototype, {
 
                         moduleParsed.path = path;
 
-                        if (currentDependency.jsonFileError) {
-                            callBack(moduleParsed);
-                        } else {
+                        if (!currentDependency.jsonFileError) {
                             currentDependency.versionInstalled = moduleParsed.version;
-                            self._handleJsonFile(moduleParsed, currentDependency, callBack); // If no errors, then format results.
+                            return self._handleJsonFile(moduleParsed, currentDependency); // If no errors, then format results.
                         }
 
+                        return moduleParsed;
                     }, function () {
                         currentDependency.jsonFileError = true;
-                        callBack();
                     });
                 } else { // The package.json file is missing.
                     currentDependency.jsonFileMissing = true;
-                    callBack();
                 }
             });
         }
@@ -261,7 +246,7 @@ exports.listCommand = Object.create(Object.prototype, {
             this._formatBundledDependencies(currentDependency,
                 (moduleParsed.bundleDependencies || moduleParsed.bundledDependencies || null));
 
-            this._readInstalled(moduleParsed, currentDependency, callBack);
+            return this._readInstalled(moduleParsed, currentDependency, callBack);
         }
     },
 
@@ -379,12 +364,12 @@ exports.listCommand = Object.create(Object.prototype, {
         }
     },
 
-    _shouldKeepFile: {
+    _checkFile: {
         value: function (element, path) {
             var deferred = Q.defer();
 
             if (element.charAt(0) !== '.') {
-                QFS.stat(path + element).then(function (stats) {
+                FS.stat(PATH.join(path, element)).then(function (stats) {
                     deferred.resolve([stats.isDirectory(), element]);
                 });
             } else {
@@ -397,28 +382,23 @@ exports.listCommand = Object.create(Object.prototype, {
 
     _filterListFiles: {
         value: function (list, path) {
-            var deferred = Q.defer(),
-                container = [];
+            var container = [],
+                self = this;
 
             if (Array.isArray(list) && list.length > 0) {
-                var queue = this._keepDependenciesLength(list.length);
-
-                for (var i = 0, length = list.length; i < length; i++) {
-                    this._shouldKeepFile(list[i], path).then(function (data) {
-                        if (data[0]) {
-                            container.push(data[1]);
-                        }
-
-                        if (queue() < 1) {
-                            deferred.resolve(container);
-                        }
+                return Q.all(list.map(function (item) {
+                        return self._checkFile(item, path).then(function (data) {
+                            if (data[0]) {
+                                container.push(data[1]);
+                            }
+                        });
+                    }))
+                    .then(function () {
+                        return container;
                     });
-                }
             } else {
-                deferred.resolve(container);
+                return Q(container);
             }
-
-            return deferred.promise;
         }
     },
 
@@ -434,47 +414,45 @@ exports.listCommand = Object.create(Object.prototype, {
     _readInstalled: {
         value: function (moduleParsed, currentDependency, callBack) {
             var self = this,
-                path = moduleParsed.path + "node_modules/";
+                path = PATH.join(moduleParsed.path, 'node_modules/');
 
-            QFS.list(path).then(function (files) {
-                self._filterListFiles(files, path).then(function (modulesInstalled) {
+            return FS.exists(path).then(function (exists) {
+                if (exists) {
+                    return FS.list(path).then(function (files) {
+                        return self._filterListFiles(files, path).then(function (modulesInstalled) {
 
-                    for (var i = 0, length = modulesInstalled.length; i < length; i++) {
+                            for (var i = 0, length = modulesInstalled.length; i < length; i++) {
 
-                        var moduleName = modulesInstalled[i],
-                            index = self._getDependencyIndex(moduleName, moduleParsed.dependencies);
+                                var moduleName = modulesInstalled[i],
+                                    index = self._getDependencyIndex(moduleName, moduleParsed.dependencies);
 
-                        if (index < 0) { // If index < 0, then the dependency is missing within the package.json file.
-                            moduleParsed.dependencies.push({
-                                name: moduleName,
-                                version: '',
-                                missing: false,
-                                dependencies: [],
-                                parent: currentDependency,
-                                path: moduleParsed.path,
-                                type: (currentDependency.bundledDependencies &&
-                                    currentDependency.bundledDependencies[moduleName]) ?
-                                    DEPENDENCY_TYPE_BUNDLE : DEPENDENCY_TYPE_REGULAR,
-                                extraneous: true
+                                if (index < 0) { // If index < 0, then the dependency is missing within the package.json file.
+                                    moduleParsed.dependencies.push({
+                                        name: moduleName,
+                                        version: '',
+                                        missing: false,
+                                        dependencies: [],
+                                        parent: currentDependency,
+                                        path: moduleParsed.path,
+                                        type: (currentDependency.bundledDependencies &&
+                                            currentDependency.bundledDependencies[moduleName]) ?
+                                            DEPENDENCY_TYPE_BUNDLE : DEPENDENCY_TYPE_REGULAR,
+                                        extraneous: true
+                                    });
+                                } else { // not missing
+                                    moduleParsed.dependencies[index].missing = false;
+                                }
+                            }
+                        },  function () {})
+                            .then(function () {
+                                currentDependency.dependencies = moduleParsed.dependencies.sort(self._sortDependencies);
+                                return self._findChildren(currentDependency); // try to find children.
                             });
-                        } else { // not missing
-                            moduleParsed.dependencies[index].missing = false;
-                        }
-                    }
-
-                    currentDependency.dependencies = moduleParsed.dependencies.sort(self._sortDependencies);
-
-                    self._findChildren(currentDependency, function () { // Tries to find some children.
-                        callBack();
                     });
-                });
-            }, function () {
-                currentDependency.dependencies = moduleParsed.dependencies.sort(self._sortDependencies);
-                self._findChildren(currentDependency, function () { // Tries to find some children.
-                    callBack();
-                });
+                }
             });
         }
+
     },
 
     /**
@@ -486,75 +464,14 @@ exports.listCommand = Object.create(Object.prototype, {
      */
     _findChildren: {
         value: function (parent, callBack) {
-            var dependencies = parent.dependencies;
+            var dependencies = parent.dependencies,
+                self = this;
 
-            if (Array.isArray(dependencies)) {
-                var length = dependencies.length;
-
-                if (length > 0) { // Has children.
-                    var total = this._keepDependenciesLength(length); // keep the number of children.
-
-                    for (var i = 0; i < length; i++) {
-                        this._examineChild(dependencies[i], total, callBack);
-                    }
-                } else { // no children
-                    callBack();
+            return Q.all(dependencies.map(function (child) {
+                if (!child.missing) { // Examines the package.json file of the current child
+                    return self._readJsonFile(PATH.join(child.path, 'node_modules/', child.name, '/'), child);
                 }
-            }
-        }
-    },
-
-    /**
-     * Keeps the length of dependencies to examine at a given level,
-     * which is shared and decremented asynchronously.
-     * @function
-     * @param {Number} length, the length of dependencies to examine at a given level.
-     * @return {Integer}
-     * @private
-     */
-    _keepDependenciesLength: {
-        value: function (length) {
-            return function () {
-                return --length;
-            };
-        }
-    },
-
-    /**
-     * Examines a dependency child at a given level.
-     * @function
-     * @param {Object} child, the child to examine at a given level.
-     * @param {Number} queue, the shared queue at a given level.
-     * @param {Function} callBack, will used later in order to check the next dependency,
-     * @private
-     */
-    _examineChild: {
-        value: function (child, queue, callBack) {
-            if (!child.missing) {
-                var self = this;
-
-                // Examines the package.json file of the current child
-                this._readJsonFile(child.path + 'node_modules/' + child.name + '/', child, function () {
-                    self._childHasBeenExamined(queue, callBack); // Notifies a child has been examined
-                });
-            } else {
-                this._childHasBeenExamined(queue, callBack);
-            }
-        }
-    },
-
-    /**
-     * Checks if there still are some children to examine.
-     * @function
-     * @param {Number} queue, the shared queue at a given level.
-     * @param {Function} callBack, will used later in order to check the next dependency,
-     * @private
-     */
-    _childHasBeenExamined: {
-        value: function (queue, callBack) {
-            if (queue() < 1) {
-                callBack();
-            }
+            }));
         }
     },
 
@@ -715,7 +632,7 @@ exports.listCommand = Object.create(Object.prototype, {
 
                     if (!substituteDependency) { // Parents don't have it.
                         this._reportTopLevel(dependency, ERROR_DEPENDENCY_MISSING, dependency.name + ' is missing' +
-                            ((parent.name && parent.name !== this._app.name) ? ', required by ' + parent.name : '.'));
+                            ((parent.name && parent.name !== this._app.name) ? ', required by ' + parent.name : ''));
                     } else { // Parents have it.
                         dependency.versionInstalled = substituteDependency.versionInstalled;
 
@@ -723,21 +640,21 @@ exports.listCommand = Object.create(Object.prototype, {
                             !semver.satisfies(dependency.versionInstalled, dependency.version, true)) {
 
                             dependency.invalid = true;
-                            this._reportTopLevel(dependency, ERROR_VERSION_INVALID, dependency.name + ' version is invalid.');
+                            this._reportTopLevel(dependency, ERROR_VERSION_INVALID, dependency.name + ' version is invalid');
                         }
                     }
                 } else if (dependency.extraneous && dependency.type !== DEPENDENCY_TYPE_BUNDLE) { // If not within the package.json file.
-                    this._reportTopLevel(dependency, ERROR_DEPENDENCY_EXTRANEOUS, dependency.name + ' is extraneous.');
+                    this._reportTopLevel(dependency, ERROR_DEPENDENCY_EXTRANEOUS, dependency.name + ' is extraneous');
                 } else if (!dependency.missing && dependency.type !== DEPENDENCY_TYPE_DEV &&
                     semver.validRange(dependency.version) &&
                     !semver.satisfies(dependency.versionInstalled, dependency.version, true)) { // Check the version requirement.
 
                     dependency.invalid = true;
-                    this._reportTopLevel(dependency, ERROR_VERSION_INVALID, dependency.name + ' version is invalid.');
+                    this._reportTopLevel(dependency, ERROR_VERSION_INVALID, dependency.name + ' version is invalid');
                 }
             } else {
                 this._reportTopLevel(dependency, ERROR_FILE_INVALID,'the package.json file ' +
-                    ((!!dependency.jsonFileError) ? 'shows a few errors' : ' is missing.'));
+                    ((!!dependency.jsonFileError) ? 'shows a few errors' : ' is missing'));
             }
         }
     }

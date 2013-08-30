@@ -1,3 +1,5 @@
+/*global describe,beforeEach,it,expect,waits,waitsFor,runs,afterEach*/
+
 var PackageQueueManager = require("../../../extensions/package-manager.filament-extension/core/packages-queue-manager").PackageQueueManager,
     ACTION_INSTALLING = 0,
     ACTION_REMOVING = 1;

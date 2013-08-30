@@ -54,8 +54,7 @@ exports.PackageInformationMaintainers = Component.specialize(/** @lends PackageI
     handleCreateMaintainer: {
         value: function (event) {
             var maintainer = (event.detail && event.detail.maintainer) ? event.detail.maintainer : null;
-            if (maintainer && this.editingDocument && this.editingDocument.addMaintainer(maintainer)
-                && this.createPersonOverlay.isShown) {
+            if (maintainer && this.editingDocument && this.editingDocument.addMaintainer(maintainer) && this.createPersonOverlay.isShown) {
                 this.createPersonOverlay.hide();
             } else {
                 this.dispatchEventNamed("asyncActivity", true, false, {

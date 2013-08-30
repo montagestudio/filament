@@ -165,7 +165,7 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
      */
     installModule: {
         value: function (module, strict) {
-            return this._addModuleToQueue(module, ACTION_INSTALLING, strict);
+            return this._prepareAddingModuleToQueue(module, ACTION_INSTALLING, strict);
         }
     },
 
@@ -222,7 +222,7 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
      */
     uninstallModule: {
         value: function (module, strict) {
-            return this._addModuleToQueue(module, ACTION_REMOVING, strict);
+            return this._prepareAddingModuleToQueue(module, ACTION_REMOVING, strict);
         }
     },
 
@@ -261,6 +261,24 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
         }
     },
 
+    _addModuleToQueue: {
+        value: function (module, action, strict, deferred) {
+            var version = Tools.isVersionValid(module.version) ? module.version : null,
+                request = Tools.isGitUrl(module.version) ? module.version :
+                    version ? module.name + '@' + version : module.name;
+
+            this._queue.push({
+                name: module.name,
+                type: (typeof module.type === 'string' && module.type.length > 0) ? module.type : DependencyNames.dependencies,
+                version: version,
+                deferred: deferred,
+                request: request,
+                strict: (typeof strict === 'boolean') ? strict : true,
+                action: action
+            });
+        }
+    },
+
     /**
      * Adds an action within the queue.
      * @function
@@ -269,50 +287,29 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
      * @param {Boolean} strict, if false => simulate an uninstalling action.
      * @private
      */
-    _addModuleToQueue: {
+    _prepareAddingModuleToQueue: {
         value: function (module, action, strict) {
             var deferred = Promise.defer();
 
             if (this._queueManagerLoaded) {
-                if (typeof module === 'string' && module.length > 0) {
+                if (typeof module === 'string' && module.length > 0) { //url
                     var moduleName = Tools.findModuleNameFormGitUrl(module);
-
-                    if (moduleName) {
-                        module = {
-                            name: moduleName,
-                            version: module
-                        };
-                    } else {
-                        module = Tools.getModuleFromString(module);
-                    }
+                    module = (moduleName) ? { name: moduleName, version: module} : Tools.getModuleFromString(module);
                 }
 
-                if (module && typeof module === 'object' && Tools.isNameValid(module.name)) {
-                    var version = Tools.isVersionValid(module.version) ? module.version : null,
-                        request = Tools.isGitUrl(module.version) ? module.version :
-                            version ? module.name + '@' + version : module.name;
-
-                    this._queue.push({
-                        name: module.name,
-                        type: (typeof module.type === 'string' && module.type.length > 0) ?
-                            module.type : DependencyNames.dependencies,
-                        version: version,
-                        deferred: deferred,
-                        request: request,
-                        strict: (typeof strict === 'boolean') ? strict : true,
-                        action: action
-                    });
+                if (module && typeof module === 'object' && Tools.isNameValid(module.name)) { // module
+                    this._addModuleToQueue(module, action, strict, deferred);
 
                     if (!this._isRunning) {
                         this._run();
                     }
-
                 } else {
                     deferred.reject(new Error("Wrong format => name | name[@version] | { name:value }"));
                 }
             } else {
                 deferred.reject(new Error("PackageManager needs to be loaded first"));
             }
+
             return deferred.promise;
         }
     },

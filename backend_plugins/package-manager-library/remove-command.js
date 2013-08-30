@@ -1,4 +1,5 @@
-var QFS = require("q-io/fs"),
+var FS = require("q-io/fs"),
+    path = require("path"),
     PackageManagerError = require("./core").PackageManagerError,
     Tools = require("./package-manager-tools").PackageManagerTools,
     ERROR_DEPENDENCY_NAME_NOT_VALID = 4000,
@@ -21,33 +22,31 @@ exports.removeCommand = Object.create(Object.prototype, {
                 name = name.trim();
 
                 if (!Tools.isNameValid(name)) {
-                    throw new PackageManagerError("Dependency name invalid.", ERROR_DEPENDENCY_NAME_NOT_VALID);
+                    throw new PackageManagerError("Dependency named " + name + " is invalid", ERROR_DEPENDENCY_NAME_NOT_VALID);
                 }
             } else {
-                throw new PackageManagerError("Dependency name invalid.", ERROR_DEPENDENCY_NAME_NOT_VALID);
+                throw new PackageManagerError("Dependency name invalid", ERROR_DEPENDENCY_NAME_NOT_VALID);
             }
 
             if (typeof where === 'string' && where.length > 0) {
-                if (where.charAt(where.length - 1) !== '/') {
-                    where +=  '/';
-                }
+                where = path.join(where, '/');
 
                 if (!(/\/node_modules\/$/).test(where)) {
-                    where += 'node_modules/';
+                    where = path.join(where, 'node_modules/');
                 }
 
-                return QFS.removeTree(where+name).then(function () {
+                return FS.removeTree(path.join(where, name)).then(function () {
                     return { name: name };
                 }, function (error) {
                     if (error.errno === 3) {
-                        throw new PackageManagerError("Error filesystem permissions.", ERROR_FS_PERMISSION);
+                        throw new PackageManagerError("Error filesystem permissions while removing the dependency named " + name, ERROR_FS_PERMISSION);
                     } else if (error.errno === 34) {
-                        throw new PackageManagerError("Dependency missing.", ERROR_DEPENDENCY_NOT_FOUND);
+                        throw new PackageManagerError("Dependency named " + name + " is missing", ERROR_DEPENDENCY_NOT_FOUND);
                     }
                     throw error;
                 });
             } else {
-                throw new PackageManagerError("Dependency path invalid.", ERROR_PROJECT_PATH_NOT_VALID);
+                throw new PackageManagerError("Dependency path invalid", ERROR_PROJECT_PATH_NOT_VALID);
             }
         }
     }

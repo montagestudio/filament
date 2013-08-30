@@ -1,3 +1,5 @@
+/* jshint camelcase: false */
+
 var DEPENDENCIES_CACHE_NAMES = [
     'dependencies',
     'optionalDependencies',
@@ -22,6 +24,24 @@ exports.ProjectFSMocksFactory = Object.create(Object.prototype, {
         value: function (project) {
             this._fs = {};
             this._fs[project.name] = this._getModule(project);
+        }
+    },
+
+    _getBundledDependencies: {
+        value: function (module, file) {
+            var bundledDependencies = module.bundledDependencies;
+
+            if (Array.isArray(bundledDependencies) && bundledDependencies.length > 0) {
+                var bundle = file.bundledDependencies = [];
+
+                for (var z = 0, l = bundledDependencies.length; z < l; z++) {
+                    var dep = bundledDependencies[z];
+
+                    if (typeof dep === "string" && dep.length > 0) {
+                        bundle.push(dep);
+                    }
+                }
+            }
         }
     },
 
@@ -57,19 +77,7 @@ exports.ProjectFSMocksFactory = Object.create(Object.prototype, {
                     }
                 }
 
-                var bundledDependencies = module.bundledDependencies;
-
-                if (Array.isArray(bundledDependencies) && bundledDependencies.length > 0) {
-                    var bundle = file.bundledDependencies = [];
-
-                    for (var z = 0, l = bundledDependencies.length; z < l; z++) {
-                        var dep = bundledDependencies[z];
-
-                        if (typeof dep === "string" && dep.length > 0) {
-                            bundle.push(dep);
-                        }
-                    }
-                }
+                this._getBundledDependencies(module, file);
                 return !module.jsonFileError ? JSON.stringify(file) : JSON.stringify(file) + "{";
             }
             return null;
@@ -83,7 +91,7 @@ exports.ProjectFSMocksFactory = Object.create(Object.prototype, {
 
             if (file) {
                 current['package.json'] = file;
-                var nodeModules = current['node_modules'] = {};
+                var nodeModules = current.node_modules = {};
 
                 for (var j = 0, len = DEPENDENCIES_CACHE_NAMES.length; j < len; j++) {
                     var type = DEPENDENCIES_CACHE_NAMES[j],

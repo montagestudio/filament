@@ -530,8 +530,8 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     replaceDependency: {
         value: function (dependency, type) {
-            if (dependency && dependency.type !== type && !PackageQueueManager.isRunning && !this.isReloadingList
-                && this._removeDependencyFromFile(dependency, false) && this._addDependencyToFile(dependency, type)) {
+            if (dependency && dependency.type !== type && !PackageQueueManager.isRunning && !this.isReloadingList &&
+                this._removeDependencyFromFile(dependency, false) && this._addDependencyToFile(dependency, type)) {
                 var self = this;
 
                 return this.saveModification().then(function () {
@@ -566,8 +566,8 @@ exports.PackageDocument = EditingDocument.specialize( {
                 dependency = this.findDependency(dependency); // try to find the dependency related to this name
             }
 
-            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name')
-                && dependency.hasOwnProperty('type') && !dependency.extraneous) {
+            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name') &&
+                dependency.hasOwnProperty('type') && !dependency.extraneous) {
                 var type = DependencyNames[dependency.type];
 
                 if (type) {

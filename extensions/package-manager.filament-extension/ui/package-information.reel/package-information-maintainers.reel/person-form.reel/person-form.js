@@ -34,9 +34,9 @@ exports.PersonForm = Component.specialize(/** @lends PersonForm# */ {
     person: {
         set: function (person) {
             if (person && typeof person === 'object') {
-                this._person.name = (person.name || '');
-                this._person.email = (person.email || '');
-                this._person.url = (person.url || '');
+                this._person.name = person.name || '';
+                this._person.email = person.email || '';
+                this._person.url = person.url || '';
             }
         },
         get: function () {
@@ -52,8 +52,8 @@ exports.PersonForm = Component.specialize(/** @lends PersonForm# */ {
      */
     handleValidButtonAction: {
         value: function () {
-            if (this.person.name.length > MIN_NAME_LENGTH && this.templateObjects.personEmail.element.validity.valid
-                && this.templateObjects.personUrl.element.validity.valid) {
+            if (this.person.name.length > MIN_NAME_LENGTH && this.templateObjects.personEmail.element.validity.valid &&
+                this.templateObjects.personUrl.element.validity.valid) {
 
                 this.dispatchEventNamed("CreateMaintainer", true, true, {
                     maintainer: this.person

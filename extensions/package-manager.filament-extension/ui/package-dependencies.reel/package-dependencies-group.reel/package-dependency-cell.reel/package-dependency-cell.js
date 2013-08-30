@@ -6,6 +6,7 @@ var Component = require("montage/ui/component").Component,
     DEPENDENCY_TYPE_REGULAR = 'dependencies',
     DETAILS_ERROR_LABEL = 'errors',
     CAN_INSTALL_LABEL = 'Install',
+    MIME_TYPES = require("../../../../core/mime-types"),
     DEFAULT_LABEL = '-';
 
 /**
@@ -138,8 +139,8 @@ exports.PackageDependencyCell = Component.specialize(/** @lends PackageDependenc
         value: function (event) {
             var dataTransfer = event.dataTransfer;
             dataTransfer.effectAllowed = 'move';
-            dataTransfer.setData("application/json", JSON.stringify(this._dependency));
-            dataTransfer.setData("text/plain", this._dependency.type);
+            dataTransfer.setData(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY, JSON.stringify(this._dependency));
+            dataTransfer.setData(MIME_TYPES.PACKAGE_MANAGER_DEPENDENCY_TYPE, this._dependency.type);
         }
     }
 

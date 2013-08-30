@@ -92,9 +92,8 @@ exports.AddDependencyOverlay = Overlay.specialize(/** @lends AddDependencyOverla
     },
 
     handleInstallManuallyDependencyAction: {
-        value: function (event) {
+        value: function () {
             if (this.packageEditor && this._name && this._name.length > 0 && this._checkValidity()) {
-                var self = this;
                 this.packageEditor.installDependency(this._name, (this._url || this._version), this.type);
                 this.hide();
             }

@@ -65,7 +65,7 @@ exports.DependencySwitchType = Component.specialize(/** @lends DependencySwitchT
                         var self = this;
                         promise.then(function () {
                             self.currentDependency.type = type;
-                        });
+                        }).done();
                     }
                 }
             }

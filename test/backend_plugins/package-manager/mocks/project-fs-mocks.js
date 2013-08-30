@@ -1,3 +1,5 @@
+/* jshint maxcomplexity:false */
+
 var ProjectFSMocksFactory = require('./project-fs-mocks-factory').ProjectFSMocksFactory,
     QFSMock = require("q-io/fs-mock"),
     DEFAULT_PROJECT_NAME = 'App';

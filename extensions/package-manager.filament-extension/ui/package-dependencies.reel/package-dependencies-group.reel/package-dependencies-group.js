@@ -2,7 +2,8 @@
  * @module ui/package-dependencies-group.reel
  * @requires montage/ui/component
  */
-var Component = require("montage/ui/component").Component;
+var Component = require("montage/ui/component").Component,
+    MIME_TYPES = require("../../../core/mime-types");
 
 /**
  * @class PackageDependenciesGroup
@@ -78,7 +79,7 @@ exports.PackageDependenciesGroup = Component.specialize(/** @lends PackageDepend
             var dataTransfer = event.dataTransfer,
                 availableTypes = dataTransfer.types;
 
-            if (availableTypes && availableTypes.has("application/json")) {
+            if (availableTypes && availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY)) {
                 event.preventDefault();
                 dataTransfer.dropEffect = "move";
                 this._willAcceptDrop = true;
@@ -100,8 +101,8 @@ exports.PackageDependenciesGroup = Component.specialize(/** @lends PackageDepend
             var dataTransfer = event.dataTransfer,
                 availableTypes = dataTransfer.types;
 
-            if (availableTypes && availableTypes.has("application/json")) {
-                var data = dataTransfer.getData("application/json"),
+            if (availableTypes && availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY)) {
+                var data = dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY),
                     dependency = JSON.parse(data);
                 if (dependency.type !== this.type) {
                     this.editingDocument.replaceDependency(dependency, this.type);
