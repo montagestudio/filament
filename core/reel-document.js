@@ -1051,6 +1051,20 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    _addOwnedObjectEventListener: {
+        value: function (proxy, listener, insertionIndex) {
+
+            var addedListener = proxy.addEventListener(listener, insertionIndex);
+
+            if (addedListener) {
+                this.undoManager.register("Define Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listener]));
+            }
+
+            return addedListener;
+
+        }
+    },
+
     cancelOwnedObjectBinding: {
         value: function (proxy, binding) {
             var removedBinding,
@@ -1116,16 +1130,39 @@ exports.ReelDocument = EditingDocument.specialize({
                 //     // TODO register the listener on the stage, make sure we can remove it later
                 // }
 
-                this.undoManager.register("Add Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listenerEntry]));
+                this.undoManager.register("Define Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listenerEntry]));
             }
 
             return listenerEntry;
         }
     },
 
+    updateOwnedObjectEventListener: {
+        value: function (proxy, existingListener, type, listener, useCapture) {
+            var originalType = existingListener.type,
+                originalListener = existingListener.listener,
+                originalUseCapture = existingListener.useCapture,
+                updatedListener;
+
+            updatedListener = proxy.updateObjectEventListener(existingListener, type, listener, useCapture);
+
+            if (updatedListener) {
+                this.undoManager.register("Edit Listener", Promise.resolve([this.updateOwnedObjectEventListener, this, proxy, updatedListener, originalType, originalListener, originalUseCapture]));
+            }
+
+            return updatedListener;
+        }
+    },
+
     removeOwnedObjectEventListener: {
         value: function (proxy, listener) {
-            var removedListener = proxy.removeObjectEventListener(listener);
+            var removedListener,
+                removedIndex,
+                removedInfo;
+
+            removedInfo = proxy.removeObjectEventListener(listener);
+            removedListener = removedInfo.removedListener;
+            removedIndex = removedInfo.index;
 
             if (removedListener) {
                 // if (this._editingController) {
@@ -1133,7 +1170,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 // }
 
                 this.undoManager.register("Remove Listener", Promise.resolve([
-                    this.addOwnedObjectEventListener, this, proxy, removedListener.type, removedListener.listener, removedListener.useCapture
+                    this._addOwnedObjectEventListener, this, proxy, removedListener, removedIndex
                 ]));
             }
 
