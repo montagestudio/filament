@@ -30,11 +30,14 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
 
     prepareForActivationEvents: {
         value: function () {
-            //Listen to start editing
+            // Listen to start editing
             this.element.addEventListener("dblclick", this);
 
-            //Listen for editing to finish
+            // Listen for editing to finish
             this.templateObjects.inputText.addEventListener("action", this);
+
+            // Listen for blur to stop editin
+            this.templateObjects.inputText.element.addEventListener("blur", this);
         }
     },
 
@@ -84,6 +87,12 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
                 this._inputValue = null;
                 this.isEditing = false;
             }
+        }
+    },
+
+    handleBlur: {
+        value: function () {
+            this.isEditing = false;
         }
     }
 
