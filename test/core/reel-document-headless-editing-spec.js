@@ -597,11 +597,11 @@ describe("core/reel-document-headless-editing-spec", function () {
                 var listener = targetProxy.listeners[0];
 
                 reelDocument.removeOwnedObjectEventListener(targetProxy, listener);
-                return reelDocument.undo().then(function (definedListener) {
-                    expect(definedListener).toBe(listener);
-                    expect(definedListener.type).toBe(listener.type);
-                    expect(definedListener.listener).toBe(listener.listener);
-                    expect(definedListener.useCapture).toBe(listener.useCapture);
+                return reelDocument.undo().then(function (addedListener) {
+                    expect(addedListener).toBe(listener);
+                    expect(addedListener.type).toBe(listener.type);
+                    expect(addedListener.listener).toBe(listener.listener);
+                    expect(addedListener.useCapture).toBe(listener.useCapture);
                 });
 
             }).timeout(WAITSFOR_TIMEOUT);
@@ -617,8 +617,8 @@ describe("core/reel-document-headless-editing-spec", function () {
                 targetProxy.listeners.push("bar");
 
                 reelDocument.removeOwnedObjectEventListener(targetProxy, listener);
-                return reelDocument.undo().then(function (definedListener) {
-                    expect(targetProxy.listeners.indexOf(definedListener)).toBe(0);
+                return reelDocument.undo().then(function (addedListener) {
+                    expect(targetProxy.listeners.indexOf(addedListener)).toBe(0);
                 });
 
             }).timeout(WAITSFOR_TIMEOUT);
@@ -638,17 +638,17 @@ describe("core/reel-document-headless-editing-spec", function () {
                     //Remove the listener that's been edited, this will be undone shortly
                     reelDocument.removeOwnedObjectEventListener(targetProxy, listener);
 
-                    return reelDocument.undo().then(function (definedListener) {
+                    return reelDocument.undo().then(function (addedListener) {
                         //Listener should look as it did before the removal
-                        expect(definedListener.type).toBe("press");
-                        expect(definedListener.listener).toBe(eventHandler);
-                        expect(definedListener.useCapture).toBe(undefined);
+                        expect(addedListener.type).toBe("press");
+                        expect(addedListener.listener).toBe(eventHandler);
+                        expect(addedListener.useCapture).toBe(undefined);
 
-                        return reelDocument.undo().then(function (definedListener) {
+                        return reelDocument.undo().then(function (addedListener) {
                             //Listener should look as it did after undoing both removal and the edit
-                            expect(definedListener.type).toBe("fooEvent");
-                            expect(definedListener.listener).toBe(eventHandler);
-                            expect(definedListener.useCapture).toBe(undefined);
+                            expect(addedListener.type).toBe("fooEvent");
+                            expect(addedListener.listener).toBe(eventHandler);
+                            expect(addedListener.useCapture).toBe(undefined);
                         });
                     });
 
@@ -668,9 +668,9 @@ describe("core/reel-document-headless-editing-spec", function () {
                     //Remove the listener that's been edited, this will be undone shortly
                     reelDocument.removeOwnedObjectEventListener(targetProxy, listener);
 
-                    return reelDocument.undo().then(function (definedListener) {
+                    return reelDocument.undo().then(function (addedListener) {
                         expect(targetProxy.listeners.length).toBe(expectedListenerCount);
-                        return reelDocument.undo().then(function (definedListener) {
+                        return reelDocument.undo().then(function (addedListener) {
                             expect(targetProxy.listeners.length).toBe(expectedListenerCount);
                         });
                     });
