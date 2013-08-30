@@ -1121,9 +1121,10 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    defineOwnedObjectEventListener: {
+    addOwnedObjectEventListener: {
         value: function (proxy, type, listener, useCapture) {
-            var listenerEntry = proxy.defineObjectEventListener(type, listener, useCapture);
+            var listenerEntry = proxy.addObjectEventListener(type, listener, useCapture);
+
             if (listenerEntry) {
                 // if (this._editingController) {
                 //     // TODO register the listener on the stage, make sure we can remove it later

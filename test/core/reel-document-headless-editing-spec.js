@@ -696,7 +696,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                 var targetProxy = reelDocument.editingProxyMap.foo;
                 var eventHandler = reelDocument.editingProxyMap.owner;
 
-                var listener = reelDocument.defineOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture);
+                var listener = reelDocument.addOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture);
 
                 expect(listener.type).toBe(type);
                 expect(listener.listener).toBe(eventHandler);
@@ -709,7 +709,7 @@ describe("core/reel-document-headless-editing-spec", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
                 var eventHandler = reelDocument.editingProxyMap.owner;
-                var listener = reelDocument.defineOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture);
+                var listener = reelDocument.addOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture);
 
                 expect(targetProxy.listeners.indexOf(listener) === -1).toBeFalsy();
 
@@ -721,7 +721,7 @@ describe("core/reel-document-headless-editing-spec", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
                 var eventHandler = reelDocument.editingProxyMap.owner;
-                var listener = reelDocument.defineOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture);
+                var listener = reelDocument.addOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture);
 
                 expect(reelDocument.undoManager.undoCount).toBe(1);
 
@@ -732,7 +732,7 @@ describe("core/reel-document-headless-editing-spec", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
                 var eventHandler = reelDocument.editingProxyMap.owner;
-                var listener = reelDocument.defineOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture);
+                var listener = reelDocument.addOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture);
 
                 return reelDocument.undo().then(function (removedListener) {
                     expect(removedListener).toBe(listener);

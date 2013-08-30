@@ -57,7 +57,7 @@ exports.ListenerJig = Montage.create(Component, /** @lends module:"./listener-ji
         }
     },
 
-    handleDefineListenerButtonAction: {
+    handleUpdateEventListenerButtonAction: {
         value: function (evt) {
             evt.stop();
             this._commitListenerEdits();
@@ -99,7 +99,7 @@ exports.ListenerJig = Montage.create(Component, /** @lends module:"./listener-ji
             if (this.existingListener) {
                 listenerEntry = this.editingDocument.updateOwnedObjectEventListener(proxy, this.existingListener, type, listener, useCapture);
             } else {
-                listenerEntry = this.editingDocument.defineOwnedObjectEventListener(proxy, type, listener, useCapture);
+                listenerEntry = this.editingDocument.addOwnedObjectEventListener(proxy, type, listener, useCapture);
             }
 
             this.dispatchEventNamed("commit", true, false, {

@@ -315,7 +315,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
-    defineObjectEventListener: {
+    addObjectEventListener: {
         value: function (type, listener, useCapture) {
             var listenerModel = Object.create(null);
 
