@@ -205,7 +205,9 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             var newMontageId = evt.target.value,
                 nodeProxy = this._nodeInfo;
 
-            nodeProxy._editingDocument.setNodeProxyMontageId(nodeProxy, newMontageId);
+            if (!nodeProxy._editingDocument.setNodeProxyMontageId(nodeProxy, newMontageId)) {
+                evt.preventDefault();
+            }
         }
     }
 

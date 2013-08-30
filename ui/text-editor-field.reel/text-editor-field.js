@@ -59,10 +59,17 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
         value: function (evt) {
             evt.stop();
 
-            this.value = this._inputValue;
-            this.isEditing = false;
+            var previousValue = this.value;
 
-            this.dispatchActionEvent();
+            this.value = this._inputValue;
+
+            var ok = this.dispatchActionEvent();
+
+            if (ok) {
+                this.isEditing = false;
+            } else {
+                this.value = previousValue;
+            }
         }
     },
 
