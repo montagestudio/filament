@@ -1178,6 +1178,32 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    // Override EditingDocument#setOwnedObjectLabel to also change the object's
+    // element's montage id if possible
+    setOwnedObjectLabel: {
+        value: function (proxy, newLabel) {
+            var nodeProxy = proxy.properties.get("element");
+            // if this object has an element and the element's
+            // data-montage-id is the same as a label, and no other element
+            // exists with that montage id then change them both
+            if (
+                nodeProxy &&
+                nodeProxy.montageId === proxy.label &&
+                !this.nodeProxyForMontageId(newLabel)
+            ) {
+                this.undoManager.openBatch("Set label and montage id");
+                var ok = this.super(proxy, newLabel);
+                if (ok) {
+                    this.setNodeProxyMontageId(nodeProxy, newLabel);
+                }
+                this.undoManager.closeBatch();
+                return ok;
+            } else {
+                return this.super(proxy, newLabel);
+            }
+        }
+    },
+
     setOwnedObjectEditorMetadata: {
         value: function (proxy, property, value) {
             var previousValue =  proxy.getEditorMetadata(property);
