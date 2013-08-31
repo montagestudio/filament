@@ -639,6 +639,43 @@ describe("core/reel-document-template-editing-spec", function () {
         });
     });
 
+    describe("setting an object's label", function () {
+        it("returns false if the new label already exists", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var proxy = reelDocument.editingProxyMap.foo;
+
+                var ok = reelDocument.setOwnedObjectLabel(proxy, "bar");
+                expect(ok).toBe(false);
+                expect(proxy.label).toBe("foo");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("changes the montage id of an associated element", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var proxy = reelDocument.editingProxyMap.foo;
+                var element = reelDocument.htmlDocument.getElementById("foo");
+
+                var ok = reelDocument.setOwnedObjectLabel(proxy, "newFoo");
+                expect(ok).toBe(true);
+                expect(proxy.label).toBe("newFoo");
+                expect(element.getAttribute("data-montage-id")).toBe("newFoo");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("does not change the montage id if it not the same as the label", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var proxy = reelDocument.editingProxyMap.foo;
+                var element = reelDocument.htmlDocument.getElementById("foo");
+                element.setAttribute("data-montage-id", "other");
+
+                var ok = reelDocument.setOwnedObjectLabel(proxy, "newFoo");
+                expect(ok).toBe(true);
+                expect(proxy.label).toBe("newFoo");
+                expect(element.getAttribute("data-montage-id")).toBe("other");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+    });
+
     describe("setting a node's data-montage-id", function() {
 
         it("should change the data-montage-id attribute", function() {
