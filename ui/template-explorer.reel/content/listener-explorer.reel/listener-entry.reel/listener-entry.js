@@ -15,26 +15,6 @@ exports.ListenerEntry = Montage.create(Component, /** @lends module:"./listener-
 
     listenerInfo: {
         value: null
-    },
-
-    targetObject: {
-        value: null
-    },
-
-    handlePress: {
-        value: function(evt) {
-            if (this.listenerInfo) {
-                var listenerModel = Object.create(null);
-                listenerModel.targetObject = this.targetObject;
-                listenerModel.type = this.listenerInfo.type;
-                listenerModel.listener = this.listenerInfo.listener;
-                listenerModel.useCapture = this.listenerInfo.useCapture;
-                this.dispatchEventNamed("editListenerForObject", true, false, {
-                    listenerModel: listenerModel,
-                    existingListener: this.listenerInfo
-                });
-            }
-        }
     }
 
 });

@@ -30,10 +30,6 @@ exports.ListenerJig = Montage.create(Component, /** @lends module:"./listener-ji
         value: true
     },
 
-    existingListener: {
-        value: null
-    },
-
     enterDocument: {
         value: function () {
 
@@ -57,7 +53,7 @@ exports.ListenerJig = Montage.create(Component, /** @lends module:"./listener-ji
         }
     },
 
-    handleUpdateEventListenerButtonAction: {
+    handleAddListenerButtonAction: {
         value: function (evt) {
             evt.stop();
             this._commitListenerEdits();
@@ -82,7 +78,6 @@ exports.ListenerJig = Montage.create(Component, /** @lends module:"./listener-ji
     _discardListenerEdits: {
         value: function () {
             this.listenerModel = null;
-            this.existingListener = null;
             this.dispatchEventNamed("discard", true, false);
         }
     },
@@ -90,23 +85,19 @@ exports.ListenerJig = Montage.create(Component, /** @lends module:"./listener-ji
     _commitListenerEdits: {
         value: function () {
             var model = this.listenerModel,
-                proxy = model.targetObject,
+                target = model.targetObject,
                 type = model.type,
                 listener = model.listener,
                 useCapture = model.useCapture,
                 listenerEntry;
 
-            if (this.existingListener) {
-                listenerEntry = this.editingDocument.updateOwnedObjectEventListener(proxy, this.existingListener, type, listener, useCapture);
-            } else {
-                listenerEntry = this.editingDocument.addOwnedObjectEventListener(proxy, type, listener, useCapture);
-            }
+            //TODO provide support for updating an listener entry
+            listenerEntry = this.editingDocument.addOwnedObjectEventListener(target, type, listener, useCapture);
 
             this.dispatchEventNamed("commit", true, false, {
                 listenerEntry: listenerEntry
             });
 
-            this.existingListener = null;
             this.listenerModel = null;
         }
     },
