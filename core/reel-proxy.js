@@ -290,6 +290,30 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
+
+    /**
+     * Add a specified listener object to the proxy at a specific index
+     * in the listeners collection, used for undoability not new listeners
+     */
+    addEventListener: {
+        value: function (listener, insertionIndex) {
+            var listenerIndex = this.listeners.indexOf(listener);
+
+            if (-1 === listenerIndex) {
+                if (isNaN(insertionIndex)) {
+                    this.listeners.push(listener);
+                } else {
+                    this.listeners.splice(insertionIndex, 0, listener);
+                }
+            } else {
+                //TODO guard against adding exact same listener to multiple proxies
+                throw new Error("Cannot add the same listener to a proxy more than once");
+            }
+
+            return listener;
+        }
+    },
+
     /**
      * Remove the specific binding from the set of active bindings on this proxy
      *
@@ -324,6 +348,41 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
+    /**
+     * Update an existing listener with new parameters
+     *
+     * All parameters are required, currently you cannot update a single
+     * property of the existing listener without affecting the others.
+     *
+     * @param {Object} listener The existing listener to update
+     * @param {string} type 
+     * @param {Object} itsListener 
+     * @param {string} useCapture 
+     */
+    updateObjectEventListener: {
+        value: function (listener, type, itsListener, useCapture) {
+            var existinglistener,
+                listenerIndex = this.listeners.indexOf(listener);
+
+            if (listenerIndex > -1) {
+                existinglistener = listener;
+            } else {
+                throw new Error("Cannot update a listener that's not associated with this proxy.");
+            }
+
+            listener.type = type;
+            listener.listener = itsListener;
+            listener.useCapture = useCapture;
+
+            return listener;
+        }
+    },
+
+    /**
+     * Remove the specific listener from the set of active listeners on this proxy
+     *
+     * @return {Object} an object with two keys index and removedListener
+     */
     removeObjectEventListener: {
         value: function (listener) {
             var removedListener,
@@ -331,10 +390,10 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
 
             if (listenerIndex > -1) {
                 this.listeners.splice(listenerIndex, 1);
-                removedListener = listener;
+                return {index: listenerIndex, removedListener: listener};
+            } else {
+                throw new Error("Cannot remove a listener that's not associated with this proxy");
             }
-
-            return removedListener;
         }
     }
 
