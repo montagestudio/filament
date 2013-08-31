@@ -22,16 +22,6 @@
             }
         },
 
-        "objectLabel": {
-            "prototype": "montage/ui/text.reel",
-            "properties": {
-                "element": {"#": "objectLabel"}
-            },
-            "bindings": {
-                "value": {"<-": "@owner.templateObject.label"}
-            }
-        },
-
         "templateObjectExportName": {
             "prototype": "montage/ui/text.reel",
             "properties": {
@@ -114,7 +104,7 @@
             <div data-montage-id="referenceProxy" class="TemplateObjectHeader-referenceProxy" draggable="true">
                 <img data-montage-id="icon" class="TemplateObjectHeader-icon" src="" draggable="false">
                 <div class="TemplateObjectHeader-flex">
-                    <h3 data-montage-id="objectLabel" class="TemplateObjectHeader-title"></h3>
+                    <h3 class="TemplateObjectHeader-title"><div data-param="title"></div></h3>
                     <label data-montage-id="templateObjectExportName" class="TemplateObjectHeader-exportName"></label>
                 </div>
             </div>

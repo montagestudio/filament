@@ -134,6 +134,17 @@ exports.TemplateObjectCell = Component.specialize({
                 });
             }
         }
+    },
+
+    handleObjectLabelAction: {
+        value: function (event) {
+            var proxy = this.templateObject,
+                editingDocument = proxy._editingDocument;
+
+            if (!editingDocument.setOwnedObjectLabel(proxy, event.target.value)) {
+                event.preventDefault();
+            }
+        }
     }
 
 });

@@ -28,6 +28,19 @@
                 }
             },
 
+            "objectLabel": {
+                "prototype": "ui/text-editor-field.reel",
+                "properties": {
+                    "element": {"#": "objectLabel"}
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.templateObject.label"}
+                },
+                "listeners": [
+                    {"type": "action", "listener": {"@": "owner"}}
+                ]
+            },
+
             "elementCondition": {
                 "prototype": "montage/ui/condition.reel",
                 "properties": {
@@ -100,6 +113,7 @@
 <li data-montage-id="template-object-cell" class="TemplateObjectCell">
 
     <header data-montage-id="header">
+        <div data-arg="title" data-montage-id="objectLabel"></div>
         <div data-arg="toolbar"></div>
     </header>
 
