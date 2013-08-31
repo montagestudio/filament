@@ -315,6 +315,29 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
     },
 
     /**
+     * Add a specified listener object to the proxy at a specific index
+     * in the listeners collection, used for undoability not new listeners
+     */
+    addEventListener: {
+        value: function (listener, insertionIndex) {
+            var listenerIndex = this.listeners.indexOf(listener);
+
+            if (-1 === listenerIndex) {
+                if (isNaN(insertionIndex)) {
+                    this.listeners.push(listener);
+                } else {
+                    this.listeners.splice(insertionIndex, 0, listener);
+                }
+            } else {
+                //TODO guard against adding exact same listener to multiple proxies
+                throw new Error("Cannot add the same listener to a proxy more than once");
+            }
+
+            return listener;
+        }
+    },
+
+    /**
      * Remove the specific binding from the set of active bindings on this proxy
      *
      * @return {Object} an object with two keys index and removedBinding
