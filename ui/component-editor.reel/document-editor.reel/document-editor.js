@@ -227,10 +227,8 @@ exports.DocumentEditor = Component.specialize({
 
             // clear highlighting stage elements
             documentEditor.clearHighlightedElements();
-            // clean highlighting DOM explorer elements
-            for (var i = 0; i < documentEditor.templateNodes.length; i++) {
-                documentEditor.templateNodes[i].isHighlighted = false;
-            }
+            // clean highlighting DOM explorer 
+            this.dispatchEventNamed("deHighlightDomExplorerElement", true, true);
         }
     },
 

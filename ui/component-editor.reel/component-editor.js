@@ -91,6 +91,7 @@ exports.ComponentEditor = Editor.specialize({
                 this.addEventListener("highlight", this, false);
                 // Element highlight DOM Explorer -> stage
                 this.addEventListener("highlightStageElement", this, false);
+                this.addEventListener("deHighlightDomExplorerElement", this, false);
             }
         }
     },
@@ -230,12 +231,10 @@ exports.ComponentEditor = Editor.specialize({
                 stageElement = detail.element,
                 firstIterationXPath = detail.firstIterationXPath,
                 documentEditor = this.currentDocument,
-                tree = this.templateObjects.domExplorer.nodeTreeController;
+                domExplorer = this.templateObjects.domExplorer;
 
             // de-highlight all DOM Elements
-            tree.preOrderWalk(function(node) {
-                node.isHighlighted = false;
-            });
+            domExplorer.highlightedDOMElement = null;
 
             // Ignore body
             if (xpath === "/html/body") {
@@ -254,13 +253,19 @@ exports.ComponentEditor = Editor.specialize({
                     XPathResult.FIRST_ORDERED_NODE_TYPE,
                     null
                 ).singleNodeValue;
-            var nodeProxy = documentEditor.nodeProxyForNode(element),
-                node = tree.findNodeByContent(nodeProxy);
-            node.isHighlighted = highlight;
-
+            var nodeProxy = documentEditor.nodeProxyForNode(element);
+            // select the highlighted domExplorer element
+            domExplorer.highlightedDOMElement = nodeProxy;
             // highlight the stageElement to simulate a hover
             documentEditor.clearHighlightedElements();
             documentEditor.hightlightElement(stageElement);
+        }
+    },
+
+    handleDeHighlightDomExplorerElement: {
+        value: function (evt) {
+            var domExplorer = this.templateObjects.domExplorer;
+            domExplorer.highlightedDOMElement = null;
         }
     },
 
@@ -268,7 +273,7 @@ exports.ComponentEditor = Editor.specialize({
     highlightStageElement:{
         value: function (highlight, xpath) {
             var documentEditor = this.currentDocument,
-                stageDocument = documentEditor._editingController.frame.iframe.contentDocument; // FIXME _editingController can be undefined
+                stageDocument = documentEditor._editingController.frame.iframe.contentDocument;
 
             var element = documentEditor.htmlDocument.evaluate(
                 xpath,

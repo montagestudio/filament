@@ -23,6 +23,10 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: null
     },
 
+    editingDocument:{
+        value: null
+    },
+
     nodeInfo: {
         get: function() {
             return this._nodeInfo;
@@ -36,10 +40,6 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
 
             this.needsDraw = true;
         }
-    },
-
-    isHighlighted : {
-        value: false
     },
 
     enterDocument: {
