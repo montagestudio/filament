@@ -52,18 +52,6 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
         }
     },
 
-    handleSaveCommentButtonAction: {
-        value: function () {
-            this._commitComment(this.templateObjects.commentField.value);
-        }
-    },
-
-    handleDiscardCommentButtonAction: {
-        value: function () {
-            this._discardComment();
-        }
-    },
-
     _commitComment: {
         value: function (commentValue) {
             var proxy = this.templateObject,
