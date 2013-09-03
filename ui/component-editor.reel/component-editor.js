@@ -229,7 +229,7 @@ exports.ComponentEditor = Editor.specialize({
                 highlight = detail.highlight,
                 xpath = detail.xpath,
                 stageElement = detail.element,
-                firstIterationXPath = detail.firstIterationXPath,
+                parentComponentId = detail.parentComponentId,
                 documentEditor = this.currentDocument,
                 domExplorer = this.templateObjects.domExplorer;
 
@@ -240,11 +240,6 @@ exports.ComponentEditor = Editor.specialize({
             if (xpath === "/html/body") {
                 return;
             }
-
-            // Repetition hack
-            if (firstIterationXPath) {
-                xpath = firstIterationXPath;
-            }
             
             var element = documentEditor.htmlDocument.evaluate(
                     xpath,
@@ -254,6 +249,12 @@ exports.ComponentEditor = Editor.specialize({
                     null
                 ).singleNodeValue;
             var nodeProxy = documentEditor.nodeProxyForNode(element);
+
+            // handle highlighting at the component level if the DOM element is not found
+            if (!nodeProxy && parentComponentId) {
+                nodeProxy = documentEditor.nodeProxyForMontageId(parentComponentId);
+            }
+
             // select the highlighted domExplorer element
             domExplorer.highlightedDOMElement = nodeProxy;
             // highlight the stageElement to simulate a hover
@@ -269,10 +270,14 @@ exports.ComponentEditor = Editor.specialize({
         }
     },
 
-    // highlight or dehighlight a stage element given as an xpath
-    highlightStageElement:{
-        value: function (highlight, xpath) {
-            var documentEditor = this.currentDocument,
+    // Event dispatched on DOM Explorer hover
+    handleHighlightStageElement: {
+        value: function (evt) {
+            var detail = evt.detail,
+                highlight = detail.highlight,
+                xpath = detail.xpath,
+                component = detail.component,
+                documentEditor = this.currentDocument,
                 stageDocument = documentEditor._editingController.frame.iframe.contentDocument;
 
             var element = documentEditor.htmlDocument.evaluate(
@@ -283,23 +288,17 @@ exports.ComponentEditor = Editor.specialize({
                 null
             ).singleNodeValue;
 
+            // use the component stage element representation when the DON element can't be found
+            if (!element && component) {
+                element = component.stageObject.element;
+            }
+
             if (highlight) {
                 documentEditor.hightlightElement(element);
             }
             else {
                 documentEditor.deHighlightElement(element);
             }
-        }
-    },
-
-    // Event dispatched on DOM Explorer hover
-    handleHighlightStageElement: {
-        value: function (evt) {
-            var detail = evt.detail,
-                highlight = detail.highlight,
-                xpath = detail.xpath;
-
-            this.highlightStageElement(highlight, xpath);
         }
     },
 

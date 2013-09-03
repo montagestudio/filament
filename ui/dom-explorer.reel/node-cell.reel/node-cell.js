@@ -219,6 +219,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function (evt) {
             this.dispatchEventNamed("highlightStageElement", true, true, {
                 xpath: getElementXPath(this.nodeInfo._templateNode),
+                component: this.nodeInfo.component,
                 highlight: true
             });
         }
