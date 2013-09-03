@@ -91,7 +91,7 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
 
     handleFocusout: {
         value: function (evt) {
-            this._stopEditing();
+            this._cancelEditing();
         }
     }
 
