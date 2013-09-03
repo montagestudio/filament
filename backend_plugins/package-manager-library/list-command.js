@@ -653,7 +653,7 @@ exports.listCommand = Object.create(Object.prototype, {
                     this._reportTopLevel(dependency, ERROR_VERSION_INVALID, dependency.name + ' version is invalid');
                 }
             } else {
-                this._reportTopLevel(dependency, ERROR_FILE_INVALID,'the package.json file ' +
+                this._reportTopLevel(dependency, ERROR_FILE_INVALID,'the package.json file of ' + dependency.name +
                     ((!!dependency.jsonFileError) ? 'shows a few errors' : ' is missing'));
             }
         }
