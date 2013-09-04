@@ -131,6 +131,9 @@
             "properties": {
                 "element": {"#": "addName"}
             },
+            "bindings": {
+                "value": {"<->": "@owner.ownerObjectInfo.addName"}
+            },
             "listeners": [
                 {"type": "action", "listener": {"@": "owner"}}
             ]
