@@ -2,9 +2,9 @@ require("montage-testing").run(require, [
     // Please keep in alphabetical order
     "test/core/file-descriptor-spec",
     "test/core/node-proxy-spec",
+    "test/core/project-controller-extensions-spec",
     "test/core/project-controller-file-spec",
     "test/core/project-controller-filesystem-spec",
-    "test/core/project-controller-extensions-spec",
     "test/core/project-controller-spec",
     "test/core/reel-blueprint-editing-spec",
     "test/core/reel-context-spec",
@@ -14,6 +14,7 @@ require("montage-testing").run(require, [
     "test/core/reel-document-spec",
     "test/core/reel-document-template-editing-spec",
     "test/core/reel-proxy-spec",
+    "test/core/side-data-converter-spec",
     "test/core/url-spec",
     "test/ui/template-explorer/content/edit-properties-spec"
 ]);
