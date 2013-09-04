@@ -55,7 +55,7 @@
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "(@owner.templateObject.getEditorMetadata('comment') || @owner.isEditingComment)"}
+                "condition": {"<-": "(@owner.templateObject.editorMetadata.get('comment') || @owner.isEditingComment)"}
             }
         },
 
