@@ -104,25 +104,18 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
         }
     },
 
-    editingMontageArg: {
-        value: null
-    },
-
     montageArg: {
         get: function() {
             var arg = this._templateNode ? this._templateNode.getAttribute("data-arg") : null;
             return arg;
-        },
-        set: function(value) {
-            console.log("editingMontageArg " + value);
-            this.editingMontageArg = value;
         }
     },
 
+    //TODO connect this to the montageArg
     setNodeAttribute: {
         value: function(proxy, attribute, value) {
             var previousValue = proxy._templateNode ? proxy._templateNode.getAttribute(attribute) : null;
-            
+
             if (previousValue === value) {
                 return;
             }
@@ -136,17 +129,6 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
             this._editingDocument.undoManager.register("Set attribute", Promise.resolve([
                 this.setMontageArg, this, proxy, attribute, previousValue
             ]));
-        }
-    },
-
-    acceptsActiveTarget: {
-        value: true
-    },
-
-    surrendersActiveTarget: {
-        value: function(newTarget) {
-            this.setNodeAttribute(this, "data-arg", this.editingMontageArg);
-            return true;
         }
     },
 
