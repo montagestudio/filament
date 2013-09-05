@@ -116,6 +116,8 @@ exports.DocumentEditor = Component.specialize({
                 this.workbench.addEventListener("dragover", this, false);
                 this.workbench.addEventListener("drop", this, false);
                 this.workbench.addEventListener("select", this, false);
+
+                this.element.addEventListener("mouseout", this, false);
             }
         }
     },
@@ -217,6 +219,19 @@ exports.DocumentEditor = Component.specialize({
             }
         }
     },
+
+    // deHighlight elements when leaving the stage
+    handleMouseout: {
+        value: function(event) {
+            var documentEditor = this.editingDocument;
+
+            // clear highlighting stage elements
+            documentEditor.clearHighlightedElements();
+            // clean highlighting DOM explorer 
+            this.dispatchEventNamed("deHighlightDomExplorerElement", true, true);
+        }
+    },
+
     handleDrop: {
         enumerable: false,
         value: function (event) {

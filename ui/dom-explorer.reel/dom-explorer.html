@@ -132,7 +132,9 @@
                 "element": {"#": "nodeCell"}
             },
             "bindings": {
-                "nodeInfo": {"<-": "@nodeCell.parentComponent.object"}
+                "nodeInfo": {"<-": "@nodeCell.parentComponent.object"},
+                "treeControllerNode": {"<-": "@nodeCell.parentComponent.iteration"},
+                "domExplorer": {"<-": "@owner"}
             }
         }
     }
