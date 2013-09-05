@@ -1,6 +1,4 @@
-var Core = require("./core"),
-    AbstractNpmCommand = Core.AbstractNpmCommand,
-    PackageManagerError = Core.PackageManagerError,
+var PackageManagerError = require("./core").PackageManagerError,
     Q = require("q"),
     Tools = require("./package-manager-tools").PackageManagerTools,
     ERROR_NOT_FOUND = 3000,
@@ -8,7 +6,7 @@ var Core = require("./core"),
     ERROR_WRONG_FORMAT = 3002,
     npm = require("npm");
 
-exports.viewCommand = Object.create(AbstractNpmCommand, {
+exports.viewCommand = Object.create(Object.prototype, {
 
     /**
      * Prepares the view command, then invokes it.
@@ -26,11 +24,8 @@ exports.viewCommand = Object.create(AbstractNpmCommand, {
             }
 
             if (Tools.isRequestValid(request)) {
-                if (!this._npmLoaded) {
-                    var self = this;
-                    return this._loadNpm().then(function () {
-                        return self._invokeViewCommand(request);
-                    });
+                if (!npm.config.loaded) {
+                    throw new Error("NPM should be loaded first");
                 }
                 return this._invokeViewCommand(request);
             }

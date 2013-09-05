@@ -1,17 +1,14 @@
-var Core = require("./core"),
-    AbstractNpmCommand = Core.AbstractNpmCommand,
-    PackageManagerError = Core.PackageManagerError,
+var PackageManagerError = require("./core").PackageManagerError,
     Q = require("q"),
     Tools = require("./package-manager-tools").PackageManagerTools,
     npm = require("npm"),
 
     ERROR_NOT_FOUND = 2000,
     ERROR_VERSION_NOT_FOUND = 2001,
-    ERROR_INVALID_REQUEST = 2002,
-    ERROR_WRONG_FORMAT = 2003,
-    ERROR_UNKNOWN = 2004;
+    ERROR_WRONG_FORMAT = 2002,
+    ERROR_UNKNOWN = 2003;
 
-exports.installCommand = Object.create(AbstractNpmCommand, {
+exports.installCommand = Object.create(Object.prototype, {
 
     /**
      * Prepares the install command, then invokes it.
@@ -23,22 +20,12 @@ exports.installCommand = Object.create(AbstractNpmCommand, {
      */
     run: {
         value: function (request, where, deeply) {
-            if (typeof request === 'string' && request.length > 0) {
-                request = request.trim();
-            } else {
-                throw new PackageManagerError("Request invalid", ERROR_INVALID_REQUEST);
-            }
-
             if (Tools.isRequestValid(request)) {
-                if (!this._npmLoaded) {
-                    var self = this;
-                    return this._loadNpm().then(function () {
-                        return self._invokeInstallCommand(request, where, deeply);
-                    });
+                if (!npm.config.loaded) {
+                    throw new Error("NPM should be loaded first");
                 }
                 return this._invokeInstallCommand(request, where, deeply);
             }
-
             throw new PackageManagerError("Should respect the following format: name[@version], gitUrl", ERROR_WRONG_FORMAT);
         }
     },

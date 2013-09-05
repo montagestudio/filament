@@ -43,6 +43,12 @@ exports.PackageDocument = EditingDocument.specialize( {
             if (app) {
                 this._package = app.file || {};
                 this._classifyDependencies(app.dependencies, false); // classify dependencies
+                this.packageManagerPlugin.invoke("loadNPM", this.projectUrl).then(function (loaded) {
+                    if (!loaded) {
+                        throw new Error("An error has occurred while NPM was initializing");
+                    }
+                    self._getOutDatedDependencies();
+                }).done();
             }
             return self;
         }
@@ -286,6 +292,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
             return self.listDependencies().then(function (app) { // invoke list in order to find eventual errors after this removing.
                 self._classifyDependencies(app.dependencies, false); // classify dependencies
+                self._notifyOutDatedDependencies();
                 self.isReloadingList = false;
             });
         }
@@ -336,8 +343,11 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     _updateDependenciesAfterSaving: {
         value: function () {
-            this._updateDependenciesList();
-            this._updateLibraryGroups().done();
+            var self = this;
+
+            this._updateDependenciesList().then(function () {
+                self._updateLibraryGroups();
+            }).done();
         }
     },
 
@@ -576,6 +586,49 @@ exports.PackageDocument = EditingDocument.specialize( {
                 }
             }
             return false;
+        }
+    },
+
+    _outDatedDependencies: {
+        value: null
+    },
+
+    _notifyOutDatedDependencies: {
+        value: function () {
+            var outDatedDependencies = this._outDatedDependencies,
+                keys = Object.keys(outDatedDependencies);
+
+            for (var i = 0, length = keys.length; i < length; i++) {
+                var dependency = this.findDependency(keys[i]);
+
+                if (dependency) {
+                    var update = outDatedDependencies[keys[i]];
+
+                    if (dependency.versionInstalled  !== update.available) {
+                        dependency.update = outDatedDependencies[keys[i]];
+                    }
+                }
+            }
+        }
+    },
+
+    _getOutDatedDependencies: {
+        value: function () {
+            var self = this,
+                promise = this.packageManagerPlugin.invoke("getOutdatedDependencies", this.projectUrl).then(function (updates) {
+                    var keys = Object.keys(updates),
+                        total = keys ? keys.length : 0;
+
+                    self._outDatedDependencies = updates;
+                    self._notifyOutDatedDependencies();
+
+                    return total > 1 ? total + " updates have been found" : total + " update has been found";
+                });
+
+            this.dispatchEventNamed("asyncActivity", true, false, {
+                promise: promise,
+                title: "Searching Updates"
+            });
         }
     },
 
