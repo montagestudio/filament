@@ -1,7 +1,11 @@
-var AbstractNpmCommand = require("./abstract-npm-command").AbstractNpmCommand,
+var Core = require("./core"),
+    AbstractNpmCommand = Core.AbstractNpmCommand,
+    PackageManagerError = Core.PackageManagerError,
     Q = require("q"),
     Tools = require("./package-manager-tools").PackageManagerTools,
-    npm = require("npm");
+    npm = require("npm"),
+    ERROR_NAME_TYPE = 5000,
+    ERROR_INVALID_REQUEST = 5001;
 
 exports.searchCommand = Object.create(AbstractNpmCommand, {
 
@@ -17,7 +21,7 @@ exports.searchCommand = Object.create(AbstractNpmCommand, {
             if (typeof name === 'string' && name.length > 0) {
                 name = name.trim();
             } else {
-                throw new TypeError("The request value should be a string or not empty.");
+                throw new PackageManagerError("Dependency name invalid", ERROR_NAME_TYPE);
             }
 
             if (Tools.isNameValid(name)) {
@@ -32,7 +36,7 @@ exports.searchCommand = Object.create(AbstractNpmCommand, {
                     return this._invokeSearchCommand(name);
                 }
             } else {
-                throw new Error("The request should be a string and respect the following format: name.");
+                throw new PackageManagerError("The request is invalid", ERROR_INVALID_REQUEST);
             }
         }
     },
@@ -75,9 +79,12 @@ exports.searchCommand = Object.create(AbstractNpmCommand, {
     _formatElementFromResearch: {
         value: function (element) {
             return {
-                name: (element.name || ''),
-                version: (element.version || ''),
-                description: (element.description || '')
+                name: element.name || null,
+                version: element.version || null,
+                description: element.description || null,
+                maintainers: element.maintainers || [],
+                time: element.time || null,
+                url: element.url || null
             };
         }
     },

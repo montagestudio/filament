@@ -1,0 +1,27 @@
+.AddDependencyOverlay {
+    background: white;
+    border: 1px solid #b3b3b3;
+    padding: 15px;
+    border-radius: 4px;
+    box-shadow: 0 0 2px 1px #a3a3a3;
+}
+
+.AddDependencyOverlay ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.AddDependencyOverlay li {
+    padding: 5px;
+}
+
+.AddDependencyOverlay label {
+    font-size: 13px;
+    display: inline-block;
+    width: 60px;
+}
+
+.AddDependencyOverlay-item--choice{
+    text-align: center;
+}

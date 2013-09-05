@@ -3,12 +3,7 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    DEPENDENCIES_ALLOWED = [
-        'regular',
-        'optional',
-        'bundle',
-        'dev'
-    ];
+    DependencyNames = require('../../../core/package-tools').DependencyNames;
 
 /**
  * @class DependencySwitchType
@@ -62,13 +57,16 @@ exports.DependencySwitchType = Component.specialize(/** @lends DependencySwitchT
      */
     handleSelectedValueChange: {
         value: function (type) {
-            if (type && this.currentDependency && this.currentDependency.type !== type && DEPENDENCIES_ALLOWED.indexOf(type) >= 0) {
+            if (type && DependencyNames[type] && this.currentDependency && this.currentDependency.type !== type) {
                 if (this.editingDocument) {
-                    var self = this;
+                    var promise = this.editingDocument.replaceDependency(this.currentDependency, type);
 
-                    this.editingDocument.replaceDependency(this.currentDependency, type).then(function () {
-                        self.currentDependency.type = type;
-                    });
+                    if (promise) {
+                        var self = this;
+                        promise.then(function () {
+                            self.currentDependency.type = type;
+                        }).done();
+                    }
                 }
             }
         }

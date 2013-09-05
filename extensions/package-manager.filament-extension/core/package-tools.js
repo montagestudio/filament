@@ -1,4 +1,10 @@
-exports.PackageTools = Object.create(Object.prototype, {
+var VALID_PERSON_PROPERTIES = [
+    'name',
+    'email',
+    'url'
+];
+
+exports.ToolsBox = Object.create(Object.prototype, {
 
     /**
      * Checks if a package name is valid.
@@ -8,7 +14,8 @@ exports.PackageTools = Object.create(Object.prototype, {
      */
     isNameValid: {
         value: function (name) {
-            return (typeof name === 'string') ? (/^(?!(js|node|node_modules|favicon\.ico)$)(?=([0-9a-zA-Z~]([\w\-\.~]){0,})$)/i).test(name) : false;
+            return (typeof name === 'string') ?
+                (/^(?!(js|node|node_modules|favicon\.ico)$)(?=([0-9a-zA-Z~]([\w\-\.~]){0,})$)/i).test(name) : false;
         }
     },
 
@@ -32,7 +39,25 @@ exports.PackageTools = Object.create(Object.prototype, {
      */
     isUrlValid: {
         value: function (url) {
-            return (typeof url === 'string') ? (/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w\.\-]*)*\/?$/).test(url) : false;
+            return (typeof url === 'string') ?
+                (/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w\.\-]*)*\/?$/).test(url) : false;
+        }
+    },
+
+    isGitUrl: {
+        value: function (url) {
+            return (typeof url === 'string') ?
+                (/^git(\+https?|\+ssh)?:\/\/([\w\-\.~]+@)?[\/\w\.\-:~\?]*\/([0-9a-zA-Z~][\w\-\.~]*)\.git(#[\w\-\.~]*)?$/).exec(url) : null;
+        }
+    },
+
+    findModuleNameFormGitUrl: {
+        value: function  (url) {
+            var results = this.isGitUrl(url);
+
+            if (Array.isArray(results) && results.length > 0) {
+                return results[3];
+            }
         }
     },
 
@@ -44,7 +69,8 @@ exports.PackageTools = Object.create(Object.prototype, {
      */
     isEmailValid: {
         value: function (email) {
-            return (typeof email === 'string') ? (/^([a-z0-9_\.\-\+!#$%&'/=?^_`{|}~]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/).test(email) : false;
+            return (typeof email === 'string') ?
+                (/^([a-z0-9_\.\-\+!#$%&'/=?^_`{|}~]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/).test(email) : false;
         }
     },
 
@@ -73,22 +99,6 @@ exports.PackageTools = Object.create(Object.prototype, {
     },
 
     /**
-     * Returns the allowed Person properties.
-     * @type {Array}
-     * @default allowed Person properties.
-     * @private
-     */
-    _validPersonProperties: {
-        get: function () {
-            return [
-                'name',
-                'email',
-                'url'
-            ];
-        }
-    },
-
-    /**
      * Checks if two Person objects are equal.
      * @function
      * @param {Object} a, person A.
@@ -98,10 +108,8 @@ exports.PackageTools = Object.create(Object.prototype, {
     isPersonEqual: {
         value: function (a, b) {
             if (a && b && typeof a === 'object' && typeof b === 'object') {
-                var properties = this._validPersonProperties;
-
-                for (var i = 0, length = properties.length; i < length; i++) {
-                    if (a[properties[i]] !== b[properties[i]]) {
+                for (var i = 0, length = VALID_PERSON_PROPERTIES.length; i < length; i++) {
+                    if (a[VALID_PERSON_PROPERTIES[i]] !== b[VALID_PERSON_PROPERTIES[i]]) {
                         return false;
                     }
                 }
@@ -120,7 +128,8 @@ exports.PackageTools = Object.create(Object.prototype, {
      */
     getValidPerson: {
         value: function (person) {
-            if (person && typeof person === 'object' && person.hasOwnProperty('name') && typeof person.name === 'string' && person.name.length > 0) {
+            if (person && typeof person === 'object' && person.hasOwnProperty('name') &&
+                typeof person.name === 'string' && person.name.length > 0) {
 
                 return {
                     name: person.name,
@@ -133,3 +142,54 @@ exports.PackageTools = Object.create(Object.prototype, {
     }
 
 });
+
+exports.Errors = {
+    commands: {
+        list: {
+            codes: {
+                missing: 1000,
+                versionInvalid: 1001,
+                fileErrors: 1002,
+                extraneous: 1003,
+                projectFileErrors: 1004,
+                pathMissing: 1005
+            }
+        },
+        install: {
+            codes: {
+                dependencyNotFound: 2000,
+                versionNotFound: 2001,
+                requestInvalid: 2002,
+                wrongRequestFormat: 2003,
+                unknown: 2004
+            }
+        },
+        view: {
+            codes: {
+                dependencyNotFound: 3000,
+                requestInvalid: 3001,
+                wrongRequestFormat: 3002
+            }
+        },
+        remove: {
+            codes: {
+                nameInvalid: 4000,
+                pathInvalid: 4001,
+                fsErrors: 4002,
+                dependencyMissing: 4003
+            }
+        },
+        search: {
+            codes: {
+                requestType: 5000,
+                requestInvalid: 5001
+            }
+        }
+    }
+};
+
+exports.DependencyNames = {
+    dependencies: 'dependencies',
+    optionalDependencies: 'optionalDependencies',
+    devDependencies: 'devDependencies'
+};

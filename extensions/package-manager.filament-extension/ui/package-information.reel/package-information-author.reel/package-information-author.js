@@ -83,7 +83,9 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
 
     handleAuthorChange: {
         value: function (value) {
-            if (value && this.editingDocument && this.urlTextField.element.validity.valid && this.emailTextField.element.validity.valid) {
+            if (value && this.editingDocument && this.urlTextField.element.validity.valid &&
+                this.emailTextField.element.validity.valid) {
+
                 this.editingDocument.setProperty('author', value);
             }
         }

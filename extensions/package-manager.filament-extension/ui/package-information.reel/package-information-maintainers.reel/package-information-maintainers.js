@@ -58,7 +58,9 @@ exports.PackageInformationMaintainers = Component.specialize(/** @lends PackageI
                 this.createPersonOverlay.hide();
             } else {
                 this.dispatchEventNamed("asyncActivity", true, false, {
-                    promise: Promise.reject(new Error('Can not add the current maintainer, the information given are invalid or the name is already used')),
+                    promise: Promise.reject(
+                        new Error('Can not add the current maintainer, the information given are invalid or the name is already used')
+                    ),
                     title: "Adding maintainer"
                 });
                 // TODO indicate error within the overlay.

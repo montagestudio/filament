@@ -4,9 +4,8 @@
  */
 var Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
-    DEPENDENCY_TYPE_REGULAR = 'regular',
-    DEPENDENCY_TYPE_OPTIONAL = 'optional',
-    DEPENDENCY_TYPE_DEV = 'dev';
+    MIME_TYPES = require("../../core/mime-types"),
+    DependencyNames = require('../../core/package-tools').DependencyNames;
 
 /**
  * @class PackageDependencies
@@ -20,19 +19,27 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
         }
     },
 
-    didDraw: {
-        value: function () {
-            this.addOwnPropertyChangeListener("selectedDependency", this, true);
-            this.addOwnPropertyChangeListener("selectedDependency", this, false);
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this.element.addEventListener("dragstart", this, false);
+                this.element.addEventListener("dragend", this, false);
+                this.addOwnPropertyChangeListener("selectedDependency", this, true);
+                this.addOwnPropertyChangeListener("selectedDependency", this, false);
+            }
         }
     },
 
+    editingDocument: {
+        value: null
+    },
+
     /**
-     * Reference to the packageDocument.
+     * Reference to the packageEditor.
      * @type {Object}
      * @default null
      */
-    editingDocument: {
+    packageEditor: {
         value: null
     },
 
@@ -63,11 +70,11 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
     handleSelectedDependencyWillChange: {
         value: function (cell) {
             if (this._selectedCell && cell && cell.type !== this._selectedCell.type) { // Needs manual change.
-                if (this._selectedCell.type === DEPENDENCY_TYPE_REGULAR) {
+                if (this._selectedCell.type === DependencyNames.dependencies) {
                     this.templateObjects.packageDependenciesGroup.contentController.clearSelection();
-                } else if (this._selectedCell.type === DEPENDENCY_TYPE_OPTIONAL) {
+                } else if (this._selectedCell.type === DependencyNames.optionalDependencies) {
                     this.templateObjects.packageOptionalDependenciesGroup.contentController.clearSelection();
-                } else if (this._selectedCell.type === DEPENDENCY_TYPE_DEV) {
+                } else if (this._selectedCell.type === DependencyNames.devDependencies) {
                     this.templateObjects.packageDevDependenciesGroup.contentController.clearSelection();
                 }
             }
@@ -125,6 +132,89 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
     devDependencyCell: {
         set: function (cell) {
             this._manualChange(cell);
+        }
+    },
+
+    updateSelection: {
+        value: function (dependency) {
+            if (dependency && dependency.hasOwnProperty("type")) {
+                var templateObjects = this.templateObjects,
+                    type = dependency.type;
+
+                if (type === DependencyNames.dependencies) {
+                    templateObjects.packageDependenciesGroup.contentController.select(dependency);
+                } else if (type === DependencyNames.optionalDependencies) {
+                    templateObjects.packageOptionalDependenciesGroup.contentController.select(dependency);
+                } else if (type === DependencyNames.devDependencies) {
+                    templateObjects.packageDevDependenciesGroup.contentController.select(dependency);
+                }
+            }
+        }
+    },
+
+    /**
+     * Displays the install dependency overlay form.
+     * @function
+     */
+    handleAddDependencyButtonAction: {
+        value: function() {
+            this.installDependencyOverlay.show();
+        }
+    },
+
+    _forceDisplayGroup: {
+        value: function (force) {
+            var templateObjects = this.templateObjects;
+            templateObjects.packageOptionalDependenciesGroup.forceDisplay =
+                templateObjects.packageDevDependenciesGroup.forceDisplay =
+                templateObjects.packageDependenciesGroup.forceDisplay = !!force;
+        }
+    },
+
+    _groupCanAcceptDrop: {
+        value: function (type, accept) {
+            var response = null,
+                templateObjects = this.templateObjects;
+
+            if (type === DependencyNames.dependencies) {
+                response = templateObjects.packageDependenciesGroup.canAcceptDrop = !!accept;
+            } else if (type === DependencyNames.optionalDependencies) {
+                response = templateObjects.packageOptionalDependenciesGroup.canAcceptDrop = !!accept;
+            } else if (type === DependencyNames.devDependencies) {
+                response = templateObjects.packageDevDependenciesGroup.canAcceptDrop = !!accept;
+            }
+
+            return (response !== null);
+        }
+    },
+
+    _groupDoesNoAcceptDrop: {
+        value: null
+    },
+
+    handleDragstart: {
+        value: function (event) {
+            var dataTransfer = event.dataTransfer,
+                availableTypes = dataTransfer.types;
+
+            if (availableTypes && availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_DEPENDENCY_TYPE)) {
+                var type = dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_DEPENDENCY_TYPE);
+                if (this._groupCanAcceptDrop(type, false)) {
+                    this._groupDoesNoAcceptDrop = type;
+                    this._forceDisplayGroup(true);
+                    event.stopPropagation();
+                }
+            }
+        }
+    },
+
+    handleDragend: {
+        value: function (event) {
+            if (this._groupDoesNoAcceptDrop && this._groupCanAcceptDrop(this._groupDoesNoAcceptDrop, true)) {
+                this._groupDoesNoAcceptDrop = null;
+                this._forceDisplayGroup(false);
+                event.stopPropagation();
+            }
         }
     }
 

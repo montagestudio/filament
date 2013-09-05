@@ -3,9 +3,10 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    DEPENDENCY_TYPE_REGULAR = 'regular',
+    DEPENDENCY_TYPE_REGULAR = 'dependencies',
     DETAILS_ERROR_LABEL = 'errors',
     CAN_INSTALL_LABEL = 'Install',
+    MIME_TYPES = require("../../../../core/mime-types"),
     DEFAULT_LABEL = '-';
 
 /**
@@ -17,6 +18,14 @@ exports.PackageDependencyCell = Component.specialize(/** @lends PackageDependenc
     constructor: {
         value: function PackageDependencyCell() {
             this.super();
+        }
+    },
+
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this._element.addEventListener("dragstart", this, true);
+            }
         }
     },
 
@@ -34,12 +43,7 @@ exports.PackageDependencyCell = Component.specialize(/** @lends PackageDependenc
             if (module && typeof module === "object") {
                 this._dependency = module;
                 this.hasError = (this._dependency && Array.isArray(this._dependency.problems) && this._dependency.problems.length > 0);
-
-                if (this._dependency.type !== DEPENDENCY_TYPE_REGULAR && this._dependency.missing) {
-                    this.canInstall = true;
-                } else {
-                    this.buttonLabel = DEFAULT_LABEL;
-                }
+                this.canInstall = (this._dependency.type !== DEPENDENCY_TYPE_REGULAR && this._dependency.missing);
             }
         },
         get: function () {
@@ -128,6 +132,15 @@ exports.PackageDependencyCell = Component.specialize(/** @lends PackageDependenc
         },
         get: function () {
             return this._canInstall;
+        }
+    },
+
+    captureDragstart: {
+        value: function (event) {
+            var dataTransfer = event.dataTransfer;
+            dataTransfer.effectAllowed = 'move';
+            dataTransfer.setData(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY, JSON.stringify(this._dependency));
+            dataTransfer.setData(MIME_TYPES.PACKAGE_MANAGER_DEPENDENCY_TYPE, this._dependency.type);
         }
     }
 

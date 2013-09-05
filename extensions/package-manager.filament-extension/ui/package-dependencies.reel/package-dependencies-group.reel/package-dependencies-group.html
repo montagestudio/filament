@@ -12,7 +12,8 @@
             },
             "bindings": {
                 "selectedCell": {"<-": "@dependencyContentController.selection"},
-                "classList.has('hidden')" : { "<-" : "(@owner.dependencies.length == 0)"}
+                "classList.has('hidden')" : { "<-" : "@owner.dependencies.length == 0 && !@owner.forceDisplay"},
+                "classList.has('willAcceptDrop')" : { "<-" : "(@owner._willAcceptDrop && @owner.canAcceptDrop)"}
             }
         },
 
