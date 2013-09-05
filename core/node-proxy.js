@@ -1,4 +1,5 @@
 var Montage = require("montage").Montage,
+    Promise = require("montage/core/promise").Promise,
     NodeProxy;
 
 exports.NodeProxy = NodeProxy = Montage.specialize({
@@ -100,6 +101,52 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
     montageId: {
         get: function () {
             return this._templateNode ? this._templateNode.getAttribute("data-montage-id") : null;
+        }
+    },
+
+    editingMontageArg: {
+        value: null
+    },
+
+    montageArg: {
+        get: function() {
+            var arg = this._templateNode ? this._templateNode.getAttribute("data-arg") : null;
+            return arg;
+        },
+        set: function(value) {
+            console.log("editingMontageArg " + value);
+            this.editingMontageArg = value;
+        }
+    },
+
+    setNodeAttribute: {
+        value: function(proxy, attribute, value) {
+            var previousValue = proxy._templateNode ? proxy._templateNode.getAttribute(attribute) : null;
+            
+            if (previousValue === value) {
+                return;
+            }
+
+            if (!value) {
+                this._templateNode.removeAttribute("data-arg");
+            } else {
+                this._templateNode.setAttribute(attribute, value);
+            }
+
+            this._editingDocument.undoManager.register("Set attribute", Promise.resolve([
+                this.setMontageArg, this, proxy, attribute, previousValue
+            ]));
+        }
+    },
+
+    acceptsActiveTarget: {
+        value: true
+    },
+
+    surrendersActiveTarget: {
+        value: function(newTarget) {
+            this.setNodeAttribute(this, "data-arg", this.editingMontageArg);
+            return true;
         }
     },
 
