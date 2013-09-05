@@ -89,6 +89,8 @@ exports.PackageEditor = Montage.create(Editor, {
                             module.problems = dependency.problems;
                             module.type = dependency.type;
                             module.versionInstalled = dependency.versionInstalled;
+                            module.range = dependency.version;
+                            module.update = dependency.update || null;
                             self.dependencyDisplayed = module;
                         } else {
                             self.dependencyDisplayed = dependency;

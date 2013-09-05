@@ -3,6 +3,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     Tools = require('./package-tools'),
     PackageQueueManager = require('./packages-queue-manager').PackageQueueManager,
     Promise = require("montage/core/promise").Promise,
+    semver = require('semver'),
     PackageTools = Tools.ToolsBox,
     ErrorsCommands = Tools.Errors.commands,
     DependencyNames = Tools.DependencyNames,
@@ -310,7 +311,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function (modules) {
             if (Array.isArray(modules) && modules.length > 0) {
                 if (this._saveTimer || this._savingInProgress) { // A saving request has been scheduled,
-                // need to save the package.json file before invoking the list command.
+                    // need to save the package.json file before invoking the list command.
 
                     clearTimeout(this._saveTimer);
                     var self = this;
@@ -532,11 +533,8 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function (dependency, type) {
             if (dependency && dependency.type !== type && !PackageQueueManager.isRunning && !this.isReloadingList &&
                 this._removeDependencyFromFile(dependency, false) && this._addDependencyToFile(dependency, type)) {
-                var self = this;
 
-                return this.saveModification().then(function () {
-                    return self._updateDependenciesAfterSaving();
-                });
+                return this.saveModification(true);
             }
         }
     },
@@ -581,12 +579,42 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
+    isRangeValid: {
+        value: function (range) {
+            return !!semver.validRange(range);
+        }
+    },
+
+    updateDependencyRange: {
+        value: function (dependency, range) {
+            if (typeof dependency === "string" && PackageTools.isNameValid(dependency)) {
+                dependency = this.findDependency(dependency); // try to find the dependency related to the name
+            }
+
+            if (dependency && typeof dependency === "object" && dependency.hasOwnProperty('name') &&
+                dependency.hasOwnProperty("type") && this.isRangeValid(range)) {
+                var type = DependencyNames[dependency.type];
+
+                if (type) {
+                    var container = this._package[type];
+
+                    if (container[dependency.name]) {
+                        container[dependency.name] = range.trim();
+                        this._modificationsAccepted(DEFAULT_TIME_AUTO_SAVE, true);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    },
+
     _saveTimer: {
         value: null
     },
 
     _modificationsAccepted: {
-        value: function (time) {
+        value: function (time, updateDependencies) {
             var self = this;
             time = (typeof time === "number") ? time : DEFAULT_TIME_AUTO_SAVE;
 
@@ -595,16 +623,22 @@ exports.PackageDocument = EditingDocument.specialize( {
             }
 
             this._saveTimer = setTimeout(function () {
-                self.saveModification().then(function () {
+                self.saveModification(updateDependencies).then(function () {
                     self._saveTimer = null;
-                });
+                }).done();
             }, time);
         }
     },
 
     saveModification: {
-        value: function () {
-            return this.sharedProjectController.environmentBridge.save(this, this.url);
+        value: function (updateDependencies) {
+            var self = this;
+
+            return this.sharedProjectController.environmentBridge.save(this, this.url).then(function () {
+                if (!!updateDependencies) {
+                    return self._updateDependenciesAfterSaving();
+                }
+            });
         }
     },
 

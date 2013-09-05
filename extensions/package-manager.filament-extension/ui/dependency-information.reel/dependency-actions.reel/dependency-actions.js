@@ -1,25 +1,20 @@
 /**
- * @module ui/dependency-switch-type.reel
+ * @module ui/dependency-actions.reel
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
     DependencyNames = require('../../../core/package-tools').DependencyNames;
 
 /**
- * @class DependencySwitchType
+ * @class DependencyActions
  * @extends Component
  */
-exports.DependencySwitchType = Component.specialize(/** @lends DependencySwitchType# */ {
-
+exports.DependencyActions = Component.specialize(/** @lends DependencyActions# */ {
     constructor: {
-        value: function DependencySwitchType() {
+        value: function DependencyActions() {
             this.super();
-        }
-    },
-
-    didDraw: {
-        value: function () {
             this.addOwnPropertyChangeListener("selectedValue", this);
+            this.addOwnPropertyChangeListener("range", this);
         }
     },
 
@@ -48,6 +43,33 @@ exports.DependencySwitchType = Component.specialize(/** @lends DependencySwitchT
      */
     selectedValue: {
         value: null
+    },
+
+    range: {
+        value: null
+    },
+
+    _rangeValidity: {
+        value: function (valid) {
+            this.rangeTextField.element.setCustomValidity(valid ? '' : 'not valid');
+            return valid;
+        }
+    },
+
+    handleRangeChange: {
+        value: function (range) {
+            if (this.editingDocument && typeof range === "string" && range.length > 0) {
+                range = range.trim();
+
+                if (this.currentDependency.range !== range &&
+                    this._rangeValidity(this.editingDocument.updateDependencyRange(this.currentDependency, range))) {
+
+                    this.currentDependency.range = range;
+                } else {
+                    this._rangeValidity(this.editingDocument.isRangeValid(range));
+                }
+            }
+        }
     },
 
     /**

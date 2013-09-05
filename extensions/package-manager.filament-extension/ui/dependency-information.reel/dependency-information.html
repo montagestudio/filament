@@ -33,15 +33,16 @@
             }
         },
 
-        "dependencySwitchType": {
-            "prototype": "./dependency-switch-type.reel",
+        "dependencyActions": {
+            "prototype": "./dependency-actions.reel",
             "properties": {
-                "element": {"#": "dependencySwitchType"}
+                "element": {"#": "dependencyActions"}
             },
             "bindings": {
                 "currentDependency": {"<-": "@owner.currentDependency"},
                 "editingDocument": {"<-": "@owner.editingDocument"},
-                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency"}
+                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency"},
+                "range": {"<-": "@owner.currentDependency.range"}
             }
         }
     }
@@ -53,7 +54,7 @@
     <div class="PackageEditorColumnContent">
         <div data-montage-id="dependencyDetails" class="PackageEditorPanel"></div>
         <div data-montage-id="dependencyErrors" class="PackageEditorPanel"></div>
-        <div data-montage-id="dependencySwitchType" class="PackageEditorPanel"></div>
+        <div data-montage-id="dependencyActions" class="PackageEditorPanel"></div>
     </div>
 </div>
 </body>
