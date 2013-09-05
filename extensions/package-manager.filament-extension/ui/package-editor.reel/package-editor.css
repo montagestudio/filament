@@ -121,3 +121,7 @@
     width: 60px;
     margin-right: 6px;
 }
+
+.packageEditorAsideColumn--search-panel{
+    display: none;
+}
