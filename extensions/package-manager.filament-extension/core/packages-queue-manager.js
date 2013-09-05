@@ -1,9 +1,10 @@
-var Tools = require('./package-tools').PackageTools,
+var PackageTools = require('./package-tools'),
     Promise = require("montage/core/promise").Promise,
+    Tools = PackageTools.ToolsBox,
+    DependencyNames = PackageTools.DependencyNames,
     ACTION_INSTALLING = 0,
     ACTION_REMOVING = 1,
-    TIME_WAITING_BEFORE_NEXT = 75,
-    DEPENDENCY_TYPE_REGULAR = 'regular';
+    TIME_WAITING_BEFORE_NEXT = 75;
 
 exports.PackageQueueManager = Object.create(Object.prototype, {
 
@@ -138,8 +139,15 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
      * @private
      */
     _prepareForNext: {
-        value: function (module) {
-            this._modulesModified.push(module);
+        value: function (module, action, error) {
+            this._modulesModified.push({
+                name: module.name,
+                version: module.version || module.versionInstalled || '',
+                type: module.type,
+                action: action,
+                error: !!error
+            });
+
             this._queue.shift();
             var self = this;
 
@@ -156,8 +164,8 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
      * @return {Promise.<Object>} Promise for the package to install.
      */
     installModule: {
-        value: function (module) {
-            return this._addModuleToQueue(module, ACTION_INSTALLING);
+        value: function (module, strict) {
+            return this._prepareAddingModuleToQueue(module, ACTION_INSTALLING, strict);
         }
     },
 
@@ -172,27 +180,32 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
             var self = this;
 
             if (module) {
-                this._packageManagerPlugin.invoke("installDependency", module.request, this._projectUrl).then(function (installed) {
-                    if (installed && typeof installed === 'object' && installed.hasOwnProperty('name')) { // If the package has been installed.
-                        installed = {
-                            name: installed.name,
-                            versionInstalled: installed.version,
-                            type: module.type,
-                            missing: false,
-                            installed: true
-                        };
+                if (module.strict) {
+                    this._packageManagerPlugin.invoke("installDependency", module.request, this._projectUrl).then(function (installed) {
+                        if (installed && typeof installed === 'object' && installed.hasOwnProperty('name')) { // If the package has been installed.
+                            installed = {
+                                name: installed.name,
+                                versionInstalled: installed.version,
+                                type: module.type,
+                                missing: false,
+                                installed: true
+                            };
 
-                        module.deferred.resolve(installed);
+                            module.deferred.resolve(installed);
 
-                    } else {
-                        module.deferred.reject(installed);
-                    }
+                        } else {
+                            module.deferred.reject(installed);
+                        }
 
-                    self._prepareForNext(installed); // Indicates to the package queue manager, it can perform the next action.
-                }, function (error) {
-                    module.deferred.reject(error);
-                    self._prepareForNext(module);
-                });
+                        self._prepareForNext(installed, module.action); // Indicates to the package queue manager, it can perform the next action.
+                    }, function (error) {
+                        module.deferred.reject(error);
+                        self._prepareForNext(module, module.action, true);
+                    });
+                } else {
+                    module.deferred.resolve(true);
+                    self._prepareForNext(module, module.action);
+                }
             } else {
                 this._done(new Error('An error has occurred'));
             }
@@ -209,7 +222,7 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
      */
     uninstallModule: {
         value: function (module, strict) {
-            return this._addModuleToQueue(module, ACTION_REMOVING, strict);
+            return this._prepareAddingModuleToQueue(module, ACTION_REMOVING, strict);
         }
     },
 
@@ -227,27 +240,42 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
                 if (module.strict) {
                     this._packageManagerPlugin.invoke("removeDependency", module.name, this._projectUrl).then(function (removed) {
                         if (removed) { // If the package has been removed.
-                            self._modulesModified.push(removed);
                             module.deferred.resolve(removed);
 
                         } else {
                             module.deferred.reject(new Error('An error has occurred while removing the dependency ' + module.name));
                         }
 
-                        self._prepareForNext(module);
-
+                        self._prepareForNext(module, module.action);
                     }, function (error) {
                         module.deferred.reject(error);
-                        self._prepareForNext(module);
+                        self._prepareForNext(module, module.action, true);
                     });
                 } else {
-                    self._modulesModified.push(module);
                     module.deferred.resolve(true);
-                    self._prepareForNext(module);
+                    self._prepareForNext(module, module.action);
                 }
             } else {
                 this._done(new Error('An error has occurred'));
             }
+        }
+    },
+
+    _addModuleToQueue: {
+        value: function (module, action, strict, deferred) {
+            var version = Tools.isVersionValid(module.version) ? module.version : null,
+                request = Tools.isGitUrl(module.version) ? module.version :
+                    version ? module.name + '@' + version : module.name;
+
+            this._queue.push({
+                name: module.name,
+                type: (typeof module.type === 'string' && module.type.length > 0) ? module.type : DependencyNames.dependencies,
+                version: version,
+                deferred: deferred,
+                request: request,
+                strict: (typeof strict === 'boolean') ? strict : true,
+                action: action
+            });
         }
     },
 
@@ -259,38 +287,29 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
      * @param {Boolean} strict, if false => simulate an uninstalling action.
      * @private
      */
-    _addModuleToQueue: {
+    _prepareAddingModuleToQueue: {
         value: function (module, action, strict) {
             var deferred = Promise.defer();
 
             if (this._queueManagerLoaded) {
-                if (typeof module === 'string' && module.length > 0) {
-                    module = Tools.getModuleFromString(module);
+                if (typeof module === 'string' && module.length > 0) { //url
+                    var moduleName = Tools.findModuleNameFormGitUrl(module);
+                    module = (moduleName) ? { name: moduleName, version: module} : Tools.getModuleFromString(module);
                 }
 
-                if (module && typeof module === 'object' && module.hasOwnProperty('name') && Tools.isNameValid(module.name)) {
-                    module.version = (Tools.isVersionValid(module.version)) ? module.version : null;
-
-                    this._queue.push({
-                        name: module.name,
-                        type: (typeof module.type === 'string' && module.type.length > 0) ? module.type : DEPENDENCY_TYPE_REGULAR,
-                        version: module.version,
-                        deferred: deferred,
-                        request: (module.version) ? module.name + '@' + module.version : module.name,
-                        strict: (typeof strict === 'boolean') ? strict : true,
-                        action: action
-                    });
+                if (module && typeof module === 'object' && Tools.isNameValid(module.name)) { // module
+                    this._addModuleToQueue(module, action, strict, deferred);
 
                     if (!this._isRunning) {
                         this._run();
                     }
-
                 } else {
                     deferred.reject(new Error("Wrong format => name | name[@version] | { name:value }"));
                 }
             } else {
                 deferred.reject(new Error("PackageManager needs to be loaded first"));
             }
+
             return deferred.promise;
         }
     },
@@ -328,15 +347,20 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
         writable: true
     },
 
+    _isRunning: {
+        value: false,
+        writable: true
+    },
+
     /**
      * Indicates if the package queue manager is running.
      * @type {Boolean}
      * @default false
-     * @private
      */
-    _isRunning: {
-        value: false,
-        writable: true
+    isRunning: {
+        get: function () {
+            return this._isRunning;
+        }
     },
 
     /**

@@ -3,7 +3,7 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    PackageTools = require('../../../core/package-tools').PackageTools;
+    PackageTools = require('../../../core/package-tools').ToolsBox;
 
 /**
  * @class PackageInformationBasics

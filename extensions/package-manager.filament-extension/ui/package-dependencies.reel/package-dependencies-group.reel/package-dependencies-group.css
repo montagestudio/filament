@@ -1,9 +1,16 @@
 .PackageDependenciesGroup {
-    margin-bottom: 10px;
+    padding: 6px;
+    margin-bottom: 0 !important;
 }
 
 .PackageDependenciesGroup.hidden {
     display: none;
+}
+
+.PackageDependenciesGroup.willAcceptDrop {
+    border: 2px dashed #2E88CF;
+    border-radius: 5px;
+    padding: 4px;
 }
 
 .PackageDependenciesGroup-list {

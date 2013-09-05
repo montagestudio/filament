@@ -1,7 +1,15 @@
-var AbstractNpmCommand = require("./abstract-npm-command").AbstractNpmCommand,
+var Core = require("./core"),
+    AbstractNpmCommand = Core.AbstractNpmCommand,
+    PackageManagerError = Core.PackageManagerError,
     Q = require("q"),
     Tools = require("./package-manager-tools").PackageManagerTools,
-    npm = require("npm");
+    npm = require("npm"),
+
+    ERROR_NOT_FOUND = 2000,
+    ERROR_VERSION_NOT_FOUND = 2001,
+    ERROR_INVALID_REQUEST = 2002,
+    ERROR_WRONG_FORMAT = 2003,
+    ERROR_UNKNOWN = 2004;
 
 exports.installCommand = Object.create(AbstractNpmCommand, {
 
@@ -18,7 +26,7 @@ exports.installCommand = Object.create(AbstractNpmCommand, {
             if (typeof request === 'string' && request.length > 0) {
                 request = request.trim();
             } else {
-                throw new TypeError("The request value should be a string or not empty.");
+                throw new PackageManagerError("Request invalid", ERROR_INVALID_REQUEST);
             }
 
             if (Tools.isRequestValid(request)) {
@@ -27,12 +35,11 @@ exports.installCommand = Object.create(AbstractNpmCommand, {
                     return this._loadNpm().then(function () {
                         return self._invokeInstallCommand(request, where, deeply);
                     });
-                } else {
-                    return this._invokeInstallCommand(request, where, deeply);
                 }
-            } else {
-                throw new Error("The request should be a string and respect the following format: name[@version].");
+                return this._invokeInstallCommand(request, where, deeply);
             }
+
+            throw new PackageManagerError("Should respect the following format: name[@version], gitUrl", ERROR_WRONG_FORMAT);
         }
     },
 
@@ -50,15 +57,16 @@ exports.installCommand = Object.create(AbstractNpmCommand, {
             var self = this;
 
             return Q.ninvoke(npm.commands, "install", where, request).then(function (data) { // Where -> private API.
-                if (Array.isArray(data) && data.length >= 3) {
-                    return self._formatResponse(data[1], deeply);
-                }
+                return self._formatResponse(data[1], deeply);
             }, function (error) {
-                if (typeof error === 'object' && error.code === 'E404') {
-                    throw new Error(request + " doesn't exist.");
-                } else {
-                    throw error;
+                if (typeof error === 'object') {
+                    if (error.code === 'E404') {
+                        error = new PackageManagerError("Dependency not found", ERROR_NOT_FOUND);
+                    } else if ((/version not found/).test(error.message)) {
+                        error = new PackageManagerError("Version not found", ERROR_VERSION_NOT_FOUND);
+                    }
                 }
+                throw error;
             });
         }
     },
@@ -75,13 +83,18 @@ exports.installCommand = Object.create(AbstractNpmCommand, {
         value: function (response, deeply) {
             if (response && typeof response === 'object') {
                 var keys = Object.keys(response),
-                    root = response[keys[0]],
-                    information = Tools.getModuleFromString(root.what);
+                    root = response[keys[0]];
+
+                if (!root && typeof root !== 'object') {
+                    throw new PackageManagerError("Dependency not installed", ERROR_UNKNOWN);
+                }
+
+                var information = Tools.getModuleFromString(root.what);
 
                 return {
-                    name: (information.name || ''),
-                    version: (information.version|| ''),
-                    children: (!!deeply) ? this._formatChildren(root) : null
+                    name: information.name || '',
+                    version: information.version|| '',
+                    children: !!deeply ? this._formatChildren(root) : null
                 };
             }
         }

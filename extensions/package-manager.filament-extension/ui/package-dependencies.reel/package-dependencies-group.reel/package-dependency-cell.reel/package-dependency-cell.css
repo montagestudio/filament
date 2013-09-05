@@ -6,6 +6,21 @@
     display: -webkit-flex;
 }
 
+.PackageDependencyCell.selected {
+    background: hsl(210,100%,92%) !important;
+}
+
+.PackageDependencyCell:-webkit-drag {
+    background: hsla(0,0%,100%,.8) !important;
+    text-align: center;
+    font-size: 22px;
+}
+
+.PackageDependencyCell:-webkit-drag .PackageDependencyCell-item--version,
+.PackageDependencyCell:-webkit-drag .PackageDependencyCell-item--action {
+    display: none;
+}
+
 .PackageDependencyCell:last-child {
     border-radius: 0 0 6px 6px;
 }
