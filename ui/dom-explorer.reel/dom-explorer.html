@@ -132,7 +132,8 @@
                 "element": {"#": "nodeCell"}
             },
             "bindings": {
-                "nodeInfo": {"<-": "@nodeCell.parentComponent.object"}
+                "nodeInfo": {"<-": "@nodeCell.parentComponent.object"},
+                "isExpanded": {"<->": "@nodeCell.parentComponent.iteration.expanded"}
             }
         }
     }
