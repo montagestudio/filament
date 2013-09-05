@@ -154,7 +154,7 @@ exports.PackageEditor = Montage.create(Editor, {
                 var source = event.detail.get('source');
 
                 if (source && typeof source === 'object' && !source.canInstall) { // remove request
-                    this._removeDependency(source, source.dependency);
+                    this.removeDependency(source, source.dependency);
                 } else { // install request
                     this.installDependency(source.dependency);
                 }
@@ -168,7 +168,7 @@ exports.PackageEditor = Montage.create(Editor, {
      * @param {Object} source, the cell which raised the action.
      * @param {Object} dependency, the dependency owns by the cell.
      */
-    _removeDependency: {
+    removeDependency: {
         value: function (source, dependency) {
             var self = this;
 

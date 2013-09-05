@@ -519,8 +519,13 @@ exports.listCommand = Object.create(Object.prototype, {
      */
     _findTopParent: {
         value: function (element, previous) {
-            return (element.parent) ? this._findTopParent(element.parent, element) :
-                (typeof previous === 'undefined') ? element : previous;
+            if (element.parent) {
+                return this._findTopParent(element.parent, element);
+            } else if (typeof previous === 'undefined') {
+                return element;
+            } else {
+                return previous;
+            }
         }
     },
 
