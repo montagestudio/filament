@@ -49,6 +49,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             this._nodeSegment.addEventListener("drop", this, false);
 
             this.templateObjects.montageId.addEventListener("action", this);
+            this.templateObjects.montageArg.addEventListener("action", this);
         }
     },
 
@@ -205,7 +206,20 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             var newMontageId = evt.target.value,
                 nodeProxy = this._nodeInfo;
 
-            if (!nodeProxy._editingDocument.setNodeProxyMontageId(nodeProxy, newMontageId)) {
+            //TODO consolidate attribute constants somewhere
+            if (!nodeProxy._editingDocument.setNodeProxyAttribute(nodeProxy, "data-montage-id", newMontageId)) {
+                evt.preventDefault();
+            }
+        }
+    },
+
+    handleMontageArgAction: {
+        value: function (evt) {
+            var newMontageArg = evt.target.value,
+                nodeProxy = this._nodeInfo;
+
+            //TODO consolidate attribute constants somewhere
+            if (!nodeProxy._editingDocument.setNodeProxyAttribute(nodeProxy, "data-arg", newMontageArg)) {
                 evt.preventDefault();
             }
         }

@@ -636,7 +636,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 // that they are "bound" together.
                 montageId = suggestedId;
             }
-            this.setNodeProxyMontageId(nodeProxy, montageId);
+            this.setNodeProxyAttribute(nodeProxy, "data-montage-id", montageId);
 
             return montageId;
         }
@@ -1179,38 +1179,33 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     /**
-     * Sets the data-montage-id of a node proxy
+     * Sets the specified attribute of a nodeProxy to be a specified value
      * @function
      * @param  {NodeProxy}  nodeProxy
-     * @param  {string}     montageId   The montage id to change to
-     * @return {boolean}                `true` if the id was changed, `false`
-     * if not because another element already exists with that montage id.
+     * @param  {string} attribute The attribute to set on the specified node proxy
+     * @param  {string} value The value to set for the specified attribute
+     * @return {boolean} Whether or not the value specified was applied
      */
-    setNodeProxyMontageId: {
-        value: function(nodeProxy, montageId) {
-            if (montageId === nodeProxy.montageId) {
+    setNodeProxyAttribute: {
+        value: function(nodeProxy, attribute, value) {
+            var previousValue = nodeProxy.getAttribute(attribute);
+            if (value === previousValue) {
                 return true;
             }
 
-            if (montageId && this.templateNodes.some(function (node) {
-                return node.montageId === montageId;
-            })) {
+            //TODO use an exported constant for attribute name; pick a place to store them
+            if (attribute === "data-montage-id" && value &&
+                this.templateNodes.some(function (node) {
+                    return node.montageId === value;
+                })) {
+
                 // this data-montage-id already exists
                 return false;
             }
 
-            this.undoManager.register("Set Montage Id", Promise.resolve([this.setNodeProxyMontageId, this, nodeProxy, nodeProxy.montageId]));
+            nodeProxy.setAttribute(attribute, value);
+            this.undoManager.register("Set Node Attribute", Promise.resolve([this.setNodeProxyAttribute, this, nodeProxy, attribute, previousValue]));
 
-            // TODO Kind of reaching into NodeProxy's domain but this will
-            // have to do until we figure out the data model for the node
-            // proxy.
-            if (montageId) {
-                nodeProxy._templateNode.setAttribute("data-montage-id", montageId); // MARK
-            } else {
-                nodeProxy._templateNode.removeAttribute("data-montage-id");
-            }
-
-            nodeProxy.dispatchOwnPropertyChange("montageId", montageId);
             return true;
         }
     },
@@ -1231,7 +1226,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.undoManager.openBatch("Set label and montage id");
                 var ok = this.super(proxy, newLabel);
                 if (ok) {
-                    this.setNodeProxyMontageId(nodeProxy, newLabel);
+                    this.setNodeProxyAttribute(nodeProxy, "data-montage-id", newLabel);
                 }
                 this.undoManager.closeBatch();
                 return ok;

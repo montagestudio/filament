@@ -39,6 +39,16 @@
     z-index: 10;
 }
 
+.NodeCell-segment-item--montageArg {
+    border-left: 1px solid hsla(0,0%,0%,.1);
+    font-weight: normal;
+    background-color: hsl(75,44%,85%);
+}
+
+.NodeCell-segment-item--montageArg.TextEditorField--editing {
+    z-index: 10;
+}
+
 .NodeCell-segment-item--component {
     padding-left: 10px;
     border-radius: 0 11px 11px 0;

@@ -683,7 +683,7 @@ describe("core/reel-document-template-editing-spec", function () {
                 var element = reelDocument.htmlDocument.getElementById("foo");
                 var nodeProxy = reelDocument.nodeProxyForNode(element);
 
-                var ok = reelDocument.setNodeProxyMontageId(nodeProxy, "newFoo");
+                var ok = reelDocument.setNodeProxyAttribute(nodeProxy, "data-montage-id", "newFoo");
                 expect(ok).toBe(true);
                 expect(element.getAttribute("data-montage-id")).toBe("newFoo");
             }).timeout(WAITSFOR_TIMEOUT);
@@ -694,7 +694,7 @@ describe("core/reel-document-template-editing-spec", function () {
                 var element = reelDocument.htmlDocument.getElementById("removeMe");
                 var nodeProxy = reelDocument.nodeProxyForNode(element);
 
-                var ok = reelDocument.setNodeProxyMontageId(nodeProxy, "foo");
+                var ok = reelDocument.setNodeProxyAttribute(nodeProxy, "data-montage-id", "foo");
                 expect(ok).toBe(false);
                 expect(element.getAttribute("data-montage-id")).not.toBe("foo");
             }).timeout(WAITSFOR_TIMEOUT);
@@ -705,7 +705,7 @@ describe("core/reel-document-template-editing-spec", function () {
                 var element = reelDocument.htmlDocument.getElementById("foo");
                 var nodeProxy = reelDocument.nodeProxyForNode(element);
 
-                reelDocument.setNodeProxyMontageId(nodeProxy, null);
+                reelDocument.setNodeProxyAttribute(nodeProxy, "data-montage-id", null);
                 expect(element.hasAttribute("data-montage-id")).toBeFalsy();
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -715,7 +715,7 @@ describe("core/reel-document-template-editing-spec", function () {
                 var element = reelDocument.htmlDocument.getElementById("foo");
                 var nodeProxy = reelDocument.nodeProxyForNode(element);
 
-                reelDocument.setNodeProxyMontageId(nodeProxy, "newFoo");
+                reelDocument.setNodeProxyAttribute(nodeProxy, "data-montage-id", "newFoo");
                 expect(reelDocument.undoManager.undoCount).toBe(1);
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -725,7 +725,7 @@ describe("core/reel-document-template-editing-spec", function () {
                 var element = reelDocument.htmlDocument.getElementById("foo");
                 var nodeProxy = reelDocument.nodeProxyForNode(element);
 
-                reelDocument.setNodeProxyMontageId(nodeProxy, "newFoo");
+                reelDocument.setNodeProxyAttribute(nodeProxy, "data-montage-id", "newFoo");
 
                 return reelDocument.undoManager.undo().then(function() {
                     expect(element.getAttribute("data-montage-id")).toBe("foo");

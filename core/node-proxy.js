@@ -1,6 +1,9 @@
 var Montage = require("montage").Montage,
     NodeProxy;
 
+var MONTAGE_ID_ATTRIBUTE = "data-montage-id",
+    MONTAGE_ARG_ATTRIBUTE = "data-arg";
+
 exports.NodeProxy = NodeProxy = Montage.specialize({
 
     constructor: {
@@ -99,7 +102,58 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
 
     montageId: {
         get: function () {
-            return this._templateNode ? this._templateNode.getAttribute("data-montage-id") : null;
+            return this.getAttribute(MONTAGE_ID_ATTRIBUTE);
+        },
+        set: function (value) {
+            this.setAttribute(MONTAGE_ID_ATTRIBUTE, value);
+        }
+    },
+
+    montageArg: {
+        get: function() {
+            return this.getAttribute(MONTAGE_ARG_ATTRIBUTE);
+        },
+        set: function (value) {
+            this.setAttribute(MONTAGE_ARG_ATTRIBUTE, value);
+        }
+    },
+
+    getAttribute: {
+        value: function (attributeName) {
+            return this._templateNode ? this._templateNode.getAttribute(attributeName) : null;
+        }
+    },
+
+    _attributeToPropertyMap: {
+        value: {
+            MONTAGE_ID_ATTRIBUTE: "montageId",
+            MONTAGE_ARG_ATTRIBUTE: "montageArg"
+        }
+    },
+
+    setAttribute: {
+        value: function(attribute, value) {
+            var previousValue = this.getAttribute(attribute);
+
+            if (previousValue === value) {
+                return;
+            }
+
+            var affectedProperty = this._attributeToPropertyMap[attribute];
+
+            if (affectedProperty) {
+                this.dispatchBeforeOwnPropertyChange(affectedProperty, previousValue);
+            }
+
+            if (value) {
+                this._templateNode.setAttribute(attribute, value);
+            } else {
+                this._templateNode.removeAttribute(attribute);
+            }
+
+            if (affectedProperty) {
+                this.dispatchOwnPropertyChange(affectedProperty, value || null);
+            }
         }
     },
 
