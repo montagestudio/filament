@@ -51,7 +51,7 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
 
     _rangeValidity: {
         value: function (valid) {
-            this.rangeTextField.element.setCustomValidity(valid ? '' : 'not valid');
+            this.rangeTextField.element.setCustomValidity(valid ? '' : 'range is not valid');
             return valid;
         }
     },

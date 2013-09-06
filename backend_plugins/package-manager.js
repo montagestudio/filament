@@ -14,10 +14,11 @@ exports.loadNPM = function (where) {
             "prefix": where,
             "global": false
         }).then(function () {
-                return npm.config.loaded;
-            });
+            return npm.config.loaded;
+        });
     }
-    return true;
+
+    return Q(true);
 };
 
 exports.listDependencies = function (where) {

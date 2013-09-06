@@ -1,66 +1,63 @@
 var Q = require("q"),
-    npm = require("npm");
+    npm = require("npm"),
+    path = require("path"),
+    readJson = require("npm/node_modules/read-package-json"),
+    OutDatedCommand = function () {};
 
-exports.outDatedCommand = Object.create(Object.prototype, {
+/**
+ * Prepares the outdated command, then invokes it.
+ * @function
+ * @return {Promise.<Object>} A promise with all outdated dependencies.
+ */
+OutDatedCommand.prototype.run = function () {
+    if (!npm.config.loaded) {
+        throw new Error("NPM should be loaded first");
+    }
+    return this._invokeOutDatedCommand();
+};
 
-    /**
-     * Prepares the outdated command, then invokes it.
-     * @function
-     * @return {Promise.<Object>} A promise with all outdated dependencies.
-     */
-    run: {
-        value: function () {
-            if (!npm.config.loaded) {
-                throw new Error("NPM should be loaded first");
-            }
-            return this._invokeOutDatedCommand();
-        }
-    },
+/**
+ * Invokes the outdated command.
+ * @function
+ * @return {Promise.<Object>} A promise with all outdated dependencies.
+ * @private
+ */
+OutDatedCommand.prototype._invokeOutDatedCommand = function () {
+    var self = this;
 
-    /**
-     * Invokes the outdated command.
-     * @function
-     * @return {Promise.<Object>} A promise with all outdated dependencies.
-     * @private
-     */
-    _invokeOutDatedCommand: {
-        value: function () {
-            var self = this;
-            return Q.ninvoke(npm.commands, "outdated", true).then(function (list) {
-                return self._formatListDependenciesOutDated(list);
-            });
-        }
-    },
+    readJson.cache.del(path.join(npm.prefix, "package.json")); // clean the cache.
 
-    /**
-     * Formats the information gathered from the NPM command.
-     * @function
-     * @param {Array} contains all outdated dependencies.
-     * @return {list} contains all outdated dependencies well formated.
-     * @private
-     */
-    _formatListDependenciesOutDated: {
-        value: function (list) {
-            var container = {},
-                dir = npm.prefix;
+    return Q.ninvoke(npm.commands, "outdated", [], true).then(function (list) {
+        return self._formatListDependenciesOutDated(list);
+    });
+};
 
-            for (var i = 0, length = list.length; i < length; i++) {
-                var data = list[i],
-                    name = data[1],
-                    current = data[2],
-                    available = data[3],
-                    where = data[0];
+/**
+ * Formats the information gathered from the NPM command.
+ * @function
+ * @param {Array} contains all outdated dependencies.
+ * @return {list} contains all outdated dependencies well formated.
+ * @private
+ */
+OutDatedCommand.prototype._formatListDependenciesOutDated = function (list) {
+    var container = {},
+        dir = npm.prefix;
 
-                if (where === dir && current !== available) {
-                    container[name] = {
-                        current: current,
-                        available: available
-                    };
-                }
-            }
+    for (var i = 0, length = list.length; i < length; i++) {
+        var data = list[i],
+            name = data[1],
+            current = data[2],
+            available = data[3],
+            where = data[0];
 
-            return container;
+        if (where === dir && current !== available) {
+            container[name] = {
+                current: current,
+                available: available
+            };
         }
     }
+    return container;
+};
 
-});
+exports.outDatedCommand = new OutDatedCommand();

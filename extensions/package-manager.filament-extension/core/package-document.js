@@ -36,21 +36,21 @@ exports.PackageDocument = EditingDocument.specialize( {
     init: {
         value: function (fileUrl, packageRequire, projectController, app) {
             var self = this.super.call(this, fileUrl, packageRequire);
+
             PackageQueueManager.load(this, '_handleDependenciesListChange');
             this._livePackage = packageRequire.packageDescription;
             this.sharedProjectController = projectController;
 
-            if (app) {
-                this._package = app.file || {};
-                this._classifyDependencies(app.dependencies, false); // classify dependencies
-                this.packageManagerPlugin.invoke("loadNPM", this.projectUrl).then(function (loaded) {
-                    if (!loaded) {
-                        throw new Error("An error has occurred while NPM was initializing");
-                    }
-                    self._getOutDatedDependencies();
-                }).done();
-            }
-            return self;
+            this._package = app.file || {};
+            this._classifyDependencies(app.dependencies, false); // classify dependencies
+
+            return this.packageManagerPlugin.invoke("loadNPM", this.projectUrl).then(function (loaded) {
+                if (!loaded) {
+                    throw new Error("An error has occurred while NPM was initializing");
+                }
+                self._getOutDatedDependencies();
+                return self;
+            });
         }
     },
 
