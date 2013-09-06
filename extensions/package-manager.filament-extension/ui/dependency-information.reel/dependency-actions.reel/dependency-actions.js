@@ -90,6 +90,29 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
                 }
             }
         }
+    },
+
+    handleAcceptUpdateAction: {
+        value: function () {
+            var update = this.currentDependency.update ? this.currentDependency.update.available : null,
+                name = this.currentDependency.name;
+
+            if (this.currentDependency && this.editingDocument && update) {
+                var promise = this.editingDocument.updateDependency(name, update, this.currentDependency.type)
+                    .then(function (data) {
+                        if (data && typeof data === 'object' && data.hasOwnProperty('name')) {
+                            return 'The dependency ' + data.name + ' has been updated';
+                        }
+
+                        throw new Error('An error has occurred while updating the dependency ' + name);
+                    });
+
+                this.dispatchEventNamed("asyncActivity", true, false, {
+                    promise: promise,
+                    title: "Updating"
+                });
+            }
+        }
     }
 
 });

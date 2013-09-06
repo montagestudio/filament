@@ -452,6 +452,15 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
+    updateDependency: {
+        value: function (name, version, type) {
+            if (PackageTools.isNameValid(name) && PackageTools.isVersionValid(version)) {
+                return this.installDependency(name, version, type);
+            }
+            return Promise.reject(new Error("The dependency name and version are required"));
+        }
+    },
+
     installDependency: {
         value: function (name, version, type) { // version or git url
             var self = this,
