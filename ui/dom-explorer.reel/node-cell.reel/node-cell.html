@@ -43,6 +43,16 @@
             }
         },
 
+        "montageArg": {
+            "prototype": "ui/text-editor-field.reel",
+            "properties": {
+                "element": {"#": "montageArg"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.nodeInfo.montageArg"}
+            }
+        },
+
         "componentCondition": {
             "prototype": "montage/ui/condition.reel",
             "properties": {
@@ -218,6 +228,7 @@
         <span data-montage-id="nodeSegment" class="NodeCell-segment"  draggable="true">
             <span data-montage-id="tagName" class="NodeCell-segment-item NodeCell-segment-item--tag"></span>
 
+            <span data-montage-id="montageArg" class="NodeCell-segment-item NodeCell-segment-item--montageArg"></span>
             <span data-montage-id="montageId" class="NodeCell-segment-item NodeCell-segment-item--montageId"></span>
 
             <span data-montage-id="componentCondition" class="NodeCell-segment-item NodeCell-segment-item--component">
