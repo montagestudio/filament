@@ -19,6 +19,11 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
                     self: this
                 }
             });
+
+            var attributeMap = this._attributeToPropertyMap = {};
+            attributeMap[MONTAGE_ID_ATTRIBUTE] = "montageId";
+            attributeMap[MONTAGE_ARG_ATTRIBUTE] = "montageArg";
+
         }
     },
 
@@ -125,10 +130,7 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
     },
 
     _attributeToPropertyMap: {
-        value: {
-            MONTAGE_ID_ATTRIBUTE: "montageId",
-            MONTAGE_ARG_ATTRIBUTE: "montageArg"
-        }
+        value: null
     },
 
     setAttribute: {
