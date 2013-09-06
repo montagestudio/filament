@@ -16,7 +16,16 @@
     font-size: 22px;
 }
 
+.PackageDependencyCell-item--update {
+    visibility: hidden;
+}
+
+.PackageDependencyCell-item-visible {
+    visibility: visible;
+}
+
 .PackageDependencyCell:-webkit-drag .PackageDependencyCell-item--version,
+.PackageDependencyCell:-webkit-drag .PackageDependencyCell-item--update,
 .PackageDependencyCell:-webkit-drag .PackageDependencyCell-item--action {
     display: none;
 }
@@ -50,7 +59,7 @@
     -webkit-flex: 2;
 }
 
-.PackageDependencyCell-item--version {
+.PackageDependencyCell-item--version, .PackageDependencyCell-item--update {
     text-indent: 8px;
     -webkit-flex: 1;
 }

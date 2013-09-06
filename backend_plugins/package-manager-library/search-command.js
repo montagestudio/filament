@@ -1,13 +1,11 @@
-var Core = require("./core"),
-    AbstractNpmCommand = Core.AbstractNpmCommand,
-    PackageManagerError = Core.PackageManagerError,
+var PackageManagerError = require("./core").PackageManagerError,
     Q = require("q"),
     Tools = require("./package-manager-tools").PackageManagerTools,
     npm = require("npm"),
     ERROR_NAME_TYPE = 5000,
     ERROR_INVALID_REQUEST = 5001;
 
-exports.searchCommand = Object.create(AbstractNpmCommand, {
+exports.searchCommand = Object.create(Object.prototype, {
 
     /**
      * Prepares the search command, then invokes it.
@@ -27,14 +25,10 @@ exports.searchCommand = Object.create(AbstractNpmCommand, {
             if (Tools.isNameValid(name)) {
                 this.limit = limit;
 
-                if (!this._npmLoaded) { // Needs to load npm at least once.
-                    var self = this;
-                    return this._loadNpm().then(function () {
-                        return self._invokeSearchCommand(name);
-                    });
-                } else {
-                    return this._invokeSearchCommand(name);
+                if (!npm.config.loaded) {
+                    throw new Error("NPM should be loaded first");
                 }
+                return this._invokeSearchCommand(name);
             } else {
                 throw new PackageManagerError("The request is invalid", ERROR_INVALID_REQUEST);
             }

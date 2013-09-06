@@ -3,6 +3,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     Tools = require('./package-tools'),
     PackageQueueManager = require('./packages-queue-manager').PackageQueueManager,
     Promise = require("montage/core/promise").Promise,
+    semver = require('semver'),
     PackageTools = Tools.ToolsBox,
     ErrorsCommands = Tools.Errors.commands,
     DependencyNames = Tools.DependencyNames,
@@ -35,15 +36,21 @@ exports.PackageDocument = EditingDocument.specialize( {
     init: {
         value: function (fileUrl, packageRequire, projectController, app) {
             var self = this.super.call(this, fileUrl, packageRequire);
+
             PackageQueueManager.load(this, '_handleDependenciesListChange');
             this._livePackage = packageRequire.packageDescription;
             this.sharedProjectController = projectController;
 
-            if (app) {
-                this._package = app.file || {};
-                this._classifyDependencies(app.dependencies, false); // classify dependencies
-            }
-            return self;
+            this._package = app.file || {};
+            this._classifyDependencies(app.dependencies, false); // classify dependencies
+
+            return this.packageManagerPlugin.invoke("loadNPM", this.projectUrl).then(function (loaded) {
+                if (!loaded) {
+                    throw new Error("An error has occurred while NPM was initializing");
+                }
+                self._getOutDatedDependencies();
+                return self;
+            });
         }
     },
 
@@ -285,6 +292,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
             return self.listDependencies().then(function (app) { // invoke list in order to find eventual errors after this removing.
                 self._classifyDependencies(app.dependencies, false); // classify dependencies
+                self._notifyOutDatedDependencies();
                 self.isReloadingList = false;
             });
         }
@@ -310,7 +318,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function (modules) {
             if (Array.isArray(modules) && modules.length > 0) {
                 if (this._saveTimer || this._savingInProgress) { // A saving request has been scheduled,
-                // need to save the package.json file before invoking the list command.
+                    // need to save the package.json file before invoking the list command.
 
                     clearTimeout(this._saveTimer);
                     var self = this;
@@ -335,8 +343,11 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     _updateDependenciesAfterSaving: {
         value: function () {
-            this._updateDependenciesList();
-            this._updateLibraryGroups().done();
+            var self = this;
+
+            this._updateDependenciesList().then(function () {
+                self._updateLibraryGroups();
+            }).done();
         }
     },
 
@@ -532,11 +543,8 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function (dependency, type) {
             if (dependency && dependency.type !== type && !PackageQueueManager.isRunning && !this.isReloadingList &&
                 this._removeDependencyFromFile(dependency, false) && this._addDependencyToFile(dependency, type)) {
-                var self = this;
 
-                return this.saveModification().then(function () {
-                    return self._updateDependenciesAfterSaving();
-                });
+                return this.saveModification(true);
             }
         }
     },
@@ -581,12 +589,85 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
+    _outDatedDependencies: {
+        value: null
+    },
+
+    _notifyOutDatedDependencies: {
+        value: function () {
+            var outDatedDependencies = this._outDatedDependencies,
+                keys = Object.keys(outDatedDependencies);
+
+            for (var i = 0, length = keys.length; i < length; i++) {
+                var dependency = this.findDependency(keys[i]);
+
+                if (dependency) {
+                    var update = outDatedDependencies[keys[i]];
+
+                    if (dependency.versionInstalled  !== update.available && semver.satisfies(update.available, dependency.version)) {
+                        dependency.update = update;
+                    }
+                }
+            }
+        }
+    },
+
+    _getOutDatedDependencies: {
+        value: function () {
+            var self = this,
+                promise = this.packageManagerPlugin.invoke("getOutdatedDependencies", this.projectUrl).then(function (updates) {
+                    var keys = Object.keys(updates),
+                        total = keys ? keys.length : 0;
+
+                    self._outDatedDependencies = updates;
+                    self._notifyOutDatedDependencies();
+
+                    return total > 1 ? total + " updates have been found" : total + " update has been found";
+                });
+
+            this.dispatchEventNamed("asyncActivity", true, false, {
+                promise: promise,
+                title: "Searching Updates"
+            });
+        }
+    },
+
+    isRangeValid: {
+        value: function (range) {
+            return !!semver.validRange(range);
+        }
+    },
+
+    updateDependencyRange: {
+        value: function (dependency, range) {
+            if (typeof dependency === "string" && PackageTools.isNameValid(dependency)) {
+                dependency = this.findDependency(dependency); // try to find the dependency related to the name
+            }
+
+            if (dependency && typeof dependency === "object" && dependency.hasOwnProperty('name') &&
+                dependency.hasOwnProperty("type") && this.isRangeValid(range)) {
+                var type = DependencyNames[dependency.type];
+
+                if (type) {
+                    var container = this._package[type];
+
+                    if (container[dependency.name]) {
+                        container[dependency.name] = range.trim();
+                        this._modificationsAccepted(DEFAULT_TIME_AUTO_SAVE, true);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    },
+
     _saveTimer: {
         value: null
     },
 
     _modificationsAccepted: {
-        value: function (time) {
+        value: function (time, updateDependencies) {
             var self = this;
             time = (typeof time === "number") ? time : DEFAULT_TIME_AUTO_SAVE;
 
@@ -595,16 +676,22 @@ exports.PackageDocument = EditingDocument.specialize( {
             }
 
             this._saveTimer = setTimeout(function () {
-                self.saveModification().then(function () {
+                self.saveModification(updateDependencies).then(function () {
                     self._saveTimer = null;
-                });
+                }).done();
             }, time);
         }
     },
 
     saveModification: {
-        value: function () {
-            return this.sharedProjectController.environmentBridge.save(this, this.url);
+        value: function (updateDependencies) {
+            var self = this;
+
+            return this.sharedProjectController.environmentBridge.save(this, this.url).then(function () {
+                if (!!updateDependencies) {
+                    return self._updateDependenciesAfterSaving();
+                }
+            });
         }
     },
 

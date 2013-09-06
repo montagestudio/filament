@@ -161,7 +161,6 @@ exports.listCommand = Object.create(Object.prototype, {
      * @param {String} path, represents the package.json file path of the current dependency or the project app.
      * @param {Object} currentDependency, represents the current dependency which is analyzing.
      * @param {boolean} root, whether true will store the raw data of the package.json file.
-     * @param {Function} callBack, will used later in order to check the next dependency,
      * but once all information will have been gathered.
      * @private
      */
@@ -217,11 +216,10 @@ exports.listCommand = Object.create(Object.prototype, {
      * @function
      * @param {Object} moduleParsed, represents the raw data from the package.json file.
      * @param {Object} currentDependency, represents the current dependency which is analyzing.
-     * @param {Function} callBack, will used later in order to check the next dependency,
      * @private
      */
     _handleJsonFile: {
-        value: function (moduleParsed, currentDependency, callBack) {
+        value: function (moduleParsed, currentDependency) {
 
             if (moduleParsed.optionalDependencies) { // if optionalDependencies exists
                 var temp = {dependencies: this._formatDependencies(moduleParsed.optionalDependencies,
@@ -246,7 +244,7 @@ exports.listCommand = Object.create(Object.prototype, {
             this._formatBundledDependencies(currentDependency,
                 (moduleParsed.bundleDependencies || moduleParsed.bundledDependencies || null));
 
-            return this._readInstalled(moduleParsed, currentDependency, callBack);
+            return this._readInstalled(moduleParsed, currentDependency);
         }
     },
 
@@ -408,11 +406,10 @@ exports.listCommand = Object.create(Object.prototype, {
      * @function
      * @param {Object} moduleParsed, represents the raw data from the package.json file.
      * @param {Object} currentDependency, represents the current dependency which is analyzing.
-     * @param {Function} callBack, will used later in order to check the next dependency,
      * @private
      */
     _readInstalled: {
-        value: function (moduleParsed, currentDependency, callBack) {
+        value: function (moduleParsed, currentDependency) {
             var self = this,
                 path = PATH.join(moduleParsed.path, 'node_modules/');
 
@@ -459,11 +456,10 @@ exports.listCommand = Object.create(Object.prototype, {
      * Tries to find some dependency children.
      * @function
      * @param {Object} parent, represents the current dependency which is analyzing.
-     * @param {Function} callBack, will used later in order to check the next dependency,
      * @private
      */
     _findChildren: {
-        value: function (parent, callBack) {
+        value: function (parent) {
             var dependencies = parent.dependencies,
                 self = this;
 
