@@ -130,3 +130,16 @@
     height: 2px;
     background: -webkit-linear-gradient(left, hsl(208,100%,50%), hsla(208,100%,50%,0) );
 }
+
+/* Toggle tree expension -------------- */
+.NodeCell:hover .Toggle {
+    opacity: 1;
+}
+
+.NodeCell .Toggle {
+    opacity: 0.25;
+}
+
+.NodeCell--noChildren{
+    padding-left: 20px;
+}

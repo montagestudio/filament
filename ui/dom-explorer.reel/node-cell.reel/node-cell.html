@@ -16,6 +16,9 @@
                 },
                 "classList.has('NodeCell--dropTarget')": {
                     "<-": "isDropTarget"
+                },
+                "classList.has('NodeCell--noChildren')": {
+                    "<-": "!@owner.nodeInfo.children.length"
                 }
             }
         },
@@ -180,12 +183,37 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
+
+        "toggleExpanded": {
+            "prototype": "./toggle.reel",
+            "properties": {
+                "element": {"#": "toggleExpanded"}
+            },
+            "bindings": {
+                "isOpen": {"<->": "@owner.isExpanded"}
+            }
+        },
+
+        "hasChildrenCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "hasChildrenCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.nodeInfo.children.length"}
+            }
         }
     }
     </script>
 </head>
 <body>
     <div data-montage-id="node-cell" class="NodeCell">
+
+        <span data-montage-id="hasChildrenCondition" class="NodeCell-toggle">
+            <div data-montage-id="toggleExpanded"></div>
+        </span>
 
         <span data-montage-id="nodeSegment" class="NodeCell-segment"  draggable="true">
             <span data-montage-id="tagName" class="NodeCell-segment-item NodeCell-segment-item--tag"></span>
@@ -218,7 +246,6 @@
                 class="NodeCell-button NodeCell-button--child"
                 title="Append new node as last child"><i class="NodeCell-button-icon NodeCell-button-icon--child"></i></button>
         </span>
-
     </div>
 </body>
 </html>
