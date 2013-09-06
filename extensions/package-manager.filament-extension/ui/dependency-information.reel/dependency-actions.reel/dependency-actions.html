@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="dependency-actions.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "dependency-actions"},
+                "rangeTextField": {"@": "range"}
+            },
+            "bindings": {
+                "selectedValue": {"<-": "@switchTypesController.value"}
+            }
+        },
+
+        "switchTypesController": {
+            "prototype": "montage/core/radio-button-controller"
+        },
+
+        "regular": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "type-regular"},
+                "value": "dependencies",
+                "radioButtonController": {"@": "switchTypesController"}
+            },
+            "bindings": {
+                "checked": {"<-": "(@owner.currentDependency.type == value)"}
+            }
+        },
+
+        "dev": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "type-dev"},
+                "value": "devDependencies",
+                "radioButtonController": {"@": "switchTypesController"}
+            },
+            "bindings": {
+                "checked": {"<-": "(@owner.currentDependency.type == value)"}
+            }
+        },
+
+        "optional": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "type-optional"},
+                "value": "optionalDependencies",
+                "radioButtonController": {"@": "switchTypesController"}
+            },
+            "bindings": {
+                "checked": {"<-": "(@owner.currentDependency.type == value)"}
+            }
+        },
+
+        "range": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "dependencyRangeValue"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.range"}
+            }
+        },
+
+        "dependencyUpdate": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "dependencyUpdate"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "!!@owner.currentDependency.update"}
+            }
+        },
+
+         "dependencyUpdateAvailable": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "dependencyUpdateAvailable"}
+            },
+            "bindings": {
+                "value" : { "<-" : "@owner.currentDependency.update.available"}
+            }
+        }
+
+
+
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="dependency-actions" class="DependencyActions">
+        <h3 class="PackageEditorPanel-title">Actions</h3>
+        <div class="PackageEditorPanel-content DependencyActions-content">
+            <ul class="PackageEditorPanel-list">
+                <li class="PackageEditorPanel-list-item">
+                    <label>Type:</label>
+                    <input type="radio" data-montage-id="type-regular"> Regular
+                    <input type="radio" data-montage-id="type-dev"> Dev
+                    <input type="radio" data-montage-id="type-optional"> Optional
+                </li>
+                <li class="PackageEditorPanel-list-item">
+                    <label for="dependencyRangeValue">Range:</label>
+                    <input id="dependencyRangeValue" data-montage-id="dependencyRangeValue" type="text" />
+                </li>
+                <li class="PackageEditorPanel-list-item" data-montage-id="dependencyUpdate">
+                    <span>Update available:</span>
+                    <span data-montage-id="dependencyUpdateAvailable"></span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

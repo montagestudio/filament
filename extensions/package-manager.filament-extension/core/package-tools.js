@@ -159,9 +159,8 @@ exports.Errors = {
             codes: {
                 dependencyNotFound: 2000,
                 versionNotFound: 2001,
-                requestInvalid: 2002,
-                wrongRequestFormat: 2003,
-                unknown: 2004
+                wrongRequestFormat: 2002,
+                unknown: 2003
             }
         },
         view: {
