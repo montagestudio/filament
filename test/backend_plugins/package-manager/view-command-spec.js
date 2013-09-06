@@ -1,8 +1,25 @@
 var viewCommand = require('../../../backend_plugins/package-manager-library/view-command').viewCommand,
     ErrorsCodes = require("../../../extensions/package-manager.filament-extension/core/package-tools.js").Errors.commands.view.codes,
+    SandboxedModule = require('sandboxed-module'),
+    npm = require("npm"),
     Q = require("q");
 
 describe("view command", function () {
+
+    beforeEach(function () {
+
+        runs(function() {
+            npm.load(null, function () {
+                viewCommand = SandboxedModule.require('../../../backend_plugins/package-manager-library/view-command', {
+                    requires: {"npm": npm}
+                }).viewCommand;
+            });
+        });
+
+        waitsFor(function() {
+            return npm.config.loaded;
+        }, "The npm package should be loaded", 750);
+    });
 
     it('should throw an error if the request is not valid.', function() {
 

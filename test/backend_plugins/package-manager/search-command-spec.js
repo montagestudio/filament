@@ -1,8 +1,25 @@
 var searchCommand = require('../../../backend_plugins/package-manager-library/search-command').searchCommand,
+    SandboxedModule = require('sandboxed-module'),
     ErrorsCodes = require("../../../extensions/package-manager.filament-extension/core/package-tools.js").Errors.commands.search.codes,
+    npm = require("npm"),
     Q = require("q");
 
 describe("search command", function () {
+
+    beforeEach(function () {
+
+        runs(function() {
+            npm.load(null, function () {
+                searchCommand = SandboxedModule.require('../../../backend_plugins/package-manager-library/search-command', {
+                    requires: {"npm": npm}
+                }).searchCommand;
+            });
+        });
+
+        waitsFor(function() {
+            return npm.config.loaded;
+        }, "The npm package should be loaded", 750);
+    });
 
     it("the request should be a valid name.", function() {
 
