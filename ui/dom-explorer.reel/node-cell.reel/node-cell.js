@@ -48,8 +48,6 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             this._nodeSegment.addEventListener("dragleave", this, false);
             this._nodeSegment.addEventListener("drop", this, false);
 
-            this.templateObjects.montageId.addEventListener("action", this);
-            this.templateObjects.montageArg.addEventListener("action", this);
         }
     },
 
