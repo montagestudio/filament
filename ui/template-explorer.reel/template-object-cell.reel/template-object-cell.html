@@ -25,7 +25,13 @@
                 },
                 "bindings": {
                     "templateObject": {"<-": "@owner.templateObject"}
-                }
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             },
 
             "objectLabel": {
