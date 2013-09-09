@@ -92,6 +92,9 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
 
     handleBlur: {
         value: function () {
+            if(this.isEditing){
+                this.value = this._inputValue;
+            }
             this.isEditing = false;
         }
     }
