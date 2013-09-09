@@ -409,4 +409,15 @@ describe("core/project-controller-filesystem-spec", function () {
         });
     });
 
+    describe("fileInTreeAtUrl", function () {
+
+        it("works when passed a trailing slash", function () {
+            return projectControllerLoadedPromise.then(function () {
+                var ui = projectController.fileInTreeAtUrl("projectUrl/ui/");
+                expect(ui.name).toBe("ui");
+            });
+        });
+
+    });
+
 });

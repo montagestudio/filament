@@ -1056,6 +1056,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             if (fileUrl === this.projectUrl) {
                 return this.files;
             }
+            // Remove any trailing slash
+            fileUrl = fileUrl.replace(/\/$/, "");
 
             var relativePathInProject = fileUrl.replace(this.projectUrl + "/", "");
             var hierarchy = relativePathInProject.split("/");
