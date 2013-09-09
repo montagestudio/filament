@@ -463,7 +463,7 @@ exports.PackageDocument = EditingDocument.specialize( {
     },
 
     installDependency: {
-        value: function (name, version, type) { // version or git url
+        value: function (name, version, type, strict) { // version or git url, strict force the range to be the version installed.
             var self = this,
                 module = {
                     name: name,
@@ -473,7 +473,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                     isInstalling: true
                 };
 
-            this._insertDependency(module, true); // Insert and Save
+            this._insertDependency(module, true, strict); // Insert and Save
 
             return PackageQueueManager.installModule(module).then(function (installed) {
                 if (installed && typeof installed === 'object' && installed.hasOwnProperty('name')) {
@@ -506,7 +506,7 @@ exports.PackageDocument = EditingDocument.specialize( {
     },
 
     _insertDependency: {
-        value: function (module, save) {
+        value: function (module, save, strict) {
             if (module && typeof module === 'object' && module.hasOwnProperty('name') && module.hasOwnProperty('version')) {
                 var self = this;
 
@@ -519,11 +519,11 @@ exports.PackageDocument = EditingDocument.specialize( {
                     self._dependencyCollection[module.type].push(module);
 
                     if (!!save) {
-                        if (index >= 0) {
+                        if (index >= 0 && module.type !== dependency.type) {
                             self._removeDependencyFromFile(dependency, false);
                         }
 
-                        self._addDependencyToFile(module);
+                        self._addDependencyToFile(module, strict);
                         self._modificationsAccepted(DEPENDENCY_TIME_AUTO_SAVE);
                     }
                 });
@@ -532,7 +532,7 @@ exports.PackageDocument = EditingDocument.specialize( {
     },
 
     _addDependencyToFile: {
-        value: function (dependency, type) {
+        value: function (dependency, strict, type) {
             if (typeof type === 'string') {
                 dependency.type = type;
             }
@@ -541,7 +541,16 @@ exports.PackageDocument = EditingDocument.specialize( {
                 type = DependencyNames[dependency.type];
 
                 if (type) {
-                    this._package[type][dependency.name] = (dependency.versionInstalled || dependency.version);
+                    var group = this._package[type],
+                        range = group[dependency.name];
+
+                    if (range && !strict) { // if range already specified
+                        range = !semver.clean(range, true) ? range : dependency.versionInstalled; // clean returns null if the range it's not a version specified.
+                    } else {
+                        range = dependency.versionInstalled;
+                    }
+
+                    group[dependency.name] = range;
                     return true;
                 }
             }
@@ -552,7 +561,7 @@ exports.PackageDocument = EditingDocument.specialize( {
     replaceDependency: {
         value: function (dependency, type) {
             if (dependency && dependency.type !== type && !PackageQueueManager.isRunning && !this.isReloadingList &&
-                this._removeDependencyFromFile(dependency, false) && this._addDependencyToFile(dependency, type)) {
+                this._removeDependencyFromFile(dependency, false) && this._addDependencyToFile(dependency, true, type)) {
 
                 return this.saveModification(true);
             }

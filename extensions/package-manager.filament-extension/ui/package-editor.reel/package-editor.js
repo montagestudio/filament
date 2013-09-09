@@ -207,7 +207,7 @@ exports.PackageEditor = Montage.create(Editor, {
             }
 
             var self = this,
-                promise = this.currentDocument.installDependency(dependency, version, type).then(function (data) {
+                promise = this.currentDocument.installDependency(dependency, version, type, true).then(function (data) {
                     if (data && typeof data === 'object' && data.hasOwnProperty('name')) {
                         self._dependenciesListChange(data.name, INSTALL_DEPENDENCY_ACTION);
                         return 'The dependency ' + data.name + ' has been installed.';
