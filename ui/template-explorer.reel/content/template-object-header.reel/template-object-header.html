@@ -65,7 +65,8 @@
                 "element": {"#": "commentField"}
             },
             "bindings": {
-                "value": {"<-": "@owner.templateObject.editorMetadata.get('comment')"}
+                "value": {"<-": "@owner.templateObject.editorMetadata.get('comment')"},
+                "classList.has('TemplateObjectHeader-comment--disabled')": {"<-": "!@owner.isEditingComment"}
             }
         }
     }

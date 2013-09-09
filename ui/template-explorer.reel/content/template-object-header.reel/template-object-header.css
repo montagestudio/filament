@@ -98,6 +98,11 @@
     background: hsl(42, 83%, 95%);
 }
 
+.TemplateObjectHeader-comment--disabled{
+    opacity: .5;
+    pointer-events: none;
+}
+
 .TemplateObjectHeader-comment:focus {
     border-color: hsla(0,0%,0%,.2);
     background: hsl(42, 83%, 98%);
