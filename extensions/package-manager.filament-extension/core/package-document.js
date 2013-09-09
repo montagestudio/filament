@@ -7,6 +7,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     PackageTools = Tools.ToolsBox,
     ErrorsCommands = Tools.Errors.commands,
     DependencyNames = Tools.DependencyNames,
+    defaultLocalizer = require("montage/core/localizer").defaultLocalizer,
     DEFAULT_TIME_AUTO_SAVE = 400,
     DEPENDENCY_TIME_AUTO_SAVE = 100,
     DEPENDENCIES_REQUIRED = ['montage'],
@@ -631,12 +632,14 @@ exports.PackageDocument = EditingDocument.specialize( {
                     self._outDatedDependencies = updates;
                     self._notifyOutDatedDependencies();
 
-                    return total > 1 ? total + " updates have been found" : total + " update has been found";
+                    return defaultLocalizer.localize("num_updates").then(function (messageFn) {
+                        return messageFn({updates:total});
+                    });
                 });
 
             this.dispatchEventNamed("asyncActivity", true, false, {
                 promise: promise,
-                title: "Searching Updates"
+                title: "Searching for updates"
             });
         }
     },
@@ -713,7 +716,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             var self = this,
                 jsonPackage = JSON.stringify(this._package, function (key, value) {
                     return (value !== null) ?  value : undefined;
-                }, '\t');
+                }, 4);
 
             this._savingInProgress = Promise.when(dataWriter(jsonPackage, url)).then(function (value) {
                 self._changeCount = 0;
