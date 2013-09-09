@@ -29,6 +29,8 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
     prepareForActivationEvents: {
         value: function () {
             this._referenceProxyElement.addEventListener("dragstart", this, false);
+
+            this.templateObjects.icon.element.addEventListener("dblclick", this, false);
         }
     },
 
@@ -79,6 +81,12 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
             var commentField = this.templateObjects.commentField;
             commentField.value = this.templateObject.getEditorMetadata('comment');
             this.isEditingComment = false;
+		}
+	},
+
+    handleDblclick: {
+        value: function () {
+            this.dispatchEventNamed("action", true ,true);
         }
     }
 

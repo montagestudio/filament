@@ -29,8 +29,6 @@ exports.TemplateObjectCell = Component.specialize({
             this.element.addEventListener("dragover", this, false);
             this.element.addEventListener("dragleave", this, false);
             this.element.addEventListener("drop", this, false);
-
-            this.element.addEventListener("dblclick", this, false);
         }
     },
 
@@ -126,7 +124,7 @@ exports.TemplateObjectCell = Component.specialize({
         }
     },
 
-    handleDblclick: {
+    handleHeaderAction: {
         value: function () {
             if (this.isInProjectPackage) {
                 this.dispatchEventNamed("openModuleId", true ,true, {
