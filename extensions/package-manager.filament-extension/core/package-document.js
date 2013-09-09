@@ -550,7 +550,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                         range = dependency.versionInstalled;
                     }
 
-                    group[dependency.name] = range;
+                    group[dependency.name] = range || '';
                     return true;
                 }
             }
