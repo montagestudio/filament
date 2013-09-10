@@ -55,11 +55,25 @@ exports.TemplateObjectCell = Component.specialize({
                 // and this is super limited done in time for a demo
                 this.isInProjectPackage = /^ui\//.test(value.moduleId);
 
-                value.editingDocument.packageRequire.async(value.moduleId)
+                // If we already have the exports then use them synchronously
+                // This avoids a visual glitch where the element field appears
+                // breifly.
+                try {
+                    var exports = value.editingDocument.packageRequire(value.moduleId);
+                    var object = exports[value.exportName];
+                    this.isTemplateObjectComponent = object.prototype instanceof Component;
+                } catch (e) {
+                    // Otherwise if Mr hasn't loaded the module then do it async
+                    if (e.message.search(/^Can't require module/) === -1) {
+                        throw e;
+                    }
+                    value.editingDocument.packageRequire.async(value.moduleId)
                     .get(value.exportName)
                     .then(function (object) {
                         self.isTemplateObjectComponent = object.prototype instanceof Component;
                     }).fail(Function.noop);
+                }
+
             }
 
         }
