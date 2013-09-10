@@ -1,3 +1,5 @@
+/*global describe,beforeEach,it,expect,waitsFor,runs*/
+
 var searchCommand = require('../../../backend_plugins/package-manager-library/search-command').searchCommand,
     SandboxedModule = require('sandboxed-module'),
     ErrorsCodes = require("../../../extensions/package-manager.filament-extension/core/package-tools.js").Errors.commands.search.codes,
