@@ -33,14 +33,14 @@ exports.searchModules = function (request) {
     return Q.invoke(searchCommand, "run", request);
 };
 
-exports.installDependency = function (request, where) {
-    return Q.invoke(installCommand, "run", request, where, false);
+exports.installDependency = function (request) {
+    return Q.invoke(installCommand, "run", request, false);
 };
 
 exports.removeDependency = function (name, where) {
     return Q.invoke(removeCommand, "run", name, where);
 };
 
-exports.getOutdatedDependencies = function (where) {
-    return Q.invoke(outDatedCommand, "run", where);
+exports.getOutdatedDependencies = function () {
+    return Q.invoke(outDatedCommand, "run");
 };

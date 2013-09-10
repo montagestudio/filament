@@ -634,7 +634,7 @@ exports.PackageDocument = EditingDocument.specialize( {
     _getOutDatedDependencies: {
         value: function () {
             var self = this,
-                promise = this.packageManagerPlugin.invoke("getOutdatedDependencies", this.projectUrl).then(function (updates) {
+                promise = this.packageManagerPlugin.invoke("getOutdatedDependencies").then(function (updates) {
                     var keys = Object.keys(updates),
                         total = keys ? keys.length : 0;
 
