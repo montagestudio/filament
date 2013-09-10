@@ -172,9 +172,8 @@ exports.PackageEditor = Montage.create(Editor, {
      */
     removeDependency: {
         value: function (source, dependency) {
-            var self = this;
-
             if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name')) {
+                var self = this;
                 source.performingAction = true; // Notify to the cell the dependency is installing.
 
                 var promise = this.currentDocument.uninstallDependency(dependency.name).then(function (success) {
@@ -191,7 +190,7 @@ exports.PackageEditor = Montage.create(Editor, {
                     throw error;
                 });
 
-                self.dispatchEventNamed("asyncActivity", true, false, {
+                this.dispatchEventNamed("asyncActivity", true, false, {
                     promise: promise,
                     title: "Removing"
                 });
@@ -208,7 +207,7 @@ exports.PackageEditor = Montage.create(Editor, {
             }
 
             var self = this,
-                promise = this.currentDocument.installDependency(dependency, version, type).then(function (data) {
+                promise = this.currentDocument.installDependency(dependency, version, type, true).then(function (data) {
                     if (data && typeof data === 'object' && data.hasOwnProperty('name')) {
                         self._dependenciesListChange(data.name, INSTALL_DEPENDENCY_ACTION);
                         return 'The dependency ' + data.name + ' has been installed.';
@@ -217,7 +216,7 @@ exports.PackageEditor = Montage.create(Editor, {
                     throw new Error('An error has occurred while installing the dependency ' + dependency);
                 });
 
-            self.dispatchEventNamed("asyncActivity", true, false, {
+            this.dispatchEventNamed("asyncActivity", true, false, {
                 promise: promise,
                 title: "Installing"
             });

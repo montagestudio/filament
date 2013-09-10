@@ -177,9 +177,9 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
      */
     _install: {
         value: function (module) {
-            var self = this;
-
             if (module) {
+                var self = this;
+
                 if (module.strict) {
                     this._packageManagerPlugin.invoke("installDependency", module.request, this._projectUrl).then(function (installed) {
                         if (installed && typeof installed === 'object' && installed.hasOwnProperty('name')) { // If the package has been installed.
@@ -234,9 +234,9 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
      */
     _remove: {
         value: function (module) {
-            var self = this;
-
             if (module) {
+                var self = this;
+
                 if (module.strict) {
                     this._packageManagerPlugin.invoke("removeDependency", module.name, this._projectUrl).then(function (removed) {
                         if (removed) { // If the package has been removed.

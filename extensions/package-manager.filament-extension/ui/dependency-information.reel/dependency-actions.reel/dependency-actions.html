@@ -84,9 +84,21 @@
             "bindings": {
                 "value" : { "<-" : "@owner.currentDependency.update.available"}
             }
+        },
+
+        "acceptUpdate": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "label": "Update",
+                "element": {"#": "dependencyAcceptUpdate"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
-
-
 
     }
     </script>
@@ -109,6 +121,7 @@
                 <li class="PackageEditorPanel-list-item" data-montage-id="dependencyUpdate">
                     <span>Update available:</span>
                     <span data-montage-id="dependencyUpdateAvailable"></span>
+                    <button data-montage-id="dependencyAcceptUpdate"></button>
                 </li>
             </ul>
         </div>
