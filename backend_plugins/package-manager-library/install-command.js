@@ -1,8 +1,8 @@
 var PackageManagerError = require("./core").PackageManagerError,
-    Q = require("q"),
     Tools = require("./package-manager-tools").PackageManagerTools,
-    npm = require("npm"),
     InstallCommand = function InstallCommand() {},
+    npm = require("npm"),
+    Q = require("q"),
 
     ERROR_NOT_FOUND = 2000,
     ERROR_VERSION_NOT_FOUND = 2001,
@@ -13,8 +13,9 @@ var PackageManagerError = require("./core").PackageManagerError,
  * Prepares the install command, then invokes it.
  * @function
  * @param {String} request the package to install, should respect the following format: "name[@version]".
- * @param {String} where where to install the package.
- * @param {boolean} deeply option which allows to get a response with further information.
+ * @param {String} where represents the path where the package will be installed.
+ * @param {boolean} deeply represents an option which allows to get a response with further information
+ * (all the dependencies child installed).
  * @return {Promise.<Object>} A promise for the installed package.
  */
 InstallCommand.prototype.run = function (request, where, deeply) {
@@ -24,16 +25,17 @@ InstallCommand.prototype.run = function (request, where, deeply) {
         }
         return this._invokeInstallCommand(request, where, deeply);
     }
-    throw new PackageManagerError("Should respect the following format: name[@version], gitUrl", ERROR_WRONG_FORMAT);
+    throw new PackageManagerError("Should respect the following format: name[@version], or a git url", ERROR_WRONG_FORMAT);
 };
 
 /**
- * Invokes the install command.
+ * Invokes the NPM install command.
  * @function
  * @param {String} request the package to install, should respect the following format: "name[@version]".
- * @param {String} where where to install the package.
- * @param {boolean} deeply option which allows to get a response with more information.
- * @return {Promise} A promise for the installed package.
+ * @param {String} where represents the path where the package will be installed.
+ * @param {boolean} deeply represents an option which allows to get a response with further information
+ * (all the dependencies child installed).
+ * @return {Promise.<Object>} A promise for the installed package.
  * @private
  */
 InstallCommand.prototype._invokeInstallCommand = function (request, where, deeply) {
@@ -57,8 +59,9 @@ InstallCommand.prototype._invokeInstallCommand = function (request, where, deepl
  * Format the NPM response when the package installation is done.
  * @function
  * @param {Object} response contains all information about the installation.
- * @param {boolean} deeply option which allows to get a deeply response.
- * @return {Object} a well formatted object containing information about the installation.
+ * @param {boolean} deeply represents an option which allows to get a response with further information
+ * (all the dependencies child installed).
+ * @return {Object} a well formatted object containing all information about the installation.
  * @private
  */
 InstallCommand.prototype._formatResponse = function (response, deeply) {
@@ -66,8 +69,8 @@ InstallCommand.prototype._formatResponse = function (response, deeply) {
         var keys = Object.keys(response),
             root = response[keys[0]];
 
-        if (!root && typeof root !== 'object') {
-            throw new PackageManagerError("Dependency not installed", ERROR_UNKNOWN);
+        if (!root && typeof root !== 'object' && !root.hasOwnProperty('what')) {
+            throw new PackageManagerError("Dependency not installed, error unknown", ERROR_UNKNOWN);
         }
 
         var information = Tools.getModuleFromString(root.what);
@@ -90,12 +93,16 @@ InstallCommand.prototype._formatChildren = function (parent) {
     var container = [];
 
     if (parent && typeof parent === 'object' && parent.hasOwnProperty('children')) {
-        for (var i = 0, length = parent.children.length; i < length; i++) {
-            var child = parent.children[i],
-                tmp = Tools.getModuleFromString(child.what);
+        var children = parent.children;
 
-            tmp.children = this._formatChildren(child);
-            container.push(tmp);
+        for (var i = 0, length = children.length; i < length; i++) {
+            var child = children[i];
+
+            if (child && typeof child === 'object' && child.hasOwnProperty('what')) {
+                var tmp = Tools.getModuleFromString(child.what);
+                tmp.children = this._formatChildren(child);
+                container.push(tmp);
+            }
         }
     }
     return container;
