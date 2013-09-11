@@ -9,6 +9,13 @@ var FS = require("q-io/fs"),
     ERROR_FS_PERMISSION = 4002,
     ERROR_DEPENDENCY_NOT_FOUND = 4003;
 
+/**
+ * Remove a dependency on the filesystem.
+ * @function
+ * @param {String} name Dependency name.
+ * @param {boolean} where represents the file system path where to operate.
+ * @return {Promise.<Object>} Promise for the removed dependency.
+ */
 RemoveCommand.prototype.run = function (name, where) {
     if (typeof name === 'string' && name.length > 0) {
         name = name.trim();
