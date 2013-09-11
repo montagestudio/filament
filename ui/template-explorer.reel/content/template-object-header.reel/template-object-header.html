@@ -22,13 +22,13 @@
             }
         },
 
-        "templateObjectExportName": {
+        "templateObjectExportId": {
             "prototype": "montage/ui/text.reel",
             "properties": {
-                "element": {"#": "templateObjectExportName"}
+                "element": {"#": "templateObjectExportId"}
             },
             "bindings": {
-                "value": {"<-": "@owner.templateObject.exportName"}
+                "value": {"<-": "@owner.templateObject.exportId"}
             }
         },
 
@@ -105,7 +105,7 @@
                 <img data-montage-id="icon" class="TemplateObjectHeader-icon" src="" draggable="false">
                 <div class="TemplateObjectHeader-flex">
                     <h3 class="TemplateObjectHeader-title"><div data-param="title"></div></h3>
-                    <label data-montage-id="templateObjectExportName" class="TemplateObjectHeader-exportName"></label>
+                    <label data-montage-id="templateObjectExportId" class="TemplateObjectHeader-exportId"></label>
                 </div>
             </div>
             <section data-param="toolbar"></section>
