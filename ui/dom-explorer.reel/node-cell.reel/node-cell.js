@@ -113,12 +113,17 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             this.addChildOver = true;
             this.addAfterOver = true;
             prevNodeCell.addAfterOver = true;
-            this.domExplorer.element.classList.add('shift');
+            //this.domExplorer.element.classList.add('shift');
+            this.domExplorer.element.classList.remove('preshift');
+
+            this.domExplorer.addChildOver = this;
+            this.domExplorer.addAfterOver= [this, prevNodeCell];
         }
     },
 
     addElementOut: {
         value: function () {
+            if (true) {return;} // FIXME
             var prevNodeCell = this._element.parentNode.previousElementSibling.firstElementChild.component;
             this.addChildOver = false;
             this.addAfterOver = false;

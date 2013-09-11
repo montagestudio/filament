@@ -245,7 +245,7 @@
                 "type": "child"
             },
             "bindings": {
-                "classList.has('dropover')": {"<-": "@owner.addChildOver"}
+                "classList.has('dropover')": {"<-": "@owner.domExplorer.addChildOver == @owner"}
             },
             "listeners": [
                 {
@@ -261,7 +261,7 @@
                 "type": "sibling"
             },
             "bindings": {
-                "classList.has('dropover')": {"<-": "@owner.addAfterOver"}
+                "classList.has('dropover')": {"<-": "@owner.domExplorer.addAfterOver && @owner.domExplorer.addAfterOver.indexOf(@owner) != -1"}
             },
             "listeners": [
                 {

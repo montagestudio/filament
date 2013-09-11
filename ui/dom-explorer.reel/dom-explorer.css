@@ -33,6 +33,11 @@
     margin-top: -35px;
 }
 
+.DomExplorer.preshift .NodeList{
+    margin-top: 35px;
+}
+
+
 /* AddElement --------------------------- */
 
 .AddElement {
