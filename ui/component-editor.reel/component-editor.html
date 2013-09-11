@@ -106,7 +106,8 @@
             "eventTargetOverlay": {
                 "prototype": "montage/ui/overlay.reel",
                 "properties": {
-                    "element": {"#": "eventTargetOverlay"}
+                    "element": {"#": "eventTargetOverlay"},
+                    "delegate": {"@": "listenerCreator"}
                 }
             },
 
@@ -133,7 +134,8 @@
             "bindingOverlay": {
                 "prototype": "montage/ui/overlay.reel",
                 "properties": {
-                    "element": {"#": "bindingOverlay"}
+                    "element": {"#": "bindingOverlay"},
+                    "delegate": {"@": "bindingCreator"}
                 }
             },
 

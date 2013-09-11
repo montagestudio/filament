@@ -57,6 +57,19 @@ exports.ListenerJig = Montage.create(Component, /** @lends module:"./listener-ji
         }
     },
 
+    shouldDismissOverlay: {
+        value: function (overlay, target) {
+            // don't dismiss the overlay if the user can drag the target
+            while (target) {
+                if (target.draggable) {
+                    return false;
+                }
+                target = target.parentElement;
+            }
+            return true;
+        }
+    },
+
     handleUpdateEventListenerButtonAction: {
         value: function (evt) {
             evt.stop();
