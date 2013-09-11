@@ -129,7 +129,8 @@
         "nodeCell": {
             "prototype": "./node-cell.reel",
             "properties": {
-                "element": {"#": "nodeCell"}
+                "element": {"#": "nodeCell"},
+                "domExplorer": {"@": "owner"}
             },
             "bindings": {
                 "nodeInfo": {"<-": "@nodeCell.parentComponent.object"},

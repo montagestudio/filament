@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="add-element.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "AddElement"}
+            }
+        },
+        
+        "textInput": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "textInput"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="AddElement" class="AddElement">
+        <div class="AddElement-segment">
+            <input style="display:none" data-montage-id="textInput" type="text" placeholder="<element />" />
+        </div>
+    </div>
+</body>
+</html>
