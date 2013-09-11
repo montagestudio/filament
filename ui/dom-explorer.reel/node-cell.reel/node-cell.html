@@ -235,7 +235,40 @@
             },
             "bindings": {
                 "condition": {"<-": "@owner.nodeInfo.children.length"}
-            }
+            } 
+        },
+
+        "addChildElement": {
+            "prototype": "./add-element.reel",
+            "properties": {
+                "element": {"#": "addChildElement"},
+                "type": "child"
+            },
+            "bindings": {
+                "classList.has('dropover')": {"<-": "@owner.addChildOver"}
+            },
+            "listeners": [
+                {
+                    "type": "insertTemplateAction",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+        "addElementAfter": {
+            "prototype": "./add-element.reel",
+            "properties": {
+                "element": {"#": "addElementAfter"},
+                "type": "sibling"
+            },
+            "bindings": {
+                "classList.has('dropover')": {"<-": "@owner.addAfterOver"}
+            },
+            "listeners": [
+                {
+                    "type": "insertTemplateAction",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>
@@ -279,6 +312,10 @@
                 class="NodeCell-button NodeCell-button--child"
                 title="Append new node as last child"><i class="NodeCell-button-icon NodeCell-button-icon--child"></i></button>
         </span>
+
+        <div data-montage-id="addChildElement" class="NodeCell-add-element child"></div>
+        <div data-montage-id="addElementAfter" class="NodeCell-add-element sibling"></div>
+
     </div>
 </body>
 </html>

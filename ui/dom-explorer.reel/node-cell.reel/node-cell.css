@@ -181,6 +181,19 @@
     opacity: 0.25;
 }
 
-.NodeCell--noChildren{
-    padding-left: 20px;
+/* Add tree elements -------------- */
+.NodeCell:hover .NodeCell-add-element, .NodeCell-add-element.hover {
+    display: block;
+}
+
+.NodeCell-add-element{
+    margin-left: 10px;
+    padding: 0px;
+    /*display: none;*/
+}
+.NodeCell--noChildren .NodeCell-add-element {
+    margin-left: 0px;
+}
+.NodeCell-add-element.child {
+    padding-left: 24px;
 }

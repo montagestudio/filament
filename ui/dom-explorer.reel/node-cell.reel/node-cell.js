@@ -27,6 +27,18 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: null
     },
 
+    addChildOver: {
+        value: false
+    },
+
+    addAfterOver: {
+        value: false
+    },
+
+    domExplorer: {
+        value: null
+    },
+
     nodeInfo: {
         get: function() {
             return this._nodeInfo;
@@ -51,6 +63,9 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             this._nodeSegment.addEventListener("dragenter", this, false);
             this._nodeSegment.addEventListener("dragleave", this, false);
             this._nodeSegment.addEventListener("drop", this, false);
+
+            this._nodeSegment.addEventListener("mouseover", this, false);
+            this._nodeSegment.addEventListener("mouseout", this, false);
 
             this.templateObjects.montageId.addEventListener("action", this);
             this.element.addEventListener("mouseover", this);
@@ -92,6 +107,26 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
+    addElementOver: {
+        value: function () {
+            var prevNodeCell = this._element.parentNode.previousElementSibling.firstElementChild.component;
+            this.addChildOver = true;
+            this.addAfterOver = true;
+            prevNodeCell.addAfterOver = true;
+            this.domExplorer.element.classList.add('shift');
+        }
+    },
+
+    addElementOut: {
+        value: function () {
+            var prevNodeCell = this._element.parentNode.previousElementSibling.firstElementChild.component;
+            this.addChildOver = false;
+            this.addAfterOver = false;
+            prevNodeCell.addAfterOver = false;
+            this.domExplorer.element.classList.remove('shift');
+        }
+    },
+
     handleDragover: {
         enumerable: false,
         value: function (event) {
@@ -107,6 +142,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     handleDragenter: {
         enumerable: false,
         value: function (evt) {
+            this.addElementOver();
             if (this.acceptsDrop(evt) && (this._nodeSegment === evt.target || this._nodeSegment.parentOf(evt.target))) {
                 this.isDropTarget = true;
             }
@@ -115,6 +151,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
 
     handleDragleave: {
         value: function (evt) {
+            this.addElementOut();
             if (this.acceptsDrop(evt) && (this._nodeSegment === evt.target || this._nodeSegment.parentOf(evt.target))) {
                 this.isDropTarget = false;
             }
@@ -137,6 +174,18 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                 self.isDropTarget = false;
             })
             .done();
+        }
+    },
+
+    handleMouseover: {
+        value: function (evt){
+            this.addElementOver();
+        }
+    },
+
+    handleMouseout: {
+        value: function (evt){
+            this.addElementOut();
         }
     },
 
@@ -193,6 +242,26 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function (evt) {
             this.dispatchEventNamed("insertAfterNode", true, true, {
                 previousSibling: this.nodeInfo,
+                transferObject: evt.detail.transferObject
+            });
+        }
+    },
+
+    // new drop/hover add template sibling
+    handleAddElementAfterInsertTemplateAction: {
+        value: function (evt) {
+            this.dispatchEventNamed("insertAfterNode", true, true, {
+                previousSibling: this.nodeInfo,
+                transferObject: evt.detail.transferObject
+            });
+        }
+    },
+
+    // new drop/hover add template child
+    handleAddChildElementInsertTemplateAction: {
+        value: function (evt) {
+            this.dispatchEventNamed("appendNode", true, true, {
+                parentNode: this.nodeInfo,
                 transferObject: evt.detail.transferObject
             });
         }

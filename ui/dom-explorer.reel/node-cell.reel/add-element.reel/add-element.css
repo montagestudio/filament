@@ -1,0 +1,54 @@
+.AddElement {
+    margin: 2px 0;
+    padding: 0px;
+    display: none;
+}
+
+.AddElement .AddElement-segment {
+    border: 2px dashed hsl(0,0%,90%);
+    border-radius: 22px;
+    display: inline-block;
+    text-align: center;
+    width: 120px;
+}
+
+.AddElement .AddElement-segment input{
+    background-color: transparent;
+    text-align: center;
+    border: 0px;
+    padding: 0;
+    border-radius: 22px;
+    line-height: 22px;
+    font-size: 11px;
+}
+
+.AddElement .AddElement-segment input:focus {
+
+}
+
+.AddElement .AddElement-segment:before {
+    font-size: 11px;
+    line-height: 22px;
+    color: hsl(0,0%,60%);
+}
+
+.AddElement.child .AddElement-segment:before {
+    content: "<child element />";
+}
+.AddElement.sibling .AddElement-segment:before {
+    content: "<sibling element />";
+}
+
+.AddElement--dropTarget .AddElement-segment{
+    border-style: dashed;
+    border-color: hsl(216,100%,70%);
+    color: hsl(216,100%,70%);
+}
+
+.AddElement--dropTarget .AddElement-segment:before {
+    color: hsl(216,100%,70%);
+}
+
+.AddElement.dropover {
+    display: block;
+}
