@@ -53,6 +53,19 @@ exports.BindingJig = Montage.create(Component, {
         value: null
     },
 
+    shouldDismissOverlay: {
+        value: function (overlay, target) {
+            // don't dismiss the overlay if the user can drag the target
+            while (target) {
+                if (target.draggable) {
+                    return false;
+                }
+                target = target.parentElement;
+            }
+            return true;
+        }
+    },
+
     handleDrop: {
         value: function (event) {
             if (event.dataTransfer.types.has(MimeTypes.SERIALIZATION_OBJECT_LABEL)) {
