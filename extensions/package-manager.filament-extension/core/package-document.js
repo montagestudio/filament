@@ -547,7 +547,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                     if (range && !strict) { // if range already specified
                         range = !semver.clean(range, true) ? range : dependency.versionInstalled; // clean returns null if the range it's not a version specified.
                     } else {
-                        range = dependency.versionInstalled;
+                        range = PackageTools.isGitUrl(dependency.version) ? dependency.version : dependency.versionInstalled;
                     }
 
                     group[dependency.name] = range || '';
@@ -655,7 +655,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     isRangeValid: {
         value: function (range) {
-            return !!semver.validRange(range);
+            return !!semver.validRange(range) || PackageTools.isGitUrl(range);
         }
     },
 
