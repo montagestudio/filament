@@ -40,7 +40,13 @@
             },
             "bindings": {
                 "value": {"<-": "@owner.nodeInfo.montageId"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "montageArg": {
@@ -50,7 +56,14 @@
             },
             "bindings": {
                 "value": {"<-": "@owner.nodeInfo.montageArg"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+
         },
 
         "componentCondition": {

@@ -47,6 +47,12 @@ describe("core/reel-document-template-editing-spec", function () {
                     }
                 ]
             },
+            "testDomAttribute": {
+                "prototype": "ui/foo.reel",
+                "properties": {
+                    "element": {"#": "testDomAttribute"}
+                }
+            },
             "bar": {
                 "prototype": "bar-exportId"
             }
@@ -57,6 +63,7 @@ describe("core/reel-document-template-editing-spec", function () {
         '       <div id="foo" data-montage-id="foo">'+
         '           <p id="removeLastNode"></p>'+
         '       </div>'+
+        '       <div data-arg="readOnly" id="testDomAttribute" data-montage-id="testDomAttribute"></div>'+
         '   </section>'+
         '</div>');
     });
@@ -729,6 +736,78 @@ describe("core/reel-document-template-editing-spec", function () {
 
                 return reelDocument.undoManager.undo().then(function() {
                     expect(element.getAttribute("data-montage-id")).toBe("foo");
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+    });
+
+    describe("setting a node's dom attributes", function() {
+
+        it("should add a dom attribute", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("foo");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                var ok = reelDocument.setNodeProxyAttribute(nodeProxy, "data-arg", "integer");
+                expect(ok).toBe(true);
+                expect(element.getAttribute("data-arg")).toBe("integer");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should change the dom attribute", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("testDomAttribute");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                var ok = reelDocument.setNodeProxyAttribute(nodeProxy, "data-arg", "readWrite");
+                expect(ok).toBe(true);
+                expect(element.getAttribute("data-arg")).toBe("readWrite");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should reflect changes to the dom attribute", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("testDomAttribute");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+                var userVisibleValue = nodeProxy.montageArg;
+
+                expect(userVisibleValue).toBe("readOnly");
+                reelDocument.setNodeProxyAttribute(nodeProxy, "data-arg", "readWrite");
+                userVisibleValue = nodeProxy.montageArg;
+                expect(userVisibleValue).toBe("readWrite");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should remove dom when it is set to a falsy value", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("testDomAttribute");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                reelDocument.setNodeProxyAttribute(nodeProxy, "data-arg", null);
+                expect(element.hasAttribute("data-arg")).toBeFalsy();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should add an undo operation for changing it", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("testDomAttribute");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                reelDocument.setNodeProxyAttribute(nodeProxy, "data-arg", "readWrite");
+                expect(reelDocument.undoManager.undoCount).toBe(1);
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should undo the setting by reverting to the previous value", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("testDomAttribute");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                reelDocument.setNodeProxyAttribute(nodeProxy, "data-arg", "readWrite");
+
+                return reelDocument.undoManager.undo().then(function() {
+                    expect(element.getAttribute("data-arg")).toBe("readOnly");
                 });
             }).timeout(WAITSFOR_TIMEOUT);
         });
