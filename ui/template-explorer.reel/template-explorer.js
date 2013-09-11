@@ -6,14 +6,24 @@
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     application = require("montage/core/application").application,
-    MimeTypes = require("core/mime-types");
+    MimeTypes = require("core/mime-types"),
+    SideDataConverter = require("core/side-data-converter").SideDataConverter;
 
 /**
     Description TODO
     @class module:"./template-explorer.reel".TemplateExplorer
     @extends module:montage/ui/component.Component
 */
-exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./template-explorer.reel".TemplateExplorer# */ {
+exports.TemplateExplorer = Component.specialize(/** @lends module:"./template-explorer.reel".TemplateExplorer# */ {
+
+    constructor: {
+        value: function TemplateExplorer() {
+            this.super();
+
+            this.defineBinding("templateObjectsController.filterPath", {"<-": "templateObjectFilterPath"});
+            this.defineBinding("documentInfo", {"<-": "editingDocument", converter: new SideDataConverter()});
+        }
+    },
 
     _templateObjectFilterTerm: {
         value: null
@@ -51,14 +61,6 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             }
 
             return this._templateObjectFilterPath;
-        }
-    },
-
-    constructor: {
-        value: function TemplateExplorer() {
-            this.super();
-
-            this.defineBinding("templateObjectsController.filterPath", {"<-": "templateObjectFilterPath"});
         }
     },
 

@@ -7,7 +7,8 @@ var Component = require("montage/ui/component").Component,
     RangeController = require("montage/core/range-controller").RangeController,
     PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint,
     Serializer = require("montage/core/serialization").Serializer,
-    Promise = require("montage/core/promise").Promise;
+    Promise = require("montage/core/promise").Promise,
+    SideDataConverter = require("core/side-data-converter").SideDataConverter;
 
 /**
     Description TODO
@@ -19,6 +20,8 @@ exports.EditProperties = Component.specialize({
     constructor: {
         value: function EditProperties() {
             this.propertiesController =  RangeController.create();
+
+            this.defineBinding("ownerObjectInfo", {"<-": "ownerObject", converter: new SideDataConverter()});
         }
     },
 
