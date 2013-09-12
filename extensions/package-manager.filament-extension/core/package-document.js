@@ -8,8 +8,12 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     ErrorsCommands = Tools.Errors.commands,
     DependencyNames = Tools.DependencyNames,
     defaultLocalizer = require("montage/core/localizer").defaultLocalizer,
+
     DEFAULT_TIME_AUTO_SAVE = 400,
     DEPENDENCY_TIME_AUTO_SAVE = 100,
+    INSTALL_DEPENDENCY_ACTION = 0,
+    REMOVE_DEPENDENCY_ACTION = 1,
+    UPDATE_DEPENDENCY_ACTION = 2,
     DEPENDENCIES_REQUIRED = ['montage'],
     ALLOWED_PROPERTIES_KEYS = [
         'name',
@@ -462,14 +466,14 @@ exports.PackageDocument = EditingDocument.specialize( {
                 promise = Promise.reject(new Error("Dependency Information is missing"));
             }
 
-            if (!promise) { // no errors
-                if (action === 0) { // install
+            if (!promise) { // No errors.
+                if (action === INSTALL_DEPENDENCY_ACTION) {
                     promise = this.installDependency(dependency, true);
                     title = "Installing";
-                } else if (action === 1) { // remove
+                } else if (action === REMOVE_DEPENDENCY_ACTION) {
                     promise = this.uninstallDependency(dependency);
                     title = "Uninstalling";
-                } else if (action === 2) { // update
+                } else if (action === UPDATE_DEPENDENCY_ACTION) {
                     promise = this.updateDependency(dependency);
                     title = "Updating";
                 } else {
