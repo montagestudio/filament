@@ -6,7 +6,7 @@
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     MimeTypes = require("core/mime-types"),
-    getElementXPath = require("core/xpath").getElementXPath;
+    getElementXPath = require("palette/core/xpath").getElementXPath;
 
 /**
     Description TODO
