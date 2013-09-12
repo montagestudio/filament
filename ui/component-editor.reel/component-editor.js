@@ -223,7 +223,7 @@ exports.ComponentEditor = Editor.specialize({
     },
 
     // Event dispatched on stage element hover
-    handleHighlight: {
+    handleElementHover: {
         value: function (evt) {
             var detail = evt.detail,
                 highlight = detail.highlight,
