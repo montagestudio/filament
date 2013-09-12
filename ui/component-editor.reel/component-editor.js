@@ -88,7 +88,7 @@ exports.ComponentEditor = Editor.specialize({
                 this.needsDraw = true;
 
                 // Element highlight stage -> DOM Explorer
-                this.addEventListener("highlight", this, false);
+                this.addEventListener("elementHover", this, false);
                 // Element highlight DOM Explorer -> stage
                 this.addEventListener("highlightStageElement", this, false);
                 this.addEventListener("deHighlightDomExplorerElement", this, false);
