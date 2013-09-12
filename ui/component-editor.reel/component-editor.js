@@ -229,7 +229,7 @@ exports.ComponentEditor = Editor.specialize({
                 highlight = detail.highlight,
                 xpath = detail.xpath,
                 stageElement = detail.element,
-                parentComponentId = detail.parentComponentId,
+                parentComponents = detail.parentComponents,
                 documentEditor = this.currentDocument,
                 domExplorer = this.templateObjects.domExplorer;
 
@@ -251,8 +251,12 @@ exports.ComponentEditor = Editor.specialize({
             var nodeProxy = documentEditor.nodeProxyForNode(element);
 
             // handle highlighting at the component level if the DOM element is not found
-            if (!nodeProxy && parentComponentId) {
-                nodeProxy = documentEditor.nodeProxyForMontageId(parentComponentId);
+            if (!nodeProxy && parentComponents) {
+                var parentComponentId;
+                do {
+                    parentComponentId = parentComponents.shift();
+                    nodeProxy = documentEditor.nodeProxyForMontageId(parentComponentId);
+                } while (!nodeProxy);
             }
 
             // select the highlighted domExplorer element
