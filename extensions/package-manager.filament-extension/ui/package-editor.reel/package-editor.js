@@ -156,70 +156,11 @@ exports.PackageEditor = Montage.create(Editor, {
                 var source = event.detail.get('source');
 
                 if (source && typeof source === 'object' && !source.canInstall) { // remove request
-                    this.removeDependency(source, source.dependency);
+                    this.currentDocument.performActionDependency(REMOVE_DEPENDENCY_ACTION, source.dependency).done();
                 } else { // install request
-                    this.installDependency(source.dependency);
+                    this.currentDocument.performActionDependency(INSTALL_DEPENDENCY_ACTION, source.dependency).done();
                 }
             }
-        }
-    },
-
-    /**
-     * Invokes the uninstall dependency process.
-     * @function
-     * @param {Object} source, the cell which raised the action.
-     * @param {Object} dependency, the dependency owns by the cell.
-     */
-    removeDependency: {
-        value: function (source, dependency) {
-            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name')) {
-                var self = this;
-                source.performingAction = true; // Notify to the cell the dependency is installing.
-
-                var promise = this.currentDocument.uninstallDependency(dependency.name).then(function (success) {
-
-                    if (success) {
-                        self._dependenciesListChange(dependency.name, REMOVE_DEPENDENCY_ACTION);
-                        return 'The dependency ' + dependency.name + ' has been removed';
-                    }
-                    source.performingAction = false;
-                    throw new Error('An error has occurred while removing the dependency ' + dependency.name);
-
-                }, function (error) {
-                    source.performingAction = false;
-                    throw error;
-                });
-
-                this.dispatchEventNamed("asyncActivity", true, false, {
-                    promise: promise,
-                    title: "Removing"
-                });
-            }
-        }
-    },
-
-    installDependency: {
-        value: function (dependency, version, type) {
-            if (dependency && typeof dependency === "object" && dependency.name) {
-                version = dependency.version;
-                type = dependency.type;
-                dependency = dependency.name;
-            }
-
-            var self = this,
-                promise = this.currentDocument.installDependency(dependency, version, type, true).then(function (data) {
-                    if (data && typeof data === 'object' && data.hasOwnProperty('name')) {
-                        self._dependenciesListChange(data.name, INSTALL_DEPENDENCY_ACTION);
-                        return 'The dependency ' + data.name + ' has been installed.';
-                    }
-
-                    throw new Error('An error has occurred while installing the dependency ' + dependency);
-                });
-
-            this.dispatchEventNamed("asyncActivity", true, false, {
-                promise: promise,
-                title: "Installing"
-            });
         }
     },
 

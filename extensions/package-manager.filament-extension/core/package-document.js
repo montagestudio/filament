@@ -453,53 +453,79 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
+    performActionDependency: {
+        value: function (action, dependency) {
+            var promise = null,
+                title = null;
+
+            if (!dependency) {
+                promise = Promise.reject(new Error("Dependency Information is missing"));
+            }
+
+            if (!promise) { // no errors
+                if (action === 0) { // install
+                    promise = this.installDependency(dependency, true);
+                    title = "Installing";
+                } else if (action === 1) { // remove
+                    promise = this.uninstallDependency(dependency);
+                    title = "Uninstalling";
+                } else if (action === 2) { // update
+                    promise = this.updateDependency(dependency);
+                    title = "Updating";
+                } else {
+                    promise = Promise.reject(new Error("Action not recognized"));
+                    title = "Error";
+                }
+            }
+
+            this.dispatchEventNamed("asyncActivity", true, false, {
+                promise: promise,
+                title: title
+            });
+
+            return promise;
+        }
+    },
+
     updateDependency: {
-        value: function (name, version, type) {
-            if (PackageTools.isNameValid(name) && PackageTools.isVersionValid(version)) {
-                return this.installDependency(name, version, type);
+        value: function (dependency) {
+            if (dependency && typeof dependency === "object" && PackageTools.isNameValid(dependency.name) &&
+                PackageTools.isVersionValid(dependency.version)) {
+
+                return this.installDependency(dependency, false);
             }
             return Promise.reject(new Error("The dependency name and version are required"));
         }
     },
 
     installDependency: {
-        value: function (name, version, type, strict) { // version or git url, strict force the range to be the version installed.
+        value: function (dependency, install) { // install action => force the range to be the version installed.
             var self = this,
-                module = {
-                    name: name,
-                    version: (version || ''),
-                    versionInstalled: PackageTools.isVersionValid(version) ? version : null,
-                    type: (type || DependencyNames.dependencies),
-                    isInstalling: true
-                };
+                module = dependency;
 
-            this._insertDependency(module, true, strict); // Insert and Save
+            module.versionInstalled = PackageTools.isVersionValid(module.version) ? module.version : null; // if git url
+            module.performingAction = true;
+
+            this._insertDependency(module, true, install); // Insert and Save
 
             return PackageQueueManager.installModule(module).then(function (installed) {
                 if (installed && typeof installed === 'object' && installed.hasOwnProperty('name')) {
-                    module.isInstalling = false;
+                    module.performingAction = false;
 
-                    if (installed.name !== module.name) {
+                    if (installed.name !== module.name || !module.version) { // If names are different or version missing
                         self._removeDependencyFromFile(module, false);
-                        self._insertDependency({
-                            name: installed.name,
-                            version: installed.versionInstalled,
-                            type: module.type
-                        }, true); // If names are different
+                        module.name = installed.name;
+                        module.version = PackageTools.isGitUrl(module.version) ? module.version : installed.versionInstalled;
+                        module.versionInstalled = installed.versionInstalled;
+                        self._insertDependency(module, true);
                     }
 
-                    return {
-                        name: installed.name,
-                        versionInstalled: installed.versionInstalled,
-                        type: module.type,
-                        missing: false,
-                        installed: true
-                    };
+                    return 'The dependency ' + installed.name + (!!install ? ' has been installed.' : ' has been updated');
                 }
-                throw new Error('An error has occurred while installing the dependency ' + name);
+                throw new Error('An error has occurred while installing the dependency ' + module.name);
 
             }, function (error) {
-                module.isInstalling = false;
+                module.performingAction = false;
                 throw error;
             });
         }
@@ -569,21 +595,24 @@ exports.PackageDocument = EditingDocument.specialize( {
     },
 
     uninstallDependency: {
-        value: function (name) {
-            if (typeof name === 'string' && DEPENDENCIES_REQUIRED.indexOf(name.toLowerCase()) < 0) {
-                var dependency = this.findDependency(name);
+        value: function (dependency) {
+            dependency = (typeof dependency === 'string') ? this.findDependency(dependency) : dependency;
 
-                if (dependency && typeof dependency === "object") {
-                    this._removeDependencyFromFile(dependency, true);
-                    return PackageQueueManager.uninstallModule(name, !dependency.missing).then(function (data) {
-                        return data;
-                    });
+            if (dependency && typeof dependency === "object" && dependency.hasOwnProperty("name")) {
+                var name = dependency.name;
+
+                if (DEPENDENCIES_REQUIRED.indexOf(name.toLowerCase()) >= 0) {
+                    return Promise.reject(new Error('Can not uninstall the dependency ' + name + ', required by Lumieres'));
                 }
 
-                return Promise.reject(new Error('An error has occurred'));
-            } else {
-                return Promise.reject(new Error('Can not uninstall the dependency ' + name + ', required by Lumieres'));
+                dependency.performingAction = true;
+                this._removeDependencyFromFile(dependency, true);
+
+                return PackageQueueManager.uninstallModule(name, !dependency.missing).then(function () {
+                    return 'The dependency ' +name + ' has been removed';
+                });
             }
+            return Promise.reject(new Error('An error has occurred while removing a dependency'));
         }
     },
 
@@ -675,6 +704,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                     if (container[dependency.name]) {
                         container[dependency.name] = range.trim();
                         this._modificationsAccepted(DEFAULT_TIME_AUTO_SAVE, true);
+                        dependency.version = range;
                         return true;
                     }
                 }
