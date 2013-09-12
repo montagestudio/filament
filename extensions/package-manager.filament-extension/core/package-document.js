@@ -716,7 +716,6 @@ exports.PackageDocument = EditingDocument.specialize( {
                     if (container[dependency.name]) {
                         container[dependency.name] = range.trim();
                         this._modificationsAccepted(DEFAULT_TIME_AUTO_SAVE, true);
-                        dependency.version = range;
                         return true;
                     }
                 }
