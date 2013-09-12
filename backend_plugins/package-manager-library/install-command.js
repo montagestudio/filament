@@ -1,7 +1,5 @@
 var PackageManagerError = require("./core").PackageManagerError,
     Tools = require("./package-manager-tools").PackageManagerTools,
-    readJson = require("npm/node_modules/read-package-json"),
-    path = require("path"),
     npm = require("npm"),
     Q = require("q"),
 
@@ -41,7 +39,6 @@ InstallCommand.prototype.run = function (request, deeply) {
  */
 InstallCommand.prototype._invokeInstallCommand = function (request, deeply) {
     var self = this;
-    readJson.cache.del(path.join(npm.prefix, "package.json")); // force to clean the cache.
 
     return Q.ninvoke(npm.commands, "install", npm.prefix, request).then(function (data) { // Where -> private API.
         return self._formatResponse(data[1], deeply);
