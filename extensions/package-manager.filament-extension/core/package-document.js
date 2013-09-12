@@ -671,14 +671,19 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function () {
             var self = this,
                 promise = this.packageManagerPlugin.invoke("getOutdatedDependencies").then(function (updates) {
-                    var keys = Object.keys(updates),
-                        total = keys ? keys.length : 0;
+                    var keys = Object.keys(updates);
+
+                    for (var i = 0, length = keys.length; i < length; i++) { // temporary fix because npm outdated is buggy.
+                        if (self.findDependency(keys[i], null, true) < 0) {
+                            delete updates[keys[i]];
+                        }
+                    }
 
                     self._outDatedDependencies = updates;
                     self._notifyOutDatedDependencies();
 
                     return defaultLocalizer.localize("num_updates").then(function (messageFn) {
-                        return messageFn({updates:total});
+                        return messageFn({updates:Object.keys(updates).length});
                     });
                 });
 
