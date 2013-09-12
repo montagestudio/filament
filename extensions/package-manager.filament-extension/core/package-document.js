@@ -452,7 +452,10 @@ exports.PackageDocument = EditingDocument.specialize( {
                 var args = (response) ? [response.key, response.dependency] : [];
                 index(args[0], args[1]);
             } else {
-                return (!response) ? null : (index) ? response.key : response.dependency;
+                if (!!index) {
+                    return response ? response.key : -1;
+                }
+                return response ? response.dependency : null;
             }
         }
     },
