@@ -177,8 +177,10 @@ exports.listCommand = Object.create(Object.prototype, {
                         try {
                             moduleParsed = JSON.parse(data);
 
-                            if (typeof moduleParsed.name === 'undefined' || typeof moduleParsed.version === 'undefined' || (!root && moduleParsed.name !== currentDependency.name) ) {
-                                // If the name or the version field are missing.
+                            if ( // If the name or the version field are missing.
+                                typeof moduleParsed.name === 'undefined' || typeof moduleParsed.version === 'undefined' ||
+                                (!root && moduleParsed.name !== currentDependency.name)
+                            ) {
                                 currentDependency.jsonFileError = true;
                             }
 

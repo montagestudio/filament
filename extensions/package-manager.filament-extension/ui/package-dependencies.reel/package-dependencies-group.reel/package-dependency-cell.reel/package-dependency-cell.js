@@ -43,7 +43,9 @@ exports.PackageDependencyCell = Component.specialize(/** @lends PackageDependenc
             if (module && typeof module === "object" && module.hasOwnProperty('name')) {
                 this._dependency = module;
                 this.hasError = (this._dependency && Array.isArray(this._dependency.problems) && this._dependency.problems.length > 0);
-                this.canInstall = (this._dependency.type !== DEPENDENCY_TYPE_REGULAR && this._dependency.missing); // regular dependency cannot be missing (error)
+
+                // Regular dependency cannot be missing (error).
+                this.canInstall = (this._dependency.type !== DEPENDENCY_TYPE_REGULAR && this._dependency.missing);
             }
         },
         get: function () {

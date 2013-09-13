@@ -425,8 +425,8 @@ exports.PackageDocument = EditingDocument.specialize( {
                 if (!dependency.private && !dependency.information) {
                     var search = (dependency.versionInstalled) ? dependency.name + "@" + dependency.versionInstalled : dependency.name;
 
-                    return this._packageManagerPlugin.invoke("viewDependency", search).then(function (module) { // Can be null if the version doesn't exists.
-                        dependency.information = module || {};
+                    return this._packageManagerPlugin.invoke("viewDependency", search).then(function (module) {
+                        dependency.information = module || {}; // Can be null if the version doesn't exists.
                         return dependency;
                     });
                 }
@@ -523,7 +523,7 @@ exports.PackageDocument = EditingDocument.specialize( {
     },
 
     installDependency: {
-        value: function (dependency, install) { // install action => force the range to be the version installed.
+        value: function (dependency, install) { // install action (not update) => force the range to be the version installed.
             var self = this,
                 module = dependency;
 
