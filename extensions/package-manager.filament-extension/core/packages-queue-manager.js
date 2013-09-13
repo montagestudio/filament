@@ -181,7 +181,7 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
                 var self = this;
 
                 if (module.strict) {
-                    this._packageManagerPlugin.invoke("installDependency", module.request, this._projectUrl).then(function (installed) {
+                    this._packageManagerPlugin.invoke("installDependency", module.request).then(function (installed) {
                         if (installed && typeof installed === 'object' && installed.hasOwnProperty('name')) { // If the package has been installed.
                             installed = {
                                 name: installed.name,
