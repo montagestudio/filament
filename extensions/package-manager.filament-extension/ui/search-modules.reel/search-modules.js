@@ -6,6 +6,8 @@ var Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
     CLEAR_BUTTON_DEFAULT_LABEL = 'clear',
     CLEAR_BUTTON_STOP_LABEL = 'stop',
+    Dependency = require("../../core/Dependency").Dependency,
+    INSTALL_DEPENDENCY_ACTION = 0,
     REMOVE_DEPENDENCY_ACTION = 1,
     MIN_SEARCH_LENGTH = 1;
 
@@ -201,25 +203,8 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
 
             if (this.editingDocument && module && typeof module === 'object' && module.hasOwnProperty('name')) {
                 cell.installing(true);
-
-                var promise = this.editingDocument.installDependency(module.name, module.version, null, true).then(function (data) {
-                    if (data && typeof data === 'object' && data.hasOwnProperty('name') && module.name === data.name) {
-                        if (cell) {
-                            module.installed = true;
-                        }
-                        return "The dependency " + module.name + " has been installed";
-                    }
-                }, function (error) {
-                    if (cell) {
-                        cell.error(true);
-                    }
-                    throw error;
-                });
-
-                this.dispatchEventNamed("asyncActivity", true, false, {
-                    promise: promise,
-                    title: "Installing"
-                });
+                this.editingDocument.performActionDependency(INSTALL_DEPENDENCY_ACTION,
+                    new Dependency(module.name, module.version)).done();
             }
         }
     },

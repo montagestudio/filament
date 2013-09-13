@@ -3,7 +3,9 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    DependencyNames = require('../../../core/package-tools').DependencyNames;
+    Dependency = require("../../../core/Dependency").Dependency,
+    DependencyNames = require('../../../core/package-tools').DependencyNames,
+    UPDATE_DEPENDENCY_ACTION = 2;
 
 /**
  * @class DependencyActions
@@ -61,10 +63,8 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
             if (this.editingDocument && typeof range === "string" && range.length > 0) {
                 range = range.trim();
 
-                if (this.currentDependency.range !== range &&
-                    this._rangeValidity(this.editingDocument.updateDependencyRange(this.currentDependency, range))) {
-
-                    this.currentDependency.range = range;
+                if (this.currentDependency.version !== range) {
+                    this._rangeValidity(this.editingDocument.updateDependencyRange(this.currentDependency, range));
                 } else {
                     this._rangeValidity(this.editingDocument.isRangeValid(range));
                 }
@@ -94,23 +94,11 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
 
     handleAcceptUpdateAction: {
         value: function () {
-            var update = this.currentDependency.update ? this.currentDependency.update.available : null,
-                name = this.currentDependency.name;
+            var update = this.currentDependency.update ? this.currentDependency.update.available : null;
 
             if (this.currentDependency && this.editingDocument && update) {
-                var promise = this.editingDocument.updateDependency(name, update, this.currentDependency.type)
-                    .then(function (data) {
-                        if (data && typeof data === 'object' && data.hasOwnProperty('name')) {
-                            return 'The dependency ' + data.name + ' has been updated';
-                        }
-
-                        throw new Error('An error has occurred while updating the dependency ' + name);
-                    });
-
-                this.dispatchEventNamed("asyncActivity", true, false, {
-                    promise: promise,
-                    title: "Updating"
-                });
+                this.editingDocument.performActionDependency(UPDATE_DEPENDENCY_ACTION,
+                    new Dependency(this.currentDependency.name, update, this.currentDependency.type)).done();
             }
         }
     }

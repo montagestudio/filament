@@ -28,6 +28,7 @@ exports.loadNPM = function (where) {
         });
     }
 
+    npm.prefix = where;
     return Q(true);
 };
 
