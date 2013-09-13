@@ -421,7 +421,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     getInformationDependency: {
         value: function (dependency) {
-            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name')) {
+            if (PackageTools.isDependency(dependency)) {
                 if (!dependency.private && !dependency.information) {
                     var search = (dependency.versionInstalled) ? dependency.name + "@" + dependency.versionInstalled : dependency.name;
 
@@ -513,7 +513,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     updateDependency: {
         value: function (dependency) {
-            if (dependency && typeof dependency === "object" && PackageTools.isNameValid(dependency.name) &&
+            if (PackageTools.isDependency(dependency) && PackageTools.isNameValid(dependency.name) &&
                 PackageTools.isVersionValid(dependency.version)) {
 
                 return this.installDependency(dependency, false);
@@ -533,7 +533,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             this._insertDependency(module, true, install); // Insert and Save
 
             return PackageQueueManager.installModule(module).then(function (installed) {
-                if (installed && typeof installed === 'object' && installed.hasOwnProperty('name')) {
+                if (PackageTools.isDependency(installed)) {
                     module.performingAction = false;
 
                     if (installed.name !== module.name || !module.version) { // If names are different or version missing
@@ -557,7 +557,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     _insertDependency: {
         value: function (module, save, strict) {
-            if (module && typeof module === 'object' && module.hasOwnProperty('name') && module.hasOwnProperty('version')) {
+            if (PackageTools.isDependency(module) && module.hasOwnProperty('version')) {
                 var self = this;
 
                 this.findDependency(module.name, null, function (index, dependency) {
@@ -587,7 +587,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                 dependency.type = type;
             }
 
-            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name') && dependency.hasOwnProperty('type')) {
+            if (PackageTools.isDependency(dependency) && dependency.hasOwnProperty('type')) {
                 type = DependencyNames[dependency.type];
 
                 if (type) {
@@ -595,7 +595,8 @@ exports.PackageDocument = EditingDocument.specialize( {
                         range = group[dependency.name];
 
                     if (range && !strict) { // if range already specified
-                        range = !semver.clean(range, true) ? range : dependency.versionInstalled; // clean returns null if the range it's not a version specified.
+                        // clean returns null if the range it's not a version specified.
+                        range = !semver.clean(range, true) ? range : dependency.versionInstalled;
                     } else {
                         range = PackageTools.isGitUrl(dependency.version) ? dependency.version : dependency.versionInstalled;
                     }
@@ -608,13 +609,28 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    replaceDependency: {
+    switchDependencyType: {
         value: function (dependency, type) {
-            if (dependency && dependency.type !== type && !PackageQueueManager.isRunning && !this.isReloadingList &&
-                this._removeDependencyFromFile(dependency, false) && this._addDependencyToFile(dependency, true, type)) {
+            if (PackageTools.isDependency(dependency) && type) {
+                if (dependency.type === type) {
+                    return Promise.resolve(true);
+                }
 
-                return this.saveModification(true);
+                if (dependency.extraneous || PackageQueueManager.isRunning || this.isReloadingList) {
+                    var promise = Promise.reject(new Error ('Can not change a dependency type either the dependency is ' +
+                        'extraneous or an action is performing'));
+
+                    this.dispatchEventNamed("asyncActivity", true, false, {
+                        promise: promise,
+                        title: "Package Manager"
+                    });
+                }
+
+                if (this._removeDependencyFromFile(dependency, false) && this._addDependencyToFile(dependency, true, type)) {
+                    return this.saveModification(true);
+                }
             }
+            return Promise.reject(new Error ('An error has occurred while switching dependency type'));
         }
     },
 
@@ -622,7 +638,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function (dependency) {
             dependency = (typeof dependency === 'string') ? this.findDependency(dependency) : dependency;
 
-            if (dependency && typeof dependency === "object" && dependency.hasOwnProperty("name")) {
+            if (PackageTools.isDependency(dependency)) {
                 var name = dependency.name;
 
                 if (DEPENDENCIES_REQUIRED.indexOf(name.toLowerCase()) >= 0) {
@@ -646,8 +662,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                 dependency = this.findDependency(dependency); // try to find the dependency related to this name
             }
 
-            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name') &&
-                dependency.hasOwnProperty('type') && !dependency.extraneous) {
+            if (PackageTools.isDependency(dependency) && dependency.hasOwnProperty('type') && !dependency.extraneous) {
                 var type = DependencyNames[dependency.type];
 
                 if (type) {
@@ -724,8 +739,8 @@ exports.PackageDocument = EditingDocument.specialize( {
                 dependency = this.findDependency(dependency); // try to find the dependency related to the name
             }
 
-            if (dependency && typeof dependency === "object" && dependency.hasOwnProperty('name') &&
-                dependency.hasOwnProperty("type") && (this.isRangeValid(range) || PackageTools.isGitUrl(range))) {
+            if (PackageTools.isDependency(dependency) && !dependency.extraneous && dependency.hasOwnProperty("type") &&
+                (this.isRangeValid(range) || PackageTools.isGitUrl(range))) {
                 var type = DependencyNames[dependency.type];
 
                 if (type) {

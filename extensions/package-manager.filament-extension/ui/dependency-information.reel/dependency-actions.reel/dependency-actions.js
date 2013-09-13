@@ -80,14 +80,11 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
     handleSelectedValueChange: {
         value: function (type) {
             if (type && this.editingDocument && DependencyNames[type] && this.currentDependency && this.currentDependency.type !== type) {
-                var promise = this.editingDocument.replaceDependency(this.currentDependency, type);
+                var self = this;
 
-                if (promise) {
-                    var self = this;
-                    promise.then(function () {
-                        self.currentDependency.type = type;
-                    }).done();
-                }
+                this.editingDocument.switchDependencyType(this.currentDependency, type).then(function () {
+                    self.currentDependency.type = type;
+                }).done();
             }
         }
     },
