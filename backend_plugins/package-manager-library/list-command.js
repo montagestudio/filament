@@ -443,13 +443,12 @@ exports.listCommand = Object.create(Object.prototype, {
                                     moduleParsed.dependencies[index].missing = false;
                                 }
                             }
-                        },  function () {})
-                            .then(function () {
-                                currentDependency.dependencies = moduleParsed.dependencies.sort(self._sortDependencies);
-                                return self._findChildren(currentDependency); // try to find children.
-                            });
+                        });
                     });
                 }
+            }, function () {}).then(function () {
+                currentDependency.dependencies = moduleParsed.dependencies.sort(self._sortDependencies);
+                return self._findChildren(currentDependency); // try to find children.
             });
         }
 
