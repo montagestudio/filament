@@ -784,7 +784,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             return this.environmentBridge.promptForSave(options).then(function (destination) {
                 if (!destination) {
                     window.close();
-                    return null;
+                    throw new Error("Application creation cancelled. Closing window.");
                 }
 
                 // remove trailing slash
