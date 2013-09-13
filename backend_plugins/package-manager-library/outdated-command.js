@@ -50,7 +50,7 @@ OutDatedCommand.prototype._formatListDependenciesOutDated = function (list) {
             available = data[3],
             where = data[0];
 
-        if (where === dir && current !== available) {
+        if (where === dir && current && current !== available) {
             container[name] = {
                 current: current,
                 available: available

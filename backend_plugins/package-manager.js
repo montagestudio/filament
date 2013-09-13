@@ -1,3 +1,5 @@
+/*global process,__dirname */
+
 var listCommand = require('./package-manager-library/list-command').listCommand,
     viewCommand = require('./package-manager-library/view-command').viewCommand,
     searchCommand = require('./package-manager-library/search-command').searchCommand,
@@ -5,7 +7,15 @@ var listCommand = require('./package-manager-library/list-command').listCommand,
     removeCommand = require('./package-manager-library/remove-command').removeCommand,
     outDatedCommand = require('./package-manager-library/outdated-command').outDatedCommand,
     npm = require("npm"),
+    Path = require("path"),
     Q = require("q");
+
+/*
+ * Hack that adds a path into the environment variable $PATH,
+ * in order to allow the shell to find the npm command.
+ */
+
+process.env.PATH += ":" +  Path.join(__dirname, "..", "node_modules", ".bin");
 
 exports.loadNPM = function (where) {
     if (!npm.config.loaded) {
@@ -33,14 +43,14 @@ exports.searchModules = function (request) {
     return Q.invoke(searchCommand, "run", request);
 };
 
-exports.installDependency = function (request, where) {
-    return Q.invoke(installCommand, "run", request, where, false);
+exports.installDependency = function (request) {
+    return Q.invoke(installCommand, "run", request, false);
 };
 
 exports.removeDependency = function (name, where) {
     return Q.invoke(removeCommand, "run", name, where);
 };
 
-exports.getOutdatedDependencies = function (where) {
-    return Q.invoke(outDatedCommand, "run", where);
+exports.getOutdatedDependencies = function () {
+    return Q.invoke(outDatedCommand, "run");
 };
