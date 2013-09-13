@@ -3,6 +3,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     Tools = require('./package-tools'),
     PackageQueueManager = require('./packages-queue-manager').PackageQueueManager,
     Promise = require("montage/core/promise").Promise,
+    Dependency = require('./dependency').Dependency,
     semver = require('semver'),
     PackageTools = Tools.ToolsBox,
     ErrorsCommands = Tools.Errors.commands,
@@ -11,9 +12,6 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
 
     DEFAULT_TIME_AUTO_SAVE = 400,
     DEPENDENCY_TIME_AUTO_SAVE = 100,
-    INSTALL_DEPENDENCY_ACTION = 0,
-    REMOVE_DEPENDENCY_ACTION = 1,
-    UPDATE_DEPENDENCY_ACTION = 2,
     DEPENDENCIES_REQUIRED = ['montage'],
     ALLOWED_PROPERTIES_KEYS = [
         'name',
@@ -487,13 +485,13 @@ exports.PackageDocument = EditingDocument.specialize( {
             }
 
             if (!promise) { // No errors.
-                if (action === INSTALL_DEPENDENCY_ACTION) {
+                if (action === Dependency.INSTALL_DEPENDENCY_ACTION) {
                     promise = this.installDependency(dependency, true);
                     title = "Installing";
-                } else if (action === REMOVE_DEPENDENCY_ACTION) {
+                } else if (action === Dependency.REMOVE_DEPENDENCY_ACTION) {
                     promise = this.uninstallDependency(dependency);
                     title = "Uninstalling";
-                } else if (action === UPDATE_DEPENDENCY_ACTION) {
+                } else if (action === Dependency.UPDATE_DEPENDENCY_ACTION) {
                     promise = this.updateDependency(dependency);
                     title = "Updating";
                 } else {

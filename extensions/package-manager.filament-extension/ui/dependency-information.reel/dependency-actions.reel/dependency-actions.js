@@ -3,9 +3,8 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    Dependency = require("../../../core/Dependency").Dependency,
-    DependencyNames = require('../../../core/package-tools').DependencyNames,
-    UPDATE_DEPENDENCY_ACTION = 2;
+    Dependency = require("../../../core/dependency").Dependency,
+    DependencyNames = require('../../../core/package-tools').DependencyNames;
 
 /**
  * @class DependencyActions
@@ -97,7 +96,7 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
             var update = this.currentDependency.update ? this.currentDependency.update.available : null;
 
             if (this.currentDependency && this.editingDocument && update) {
-                this.editingDocument.performActionDependency(UPDATE_DEPENDENCY_ACTION,
+                this.editingDocument.performActionDependency(Dependency.UPDATE_DEPENDENCY_ACTION,
                     new Dependency(this.currentDependency.name, update, this.currentDependency.type)).done();
             }
         }

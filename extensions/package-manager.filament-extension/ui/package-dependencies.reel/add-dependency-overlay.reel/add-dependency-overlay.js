@@ -3,9 +3,8 @@
  * @requires montage/ui/component
  */
 var Overlay = require("montage/ui/overlay.reel/").Overlay,
-    Dependency = require("../../../core/Dependency").Dependency,
-    Tools = require('../../../core/package-tools').ToolsBox,
-    INSTALL_DEPENDENCY_ACTION = 0;
+    Dependency = require("../../../core/dependency").Dependency,
+    Tools = require('../../../core/package-tools').ToolsBox;
 
 /**
  * @class AddDependencyOverlay
@@ -96,7 +95,7 @@ exports.AddDependencyOverlay = Overlay.specialize(/** @lends AddDependencyOverla
     handleInstallManuallyDependencyAction: {
         value: function () {
             if (this.editingDocument && this._name && this._name.length > 0 && this._checkValidity()) {
-                this.editingDocument.performActionDependency(INSTALL_DEPENDENCY_ACTION,
+                this.editingDocument.performActionDependency(Dependency.INSTALL_DEPENDENCY_ACTION,
                     new Dependency(this._name, (this._url || this._version), this.type)).done();
 
                 this.hide();

@@ -3,8 +3,7 @@ var Montage = require("montage").Montage,
     Promise = require("montage/core/promise").Promise,
     ErrorsCommands = require('../../core/package-tools').Errors.commands,
     application = require("montage/core/application").application,
-    INSTALL_DEPENDENCY_ACTION = 0,
-    REMOVE_DEPENDENCY_ACTION = 1;
+    Dependency = require("../../core/dependency").Dependency;
 
 exports.PackageEditor = Montage.create(Editor, {
 
@@ -140,9 +139,9 @@ exports.PackageEditor = Montage.create(Editor, {
                 var source = event.detail.get('source');
 
                 if (source && typeof source === 'object' && !source.canInstall) { // remove request
-                    this.currentDocument.performActionDependency(REMOVE_DEPENDENCY_ACTION, source.dependency).done();
+                    this.currentDocument.performActionDependency(Dependency.REMOVE_DEPENDENCY_ACTION, source.dependency).done();
                 } else { // install request
-                    this.currentDocument.performActionDependency(INSTALL_DEPENDENCY_ACTION, source.dependency).done();
+                    this.currentDocument.performActionDependency(Dependency.INSTALL_DEPENDENCY_ACTION, source.dependency).done();
                 }
             }
         }
@@ -168,7 +167,7 @@ exports.PackageEditor = Montage.create(Editor, {
             if (dependencyName && action >= 0) {
                 this.templateObjects.searchModules.handleDependenciesListChange(dependencyName, action);
 
-                if (action === REMOVE_DEPENDENCY_ACTION && this.dependencyDisplayed &&
+                if (action === Dependency.REMOVE_DEPENDENCY_ACTION && this.dependencyDisplayed &&
                     this.dependencyDisplayed.name === dependencyName) { // Need to clean the view part, if the dependency deleted is also the dependency displayed
                     this._clearSelection();
                 }
