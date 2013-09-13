@@ -1,3 +1,5 @@
+/*global process,__dirname */
+
 var listCommand = require('./package-manager-library/list-command').listCommand,
     viewCommand = require('./package-manager-library/view-command').viewCommand,
     searchCommand = require('./package-manager-library/search-command').searchCommand,
@@ -5,7 +7,15 @@ var listCommand = require('./package-manager-library/list-command').listCommand,
     removeCommand = require('./package-manager-library/remove-command').removeCommand,
     outDatedCommand = require('./package-manager-library/outdated-command').outDatedCommand,
     npm = require("npm"),
+    Path = require("path"),
     Q = require("q");
+
+/*
+ * Hack that adds a path into the environment variable $PATH,
+ * in order to allow the shell to find the npm command.
+ */
+
+process.env.PATH += ":" +  Path.join(__dirname, "..", "node_modules", ".bin");
 
 exports.loadNPM = function (where) {
     if (!npm.config.loaded) {
