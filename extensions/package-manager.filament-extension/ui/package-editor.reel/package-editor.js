@@ -32,18 +32,9 @@ exports.PackageEditor = Montage.create(Editor, {
     },
 
     handleDidOpenDocument: {
-        value: function (evt) {
-            var openedDocument = evt.detail.document;
-            if (this.currentDocument === openedDocument) {
+        value: function (event) {
+            if (this.currentDocument === event.detail.document) {
                 this._updateSelection();
-            }
-        }
-    },
-
-    _backendPlugin: {
-        get: function () {
-            if (this.currentDocument) {
-                return this.currentDocument.packageManagerPlugin;
             }
         }
     },
@@ -78,28 +69,21 @@ exports.PackageEditor = Montage.create(Editor, {
      */
     handleSelectedDependencyChange: {
         value: function (dependency) {
-            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name')) {
-                var self = this,
-                    search = (dependency.versionInstalled) ?
-                        dependency.name + "@" + dependency.versionInstalled : dependency.name;
+            if (this.currentDocument && dependency && typeof dependency === 'object') {
+                var self = this;
 
-                this._backendPlugin.invoke("viewDependency", search).then(function (module) {
-                    if (self.selectedDependency) {
-                        if (module && typeof module === 'object' && module.hasOwnProperty('name')) {
-                            module.problems = dependency.problems;
-                            module.type = dependency.type;
-                            module.versionInstalled = dependency.versionInstalled;
-                            module.version = dependency.version;
-                            module.update = dependency.update || null;
-                            self.dependencyDisplayed = module;
-                        } else {
-                            self.dependencyDisplayed = dependency;
-                        }
+                this.currentDocument.getInformationDependency(dependency).then(function (module) {
+                    if(self.selectedDependency && module && typeof module === 'object' && module.name === self.selectedDependency.name) {
+                        self.dependencyDisplayed = module;
                     }
                 }, function (error) {
-
                     if (error && typeof error === 'object' && error.code === ErrorsCommands.view.codes.dependencyNotFound) {
-                        self.dependencyDisplayed = (self.selectedDependency) ? dependency : null;
+                        if (self.selectedDependency && dependency && dependency.name === self.selectedDependency.name) { // Can be private.
+                            self.dependencyDisplayed = self.selectedDependency;
+                            self.selectedDependency.information = {};
+                        } else { // Does not exist.
+                            self._clearSelection();
+                        }
                     } else {
                         self._clearSelection();
                         self.dispatchEventNamed("asyncActivity", true, false, {

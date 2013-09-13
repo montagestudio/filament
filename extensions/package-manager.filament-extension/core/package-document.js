@@ -419,6 +419,23 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
+    getInformationDependency: {
+        value: function (dependency) {
+            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name')) {
+                if (!dependency.private && !dependency.information) {
+                    var search = (dependency.versionInstalled) ? dependency.name + "@" + dependency.versionInstalled : dependency.name;
+
+                    return this._packageManagerPlugin.invoke("viewDependency", search).then(function (module) { // Can be null if the version doesn't exists.
+                        dependency.information = module || {};
+                        return dependency;
+                    });
+                }
+                return Promise.resolve(dependency);
+            }
+            return Promise.reject(new Error("Encountered an error while getting dependency information"));
+        }
+    },
+
     _findDependency: {
         value: function (name, type) {
             if (!type) { // if type not specified, search inside any

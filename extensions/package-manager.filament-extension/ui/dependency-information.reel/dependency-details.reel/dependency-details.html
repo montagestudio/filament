@@ -27,7 +27,7 @@
                 "element": {"#": "packageDescription"}
             },
             "bindings": {
-                "value": {"<-": "@owner.currentDependency.description"}
+                "value": {"<-": "@owner.currentDependency.information.description"}
             }
         },
 
@@ -47,7 +47,7 @@
                 "element": {"#": "packageAuthorName"}
             },
             "bindings": {
-                "value": {"<-": "@owner.currentDependency.author.name"}
+                "value": {"<-": "@owner.currentDependency.information.author.name"}
             }
         },
 
@@ -57,7 +57,7 @@
                 "element": {"#": "packageMaintainers"}
             },
             "bindings": {
-                "content": {"<-": "@owner.currentDependency.maintainers"}
+                "content": {"<-": "@owner.currentDependency.information.maintainers"}
             }
         },
 
