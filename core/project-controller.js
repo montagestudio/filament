@@ -784,7 +784,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             return this.environmentBridge.promptForSave(options).then(function (destination) {
                 if (!destination) {
                     window.close();
-                    throw new Error("Application creation cancelled. Closing window.");
+                    throw new Error("Application creation cancelled, closing window");
                 }
 
                 // remove trailing slash
@@ -840,7 +840,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             return this.environmentBridge.promptForSave(options)
                 .then(function (destination) {
                     if (!destination) {
-                        return null;
+                        throw new Error(thing + " creation cancelled");
                     }
                     // remove trailing slash
                     destination = destination.replace(/\/$/, "");
