@@ -22,6 +22,7 @@ exports.ReelDocument = EditingDocument.specialize({
     constructor: {
         value: function ReelDocument() {
             this.super();
+            this.sideData = Object.create(null);
         }
     },
 
@@ -99,6 +100,14 @@ exports.ReelDocument = EditingDocument.specialize({
 
             return self;
         }
+    },
+
+    /**
+     * An object to store UI state
+     * @type {Object}
+     */
+    sideData: {
+        value: null
     },
 
     reviverConstructor: {

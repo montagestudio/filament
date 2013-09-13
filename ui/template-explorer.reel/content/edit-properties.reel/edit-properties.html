@@ -131,6 +131,9 @@
             "properties": {
                 "element": {"#": "addName"}
             },
+            "bindings": {
+                "value": {"<->": "@owner.ownerObject.editingDocument.sideData.addName"}
+            },
             "listeners": [
                 {"type": "action", "listener": {"@": "owner"}}
             ]
