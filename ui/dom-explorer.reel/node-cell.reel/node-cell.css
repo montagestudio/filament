@@ -1,4 +1,7 @@
 .NodeCell {
+    display: -webkit-flex;
+    -webkit-flex-flow: row nowrap;
+    -webkit-align-items: center;
     position: relative;
     background: hsl(0,0%,96%);
 }
@@ -13,7 +16,7 @@
     font-size: 0;
     border-radius: 22px;
     background: hsl(0,0%,90%);
-    border: 2px solid hsla(0,0%,0%, 0);
+    border: 1px solid hsla(0,0%,0%,.08);
 }
 
 .NodeCell-segment-item {
@@ -76,6 +79,10 @@
 
 .NodeCell .NodeCell-removeButton {
     visibility: hidden;
+}
+
+.NodeCell .NodeCell-removeButton.matte-Button {
+    margin-left: 4px;
 }
 
 
