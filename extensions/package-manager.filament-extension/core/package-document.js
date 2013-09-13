@@ -674,7 +674,8 @@ exports.PackageDocument = EditingDocument.specialize( {
                     var keys = Object.keys(updates);
 
                     for (var i = 0, length = keys.length; i < length; i++) { // temporary fix because npm outdated is buggy.
-                        if (self.findDependency(keys[i], null, true) < 0) {
+                        var dependency = self.findDependency(keys[i], null, false);
+                        if (!dependency || dependency.private) {
                             delete updates[keys[i]];
                         }
                     }
