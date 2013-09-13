@@ -38,18 +38,17 @@
     font-style: italic;
 }
 
-.NodeCell-segment-item--montageId.TextEditorField--editing {
-    z-index: 10;
-}
-
 .NodeCell-segment-item--montageArg {
     border-left: 1px solid hsla(0,0%,0%,.1);
     font-weight: normal;
     background-color: hsl(75,44%,85%);
 }
 
+.NodeCell-segment-item--montageId.TextEditorField--editing,
 .NodeCell-segment-item--montageArg.TextEditorField--editing {
     z-index: 10;
+    box-shadow: 0 0 0 1px hsl(210,100%,70%);
+    background-color: hsla(210,100%,60%,0.1);
 }
 
 .NodeCell-segment-item--component {
@@ -70,6 +69,30 @@
     border-style: dashed;
     border-color: hsl(216,100%,70%);
 }
+
+
+/* Overrides ---------------------------- */
+
+.NodeCell .matte-InputText {
+    border: none;
+    margin: 0;
+    border-radius: 0;
+    background-color: transparent;
+    width: 100px;
+    height: 20px;
+    padding: 0;
+    font-size: inherit;
+    line-height: 20px;
+    font-weight: inherit;
+    font-style: inherit;
+}
+
+.NodeCell .montage-Text {
+    white-space: nowrap;
+}
+
+
+
 
 /* Remove Button ---------------------------- */
 
@@ -148,7 +171,7 @@
     background: -webkit-linear-gradient(left, hsl(208,100%,50%), hsla(208,100%,50%,0) );
 }
 
-/* Toggle tree expension -------------- */
+/* Toggle tree expansion -------------- */
 .NodeCell:hover .Toggle {
     opacity: 1;
 }
