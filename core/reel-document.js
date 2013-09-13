@@ -1239,6 +1239,11 @@ exports.ReelDocument = EditingDocument.specialize({
     setOwnedObjectEditorMetadata: {
         value: function (proxy, property, value) {
             var previousValue =  proxy.getEditorMetadata(property);
+
+            if(previousValue === value){
+                return;
+            }
+
             proxy.setEditorMetadata(property, value);
 
             //TODO improve humanization of the undo name

@@ -26,6 +26,35 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
         }
     },
 
+    enterDocument: {
+        value: function(firstTime) {
+            if (firstTime) {
+                this.element.addEventListener("keyup", this, false);
+            }
+        }
+    },
+
+    handleKeyup: {
+        value: function(evt) {
+            var escape = 27;
+            if (evt.keyCode === escape){
+                this._discardComment();
+            }
+        }
+    },
+
+    acceptsActiveTarget: {
+        value: true
+    },
+
+    surrendersActiveTarget: {
+        value: function (newTarget) {
+            // Apply changes when comment area looses focus
+            this._commitComment(this.templateObjects.commentField.value);
+            return true;
+        }
+    },
+
     prepareForActivationEvents: {
         value: function () {
             this._referenceProxyElement.addEventListener("dragstart", this, false);
@@ -54,18 +83,6 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
         }
     },
 
-    handleSaveCommentButtonAction: {
-        value: function () {
-            this._commitComment(this.templateObjects.commentField.value);
-        }
-    },
-
-    handleDiscardCommentButtonAction: {
-        value: function () {
-            this._discardComment();
-        }
-    },
-
     _commitComment: {
         value: function (commentValue) {
             var proxy = this.templateObject,
@@ -81,8 +98,8 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
             var commentField = this.templateObjects.commentField;
             commentField.value = this.templateObject.getEditorMetadata('comment');
             this.isEditingComment = false;
-		}
-	},
+        }
+    },
 
     handleDblclick: {
         value: function () {
