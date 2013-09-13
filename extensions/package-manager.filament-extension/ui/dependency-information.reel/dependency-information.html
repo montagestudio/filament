@@ -41,7 +41,7 @@
             "bindings": {
                 "currentDependency": {"<-": "@owner.currentDependency"},
                 "editingDocument": {"<-": "@owner.editingDocument"},
-                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency"},
+                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency || @owner.currentDependency.extraneous"},
                 "range": {"<-": "@owner.currentDependency.version"}
             }
         }
