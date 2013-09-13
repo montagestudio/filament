@@ -725,7 +725,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             }
 
             if (dependency && typeof dependency === "object" && dependency.hasOwnProperty('name') &&
-                dependency.hasOwnProperty("type") && this.isRangeValid(range)) {
+                dependency.hasOwnProperty("type") && (this.isRangeValid(range) || PackageTools.isGitUrl(range))) {
                 var type = DependencyNames[dependency.type];
 
                 if (type) {
