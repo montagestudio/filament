@@ -86,6 +86,12 @@ exports.ComponentEditor = Editor.specialize({
                 }
 
                 this.needsDraw = true;
+
+                // Element highlight stage -> DOM Explorer
+                this.addEventListener("elementHover", this, false);
+                // Element highlight DOM Explorer -> stage
+                this.addEventListener("highlightStageElement", this, false);
+                this.addEventListener("deHighlightDomExplorerElement", this, false);
             }
         }
     },
@@ -216,6 +222,90 @@ exports.ComponentEditor = Editor.specialize({
         value: function (evt) {
             this.currentDocument.selectObject(evt.detail.templateObject);
         }
-    }
+    },
+
+    // Event dispatched on stage element hover
+    handleElementHover: {
+        value: function (evt) {
+            var detail = evt.detail,
+                highlight = detail.highlight,
+                xpath = detail.xpath,
+                stageElement = detail.element,
+                parentComponents = detail.parentComponents,
+                documentEditor = this.currentDocument,
+                domExplorer = this.templateObjects.domExplorer;
+
+            // de-highlight all DOM Elements
+            domExplorer.highlightedDOMElement = null;
+
+            // Ignore body
+            if (xpath === "/html/body") {
+                return;
+            }
+            
+            var element = documentEditor.htmlDocument.evaluate(
+                    xpath,
+                    documentEditor.htmlDocument,
+                    null,
+                    XPathResult.FIRST_ORDERED_NODE_TYPE,
+                    null
+                ).singleNodeValue;
+            var nodeProxy = documentEditor.nodeProxyForNode(element);
+
+            // handle highlighting at the component level if the DOM element is not found
+            if (!nodeProxy && parentComponents) {
+                var parentComponentId;
+                do {
+                    parentComponentId = parentComponents.shift();
+                    nodeProxy = documentEditor.nodeProxyForMontageId(parentComponentId);
+                } while (!nodeProxy);
+            }
+
+            // select the highlighted domExplorer element
+            domExplorer.highlightedDOMElement = nodeProxy;
+            // highlight the stageElement to simulate a hover
+            documentEditor.clearHighlightedElements();
+            documentEditor.hightlightElement(stageElement);
+        }
+    },
+
+    handleDeHighlightDomExplorerElement: {
+        value: function (evt) {
+            var domExplorer = this.templateObjects.domExplorer;
+            domExplorer.highlightedDOMElement = null;
+        }
+    },
+
+    // Event dispatched on DOM Explorer hover
+    handleHighlightStageElement: {
+        value: function (evt) {
+            var detail = evt.detail,
+                highlight = detail.highlight,
+                xpath = detail.xpath,
+                component = detail.component,
+                documentEditor = this.currentDocument,
+                stageDocument = documentEditor._editingController.frame.iframe.contentDocument;
+
+            var element = documentEditor.htmlDocument.evaluate(
+                xpath,
+                stageDocument,
+                null,
+                XPathResult.FIRST_ORDERED_NODE_TYPE,
+                null
+            ).singleNodeValue;
+
+            // use the component stage element representation when the DON element can't be found
+            if (!element && component) {
+                element = component.stageObject.element;
+            }
+
+            if (highlight) {
+                documentEditor.hightlightElement(element);
+            }
+            else {
+                documentEditor.deHighlightElement(element);
+            }
+        }
+    },
 
 });

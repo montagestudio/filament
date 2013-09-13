@@ -6,7 +6,7 @@
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     MimeTypes = require("core/mime-types"),
-    getElementXPath = require("core/xpath").getElementXPath;
+    getElementXPath = require("palette/core/xpath").getElementXPath;
 
 /**
     Description TODO
@@ -20,6 +20,10 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     },
 
     _nodeInfo: {
+        value: null
+    },
+
+    editingDocument:{
         value: null
     },
 
@@ -48,6 +52,9 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             this._nodeSegment.addEventListener("dragleave", this, false);
             this._nodeSegment.addEventListener("drop", this, false);
 
+            this.templateObjects.montageId.addEventListener("action", this);
+            this.element.addEventListener("mouseover", this);
+            this.element.addEventListener("mouseout", this);
         }
     },
 
@@ -220,6 +227,26 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             if (!nodeProxy._editingDocument.setNodeProxyAttribute(nodeProxy, "data-arg", newMontageArg)) {
                 evt.preventDefault();
             }
+        }
+    },
+
+    handleMouseover: {
+        value: function (evt) {
+            this.dispatchEventNamed("highlightStageElement", true, true, {
+                xpath: getElementXPath(this.nodeInfo._templateNode),
+                component: this.nodeInfo.component,
+                highlight: true
+            });
+        }
+    },
+
+    handleMouseout: {
+        value: function (evt) {
+            this.dispatchEventNamed("highlightStageElement", true, true, {
+                xpath: getElementXPath(this.nodeInfo._templateNode),
+                component: this.nodeInfo.component,
+                highlight: false
+            });
         }
     }
 

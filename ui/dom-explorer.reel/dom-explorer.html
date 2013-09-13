@@ -133,7 +133,9 @@
             },
             "bindings": {
                 "nodeInfo": {"<-": "@nodeCell.parentComponent.object"},
-                "isExpanded": {"<->": "@nodeCell.parentComponent.iteration.expanded"}
+                "isExpanded": {"<->": "@nodeCell.parentComponent.iteration.expanded"},
+                "treeControllerNode": {"<-": "@nodeCell.parentComponent.iteration"},
+                "domExplorer": {"<-": "@owner"}
             }
         }
     }
