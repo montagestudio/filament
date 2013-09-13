@@ -196,6 +196,7 @@ exports.listCommand = Object.create(Object.prototype, {
 
                         if (!currentDependency.jsonFileError) {
                             currentDependency.versionInstalled = moduleParsed.version;
+                            currentDependency.private = !!moduleParsed.private;
                             return self._handleJsonFile(moduleParsed, currentDependency); // If no errors, then format results.
                         }
 
