@@ -46,6 +46,10 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
         value: null
     },
 
+    loadingDependency: {
+        value: false
+    },
+
     range: {
         value: null
     },
@@ -78,9 +82,10 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
      */
     handleSelectedValueChange: {
         value: function (type) {
-            if (type && this.editingDocument && DependencyNames[type] && this.currentDependency && this.currentDependency.type !== type) {
-                var self = this;
+            if (type && !this.loadingDependency && this.editingDocument && DependencyNames[type] &&
+                this.currentDependency && this.currentDependency.type !== type) {
 
+                var self = this;
                 this.editingDocument.switchDependencyType(this.currentDependency, type).then(function () {
                     self.currentDependency.type = type;
                 }).done();
@@ -92,7 +97,7 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
         value: function () {
             var update = this.currentDependency.update ? this.currentDependency.update.available : null;
 
-            if (this.currentDependency && this.editingDocument && update) {
+            if (this.currentDependency && !this.loadingDependency &&this.editingDocument && update) {
                 this.editingDocument.performActionDependency(Dependency.UPDATE_DEPENDENCY_ACTION,
                     new Dependency(this.currentDependency.name, update, this.currentDependency.type)).done();
             }

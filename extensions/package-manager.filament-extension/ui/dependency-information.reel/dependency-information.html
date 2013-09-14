@@ -18,7 +18,7 @@
             },
             "bindings": {
                 "currentDependency": {"<-": "@owner.currentDependency"},
-                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency || @owner.loadingDependency"}
+                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency"}
             }
         },
 
@@ -29,7 +29,7 @@
             },
             "bindings": {
                 "currentDependency": {"<-": "@owner.currentDependency"},
-                "classList.has('hide-component')" : { "<-" : "!@owner.hasError || @owner.loadingDependency"}
+                "classList.has('hide-component')" : { "<-" : "!@owner.hasError"}
             }
         },
 
@@ -40,8 +40,9 @@
             },
             "bindings": {
                 "currentDependency": {"<-": "@owner.currentDependency"},
+                "loadingDependency": {"<-": "@owner.loadingDependency"},
                 "editingDocument": {"<-": "@owner.editingDocument"},
-                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency || @owner.currentDependency.extraneous || @owner.loadingDependency"},
+                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency || @owner.currentDependency.extraneous"},
                 "range": {"<-": "@owner.currentDependency.version"}
             }
         },
