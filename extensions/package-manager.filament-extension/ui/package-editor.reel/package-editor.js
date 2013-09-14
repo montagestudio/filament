@@ -17,7 +17,6 @@ exports.PackageEditor = Montage.create(Editor, {
         value: function (firstTime) {
             if (firstTime) {
                 this.addOwnPropertyChangeListener("selectedDependency", this);
-                this.addOwnPropertyChangeListener("reloadingList", this, true);
                 application.addEventListener("didOpenDocument", this);
             }
         }
@@ -33,7 +32,7 @@ exports.PackageEditor = Montage.create(Editor, {
     handleDidOpenDocument: {
         value: function (event) {
             if (this.currentDocument === event.detail.document) {
-                this._updateSelection();
+                this.updateSelectionDependencyList();
             }
         }
     },
@@ -95,17 +94,7 @@ exports.PackageEditor = Montage.create(Editor, {
         }
     },
 
-    /**
-     * "Watches" if the the dependencies list is reloading.
-     * @type {boolean}
-     * @default false
-     * @return {boolean}
-     */
-    reloadingList: {
-        value: false
-    },
-
-    _updateSelection: {
+    updateSelectionDependencyList: {
         value: function () {
             if (this.dependencyDisplayed && this.currentDocument) {
                 this.previousSelectedDependency = this.currentDocument.findDependency(this.dependencyDisplayed.name, null, false);
@@ -122,14 +111,6 @@ exports.PackageEditor = Montage.create(Editor, {
     loadingDependency: {
         value: function (loading) {
             this.templateObjects.dependencyInformation.loadingDependency = !!loading;
-        }
-    },
-
-    handleReloadingListWillChange: {
-        value: function () {
-            if (this.reloadingList) {
-                this._updateSelection();
-            }
         }
     },
 

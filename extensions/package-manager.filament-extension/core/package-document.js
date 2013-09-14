@@ -298,6 +298,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                 self._classifyDependencies(app.dependencies, false); // classify dependencies
                 self._notifyOutDatedDependencies();
                 self.isReloadingList = false;
+                self.editor.updateSelectionDependencyList();
             });
         }
     },
