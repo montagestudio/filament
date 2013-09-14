@@ -119,6 +119,12 @@ exports.PackageEditor = Montage.create(Editor, {
         }
     },
 
+    loadingDependency: {
+        value: function (loading) {
+            this.templateObjects.dependencyInformation.loadingDependency = !!loading;
+        }
+    },
+
     handleReloadingListWillChange: {
         value: function () {
             if (this.reloadingList) {

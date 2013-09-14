@@ -43,6 +43,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             PackageQueueManager.load(this, '_handleDependenciesListChange');
             this._livePackage = packageRequire.packageDescription;
             this.sharedProjectController = projectController;
+            this.editor = projectController.currentEditor;
 
             this._package = app.file || {};
             this._classifyDependencies(app.dependencies, false); // classify dependencies
@@ -421,10 +422,13 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function (dependency) {
             if (PackageTools.isDependency(dependency)) {
                 if (!dependency.private && !dependency.information) {
-                    var search = (dependency.versionInstalled) ? dependency.name + "@" + dependency.versionInstalled : dependency.name;
+                    this.editor.loadingDependency(true);
+                    var search = (dependency.versionInstalled) ? dependency.name + "@" + dependency.versionInstalled : dependency.name,
+                        self = this;
 
                     return this._packageManagerPlugin.invoke("viewDependency", search).then(function (module) {
                         dependency.information = module || {}; // Can be null if the version doesn't exists.
+                        self.editor.loadingDependency(false);
                         return dependency;
                     });
                 }

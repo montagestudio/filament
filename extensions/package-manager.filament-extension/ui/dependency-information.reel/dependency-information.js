@@ -29,6 +29,19 @@ exports.DependencyInformation = Component.specialize(/** @lends DependencyInform
         value: null
     },
 
+    _loadingDependency: {
+        value: false
+    },
+
+    loadingDependency: {
+        set: function (loading) {
+            this._loadingDependency = !!loading;
+        },
+        get: function () {
+            return this._loadingDependency;
+        }
+    },
+
     /**
      * Reference to the current selected dependency.
      * Determines if the current selected dependency has some errors.

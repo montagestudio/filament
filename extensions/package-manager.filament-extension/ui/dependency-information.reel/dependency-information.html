@@ -18,7 +18,7 @@
             },
             "bindings": {
                 "currentDependency": {"<-": "@owner.currentDependency"},
-                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency"}
+                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency || @owner.loadingDependency"}
             }
         },
 
@@ -29,7 +29,7 @@
             },
             "bindings": {
                 "currentDependency": {"<-": "@owner.currentDependency"},
-                "classList.has('hide-component')" : { "<-" : "!@owner.hasError"}
+                "classList.has('hide-component')" : { "<-" : "!@owner.hasError || @owner.loadingDependency"}
             }
         },
 
@@ -41,8 +41,18 @@
             "bindings": {
                 "currentDependency": {"<-": "@owner.currentDependency"},
                 "editingDocument": {"<-": "@owner.editingDocument"},
-                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency || @owner.currentDependency.extraneous"},
+                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency || @owner.currentDependency.extraneous || @owner.loadingDependency"},
                 "range": {"<-": "@owner.currentDependency.version"}
+            }
+        },
+
+        "loadingDependency": {
+            "prototype": "../spinner.reel",
+            "properties": {
+                "element": {"#": "loadingDependency"}
+            },
+            "bindings": {
+                "loading": {"<-": "@owner.loadingDependency"}
             }
         }
     }
@@ -50,7 +60,12 @@
 </head>
 <body>
 <div data-montage-id="dependency-information">
-    <header class="PackageEditorPanel-title PackageEditorPanel-title--header">Dependency Information</header>
+    <header class="PackageEditorPanel-title PackageEditorPanel-title--header">
+        <span>Dependency Information</span>
+        <span class="PackageEditorPanel-title--header-spinner">
+            <span data-montage-id="loadingDependency"></span>
+        </span>
+    </header>
     <div class="PackageEditorColumnContent">
         <div data-montage-id="dependencyDetails" class="PackageEditorPanel"></div>
         <div data-montage-id="dependencyErrors" class="PackageEditorPanel"></div>
