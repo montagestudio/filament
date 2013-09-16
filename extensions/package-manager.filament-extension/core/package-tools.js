@@ -51,6 +51,12 @@ exports.ToolsBox = Object.create(Object.prototype, {
         }
     },
 
+    isDependency: {
+        value: function (dependency) {
+            return (dependency && typeof dependency === "object" && dependency.hasOwnProperty("name"));
+        }
+    },
+
     findModuleNameFormGitUrl: {
         value: function  (url) {
             var results = this.isGitUrl(url);

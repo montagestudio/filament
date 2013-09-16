@@ -105,7 +105,7 @@ exports.PackageDependenciesGroup = Component.specialize(/** @lends PackageDepend
                 var data = dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY),
                     dependency = JSON.parse(data);
                 if (dependency.type !== this.type) {
-                    this.editingDocument.replaceDependency(dependency, this.type);
+                    this.editingDocument.switchDependencyType(dependency, this.type).done();
                 }
             }
             this._willAcceptDrop = false;

@@ -3,11 +3,13 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     Tools = require('./package-tools'),
     PackageQueueManager = require('./packages-queue-manager').PackageQueueManager,
     Promise = require("montage/core/promise").Promise,
+    Dependency = require('./dependency').Dependency,
     semver = require('semver'),
     PackageTools = Tools.ToolsBox,
     ErrorsCommands = Tools.Errors.commands,
     DependencyNames = Tools.DependencyNames,
     defaultLocalizer = require("montage/core/localizer").defaultLocalizer,
+
     DEFAULT_TIME_AUTO_SAVE = 400,
     DEPENDENCY_TIME_AUTO_SAVE = 100,
     DEPENDENCIES_REQUIRED = ['montage'],
@@ -41,6 +43,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             PackageQueueManager.load(this, '_handleDependenciesListChange');
             this._livePackage = packageRequire.packageDescription;
             this.sharedProjectController = projectController;
+            this.editor = projectController.currentEditor;
 
             this._package = app.file || {};
             this._classifyDependencies(app.dependencies, false); // classify dependencies
@@ -295,6 +298,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                 self._classifyDependencies(app.dependencies, false); // classify dependencies
                 self._notifyOutDatedDependencies();
                 self.isReloadingList = false;
+                self.editor.updateSelectionDependencyList();
             });
         }
     },
@@ -415,6 +419,29 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
+    getInformationDependency: {
+        value: function (dependency) {
+            if (PackageTools.isDependency(dependency)) {
+                if (!dependency.private && !dependency.information) {
+                    this.editor.loadingDependency(true);
+                    var search = (dependency.versionInstalled) ? dependency.name + "@" + dependency.versionInstalled : dependency.name,
+                        self = this;
+
+                    return this._packageManagerPlugin.invoke("viewDependency", search).then(function (module) {
+                        dependency.information = module || {}; // Can be null if the version doesn't exists.
+                        self.editor.loadingDependency(false);
+                        return dependency;
+                    }, function (error) {
+                        self.editor.loadingDependency(false);
+                        throw error;
+                    });
+                }
+                return Promise.resolve(dependency);
+            }
+            return Promise.reject(new Error("Encountered an error while getting dependency information"));
+        }
+    },
+
     _findDependency: {
         value: function (name, type) {
             if (!type) { // if type not specified, search inside any
@@ -448,58 +475,87 @@ exports.PackageDocument = EditingDocument.specialize( {
                 var args = (response) ? [response.key, response.dependency] : [];
                 index(args[0], args[1]);
             } else {
-                return (!response) ? null : (index) ? response.key : response.dependency;
+                if (!!index) {
+                    return response ? response.key : -1;
+                }
+                return response ? response.dependency : null;
             }
         }
     },
 
+    performActionDependency: {
+        value: function (action, dependency) {
+            var promise = null,
+                title = null;
+
+            if (!dependency) {
+                promise = Promise.reject(new Error("Dependency Information is missing"));
+            }
+
+            if (!promise) { // No errors.
+                if (action === Dependency.INSTALL_DEPENDENCY_ACTION) {
+                    promise = this.installDependency(dependency, true);
+                    title = "Installing";
+                } else if (action === Dependency.REMOVE_DEPENDENCY_ACTION) {
+                    promise = this.uninstallDependency(dependency);
+                    title = "Uninstalling";
+                } else if (action === Dependency.UPDATE_DEPENDENCY_ACTION) {
+                    promise = this.updateDependency(dependency);
+                    title = "Updating";
+                } else {
+                    promise = Promise.reject(new Error("Action not recognized"));
+                    title = "Error";
+                }
+            }
+
+            this.dispatchEventNamed("asyncActivity", true, false, {
+                promise: promise,
+                title: title
+            });
+
+            return promise;
+        }
+    },
+
     updateDependency: {
-        value: function (name, version, type) {
-            if (PackageTools.isNameValid(name) && PackageTools.isVersionValid(version)) {
-                return this.installDependency(name, version, type);
+        value: function (dependency) {
+            if (PackageTools.isDependency(dependency) && PackageTools.isNameValid(dependency.name) &&
+                PackageTools.isVersionValid(dependency.version)) {
+
+                return this.installDependency(dependency, false);
             }
             return Promise.reject(new Error("The dependency name and version are required"));
         }
     },
 
     installDependency: {
-        value: function (name, version, type, strict) { // version or git url, strict force the range to be the version installed.
+        value: function (dependency, install) { // install action (not update) => force the range to be the version installed.
             var self = this,
-                module = {
-                    name: name,
-                    version: (version || ''),
-                    versionInstalled: PackageTools.isVersionValid(version) ? version : null,
-                    type: (type || DependencyNames.dependencies),
-                    isInstalling: true
-                };
+                module = dependency;
 
-            this._insertDependency(module, true, strict); // Insert and Save
+            module.versionInstalled = PackageTools.isVersionValid(module.version) ? module.version : null; // if git url
+            module.performingAction = true;
+
+            this._insertDependency(module, true, install); // Insert and Save
 
             return PackageQueueManager.installModule(module).then(function (installed) {
-                if (installed && typeof installed === 'object' && installed.hasOwnProperty('name')) {
-                    module.isInstalling = false;
+                if (PackageTools.isDependency(installed)) {
+                    module.performingAction = false;
 
-                    if (installed.name !== module.name) {
+                    if (installed.name !== module.name || !module.version) { // If names are different or version missing
                         self._removeDependencyFromFile(module, false);
-                        self._insertDependency({
-                            name: installed.name,
-                            version: installed.versionInstalled,
-                            type: module.type
-                        }, true); // If names are different
+                        module.name = installed.name;
+                        module.version = PackageTools.isGitUrl(module.version) ? module.version : installed.versionInstalled;
+                        module.versionInstalled = installed.versionInstalled;
+                        self._insertDependency(module, true);
                     }
 
-                    return {
-                        name: installed.name,
-                        versionInstalled: installed.versionInstalled,
-                        type: module.type,
-                        missing: false,
-                        installed: true
-                    };
+                    return 'The dependency ' + installed.name + (!!install ? ' has been installed.' : ' has been updated');
                 }
-                throw new Error('An error has occurred while installing the dependency ' + name);
+                throw new Error('An error has occurred while installing the dependency ' + module.name);
 
             }, function (error) {
-                module.isInstalling = false;
+                module.performingAction = false;
                 throw error;
             });
         }
@@ -507,7 +563,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     _insertDependency: {
         value: function (module, save, strict) {
-            if (module && typeof module === 'object' && module.hasOwnProperty('name') && module.hasOwnProperty('version')) {
+            if (PackageTools.isDependency(module) && module.hasOwnProperty('version')) {
                 var self = this;
 
                 this.findDependency(module.name, null, function (index, dependency) {
@@ -537,7 +593,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                 dependency.type = type;
             }
 
-            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name') && dependency.hasOwnProperty('type')) {
+            if (PackageTools.isDependency(dependency) && dependency.hasOwnProperty('type')) {
                 type = DependencyNames[dependency.type];
 
                 if (type) {
@@ -545,7 +601,8 @@ exports.PackageDocument = EditingDocument.specialize( {
                         range = group[dependency.name];
 
                     if (range && !strict) { // if range already specified
-                        range = !semver.clean(range, true) ? range : dependency.versionInstalled; // clean returns null if the range it's not a version specified.
+                        // clean returns null if the range it's not a version specified.
+                        range = !semver.clean(range, true) ? range : dependency.versionInstalled;
                     } else {
                         range = PackageTools.isGitUrl(dependency.version) ? dependency.version : dependency.versionInstalled;
                     }
@@ -558,32 +615,50 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    replaceDependency: {
+    switchDependencyType: {
         value: function (dependency, type) {
-            if (dependency && dependency.type !== type && !PackageQueueManager.isRunning && !this.isReloadingList &&
-                this._removeDependencyFromFile(dependency, false) && this._addDependencyToFile(dependency, true, type)) {
+            if (PackageTools.isDependency(dependency) && type) {
+                if (dependency.type === type) {
+                    return Promise.resolve(true);
+                }
 
-                return this.saveModification(true);
+                if (dependency.extraneous || PackageQueueManager.isRunning || this.isReloadingList) {
+                    var promise = Promise.reject(new Error ('Can not change a dependency type either the dependency is ' +
+                        'extraneous or an action is performing'));
+
+                    this.dispatchEventNamed("asyncActivity", true, false, {
+                        promise: promise,
+                        title: "Package Manager"
+                    });
+                }
+
+                if (this._removeDependencyFromFile(dependency, false) && this._addDependencyToFile(dependency, true, type)) {
+                    return this.saveModification(true);
+                }
             }
+            return Promise.reject(new Error ('An error has occurred while switching dependency type'));
         }
     },
 
     uninstallDependency: {
-        value: function (name) {
-            if (typeof name === 'string' && DEPENDENCIES_REQUIRED.indexOf(name.toLowerCase()) < 0) {
-                var dependency = this.findDependency(name);
+        value: function (dependency) {
+            dependency = (typeof dependency === 'string') ? this.findDependency(dependency) : dependency;
 
-                if (dependency && typeof dependency === "object") {
-                    this._removeDependencyFromFile(dependency, true);
-                    return PackageQueueManager.uninstallModule(name, !dependency.missing).then(function (data) {
-                        return data;
-                    });
+            if (PackageTools.isDependency(dependency)) {
+                var name = dependency.name;
+
+                if (DEPENDENCIES_REQUIRED.indexOf(name.toLowerCase()) >= 0) {
+                    return Promise.reject(new Error('Can not uninstall the dependency ' + name + ', required by Lumieres'));
                 }
 
-                return Promise.reject(new Error('An error has occurred'));
-            } else {
-                return Promise.reject(new Error('Can not uninstall the dependency ' + name + ', required by Lumieres'));
+                dependency.performingAction = true;
+                this._removeDependencyFromFile(dependency, true);
+
+                return PackageQueueManager.uninstallModule(name, !dependency.missing).then(function () {
+                    return 'The dependency ' +name + ' has been removed';
+                });
             }
+            return Promise.reject(new Error('An error has occurred while removing a dependency'));
         }
     },
 
@@ -593,8 +668,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                 dependency = this.findDependency(dependency); // try to find the dependency related to this name
             }
 
-            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name') &&
-                dependency.hasOwnProperty('type') && !dependency.extraneous) {
+            if (PackageTools.isDependency(dependency) && dependency.hasOwnProperty('type') && !dependency.extraneous) {
                 var type = DependencyNames[dependency.type];
 
                 if (type) {
@@ -635,14 +709,20 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function () {
             var self = this,
                 promise = this.packageManagerPlugin.invoke("getOutdatedDependencies").then(function (updates) {
-                    var keys = Object.keys(updates),
-                        total = keys ? keys.length : 0;
+                    var keys = Object.keys(updates);
+
+                    for (var i = 0, length = keys.length; i < length; i++) { // temporary fix because npm outdated is buggy.
+                        var dependency = self.findDependency(keys[i], null, false);
+                        if (!dependency || dependency.private) {
+                            delete updates[keys[i]];
+                        }
+                    }
 
                     self._outDatedDependencies = updates;
                     self._notifyOutDatedDependencies();
 
                     return defaultLocalizer.localize("num_updates").then(function (messageFn) {
-                        return messageFn({updates:total});
+                        return messageFn({updates:Object.keys(updates).length});
                     });
                 });
 
@@ -665,8 +745,8 @@ exports.PackageDocument = EditingDocument.specialize( {
                 dependency = this.findDependency(dependency); // try to find the dependency related to the name
             }
 
-            if (dependency && typeof dependency === "object" && dependency.hasOwnProperty('name') &&
-                dependency.hasOwnProperty("type") && this.isRangeValid(range)) {
+            if (PackageTools.isDependency(dependency) && !dependency.extraneous && dependency.hasOwnProperty("type") &&
+                (this.isRangeValid(range) || PackageTools.isGitUrl(range))) {
                 var type = DependencyNames[dependency.type];
 
                 if (type) {

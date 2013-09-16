@@ -29,6 +29,19 @@ exports.DependencyInformation = Component.specialize(/** @lends DependencyInform
         value: null
     },
 
+    _loadingDependency: {
+        value: false
+    },
+
+    loadingDependency: {
+        set: function (loading) {
+            this._loadingDependency = !!loading;
+        },
+        get: function () {
+            return this._loadingDependency;
+        }
+    },
+
     /**
      * Reference to the current selected dependency.
      * Determines if the current selected dependency has some errors.
@@ -37,14 +50,8 @@ exports.DependencyInformation = Component.specialize(/** @lends DependencyInform
      */
     currentDependency: {
         set: function (module) {
-            if (module && typeof module === "object") {
-                this._currentDependency = module;
-                this.hasError = (this.currentDependency && Array.isArray(this.currentDependency.problems) &&
-                    this.currentDependency.problems.length > 0);
-            } else { // Can be null
-                this._currentDependency = null;
-                this.hasError =  false;
-            }
+            this._currentDependency = module;
+            this.hasError = (module && Array.isArray(module.problems) && module.problems.length > 0);
         },
         get: function () {
             return this._currentDependency;

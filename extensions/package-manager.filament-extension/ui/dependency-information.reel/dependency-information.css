@@ -1,3 +1,9 @@
+.PackageEditorPanel-title--header-spinner {
+    height: 20px;
+    padding: 6px;
+    float: right;
+}
+
 .dependencyDetailsList{
     -webkit-align-items: flex-start;
     -webkit-flex-direction: row;

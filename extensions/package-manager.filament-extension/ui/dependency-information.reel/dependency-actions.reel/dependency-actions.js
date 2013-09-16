@@ -3,6 +3,7 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
+    Dependency = require("../../../core/dependency").Dependency,
     DependencyNames = require('../../../core/package-tools').DependencyNames;
 
 /**
@@ -45,6 +46,10 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
         value: null
     },
 
+    loadingDependency: {
+        value: false
+    },
+
     range: {
         value: null
     },
@@ -61,10 +66,8 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
             if (this.editingDocument && typeof range === "string" && range.length > 0) {
                 range = range.trim();
 
-                if (this.currentDependency.range !== range &&
-                    this._rangeValidity(this.editingDocument.updateDependencyRange(this.currentDependency, range))) {
-
-                    this.currentDependency.range = range;
+                if (this.currentDependency.version !== range) {
+                    this._rangeValidity(this.editingDocument.updateDependencyRange(this.currentDependency, range));
                 } else {
                     this._rangeValidity(this.editingDocument.isRangeValid(range));
                 }
@@ -79,38 +82,24 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
      */
     handleSelectedValueChange: {
         value: function (type) {
-            if (type && this.editingDocument && DependencyNames[type] && this.currentDependency && this.currentDependency.type !== type) {
-                var promise = this.editingDocument.replaceDependency(this.currentDependency, type);
+            if (type && !this.loadingDependency && this.editingDocument && DependencyNames[type] &&
+                this.currentDependency && this.currentDependency.type !== type) {
 
-                if (promise) {
-                    var self = this;
-                    promise.then(function () {
-                        self.currentDependency.type = type;
-                    }).done();
-                }
+                var self = this;
+                this.editingDocument.switchDependencyType(this.currentDependency, type).then(function () {
+                    self.currentDependency.type = type;
+                }).done();
             }
         }
     },
 
     handleAcceptUpdateAction: {
         value: function () {
-            var update = this.currentDependency.update ? this.currentDependency.update.available : null,
-                name = this.currentDependency.name;
+            var update = this.currentDependency.update ? this.currentDependency.update.available : null;
 
-            if (this.currentDependency && this.editingDocument && update) {
-                var promise = this.editingDocument.updateDependency(name, update, this.currentDependency.type)
-                    .then(function (data) {
-                        if (data && typeof data === 'object' && data.hasOwnProperty('name')) {
-                            return 'The dependency ' + data.name + ' has been updated';
-                        }
-
-                        throw new Error('An error has occurred while updating the dependency ' + name);
-                    });
-
-                this.dispatchEventNamed("asyncActivity", true, false, {
-                    promise: promise,
-                    title: "Updating"
-                });
+            if (this.currentDependency && !this.loadingDependency &&this.editingDocument && update) {
+                this.editingDocument.performActionDependency(Dependency.UPDATE_DEPENDENCY_ACTION,
+                    new Dependency(this.currentDependency.name, update, this.currentDependency.type)).done();
             }
         }
     }
