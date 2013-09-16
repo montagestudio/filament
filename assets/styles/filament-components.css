@@ -29,8 +29,19 @@
     background-color: hsla(210,100%,60%,0.1);
 }
 
-.Search::-webkit-search-cancel-button {
-    margin: 0 6px 0 8px;
+/* Search Close Button */
+.Search.matte-InputText::-webkit-search-cancel-button {
+  margin: 6px;
+  opacity: .8;
+  cursor: pointer;
+}
+
+.Search.matte-InputText::-webkit-search-cancel-button:hover {
+  opacity: 1;
+}
+
+.Search.matte-InputText::-webkit-search-cancel-button:active {
+  opacity: .3;
 }
 
 
