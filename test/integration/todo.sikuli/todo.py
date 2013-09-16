@@ -44,7 +44,7 @@ if exists("1371598405282.png"):
     waitVanish(overwriteSheet, 2)           
 
 sleep(2)
-lumieresRegion.wait("1376294047035.png", 20)
+lumieresRegion.wait(Pattern("1376294047035.png").similar(0.50), 20)
 explorer = lumieresRegion.find(Pattern("1371631581983.png").similar(0.60)).below(500)
 sleep(1)
 templateExplorer = lumieresRegion.find("1376294075874.png")
@@ -73,13 +73,13 @@ rangeControllerInspector.click(Pattern("1371770852843.png").targetOffset(59,13))
 
 # Add a list to present the tasks
 
-dragDrop(digitPackageRegion.find("1372142855514.png"), Pattern("1374615691186.png").targetOffset(-59,11))
+dragDrop(digitPackageRegion.find("1372142855514.png"), Pattern("1379348761930.png").targetOffset(-73,27))
 
 #Set the list to receive its content from the rangeController we created
-dragDrop(templateExplorer.find("1376294158032.png"), "1371601115096.png")
+dragDrop(Pattern("1379357122124.png").similar(0.51), Pattern("1379357187665.png").targetOffset(33,59))
 
 #Remove the placeholder list content
-click(Pattern("1374615281648.png").similar(0.69).targetOffset(28,1))
+click(Pattern("1379348525259.png").similar(0.54).targetOffset(43,0))
 
 # Create a component to encapsulate the presentation of a task in the list
 #TODO why does click not work?
@@ -92,8 +92,6 @@ type("task")
 click("1371601213234.png")
 sleep(1)
 explorer.wait("1371626266866.png", 1)
-explorer.click(Pattern("1371626282274.png").targetOffset(-7,18))
-
 wait("1376294233084.png", 2)
 #Add a checkbox to complete tasks
 dragDrop("1371626348331.png", "1371626362160.png")
@@ -104,7 +102,7 @@ checkboxCard.inside().find("1376294281054.png").right().click("1376294297971.png
 bind("checked", False, "@owner.task.completed")
 
 # Add a textfiled to edit the title of the task
-dragDrop("1372143026732.png", Pattern("1371627827353.png").targetOffset(-5,-9))
+dragDrop("1372143026732.png", Pattern("1379357399537.png").targetOffset(-109,21))
 
 taskTitleCard = find("1376294350349.png")
 taskTitleCard.inside().find("1376294281054.png").right().click("1376294297971.png")
@@ -133,13 +131,14 @@ bind("task", True, "@list1.objectAtCurrentIteration")
 save()
 
 #Add a new task button
-dragDrop("1371708733359.png", "1371708794806.png")
+dragDrop("1371708733359.png", Pattern("1379359175062.png").targetOffset(-47,0))
 doubleClick("1371708858768.png")
 type("New Task")
 
 #add an actionEventListener to call the addContent method on the rangeController
 
 dragDrop("1371708937502.png", templateExplorer)
+wheel(templateExplorer, WHEEL_UP, 100)
 dragDrop("1376294527604.png", "1371709006343.png")
 type("1371709026331.png", "addContent")
 
@@ -147,14 +146,14 @@ type("1371709026331.png", "addContent")
 
 wheel(templateExplorer, WHEEL_DOWN, 100)
 
-buttonCard = find("1376295839529.png")
+buttonCard = find("1379358342966.png")
 buttonEvent = buttonCard.find("1376294601972.png").right().find("1376294614002.png")
-actionListenerCard = "1376295854881.png"
-dragDrop(buttonEvent, actionListenerCard.find("1376294679650.png"))
-click("1371710441914.png")
+actionListenerCard = "1379358548521.png"
+dragDrop(buttonEvent, actionListenerCard)
+click("1379358296330.png")
 
 #add a badge to count the remaining tasks
-dragDrop("1371711022203.png", "1371711073673.png")
+dragDrop("1371711022203.png", Pattern("1379359212690.png").targetOffset(-49,2))
 
 badgeCard = find("1376295271102.png")
 badgeCard.find("1376294281054.png").right().click("1376294297971.png")
