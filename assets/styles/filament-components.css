@@ -31,7 +31,7 @@
 
 /* Search Close Button */
 .Search.matte-InputText::-webkit-search-cancel-button {
-  margin: 6px;
+  margin: 2px 8px 0 4px;
   opacity: .8;
   cursor: pointer;
 }
