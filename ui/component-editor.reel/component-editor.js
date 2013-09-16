@@ -4,6 +4,7 @@ var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
     WeakMap = require("montage/collections/weak-map"),
     Editor = require("palette/ui/editor.reel").Editor,
+    getElementXPath = require("palette/core/xpath").getElementXPath,
     defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
 exports.ComponentEditor = Editor.specialize({
@@ -233,6 +234,7 @@ exports.ComponentEditor = Editor.specialize({
                 stageElement = detail.element,
                 parentComponents = detail.parentComponents,
                 documentEditor = this.currentDocument,
+                stageDocument = documentEditor._editingController.frame.iframe.contentDocument,
                 domExplorer = this.templateObjects.domExplorer;
 
             // de-highlight all DOM Elements
@@ -251,7 +253,6 @@ exports.ComponentEditor = Editor.specialize({
                     null
                 ).singleNodeValue;
             var nodeProxy = documentEditor.nodeProxyForNode(element);
-
             // handle highlighting at the component level if the DOM element is not found
             if (!nodeProxy && parentComponents) {
                 var parentComponentId;
@@ -263,9 +264,20 @@ exports.ComponentEditor = Editor.specialize({
 
             // select the highlighted domExplorer element
             domExplorer.highlightedDOMElement = nodeProxy;
+
             // highlight the stageElement to simulate a hover
-            documentEditor.clearHighlightedElements();
-            documentEditor.hightlightElement(stageElement);
+            if (nodeProxy.component) {
+                xpath = getElementXPath(nodeProxy._templateNode);
+                element = documentEditor.htmlDocument.evaluate(
+                    xpath,
+                    stageDocument,
+                    null,
+                    XPathResult.FIRST_ORDERED_NODE_TYPE,
+                    null
+                ).singleNodeValue;
+                documentEditor.clearHighlightedElements();
+                documentEditor.hightlightElement(element);
+            }
         }
     },
 
