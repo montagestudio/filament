@@ -3,8 +3,7 @@ var Montage = require("montage").Montage,
     Promise = require("montage/core/promise").Promise,
     ErrorsCommands = require('../../core/package-tools').Errors.commands,
     application = require("montage/core/application").application,
-    INSTALL_DEPENDENCY_ACTION = 0,
-    REMOVE_DEPENDENCY_ACTION = 1;
+    Dependency = require("../../core/dependency").Dependency;
 
 exports.PackageEditor = Montage.create(Editor, {
 
@@ -18,7 +17,6 @@ exports.PackageEditor = Montage.create(Editor, {
         value: function (firstTime) {
             if (firstTime) {
                 this.addOwnPropertyChangeListener("selectedDependency", this);
-                this.addOwnPropertyChangeListener("reloadingList", this, true);
                 application.addEventListener("didOpenDocument", this);
             }
         }
@@ -32,18 +30,9 @@ exports.PackageEditor = Montage.create(Editor, {
     },
 
     handleDidOpenDocument: {
-        value: function (evt) {
-            var openedDocument = evt.detail.document;
-            if (this.currentDocument === openedDocument) {
-                this._updateSelection();
-            }
-        }
-    },
-
-    _backendPlugin: {
-        get: function () {
-            if (this.currentDocument) {
-                return this.currentDocument.packageManagerPlugin;
+        value: function (event) {
+            if (this.currentDocument === event.detail.document) {
+                this.updateSelectionDependencyList();
             }
         }
     },
@@ -78,28 +67,21 @@ exports.PackageEditor = Montage.create(Editor, {
      */
     handleSelectedDependencyChange: {
         value: function (dependency) {
-            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name')) {
-                var self = this,
-                    search = (dependency.versionInstalled) ?
-                        dependency.name + "@" + dependency.versionInstalled : dependency.name;
+            if (this.currentDocument && dependency && typeof dependency === 'object') {
+                var self = this;
 
-                this._backendPlugin.invoke("viewDependency", search).then(function (module) {
-                    if (self.selectedDependency) {
-                        if (module && typeof module === 'object' && module.hasOwnProperty('name')) {
-                            module.problems = dependency.problems;
-                            module.type = dependency.type;
-                            module.versionInstalled = dependency.versionInstalled;
-                            module.range = dependency.version;
-                            module.update = dependency.update || null;
-                            self.dependencyDisplayed = module;
-                        } else {
-                            self.dependencyDisplayed = dependency;
-                        }
+                this.currentDocument.getInformationDependency(dependency).then(function (module) {
+                    if(self.selectedDependency && module && typeof module === 'object' && module.name === self.selectedDependency.name) {
+                        self.dependencyDisplayed = module;
                     }
                 }, function (error) {
-
                     if (error && typeof error === 'object' && error.code === ErrorsCommands.view.codes.dependencyNotFound) {
-                        self.dependencyDisplayed = (self.selectedDependency) ? dependency : null;
+                        if (self.selectedDependency && dependency && dependency.name === self.selectedDependency.name) { // Can be private.
+                            self.dependencyDisplayed = self.selectedDependency;
+                            self.selectedDependency.information = {};
+                        } else { // Does not exist.
+                            self._clearSelection();
+                        }
                     } else {
                         self._clearSelection();
                         self.dispatchEventNamed("asyncActivity", true, false, {
@@ -112,17 +94,7 @@ exports.PackageEditor = Montage.create(Editor, {
         }
     },
 
-    /**
-     * "Watches" if the the dependencies list is reloading.
-     * @type {boolean}
-     * @default false
-     * @return {boolean}
-     */
-    reloadingList: {
-        value: false
-    },
-
-    _updateSelection: {
+    updateSelectionDependencyList: {
         value: function () {
             if (this.dependencyDisplayed && this.currentDocument) {
                 this.previousSelectedDependency = this.currentDocument.findDependency(this.dependencyDisplayed.name, null, false);
@@ -136,11 +108,9 @@ exports.PackageEditor = Montage.create(Editor, {
         }
     },
 
-    handleReloadingListWillChange: {
-        value: function () {
-            if (this.reloadingList) {
-                this._updateSelection();
-            }
+    loadingDependency: {
+        value: function (loading) {
+            this.templateObjects.dependencyInformation.loadingDependency = !!loading;
         }
     },
 
@@ -156,70 +126,11 @@ exports.PackageEditor = Montage.create(Editor, {
                 var source = event.detail.get('source');
 
                 if (source && typeof source === 'object' && !source.canInstall) { // remove request
-                    this.removeDependency(source, source.dependency);
+                    this.currentDocument.performActionDependency(Dependency.REMOVE_DEPENDENCY_ACTION, source.dependency).done();
                 } else { // install request
-                    this.installDependency(source.dependency);
+                    this.currentDocument.performActionDependency(Dependency.INSTALL_DEPENDENCY_ACTION, source.dependency).done();
                 }
             }
-        }
-    },
-
-    /**
-     * Invokes the uninstall dependency process.
-     * @function
-     * @param {Object} source, the cell which raised the action.
-     * @param {Object} dependency, the dependency owns by the cell.
-     */
-    removeDependency: {
-        value: function (source, dependency) {
-            if (dependency && typeof dependency === 'object' && dependency.hasOwnProperty('name')) {
-                var self = this;
-                source.performingAction = true; // Notify to the cell the dependency is installing.
-
-                var promise = this.currentDocument.uninstallDependency(dependency.name).then(function (success) {
-
-                    if (success) {
-                        self._dependenciesListChange(dependency.name, REMOVE_DEPENDENCY_ACTION);
-                        return 'The dependency ' + dependency.name + ' has been removed';
-                    }
-                    source.performingAction = false;
-                    throw new Error('An error has occurred while removing the dependency ' + dependency.name);
-
-                }, function (error) {
-                    source.performingAction = false;
-                    throw error;
-                });
-
-                this.dispatchEventNamed("asyncActivity", true, false, {
-                    promise: promise,
-                    title: "Removing"
-                });
-            }
-        }
-    },
-
-    installDependency: {
-        value: function (dependency, version, type) {
-            if (dependency && typeof dependency === "object" && dependency.name) {
-                version = dependency.version;
-                type = dependency.type;
-                dependency = dependency.name;
-            }
-
-            var self = this,
-                promise = this.currentDocument.installDependency(dependency, version, type, true).then(function (data) {
-                    if (data && typeof data === 'object' && data.hasOwnProperty('name')) {
-                        self._dependenciesListChange(data.name, INSTALL_DEPENDENCY_ACTION);
-                        return 'The dependency ' + data.name + ' has been installed.';
-                    }
-
-                    throw new Error('An error has occurred while installing the dependency ' + dependency);
-                });
-
-            this.dispatchEventNamed("asyncActivity", true, false, {
-                promise: promise,
-                title: "Installing"
-            });
         }
     },
 
@@ -243,7 +154,7 @@ exports.PackageEditor = Montage.create(Editor, {
             if (dependencyName && action >= 0) {
                 this.templateObjects.searchModules.handleDependenciesListChange(dependencyName, action);
 
-                if (action === REMOVE_DEPENDENCY_ACTION && this.dependencyDisplayed &&
+                if (action === Dependency.REMOVE_DEPENDENCY_ACTION && this.dependencyDisplayed &&
                     this.dependencyDisplayed.name === dependencyName) { // Need to clean the view part, if the dependency deleted is also the dependency displayed
                     this._clearSelection();
                 }

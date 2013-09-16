@@ -27,7 +27,8 @@
                 "radioButtonController": {"@": "switchTypesController"}
             },
             "bindings": {
-                "checked": {"<-": "(@owner.currentDependency.type == value)"}
+                "checked": {"<-": "(@owner.currentDependency.type == value)"},
+                "disabled": {"<-": "@owner.loadingDependency"}
             }
         },
 
@@ -39,7 +40,8 @@
                 "radioButtonController": {"@": "switchTypesController"}
             },
             "bindings": {
-                "checked": {"<-": "(@owner.currentDependency.type == value)"}
+                "checked": {"<-": "(@owner.currentDependency.type == value)"},
+                "disabled": {"<-": "@owner.loadingDependency"}
             }
         },
 
@@ -51,7 +53,8 @@
                 "radioButtonController": {"@": "switchTypesController"}
             },
             "bindings": {
-                "checked": {"<-": "(@owner.currentDependency.type == value)"}
+                "checked": {"<-": "(@owner.currentDependency.type == value)"},
+                "disabled": {"<-": "@owner.loadingDependency"}
             }
         },
 
@@ -61,7 +64,8 @@
                 "element": {"#": "dependencyRangeValue"}
             },
             "bindings": {
-                "value": {"<->": "@owner.range"}
+                "value": {"<->": "@owner.range"},
+                "disabled": {"<-": "@owner.loadingDependency"}
             }
         },
 

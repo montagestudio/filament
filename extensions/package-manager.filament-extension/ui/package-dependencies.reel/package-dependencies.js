@@ -3,7 +3,6 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    Promise = require("montage/core/promise").Promise,
     MIME_TYPES = require("../../core/mime-types"),
     DependencyNames = require('../../core/package-tools').DependencyNames;
 
@@ -98,7 +97,7 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
      * @param {Object} cell, represents the future selected dependency.
      * @private
      */
-    _manualChange: {
+    _changeSelection: {
         value: function (cell) {
             this.dispatchBeforeOwnPropertyChange('selectedDependency', cell);
             this.dispatchOwnPropertyChange('selectedDependency', cell);
@@ -111,7 +110,7 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
      */
     dependencyCell: {
         set: function (cell) {
-            this._manualChange(cell);
+            this._changeSelection(cell);
         }
     },
 
@@ -121,7 +120,7 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
      */
     optionalDependencyCell: {
         set: function (cell) {
-            this._manualChange(cell);
+            this._changeSelection(cell);
         }
     },
 
@@ -131,7 +130,7 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
      */
     devDependencyCell: {
         set: function (cell) {
-            this._manualChange(cell);
+            this._changeSelection(cell);
         }
     },
 
