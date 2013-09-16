@@ -63,24 +63,48 @@
 }
 
 
-/* Comments ------------------------------ */
+.TemplateObjectHeader-buttonGroup {
+    display: -webkit-flex;
+    padding-right: 5px;
+}
 
-.TemplateObjectHeader-commentButton.matte-Button {
+/* Header button ------------------------------ */
+
+.TemplateObjectHeader-button.matte-Button {
     display: block;
-    margin: 0 7px;
+    margin: 0 2px;
     border-color: transparent;
-    background: transparent url(/assets/icons/comment.png) no-repeat center;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
     background-size: 14px;
 }
 
-.TemplateObjectHeader-commentButton.matte-Button:hover {
+.TemplateObjectHeader-button.matte-Button:hover {
     background-color: transparent;
+    border-color: hsla(0,0%,0%,.1);
 }
 
-.TemplateObjectHeader-commentButton.TemplateObjectHeader--active{
-    background-color: hsl(42, 83%, 95%);
-    border-color: hsl(0,0%,80%);
+.TemplateObjectHeader-button.matte-Button.active,
+.TemplateObjectHeader-button.matte-Button.active:hover {
+    background-color: hsla(0,0%,0%,.1);
 }
+
+.TemplateObjectHeader-button.matte-Button.pressed {
+    border-color: hsla(0,0%,0%,.1);
+    background-color: hsla(0,0%,100%,.3);
+}
+
+.TemplateObjectHeader-button--edit {
+    background-image: url(/assets/icons/edit.png);
+}
+
+.TemplateObjectHeader-button--comment {
+    background-image: url(/assets/icons/comment.png);
+}
+
+
+/* Comments ------------------------------ */
 
 .TemplateObjectHeader-comment {
     display: block;
