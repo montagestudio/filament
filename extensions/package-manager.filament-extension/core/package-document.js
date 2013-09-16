@@ -431,6 +431,9 @@ exports.PackageDocument = EditingDocument.specialize( {
                         dependency.information = module || {}; // Can be null if the version doesn't exists.
                         self.editor.loadingDependency(false);
                         return dependency;
+                    }, function (error) {
+                        self.editor.loadingDependency(false);
+                        throw error;
                     });
                 }
                 return Promise.resolve(dependency);
