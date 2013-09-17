@@ -48,12 +48,20 @@ exports.PackageDocument = EditingDocument.specialize( {
             this._package = app.file || {};
             this._classifyDependencies(app.dependencies, false); // classify dependencies
 
-            return this.packageManagerPlugin.invoke("loadNPM", this.projectUrl).then(function (loaded) {
-                if (!loaded) {
-                    throw new Error("An error has occurred while NPM was initializing");
-                }
-                self._getOutDatedDependencies();
-                return self;
+            return this.getApplicationSupportUrl().then(function (url) {
+                self.applicationSupportUrl = url;
+
+                return self.packageManagerPlugin.invoke("loadPackageManager", self.projectUrl, url).then(function (loaded) {
+                    if (!loaded) {
+                        throw new Error("An error has occurred while Package manager was loading");
+                    }
+
+                    self._getOutDatedDependencies();
+
+                    return self;
+                }, function (error) {
+                    console.log(error);
+                });
             });
         }
     },
@@ -77,7 +85,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             if (!this._packageManagerPlugin && this.sharedProjectController) {
                 this._packageManagerPlugin = this.sharedProjectController.environmentBridge.backend.get("package-manager");
             }
-            return  this._packageManagerPlugin;
+            return this._packageManagerPlugin;
         }
     },
 
@@ -91,6 +99,21 @@ exports.PackageDocument = EditingDocument.specialize( {
                 this._projectUrl = this.sharedProjectController.environmentBridge.convertBackendUrlToPath(this.sharedProjectController.projectUrl);
             }
             return this._projectUrl;
+        }
+    },
+
+    applicationSupportUrl: {
+        value: null
+    },
+
+    getApplicationSupportUrl: {
+        value: function () {
+            var self = this;
+
+            return this.sharedProjectController.environmentBridge.backend.get("application")
+                .invoke("specialFolderURL", "application-support").then(function(folder) {
+                    return self.sharedProjectController.environmentBridge.convertBackendUrlToPath(folder.url.replace("%20", " "));
+                });
         }
     },
 
