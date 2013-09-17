@@ -62,4 +62,36 @@ describe("core/node-proxy-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
     });
+
+    describe("tagName", function () {
+
+        it("changes the tagName", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.nodeProxyForMontageId("foo");
+
+                nodeProxy.tagName = "span";
+                expect(nodeProxy._templateNode.tagName).toEqual("SPAN");
+            });
+        });
+
+        it("copies attributes", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.nodeProxyForMontageId("foo");
+
+                nodeProxy.tagName = "span";
+                expect(nodeProxy._templateNode.getAttribute("data-montage-id")).toEqual("foo");
+            });
+        });
+
+        it("moves children", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var nodeProxy = reelDocument.nodeProxyForMontageId("ownerElement");
+                var fooProxy = reelDocument.nodeProxyForMontageId("foo");
+
+                nodeProxy.tagName = "span";
+                expect(nodeProxy._templateNode.childNodes[0]).toBe(fooProxy._templateNode);
+            });
+        });
+
+    });
 });

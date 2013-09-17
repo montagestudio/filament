@@ -813,4 +813,29 @@ describe("core/reel-document-template-editing-spec", function () {
         });
 
     });
+
+    describe("changing a node's tag name", function () {
+        it("should add an undo operation", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("testDomAttribute");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                reelDocument.setNodeProxyTagName(nodeProxy, "span");
+                expect(reelDocument.undoManager.undoCount).toBe(1);
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should undo the tag name by reverting to the previous value", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("testDomAttribute");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                reelDocument.setNodeProxyTagName(nodeProxy, "span");
+
+                return reelDocument.undoManager.undo().then(function() {
+                    expect(element.tagName).toBe("DIV");
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+    });
 });

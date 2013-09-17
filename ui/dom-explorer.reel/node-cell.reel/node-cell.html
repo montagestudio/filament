@@ -27,13 +27,19 @@
         },
 
         "tagName": {
-            "prototype": "montage/ui/text.reel",
+            "prototype": "ui/text-editor-field.reel",
             "properties": {
                 "element": {"#": "tagName"}
             },
             "bindings": {
                 "value": {"<-": "@owner.nodeInfo.tagName"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "montageId": {
