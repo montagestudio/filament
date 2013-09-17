@@ -32,61 +32,76 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
         writable: true
     },
 
+    _needUpdate: {
+        value: function () {
+            return this._getLastUpdate().then(function (lastUpdate) {
+                return (Date.now() - lastUpdate) >= (TIMEOUT_BEFORE_NEW_REQUEST * 1000);
+            });
+        }
+    },
+
     update: {
         value: function (all) {
             var self = this;
 
-            return this._getLastUpdate().then(function (lastUpdate) {
-                if ((Date.now() - lastUpdate) < (TIMEOUT_BEFORE_NEW_REQUEST * 1000)) { // uses cache
-                    return Q(true);
+            return this._needUpdate().then(function (needed) {
+                if (needed) {
+                    return self._performUpdate(all);
+                }
+                return Q(true);
+            });
+        }
+    },
+
+    _performUpdate: {
+        value: function (all) {
+            // Request for the npm registry
+            var request = (!!all || this.lastUpdate === 0) ?
+                    "/-/all" : "/-/all/since?stale=update_after&startkey=" + this.lastUpdate,
+                self = this;
+
+            return LumieresDB.open().then(function (instance) {
+                if (!npm.config.loaded) {
+                    throw new Error("NPM should be loaded first");
                 }
 
-                // Request for the npm registry
-                var request = (!!all || lastUpdate === 0) ? "/-/all" : "/-/all/since?stale=update_after&startkey=" + lastUpdate;
+                return Q.ninvoke(npm.registry, "get", request, TIMEOUT_BEFORE_NEW_REQUEST, false, true).then(function (modules) {
+                    return Q.ninvoke(instance, "serialize").then(function () {
+                        return Q.ninvoke(instance, "run", "BEGIN").then(function () {
+                            var keys = Object.keys(modules),
+                                stmt = instance.prepare(
+                                    "INSERT INTO " +
+                                        "PACKAGE_MANAGER_REGISTRY (NAME, VERSION, KEYWORDS, AUTHOR, DESCRIPTION) " +
+                                        "VALUES (?, ?, ?, ?, ?)"
+                                );
 
-                return LumieresDB.open().then(function (instance) {
-                    if (!npm.config.loaded) {
-                        throw new Error("NPM should be loaded first");
-                    }
+                            for (var i = 0, length = keys.length; i < length; i++) {
+                                var module = modules[keys[i]],
+                                    version = (module.versions && typeof module.versions === "object") ?
+                                        Object.keys(module.versions)[0] : null;
 
-                    return Q.ninvoke(npm.registry, "get", request, TIMEOUT_BEFORE_NEW_REQUEST, false, true).then(function (modules) {
-                        return Q.ninvoke(instance, "serialize").then(function () {
-                            return Q.ninvoke(instance, "run", "BEGIN").then(function () {
-                                var keys = Object.keys(modules),
-                                    stmt = instance.prepare(
-                                        "INSERT INTO " +
-                                            "PACKAGE_MANAGER_REGISTRY (NAME, VERSION, KEYWORDS, AUTHOR, DESCRIPTION) " +
-                                            "VALUES (?, ?, ?, ?, ?)"
+                                if (module.name && version) {
+                                    stmt.run(
+                                        module.name,
+                                        version,
+                                        JSON.stringify(module.keywords),
+                                        JSON.stringify(module.author),
+                                        module.description
                                     );
-
-                                for (var i = 0, length = keys.length; i < length; i++) {
-                                    var module = modules[keys[i]],
-                                        version = (module.versions && typeof module.versions === "object") ?
-                                            Object.keys(module.versions)[0] : null;
-
-                                    if (module.name && version) {
-                                        stmt.run(
-                                            module.name,
-                                            version,
-                                            JSON.stringify(module.keywords),
-                                            JSON.stringify(module.author),
-                                            module.description
-                                        );
-                                    }
                                 }
+                            }
 
-                                return Q.ninvoke(stmt, "finalize").then(function () {
-                                    return Q.ninvoke(instance, "run", "COMMIT").then(function () {
-                                        var updated = Date.now();
+                            return Q.ninvoke(stmt, "finalize").then(function () {
+                                return Q.ninvoke(instance, "run", "COMMIT").then(function () {
+                                    var updated = Date.now();
 
-                                        return Q.ninvoke(instance, "run", "UPDATE PACKAGE_MANAGER_DATA " +
-                                                "SET KEY_VALUE = ? " +
-                                                "WHERE KEY_NAME = 'REGISTRY_CACHE'", updated)
-                                            .then(function () {
-                                                self.lastUpdate = updated;
-                                                return LumieresDB.close();
-                                            });
-                                    });
+                                    return Q.ninvoke(instance, "run", "UPDATE PACKAGE_MANAGER_DATA " +
+                                            "SET KEY_VALUE = ? " +
+                                            "WHERE KEY_NAME = 'REGISTRY_CACHE'", updated)
+                                        .then(function () {
+                                            self.lastUpdate = updated;
+                                            return LumieresDB.close();
+                                        });
                                 });
                             });
                         });
