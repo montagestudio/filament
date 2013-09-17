@@ -29,6 +29,10 @@ exports.TemplateObjectCell = Component.specialize({
             this.element.addEventListener("dragover", this, false);
             this.element.addEventListener("dragleave", this, false);
             this.element.addEventListener("drop", this, false);
+
+            // hover component in the stage
+            this.element.addEventListener("mouseover", this, false);
+            this.element.addEventListener("mouseout", this, false);
         }
     },
 
@@ -145,6 +149,26 @@ exports.TemplateObjectCell = Component.specialize({
                     moduleId: this.templateObject.moduleId
                 });
             }
+        }
+    },
+
+    handleMouseover: {
+        value: function () {
+            var proxy = this.templateObject,
+                editingDocument = proxy._editingDocument,
+                element = proxy.stageObject._element;
+
+            editingDocument.clearHighlightedElements();
+            editingDocument.hightlightElement(element);
+        }
+    },
+
+    handleMouseout: {
+        value: function () {
+            var proxy = this.templateObject,
+                editingDocument = proxy._editingDocument;
+
+            editingDocument.clearHighlightedElements();
         }
     },
 
