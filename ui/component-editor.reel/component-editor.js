@@ -4,7 +4,6 @@ var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
     WeakMap = require("montage/collections/weak-map"),
     Editor = require("palette/ui/editor.reel").Editor,
-    getElementXPath = require("palette/core/xpath").getElementXPath,
     defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
 exports.ComponentEditor = Editor.specialize({
@@ -267,14 +266,7 @@ exports.ComponentEditor = Editor.specialize({
 
             // highlight the stageElement to simulate a hover
             if (nodeProxy.component) {
-                xpath = getElementXPath(nodeProxy._templateNode);
-                element = documentEditor.htmlDocument.evaluate(
-                    xpath,
-                    stageDocument,
-                    null,
-                    XPathResult.FIRST_ORDERED_NODE_TYPE,
-                    null
-                ).singleNodeValue;
+                element = nodeProxy.component.stageObject._element;
                 documentEditor.clearHighlightedElements();
                 documentEditor.hightlightElement(element);
             }
