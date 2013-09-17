@@ -57,10 +57,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                     }
 
                     self._getOutDatedDependencies();
-
                     return self;
-                }, function (error) {
-                    console.log(error);
                 });
             });
         }
