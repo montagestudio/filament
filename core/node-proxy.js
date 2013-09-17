@@ -102,6 +102,31 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
     tagName: {
         get: function () {
             return this._templateNode ? this._templateNode.tagName : null;
+        },
+        set: function (value) {
+            var currentNode = this._templateNode;
+            var doc = currentNode.ownerDocument;
+            var parent = currentNode.parentNode;
+
+            // Create new element
+            var newNode = doc.createElement(value);
+            // Copy attributes
+            var attributes = currentNode.attributes;
+            for (var i = 0, len = attributes.length; i < len; i++) {
+                var attr = attributes[i];
+                newNode.setAttribute(attr.name, attr.value);
+            }
+            // Move children
+            var children = currentNode.childNodes;
+            for (i = 0, len = children.length; i < len; i++) {
+                // The nodes are removed from the childNodes array as we append
+                // them here, so the next node to add is always the first one
+                newNode.appendChild(children[0]);
+            }
+            // Set correct parent on the children's nodeProxies
+
+            parent.replaceChild(newNode, currentNode);
+            this._templateNode = newNode;
         }
     },
 
