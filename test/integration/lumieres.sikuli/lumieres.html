@@ -71,13 +71,16 @@
 </div>
 <pre class="sikuli-code">
 <span class="kw">from</span> sikuli <span class="kw">import</span> *
+<span class="kw">import</span> logging
 
 <span class="cmt"># Find the Lumieres welcome screen and click on it to bring it to the front
 </span><span class="kw">def</span> focusLumieres():
-    <span class="kw">if</span> exists(<img src="1379460790475.png" />):
-        <span class="skw">click</span>(getLastMatch())
-    <span class="kw">else</span>:
-        <span class="kw">print</span> <span class="str">"Could not find Lumieres Welcome Screen"</span>
+    <span class="kw">try</span>:
+        <span class="skw">click</span>(<img src="1379460790475.png" />)
+    <span class="kw">except</span> FindFailed, exception:
+        logging.error(<span class="str">"Could not find Lumieres Welcome Screen"</span>)
+        <span class="kw">raise</span> exception
+
 
 <span class="cmt"># Create a new application
 </span><span class="kw">def</span> makeNewApplication(name):
@@ -96,9 +99,23 @@
     lumieresRegion = App.focusedWindow()
 
     <span class="cmt"># Wait for the application ot be ready to actually use
-</span>    lumieresRegion.<span class="skw">wait</span>(Pattern(<img src="1379476862102.png" />).similar(<span class="dig">0.91</span>), <span class="dig">20</span>)
-    lumieresRegion.<span class="skw">wait</span>(<img src="1379478367947.png" />, <span class="dig">20</span>)
-    lumieresRegion.<span class="skw">wait</span>(<img src="1379478388607.png" />, <span class="dig">20</span>)
+</span>    <span class="kw">try</span>:
+        lumieresRegion.<span class="skw">wait</span>(Pattern(<img src="1379476862102.png" />).similar(<span class="dig">0.91</span>), <span class="dig">20</span>)
+    <span class="kw">except</span> FindFailed, exception:
+        logging.error(<span class="str">"Failed to find application created success message"</span>)
+        <span class="kw">raise</span> exception
+
+    <span class="kw">try</span>:
+        lumieresRegion.<span class="skw">wait</span>(<img src="1379478367947.png" />, <span class="dig">20</span>)
+    <span class="kw">except</span> FindFailed, exception:
+        logging.error(<span class="str">"Failed to find opened main component in templateExplorer"</span>)
+        <span class="kw">raise</span> exception
+
+    <span class="kw">try</span>:
+        lumieresRegion.<span class="skw">wait</span>(<img src="1379478388607.png" />, <span class="dig">20</span>)
+    <span class="kw">except</span> FindFailed, exception:
+        logging.error(<span class="str">"Failed to find expected DOM tree in DomExplorer"</span>)
+        <span class="kw">raise</span> exception
 
     <span class="kw">return</span> lumieresRegion
 

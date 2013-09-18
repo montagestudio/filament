@@ -1,11 +1,13 @@
 from sikuli import *
+import logging
 
 # Find the Lumieres welcome screen and click on it to bring it to the front
 def focusLumieres():
-    if exists("1379460790475.png"):
-        click(getLastMatch())
-    else:
-        print "Could not find Lumieres Welcome Screen"
+    try:
+        click("1379460790475.png")
+    except FindFailed, exception:
+        logging.error("Could not find Lumieres Welcome Screen")
+        raise exception
 
 # Create a new application
 def makeNewApplication(name):
@@ -23,10 +25,24 @@ def makeNewApplication(name):
 
     lumieresRegion = App.focusedWindow()
 
-    # Wait for the application ot be ready to actually use
-    lumieresRegion.wait(Pattern("1379476862102.png").similar(0.91), 20)
-    lumieresRegion.wait("1379478367947.png", 20)
-    lumieresRegion.wait("1379478388607.png", 20)
+    # Wait for the application to be ready to actually use
+    try:
+        lumieresRegion.wait(Pattern("1379476862102.png").similar(0.91), 10)
+    except FindFailed, exception:
+        logging.error("Failed to find application created success message")
+        raise exception
+
+    try:
+        lumieresRegion.wait("1379478367947.png", 10)
+    except FindFailed, exception:
+        logging.error("Failed to find opened main component in templateExplorer")
+        raise exception
+
+    try:
+        lumieresRegion.wait("1379478388607.png", 10)
+    except FindFailed, exception:
+        logging.error("Failed to find expected DOM tree in DomExplorer")
+        raise exception
 
     return lumieresRegion 
 
