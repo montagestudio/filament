@@ -206,6 +206,17 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
+    handleTagNameAction: {
+        value: function (evt) {
+            var newTagName = evt.target.value,
+                nodeProxy = this._nodeInfo;
+
+            if (!nodeProxy._editingDocument.setNodeProxyTagName(nodeProxy, newTagName)) {
+                evt.preventDefault();
+            }
+        }
+    },
+
     handleMontageIdAction: {
         value: function (evt) {
             var newMontageId = evt.target.value,

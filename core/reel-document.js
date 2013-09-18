@@ -1224,6 +1224,29 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    /**
+     * Sets the specified attribute of a nodeProxy to be a specified value
+     * @function
+     * @param  {NodeProxy}  nodeProxy
+     * @param  {string} attribute The attribute to set on the specified node proxy
+     * @param  {string} value The value to set for the specified attribute
+     * @return {boolean} Whether or not the value specified was applied
+     */
+    setNodeProxyTagName: {
+        value: function(nodeProxy, tagName) {
+            var previousTagName = nodeProxy.tagName;
+            if (tagName === previousTagName) {
+                return true;
+            }
+
+            nodeProxy.tagName = tagName;
+            this.undoManager.register("Set Node Tag Name", Promise.resolve([this.setNodeProxyTagName, this, nodeProxy, previousTagName]));
+            this.editor.refresh();
+
+            return true;
+        }
+    },
+
     // Override EditingDocument#setOwnedObjectLabel to also change the object's
     // element's montage id if possible
     setOwnedObjectLabel: {
