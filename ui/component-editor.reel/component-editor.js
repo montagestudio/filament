@@ -299,7 +299,7 @@ exports.ComponentEditor = Editor.specialize({
                 templateExplorer.highlightedComponent = nodeProxy.component;
                 // highlight the stageElement to simulate a hover
                 element = nodeProxy.component.stageObject._element;
-                documentEditor.hightlightElement(element);
+                documentEditor.highlightElement(element);
             }
         }
     },
@@ -343,7 +343,7 @@ exports.ComponentEditor = Editor.specialize({
             // set templateExplorer's highlighted component
             templateExplorer.highlightedComponent = component || null;
             // highlight the stageElement
-            documentEditor.hightlightElement(stageElement);
+            documentEditor.highlightElement(stageElement);
         }
     },
 
@@ -367,7 +367,7 @@ exports.ComponentEditor = Editor.specialize({
             // set templateExplorer's highlighted component (hover effect)
             templateExplorer.highlightedComponent = component;
             // highlight the stageElement
-            documentEditor.hightlightElement(stageElement);
+            documentEditor.highlightElement(stageElement);
         }
     }
 
