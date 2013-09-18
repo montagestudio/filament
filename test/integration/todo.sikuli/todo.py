@@ -1,50 +1,12 @@
-def findLumieres():
-    if exists("1371596756905.png"):
-        click(getLastMatch())
+# This will build the basic todo application
+# Precondition: The instance of lumieres you want touse is up and running with is welcome screen visible
+# Postcondition: A `todo` application will be successfully assembled on the desktop
 
-    elif exists(Pattern("1371597952876.png").similar(0.66)):
-        doubleClick(Pattern("1371625485554.png").targetOffset(-9,0))
-    
-    elif exists("1371599372730.png"):
-        doubleClick(Pattern("1371625510803.png").targetOffset(-8,-1))
+import lumieres
+reload(lumieres)
 
-#TODO use cmd-s to save, or have an option to do so
-def save():
-    click("1371628194913.png")
-    click("1371628226102.png")
-    sleep(1)
-
-def bind(targetPath, oneway, sourcePath):
-    sleep(1)
-    checkboxBindingJig = find("1376294958706.png")
-    checkboxBindingJig.inside().type(Pattern("1374616220841.png").targetOffset(0,6), targetPath)
-    if (not oneway):
-        checkboxBindingJig.inside().click("1371627538325.png")
-    checkboxBindingJig.inside().type(Pattern("1374616197093.png").targetOffset(0,6), sourcePath)
-    checkboxBindingJig.inside().click("1371627635301.png")
-    sleep(1)
-
-# Begin Actual Application
-
-findLumieres()
-
-# Create a new application
-click("1371596763802.png")
-
-wait("1371769499689.png", 10)
-
-lumieresRegion = getLastMatch().nearby(2)
-
-type("d", Key.META)
-type("todo")
-type(Key.ENTER)
-if exists("1371598405282.png"):
-    overwriteSheet = getLastMatch()
-    overwriteSheet.nearby(100).click("1371598422707.png")
-    waitVanish(overwriteSheet, 2)           
-
-sleep(2)
-lumieresRegion.wait(Pattern("1376294047035.png").similar(0.50), 20)
+lumieres.focusLumieres();
+lumieresRegion = lumieres.makeNewApplication("todo")
 explorer = lumieresRegion.find(Pattern("1371631581983.png").similar(0.60)).below(500)
 sleep(1)
 templateExplorer = lumieresRegion.find("1376294075874.png")
@@ -99,19 +61,19 @@ checkboxCard = find("1376294261916.png")
 
 # Bind the checkbox to the task's completed state
 checkboxCard.inside().find("1376294281054.png").right().click("1376294297971.png")
-bind("checked", False, "@owner.task.completed")
+lumieres.bind("checked", False, "@owner.task.completed")
 
 # Add a textfiled to edit the title of the task
 dragDrop("1372143026732.png", Pattern("1379357399537.png").targetOffset(-109,21))
 
 taskTitleCard = find("1376294350349.png")
 taskTitleCard.inside().find("1376294281054.png").right().click("1376294297971.png")
-bind("value", False, "@owner.task.title")
+lumieres.bind("value", False, "@owner.task.title")
 
 
 #save this component so we can use it in the main component
 
-save()    
+lumieres.save()    
 
 #switch back to the main component
 
@@ -126,9 +88,9 @@ taskCard = find("1376295091372.png")
 taskCard.find("1376294281054.png").right().click("1376294297971.png")
 
 #bind the task property of the task component to the list's current iteration
-bind("task", True, "@list1.objectAtCurrentIteration")
+lumieres.bind("task", True, "@list1.objectAtCurrentIteration")
 
-save()
+lumieres.save()
 
 #Add a new task button
 dragDrop("1371708733359.png", Pattern("1379359175062.png").targetOffset(-47,0))
@@ -157,9 +119,9 @@ dragDrop("1371711022203.png", Pattern("1379359212690.png").targetOffset(-49,2))
 
 badgeCard = find("1376295271102.png")
 badgeCard.find("1376294281054.png").right().click("1376294297971.png")
-bind("value", True, "@rangeController1.organizedContent.filter{!completed}.length")
+lumieres.bind("value", True, "@rangeController1.organizedContent.filter{!completed}.length")
 
-save()
+lumieres.save()
 
 #TODO insert completed toggle
 #TODO insert hr's for formatting

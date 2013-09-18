@@ -1,0 +1,129 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }
+
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>lumieres.sikuli</h2> <a href="lumieres.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="kw">from</span> sikuli <span class="kw">import</span> *
+
+<span class="cmt"># Find the Lumieres welcome screen and click on it to bring it to the front
+</span><span class="kw">def</span> focusLumieres():
+    <span class="kw">if</span> exists(<img src="1379460790475.png" />):
+        <span class="skw">click</span>(getLastMatch())
+    <span class="kw">else</span>:
+        <span class="kw">print</span> <span class="str">"Could not find Lumieres Welcome Screen"</span>
+
+<span class="cmt"># Create a new application
+</span><span class="kw">def</span> makeNewApplication(name):
+    <span class="cmt">#TODO not assume we have the welcome screen
+</span>    <span class="skw">click</span>(<img src="1371596763802.png" />)
+
+    <span class="skw">wait</span>(<img src="1379462893447.png" />, <span class="dig">5</span>)
+
+    <span class="skw">type</span>(<span class="str">"d"</span>, Key.META)
+    <span class="skw">type</span>(name)
+    <span class="skw">type</span>(Key.ENTER)
+
+    <span class="kw">if</span> exists(<img src="1379462931252.png" />):
+        <span class="skw">type</span>(Key.SPACE)
+
+    lumieresRegion = App.focusedWindow()
+
+    <span class="cmt"># Wait for the application ot be ready to actually use
+</span>    lumieresRegion.<span class="skw">wait</span>(Pattern(<img src="1379476862102.png" />).similar(<span class="dig">0.91</span>), <span class="dig">20</span>)
+    lumieresRegion.<span class="skw">wait</span>(<img src="1379478367947.png" />, <span class="dig">20</span>)
+    lumieresRegion.<span class="skw">wait</span>(<img src="1379478388607.png" />, <span class="dig">20</span>)
+
+    <span class="kw">return</span> lumieresRegion
+
+<span class="cmt"># Save the current file
+</span><span class="kw">def</span> save(useShortcut=False):
+    <span class="kw">if</span> useShortcut:
+        <span class="skw">type</span>(KeyModifier.CMD, <span class="str">"S"</span>)
+    <span class="kw">else</span>:
+        mainMenu = <span class="skw">find</span>(<img src="1379461140195.png" />).right()
+        editMenuItem = mainMenu.<span class="skw">find</span>(<img src="1379462158739.png" />)
+        <span class="skw">click</span>(editMenuItem)
+        editMenu = editMenuItem.below(<span class="dig">300</span>).left(<span class="dig">150</span>).right(<span class="dig">300</span>)
+        editMenu.<span class="skw">click</span>(<img src="1379462376737.png" />)
+    <span class="skw">sleep</span>(<span class="dig">1</span>)
+
+<span class="cmt"># Define a new binding with the specified parameters
+</span><span class="kw">def</span> bind(targetPath, oneway, sourcePath):
+    <span class="skw">sleep</span>(<span class="dig">1</span>)
+    checkboxBindingJig = <span class="skw">find</span>(<img src="1376294958706.png" />)
+    checkboxBindingJig.inside().<span class="skw">type</span>(Pattern(<img src="1374616220841.png" />).targetOffset(<span class="dig">0</span>,<span class="dig">6</span>), targetPath)
+    <span class="kw">if</span> (<span class="kw">not</span> oneway):
+        checkboxBindingJig.inside().<span class="skw">click</span>(<img src="1371627538325.png" />)
+    checkboxBindingJig.inside().<span class="skw">type</span>(Pattern(<img src="1374616197093.png" />).targetOffset(<span class="dig">0</span>,<span class="dig">6</span>), sourcePath)
+    checkboxBindingJig.inside().<span class="skw">click</span>(<img src="1371627635301.png" />)
+    <span class="skw">sleep</span>(<span class="dig">1</span>)
+</pre>
+</body>
+</html>

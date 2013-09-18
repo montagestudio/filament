@@ -70,53 +70,15 @@
 <h2>todo.sikuli</h2> <a href="todo.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
-<span class="kw">def</span> findLumieres():
-    <span class="kw">if</span> exists(<img src="1371596756905.png" />):
-        <span class="skw">click</span>(getLastMatch())
-
-    <span class="kw">elif</span> exists(Pattern(<img src="1371597952876.png" />).similar(<span class="dig">0.66</span>)):
-        <span class="skw">doubleClick</span>(Pattern(<img src="1371625485554.png" />).targetOffset(-<span class="dig">9</span>,<span class="dig">0</span>))
-
-    <span class="kw">elif</span> exists(<img src="1371599372730.png" />):
-        <span class="skw">doubleClick</span>(Pattern(<img src="1371625510803.png" />).targetOffset(-<span class="dig">8</span>,-<span class="dig">1</span>))
-
-<span class="cmt">#TODO use cmd-s to save, or have an option to do so
-</span><span class="kw">def</span> save():
-    <span class="skw">click</span>(<img src="1371628194913.png" />)
-    <span class="skw">click</span>(<img src="1371628226102.png" />)
-    <span class="skw">sleep</span>(<span class="dig">1</span>)
-
-<span class="kw">def</span> bind(targetPath, oneway, sourcePath):
-    <span class="skw">sleep</span>(<span class="dig">1</span>)
-    checkboxBindingJig = <span class="skw">find</span>(<img src="1376294958706.png" />)
-    checkboxBindingJig.inside().<span class="skw">type</span>(Pattern(<img src="1374616220841.png" />).targetOffset(<span class="dig">0</span>,<span class="dig">6</span>), targetPath)
-    <span class="kw">if</span> (<span class="kw">not</span> oneway):
-        checkboxBindingJig.inside().<span class="skw">click</span>(<img src="1371627538325.png" />)
-    checkboxBindingJig.inside().<span class="skw">type</span>(Pattern(<img src="1374616197093.png" />).targetOffset(<span class="dig">0</span>,<span class="dig">6</span>), sourcePath)
-    checkboxBindingJig.inside().<span class="skw">click</span>(<img src="1371627635301.png" />)
-    <span class="skw">sleep</span>(<span class="dig">1</span>)
-
-<span class="cmt"># Begin Actual Application
+<span class="cmt"># This will build the basic todo application
+</span><span class="cmt"># Precondition: The instance of lumieres you want touse is up and running with is welcome screen visible
+</span><span class="cmt"># Postcondition: A `todo` application will be successfully assembled on the desktop
 </span>
-findLumieres()
+<span class="kw">import</span> lumieres
+reload(lumieres)
 
-<span class="cmt"># Create a new application
-</span><span class="skw">click</span>(<img src="1371596763802.png" />)
-
-<span class="skw">wait</span>(<img src="1371769499689.png" />, <span class="dig">10</span>)
-
-lumieresRegion = getLastMatch().nearby(<span class="dig">2</span>)
-
-<span class="skw">type</span>(<span class="str">"d"</span>, Key.META)
-<span class="skw">type</span>(<span class="str">"todo"</span>)
-<span class="skw">type</span>(Key.ENTER)
-<span class="kw">if</span> exists(<img src="1371598405282.png" />):
-    overwriteSheet = getLastMatch()
-    overwriteSheet.nearby(<span class="dig">100</span>).<span class="skw">click</span>(<img src="1371598422707.png" />)
-    waitVanish(overwriteSheet, <span class="dig">2</span>)
-
-<span class="skw">sleep</span>(<span class="dig">2</span>)
-lumieresRegion.<span class="skw">wait</span>(Pattern(<img src="1376294047035.png" />).similar(<span class="dig">0.50</span>), <span class="dig">20</span>)
+lumieres.focusLumieres();
+lumieresRegion = lumieres.makeNewApplication(<span class="str">"todo"</span>)
 explorer = lumieresRegion.<span class="skw">find</span>(Pattern(<img src="1371631581983.png" />).similar(<span class="dig">0.60</span>)).below(<span class="dig">500</span>)
 <span class="skw">sleep</span>(<span class="dig">1</span>)
 templateExplorer = lumieresRegion.<span class="skw">find</span>(<img src="1376294075874.png" />)
@@ -171,19 +133,19 @@ checkboxCard = <span class="skw">find</span>(<img src="1376294261916.png" />)
 
 <span class="cmt"># Bind the checkbox to the task's completed state
 </span>checkboxCard.inside().<span class="skw">find</span>(<img src="1376294281054.png" />).right().<span class="skw">click</span>(<img src="1376294297971.png" />)
-bind(<span class="str">"checked"</span>, False, <span class="str">"@owner.task.completed"</span>)
+lumieres.bind(<span class="str">"checked"</span>, False, <span class="str">"@owner.task.completed"</span>)
 
 <span class="cmt"># Add a textfiled to edit the title of the task
 </span><span class="skw">dragDrop</span>(<img src="1372143026732.png" />, Pattern(<img src="1379357399537.png" />).targetOffset(-<span class="dig">109</span>,<span class="dig">21</span>))
 
 taskTitleCard = <span class="skw">find</span>(<img src="1376294350349.png" />)
 taskTitleCard.inside().<span class="skw">find</span>(<img src="1376294281054.png" />).right().<span class="skw">click</span>(<img src="1376294297971.png" />)
-bind(<span class="str">"value"</span>, False, <span class="str">"@owner.task.title"</span>)
+lumieres.bind(<span class="str">"value"</span>, False, <span class="str">"@owner.task.title"</span>)
 
 
 <span class="cmt">#save this component so we can use it in the main component
 </span>
-save()
+lumieres.save()
 
 <span class="cmt">#switch back to the main component
 </span>
@@ -198,9 +160,9 @@ taskCard = <span class="skw">find</span>(<img src="1376295091372.png" />)
 taskCard.<span class="skw">find</span>(<img src="1376294281054.png" />).right().<span class="skw">click</span>(<img src="1376294297971.png" />)
 
 <span class="cmt">#bind the task property of the task component to the list's current iteration
-</span>bind(<span class="str">"task"</span>, True, <span class="str">"@list1.objectAtCurrentIteration"</span>)
+</span>lumieres.bind(<span class="str">"task"</span>, True, <span class="str">"@list1.objectAtCurrentIteration"</span>)
 
-save()
+lumieres.save()
 
 <span class="cmt">#Add a new task button
 </span><span class="skw">dragDrop</span>(<img src="1371708733359.png" />, Pattern(<img src="1379359175062.png" />).targetOffset(-<span class="dig">47</span>,<span class="dig">0</span>))
@@ -229,9 +191,9 @@ actionListenerCard = <img src="1379358548521.png" />
 
 badgeCard = <span class="skw">find</span>(<img src="1376295271102.png" />)
 badgeCard.<span class="skw">find</span>(<img src="1376294281054.png" />).right().<span class="skw">click</span>(<img src="1376294297971.png" />)
-bind(<span class="str">"value"</span>, True, <span class="str">"@rangeController1.organizedContent.filter{!completed}.length"</span>)
+lumieres.bind(<span class="str">"value"</span>, True, <span class="str">"@rangeController1.organizedContent.filter{!completed}.length"</span>)
 
-save()
+lumieres.save()
 
 <span class="cmt">#TODO insert completed toggle
 </span><span class="cmt">#TODO insert hr's for formatting
