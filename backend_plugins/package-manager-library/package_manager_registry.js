@@ -85,7 +85,7 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
                                         module.name,
                                         version,
                                         JSON.stringify(module.keywords),
-                                        JSON.stringify(module.author),
+                                        module.author ? module.author.name : null,
                                         module.description
                                     );
                                 }
