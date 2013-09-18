@@ -30,6 +30,14 @@ Testing
 `npm test` Tests server side portions of Filament
 `FILAMENT_URL/run-tests.html` Tests the client-side portions of Filament
 
+Integration Tests
+=================
+1. Install sikuli http://www.sikuli.org/index.html
+2. Run the integration tests in `tests/integration`
+
+Unfortunatley the sikuli instructions are kind of platform specific;
+you can either run them from the sikuli IDE or from the commandline
+
 Contributing
 ============
 - Run `jshint` on your code to ensure it conforms to Filament standards
