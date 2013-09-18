@@ -19,6 +19,10 @@ exports.TemplateObjectCell = Component.specialize({
         }
     },
 
+    templateExplorer: {
+        value: null
+    },
+
     enterDocument: {
         value: function (firstTime) {
             if (!firstTime) {
@@ -156,19 +160,23 @@ exports.TemplateObjectCell = Component.specialize({
         value: function () {
             var proxy = this.templateObject,
                 editingDocument = proxy._editingDocument,
-                element = proxy.stageObject._element;
+                nodeProxy = editingDocument.nodeProxyForComponent(proxy);
 
-            editingDocument.clearHighlightedElements();
-            editingDocument.hightlightElement(element);
+            this.dispatchEventNamed("highlightComponent", true, true, {
+                component: proxy,
+                element: nodeProxy,
+                highlight: true
+            });
         }
     },
 
     handleMouseout: {
         value: function () {
-            var proxy = this.templateObject,
-                editingDocument = proxy._editingDocument;
-
-            editingDocument.clearHighlightedElements();
+            var proxy = this.templateObject;
+            this.dispatchEventNamed("highlightComponent", true, true, {
+                component: proxy,
+                highlight: false
+            });
         }
     },
 

@@ -261,6 +261,26 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    nodeProxyForComponent: {
+        value: function (component) {
+            var nodes = this.templateNodes,
+                i = 0,
+                iNode = nodes ? nodes[i] : null,
+                foundNode;
+
+            while (!foundNode && iNode) {
+                if (component === iNode.component) {
+                    foundNode = iNode;
+                } else {
+                    i++;
+                    iNode = nodes[i];
+                }
+            }
+
+            return foundNode;
+        }
+    },
+
     _buildSerializationObjects: {
         value: function () {
             var template = this._template,

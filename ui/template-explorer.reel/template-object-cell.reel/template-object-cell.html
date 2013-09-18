@@ -14,7 +14,8 @@
                         "<-": "@owner.templateObject.label == 'owner'"
                     },
                     "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"},
-                    "classList.has('TemplateObjectCell--isInProjectPackage')": {"<-": "@owner.isInProjectPackage"}
+                    "classList.has('TemplateObjectCell--isInProjectPackage')": {"<-": "@owner.isInProjectPackage"},
+                    "classList.has('TemplateObjectCell--highlighted')": {"<-": "@owner.templateExplorer.highlightedComponent == @owner.templateObject"}
                 }
             },
 

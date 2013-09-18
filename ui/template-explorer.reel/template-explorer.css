@@ -44,7 +44,7 @@
     background-color: hsl(0,0%,98%)
 }
 
-.TemplateObjectCell:hover {
+.TemplateObjectCell--highlighted {
     border-color: hsl(210,100%,60%);
 }
 

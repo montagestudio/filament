@@ -87,11 +87,14 @@ exports.ComponentEditor = Editor.specialize({
 
                 this.needsDraw = true;
 
-                // Element highlight stage -> DOM Explorer
+                // Element highlight stage -> domExplorer & templateExplorer
                 this.addEventListener("elementHover", this, false);
                 // Element highlight DOM Explorer -> stage
                 this.addEventListener("highlightStageElement", this, false);
-                this.addEventListener("deHighlightDomExplorerElement", this, false);
+                // Component highlight templateExplorer -> stage & domExplorer
+                this.addEventListener("highlightComponent", this, false);
+                // deHighlight everywhere
+                this.addEventListener("deHighlight", this, false);
             }
         }
     },
@@ -224,7 +227,33 @@ exports.ComponentEditor = Editor.specialize({
         }
     },
 
-    // Event dispatched on stage element hover
+    /*
+        Tree-way "assymetrical" highlighting
+
+        - domExplorer: has elements and components,
+        but not all sub elements/components.
+
+        - stage: has everything
+
+        - templateExplorer: has only components and no sub-components
+    */
+
+    clearHighlighting: {
+        value: function(){
+            var domExplorer = this.templateObjects.domExplorer,
+                documentEditor = this.currentDocument,
+                templateExplorer = this.templateObjects.templateExplorer;
+
+            // de-highlight domExplorer element
+            domExplorer.highlightedElement = null;
+            // de-highlight templateExplorer component
+            templateExplorer.highlightedComponent = null;
+            // de-highlight stage
+            documentEditor.clearHighlightedElements();
+        }
+    },
+
+    // Highlighting from stage
     handleElementHover: {
         value: function (evt) {
             var detail = evt.detail,
@@ -234,16 +263,17 @@ exports.ComponentEditor = Editor.specialize({
                 parentComponents = detail.parentComponents,
                 documentEditor = this.currentDocument,
                 stageDocument = documentEditor._editingController.frame.iframe.contentDocument,
-                domExplorer = this.templateObjects.domExplorer;
+                domExplorer = this.templateObjects.domExplorer,
+                templateExplorer = this.templateObjects.templateExplorer;
 
-            // de-highlight all DOM Elements
-            domExplorer.highlightedDOMElement = null;
+            this.clearHighlighting();
+            if (!highlight) {return;}
 
             // Ignore body
             if (xpath === "/html/body") {
                 return;
             }
-            
+
             var element = documentEditor.htmlDocument.evaluate(
                     xpath,
                     documentEditor.htmlDocument,
@@ -261,36 +291,42 @@ exports.ComponentEditor = Editor.specialize({
                 } while (!nodeProxy);
             }
 
-            // select the highlighted domExplorer element
+            // set domExplorer's highlighted element
             domExplorer.highlightedDOMElement = nodeProxy;
 
-            // highlight the stageElement to simulate a hover
             if (nodeProxy.component) {
+                // set templateExplorer's highlighted component
+                templateExplorer.highlightedComponent = nodeProxy.component;
+                // highlight the stageElement to simulate a hover
                 element = nodeProxy.component.stageObject._element;
-                documentEditor.clearHighlightedElements();
                 documentEditor.hightlightElement(element);
             }
         }
     },
 
-    handleDeHighlightDomExplorerElement: {
+    handleDeHighlight: {
         value: function (evt) {
-            var domExplorer = this.templateObjects.domExplorer;
-            domExplorer.highlightedDOMElement = null;
+            this.clearHighlighting();
         }
     },
 
-    // Event dispatched on DOM Explorer hover
+    // Highlighting from the domExplorer
     handleHighlightStageElement: {
         value: function (evt) {
             var detail = evt.detail,
                 highlight = detail.highlight,
                 xpath = detail.xpath,
                 component = detail.component,
+                proxy = detail.proxy,
                 documentEditor = this.currentDocument,
-                stageDocument = documentEditor._editingController.frame.iframe.contentDocument;
+                stageDocument = documentEditor._editingController.frame.iframe.contentDocument,
+                domExplorer = this.templateObjects.domExplorer,
+                templateExplorer = this.templateObjects.templateExplorer;
 
-            var element = documentEditor.htmlDocument.evaluate(
+            this.clearHighlighting();
+            if (!highlight) {return;}
+
+            var stageElement = stageDocument.evaluate(
                 xpath,
                 stageDocument,
                 null,
@@ -298,18 +334,41 @@ exports.ComponentEditor = Editor.specialize({
                 null
             ).singleNodeValue;
 
-            // use the component stage element representation when the DON element can't be found
-            if (!element && component) {
-                element = component.stageObject.element;
+            // handle highlighting at the component level if the DOM element is not found
+            if (!stageElement && component) {
+                stageElement = component.stageObject.element;
             }
-
-            if (highlight) {
-                documentEditor.hightlightElement(element);
-            }
-            else {
-                documentEditor.deHighlightElement(element);
-            }
+            // set domExplorer's highlighted element (hover effect)
+            domExplorer.highlightedElement = proxy;
+            // set templateExplorer's highlighted component
+            templateExplorer.highlightedComponent = component || null;
+            // highlight the stageElement
+            documentEditor.hightlightElement(stageElement);
         }
     },
+
+    // Highlighting from the template Explorer
+    handleHighlightComponent: {
+        value: function (evt) {
+            var detail = evt.detail,
+                highlight = detail.highlight,
+                component = detail.component,
+                element = detail.element,
+                stageElement = component.stageObject.element,
+                domExplorer = this.templateObjects.domExplorer,
+                documentEditor = this.currentDocument,
+                templateExplorer = this.templateObjects.templateExplorer;
+
+            this.clearHighlighting();
+            if (!highlight) {return;}
+
+            // set domExplorer's highlighted element
+            domExplorer.highlightedElement = element;
+            // set templateExplorer's highlighted component (hover effect)
+            templateExplorer.highlightedComponent = component;
+            // highlight the stageElement
+            documentEditor.hightlightElement(stageElement);
+        }
+    }
 
 });
