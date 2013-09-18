@@ -292,7 +292,7 @@ exports.ComponentEditor = Editor.specialize({
             }
 
             // set domExplorer's highlighted element
-            domExplorer.highlightedDOMElement = nodeProxy;
+            domExplorer.highlightedElement = nodeProxy;
 
             if (nodeProxy.component) {
                 // set templateExplorer's highlighted component
