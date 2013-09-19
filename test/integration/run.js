@@ -1,9 +1,9 @@
+/* global process */
 var path = require ("path");
 var fs = require("fs");
 var Q = require("q");
-var child_process = require('child_process');
+var childProcess = require('child_process');
 
-// $SIKULI -r test/integration/todo.sikuli
 var sikuli = process.env.SIKULI;
 
 if (!sikuli) {
@@ -21,7 +21,7 @@ var result = scripts.reduce(function (promise, testName) {
     return promise.then(function (success) {
 		return runTest(testName);
 	}, function (failure) {
-		console.log("Stopped on failure.")
+		console.log("Stopped on failure.");
 	});
 }, Q());
 
@@ -30,7 +30,7 @@ function runTest (name) {
 	if (fs.existsSync(testPath)) {
 		var deferredExit = Q.defer();
 		console.log("Running", testPath);
-		var child = child_process.spawn("sh", [sikuli, "-r", testPath]);
+		var child = childProcess.spawn("sh", [sikuli, "-r", testPath]);
 		
 		child.on("close", function (code) {
 			if (0 === code) {
