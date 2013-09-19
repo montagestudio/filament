@@ -1,5 +1,6 @@
 var PackageManagerDB = require("./package-manager-database").PackageManagerDB,
     npm = require("npm"),
+    semver = require("semver"),
     Q = require('q'),
     TIMEOUT_BEFORE_NEW_REQUEST = 900; // seconds
 
@@ -55,6 +56,16 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
         }
     },
 
+    _findLastVersion: {
+        value: function (versions) {
+            versions = versions.sort(function (a, b) {
+                return semver.compare(b, a);
+            });
+
+            return versions[0];
+        }
+    },
+
     _performUpdate: {
         value: function (all) {
             // Request for the npm registry
@@ -79,10 +90,10 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
 
                             for (var i = 0, length = keys.length; i < length; i++) {
                                 var module = modules[keys[i]],
-                                    version = (module.versions && typeof module.versions === "object") ?
-                                        Object.keys(module.versions)[0] : null;
+                                    versions = (module.versions && typeof module.versions === "object") ?
+                                        Object.keys(module.versions) : null;
 
-                                if (module.name && version) {
+                                if (module.name && Array.isArray(versions) && versions.length > 0) {
                                     var author = module.author ? module.author.name : null,
                                         maintainers = module.maintainers,
                                         names = [];
@@ -99,7 +110,7 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
 
                                     stmt.run(
                                         module.name,
-                                        version,
+                                        versions.length === 1 ? versions[0] : self._findLastVersion(versions),
                                         JSON.stringify(module.keywords),
                                         author,
                                         JSON.stringify(names),
