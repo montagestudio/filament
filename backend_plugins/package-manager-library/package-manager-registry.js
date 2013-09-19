@@ -130,6 +130,42 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
                 });
             });
         }
+    },
+
+    search: {
+        value: function (search) {
+            return this.update().then(function () {
+                return PackageManagerDB.open().then(function (instance) {
+                    return Q.ninvoke(instance, "all",
+                        "SELECT NAME AS name, VERSION AS version, KEYWORDS AS keywords, " +
+                            "AUTHOR AS author, MAINTAINERS AS maintainers, DESCRIPTION AS description " +
+                            "FROM PACKAGE_MANAGER_REGISTRY " +
+                            "WHERE NAME LIKE $search " +
+                            "OR KEYWORDS LIKE $search " +
+                            "OR DESCRIPTION LIKE $search " +
+                            "OR MAINTAINERS LIKE $search " +
+                            "OR AUTHOR LIKE $search ",
+                        { $search: "%" + search + "%" }
+                    ).then(function (rows) {
+                        for (var i = 0, length = rows.length; i < length; i++) {
+                            var row = rows[i];
+
+                            if (row.keywords) {
+                                row.keywords = JSON.parse(row.keywords);
+                            }
+
+                            if (row.maintainers) {
+                                row.maintainers = JSON.parse(row.maintainers);
+                            }
+                        }
+
+                        return PackageManagerDB.close().then(function () {
+                            return rows;
+                        });
+                    });
+                });
+            });
+        }
     }
 
 });
