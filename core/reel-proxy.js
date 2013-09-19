@@ -73,7 +73,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         value: function (property, value) {
             var previous = this.properties.get(property);
             if (previous instanceof NodeProxy) {
-                previous.references.delete([this, property]);
+                this.editingDocument.references.delete(previous, this, property);
             }
 
             // The value being set here should always be something of worth to the
@@ -82,7 +82,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             this.properties.set(property, value);
 
             if (value instanceof NodeProxy) {
-                value.references.add([this, property]);
+                this.editingDocument.references.add(value, this, property);
             }
 
             if (this.stageObject) {
@@ -155,7 +155,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
 
             self.properties.forEach(function (value, property) {
                 if (value instanceof NodeProxy) {
-                    value.references.add([self, property]);
+                    editingDocument.references.add(value, self, property);
                 }
             }, self);
 
