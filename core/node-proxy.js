@@ -1,5 +1,7 @@
 var Montage = require("montage").Montage,
-    NodeProxy;
+    Set = require("montage/collections/set");
+
+var NodeProxy;
 
 var MONTAGE_ID_ATTRIBUTE = "data-montage-id",
     MONTAGE_ARG_ATTRIBUTE = "data-arg";
@@ -24,6 +26,11 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
             attributeMap[MONTAGE_ID_ATTRIBUTE] = "montageId";
             attributeMap[MONTAGE_ARG_ATTRIBUTE] = "montageArg";
 
+            this.references = Set(void 0, function (a, b) {
+                return a && b && a[0] === b[0] && a[1] === b[1];
+            }, function (object) {
+                return object[0].uuid + object[1];
+            });
         }
     },
 
@@ -254,5 +261,9 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
 
             return nodeProxy;
         }
+    },
+
+    references: {
+        value: null
     }
 });

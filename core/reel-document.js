@@ -417,11 +417,10 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.templateNodes.splice(index, 1);
             }
 
-            // If a component is using the node as an element then remove the
-            // element reference.
-            if (proxy.component) {
-                this.setOwnedObjectElement(proxy.component, void 0);
-            }
+            // If an object is using the nodethen remove the element reference.
+            proxy.references.forEach(function (proxyAndProperty) {
+                this.setOwnedObjectProperty(proxyAndProperty[0], proxyAndProperty[1], void 0);
+            }, this);
 
             proxy.children.forEach(function (child) {
                 this.__removeNodeProxy(child);
