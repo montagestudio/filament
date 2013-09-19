@@ -71,8 +71,8 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
                             var keys = Object.keys(modules),
                                 stmt = instance.prepare(
                                     "INSERT INTO " +
-                                        "PACKAGE_MANAGER_REGISTRY (NAME, VERSION, KEYWORDS, AUTHOR, DESCRIPTION) " +
-                                        "VALUES (?, ?, ?, ?, ?)"
+                                        "PACKAGE_MANAGER_REGISTRY (NAME, VERSION, KEYWORDS, AUTHOR, AUTHOR_PSEUDO, DESCRIPTION) " +
+                                        "VALUES (?, ?, ?, ?, ?, ?)"
                                 );
 
                             for (var i = 0, length = keys.length; i < length; i++) {
@@ -81,11 +81,14 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
                                         Object.keys(module.versions)[0] : null;
 
                                 if (module.name && version) {
+                                    var author = module.author ? module.author.name : null;
+
                                     stmt.run(
                                         module.name,
                                         version,
                                         JSON.stringify(module.keywords),
-                                        module.author ? module.author.name : null,
+                                        author,
+                                        author ? author.replace(/\s+/g, '') : null,
                                         module.description
                                     );
                                 }
