@@ -1,4 +1,4 @@
-var LumieresDB = require("./lumieres_database").LumieresDB,
+var PackageManagerDB = require("./package-manager-database").PackageManagerDB,
     npm = require("npm"),
     Q = require('q'),
     TIMEOUT_BEFORE_NEW_REQUEST = 900; // seconds
@@ -10,12 +10,12 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
             if (!this.lastUpdate) {
                 var self = this;
 
-                return LumieresDB.open().then(function (instance) {
+                return PackageManagerDB.open().then(function (instance) {
                     return Q.ninvoke(instance, "get", "SELECT KEY_VALUE AS lastUpdate " +
                             "FROM PACKAGE_MANAGER_DATA " +
                             "WHERE KEY_NAME = 'REGISTRY_CACHE'")
                         .then(function (row) {
-                            return LumieresDB.close().then(function () {
+                            return PackageManagerDB.close().then(function () {
                                 self.lastUpdate = Number(row ? row.lastUpdate : 0);
                                 return self.lastUpdate;
                             });
@@ -53,6 +53,12 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
         }
     },
 
+    _getPersonNames: {
+        value: function (persons, container) {
+
+        }
+    },
+
     _performUpdate: {
         value: function (all) {
             // Request for the npm registry
@@ -60,7 +66,7 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
                     "/-/all" : "/-/all/since?stale=update_after&startkey=" + this.lastUpdate,
                 self = this;
 
-            return LumieresDB.open().then(function (instance) {
+            return PackageManagerDB.open().then(function (instance) {
                 if (!npm.config.loaded) {
                     throw new Error("NPM should be loaded first");
                 }
@@ -71,7 +77,7 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
                             var keys = Object.keys(modules),
                                 stmt = instance.prepare(
                                     "INSERT INTO " +
-                                        "PACKAGE_MANAGER_REGISTRY (NAME, VERSION, KEYWORDS, AUTHOR, AUTHOR_PSEUDO, DESCRIPTION) " +
+                                        "PACKAGE_MANAGER_REGISTRY (NAME, VERSION, KEYWORDS, AUTHOR, MAINTAINERS, DESCRIPTION) " +
                                         "VALUES (?, ?, ?, ?, ?, ?)"
                                 );
 
@@ -81,14 +87,26 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
                                         Object.keys(module.versions)[0] : null;
 
                                 if (module.name && version) {
-                                    var author = module.author ? module.author.name : null;
+                                    var author = module.author ? module.author.name : null,
+                                        maintainers = module.maintainers,
+                                        names = [];
+
+                                    if (maintainers && Array.isArray(maintainers)) {
+                                        for (var j = 0, len = maintainers.length; j < len; j++) {
+                                            var maintainer = maintainers[j];
+
+                                            if (maintainer && typeof maintainer === "object" && maintainer.hasOwnProperty("name")) {
+                                                names.push(maintainer.name);
+                                            }
+                                        }
+                                    }
 
                                     stmt.run(
                                         module.name,
                                         version,
                                         JSON.stringify(module.keywords),
                                         author,
-                                        author ? author.replace(/\s+/g, '') : null,
+                                        JSON.stringify(names),
                                         module.description
                                     );
                                 }
@@ -103,7 +121,7 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
                                             "WHERE KEY_NAME = 'REGISTRY_CACHE'", updated)
                                         .then(function () {
                                             self.lastUpdate = updated;
-                                            return LumieresDB.close();
+                                            return PackageManagerDB.close();
                                         });
                                 });
                             });

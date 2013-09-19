@@ -3,10 +3,10 @@ var sqlite3 = require('sqlite3'),
     FS = require("q-io/fs"),
     path = require('path'),
     Q = require('q'),
-    INIT_FILENAME = 'init_database.sql',
-    DATABASE_NAME = 'lumieres_sqlite.db';
+    INIT_FILENAME = 'init-database.sql',
+    DATABASE_NAME = 'package-manager.db';
 
-var LumieresDB = Object.create(Object.prototype, {
+var PackageManagerDB = Object.create(Object.prototype, {
 
     init: {
         value: function () {
@@ -51,7 +51,7 @@ var LumieresDB = Object.create(Object.prototype, {
     open: {
         value: function () {
             if (!this.url) {
-                throw new Error("LumieresDB should be loaded first");
+                throw new Error("PackageManagerDB should be loaded first");
             }
 
             if (!this.database || !this.database.open) {
@@ -85,4 +85,4 @@ var LumieresDB = Object.create(Object.prototype, {
 
 });
 
-exports.LumieresDB = LumieresDB;
+exports.PackageManagerDB = PackageManagerDB;

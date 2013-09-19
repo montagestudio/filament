@@ -6,7 +6,7 @@ var listCommand = require('./package-manager-library/list-command').listCommand,
     installCommand = require('./package-manager-library/install-command').installCommand,
     removeCommand = require('./package-manager-library/remove-command').removeCommand,
     outDatedCommand = require('./package-manager-library/outdated-command').outDatedCommand,
-    LumieresDB = require('./package-manager-library/lumieres_database').LumieresDB,
+    PackageManagerDB = require('./package-manager-library/package-manager-database').PackageManagerDB,
     npm = require("npm"),
     Path = require("path"),
     Q = require("q");
@@ -34,7 +34,7 @@ function loadNpm (projectUrl) {
 }
 
 function loadDB (supportUrl) {
-    return LumieresDB.load(supportUrl);
+    return PackageManagerDB.load(supportUrl);
 }
 
 exports.loadPackageManager = function (projectUrl, supportUrl) {

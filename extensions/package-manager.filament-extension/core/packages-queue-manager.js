@@ -307,7 +307,7 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
                     deferred.reject(new Error("Wrong format => name | name[@version] | { name:value }"));
                 }
             } else {
-                deferred.reject(new Error("PackageManager needs to be loaded first"));
+                deferred.reject(new Error("PackageManagerDB needs to be loaded first"));
             }
 
             return deferred.promise;
