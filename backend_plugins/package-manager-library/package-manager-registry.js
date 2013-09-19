@@ -66,6 +66,43 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
         }
     },
 
+    _prepareData: {
+        value: function (stmt, modules) {
+            var keys = Object.keys(modules);
+
+            for (var i = 0, length = keys.length; i < length; i++) {
+                var module = modules[keys[i]],
+                    versions = (module.versions && typeof module.versions === "object") ?
+                        Object.keys(module.versions) : null;
+
+                if (module.name && Array.isArray(versions) && versions.length > 0) {
+                    var author = module.author ? module.author.name : null,
+                        maintainers = module.maintainers,
+                        names = [];
+
+                    if (maintainers && Array.isArray(maintainers)) {
+                        for (var j = 0, len = maintainers.length; j < len; j++) {
+                            var maintainer = maintainers[j];
+
+                            if (maintainer && typeof maintainer === "object" && maintainer.hasOwnProperty("name")) {
+                                names.push(maintainer.name);
+                            }
+                        }
+                    }
+
+                    stmt.run(
+                        module.name,
+                        versions.length === 1 ? versions[0] : this._findLastVersion(versions),
+                        JSON.stringify(module.keywords),
+                        author,
+                        JSON.stringify(names),
+                        module.description
+                    );
+                }
+            }
+        }
+    },
+
     _performUpdate: {
         value: function (all) {
             // Request for the npm registry
@@ -81,43 +118,13 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
                 return Q.ninvoke(npm.registry, "get", request, TIMEOUT_BEFORE_NEW_REQUEST, false, true).then(function (modules) {
                     return Q.ninvoke(instance, "serialize").then(function () {
                         return Q.ninvoke(instance, "run", "BEGIN").then(function () {
-                            var keys = Object.keys(modules),
-                                stmt = instance.prepare(
+                            var stmt = instance.prepare(
                                     "INSERT INTO " +
                                         "PACKAGE_MANAGER_REGISTRY (NAME, VERSION, KEYWORDS, AUTHOR, MAINTAINERS, DESCRIPTION) " +
                                         "VALUES (?, ?, ?, ?, ?, ?)"
                                 );
 
-                            for (var i = 0, length = keys.length; i < length; i++) {
-                                var module = modules[keys[i]],
-                                    versions = (module.versions && typeof module.versions === "object") ?
-                                        Object.keys(module.versions) : null;
-
-                                if (module.name && Array.isArray(versions) && versions.length > 0) {
-                                    var author = module.author ? module.author.name : null,
-                                        maintainers = module.maintainers,
-                                        names = [];
-
-                                    if (maintainers && Array.isArray(maintainers)) {
-                                        for (var j = 0, len = maintainers.length; j < len; j++) {
-                                            var maintainer = maintainers[j];
-
-                                            if (maintainer && typeof maintainer === "object" && maintainer.hasOwnProperty("name")) {
-                                                names.push(maintainer.name);
-                                            }
-                                        }
-                                    }
-
-                                    stmt.run(
-                                        module.name,
-                                        versions.length === 1 ? versions[0] : self._findLastVersion(versions),
-                                        JSON.stringify(module.keywords),
-                                        author,
-                                        JSON.stringify(names),
-                                        module.description
-                                    );
-                                }
-                            }
+                            modules = self._prepareData(stmt, modules);
 
                             return Q.ninvoke(stmt, "finalize").then(function () {
                                 return Q.ninvoke(instance, "run", "COMMIT").then(function () {
