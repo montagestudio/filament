@@ -7,8 +7,12 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
 
     _getLastUpdate: {
         value: function () {
-            if (!this.lastUpdate) {
-                var self = this;
+            var self = this;
+
+            return PackageManagerDB.exists().then(function (exists) {
+                if (exists && this.lastUpdate) {
+                    return this.lastUpdate;
+                }
 
                 return PackageManagerDB.open().then(function (instance) {
                     return Q.ninvoke(instance, "get", "SELECT KEY_VALUE AS lastUpdate " +
@@ -21,9 +25,7 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
                             });
                         });
                 });
-            }
-
-            return Q(this.lastUpdate);
+            });
         }
     },
 
@@ -50,12 +52,6 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
                 }
                 return Q(true);
             });
-        }
-    },
-
-    _getPersonNames: {
-        value: function (persons, container) {
-
         }
     },
 

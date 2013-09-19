@@ -31,11 +31,17 @@ var PackageManagerDB = Object.create(Object.prototype, {
         }
     },
 
+    exists: {
+        value: function () {
+            return FS.exists(this.url);
+        }
+    },
+
     _getInstance: {
         value: function () {
             var self = this;
 
-            return FS.exists(this.url).then(function (exist) {
+            return this.exists().then(function (exist) {
                 return Q.fcall(function () {
                     self.database = new sqlite3.Database(self.url);
 
