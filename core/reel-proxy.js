@@ -3,6 +3,7 @@ var Montage = require("montage").Montage,
     EditingProxy = require("palette/core/editing-proxy").EditingProxy,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     Map = require("montage/collections/map"),
+    NodeProxy = require("core/node-proxy").NodeProxy,
     BUILDER_UNIT_LABEL = "_dev";
 
 /**
@@ -70,11 +71,19 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
 
     setObjectProperty: {
         value: function (property, value) {
+            var previous = this.properties.get(property);
+            if (previous instanceof NodeProxy) {
+                this.editingDocument.references.delete(previous, this, property);
+            }
 
             // The value being set here should always be something of worth to the
             // editingModel, in contrast to what we do later if we have live
             // representations to update as well
             this.properties.set(property, value);
+
+            if (value instanceof NodeProxy) {
+                this.editingDocument.references.add(value, this, property);
+            }
 
             if (this.stageObject) {
                 // At this point, we're setting values in a live application;
@@ -143,6 +152,12 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             self._exportId = exportId || serialization.prototype || serialization.object;
 
             this.defineBinding("isInTemplate", {"<-": "_editingDocument.editingProxies.has($)", parameters: this});
+
+            self.properties.forEach(function (value, property) {
+                if (value instanceof NodeProxy) {
+                    editingDocument.references.add(value, self, property);
+                }
+            }, self);
 
             return self;
         }
@@ -354,9 +369,9 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
      * property of the existing listener without affecting the others.
      *
      * @param {Object} listener The existing listener to update
-     * @param {string} type 
-     * @param {Object} itsListener 
-     * @param {string} useCapture 
+     * @param {string} type
+     * @param {Object} itsListener
+     * @param {string} useCapture
      */
     updateObjectEventListener: {
         value: function (listener, type, itsListener, useCapture) {

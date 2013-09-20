@@ -14,7 +14,8 @@ var Montage = require("montage").Montage,
     NodeProxy = require("core/node-proxy").NodeProxy,
     visit = require("montage/mousse/serialization/malker").visit,
     URL = require("core/node/url"),
-    PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint;
+    PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint,
+    ObjectReferences = require("core/object-references").ObjectReferences;
 
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = EditingDocument.specialize({
@@ -23,6 +24,7 @@ exports.ReelDocument = EditingDocument.specialize({
         value: function ReelDocument() {
             this.super();
             this.sideData = Object.create(null);
+            this.references = new ObjectReferences();
         }
     },
 
@@ -107,6 +109,15 @@ exports.ReelDocument = EditingDocument.specialize({
      * @type {Object}
      */
     sideData: {
+        value: null
+    },
+
+    /**
+     * Stores which objects reference which other objects, so that when they're
+     * deleted in the editor, other references can be cleaned up.
+     * @type {ObjectReferences}
+     */
+    references: {
         value: null
     },
 
@@ -417,11 +428,10 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.templateNodes.splice(index, 1);
             }
 
-            // If a component is using the node as an element then remove the
-            // element reference.
-            if (proxy.component) {
-                this.setOwnedObjectElement(proxy.component, void 0);
-            }
+            // If an object is using the node then remove the element reference.
+            this.references.forEach(proxy, function (proxy, property) {
+                this.setOwnedObjectProperty(proxy, property, void 0);
+            }, this);
 
             proxy.children.forEach(function (child) {
                 this.__removeNodeProxy(child);
