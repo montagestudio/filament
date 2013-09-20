@@ -24,7 +24,7 @@ var PackageManagerDB = Object.create(Object.prototype, {
         value: function (url) {
             if (typeof url === "string" && url.length > 0) {
                 this.url = path.join(url, DATABASE_NAME);
-                return this._getInstance();
+                return Q(true);
             }
 
             return Q.reject(new Error("The Database path is incorrect"));
