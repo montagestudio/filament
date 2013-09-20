@@ -1,0 +1,102 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }
+
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>auto-refresh-preview.sikuli</h2> <a href="auto-refresh-preview.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="kw">import</span> lumieres
+reload(lumieres)
+
+lumieres.focusLumieres();
+lumieresRegion = lumieres.makeNewApplication(<span class="str">"focus"</span>)
+
+<span class="skw">click</span>(Pattern(<img src="1379635114233.png" />).targetOffset(<span class="dig">62</span>,<span class="dig">2</span>))
+
+browserLaunched = False
+maxAttemptCount = <span class="dig">10</span>
+attemptCount = <span class="dig">0</span>
+
+<span class="kw">while</span> <span class="kw">not</span> browserLaunched <span class="kw">or</span> attemptCount &gt; maxAttemptCount:
+    <span class="skw">sleep</span>(<span class="dig">1</span>)
+    attemptCount = attemptCount + <span class="dig">1</span>
+    browserRegion = App.focusedWindow()
+    browserLaunched = (
+            lumieresRegion.w != browserRegion.w <span class="kw">or</span>
+            lumieresRegion.h != browserRegion.h <span class="kw">or</span>
+            lumieresRegion.x != browserRegion.x <span class="kw">or</span>
+            lumieresRegion.y != browserRegion.y)
+
+<span class="skw">type</span>(Key.TAB, Key.META)
+
+<span class="skw">dragDrop</span>(<img src="1379636068715.png" />, <img src="1379636076570.png" />)
+lumieres.save()
+<span class="skw">wait</span>(browserRegion.<span class="skw">find</span>(<img src="1379636165608.png" />))
+</pre>
+</body>
+</html>

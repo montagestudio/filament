@@ -14,6 +14,7 @@ if (!sikuli) {
 var testDirectoryPath = "test/integration";
 
 var scripts = [
+	"auto-refresh-preview",
 	"todo"
 ];
 
