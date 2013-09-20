@@ -78,6 +78,7 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
                 if (module.name && Array.isArray(versions) && versions.length > 0) {
                     var author = module.author ? module.author.name : null,
                         maintainers = module.maintainers,
+                        modified = module.time ? module.time.modified : null,
                         names = [];
 
                     if (maintainers && Array.isArray(maintainers)) {
@@ -96,7 +97,8 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
                         JSON.stringify(module.keywords),
                         author,
                         JSON.stringify(names),
-                        module.description
+                        module.description,
+                        modified
                     );
                 }
             }
@@ -120,8 +122,8 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
                         return Q.ninvoke(instance, "run", "BEGIN").then(function () {
                             var stmt = instance.prepare(
                                     "INSERT INTO " +
-                                        "PACKAGE_MANAGER_REGISTRY (NAME, VERSION, KEYWORDS, AUTHOR, MAINTAINERS, DESCRIPTION) " +
-                                        "VALUES (?, ?, ?, ?, ?, ?)"
+                                        "PACKAGE_MANAGER_REGISTRY (NAME, VERSION, KEYWORDS, AUTHOR, MAINTAINERS, DESCRIPTION, MODIFIED) " +
+                                        "VALUES (?, ?, ?, ?, ?, ?, ?)"
                                 );
 
                             modules = self._prepareData(stmt, modules);
@@ -151,7 +153,7 @@ var PackageManagerRegistry = Object.create(Object.prototype, {
             return this.update().then(function () {
                 return PackageManagerDB.open().then(function (instance) {
                     return Q.ninvoke(instance, "all",
-                        "SELECT NAME AS name, VERSION AS version, KEYWORDS AS keywords, " +
+                        "SELECT NAME AS name, VERSION AS version, KEYWORDS AS keywords, MODIFIED AS modified, " +
                             "AUTHOR AS author, MAINTAINERS AS maintainers, DESCRIPTION AS description " +
                             "FROM PACKAGE_MANAGER_REGISTRY " +
                             "WHERE NAME LIKE $search " +
