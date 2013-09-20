@@ -32,13 +32,12 @@ Testing
 
 Integration Tests
 =================
-1. Install sikuli http://www.sikuli.org/index.html (You'll want Pack 1 and Pack 2, installed seperately)
-2. Set an environment variable $SIKULI to point to the `runScript` built by the Sikuli installer
-3. Launch lumieres such that the Welcome window is open and visible on screen
-4. Run the integration tests using `npm run lumieres`
+1. Install sikuli http://www.sikuli.org/index.html (You'll want Pack 1 and Pack 2) installed seperately)
+3. Set an environment variable $SIKULI to point to the `runScript` built by the Sikuli installer
+4. Set an environment variable $LUMIERES to point to the `Lumieres` binary inside the `Lumieres.app` bundle
+5. Run the integration tests using `npm run lumieres`
 
-Unfortunatley the sikuli instructions are kind of platform specific;
-you can either run them from the sikuli IDE or from the commandline
+You can also run individual tests manually or via the sikuli IDE
 
 Contributing
 ============
