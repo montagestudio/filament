@@ -220,15 +220,10 @@ exports.DocumentEditor = Component.specialize({
         }
     },
 
-    // deHighlight elements when leaving the stage
+    // deHighlight when leaving the stage
     handleMouseout: {
         value: function(event) {
-            var documentEditor = this.editingDocument;
-
-            // clear highlighting stage elements
-            documentEditor.clearHighlightedElements();
-            // clean highlighting DOM explorer 
-            this.dispatchEventNamed("deHighlightDomExplorerElement", true, true);
+            this.dispatchEventNamed("deHighlight", true, true);
         }
     },
 

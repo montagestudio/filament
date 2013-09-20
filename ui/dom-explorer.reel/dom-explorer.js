@@ -55,7 +55,7 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
-    highlightedDOMElement : {
+    highlightedElement : {
         value: null
     },
 
