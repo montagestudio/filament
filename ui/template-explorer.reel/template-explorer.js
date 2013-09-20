@@ -66,6 +66,10 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         value: false
     },
 
+    highlightedComponent: {
+        value: null
+    },
+
     enterDocument: {
         value: function (firstTime) {
             if (!firstTime) { return; }
