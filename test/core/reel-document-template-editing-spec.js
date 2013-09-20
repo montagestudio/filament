@@ -54,14 +54,17 @@ describe("core/reel-document-template-editing-spec", function () {
                 }
             },
             "bar": {
-                "prototype": "bar-exportId"
+                "prototype": "bar-exportId",
+                "properties": {
+                    "elReference": {"#": "removeLastNode"}
+                }
             }
         },
         '<div id="ownerElement" data-montage-id="ownerElement">'+
         '   <section id="removeSubTree">'+
         '       <p id="removeMe"></p>'+
         '       <div id="foo" data-montage-id="foo">'+
-        '           <p id="removeLastNode"></p>'+
+        '           <p id="removeLastNode" data-montage-id="removeLastNode"></p>'+
         '       </div>'+
         '       <div data-arg="readOnly" id="testDomAttribute" data-montage-id="testDomAttribute"></div>'+
         '   </section>'+
@@ -214,6 +217,19 @@ describe("core/reel-document-template-editing-spec", function () {
                     expect(reelDocument.templateNodes.indexOf(nodeProxy)).toBeGreaterThan(-1);
                     expect(nodeProxy.isInTemplate).toBeTruthy();
                 });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should not appear where it used to be referenced in the serialization", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("removeLastNode");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+
+                expect(reelDocument.editingProxyMap.bar.properties.get("elReference")).toBe(nodeProxy);
+
+                reelDocument.removeTemplateNode(nodeProxy);
+
+                expect(reelDocument.editingProxyMap.bar.properties.get("elReference")).toBeUndefined();
             }).timeout(WAITSFOR_TIMEOUT);
         });
     });
