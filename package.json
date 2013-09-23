@@ -30,7 +30,7 @@
         "sandboxed-module": "0.1.4",
         "montage-testing": "0.2.0",
         "jshint": "2.1.9",
-        "glTF-webgl-viewer": "git+ssh://git@github.com:fabrobinet/glTF-webgl-viewer.git"
+        "glTF-webgl-viewer": "git+ssh://git@github.com:fabrobinet/glTF-webgl-viewer.git#df9b068db6bea24e5518058578c23bcf90f474a4"
     },
     "mappings": {
         "filament-extension": {
