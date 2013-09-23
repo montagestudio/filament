@@ -10,10 +10,10 @@
                 "element": {"#": "listener-entry"}
             }
         },
-        "actionField": {
+        "methodField": {
             "prototype": "ui/text-editor-field.reel",
             "properties": {
-                "element": {"#": "actionField"}
+                "element": {"#": "methodField"}
             },
             "bindings": {
                 "value": {"<-": "@owner.listenerInfo.listener.properties.get('action')"}
@@ -96,7 +96,7 @@
         <div data-montage-id="listenerInfoSwitch">
             <div data-arg="directedHandler">
                 <div data-montage-id="handlerField"></div>
-                <div data-montage-id="actionField"></div>
+                <div data-montage-id="methodField"></div>
             </div>
             <div data-montage-id="listener" data-arg="defaultHandler"></div>
         </div>
