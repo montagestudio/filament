@@ -579,7 +579,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                             self._removeDependencyFromFile(dependency, false);
                         }
 
-                        self._addDependencyToFile(module, strict);
+                        self._addDependencyToFile(module, strict, module.type);
                         self._modificationsAccepted(DEPENDENCY_TIME_AUTO_SAVE);
                     }
                 });
@@ -589,15 +589,11 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     _addDependencyToFile: {
         value: function (dependency, strict, type) {
-            if (typeof type === 'string') {
-                dependency.type = type;
-            }
-
             if (PackageTools.isDependency(dependency) && dependency.hasOwnProperty('type')) {
-                type = DependencyNames[dependency.type];
+                type = DependencyNames[type];
 
                 if (type) {
-                    var group = this._package[type],
+                    var group = this._package[dependency.type],
                         range = group[dependency.name];
 
                     if (range && !strict) { // if range already specified
@@ -607,7 +603,12 @@ exports.PackageDocument = EditingDocument.specialize( {
                         range = PackageTools.isGitUrl(dependency.version) ? dependency.version : dependency.versionInstalled;
                     }
 
-                    group[dependency.name] = range || '';
+                    if (group) {
+                        delete group[dependency.name];
+                    }
+
+                    dependency.type = type;
+                    this._package[type][dependency.name] = range || '';
                     return true;
                 }
             }
@@ -632,7 +633,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                     });
                 }
 
-                if (this._removeDependencyFromFile(dependency, false) && this._addDependencyToFile(dependency, true, type)) {
+                if (this._addDependencyToFile(dependency, false, type)) {
                     return this.saveModification(true);
                 }
             }
