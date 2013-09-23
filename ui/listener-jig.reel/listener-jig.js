@@ -126,7 +126,14 @@ exports.ListenerJig = Montage.create(Component, /** @lends module:"./listener-ji
 
     handleAction: {
         value: function (evt) {
-            this._commitListenerEdits();
+            var templateObjects = this.templateObjects,
+                target = evt.target;
+
+            if (target !== templateObjects.useCapture &&
+                target !== templateObjects.useBubble) {
+
+                this._commitListenerEdits();
+            }
         }
     }
 
