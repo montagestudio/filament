@@ -86,6 +86,16 @@
             "bindings": {
                 "checked": {"<->": "@owner.showListeners"}
             }
+        },
+
+        "showHidden": {
+            "prototype": "matte/ui/input-checkbox.reel",
+            "properties": {
+                "element": {"#": "showHidden"}
+            },
+            "bindings": {
+                "checked": {"<->": "@owner.showHidden"}
+            }
         }
     }
     </script>
@@ -102,6 +112,7 @@
         <footer class="TemplateExplorer-footer Panel-bar">
             <form class="TemplateExplorerFilter">
                 <input data-montage-id="templateObjectFilter" class="Search" type="search" placeholder="Search">
+                <label class="TemplateExplorerFilter-label"><input data-montage-id="showHidden" type="checkbox">Show Hidden</label>
                 <label class="TemplateExplorerFilter-label"><input data-montage-id="showBindings" type="checkbox">Show Bindings</label>
                 <label class="TemplateExplorerFilter-label"><input data-montage-id="showListeners" type="checkbox">Show Listeners</label>
             </form>

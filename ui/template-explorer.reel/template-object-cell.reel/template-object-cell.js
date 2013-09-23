@@ -189,6 +189,15 @@ exports.TemplateObjectCell = Component.specialize({
                 event.preventDefault();
             }
         }
+    },
+
+    handleHiddenCheckboxAction: {
+        value: function (evt) {
+            var proxy = this.templateObject,
+                editingDocument = proxy._editingDocument;
+
+            editingDocument.setOwnedObjectEditorMetadata(proxy, "isHidden", evt.target.checked);
+        }
     }
 
 });

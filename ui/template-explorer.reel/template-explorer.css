@@ -39,6 +39,10 @@
     background-color: hsl(0,0%,96%);
 }
 
+.TemplateObjectCell--hidden {
+    border-style: dashed;
+}
+
 .TemplateObjectCell.selected {
     border-color: hsl(210,100%,60%);
     background-color: hsl(0,0%,98%)

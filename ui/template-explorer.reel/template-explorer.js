@@ -15,6 +15,26 @@ var Montage = require("montage").Montage,
 */
 exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./template-explorer.reel".TemplateExplorer# */ {
 
+    _showHidden: {
+        value: false
+    },
+
+    showHidden: {
+        get: function () {
+            return this._hidden;
+        },
+        set: function (value) {
+            if (value === this._showHidden) {
+                return;
+            }
+
+            this.dispatchBeforeOwnPropertyChange("templateObjectFilterPath", this.templateObjectFilterPath);
+            this._templateObjectFilterPath = null;
+            this._showHidden = value;
+            this.dispatchOwnPropertyChange("templateObjectFilterPath", this.templateObjectFilterPath);
+        }
+    },
+
     _templateObjectFilterTerm: {
         value: null
     },
@@ -41,13 +61,26 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
 
     templateObjectFilterPath: {
         get: function () {
-            var term = this.templateObjectFilterTerm;
-            if (!this._templateObjectFilterPath && term) {
-                // TODO remove manual capitalization once we can specify case insensitivity
-                var capitalizedTerm = term.toCapitalized();
-                this._templateObjectFilterPath = "!label.contains('owner') && (label.contains('" + term + "') || label.contains('" + capitalizedTerm + "'))";
-            } else {
-                this._templateObjectFilterPath = "!label.contains('owner')";
+            var term = this.templateObjectFilterTerm,
+                filterPath;
+
+            if (!this._templateObjectFilterPath) {
+
+                if (this._showHidden) {
+                    filterPath = "";
+                } else {
+                    filterPath = "!editorMetadata.get('isHidden') && ";
+                }
+
+                if (term) {
+                    // TODO remove manual capitalization once we can specify case insensitivity
+                    var capitalizedTerm = term.toCapitalized();
+                    filterPath += "!label.contains('owner') && (label.contains('" + term + "') || label.contains('" + capitalizedTerm + "'))";
+                } else {
+                    filterPath += "!label.contains('owner')";
+                }
+
+                this._templateObjectFilterPath = filterPath;
             }
 
             return this._templateObjectFilterPath;
