@@ -75,16 +75,21 @@ SearchCommand.prototype.rankResults = function (search, results) {
             row.rank += this._rankAuthor(search, author.toLowerCase());
         }
 
-        if (maintainers) {
-            var self = this;
-
-            row.rank += maintainers.reduce(function (previousRank, currentMaintainer) {
-                return previousRank + self._rankAuthor(search, currentMaintainer.toLowerCase());
-            }, 0);
+        if (maintainers && maintainers.length > 0) {
+            row.rank += this._rankMaintainers(search, maintainers);
         }
     }
 
     return this._clearResults(results.sort(this._sortResults));
+};
+
+
+SearchCommand.prototype._rankMaintainers = function (search, maintainers) {
+    var self = this;
+
+    return maintainers.reduce(function (previousRank, currentMaintainer) {
+        return previousRank + self._rankAuthor(search, currentMaintainer.toLowerCase());
+    }, 0);
 };
 
 SearchCommand.prototype._clearResults = function (results) {
