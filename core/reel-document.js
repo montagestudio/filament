@@ -1106,20 +1106,6 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    _addOwnedObjectEventListener: {
-        value: function (proxy, listener, insertionIndex) {
-
-            var addedListener = proxy.addEventListener(listener, insertionIndex);
-
-            if (addedListener) {
-                this.undoManager.register("Define Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listener]));
-            }
-
-            return addedListener;
-
-        }
-    },
-
     cancelOwnedObjectBinding: {
         value: function (proxy, binding) {
             var removedBinding,
@@ -1262,6 +1248,32 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return removedListener;
+        }
+    },
+
+    /**
+     * @private
+     * Adds the specified listener registration object into the specified proxy's
+     * listener collection at the specified index.
+     *
+     * This is intended to be used as part of undoing the removal of a listener
+     * so the removed object and its exact position in the collection are preserved.
+     *
+     * In particular this address the case where further undo operations
+     * rely on that exact instance of the listener registration. It also keeps the
+     * listener appearing in the same spot where it was just deleted from.
+     */
+    _addOwnedObjectEventListener: {
+        value: function (proxy, listener, insertionIndex) {
+
+            var addedListener = proxy.addEventListener(listener, insertionIndex);
+
+            if (addedListener) {
+                this.undoManager.register("Add Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listener]));
+            }
+
+            return addedListener;
+
         }
     },
 
