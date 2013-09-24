@@ -10,7 +10,8 @@
                 "element": {"#": "search-modules-cell"}
             },
             "bindings": {
-                "installed": {"<-": "@owner.module.installed"}
+                "state": {"<-": "@owner.module.state"},
+                "draggable": {"<-": "@owner.enabled"}
             }
         },
 
@@ -34,13 +35,47 @@
             }
         },
 
+        "labelAuthor": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "labelAuthor"},
+                "value": "Author:"
+            },
+            "bindings": {
+                "classList.has('hidden')" : { "<-" : "!@owner.module.author"}
+            }
+        },
+
+        "moduleAuthor": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "moduleAuthor"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.module.author"},
+                "classList.has('hidden')" : { "<-" : "!@owner.module.author"}
+            }
+        },
+
+        "LabelDescription": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "LabelDescription"},
+                "value": "Description:"
+            },
+            "bindings": {
+                "classList.has('hidden')" : { "<-" : "!@owner.module.description"}
+            }
+        },
+
         "moduleDescription": {
             "prototype": "montage/ui/text.reel",
             "properties": {
                 "element": {"#": "moduleDescription"}
             },
             "bindings": {
-                "value": {"<-": "@owner.module.description"}
+                "value": {"<-": "@owner.module.description"},
+                "classList.has('hidden')" : { "<-" : "!@owner.module.description"}
             }
         },
 
@@ -51,7 +86,7 @@
             },
             "bindings": {
                 "label": {"<-": "@owner.label"},
-                "detail.get('cell')": {"<-": "@owner"},
+                "detail.get('module')": {"<-": "@owner.module"},
                 "enabled": {"<-": "@owner.enabled"}
             }
         }
@@ -61,10 +96,19 @@
 </head>
 <body>
     <li data-montage-id="search-modules-cell" class="SearchModulesCell">
-        <strong data-montage-id="moduleName"></strong>
-        <span data-montage-id="moduleVersion"></span>
-        <em data-montage-id="moduleDescription"></em>
-        <button data-montage-id="moduleInstall"></button>
+        <div class="SearchModulesCell-information">
+            <strong data-montage-id="moduleName" class="SearchModulesCell-information--name"></strong>
+            <span data-montage-id="moduleVersion" class="SearchModulesCell-information--version"></span>
+            <div class="SearchModulesCell-information--shift">
+                <h5 data-montage-id="labelAuthor" class="SearchModulesCell-information--header"></h5>
+                <span data-montage-id="moduleAuthor" class="SearchModulesCell-information--author"></span>
+                <h5 data-montage-id="LabelDescription" class="SearchModulesCell-information--header"></h5>
+                <em data-montage-id="moduleDescription" class="SearchModulesCell-information--description"></em>
+            </div>
+        </div>
+        <div class="SearchModulesCell-action">
+            <button data-montage-id="moduleInstall"></button>
+        </div>
     </li>
 </body>
 </html>

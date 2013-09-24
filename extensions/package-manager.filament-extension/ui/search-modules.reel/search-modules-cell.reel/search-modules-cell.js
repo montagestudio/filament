@@ -3,10 +3,19 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    DEFAULT_LABEL = "Install",
-    ERROR_LABEL = "Error",
-    INSTALLED_LABEL = "Installed",
-    INSTALLING_LABEL = "Installing...";
+    LABELS_STATE = {
+        0: "Install",
+        1: "Installing...",
+        2: "Installed",
+        3: "Error"
+    };
+
+var STATES = exports.STATES = {
+        DEFAULT: 0,
+        INSTALLING: 1,
+        INSTALLED: 2,
+        ERROR: 3
+    };
 
 /**
  * @class SearchModulesCell
@@ -17,6 +26,29 @@ exports.SearchModulesCell = Component.specialize(/** @lends SearchModulesCell# *
     constructor: {
         value: function SearchModulesCell() {
             this.super();
+            this.label = STATES.DEFAULT;
+            this.addOwnPropertyChangeListener("state", this);
+        }
+    },
+
+    state: {
+        value: null
+    },
+
+    _draggable: {
+        value: false
+    },
+
+    draggable: {
+        set: function (draggable) {
+            this._draggable = !!draggable;
+            this.needsDraw = true;
+        }
+    },
+
+    draw: {
+        value: function () {
+            this.element.setAttribute("draggable", this._draggable);
         }
     },
 
@@ -30,9 +62,7 @@ exports.SearchModulesCell = Component.specialize(/** @lends SearchModulesCell# *
      */
     module: {
         set: function (module) {
-            if (module && typeof module === 'object' && module.hasOwnProperty('name') && module.hasOwnProperty('installed')) {
-                this._module = module;
-            }
+            this._module = module;
         },
         get: function () {
             return this._module;
@@ -49,8 +79,8 @@ exports.SearchModulesCell = Component.specialize(/** @lends SearchModulesCell# *
      * @type {String}
      */
     label: {
-        set: function (label) {
-            this._label =  (typeof label === "string" && label.length > 0) ? label : DEFAULT_LABEL;
+        set: function (state) {
+            this._label = LABELS_STATE[state];
         },
         get: function () {
             return this._label;
@@ -68,54 +98,22 @@ exports.SearchModulesCell = Component.specialize(/** @lends SearchModulesCell# *
      */
     enabled: {
         set: function (enable) {
-            this._enabled =  (typeof enable === "boolean") ? enable : true;
+            this._enabled = !!enable;
         },
         get: function () {
             return this._enabled;
         }
     },
 
-    _installed: {
-        value: false
-    },
-
-    /**
-     * Bound to the module.installed property.
-     * Specifies if the module is installed or not.
-     * @type {Boolean}
-     */
-    installed: {
-        set: function (installed) {
-            this._installed = (typeof installed === 'boolean') ? installed : false;
-            this.label = (this._installed) ? INSTALLED_LABEL : DEFAULT_LABEL;
-            this.enabled = !this._installed;
-        },
-        get: function () {
-            return this._installed;
-        }
-    },
-
-    /**
-     * Specifies if the module is installing or not.
-     * @function {Boolean}
-     */
-    installing: {
-        value: function (installing) {
-            installing = (typeof installing === 'boolean') ? installing : false;
-            this.label = (installing) ? INSTALLING_LABEL : DEFAULT_LABEL;
-            this.enabled = !installing;
-        }
-    },
-
-    /**
-     * Specifies if an error has occurred during the installation.
-     * @function {Boolean}
-     */
-    error: {
-        value: function (error) {
-            error = (typeof error === 'boolean') ? error : false;
-            this.label = (error) ? ERROR_LABEL : DEFAULT_LABEL;
-            this.enabled = !error;
+    handleStateChange: {
+        value: function (state) {
+            if (state === STATES.INSTALLING || state === STATES.INSTALLED || state === STATES.ERROR) {
+                this.enabled = false;
+                this.label = state;
+            } else {
+                this.enabled = true;
+                this.label = STATES.DEFAULT;
+            }
         }
     }
 

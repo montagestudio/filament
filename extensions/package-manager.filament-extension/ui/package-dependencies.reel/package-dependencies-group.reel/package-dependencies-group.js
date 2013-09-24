@@ -3,6 +3,7 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
+    Dependency = require("../../../core/dependency").Dependency;
     MIME_TYPES = require("../../../core/mime-types");
 
 /**
@@ -79,10 +80,14 @@ exports.PackageDependenciesGroup = Component.specialize(/** @lends PackageDepend
             var dataTransfer = event.dataTransfer,
                 availableTypes = dataTransfer.types;
 
-            if (availableTypes && availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY)) {
-                event.preventDefault();
-                dataTransfer.dropEffect = "move";
-                this._willAcceptDrop = true;
+            if (availableTypes) {
+                if (availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY) ||
+                    availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_INSTALLATION_DEPENDENCY)) {
+
+                    event.preventDefault();
+                    dataTransfer.dropEffect = dataTransfer.effectAllowed;
+                    this._willAcceptDrop = true;
+                }
             } else {
                 dataTransfer.dropEffect = "none";
                 this._willAcceptDrop = false;
@@ -101,11 +106,21 @@ exports.PackageDependenciesGroup = Component.specialize(/** @lends PackageDepend
             var dataTransfer = event.dataTransfer,
                 availableTypes = dataTransfer.types;
 
-            if (availableTypes && availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY)) {
-                var data = dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY),
-                    dependency = JSON.parse(data);
-                if (dependency.type !== this.type) {
-                    this.editingDocument.switchDependencyType(dependency, this.type).done();
+            if (availableTypes) {
+                if (availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY)) {
+                    var dependency = JSON.parse(dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY));
+
+                    if (dependency.type !== this.type) {
+                        this.editingDocument.switchDependencyType(dependency, this.type).done();
+                    }
+
+                } else if (availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_INSTALLATION_DEPENDENCY)) {
+                    var module = JSON.parse(dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_INSTALLATION_DEPENDENCY));
+
+                    if (module) {
+                        this.editingDocument.performActionDependency(Dependency.INSTALL_DEPENDENCY_ACTION,
+                                new Dependency(module.name, module.version, this.type)).done();
+                    }
                 }
             }
             this._willAcceptDrop = false;
