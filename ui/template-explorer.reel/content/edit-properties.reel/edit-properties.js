@@ -142,6 +142,8 @@ exports.EditProperties = Component.specialize({
             }
 
             this._ownerObject.editingDocument.addOwnerBlueprintProperty(name).done();
+            // the value can't be set while the textfield has focus
+            this.templateObjects.addName.element.blur();
             this.templateObjects.addName.value = "";
         }
     },
@@ -155,6 +157,12 @@ exports.EditProperties = Component.specialize({
     ////
 
     handleAddEventAction: {
+        value: function () {
+            this.addEvent();
+        }
+    },
+
+    handleAddEventNameAction: {
         value: function () {
             this.addEvent();
         }
@@ -174,6 +182,8 @@ exports.EditProperties = Component.specialize({
             }
 
             this._ownerObject.editingDocument.addOwnerBlueprintEvent(name).done();
+            // the value can't be set while the textfield has focus
+            this.templateObjects.addEventName.element.blur();
             this.templateObjects.addEventName.value = "";
         }
     },
