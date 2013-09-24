@@ -6,6 +6,7 @@ var listCommand = require('./package-manager-library/list-command').listCommand,
     installCommand = require('./package-manager-library/install-command').installCommand,
     removeCommand = require('./package-manager-library/remove-command').removeCommand,
     outDatedCommand = require('./package-manager-library/outdated-command').outDatedCommand,
+    PackageManagerDB = require('./package-manager-library/package-manager-database').PackageManagerDB,
     npm = require("npm"),
     Path = require("path"),
     Q = require("q");
@@ -17,19 +18,32 @@ var listCommand = require('./package-manager-library/list-command').listCommand,
 
 process.env.PATH += ":" +  Path.join(__dirname, "..", "node_modules", ".bin");
 
-exports.loadNPM = function (where) {
+function loadNpm (projectUrl) {
     if (!npm.config.loaded) {
         return Q.ninvoke(npm, "load", {
             "loglevel": "silent",
-            "prefix": where,
+            "prefix": projectUrl,
             "global": false
         }).then(function () {
             return npm.config.loaded;
         });
     }
 
-    npm.prefix = where;
+    npm.prefix = projectUrl; // if the project url has changed.
     return Q(true);
+}
+
+function loadDB (supportUrl) {
+    return PackageManagerDB.load(supportUrl);
+}
+
+exports.loadPackageManager = function (projectUrl, supportUrl) {
+    return loadNpm(projectUrl).then(function (npmLoaded) {
+        if (npmLoaded) {
+            return loadDB(supportUrl);
+        }
+        return false;
+    });
 };
 
 exports.listDependencies = function (where) {
