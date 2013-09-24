@@ -557,6 +557,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             module.performingAction = true;
 
             this._insertDependency(module, true, install); // Insert and Save
+            self.editor.notifyDependenciesListChange(module.name, Dependency.INSTALLING_DEPENDENCY_ACTION);
 
             return PackageQueueManager.installModule(module).then(function (installed) {
                 if (PackageTools.isDependency(installed)) {
@@ -570,12 +571,16 @@ exports.PackageDocument = EditingDocument.specialize( {
                         self._insertDependency(module, true);
                     }
 
+                    self.editor.notifyDependenciesListChange(module.name, Dependency.INSTALL_DEPENDENCY_ACTION);
                     return 'The dependency ' + installed.name + (!!install ? ' has been installed.' : ' has been updated');
                 }
+
+                self.editor.notifyDependenciesListChange(module.name, Dependency.ERROR_INSTALL_DEPENDENCY_ACTION);
                 throw new Error('An error has occurred while installing the dependency ' + module.name);
 
             }, function (error) {
                 module.performingAction = false;
+                self.editor.notifyDependenciesListChange(module.name, Dependency.ERROR_INSTALL_DEPENDENCY_ACTION);
                 throw error;
             });
         }
@@ -666,7 +671,8 @@ exports.PackageDocument = EditingDocument.specialize( {
             dependency = (typeof dependency === 'string') ? this.findDependency(dependency) : dependency;
 
             if (PackageTools.isDependency(dependency)) {
-                var name = dependency.name;
+                var name = dependency.name,
+                    self = this;
 
                 if (DEPENDENCIES_REQUIRED.indexOf(name.toLowerCase()) >= 0) {
                     return Promise.reject(new Error('Can not uninstall the dependency ' + name + ', required by Lumieres'));
@@ -676,6 +682,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                 this._removeDependencyFromFile(dependency, true);
 
                 return PackageQueueManager.uninstallModule(name, !dependency.missing).then(function () {
+                    self.editor.notifyDependenciesListChange(name, Dependency.REMOVE_DEPENDENCY_ACTION);
                     return 'The dependency ' +name + ' has been removed';
                 });
             }
