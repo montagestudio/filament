@@ -4,11 +4,16 @@ var PackageManagerTools = function PackageManagerTools() {};
  * Checks if a package name is valid.
  * @function
  * @param {String} name
+ * @param {Boolean} strict
  * @return {Boolean}
  */
-PackageManagerTools.prototype.isNameValid = function (name) {
-    return (typeof name === 'string') ?
-        (/^(?!(js|node|node_modules|favicon\.ico)$)(?=([0-9a-zA-Z~]([\w\-\.~]){0,})$)/i).test(name) : false;
+PackageManagerTools.prototype.isNameValid = function (name, strict) {
+    if (typeof strict === "undefined" || strict) {
+        return (typeof name === 'string') ?
+            (/^(?!(js|node|node_modules|favicon\.ico)$)(?=([0-9a-zA-Z~]([\w\-\.~]){0,})$)/i).test(name) : false;
+    }
+
+    return (typeof name === 'string') ? /^[0-9a-zA-Z~]([\w\-\.~])*$/.test(name) : false;
 };
 
 /**
