@@ -76,9 +76,11 @@ SearchCommand.prototype.rankResults = function (search, results) {
         }
 
         if (maintainers) {
-            for (var j = 0, len = maintainers.length; j < len; j++) {
-                row.rank += this._rankAuthor(search, maintainers[j].toLowerCase());
-            }
+            var self = this;
+
+            row.rank += maintainers.reduce(function (previousRank, currentMaintainer) {
+                return previousRank + self._rankAuthor(search, currentMaintainer.toLowerCase());
+            }, 0);
         }
     }
 

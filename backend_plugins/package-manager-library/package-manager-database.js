@@ -57,7 +57,7 @@ var PackageManagerDB = Object.create(Object.prototype, {
     open: {
         value: function () {
             if (!this.url) {
-                throw new Error("PackageManagerDB should be loaded first");
+                throw new Error("The Database should be loaded first");
             }
 
             if (!this.database || !this.database.open) {

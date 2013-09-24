@@ -53,7 +53,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
                 return self.packageManagerPlugin.invoke("loadPackageManager", self.projectUrl, url).then(function (loaded) {
                     if (!loaded) {
-                        throw new Error("An error has occurred while Package manager was loading");
+                        throw new Error("An error has occurred while PackageManager was loading");
                     }
 
                     self._getOutDatedDependencies();

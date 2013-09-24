@@ -30,7 +30,7 @@ function loadNpm (projectUrl) {
     }
 
     npm.prefix = projectUrl; // if the project url has changed.
-    return true;
+    return Q(true);
 }
 
 function loadDB (supportUrl) {
@@ -38,12 +38,12 @@ function loadDB (supportUrl) {
 }
 
 exports.loadPackageManager = function (projectUrl, supportUrl) {
-    if(loadNpm(projectUrl)) {
-        return loadDB(supportUrl).then(function () {
-            return true;
-        });
-    }
-    return Q(false);
+    return loadNpm(projectUrl).then(function (npmLoaded) {
+        if (npmLoaded) {
+            return loadDB(supportUrl);
+        }
+        return false;
+    });
 };
 
 exports.listDependencies = function (where) {
