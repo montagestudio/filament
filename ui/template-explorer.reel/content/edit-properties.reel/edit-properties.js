@@ -19,6 +19,7 @@ exports.EditProperties = Component.specialize({
     constructor: {
         value: function EditProperties() {
             this.propertiesController =  RangeController.create();
+            this.eventsController =  RangeController.create();
         }
     },
 
@@ -71,6 +72,7 @@ exports.EditProperties = Component.specialize({
             if (value) {
                 // add... returns the existing group if it already exists
                 this.propertiesController.content = value.addPropertyBlueprintGroupNamed(this.ownerObject.exportName);
+                this.eventsController.content = value.eventBlueprints;
             }
         }
     },
@@ -148,6 +150,38 @@ exports.EditProperties = Component.specialize({
         value: function (event) {
             this._ownerObject.editingDocument.removeOwnerBlueprintProperty(event.detail.get('name')).done();
         }
-    }
+    },
+
+    ////
+
+    handleAddEventAction: {
+        value: function () {
+            this.addEvent();
+        }
+    },
+
+    addEvent: {
+        value: function (event) {
+            var name = this.templateObjects.addEventName.value;
+            if (!name) {
+                return;
+            }
+            // Check if this event name already exists
+            // The check should also be in blueprints, but this way we can
+            // stop sooner and (not) update the UI sooner.
+            if (this.ownerBlueprint.eventBlueprints.some(function (p) { return p.name === name; })) {
+                return;
+            }
+
+            this._ownerObject.editingDocument.addOwnerBlueprintEvent(name).done();
+            this.templateObjects.addEventName.value = "";
+        }
+    },
+
+    handleRemoveEventAction: {
+        value: function (event) {
+            this._ownerObject.editingDocument.removeOwnerBlueprintEvent(event.detail.get('name')).done();
+        }
+    },
 
 });

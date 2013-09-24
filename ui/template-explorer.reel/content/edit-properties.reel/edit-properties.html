@@ -137,7 +137,63 @@
             "listeners": [
                 {"type": "action", "listener": {"@": "owner"}}
             ]
+        },
+
+        "events": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "events"}
+            },
+            "bindings": {
+                "contentController": {"<-": "@owner.eventsController"}
+            }
+        },
+
+        "eventName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "eventName"}
+            },
+            "bindings": {
+                "value": {"<-": "@events.objectAtCurrentIteration.name"}
+            }
+        },
+
+        "removeEvent": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "removeEvent"}
+            },
+            "bindings": {
+                "detail.get('name')": {"<-": "@events.objectAtCurrentIteration.name"}
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
+        },
+
+        "addEvent": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "addEvent"}
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
+        },
+        "addEventName": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "addEventName"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.ownerObject.editingDocument.sideData.addEventName"}
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
         }
+
     }
     </script>
 </head>
@@ -163,6 +219,19 @@
         <footer class="EditProperties-bar">
             <input type="text" data-montage-id="addName" class="Input" placeholder="Property name">
             <button data-montage-id="addProperty" class="Button--action">+ Add property</button>
+        </footer>
+
+        <ul data-montage-id="events" class="EditProperties-list">
+            <li class="EditProperties-listItem">
+                <span data-montage-id="eventName" class="EditProperties-name"></span>
+
+                <button data-montage-id="removeEvent" class="Button Button--circle">-</button>
+            </li>
+        </ul>
+
+        <footer class="EditProperties-bar">
+            <input type="text" data-montage-id="addEventName" class="Input" placeholder="Event name">
+            <button data-montage-id="addEvent" class="Button--action">+ Add event</button>
         </footer>
 
     </div>
