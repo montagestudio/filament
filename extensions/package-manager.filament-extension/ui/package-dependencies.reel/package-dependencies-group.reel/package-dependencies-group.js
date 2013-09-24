@@ -3,7 +3,7 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    Dependency = require("../../../core/dependency").Dependency;
+    Dependency = require("../../../core/dependency").Dependency,
     MIME_TYPES = require("../../../core/mime-types");
 
 /**
