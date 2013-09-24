@@ -1,4 +1,4 @@
-/*global require,exports,describe,it,expect,runs */
+/*global require,exports,describe,it,expect,runs,waits */
 var TestPageLoader = require("montage-testing/testpageloader").TestPageLoader;
 var Blueprint = require("montage/core/meta/blueprint").Blueprint;
 var PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint;
@@ -45,7 +45,7 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                 defaultGroup = blueprint.addPropertyBlueprintGroupNamed("Mock");
                 defaultGroup.push(a, b);
 
-                testPage.waitForDraw(1, true);
+                waits(100); // wait for a draw that may or may not happen
             });
 
             describe("add property button", function () {
@@ -170,7 +170,7 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                 blueprint.addEventBlueprint(a);
                 blueprint.addEventBlueprint(b);
 
-                testPage.waitForDraw(1, true);
+                waits(100); // wait for a draw that may or may not happen
             });
 
             describe("add event button", function () {
