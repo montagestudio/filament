@@ -1165,6 +1165,18 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    /**
+     * Registers the specified listener as an observer of the object
+     * represented by the proxy for the specified event type in during the
+     * specified event distribution phase.
+     *
+     * @param {Proxy} proxy The proxy representing the object to listen to
+     * @param {string} type The type of event to listen for
+     * @param {Proxy} listener The proxy representing an object to handle an event
+     * @param {boolean} useCapture Whether or not to listen in the capture phase versus the bubble phase
+     *
+     * @return {Object} The listener registration with the specified properties
+     */
     addOwnedObjectEventListener: {
         value: function (proxy, type, listener, useCapture) {
             var listenerEntry = proxy.addObjectEventListener(type, listener, useCapture);
@@ -1181,6 +1193,18 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    /**
+     * Updates an existing listener entry with the specified type, listener,
+     * and phase information.
+     *
+     * @param {Proxy} proxy The proxy representing the object being listened to by the specified listener
+     * @param {Object} existingListener The object representing the existing listener registration
+     * @param {string} type The type of event to listen for
+     * @param {Proxy} listener The proxy representing an object to handle an event
+     * @param {boolean} useCapture Whether or not to listen in the capture phase versus the bubble phase
+     *
+     * @return {Object} The updated listener registration
+     */
     updateOwnedObjectEventListener: {
         value: function (proxy, existingListener, type, listener, useCapture) {
             var originalType = existingListener.type,
@@ -1198,6 +1222,14 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    /**
+     * Removes the specified listener registration from the specified object
+     *
+     * @param {Proxy} proxy The proxy representing the object being listened to by the specified listener
+     * @param {Object} listener The object representing the existing listener registration
+     *
+     * @return {Object} The removed listener registration
+     */
     removeOwnedObjectEventListener: {
         value: function (proxy, listener) {
             var removedListener,
