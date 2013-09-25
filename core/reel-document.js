@@ -1180,31 +1180,83 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    __implicitActionEventListenerTemplate: {
+        value: null
+    },
+
+    _implicitActionEventListenerTemplate: {
+        get: function () {
+
+            if (!this.__implicitActionEventListenerTemplate) {
+                var serializationFragment = {
+                    "prototype": "montage/core/event/action-event-listener",
+                    "_dev": {
+                        "isHidden": true
+                    }
+                };
+                this.__implicitActionEventListenerTemplate = this._buildTemplate("actionEventListener", serializationFragment, null);
+            }
+
+            return this.__implicitActionEventListenerTemplate;
+        }
+    },
+
     /**
      * Registers the specified listener as an observer of the object
      * represented by the proxy for the specified event type in during the
      * specified event distribution phase.
      *
+     * Listeners are typically responsible for implementing an event handling
+     * method that conforms to the Montage conventions
+     * e.g. `handleActionEvent`
+     *
+     * If the optional `methodName` parameter is specified an `ActionEventListener`
+     * object will be implicitly created and registered as the actual listener
+     * as recorded in the returned listener registration. The specified listener
+     * will be recorded as the AEL's `handler` and the methodName will be recorded
+     * as AEL's `action`, i.e. the name of the method to call on the handler.
+     *
      * @param {Proxy} proxy The proxy representing the object to listen to
      * @param {string} type The type of event to listen for
      * @param {Proxy} listener The proxy representing an object to handle an event
      * @param {boolean} useCapture Whether or not to listen in the capture phase versus the bubble phase
+     * @param {string} methodName The name of the method to call on the listener object when handling an event
      *
-     * @return {Object} The listener registration with the specified properties
+     * @return {Promise} A promise for the listener registration with the specified properties
      */
     addOwnedObjectEventListener: {
-        value: function (proxy, type, listener, useCapture) {
-            var listenerEntry = proxy.addObjectEventListener(type, listener, useCapture);
+        value: function (proxy, type, listener, useCapture, methodName) {
 
-            if (listenerEntry) {
-                // if (this._editingController) {
-                //     // TODO register the listener on the stage, make sure we can remove it later
-                // }
+            var installListenerPromise,
+                deferredUndoOperation = Promise.defer(),
+                self = this;
 
-                this.undoManager.register("Define Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listenerEntry]));
+            this.undoManager.register("Add Listener", deferredUndoOperation.promise);
+
+            if (methodName) {
+                installListenerPromise = this._implicitActionEventListenerTemplate.then(function (template) {
+                    return self.addObjectsFromTemplate(template);
+                }).then(function (objects) {
+                    var actionEventListener = objects[0];
+                    actionEventListener.setObjectProperty("handler", listener);
+                    actionEventListener.setObjectProperty("action", methodName);
+                    return actionEventListener;
+                });
+            } else {
+                installListenerPromise.resolve(listener);
             }
 
-            return listenerEntry;
+            return installListenerPromise.then(function (actualListener) {
+                var listenerEntry = proxy.addObjectEventListener(type, actualListener, useCapture);
+
+                if (listenerEntry) {
+                    // TODO register the listener on the stage, make sure we can remove it later
+
+                    deferredUndoOperation.resolve([self.removeOwnedObjectEventListener, self, proxy, listenerEntry]);
+                }
+
+                return listenerEntry;
+            });
         }
     },
 
