@@ -1350,29 +1350,45 @@ exports.ReelDocument = EditingDocument.specialize({
      * @param {Proxy} proxy The proxy representing the object being listened to by the specified listener
      * @param {Object} listener The object representing the existing listener registration
      *
-     * @return {Object} The removed listener registration
+     * @return {Promise} A promise for the removed listener registration
      */
     removeOwnedObjectEventListener: {
         value: function (proxy, listener) {
-            var removedListener,
+            var removedListenerEntry,
                 removedIndex,
-                removedInfo;
+                removedInfo,
+                relatedObjectRemovalPromise,
+                self = this;
 
             removedInfo = proxy.removeObjectEventListener(listener);
-            removedListener = removedInfo.removedListener;
+            removedListenerEntry = removedInfo.removedListener;
             removedIndex = removedInfo.index;
 
-            if (removedListener) {
-                // if (this._editingController) {
-                //     // TODO remove the listener on the stage
-                // }
+            if (removedListenerEntry) {
+                // TODO remove the listener on the stage
+
+                this.undoManager.openBatch("Remove Listener");
 
                 this.undoManager.register("Remove Listener", Promise.resolve([
-                    this._addOwnedObjectEventListener, this, proxy, removedListener, removedIndex
+                    this._addOwnedObjectEventListener, this, proxy, removedListenerEntry, removedIndex
                 ]));
+
+                if (removedListenerEntry.listener.properties.get("handler") && removedListenerEntry.listener.properties.get("action")) {
+                    relatedObjectRemovalPromise = this.removeObject(removedListenerEntry.listener);
+                } else {
+                    relatedObjectRemovalPromise = Promise.resolve();
+                }
+
+                relatedObjectRemovalPromise.then(function () {
+                    //TODO what if other async operations have opened batches that are open…
+                    self.undoManager.closeBatch();
+                });
             }
 
-            return removedListener;
+            return (relatedObjectRemovalPromise || Promise.resolve()).then(function () {
+                return removedListenerEntry;
+            });
+
         }
     },
 
