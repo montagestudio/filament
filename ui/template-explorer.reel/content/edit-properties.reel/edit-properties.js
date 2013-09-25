@@ -116,81 +116,59 @@ exports.EditProperties = Component.specialize({
         }
     },
 
-    handleAddPropertyAction: {
-        value: function () {
-            this.addProperty();
-        }
-    },
-
-    handleAddNameAction: {
-        value: function () {
-            this.addProperty();
-        }
-    },
-
-    addProperty: {
+    handlePropertiesAdd: {
         value: function (event) {
-            var name = this.templateObjects.addName.value;
+            event.stopPropagation();
+            var name = event.detail;
+
             if (!name) {
+                event.preventDefault();
                 return;
             }
             // Check if this property name already exists
             // The check should also be in blueprints, but this way we can
             // stop sooner and (not) update the UI sooner.
             if (this.ownerBlueprint.propertyBlueprints.map(function (p) { return p.name; }).indexOf(name) !== -1) {
+                event.preventDefault();
                 return;
             }
 
             this._ownerObject.editingDocument.addOwnerBlueprintProperty(name).done();
-            // the value can't be set while the textfield has focus
-            this.templateObjects.addName.element.blur();
-            this.templateObjects.addName.value = "";
         }
     },
 
-    handleRemovePropertyAction: {
+    handlePropertiesRemove: {
         value: function (event) {
-            this._ownerObject.editingDocument.removeOwnerBlueprintProperty(event.detail.get('name')).done();
+            this._ownerObject.editingDocument.removeOwnerBlueprintProperty(event.detail.name).done();
         }
     },
 
-    ////
+    // Events
 
-    handleAddEventAction: {
-        value: function () {
-            this.addEvent();
-        }
-    },
-
-    handleAddEventNameAction: {
-        value: function () {
-            this.addEvent();
-        }
-    },
-
-    addEvent: {
+    handleEventsAdd: {
         value: function (event) {
-            var name = this.templateObjects.addEventName.value;
+            event.stopPropagation();
+            var name = event.detail;
+
             if (!name) {
+                event.preventDefault();
                 return;
             }
             // Check if this event name already exists
             // The check should also be in blueprints, but this way we can
             // stop sooner and (not) update the UI sooner.
             if (this.ownerBlueprint.eventBlueprints.some(function (p) { return p.name === name; })) {
+                event.preventDefault();
                 return;
             }
 
             this._ownerObject.editingDocument.addOwnerBlueprintEvent(name).done();
-            // the value can't be set while the textfield has focus
-            this.templateObjects.addEventName.element.blur();
-            this.templateObjects.addEventName.value = "";
         }
     },
 
-    handleRemoveEventAction: {
+    handleEventsRemove: {
         value: function (event) {
-            this._ownerObject.editingDocument.removeOwnerBlueprintEvent(event.detail.get('name')).done();
+            this._ownerObject.editingDocument.removeOwnerBlueprintEvent(event.detail.name).done();
         }
     },
 
