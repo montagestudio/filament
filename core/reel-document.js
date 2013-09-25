@@ -688,25 +688,24 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     /**
-     * The method is a temporary anomaly that accepts what our library items currently are
-     * and builds a template for merging
+     * @private
+     * Build a template on the fly for inclusion into the existing document
+     * given relevant information
      *
-     * This will be replaced with an addTemplate or insertTemplate or mergeTemplate
+     * @return {Promise} A promise for a Montage template constructed with the specified information
      */
-    addLibraryItemFragments: {
-        value: function (serializationFragment, htmlFragment, parentElement, nextSiblingElement, stageElement, montageId) {
-            var labelInOwner,
-                templateSerialization = {},
-                self = this,
-                doc,
+    _buildTemplate: {
+        value: function (label, serializationFragment, htmlFragment) {
+            var templateSerialization = {},
+                doc = document.implementation.createHTMLDocument(),
                 serializationElement;
 
             // Try and use the montageId as the label, if not generate one from the prototype name
-            if (montageId && Object.keys(this.editingProxyMap).indexOf(montageId) === -1) {
-                labelInOwner = montageId;
-            } else {
-                labelInOwner = this._generateLabel(serializationFragment);
+            if (!label || Object.keys(this.editingProxyMap).indexOf(label) > -1) {
+                label = this._generateLabel(serializationFragment);
             }
+
+            templateSerialization[label] = serializationFragment;
 
             // If there's no htmlFragment given then none of the element
             // references in the serialization are valid, and they might end up
@@ -729,9 +728,6 @@ exports.ReelDocument = EditingDocument.specialize({
                 });
             }
 
-            templateSerialization[labelInOwner] = serializationFragment;
-
-            doc = document.implementation.createHTMLDocument();
             serializationElement = doc.createElement("script");
             serializationElement.setAttribute("type", "text/montage-serialization");
             serializationElement.appendChild(document.createTextNode(JSON.stringify(templateSerialization)));
@@ -740,7 +736,21 @@ exports.ReelDocument = EditingDocument.specialize({
                 doc.body.innerHTML = htmlFragment;
             }
 
-            return Template.create().initWithDocument(doc, this._packageRequire).then(function (template) {
+            return Template.create().initWithDocument(doc, this._packageRequire);
+        }
+    },
+
+    /**
+     * The method is a temporary anomaly that accepts what our library items currently are
+     * and builds a template for merging
+     *
+     * This will be replaced with an addTemplate or insertTemplate or mergeTemplate
+     */
+    addLibraryItemFragments: {
+        value: function (serializationFragment, htmlFragment, parentElement, nextSiblingElement, stageElement, montageId) {
+            var self = this;
+
+            return this._buildTemplate(montageId, serializationFragment, htmlFragment).then(function (template) {
                 return self.addObjectsFromTemplate(template, parentElement, nextSiblingElement, stageElement);
             }).then(function (objects) {
                 // only if there's only one object?
