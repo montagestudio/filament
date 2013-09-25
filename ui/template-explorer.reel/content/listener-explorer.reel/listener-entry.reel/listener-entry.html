@@ -11,7 +11,7 @@
             }
         },
         "methodField": {
-            "prototype": "ui/text-editor-field.reel",
+            "prototype": "montage/ui/text.reel",
             "properties": {
                 "element": {"#": "methodField"}
             },
@@ -29,12 +29,12 @@
             }
         },
         "handlerField": {
-            "prototype": "ui/text-editor-field.reel",
+            "prototype": "montage/ui/text.reel",
             "properties": {
                 "element": {"#": "handlerField"}
             },
             "bindings": {
-                "value": {"<-": "@owner.listenerInfo.listener.properties.get('handler').label"}
+                "value": {"<-": "'@' + @owner.listenerInfo.listener.properties.get('handler').label"}
             }
         },
         "listener": {
@@ -93,10 +93,9 @@
 <body>
     <div data-montage-id="listener-entry" class="ListenerEntry">
         <div data-montage-id="eventType" class="ListenerEntry-pill ListenerEntry-pill--eventType"></div>
-        <div data-montage-id="listenerInfoSwitch">
+        <div data-montage-id="listenerInfoSwitch" class="ListenerEntry-pill ListenerEntry-pill--listener">
             <div data-arg="directedHandler">
-                <div data-montage-id="handlerField"></div>
-                <div data-montage-id="methodField"></div>
+                <span data-montage-id="handlerField"></span>.<span data-montage-id="methodField"></span>(…)
             </div>
             <div data-montage-id="listener" data-arg="defaultHandler"></div>
         </div>
