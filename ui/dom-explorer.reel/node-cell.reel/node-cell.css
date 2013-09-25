@@ -182,18 +182,15 @@
 }
 
 /* Add tree elements -------------- */
-.NodeCell:hover .NodeCell-add-element, .NodeCell-add-element.hover {
-    display: block;
-}
-
-.NodeCell-add-element{
+.addElement .add-element{
     margin-left: 10px;
     padding: 0px;
-    /*display: none;*/
 }
-.NodeCell--noChildren .NodeCell-add-element {
-    margin-left: 0px;
-}
-.NodeCell-add-element.child {
+.addElement .add-element.child {
     padding-left: 24px;
+}
+.addElement {
+    padding: 2px 0px;
+    margin: 0px;
+    background: hsl(0,0%,96%);
 }

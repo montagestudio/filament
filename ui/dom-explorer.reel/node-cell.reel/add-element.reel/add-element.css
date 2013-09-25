@@ -1,5 +1,5 @@
 .AddElement {
-    margin: 2px 0;
+    margin: 0px;
     padding: 0px;
     display: none;
 }
@@ -16,7 +16,7 @@
     background-color: transparent;
     text-align: center;
     border: 0px;
-    padding: 0;
+    padding: 0 10px;
     border-radius: 22px;
     line-height: 22px;
     font-size: 11px;
@@ -38,6 +38,18 @@
 .AddElement.sibling .AddElement-segment:before {
     content: "<sibling element />";
 }
+
+.AddElement.sibling.before .AddElement-segment:before {
+    content: "<previous element />";
+}
+.AddElement.sibling.after .AddElement-segment:before {
+    content: "<next element />";
+}
+
+.AddElement.sibling.before {
+    margin-left: 0px;
+}
+
 
 .AddElement--dropTarget .AddElement-segment{
     border-style: dashed;

@@ -144,23 +144,6 @@
             }
         },
 
-        "appendNodeButton": {
-            "prototype": "./insertion-button.reel",
-            "properties": {
-                "element": {"#": "appendNodeButton"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                },
-                {
-                    "type": "insertTemplateAction",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
         "canInsertBeforeNodeCondition": {
             "prototype": "montage/ui/condition.reel",
             "properties": {
@@ -172,23 +155,6 @@
             }
         },
 
-        "insertBeforeNodeButton": {
-            "prototype": "./insertion-button.reel",
-            "properties": {
-                "element": {"#": "insertBeforeNodeButton"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                },
-                {
-                    "type": "insertTemplateAction",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
         "canInsertAfterNodeCondition": {
             "prototype": "montage/ui/condition.reel",
             "properties": {
@@ -198,23 +164,6 @@
             "bindings": {
                 "condition": {"<-": "!@owner.nodeInfo.nextSibling &&  @owner.nodeInfo.canInsertAfterNode && !@montageId.isEditing"}
             }
-        },
-
-        "insertAfterNodeButton": {
-            "prototype": "./insertion-button.reel",
-            "properties": {
-                "element": {"#": "insertAfterNodeButton"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                },
-                {
-                    "type": "insertTemplateAction",
-                    "listener": {"@": "owner"}
-                }
-            ]
         },
 
         "toggleExpanded": {
@@ -245,7 +194,7 @@
                 "type": "child"
             },
             "bindings": {
-                "classList.has('dropover')": {"<-": "@owner.domExplorer.addChildOver == @owner"}
+                "classList.has('dropover')": {"<-": "@owner.domExplorer.addElementNodeHover == @owner"}
             },
             "listeners": [
                 {
@@ -254,14 +203,32 @@
                 }
             ]
         },
+
         "addElementAfter": {
             "prototype": "./add-element.reel",
             "properties": {
                 "element": {"#": "addElementAfter"},
-                "type": "sibling"
+                "type": "after"
             },
             "bindings": {
-                "classList.has('dropover')": {"<-": "@owner.domExplorer.addAfterOver && @owner.domExplorer.addAfterOver.indexOf(@owner) != -1"}
+                "classList.has('dropover')": {"<-": "@owner.domExplorer.addElementNodeHover == @owner"}
+            },
+            "listeners": [
+                {
+                    "type": "insertTemplateAction",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "addElementBefore": {
+            "prototype": "./add-element.reel",
+            "properties": {
+                "element": {"#": "addElementBefore"},
+                "type": "before"
+            },
+            "bindings": {
+                "classList.has('dropover')": {"<-": "@owner.domExplorer.addElementNodeHover == @owner"}
             },
             "listeners": [
                 {
@@ -274,48 +241,46 @@
     </script>
 </head>
 <body>
-    <div data-montage-id="node-cell" class="NodeCell">
+    <div data-montage-id="node-cell" class="NodeCellWrapper">
+        <div data-montage-id="canInsertBeforeNodeCondition">
+            <div class="addElement">
+                <div data-montage-id="addElementBefore" class="add-element sibling before"></div>
+            </div>
+        </div>
 
-        <span data-montage-id="hasChildrenCondition" class="NodeCell-toggle">
-            <div data-montage-id="toggleExpanded"></div>
-        </span>
-
-        <span data-montage-id="nodeSegment" class="NodeCell-segment"  draggable="true">
-            <span data-montage-id="tagName" class="NodeCell-segment-item NodeCell-segment-item--tag"></span>
-
-            <span data-montage-id="montageArg" class="NodeCell-segment-item NodeCell-segment-item--montageArg"></span>
-            <span data-montage-id="montageId" class="NodeCell-segment-item NodeCell-segment-item--montageId"></span>
-
-            <span data-montage-id="componentCondition" class="NodeCell-segment-item NodeCell-segment-item--component">
-                <strong data-montage-id="componentLabel" class="NodeCell-label"></strong>
+        <div class="NodeCell">
+            <span data-montage-id="hasChildrenCondition" class="NodeCell-toggle">
+                <div data-montage-id="toggleExpanded"></div>
             </span>
-        </span>
 
-        <span data-montage-id="canRemoveNodeCondition">
-            <button data-montage-id="removeNodeButton" class="NodeCell-removeButton Button Button--circle" title="Remove node">-</button>
-        </span>
+            <span data-montage-id="nodeSegment" class="NodeCell-segment"  draggable="true">
+                <span data-montage-id="tagName" class="NodeCell-segment-item NodeCell-segment-item--tag"></span>
 
-        <span data-montage-id="canInsertBeforeNodeCondition">
-            <button data-montage-id="insertBeforeNodeButton"
-                class="NodeCell-button NodeCell-button--before"
-                title="Insert new node before"><i class="NodeCell-button-icon NodeCell-button-icon--before"></i></button>
-        </span>
+                <span data-montage-id="montageArg" class="NodeCell-segment-item NodeCell-segment-item--montageArg"></span>
+                <span data-montage-id="montageId" class="NodeCell-segment-item NodeCell-segment-item--montageId"></span>
 
-        <span data-montage-id="canInsertAfterNodeCondition">
-            <button data-montage-id="insertAfterNodeButton"
-                class="NodeCell-button NodeCell-button--after"
-                title="Insert new node after"><i class="NodeCell-button-icon NodeCell-button-icon--after"></i></button>
-        </span>
+                <span data-montage-id="componentCondition" class="NodeCell-segment-item NodeCell-segment-item--component">
+                    <strong data-montage-id="componentLabel" class="NodeCell-label"></strong>
+                </span>
+            </span>
 
-        <span data-montage-id="canAppendNodeCondition">
-            <button data-montage-id="appendNodeButton"
-                class="NodeCell-button NodeCell-button--child"
-                title="Append new node as last child"><i class="NodeCell-button-icon NodeCell-button-icon--child"></i></button>
-        </span>
+            <span data-montage-id="canRemoveNodeCondition">
+                <button data-montage-id="removeNodeButton" class="NodeCell-removeButton Button Button--circle" title="Remove node">-</button>
+            </span>
 
-        <div data-montage-id="addChildElement" class="NodeCell-add-element child"></div>
-        <div data-montage-id="addElementAfter" class="NodeCell-add-element sibling"></div>
+        </div>
 
+        <div data-montage-id="canAppendNodeCondition">
+            <div class="addElement">
+                <div data-montage-id="addChildElement" class="add-element child"></div>
+            </div>
+        </div>
+
+        <div data-montage-id="canInsertAfterNodeCondition">
+            <div class="addElement">
+                <div data-montage-id="addElementAfter" class="add-element sibling after"></div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

@@ -93,20 +93,5 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
 
             this.isDropTarget = false;
         }
-    },
-
-    draw:{
-        value: function () {
-            var textInput = this.templateObjects.textInput;
-            
-            if (this.type === "sibling") {
-                textInput.element.placeholder = "<sibling element />";
-                this.element.classList.add('sibling');
-            } else if (this.type === "child") {
-                textInput.element.placeholder = "<child element />";
-                this.element.classList.add('after');
-            }
-            
-        }
     }
 });

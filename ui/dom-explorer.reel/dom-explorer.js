@@ -78,9 +78,54 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
+    _addElementNodeHover : {
+        value: null
+    },
+
+    addElementNodeHover: {
+        get: function () {
+            return this._addElementNodeHover;
+        },
+        set: function (value) {
+            if (value === this._addElementNodeHover) { return; }
+
+            // handle vertical tree shifting by adding a class
+            if (value) {
+                var nodeInfo = value.nodeInfo;
+                if (nodeInfo.canInsertBeforeNode) {
+                    this.element.classList.add('shift');
+                } else {
+                    this.element.classList.remove('shift');
+                }
+            } else {
+                this.element.classList.remove('shift');
+            }
+            this._addElementNodeHover = value;
+        }
+    },
+
     handleRemoveNode: {
         value: function (evt) {
             this.editingDocument.removeTemplateNode(evt.detail);
+        }
+    },
+
+    enterDocument: {
+        value: function (firstTime) {
+            if (!firstTime) { return; }
+
+            this.element.addEventListener("mouseout", this, false);
+            this.element.addEventListener("dragleave", this, false);
+
+            this.addEventListener("hideAddElements", this, false);
+        }
+    },
+
+    handleDragleave: {
+        value: function (evt) {
+            if (evt.target.classList.contains('NodeCellWapper')) {
+                this.hideAddElements();
+            }
         }
     },
 
@@ -119,6 +164,24 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
     handleAddElementButtonAction: {
         value: function (evt) {
             this._createElement();
+        }
+    },
+
+    hideAddElements: {
+        value: function (evt) {
+            this.addElementNodeHover = null;
+        }
+    },
+
+    handleMouseout: {
+        value: function (evt) {
+            this.hideAddElements();
+        }
+    },
+
+    handleHideAddElements: {
+        value: function (evt) {
+            this.hideAddElements();
         }
     },
 
