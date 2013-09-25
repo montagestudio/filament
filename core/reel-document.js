@@ -1264,28 +1264,83 @@ exports.ReelDocument = EditingDocument.specialize({
      * Updates an existing listener entry with the specified type, listener,
      * and phase information.
      *
+     * If an actionEventListener is the listener for the event some parameters will be
+     * applied to the AEL's proxy. i.e. `listener` maps to `handler` and `methodName`
+     * maps to `action.
+     *
+     * Additionally, if an AEL was in place previously but the `methodName` has been
+     * removed, the AEL will be deleted.
+     *
+     * If there was no AEL but a `methodName` is specified, an AEL will be implicitly created.
+     *
      * @param {Proxy} proxy The proxy representing the object being listened to by the specified listener
      * @param {Object} existingListener The object representing the existing listener registration
      * @param {string} type The type of event to listen for
      * @param {Proxy} listener The proxy representing an object to handle an event
      * @param {boolean} useCapture Whether or not to listen in the capture phase versus the bubble phase
+     * @param {string} methodName The name of the method to call on the listener object when handling an event
      *
-     * @return {Object} The updated listener registration
+     * @return {Promise} A promise for the updated listener registration
      */
     updateOwnedObjectEventListener: {
-        value: function (proxy, existingListener, type, listener, useCapture) {
-            var originalType = existingListener.type,
-                originalListener = existingListener.listener,
-                originalUseCapture = existingListener.useCapture,
-                updatedListener;
+        value: function (proxy, existingListenerEntry, type, listener, useCapture, methodName) {
+            var originalType = existingListenerEntry.type,
+                originalUseCapture = existingListenerEntry.useCapture,
+                originalListener = existingListenerEntry.listener,
+                isDirectedHandler = originalListener.properties.has("handler") && originalListener.properties.has("action"),
+                originalHandler = isDirectedHandler ? originalListener.properties.get("handler") : null,
+                originalMethodName = isDirectedHandler ? originalListener.properties.get("action") : null,
+                updatedListenerEntry,
+                deferredUndoOperation = Promise.defer(),
+                actualListenerPromise,
+                self = this;
 
-            updatedListener = proxy.updateObjectEventListener(existingListener, type, listener, useCapture);
+            this.undoManager.register("Edit Listener", deferredUndoOperation.promise);
 
-            if (updatedListener) {
-                this.undoManager.register("Edit Listener", Promise.resolve([this.updateOwnedObjectEventListener, this, proxy, updatedListener, originalType, originalListener, originalUseCapture]));
+            if (isDirectedHandler && methodName) {
+                // Keep existing AEL in place
+                if (listener !== originalListener) {
+                    originalListener.setObjectProperty("handler", listener);
+                }
+                originalListener.setObjectProperty("action", methodName);
+                actualListenerPromise = Promise.resolve(originalListener);
+            } else if (isDirectedHandler && !methodName) {
+                // Remove existing AEL
+                actualListenerPromise = this.removeObject(originalListener).then(function (removedListener) {
+                    // Note the promise is for the listener to put in place on the proxy, not what we just removed
+                    return listener;
+                });
+            } else if (!isDirectedHandler && methodName) {
+
+                if (listener.properties.has("handler") && listener.properties.has("action")) {
+                    // Restore an AEL
+                    this.addObject(listener);
+                    listener.setObjectProperty("handler", listener);
+                    listener.setObjectProperty("action", methodName);
+                    actualListenerPromise = Promise.resolve(listener);
+                } else {
+                    // Put a new AEL in place
+                    actualListenerPromise = this._implicitActionEventListenerTemplate.then(function (template) {
+                        return self.addObjectsFromTemplate(template);
+
+                    }).then(function (objects) {
+                        var actionEventListener = objects[0];
+                        actionEventListener.setObjectProperty("handler", listener);
+                        actionEventListener.setObjectProperty("action", methodName);
+                        return actionEventListener;
+                    });
+                }
+
+            } else {
+                // No AEL involved
+                actualListenerPromise = Promise.resolve(listener);
             }
 
-            return updatedListener;
+            return actualListenerPromise.then(function (actualListener) {
+                var updatedListenerEntry = proxy.updateObjectEventListener(existingListenerEntry, type, actualListener, useCapture);
+                deferredUndoOperation.resolve([self.updateOwnedObjectEventListener, self, proxy, updatedListenerEntry, originalType, originalListener, originalUseCapture, originalMethodName]);
+                return updatedListenerEntry;
+            });
         }
     },
 

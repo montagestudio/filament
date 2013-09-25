@@ -111,7 +111,7 @@ exports.ListenerJig = Montage.create(Component, /** @lends module:"./listener-ji
                 listenerEntry;
 
             if (this.existingListener) {
-                listenerEntry = this.editingDocument.updateOwnedObjectEventListener(proxy, this.existingListener, type, listener, useCapture);
+                listenerEntry = this.editingDocument.updateOwnedObjectEventListener(proxy, this.existingListener, type, listener, useCapture, methodName);
             } else {
                 listenerEntry = this.editingDocument.addOwnedObjectEventListener(proxy, type, listener, useCapture, methodName);
             }
