@@ -15,6 +15,7 @@ var Montage = require("montage").Montage,
     visit = require("montage/mousse/serialization/malker").visit,
     URL = require("core/node/url"),
     PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint,
+    EventBlueprint = require("montage/core/meta/event-blueprint").EventBlueprint,
     ObjectReferences = require("core/object-references").ObjectReferences;
 
 // The ReelDocument is used for editing Montage Reels
@@ -1619,6 +1620,38 @@ exports.ReelDocument = EditingDocument.specialize({
                     blueprint.removePropertyBlueprint(propertyBlueprint);
                     blueprint.removePropertyBlueprintFromGroupNamed(propertyBlueprint, self._exportName);
                     return [self.addOwnerBlueprintProperty, self, name, propertyBlueprint.valueType, propertyBlueprint.cardinality, propertyBlueprint.collectionValueType];
+                })
+            );
+        }
+    },
+
+    addOwnerBlueprintEvent: {
+        value: function (name) {
+            var self = this;
+            return this.undoManager.register(
+                "Add owner event",
+                this._ownerBlueprint.then(function (blueprint) {
+                    var eventBlueprint = new EventBlueprint().initWithNameAndBlueprint(
+                        name,
+                        blueprint
+                    );
+
+                    blueprint.addEventBlueprint(eventBlueprint);
+                    return [self.removeOwnerBlueprintEvent, self, name];
+                })
+            );
+        }
+    },
+
+    removeOwnerBlueprintEvent: {
+        value: function (name) {
+            var self = this;
+            return self.undoManager.register(
+                "Remove owner event",
+                this._ownerBlueprint.then(function (blueprint) {
+                    var eventBlueprint = blueprint.eventBlueprintForName(name);
+                    blueprint.removeEventBlueprint(eventBlueprint);
+                    return [self.addOwnerBlueprintEvent, self, name];
                 })
             );
         }

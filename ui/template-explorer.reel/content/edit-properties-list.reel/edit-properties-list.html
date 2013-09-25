@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="edit-properties-list.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "editPropertiesList"},
+                "_repetition": {"@": "repetition"}
+            }
+        },
+
+        "repetition": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "repetition"}
+            },
+            "bindings": {
+                "contentController": {"<-": "@owner.contentController"}
+            }
+        },
+
+        "add": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "add"}
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
+        },
+
+        "newName": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "newName"}
+            },
+            "bindings": {
+                "placeholderValue": {"<->": "@owner.inputPlaceholder"},
+                "value": {"<->": "@owner.inputValue"}
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
+        },
+
+        "remove": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "remove"}
+            },
+            "bindings": {
+                "detail.get('object')": {"<-": "@repetition.objectAtCurrentIteration"}
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="editPropertiesList" class="EditPropertiesList">
+        <ul data-montage-id="repetition" class="EditProperties-list">
+            <li class="EditProperties-listItem">
+                <div data-param="item"></div>
+                <button data-montage-id="remove" class="Button Button--circle">-</button>
+            </li>
+        </ul>
+
+        <footer class="EditProperties-bar">
+            <input type="text" data-montage-id="newName" class="Input" placeholder="TODO">
+            <button data-montage-id="add" class="Button--action">+</button>
+        </footer>
+    </div>
+</body>
+</html>
