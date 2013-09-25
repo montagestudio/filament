@@ -134,6 +134,24 @@ exports.ReelDocument = EditingDocument.specialize({
         value: ReelSerializer
     },
 
+    filesDidChange: {
+        value: function (changes) {
+            var shouldReload = false;
+
+            // Reload the frame whenever external CSS is changed
+            for (var i = 0; i < changes.length; i++) {
+                if (changes[i].fileUrl.search(/\.css$/) !== -1) {
+                    shouldReload = true;
+                    break;
+                }
+            }
+
+            if (shouldReload) {
+                this.editor.refresh();
+            }
+        }
+    },
+
     handleMenuValidate: {
         value: function (evt) {
             var menuItem = evt.detail,
