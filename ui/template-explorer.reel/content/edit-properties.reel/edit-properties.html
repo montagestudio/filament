@@ -141,26 +141,31 @@
 </head>
 <body>
     <div data-montage-id="edit-properties" class="EditProperties">
+        <details open>
+            <summary>Properties</summary>
+            <div data-montage-id="properties">
+                <div data-arg="item">
+                    <span data-montage-id="name" class="EditProperties-name"></span>
+                    <select data-montage-id="valueType" class="Select"></select>
 
-        <div data-montage-id="properties">
-            <div data-arg="item">
-                <span data-montage-id="name" class="EditProperties-name"></span>
-                <select data-montage-id="valueType" class="Select"></select>
-
-                <div class="EditProperties-multi">
-                    <label><input type="checkbox" data-montage-id="multiple" class="Checkbox"> multi</label>
-                    <span data-montage-id="collectionCondition">
-                        <select data-montage-id="collectionValueType" class="Select"></select>
-                    </span>
+                    <div class="EditProperties-multi">
+                        <label><input type="checkbox" data-montage-id="multiple" class="Checkbox"> multi</label>
+                        <span data-montage-id="collectionCondition">
+                            <select data-montage-id="collectionValueType" class="Select"></select>
+                        </span>
+                    </div>
                 </div>
             </div>
-        </div>
+        </details>
 
-        <div data-montage-id="events">
-            <div data-arg="item">
-                <span data-montage-id="eventName" class="EditProperties-name"></span>
+        <details>
+            <summary>Events</summary>
+            <div data-montage-id="events">
+                <div data-arg="item">
+                    <span data-montage-id="eventName" class="EditProperties-name"></span>
+                </div>
             </div>
-        </div>
+        </details>
 
     </div>
 </body>
