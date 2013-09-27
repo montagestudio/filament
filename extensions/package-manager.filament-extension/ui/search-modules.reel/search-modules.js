@@ -4,10 +4,9 @@
  */
 var Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
-    CLEAR_BUTTON_DEFAULT_LABEL = 'clear',
-    CLEAR_BUTTON_STOP_LABEL = 'stop',
-    Dependency = require("../../core/dependency").Dependency,
-    MIN_SEARCH_LENGTH = 1;
+    CELL_STATES = require("./search-modules-cell.reel").STATES,
+    MIME_TYPES = require("../../core/mime-types"),
+    Dependency = require("../../core/dependency").Dependency;
 
 /**
  * @class SearchModules
@@ -18,13 +17,31 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
     constructor: {
         value: function SearchModules() {
             this.super();
+            this.addOwnPropertyChangeListener("request", this);
         }
     },
 
-    handleSearchInputAction: {
-        value: function (event) {
-            this._startSearch();
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                var searchElement = this.templateObjects.searchResults._element;
+                searchElement.addEventListener("dragstart", this, false);
+                searchElement.addEventListener("dragend", this, false);
+            }
         }
+    },
+
+    packageDependencies: {
+        value: null
+    },
+
+    /**
+     * Reference to the packageDocument.
+     * @type {Object}
+     * @default null
+     */
+    editingDocument: {
+        value: null
     },
 
     _request: {
@@ -45,32 +62,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
         }
     },
 
-    /**
-     * Reference to the packageDocument.
-     * @type {Object}
-     * @default null
-     */
-    editingDocument: {
-        value: null
-    },
-
-    _clearButtonLabel: {
-        value: null
-    },
-
-    clearButtonLabel: {
-        set: function (label) {
-            this._clearButtonLabel = (typeof label === "string") ? label : CLEAR_BUTTON_DEFAULT_LABEL;
-        },
-        get: function () {
-            if (!this._clearButtonLabel) {
-                this._clearButtonLabel = CLEAR_BUTTON_DEFAULT_LABEL;
-            }
-            return this._clearButtonLabel;
-        }
-    },
-
-    _searchResults: {
+    _results: {
         value: null
     },
 
@@ -79,26 +71,12 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
      * @type {Array}
      * @default null
      */
-    searchResults: {
+    results: {
         set: function (results) {
-            this._searchResults = Array.isArray(results) ? results : null;
-            this.resultsNumber = (this._searchResults) ? this._searchResults.length : 0;
+            this._results = Array.isArray(results) ? results : null;
         },
         get: function () {
-            return this._searchResults;
-        }
-    },
-
-    _resultsNumber: {
-        value: null
-    },
-
-    resultsNumber: {
-        set: function (number) {
-            this._resultsNumber = (typeof number === "number") ? number : 0;
-        },
-        get: function () {
-            return this._resultsNumber;
+            return this._results;
         }
     },
 
@@ -112,6 +90,14 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
         value: false
     },
 
+    handleRequestChange: {
+        value: function () {
+            if (this.results && typeof this.request === 'string' && this.request.length === 0) {
+                this.clearSearch();
+            }
+        }
+    },
+
     /**
      * Indicates whether a search request is operating.
      * @function
@@ -120,12 +106,78 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
     isSearching: {
         set: function (searching) {
             this._searching = (typeof searching === 'boolean') ? searching : false;
-            this.templateObjects.searchButton.enabled = !this._searching;
-            this.templateObjects.searchInput.element.disabled = this._searching;
-            this.clearButtonLabel = (this._searching) ? CLEAR_BUTTON_STOP_LABEL : CLEAR_BUTTON_DEFAULT_LABEL;
+            this.searchInput.element.disabled = this._searching;
         },
         get: function () {
             return this._searching;
+        }
+    },
+
+    handleSearchAction: {
+        value: function () {
+            this._startSearch();
+        }
+    },
+
+    clearSearch: {
+        value: function () {
+            this.results = null;
+            this.request = null;
+            this.isSearching = false;
+        }
+    },
+
+    _startSearch: {
+        value: function () {
+            if (!this.isSearching && this.request) {
+                var self = this;
+                this.isSearching = true;
+
+                this.editingDocument.packageManagerPlugin.invoke("searchModules", this.request).then(function (results) {
+                    for (var i = 0, length = results.length; i < length; i++) { // search for each result if it has already been installed
+                        var result = results[i],
+                            dependency = self.editingDocument.findDependency(result.name);
+
+                        result.state = (dependency && !dependency.missing) ? CELL_STATES.INSTALLED : CELL_STATES.DEFAULT;
+                    }
+
+                    self._terminateSearch(results);
+                }, function (error) {
+                    self._terminateSearch();
+
+                    self.dispatchEventNamed("asyncActivity", true, false, {
+                        promise: Promise.reject(error),
+                        title: "Searching"
+                    });
+                });
+            }
+        }
+    },
+
+    /**
+     * Terminates the current search request
+     * @function {boolean}
+     */
+    _terminateSearch: {
+        value: function (results) {
+            this.results = results || [];
+            this.isSearching = false;
+        }
+    },
+
+    /**
+     * Handles a installation request.
+     * @function {boolean}
+     * @param {Event} event, contain the cell which has raised the request.
+     */
+    handleModuleInstallAction:{
+        value: function (event) {
+            var module = event.detail.get('module');
+
+            if (this.editingDocument && module && typeof module === 'object' && module.hasOwnProperty('name')) {
+                this.editingDocument.performActionDependency(Dependency.INSTALL_DEPENDENCY_ACTION,
+                    new Dependency(module.name, module.version)).done();
+            }
         }
     },
 
@@ -138,11 +190,18 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
      */
     handleDependenciesListChange: {
         value: function (name, action) {
-            if (name && Array.isArray(this.searchResults) && this.searchResults.length > 0) {
+            if (name && this.results && this.results.length > 0) {
                 var result = this._findResult(name);
 
                 if (result) {
-                    result.installed = (action !== Dependency.REMOVE_DEPENDENCY_ACTION);
+                    if (action === Dependency.ERROR_INSTALL_DEPENDENCY_ACTION) {
+                        result.state = CELL_STATES.ERROR;
+                    } else if (action === Dependency.INSTALLING_DEPENDENCY_ACTION) {
+                        result.state = CELL_STATES.INSTALLING;
+                    } else {
+                        result.state = action === Dependency.REMOVE_DEPENDENCY_ACTION ?
+                            CELL_STATES.DEFAULT : CELL_STATES.INSTALLED;
+                    }
                 }
             }
         }
@@ -158,11 +217,11 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
     _findResult: {
         value: function (name, index) {
             if (typeof name === 'string') {
-                var keys = Object.keys(this.searchResults);
+                var keys = Object.keys(this.results);
 
                 for (var i = 0, length = keys.length; i < length; i++) {
-                    if (name === this.searchResults[keys[i]].name) {
-                        return (index) ? keys[i] : this.searchResults[keys[i]]; // return index or the dependency
+                    if (name === this.results[keys[i]].name) {
+                        return (index) ? keys[i] : this.results[keys[i]]; // return index or the dependency
                     }
                 }
             }
@@ -170,99 +229,27 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
         }
     },
 
-    clearSearch: {
-        value: function () {
-            this.searchResults = null;
-            this.request = null;
-            this.isSearching = false;
-        }
-    },
-
-    /**
-     * Clears the results list and
-     * @function {boolean}
-     * @param {Event} event, contain the cell which has raised the request.
-     */
-    handleClearAction: {
-        value: function () {
-            this.clearSearch();
-        }
-    },
-
-    /**
-     * Handles a installation request.
-     * @function {boolean}
-     * @param {Event} event, contain the cell which has raised the request.
-     */
-    handleModuleInstallAction:{
+    handleDragstart: {
         value: function (event) {
-            var cell = event.detail.get('cell'),
-                module = cell.module;
+            var source = event.target.component;
 
-            if (this.editingDocument && module && typeof module === 'object' && module.hasOwnProperty('name')) {
-                cell.installing(true);
-                this.editingDocument.performActionDependency(Dependency.INSTALL_DEPENDENCY_ACTION,
-                    new Dependency(module.name, module.version)).done();
+            if (source && this.packageDependencies && typeof source === "object" && source.hasOwnProperty("module")) {
+                var module = source.module,
+                    dataTransfer = event.dataTransfer;
+
+                dataTransfer.effectAllowed = 'copy';
+                dataTransfer.setData(MIME_TYPES.PACKAGE_MANAGER_INSTALLATION_DEPENDENCY, JSON.stringify(module));
+                this.packageDependencies.handleAcceptDrop(event);
             }
+
         }
     },
 
-    _startSearch: {
+    handleDragend: {
         value: function () {
-            if (!this.isSearching && this.request && this.request.length >= MIN_SEARCH_LENGTH) {
-                var self = this;
-                this.isSearching = true;
-
-                this.editingDocument.packageManagerPlugin.invoke("searchModules", this.request).then(function (results) {
-                    if (Array.isArray(results)) {
-                        if (self.isSearching) {
-                            for (var i = 0, length = results.length; i < length; i++) { // search for each result if it has already been installed
-                                var result = results[i];
-
-                                if (result && typeof result === 'object' && result.hasOwnProperty('name')) {
-                                    var dependency = self.editingDocument.findDependency(result.name);
-                                    result.installed = !!(dependency && !dependency.missing);
-                                } else {
-                                    results.splice(i, 1);
-                                }
-                            }
-                        } else {
-                            results = null;
-                        }
-                    }
-
-                    self._terminateSearch(results);
-
-                }, function (error) {
-                    self._terminateSearch();
-
-                    self.dispatchEventNamed("asyncActivity", true, false, {
-                        promise: Promise.reject(error),
-                        title: "Searching"
-                    });
-                });
+            if (this.packageDependencies) {
+                this.packageDependencies.forceDisplayGroups(false);
             }
-        }
-    },
-
-    /**
-     * Handles a research request.
-     * @function {boolean}
-     */
-    handleSearchButtonAction: {
-        value: function (event) {
-            this._startSearch();
-        }
-    },
-
-    /**
-     * Terminates the current search request
-     * @function {boolean}
-     */
-    _terminateSearch: {
-        value: function (results) {
-            this.searchResults = results || null;
-            this.isSearching = false;
         }
     }
 

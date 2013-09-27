@@ -5,6 +5,7 @@ var Dependency = function Dependency(name, version, type) {
 };
 
 Object.defineProperties(Dependency, {
+
     INSTALL_DEPENDENCY_ACTION: {
         value: 0,
         enumerable: true
@@ -18,7 +19,18 @@ Object.defineProperties(Dependency, {
     UPDATE_DEPENDENCY_ACTION: {
         value: 2,
         enumerable: true
+    },
+
+    ERROR_INSTALL_DEPENDENCY_ACTION: {
+        value: 3,
+        enumerable: true
+    },
+
+    INSTALLING_DEPENDENCY_ACTION: {
+        value: 4,
+        enumerable: true
     }
+
 });
 
 exports.Dependency = Dependency;
