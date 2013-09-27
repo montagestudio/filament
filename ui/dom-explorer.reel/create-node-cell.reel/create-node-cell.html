@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="create-node-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "CreateNodeCell"}
+            }
+        },
+
+        "tagName": {
+            "prototype": "ui/text-editor-field.reel",
+            "properties": {
+                "element": {"#": "tagName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.nodeInfo.tagName"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "montageId": {
+            "prototype": "ui/text-editor-field.reel",
+            "properties": {
+                "element": {"#": "montageId"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.nodeInfo.montageId"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "montageArg": {
+            "prototype": "ui/text-editor-field.reel",
+            "properties": {
+                "element": {"#": "montageArg"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.nodeInfo.montageArg"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+
+        },
+
+        "removeNodeButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "resetNodeButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="CreateNodeCell" class="CreateNodeCell">
+    <span class="info">New element: </span>
+        <span data-montage-id="nodeSegment" class="CreateNodeCell-segment"  draggable="true">
+            <span data-montage-id="tagName" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--tag">test</span>
+
+            <span data-montage-id="montageArg" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageArg">test</span>
+            <span data-montage-id="montageId" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageId">test</span>
+
+            <span data-montage-id="componentCondition" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--component">
+                <strong data-montage-id="componentLabel" class="CreateNodeCell-label">test</strong>
+            </span>
+        </span>
+        
+        <button data-montage-id="resetNodeButton" class="CreateNodeCell-reset Button Button--circle" title="Reset node">↺</button>
+    </div>
+</body>
+</html>

@@ -138,6 +138,14 @@
                 "treeControllerNode": {"<-": "@nodeCell.parentComponent.iteration"},
                 "domExplorer": {"<-": "@owner"}
             }
+        },
+
+        "createNodeCell": {
+            "prototype": "./create-node-cell.reel",
+            "properties": {
+                "element": {"#": "createNodeCell"},
+                "domExplorer": {"@": "owner"}
+            }
         }
     }
     </script>
@@ -147,6 +155,11 @@
         <div data-montage-id="nodeList" class="NodeList">
             <div data-montage-id="nodeCell" data-arg="treeNode"></div>
         </div>
+
+        <footer class="DomExplorer-footer">
+            <div data-montage-id="createNodeCell"></div>
+        </footer>
+        <!-- start to be removed -->
         <footer data-montage-id="isCreatingElementCondition" class="DomExplorer-footer">
             <div data-montage-id="elementCreationForm" class="AddElement">
                 <input data-montage-id="tagField" class="AddElement-input" type="text">
@@ -154,6 +167,7 @@
                 <button type="reset" data-montage-id="cancelElementButton" class="AddElement-reset">×</button>
             </div>
         </footer>
+        <!-- end of to be removed -->
     </div>
 </body>
 </html>

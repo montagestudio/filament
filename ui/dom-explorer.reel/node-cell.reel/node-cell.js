@@ -302,7 +302,6 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
 
     handleMouseover: {
         value: function (evt) {
-            this.addElementOver();
             this.dispatchEventNamed("highlightStageElement", true, true, {
                 xpath: getElementXPath(this.nodeInfo._templateNode),
                 component: this.nodeInfo.component,
