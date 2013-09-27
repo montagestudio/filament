@@ -298,8 +298,12 @@ exports.ComponentEditor = Editor.specialize({
                 // set templateExplorer's highlighted component
                 templateExplorer.highlightedComponent = nodeProxy.component;
                 // highlight the stageElement to simulate a hover
-                element = nodeProxy.component.stageObject._element;
-                documentEditor.highlightElement(element);
+                if (nodeProxy.component.stageObject) {
+                    element = nodeProxy.component.stageObject.element;
+                    if (element) {
+                        documentEditor.highlightElement(element);
+                    }
+                }
             }
         }
     },
@@ -319,31 +323,38 @@ exports.ComponentEditor = Editor.specialize({
                 component = detail.component,
                 proxy = detail.proxy,
                 documentEditor = this.currentDocument,
-                stageDocument = documentEditor._editingController.frame.iframe.contentDocument,
+                editingController = documentEditor._editingController,
+                stageDocument = editingController ? editingController.frame.iframe.contentDocument : void 0,
                 domExplorer = this.templateObjects.domExplorer,
                 templateExplorer = this.templateObjects.templateExplorer;
 
             this.clearHighlighting();
             if (!highlight) {return;}
 
-            var stageElement = stageDocument.evaluate(
-                xpath,
-                stageDocument,
-                null,
-                XPathResult.FIRST_ORDERED_NODE_TYPE,
-                null
-            ).singleNodeValue;
+            if (stageDocument) {
+                var stageElement = stageDocument.evaluate(
+                    xpath,
+                    stageDocument,
+                    null,
+                    XPathResult.FIRST_ORDERED_NODE_TYPE,
+                    null
+                ).singleNodeValue;
 
-            // handle highlighting at the component level if the DOM element is not found
-            if (!stageElement && component) {
-                stageElement = component.stageObject.element;
+                // handle highlighting at the component level if the DOM element is not found
+                if (!stageElement && component && component.stageObject) {
+                    stageElement = component.stageObject.element;
+                }
+
+                // highlight the stageElement
+                if (stageElement) {
+                    documentEditor.highlightElement(stageElement);
+                }
             }
+
             // set domExplorer's highlighted element (hover effect)
             domExplorer.highlightedElement = proxy;
             // set templateExplorer's highlighted component
             templateExplorer.highlightedComponent = component || null;
-            // highlight the stageElement
-            documentEditor.highlightElement(stageElement);
         }
     },
 
@@ -354,7 +365,8 @@ exports.ComponentEditor = Editor.specialize({
                 highlight = detail.highlight,
                 component = detail.component,
                 element = detail.element,
-                stageElement = component.stageObject.element,
+                stageObject = component.stageObject,
+                stageElement = stageObject ? stageObject.element : void 0,
                 domExplorer = this.templateObjects.domExplorer,
                 documentEditor = this.currentDocument,
                 templateExplorer = this.templateObjects.templateExplorer;
@@ -363,11 +375,17 @@ exports.ComponentEditor = Editor.specialize({
             if (!highlight) {return;}
 
             // set domExplorer's highlighted element
-            domExplorer.highlightedElement = element;
+            if (element) {
+                domExplorer.highlightedElement = element;
+            }
             // set templateExplorer's highlighted component (hover effect)
-            templateExplorer.highlightedComponent = component;
+            if (component) {
+                templateExplorer.highlightedComponent = component;
+            }
             // highlight the stageElement
-            documentEditor.highlightElement(stageElement);
+            if (stageElement) {
+                documentEditor.highlightElement(stageElement);
+            }
         }
     }
 
