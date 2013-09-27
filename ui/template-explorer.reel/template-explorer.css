@@ -35,6 +35,10 @@
 
 /* TemplateObject Cell ---------------------------- */
 
+.TemplateExplorer-list-item.TemplateObjectCell--isInProjectPackage {
+    border-radius: 0;
+}
+
 .TemplateObjectCell {
     background-color: hsl(0,0%,96%);
 }
