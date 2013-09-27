@@ -1231,6 +1231,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 deferredUndoOperation = Promise.defer(),
                 self = this;
 
+            this.undoManager.openBatch("Add Listener");
             this.undoManager.register("Add Listener", deferredUndoOperation.promise);
 
             if (methodName) {
@@ -1247,6 +1248,9 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return installListenerPromise.then(function (actualListener) {
+                // TODO this doesn't really do anything to guard against other unrelated sync operations being
+                // entered into the same undo block
+                self.undoManager.closeBatch();
                 var listenerEntry = proxy.addObjectEventListener(type, actualListener, useCapture);
 
                 if (listenerEntry) {
@@ -1295,6 +1299,8 @@ exports.ReelDocument = EditingDocument.specialize({
                 actualListenerPromise,
                 self = this;
 
+            //TODO same problem elsewhere regarding the blocks not working well with async code
+            this.undoManager.openBatch("Edit Listener");
             this.undoManager.register("Edit Listener", deferredUndoOperation.promise);
 
             if (isDirectedHandler && methodName) {
@@ -1337,6 +1343,8 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return actualListenerPromise.then(function (actualListener) {
+                self.undoManager.closeBatch();
+
                 var updatedListenerEntry = proxy.updateObjectEventListener(existingListenerEntry, type, actualListener, useCapture);
                 deferredUndoOperation.resolve([self.updateOwnedObjectEventListener, self, proxy, updatedListenerEntry, originalType, originalListener, originalUseCapture, originalMethodName]);
                 return updatedListenerEntry;
