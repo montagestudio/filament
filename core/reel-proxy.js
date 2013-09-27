@@ -107,7 +107,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
 
     setEditorMetadata: {
         value: function (property, value) {
-            if ("comment" === property && !value) {
+            if (("comment" === property || "isHidden" === property) && !value) {
                 this.editorMetadata.delete(property);
             } else {
                 this.editorMetadata.set(property, value);
