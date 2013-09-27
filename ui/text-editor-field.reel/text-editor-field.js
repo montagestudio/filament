@@ -36,7 +36,7 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
             // Listen for editing to finish
             this.templateObjects.inputText.addEventListener("action", this);
 
-            // Listen for blur to stop editin
+            // Listen for blur to stop editing
             this.templateObjects.inputText.element.addEventListener("blur", this);
         }
     },
@@ -85,6 +85,7 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
         value: function (evt) {
             if (evt.identifier === "cancel" && this.isEditing) {
                 this._inputValue = null;
+                this.value = null;
                 this.isEditing = false;
             }
         }
