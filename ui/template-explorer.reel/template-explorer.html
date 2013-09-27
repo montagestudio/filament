@@ -6,6 +6,7 @@
     <script type="text/montage-serialization">
     {
         "owner": {
+            "prototype": "ui/template-explorer.reel",
             "properties": {
                 "element": {"#": "template-explorer"}
             },
@@ -20,20 +21,16 @@
                 }
             ]
         },
-
-        "ownerObjectCell": {
-            "prototype": "./owner-object-cell.reel",
+        "hiddenCount": {
+            "prototype": "montage/ui/text.reel",
             "properties": {
-                "element": {"#": "ownerObjectCell"}
+                "element": {"#": "hiddenCount"},
+                "value": "Text"
             },
             "bindings": {
-                "templateObjectsController": {"<-": "@owner.templateObjectsController"},
-                "templateObject": {"<-": "@owner.ownerObject"},
-                "showListeners": {"<-": "@owner.showListeners"},
-                "showBindings": {"<-": "@owner.showBindings"}
+                "value": {"<-": "@owner.templateObjectsController.content.filter{!!editorMetadata.get('isHidden')}.length"}
             }
         },
-
         "objectList": {
             "prototype": "montage/ui/repetition.reel",
             "properties": {
@@ -44,30 +41,18 @@
                 "contentController": {"<-": "@owner.templateObjectsController"}
             }
         },
-
-        "templateObjectFilter": {
-            "prototype": "ui/input-search.reel",
+        "ownerObjectCell": {
+            "prototype": "./owner-object-cell.reel",
             "properties": {
-                "element": {"#": "templateObjectFilter"}
+                "element": {"#": "ownerObjectCell"}
             },
             "bindings": {
-                "value": {"<->": "@owner.templateObjectFilterTerm"}
-            }
-        },
-
-        "templateObjectCell": {
-            "prototype": "./template-object-cell.reel",
-            "properties": {
-                "element": {"#": "templateObjectCell"}
-            },
-            "bindings": {
-                "templateObject": {"<-": "@objectList.objectAtCurrentIteration"},
-                "showListeners": {"<-": "@owner.showListeners"},
                 "showBindings": {"<-": "@owner.showBindings"},
-                "templateExplorer": {"<-": "@owner"}
+                "showListeners": {"<-": "@owner.showListeners"},
+                "templateObject": {"<-": "@owner.ownerObject"},
+                "templateObjectsController": {"<-": "@owner.templateObjectsController"}
             }
         },
-
         "showBindings": {
             "prototype": "matte/ui/input-checkbox.reel",
             "properties": {
@@ -77,7 +62,15 @@
                 "checked": {"<->": "@owner.showBindings"}
             }
         },
-
+        "showHidden": {
+            "prototype": "matte/ui/input-checkbox.reel",
+            "properties": {
+                "element": {"#": "showHidden"}
+            },
+            "bindings": {
+                "checked": {"<->": "@owner.showHidden"}
+            }
+        },
         "showListeners": {
             "prototype": "matte/ui/input-checkbox.reel",
             "properties": {
@@ -87,14 +80,25 @@
                 "checked": {"<->": "@owner.showListeners"}
             }
         },
-
-        "showHidden": {
-            "prototype": "matte/ui/input-checkbox.reel",
+        "templateObjectCell": {
+            "prototype": "./template-object-cell.reel",
             "properties": {
-                "element": {"#": "showHidden"}
+                "element": {"#": "templateObjectCell"}
             },
             "bindings": {
-                "checked": {"<->": "@owner.showHidden"}
+                "showBindings": {"<-": "@owner.showBindings"},
+                "showListeners": {"<-": "@owner.showListeners"},
+                "templateExplorer": {"<-": "@owner"},
+                "templateObject": {"<-": "@objectList.objectAtCurrentIteration"}
+            }
+        },
+        "templateObjectFilter": {
+            "prototype": "ui/input-search.reel",
+            "properties": {
+                "element": {"#": "templateObjectFilter"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.templateObjectFilterTerm"}
             }
         }
     }
@@ -102,22 +106,29 @@
 </head>
 <body>
     <div data-montage-id="template-explorer" class="TemplateExplorer">
-
         <section data-montage-id="ownerObjectCell"></section>
-
         <ul data-montage-id="objectList" class="TemplateExplorer-list">
             <li data-montage-id="templateObjectCell" class="TemplateExplorer-list-item"></li>
         </ul>
-
         <footer class="TemplateExplorer-footer Panel-bar">
             <form class="TemplateExplorerFilter">
                 <input data-montage-id="templateObjectFilter" class="Search" type="search" placeholder="Search">
-                <label class="TemplateExplorerFilter-label"><input data-montage-id="showHidden" type="checkbox">Show Hidden</label>
-                <label class="TemplateExplorerFilter-label"><input data-montage-id="showBindings" type="checkbox">Show Bindings</label>
-                <label class="TemplateExplorerFilter-label"><input data-montage-id="showListeners" type="checkbox">Show Listeners</label>
+                <label class="TemplateExplorerFilter-label">
+                    <input data-montage-id="showHidden" type="checkbox">
+                    Show
+                    <span data-montage-id="hiddenCount"></span>
+                    Hidden
+                </label>
+                <label class="TemplateExplorerFilter-label">
+                    <input data-montage-id="showBindings" type="checkbox">
+                    Show Bindings
+                </label>
+                <label class="TemplateExplorerFilter-label">
+                    <input data-montage-id="showListeners" type="checkbox">
+                    Show Listeners
+                </label>
             </form>
         </footer>
-
     </div>
 </body>
 </html>
