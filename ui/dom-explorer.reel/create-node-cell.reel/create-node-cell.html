@@ -7,7 +7,11 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "CreateNodeCell"}
+                "element": {"#": "CreateNodeCell"},
+                "nodeSegment": {"#": "nodeSegment"}
+            },
+            "bindings": {
+                "classList.has('CreateNodeCell--draggable')": {"<-": "@owner.tagName && @owner.tagName.length > 1"}
             }
         },
 
@@ -17,7 +21,7 @@
                 "element": {"#": "tagName"}
             },
             "bindings": {
-                "value": {"<-": "@owner.nodeInfo.tagName"}
+                "value": {"<->": "@owner.tagName"}
             },
             "listeners": [
                 {
@@ -33,7 +37,7 @@
                 "element": {"#": "montageId"}
             },
             "bindings": {
-                "value": {"<-": "@owner.nodeInfo.montageId"}
+                "value": {"<->": "@owner.montageId"}
             },
             "listeners": [
                 {
@@ -49,7 +53,7 @@
                 "element": {"#": "montageArg"}
             },
             "bindings": {
-                "value": {"<-": "@owner.nodeInfo.montageArg"}
+                "value": {"<->": "@owner.montageArg"}
             },
             "listeners": [
                 {
@@ -60,7 +64,7 @@
 
         },
 
-        "removeNodeButton": {
+        "resetNodeButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {
                 "element": {"#": "resetNodeButton"}
@@ -78,16 +82,17 @@
 </head>
 <body>
     <div data-montage-id="CreateNodeCell" class="CreateNodeCell">
-    <span class="info">New element: </span>
-        <span data-montage-id="nodeSegment" class="CreateNodeCell-segment"  draggable="true">
+        <span data-montage-id="nodeSegment" class="CreateNodeCell-segment"  draggable="false">
             <span data-montage-id="tagName" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--tag">test</span>
 
             <span data-montage-id="montageArg" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageArg">test</span>
             <span data-montage-id="montageId" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageId">test</span>
 
-            <span data-montage-id="componentCondition" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--component">
-                <strong data-montage-id="componentLabel" class="CreateNodeCell-label">test</strong>
-            </span>
+            <!-- <span data-montage-id="componentCondition" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--component">
+                <select>
+                    <option><strong data-montage-id="componentLabel" class="CreateNodeCell-label">test</strong></option>
+                </select>
+            </span> -->
         </span>
         
         <button data-montage-id="resetNodeButton" class="CreateNodeCell-reset Button Button--circle" title="Reset node">↺</button>

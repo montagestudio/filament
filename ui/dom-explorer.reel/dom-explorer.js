@@ -215,7 +215,8 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         value: function (evt) {
 
             var detail = evt.detail,
-                transferObject;
+                transferObject,
+                html;
 
             if (transferObject = detail.transferObject) {
 
@@ -224,7 +225,10 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
                 var parentNode = detail.parentNode;
 
                 this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, null, null).done();
-
+            } else if (html = detail.htmlElement) {
+                var newNode = this.editingDocument.createTemplateNode(html);
+                this.editingDocument.appendChildToTemplateNode(newNode, evt.detail.parentNode);
+                this.templateObjects.createNodeCell.reset();
             } else {
                 var self =  this;
                 var insertionFunction = function (newNode) {
@@ -239,7 +243,8 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
     handleInsertBeforeNode: {
         value: function (evt) {
             var detail = evt.detail,
-                transferObject;
+                transferObject,
+                html;
 
             if (transferObject = detail.transferObject) {
                 var serializationFragment = transferObject.serializationFragment;
@@ -249,6 +254,10 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
                 this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, nextSibling, null).done();
 
+            } else if (html = detail.htmlElement) {
+                var newNode = this.editingDocument.createTemplateNode(html);
+                this.editingDocument.insertNodeBeforeTemplateNode(newNode, evt.detail.nextSibling);
+                this.templateObjects.createNodeCell.reset();
             } else {
                 var self =  this;
                 var insertionFunction = function (newNode) {
@@ -263,7 +272,8 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
     handleInsertAfterNode: {
         value: function (evt) {
             var detail = evt.detail,
-                transferObject;
+                transferObject,
+                html;
 
             if (transferObject = detail.transferObject) {
                 var serializationFragment = transferObject.serializationFragment;
@@ -273,6 +283,10 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
                 this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, nextSibling, null).done();
 
+            } else if (html = detail.htmlElement) {
+                var newNode = this.editingDocument.createTemplateNode(html);
+                this.editingDocument.insertNodeAfterTemplateNode(newNode, evt.detail.previousSibling);
+                this.templateObjects.createNodeCell.reset();
             } else {
                 var self =  this;
                 var insertionFunction = function (newNode) {

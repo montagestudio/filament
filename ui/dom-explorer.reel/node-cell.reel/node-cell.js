@@ -175,59 +175,6 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
-    handleAppendNodeButtonAction: {
-        value: function (evt) {
-            this.dispatchEventNamed("appendNode", true, true, {
-                parentNode: this.nodeInfo
-            });
-        }
-    },
-
-    handleAppendNodeButtonInsertTemplateAction: {
-        value: function (evt) {
-            this.dispatchEventNamed("appendNode", true, true, {
-                parentNode: this.nodeInfo,
-                transferObject: evt.detail.transferObject
-            });
-        }
-    },
-
-    handleInsertBeforeNodeButtonAction: {
-        value: function (evt) {
-            this.dispatchEventNamed("insertBeforeNode", true, true, {
-                nextSibling: this.nodeInfo
-            });
-        }
-    },
-
-    handleInsertBeforeNodeButtonInsertTemplateAction: {
-        value: function (evt) {
-            this.dispatchEventNamed("insertBeforeNode", true, true, {
-                nextSibling: this.nodeInfo,
-                transferObject: evt.detail.transferObject
-            });
-        }
-    },
-
-    handleInsertAfterNodeButtonAction: {
-        value: function (evt) {
-            //TODO prompt for tagName
-            this.dispatchEventNamed("insertAfterNode", true, true, {
-                previousSibling: this.nodeInfo
-            });
-        }
-    },
-
-    handleInsertAfterNodeButtonInsertTemplateAction: {
-        value: function (evt) {
-            this.dispatchEventNamed("insertAfterNode", true, true, {
-                previousSibling: this.nodeInfo,
-                transferObject: evt.detail.transferObject
-            });
-        }
-    },
-
-    // new drop/hover add as next sibling
     handleAddElementAfterInsertTemplateAction: {
         value: function (evt) {
             this.dispatchEventNamed("insertAfterNode", true, true, {
@@ -237,7 +184,6 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
-    // new drop/hover add as previous sibling
     handleAddElementBeforeInsertTemplateAction: {
         value: function (evt) {
             this.dispatchEventNamed("insertBeforeNode", true, true, {
@@ -247,12 +193,38 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
-    // new drop/hover add as new child sibling
     handleAddChildElementInsertTemplateAction: {
         value: function (evt) {
             this.dispatchEventNamed("appendNode", true, true, {
                 parentNode: this.nodeInfo,
                 transferObject: evt.detail.transferObject
+            });
+        }
+    },
+
+    handleAddElementAfterInsertElementAction: {
+        value: function (evt) {
+            this.dispatchEventNamed("insertAfterNode", true, true, {
+                previousSibling: this.nodeInfo,
+                htmlElement: evt.detail.htmlElement
+            });
+        }
+    },
+
+    handleAddElementBeforeInsertElementAction: {
+        value: function (evt) {
+            this.dispatchEventNamed("insertBeforeNode", true, true, {
+                nextSibling: this.nodeInfo,
+                htmlElement: evt.detail.htmlElement
+            });
+        }
+    },
+
+    handleAddChildElementInsertElementAction: {
+        value: function (evt) {
+            this.dispatchEventNamed("appendNode", true, true, {
+                parentNode: this.nodeInfo,
+                htmlElement: evt.detail.htmlElement
             });
         }
     },

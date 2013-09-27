@@ -44,7 +44,10 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
     acceptsDrop: {
         value: function (evt) {
             return evt.dataTransfer.types &&
-                evt.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1;
+                (
+                    evt.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 ||
+                    evt.dataTransfer.types.indexOf(MimeTypes.HTML_ELEMENT) !== -1
+                );
         }
     },
 
@@ -80,17 +83,22 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
     handleDrop: {
         enumerable: false,
         value: function (evt) {
-
             evt.stop();
 
-            // TODO: security issues?
-            var data = evt.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
-                transferObject = JSON.parse(data);
+            if (evt.dataTransfer.types.indexOf(MimeTypes.HTML_ELEMENT) !== -1) {
+                var html = evt.dataTransfer.getData(MimeTypes.HTML_ELEMENT);
+                this.dispatchEventNamed("insertElementAction", true, true, {
+                    htmlElement: html
+                });
+            } else {
+                // TODO: security issues?
+                var data = evt.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
+                    transferObject = JSON.parse(data);
 
-            this.dispatchEventNamed("insertTemplateAction", true, true, {
-                transferObject: transferObject
-            });
-
+                this.dispatchEventNamed("insertTemplateAction", true, true, {
+                    transferObject: transferObject
+                });
+            }
             this.isDropTarget = false;
         }
     }
