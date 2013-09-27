@@ -149,16 +149,10 @@ exports.PackageEditor = Montage.create(Editor, {
      * @param {String} action, specifies which action has been applied.
      * @private
      */
-    _dependenciesListChange: {
+    notifyDependenciesListChange: {
         value: function (dependencyName, action) {
             if (dependencyName && action >= 0) {
                 this.templateObjects.searchModules.handleDependenciesListChange(dependencyName, action);
-
-                if (action === Dependency.REMOVE_DEPENDENCY_ACTION && this.dependencyDisplayed &&
-                    this.dependencyDisplayed.name === dependencyName) { // Need to clean the view part, if the dependency deleted is also the dependency displayed
-                    this._clearSelection();
-                }
-
             }
         }
     }

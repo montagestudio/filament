@@ -161,7 +161,7 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
         }
     },
 
-    _forceDisplayGroup: {
+    forceDisplayGroups: {
         value: function (force) {
             var templateObjects = this.templateObjects;
             templateObjects.packageOptionalDependenciesGroup.forceDisplay =
@@ -170,7 +170,7 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
         }
     },
 
-    _groupCanAcceptDrop: {
+    _groupAcceptDrop: {
         value: function (type, accept) {
             var response = null,
                 templateObjects = this.templateObjects;
@@ -187,20 +187,33 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
         }
     },
 
-    _groupDoesNoAcceptDrop: {
+    _currentGroupNotAcceptDrop: {
         value: null
     },
 
     handleDragstart: {
         value: function (event) {
+            this.handleAcceptDrop(event);
+        }
+    },
+
+    handleAcceptDrop: {
+        value: function (event) {
             var dataTransfer = event.dataTransfer,
                 availableTypes = dataTransfer.types;
 
-            if (availableTypes && availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_DEPENDENCY_TYPE)) {
-                var type = dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_DEPENDENCY_TYPE);
-                if (this._groupCanAcceptDrop(type, false)) {
-                    this._groupDoesNoAcceptDrop = type;
-                    this._forceDisplayGroup(true);
+            if (availableTypes) {
+                if (availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_DEPENDENCY_TYPE)) {
+                    var groupType = dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_DEPENDENCY_TYPE);
+
+                    // The current dependency's type will not accept dropping.
+                    if (this._groupAcceptDrop(groupType, false)) {
+                        this._currentGroupNotAcceptDrop = groupType;
+                        this.forceDisplayGroups(true);
+                        event.stopPropagation();
+                    }
+                } else if (availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_INSTALLATION_DEPENDENCY)) {
+                    this.forceDisplayGroups(true);
                     event.stopPropagation();
                 }
             }
@@ -209,9 +222,9 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
 
     handleDragend: {
         value: function (event) {
-            if (this._groupDoesNoAcceptDrop && this._groupCanAcceptDrop(this._groupDoesNoAcceptDrop, true)) {
-                this._groupDoesNoAcceptDrop = null;
-                this._forceDisplayGroup(false);
+            if (this._currentGroupNotAcceptDrop && this._groupAcceptDrop(this._currentGroupNotAcceptDrop, true)) {
+                this._currentGroupNotAcceptDrop = null;
+                this.forceDisplayGroups(false);
                 event.stopPropagation();
             }
         }

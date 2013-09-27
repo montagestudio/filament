@@ -1,10 +1,12 @@
-.SearchModulesContent {
-    background: hsl(0,0%,94%);
-    border-radius: 4px;
-    -webkit-flex: 1;
-    display: -webkit-flex;
-    -webkit-flex-direction: column;
-    margin-bottom: 10px;
+.SearchModulesToolBar-title {
+    padding: 0;
+    display: inline-block;
+    line-height: 30px;
+    margin: 0 10px 0 0;
+}
+
+.PackageEditorColumnContent.SearchModulesColumnContent {
+    padding: 0;
 }
 
 .SearchModulesColumnContent {
@@ -13,18 +15,19 @@
     -webkit-flex-direction: column;
 }
 
-#searchModulesRequest {
+.SearchModulesToolBar {
+    background: hsl(0,0%,94%);
     border-bottom: 1px solid hsla(0,0%,0%,.1);
     padding: 20px;
 }
 
 #searchModulesResults {
-    padding: 20px 20px 10px 20px;
+    padding: 10px 10px 0px 10px;
     overflow-y: scroll;
     display: -webkit-flex;
     -webkit-flex: 1;
     -webkit-flex-direction: column;
-    background-color: #fff;
+    margin-bottom: 10px;
 }
 
 .SearchModulesList {
@@ -38,4 +41,19 @@
     color: hsl(0,0%,30%);
     font-size: 16px;
     font-weight: bold;
+}
+
+.NoResultsCell {
+    margin-bottom: 10px;
+    background-color: hsl(0,0%,96%);
+    border: 1px solid hsl(0,0%,70%);
+    border-radius: 5px;
+    padding: 8px;
+    height: 60px;
+    text-align: center;
+}
+
+.NoResultsCell-title {
+    line-height: 44px;
+    font-size: 15px;
 }

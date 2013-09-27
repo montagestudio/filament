@@ -3,20 +3,87 @@
     display: -webkit-flex;
     -webkit-flex: 1;
     -webkit-justify-content: space-between;
-}
-
-.SearchModulesCell > * {
-    display: inline-block;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    background-color: hsl(0,0%,96%);
+    border: 1px solid hsl(0,0%,70%);
+    border-radius: 5px;
     overflow: hidden;
+    padding: 8px;
+}
+
+.SearchModulesCell:-webkit-drag {
+    background: hsla(0,0%,100%,.8) !important;
+    text-align: center;
+    font-size: 22px;
+}
+
+.SearchModulesCell:-webkit-drag .SearchModulesCell-action,
+.SearchModulesCell:-webkit-drag .SearchModulesCell-information--shift {
+    display: none;
+}
+
+.SearchModulesCell-information {
+    padding: 4px;
+    -webkit-flex: 3;
+}
+
+.SearchModulesCell-information > * {
+    display: block;
+}
+
+.SearchModulesCell-information--name {
+    text-transform: capitalize;
+    font-size: 14px;
+}
+
+.SearchModulesCell-information--version {
+    font-style: italic;
+    margin-bottom: 8px;
+    font-size: 12px;
+    text-indent: 6px;
+}
+
+.SearchModulesCell-information--shift {
+    margin-left: 60px;
+    font-size: 12px;
+}
+
+.SearchModulesCell-information--header {
+    margin: 0 0 3px 0;
+    padding: 0;
+    font-size: 12px;
+}
+
+.SearchModulesCell-information--header:first-of-type {
+    display: inline-block;
+}
+
+.SearchModulesCell-information--header.hidden{
+    display: none;
+}
+
+.SearchModulesCell-information--author {
+    text-indent: 4px;
+    display: inline-block;
+}
+
+.SearchModulesCell-information--author.hidden{
+    display: none;
+}
+
+.SearchModulesCell-information--description {
+    margin-left: 15px;
+    display: inline-block;
+}
+
+.SearchModulesCell-action {
+    display: -webkit-flex;
     -webkit-flex: 1;
+    -webkit-align-items: center;
+    -webkit-justify-content: flex-end;
+    min-width: 178px;
 }
 
-.SearchModulesCell strong, .SearchPackagesCell em {
-    -webkit-flex: 2;
-}
-
-.SearchModulesCell button {
-    height: 25px;
+.SearchModulesCell-action  button {
+    height: 30px;
+    margin-right: 15px;
 }
