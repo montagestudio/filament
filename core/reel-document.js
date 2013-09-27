@@ -1243,7 +1243,7 @@ exports.ReelDocument = EditingDocument.specialize({
                     return actionEventListener;
                 });
             } else {
-                installListenerPromise.resolve(listener);
+                installListenerPromise = Promise.resolve(listener);
             }
 
             return installListenerPromise.then(function (actualListener) {

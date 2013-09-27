@@ -585,8 +585,9 @@ describe("core/reel-document-headless-editing-spec", function () {
                 var targetProxy = reelDocument.editingProxyMap.foo;
                 var listener = targetProxy.listeners[0];
 
-                reelDocument.removeOwnedObjectEventListener(targetProxy, listener);
-                expect(reelDocument.undoManager.undoCount).toBe(1);
+                return reelDocument.removeOwnedObjectEventListener(targetProxy, listener).then(function () {
+                    expect(reelDocument.undoManager.undoCount).toBe(1);
+                });
 
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -596,12 +597,13 @@ describe("core/reel-document-headless-editing-spec", function () {
                 var targetProxy = reelDocument.editingProxyMap.foo;
                 var listener = targetProxy.listeners[0];
 
-                reelDocument.removeOwnedObjectEventListener(targetProxy, listener);
-                return reelDocument.undo().then(function (addedListener) {
-                    expect(addedListener).toBe(listener);
-                    expect(addedListener.type).toBe(listener.type);
-                    expect(addedListener.listener).toBe(listener.listener);
-                    expect(addedListener.useCapture).toBe(listener.useCapture);
+                return reelDocument.removeOwnedObjectEventListener(targetProxy, listener).then(function () {
+                    return reelDocument.undo().then(function (addedListener) {
+                        expect(addedListener).toBe(listener);
+                        expect(addedListener.type).toBe(listener.type);
+                        expect(addedListener.listener).toBe(listener.listener);
+                        expect(addedListener.useCapture).toBe(listener.useCapture);
+                    });
                 });
 
             }).timeout(WAITSFOR_TIMEOUT);
@@ -616,9 +618,10 @@ describe("core/reel-document-headless-editing-spec", function () {
                 targetProxy.listeners.push("foo");
                 targetProxy.listeners.push("bar");
 
-                reelDocument.removeOwnedObjectEventListener(targetProxy, listener);
-                return reelDocument.undo().then(function (addedListener) {
-                    expect(targetProxy.listeners.indexOf(addedListener)).toBe(0);
+                return reelDocument.removeOwnedObjectEventListener(targetProxy, listener).then(function () {
+                    return reelDocument.undo().then(function (addedListener) {
+                        expect(targetProxy.listeners.indexOf(addedListener)).toBe(0);
+                    });
                 });
 
             }).timeout(WAITSFOR_TIMEOUT);
@@ -633,24 +636,24 @@ describe("core/reel-document-headless-editing-spec", function () {
                     var eventHandler = reelDocument.editingProxyMap.owner;
 
                     //Perform some edits that will be undoable
-                    reelDocument.updateOwnedObjectEventListener(targetProxy, listener, "press", eventHandler, undefined);
+                    reelDocument.updateOwnedObjectEventListener(targetProxy, listener, "press", eventHandler, undefined).then(function () {
+                        //Remove the listener that's been edited, this will be undone shortly
+                        return reelDocument.removeOwnedObjectEventListener(targetProxy, listener);
+                    }).then(function () {
+                            return reelDocument.undo().then(function (addedListener) {
+                                //Listener should look as it did before the removal
+                                expect(addedListener.type).toBe("press");
+                                expect(addedListener.listener).toBe(eventHandler);
+                                expect(addedListener.useCapture).toBe(undefined);
 
-                    //Remove the listener that's been edited, this will be undone shortly
-                    reelDocument.removeOwnedObjectEventListener(targetProxy, listener);
-
-                    return reelDocument.undo().then(function (addedListener) {
-                        //Listener should look as it did before the removal
-                        expect(addedListener.type).toBe("press");
-                        expect(addedListener.listener).toBe(eventHandler);
-                        expect(addedListener.useCapture).toBe(undefined);
-
-                        return reelDocument.undo().then(function (addedListener) {
-                            //Listener should look as it did after undoing both removal and the edit
-                            expect(addedListener.type).toBe("fooEvent");
-                            expect(addedListener.listener).toBe(eventHandler);
-                            expect(addedListener.useCapture).toBe(undefined);
+                                return reelDocument.undo().then(function (addedListener) {
+                                    //Listener should look as it did after undoing both removal and the edit
+                                    expect(addedListener.type).toBe("fooEvent");
+                                    expect(addedListener.listener).toBe(eventHandler);
+                                    expect(addedListener.useCapture).toBe(undefined);
+                                });
+                            });
                         });
-                    });
 
                 }).timeout(WAITSFOR_TIMEOUT);
             });
@@ -663,17 +666,17 @@ describe("core/reel-document-headless-editing-spec", function () {
                     var eventHandler = reelDocument.editingProxyMap.owner;
 
                     //Perform some edits that will be undoable
-                    reelDocument.updateOwnedObjectEventListener(targetProxy, listener, "press", eventHandler, undefined);
-
-                    //Remove the listener that's been edited, this will be undone shortly
-                    reelDocument.removeOwnedObjectEventListener(targetProxy, listener);
-
-                    return reelDocument.undo().then(function (addedListener) {
-                        expect(targetProxy.listeners.length).toBe(expectedListenerCount);
-                        return reelDocument.undo().then(function (addedListener) {
-                            expect(targetProxy.listeners.length).toBe(expectedListenerCount);
+                    return reelDocument.updateOwnedObjectEventListener(targetProxy, listener, "press", eventHandler, undefined).then(function () {
+                        //Remove the listener that's been edited, this will be undone shortly
+                        return reelDocument.removeOwnedObjectEventListener(targetProxy, listener);
+                    }).then(function () {
+                            return reelDocument.undo().then(function (addedListener) {
+                                expect(targetProxy.listeners.length).toBe(expectedListenerCount);
+                                return reelDocument.undo().then(function (addedListener) {
+                                    expect(targetProxy.listeners.length).toBe(expectedListenerCount);
+                                });
+                            });
                         });
-                    });
 
                 }).timeout(WAITSFOR_TIMEOUT);
             });
@@ -696,11 +699,11 @@ describe("core/reel-document-headless-editing-spec", function () {
                 var targetProxy = reelDocument.editingProxyMap.foo;
                 var eventHandler = reelDocument.editingProxyMap.owner;
 
-                var listener = reelDocument.addOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture);
-
-                expect(listener.type).toBe(type);
-                expect(listener.listener).toBe(eventHandler);
-                expect(listener.useCapture).toBe(useCapture);
+                return reelDocument.addOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture).then(function (listener) {
+                    expect(listener.type).toBe(type);
+                    expect(listener.listener).toBe(eventHandler);
+                    expect(listener.useCapture).toBe(useCapture);
+                });
 
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -709,9 +712,10 @@ describe("core/reel-document-headless-editing-spec", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
                 var eventHandler = reelDocument.editingProxyMap.owner;
-                var listener = reelDocument.addOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture);
 
-                expect(targetProxy.listeners.indexOf(listener) === -1).toBeFalsy();
+                return reelDocument.addOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture).then(function (listener) {
+                    expect(targetProxy.listeners.indexOf(listener) === -1).toBeFalsy();
+                });
 
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -721,9 +725,10 @@ describe("core/reel-document-headless-editing-spec", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
                 var eventHandler = reelDocument.editingProxyMap.owner;
-                var listener = reelDocument.addOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture);
 
-                expect(reelDocument.undoManager.undoCount).toBe(1);
+                return reelDocument.addOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture).then(function (listener) {
+                    expect(reelDocument.undoManager.undoCount).toBe(1);
+                });
 
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -732,12 +737,15 @@ describe("core/reel-document-headless-editing-spec", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
                 var eventHandler = reelDocument.editingProxyMap.owner;
-                var listener = reelDocument.addOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture);
 
-                return reelDocument.undo().then(function (removedListener) {
-                    expect(removedListener).toBe(listener);
-                    expect(targetProxy.listeners.indexOf(removedListener) === -1).toBeTruthy();
+                return reelDocument.addOwnedObjectEventListener(targetProxy, type, eventHandler, useCapture).then(function (listener) {
+                    return reelDocument.undo().then(function (removedListener) {
+                        expect(removedListener).toBe(listener);
+                        expect(targetProxy.listeners.indexOf(removedListener) === -1).toBeTruthy();
+                    });
                 });
+
+
 
             }).timeout(WAITSFOR_TIMEOUT);
         });
