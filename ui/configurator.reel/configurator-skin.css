@@ -66,6 +66,15 @@
 }
 
 
+/* InputNumber */
+
+.PropertyEditor .matte-InputNumber-input {
+    display: inline-block;
+    width: 46px;
+    font-size: 12px;
+}
+
+
 /* Select */
 
 .PropertyEditor .matte-Select {
