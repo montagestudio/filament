@@ -1,6 +1,7 @@
 .DomExplorer {
     display: -webkit-flex;
     -webkit-flex-direction: column;
+    overflow: hidden;
 }
 
 .NodeList {
@@ -28,7 +29,13 @@
     border-top: 1px solid hsl(0,0%,85%);
 }
 
+.DomExplorer .NodeList{
+    margin-top: 22px;
+}
 
+.DomExplorer.shift .NodeList{
+    margin-top: 0px;
+}
 
 /* AddElement --------------------------- */
 

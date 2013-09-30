@@ -178,6 +178,16 @@
     opacity: 0.25;
 }
 
-.NodeCell--noChildren{
-    padding-left: 20px;
+/* Add tree elements -------------- */
+.addElement .add-element{
+    margin-left: 10px;
+    padding: 0px;
+}
+.addElement .add-element.child {
+    padding-left: 24px;
+}
+.addElement {
+    padding: 2px 0px;
+    margin: 0px;
+    background: hsl(0,0%,96%);
 }

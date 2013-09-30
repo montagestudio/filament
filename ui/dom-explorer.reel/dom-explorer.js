@@ -78,9 +78,54 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
+    _addElementNodeHover : {
+        value: null
+    },
+
+    addElementNodeHover: {
+        get: function () {
+            return this._addElementNodeHover;
+        },
+        set: function (value) {
+            if (value === this._addElementNodeHover) { return; }
+
+            // handle vertical tree shifting by adding a class
+            if (value) {
+                var nodeInfo = value.nodeInfo;
+                if (nodeInfo.canInsertBeforeNode) {
+                    this.element.classList.add('shift');
+                } else {
+                    this.element.classList.remove('shift');
+                }
+            } else {
+                this.element.classList.remove('shift');
+            }
+            this._addElementNodeHover = value;
+        }
+    },
+
     handleRemoveNode: {
         value: function (evt) {
             this.editingDocument.removeTemplateNode(evt.detail);
+        }
+    },
+
+    enterDocument: {
+        value: function (firstTime) {
+            if (!firstTime) { return; }
+
+            this.element.addEventListener("mouseout", this, false);
+            this.element.addEventListener("dragleave", this, false);
+
+            this.addEventListener("hideAddElements", this, false);
+        }
+    },
+
+    handleDragleave: {
+        value: function (evt) {
+            if (evt.target.classList.contains('NodeCellWapper')) {
+                this.hideAddElements();
+            }
         }
     },
 
@@ -122,6 +167,24 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
+    hideAddElements: {
+        value: function (evt) {
+            this.addElementNodeHover = null;
+        }
+    },
+
+    handleMouseout: {
+        value: function (evt) {
+            this.hideAddElements();
+        }
+    },
+
+    handleHideAddElements: {
+        value: function (evt) {
+            this.hideAddElements();
+        }
+    },
+
     _createElement: {
         value: function () {
             if (this.tag) {
@@ -152,7 +215,8 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         value: function (evt) {
 
             var detail = evt.detail,
-                transferObject;
+                transferObject,
+                html;
 
             if (transferObject = detail.transferObject) {
 
@@ -161,7 +225,10 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
                 var parentNode = detail.parentNode;
 
                 this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, null, null).done();
-
+            } else if (html = detail.htmlElement) {
+                var newNode = this.editingDocument.createTemplateNode(html);
+                this.editingDocument.appendChildToTemplateNode(newNode, evt.detail.parentNode);
+                this.templateObjects.createNodeCell.reset();
             } else {
                 var self =  this;
                 var insertionFunction = function (newNode) {
@@ -176,7 +243,8 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
     handleInsertBeforeNode: {
         value: function (evt) {
             var detail = evt.detail,
-                transferObject;
+                transferObject,
+                html;
 
             if (transferObject = detail.transferObject) {
                 var serializationFragment = transferObject.serializationFragment;
@@ -186,6 +254,10 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
                 this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, nextSibling, null).done();
 
+            } else if (html = detail.htmlElement) {
+                var newNode = this.editingDocument.createTemplateNode(html);
+                this.editingDocument.insertNodeBeforeTemplateNode(newNode, evt.detail.nextSibling);
+                this.templateObjects.createNodeCell.reset();
             } else {
                 var self =  this;
                 var insertionFunction = function (newNode) {
@@ -200,7 +272,8 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
     handleInsertAfterNode: {
         value: function (evt) {
             var detail = evt.detail,
-                transferObject;
+                transferObject,
+                html;
 
             if (transferObject = detail.transferObject) {
                 var serializationFragment = transferObject.serializationFragment;
@@ -210,6 +283,10 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
                 this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, nextSibling, null).done();
 
+            } else if (html = detail.htmlElement) {
+                var newNode = this.editingDocument.createTemplateNode(html);
+                this.editingDocument.insertNodeAfterTemplateNode(newNode, evt.detail.previousSibling);
+                this.templateObjects.createNodeCell.reset();
             } else {
                 var self =  this;
                 var insertionFunction = function (newNode) {
