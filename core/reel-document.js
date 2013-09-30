@@ -1064,10 +1064,9 @@ exports.ReelDocument = EditingDocument.specialize({
                 self._removeProxies(proxy);
 
                 deferredUndo.resolve([self.addObject, self, proxy]);
+                self.undoManager.closeBatch();
 
                 self.dispatchEventNamed("objectRemoved", true, false, { proxy: proxy });
-
-                self.undoManager.closeBatch();
 
                 self.editor.refresh();
                 return proxy;
