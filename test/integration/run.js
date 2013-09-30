@@ -26,11 +26,7 @@ var scripts = [
 
 scripts.reduce(function (promise, testName) {
     return promise.fin(function () {
-        return runTest(testName).then(function (testCompletion) {
-            console.log("DONE", testCompletion)
-        }, function (testFailure) {
-            console.log("ERROR", testFailure.message)
-        });
+        return runTest(testName);
     });
 }, Q());
 
@@ -40,16 +36,13 @@ function runTest (name) {
 
     if (fs.existsSync(testPath)) {
         finishedPromise = setupTest(name).then(function (setupSuccess) {
-            return executeTest(name, testPath).fin(function (resultCode) {
-                return teardownTest(name).then(function (teardownSuccess) {
-                    if (0 === resultCode) {
-                        console.log("[PASSED]", name);
-                    } else {
-                        console.log("[FAILED]", name);
-                    }
-                    return true;
-                });
+            return executeTest(name, testPath).then(function (resultCode) {
+                var result = 0 === resultCode ? "PASSED" : "FAILED";
+                console.log("[" + result + "]", name);
+            }).fin(function () {
+                return teardownTest(name);
             });
+
         }, function (failure) {
             console.log("[ERROR]", name);
             console.error(failure.message);
@@ -72,7 +65,7 @@ function executeTest (name, testPath) {
         testingDonePromise;
 
     childProcess.execFile(lumieres, null, null, function (error, stdout, stderr) {
-        if (error || sikuliTestPromise.isFulfilled()) {
+        if (error || !sikuliTestPromise.isFulfilled()) {
             if (error) {
                 console.error(error);
             }
@@ -85,13 +78,14 @@ function executeTest (name, testPath) {
     activationPromise = activateLumieres();
     sikuliTestPromise = runSikuliTest(testPath);
 
-    testingDonePromise = Q.all([sikuliTestPromise, activationPromise]).then(function () {
+    testingDonePromise = Q.all([sikuliTestPromise, activationPromise]).spread(function (testingExitCode) {
         childProcess.spawn("osascript", [path.join(testDirectoryPath, "quit.scpt")]);
-    }, function (error) {
-        console.error("testingDonePromise error", error);
+        return testingExitCode;
     });
 
-    return Q.all([testingDonePromise, deferredLumieresExit.promise]);
+    return Q.all([testingDonePromise, deferredLumieresExit.promise]).spread(function (testingExitCode) {
+        return testingExitCode;
+    });
 }
 
 function activateLumieres () {
