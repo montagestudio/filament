@@ -88,9 +88,7 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
         enumerable: false,
         value: function (evt) {
             if (evt.identifier === "cancel" && this.isEditing) {
-                this._inputValue = null;
-                this.value = null;
-                this.isEditing = false;
+                this.clear();
             }
         }
     },
@@ -98,6 +96,15 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
     handleBlur: {
         value: function () {
             this.isEditing = false;
+        }
+    },
+
+    clear: {
+        value: function () {
+            this.value = null;
+            this._inputValue = null;
+            this.isEditing = false;
+            this.needsDraw = true;
         }
     },
 
