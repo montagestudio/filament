@@ -285,6 +285,41 @@ describe("core/reel-document-listener-editing-spec", function () {
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
+            it ("should undo properly", function () {
+                return reelDocumentPromise.then(function (reelDocument) {
+                    var targetProxy = reelDocument.editingProxyMap.foo;
+                    var intendedHandler = reelDocument.editingProxyMap.owner;
+
+                    return reelDocument.addOwnedObjectEventListener(targetProxy, type, intendedHandler, useCapture, methodName).then(function (listenerEntry) {
+                        return reelDocument.undoManager.undo().then(function () {
+                            expect(reelDocument.undoManager.undoCount).toBe(0);
+                            expect(reelDocument.undoManager.redoCount).toBe(1);
+                            expect(reelDocument.editingProxies.indexOf(listenerEntry.listener)).toBe(-1);
+                        });
+                    });
+
+                }).timeout(WAITSFOR_TIMEOUT);
+            });
+
+            it ("should redo properly", function () {
+                return reelDocumentPromise.then(function (reelDocument) {
+                    var targetProxy = reelDocument.editingProxyMap.foo;
+                    var intendedHandler = reelDocument.editingProxyMap.owner;
+
+                    return reelDocument.addOwnedObjectEventListener(targetProxy, type, intendedHandler, useCapture, methodName).then(function (listenerEntry) {
+                        return reelDocument.undoManager.undo().then(function () {
+                            return reelDocument.undoManager.redo();
+                        }).then(function () {
+                                expect(reelDocument.undoManager.undoCount).toBe(1);
+                                expect(reelDocument.undoManager.redoCount).toBe(0);
+                                expect(targetProxy.listeners.indexOf(listenerEntry)).not.toBe(-1);
+                                expect(reelDocument.editingProxies.indexOf(listenerEntry.listener)).not.toBe(-1);
+                            });
+                    });
+
+                }).timeout(WAITSFOR_TIMEOUT);
+            });
+
         });
 
         describe("updating a listener that uses an actionEventListener", function () {

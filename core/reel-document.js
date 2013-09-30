@@ -1247,16 +1247,17 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return installListenerPromise.then(function (actualListener) {
-                // TODO this doesn't really do anything to guard against other unrelated sync operations being
-                // entered into the same undo block
-                self.undoManager.closeBatch();
                 var listenerEntry = proxy.addObjectEventListener(type, actualListener, useCapture);
 
                 if (listenerEntry) {
                     // TODO register the listener on the stage, make sure we can remove it later
 
-                    deferredUndoOperation.resolve([self.removeOwnedObjectEventListener, self, proxy, listenerEntry]);
+                    deferredUndoOperation.resolve([self._removeOwnedObjectEventListener, self, proxy, listenerEntry]);
                 }
+
+                // TODO this doesn't really do anything to guard against other unrelated sync operations being
+                // entered into the same undo block
+                self.undoManager.closeBatch();
 
                 return listenerEntry;
             });
