@@ -1417,10 +1417,29 @@ exports.ReelDocument = EditingDocument.specialize({
             var addedListener = proxy.addEventListener(listener, insertionIndex);
 
             if (addedListener) {
-                this.undoManager.register("Add Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listener]));
+                this.undoManager.register("Add Listener", Promise.resolve([this._removeOwnedObjectEventListener, this, proxy, listener]));
             }
 
             return addedListener;
+
+        }
+    },
+
+    /**
+     * @private
+     */
+    _removeOwnedObjectEventListener: {
+        value: function (proxy, listener) {
+
+            var removedInfo = proxy.removeObjectEventListener(listener),
+                removedListenerEntry = removedInfo.removedListener,
+                removedIndex = removedInfo.index;
+
+            if (removedListenerEntry) {
+                this.undoManager.register("Remove Listener", Promise.resolve([this._addOwnedObjectEventListener, this, proxy, listener, removedIndex]));
+            }
+
+            return removedListenerEntry;
 
         }
     },
