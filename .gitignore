@@ -4,3 +4,4 @@ node_modules
 npm-debug.log
 *$py.class
 console.log
+SikuliLog.txt

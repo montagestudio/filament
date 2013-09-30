@@ -8,63 +8,118 @@ var sikuli = process.env.SIKULI;
 var lumieres = process.env.LUMIERES;
 
 if (!sikuli) {
-	console.error("Unable to find SIKULI, please set this environment variable to point to the Sikuli built `runScript`");
-	process.exit(1);
+    console.error("Unable to find SIKULI, please set this environment variable to point to the Sikuli built `runScript`");
+    process.exit(1);
 }
 
 if (!lumieres) {
-	console.error("Unable to find LUMIERES, please set this environment variable to point to the lumieres binary (inside the app bundle) to test");
-	process.exit(1);
+    console.error("Unable to find LUMIERES, please set this environment variable to point to the lumieres binary (inside the app bundle) to test");
+    process.exit(1);
 }
 
 var testDirectoryPath = "test/integration";
 
 var scripts = [
-	"auto-refresh-preview",
-	"todo"
+    "auto-refresh-preview",
+    "todo"
 ];
 
 scripts.reduce(function (promise, testName) {
     return promise.fin(function () {
-		return runTest(testName);
-	});
+        return runTest(testName).then(function (testCompletion) {
+            console.log("DONE", testCompletion)
+        }, function (testFailure) {
+            console.log("ERROR", testFailure.message)
+        });
+    });
 }, Q());
 
 function runTest (name) {
-	var testPath = path.join(testDirectoryPath, name + ".sikuli");
-	if (fs.existsSync(testPath)) {
-		var deferredExit = Q.defer();
-		var testResultCode = null;
+    var testPath = path.join(testDirectoryPath, name + ".sikuli");
+    var finishedPromise;
 
-		console.log("Running", testPath);
-		
-		childProcess.execFile(lumieres, null, null, function (error, stdout, stderr) {
-			if (null === testResultCode) {
-				console.log("[FAILED]", name);
-				console.error(error);
-				deferredExit.reject(new Error("Lumieres exited unexpectedly"));
-			} else if (0 === testResultCode) {
-				console.log("[PASSED]", name);
-				deferredExit.resolve(testResultCode);
-			} else {
-				console.log("[FAILED]", name);
-				deferredExit.reject(testResultCode);
-			}
-		});
+    if (fs.existsSync(testPath)) {
+        finishedPromise = setupTest(name).then(function (setupSuccess) {
+            return executeTest(name, testPath).fin(function (resultCode) {
+                return teardownTest(name).then(function (teardownSuccess) {
+                    if (0 === resultCode) {
+                        console.log("[PASSED]", name);
+                    } else {
+                        console.log("[FAILED]", name);
+                    }
+                    return true;
+                });
+            });
+        }, function (failure) {
+            console.log("[ERROR]", name);
+            console.error(failure.message);
+        });
+    } else {
+        finishedPromise = Q.reject(new Error("Could not find test '" + testPath + "'"));
+    }
 
-		// Make sure app is front
-		childProcess.spawn("osascript", [path.join(testDirectoryPath, "activate.scpt")]);
+    return finishedPromise;
+}
 
-		var sikuliProcess = childProcess.spawn("sh", [sikuli, "-r", testPath]);
-		sikuliProcess.on("close", function (code) {
-			testResultCode = code;
-			// Gracefully quit the app
-			childProcess.spawn("osascript", [path.join(testDirectoryPath, "quit.scpt")]);
-		});
-		
-		return deferredExit.promise;
-		
-	} else {
-		throw new Error("Could not find test '" + testPath + "'");
-	}
+function setupTest (name) {
+    return Q(true);
+}
+
+function executeTest (name, testPath) {
+    var deferredLumieresExit = Q.defer(),
+        sikuliTestPromise,
+        activationPromise,
+        testingDonePromise;
+
+    childProcess.execFile(lumieres, null, null, function (error, stdout, stderr) {
+        if (error || sikuliTestPromise.isFulfilled()) {
+            if (error) {
+                console.error(error);
+            }
+            deferredLumieresExit.reject(new Error("Lumieres exited unexpectedly"));
+        } else {
+            deferredLumieresExit.resolve(0);
+        }
+    });
+
+    activationPromise = activateLumieres();
+    sikuliTestPromise = runSikuliTest(testPath);
+
+    testingDonePromise = Q.all([sikuliTestPromise, activationPromise]).then(function () {
+        childProcess.spawn("osascript", [path.join(testDirectoryPath, "quit.scpt")]);
+    }, function (error) {
+        console.error("testingDonePromise error", error);
+    });
+
+    return Q.all([testingDonePromise, deferredLumieresExit.promise]);
+}
+
+function activateLumieres () {
+    var deferredActivation = Q.defer();
+    var activationProcess = childProcess.spawn("osascript", [path.join(testDirectoryPath, "activate.scpt")]);
+
+    activationProcess.on("close", function (code) {
+        if (1 === code) {
+            deferredActivation.resolve(activateLumieres());
+        } else {
+            deferredActivation.resolve(code);
+        }
+    });
+
+    return deferredActivation.promise;
+}
+
+function runSikuliTest (testPath) {
+    var deferredSikuliExit = Q.defer();
+    var sikuliProcess = childProcess.spawn("sh", [sikuli, "-r", testPath]);
+
+    sikuliProcess.on("close", function (code) {
+        deferredSikuliExit.resolve(code);
+    });
+
+    return deferredSikuliExit.promise;
+}
+
+function teardownTest (name) {
+    return Q(true);
 }
