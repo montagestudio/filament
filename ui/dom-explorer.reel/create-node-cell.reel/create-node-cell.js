@@ -104,20 +104,8 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
 
     draw: {
         value: function () {
-            if (this.tagName) {
-                this.nodeSegment.setAttribute("draggable", "true");
-            }
-
-            // placeholders
-            if (!this.tagName || !this.tagName.trim().length) {
-                this.templateObjects.tagName.templateObjects.text.element.innerText = "tagName";
-            }
-            if (!this.montageId || !this.montageId.trim().length) {
-                this.templateObjects.montageId.templateObjects.text.element.innerText = "montageId";
-            }
-            if (!this.montageArg || !this.montageArg.trim().length) {
-                this.templateObjects.montageArg.templateObjects.text.element.innerText = "montageArg";
-            }
+            var draggable = !!(this.tagName && this.tagName.trim().length);
+            this.nodeSegment.setAttribute("draggable", draggable.toString());
         }
     }
 });

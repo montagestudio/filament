@@ -28,6 +28,10 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
         value: false
     },
 
+    placeholder: {
+        value: null
+    },
+
     prepareForActivationEvents: {
         value: function () {
             // Listen to start editing
@@ -94,6 +98,18 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
     handleBlur: {
         value: function () {
             this.isEditing = false;
+        }
+    },
+
+    draw: {
+        value: function () {
+            if (!this.placeholder) { return; }
+
+            if (this.isEditing) {
+                this.templateObjects.inputText.placeholder = this.placeholder;
+            } else if (!this.value || this.value && this.value.trim().length === 0) {
+                this.templateObjects.text.value = this.placeholder;
+            }
         }
     }
 
