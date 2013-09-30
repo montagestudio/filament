@@ -1312,10 +1312,15 @@ exports.ReelDocument = EditingDocument.specialize({
                 actualListenerPromise = Promise.resolve(originalListener);
             } else if (isDirectedHandler && !methodName) {
                 // Remove existing AEL
-                actualListenerPromise = this.removeObject(originalListener).then(function (removedListener) {
-                    // Note the promise is for the listener to put in place on the proxy, not what we just removed
-                    return listener;
-                });
+                if (this.undoManager.isUndoing || this.undoManager.isRedoing) {
+                    //No need to manually remove, that will happen when that undoable operation is performed
+                    actualListenerPromise = Promise.resolve(listener);
+                } else {
+                    actualListenerPromise = this.removeObject(originalListener).then(function (removedListener) {
+                        // Note the promise is for the listener to put in place on the proxy, not what we just removed
+                        return listener;
+                    });
+                }
             } else if (!isDirectedHandler && methodName) {
 
                 if (listener.properties.has("handler") && listener.properties.has("action")) {

@@ -431,6 +431,7 @@ describe("core/reel-document-listener-editing-spec", function () {
         });
 
         describe("promoting a listener to use an actionEventListener", function () {
+
             it ("should add an implicit actionEventListener to call the specified method on the intended listener", function () {
                 return reelDocumentPromise.then(function (reelDocument) {
                     var targetProxy = reelDocument.editingProxyMap.foo;
@@ -458,6 +459,49 @@ describe("core/reel-document-listener-editing-spec", function () {
 
                     return reelDocument.updateOwnedObjectEventListener(targetProxy, listenerEntry, type, intendedHandler, useCapture, methodName).then(function (updatedListenerEntry) {
                         expect(reelDocument.undoManager.undoCount).toBe(1);
+                    });
+
+                }).timeout(WAITSFOR_TIMEOUT);
+            });
+
+            it ("should undo properly", function () {
+                return reelDocumentPromise.then(function (reelDocument) {
+                    var targetProxy = reelDocument.editingProxyMap.foo;
+                    var intendedHandler = reelDocument.editingProxyMap.owner;
+                    var listenerEntry = targetProxy.listeners[0];
+
+                    return reelDocument.updateOwnedObjectEventListener(targetProxy, listenerEntry, type, intendedHandler, useCapture, methodName).then(function (updatedListenerEntry) {
+                        var implicitListener = updatedListenerEntry.listener;
+                        return reelDocument.undoManager.undo().then(function () {
+                            expect(reelDocument.undoManager.undoCount).toBe(0);
+                            expect(reelDocument.undoManager.redoCount).toBe(1);
+                            expect(updatedListenerEntry).toBe(listenerEntry);
+                            expect(updatedListenerEntry.listener).toBe(intendedHandler);
+                            expect(reelDocument.editingProxies.indexOf(implicitListener)).toBe(-1);
+                        });
+                    });
+
+                }).timeout(WAITSFOR_TIMEOUT);
+            });
+
+            it ("should redo properly", function () {
+                return reelDocumentPromise.then(function (reelDocument) {
+                    var targetProxy = reelDocument.editingProxyMap.foo;
+                    var intendedHandler = reelDocument.editingProxyMap.owner;
+                    var listenerEntry = targetProxy.listeners[0];
+
+                    return reelDocument.updateOwnedObjectEventListener(targetProxy, listenerEntry, type, intendedHandler, useCapture, methodName).then(function (updatedListenerEntry) {
+                        var implicitListener = updatedListenerEntry.listener;
+                        return reelDocument.undoManager.undo().then(function () {
+                            return reelDocument.undoManager.redo();
+                        }).then(function () {
+                                expect(reelDocument.undoManager.undoCount).toBe(1);
+                                expect(reelDocument.undoManager.redoCount).toBe(0);
+                                expect(updatedListenerEntry).toBe(listenerEntry);
+                                expect(updatedListenerEntry.listener).toBe(implicitListener);
+                                expect(targetProxy.listeners.indexOf(listenerEntry)).not.toBe(-1);
+                                expect(reelDocument.editingProxies.indexOf(listenerEntry.listener)).not.toBe(-1);
+                            });
                     });
 
                 }).timeout(WAITSFOR_TIMEOUT);
