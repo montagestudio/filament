@@ -49,6 +49,14 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
 
             // Listen for focus to toggle
             this.element.addEventListener("focusin", this, false);
+
+            this.addOwnPropertyChangeListener("value", this);
+        }
+    },
+
+    handlePropertyChange:{
+        value: function (value, key, object) {
+            this.needsDraw = true;
         }
     },
 
