@@ -48,7 +48,7 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
             this.templateObjects.inputText.element.addEventListener("blur", this);
 
             // Listen for focus to toggle
-            this.element.addEventListener("focusin", this);
+            this.element.addEventListener("focusin", this, false);
         }
     },
 
@@ -127,8 +127,10 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
     },
 
     handleFocusin: {
-        value: function () {
-            this.toggle();
+        value: function (evt) {
+            if (evt.relatedTarget && evt.relatedTarget.getAttribute("tabindex")) {
+                this.toggle();
+            }
         }
     },
 

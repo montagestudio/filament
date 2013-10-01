@@ -94,6 +94,7 @@
 
 .CreateNodeCell .montage-Text {
     white-space: nowrap;
+    outline: none;
 }
 
 .CreateNodeCell-reset.matte-Button {
