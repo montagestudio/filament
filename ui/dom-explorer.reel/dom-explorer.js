@@ -41,41 +41,8 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         value: null
     },
 
-    tag: {
-        value: null
-    },
-
-    _elementCreationForm: {
-        value: null
-    },
-
-    isCreatingElement: {
-        get: function () {
-            return !!this._deferredElement;
-        }
-    },
-
     highlightedDOMElement : {
         value: null
-    },
-
-    __deferredElement: {
-        value: null
-    },
-
-    _deferredElement : {
-        get: function () {
-            return this.__deferredElement;
-        },
-        set: function(value) {
-            if (value === this.__deferredElement) {
-                return;
-            }
-
-            this.dispatchBeforeOwnPropertyChange("isCreatingElement", this.isCreatingElement);
-            this.__deferredElement = value;
-            this.dispatchOwnPropertyChange("isCreatingElement", this.isCreatingElement);
-        }
     },
 
     _addElementNodeHover : {
@@ -182,26 +149,6 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
     handleHideAddElements: {
         value: function (evt) {
             this.hideAddElements();
-        }
-    },
-
-    _createElement: {
-        value: function () {
-            if (this.tag) {
-                var html = emmet.expandAbbreviation(this.tag);
-                var newNode = this.editingDocument.createTemplateNode(html);
-                this._deferredElement.resolve(newNode);
-            }
-        }
-    },
-
-    _cancelElementCreation: {
-        value: function () {
-            if (this._deferredElement) {
-                this._deferredElement.resolve(null);
-                this._deferredElement = null;
-                this.tag = null;
-            }
         }
     },
 
