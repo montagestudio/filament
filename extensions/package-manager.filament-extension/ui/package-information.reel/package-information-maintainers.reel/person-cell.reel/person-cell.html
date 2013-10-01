@@ -7,48 +7,41 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "person-cell"}
+                "element": {"#": "person-cell"},
+                "formPerson": {"@": "personInformationEditable"}
             }
         },
 
-        "personName": {
-            "prototype": "montage/ui/text.reel",
+        "personInformationSubstitution": {
+            "prototype": "montage/ui/substitution.reel",
             "properties": {
-                "element": {"#": "personName"}
+                "element": {"#": "personInformationSubstitution"},
+                "switchValue": "person-editable"
             },
             "bindings": {
-                "value": {"<-": "@owner.person.name"}
+                "switchValue": {"<-": "@owner.isEditing ? 'person-editable' : 'person'"}
             }
         },
 
-        "personEmail": {
-            "prototype": "montage/ui/text.reel",
+        "personInformation": {
+            "prototype": "./person-information.reel",
             "properties": {
-                "element": {"#": "personEmail"}
+                "element": {"#": "personInformation"}
             },
             "bindings": {
-                "value": {"<-": "@owner.person.email"}
+                "person": {"<-": "@owner.person"},
+                "cell": {"<-": "@owner"}
             }
         },
 
-        "personUrl": {
-            "prototype": "montage/ui/text.reel",
+        "personInformationEditable": {
+            "prototype": "./person-information-editable.reel",
             "properties": {
-                "element": {"#": "personUrl"}
+                "element": {"#": "personInformationEditable"}
             },
             "bindings": {
-                "value": {"<-": "@owner.person.url"}
-            }
-        },
-
-        "deletePerson": {
-            "prototype": "matte/ui/button.reel",
-            "properties": {
-                "element": {"#": "deletePersonButton"},
-                "label": "-"
-            },
-            "bindings": {
-                "detail.get('maintainer')": {"<-": "@owner.person"}
+                "person": {"<-": "@owner.person"},
+                "cell": {"<-": "@owner"}
             }
         }
     }
@@ -56,10 +49,10 @@
 </head>
 <body>
     <li data-montage-id="person-cell" class="PersonCell">
-        <strong data-montage-id="personName" class="PersonCellName"></strong>
-        <span data-montage-id="personEmail" class="PersonCellEmail"></span>
-        <span data-montage-id="personUrl" class="PersonCellUrl"></span>
-        <button data-montage-id="deletePersonButton"></button>
+        <div data-montage-id="personInformationSubstitution" class="PersonInformationSubstitution">
+            <div data-arg="person" data-montage-id="personInformation"></div>
+            <div data-arg="person-editable" data-montage-id="personInformationEditable"></div>
+        </div>
     </li>
 </body>
 </html>

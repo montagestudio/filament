@@ -23,6 +23,30 @@ exports.PersonCell = Component.specialize(/** @lends PersonCell# */ {
      */
     person: {
         value: null
+    },
+
+    _editing: {
+        value: false
+    },
+
+    isEditing: {
+        set: function (editing) {
+            this._editing = !!editing;
+
+            if (!this._editing) {
+                this.formPerson.person = this.person;
+            }
+        },
+        get: function () {
+            return this._editing;
+        }
+    },
+
+    validModification: {
+        value: function () {
+            this.person = this.formPerson.data;
+            this.isEditing = false;
+        }
     }
 
 });
