@@ -1305,13 +1305,11 @@ exports.ReelDocument = EditingDocument.specialize({
 
             if (isDirectedHandler && methodName) {
                 // Keep existing AEL in place
-                if (listener !== originalListener) {
-                    originalListener.setObjectProperty("handler", listener);
-                }
+                originalListener.setObjectProperty("handler", listener);
                 originalListener.setObjectProperty("action", methodName);
                 actualListenerPromise = Promise.resolve(originalListener);
             } else if (isDirectedHandler && !methodName) {
-                // Remove existing AEL
+                // Remove existing AEL (Demotion)
                 if (this.undoManager.isUndoing || this.undoManager.isRedoing) {
                     //No need to manually remove, that will happen when that undoable operation is performed
                     actualListenerPromise = Promise.resolve(listener);
@@ -1323,14 +1321,12 @@ exports.ReelDocument = EditingDocument.specialize({
                 }
             } else if (!isDirectedHandler && methodName) {
 
-                if (listener.properties.has("handler") && listener.properties.has("action")) {
-                    // Restore an AEL
-                    this.addObject(listener);
-                    listener.setObjectProperty("handler", listener);
-                    listener.setObjectProperty("action", methodName);
+                // Put a new AEL in place (Promotion)
+
+                if (this.undoManager.isUndoing || this.undoManager.isRedoing) {
+                    //No need to manually add, that will happen when that undoable operation is performed
                     actualListenerPromise = Promise.resolve(listener);
                 } else {
-                    // Put a new AEL in place
                     actualListenerPromise = this._implicitActionEventListenerTemplate.then(function (template) {
                         return self.addObjectsFromTemplate(template);
 
