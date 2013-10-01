@@ -49,24 +49,6 @@
                 }
             ]
         },
-        "eventTypeHandlerName": {
-            "prototype": "montage/ui/text.reel",
-            "properties": {
-                "element": {"#": "eventTypeHandlerName"}
-            },
-            "bindings": {
-                "value": {"<-": "(!!@owner.listenerModel.useCapture ? 'capture' : 'handle') + @owner.listenerModel.type.toCapitalized()"}
-            }
-        },
-        "identifierEventTypeHandlerName": {
-            "prototype": "montage/ui/text.reel",
-            "properties": {
-                "element": {"#": "identifierEventTypeHandlerName"}
-            },
-            "bindings": {
-                "value": {"<-": "(!!@owner.listenerModel.useCapture ? 'capture' : 'handle') + @owner.listenerModel.targetObject.identifier.toCapitalized() + @owner.listenerModel.type.toCapitalized()"}
-            }
-        },
         "listenerField": {
             "prototype": "matte/ui/input-text.reel",
             "properties": {
@@ -180,19 +162,6 @@
                     Method Name
                 </label>
                 <input data-montage-id="methodNameField" type="text">
-            </section>
-            <section class="Jig-section">
-                <ol>
-                    <li>
-                        <code data-montage-id="identifierEventTypeHandlerName" class="ListenerJig--copyable"></code>
-                    </li>
-                    <li>
-                        <code data-montage-id="eventTypeHandlerName" class="ListenerJig--copyable"></code>
-                    </li>
-                    <li>
-                        <code class="ListenerJig--copyable">handleEvent</code>
-                    </li>
-                </ol>
             </section>
         </div>
         <footer class="Jig-footer">
