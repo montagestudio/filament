@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="person-information.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "person-information"}
+            }
+        },
+
+        "personName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "personName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.person.name"}
+            }
+        },
+
+        "personEmail": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "personEmail"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.person.email"}
+            }
+        },
+
+        "personUrl": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "personUrl"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.person.url"}
+            }
+        },
+
+        "deletePerson": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "deletePersonButton"},
+                "label": "-"
+            },
+            "bindings": {
+                "detail.get('maintainer')": {"<-": "@owner.person"}
+            }
+        },
+
+        "editPerson": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "editPersonButton"},
+                "label": "Edit"
+            },
+            "bindings": {
+                "detail.get('source')": {"<-": "@owner.cell"}
+            }
+        }
+    }
+    </script>
+</head>
+    <body>
+        <div data-montage-id="person-information" class="PersonInformation">
+            <div class="PersonInformation-details">
+                <span data-montage-id="personName" class="PersonInformation-item PersonInformation-name"></span>
+                <span data-montage-id="personEmail" class="PersonInformation-item PersonInformation-email"></span>
+                <span data-montage-id="personUrl" class="PersonInformation-item PersonInformation-url"></span>
+            </div>
+            <div class="PersonInformation-actions">
+                <button data-montage-id="editPersonButton"></button>
+                <button data-montage-id="deletePersonButton"></button>
+            </div>
+        </div>
+    </body>
+</html>
