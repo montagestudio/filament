@@ -362,6 +362,64 @@ describe("core/reel-document-listener-editing-spec", function () {
 
                 }).timeout(WAITSFOR_TIMEOUT);
             });
+
+            it ("should undo properly", function () {
+                return reelDocumentPromise.then(function (reelDocument) {
+                    var targetProxy = reelDocument.editingProxyMap.foo;
+                    var listenerEntry = targetProxy.listeners[1];
+
+                    var originalHandler = listenerEntry.listener.properties.get("handler");
+                    var originalType = listenerEntry.type;
+                    var originalUseCapture = listenerEntry.useCapture;
+                    var originalMethodName = listenerEntry.listener.properties.get("action");
+
+                    var newHandler = reelDocument.editingProxyMap.foo;
+                    var newType = listenerEntry.type + "FOO";
+                    var newUseCapture = !listenerEntry.useCapture;
+                    var newMethodName = listenerEntry.listener.properties.get("action") + "FOO";
+
+                    return reelDocument.updateOwnedObjectEventListener(targetProxy, listenerEntry, newType, newHandler, newUseCapture, newMethodName).then(function (updatedListenerEntry) {
+                        return reelDocument.undoManager.undo().then(function () {
+                            expect(reelDocument.undoManager.undoCount).toBe(0);
+                            expect(reelDocument.undoManager.redoCount).toBe(1);
+                            expect(updatedListenerEntry).toBe(listenerEntry);
+                            expect(updatedListenerEntry.listener.properties.get("handler")).toBe(originalHandler);
+                            expect(updatedListenerEntry.listener.properties.get("action")).toBe(originalMethodName);
+                            expect(updatedListenerEntry.type).toBe(originalType);
+                            expect(updatedListenerEntry.useCapture).toBe(originalUseCapture);
+                        });
+                    });
+
+                }).timeout(WAITSFOR_TIMEOUT);
+            });
+
+            it ("should redo properly", function () {
+                return reelDocumentPromise.then(function (reelDocument) {
+                    var targetProxy = reelDocument.editingProxyMap.foo;
+                    var listenerEntry = targetProxy.listeners[1];
+
+                    var newHandler = reelDocument.editingProxyMap.foo;
+                    var newType = listenerEntry.type + "FOO";
+                    var newUseCapture = !listenerEntry.useCapture;
+                    var newMethodName = listenerEntry.listener.properties.get("action") + "FOO";
+
+                    return reelDocument.updateOwnedObjectEventListener(targetProxy, listenerEntry, newType, newHandler, newUseCapture, newMethodName).then(function (updatedListenerEntry) {
+                        return reelDocument.undoManager.undo().then(function () {
+                            return reelDocument.undoManager.redo();
+                        }).then(function () {
+                                expect(reelDocument.undoManager.undoCount).toBe(1);
+                                expect(reelDocument.undoManager.redoCount).toBe(0);
+                                expect(updatedListenerEntry).toBe(listenerEntry);
+                                expect(updatedListenerEntry.listener.properties.get("handler")).toBe(newHandler);
+                                expect(updatedListenerEntry.listener.properties.get("action")).toBe(newMethodName);
+                                expect(updatedListenerEntry.type).toBe(newType);
+                                expect(updatedListenerEntry.useCapture).toBe(newUseCapture);
+                            });
+                    });
+
+                }).timeout(WAITSFOR_TIMEOUT);
+
+            });
         });
 
         describe("removing a listener that uses an actionEventListener", function () {

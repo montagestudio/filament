@@ -1294,6 +1294,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 isDirectedHandler = originalListener.properties.has("handler") && originalListener.properties.has("action"),
                 originalHandler = isDirectedHandler ? originalListener.properties.get("handler") : null,
                 originalMethodName = isDirectedHandler ? originalListener.properties.get("action") : null,
+                undoListenerValue = originalListener,
                 updatedListenerEntry,
                 deferredUndoOperation = Promise.defer(),
                 actualListenerPromise,
@@ -1304,32 +1305,44 @@ exports.ReelDocument = EditingDocument.specialize({
             this.undoManager.register("Edit Listener", deferredUndoOperation.promise);
 
             if (isDirectedHandler && methodName) {
-                // Keep existing AEL in place
-                originalListener.setObjectProperty("handler", listener);
+
+                undoListenerValue = originalHandler;
+
+                // Keep existing AEL, update as necessary
+                if (listener !== originalHandler) {
+                    originalListener.setObjectProperty("handler", listener);
+                }
                 originalListener.setObjectProperty("action", methodName);
                 actualListenerPromise = Promise.resolve(originalListener);
+
             } else if (isDirectedHandler && !methodName) {
-                // Remove existing AEL (Demotion)
+                // Remove existing AEL (Demotion); the methodName was cleared
+
                 if (this.undoManager.isUndoing || this.undoManager.isRedoing) {
                     //No need to manually remove, that will happen when that undoable operation is performed
                     actualListenerPromise = Promise.resolve(listener);
                 } else {
-                    actualListenerPromise = this.removeObject(originalListener).then(function (removedListener) {
-                        // Note the promise is for the listener to put in place on the proxy, not what we just removed
-                        return listener;
-                    });
+                    actualListenerPromise = this.removeObject(originalListener).thenResolve(listener);
                 }
+
             } else if (!isDirectedHandler && methodName) {
 
-                // Put a new AEL in place (Promotion)
+                // The current listener is not an AEL, but we've been given a methodName
 
-                if (this.undoManager.isUndoing || this.undoManager.isRedoing) {
+                //If the newly specified listener being put in place is itself an AEL, make sure it captures what it needs to
+                if (listener.properties.has("handler") && listener.properties.has("action")){
+                    listener.setObjectProperty("handler", originalListener);
+                    listener.setObjectProperty("action", methodName);
+
+                    actualListenerPromise = Promise.resolve(listener);
+
+                } else if (this.undoManager.isUndoing || this.undoManager.isRedoing) {
                     //No need to manually add, that will happen when that undoable operation is performed
                     actualListenerPromise = Promise.resolve(listener);
                 } else {
+                    // Otherwise, put a new AEL in place (Promotion)
                     actualListenerPromise = this._implicitActionEventListenerTemplate.then(function (template) {
                         return self.addObjectsFromTemplate(template);
-
                     }).then(function (objects) {
                         var actionEventListener = objects[0];
                         actionEventListener.setObjectProperty("handler", listener);
@@ -1347,7 +1360,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 self.undoManager.closeBatch();
 
                 var updatedListenerEntry = proxy.updateObjectEventListener(existingListenerEntry, type, actualListener, useCapture);
-                deferredUndoOperation.resolve([self.updateOwnedObjectEventListener, self, proxy, updatedListenerEntry, originalType, originalListener, originalUseCapture, originalMethodName]);
+                deferredUndoOperation.resolve([self.updateOwnedObjectEventListener, self, proxy, updatedListenerEntry, originalType, undoListenerValue, originalUseCapture, originalMethodName]);
                 return updatedListenerEntry;
             });
         }
