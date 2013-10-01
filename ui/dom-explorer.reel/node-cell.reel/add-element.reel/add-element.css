@@ -1,6 +1,8 @@
 .AddElement {
     margin: 0px;
-    padding: 0px;
+    padding: 2px 22px;
+    margin: 0px;
+    background: hsl(0,0%,96%);
     display: none;
 }
 
@@ -9,7 +11,7 @@
     border-radius: 22px;
     display: inline-block;
     text-align: center;
-    width: 120px;
+    width: 140px;
 }
 
 .AddElement .AddElement-segment input{
@@ -20,10 +22,6 @@
     border-radius: 22px;
     line-height: 22px;
     font-size: 11px;
-}
-
-.AddElement .AddElement-segment input:focus {
-
 }
 
 .AddElement .AddElement-segment:before {
