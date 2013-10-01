@@ -90,9 +90,9 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
 
     reset: {
         value: function () {
-            this.templateObjects.tagName.clear();
-            this.templateObjects.montageId.clear();
-            this.templateObjects.montageArg.clear();
+            this.tagName = null;
+            this.montageId = null;
+            this.montageArg = null;
         }
     },
 

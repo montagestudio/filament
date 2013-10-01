@@ -96,32 +96,6 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
-    _insertElement: {
-        value: function (insertionFunction) {
-            var self = this;
-
-            if (this._deferredElement) {
-                // Was in the middle of inserting a node, forget about that one now
-                this._deferredElement.resolve(null);
-                this._deferredElement = null;
-            }
-
-            this._deferredElement = Promise.defer();
-
-            setTimeout(function () {
-                self.templateObjects.tagField.element.focus();
-            }, 100);
-
-            this._deferredElement.promise.then(function (newNode) {
-                if (newNode) {
-                    insertionFunction(newNode);
-                    self._deferredElement = null;
-                    self.tag = null;
-                }
-            }).done();
-        }
-    },
-
     handleTagFieldAction: {
         value: function (evt) {
             this._createElement();
