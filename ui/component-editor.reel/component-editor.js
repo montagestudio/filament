@@ -262,7 +262,6 @@ exports.ComponentEditor = Editor.specialize({
                 stageElement = detail.element,
                 parentComponents = detail.parentComponents,
                 documentEditor = this.currentDocument,
-                stageDocument = documentEditor._editingController.frame.iframe.contentDocument,
                 domExplorer = this.templateObjects.domExplorer,
                 templateExplorer = this.templateObjects.templateExplorer;
 
