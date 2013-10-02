@@ -24,6 +24,7 @@
     padding: 0 12px;
     line-height: 22px;
     color: hsl(0, 0%, 30%);
+    overflow: hidden;
 }
 
 .NodeCell-segment-item--tag {
