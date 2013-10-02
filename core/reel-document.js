@@ -1282,14 +1282,14 @@ exports.ReelDocument = EditingDocument.specialize({
      * @param {Proxy} proxy The proxy representing the object being listened to by the specified listener
      * @param {Object} existingListener The object representing the existing listener registration
      * @param {string} type The type of event to listen for
-     * @param {Proxy} listener The proxy representing an object to handle an event
+     * @param {Proxy} explicitListener The proxy representing an object to handle an event
      * @param {boolean} useCapture Whether or not to listen in the capture phase versus the bubble phase
      * @param {string} methodName The name of the method to call on the listener object when handling an event
      *
      * @return {Promise} A promise for the updated listener registration
      */
     updateOwnedObjectEventListener: {
-        value: function (proxy, existingListenerEntry, type, listener, useCapture, methodName) {
+        value: function (proxy, existingListenerEntry, type, explicitListener, useCapture, methodName) {
             var originalType = existingListenerEntry.type,
                 originalUseCapture = existingListenerEntry.useCapture,
                 originalListener = existingListenerEntry.listener,
@@ -1307,55 +1307,18 @@ exports.ReelDocument = EditingDocument.specialize({
             this.undoManager.register("Edit Listener", deferredUndoOperation.promise);
 
             if (isDirectedHandler && methodName) {
-
-                undoListenerValue = originalHandler;
-
                 // Keep existing AEL, update as necessary
-                if (listener !== originalHandler) {
-                    originalListener.setObjectProperty("handler", listener);
-                }
-                originalListener.setObjectProperty("action", methodName);
-                actualListenerPromise = Promise.resolve(originalListener);
-
+                actualListenerPromise = this._updateActionEventListener(originalListener, originalHandler, explicitListener, methodName);
+                undoListenerValue = originalHandler;
             } else if (isDirectedHandler && !methodName) {
                 // Remove existing AEL (Demotion); the methodName was cleared
-
-                if (this.undoManager.isUndoing || this.undoManager.isRedoing) {
-                    //No need to manually remove, that will happen when that undoable operation is performed
-                    actualListenerPromise = Promise.resolve(listener);
-                } else {
-                    actualListenerPromise = this.removeObject(originalListener).thenResolve(listener);
-                }
-
+                actualListenerPromise = this._promoteToActionEventListener(originalListener, explicitListener);
             } else if (!isDirectedHandler && methodName) {
-
                 // The current listener is not an AEL, but we've been given a methodName
-
-                //If the newly specified listener being put in place is itself an AEL, make sure it captures what it needs to
-                if (listener.properties.has("handler") && listener.properties.has("action")){
-                    listener.setObjectProperty("handler", originalListener);
-                    listener.setObjectProperty("action", methodName);
-
-                    actualListenerPromise = Promise.resolve(listener);
-
-                } else if (this.undoManager.isUndoing || this.undoManager.isRedoing) {
-                    //No need to manually add, that will happen when that undoable operation is performed
-                    actualListenerPromise = Promise.resolve(listener);
-                } else {
-                    // Otherwise, put a new AEL in place (Promotion)
-                    actualListenerPromise = this._implicitActionEventListenerTemplate.then(function (template) {
-                        return self.addObjectsFromTemplate(template);
-                    }).then(function (objects) {
-                        var actionEventListener = objects[0];
-                        actionEventListener.setObjectProperty("handler", listener);
-                        actionEventListener.setObjectProperty("action", methodName);
-                        return actionEventListener;
-                    });
-                }
-
+                actualListenerPromise = this._demoteFromActionEventListener(originalListener, explicitListener, methodName);
             } else {
                 // No AEL involved
-                actualListenerPromise = Promise.resolve(listener);
+                actualListenerPromise = Promise.resolve(explicitListener);
             }
 
             return actualListenerPromise.then(function (actualListener) {
@@ -1367,6 +1330,64 @@ exports.ReelDocument = EditingDocument.specialize({
                 self.editor.refresh();
                 return updatedListenerEntry;
             });
+        }
+    },
+
+    _updateActionEventListener: {
+        value: function (originalListener, originalHandler, explicitListener, methodName) {
+            if (explicitListener !== originalHandler) {
+                originalListener.setObjectProperty("handler", explicitListener);
+            }
+            originalListener.setObjectProperty("action", methodName);
+            return Promise.resolve(originalListener);
+        }
+    },
+
+    _promoteToActionEventListener: {
+        value: function (originalListener, explicitListener) {
+
+            var actualListenerPromise;
+
+            if (this.undoManager.isUndoing || this.undoManager.isRedoing) {
+                //No need to manually remove, that will happen when that undoable operation is performed
+                actualListenerPromise = Promise.resolve(explicitListener);
+            } else {
+                actualListenerPromise = this.removeObject(originalListener).thenResolve(explicitListener);
+            }
+
+            return actualListenerPromise;
+        }
+    },
+
+    _demoteFromActionEventListener: {
+        value: function (originalListener, explicitListener, methodName) {
+
+            var actualListenerPromise,
+                self = this;
+
+            //If the newly specified listener being put in place is itself an AEL, make sure it captures what it needs to
+            if (explicitListener.properties.has("handler") && explicitListener.properties.has("action")){
+                explicitListener.setObjectProperty("handler", originalListener);
+                explicitListener.setObjectProperty("action", methodName);
+
+                actualListenerPromise = Promise.resolve(explicitListener);
+
+            } else if (this.undoManager.isUndoing || this.undoManager.isRedoing) {
+                //No need to manually add, that will happen when that undoable operation is performed
+                actualListenerPromise = Promise.resolve(explicitListener);
+            } else {
+                // Otherwise, put a new AEL in place (Promotion)
+                actualListenerPromise = this._implicitActionEventListenerTemplate.then(function (template) {
+                    return self.addObjectsFromTemplate(template);
+                }).then(function (objects) {
+                        var actionEventListener = objects[0];
+                        actionEventListener.setObjectProperty("handler", explicitListener);
+                        actionEventListener.setObjectProperty("action", methodName);
+                        return actionEventListener;
+                    });
+            }
+
+            return actualListenerPromise;
         }
     },
 
