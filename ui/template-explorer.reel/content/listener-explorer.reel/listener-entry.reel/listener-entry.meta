@@ -1,0 +1,50 @@
+{
+  "blueprint_component_reference": {
+    "prototype": "filament-extension/montage/core/meta/blueprint-reference",
+    "properties": {
+      "valueReference": {
+        "blueprintName": "Component",
+        "blueprintModule": {
+          "%": "filament-extension/montage/ui/component.meta"
+        }
+      }
+    }
+  },
+  "blueprint_unnamed_listenerInfo": {
+    "prototype": "filament-extension/montage/core/meta/property-blueprint",
+    "properties": {
+      "name": "listenerInfo",
+      "blueprint": {"@": "root"},
+      "valueType": "object"
+    }
+  },
+  "blueprint_unnamed_targetObject": {
+    "prototype": "filament-extension/montage/core/meta/property-blueprint",
+    "properties": {
+      "name": "targetObject",
+      "blueprint": {"@": "root"},
+      "valueType": "object"
+    }
+  },
+  "root": {
+    "prototype": "filament-extension/montage/core/meta/module-blueprint",
+    "properties": {
+      "name": null,
+      "parent": {"@": "blueprint_component_reference"},
+      "propertyBlueprints": [
+        {"@": "blueprint_unnamed_listenerInfo"},
+        {"@": "blueprint_unnamed_targetObject"}
+      ],
+      "propertyBlueprintGroups": {
+        "ListenerEntry": [
+          {"@": "blueprint_unnamed_listenerInfo"},
+          {"@": "blueprint_unnamed_targetObject"}
+        ]
+      },
+      "module": {
+        "%": "ui/template-explorer.reel/content/listener-explorer.reel/listener-entry.reel"
+      },
+      "exportName": "ListenerEntry"
+    }
+  }
+}

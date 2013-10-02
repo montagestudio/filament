@@ -13,6 +13,7 @@ require("montage-testing").run(require, [
     "test/core/reel-blueprint-editing-spec",
     "test/core/reel-context-spec",
     "test/core/reel-document-headless-editing-spec",
+    "test/core/reel-document-listener-editing-spec",
     "test/core/reel-document-proxy-serialization-spec",
     "test/core/reel-document-saving-spec",
     "test/core/reel-document-spec",
