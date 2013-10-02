@@ -1259,6 +1259,8 @@ exports.ReelDocument = EditingDocument.specialize({
                 // entered into the same undo block
                 self.undoManager.closeBatch();
 
+                self.editor.refresh();
+
                 return listenerEntry;
             });
         }
@@ -1361,6 +1363,8 @@ exports.ReelDocument = EditingDocument.specialize({
 
                 var updatedListenerEntry = proxy.updateObjectEventListener(existingListenerEntry, type, actualListener, useCapture);
                 deferredUndoOperation.resolve([self.updateOwnedObjectEventListener, self, proxy, updatedListenerEntry, originalType, undoListenerValue, originalUseCapture, originalMethodName]);
+
+                self.editor.refresh();
                 return updatedListenerEntry;
             });
         }
@@ -1408,6 +1412,7 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return (relatedObjectRemovalPromise || Promise.resolve()).then(function () {
+                self.editor.refresh();
                 return removedListenerEntry;
             });
 
@@ -1435,6 +1440,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.undoManager.register("Add Listener", Promise.resolve([this._removeOwnedObjectEventListener, this, proxy, listener]));
             }
 
+            this.editor.refresh();
             return addedListener;
 
         }
@@ -1454,6 +1460,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.undoManager.register("Remove Listener", Promise.resolve([this._addOwnedObjectEventListener, this, proxy, listener, removedIndex]));
             }
 
+            this.editor.refresh();
             return removedListenerEntry;
 
         }
