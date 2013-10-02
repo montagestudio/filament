@@ -1,4 +1,5 @@
 .CreateNodeCell {
+    -webkit-flex: auto;
     display: -webkit-flex;
     -webkit-flex-flow: column nowrap;
     -webkit-align-items: center;
@@ -17,10 +18,16 @@
     margin: 2px 0;
     font-size: 0;
     border-radius: 22px;
-    border: 1px solid hsla(43, 100%, 85%, 1);
-    background-color: transparent;
-    background-image: repeating-linear-gradient(-45deg, transparent, transparent 5px, hsla(43, 100%, 85%, 1) 5px, hsla(43, 100%, 85%, 1) 10px);
+    border: 1px solid hsla(43, 0%, 85%, 1);
+    background-color: hsl(0,0%,85%);
+    background-image: repeating-linear-gradient(-45deg, transparent, transparent 5px, hsla(43, 0%, 88%, 1) 5px, hsla(43, 0%, 88%, 1) 10px);
     background-clip: content-box;
+}
+
+.CreateNodeCell-segment[draggable=true]:hover {
+    background-image: none;
+    background-color: hsl(0,0%,90%);
+    -webkit-box-shadow: 0 1px 1px hsla(0,0%, 20%, 0.3);
 }
 
 .CreateNodeCell--draggable {
@@ -50,15 +57,14 @@
 .CreateNodeCell-segment-item--montageArg {
     border-left: 1px solid hsla(0,0%,0%,.1);
     font-weight: normal;
-    background-color: transparent;
-    background-image: repeating-linear-gradient(-45deg,hsl(75,44%,85%), hsl(75,44%,85%) 5px, transparent 5px, transparent 10px);
+    background-color: hsla(75,44%,85%, 0.3);
 }
 
 .CreateNodeCell-segment-item--montageId.TextEditorField--editing,
 .CreateNodeCell-segment-item--montageArg.TextEditorField--editing {
     z-index: 10;
     box-shadow: 0 0 0 1px hsl(210,100%,70%);
-    background-color: hsla(210,100%,60%,0.1);
+    background-color: hsla(210,100%,60%,0.3);
 }
 
 .CreateNodeCell-segment-item--component {
@@ -67,13 +73,12 @@
     font-weight: bold;
     color: hsla(0, 0%, 0%, 0.64);
     border-left: 1px solid hsl(210, 100%, 84%);
-    background-color: transparent;
-    background-image: repeating-linear-gradient(-45deg,hsl(210, 100%, 90%), hsl(210, 100%, 90%) 5px, transparent 5px, transparent 10px);
+    background-color: hsl(210, 100%, 90%);
 }
 
 .CreateNodeCell--owner .CreateNodeCell-segment-item--component {
-    background: hsl(43, 100%, 85%);
-    border-left-color: hsl(43, 100%, 65%);
+    background: hsl(43, 0%, 85%);
+    border-left-color: hsl(43, 0%, 65%);
 }
 
 /* Overrides ---------------------------- */
