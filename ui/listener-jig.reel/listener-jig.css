@@ -5,3 +5,12 @@
     position: relative;
     margin: 0 10px 10px 0;
 }
+
+.ListenerJig--copyable {
+    -webkit-user-select: text;
+}
+
+.Jig-row.ListenerJig-eventRow,
+.Jig-row.ListenerJig-listenerRow {
+    -webkit-justify-content: flex-start;
+}

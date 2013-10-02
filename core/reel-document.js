@@ -1064,10 +1064,9 @@ exports.ReelDocument = EditingDocument.specialize({
                 self._removeProxies(proxy);
 
                 deferredUndo.resolve([self.addObject, self, proxy]);
+                self.undoManager.closeBatch();
 
                 self.dispatchEventNamed("objectRemoved", true, false, { proxy: proxy });
-
-                self.undoManager.closeBatch();
 
                 self.editor.refresh();
                 return proxy;
@@ -1180,31 +1179,90 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    __implicitActionEventListenerTemplate: {
+        value: null
+    },
+
+    _implicitActionEventListenerTemplate: {
+        get: function () {
+
+            if (!this.__implicitActionEventListenerTemplate) {
+                var serializationFragment = {
+                    "prototype": "montage/core/event/action-event-listener",
+                    "_dev": {
+                        "isHidden": true
+                    }
+                };
+                this.__implicitActionEventListenerTemplate = this._buildTemplate("actionEventListener", serializationFragment, null);
+            }
+
+            return this.__implicitActionEventListenerTemplate;
+        }
+    },
+
     /**
      * Registers the specified listener as an observer of the object
      * represented by the proxy for the specified event type in during the
      * specified event distribution phase.
      *
+     * Listeners are typically responsible for implementing an event handling
+     * method that conforms to the Montage conventions
+     * e.g. `handleActionEvent`
+     *
+     * If the optional `methodName` parameter is specified an `ActionEventListener`
+     * object will be implicitly created and registered as the actual listener
+     * as recorded in the returned listener registration. The specified listener
+     * will be recorded as the AEL's `handler` and the methodName will be recorded
+     * as AEL's `action`, i.e. the name of the method to call on the handler.
+     *
      * @param {Proxy} proxy The proxy representing the object to listen to
      * @param {string} type The type of event to listen for
      * @param {Proxy} listener The proxy representing an object to handle an event
      * @param {boolean} useCapture Whether or not to listen in the capture phase versus the bubble phase
+     * @param {string} methodName The name of the method to call on the listener object when handling an event
      *
-     * @return {Object} The listener registration with the specified properties
+     * @return {Promise} A promise for the listener registration with the specified properties
      */
     addOwnedObjectEventListener: {
-        value: function (proxy, type, listener, useCapture) {
-            var listenerEntry = proxy.addObjectEventListener(type, listener, useCapture);
+        value: function (proxy, type, listener, useCapture, methodName) {
 
-            if (listenerEntry) {
-                // if (this._editingController) {
-                //     // TODO register the listener on the stage, make sure we can remove it later
-                // }
+            var installListenerPromise,
+                deferredUndoOperation = Promise.defer(),
+                self = this;
 
-                this.undoManager.register("Define Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listenerEntry]));
+            this.undoManager.openBatch("Add Listener");
+            this.undoManager.register("Add Listener", deferredUndoOperation.promise);
+
+            if (methodName) {
+                installListenerPromise = this._implicitActionEventListenerTemplate.then(function (template) {
+                    return self.addObjectsFromTemplate(template);
+                }).then(function (objects) {
+                    var actionEventListener = objects[0];
+                    actionEventListener.setObjectProperty("handler", listener);
+                    actionEventListener.setObjectProperty("action", methodName);
+                    return actionEventListener;
+                });
+            } else {
+                installListenerPromise = Promise.resolve(listener);
             }
 
-            return listenerEntry;
+            return installListenerPromise.then(function (actualListener) {
+                var listenerEntry = proxy.addObjectEventListener(type, actualListener, useCapture);
+
+                if (listenerEntry) {
+                    // TODO register the listener on the stage, make sure we can remove it later
+
+                    deferredUndoOperation.resolve([self._removeOwnedObjectEventListener, self, proxy, listenerEntry]);
+                }
+
+                // TODO this doesn't really do anything to guard against other unrelated sync operations being
+                // entered into the same undo block
+                self.undoManager.closeBatch();
+
+                self.editor.refresh();
+
+                return listenerEntry;
+            });
         }
     },
 
@@ -1212,28 +1270,103 @@ exports.ReelDocument = EditingDocument.specialize({
      * Updates an existing listener entry with the specified type, listener,
      * and phase information.
      *
+     * If an actionEventListener is the listener for the event some parameters will be
+     * applied to the AEL's proxy. i.e. `listener` maps to `handler` and `methodName`
+     * maps to `action.
+     *
+     * Additionally, if an AEL was in place previously but the `methodName` has been
+     * removed, the AEL will be deleted.
+     *
+     * If there was no AEL but a `methodName` is specified, an AEL will be implicitly created.
+     *
      * @param {Proxy} proxy The proxy representing the object being listened to by the specified listener
      * @param {Object} existingListener The object representing the existing listener registration
      * @param {string} type The type of event to listen for
      * @param {Proxy} listener The proxy representing an object to handle an event
      * @param {boolean} useCapture Whether or not to listen in the capture phase versus the bubble phase
+     * @param {string} methodName The name of the method to call on the listener object when handling an event
      *
-     * @return {Object} The updated listener registration
+     * @return {Promise} A promise for the updated listener registration
      */
     updateOwnedObjectEventListener: {
-        value: function (proxy, existingListener, type, listener, useCapture) {
-            var originalType = existingListener.type,
-                originalListener = existingListener.listener,
-                originalUseCapture = existingListener.useCapture,
-                updatedListener;
+        value: function (proxy, existingListenerEntry, type, listener, useCapture, methodName) {
+            var originalType = existingListenerEntry.type,
+                originalUseCapture = existingListenerEntry.useCapture,
+                originalListener = existingListenerEntry.listener,
+                isDirectedHandler = originalListener.properties.has("handler") && originalListener.properties.has("action"),
+                originalHandler = isDirectedHandler ? originalListener.properties.get("handler") : null,
+                originalMethodName = isDirectedHandler ? originalListener.properties.get("action") : null,
+                undoListenerValue = originalListener,
+                updatedListenerEntry,
+                deferredUndoOperation = Promise.defer(),
+                actualListenerPromise,
+                self = this;
 
-            updatedListener = proxy.updateObjectEventListener(existingListener, type, listener, useCapture);
+            //TODO same problem elsewhere regarding the blocks not working well with async code
+            this.undoManager.openBatch("Edit Listener");
+            this.undoManager.register("Edit Listener", deferredUndoOperation.promise);
 
-            if (updatedListener) {
-                this.undoManager.register("Edit Listener", Promise.resolve([this.updateOwnedObjectEventListener, this, proxy, updatedListener, originalType, originalListener, originalUseCapture]));
+            if (isDirectedHandler && methodName) {
+
+                undoListenerValue = originalHandler;
+
+                // Keep existing AEL, update as necessary
+                if (listener !== originalHandler) {
+                    originalListener.setObjectProperty("handler", listener);
+                }
+                originalListener.setObjectProperty("action", methodName);
+                actualListenerPromise = Promise.resolve(originalListener);
+
+            } else if (isDirectedHandler && !methodName) {
+                // Remove existing AEL (Demotion); the methodName was cleared
+
+                if (this.undoManager.isUndoing || this.undoManager.isRedoing) {
+                    //No need to manually remove, that will happen when that undoable operation is performed
+                    actualListenerPromise = Promise.resolve(listener);
+                } else {
+                    actualListenerPromise = this.removeObject(originalListener).thenResolve(listener);
+                }
+
+            } else if (!isDirectedHandler && methodName) {
+
+                // The current listener is not an AEL, but we've been given a methodName
+
+                //If the newly specified listener being put in place is itself an AEL, make sure it captures what it needs to
+                if (listener.properties.has("handler") && listener.properties.has("action")){
+                    listener.setObjectProperty("handler", originalListener);
+                    listener.setObjectProperty("action", methodName);
+
+                    actualListenerPromise = Promise.resolve(listener);
+
+                } else if (this.undoManager.isUndoing || this.undoManager.isRedoing) {
+                    //No need to manually add, that will happen when that undoable operation is performed
+                    actualListenerPromise = Promise.resolve(listener);
+                } else {
+                    // Otherwise, put a new AEL in place (Promotion)
+                    actualListenerPromise = this._implicitActionEventListenerTemplate.then(function (template) {
+                        return self.addObjectsFromTemplate(template);
+                    }).then(function (objects) {
+                        var actionEventListener = objects[0];
+                        actionEventListener.setObjectProperty("handler", listener);
+                        actionEventListener.setObjectProperty("action", methodName);
+                        return actionEventListener;
+                    });
+                }
+
+            } else {
+                // No AEL involved
+                actualListenerPromise = Promise.resolve(listener);
             }
 
-            return updatedListener;
+            return actualListenerPromise.then(function (actualListener) {
+                self.undoManager.closeBatch();
+
+                var updatedListenerEntry = proxy.updateObjectEventListener(existingListenerEntry, type, actualListener, useCapture);
+                deferredUndoOperation.resolve([self.updateOwnedObjectEventListener, self, proxy, updatedListenerEntry, originalType, undoListenerValue, originalUseCapture, originalMethodName]);
+
+                self.editor.refresh();
+                return updatedListenerEntry;
+            });
         }
     },
 
@@ -1243,29 +1376,46 @@ exports.ReelDocument = EditingDocument.specialize({
      * @param {Proxy} proxy The proxy representing the object being listened to by the specified listener
      * @param {Object} listener The object representing the existing listener registration
      *
-     * @return {Object} The removed listener registration
+     * @return {Promise} A promise for the removed listener registration
      */
     removeOwnedObjectEventListener: {
         value: function (proxy, listener) {
-            var removedListener,
+            var removedListenerEntry,
                 removedIndex,
-                removedInfo;
+                removedInfo,
+                relatedObjectRemovalPromise,
+                self = this;
 
             removedInfo = proxy.removeObjectEventListener(listener);
-            removedListener = removedInfo.removedListener;
+            removedListenerEntry = removedInfo.removedListener;
             removedIndex = removedInfo.index;
 
-            if (removedListener) {
-                // if (this._editingController) {
-                //     // TODO remove the listener on the stage
-                // }
+            if (removedListenerEntry) {
+                // TODO remove the listener on the stage
+
+                this.undoManager.openBatch("Remove Listener");
 
                 this.undoManager.register("Remove Listener", Promise.resolve([
-                    this._addOwnedObjectEventListener, this, proxy, removedListener, removedIndex
+                    this._addOwnedObjectEventListener, this, proxy, removedListenerEntry, removedIndex
                 ]));
+
+                if (removedListenerEntry.listener.properties.get("handler") && removedListenerEntry.listener.properties.get("action")) {
+                    relatedObjectRemovalPromise = this.removeObject(removedListenerEntry.listener);
+                } else {
+                    relatedObjectRemovalPromise = Promise.resolve();
+                }
+
+                relatedObjectRemovalPromise.then(function () {
+                    //TODO what if other async operations have opened batches that are open…
+                    self.undoManager.closeBatch();
+                });
             }
 
-            return removedListener;
+            return (relatedObjectRemovalPromise || Promise.resolve()).then(function () {
+                self.editor.refresh();
+                return removedListenerEntry;
+            });
+
         }
     },
 
@@ -1287,10 +1437,31 @@ exports.ReelDocument = EditingDocument.specialize({
             var addedListener = proxy.addEventListener(listener, insertionIndex);
 
             if (addedListener) {
-                this.undoManager.register("Add Listener", Promise.resolve([this.removeOwnedObjectEventListener, this, proxy, listener]));
+                this.undoManager.register("Add Listener", Promise.resolve([this._removeOwnedObjectEventListener, this, proxy, listener]));
             }
 
+            this.editor.refresh();
             return addedListener;
+
+        }
+    },
+
+    /**
+     * @private
+     */
+    _removeOwnedObjectEventListener: {
+        value: function (proxy, listener) {
+
+            var removedInfo = proxy.removeObjectEventListener(listener),
+                removedListenerEntry = removedInfo.removedListener,
+                removedIndex = removedInfo.index;
+
+            if (removedListenerEntry) {
+                this.undoManager.register("Remove Listener", Promise.resolve([this._addOwnedObjectEventListener, this, proxy, listener, removedIndex]));
+            }
+
+            this.editor.refresh();
+            return removedListenerEntry;
 
         }
     },
