@@ -1,0 +1,125 @@
+.CreateNodeCell {
+    display: -webkit-flex;
+    -webkit-flex-flow: column nowrap;
+    -webkit-align-items: center;
+    position: relative;
+    opacity: 80%;
+}
+
+.CreateNodeCell .row {
+    display: -webkit-flex;
+    -webkit-flex-flow: row nowrap;
+    -webkit-align-items: center;
+}
+
+.CreateNodeCell-segment {
+    display: -webkit-inline-flex;
+    margin: 2px 0;
+    font-size: 0;
+    border-radius: 22px;
+    border: 1px solid hsla(43, 100%, 85%, 1);
+    background-color: transparent;
+    background-image: repeating-linear-gradient(-45deg, transparent, transparent 5px, hsla(43, 100%, 85%, 1) 5px, hsla(43, 100%, 85%, 1) 10px);
+    background-clip: content-box;
+}
+
+.CreateNodeCell--draggable {
+    cursor: -webkit-grab;
+}
+
+.CreateNodeCell-segment-item {
+    display: block;
+    padding: 0 12px;
+    font-size: 11px;
+    line-height: 22px;
+    min-height: 22px;
+    color: hsl(0, 0%, 30%);
+}
+
+.CreateNodeCell-segment-item--tag {
+    color: hsl(0,0%,60%);
+    text-transform: lowercase;
+}
+
+.CreateNodeCell-segment-item--montageId {
+    border-left: 1px solid hsla(0,0%,0%,.1);
+    font-weight: bold;
+    font-style: italic;
+}
+
+.CreateNodeCell-segment-item--montageArg {
+    border-left: 1px solid hsla(0,0%,0%,.1);
+    font-weight: normal;
+    background-color: transparent;
+    background-image: repeating-linear-gradient(-45deg,hsl(75,44%,85%), hsl(75,44%,85%) 5px, transparent 5px, transparent 10px);
+}
+
+.CreateNodeCell-segment-item--montageId.TextEditorField--editing,
+.CreateNodeCell-segment-item--montageArg.TextEditorField--editing {
+    z-index: 10;
+    box-shadow: 0 0 0 1px hsl(210,100%,70%);
+    background-color: hsla(210,100%,60%,0.1);
+}
+
+.CreateNodeCell-segment-item--component {
+    padding-left: 10px;
+    border-radius: 0 11px 11px 0;
+    font-weight: bold;
+    color: hsla(0, 0%, 0%, 0.64);
+    border-left: 1px solid hsl(210, 100%, 84%);
+    background-color: transparent;
+    background-image: repeating-linear-gradient(-45deg,hsl(210, 100%, 90%), hsl(210, 100%, 90%) 5px, transparent 5px, transparent 10px);
+}
+
+.CreateNodeCell--owner .CreateNodeCell-segment-item--component {
+    background: hsl(43, 100%, 85%);
+    border-left-color: hsl(43, 100%, 65%);
+}
+
+/* Overrides ---------------------------- */
+
+.CreateNodeCell .matte-InputText {
+    border: none;
+    margin: 0;
+    border-radius: 0;
+    background-color: transparent;
+    width: 100px;
+    height: 20px;
+    padding: 0;
+    font-size: inherit;
+    line-height: 20px;
+    font-weight: inherit;
+    font-style: inherit;
+}
+
+.CreateNodeCell .montage-Text {
+    white-space: nowrap;
+    outline: none;
+}
+
+.CreateNodeCell-reset.matte-Button {
+    width: 34px;
+    height: 34px;
+    min-width: auto;
+    margin: 0;
+    margin-left: 4px !important;
+    margin-top: 2px !important;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.CreateNodeCell-reset.matte-Button:hover {
+    background: hsla(0,0%,0%,.1)
+}
+
+.CreateNodeCell-reset.matte-Button:active {
+    color: white;
+    background: hsla(0,0%,0%,.8)
+}
+
+
+
+

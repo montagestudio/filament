@@ -27,6 +27,18 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: null
     },
 
+    addChildOver: {
+        value: false
+    },
+
+    addAfterOver: {
+        value: false
+    },
+
+    domExplorer: {
+        value: null
+    },
+
     nodeInfo: {
         get: function() {
             return this._nodeInfo;
@@ -51,6 +63,9 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             this._nodeSegment.addEventListener("dragenter", this, false);
             this._nodeSegment.addEventListener("dragleave", this, false);
             this._nodeSegment.addEventListener("drop", this, false);
+
+            this._nodeSegment.addEventListener("mouseover", this, false);
+            this._nodeSegment.addEventListener("mouseout", this, false);
 
             this.templateObjects.montageId.addEventListener("action", this);
             this.element.addEventListener("mouseover", this);
@@ -92,6 +107,18 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
+    addElementOver: {
+        value: function () {
+            this.domExplorer.addElementNodeHover = this;
+        }
+    },
+
+    addElementOut: {
+        value: function () {
+            this.domExplorer.addElementNodeHover = null;
+        }
+    },
+
     handleDragover: {
         enumerable: false,
         value: function (event) {
@@ -107,6 +134,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     handleDragenter: {
         enumerable: false,
         value: function (evt) {
+            this.addElementOver();
             if (this.acceptsDrop(evt) && (this._nodeSegment === evt.target || this._nodeSegment.parentOf(evt.target))) {
                 this.isDropTarget = true;
             }
@@ -137,6 +165,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                 self.isDropTarget = false;
             })
             .done();
+            this.addElementOut();
         }
     },
 
@@ -146,32 +175,16 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
-    handleAppendNodeButtonAction: {
+    handleAddElementAfterInsertTemplateAction: {
         value: function (evt) {
-            this.dispatchEventNamed("appendNode", true, true, {
-                parentNode: this.nodeInfo
-            });
-        }
-    },
-
-    handleAppendNodeButtonInsertTemplateAction: {
-        value: function (evt) {
-            this.dispatchEventNamed("appendNode", true, true, {
-                parentNode: this.nodeInfo,
+            this.dispatchEventNamed("insertAfterNode", true, true, {
+                previousSibling: this.nodeInfo,
                 transferObject: evt.detail.transferObject
             });
         }
     },
 
-    handleInsertBeforeNodeButtonAction: {
-        value: function (evt) {
-            this.dispatchEventNamed("insertBeforeNode", true, true, {
-                nextSibling: this.nodeInfo
-            });
-        }
-    },
-
-    handleInsertBeforeNodeButtonInsertTemplateAction: {
+    handleAddElementBeforeInsertTemplateAction: {
         value: function (evt) {
             this.dispatchEventNamed("insertBeforeNode", true, true, {
                 nextSibling: this.nodeInfo,
@@ -180,20 +193,38 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
-    handleInsertAfterNodeButtonAction: {
+    handleAddChildElementInsertTemplateAction: {
         value: function (evt) {
-            //TODO prompt for tagName
-            this.dispatchEventNamed("insertAfterNode", true, true, {
-                previousSibling: this.nodeInfo
+            this.dispatchEventNamed("appendNode", true, true, {
+                parentNode: this.nodeInfo,
+                transferObject: evt.detail.transferObject
             });
         }
     },
 
-    handleInsertAfterNodeButtonInsertTemplateAction: {
+    handleAddElementAfterInsertElementAction: {
         value: function (evt) {
             this.dispatchEventNamed("insertAfterNode", true, true, {
                 previousSibling: this.nodeInfo,
-                transferObject: evt.detail.transferObject
+                htmlElement: evt.detail.htmlElement
+            });
+        }
+    },
+
+    handleAddElementBeforeInsertElementAction: {
+        value: function (evt) {
+            this.dispatchEventNamed("insertBeforeNode", true, true, {
+                nextSibling: this.nodeInfo,
+                htmlElement: evt.detail.htmlElement
+            });
+        }
+    },
+
+    handleAddChildElementInsertElementAction: {
+        value: function (evt) {
+            this.dispatchEventNamed("appendNode", true, true, {
+                parentNode: this.nodeInfo,
+                htmlElement: evt.detail.htmlElement
             });
         }
     },

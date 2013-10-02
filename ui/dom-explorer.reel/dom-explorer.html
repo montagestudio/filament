@@ -35,75 +35,6 @@
             ]
         },
 
-        "isCreatingElementCondition": {
-            "prototype": "montage/ui/condition.reel",
-            "properties": {
-                "element": {"#": "isCreatingElementCondition"},
-                "removalStrategy": "hide"
-            },
-            "bindings": {
-                "condition": {"<-": "@owner.isCreatingElement"}
-            }
-        },
-
-        "tagField": {
-            "prototype": "matte/ui/input-text.reel",
-            "properties": {
-                "element": {"#": "tagField"}
-            },
-            "bindings": {
-                "value": {"<->": "@owner.tag"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
-        "addElementButton": {
-            "prototype": "matte/ui/button.reel",
-            "properties": {
-                "element": {"#": "addElementButton"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
-        "cancelElementButton": {
-            "prototype": "matte/ui/button.reel",
-            "properties": {
-                "element": {"#": "cancelElementButton"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
-        "cancelElementEscape": {
-            "prototype": "montage/composer/key-composer",
-            "properties": {
-                "keys": "escape",
-                "component": {"@": "owner"},
-                "identifier": "cancelElementEscape",
-                "element": {"#": "tagField"}
-            },
-            "listeners": [
-                {
-                    "type": "keyPress",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
         "nodeTreeController": {
             "prototype": "montage/core/tree-controller",
             "properties": {
@@ -129,7 +60,8 @@
         "nodeCell": {
             "prototype": "./node-cell.reel",
             "properties": {
-                "element": {"#": "nodeCell"}
+                "element": {"#": "nodeCell"},
+                "domExplorer": {"@": "owner"}
             },
             "bindings": {
                 "nodeInfo": {"<-": "@nodeCell.parentComponent.object"},
@@ -137,21 +69,26 @@
                 "treeControllerNode": {"<-": "@nodeCell.parentComponent.iteration"},
                 "domExplorer": {"<-": "@owner"}
             }
+        },
+
+        "createNodeCell": {
+            "prototype": "./create-node-cell.reel",
+            "properties": {
+                "element": {"#": "createNodeCell"},
+                "domExplorer": {"@": "owner"}
+            }
         }
     }
     </script>
 </head>
 <body>
-    <div data-montage-id="dom-explorer" class="DomExplorer">
+    <div data-montage-id="dom-explorer" class="DomExplorer preshift">
         <div data-montage-id="nodeList" class="NodeList">
             <div data-montage-id="nodeCell" data-arg="treeNode"></div>
         </div>
-        <footer data-montage-id="isCreatingElementCondition" class="DomExplorer-footer">
-            <div data-montage-id="elementCreationForm" class="AddElement">
-                <input data-montage-id="tagField" class="AddElement-input" type="text">
-                <button type="submit" data-montage-id="addElementButton" class="matte-Button Button AddElement-submit">Add</button>
-                <button type="reset" data-montage-id="cancelElementButton" class="AddElement-reset">×</button>
-            </div>
+
+        <footer class="DomExplorer-footer">
+            <div data-montage-id="createNodeCell"></div>
         </footer>
     </div>
 </body>

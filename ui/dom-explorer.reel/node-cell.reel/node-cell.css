@@ -15,6 +15,7 @@
     margin: 2px 0;
     border-radius: 22px;
     background: hsl(0,0%,90%);
+    padding: 1px;
     border: 1px solid hsla(0,0%,0%,.08);
 }
 
@@ -54,7 +55,7 @@
     border-radius: 0 11px 11px 0;
     font-weight: bold;
     color: hsla(0, 0%, 0%, 0.64);
-    border-left: 1px solid hsl(210, 100%, 84%);
+    border-left: 2px solid hsl(210, 100%, 84%);
     background: hsl(210, 100%, 90%);
 }
 
@@ -64,8 +65,15 @@
 }
 
 .NodeCell--dropTarget .NodeCell-segment {
+    padding: 0px;
+    border: 2px;
     border-style: dashed;
     border-color: hsl(216,100%,70%);
+}
+
+
+.NodeCell--noChildren .NodeCell{
+    padding-left: 22px;
 }
 
 
@@ -88,8 +96,6 @@
 .NodeCell .montage-Text {
     white-space: nowrap;
 }
-
-
 
 
 /* Remove Button ---------------------------- */
@@ -178,6 +184,7 @@
     opacity: 0.25;
 }
 
-.NodeCell--noChildren{
-    padding-left: 20px;
+/* Add tree elements -------------- */
+.addElement .add-element.child {
+    padding-left: 44px;
 }

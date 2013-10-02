@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="create-node-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "CreateNodeCell"},
+                "nodeSegment": {"#": "nodeSegment"}
+            },
+            "bindings": {
+                "classList.has('CreateNodeCell--draggable')": {"<-": "@owner.tagName && @owner.tagName.length > 1"}
+            }
+        },
+
+        "tagName": {
+            "prototype": "ui/text-editor-field.reel",
+            "properties": {
+                "element": {"#": "tagName"},
+                "placeholder": "tagName",
+                "tabindex": "1"
+            },
+            "bindings": {
+                "value": {"<->": "@owner.tagName"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "montageId": {
+            "prototype": "ui/text-editor-field.reel",
+            "properties": {
+                "element": {"#": "montageId"},
+                "placeholder": "montageId",
+                "tabindex": "3"
+            },
+            "bindings": {
+                "value": {"<->": "@owner.montageId"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "montageArg": {
+            "prototype": "ui/text-editor-field.reel",
+            "properties": {
+                "element": {"#": "montageArg"},
+                "placeholder": "montageArg",
+                "tabindex": "2"
+            },
+            "bindings": {
+                "value": {"<->": "@owner.montageArg"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+
+        },
+
+        "resetNodeButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "resetNodeButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="CreateNodeCell" class="CreateNodeCell">
+        <div class="row">
+        <span data-montage-id="nodeSegment" class="CreateNodeCell-segment"  draggable="false">
+            <span data-montage-id="tagName" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--tag">test</span>
+
+            <span data-montage-id="montageArg" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageArg">test</span>
+            <span data-montage-id="montageId" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageId">test</span>
+        </span>
+        
+        <button data-montage-id="resetNodeButton" class="CreateNodeCell-reset Button Button--circle" title="Reset node">↺</button>
+        </div>
+    </div>
+</body>
+</html>

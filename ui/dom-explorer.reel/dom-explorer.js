@@ -59,22 +59,29 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         value: null
     },
 
-    __deferredElement: {
+    _addElementNodeHover : {
         value: null
     },
 
-    _deferredElement : {
+    addElementNodeHover: {
         get: function () {
-            return this.__deferredElement;
+            return this._addElementNodeHover;
         },
-        set: function(value) {
-            if (value === this.__deferredElement) {
-                return;
-            }
+        set: function (value) {
+            if (value === this._addElementNodeHover) { return; }
 
-            this.dispatchBeforeOwnPropertyChange("isCreatingElement", this.isCreatingElement);
-            this.__deferredElement = value;
-            this.dispatchOwnPropertyChange("isCreatingElement", this.isCreatingElement);
+            // handle vertical tree shifting by adding a class
+            if (value) {
+                var nodeInfo = value.nodeInfo;
+                if (nodeInfo.canInsertBeforeNode) {
+                    this.element.classList.add('shift');
+                } else {
+                    this.element.classList.remove('shift');
+                }
+            } else {
+                this.element.classList.remove('shift');
+            }
+            this._addElementNodeHover = value;
         }
     },
 
@@ -84,29 +91,22 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
-    _insertElement: {
-        value: function (insertionFunction) {
-            var self = this;
+    enterDocument: {
+        value: function (firstTime) {
+            if (!firstTime) { return; }
 
-            if (this._deferredElement) {
-                // Was in the middle of inserting a node, forget about that one now
-                this._deferredElement.resolve(null);
-                this._deferredElement = null;
+            this.element.addEventListener("mouseout", this, false);
+            this.element.addEventListener("dragleave", this, false);
+
+            this.addEventListener("hideAddElements", this, false);
+        }
+    },
+
+    handleDragleave: {
+        value: function (evt) {
+            if (evt.target.classList.contains('NodeCellWapper')) {
+                this.hideAddElements();
             }
-
-            this._deferredElement = Promise.defer();
-
-            setTimeout(function () {
-                self.templateObjects.tagField.element.focus();
-            }, 100);
-
-            this._deferredElement.promise.then(function (newNode) {
-                if (newNode) {
-                    insertionFunction(newNode);
-                    self._deferredElement = null;
-                    self.tag = null;
-                }
-            }).done();
         }
     },
 
@@ -122,23 +122,21 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
-    _createElement: {
-        value: function () {
-            if (this.tag) {
-                var html = emmet.expandAbbreviation(this.tag);
-                var newNode = this.editingDocument.createTemplateNode(html);
-                this._deferredElement.resolve(newNode);
-            }
+    hideAddElements: {
+        value: function (evt) {
+            this.addElementNodeHover = null;
         }
     },
 
-    _cancelElementCreation: {
-        value: function () {
-            if (this._deferredElement) {
-                this._deferredElement.resolve(null);
-                this._deferredElement = null;
-                this.tag = null;
-            }
+    handleMouseout: {
+        value: function (evt) {
+            this.hideAddElements();
+        }
+    },
+
+    handleHideAddElements: {
+        value: function (evt) {
+            this.hideAddElements();
         }
     },
 
@@ -152,7 +150,8 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         value: function (evt) {
 
             var detail = evt.detail,
-                transferObject;
+                transferObject,
+                html;
 
             if (transferObject = detail.transferObject) {
 
@@ -161,7 +160,10 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
                 var parentNode = detail.parentNode;
 
                 this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, null, null).done();
-
+            } else if (html = detail.htmlElement) {
+                var newNode = this.editingDocument.createTemplateNode(html);
+                this.editingDocument.appendChildToTemplateNode(newNode, evt.detail.parentNode);
+                this.templateObjects.createNodeCell.reset();
             } else {
                 var self =  this;
                 var insertionFunction = function (newNode) {
@@ -176,7 +178,8 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
     handleInsertBeforeNode: {
         value: function (evt) {
             var detail = evt.detail,
-                transferObject;
+                transferObject,
+                html;
 
             if (transferObject = detail.transferObject) {
                 var serializationFragment = transferObject.serializationFragment;
@@ -186,6 +189,10 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
                 this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, nextSibling, null).done();
 
+            } else if (html = detail.htmlElement) {
+                var newNode = this.editingDocument.createTemplateNode(html);
+                this.editingDocument.insertNodeBeforeTemplateNode(newNode, evt.detail.nextSibling);
+                this.templateObjects.createNodeCell.reset();
             } else {
                 var self =  this;
                 var insertionFunction = function (newNode) {
@@ -200,7 +207,8 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
     handleInsertAfterNode: {
         value: function (evt) {
             var detail = evt.detail,
-                transferObject;
+                transferObject,
+                html;
 
             if (transferObject = detail.transferObject) {
                 var serializationFragment = transferObject.serializationFragment;
@@ -210,6 +218,10 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
                 this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, nextSibling, null).done();
 
+            } else if (html = detail.htmlElement) {
+                var newNode = this.editingDocument.createTemplateNode(html);
+                this.editingDocument.insertNodeAfterTemplateNode(newNode, evt.detail.previousSibling);
+                this.templateObjects.createNodeCell.reset();
             } else {
                 var self =  this;
                 var insertionFunction = function (newNode) {
