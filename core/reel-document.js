@@ -1412,8 +1412,6 @@ exports.ReelDocument = EditingDocument.specialize({
             removedIndex = removedInfo.index;
 
             if (removedListenerEntry) {
-                // TODO remove the listener on the stage
-
                 this.undoManager.openBatch("Remove Listener");
 
                 this.undoManager.register("Remove Listener", Promise.resolve([
@@ -1422,14 +1420,9 @@ exports.ReelDocument = EditingDocument.specialize({
 
                 if (removedListenerEntry.listener.properties.get("handler") && removedListenerEntry.listener.properties.get("action")) {
                     relatedObjectRemovalPromise = this.removeObject(removedListenerEntry.listener);
-                } else {
-                    relatedObjectRemovalPromise = Promise.resolve();
                 }
 
-                relatedObjectRemovalPromise.then(function () {
-                    //TODO what if other async operations have opened batches that are open…
-                    self.undoManager.closeBatch();
-                });
+                this.undoManager.closeBatch();
             }
 
             return (relatedObjectRemovalPromise || Promise.resolve()).then(function () {
