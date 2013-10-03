@@ -81,6 +81,7 @@ lumieresRegion = lumieres.makeNewApplication(<span class="str">"focus"</span>)
 browserLaunched = False
 maxAttemptCount = <span class="dig">10</span>
 attemptCount = <span class="dig">0</span>
+browserRegion = None
 
 <span class="kw">while</span> <span class="kw">not</span> browserLaunched <span class="kw">or</span> attemptCount &gt; maxAttemptCount:
     <span class="skw">sleep</span>(<span class="dig">1</span>)
@@ -91,12 +92,21 @@ attemptCount = <span class="dig">0</span>
             lumieresRegion.h != browserRegion.h <span class="kw">or</span>
             lumieresRegion.x != browserRegion.x <span class="kw">or</span>
             lumieresRegion.y != browserRegion.y)
+    <span class="kw">if</span> (<span class="kw">not</span> browserLaunched):
+        browserRegion = None
+
+<span class="kw">if</span> (<span class="kw">not</span> browserRegion):
+    <span class="kw">raise</span> Exception(<span class="str">"Could not find Browser"</span>)
 
 <span class="skw">type</span>(Key.TAB, Key.META)
 
-<span class="skw">dragDrop</span>(<img src="1379636068715.png" />, <img src="1379636076570.png" />)
+<span class="cmt">#Edit the applications
+</span>lumieres.insertDomObject(<img src="1379636068715.png" />, <img src="1379636076570.png" />, <span class="str">"child"</span>)
 lumieres.save()
-<span class="skw">wait</span>(browserRegion.<span class="skw">find</span>(<img src="1379636165608.png" />))
+
+<span class="cmt"># Meanwhile, back in the browser we should see the result
+</span><span class="skw">type</span>(Key.TAB, Key.META)
+browserRegion.<span class="skw">wait</span>(<img src="1379636165608.png" />, <span class="dig">1</span>)
 </pre>
 </body>
 </html>
