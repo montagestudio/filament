@@ -19,7 +19,9 @@
     margin-bottom: 0;
 }
 
-.PersonInformationEditable-input {
+.PersonInformationEditable-name,
+.PersonInformationEditable-url,
+.PersonInformationEditable-email {
     height: 28px !important;
 }
 

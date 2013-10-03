@@ -2,7 +2,9 @@
     -webkit-flex: 1;
     display: -webkit-flex;
 }
-.PersonInformation-item {
+.PersonInformation-email,
+.PersonInformation-url,
+.PersonInformation-name {
     font-size: 12px;
     color: hsl(0,0%,50%);
     display: block;

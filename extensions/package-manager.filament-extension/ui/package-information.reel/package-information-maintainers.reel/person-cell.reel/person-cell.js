@@ -34,7 +34,7 @@ exports.PersonCell = Component.specialize(/** @lends PersonCell# */ {
             this._editing = !!editing;
 
             if (!this._editing) {
-                this.formPerson.person = this.person;
+                this.formEditPerson.person = this.person;
             }
         },
         get: function () {
@@ -42,9 +42,15 @@ exports.PersonCell = Component.specialize(/** @lends PersonCell# */ {
         }
     },
 
+    editedPerson: {
+        get: function () {
+            return this.formEditPerson.data;
+        }
+    },
+
     validModification: {
         value: function () {
-            this.person = this.formPerson.data;
+            this.person = this.editedPerson;
             this.isEditing = false;
         }
     }

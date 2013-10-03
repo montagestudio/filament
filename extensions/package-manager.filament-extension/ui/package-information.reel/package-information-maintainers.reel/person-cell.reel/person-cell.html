@@ -8,14 +8,14 @@
         "owner": {
             "properties": {
                 "element": {"#": "person-cell"},
-                "formPerson": {"@": "personInformationEditable"}
+                "formEditPerson": {"@": "personInformationEditable"}
             }
         },
 
-        "personInformationSubstitution": {
+        "personCellSubstitution": {
             "prototype": "montage/ui/substitution.reel",
             "properties": {
-                "element": {"#": "personInformationSubstitution"}
+                "element": {"#": "personCellSubstitution"}
             },
             "bindings": {
                 "switchValue": {"<-": "@owner.isEditing ? 'person-editable' : 'person'"}
@@ -48,7 +48,7 @@
 </head>
 <body>
     <li data-montage-id="person-cell" class="PersonCell">
-        <div data-montage-id="personInformationSubstitution" class="PersonInformationSubstitution">
+        <div data-montage-id="personCellSubstitution" class="PersonCellSubstitution">
             <div data-arg="person" data-montage-id="personInformation"></div>
             <div data-arg="person-editable" data-montage-id="personInformationEditable"></div>
         </div>

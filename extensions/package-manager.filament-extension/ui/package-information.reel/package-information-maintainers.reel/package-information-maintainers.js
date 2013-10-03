@@ -102,7 +102,7 @@ exports.PackageInformationMaintainers = Component.specialize(/** @lends PackageI
         value: function (event) {
             var source = event.detail.get('source'),
                 old = source.person,
-                maintainer = source.formPerson.data;
+                maintainer = source.editedPerson;
 
             if (this.editingDocument && source && maintainer) {
                 this.editingDocument.replaceMaintainer(old, maintainer);
