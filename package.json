@@ -46,7 +46,7 @@
     "scripts": {
         "test": "node test/run.js",
         "lint": "./node_modules/.bin/jshint --verbose .",
-		"lumieres": "node test/integration/run.js"
+		"lumieres": "node test/functional/run.js"
     },
     "manifest": true
 }
