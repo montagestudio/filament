@@ -1,7 +1,8 @@
 .EditProperties {
+    padding: 8px;
     font-size: 12px;
-    background: hsl(0,0%,94%);
-    box-shadow: inset 0 1px 3px 0px rgba(0, 0, 0, 0.1);
+    background: hsl(0, 0%, 86%);
+    border-top: 1px solid hsla(0, 0%, 0%, .1);
     border-bottom: 1px solid hsla(0, 0%, 0%, .1);
 }
 
@@ -50,4 +51,43 @@
 
 .EditProperties-bar {
     padding: 5px 10px 10px 10px;
+}
+
+
+/* Groups ------------------------- */
+
+.EditProperties-group {
+    margin-bottom: 8px;
+}
+
+.EditProperties-group:last-child {
+    margin-bottom: 0;
+}
+
+
+/* Group Toggle ------------------------- */
+
+.EditProperties-toggle {
+    position: relative;
+	padding: 4px 8px;
+	margin: 0;
+	font-size: 12px;
+	font-weight: bold;
+	color: hsl(0,0%,50%);
+	cursor: pointer;
+	border-radius: 4px;
+	box-shadow: inset 0 0 0 1px hsla(0,0%,0%,.1), 0 1px 0 hsla(0,0%,100%,.2);
+	background-color: hsl(0,0%,90%);
+}
+
+.EditProperties-toggle:focus {
+    outline: none;
+}
+
+.EditProperties-group[open] .EditProperties-toggle {
+    border-radius: 4px 4px 0 0;
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.8);
+    border-bottom: 1px solid hsla(0,0%,0%,.1);
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,1);
+	background: -webkit-linear-gradient( hsl(0,0%,99%), hsl(0,0%,96%) );
 }

@@ -1,3 +1,14 @@
 .EditPropertiesList {
+    padding: 5px 0;
+    background: hsl(0,0%,94%);
+    border-bottom: 1px solid hsla(0,0%,0%,.05);
+}
 
+.EditPropertiesList:last-child {
+    border-radius: 0 0 4px 4px;
+}
+
+.EditPropertiesList-list {
+    margin: 0;
+    padding: 0;
 }
