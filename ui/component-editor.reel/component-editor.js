@@ -293,7 +293,7 @@ exports.ComponentEditor = Editor.specialize({
             // set domExplorer's highlighted element
             domExplorer.highlightedElement = nodeProxy;
 
-            if (nodeProxy.component) {
+            if (nodeProxy && nodeProxy.component) {
                 // set templateExplorer's highlighted component
                 templateExplorer.highlightedComponent = nodeProxy.component;
                 // highlight the stageElement to simulate a hover
