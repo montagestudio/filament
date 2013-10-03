@@ -81,7 +81,6 @@
         logging.error(<span class="str">"Could not find Lumieres Welcome Screen"</span>)
         <span class="kw">raise</span> exception
 
-
 <span class="cmt"># Create a new application
 </span><span class="kw">def</span> makeNewApplication(name):
     <span class="cmt">#TODO not assume we have the welcome screen
@@ -98,21 +97,21 @@
 
     lumieresRegion = App.focusedWindow()
 
-    <span class="cmt"># Wait for the application ot be ready to actually use
+    <span class="cmt"># Wait for the application to be ready to actually use
 </span>    <span class="kw">try</span>:
-        lumieresRegion.<span class="skw">wait</span>(Pattern(<img src="1379476862102.png" />).similar(<span class="dig">0.91</span>), <span class="dig">20</span>)
+        lumieresRegion.<span class="skw">wait</span>(Pattern(<img src="1379476862102.png" />).similar(<span class="dig">0.91</span>), <span class="dig">10</span>)
     <span class="kw">except</span> FindFailed, exception:
         logging.error(<span class="str">"Failed to find application created success message"</span>)
         <span class="kw">raise</span> exception
 
     <span class="kw">try</span>:
-        lumieresRegion.<span class="skw">wait</span>(<img src="1379478367947.png" />, <span class="dig">20</span>)
+        lumieresRegion.<span class="skw">wait</span>(<img src="1379478367947.png" />, <span class="dig">10</span>)
     <span class="kw">except</span> FindFailed, exception:
         logging.error(<span class="str">"Failed to find opened main component in templateExplorer"</span>)
         <span class="kw">raise</span> exception
 
     <span class="kw">try</span>:
-        lumieresRegion.<span class="skw">wait</span>(<img src="1379478388607.png" />, <span class="dig">20</span>)
+        lumieresRegion.<span class="skw">wait</span>(<img src="1380777365223.png" />, <span class="dig">10</span>)
     <span class="kw">except</span> FindFailed, exception:
         logging.error(<span class="str">"Failed to find expected DOM tree in DomExplorer"</span>)
         <span class="kw">raise</span> exception
@@ -141,6 +140,22 @@
     checkboxBindingJig.inside().<span class="skw">type</span>(Pattern(<img src="1374616197093.png" />).targetOffset(<span class="dig">0</span>,<span class="dig">6</span>), sourcePath)
     checkboxBindingJig.inside().<span class="skw">click</span>(<img src="1371627635301.png" />)
     <span class="skw">sleep</span>(<span class="dig">1</span>)
+
+<span class="kw">def</span> insertDomObject(object, targetNode, relationship=<span class="str">"self"</span>):
+    drag(object)
+    hover(targetNode)
+
+    <span class="kw">if</span> (<span class="str">"child"</span> == relationship):
+        destination = Pattern(<img src="1380777706858.png" />).similar(<span class="dig">0.95</span>)
+    <span class="kw">elif</span> (<span class="str">"next"</span> == relationship):
+        destination = Pattern(<img src="1380777751082.png" />).similar(<span class="dig">0.95</span>)
+    <span class="kw">elif</span> (<span class="str">"previous"</span> == relationship):
+        destination = Pattern(<img src="1380777788841.png" />).similar(<span class="dig">0.95</span>)
+    <span class="kw">else</span>:
+        destination = targetNode
+
+
+    dropAt(destination)
 </pre>
 </body>
 </html>

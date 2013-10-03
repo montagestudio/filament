@@ -39,7 +39,7 @@ def makeNewApplication(name):
         raise exception
 
     try:
-        lumieresRegion.wait("1379478388607.png", 10)
+        lumieresRegion.wait("1380777365223.png", 10)
     except FindFailed, exception:
         logging.error("Failed to find expected DOM tree in DomExplorer")
         raise exception
@@ -68,3 +68,20 @@ def bind(targetPath, oneway, sourcePath):
     checkboxBindingJig.inside().type(Pattern("1374616197093.png").targetOffset(0,6), sourcePath)
     checkboxBindingJig.inside().click("1371627635301.png")
     sleep(1)
+    
+def insertDomObject(object, targetNode, relationship="self"):
+    drag(object)
+    hover(targetNode)
+
+    if ("child" == relationship):
+        destination = Pattern("1380777706858.png").similar(0.95)
+    elif ("next" == relationship):
+        destination = Pattern("1380777751082.png").similar(0.95)
+    elif ("previous" == relationship):
+        destination = Pattern("1380777788841.png").similar(0.95)
+    else:
+        destination = targetNode
+        
+    
+    dropAt(destination)
+    
