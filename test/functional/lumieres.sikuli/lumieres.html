@@ -72,6 +72,7 @@
 <pre class="sikuli-code">
 <span class="kw">from</span> sikuli <span class="kw">import</span> *
 <span class="kw">import</span> logging
+<span class="kw">import</span> math
 
 <span class="cmt"># Find the Lumieres welcome screen and click on it to bring it to the front
 </span><span class="kw">def</span> focusLumieres():
@@ -154,7 +155,21 @@
     <span class="kw">else</span>:
         destination = targetNode
 
+    dropAt(destination)
 
+<span class="kw">def</span> resizeDomExplorerY(distance):
+    divider = <span class="skw">find</span>(<img src="1380836949088.png" />).nearby(<span class="dig">100</span>).above().<span class="skw">find</span>(<img src="1380836989677.png" />)
+    drag(divider)
+
+    triggerDragDistance = <span class="dig">5</span>
+
+    <span class="kw">if</span> (distance &lt; <span class="dig">0</span>):
+        triggerDragDistance = -<span class="dig">5</span>
+
+    triggerDragTarget = divider.getTarget().offset(<span class="dig">0</span>, triggerDragDistance)
+    mouseMove(triggerDragTarget)
+
+    destination = divider.getTarget().offset(<span class="dig">0</span>, int(distance - math.fabs(triggerDragDistance)))
     dropAt(destination)
 </pre>
 </body>

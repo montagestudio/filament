@@ -1,5 +1,6 @@
 from sikuli import *
 import logging
+import math
 
 # Find the Lumieres welcome screen and click on it to bring it to the front
 def focusLumieres():
@@ -82,6 +83,20 @@ def insertDomObject(object, targetNode, relationship="self"):
     else:
         destination = targetNode
         
+    dropAt(destination)
+
+def resizeDomExplorerY(distance):
+    divider = find("1380836949088.png").nearby(100).above().find("1380836989677.png")
+    drag(divider)
+
+    triggerDragDistance = 5
+
+    if (distance < 0):
+        triggerDragDistance = -5
     
+    triggerDragTarget = divider.getTarget().offset(0, triggerDragDistance)
+    mouseMove(triggerDragTarget)
+
+    destination = divider.getTarget().offset(0, int(distance - math.fabs(triggerDragDistance)))
     dropAt(destination)
     
