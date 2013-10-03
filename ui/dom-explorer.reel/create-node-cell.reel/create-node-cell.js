@@ -78,7 +78,7 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
             evt.dataTransfer.effectAllowed = "all";
             var element = document.createElement(this.tagName);
             if (this.montageArg){
-                element.dataset.montageArg = this.montageArg;
+                element.dataset.arg = this.montageArg;
             }
             if (this.montageId){
                 element.dataset.montageId = this.montageId;
@@ -109,4 +109,3 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
         }
     }
 });
- 
