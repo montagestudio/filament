@@ -85,7 +85,7 @@ templateExplorer = lumieresRegion.<span class="skw">find</span>(<img src="137629
 
 digitPackageRegion = <span class="skw">find</span>(<img src="1372142584813.png" />)
 <span class="cmt"># Add a title
-</span><span class="skw">dragDrop</span>(digitPackageRegion.<span class="skw">find</span>(Pattern(<img src="1372142022209.png" />).similar(<span class="dig">0.81</span>)), <img src="1371600526337.png" />)
+</span>lumieres.insertDomObject(digitPackageRegion.<span class="skw">find</span>(Pattern(<img src="1372142022209.png" />).similar(<span class="dig">0.81</span>)), <img src="1380786943201.png" />, <span class="str">"child"</span>)
 
 <span class="skw">wait</span>(Pattern(<img src="1371600653629.png" />).targetOffset(<span class="dig">20</span>,<span class="dig">12</span>), <span class="dig">3</span>)
 <span class="skw">doubleClick</span>(getLastMatch())
@@ -107,13 +107,14 @@ rangeControllerInspector.<span class="skw">find</span>(<img src="1371745547975.p
 
 <span class="cmt"># Add a list to present the tasks
 </span>
-<span class="skw">dragDrop</span>(digitPackageRegion.<span class="skw">find</span>(<img src="1372142855514.png" />), Pattern(<img src="1379348761930.png" />).targetOffset(-<span class="dig">73</span>,<span class="dig">27</span>))
+lumieres.insertDomObject(digitPackageRegion.<span class="skw">find</span>(<img src="1372142855514.png" />), <img src="1380787051214.png" />, <span class="str">"next"</span>)
 
 <span class="cmt">#Set the list to receive its content from the rangeController we created
 </span><span class="skw">dragDrop</span>(Pattern(<img src="1379357122124.png" />).similar(<span class="dig">0.51</span>), Pattern(<img src="1379357187665.png" />).targetOffset(<span class="dig">33</span>,<span class="dig">59</span>))
 
 <span class="cmt">#Remove the placeholder list content
-</span><span class="skw">click</span>(Pattern(<img src="1379348525259.png" />).similar(<span class="dig">0.54</span>).targetOffset(<span class="dig">43</span>,<span class="dig">0</span>))
+</span>hover(<img src="1380787922104.png" />)
+<span class="skw">click</span>(Pattern(<img src="1379348525259.png" />).similar(<span class="dig">0.54</span>).targetOffset(<span class="dig">43</span>,<span class="dig">0</span>))
 
 <span class="cmt"># Create a component to encapsulate the presentation of a task in the list
 </span><span class="cmt">#TODO why does click not work?
@@ -128,7 +129,7 @@ mouseUp(Button.LEFT)
 explorer.<span class="skw">wait</span>(<img src="1371626266866.png" />, <span class="dig">1</span>)
 <span class="skw">wait</span>(<img src="1376294233084.png" />, <span class="dig">2</span>)
 <span class="cmt">#Add a checkbox to complete tasks
-</span><span class="skw">dragDrop</span>(<img src="1371626348331.png" />, <img src="1371626362160.png" />)
+</span>lumieres.insertDomObject(<img src="1371626348331.png" />, <img src="1380787145595.png" />, <span class="str">"child"</span>)
 checkboxCard = <span class="skw">find</span>(<img src="1376294261916.png" />)
 
 <span class="cmt"># Bind the checkbox to the task's completed state
@@ -136,7 +137,7 @@ checkboxCard = <span class="skw">find</span>(<img src="1376294261916.png" />)
 lumieres.bind(<span class="str">"checked"</span>, False, <span class="str">"@owner.task.completed"</span>)
 
 <span class="cmt"># Add a textfiled to edit the title of the task
-</span><span class="skw">dragDrop</span>(<img src="1372143026732.png" />, Pattern(<img src="1379357399537.png" />).targetOffset(-<span class="dig">109</span>,<span class="dig">21</span>))
+</span>lumieres.insertDomObject(<img src="1372143026732.png" />, <img src="1380787195094.png" />, <span class="str">"next"</span>)
 
 taskTitleCard = <span class="skw">find</span>(<img src="1376294350349.png" />)
 taskTitleCard.inside().<span class="skw">find</span>(<img src="1376294281054.png" />).right().<span class="skw">click</span>(<img src="1376294297971.png" />)
@@ -153,7 +154,7 @@ lumieres.save()
 
 <span class="skw">sleep</span>(<span class="dig">2</span>)
 <span class="cmt">#add our task component to the list
-</span><span class="skw">dragDrop</span>(Pattern(<img src="1371628340381.png" />).similar(<span class="dig">0.73</span>).targetOffset(<span class="dig">1</span>,-<span class="dig">6</span>), Pattern(<img src="1371632573099.png" />).targetOffset(-<span class="dig">33</span>,<span class="dig">10</span>))
+</span>lumieres.insertDomObject(Pattern(<img src="1371628340381.png" />).similar(<span class="dig">0.73</span>).targetOffset(<span class="dig">1</span>,-<span class="dig">6</span>), <img src="1380787254026.png" />, <span class="str">"child"</span>)
 <span class="skw">sleep</span>(<span class="dig">1</span>)
 
 taskCard = <span class="skw">find</span>(<img src="1376295091372.png" />)
@@ -165,7 +166,7 @@ taskCard.<span class="skw">find</span>(<img src="1376294281054.png" />).right().
 lumieres.save()
 
 <span class="cmt">#Add a new task button
-</span><span class="skw">dragDrop</span>(<img src="1371708733359.png" />, Pattern(<img src="1379359175062.png" />).targetOffset(-<span class="dig">47</span>,<span class="dig">0</span>))
+</span>lumieres.insertDomObject(<img src="1371708733359.png" />, <img src="1380787319604.png" />, <span class="str">"next"</span>)
 <span class="skw">doubleClick</span>(<img src="1371708858768.png" />)
 <span class="skw">type</span>(<span class="str">"New Task"</span>)
 
@@ -187,7 +188,7 @@ actionListenerCard = <img src="1379358548521.png" />
 <span class="skw">click</span>(<img src="1379358296330.png" />)
 
 <span class="cmt">#add a badge to count the remaining tasks
-</span><span class="skw">dragDrop</span>(<img src="1371711022203.png" />, Pattern(<img src="1379359212690.png" />).targetOffset(-<span class="dig">49</span>,<span class="dig">2</span>))
+</span>lumieres.insertDomObject(<img src="1371711022203.png" />, <img src="1380787370986.png" />, <span class="str">"next"</span>)
 
 badgeCard = <span class="skw">find</span>(<img src="1376295271102.png" />)
 badgeCard.<span class="skw">find</span>(<img src="1376294281054.png" />).right().<span class="skw">click</span>(<img src="1376294297971.png" />)
