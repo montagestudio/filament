@@ -100,6 +100,7 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
                 });
             }
             this.isDropTarget = false;
+            this.dispatchEventNamed("addelementout", true, true);
         }
     }
 });

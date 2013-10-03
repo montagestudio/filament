@@ -70,6 +70,8 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             this.templateObjects.montageId.addEventListener("action", this);
             this.element.addEventListener("mouseover", this);
             this.element.addEventListener("mouseout", this);
+
+            this.addEventListener("addelementout", this);
         }
     },
 
@@ -126,6 +128,12 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
+    handleAddelementout: {
+        value: function (evt) {
+            this.addElementOut();
+        }
+    },
+
     handleDragover: {
         enumerable: false,
         value: function (event) {
@@ -174,7 +182,6 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                 self.isDropTarget = false;
             })
             .done();
-            this.addElementOut();
         }
     },
 
