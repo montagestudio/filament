@@ -107,6 +107,13 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
+    acceptsDropAddElement: {
+        value: function (evt) {
+            return evt.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 ||
+                evt.dataTransfer.types.indexOf(MimeTypes.HTML_ELEMENT) !== -1;
+        }
+    },
+
     addElementOver: {
         value: function () {
             this.domExplorer.addElementNodeHover = this;
@@ -134,7 +141,9 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     handleDragenter: {
         enumerable: false,
         value: function (evt) {
-            this.addElementOver();
+            if (this.acceptsDropAddElement(evt)) {
+                this.addElementOver();
+            }
             if (this.acceptsDrop(evt) && (this._nodeSegment === evt.target || this._nodeSegment.parentOf(evt.target))) {
                 this.isDropTarget = true;
             }
