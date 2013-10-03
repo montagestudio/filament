@@ -1,4 +1,4 @@
-/* global process */
+/* global process, __dirname*/
 var path = require ("path");
 var fs = require("fs");
 var Q = require("q");
@@ -17,7 +17,7 @@ if (!lumieres) {
     process.exit(1);
 }
 
-var testDirectoryPath = "test/integration";
+var testDirectoryPath = __dirname;
 
 var scripts = [
     "auto-refresh-preview",
