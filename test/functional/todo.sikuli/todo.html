@@ -96,15 +96,6 @@ digitPackageRegion = <span class="skw">find</span>(<img src="1372142584813.png" 
 </span>
 <span class="skw">dragDrop</span>(<img src="1372142743355.png" />, templateExplorer)
 
-
-<span class="cmt">#TODO this is a temporary thing to create an array in the declaration
-</span><span class="cmt">#TODO ideally this would rely on a binding to the @owner.tasks, but we have no UI to set that property right now
-</span>rangeControllerInspector = <span class="skw">find</span>(<img src="1371745473281.png" />).below()
-rangeControllerInspector.<span class="skw">find</span>(<img src="1371745547975.png" />).right(<span class="dig">100</span>).nearby(<span class="dig">10</span>).<span class="skw">click</span>(<img src="1371745557967.png" />)
-<span class="cmt"># Remove the default content, we want an empty list
-</span>rangeControllerInspector.<span class="skw">click</span>(Pattern(<img src="1371770852843.png" />).targetOffset(<span class="dig">59</span>,<span class="dig">13</span>))
-
-
 <span class="cmt"># Add a list to present the tasks
 </span>
 lumieres.insertDomObject(digitPackageRegion.<span class="skw">find</span>(<img src="1372142855514.png" />), <img src="1380787051214.png" />, <span class="str">"next"</span>)

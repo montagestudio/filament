@@ -24,15 +24,6 @@ type("Things Worth Doing")
 
 dragDrop("1372142743355.png", templateExplorer)
 
-
-#TODO this is a temporary thing to create an array in the declaration
-#TODO ideally this would rely on a binding to the @owner.tasks, but we have no UI to set that property right now
-rangeControllerInspector = find("1371745473281.png").below()
-rangeControllerInspector.find("1371745547975.png").right(100).nearby(10).click("1371745557967.png")
-# Remove the default content, we want an empty list
-rangeControllerInspector.click(Pattern("1371770852843.png").targetOffset(59,13))
-
-
 # Add a list to present the tasks
 
 lumieres.insertDomObject(digitPackageRegion.find("1372142855514.png"), "1380787051214.png", "next")
