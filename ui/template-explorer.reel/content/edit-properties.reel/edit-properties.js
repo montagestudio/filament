@@ -72,7 +72,7 @@ exports.EditProperties = Component.specialize({
             if (value) {
                 // add... returns the existing group if it already exists
                 this.propertiesController.content = value.addPropertyBlueprintGroupNamed(this.ownerObject.exportName);
-                this.eventsController.content = value.eventBlueprints;
+                this.eventsController.content = value.ownEventBlueprints;
             }
         }
     },

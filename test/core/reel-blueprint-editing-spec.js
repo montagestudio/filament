@@ -186,13 +186,13 @@ describe("core/reel-blueprint-editing-spec", function () {
 
             it("correctly undos", function () {
                 return reelDocumentPromise.then(function (reelDocument) {
-                    return reelDocument.removeOwnerBlueprintEvent("b")
+                    return reelDocument.removeOwnerBlueprintEvent("a")
                     .then(function () {
                         return reelDocument.undoManager.undo();
                     })
                     .then(function () {
                         expect(eventBlueprints.length).toBe(2);
-                        expect(eventBlueprints[1].name).toBe("b");
+                        expect(eventBlueprints[0].name).toBe("a");
                     });
                 });
             });

@@ -6,6 +6,7 @@ require("montage-testing").run(require, [
     "test/core/file-descriptor-spec",
     "test/core/node-proxy-spec",
     "test/core/object-references-spec",
+    "test/core/add-value-to-set-at-spec",
     "test/core/project-controller-extensions-spec",
     "test/core/project-controller-file-spec",
     "test/core/project-controller-filesystem-spec",

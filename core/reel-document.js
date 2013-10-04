@@ -16,7 +16,8 @@ var Montage = require("montage").Montage,
     URL = require("core/node/url"),
     PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint,
     EventBlueprint = require("montage/core/meta/event-blueprint").EventBlueprint,
-    ObjectReferences = require("core/object-references").ObjectReferences;
+    ObjectReferences = require("core/object-references").ObjectReferences,
+    addValueToSetAt = require("core/add-value-to-set-at");
 
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = EditingDocument.specialize({
@@ -1675,7 +1676,7 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     addOwnerBlueprintEvent: {
-        value: function (name, position) {
+        value: function (name, index) {
             var self = this;
             return this.undoManager.register(
                 "Add owner event",
@@ -1686,6 +1687,10 @@ exports.ReelDocument = EditingDocument.specialize({
                     );
 
                     blueprint.addEventBlueprint(eventBlueprint);
+                    if (index !== void 0) {
+                        blueprint.ownEventBlueprints.delete(eventBlueprint);
+                        addValueToSetAt(blueprint.ownEventBlueprints, eventBlueprint, index);
+                    }
                     return [self.removeOwnerBlueprintEvent, self, name];
                 })
             );
@@ -1699,8 +1704,13 @@ exports.ReelDocument = EditingDocument.specialize({
                 "Remove owner event",
                 this._ownerBlueprint.then(function (blueprint) {
                     var eventBlueprint = blueprint.eventBlueprintForName(name);
+
+                    var order = blueprint.ownEventBlueprints.order;
+                    var index = order.find(eventBlueprint).index;
+
                     blueprint.removeEventBlueprint(eventBlueprint);
-                    return [self.addOwnerBlueprintEvent, self, name];
+
+                    return [self.addOwnerBlueprintEvent, self, name, index];
                 })
             );
         }
