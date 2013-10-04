@@ -1605,7 +1605,7 @@ exports.ReelDocument = EditingDocument.specialize({
     // Owner blueprint
 
     addOwnerBlueprintProperty: {
-        value: function (name, valueType, cardinality, collectionValueType) {
+        value: function (name, index, valueType, cardinality, collectionValueType) {
             var self = this;
             return this.undoManager.register(
                 "Add owner property",
@@ -1623,7 +1623,13 @@ exports.ReelDocument = EditingDocument.specialize({
                     }
 
                     blueprint.addPropertyBlueprint(propertyBlueprint);
-                    blueprint.addPropertyBlueprintToGroupNamed(propertyBlueprint, self._exportName);
+
+                    if (index !== void 0) {
+                        blueprint.propertyBlueprintGroupForName(self._exportName).splice(index, 0, propertyBlueprint);
+                    } else {
+                        blueprint.addPropertyBlueprintToGroupNamed(propertyBlueprint, self._exportName);
+                    }
+
                     return [self.removeOwnerBlueprintProperty, self, name];
                 })
             );
@@ -1657,16 +1663,19 @@ exports.ReelDocument = EditingDocument.specialize({
                 "Remove owner property",
                 this._ownerBlueprint.then(function (blueprint) {
                     var propertyBlueprint = blueprint.propertyBlueprintForName(name);
+
+                    var index = blueprint.propertyBlueprintGroupForName(self._exportName).indexOf(propertyBlueprint);
+
                     blueprint.removePropertyBlueprint(propertyBlueprint);
                     blueprint.removePropertyBlueprintFromGroupNamed(propertyBlueprint, self._exportName);
-                    return [self.addOwnerBlueprintProperty, self, name, propertyBlueprint.valueType, propertyBlueprint.cardinality, propertyBlueprint.collectionValueType];
+                    return [self.addOwnerBlueprintProperty, self, name, index, propertyBlueprint.valueType, propertyBlueprint.cardinality, propertyBlueprint.collectionValueType];
                 })
             );
         }
     },
 
     addOwnerBlueprintEvent: {
-        value: function (name) {
+        value: function (name, position) {
             var self = this;
             return this.undoManager.register(
                 "Add owner event",

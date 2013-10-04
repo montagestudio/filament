@@ -57,6 +57,27 @@ describe("core/reel-blueprint-editing-spec", function () {
                 });
             });
 
+            it("creates with the given properties", function () {
+                return reelDocumentPromise.then(function (reelDocument) {
+                    return reelDocument.addOwnerBlueprintProperty("pass", void 0, "string", Infinity, "list")
+                    .then(function () {
+                        expect(defaultGroup[2].name).toBe("pass");
+                        expect(defaultGroup[2].valueType).toBe("string");
+                        expect(defaultGroup[2].cardinality).toBe(Infinity);
+                        expect(defaultGroup[2].collectionValueType).toBe("list");
+                    });
+                });
+            });
+
+            it("inserts at the given position", function () {
+                return reelDocumentPromise.then(function (reelDocument) {
+                    return reelDocument.addOwnerBlueprintProperty("pass", 1)
+                    .then(function () {
+                        expect(defaultGroup[1].name).toBe("pass");
+                    });
+                });
+            });
+
             it("adds a group named after the component if one doesn't exist", function () {
                 return reelDocumentPromise.then(function (reelDocument) {
                     blueprint = new Blueprint();
@@ -98,15 +119,15 @@ describe("core/reel-blueprint-editing-spec", function () {
 
             it("correctly undos", function () {
                 return reelDocumentPromise.then(function (reelDocument) {
-                    defaultGroup[1].valueType = "number";
-                    return reelDocument.removeOwnerBlueprintProperty("b")
+                    defaultGroup[0].valueType = "number";
+                    return reelDocument.removeOwnerBlueprintProperty("a")
                     .then(function () {
                         return reelDocument.undoManager.undo();
                     })
                     .then(function () {
                         expect(defaultGroup.length).toBe(2);
-                        expect(defaultGroup[1].name).toBe("b");
-                        expect(defaultGroup[1].valueType).toBe("number");
+                        expect(defaultGroup[0].name).toBe("a");
+                        expect(defaultGroup[0].valueType).toBe("number");
                     });
                 });
             });
