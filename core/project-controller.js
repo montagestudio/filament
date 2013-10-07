@@ -189,6 +189,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             var packagePromise = require.loadPackage(this.packageUrl).then(function (packageRequire) {
                 var packageDescription = packageRequire.packageDescription;
+                packageDescription.iconUrl = packageDescription.icon ? self.packageUrl + "/" + packageDescription.icon : "";
                 self.packageDescription = packageDescription;
 
                 // Add a dependency entry for this package so that the
