@@ -29,24 +29,19 @@ exports.PackageDocument = EditingDocument.specialize( {
             var self = this;
 
             return require.loadPackage(packageUrl).then(function (packageRequire) {
-                return self.listDependencies().then(function(app) { // invoke the custom list command, which check every dependencies installed.
-                    return self.create().init(fileUrl, packageRequire, self.sharedProjectController, app);
-                });
+                return self.create().init(fileUrl, packageRequire, self.sharedProjectController);
             });
         }
     },
 
     init: {
-        value: function (fileUrl, packageRequire, projectController, app) {
+        value: function (fileUrl, packageRequire, projectController) {
             var self = this.super.call(this, fileUrl, packageRequire);
 
             PackageQueueManager.load(this, '_handleDependenciesListChange');
             this._livePackage = packageRequire.packageDescription;
             this.sharedProjectController = projectController;
             this.editor = projectController.currentEditor;
-
-            this._package = app.file || {};
-            this._classifyDependencies(app.dependencies, false); // classify dependencies
 
             return this.getApplicationSupportUrl().then(function (url) {
                 self.applicationSupportUrl = url;
@@ -56,8 +51,13 @@ exports.PackageDocument = EditingDocument.specialize( {
                         throw new Error("An error has occurred while PackageManager was loading");
                     }
 
-                    self._getOutDatedDependencies();
-                    return self;
+                    return self.listDependencies().then(function(app) { // invoke the custom list command, which check every dependencies installed.
+                        self._package = app.file || {};
+                        self._classifyDependencies(app.dependencies, false); // classify dependencies
+
+                        self._getOutDatedDependencies();
+                        return self;
+                    });
                 });
             });
         }
