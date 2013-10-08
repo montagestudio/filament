@@ -1,6 +1,6 @@
 .PackageInformation--maintainers .PackageEditorPanel-content {
     -webkit-flex-direction: column;
-
+    padding: 15px;
 }
 
 .PersonFromOverlay {
@@ -12,12 +12,18 @@
 }
 
 .MaintainersList {
-    background: #ffffff;
+    background-color: #ffffff;
     margin-top: 15px;
+    width: 100%;
+    padding: 0;
+    max-height: 160px;
+    overflow-y: auto;
+    border-radius: 5px;
 }
 
 .MaintainersList ul {
     padding: 0;
     margin: 0;
     width: 100%;
+    list-style: none;
 }

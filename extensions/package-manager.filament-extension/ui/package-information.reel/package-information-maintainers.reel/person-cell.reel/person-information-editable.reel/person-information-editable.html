@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="person-information-editable.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "PersonInformationEditable"}
+            }
+        },
+
+        "personEditName": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "personEditName"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.data.name"}
+            }
+        },
+
+        "personEditEmail": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "personEditEmail"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.data.email"}
+            }
+        },
+
+        "personEditUrl": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "personEditUrl"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.data.url"}
+            }
+        },
+
+        "cancelEditPerson": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "cancelEditPersonButton"},
+                "label": "Cancel"
+            },
+            "bindings": {
+                "detail.get('source')": {"<-": "@owner.cell"}
+            }
+        },
+
+        "validEditPerson": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "validEditPersonButton"},
+                "label": "Valid"
+            },
+            "bindings": {
+                "detail.get('source')": {"<-": "@owner.cell"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="PersonInformationEditable" class="PersonInformationEditable">
+        <div class="PersonInformationEditable-details">
+            <ul class="PersonInformationEditable-list">
+                <li class="PersonInformationEditable-item">
+                    <label for="PersonEditName">Name:</label>
+                    <input type="text" id="PersonEditName" data-montage-id="personEditName" class="PersonInformationEditable-name" />
+                </li>
+                <li class="PersonInformationEditable-item">
+                    <label for="PersonEditEmail">Email:</label>
+                    <input type="text" id="PersonEditEmail" data-montage-id="personEditEmail" class="PersonInformationEditable-email " />
+                </li>
+                <li class="PersonInformationEditable-item">
+                    <label for="PersonEditUrl">Url:</label>
+                    <input type="text" id="PersonEditUrl" data-montage-id="personEditUrl" class="PersonInformationEditable-url" />
+                </li>
+            </ul>
+        </div>
+        <div class="PersonInformationEditable-actions">
+            <button data-montage-id="cancelEditPersonButton"></button>
+            <button data-montage-id="validEditPersonButton"></button>
+        </div>
+    </div>
+</body>
+</html>
