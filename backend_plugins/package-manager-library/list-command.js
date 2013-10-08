@@ -496,10 +496,13 @@ exports.listCommand = Object.create(Object.prototype, {
 
             if (Array.isArray(dependencies)) {
                 for (var i = 0, length = dependencies.length; i < length; i++) { // for each dependency we looks for eventual errors
-                    this._reportEventualErrors(module, dependencies[i]);
+                    var dependency = dependencies[i];
+                    this._reportEventualErrors(module, dependency);
 
-                    if (dependencies[i].dependencies.length > 0) { // need to check deeply
-                        this._browseTree(dependencies[i]);
+                    if (!dependency.extraneous && Array.isArray(dependency.dependencies) &&
+                        dependency.dependencies.length > 0) { // need to check deeply
+
+                        this._browseTree(dependency);
                     }
                 }
             }
@@ -542,8 +545,12 @@ exports.listCommand = Object.create(Object.prototype, {
 
                 if (Array.isArray(dependencies)) {
                     for (var i = 0, length = dependencies.length; i < length; i++) {
-                        if (!dependencies[i].missing && dependencies[i].name === name) {
-                            return dependencies[i];
+                        var dependency = dependencies[i];
+
+                        if (!dependency.jsonFileError && !dependency.jsonFileMissing &&
+                            !dependency.missing && dependency.name === name) {
+
+                            return dependency;
                         }
                     }
                     // Examines the next parent level when no results.
@@ -580,7 +587,9 @@ exports.listCommand = Object.create(Object.prototype, {
 
             if (Array.isArray(problems)) {
                 for (var i = 0, length = problems.length; i < length; i++) {
-                    if (problems[i] && problems[i].name === error.name && problems[i].type === error.type) {
+                    var problem = problems[i];
+
+                    if (problem && problem.name === error.name && problem.type === error.type) {
                         return true;
                     }
                 }
@@ -602,8 +611,10 @@ exports.listCommand = Object.create(Object.prototype, {
                 error = {
                     name: child.name,
                     type: type,
+                    version: child.versionInstalled || '',
+                    path: child.path,
                     message: message,
-                    parent: (child.parent.name !== this._app.name) ? child.parent.name : 'app'
+                    parent: (child.parent && child.parent.name !== this._app.name) ? child.parent.name : 'app'
                 };
 
             if (!this._hasAlreadyBeenRaised(error, parent)) { // Check if an similar error has already been raised to this top level.
@@ -657,7 +668,7 @@ exports.listCommand = Object.create(Object.prototype, {
                 }
             } else {
                 this._reportTopLevel(dependency, ERROR_FILE_INVALID,'the package.json file of ' + dependency.name +
-                    ((!!dependency.jsonFileError) ? 'shows a few errors' : ' is missing'));
+                    ((!!dependency.jsonFileError) ? ' shows a few errors' : ' is missing'));
             }
         }
     }
