@@ -12,6 +12,7 @@ var Montage = require("montage/core/core").Montage,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     ProjectController,
     FileDescriptor = require("core/file-descriptor").FileDescriptor,
+    Template = require("montage/core/template").Template,
     URL = require("core/url");
 
 exports.ProjectController = ProjectController = DocumentController.specialize({
@@ -189,7 +190,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             var packagePromise = require.loadPackage(this.packageUrl).then(function (packageRequire) {
                 var packageDescription = packageRequire.packageDescription;
-                packageDescription.iconUrl = packageDescription.icon ? self.packageUrl + "/" + packageDescription.icon : "";
+                self.loadProjectIcon(self.packageUrl);
                 self.packageDescription = packageDescription;
 
                 // Add a dependency entry for this package so that the
@@ -218,6 +219,43 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     });
                     return packageUrl;
                 });
+        }
+    },
+
+    icon: {
+        value: null
+    },
+
+    loadProjectIcon: {
+        value: function(projectUrl) {
+            var self = this;
+            var url = projectUrl + "/index.html";
+            this.icon = this.icon || "/assets/icons/app-icon.png";
+
+            var req = new XMLHttpRequest();
+            req.open("GET", url);
+            req.addEventListener("load", function() {
+                if (req.status === 200) {
+                    var touchIconLink,
+                        touchIcon,
+                        doc,
+                        template;
+
+                    template = Template.create();
+                    doc = template.createHtmlDocumentWithHtml(req.responseText);
+
+                    // Use Apple touch or Android shortcut icon as the project icon, if present
+                    touchIconLink = doc.querySelector('link[rel="apple-touch-icon-precomposed"]')
+                        || doc.querySelector('link[rel="apple-touch-icon"]')
+                        || doc.querySelector('link[rel="shortcut icon"]');
+
+                    if (touchIconLink && touchIconLink.getAttribute("href")) {
+                        self.icon = projectUrl + "/" + touchIconLink.getAttribute("href");
+                    }
+                }
+            }, false);
+
+            req.send();
         }
     },
 
