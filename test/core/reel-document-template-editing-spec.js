@@ -66,7 +66,7 @@ describe("core/reel-document-template-editing-spec", function () {
         '       <div id="foo" data-montage-id="foo">'+
         '           <p id="removeLastNode" data-montage-id="removeLastNode"></p>'+
         '       </div>'+
-        '       <div data-arg="readOnly" id="testDomAttribute" data-montage-id="testDomAttribute"></div>'+
+        '       <div data-arg="readOnly" data-param="display" id="testDomAttribute" data-montage-id="testDomAttribute"></div>'+
         '   </section>'+
         '</div>');
     });
@@ -792,6 +792,19 @@ describe("core/reel-document-template-editing-spec", function () {
                 reelDocument.setNodeProxyAttribute(nodeProxy, "data-arg", "readWrite");
                 userVisibleValue = nodeProxy.montageArg;
                 expect(userVisibleValue).toBe("readWrite");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should reflect changes to the data param", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("testDomAttribute");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+                var userVisibleValue = nodeProxy.montageParam;
+
+                expect(userVisibleValue).toBe("display");
+                reelDocument.setNodeProxyAttribute(nodeProxy, "data-param", "network");
+                userVisibleValue = nodeProxy.montageParam;
+                expect(userVisibleValue).toBe("network");
             }).timeout(WAITSFOR_TIMEOUT);
         });
 

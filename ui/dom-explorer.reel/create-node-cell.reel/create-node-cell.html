@@ -67,7 +67,24 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
 
+        "montageParam": {
+            "prototype": "ui/text-editor-field.reel",
+            "properties": {
+                "element": {"#": "montageParam"},
+                "placeholder": "montageParam",
+                "tabindex": "2"
+            },
+            "bindings": {
+                "value": {"<->": "@owner.montageParam"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "resetNodeButton": {
@@ -93,6 +110,7 @@
             <span data-montage-id="tagName" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--tag">test</span>
 
             <span data-montage-id="montageArg" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageArg">test</span>
+            <span data-montage-id="montageParam" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageParam">test</span>
             <span data-montage-id="montageId" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageId">test</span>
         </span>
         

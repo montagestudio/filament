@@ -43,6 +43,20 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
         }
     },
 
+    _montageParam: {
+        value: null
+    },
+
+    montageParam: {
+        set: function (value) {
+            this._montageParam = value;
+            this.needsDraw = true;
+        },
+        get: function () {
+            return this._montageParam;
+        }
+    },
+
     _tagName: {
         value: null
     },
@@ -79,6 +93,9 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
             var element = document.createElement(this.tagName);
             if (this.montageArg){
                 element.dataset.arg = this.montageArg;
+            }
+            if (this.montageParam){
+                element.dataset.param = this.montageParam;
             }
             if (this.montageId){
                 element.dataset.montageId = this.montageId;

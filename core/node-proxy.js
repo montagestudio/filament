@@ -2,7 +2,8 @@ var Montage = require("montage").Montage,
     NodeProxy;
 
 var MONTAGE_ID_ATTRIBUTE = "data-montage-id",
-    MONTAGE_ARG_ATTRIBUTE = "data-arg";
+    MONTAGE_ARG_ATTRIBUTE = "data-arg",
+    MONTAGE_PARAM_ATTRIBUTE = "data-param";
 
 exports.NodeProxy = NodeProxy = Montage.specialize({
 
@@ -23,6 +24,7 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
             var attributeMap = this._attributeToPropertyMap = {};
             attributeMap[MONTAGE_ID_ATTRIBUTE] = "montageId";
             attributeMap[MONTAGE_ARG_ATTRIBUTE] = "montageArg";
+            attributeMap[MONTAGE_PARAM_ATTRIBUTE] = "montageParam";
 
         }
     },
@@ -145,6 +147,15 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
         },
         set: function (value) {
             this.setAttribute(MONTAGE_ARG_ATTRIBUTE, value);
+        }
+    },
+
+    montageParam: {
+        get: function() {
+            return this.getAttribute(MONTAGE_PARAM_ATTRIBUTE);
+        },
+        set: function (value) {
+            this.setAttribute(MONTAGE_PARAM_ATTRIBUTE, value);
         }
     },
 

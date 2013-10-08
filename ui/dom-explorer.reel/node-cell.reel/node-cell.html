@@ -72,7 +72,22 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
 
+        "montageParam": {
+            "prototype": "ui/text-editor-field.reel",
+            "properties": {
+                "element": {"#": "montageParam"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.nodeInfo.montageParam"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "componentCondition": {
@@ -269,6 +284,7 @@
                 <span data-montage-id="tagName" class="NodeCell-segment-item NodeCell-segment-item--tag"></span>
 
                 <span data-montage-id="montageArg" class="NodeCell-segment-item NodeCell-segment-item--montageArg"></span>
+                <span data-montage-id="montageParam" class="NodeCell-segment-item NodeCell-segment-item--montageParam"></span>
                 <span data-montage-id="montageId" class="NodeCell-segment-item NodeCell-segment-item--montageId"></span>
 
                 <span data-montage-id="componentCondition" class="NodeCell-segment-item NodeCell-segment-item--component">
