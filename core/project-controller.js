@@ -229,33 +229,28 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     loadProjectIcon: {
         value: function(projectUrl) {
             var self = this;
-            var url = projectUrl + "/index.html";
+            
+            // Use a default icon
             this.icon = this.icon || "/assets/icons/app-icon.png";
 
-            var req = new XMLHttpRequest();
-            req.open("GET", url);
-            req.addEventListener("load", function() {
-                if (req.status === 200) {
-                    var touchIconLink,
-                        touchIcon,
-                        doc,
-                        template;
+            require.read(projectUrl + "/index.html").then(function(indexHtml) {
+                var touchIconLink,
+                    touchIcon,
+                    doc,
+                    template;
 
-                    template = Template.create();
-                    doc = template.createHtmlDocumentWithHtml(req.responseText);
+                template = Template.create();
+                doc = template.createHtmlDocumentWithHtml(indexHtml);
 
-                    // Use Apple touch or Android shortcut icon as the project icon, if present
-                    touchIconLink = doc.querySelector('link[rel="apple-touch-icon-precomposed"]')
-                        || doc.querySelector('link[rel="apple-touch-icon"]')
-                        || doc.querySelector('link[rel="shortcut icon"]');
+                // Use Apple touch or Android shortcut icon as the project icon, if present
+                touchIconLink = doc.querySelector('link[rel="apple-touch-icon-precomposed"]')
+                    || doc.querySelector('link[rel="apple-touch-icon"]')
+                    || doc.querySelector('link[rel="shortcut icon"]');
 
-                    if (touchIconLink && touchIconLink.getAttribute("href")) {
-                        self.icon = projectUrl + "/" + touchIconLink.getAttribute("href");
-                    }
+                if (touchIconLink && touchIconLink.getAttribute("href")) {
+                    self.icon = projectUrl + "/" + touchIconLink.getAttribute("href");
                 }
-            }, false);
-
-            req.send();
+            });
         }
     },
 
