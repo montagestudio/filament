@@ -755,7 +755,9 @@ exports.PackageDocument = EditingDocument.specialize( {
                     if (dependency) {
                         var update = outDatedDependencies[key];
 
-                        if (dependency.versionInstalled  !== update.available && semver.satisfies(update.available, dependency.version)) {
+                        if (dependency.versionInstalled  !== update.available &&
+                            semver.satisfies(update.available, dependency.version)) {
+
                             dependency.update = update;
                         }
                     }
