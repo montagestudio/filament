@@ -743,17 +743,21 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     _notifyOutDatedDependencies: {
         value: function () {
-            var outDatedDependencies = this._outDatedDependencies,
-                keys = Object.keys(outDatedDependencies);
+            var outDatedDependencies = this._outDatedDependencies;
 
-            for (var i = 0, length = keys.length; i < length; i++) {
-                var dependency = this.findDependency(keys[i]);
+            if (outDatedDependencies) {
+                var keys = Object.keys(outDatedDependencies);
 
-                if (dependency) {
-                    var update = outDatedDependencies[keys[i]];
+                for (var i = 0, length = keys.length; i < length; i++) {
+                    var key = keys[i],
+                        dependency = this.findDependency(key);
 
-                    if (dependency.versionInstalled  !== update.available && semver.satisfies(update.available, dependency.version)) {
-                        dependency.update = update;
+                    if (dependency) {
+                        var update = outDatedDependencies[key];
+
+                        if (dependency.versionInstalled  !== update.available && semver.satisfies(update.available, dependency.version)) {
+                            dependency.update = update;
+                        }
                     }
                 }
             }
