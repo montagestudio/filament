@@ -29,24 +29,19 @@ exports.PackageDocument = EditingDocument.specialize( {
             var self = this;
 
             return require.loadPackage(packageUrl).then(function (packageRequire) {
-                return self.listDependencies().then(function(app) { // invoke the custom list command, which check every dependencies installed.
-                    return self.create().init(fileUrl, packageRequire, self.sharedProjectController, app);
-                });
+                return self.create().init(fileUrl, packageRequire, self.sharedProjectController);
             });
         }
     },
 
     init: {
-        value: function (fileUrl, packageRequire, projectController, app) {
+        value: function (fileUrl, packageRequire, projectController) {
             var self = this.super.call(this, fileUrl, packageRequire);
 
             PackageQueueManager.load(this, '_handleDependenciesListChange');
             this._livePackage = packageRequire.packageDescription;
             this.sharedProjectController = projectController;
             this.editor = projectController.currentEditor;
-
-            this._package = app.file || {};
-            this._classifyDependencies(app.dependencies, false); // classify dependencies
 
             return this.getApplicationSupportUrl().then(function (url) {
                 self.applicationSupportUrl = url;
@@ -56,8 +51,13 @@ exports.PackageDocument = EditingDocument.specialize( {
                         throw new Error("An error has occurred while PackageManager was loading");
                     }
 
-                    self._getOutDatedDependencies();
-                    return self;
+                    return self.listDependencies().then(function(app) { // invoke the custom list command, which check every dependencies installed.
+                        self._package = app.file || {};
+                        self._classifyDependencies(app.dependencies, false); // classify dependencies
+
+                        self._getOutDatedDependencies();
+                        return self;
+                    });
                 });
             });
         }
@@ -234,29 +234,40 @@ exports.PackageDocument = EditingDocument.specialize( {
             maintainer = PackageTools.getValidPerson(maintainer);
 
             if (maintainer) {
-                if (this._findMaintainerIndex(maintainer.name) < 0) { // name must be different
-                    var maintainers = this.packageMaintainers,
-                        length = maintainers.length;
+                if (this._findMaintainerIndex(maintainer) >= 0) { // Already exists. Must be unique.
+                    return true;
+                }
 
-                    maintainers.push(maintainer);
-
-                    if (maintainers.length > length) {
-                        this.saveModification();
-                        return true;
-                    }
+                if (this._addMaintainer(maintainer)) {
+                    this.saveModification();
+                    return true;
                 }
             }
             return false;
         }
     },
 
+    _addMaintainer: {
+        value: function (maintainer) {
+            var maintainers = this.packageMaintainers,
+                length = maintainers.length;
+
+            maintainers.push(maintainer);
+            return maintainers.length > length;
+        }
+    },
+
     _findMaintainerIndex: {
-        value: function (name) {
+        value: function (person) {
             var maintainers = this.packageMaintainers;
 
-            if (maintainers && typeof name === 'string' && name.length > 0) {
+            if (maintainers && person && typeof person === 'object') {
                 for (var i = 0, length = maintainers.length; i < length; i++) {
-                    if (maintainers[i].name === name) {
+                    var maintainer = maintainers[i];
+
+                    if (maintainer.name === person.name &&
+                        maintainer.url === person.url && maintainer.email === person.email) {
+
                         return i;
                     }
                 }
@@ -265,17 +276,33 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    removeMaintainer: {
-        value: function (maintainer) {
-            var index  = (typeof maintainer === "string") ? this._findMaintainerIndex(maintainer) :
-                (maintainer && typeof maintainer === 'object' && maintainer.hasOwnProperty('name')) ?
-                    this._findMaintainerIndex(maintainer.name) : -1;
+    replaceMaintainer: {
+        value: function (old, person) {
+            var index = this._findMaintainerIndex(old);
 
-            if (index >= 0 && this.packageMaintainers.splice(index, 1).length > 0) {
+            if (index >= 0 && this._removeMaintainer(index) && this._addMaintainer(person)) {
                 this.saveModification();
                 return true;
             }
             return false;
+        }
+    },
+
+    removeMaintainer: {
+        value: function (maintainer) {
+            if (maintainer && typeof maintainer === 'object') {
+                if (this._removeMaintainer(this._findMaintainerIndex(maintainer))) {
+                    this.saveModification();
+                    return true;
+                }
+            }
+            return false;
+        }
+    },
+
+    _removeMaintainer: {
+        value: function (index) {
+            return index >= 0 && this.packageMaintainers.splice(index, 1).length > 0;
         }
     },
 

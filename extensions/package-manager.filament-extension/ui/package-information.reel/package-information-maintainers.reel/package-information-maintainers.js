@@ -54,16 +54,11 @@ exports.PackageInformationMaintainers = Component.specialize(/** @lends PackageI
     handleCreateMaintainer: {
         value: function (event) {
             var maintainer = (event.detail && event.detail.maintainer) ? event.detail.maintainer : null;
-            if (maintainer && this.editingDocument && this.editingDocument.addMaintainer(maintainer) && this.createPersonOverlay.isShown) {
+
+            if (maintainer && this.editingDocument &&
+                this.editingDocument.addMaintainer(maintainer) && this.createPersonOverlay.isShown) {
+
                 this.createPersonOverlay.hide();
-            } else {
-                this.dispatchEventNamed("asyncActivity", true, false, {
-                    promise: Promise.reject(
-                        new Error('Can not add the current maintainer, the information given are invalid or the name is already used')
-                    ),
-                    title: "Adding maintainer"
-                });
-                // TODO indicate error within the overlay.
             }
         }
     },
@@ -79,6 +74,39 @@ exports.PackageInformationMaintainers = Component.specialize(/** @lends PackageI
 
             if (maintainer && this.editingDocument) {
                 this.editingDocument.removeMaintainer(maintainer);
+            }
+        }
+    },
+
+    handleEditPersonAction: {
+        value: function (event) {
+            var source = event.detail.get('source');
+
+            if (source && this.editingDocument) {
+                source.isEditing = true;
+            }
+        }
+    },
+
+    handleCancelEditPersonAction: {
+        value: function (event) {
+            var source = event.detail.get('source');
+
+            if (source && this.editingDocument) {
+                source.isEditing = false;
+            }
+        }
+    },
+
+    handleValidEditPersonAction: {
+        value: function (event) {
+            var source = event.detail.get('source'),
+                old = source.person,
+                maintainer = source.editedPerson;
+
+            if (this.editingDocument && source && maintainer) {
+                this.editingDocument.replaceMaintainer(old, maintainer);
+                source.validModification();
             }
         }
     },

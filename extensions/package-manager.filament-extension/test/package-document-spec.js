@@ -128,16 +128,16 @@ describe("package document", function () {
     });
 
     it('should be able to add a maintainer and remove it.', function () {
-        packageDocument.addMaintainer(
-            {
-                name: 'bob',
-                email: 'bob@declarativ.com',
-                url: 'declarativ.com'
-            }
-        );
+        var bob = {
+            name: 'bob',
+            email: 'bob@declarativ.com',
+            url: 'declarativ.com'
+        };
+
+        packageDocument.addMaintainer(bob);
 
         expect(packageDocument.packageMaintainers.length).toEqual(1);
-        expect(packageDocument.removeMaintainer('bob')).toEqual(true);
+        expect(packageDocument.removeMaintainer(bob)).toEqual(true);
         expect(packageDocument.packageMaintainers.length).toEqual(0);
     });
 

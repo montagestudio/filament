@@ -9,7 +9,13 @@
             "properties": {
                 "element": {"#": "package-information-maintainers"},
                 "createPersonOverlay": {"@": "overlay"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "title": {
@@ -49,13 +55,7 @@
             "properties": {
                 "label": "Add Maintainer",
                 "element": {"#": "addMaintainerButton"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
+            }
         },
 
         "maintainersContentController": {
@@ -73,13 +73,7 @@
             "properties": {
                 "element": {"#": "maintainersList"},
                 "contentController": {"@": "maintainersContentController"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
+            }
         },
 
         "maintainerCell": {
@@ -98,7 +92,7 @@
     <div data-montage-id="package-information-maintainers" class="PackageInformation--maintainers">
         <h3 data-montage-id="packageInformationBoxTitle" class="PackageEditorPanel-title"></h3>
         <div class="PackageEditorPanel-content">
-            <div>
+            <div class="MaintainersToolBar">
                 <button data-montage-id="addMaintainerButton"></button>
                 <div data-montage-id="maintainerFormOverlay" class="PersonFromOverlay">
                     <div data-montage-id="maintainerFormOverlayContent"></div>
