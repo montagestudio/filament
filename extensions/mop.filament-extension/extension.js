@@ -1,8 +1,8 @@
 var Montage = require("montage/core/core").Montage,
     CoreExtension = require("filament-extension/core/extension").Extension,
     Promise = require("montage/core/promise").Promise,
-    defaultMenu = require("filament/ui/native-menu/menu").defaultMenu,
-    MenuItem = require("filament/ui/native-menu/menu-item").MenuItem;
+    defaultMenu = require("collectif/ui/native/menu").defaultMenu,
+    MenuItem = require("collectif/ui/native/menu-item").MenuItem;
 
 /*global lumieres */
 
