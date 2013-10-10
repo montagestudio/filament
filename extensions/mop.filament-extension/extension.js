@@ -1,7 +1,7 @@
 var CoreExtension = require("filament-extension/core/extension").Extension,
     Promise = require("montage/core/promise").Promise,
-    defaultMenu = require("filament/ui/native-menu/menu").defaultMenu,
-    MenuItem = require("filament/ui/native-menu/menu-item").MenuItem;
+    defaultMenu = require("filament/adaptor/client/ui/native/menu").defaultMenu,
+    MenuItem = require("filament/adaptor/client/ui/native/menu-item").MenuItem;
 
 var PARENT_MENU = "Tools";
 
