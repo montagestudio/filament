@@ -12,7 +12,7 @@
         "palette": "git+ssh://git@github.com:declarativ/palette.git#v0.15.0",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#v0.14.0",
         "minit": "git+ssh://git@github.com:montagejs/minit.git#6df2fe6aacb5b4af6d38b716a3abb45b2c33cc1d",
-        "collectif": "git+ssh://git@github.com:declarativ/collectif.git#f2cfb6d956781bf325d64d5a68bf9f33f5032e88",
+        "collectif": "git+ssh://git@github.com:declarativ/collectif.git#94a27cefa6f2c103a9c93c43a501e03fd8d545fc",
         "mousse": "0.1.2",
         "q": "0.9.7",
         "q-connection": "0.5.5",
