@@ -229,13 +229,13 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     loadProjectIcon: {
         value: function(projectUrl) {
             var self = this;
-            
+
             // Use a default icon
             this.icon = this.icon || "/assets/icons/app-icon.png";
 
             require.read(projectUrl + "/index.html").then(function(indexHtml) {
-                var touchIconLink,
-                    touchIcon,
+                var icons,
+                    sizes,
                     doc,
                     template;
 
@@ -243,13 +243,36 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 doc = template.createHtmlDocumentWithHtml(indexHtml);
 
                 // Use Apple touch or Android shortcut icon as the project icon, if present
-                touchIconLink = doc.querySelector('link[rel="apple-touch-icon-precomposed"]')
-                    || doc.querySelector('link[rel="apple-touch-icon"]')
-                    || doc.querySelector('link[rel="shortcut icon"]');
+                icons = Array.prototype.slice.call(doc.querySelectorAll('link[rel="apple-touch-icon-precomposed"]'))
+                    .concat(Array.prototype.slice.call(doc.querySelectorAll('link[rel="apple-touch-icon"]')))
+                    .concat(Array.prototype.slice.call(doc.querySelectorAll('link[rel="shortcut icon"]')));
+                sizes = [];
+                for (var icon in icons) { 
+                    var href = icons[icon].getAttribute("href");
+                    if(!href) continue;
 
-                if (touchIconLink && touchIconLink.getAttribute("href")) {
-                    self.icon = projectUrl + "/" + touchIconLink.getAttribute("href");
+                    var size = icons[icon].getAttribute("sizes") || "9999x9999";
+                    sizes.push({
+                        size: parseInt(size.split("x")[0]),
+                        href: href
+                    });
                 }
+                if (sizes.length > 0) {
+                    /* sort to have the smallest which is larger than 28px in position 0 */
+                    sizes.sort(function(a, b) {
+                        if (!a.href || a.size < 28) {
+                            return false;
+                        }
+                        return (a.size - b.size);
+                    });
+                    self.icon = projectUrl + "/" + sizes[0].href;
+                } else {
+                    /* if no touch icons are present, but a favicon is, use it */
+                    require.read(projectUrl + "/favicon.ico").then(function() {
+                        self.icon = projectUrl + "/favicon.ico";
+                    });
+                }
+
             });
         }
     },
