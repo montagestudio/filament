@@ -29,6 +29,11 @@ Object.defineProperties(Dependency, {
     INSTALLING_DEPENDENCY_ACTION: {
         value: 4,
         enumerable: true
+    },
+
+    FIX_ERROR_DEPENDENCY_ACTION: {
+        value: 5,
+        enumerable: true
     }
 
 });
