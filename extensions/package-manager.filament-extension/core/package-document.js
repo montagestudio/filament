@@ -710,7 +710,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
                 return PackageQueueManager.uninstallModule(name, !dependency.missing).then(function () {
                     self.editor.notifyDependenciesListChange(name, Dependency.REMOVE_DEPENDENCY_ACTION);
-                    return 'The dependency ' +name + ' has been removed';
+                    return 'The dependency ' + name + ' has been removed';
                 });
             }
             return Promise.reject(new Error('An error has occurred while removing a dependency'));
@@ -774,7 +774,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
                     for (var i = 0, length = keys.length; i < length; i++) { // temporary fix because npm outdated is buggy.
                         var dependency = self.findDependency(keys[i], null, false);
-                        if (!dependency || dependency.private) {
+                        if (!dependency || dependency.private || dependency.problems) {
                             delete updates[keys[i]];
                         }
                     }
