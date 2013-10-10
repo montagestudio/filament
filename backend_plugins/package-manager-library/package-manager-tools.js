@@ -165,3 +165,9 @@ PackageManagerTools.prototype.formatPersonsContainer = function (personsContaine
 };
 
 exports.PackageManagerTools = new PackageManagerTools();
+
+exports.DependencyNames = {
+    dependencies: 'dependencies',
+    optionalDependencies: 'optionalDependencies',
+    devDependencies: 'devDependencies'
+};

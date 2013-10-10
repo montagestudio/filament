@@ -6,6 +6,7 @@ var listCommand = require('./package-manager-library/list-command').listCommand,
     installCommand = require('./package-manager-library/install-command').installCommand,
     removeCommand = require('./package-manager-library/remove-command').removeCommand,
     outDatedCommand = require('./package-manager-library/outdated-command').outDatedCommand,
+    saveModuleFileCommand = require('./package-manager-library/save-module-file-command').saveModuleFileCommand,
     PackageManagerDB = require('./package-manager-library/package-manager-database').PackageManagerDB,
     npm = require("npm"),
     Path = require("path"),
@@ -68,4 +69,8 @@ exports.removeDependency = function (name, where) {
 
 exports.getOutdatedDependencies = function () {
     return Q.invoke(outDatedCommand, "run");
+};
+
+exports.saveModuleIntoFile = function (dependency, where) {
+    return saveModuleFileCommand.run(dependency, where);
 };
