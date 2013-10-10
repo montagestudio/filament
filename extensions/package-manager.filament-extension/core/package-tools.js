@@ -52,8 +52,9 @@ exports.ToolsBox = Object.create(Object.prototype, {
     },
 
     isDependency: {
-        value: function (dependency) {
-            return (dependency && typeof dependency === "object" && dependency.hasOwnProperty("name"));
+        value: function (module) {
+            return (module && typeof module === "object" &&
+                module.hasOwnProperty("name") && typeof module.name === "string" && module.name.length > 0);
         }
     },
 
@@ -142,6 +143,16 @@ exports.ToolsBox = Object.create(Object.prototype, {
                     email: (typeof person.email === 'string' && this.isEmailValid(person.email)) ? person.email : '',
                     url: (typeof person.url === 'string' && this.isUrlValid(person.url)) ? person.url : ''
                 };
+            }
+            return null;
+        }
+    },
+
+    getValidRequestFromModule: {
+        value: function (module) {
+            if (this.isDependency(module)) {
+                var version = this.isVersionValid(module.version) ? module.version : null;
+                return this.isGitUrl(module.version) ? module.version : version ? module.name + '@' + version : module.name;
             }
             return null;
         }
