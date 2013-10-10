@@ -1,6 +1,6 @@
 /* global lumieres */
 var Montage = require("montage/core/core").Montage,
-    EnvironmentBridge = require("core/environment-bridge").EnvironmentBridge,
+    EnvironmentBridge = require("collectif/core/environment-bridge").EnvironmentBridge,
     Connection = require("q-connection"),
     adaptConnection = require("q-connection/adapt"),
     Promise = require("montage/core/promise").Promise,
