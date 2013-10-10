@@ -29,6 +29,34 @@
             "bindings": {
                 "value": {"<-": "@dependencyErrors.objectAtCurrentIteration.message"}
             }
+        },
+
+        "substitutionState": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "substitutionState"}
+            },
+            "bindings": {
+                "switchValue": {"<-": "@owner.isFixing ? 'spinner' : 'button'"}
+            }
+        },
+
+        "fixDependencyError": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "fixDependencyError"},
+                "label": "Fix Errors"
+            }
+        },
+
+        "fixDependencyErrorSpinner": {
+            "prototype": "../../spinner.reel",
+            "properties": {
+                "element": {"#": "fixDependencyErrorSpinner"}
+            },
+            "bindings": {
+                "loading": {"<-": "@owner.isFixing"}
+            }
         }
     }
     </script>
@@ -36,12 +64,18 @@
 <body>
     <div data-montage-id="dependency-errors" class="PackageInformation--dependency-errors">
         <h3 class="PackageEditorPanel-title">Errors</h3>
-        <div class="PackageEditorPanel-content dependencyDetailsList">
-            <ul data-montage-id="dependencyErrors">
-                <li>
-                    <span data-montage-id="dependencyError" class="dependencyDetails-value"></span>
-                </li>
-            </ul>
+        <div class="PackageEditorPanel-content PanelDependencyErrors">
+            <div class="PanelDependencyErrorsList">
+                <ul data-montage-id="dependencyErrors">
+                    <li class="PanelDependencyErrorsCell">
+                        <span data-montage-id="dependencyError" class="PanelDependencyErrorsCell-detail"></span>
+                    </li>
+                </ul>
+            </div>
+            <div data-montage-id="substitutionState" class="PanelDependencyErrorsActions">
+                <button data-arg="button" data-montage-id="fixDependencyError" class="PanelDependencyErrorsActions-button"></button>
+                <span data-arg="spinner" data-montage-id="fixDependencyErrorSpinner"></span>
+            </div>
         </div>
     </div>
 </body>

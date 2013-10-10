@@ -1,0 +1,24 @@
+.PanelDependencyErrorsList {
+    display: -webkit-flex;
+    -webkit-flex: 5;
+    margin-left: 40px;
+}
+
+.PanelDependencyErrorsList > ul {
+    padding: 0;
+    list-style: none;
+}
+
+.PanelDependencyErrorsCell {
+    display: -webkit-flex;
+    -webkit-flex: 1;
+    display: block;
+    line-height: 26px;
+}
+
+.PanelDependencyErrorsActions {
+    display: -webkit-flex;
+    -webkit-flex: 1;
+    -webkit-justify-content: center;
+    min-width: 96px;
+}
