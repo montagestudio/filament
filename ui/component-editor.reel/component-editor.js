@@ -212,6 +212,7 @@ exports.ComponentEditor = Editor.specialize({
     handleBindingCreatorCommit: {
         value: function (evt) {
             this.templateObjects.bindingOverlay.hide();
+            this.currentDocument._editor.refresh();
         }
     },
 

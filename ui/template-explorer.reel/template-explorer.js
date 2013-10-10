@@ -192,6 +192,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             var targetObject = evt.detail.get("targetObject");
             var binding = evt.detail.get("binding");
             this.editingDocument.cancelOwnedObjectBinding(targetObject, binding);
+            this.editingDocument._editor.refresh();
         }
     },
 
