@@ -36,6 +36,10 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
         value: null
     },
 
+    homepage: {
+        value: null
+    },
+
     privacy: {
         value: null
     },
@@ -46,6 +50,7 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
             this.addOwnPropertyChangeListener("version", this);
             this.addOwnPropertyChangeListener("license", this);
             this.addOwnPropertyChangeListener("privacy", this);
+            this.addOwnPropertyChangeListener("homepage", this);
             this._nameValidity(PackageTools.isNameValid(this.name)); // If the name has been modified manually within the package.json file
         }
     },
@@ -76,6 +81,14 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
         value: function (value) {
             if (this.editingDocument) {
                 this.editingDocument.setProperty('license', value);
+            }
+        }
+    },
+
+    handleHomepageChange: {
+        value: function (value) {
+            if (this.editingDocument && this.homepageTextField.element.validity.valid) {
+                this.editingDocument.setProperty('homepage', value);
             }
         }
     },

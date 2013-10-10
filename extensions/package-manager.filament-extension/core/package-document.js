@@ -18,6 +18,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
         'version',
         'privacy',
         'license',
+        'homepage',
         'description',
         'author'
     ];
@@ -226,6 +227,18 @@ exports.PackageDocument = EditingDocument.specialize( {
         },
         get: function () {
             return this._package.private;
+        }
+    },
+
+    homepage: {
+        set: function (homepage) {
+            if (PackageTools.isUrlValid(homepage)) {
+                this._package.homepage = homepage;
+                this._modificationsAccepted();
+            }
+        },
+        get: function () {
+            return this._package.homepage;
         }
     },
 
