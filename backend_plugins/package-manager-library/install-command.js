@@ -18,12 +18,9 @@ var PackageManagerError = require("./core").PackageManagerError,
  * (all the dependencies child installed).
  * @return {Promise.<Object>} A promise for the installed package.
  */
-InstallCommand.prototype.run = function (request, deeply) {
+InstallCommand.prototype.run = function (request, where, deeply) {
     if (Tools.isRequestValid(request)) {
-        if (!npm.config.loaded) {
-            throw new Error("NPM should be loaded first");
-        }
-        return this._invokeInstallCommand(request, deeply);
+        return this._invokeInstallCommand(request, where, deeply);
     }
     throw new PackageManagerError("Should respect the following format: name[@version], or a git url", ERROR_WRONG_FORMAT);
 };
@@ -37,10 +34,10 @@ InstallCommand.prototype.run = function (request, deeply) {
  * @return {Promise.<Object>} A promise for the installed package.
  * @private
  */
-InstallCommand.prototype._invokeInstallCommand = function (request, deeply) {
+InstallCommand.prototype._invokeInstallCommand = function (request, where, deeply) {
     var self = this;
 
-    return Q.ninvoke(npm.commands, "install", npm.prefix, request).then(function (data) { // Where -> private API.
+    return Q.ninvoke(npm.commands, "install", where, request).then(function (data) { // Where -> private API.
         return self._formatResponse(data[1], deeply);
     }, function (error) {
         if (typeof error === 'object') {
