@@ -134,7 +134,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                         }
                         return true;
                     }
-                } else if(this[key] !== value) { // new value is different from the old one.
+                } else if(typeof this[key] !== 'object' && this[key] !== value) { // new value is different from the old one.
                     this[key] = value;
 
                     if (this[key] === value) {
