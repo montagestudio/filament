@@ -171,8 +171,12 @@ exports.ComponentEditor = Editor.specialize({
                 overlay;
 
             listenerJig = this.templateObjects.listenerCreator;
-            listenerJig.listenerModel = listenerModel;
-            listenerJig.existingListener = existingListener;
+
+            // If the listener jig is already referring to this listener, leave what's already in the overlay in case user was editing
+            if (listenerJig.existingListener !== existingListener) {
+                listenerJig.listenerModel = listenerModel;
+                listenerJig.existingListener = existingListener;
+            }
 
             overlay = this.templateObjects.eventTargetOverlay;
 //            overlay.anchor = evt.target.element; //TODO when anchoring works well inside this scrollview
@@ -200,8 +204,12 @@ exports.ComponentEditor = Editor.specialize({
                 overlay;
 
             bindingJig = this.templateObjects.bindingCreator;
-            bindingJig.bindingModel = bindingModel;
-            bindingJig.existingBinding = existingBinding;
+
+            // If the binding jig is already referring to this binding, leave what's already in the overlay in case user was editing
+            if (bindingJig.existingBinding !== existingBinding) {
+                bindingJig.bindingModel = bindingModel;
+                bindingJig.existingBinding = existingBinding;
+            }
 
             overlay = this.templateObjects.bindingOverlay;
 //            overlay.anchor = evt.target.element; //TODO when anchoring works well inside this scrollview
