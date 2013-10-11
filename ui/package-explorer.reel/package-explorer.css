@@ -11,12 +11,17 @@
     height: 71px;
 }
 
-.Panel-title-icon {
+.PackageExplorer-title-icon {
+    border-width: 1px;
+    border-color: #eeeeee;
+    border-style: solid;
+    border-radius: 5px;
     height: 28px;
+    padding: 2px;
     margin:  0;
 }
 
-.Panel-title-flex {
+.PackageExplorer-title-flex {
     -webkit-flex: 1;
     min-width: 0;
     margin-left: 8px;

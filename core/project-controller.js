@@ -230,12 +230,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: function(projectUrl) {
             var self = this;
 
-            // Use a default icon
-            this.icon = this.icon || "/assets/icons/app-icon.png";
-
             require.read(projectUrl + "/index.html").then(function(indexHtml) {
-                var icons,
-                    sizes,
+                var sizes = [],
+                    icons,
                     doc,
                     template;
 
@@ -246,7 +243,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 icons = Array.prototype.slice.call(doc.querySelectorAll('link[rel="apple-touch-icon-precomposed"]'))
                     .concat(Array.prototype.slice.call(doc.querySelectorAll('link[rel="apple-touch-icon"]')))
                     .concat(Array.prototype.slice.call(doc.querySelectorAll('link[rel="shortcut icon"]')));
-                sizes = [];
                 for (var icon in icons) {
                     if (icons.hasOwnProperty(icon)) {
                         var href = icons[icon].getAttribute("href");
