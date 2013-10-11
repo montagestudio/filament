@@ -247,15 +247,18 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     .concat(Array.prototype.slice.call(doc.querySelectorAll('link[rel="apple-touch-icon"]')))
                     .concat(Array.prototype.slice.call(doc.querySelectorAll('link[rel="shortcut icon"]')));
                 sizes = [];
-                for (var icon in icons) { 
-                    var href = icons[icon].getAttribute("href");
-                    if(!href) continue;
-
-                    var size = icons[icon].getAttribute("sizes") || "9999x9999";
-                    sizes.push({
-                        size: parseInt(size.split("x")[0]),
-                        href: href
-                    });
+                for (var icon in icons) {
+                    if (icons.hasOwnProperty(icon)) {
+                        var href = icons[icon].getAttribute("href");
+                        if (!href) {
+                            continue;
+                        }
+                        var size = icons[icon].getAttribute("sizes") || "9999x9999";
+                        sizes.push({
+                            size: parseInt(size.split("x")[0], 10),
+                            href: href
+                        });
+                    }
                 }
                 if (sizes.length > 0) {
                     /* sort to have the smallest which is larger than 28px in position 0 */
