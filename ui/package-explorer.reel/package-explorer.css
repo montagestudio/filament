@@ -4,8 +4,27 @@
 }
 
 .PackageExplorer .Panel-title {
+    display: -webkit-flex;
+    -webkit-justify-content: space-between;
+    -webkit-align-items: top;
     padding: 10px 8px 0 8px;
     height: 71px;
+}
+
+.PackageExplorer-title-icon {
+    border-width: 1px;
+    border-color: #eeeeee;
+    border-style: solid;
+    border-radius: 5px;
+    height: 28px;
+    padding: 2px;
+    margin:  0;
+}
+
+.PackageExplorer-title-flex {
+    -webkit-flex: 1;
+    min-width: 0;
+    margin-left: 8px;
 }
 
 .PackageExplorer .Panel-title-name {
