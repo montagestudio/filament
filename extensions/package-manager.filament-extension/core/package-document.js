@@ -496,11 +496,9 @@ exports.PackageDocument = EditingDocument.specialize( {
 
                     return this._packageManagerPlugin.invoke("viewDependency", search).then(function (module) {
                         dependency.information = module || {}; // Can be null if the version doesn't exists.
-                        self.editor.loadingDependency(false);
                         return dependency;
-                    }, function (error) {
+                    }).fin(function () {
                         self.editor.loadingDependency(false);
-                        throw error;
                     });
                 }
                 return Promise.resolve(dependency);

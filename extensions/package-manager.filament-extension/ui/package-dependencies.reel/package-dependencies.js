@@ -23,8 +23,6 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
             if (firstTime) {
                 this.element.addEventListener("dragstart", this, false);
                 this.element.addEventListener("dragend", this, false);
-                this.addOwnPropertyChangeListener("selectedDependency", this, true);
-                this.addOwnPropertyChangeListener("selectedDependency", this, false);
             }
         }
     },
@@ -34,61 +32,12 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
     },
 
     /**
-     * Reference to the packageEditor.
-     * @type {Object}
-     * @default null
-     */
-    packageEditor: {
-        value: null
-    },
-
-    _selectedCell: {
-        value: null
-    },
-
-    /**
      *  The current selected dependency.
      * @type {Object}
      * @default null
      */
     selectedCell: {
-        set: function (cell) {
-            this._selectedCell = cell;
-        },
-        get: function () {
-            return this._selectedCell;
-        }
-    },
-
-    /**
-     * Determines whether the future selected dependency belongs to the current selected list,
-     * if not then clear the current list selection.
-     * @function
-     * @param {Object} cell, represents the dependency which will be selected
-     */
-    handleSelectedDependencyWillChange: {
-        value: function (cell) {
-            if (this._selectedCell && cell && cell.type !== this._selectedCell.type) { // Needs manual change.
-                if (this._selectedCell.type === DependencyNames.dependencies) {
-                    this.templateObjects.packageDependenciesGroup.contentController.clearSelection();
-                } else if (this._selectedCell.type === DependencyNames.optionalDependencies) {
-                    this.templateObjects.packageOptionalDependenciesGroup.contentController.clearSelection();
-                } else if (this._selectedCell.type === DependencyNames.devDependencies) {
-                    this.templateObjects.packageDevDependenciesGroup.contentController.clearSelection();
-                }
-            }
-        }
-    },
-
-    /**
-     * Sets the current selected dependency.
-     * @function
-     * @param {Object} cell, represents the current selected dependency.
-     */
-    handleSelectedDependencyChange: {
-        value: function (cell) {
-            this.selectedCell = cell;
-        }
+        value: null
     },
 
     /**
@@ -99,8 +48,29 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
      */
     _changeSelection: {
         value: function (cell) {
-            this.dispatchBeforeOwnPropertyChange('selectedDependency', cell);
-            this.dispatchOwnPropertyChange('selectedDependency', cell);
+            if (cell) {
+                if (this.selectedCell && cell.type !== this.selectedCell.type) { // Needs manual change.
+                    this.deselectPreviousCategory();
+                }
+
+                this.selectedCell = cell;
+            }
+        }
+    },
+
+    deselectPreviousCategory: {
+        value: function () {
+            if (this.selectedCell) {
+                var oldType = this.selectedCell.type;
+
+                if (oldType === DependencyNames.dependencies) {
+                    this.templateObjects.dependenciesGroup.contentController.clearSelection();
+                } else if (oldType === DependencyNames.optionalDependencies) {
+                    this.templateObjects.optionalDependenciesGroup.contentController.clearSelection();
+                } else if (oldType === DependencyNames.devDependencies) {
+                    this.templateObjects.devDependenciesGroup.contentController.clearSelection();
+                }
+            }
         }
     },
 
@@ -137,15 +107,14 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
     updateSelection: {
         value: function (dependency) {
             if (dependency && dependency.hasOwnProperty("type")) {
-                var templateObjects = this.templateObjects,
-                    type = dependency.type;
+                var type = dependency.type;
 
                 if (type === DependencyNames.dependencies) {
-                    templateObjects.packageDependenciesGroup.contentController.select(dependency);
+                    this.templateObjects.dependenciesGroup.contentController.select(dependency);
                 } else if (type === DependencyNames.optionalDependencies) {
-                    templateObjects.packageOptionalDependenciesGroup.contentController.select(dependency);
+                    this.templateObjects.optionalDependenciesGroup.contentController.select(dependency);
                 } else if (type === DependencyNames.devDependencies) {
-                    templateObjects.packageDevDependenciesGroup.contentController.select(dependency);
+                    this.templateObjects.devDependenciesGroup.contentController.select(dependency);
                 }
             }
         }
@@ -164,23 +133,22 @@ exports.PackageDependencies = Component.specialize(/** @lends PackageDependencie
     forceDisplayGroups: {
         value: function (force) {
             var templateObjects = this.templateObjects;
-            templateObjects.packageOptionalDependenciesGroup.forceDisplay =
-                templateObjects.packageDevDependenciesGroup.forceDisplay =
-                templateObjects.packageDependenciesGroup.forceDisplay = !!force;
+            templateObjects.optionalDependenciesGroup.forceDisplay =
+                templateObjects.devDependenciesGroup.forceDisplay =
+                templateObjects.dependenciesGroup.forceDisplay = !!force;
         }
     },
 
     _groupAcceptDrop: {
         value: function (type, accept) {
-            var response = null,
-                templateObjects = this.templateObjects;
+            var response = null;
 
             if (type === DependencyNames.dependencies) {
-                response = templateObjects.packageDependenciesGroup.canAcceptDrop = !!accept;
+                response = this.templateObjects.dependenciesGroup.canAcceptDrop = !!accept;
             } else if (type === DependencyNames.optionalDependencies) {
-                response = templateObjects.packageOptionalDependenciesGroup.canAcceptDrop = !!accept;
+                response = this.templateObjects.optionalDependenciesGroup.canAcceptDrop = !!accept;
             } else if (type === DependencyNames.devDependencies) {
-                response = templateObjects.packageDevDependenciesGroup.canAcceptDrop = !!accept;
+                response = this.templateObjects.devDependenciesGroup.canAcceptDrop = !!accept;
             }
 
             return (response !== null);

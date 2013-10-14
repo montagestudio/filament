@@ -11,9 +11,9 @@
                 "installDependencyOverlay": {"@": "installDependencyOverlay"}
             },
             "bindings": {
-                "dependencyCell": {"<-": "@packageDependenciesGroup.selectedCell.0"},
-                "devDependencyCell": {"<-": "@packageDevDependenciesGroup.selectedCell.0"},
-                "optionalDependencyCell": {"<-": "@packageOptionalDependenciesGroup.selectedCell.0"}
+                "dependencyCell": {"<-": "@dependenciesGroup.selectedCell.0"},
+                "devDependencyCell": {"<-": "@devDependenciesGroup.selectedCell.0"},
+                "optionalDependencyCell": {"<-": "@optionalDependenciesGroup.selectedCell.0"}
             },
             "listeners": [
                 {
@@ -23,10 +23,10 @@
             ]
         },
 
-        "packageDependenciesGroup": {
+        "dependenciesGroup": {
             "prototype": "./package-dependencies-group.reel",
             "properties": {
-                "element": {"#": "packageDependenciesGroup"},
+                "element": {"#": "dependenciesGroup"},
                 "title": "Dependencies",
                 "type": "dependencies"
             },
@@ -36,10 +36,10 @@
             }
         },
 
-        "packageDevDependenciesGroup": {
+        "devDependenciesGroup": {
             "prototype": "./package-dependencies-group.reel",
             "properties": {
-                "element": {"#": "packageDevDependenciesGroup"},
+                "element": {"#": "devDependenciesGroup"},
                 "title": "Dev Dependencies",
                 "type": "devDependencies"
             },
@@ -49,10 +49,10 @@
             }
         },
 
-        "packageOptionalDependenciesGroup": {
+        "optionalDependenciesGroup": {
             "prototype": "./package-dependencies-group.reel",
             "properties": {
-                "element": {"#": "packageOptionalDependenciesGroup"},
+                "element": {"#": "optionalDependenciesGroup"},
                 "title": "Optional Dependencies",
                 "type": "optionalDependencies"
             },
@@ -87,9 +87,9 @@
     <section data-montage-id="package-dependencies" id="PackageDependencies">
         <header class="PackageEditorPanel-title PackageEditorPanel-title--header">Package Dependencies<button data-montage-id="addDependencyButton" class="PackageEditorPanel-title--button"></button></header>
         <div class="PackageEditorColumnContent">
-            <div data-montage-id="packageDependenciesGroup" class="PackageEditorPanel ListDependencies"></div>
-            <div data-montage-id="packageDevDependenciesGroup" class="PackageEditorPanel ListDependencies"></div>
-            <div data-montage-id="packageOptionalDependenciesGroup" class="PackageEditorPanel ListDependencies"></div>
+            <div data-montage-id="dependenciesGroup" class="PackageEditorPanel ListDependencies"></div>
+            <div data-montage-id="devDependenciesGroup" class="PackageEditorPanel ListDependencies"></div>
+            <div data-montage-id="optionalDependenciesGroup" class="PackageEditorPanel ListDependencies"></div>
         </div>
 
         <div data-montage-id="installDependencyOverlay"></div>
