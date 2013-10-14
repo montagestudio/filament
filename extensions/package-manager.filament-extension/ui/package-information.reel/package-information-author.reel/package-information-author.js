@@ -19,7 +19,11 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
                 email: "",
                 url: ""
             };
+        }
+    },
 
+    didDraw: {
+        value: function () {
             this.addPathChangeListener("author.name", this, "handleAuthorChange");
             this.addPathChangeListener("author.email", this, "handleAuthorChange");
             this.addPathChangeListener("author.url", this, "handleAuthorChange");
