@@ -1,11 +1,11 @@
 /* global lumieres */
 var Montage = require("montage/core/core").Montage,
-    EnvironmentBridge = require("core/environment-bridge").EnvironmentBridge,
+    EnvironmentBridge = require("collectif/core/environment-bridge").EnvironmentBridge,
     Connection = require("q-connection"),
     adaptConnection = require("q-connection/adapt"),
     Promise = require("montage/core/promise").Promise,
     qs = require("qs"),
-    mainMenu = require("ui/native-menu/menu").defaultMenu,
+    mainMenu = require("collectif/ui/native/menu").defaultMenu,
     FileDescriptor = require("core/file-descriptor").FileDescriptor,
     defaultLocalizer = require("montage/core/localizer").defaultLocalizer,
     PATH = require("core/path");

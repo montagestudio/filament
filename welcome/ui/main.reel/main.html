@@ -15,13 +15,7 @@
             "owner": {
                 "properties": {
                     "element": {"#": "main"}
-                },
-                "listeners": [
-                    {
-                        "type": "openDocument",
-                        "listener": {"@": "owner"}
-                    }
-                ]
+                }
             },
 
             "newAppButton": {
@@ -39,7 +33,7 @@
                     }
                 ]
             },
-            
+
             "openAppButton": {
                 "prototype": "matte/ui/button.reel",
                 "properties": {
@@ -102,11 +96,11 @@
             },
 
             "historyItemConverter": {
-                "prototype": "welcome/core/history-item-converter"
+                "prototype": "collectif/core/history/history-item-converter"
             },
 
             "historyListItem": {
-                "prototype": "welcome/ui/history-list-item.reel",
+                "prototype": "collectif/ui/history-list-item.reel",
                 "properties": {
                     "element": {"#": "historyListItem"}
                 },
@@ -115,7 +109,13 @@
                         "<-": "@historyList.objectAtCurrentIteration",
                         "converter": {"@": "historyItemConverter"}
                     }
-                }
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             }
 
         }
@@ -133,7 +133,7 @@
         </section>
 
         <section class="Launcher">
-            
+
             <section class="Launcher-section Action">
                 <button data-montage-id="newAppButton" class="Action-button Action-button--new"></button>
                 <button data-montage-id="openAppButton" class="Action-button Action-button--open"></button>
@@ -145,10 +145,10 @@
                     <li class="History-list-item" data-montage-id="historyListItem"></li>
                 </ul>
             </section>
-            
+
         </section>
-        
-        
+
+
 
     </div>
 
