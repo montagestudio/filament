@@ -59,16 +59,16 @@ exports.searchModules = function (request) {
     return Q.invoke(searchCommand, "run", request);
 };
 
-exports.installDependency = function (request, where) {
+exports.installDependency = function (request, packageLocation) {
     if (!npm.config.loaded) {
         return Q.reject(new Error("NPM should be loaded first"));
     }
 
-    if (typeof where === "undefined") {
-        where = npm.prefix;
+    if (typeof packageLocation === "undefined") {
+        packageLocation = npm.prefix;
     }
 
-    return Q.invoke(installCommand, "run", request, where, false);
+    return Q.invoke(installCommand, "run", request, packageLocation, false);
 };
 
 exports.removeDependency = function (name, where) {

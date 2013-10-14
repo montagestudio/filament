@@ -17,14 +17,14 @@ var PackageManagerError = require("./core").PackageManagerError,
  * Prepares the SaveModuleFile Command, then invokes it.
  * Save modules according their types into a package.json file.
  * @function
- * @param {Object} listDependency array that contains dependency to saved within the package.json file.
- * @param {String} where is the path where the package.json file is located.
+ * @param {Object} dependencyList array that contains dependency to saved within the package.json file.
+ * @param {String} packageLocation is the path where the package.json file is located.
  * @return {Promise.<Object>} A promise for the modified package.json file.
  */
-SaveModuleFileCommand.prototype.run = function (listDependency, where) {
-    if (Array.isArray(listDependency) && listDependency.length > 0) {
-        if (typeof where === "string" && where.length > 0) {
-            return this._invokeCommand(listDependency, where);
+SaveModuleFileCommand.prototype.run = function (dependencyList, packageLocation) {
+    if (Array.isArray(dependencyList) && dependencyList.length > 0) {
+        if (typeof packageLocation === "string" && packageLocation.length > 0) {
+            return this._invokeCommand(dependencyList, packageLocation);
         }
 
         return Q.reject(
@@ -37,26 +37,25 @@ SaveModuleFileCommand.prototype.run = function (listDependency, where) {
     );
 };
 
-SaveModuleFileCommand.prototype._invokeCommand = function (listDependency, where) {
-    if (!/package\.json$/.test(where)) {
-        where = path.join(where, 'package.json');
+SaveModuleFileCommand.prototype._invokeCommand = function (dependencyList, packageLocation) {
+    if (!/package\.json$/.test(packageLocation)) {
+        packageLocation = path.join(packageLocation, 'package.json');
     }
 
-    return FS.exists(where).then(function (exists) {
+    return FS.exists(packageLocation).then(function (exists) {
         if (exists) {
-            return FS.read(where).then(function (raw) {
+            return FS.read(packageLocation).then(function (rawPackageContent) {
                 var packageFile = null;
 
                 try {
-                    packageFile = JSON.parse(raw);
+                    packageFile = JSON.parse(rawPackageContent);
                 } catch (exception) {
                     throw new PackageManagerError("The package.json file shows some errors", ERROR_JSON_SHOWS_ERRORS);
                 }
 
                 if (packageFile) {
-                    for (var i = 0, length = listDependency.length; i < length; i++){
-                        var dependency = listDependency[i],
-                            version = dependency.version,
+                    dependencyList.forEach(function (dependency) {
+                        var version = dependency.version,
                             type = DependencyNames[dependency.type];
 
                         dependency.version = Tools.isGitUrl(version) || Tools.isVersionValid(version) ? version : '';
@@ -67,9 +66,9 @@ SaveModuleFileCommand.prototype._invokeCommand = function (listDependency, where
                         }
 
                         packageFile[type][dependency.name] = dependency.version;
-                    }
+                    });
 
-                    return FS.write(where, JSON.stringify(packageFile, null, 4));
+                    return FS.write(packageLocation, JSON.stringify(packageFile, null, 4));
                 }
             });
         } else {

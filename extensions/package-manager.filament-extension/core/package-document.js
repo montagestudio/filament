@@ -427,16 +427,17 @@ exports.PackageDocument = EditingDocument.specialize( {
                 return true;
             }
 
-            for (var i = 0; i < length; i++) {
-                var problem = problems[i];
-
-                if (problem.parent === ERROR_APP_NICKNAME && (problem.type === errorCodes.missing ||
-                    problem.type === errorCodes.fileErrors || problem.type === errorCodes.versionInvalid)) {
-
-                    return true;
-                }
-            }
-            return false; // Not too many deep errors.
+            /* Whether a dependency is located at the "top" level and has one of these following problems:
+             *
+             * - Version invalid.
+             * - Missing or invalid Package.json file.
+             *
+             * We should reinstall it.
+             */
+            return problems.reduce(function (needInstall, problem) {
+                return needInstall || (problem.parent === ERROR_APP_NICKNAME && (problem.type === errorCodes.missing ||
+                    problem.type === errorCodes.fileErrors || problem.type === errorCodes.versionInvalid));
+            }, false);
         }
     },
 
