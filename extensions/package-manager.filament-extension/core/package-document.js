@@ -13,15 +13,14 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     DEFAULT_TIME_AUTO_SAVE = 400,
     DEPENDENCY_TIME_AUTO_SAVE = 100,
     DEPENDENCIES_REQUIRED = ['montage'],
-    ALLOWED_PROPERTIES_KEYS = [
-        'name',
-        'version',
-        'privacy',
-        'license',
-        'homepage',
-        'description',
-        'author'
-    ];
+    PACKAGE_PROPERTIES_ALLOWED_MODIFY = {
+        name: "name",
+        version: "version",
+        privacy: "privacy",
+        license: "license",
+        description: "description",
+        author: "author"
+    };
 
 exports.PackageDocument = EditingDocument.specialize( {
 
@@ -125,30 +124,38 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     setProperty: {
         value: function (key, value) {
-            if (typeof key === 'string' && typeof value !== 'undefined' && ALLOWED_PROPERTIES_KEYS.indexOf(key) >= 0) {
-                if (this[key] && typeof this[key] === 'object' && !PackageTools.isPersonEqual(this[key], value)) { // case person object.
-                    this[key] = value;
+            var response = false;
 
-                    if (PackageTools.isPersonEqual(this[key], value)) { // modification has been accepted.
-                        if (this.undoManager) {
+            if (typeof key === 'string' && PACKAGE_PROPERTIES_ALLOWED_MODIFY.hasOwnProperty(key)) {
+                response = true; // Could be the same value.
+
+                switch (key) {
+
+                case PACKAGE_PROPERTIES_ALLOWED_MODIFY.author:
+                    if (!PackageTools.isPersonEqual(this[key], value)) { // Different values.
+                        this[key] = value; // Try to set the new value.
+                        // Check if the modification has been accepted.
+                        response = PackageTools.isPersonEqual(this[key], value);
+
+                        if (response && this.undoManager) {
                             this.undoManager.register("Set Property", Promise.resolve([this.setProperty, this, key, value]));
                         }
-                        return true;
                     }
-                } else if(this[key] !== value) { // new value is different from the old one.
-                    this[key] = value;
+                    break;
 
-                    if (this[key] === value) {
-                        if (this.undoManager) {
+                default:
+                    if(this[key] !== value) { // Different values.
+                        this[key] = value; // Try to set the new value.
+                        response = this[key] === value;// Check if the modification has been accepted.
+
+                        if (response && this.undoManager) {
                             this.undoManager.register("Set Property", Promise.resolve([this.setProperty, this, key, value]));
                         }
-                        return true;
                     }
-                } else { // no need modifications.
-                    return true;
+                    break;
                 }
             }
-            return false;
+            return response;
         }
     },
 
