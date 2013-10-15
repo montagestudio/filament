@@ -8,7 +8,8 @@
         "owner": {
             "properties": {
                 "element": {"#": "package-information-basics"},
-                "nameTextField": {"@": "name"}
+                "nameTextField": {"@": "name"},
+                "homepageTextField": {"@": "homepage"}
             }
         },
 
@@ -52,6 +53,16 @@
             }
         },
 
+        "homepage":{
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "packageInformationBasicsHomepage"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.homepage"}
+            }
+        },
+
         "privacy": {
             "prototype": "matte/ui/input-checkbox.reel",
             "properties": {
@@ -80,6 +91,10 @@
                 <li class="PackageEditorPanel-list-item">
                     <label for="packageInformationBasicsLicense">License:</label>
                     <input id="packageInformationBasicsLicense" data-montage-id="packageInformationBasicsLicense" type="text" />
+                </li>
+                <li class="PackageEditorPanel-list-item">
+                    <label for="packageInformationBasicsHomepage">Homepage:</label>
+                    <input id="packageInformationBasicsHomepage" data-montage-id="packageInformationBasicsHomepage" type="text" pattern="^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w\.\-]*)*\/?$"/>
                 </li>
                 <li class="PackageEditorPanel-list-item">
                     <label for="packageInformationBasicsPrivacy">Private:</label>

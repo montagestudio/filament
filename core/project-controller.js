@@ -12,6 +12,7 @@ var Montage = require("montage/core/core").Montage,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     ProjectController,
     FileDescriptor = require("core/file-descriptor").FileDescriptor,
+    Template = require("montage/core/template").Template,
     URL = require("core/url");
 
 exports.ProjectController = ProjectController = DocumentController.specialize({
@@ -189,6 +190,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             var packagePromise = require.loadPackage(this.packageUrl).then(function (packageRequire) {
                 var packageDescription = packageRequire.packageDescription;
+                self.loadProjectIcon(self.packageUrl);
                 self.packageDescription = packageDescription;
 
                 // Add a dependency entry for this package so that the
@@ -217,6 +219,60 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     });
                     return packageUrl;
                 });
+        }
+    },
+
+    icon: {
+        value: null
+    },
+
+    loadProjectIcon: {
+        value: function(projectUrl) {
+            var self = this;
+
+            require.read(projectUrl + "/index.html").then(function(indexHtml) {
+                var sizes = [],
+                    icons,
+                    doc,
+                    template;
+
+                template = Template.create();
+                doc = template.createHtmlDocumentWithHtml(indexHtml);
+
+                // Use Apple touch or Android shortcut icon as the project icon, if present
+                icons = Array.prototype.slice.call(doc.querySelectorAll('link[rel="apple-touch-icon-precomposed"]'))
+                    .concat(Array.prototype.slice.call(doc.querySelectorAll('link[rel="apple-touch-icon"]')))
+                    .concat(Array.prototype.slice.call(doc.querySelectorAll('link[rel="shortcut icon"]')));
+                for (var icon in icons) {
+                    if (icons.hasOwnProperty(icon)) {
+                        var href = icons[icon].getAttribute("href");
+                        if (!href) {
+                            continue;
+                        }
+                        var size = icons[icon].getAttribute("sizes") || "9999x9999";
+                        sizes.push({
+                            size: parseInt(size.split("x")[0], 10),
+                            href: href
+                        });
+                    }
+                }
+                if (sizes.length > 0) {
+                    /* sort to have the smallest which is larger than 28px in position 0 */
+                    sizes.sort(function(a, b) {
+                        if (!a.href || a.size < 28) {
+                            return false;
+                        }
+                        return (a.size - b.size);
+                    });
+                    self.icon = projectUrl + "/" + sizes[0].href;
+                } else {
+                    /* if no touch icons are present, but a favicon is, use it */
+                    require.read(projectUrl + "/favicon.ico").then(function() {
+                        self.icon = projectUrl + "/favicon.ico";
+                    });
+                }
+
+            });
         }
     },
 

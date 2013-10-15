@@ -12,11 +12,17 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
     constructor: {
         value: function PackageInformationAuthor() {
             this.super();
+
+            // If the author propriety is not defined, within the package.json file.
             this._author = {
-                name: '',
-                email: '',
-                url: ''
+                name: "",
+                email: "",
+                url: ""
             };
+
+            this.addPathChangeListener("author.name", this, "handleAuthorChange");
+            this.addPathChangeListener("author.email", this, "handleAuthorChange");
+            this.addPathChangeListener("author.url", this, "handleAuthorChange");
         }
     },
 
@@ -28,36 +34,6 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
         value: null
     },
 
-    name: {
-        set: function (name) {
-            this._author.name = (typeof name === 'string') ? name : '';
-            this.dispatchOwnPropertyChange('author', this.author);
-        },
-        get: function () {
-            return this._author.name;
-        }
-    },
-
-    url: {
-        set: function (url) {
-            this._author.url = (typeof url === 'string') ? url : '';
-            this.dispatchOwnPropertyChange('author', this.author);
-        },
-        get: function () {
-            return this._author.url;
-        }
-    },
-
-    email: {
-        set: function (email) {
-            this._author.email = (typeof email === 'string') ? email : '';
-            this.dispatchOwnPropertyChange('author', this.author);
-        },
-        get: function () {
-            return this._author.email;
-        }
-    },
-
     _author: {
         value: null
     },
@@ -65,9 +41,9 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
     author: {
         set: function (author) {
             if (author && typeof author === 'object') {
-                this.name = (author.name || '');
-                this.email = (author.email || '');
-                this.url = (author.url || '');
+                this._author.name = author.name || '';
+                this._author.email = author.email || '';
+                this._author.url = author.url || '';
             }
         },
         get: function () {
@@ -75,18 +51,10 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
         }
     },
 
-    didDraw: {
-        value: function () {
-            this.addOwnPropertyChangeListener("author", this);
-        }
-    },
-
     handleAuthorChange: {
-        value: function (value) {
-            if (value && this.editingDocument && this.urlTextField.element.validity.valid &&
-                this.emailTextField.element.validity.valid) {
-
-                this.editingDocument.setProperty('author', value);
+        value: function () {
+            if (this.editingDocument && this.urlTextField.element.validity.valid && this.emailTextField.element.validity.valid) {
+                this.editingDocument.setProperty('author', this.author);
             }
         }
     }

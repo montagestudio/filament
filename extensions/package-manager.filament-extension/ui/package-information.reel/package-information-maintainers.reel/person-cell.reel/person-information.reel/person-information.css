@@ -1,0 +1,41 @@
+.PersonInformation {
+    -webkit-flex: 1;
+    display: -webkit-flex;
+}
+.PersonInformation-email,
+.PersonInformation-url,
+.PersonInformation-name {
+    font-size: 12px;
+    color: hsl(0,0%,50%);
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.PersonInformation-name {
+    text-transform: capitalize;
+    font-weight: 600;
+}
+
+.PersonInformation-email,
+.PersonInformation-url {
+    text-indent: 12px;
+}
+
+.PersonInformation-details {
+    -webkit-flex: 4;
+}
+
+.PersonInformation-actions {
+    display: -webkit-flex;
+    -webkit-flex: 0.5;
+    -webkit-justify-content: center;
+    -webkit-flex-direction: column;
+    min-width: 65px;
+}
+
+.PersonInformation-actions > button {
+    height: 25px;
+    margin: 6px 0 6px 0;
+}

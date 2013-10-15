@@ -13,14 +13,14 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     DEFAULT_TIME_AUTO_SAVE = 400,
     DEPENDENCY_TIME_AUTO_SAVE = 100,
     DEPENDENCIES_REQUIRED = ['montage'],
-    ALLOWED_PROPERTIES_KEYS = [
-        'name',
-        'version',
-        'privacy',
-        'license',
-        'description',
-        'author'
-    ];
+    PACKAGE_PROPERTIES_ALLOWED_MODIFY = {
+        name: "name",
+        version: "version",
+        privacy: "privacy",
+        license: "license",
+        description: "description",
+        author: "author"
+    };
 
 exports.PackageDocument = EditingDocument.specialize( {
 
@@ -29,24 +29,19 @@ exports.PackageDocument = EditingDocument.specialize( {
             var self = this;
 
             return require.loadPackage(packageUrl).then(function (packageRequire) {
-                return self.listDependencies().then(function(app) { // invoke the custom list command, which check every dependencies installed.
-                    return self.create().init(fileUrl, packageRequire, self.sharedProjectController, app);
-                });
+                return self.create().init(fileUrl, packageRequire, self.sharedProjectController);
             });
         }
     },
 
     init: {
-        value: function (fileUrl, packageRequire, projectController, app) {
+        value: function (fileUrl, packageRequire, projectController) {
             var self = this.super.call(this, fileUrl, packageRequire);
 
             PackageQueueManager.load(this, '_handleDependenciesListChange');
             this._livePackage = packageRequire.packageDescription;
             this.sharedProjectController = projectController;
             this.editor = projectController.currentEditor;
-
-            this._package = app.file || {};
-            this._classifyDependencies(app.dependencies, false); // classify dependencies
 
             return this.getApplicationSupportUrl().then(function (url) {
                 self.applicationSupportUrl = url;
@@ -56,8 +51,13 @@ exports.PackageDocument = EditingDocument.specialize( {
                         throw new Error("An error has occurred while PackageManager was loading");
                     }
 
-                    self._getOutDatedDependencies();
-                    return self;
+                    return self.listDependencies().then(function(app) { // invoke the custom list command, which check every dependencies installed.
+                        self._package = app.file || {};
+                        self._classifyDependencies(app.dependencies, false); // classify dependencies
+
+                        self._getOutDatedDependencies();
+                        return self;
+                    });
                 });
             });
         }
@@ -124,30 +124,38 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     setProperty: {
         value: function (key, value) {
-            if (typeof key === 'string' && typeof value !== 'undefined' && ALLOWED_PROPERTIES_KEYS.indexOf(key) >= 0) {
-                if (this[key] && typeof this[key] === 'object' && !PackageTools.isPersonEqual(this[key], value)) { // case person object.
-                    this[key] = value;
+            var response = false;
 
-                    if (PackageTools.isPersonEqual(this[key], value)) { // modification has been accepted.
-                        if (this.undoManager) {
+            if (typeof key === 'string' && PACKAGE_PROPERTIES_ALLOWED_MODIFY.hasOwnProperty(key)) {
+                response = true; // Could be the same value.
+
+                switch (key) {
+
+                case PACKAGE_PROPERTIES_ALLOWED_MODIFY.author:
+                    if (!PackageTools.isPersonEqual(this[key], value)) { // Different values.
+                        this[key] = value; // Try to set the new value.
+                        // Check if the modification has been accepted.
+                        response = PackageTools.isPersonEqual(this[key], value);
+
+                        if (response && this.undoManager) {
                             this.undoManager.register("Set Property", Promise.resolve([this.setProperty, this, key, value]));
                         }
-                        return true;
                     }
-                } else if(this[key] !== value) { // new value is different from the old one.
-                    this[key] = value;
+                    break;
 
-                    if (this[key] === value) {
-                        if (this.undoManager) {
+                default:
+                    if(this[key] !== value) { // Different values.
+                        this[key] = value; // Try to set the new value.
+                        response = this[key] === value;// Check if the modification has been accepted.
+
+                        if (response && this.undoManager) {
                             this.undoManager.register("Set Property", Promise.resolve([this.setProperty, this, key, value]));
                         }
-                        return true;
                     }
-                } else { // no need modifications.
-                    return true;
+                    break;
                 }
             }
-            return false;
+            return response;
         }
     },
 
@@ -229,34 +237,57 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
+    homepage: {
+        set: function (homepage) {
+            if (PackageTools.isUrlValid(homepage)) {
+                this._package.homepage = homepage;
+                this._modificationsAccepted();
+            }
+        },
+        get: function () {
+            return this._package.homepage;
+        }
+    },
+
     addMaintainer: {
         value: function (maintainer) {
             maintainer = PackageTools.getValidPerson(maintainer);
 
             if (maintainer) {
-                if (this._findMaintainerIndex(maintainer.name) < 0) { // name must be different
-                    var maintainers = this.packageMaintainers,
-                        length = maintainers.length;
+                if (this._findMaintainerIndex(maintainer) >= 0) { // Already exists. Must be unique.
+                    return true;
+                }
 
-                    maintainers.push(maintainer);
-
-                    if (maintainers.length > length) {
-                        this.saveModification();
-                        return true;
-                    }
+                if (this._addMaintainer(maintainer)) {
+                    this.saveModification();
+                    return true;
                 }
             }
             return false;
         }
     },
 
+    _addMaintainer: {
+        value: function (maintainer) {
+            var maintainers = this.packageMaintainers,
+                length = maintainers.length;
+
+            maintainers.push(maintainer);
+            return maintainers.length > length;
+        }
+    },
+
     _findMaintainerIndex: {
-        value: function (name) {
+        value: function (person) {
             var maintainers = this.packageMaintainers;
 
-            if (maintainers && typeof name === 'string' && name.length > 0) {
+            if (maintainers && person && typeof person === 'object') {
                 for (var i = 0, length = maintainers.length; i < length; i++) {
-                    if (maintainers[i].name === name) {
+                    var maintainer = maintainers[i];
+
+                    if (maintainer.name === person.name &&
+                        maintainer.url === person.url && maintainer.email === person.email) {
+
                         return i;
                     }
                 }
@@ -265,17 +296,33 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    removeMaintainer: {
-        value: function (maintainer) {
-            var index  = (typeof maintainer === "string") ? this._findMaintainerIndex(maintainer) :
-                (maintainer && typeof maintainer === 'object' && maintainer.hasOwnProperty('name')) ?
-                    this._findMaintainerIndex(maintainer.name) : -1;
+    replaceMaintainer: {
+        value: function (old, person) {
+            var index = this._findMaintainerIndex(old);
 
-            if (index >= 0 && this.packageMaintainers.splice(index, 1).length > 0) {
+            if (index >= 0 && this._removeMaintainer(index) && this._addMaintainer(person)) {
                 this.saveModification();
                 return true;
             }
             return false;
+        }
+    },
+
+    removeMaintainer: {
+        value: function (maintainer) {
+            if (maintainer && typeof maintainer === 'object') {
+                if (this._removeMaintainer(this._findMaintainerIndex(maintainer))) {
+                    this.saveModification();
+                    return true;
+                }
+            }
+            return false;
+        }
+    },
+
+    _removeMaintainer: {
+        value: function (index) {
+            return index >= 0 && this.packageMaintainers.splice(index, 1).length > 0;
         }
     },
 
@@ -449,11 +496,9 @@ exports.PackageDocument = EditingDocument.specialize( {
 
                     return this._packageManagerPlugin.invoke("viewDependency", search).then(function (module) {
                         dependency.information = module || {}; // Can be null if the version doesn't exists.
-                        self.editor.loadingDependency(false);
                         return dependency;
-                    }, function (error) {
+                    }).fin(function () {
                         self.editor.loadingDependency(false);
-                        throw error;
                     });
                 }
                 return Promise.resolve(dependency);
@@ -716,17 +761,23 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     _notifyOutDatedDependencies: {
         value: function () {
-            var outDatedDependencies = this._outDatedDependencies,
-                keys = Object.keys(outDatedDependencies);
+            var outDatedDependencies = this._outDatedDependencies;
 
-            for (var i = 0, length = keys.length; i < length; i++) {
-                var dependency = this.findDependency(keys[i]);
+            if (outDatedDependencies) {
+                var keys = Object.keys(outDatedDependencies);
 
-                if (dependency) {
-                    var update = outDatedDependencies[keys[i]];
+                for (var i = 0, length = keys.length; i < length; i++) {
+                    var key = keys[i],
+                        dependency = this.findDependency(key);
 
-                    if (dependency.versionInstalled  !== update.available && semver.satisfies(update.available, dependency.version)) {
-                        dependency.update = update;
+                    if (dependency) {
+                        var update = outDatedDependencies[key];
+
+                        if (dependency.versionInstalled  !== update.available &&
+                            semver.satisfies(update.available, dependency.version)) {
+
+                            dependency.update = update;
+                        }
                     }
                 }
             }
