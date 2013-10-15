@@ -1105,6 +1105,9 @@ exports.ReelDocument = EditingDocument.specialize({
             // updates, ready for the inner template inspector
             this._buildSerializationObjects();
 
+            // Refresh the stage
+            this.editor.refresh();
+
             return binding;
         }
     },
@@ -1147,6 +1150,9 @@ exports.ReelDocument = EditingDocument.specialize({
             // updates, ready for the inner template inspector
             this._buildSerializationObjects();
 
+            // Refresh the stage
+            this.editor.refresh();
+
             return removedBinding;
         }
     },
@@ -1174,6 +1180,9 @@ exports.ReelDocument = EditingDocument.specialize({
             // Need to rebuild the serialization here so that the template
             // updates, ready for the inner template inspector
             this._buildSerializationObjects();
+
+            // Refresh the stage
+            this.editor.refresh();
 
             return updatedBinding;
         }
