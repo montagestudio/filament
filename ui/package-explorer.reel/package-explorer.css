@@ -27,7 +27,7 @@
     margin: 0;
     width: inherit;
     height: inherit;
-    border-radius: inherit;
+    border-radius: 4px; /* One px less than parent to avoid showing inner shadow */
     opacity: .999; /* For some reason this is needed to make the img transparent */
 }
 
