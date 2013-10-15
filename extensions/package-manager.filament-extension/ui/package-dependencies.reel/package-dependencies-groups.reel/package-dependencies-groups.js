@@ -22,12 +22,24 @@ exports.PackageDependenciesGroups = Component.specialize(/** @lends PackageDepen
             if (firstTime) {
                 this.element.addEventListener("dragstart", this, false);
                 this.element.addEventListener("dragend", this, false);
+                this.element.addEventListener("click", this, false);
             }
         }
     },
 
     editingDocument: {
         value: null
+    },
+
+    handleClick: {
+        value: function (event) {
+            var target = event.target;
+
+            if (target === this.element) {
+                this.deselectPreviousCategory();
+                this.selectedCell = null;
+            }
+        }
     },
 
     /**
