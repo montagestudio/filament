@@ -24,7 +24,7 @@ exports.PackageEditor = Montage.create(Editor, {
 
     closeDocument: {
         value: function () {
-            this._clearSelection();
+            this.clearSelection();
             this.templateObjects.searchModules.clearSearch();
         }
     },
@@ -67,29 +67,34 @@ exports.PackageEditor = Montage.create(Editor, {
      */
     handleSelectedDependencyChange: {
         value: function (dependency) {
-            if (this.currentDocument && dependency && typeof dependency === 'object') {
-                var self = this;
+            if (this.currentDocument) {
+                if (dependency && typeof dependency === 'object') {
+                    var self = this;
 
-                this.currentDocument.getInformationDependency(dependency).then(function (module) {
-                    if(self.selectedDependency && module && typeof module === 'object' && module.name === self.selectedDependency.name) {
-                        self.dependencyDisplayed = module;
-                    }
-                }, function (error) {
-                    if (error && typeof error === 'object' && error.code === ErrorsCommands.view.codes.dependencyNotFound) {
-                        if (self.selectedDependency && dependency && dependency.name === self.selectedDependency.name) { // Can be private.
-                            self.dependencyDisplayed = self.selectedDependency;
-                            self.selectedDependency.information = {};
-                        } else { // Does not exist.
-                            self._clearSelection();
+                    this.currentDocument.getInformationDependency(dependency).then(function (module) {
+                        if(self.selectedDependency && module && typeof module === 'object' && module.name === self.selectedDependency.name) {
+                            self.dependencyDisplayed = module;
                         }
-                    } else {
-                        self._clearSelection();
-                        self.dispatchEventNamed("asyncActivity", true, false, {
-                            promise: Promise.reject(error),
-                            title: "Package Manager"
-                        });
-                    }
-                });
+
+                    }, function (error) {
+                        if (error && typeof error === 'object' && error.code === ErrorsCommands.view.codes.dependencyNotFound) {
+                            if (self.selectedDependency && dependency && dependency.name === self.selectedDependency.name) { // Can be private.
+                                self.dependencyDisplayed = self.selectedDependency;
+                                self.selectedDependency.information = {};
+                            } else { // Does not exist.
+                                self.clearSelection();
+                            }
+                        } else {
+                            self.clearSelection();
+                            self.dispatchEventNamed("asyncActivity", true, false, {
+                                promise: Promise.reject(error),
+                                title: "Package Manager"
+                            });
+                        }
+                    });
+                } else {
+                    this.clearSelection();
+                }
             }
         }
     },
@@ -100,7 +105,7 @@ exports.PackageEditor = Montage.create(Editor, {
                 this.previousSelectedDependency = this.currentDocument.findDependency(this.dependencyDisplayed.name, null, false);
 
                 if (!this.previousSelectedDependency) {
-                    this._clearSelection();
+                    this.clearSelection();
                 } else {
                     this.templateObjects.packageDependencies.updateSelection(this.previousSelectedDependency);
                 }
@@ -134,7 +139,7 @@ exports.PackageEditor = Montage.create(Editor, {
         }
     },
 
-    _clearSelection: {
+    clearSelection: {
         value: function () {
             this.dependencyDisplayed = null;
             this.previousSelectedDependency = null;

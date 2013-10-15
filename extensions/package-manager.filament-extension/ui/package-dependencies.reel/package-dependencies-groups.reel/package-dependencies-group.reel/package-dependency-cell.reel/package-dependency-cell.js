@@ -6,7 +6,7 @@ var Component = require("montage/ui/component").Component,
     DEPENDENCY_TYPE_REGULAR = 'dependencies',
     DETAILS_ERROR_LABEL = 'errors',
     CAN_INSTALL_LABEL = 'Install',
-    MIME_TYPES = require("../../../../core/mime-types"),
+    MIME_TYPES = require("../../../../../core/mime-types"),
     DEFAULT_LABEL = '-';
 
 /**
