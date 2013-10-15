@@ -728,7 +728,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
                 return PackageQueueManager.uninstallModule(name, !dependency.missing).then(function () {
                     self.editor.notifyDependenciesListChange(name, Dependency.REMOVE_DEPENDENCY_ACTION);
-                    return 'The dependency ' +name + ' has been removed';
+                    return 'The dependency ' + name + ' has been removed';
                 });
             }
             return Promise.reject(new Error('An error has occurred while removing a dependency'));

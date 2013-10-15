@@ -1,8 +1,9 @@
 var FS = require("q-io/fs"),
     path = require("path"),
+    Q = require("q"),
     PackageManagerError = require("./core").PackageManagerError,
     Tools = require("./package-manager-tools").PackageManagerTools,
-    RemoveCommand =  function RemoveCommand () {},
+    RemoveCommand = function RemoveCommand () {},
 
     ERROR_DEPENDENCY_NAME_NOT_VALID = 4000,
     ERROR_PROJECT_PATH_NOT_VALID = 4001,
@@ -12,41 +13,41 @@ var FS = require("q-io/fs"),
 /**
  * Remove a dependency on the filesystem.
  * @function
- * @param {String} name Dependency name.
- * @param {boolean} where represents the file system path where to operate.
+ * @param {String} dependencyName Dependency name.
+ * @param {boolean} dependencyLocation represents the file system path where to operate.
  * @return {Promise.<Object>} Promise for the removed dependency.
  */
-RemoveCommand.prototype.run = function (name, where) {
-    if (typeof name === 'string' && name.length > 0) {
-        name = name.trim();
+RemoveCommand.prototype.run = function (dependencyName, dependencyLocation) {
+    if (typeof dependencyName === 'string' && dependencyName.length > 0) {
 
-        if (!Tools.isNameValid(name)) {
-            throw new PackageManagerError("Dependency named " + name + " is invalid", ERROR_DEPENDENCY_NAME_NOT_VALID);
-        }
-    } else {
-        throw new PackageManagerError("Dependency name invalid", ERROR_DEPENDENCY_NAME_NOT_VALID);
-    }
+        if (typeof dependencyLocation === 'string' && dependencyLocation.length > 0) {
+            dependencyName = dependencyName.trim();
 
-    if (typeof where === 'string' && where.length > 0) {
-        where = path.join(where, '/');
-
-        if (!(/\/node_modules\/$/).test(where)) {
-            where = path.join(where, 'node_modules/');
-        }
-
-        return FS.removeTree(path.join(where, name)).then(function () {
-            return { name: name };
-        }, function (error) {
-            if (error.errno === 3) {
-                throw new PackageManagerError("Error filesystem permissions while removing the dependency named " + name, ERROR_FS_PERMISSION);
-            } else if (error.errno === 34) {
-                throw new PackageManagerError("Dependency named " + name + " is missing", ERROR_DEPENDENCY_NOT_FOUND);
+            if (!(/\/node_modules$/).test(dependencyLocation)) {
+                dependencyLocation = path.join(dependencyLocation, 'node_modules/');
             }
-            throw error;
-        });
-    } else {
-        throw new PackageManagerError("Dependency path invalid", ERROR_PROJECT_PATH_NOT_VALID);
+
+            return FS.removeTree(path.join(dependencyLocation, dependencyName)).then(function () {
+                return { name: dependencyName };
+
+            }, function (error) {
+                if (error.errno === 3) {
+
+                    var wrongPermission = "Error filesystem permissions while removing the dependency named " + dependencyName;
+                    throw new PackageManagerError(wrongPermission, ERROR_FS_PERMISSION);
+
+                } else if (error.errno === 34) {
+
+                    var folderNotFound = "Dependency named " + dependencyName + "has not been found on the filesystem";
+                    throw new PackageManagerError(folderNotFound, ERROR_DEPENDENCY_NOT_FOUND);
+                }
+
+                throw error;
+            });
+        }
+        return Q.reject(new PackageManagerError("Dependency path invalid", ERROR_PROJECT_PATH_NOT_VALID));
     }
+    return Q.reject(new PackageManagerError("Dependency name invalid", ERROR_DEPENDENCY_NAME_NOT_VALID));
 };
 
 exports.removeCommand = new RemoveCommand();
