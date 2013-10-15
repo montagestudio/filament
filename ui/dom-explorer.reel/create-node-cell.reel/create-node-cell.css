@@ -60,8 +60,15 @@
     background-color: hsla(75,44%,85%, 0.3);
 }
 
+.CreateNodeCell-segment-item--montageParam {
+    border-left: 1px solid hsla(0,0%,0%,.1);
+    font-weight: normal;
+    background-color: hsla(85,60%,85%, 0.3);
+}
+
 .CreateNodeCell-segment-item--montageId.TextEditorField--editing,
-.CreateNodeCell-segment-item--montageArg.TextEditorField--editing {
+.CreateNodeCell-segment-item--montageArg.TextEditorField--editing,
+.CreateNodeCell-segment-item--montageParam.TextEditorField--editing {
     z-index: 10;
     box-shadow: 0 0 0 1px hsl(210,100%,70%);
     background-color: hsla(210,100%,60%,0.3);
