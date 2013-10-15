@@ -76,13 +76,13 @@
             }
         },
 
-        "converterObject": {
+        "converter": {
             "prototype": "matte/ui/input-text.reel",
             "properties": {
-                "element": {"#": "converterObject"}
+                "element": {"#": "converter"}
             },
             "bindings": {
-                "value": {"<->": "@owner.bindingModel.converterObject", "converter": {"@": "objectLabelConverter"}}
+                "value": {"<->": "@owner.bindingModel.converter", "converter": {"@": "objectLabelConverter"}}
             }
         },
 
@@ -165,7 +165,7 @@
 
         <section class="Jig-section BindingJig-section--source">
             <label class="Jig-label">Converter (Optional)</label>
-            <input data-montage-id="converterObject" class="Jig-input" type="text">
+            <input data-montage-id="converter" class="Jig-input" type="text">
         </section>
 
         <footer class="Jig-footer">

@@ -128,13 +128,13 @@ exports.BindingJig = Montage.create(Component, {
                 targetPath = model.targetPath,
                 oneway = model.oneway,
                 sourcePath = model.sourcePath,
-                converterObject = model.converterObject,
+                converter = model.converter,
                 bindingEntry;
 
             if (this.existingBinding) {
-                bindingEntry = this.editingDocument.updateOwnedObjectBinding(proxy, this.existingBinding, targetPath, oneway, sourcePath, converterObject);
+                bindingEntry = this.editingDocument.updateOwnedObjectBinding(proxy, this.existingBinding, targetPath, oneway, sourcePath, converter);
             } else {
-                bindingEntry = this.editingDocument.defineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath, converterObject);
+                bindingEntry = this.editingDocument.defineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath, converter);
             }
 
 
