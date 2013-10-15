@@ -76,6 +76,16 @@
             }
         },
 
+        "converterPath": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "converterPath"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.bindingModel.converterPath"}
+            }
+        },
+
         "defineBindingButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {"label":"Define Binding",
@@ -144,6 +154,11 @@
         <section class="Jig-section BindingJig-section--source">
             <label class="Jig-label">Source Path</label>
             <input data-montage-id="sourcePath" class="Jig-input" type="text">
+        </section>
+
+        <section class="Jig-section BindingJig-section--source">
+            <label class="Jig-label">Converter (Optional)</label>
+            <input data-montage-id="converterPath" class="Jig-input" type="text">
         </section>
 
         <footer class="Jig-footer">
