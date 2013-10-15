@@ -110,6 +110,7 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
             this.tagName = null;
             this.montageId = null;
             this.montageArg = null;
+            this.montageParam = null;
         }
     },
 
