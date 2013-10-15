@@ -82,7 +82,14 @@
                 "element": {"#": "converterObject"}
             },
             "bindings": {
-                "value": {"<->": "@owner.bindingModel.converterObject"}
+                "value": {"<->": "@owner.bindingModel.converterObject", "converter": {"@": "objectLabelConverter"}}
+            }
+        },
+
+        "objectLabelConverter": {
+            "prototype": "core/object-label-converter",
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"}
             }
         },
 

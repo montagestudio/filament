@@ -176,7 +176,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
                     bindingDescriptor.targetPath = key;
                     bindingDescriptor.oneway = ("<-" in bindingEntry);
                     bindingDescriptor.sourcePath = bindingDescriptor.oneway ? bindingEntry["<-"] : bindingEntry["<->"];
-                    bindingDescriptor.converterObject =  bindingEntry.converter ? bindingEntry.converter.label : "";
+                    bindingDescriptor.converterObject =  bindingEntry.converter ? bindingEntry.converter : null;
 
                     bindings.push(bindingDescriptor);
                 }

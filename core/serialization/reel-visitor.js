@@ -92,7 +92,7 @@ exports.ReelVisitor = ProxyVisitor.specialize({
 
                 if (converterObject) {
                     output.converter = {
-                        "@": converterObject
+                        "@": converterObject.label
                     };
                 }
 

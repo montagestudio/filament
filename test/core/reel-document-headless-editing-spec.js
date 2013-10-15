@@ -49,6 +49,9 @@ describe("core/reel-document-headless-editing-spec", function () {
             },
             "bar": {
                 "prototype": "bar-exportId"
+            },
+            "newConverterObject": {
+                "prototype": "montage/core/converter/converter"
             }
         }, '<div data-montage-id="ownerElement"><div data-montage-id="foo"><span data-montage-id="a"></span><span data-montage-id="b"></span></div></div>');
     });
@@ -219,7 +222,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                     templateSerialization;
 
                 return removalPromise.then(function () {
-                    expect(reelDocument.editingProxies.length).toBe(2);
+                    expect(reelDocument.editingProxies.length).toBe(3);
                     templateSerialization = reelDocument._buildSerializationObjects();
                     expect(templateSerialization.owner).toBeTruthy();
                     expect(templateSerialization.bar).toBeTruthy();
@@ -356,7 +359,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                     templateSerialization;
 
                 return removalPromise.then(function () {
-                    expect(reelDocument.editingProxies.length).toBe(2);
+                    expect(reelDocument.editingProxies.length).toBe(3);
                     templateSerialization = reelDocument._buildSerializationObjects();
                     expect(templateSerialization.owner).toBeTruthy();
                     expect(templateSerialization.foo).toBeTruthy();
@@ -459,9 +462,10 @@ describe("core/reel-document-headless-editing-spec", function () {
                 return reelDocumentPromise.then(function (reelDocument) {
                     var targetProxy = reelDocument.editingProxyMap.foo;
                     var binding = targetProxy.bindings[0];
+                    var newConverterObject = reelDocument.editingProxyMap.newConverterObject;
 
                     //Perform some edits that will be undoable
-                    reelDocument.updateOwnedObjectBinding(targetProxy, binding, "newTargetPath", false, "newSourcePath", "newconverterObject");
+                    reelDocument.updateOwnedObjectBinding(targetProxy, binding, "newTargetPath", false, "newSourcePath", newConverterObject);
 
                     //Remove the binding that's been edited, this will be undone shortly
                     reelDocument.cancelOwnedObjectBinding(targetProxy, binding);
@@ -471,14 +475,14 @@ describe("core/reel-document-headless-editing-spec", function () {
                         expect(definedBinding.targetPath).toBe("newTargetPath");
                         expect(definedBinding.oneway).toBe(false);
                         expect(definedBinding.sourcePath).toBe("newSourcePath");
-                        expect(definedBinding.converterObject).toBe("newconverterObject");
+                        expect(definedBinding.converterObject).toBe(newConverterObject);
 
                         return reelDocument.undo().then(function (definedBinding) {
                             //Binding should look as it did after undoing both removal and the edit
                             expect(definedBinding.targetPath).toBe("targetValue");
                             expect(definedBinding.oneway).toBe(true);
                             expect(definedBinding.sourcePath).toBe("@bar.sourceValue");
-                            expect(definedBinding.converterObject).toBe("");
+                            expect(definedBinding.converterObject).toBe(null);
                         });
                     });
 
@@ -490,9 +494,10 @@ describe("core/reel-document-headless-editing-spec", function () {
                     var targetProxy = reelDocument.editingProxyMap.foo;
                     var binding = targetProxy.bindings[0];
                     var expectedBindingCount = targetProxy.bindings.length;
+                    var newConverterObject = reelDocument.editingProxyMap.newConverterObject;
 
                     //Perform some edits that will be undoable
-                    reelDocument.updateOwnedObjectBinding(targetProxy, binding, "newTargetPath", false, "newSourcePath", "newconverterObject");
+                    reelDocument.updateOwnedObjectBinding(targetProxy, binding, "newTargetPath", false, "newSourcePath", "newConverterObject");
 
                     //Remove the binding that's been edited, this will be undone shortly
                     reelDocument.cancelOwnedObjectBinding(targetProxy, binding);
