@@ -30,6 +30,7 @@ exports.BindingEntry = Montage.create(Component, /** @lends module:"./binding-en
                 bindingModel.targetPath = this.binding.targetPath;
                 bindingModel.oneway = this.binding.oneway;
                 bindingModel.sourcePath = this.binding.sourcePath;
+                bindingModel.converter = this.binding.converter;
 
                 this.dispatchEventNamed("editBindingForObject", true, false, {
                     bindingModel: bindingModel,

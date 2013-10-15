@@ -76,6 +76,23 @@
             }
         },
 
+        "converter": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "converter"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.bindingModel.converter", "converter": {"@": "objectLabelConverter"}}
+            }
+        },
+
+        "objectLabelConverter": {
+            "prototype": "core/object-label-converter",
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"}
+            }
+        },
+
         "defineBindingButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {"label":"Define Binding",
@@ -144,6 +161,11 @@
         <section class="Jig-section BindingJig-section--source">
             <label class="Jig-label">Source Path</label>
             <input data-montage-id="sourcePath" class="Jig-input" type="text">
+        </section>
+
+        <section class="Jig-section BindingJig-section--source">
+            <label class="Jig-label">Converter (Optional)</label>
+            <input data-montage-id="converter" class="Jig-input" type="text">
         </section>
 
         <footer class="Jig-footer">
