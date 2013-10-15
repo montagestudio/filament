@@ -34,7 +34,7 @@
 .PackageExplorer-title-flex {
     -webkit-flex: 1;
     min-width: 0;
-    line-height: 14px;
+    line-height: 18px;
     margin-left: 8px;
 }
 
@@ -44,7 +44,7 @@
     color: hsl(0,0%,30%);
     font-family: Titillium Web, Open Sans, sans-serif;
     font-size: 22px;
-    line-height: 22px;
+    line-height: 25px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
