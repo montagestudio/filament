@@ -3,6 +3,10 @@
     border-right: 1px solid hsl(0,0%,75%);
 }
 
+.PackageExplorer .Panel-shadow {
+    top: 74px;
+}
+
 .PackageExplorer .Panel-title {
     display: -webkit-flex;
     -webkit-justify-content: space-between;
@@ -53,6 +57,7 @@
    line-height: 14px;
 }
 
+
 /* Preview Button ------------------- */
 
 .PackageExplorer .PackageExplorer-previewButton {
@@ -81,18 +86,20 @@
 }
 
 
-.PackageExplorer .Panel-shadow {
-    top: 74px;
+/* PackageExplorer footer ------------------- */
+
+.PackageExplorer-footer {
+    padding: 8px;
+    border-top: 1px solid white;
+    background: -webkit-linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
 }
 
-
-.Panel-title.PackageExplorer-bar {
-    height: 94px;
-    padding: 10px 10px 0 10px;
-}
-
-.PackageExplorer-bar .Button {
+.PackageExplorer-footer .Button {
     display: block;
     width: 100%;
-    margin: 0 0 10px 0;
+    margin: 0 0 8px 0;
+}
+
+.PackageExplorer-footer .Button:last-child {
+    margin-bottom: 0;
 }
