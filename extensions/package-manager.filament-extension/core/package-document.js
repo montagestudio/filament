@@ -16,7 +16,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     PACKAGE_PROPERTIES_ALLOWED_MODIFY = {
         name: "name",
         version: "version",
-        privacy: "privacy",
+        private: "private",
         homepage: "homepage",
         maintainers: "maintainers",
         license: "license",
@@ -227,7 +227,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    privacy: {
+    private: {
         set: function (privacy) {
             if (typeof privacy === "boolean") {
                 this._package.private = privacy;
@@ -380,11 +380,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                 self = this;
 
             keys.forEach(function (key) {
-                if (key !== PACKAGE_PROPERTIES_ALLOWED_MODIFY.privacy) {
-                    self.dispatchOwnPropertyChange(key, self._package[key]);
-                } else {
-                    self.dispatchOwnPropertyChange(key, self._package.private);
-                }
+                self.dispatchOwnPropertyChange(key, self._package[key]);
             });
         }
     },

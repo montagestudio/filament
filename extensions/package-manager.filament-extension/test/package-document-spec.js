@@ -68,16 +68,16 @@ describe("package document", function () {
         expect(packageDocument._modificationsAccepted).not.toHaveBeenCalled();
     });
 
-    it('should be able to save a valid package privacy value.', function () {
+    it('should be able to save a valid package private value.', function () {
 
-        expect(packageDocument.setProperty('privacy', true)).toEqual(true);
+        expect(packageDocument.setProperty('private', true)).toEqual(true);
         expect(packageDocument._modificationsAccepted).toHaveBeenCalled();
-        expect(packageDocument.privacy).toEqual(true);
+        expect(packageDocument.private).toEqual(true);
     });
 
-    it('should reject a invalid package privacy value.', function () {
+    it('should reject a invalid package private value.', function () {
 
-        expect(packageDocument.setProperty('privacy', null)).toEqual(false);
+        expect(packageDocument.setProperty('private', null)).toEqual(false);
         expect(packageDocument._modificationsAccepted).not.toHaveBeenCalled();
     });
 
