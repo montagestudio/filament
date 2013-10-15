@@ -292,19 +292,31 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
             var deferred = Promise.defer();
 
             if (this._queueManagerLoaded) {
-                if (typeof module === 'string' && module.length > 0) { //url
-                    var moduleName = Tools.findModuleNameFormGitUrl(module);
-                    module = (moduleName) ? { name: moduleName, version: module} : Tools.getModuleFromString(module);
+                if (typeof module === 'string' && module.length > 0) { // GitUrl or name[@version].
+                    var moduleNameFromGitUrl = Tools.findModuleNameFormGitUrl(module);
+
+                    if (!moduleNameFromGitUrl) {
+                        module = Tools.getModuleFromString(module);
+
+                        // Keeps the invalid name in case of a removal, but in case of an installation
+                        // an error will be raised by the install command.
+                        if (module.name === '') {
+                            module.name = module.dataParsed[0];
+                        }
+                    } else {
+                        module = {
+                            name: moduleNameFromGitUrl,
+                            version: module
+                        };
+                    }
                 }
 
-                if (module && typeof module === 'object' && Tools.isNameValid(module.name)) { // module
+                if (module && typeof module === 'object') { // module
                     this._addModuleToQueue(module, action, strict, deferred);
 
                     if (!this._isRunning) {
                         this._run();
                     }
-                } else {
-                    deferred.reject(new Error("Wrong format => name | name[@version] | { name:value }"));
                 }
             } else {
                 deferred.reject(new Error("PackageManager needs to be loaded first"));

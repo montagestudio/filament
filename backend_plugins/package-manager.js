@@ -62,8 +62,8 @@ exports.installDependency = function (request) {
     return Q.invoke(installCommand, "run", request, false);
 };
 
-exports.removeDependency = function (name, where) {
-    return Q.invoke(removeCommand, "run", name, where);
+exports.removeDependency = function (dependencyName, dependencyLocation) {
+    return removeCommand.run(dependencyName, dependencyLocation);
 };
 
 exports.getOutdatedDependencies = function () {
