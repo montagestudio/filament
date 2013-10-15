@@ -176,7 +176,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
                     bindingDescriptor.targetPath = key;
                     bindingDescriptor.oneway = ("<-" in bindingEntry);
                     bindingDescriptor.sourcePath = bindingDescriptor.oneway ? bindingEntry["<-"] : bindingEntry["<->"];
-                    bindingDescriptor.converterPath =  bindingEntry.converter ? bindingEntry.converter.label : "";
+                    bindingDescriptor.converterObject =  bindingEntry.converter ? bindingEntry.converter.label : "";
 
                     bindings.push(bindingDescriptor);
                 }
@@ -239,14 +239,14 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
     },
 
     defineObjectBinding: {
-        value: function (targetPath, oneway, sourcePath, converterPath) {
+        value: function (targetPath, oneway, sourcePath, converterObject) {
             var binding = Object.create(null);
 
             //TODO guard against binding to the exact same targetPath twice
             binding.targetPath = targetPath;
             binding.oneway = oneway;
             binding.sourcePath = sourcePath;
-            binding.converterPath = converterPath;
+            binding.converterObject = converterObject;
 
             this.bindings.push(binding);
 
@@ -264,10 +264,10 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
      * @param {string} targetPath The targetPath to set on the binding
      * @param {boolean} oneway Whether or not to set the binding as being oneway
      * @param {string} sourcePath The sourcePath to set on the binding
-     * @param {string} converterPath The converterPath to set on the binding
+     * @param {string} converterObject The converterObject to set on the binding
      */
     updateObjectBinding: {
-        value: function (binding, targetPath, oneway, sourcePath, converterPath) {
+        value: function (binding, targetPath, oneway, sourcePath, converterObject) {
             var existingBinding,
                 bindingIndex = this.bindings.indexOf(binding);
 
@@ -280,7 +280,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             binding.targetPath = targetPath;
             binding.oneway = oneway;
             binding.sourcePath = sourcePath;
-            binding.converterPath = converterPath;
+            binding.converterObject = converterObject;
 
             return binding;
         }

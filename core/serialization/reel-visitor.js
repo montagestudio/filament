@@ -82,7 +82,7 @@ exports.ReelVisitor = ProxyVisitor.specialize({
             bindings.forEach(function (binding) {
                 var output = {};
                 var sourcePath = binding.sourcePath;
-                var converterPath = binding.converterPath;
+                var converterObject = binding.converterObject;
 
                 if (!binding.oneway) {
                     output["<->"] = sourcePath;
@@ -90,9 +90,9 @@ exports.ReelVisitor = ProxyVisitor.specialize({
                     output["<-"] = sourcePath;
                 }
 
-                if (converterPath) {
+                if (converterObject) {
                     output.converter = {
-                        "@": converterPath
+                        "@": converterObject
                     };
                 }
 
