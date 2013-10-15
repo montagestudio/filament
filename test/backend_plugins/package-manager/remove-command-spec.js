@@ -31,13 +31,6 @@ describe("remove command", function () {
         });
     });
 
-    it('should throw an error when the dependency name is not valid.', function() {
-
-        return Q.invoke(removeCommand, 'run', 'Montage%', PROJECT_APP_NAME).then(null, function (error) {
-            expect(error.code).toEqual(ErrorsCodes.nameInvalid);
-        });
-    });
-
     it('should throw an error when the project path is not valid.', function() {
 
         return Q.invoke(removeCommand, 'run', 'montage', 3).then(null, function (error) {

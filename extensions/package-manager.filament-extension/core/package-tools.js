@@ -97,6 +97,7 @@ exports.ToolsBox = Object.create(Object.prototype, {
 
                 module.name = (this.isNameValid(name)) ? name : '';
                 module.version = (this.isVersionValid(version)) ? version : null;
+                module.dataParsed = [name, version];
 
                 return module;
             }
