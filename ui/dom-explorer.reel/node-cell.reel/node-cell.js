@@ -290,11 +290,11 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
 
     handleMontageParamAction: {
         value: function (evt) {
-            var newMontageArg = evt.target.value,
+            var newMontageParam = evt.target.value,
                 nodeProxy = this._nodeInfo;
 
             //TODO consolidate attribute constants somewhere
-            if (!nodeProxy._editingDocument.setNodeProxyAttribute(nodeProxy, "data-param", newMontageArg)) {
+            if (!nodeProxy._editingDocument.setNodeProxyAttribute(nodeProxy, "data-param", newMontageParam)) {
                 evt.preventDefault();
             }
         }
