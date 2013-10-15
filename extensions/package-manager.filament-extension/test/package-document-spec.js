@@ -136,9 +136,9 @@ describe("package document", function () {
 
         packageDocument.addMaintainer(bob);
 
-        expect(packageDocument.packageMaintainers.length).toEqual(1);
+        expect(packageDocument.maintainers.length).toEqual(1);
         expect(packageDocument.removeMaintainer(bob)).toEqual(true);
-        expect(packageDocument.packageMaintainers.length).toEqual(0);
+        expect(packageDocument.maintainers.length).toEqual(0);
     });
 
     it('should be able to find a dependency.', function () {
