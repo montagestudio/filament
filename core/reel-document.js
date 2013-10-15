@@ -1090,8 +1090,8 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     defineOwnedObjectBinding: {
-        value: function (proxy, targetPath, oneway, sourcePath) {
-            var binding = proxy.defineObjectBinding(targetPath, oneway, sourcePath);
+        value: function (proxy, targetPath, oneway, sourcePath, converter) {
+            var binding = proxy.defineObjectBinding(targetPath, oneway, sourcePath, converter);
 
             if (binding) {
                 // if (this._editingController) {
@@ -1158,13 +1158,14 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     updateOwnedObjectBinding: {
-        value: function (proxy, existingBinding, targetPath, oneway, sourcePath) {
+        value: function (proxy, existingBinding, targetPath, oneway, sourcePath, converter) {
             var originalTargetPath = existingBinding.targetPath,
                 originalOneway = existingBinding.oneway,
                 originalSourcePath = existingBinding.sourcePath,
+                originalconverter = existingBinding.converter,
                 updatedBinding;
 
-            updatedBinding = proxy.updateObjectBinding(existingBinding, targetPath, oneway, sourcePath);
+            updatedBinding = proxy.updateObjectBinding(existingBinding, targetPath, oneway, sourcePath, converter);
 
             if (updatedBinding) {
                 // if (this._editingController) {
@@ -1173,7 +1174,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 // }
 
                 this.undoManager.register("Edit Binding", Promise.resolve([
-                    this.updateOwnedObjectBinding, this, proxy, updatedBinding, originalTargetPath, originalOneway, originalSourcePath
+                    this.updateOwnedObjectBinding, this, proxy, updatedBinding, originalTargetPath, originalOneway, originalSourcePath, originalconverter
                 ]));
             }
 
