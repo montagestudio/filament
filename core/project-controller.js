@@ -260,9 +260,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     }
                 }
                 if (sizes.length > 0) {
-                    /* sort to have the smallest which is larger than 28px in position 0 */
+                    /* sort to have the smallest which is larger than 56px in position 0 */
                     sizes.sort(function(a, b) {
-                        if (!a.href || a.size < 28) {
+                        if (!a.href || a.size < 56) {
                             return false;
                         }
                         return (a.size - b.size);
