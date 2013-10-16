@@ -19,7 +19,11 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
                 email: "",
                 url: ""
             };
+        }
+    },
 
+    didDraw: {
+        value: function () {
             this.addPathChangeListener("author.name", this, "handleAuthorChange");
             this.addPathChangeListener("author.email", this, "handleAuthorChange");
             this.addPathChangeListener("author.url", this, "handleAuthorChange");
@@ -53,7 +57,12 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
 
     handleAuthorChange: {
         value: function () {
-            if (this.editingDocument && this.urlTextField.element.validity.valid && this.emailTextField.element.validity.valid) {
+            var urlInput = this.templateObjects.authorUrl,
+                emailInput = this.templateObjects.authorEmail;
+
+            if (urlInput && emailInput && this.editingDocument &&
+                urlInput.element.validity.valid && emailInput.element.validity.valid) {
+
                 this.editingDocument.setProperty('author', this.author);
             }
         }
