@@ -15,20 +15,11 @@
     height: 74px;
 }
 
-.PackageExplorer-title-icon {
+.PackageExplorer-icon {
+    margin: 0;
     width: 28px;
     height: 28px;
     border-radius: 5px;
-    background-color: hsla(0,0%,0%,.08);
-    box-shadow: inset 0 1px 3px hsla(0,0%,0%,.25);
-}
-
-.PackageExplorer-title-icon-img {
-    margin: 0;
-    width: inherit;
-    height: inherit;
-    border-radius: 4px; /* One px less than parent to avoid showing inner shadow */
-    opacity: .999; /* For some reason this is needed to make the img transparent */
 }
 
 .PackageExplorer-title-flex {

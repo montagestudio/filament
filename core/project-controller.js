@@ -229,7 +229,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     loadProjectIcon: {
         value: function(projectUrl) {
             var self = this;
-
+            
+            // Use a default icon
+            this.icon = this.icon || "/assets/img/app-icon.png";
+            
             require.read(projectUrl + "/index.html").then(function(indexHtml) {
                 var sizes = [],
                     icons,
