@@ -1,33 +1,25 @@
 .CreateNodeCell {
-    -webkit-flex: auto;
-    display: -webkit-flex;
-    -webkit-flex-flow: column nowrap;
-    -webkit-align-items: center;
     position: relative;
-    opacity: 80%;
-}
-
-.CreateNodeCell .row {
     display: -webkit-flex;
     -webkit-flex-flow: row nowrap;
     -webkit-align-items: center;
+    -webkit-justify-content: center;
+    padding: 1px 0 2px 0; /* TODO: Fix consistent footer height */
 }
 
 .CreateNodeCell-segment {
     display: -webkit-inline-flex;
     margin: 2px 0;
-    font-size: 0;
     border-radius: 22px;
-    border: 1px solid hsla(43, 0%, 85%, 1);
-    background-color: hsl(0,0%,85%);
-    background-image: repeating-linear-gradient(-45deg, transparent, transparent 5px, hsla(43, 0%, 88%, 1) 5px, hsla(43, 0%, 88%, 1) 10px);
+    border: 1px solid hsla(0,0%,85%, 1);
+    background-color: hsl(0,0%,90%);
+    background-image: repeating-linear-gradient(-45deg, transparent, transparent 5px, hsla(0,0%,100%,.3) 5px, hsla(0,0%,100%,.3) 10px);
     background-clip: content-box;
 }
 
 .CreateNodeCell-segment[draggable=true]:hover {
-    background-image: none;
-    background-color: hsl(0,0%,90%);
-    -webkit-box-shadow: 0 1px 1px hsla(0,0%, 20%, 0.3);
+    background: hsl(0,0%,90%);
+    box-shadow: 0 1px 2px hsla(0,0%,0%,.2);
 }
 
 .CreateNodeCell--draggable {
@@ -66,12 +58,20 @@
     background-color: hsla(85,60%,85%, 0.3);
 }
 
-.CreateNodeCell-segment-item--montageId.TextEditorField--editing,
-.CreateNodeCell-segment-item--montageArg.TextEditorField--editing,
-.CreateNodeCell-segment-item--montageParam.TextEditorField--editing {
+.CreateNodeCell-segment-item.TextEditorField--editing {
     z-index: 10;
     box-shadow: 0 0 0 1px hsl(210,100%,70%);
-    background-color: hsla(210,100%,60%,0.3);
+    background-color: hsla(210,100%,60%,.1);
+}
+
+.CreateNodeCell-segment-item.TextEditorField--editing:first-child {
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+}
+
+.CreateNodeCell-segment-item.TextEditorField--editing:last-child {
+    border-top-right-radius: inherit;
+    border-bottom-right-radius: inherit;
 }
 
 .CreateNodeCell-segment-item--component {
@@ -105,8 +105,12 @@
 }
 
 .CreateNodeCell .montage-Text {
-    white-space: nowrap;
+    display: block;
     outline: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 20px;
 }
 
 .CreateNodeCell-reset.matte-Button {
