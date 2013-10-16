@@ -857,7 +857,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    _countPackageFileChangedByApp: {
+    _packageFileChangeByAppCount: {
         value: 0
     },
 
@@ -872,12 +872,12 @@ exports.PackageDocument = EditingDocument.specialize( {
             files.forEach(function (file) {
 
                 if (self.url === file.fileUrl) { // Package.json file has been modified.
-                    if (self._countPackageFileChangedByApp === 0) {
+                    if (self._packageFileChangeByAppCount === 0) {
                         if (!PackageQueueManager.isRunning || !self.isReloadingList) {
                             self._updateDependenciesList().done();
                         }
                     } else {
-                        self._countPackageFileChangedByApp--;
+                        self._packageFileChangeByAppCount--;
                     }
                 }
             });
@@ -931,7 +931,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             this._savingInProgress = Promise.when(dataWriter(jsonPackage, url)).then(function (value) {
                 self._changeCount = 0;
                 self._savingInProgress = null;
-                self._countPackageFileChangedByApp++;
+                self._packageFileChangeByAppCount++;
                 return value;
             });
             return this._savingInProgress;
