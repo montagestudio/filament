@@ -1092,17 +1092,12 @@ exports.ReelDocument = EditingDocument.specialize({
     /**
      * Registers the specified binding.
      *
-     * If the optional `converter` parameter is specified an `Binding`
-     * object will be implicitly created and registered as the actual binding
-     * as recorded in the returned binding registration. The specified binding
-     * will be recorded as the AEL's `handler` and the methodName will be recorded
-     * as AEL's `action`, i.e. the name of the method to call on the handler.
-     *
      * @param {Proxy} proxy The proxy representing the object to bind to
      * @param {string} targetPath The path of the attribute to bind to
-     * @param {boolean} oneway Whether or not to one way or two way binding
+     * @param {boolean} oneway Whether or not to one way (true) or two way binding
      * @param {string} sourcePath The path of the attribute to bind from 
-     * @param {Converter} converter The optional converter on the binding
+     * @param {Converter} converter An optional converter on the binding
+     * @param {String} converterLabel An optional label if the user is asking a converter to be defined
      *
      * @return {Promise} A promise for the binding registration with the specified properties
      */
@@ -1116,7 +1111,7 @@ exports.ReelDocument = EditingDocument.specialize({
             this.undoManager.openBatch("Define Binding");
             this.undoManager.register("Define Binding", deferredUndoOperation.promise);
 
-            /* If the converter doesnt exist, and the user asked for a converter label, create a default converter for the user with the requested label */
+            /* If the converter doesnt exist, and the user asked for a converter label, create a default converter in the serialization with the requested label */
             if (!converter && converterLabel) {
                 var serializationFragment = {
                     "prototype": "montage/core/converter/converter"
@@ -1133,8 +1128,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 installBindingPromise = Promise.resolve(binding);
             }
 
-            return installBindingPromise.then(function(actualBinding) {
-                var bindingEntry = proxy.defineOwnedObjectBinding(targetPath, oneway, sourcePath, converter, converterLabel);
+            return installBindingPromise.then(function(bindingEntry) {
 
                 if (bindingEntry) {
                     // TODO register the binding on the stage, make sure we can remove it later
