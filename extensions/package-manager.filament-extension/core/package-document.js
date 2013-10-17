@@ -16,7 +16,9 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     PACKAGE_PROPERTIES_ALLOWED_MODIFY = {
         name: "name",
         version: "version",
-        privacy: "privacy",
+        private: "private",
+        homepage: "homepage",
+        maintainers: "maintainers",
         license: "license",
         description: "description",
         author: "author"
@@ -225,7 +227,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    privacy: {
+    private: {
         set: function (privacy) {
             if (typeof privacy === "boolean") {
                 this._package.private = privacy;
@@ -269,7 +271,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     _addMaintainer: {
         value: function (maintainer) {
-            var maintainers = this.packageMaintainers,
+            var maintainers = this.maintainers,
                 length = maintainers.length;
 
             maintainers.push(maintainer);
@@ -279,7 +281,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     _findMaintainerIndex: {
         value: function (person) {
-            var maintainers = this.packageMaintainers;
+            var maintainers = this.maintainers;
 
             if (maintainers && person && typeof person === 'object') {
                 for (var i = 0, length = maintainers.length; i < length; i++) {
@@ -322,11 +324,11 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     _removeMaintainer: {
         value: function (index) {
-            return index >= 0 && this.packageMaintainers.splice(index, 1).length > 0;
+            return index >= 0 && this.maintainers.splice(index, 1).length > 0;
         }
     },
 
-    packageMaintainers: {
+    maintainers: {
         get: function () {
             if (!this._package.maintainers) {
                 this._package.maintainers = [];
@@ -364,8 +366,21 @@ exports.PackageDocument = EditingDocument.specialize( {
             return self.listDependencies().then(function (app) { // invoke list in order to find eventual errors after this removing.
                 self._classifyDependencies(app.dependencies, false); // classify dependencies
                 self._notifyOutDatedDependencies();
+                self._package = app.file || self._package;
+                self.dispatchPackagePropertiesChange();
                 self.isReloadingList = false;
                 self.editor.updateSelectionDependencyList();
+            });
+        }
+    },
+
+    dispatchPackagePropertiesChange: {
+        value: function () {
+            var keys = Object.keys(PACKAGE_PROPERTIES_ALLOWED_MODIFY),
+                self = this;
+
+            keys.forEach(function (key) {
+                self.dispatchOwnPropertyChange(key, self._package[key]);
             });
         }
     },
@@ -842,6 +857,33 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
+    _packageFileChangeByAppCount: {
+        value: 0
+    },
+
+    filesDidChange: {
+        value: function (files) {
+            // Update the PackageManager when the Package.json file has not been changed by the app,
+            // except when the PackageQueueManager is performing some actions, it will reload the list
+            // once it will be done.
+
+            var self = this;
+
+            files.forEach(function (file) {
+
+                if (self.url === file.fileUrl) { // Package.json file has been modified.
+                    if (self._packageFileChangeByAppCount === 0) {
+                        if (!PackageQueueManager.isRunning || !self.isReloadingList) {
+                            self._updateDependenciesList().done();
+                        }
+                    } else {
+                        self._packageFileChangeByAppCount--;
+                    }
+                }
+            });
+        }
+    },
+
     _saveTimer: {
         value: null
     },
@@ -889,6 +931,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             this._savingInProgress = Promise.when(dataWriter(jsonPackage, url)).then(function (value) {
                 self._changeCount = 0;
                 self._savingInProgress = null;
+                self._packageFileChangeByAppCount++;
                 return value;
             });
             return this._savingInProgress;

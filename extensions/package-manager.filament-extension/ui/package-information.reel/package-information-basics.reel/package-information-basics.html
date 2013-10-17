@@ -63,13 +63,13 @@
             }
         },
 
-        "privacy": {
+        "private": {
             "prototype": "matte/ui/input-checkbox.reel",
             "properties": {
-                "element": {"#": "packageInformationBasicsPrivacy"}
+                "element": {"#": "packageInformationBasicsPrivate"}
             },
             "bindings": {
-                "checked": {"<->": "@owner.privacy"}
+                "checked": {"<->": "@owner.private"}
             }
         }
     }
@@ -97,8 +97,8 @@
                     <input id="packageInformationBasicsHomepage" data-montage-id="packageInformationBasicsHomepage" type="text" pattern="^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w\.\-]*)*\/?$"/>
                 </li>
                 <li class="PackageEditorPanel-list-item">
-                    <label for="packageInformationBasicsPrivacy">Private:</label>
-                    <input id="packageInformationBasicsPrivacy" data-montage-id="packageInformationBasicsPrivacy" class="FileCell-toggle" type="checkbox" />
+                    <label for="packageInformationBasicsPrivate">Private:</label>
+                    <input id="packageInformationBasicsPrivate" data-montage-id="packageInformationBasicsPrivate" class="FileCell-toggle" type="checkbox" />
                 </li>
             </ul>
         </div>
