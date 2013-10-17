@@ -19,46 +19,69 @@
     border: 1px solid hsla(0,0%,0%,.08);
 }
 
-.NodeCell-segment-item {
+
+/* NodeCell Item ------------------------------ */
+
+.NodeCell-item {
     display: block;
-    padding: 0 12px;
+    padding: 0 8px;
     line-height: 22px;
     color: hsl(0, 0%, 30%);
     overflow: hidden;
 }
 
-.NodeCell-segment-item--tag {
+.NodeCell-item--tag {
     color: hsl(0,0%,60%);
     text-transform: lowercase;
 }
 
-.NodeCell-segment-item--montageId {
+.NodeCell-item--montageArg {
     border-left: 1px solid hsla(0,0%,0%,.1);
+}
+
+.NodeCell-item--montageParam {
+    border-left: 1px solid hsla(0,0%,0%,.1);
+}
+
+.NodeCell-item--montageId {
     font-weight: bold;
     font-style: italic;
-}
-
-.NodeCell-segment-item--montageArg {
     border-left: 1px solid hsla(0,0%,0%,.1);
-    font-weight: normal;
-    background-color: hsl(75,44%,85%);
 }
 
-.NodeCell-segment-item--montageParam {
-    border-left: 1px solid hsla(0,0%,0%,.1);
-    font-weight: normal;
-    background-color: hsla(85,60%,85%, 0.3);
+.NodeCell-item--montageArg .montage-Text:after,
+.NodeCell-item--montageParam .montage-Text:before {
+    content: "↔";
+    color: #999;
 }
 
-.NodeCell-segment-item--montageId.TextEditorField--editing,
-.NodeCell-segment-item--montageArg.TextEditorField--editing
-.NodeCell-segment-item--montageParam.TextEditorField--editing {
+/* NodeCell Item states/variations ------------------------------ */
+
+.NodeCell-item--isUsed.NodeCell-item--montageArg {
+    background: hsl(75,44%,85%);
+}
+
+.NodeCell-item--isUsed.NodeCell-item--montageArg .montage-Text:after {
+    content: "→";
+    margin-left: 4px;
+}
+
+.NodeCell-item--isUsed.NodeCell-item--montageParam {
+    background: hsla(85,60%,85%, 0.3);
+}
+
+.NodeCell-item--isUsed.NodeCell-item--montageParam .montage-Text:before {
+    content: "→";
+    margin-right: 4px;
+}
+
+.NodeCell-item.TextEditorField--editing {
     z-index: 10;
     box-shadow: 0 0 0 1px hsl(210,100%,70%);
     background-color: hsla(210,100%,60%,0.1);
 }
 
-.NodeCell-segment-item--component {
+.NodeCell-item--component {
     padding-left: 10px;
     border-radius: 0 11px 11px 0;
     font-weight: bold;
