@@ -239,7 +239,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
 
                 dataTransfer.effectAllowed = 'copy';
                 dataTransfer.setData(MIME_TYPES.PACKAGE_MANAGER_INSTALLATION_DEPENDENCY, JSON.stringify(module));
-                this.packageDependencies.handleAcceptDrop(event);
+                this.packageDependencies.acceptDrop(event);
             }
 
         }

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="package-dependencies-groups.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "package-dependencies-groups"}
+            },
+            "bindings": {
+                "dependencyCell": {"<-": "@dependenciesGroup.selectedCell.0"},
+                "devDependencyCell": {"<-": "@devDependenciesGroup.selectedCell.0"},
+                "optionalDependencyCell": {"<-": "@optionalDependenciesGroup.selectedCell.0"}
+            }
+        },
+
+        "dependenciesGroup": {
+            "prototype": "./package-dependencies-group.reel",
+            "properties": {
+                "element": {"#": "dependenciesGroup"},
+                "title": "Dependencies",
+                "type": "dependencies"
+            },
+            "bindings": {
+                "dependencies": {"<-": "@owner.editingDocument.dependencyCollection.dependencies"},
+                "editingDocument": {"<-": "@owner.editingDocument"}
+            }
+        },
+
+        "devDependenciesGroup": {
+            "prototype": "./package-dependencies-group.reel",
+            "properties": {
+                "element": {"#": "devDependenciesGroup"},
+                "title": "Dev Dependencies",
+                "type": "devDependencies"
+            },
+            "bindings": {
+                "dependencies": {"<-": "@owner.editingDocument.dependencyCollection.devDependencies"},
+                "editingDocument": {"<-": "@owner.editingDocument"}
+            }
+        },
+
+        "optionalDependenciesGroup": {
+            "prototype": "./package-dependencies-group.reel",
+            "properties": {
+                "element": {"#": "optionalDependenciesGroup"},
+                "title": "Optional Dependencies",
+                "type": "optionalDependencies"
+            },
+            "bindings": {
+                "dependencies": {"<-": "@owner.editingDocument.dependencyCollection.optionalDependencies"},
+                "editingDocument": {"<-": "@owner.editingDocument"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="package-dependencies-groups" class="PackageDependenciesGroups">
+        <div data-montage-id="dependenciesGroup" class="PackageEditorPanel ListDependencies"></div>
+        <div data-montage-id="devDependenciesGroup" class="PackageEditorPanel ListDependencies"></div>
+        <div data-montage-id="optionalDependenciesGroup" class="PackageEditorPanel ListDependencies"></div>
+    </div>
+</body>
+</html>

@@ -11,9 +11,7 @@
                 "installDependencyOverlay": {"@": "installDependencyOverlay"}
             },
             "bindings": {
-                "dependencyCell": {"<-": "@dependenciesGroup.selectedCell.0"},
-                "devDependencyCell": {"<-": "@devDependenciesGroup.selectedCell.0"},
-                "optionalDependencyCell": {"<-": "@optionalDependenciesGroup.selectedCell.0"}
+                "selectedCell": {"<-": "@dependenciesGroups.selectedCell"}
             },
             "listeners": [
                 {
@@ -23,41 +21,12 @@
             ]
         },
 
-        "dependenciesGroup": {
-            "prototype": "./package-dependencies-group.reel",
+        "dependenciesGroups": {
+            "prototype": "./package-dependencies-groups.reel",
             "properties": {
-                "element": {"#": "dependenciesGroup"},
-                "title": "Dependencies",
-                "type": "dependencies"
+                "element": {"#": "packageDependenciesGroups"}
             },
             "bindings": {
-                "dependencies": {"<-": "@owner.editingDocument.dependencyCollection.dependencies"},
-                "editingDocument": {"<-": "@owner.editingDocument"}
-            }
-        },
-
-        "devDependenciesGroup": {
-            "prototype": "./package-dependencies-group.reel",
-            "properties": {
-                "element": {"#": "devDependenciesGroup"},
-                "title": "Dev Dependencies",
-                "type": "devDependencies"
-            },
-            "bindings": {
-                "dependencies": {"<-": "@owner.editingDocument.dependencyCollection.devDependencies"},
-                "editingDocument": {"<-": "@owner.editingDocument"}
-            }
-        },
-
-        "optionalDependenciesGroup": {
-            "prototype": "./package-dependencies-group.reel",
-            "properties": {
-                "element": {"#": "optionalDependenciesGroup"},
-                "title": "Optional Dependencies",
-                "type": "optionalDependencies"
-            },
-            "bindings": {
-                "dependencies": {"<-": "@owner.editingDocument.dependencyCollection.optionalDependencies"},
                 "editingDocument": {"<-": "@owner.editingDocument"}
             }
         },
@@ -86,12 +55,7 @@
 <body>
     <section data-montage-id="package-dependencies" id="PackageDependencies">
         <header class="PackageEditorPanel-title PackageEditorPanel-title--header">Package Dependencies<button data-montage-id="addDependencyButton" class="PackageEditorPanel-title--button"></button></header>
-        <div class="PackageEditorColumnContent">
-            <div data-montage-id="dependenciesGroup" class="PackageEditorPanel ListDependencies"></div>
-            <div data-montage-id="devDependenciesGroup" class="PackageEditorPanel ListDependencies"></div>
-            <div data-montage-id="optionalDependenciesGroup" class="PackageEditorPanel ListDependencies"></div>
-        </div>
-
+        <div data-montage-id="packageDependenciesGroups" class="PackageEditorColumnContent"></div>
         <div data-montage-id="installDependencyOverlay"></div>
     </section>
 </body>
