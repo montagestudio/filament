@@ -1089,26 +1089,66 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    /**
+     * Registers the specified binding.
+     *
+     * If the optional `converter` parameter is specified an `Binding`
+     * object will be implicitly created and registered as the actual binding
+     * as recorded in the returned binding registration. The specified binding
+     * will be recorded as the AEL's `handler` and the methodName will be recorded
+     * as AEL's `action`, i.e. the name of the method to call on the handler.
+     *
+     * @param {Proxy} proxy The proxy representing the object to bind to
+     * @param {string} targetPath The path of the attribute to bind to
+     * @param {boolean} oneway Whether or not to one way or two way binding
+     * @param {string} sourcePath The path of the attribute to bind from 
+     * @param {Converter} converter The optional converter on the binding
+     *
+     * @return {Promise} A promise for the binding registration with the specified properties
+     */
     defineOwnedObjectBinding: {
-        value: function (proxy, targetPath, oneway, sourcePath, converter) {
-            var binding = proxy.defineObjectBinding(targetPath, oneway, sourcePath, converter);
+        value: function(proxy, targetPath, oneway, sourcePath, converter, converterLabel) {
 
-            if (binding) {
-                // if (this._editingController) {
-                //     // TODO define the binding on the stage, make sure we can cancel it later
-                // }
+            var installBindingPromise,
+                deferredUndoOperation = Promise.defer(),
+                self = this;
 
-                this.undoManager.register("Define Binding", Promise.resolve([this.cancelOwnedObjectBinding, this, proxy, binding]));
+            this.undoManager.openBatch("Define Binding");
+            this.undoManager.register("Define Binding", deferredUndoOperation.promise);
+
+            /* If the converter doesnt exist, and the user asked for a converter label, create a default converter for the user with the requested label */
+            if (!converter && converterLabel) {
+                var serializationFragment = {
+                    "prototype": "montage/core/converter/converter"
+                };
+                installBindingPromise = this._buildTemplate(converterLabel, serializationFragment, null).then(function(template) {
+                    return self.addObjectsFromTemplate(template);
+                }).then(function(objects) {
+                    var createdConverter = objects[0];
+                    var binding = proxy.defineObjectBinding(targetPath, oneway, sourcePath, createdConverter);
+                    return binding;
+                });
+            } else {
+                var binding = proxy.defineObjectBinding(targetPath, oneway, sourcePath, converter);
+                installBindingPromise = Promise.resolve(binding);
             }
 
-            // Need to rebuild the serialization here so that the template
-            // updates, ready for the inner template inspector
-            this._buildSerializationObjects();
+            return installBindingPromise.then(function(actualBinding) {
+                var bindingEntry = proxy.defineOwnedObjectBinding(targetPath, oneway, sourcePath, converter, converterLabel);
 
-            // Refresh the stage
-            this.editor.refresh();
+                if (bindingEntry) {
+                    // TODO register the binding on the stage, make sure we can remove it later
+                    deferredUndoOperation.resolve([self.cancelOwnedObjectBinding, self, proxy, bindingEntry]);
+                }
 
-            return binding;
+                // TODO this doesn't really do anything to guard against other unrelated sync operations being
+                // entered into the same undo block
+                self.undoManager.closeBatch();
+
+                self.editor.refresh();
+
+                return bindingEntry;
+            });
         }
     },
 

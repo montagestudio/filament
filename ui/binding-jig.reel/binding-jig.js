@@ -134,7 +134,8 @@ exports.BindingJig = Montage.create(Component, {
             if (this.existingBinding) {
                 bindingEntry = this.editingDocument.updateOwnedObjectBinding(proxy, this.existingBinding, targetPath, oneway, sourcePath, converter);
             } else {
-                bindingEntry = this.editingDocument.defineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath, converter);
+                var converterLabelToCreate = converter ? undefined : this.templateObjects.converter.value;
+                bindingEntry = this.editingDocument.defineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath, converter, converterLabelToCreate);
             }
 
 

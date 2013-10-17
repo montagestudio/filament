@@ -5,6 +5,7 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
+    Converter = require("montage/core/converter/converter").Converter,
     application = require("montage/core/application").application,
     MimeTypes = require("core/mime-types");
 
@@ -179,6 +180,11 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             var bindingModel = Object.create(null);
             bindingModel.targetObject = evt.detail.get("targetObject");
             bindingModel.oneway = true;
+
+            // sent a temporary converter  which will be created if the user adds a label to it which doesnt already exist in the serialization
+            var tempConverter =  new Converter();
+            tempConverter.label = "";
+            bindingModel.conveter = tempConverter;
 
             this.dispatchEventNamed("addBinding", true, false, {
                 bindingModel: bindingModel
