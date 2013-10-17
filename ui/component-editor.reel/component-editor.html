@@ -32,7 +32,8 @@
                     "element": {"#": "library"}
                 },
                 "bindings": {
-                    "groups": {"<->": "@owner.projectController.libraryGroups"}
+                    "groups": {"<->": "@owner.projectController.libraryGroups"},
+                    "editingComponentPrototype": {"<-": "@owner.projectController.currentDocument._moduleId"}
                 },
                 "listeners": [
                     {
