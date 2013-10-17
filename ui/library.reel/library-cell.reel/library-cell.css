@@ -32,7 +32,10 @@
     border-radius: 0 0 4px 4px;
 }
 
-
+.LibraryCell-button[draggable=false] {
+    background-color: hsl(43, 100%, 85%) !important;
+    opacity: .5 !important;
+}
 
 /* Icon --------------------------------- */
 
