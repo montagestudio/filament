@@ -1,4 +1,4 @@
-/*global global,opener:true */
+/*global global */
 exports = module.exports = Object.create(require("adaptor/server/backend"));
 
 var path = require("path"),
@@ -6,8 +6,7 @@ var path = require("path"),
     Q = require("q"),
     npm = require("npm"),
     watchr = require("watchr"),
-    PATH = require('path'),
-    minimatch = require('minimatch');
+    PATH = require('path');
 
 exports.createApplication = function(name, packageHome) {
     return minitCreate("digit", {name: name, "packageHome": packageHome});
