@@ -117,6 +117,7 @@ exports.BindingJig = Montage.create(Component, {
         value: function () {
             this.bindingModel = null;
             this.existingBinding = null;
+            this.templateObjects.converter.value = "";
             this.dispatchEventNamed("discard", true, false);
         }
     },
@@ -142,6 +143,8 @@ exports.BindingJig = Montage.create(Component, {
                 bindingEntry: bindingEntry
             });
 
+            /* If the converter object doesnt exist in the editingDocument, this causes the converter to be removed from the binding */
+            this.templateObjects.converter.value = "";
             this.existingBinding = null;
             this.bindingModel = null;
         }
