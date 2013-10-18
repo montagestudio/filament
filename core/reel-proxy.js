@@ -176,7 +176,10 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
                     bindingDescriptor.targetPath = key;
                     bindingDescriptor.oneway = ("<-" in bindingEntry);
                     bindingDescriptor.sourcePath = bindingDescriptor.oneway ? bindingEntry["<-"] : bindingEntry["<->"];
-                    bindingDescriptor.converter =  bindingEntry.converter ? bindingEntry.converter : null;
+                    /* TODO the converter seems to be maintaining state */
+                    if (bindingEntry.converter) {
+                        bindingDescriptor.converter = bindingEntry.converter;
+                    }
 
                     bindings.push(bindingDescriptor);
                 }
