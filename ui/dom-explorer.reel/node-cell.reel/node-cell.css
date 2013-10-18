@@ -24,7 +24,7 @@
 
 .NodeCell-item {
     display: block;
-    padding: 0 8px;
+    padding: 0 12px;
     line-height: 22px;
     color: hsl(0, 0%, 30%);
     overflow: hidden;
@@ -49,30 +49,14 @@
     border-left: 1px solid hsla(0,0%,0%,.1);
 }
 
-.NodeCell-item--montageArg .montage-Text:after,
-.NodeCell-item--montageParam .montage-Text:before {
-    content: "↔";
-    color: #999;
-}
-
 /* NodeCell Item states/variations ------------------------------ */
 
 .NodeCell-item--isUsed.NodeCell-item--montageArg {
     background: hsl(75,44%,85%);
 }
 
-.NodeCell-item--isUsed.NodeCell-item--montageArg .montage-Text:after {
-    content: "→";
-    margin-left: 4px;
-}
-
 .NodeCell-item--isUsed.NodeCell-item--montageParam {
     background: hsla(85,60%,85%, 0.3);
-}
-
-.NodeCell-item--isUsed.NodeCell-item--montageParam .montage-Text:before {
-    content: "→";
-    margin-right: 4px;
 }
 
 .NodeCell-item.TextEditorField--editing {
