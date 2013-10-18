@@ -24,11 +24,11 @@
 }
 
 .DomExplorer .NodeList{
-    margin-top: 22px;
+    padding-top: 22px;
 }
 
 .DomExplorer.shift .NodeList{
-    margin-top: 0px;
+    padding-top: 0;
 }
 
 .DomExplorer-footer.Panel-bar {
