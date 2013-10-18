@@ -74,7 +74,7 @@
     background: hsl(210, 100%, 90%);
 }
 
-.NodeCell--owner .NodeCell-segment-item--component {
+.NodeCell--owner .NodeCell-item--component {
     background: hsl(43, 100%, 85%);
     border-left-color: hsl(43, 100%, 65%);
 }
