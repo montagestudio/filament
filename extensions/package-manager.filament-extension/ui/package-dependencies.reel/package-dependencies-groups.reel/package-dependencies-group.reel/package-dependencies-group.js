@@ -77,20 +77,24 @@ exports.PackageDependenciesGroup = Component.specialize(/** @lends PackageDepend
 
     handleDragover: {
         value: function (event) {
-            var dataTransfer = event.dataTransfer,
+            if (!this._willAcceptDrop) {
+                var dataTransfer = event.dataTransfer,
                 availableTypes = dataTransfer.types;
 
-            if (availableTypes) {
-                if (availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY) ||
-                    availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_INSTALLATION_DEPENDENCY)) {
+                if (availableTypes) {
+                    if (availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY) ||
+                        availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_INSTALLATION_DEPENDENCY)) {
 
-                    event.preventDefault();
-                    dataTransfer.dropEffect = dataTransfer.effectAllowed;
-                    this._willAcceptDrop = true;
+                        event.preventDefault();
+                        dataTransfer.dropEffect = dataTransfer.effectAllowed;
+                        this._willAcceptDrop = true;
+                    }
+                } else {
+                    dataTransfer.dropEffect = "none";
+                    this._willAcceptDrop = false;
                 }
-            } else {
-                dataTransfer.dropEffect = "none";
-                this._willAcceptDrop = false;
+            } else { // Already accept Drop
+                event.preventDefault();
             }
         }
     },

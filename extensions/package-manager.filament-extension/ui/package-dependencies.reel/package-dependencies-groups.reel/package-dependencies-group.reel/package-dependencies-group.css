@@ -18,3 +18,7 @@
     padding: 0;
     list-style: none;
 }
+
+.element-disablePointerEvents {
+    pointer-events: none;
+}

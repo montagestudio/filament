@@ -23,7 +23,8 @@
                 "element": {"#": "packageDependenciesGroupTitle"}
             },
             "bindings": {
-                "value": {"<-": "@owner.title"}
+                "value": {"<-": "@owner.title"},
+                "classList.has('element-disablePointerEvents')" : { "<-" : "@owner._willAcceptDrop"}
             }
         },
 
@@ -43,6 +44,9 @@
                 "element": {"#": "dependenciesList"},
                 "isSelectionEnabled": true,
                 "contentController": {"@": "dependencyContentController"}
+            },
+            "bindings": {
+                "classList.has('element-disablePointerEvents')" : { "<-" : "@owner._willAcceptDrop"}
             }
          },
 
