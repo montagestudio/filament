@@ -23,3 +23,7 @@ exports.SERIALIZATION_OBJECT_LABEL = "x-filament/x-montage-serialization-object-
 // Represents an event dispatched from a specific object
 // Value is an object with targetLabel and eventType properties
 exports.MONTAGE_EVENT_TARGET = "x-filament/x-montage-event-target";
+
+// Represents a binding 
+// Value is an object with targetPath, oneway, sourcePath and converter properties
+exports.MONTAGE_BINDING = "x-filament/x-montage-binding";
