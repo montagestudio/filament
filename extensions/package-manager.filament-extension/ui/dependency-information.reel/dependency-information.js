@@ -2,7 +2,8 @@
  * @module ui/dependency-information.reel
  * @requires montage/ui/component
  */
-var Component = require("montage/ui/component").Component;
+var Component = require("montage/ui/component").Component,
+    Dependency = require('../../core/dependency').Dependency;
 
 /**
  * @class DependencyInformation
@@ -65,6 +66,17 @@ exports.DependencyInformation = Component.specialize(/** @lends DependencyInform
      */
     hasError: {
         value: false
+    },
+
+    handleFixDependencyErrorAction: {
+        value: function () {
+            var ErrorPanel = this.templateObjects.dependencyErrors;
+            ErrorPanel.isFixing = true;
+
+            this.editingDocument.performActionDependency(Dependency.FIX_ERROR_DEPENDENCY_ACTION, this.currentDependency).then(function () {
+                ErrorPanel.isFixing = false;
+            });
+        }
     }
 
 });

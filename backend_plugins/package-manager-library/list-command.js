@@ -3,6 +3,7 @@ var semver = require("semver"),
     Q = require("q"),
     PATH = require("path"),
     FS = require("q-io/fs"),
+    ERROR_APP_NICKNAME = 'app',
     DEPENDENCY_TYPE_REGULAR = 'dependencies',
     DEPENDENCY_TYPE_OPTIONAL = 'optionalDependencies',
     DEPENDENCY_TYPE_BUNDLE = 'bundledDependencies',
@@ -589,7 +590,7 @@ exports.listCommand = Object.create(Object.prototype, {
                 for (var i = 0, length = problems.length; i < length; i++) {
                     var problem = problems[i];
 
-                    if (problem && problem.name === error.name && problem.type === error.type) {
+                    if (problem && problem.name === error.name && problem.type === error.type && problem.path === error.path) {
                         return true;
                     }
                 }
@@ -614,7 +615,7 @@ exports.listCommand = Object.create(Object.prototype, {
                     version: child.versionInstalled || '',
                     path: child.path,
                     message: message,
-                    parent: (child.parent && child.parent.name !== this._app.name) ? child.parent.name : 'app'
+                    parent: (child.parent && child.parent.name !== this._app.name) ? child.parent.name : ERROR_APP_NICKNAME
                 };
 
             if (!this._hasAlreadyBeenRaised(error, parent)) { // Check if an similar error has already been raised to this top level.

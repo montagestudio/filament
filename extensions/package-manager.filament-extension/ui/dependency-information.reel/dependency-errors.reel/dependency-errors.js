@@ -23,6 +23,10 @@ exports.DependencyErrors = Component.specialize(/** @lends DependencyErrors# */ 
      */
     currentDependency: {
         value: null
+    },
+
+    isFixing: {
+        value: false
     }
 
 });

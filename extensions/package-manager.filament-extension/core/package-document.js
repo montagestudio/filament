@@ -10,6 +10,9 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     DependencyNames = Tools.DependencyNames,
     defaultLocalizer = require("montage/core/localizer").defaultLocalizer,
 
+    DEPENDENCY_ERRORS_MAX = 3,
+    ERROR_APP_NICKNAME = 'app',
+
     DEFAULT_TIME_AUTO_SAVE = 400,
     DEPENDENCY_TIME_AUTO_SAVE = 100,
     DEPENDENCIES_REQUIRED = ['montage'],
@@ -414,15 +417,15 @@ exports.PackageDocument = EditingDocument.specialize( {
                         this._saveTimer = null;
 
                         this.saveModification().then(function () {
-                            self._updateDependenciesAfterSaving();
+                            self._updateDependenciesAfterSaving().done();
                         });
                     } else {
                         this._savingInProgress.then(function () { // saving in progress, can take some time
-                            self._updateDependenciesAfterSaving();
+                            self._updateDependenciesAfterSaving().done();
                         });
                     }
                 } else {
-                    this._updateDependenciesAfterSaving();
+                    this._updateDependenciesAfterSaving().done();
                 }
             }
         }
@@ -432,9 +435,9 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function () {
             var self = this;
 
-            this._updateDependenciesList().then(function () {
-                self._updateLibraryGroups();
-            }).done();
+            return this._updateDependenciesList().then(function () {
+                return self._updateLibraryGroups();
+            });
         }
     },
 
@@ -449,37 +452,227 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    _fixDependencyError: {
+    _shouldReInstallDependency: {
         value: function (dependency) {
-            if (!!dependency.extraneous) { // if this dependency is missing within the package.json file, then fix it.
-                this._package.dependencies[dependency.name] = dependency.versionInstalled;
+            var problems = dependency.problems,
+                errorCodes = ErrorsCommands.list.codes,
+                length = problems.length;
 
-                for (var i = 0, length = dependency.problems.length; i < length; i++) { // remove the error from the errors containers.
-                    var error = dependency.problems[i];
-
-                    if (error.name === dependency.name && error.type === ErrorsCommands.list.codes.extraneous) {
-                        dependency.problems.splice(parseInt(i, 10),1);
-                        break;
-                    }
-                }
+            if (length > DEPENDENCY_ERRORS_MAX) { // too many errors => reinstall the dependency.
                 return true;
             }
-            return false;
+
+            /* Whether a dependency is located at the "top" level and has one of these following problems:
+             *
+             * - Version invalid.
+             * - Missing or invalid Package.json file.
+             *
+             * We should reinstall it.
+             */
+            return problems.reduce(function (needInstall, problem) {
+                return needInstall || (problem.parent === ERROR_APP_NICKNAME && (problem.type === errorCodes.missing ||
+                    problem.type === errorCodes.fileErrors || problem.type === errorCodes.versionInvalid));
+            }, false);
+        }
+    },
+
+    fixDependencyErrors: {
+        value: function (dependency) {
+            var problems = dependency.problems;
+
+            if (problems) {
+                var self = this;
+
+                if (!!dependency.extraneous) { // When a dependency is extraneous, it doesn't show any deeper errors.
+
+                    return Promise.fcall(function () {
+                        self._package.dependencies[dependency.name] = dependency.versionInstalled;
+                        return self.saveModification(true).then(function () {
+                            return "The dependency " + dependency.name + " has been saved into the package.json file.";
+                        }); // Save dependency into the package.json file.
+                    });
+
+                // When a dependency shows too many errors, or has a version error, or the package.json file is invalid or missing.
+                } else if (this._shouldReInstallDependency(dependency)) {
+
+                    // When the dependency version is not a gitUrl, then it will be set to null,
+                    // because it could be invalid, but npm will install the correct version.
+                    var version = PackageTools.isGitUrl(dependency.version) ? dependency.version : null;
+                    return this.installDependency(new Dependency (dependency.name, version, dependency.type), true);
+
+                } else { // Fix deeper errors of a dependency.
+
+                    // Get an array of dependencies, which have one or several errors.
+                    var dependenciesToFix = this._getDeepErrorsSortedByDependency(problems);
+
+                    return Promise.all(dependenciesToFix.map(function (dependencyToFix) {
+                            return self._fixDependencyDeepErrors(dependencyToFix);
+                        })).then(function () {
+                            return self._updateDependenciesAfterSaving().then(function () {
+                                return "The dependency " + dependency.name + " has been fixed.";
+                            });
+                        });
+                }
+            }
+
+            return Promise.reject(new Error("No problems to fix"));
+        }
+    },
+
+    _getDeepErrorsSortedByDependency: {
+        value: function (problems) {
+            var errorsContainer = [];
+            this._getErrorsFromTree(this._getTreeErrors(problems), errorsContainer);
+            return errorsContainer;
+        }
+    },
+
+    _getErrorsFromTree: {
+        value: function (tree, container) {
+            if (Object.prototype.toString.call(tree) === '[object Object]') {
+                var keys = Object.keys(tree);
+
+                for (var i = 0, length = keys.length; i < length; i++) {
+                    var currentNode = tree[keys[i]];
+
+                    if (currentNode.hasOwnProperty("problems")) {
+                        container.push({
+                            name: currentNode.name,
+                            path: currentNode.path,
+                            problems: currentNode.problems
+                        });
+                    }
+
+                    this._getErrorsFromTree(currentNode, container);
+                }
+            }
+        }
+    },
+
+    _getTreeErrors: {
+        value: function (problems) {
+            var tree = {}; // Build a "tree errors" with all errors from a dependency.
+
+            for (var i = 0, length = problems.length; i < length; i++) {
+                this._insertIntoTree(tree, problems[i]); // Insert an error within the tree, where it is located.
+            }
+            return tree;
+        }
+    },
+
+    _insertIntoTree: {
+        value: function (tree, problem) {
+            // Get a small tree with one error, and merge it with the complete tree.
+            this._mergeErrorTrees(tree, this._getPartTreeFormError(problem));
+        }
+    },
+
+    _mergeErrorTrees : {
+        value: function (originalTree, partTree) {
+            var keys = Object.keys(partTree);
+
+            if (keys.length > 0) {
+                var key = keys[0];
+
+                if (originalTree.hasOwnProperty(key)) { // if branch exists
+                    var currentPartTreeBranch = partTree[key];
+
+                    // When the currentPartTreeBranch has a problems property, then merge it with the original tree.
+                    if (!currentPartTreeBranch.hasOwnProperty("problems")) {
+                        this._mergeErrorTrees(originalTree[key], currentPartTreeBranch);
+                    } else {
+                        var currentTreeBranch = originalTree[key];
+
+                        // The current branch has already a problems property.
+                        if (Array.isArray(currentTreeBranch.problems)) {
+                            currentTreeBranch.problems.push(currentPartTreeBranch.problems[0]);
+                        } else {
+                            currentTreeBranch.problems = currentPartTreeBranch.problems;
+                            currentTreeBranch.name = currentPartTreeBranch.name;
+                            currentTreeBranch.path = currentPartTreeBranch.path;
+                        }
+                    }
+                } else {
+                    originalTree[key] = partTree[key];
+                }
+            }
+        }
+    },
+
+    _getPartTreeFormError: {
+        value: function (problem) {
+
+            // Transforms the dependency path into a tree.
+            var path = problem.path;
+
+            if (typeof path === "string") {
+                path = (path.charAt(path.length - 1) === '/') ? path.slice(0, -1) : path;
+
+                var dependencyNames = path.split(/\/?node_modules\//),
+                    tree = {},
+                    cursor = null;
+
+                for (var i = 1, length = dependencyNames.length; i < length; i++) {
+                    if (!cursor) {
+                        cursor = tree[dependencyNames[i]] = {};
+                    } else {
+                        cursor = cursor[dependencyNames[i]] = {};
+                    }
+                }
+
+                cursor.name = dependencyNames[dependencyNames.length - 1];
+                cursor.problems = [problem];
+                cursor.path = path;
+                return tree;
+            }
+        }
+    },
+
+    _fixDependencyDeepErrors: {
+        value: function (dependency) {
+            var errorCodes = ErrorsCommands.list.codes,
+                self = this,
+                problems = dependency.problems,
+                listDependencyExtraneous = [],
+                listDependencyToInstall = [];
+
+            for (var j = 0, length = problems.length; j < length; j++) {
+                var problem = problems[j];
+
+                if (problem.type === errorCodes.extraneous) { // missing within the package.json.
+                    listDependencyExtraneous.push({
+                        name: problem.name,
+                        version: problem.version
+                    });
+                } else if (problem.type === errorCodes.versionInvalid) {
+                    listDependencyToInstall.push(problem.name); // Don't specify the version.
+                } else {
+                    listDependencyToInstall.push(
+                        PackageTools.getValidRequestFromModule(new Dependency(problem.name, problem.version))
+                    );
+                }
+            }
+
+            // Perform fixing.
+            return Promise.all(listDependencyToInstall.map(function (dependencyToInstall) {
+                return self._packageManagerPlugin.invoke("installDependency", dependencyToInstall, dependency.path);
+            })).then(function () {
+                if (listDependencyExtraneous.length > 0) {
+                    return self._packageManagerPlugin.invoke("saveModuleIntoFile", listDependencyExtraneous, dependency.path);
+                }
+            });
         }
     },
 
     _classifyDependencies: {
-        value: function (dependencies, fixError) {
+        value: function (dependencies) {
             if (dependencies) {
                 this._resetDependencies();
-                var fixedErrors = false,
-                    type = null,
+                var type = null,
                     dependencyCollection = this._dependencyCollection;
 
-                fixedErrors = dependencies.reduce(function (fixed, dependency) {
-                    if (fixError) {
-                        fixed = fixed || this._fixDependencyError(dependency);
-                    }
+                for (var i = 0, length = dependencies.length; i < length; i++) {
+                    var dependency = dependencies[i];
 
                     if (dependency.hasOwnProperty('type')) {
                         type = DependencyNames[dependency.type];
@@ -487,15 +680,9 @@ exports.PackageDocument = EditingDocument.specialize( {
                         if (type) {
                             dependencyCollection[type].push(dependency);
                         } else {
-                            throw new Error('Encountered dependency with unexpected type "' + dependency.type +'"');
+                            throw new Error('Encountered dependency with unexpected type "' + dependency.type + '"');
                         }
                     }
-                    return fixed;
-
-                }, fixedErrors);
-
-                if (fixedErrors) {
-                    this.saveModification();
                 }
             }
         }
@@ -582,6 +769,9 @@ exports.PackageDocument = EditingDocument.specialize( {
                 } else if (action === Dependency.UPDATE_DEPENDENCY_ACTION) {
                     promise = this.updateDependency(dependency);
                     title = "Updating";
+                } else if (action === Dependency.FIX_ERROR_DEPENDENCY_ACTION) {
+                    promise = this.fixDependencyErrors(dependency);
+                    title = "Fixing";
                 } else {
                     promise = Promise.reject(new Error("Action not recognized"));
                     title = "Error";
@@ -807,7 +997,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
                     for (var i = 0, length = keys.length; i < length; i++) { // temporary fix because npm outdated is buggy.
                         var dependency = self.findDependency(keys[i], null, false);
-                        if (!dependency || dependency.private) {
+                        if (!dependency || dependency.private || dependency.problems) {
                             delete updates[keys[i]];
                         }
                     }

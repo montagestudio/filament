@@ -6,6 +6,7 @@ var listCommand = require('./package-manager-library/list-command').listCommand,
     installCommand = require('./package-manager-library/install-command').installCommand,
     removeCommand = require('./package-manager-library/remove-command').removeCommand,
     outDatedCommand = require('./package-manager-library/outdated-command').outDatedCommand,
+    saveModuleFileCommand = require('./package-manager-library/save-module-file-command').saveModuleFileCommand,
     PackageManagerDB = require('./package-manager-library/package-manager-database').PackageManagerDB,
     npm = require("npm"),
     Path = require("path"),
@@ -58,8 +59,16 @@ exports.searchModules = function (request) {
     return Q.invoke(searchCommand, "run", request);
 };
 
-exports.installDependency = function (request) {
-    return Q.invoke(installCommand, "run", request, false);
+exports.installDependency = function (request, packageLocation) {
+    if (!npm.config.loaded) {
+        return Q.reject(new Error("NPM should be loaded first"));
+    }
+
+    if (typeof packageLocation === "undefined") {
+        packageLocation = npm.prefix;
+    }
+
+    return Q.invoke(installCommand, "run", request, packageLocation, false);
 };
 
 exports.removeDependency = function (dependencyName, dependencyLocation) {
@@ -68,4 +77,8 @@ exports.removeDependency = function (dependencyName, dependencyLocation) {
 
 exports.getOutdatedDependencies = function () {
     return Q.invoke(outDatedCommand, "run");
+};
+
+exports.saveModuleIntoFile = function (dependency, where) {
+    return saveModuleFileCommand.run(dependency, where);
 };

@@ -30,7 +30,13 @@
             "bindings": {
                 "currentDependency": {"<-": "@owner.currentDependency"},
                 "classList.has('hide-component')" : { "<-" : "!@owner.hasError"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "dependencyActions": {
