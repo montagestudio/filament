@@ -518,25 +518,27 @@ describe("core/reel-document-headless-editing-spec", function () {
 
     describe("defining bindings", function () {
 
-        var targetPath, oneway, sourcePath, converter;
+        var targetPath, oneway, sourcePath, converter, converterLabel;
 
         beforeEach(function () {
             targetPath = "a.Target.Path";
             oneway = true;
             sourcePath = "a.Source.Path";
-            converter = "";
+            converter = null;
+            converterLabel = null;
         });
 
         it ("should define the binding with the expected properties", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
 
-                var binding = reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter);
-
-                expect(binding.targetPath).toBe(targetPath);
-                expect(binding.oneway).toBe(oneway);
-                expect(binding.sourcePath).toBe(sourcePath);
-                expect(binding.converter).toBe(converter);
+                return reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter, converterLabel)
+                    .then(function (binding) {
+                        expect(binding.targetPath).toBe(targetPath);
+                        expect(binding.oneway).toBe(oneway);
+                        expect(binding.sourcePath).toBe(sourcePath);
+                        expect(binding.converter).toBe(converter);
+                    });
 
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -544,20 +546,37 @@ describe("core/reel-document-headless-editing-spec", function () {
         it ("should define the binding on the specified object", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
-                var binding = reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter);
 
-                expect(targetProxy.bindings.indexOf(binding) === -1).toBeFalsy();
+                return reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter)
+                    .then(function (binding) {
+                        expect(targetProxy.bindings.indexOf(binding) === -1).toBeFalsy();
+                    });
 
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
+        it ("should add a converter the serialization if new binding definition references a nonexitant converter", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var targetProxy = reelDocument.editingProxyMap.foo;
+                converterLabel = "aDynamicallyCreatedConverterPlease";
+
+                return reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter, converterLabel)
+                    .then(function (binding) {
+                        expect(binding.converter.label).toBe(converterLabel);
+                        expect(reelDocument.editingProxies.length).toBe(5);
+                    });
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
 
         it ("should register an undoable operation for the defining of a binding", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
-                var binding = reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter);
 
-                expect(reelDocument.undoManager.undoCount).toBe(1);
+                return reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter)
+                    .then(function (binding) {
+                        expect(reelDocument.undoManager.undoCount).toBe(1);
+                    });
 
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -565,12 +584,15 @@ describe("core/reel-document-headless-editing-spec", function () {
         it ("should undo the defining of a binding by removing that binding", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
-                var binding = reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter);
 
-                return reelDocument.undo().then(function (deletedBinding) {
-                    expect(deletedBinding).toBe(binding);
-                    expect(targetProxy.bindings.indexOf(binding) === -1).toBeTruthy();
-                });
+                return reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter)
+                    .then(function (binding) {
+                        return reelDocument.undo().then(function (deletedBinding) {
+                            expect(deletedBinding).toBe(binding);
+                            expect(targetProxy.bindings.indexOf(binding) === -1).toBeTruthy();
+                        });
+                    });
+
 
             }).timeout(WAITSFOR_TIMEOUT);
         });
