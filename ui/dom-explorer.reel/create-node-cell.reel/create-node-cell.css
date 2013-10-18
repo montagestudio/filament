@@ -110,7 +110,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    min-width: 20px;
+    min-width: 45px;
 }
 
 .CreateNodeCell-reset.matte-Button {
