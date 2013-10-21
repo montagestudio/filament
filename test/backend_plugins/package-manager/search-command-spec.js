@@ -31,7 +31,7 @@ describe("search command", function () {
 
             return Q.invoke(searchCommand, 'run', 4).then(null, function (error) {
                 expect(error instanceof Error).toEqual(true);
-                expect(error.code).toEqual(ErrorsCodes.requestType);
+                expect(error.code).toEqual(ErrorsCodes.requestInvalid);
             });
         });
     });

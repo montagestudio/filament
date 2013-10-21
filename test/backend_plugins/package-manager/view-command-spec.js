@@ -27,11 +27,11 @@ describe("view command", function () {
 
         return viewCommand.run('montage@').then(null, function (error) {
             expect(error instanceof Error).toEqual(true);
-            expect(error.code).toEqual(ErrorsCodes.wrongRequestFormat);
+            expect(error.code).toEqual(ErrorsCodes.requestInvalid);
 
             return viewCommand.run('montage@1.0').then(null, function (error) {
                 expect(error instanceof Error).toEqual(true);
-                expect(error.code).toEqual(ErrorsCodes.wrongRequestFormat);
+                expect(error.code).toEqual(ErrorsCodes.requestInvalid);
 
                 return viewCommand.run(45).then(null, function (error) {
                     expect(error instanceof Error).toEqual(true);

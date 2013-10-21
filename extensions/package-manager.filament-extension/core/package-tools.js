@@ -184,8 +184,7 @@ exports.Errors = {
         view: {
             codes: {
                 dependencyNotFound: 3000,
-                requestInvalid: 3001,
-                wrongRequestFormat: 3002
+                requestInvalid: 3001
             }
         },
         remove: {
@@ -198,8 +197,7 @@ exports.Errors = {
         },
         search: {
             codes: {
-                requestType: 5000,
-                requestInvalid: 5001
+                requestInvalid: 5000
             }
         }
     }

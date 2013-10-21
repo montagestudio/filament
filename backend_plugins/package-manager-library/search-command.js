@@ -15,8 +15,7 @@ var PackageManagerError = require("./core").PackageManagerError,
     CRITICAL_LENGTH = 2,
     MAX_RESULTS = 300,
 
-    ERROR_NAME_TYPE = 5000,
-    ERROR_INVALID_REQUEST = 5001;
+    ERROR_INVALID_REQUEST = 5000;
 
 /**
  * Prepares the search command, then invokes it.
@@ -27,12 +26,10 @@ var PackageManagerError = require("./core").PackageManagerError,
 SearchCommand.prototype.run = function (name) {
     if (typeof name === 'string' && name.length > 0) {
         name = name.trim().toLowerCase();
-    } else {
-        return Q.reject(new PackageManagerError("Dependency name invalid", ERROR_NAME_TYPE));
-    }
 
-    if (Tools.isNameValid(name, false)) {
-        return this._invokeSearchCommand(name);
+        if (Tools.isNameValid(name, false)) {
+            return this._invokeSearchCommand(name);
+        }
     }
 
     return Q.reject(new PackageManagerError("The request is invalid", ERROR_INVALID_REQUEST));
