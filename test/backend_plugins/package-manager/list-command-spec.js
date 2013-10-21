@@ -25,7 +25,7 @@ describe("list command", function () {
 
         it('should gather some correct information about the project.', function() {
 
-            return Q.invoke(listCommand, 'run', DEFAULT_PROJECT_APP, true).then(function (tree) {
+            return listCommand.run(DEFAULT_PROJECT_APP, true).then(function (tree) {
                 expect(typeof tree).toEqual("object");
                 expect(tree.name).toEqual(DEFAULT_PROJECT_APP);
                 expect(tree.version).toEqual('0.1.0');
@@ -36,7 +36,7 @@ describe("list command", function () {
 
         it('should has no errors in this situation.', function() {
 
-            return Q.invoke(listCommand, 'run', DEFAULT_PROJECT_APP, true).then(function (tree) {
+            return listCommand.run(DEFAULT_PROJECT_APP, true).then(function (tree) {
                 for (var i = 0, length = tree.dependencies.length; i < length; i++) {
                     expect(tree.dependencies[i].problems).not.toBeDefined();
                 }
@@ -45,14 +45,14 @@ describe("list command", function () {
 
         it('should detect when an ancestor is used by a deeper dependency.', function() {
 
-            return Q.invoke(listCommand, 'run', DEFAULT_PROJECT_APP, true).then(function (tree) {
+            return listCommand.run(DEFAULT_PROJECT_APP, true).then(function (tree) {
                 expect(tree.dependencies[2].problems).not.toBeDefined(); // montage
             });
         });
 
         it('a dependency is not extraneous if it belongs to the "bundledDependencies" field.', function() {
 
-            return Q.invoke(listCommand, 'run', DEFAULT_PROJECT_APP, true).then(function (tree) {
+            return listCommand.run(DEFAULT_PROJECT_APP, true).then(function (tree) {
                 expect(tree.dependencies[8].problems).not.toBeDefined(); // zip
                 expect(tree.dependencies[8].type).toEqual(DEPENDENCY_TYPE_BUNDLE);
             });
@@ -60,7 +60,7 @@ describe("list command", function () {
 
         it('a dependency is not missing if it belongs to the "devDependencies" or the "optionalDependencies" field.', function() {
 
-            return Q.invoke(listCommand, 'run', DEFAULT_PROJECT_APP, true).then(function (tree) {
+            return listCommand.run(DEFAULT_PROJECT_APP, true).then(function (tree) {
                 expect(tree.dependencies[6].problems).not.toBeDefined(); // sip
                 expect(tree.dependencies[6].type).toEqual(DEPENDENCY_TYPE_OPTIONAL);
                 expect(tree.dependencies[7].problems).not.toBeDefined(); // underscore
@@ -82,7 +82,7 @@ describe("list command", function () {
 
         it('should detect when a regular dependency is missing.', function() {
 
-            return Q.invoke(listCommand, 'run', DEFAULT_PROJECT_APP, true).then(function (tree) {
+            return listCommand.run(DEFAULT_PROJECT_APP, true).then(function (tree) {
                 expect(tree.dependencies[0].missing).toEqual(true); // digit
                 expect(tree.dependencies[0].type).toEqual(DEPENDENCY_TYPE_REGULAR);
                 expect(tree.dependencies[0].problems).toBeDefined();
@@ -93,7 +93,7 @@ describe("list command", function () {
 
         it('should detect an extraneous dependency.', function() {
 
-            return Q.invoke(listCommand, 'run', DEFAULT_PROJECT_APP, true).then(function (tree) {
+            return listCommand.run(DEFAULT_PROJECT_APP, true).then(function (tree) {
                 expect(tree.dependencies[1].extraneous).toEqual(true); // filament
                 expect(tree.dependencies[1].problems).toBeDefined();
                 expect(tree.dependencies[1].problems[0].type).toEqual(ErrorsCodes.extraneous);
@@ -102,7 +102,7 @@ describe("list command", function () {
 
         it('should detect an invalid regular or optional dependency version.', function() {
 
-            return Q.invoke(listCommand, 'run', DEFAULT_PROJECT_APP, true).then(function (tree) {
+            return listCommand.run(DEFAULT_PROJECT_APP, true).then(function (tree) {
                 expect(tree.dependencies[2].invalid).toEqual(true); // montage
                 expect(tree.dependencies[2].type).toEqual(DEPENDENCY_TYPE_REGULAR);
                 expect(tree.dependencies[2].problems).toBeDefined();
@@ -119,7 +119,7 @@ describe("list command", function () {
 
         it('should detect an invalid ancestor which its used by a deeper dependency.', function() {
 
-            return Q.invoke(listCommand, 'run', DEFAULT_PROJECT_APP, true).then(function (tree) {
+            return listCommand.run(DEFAULT_PROJECT_APP, true).then(function (tree) {
                 expect(tree.dependencies[2].problems).toBeDefined(); // montage
                 expect(tree.dependencies[2].problems[1].type).toEqual(ErrorsCodes.missing);
                 expect(tree.dependencies[2].problems[2].type).toEqual(ErrorsCodes.versionInvalid); // the module joey needs a valid version of the package named zip.
@@ -128,7 +128,7 @@ describe("list command", function () {
 
         it('should detect when a package.json file is missing.', function() {
 
-            return Q.invoke(listCommand, 'run', DEFAULT_PROJECT_APP, true).then(function (tree) {
+            return listCommand.run(DEFAULT_PROJECT_APP, true).then(function (tree) {
                 expect(tree.dependencies[9].problems).toBeDefined(); // zy
                 expect(tree.dependencies[9].problems[0].type).toEqual(ErrorsCodes.fileErrors);
             });
@@ -136,7 +136,7 @@ describe("list command", function () {
 
         it('should detect when a package.json file shows some errors.', function() {
 
-            return Q.invoke(listCommand, 'run', DEFAULT_PROJECT_APP, true).then(function (tree) {
+            return listCommand.run(DEFAULT_PROJECT_APP, true).then(function (tree) {
                 expect(tree.dependencies[10].problems).toBeDefined(); // zx
                 expect(tree.dependencies[10].problems[0].type).toEqual(ErrorsCodes.fileErrors);
             });
@@ -153,17 +153,16 @@ describe("list command", function () {
                 requires: {"q-io/fs": mockFS}
             }).listCommand;
 
-            return Q.invoke(listCommand, 'run', DEFAULT_PROJECT_APP, true).then(null, function (error) {
+            return listCommand.run(DEFAULT_PROJECT_APP, true).then(null, function (error) {
                 expect(error.code).toEqual(ErrorsCodes.projectFileErrors);
             });
         });
 
         it('should handle wrong project paths.', function() {
-
-            return Q.invoke(listCommand, 'run', '/root/', true).then(null, function (error) {
+            return listCommand.run('/root/', true).then(null, function (error) {
                 expect(error.code).toEqual(ErrorsCodes.projectFileErrors);
 
-                return Q.invoke(listCommand, 'run', 1, true).then(null, function (error) {
+                return listCommand.run(1, true).then(null, function (error) {
                     expect(error.code).toEqual(ErrorsCodes.pathMissing);
                 });
             });
@@ -179,7 +178,7 @@ describe("list command", function () {
                 requires: {"q-io/fs": mockFS}
             }).listCommand;
 
-            return Q.invoke(listCommand, 'run', DEFAULT_PROJECT_APP, true).then(function (tree) {
+            return listCommand.run(DEFAULT_PROJECT_APP, true).then(function (tree) {
                 expect((Array.isArray(tree.dependencies) && tree.dependencies.length === 0)).toEqual(true);
             });
         });

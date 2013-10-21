@@ -17,23 +17,22 @@ describe("remove command", function () {
 
     it('should remove a specified dependency.', function() {
 
-        return Q.invoke(removeCommand, 'run', 'montage', PROJECT_APP_NAME).then(function (module) {
+        return removeCommand.run('montage', PROJECT_APP_NAME).then(function (module) {
             expect(typeof module).toEqual("object");
             expect(module.name).toEqual("montage");
-
         });
     });
 
     it('should throw an error when the dependency name is not a valid string.', function() {
 
-        return Q.invoke(removeCommand, 'run', 3, PROJECT_APP_NAME).then(null, function (error) {
+        return removeCommand.run(3, PROJECT_APP_NAME).then(null, function (error) {
             expect(error.code).toEqual(ErrorsCodes.nameInvalid);
         });
     });
 
     it('should throw an error when the project path is not valid.', function() {
 
-        return Q.invoke(removeCommand, 'run', 'montage', 3).then(null, function (error) {
+        return removeCommand.run('montage', 3).then(null, function (error) {
             expect(error.code).toEqual(ErrorsCodes.pathInvalid);
         });
     });
