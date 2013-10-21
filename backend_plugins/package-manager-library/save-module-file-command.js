@@ -55,17 +55,21 @@ SaveModuleFileCommand.prototype._invokeCommand = function (dependencyList, packa
 
                 if (packageFile) {
                     dependencyList.forEach(function (dependency) {
-                        var version = dependency.version,
-                            type = DependencyNames[dependency.type];
+                        var dependencyName = dependency.name;
 
-                        dependency.version = Tools.isGitUrl(version) || Tools.isVersionValid(version) ? version : '';
-                        type = type ? type : DependencyNames[DependencyNames.dependencies];
+                        if (typeof dependencyName === "string" && dependencyName.length > 0) {
+                            var version = dependency.version,
+                                type = DependencyNames[dependency.type];
 
-                        if (!packageFile[type]) {
-                            packageFile[type] = {};
+                            dependency.version = Tools.isGitUrl(version) || Tools.isVersionValid(version) ? version : '';
+                            type = type ? type : DependencyNames[DependencyNames.dependencies];
+
+                            if (!packageFile[type]) {
+                                packageFile[type] = {};
+                            }
+
+                            packageFile[type][dependencyName] = dependency.version;
                         }
-
-                        packageFile[type][dependency.name] = dependency.version;
                     });
 
                     return FS.write(packageLocation, JSON.stringify(packageFile, null, 4));
