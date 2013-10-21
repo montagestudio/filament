@@ -1,9 +1,6 @@
 /* global lumieres */
 var Montage = require("montage/core/core").Montage,
-    Component = require("montage/ui/component").Component,
-    Connection = require("q-connection");
-
-var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
+    Component = require("montage/ui/component").Component;
 
 exports.Main = Montage.create(Component, {
 

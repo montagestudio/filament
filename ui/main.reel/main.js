@@ -1,6 +1,5 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
-    WeakMap = require("montage/collections/weak-map"),
     application = require("montage/core/application").application;
 
 exports.Main = Montage.create(Component, {

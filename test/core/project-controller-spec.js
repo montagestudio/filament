@@ -1,17 +1,13 @@
 var Montage = require("montage").Montage,
     environmentBridgeMock = require("test/mocks/environment-bridge-mocks").environmentBridgeMock,
     menuMock = require("test/mocks/menu-mocks").menuMock,
-    editorMock = require("test/mocks/editor-mocks").editorMock,
     editorControllerMock = require("test/mocks/editor-controller-mocks").editorControllerMock,
     ViewController = require("core/view-controller").ViewController,
-    ProjectController = require("core/project-controller").ProjectController,
-    Promise = require("montage/core/promise").Promise,
-    WAITSFOR_TIMEOUT = 2500;
+    ProjectController = require("core/project-controller").ProjectController;
 
 describe("core/project-controller-spec", function () {
 
-    var bridge, viewController, editorController, projectController, mockMenu, textUrl, reelUrl,
-        editor;
+    var bridge, viewController, editorController, projectController, mockMenu;
 
     beforeEach(function () {
         mockMenu = menuMock({

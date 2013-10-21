@@ -1,14 +1,11 @@
-var Montage = require("montage/core/core").Montage,
-    CoreExtension = require("filament-extension/core/extension").Extension,
+var CoreExtension = require("filament-extension/core/extension").Extension,
     Promise = require("montage/core/promise").Promise,
     defaultMenu = require("filament/ui/native-menu/menu").defaultMenu,
     MenuItem = require("filament/ui/native-menu/menu-item").MenuItem;
 
-/*global lumieres */
-
 var PARENT_MENU = "Tools";
 
-var Extension = exports.Extension = CoreExtension.specialize( {
+exports.Extension = CoreExtension.specialize( {
 
     constructor: {
         value: function Extension() {
@@ -93,8 +90,7 @@ var Extension = exports.Extension = CoreExtension.specialize( {
 
     optimize: {
         value: function () {
-            var self = this,
-                projectController = this.projectController,
+            var projectController = this.projectController,
                 bridge = projectController.environmentBridge,
                 mop = bridge.backend.get("mop");
 

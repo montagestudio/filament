@@ -1,5 +1,4 @@
-var Montage = require("montage").Montage,
-    Promise = require("montage/core/promise").Promise;
+var Montage = require("montage").Montage;
 
 var Editor = Montage.create(Montage, {
 

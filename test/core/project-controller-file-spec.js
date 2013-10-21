@@ -5,13 +5,11 @@ var Montage = require("montage").Montage,
     editorControllerMock = require("test/mocks/editor-controller-mocks").editorControllerMock,
     ViewController = require("core/view-controller").ViewController,
     ProjectController = require("core/project-controller").ProjectController,
-    Promise = require("montage/core/promise").Promise,
-    WAITSFOR_TIMEOUT = 2500;
+    Promise = require("montage/core/promise").Promise;
 
 describe("core/project-controller-file-spec", function () {
 
-    var bridge, viewController, editorController, projectController, mockMenu, textUrl, reelUrl,
-        editor;
+    var bridge, viewController, editorController, projectController, mockMenu;
 
     beforeEach(function () {
         mockMenu = menuMock({

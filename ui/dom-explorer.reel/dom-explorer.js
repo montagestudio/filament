@@ -4,10 +4,7 @@
     @requires montage/ui/component
 */
 var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
-    Promise = require("montage/core/promise").Promise,
-    emmet = require("core/filament-emmet"),
-    MimeTypes = require("core/mime-types");
+    Component = require("montage/ui/component").Component;
 
 /**
     Description TODO

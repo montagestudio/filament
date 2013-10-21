@@ -1,8 +1,6 @@
 var Montage = require("montage").Montage,
-    Promise = require("montage/core/promise").Promise,
     reelDocumentMock = require("test/mocks/reel-document-mocks").reelDocumentMock,
-    ReelProxy = require("core/reel-proxy").ReelProxy,
-    WAITSFOR_TIMEOUT = 2500;
+    ReelProxy = require("core/reel-proxy").ReelProxy;
 
 describe("core/reel-proxy-spec", function () {
 

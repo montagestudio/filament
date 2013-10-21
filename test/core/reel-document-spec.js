@@ -1,5 +1,4 @@
-var Montage = require("montage").Montage,
-    Promise = require("montage/core/promise").Promise,
+var Promise = require("montage/core/promise").Promise,
     ReelDocument = require("core/reel-document").ReelDocument,
     Template = require("montage/core/template").Template,
     WAITSFOR_TIMEOUT = 2500;
@@ -31,7 +30,7 @@ describe("core/reel-document-spec", function () {
 
     describe("once initialized", function () {
 
-        var mockDocument, mockTemplate, serialization;
+        var mockDocument, serialization;
 
         beforeEach(function () {
             mockDocument = document.implementation.createHTMLDocument();

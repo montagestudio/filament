@@ -1,6 +1,5 @@
 /* global global,opener:true */
 var path = require("path"),
-    fs = require("fs"),
     minitCreate = require("minit/lib/create").create,
     Q = require("q"),
     npm = require("npm"),

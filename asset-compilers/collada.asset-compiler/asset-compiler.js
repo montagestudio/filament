@@ -1,7 +1,5 @@
 /*global lumieres */
-var Montage = require("montage/core/core").Montage,
-    CoreAssetCompiler = require("filament-asset-compiler/core/asset-compiler").AssetCompiler,
-    Promise = require("montage/core/promise").Promise,
+var CoreAssetCompiler = require("filament-asset-compiler/core/asset-compiler").AssetCompiler,
     Connection = require("filament/q-connection"),
     AdaptConnection = require("filament/q-connection/adapt"),
     Q = require("filament/q");

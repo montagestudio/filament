@@ -1,20 +1,6 @@
-var Montage = require("montage").Montage,
-    Template = require("montage/core/template").Template,
-    Promise = require("montage/core/promise").Promise,
+var Template = require("montage/core/template").Template,
     mockReelDocument = require("test/mocks/reel-document-mocks").mockReelDocument,
     WAITSFOR_TIMEOUT = 2500;
-
-var templateWithSerializationAndBodyContent = function (serializationObject, htmlString) {
-    var doc = document.implementation.createHTMLDocument();
-    var serializationElement = doc.createElement("script");
-    serializationElement.setAttribute("type", "text/montage-serialization");
-    serializationElement.appendChild(document.createTextNode(JSON.stringify(serializationObject)));
-    doc.head.appendChild(serializationElement);
-    doc.body.innerHTML = htmlString;
-
-
-    return Template.create().initWithDocument(doc);
-};
 
 describe("core/reel-document-template-editing-spec", function () {
 
@@ -118,7 +104,7 @@ describe("core/reel-document-template-editing-spec", function () {
                 var element = reelDocument.htmlDocument.getElementById("removeMe");
                 var nodeProxy = reelDocument.nodeProxyForNode(element);
 
-                var removedNodeProxy = reelDocument.removeTemplateNode(nodeProxy);
+                reelDocument.removeTemplateNode(nodeProxy);
                 expect(reelDocument.htmlDocument.getElementById("removeMe")).toBeFalsy();
 
             }).timeout(WAITSFOR_TIMEOUT);
@@ -241,7 +227,7 @@ describe("core/reel-document-template-editing-spec", function () {
                 var element = reelDocument.htmlDocument.getElementById("foo");
                 var nodeProxy = reelDocument.nodeProxyForNode(element);
 
-                var removedNodeProxy = reelDocument.removeTemplateNode(nodeProxy);
+                reelDocument.removeTemplateNode(nodeProxy);
                 expect(reelDocument.htmlDocument.getElementById("foo")).toBeFalsy();
 
             }).timeout(WAITSFOR_TIMEOUT);
@@ -290,7 +276,7 @@ describe("core/reel-document-template-editing-spec", function () {
                 var element = reelDocument.htmlDocument.getElementsByTagName("body")[0];
                 var nodeProxy = reelDocument.nodeProxyForNode(element);
 
-                var removedNodeProxy = reelDocument.removeTemplateNode(nodeProxy);
+                reelDocument.removeTemplateNode(nodeProxy);
                 expect(reelDocument.htmlDocument.getElementsByTagName("body")[0]).toBe(element);
                 expect(reelDocument.htmlDocument.getElementById("removeSubTree")).toBeTruthy();
                 expect(reelDocument.htmlDocument.getElementById("removeMe")).toBeTruthy();
@@ -304,7 +290,7 @@ describe("core/reel-document-template-editing-spec", function () {
                 var element = reelDocument.htmlDocument.getElementById("ownerElement");
                 var nodeProxy = reelDocument.nodeProxyForNode(element);
 
-                var removedNodeProxy = reelDocument.removeTemplateNode(nodeProxy);
+                reelDocument.removeTemplateNode(nodeProxy);
                 expect(reelDocument.htmlDocument.getElementById("ownerElement")).toBe(element);
                 expect(reelDocument.htmlDocument.getElementById("removeSubTree")).toBeTruthy();
                 expect(reelDocument.htmlDocument.getElementById("removeMe")).toBeTruthy();
@@ -318,7 +304,7 @@ describe("core/reel-document-template-editing-spec", function () {
                 var element = reelDocument.htmlDocument.getElementById("removeSubTree");
                 var nodeProxy = reelDocument.nodeProxyForNode(element);
 
-                var removedNodeProxy = reelDocument.removeTemplateNode(nodeProxy);
+                reelDocument.removeTemplateNode(nodeProxy);
                 expect(reelDocument.htmlDocument.getElementById("removeSubTree")).toBeFalsy();
                 expect(reelDocument.htmlDocument.getElementById("removeMe")).toBeFalsy();
                 expect(reelDocument.htmlDocument.getElementById("foo")).toBeFalsy();
@@ -344,7 +330,7 @@ describe("core/reel-document-template-editing-spec", function () {
                 var root = reelDocument.htmlDocument.getElementById("removeSubTree");
                 var rootProxy = reelDocument.nodeProxyForNode(root);
 
-                var removeMe = reelDocument.htmlDocument.getElementById("removeMe");
+                reelDocument.htmlDocument.getElementById("removeMe");
                 var removeMeProxy = reelDocument.nodeProxyForNode(root);
 
                 var foo = reelDocument.htmlDocument.getElementById("foo");

@@ -5,7 +5,6 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
-    Promise = require("montage/core/promise").Promise,
     RangeController = require("montage/core/range-controller").RangeController,
     defaultLocalizer = require("montage/core/localizer").defaultLocalizer;
 

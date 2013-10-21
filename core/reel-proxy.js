@@ -1,7 +1,4 @@
-var Montage = require("montage").Montage,
-    Bindings = require("montage/core/bindings").Bindings,
-    EditingProxy = require("palette/core/editing-proxy").EditingProxy,
-    MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
+var EditingProxy = require("palette/core/editing-proxy").EditingProxy,
     Map = require("montage/collections/map"),
     NodeProxy = require("core/node-proxy").NodeProxy,
     BUILDER_UNIT_LABEL = "_dev";
@@ -406,8 +403,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
      */
     removeObjectEventListener: {
         value: function (listener) {
-            var removedListener,
-                listenerIndex = this.listeners.indexOf(listener);
+            var listenerIndex = this.listeners.indexOf(listener);
 
             if (listenerIndex > -1) {
                 this.listeners.splice(listenerIndex, 1);

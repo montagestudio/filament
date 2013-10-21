@@ -1,6 +1,4 @@
-/*global describe,beforeEach,it,expect,waits,waitsFor,runs,afterEach */
-
-var PATH = require("path");
+/*global describe,beforeEach,it,expect */
 
 var SandboxedModule = require('sandboxed-module');
 var QFSMock = require("q-io/fs-mock");

@@ -1,5 +1,4 @@
-var Montage = require("montage").Montage,
-    ProxyContext = require("palette/core/serialization/proxy-context").ProxyContext;
+var ProxyContext = require("palette/core/serialization/proxy-context").ProxyContext;
 
 exports.ReelContext = ProxyContext.specialize({
 

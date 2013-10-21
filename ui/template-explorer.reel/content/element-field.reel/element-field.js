@@ -63,8 +63,7 @@ exports.ElementField = Component.specialize(/** @lends ElementField# */ {
 
     handleDrop: {
         value: function (event) {
-            var availableTypes = event.dataTransfer.types,
-                listenerModel;
+            var availableTypes = event.dataTransfer.types;
 
             if (availableTypes &&
                 (availableTypes.has(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) ||

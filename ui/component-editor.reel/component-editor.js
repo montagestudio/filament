@@ -1,7 +1,4 @@
-var Montage = require("montage/core/core").Montage,
-    Component = require("montage/ui/component").Component,
-    DocumentEditor = require("./document-editor.reel").DocumentEditor,
-    Promise = require("montage/core/promise").Promise,
+var DocumentEditor = require("./document-editor.reel").DocumentEditor,
     WeakMap = require("montage/collections/weak-map"),
     Editor = require("palette/ui/editor.reel").Editor,
     defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
@@ -121,9 +118,7 @@ exports.ComponentEditor = Editor.specialize({
 
     draw: {
         value: function () {
-
-            var self = this,
-                editorArea,
+            var editorArea,
                 element,
                 editorElement,
                 frontEditor = this._frontEditor;
@@ -267,7 +262,6 @@ exports.ComponentEditor = Editor.specialize({
             var detail = evt.detail,
                 highlight = detail.highlight,
                 xpath = detail.xpath,
-                stageElement = detail.element,
                 parentComponents = detail.parentComponents,
                 documentEditor = this.currentDocument,
                 domExplorer = this.templateObjects.domExplorer,

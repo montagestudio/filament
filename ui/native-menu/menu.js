@@ -9,10 +9,8 @@
 
 var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
-    MenuItem = require("ui/native-menu/menu-item").MenuItem,
-    defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
+    MenuItem = require("ui/native-menu/menu-item").MenuItem;
 
-var getMainMenu = null;
 var kListenerError = "'menuAction' listener must be installed on a component or the Application object";
 
 var Menu = exports.Menu = Montage.create(Montage, {
@@ -220,8 +218,7 @@ var Menu = exports.Menu = Montage.create(Montage, {
                 i;
 
             var nativeItemAtIndex = function(menu, index) {
-                var items = menu.items,
-                    iItem,
+                var iItem,
                     i;
 
                 for (i = 0; (iItem = menu.items[i]); i++) {

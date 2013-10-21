@@ -1,11 +1,7 @@
-var Montage = require("montage").Montage,
-    Template = require("montage/core/template").Template,
-    mockReelDocument = require("test/mocks/reel-document-mocks").mockReelDocument,
+var mockReelDocument = require("test/mocks/reel-document-mocks").mockReelDocument,
     WAITSFOR_TIMEOUT = 2500;
 
 describe("core/reel-document-saving-spec", function () {
-
-    var reelDocument;
 
     describe("labels", function () {
 

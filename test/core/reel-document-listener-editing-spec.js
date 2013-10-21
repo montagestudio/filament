@@ -1,20 +1,6 @@
-var Montage = require("montage").Montage,
-    Template = require("montage/core/template").Template,
-    Promise = require("montage/core/promise").Promise,
+var Template = require("montage/core/template").Template,
     mockReelDocument = require("test/mocks/reel-document-mocks").mockReelDocument,
     WAITSFOR_TIMEOUT = 2500;
-
-var templateWithSerializationAndBodyContent = function (serializationObject, htmlString) {
-    var doc = document.implementation.createHTMLDocument();
-    var serializationElement = doc.createElement("script");
-    serializationElement.setAttribute("type", "text/montage-serialization");
-    serializationElement.appendChild(document.createTextNode(JSON.stringify(serializationObject)));
-    doc.head.appendChild(serializationElement);
-    doc.body.innerHTML = htmlString;
-
-
-    return Template.create().initWithDocument(doc);
-};
 
 describe("core/reel-document-listener-editing-spec", function () {
 

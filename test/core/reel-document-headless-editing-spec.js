@@ -1,5 +1,4 @@
-var Montage = require("montage").Montage,
-    Template = require("montage/core/template").Template,
+var Template = require("montage/core/template").Template,
     Promise = require("montage/core/promise").Promise,
     mockReelDocument = require("test/mocks/reel-document-mocks").mockReelDocument,
     WAITSFOR_TIMEOUT = 2500;
@@ -233,8 +232,7 @@ describe("core/reel-document-headless-editing-spec", function () {
         it("should add an undo operation for this removal", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxyToRemove = reelDocument.editingProxyMap[labelInOwner],
-                    removalPromise = reelDocument.removeObject(proxyToRemove),
-                    templateSerialization;
+                    removalPromise = reelDocument.removeObject(proxyToRemove);
 
                 return removalPromise.then(function () {
                     expect(reelDocument.undoManager.undoCount).toBe(1);
@@ -313,8 +311,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
     describe("removing an object", function () {
 
-        var labelInOwner = "bar",
-            proxyToRemove;
+        var labelInOwner = "bar";
 
         it("should return a promise for a removed proxy", function () {
             return reelDocumentPromise.then(function (reelDocument) {
@@ -371,8 +368,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
     describe("setting a property on an object", function () {
 
-        var labelInOwner = "bar",
-            proxyToEdit;
+        var labelInOwner = "bar";
 
         it("should set the property on the proxy to be the expected value", function () {
             return reelDocumentPromise.then(function (reelDocument) {
@@ -494,7 +490,6 @@ describe("core/reel-document-headless-editing-spec", function () {
                     var targetProxy = reelDocument.editingProxyMap.foo;
                     var binding = targetProxy.bindings[0];
                     var expectedBindingCount = targetProxy.bindings.length;
-                    var newconverter = reelDocument.editingProxyMap.newconverter;
 
                     //Perform some edits that will be undoable
                     reelDocument.updateOwnedObjectBinding(targetProxy, binding, "newTargetPath", false, "newSourcePath", "newconverter");
@@ -555,7 +550,7 @@ describe("core/reel-document-headless-editing-spec", function () {
         it ("should register an undoable operation for the defining of a binding", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
-                var binding = reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter);
+                reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter);
 
                 expect(reelDocument.undoManager.undoCount).toBe(1);
 

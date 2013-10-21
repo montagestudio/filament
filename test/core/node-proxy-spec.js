@@ -1,7 +1,4 @@
-var Montage = require("montage").Montage,
-    Promise = require("montage/core/promise").Promise,
-    mockReelDocument = require("test/mocks/reel-document-mocks").mockReelDocument,
-    NodeProxy = require("core/node-proxy").NodeProxy,
+var mockReelDocument = require("test/mocks/reel-document-mocks").mockReelDocument,
     WAITSFOR_TIMEOUT = 2500;
 
 describe("core/node-proxy-spec", function () {

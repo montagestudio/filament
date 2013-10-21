@@ -1,11 +1,9 @@
-var Montage = require("montage").Montage,
-    EditingDocument = require("palette/core/editing-document").EditingDocument,
+var EditingDocument = require("palette/core/editing-document").EditingDocument,
     EditingController = require("palette/core/controller/editing-controller").EditingController,
     TemplateFormatter = require("palette/core/template-formatter").TemplateFormatter,
     Template = require("montage/core/template").Template,
     Promise = require("montage/core/promise").Promise,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
-    ReelProxy = require("core/reel-proxy").ReelProxy,
     SORTERS = require("palette/core/sorters"),
     ComponentEditor = require("ui/component-editor.reel").ComponentEditor,
     ReelSerializer = require("core/serialization/reel-serializer").ReelSerializer,
@@ -176,8 +174,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
     handleMenuAction: {
         value: function (evt) {
-            var menuItem = evt.detail,
-                identifier = evt.detail.identifier;
+            var identifier = evt.detail.identifier;
 
             if ("delete" === identifier) {
                 if (this.canDelete) {
@@ -240,7 +237,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
                     var array = [node];
 
-                    var grandChildren = node.children.forEach(function (child) {
+                    node.children.forEach(function (child) {
                         array = array.concat(this._children(child, depth + 1));
                     }, this);
 
@@ -396,7 +393,6 @@ exports.ReelDocument = EditingDocument.specialize({
             var self = this;
             //TODO I think I've made this regex many times...and probably differently
             var filenameMatch = location.match(/.+\/(.+)\.reel/),
-                path,
                 registeredFiles = this._registeredFiles,
                 promise;
 
@@ -1041,9 +1037,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             var self = this,
                 removalPromise,
-                deferredUndo = Promise.defer(),
-                body,
-                bodyRange;
+                deferredUndo = Promise.defer();
 
             this.undoManager.openBatch("Remove");
 
@@ -1307,7 +1301,6 @@ exports.ReelDocument = EditingDocument.specialize({
                 originalHandler = isDirectedHandler ? originalListener.properties.get("handler") : null,
                 originalMethodName = isDirectedHandler ? originalListener.properties.get("action") : null,
                 undoListenerValue = originalListener,
-                updatedListenerEntry,
                 deferredUndoOperation = Promise.defer(),
                 actualListenerPromise,
                 self = this;

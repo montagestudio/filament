@@ -11,8 +11,8 @@ var Montage = require("montage").Montage,
 
 describe("core/project-controller-filesystem-spec", function () {
 
-    var bridge, viewController, editorController, projectController, mockMenu, textUrl, reelUrl,
-        editor, projectControllerLoadedPromise, watcher;
+    var bridge, viewController, editorController, projectController, mockMenu,
+        projectControllerLoadedPromise, watcher;
 
     beforeEach(function () {
         mockMenu = menuMock({
@@ -263,8 +263,6 @@ describe("core/project-controller-filesystem-spec", function () {
         var mockFileStat;
 
         beforeEach(function () {
-            var editorType = editorMock;
-
             mockFileStat = {
                 node: {
                     dev: 2114,

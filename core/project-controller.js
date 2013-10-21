@@ -1,10 +1,7 @@
-var Montage = require("montage/core/core").Montage,
-    DocumentController = require("palette/core/document-controller").DocumentController,
+var DocumentController = require("palette/core/document-controller").DocumentController,
     Promise = require("montage/core/promise").Promise,
     application = require("montage/core/application").application,
     LibraryItem = require("filament-extension/core/library-item").LibraryItem,
-    Deserializer = require("montage/core/serialization").Deserializer,
-    findObjectNameRegExp = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver._findObjectNameRegExp,
     RangeController = require("montage/core/range-controller").RangeController,
     WeakMap = require("montage/collections/weak-map"),
     Map = require("montage/collections/map"),
@@ -122,8 +119,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: function (bridge, viewController, editorController, extensionController) {
             bridge.setDocumentDirtyState(false);
 
-            var self = this;
-
             this._environmentBridge = bridge;
             this._viewController = viewController;
             this._editorController = editorController;
@@ -229,10 +224,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     loadProjectIcon: {
         value: function(projectUrl) {
             var self = this;
-            
+
             // Use a default icon
             this.icon = this.icon || "/assets/img/app-icon.png";
-            
+
             require.read(projectUrl + "/index.html").then(function(indexHtml) {
                 var sizes = [],
                     icons,
