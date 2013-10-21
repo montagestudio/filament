@@ -35,9 +35,8 @@ exports.listCommand = Object.create(Object.prototype, {
                 };
 
                 return this._runProcess(lite);
-            } else {
-                return Q.reject(new PackageManagerError("The project path is missing", ERROR_PATH_MISSING));
             }
+            return Q.reject(new PackageManagerError("The project path is missing", ERROR_PATH_MISSING));
         }
     },
 
@@ -121,9 +120,8 @@ exports.listCommand = Object.create(Object.prototype, {
                     }
                 }
                 return dependencies;
-            } else {
-                return [];
             }
+            return [];
         }
     },
 

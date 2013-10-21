@@ -18,16 +18,16 @@ ViewCommand.prototype.run = function (request) {
     if (typeof request === 'string' && request.length > 0) {
         request = request.trim();
     } else {
-        throw new PackageManagerError("Request invalid", ERROR_REQUEST_INVALID);
+        return Q.reject(new PackageManagerError("Request invalid", ERROR_REQUEST_INVALID));
     }
 
     if (Tools.isRequestValid(request)) {
         if (!npm.config.loaded) {
-            throw new Error("NPM should be loaded first");
+            return Q.reject(new Error("NPM should be loaded first"));
         }
         return this._invokeViewCommand(request);
     }
-    throw new PackageManagerError("Should respect the following format: name[@version]", ERROR_WRONG_FORMAT);
+    return Q.reject(new PackageManagerError("Should respect the following format: name[@version]", ERROR_WRONG_FORMAT));
 };
 
 /**

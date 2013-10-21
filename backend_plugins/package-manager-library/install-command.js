@@ -14,30 +14,34 @@ var PackageManagerError = require("./core").PackageManagerError,
  * Prepares the install command, then invokes it.
  * @function
  * @param {String} request the package to install, should respect the following format: "name[@version]".
+ * @param {String} packageLocation represents the path where the package will be installed.
  * @param {boolean} deeply represents an option which allows to get a response with further information
  * (all the dependencies child installed).
  * @return {Promise.<Object>} A promise for the installed package.
  */
-InstallCommand.prototype.run = function (request, where, deeply) {
+InstallCommand.prototype.run = function (request, packageLocation, deeply) {
     if (Tools.isRequestValid(request)) {
-        return this._invokeInstallCommand(request, where, deeply);
+        return this._invokeInstallCommand(request, packageLocation, deeply);
     }
-    throw new PackageManagerError("Should respect the following format: name[@version], or a git url", ERROR_WRONG_FORMAT);
+    return Q.reject(
+        new PackageManagerError("Should respect the following format: name[@version], or a git url", ERROR_WRONG_FORMAT)
+    );
 };
 
 /**
  * Invokes the NPM install command.
  * @function
  * @param {String} request the package to install, should respect the following format: "name[@version]".
+ * @param {String} packageLocation represents the path where the package will be installed.
  * @param {boolean} deeply represents an option which allows to get a response with further information
  * (all the dependencies child installed).
  * @return {Promise.<Object>} A promise for the installed package.
  * @private
  */
-InstallCommand.prototype._invokeInstallCommand = function (request, where, deeply) {
+InstallCommand.prototype._invokeInstallCommand = function (request, packageLocation, deeply) {
     var self = this;
 
-    return Q.ninvoke(npm.commands, "install", where, request).then(function (data) { // Where -> private API.
+    return Q.ninvoke(npm.commands, "install", packageLocation, request).then(function (data) { // packageLocation -> private API.
         return self._formatResponse(data[1], deeply);
     }, function (error) {
         if (typeof error === 'object') {
