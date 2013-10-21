@@ -102,7 +102,7 @@ exports.TemplateObjectCell = Component.specialize({
             if (!availableTypes) {
                 event.dataTransfer.dropEffect = "none";
                 this._willAcceptDrop = false;
-            } else if (availableTypes.has(MimeTypes.MONTAGE_EVENT_TARGET)) {
+            } else if (availableTypes.has(MimeTypes.MONTAGE_EVENT_TARGET) || availableTypes.has(MimeTypes.MONTAGE_BINDING)) {
 
                 // allows us to drop
                 event.preventDefault();
