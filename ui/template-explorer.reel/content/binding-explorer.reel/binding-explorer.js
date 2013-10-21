@@ -3,6 +3,7 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
+    ObjectLabelConverter = require("core/object-label-converter").ObjectLabelConverter,
     MimeTypes = require("core/mime-types");
 
 
@@ -10,7 +11,7 @@ var Component = require("montage/ui/component").Component,
  * @class BindingsExplorer
  * @extends Component
  */
-exports.BindingExplorer = Component.specialize(/** @lends BindingsExplorer# */ {
+exports.BindingExplorer = Component.specialize( /** @lends BindingsExplorer# */ {
     constructor: {
         value: function BindingExplorer() {
             this.super();
@@ -18,14 +19,17 @@ exports.BindingExplorer = Component.specialize(/** @lends BindingsExplorer# */ {
     },
 
     enterDocument: {
-        value: function (firstTime) {
-            if (!firstTime) { return; }
+        value: function(firstTime) {
+            if (!firstTime) {
+                return;
+            }
             this.defineBinding("classList.has('AddElement--dropTarget')", {"<-": "isDropTarget"});
 
-            this._element.addEventListener("dragover", this, false);
-            this._element.addEventListener("dragenter", this, false);
-            this._element.addEventListener("dragleave", this, false);
-            this._element.addEventListener("drop", this, false);
+            var element = this.element.querySelector("[data-montage-id=addButton]");
+            element.addEventListener("dragover", this, false);
+            element.addEventListener("dragenter", this, false);
+            element.addEventListener("dragleave", this, false);
+            element.addEventListener("drop", this, false);
 
         }
     },
@@ -35,16 +39,16 @@ exports.BindingExplorer = Component.specialize(/** @lends BindingsExplorer# */ {
     },
 
     acceptsDrop: {
-        value: function (event) {
-            return  event.dataTransfer.types 
-                && event.dataTransfer.types.indexOf(MimeTypes.MONTAGE_BINDING) !== -1 ;
+        value: function(event) {
+            return event.dataTransfer.types && event.dataTransfer.types.has(MimeTypes.MONTAGE_BINDING);
         }
     },
 
     handleDragover: {
-        value: function (event) {
+        enumerable: false,
+        value: function(event) {
             if (this.acceptsDrop(event)) {
-                event.preventDefault();
+                event.stop();
                 event.dataTransfer.dropEffect = "copy";
             } else {
                 event.dataTransfer.dropEffect = "none";
@@ -53,7 +57,8 @@ exports.BindingExplorer = Component.specialize(/** @lends BindingsExplorer# */ {
     },
 
     handleDragenter: {
-        value: function (event) {
+        enumerable: false,
+        value: function(event) {
             if (this.acceptsDrop(event)) {
                 this.isDropTarget = true;
             }
@@ -61,26 +66,33 @@ exports.BindingExplorer = Component.specialize(/** @lends BindingsExplorer# */ {
     },
 
     handleDragleave: {
-        value: function (event) {
+        enumerable: false,
+        value: function(event) {
             this.isDropTarget = false;
             event.dataTransfer.dropEffect = "none";
         }
     },
 
     handleDrop: {
-        value: function (event) {
-            console.log("drop", event.target);
-            event.stop();
-            // TODO: security issues?
+        enumerable: false,
+        value: function(event) {
+            if (!this.acceptsDrop) {
+                return;
+            }
             var data = event.dataTransfer.getData(MimeTypes.MONTAGE_BINDING),
+                targetObject = this.ownerComponent.templateObject,
+                // TODO: security issues?
                 transferObject = JSON.parse(data),
                 editingDocument = this.ownerComponent.ownerComponent.editingDocument,
-                self = this;
-            editingDocument.defineOwnedObjectBinding(this, transferObject.targetPath, transferObject.oneway, transferObject.sourcePath, transferObject.converter)
-                .finally(function () {
-                    self.isDropTarget = false;
-                })
-                .done();
+                self = this,
+                converter;
+            var objectLabelConverter = new ObjectLabelConverter();
+            if (transferObject.converterLabel) {
+                objectLabelConverter.editingDocument = editingDocument;
+                converter = objectLabelConverter.revert(transferObject.converterLabel);
+            }
+            editingDocument.defineOwnedObjectBinding(targetObject, transferObject.targetPath, transferObject.oneway, transferObject.sourcePath, converter);
+            self.isDropTarget = false;
         }
     }
 });

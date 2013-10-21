@@ -18,7 +18,7 @@ exports.BindingEntry = Montage.create(Component, /** @lends module:"./binding-en
     enterDocument: {
         value: function (firstTime) {
             if (firstTime) {
-                this._element.addEventListener("dragstart", this, true);
+                this._element.addEventListener("dragstart", this, false);
             }
         }
     },
@@ -49,9 +49,9 @@ exports.BindingEntry = Montage.create(Component, /** @lends module:"./binding-en
         }
     },
 
-    captureDragstart: {
+    handleDragstart: {
         value: function (event) {
-            event.dataTransfer.effectAllowed = 'copy';
+            event.dataTransfer.effectAllowed = 'all';
 
             if (this.targetObject && this.binding) {
                 var bindingModel = Object.create(null);
