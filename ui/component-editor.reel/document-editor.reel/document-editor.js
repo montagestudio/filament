@@ -1,5 +1,4 @@
-var Montage = require("montage/core/core").Montage,
-    Component = require("montage/ui/component").Component,
+var Component = require("montage/ui/component").Component,
     MimeTypes = require("core/mime-types"),
     Promise = require("montage/core/promise").Promise,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver;
@@ -44,8 +43,6 @@ exports.DocumentEditor = Component.specialize({
     load: {
         value: function (document) {
             var self = this,
-                liveStageInfoPromise,
-                editingDocumentPromise,
                 moduleId,
                 exportName;
 

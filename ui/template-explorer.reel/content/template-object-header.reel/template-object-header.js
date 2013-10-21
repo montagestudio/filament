@@ -3,7 +3,6 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    Promise = require("montage/core/promise").Promise,
     MimeTypes = require("core/mime-types");
 
 /**

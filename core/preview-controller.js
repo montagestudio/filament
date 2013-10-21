@@ -1,6 +1,4 @@
-var Montage = require("montage/core/core").Montage,
-    Target = require("montage/core/target").Target,
-    Promise = require("montage/core/promise").Promise;
+var Target = require("montage/core/target").Target;
 
 exports.PreviewController = Target.specialize({
 

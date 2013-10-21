@@ -90,7 +90,6 @@ exports.OwnerObjectCell = Component.specialize({
     handleDrop: {
         value: function (event) {
             var availableTypes = event.dataTransfer.types,
-                target = event.target,
                 listenerModel;
 
             // Always accept Events

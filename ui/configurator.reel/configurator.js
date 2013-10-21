@@ -1,6 +1,5 @@
 var Montage = require("montage/core/core").Montage,
-    Panel = require("ui/panel.reel").Panel,
-    RangeController = require("montage/core/range-controller").RangeController;
+    Panel = require("ui/panel.reel").Panel;
 
 exports.Configurator = Montage.create(Panel, {
 

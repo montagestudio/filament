@@ -1,6 +1,4 @@
-var Montage = require("montage").Montage,
-    Promise = require("montage/core/promise").Promise,
-    ReelReviver = require("core/serialization/reel-reviver").ReelReviver,
+var ReelReviver = require("core/serialization/reel-reviver").ReelReviver,
     ReelContext = require("core/serialization/reel-context").ReelContext,
     mockReelDocument = require("test/mocks/reel-document-mocks").mockReelDocument,
     WAITSFOR_TIMEOUT = 2500;

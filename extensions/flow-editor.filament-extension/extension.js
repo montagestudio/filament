@@ -3,7 +3,7 @@ var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
     FlowEditorController = require("flow-editor/core/controller").Controller;
 
-var Extension = exports.Extension = Montage.create(CoreExtension, {
+exports.Extension = Montage.create(CoreExtension, {
 
     constructor: {
         value: function Extension() {

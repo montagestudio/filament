@@ -1,5 +1,4 @@
-var Montage = require("montage/core/core").Montage,
-    Target = require("montage/core/target").Target;
+var Target = require("montage/core/target").Target;
 
 exports.Extension = Target.specialize( {
 

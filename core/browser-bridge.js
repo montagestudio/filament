@@ -1,5 +1,4 @@
-var Montage = require("montage/core/core").Montage,
-    EnvironmentBridge = require("core/environment-bridge").EnvironmentBridge,
+var EnvironmentBridge = require("core/environment-bridge").EnvironmentBridge,
     Promise = require("montage/core/promise").Promise;
 
 exports.BrowserBridge = EnvironmentBridge.specialize({

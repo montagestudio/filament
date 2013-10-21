@@ -1,4 +1,4 @@
-/*global require,exports,describe,it,expect,runs,waits */
+/*global require,describe,it,expect,runs,waits */
 var TestPageLoader = require("montage-testing/testpageloader").TestPageLoader;
 var Blueprint = require("montage/core/meta/blueprint").Blueprint;
 var PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint;

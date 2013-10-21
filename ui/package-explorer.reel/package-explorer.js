@@ -1,5 +1,4 @@
-var Montage = require("montage/core/core").Montage,
-    Component = require("montage/ui/component").Component;
+var Component = require("montage/ui/component").Component;
 
 var defaultMenu = require("ui/native-menu/menu").defaultMenu;
 var MenuItem = require("ui/native-menu/menu-item").MenuItem;

@@ -7,7 +7,6 @@ var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     MimeTypes = require("core/mime-types");
 
-
 /**
     Description TODO
     @class module:"./binding-entry.reel".BindingEntry

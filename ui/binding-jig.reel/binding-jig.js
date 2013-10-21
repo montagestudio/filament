@@ -2,7 +2,6 @@ var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     MimeTypes = require("core/mime-types"),
     replaceDroppedTextPlain = require("ui/drag-and-drop").replaceDroppedTextPlain,
-    Promise = require("montage/core/promise").Promise,
     defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
 exports.BindingJig = Montage.create(Component, {
@@ -69,7 +68,6 @@ exports.BindingJig = Montage.create(Component, {
     handleDrop: {
         value: function (event) {
             if (event.dataTransfer.types.has(MimeTypes.SERIALIZATION_OBJECT_LABEL)) {
-                var element = this.inputEl;
                 var plain = event.dataTransfer.getData("text/plain");
                 var rich = "@" + event.dataTransfer.getData(MimeTypes.SERIALIZATION_OBJECT_LABEL);
                 replaceDroppedTextPlain(plain, rich, this.templateObjects.sourcePath.element);

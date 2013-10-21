@@ -2,7 +2,6 @@ var FS = require("q-io/fs"),
     path = require("path"),
     Q = require("q"),
     PackageManagerError = require("./core").PackageManagerError,
-    Tools = require("./package-manager-tools").PackageManagerTools,
     RemoveCommand = function RemoveCommand () {},
 
     ERROR_DEPENDENCY_NAME_NOT_VALID = 4000,
