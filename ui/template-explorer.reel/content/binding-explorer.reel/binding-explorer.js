@@ -3,6 +3,7 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
+    application = require("montage/core/application").application,
     ObjectLabelConverter = require("core/object-label-converter").ObjectLabelConverter,
     MimeTypes = require("core/mime-types");
 
@@ -76,7 +77,7 @@ exports.BindingExplorer = Component.specialize( /** @lends BindingsExplorer# */ 
     handleDrop: {
         enumerable: false,
         value: function(event) {
-            if (!this.acceptsDrop) {
+            if (!this.acceptsDrop(event)) {
                 return;
             }
             var data = event.dataTransfer.getData(MimeTypes.MONTAGE_BINDING),
@@ -87,11 +88,21 @@ exports.BindingExplorer = Component.specialize( /** @lends BindingsExplorer# */ 
                 self = this,
                 converter;
             var objectLabelConverter = new ObjectLabelConverter();
+            objectLabelConverter.editingDocument = editingDocument;
             if (transferObject.converterLabel) {
-                objectLabelConverter.editingDocument = editingDocument;
                 converter = objectLabelConverter.revert(transferObject.converterLabel);
             }
             editingDocument.defineOwnedObjectBinding(targetObject, transferObject.targetPath, transferObject.oneway, transferObject.sourcePath, converter);
+            // TODO when bindings return promises, move this into the then to create a transactional-like undo
+            var stillMoveBinding = !application.copyOnDragEvents;
+            if (stillMoveBinding && transferObject.movedBindingIndex !== undefined && transferObject.movedBindingIndex > -1) {
+                var fromTargetObject = objectLabelConverter.revert(transferObject.targeObjectLabel);
+                if (fromTargetObject && fromTargetObject.bindings && fromTargetObject.bindings.length > transferObject.movedBindingIndex) {
+                    var binding = fromTargetObject.bindings[transferObject.movedBindingIndex];
+                    editingDocument.cancelOwnedObjectBinding(fromTargetObject, binding);
+                }
+            }
+
             self.isDropTarget = false;
         }
     }

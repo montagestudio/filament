@@ -5,6 +5,7 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
+    application = require("montage/core/application").application,
     MimeTypes = require("core/mime-types");
 
 /**
@@ -57,11 +58,18 @@ exports.BindingEntry = Montage.create(Component, /** @lends module:"./binding-en
                 bindingModel.targetPath = this.binding.targetPath;
                 bindingModel.oneway = this.binding.oneway;
                 bindingModel.sourcePath = this.binding.sourcePath;
-                // cant send converter TODO circular references
                 if (this.binding.converter) {
                     bindingModel.converterLabel = this.binding.converter.label;
                 }
+
+                var copyBinding = application.copyOnDragEvents;
+                if (!copyBinding) {
+                    bindingModel.targeObjectLabel = this.targetObject.label;
+                    bindingModel.movedBindingIndex = this.targetObject.bindings.indexOf(this.binding);
+                }
+
                 event.dataTransfer.setData(MimeTypes.MONTAGE_BINDING, JSON.stringify(bindingModel));
+                
             }
         }
     }
