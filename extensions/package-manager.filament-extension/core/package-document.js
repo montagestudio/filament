@@ -252,10 +252,8 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     homepage: {
         set: function (homepage) {
-            if (PackageTools.isUrlValid(homepage)) {
-                this._package.homepage = homepage;
-                this._modificationsAccepted();
-            }
+            this._package.homepage = PackageTools.isUrlValid(homepage) ? homepage : '';
+            this._modificationsAccepted();
         },
         get: function () {
             return this._package.homepage;
