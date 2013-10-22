@@ -4,7 +4,8 @@
     @requires montage/ui/component
 */
 var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+    Component = require("montage/ui/component").Component,
+    MimeTypes = require("core/mime-types");
 
 /**
     Description TODO
@@ -12,6 +13,14 @@ var Montage = require("montage").Montage,
     @extends module:montage/ui/component.Component
 */
 exports.ListenerEntry = Montage.create(Component, /** @lends module:"./listener-entry.reel".ListenerEntry# */ {
+
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this._element.addEventListener("dragstart", this, false);
+            }
+        }
+    },
 
     listenerInfo: {
         value: null
@@ -44,6 +53,29 @@ exports.ListenerEntry = Montage.create(Component, /** @lends module:"./listener-
                     existingListener: this.listenerInfo
                 });
             }
+        }
+    },
+
+    handleDragstart: {
+        value: function (event) {
+            event.dataTransfer.effectAllowed = 'all';
+            var listenerModel = Object.create(null),
+                listener = this.listenerInfo.listener;
+
+            listenerModel.type = this.listenerInfo.type;
+            listenerModel.useCapture = this.listenerInfo.useCapture;
+
+            if (listener && listener.properties.has('handler') && listener.properties.has('action')) {
+                listenerModel.listenerLabel = listener.properties.get('handler').label;
+                listenerModel.methodName = listener.properties.get('action');
+            } else {
+                listenerModel.listenerLabel = listener.label;
+            }
+
+            listenerModel.targeObjectLabel = this.targetObject.label;
+            listenerModel.movedListenerIndex = this.targetObject.listeners.indexOf(this.listenerInfo);
+
+            event.dataTransfer.setData(MimeTypes.MONTAGE_LISTENER, JSON.stringify(listenerModel));
         }
     }
 

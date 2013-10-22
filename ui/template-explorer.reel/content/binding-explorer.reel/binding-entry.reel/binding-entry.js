@@ -4,7 +4,8 @@
     @requires montage/ui/component
 */
 var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+    Component = require("montage/ui/component").Component,
+    MimeTypes = require("core/mime-types");
 
 /**
     Description TODO
@@ -12,6 +13,14 @@ var Montage = require("montage").Montage,
     @extends module:montage/ui/component.Component
 */
 exports.BindingEntry = Montage.create(Component, /** @lends module:"./binding-entry.reel".BindingEntry# */ {
+    
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this._element.addEventListener("dragstart", this, false);
+            }
+        }
+    },
 
     binding: {
         value: null
@@ -35,6 +44,28 @@ exports.BindingEntry = Montage.create(Component, /** @lends module:"./binding-en
                     bindingModel: bindingModel,
                     existingBinding: this.binding
                 });
+            }
+        }
+    },
+
+    handleDragstart: {
+        value: function (event) {
+            event.dataTransfer.effectAllowed = 'all';
+
+            if (this.targetObject && this.binding) {
+                var bindingModel = Object.create(null);
+                bindingModel.targetPath = this.binding.targetPath;
+                bindingModel.oneway = this.binding.oneway;
+                bindingModel.sourcePath = this.binding.sourcePath;
+                if (this.binding.converter) {
+                    bindingModel.converterLabel = this.binding.converter.label;
+                }
+
+                bindingModel.targeObjectLabel = this.targetObject.label;
+                bindingModel.movedBindingIndex = this.targetObject.bindings.indexOf(this.binding);
+
+                event.dataTransfer.setData(MimeTypes.MONTAGE_BINDING, JSON.stringify(bindingModel));
+                
             }
         }
     }
