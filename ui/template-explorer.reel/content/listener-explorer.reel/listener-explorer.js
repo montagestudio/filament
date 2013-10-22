@@ -3,7 +3,6 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    application = require("montage/core/application").application,
     ObjectLabelConverter = require("core/object-label-converter").ObjectLabelConverter,
     MimeTypes = require("core/mime-types");
 
@@ -42,9 +41,17 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
     acceptsListenerDrop: {
         value: function(event) {
             var availableTypes = event.dataTransfer.types,
-                plusButton = this.element.querySelector("[data-montage-id=addListenerButton]");
+                target = event.target,
+                element = this.element;
 
-            return availableTypes && availableTypes.has(MimeTypes.MONTAGE_LISTENER) && plusButton && event.target === plusButton;
+            return availableTypes && availableTypes.has(MimeTypes.MONTAGE_LISTENER) && (target === element || element.contains(target));
+        }
+    },
+
+    acceptsListenerCopy: {
+        value: function(evt) {
+            var addButton = this.element.querySelector("[data-montage-id=addListenerButton]");
+            return  addButton && evt.target === addButton;
         }
     },
 
@@ -54,7 +61,7 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
                 return;
             }
 
-            // Allow event button to be dragged as a reference ot this as an eventTarget
+            // Allow event button to be dragged as a reference to this as an eventTarget
             var eventButton = this.templateObjects.addListenerButton.element;
             eventButton.addEventListener("dragstart", this, false);
 
@@ -75,8 +82,18 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
             }
 
             event.stop();
-            event.dataTransfer.dropEffect = this.acceptsListenerDrop(event) ? "copy" : "link";
             this._willAcceptDrop = true;
+
+            if (this.acceptsListenerDrop(event)) {
+                if (this.acceptsListenerCopy(event)) {
+                    event.dataTransfer.dropEffect = "copy";
+                } else {
+                    // event.dataTransfer.dropEffect = "move";
+                    event.dataTransfer.dropEffect = "link";
+                }
+            } else {
+                event.dataTransfer.dropEffect = "link";
+            }
         }
     },
 
@@ -88,8 +105,9 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
 
     handleDrop: {
         value: function (event) {
-            var availableTypes = event.dataTransfer.types,
-                listenerModel;
+            var listenerModel,
+                self = this,
+                thisEvent = event;
 
             if (!this.acceptsDrop(event)) {
                 return;
@@ -118,11 +136,11 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
                 objectLabelConverter = new ObjectLabelConverter();
                 objectLabelConverter.editingDocument = editingDocument;
                 listener = objectLabelConverter.revert(transferObject.listenerLabel);
+
                 editingDocument.addOwnedObjectEventListener(targetObject, transferObject.type, listener, transferObject.useCapture, transferObject.methodName)
-                    .then(function(){
-                        // If this is a move, remove the other listener from whence this came
-                        var stillMoveListener = !application.copyOnDragEvents;
-                        if (stillMoveListener && transferObject.movedListenerIndex !== undefined && transferObject.movedListenerIndex > -1) {
+                    .then(function() {
+                        // If this is not a copy, remove the other listener from whence this came
+                        if (!self.acceptsListenerCopy(thisEvent) && transferObject.movedListenerIndex !== undefined && transferObject.movedListenerIndex > -1) {
                             var fromTargetObject = objectLabelConverter.revert(transferObject.targeObjectLabel);
                             if (fromTargetObject && fromTargetObject.listeners && fromTargetObject.listeners.length > transferObject.movedListenerIndex) {
                                 var listener = fromTargetObject.listeners[transferObject.movedListenerIndex];

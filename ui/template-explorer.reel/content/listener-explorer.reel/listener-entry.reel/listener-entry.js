@@ -5,7 +5,6 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
-    application = require("montage/core/application").application,
     MimeTypes = require("core/mime-types");
 
 /**
@@ -73,11 +72,8 @@ exports.ListenerEntry = Montage.create(Component, /** @lends module:"./listener-
                 listenerModel.listenerLabel = listener.label;
             }
 
-            var copyListener = application.copyOnDragEvents;
-            if (!copyListener) {
-                listenerModel.targeObjectLabel = this.targetObject.label;
-                listenerModel.movedListenerIndex = this.targetObject.listeners.indexOf(this.listenerInfo);
-            }
+            listenerModel.targeObjectLabel = this.targetObject.label;
+            listenerModel.movedListenerIndex = this.targetObject.listeners.indexOf(this.listenerInfo);
 
             event.dataTransfer.setData(MimeTypes.MONTAGE_LISTENER, JSON.stringify(listenerModel));
         }

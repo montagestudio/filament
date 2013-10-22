@@ -3,7 +3,6 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    application = require("montage/core/application").application,
     ObjectLabelConverter = require("core/object-label-converter").ObjectLabelConverter,
     MimeTypes = require("core/mime-types");
 
@@ -26,7 +25,7 @@ exports.BindingExplorer = Component.specialize( /** @lends BindingsExplorer# */ 
             }
             this.defineBinding("classList.has('AddElement--dropTarget')", {"<-": "isDropTarget"});
 
-            var element = this.element.querySelector("[data-montage-id=addButton]");
+            var element = this.element;
             element.addEventListener("dragover", this, false);
             element.addEventListener("dragenter", this, false);
             element.addEventListener("dragleave", this, false);
@@ -45,12 +44,26 @@ exports.BindingExplorer = Component.specialize( /** @lends BindingsExplorer# */ 
         }
     },
 
+    acceptsBindingCopy: {
+        value: function(event) {
+            var addButton = this.element.querySelector("[data-montage-id=addButton]");
+
+            return event.dataTransfer.types && event.dataTransfer.types.has(MimeTypes.MONTAGE_BINDING) && event.target === addButton;
+        }
+    },
+
     handleDragover: {
         enumerable: false,
         value: function(event) {
             if (this.acceptsDrop(event)) {
                 event.stop();
-                event.dataTransfer.dropEffect = "copy";
+
+                if (this.acceptsBindingCopy(event)) {
+                    event.dataTransfer.dropEffect = "copy";
+                } else {
+                    // event.dataTransfer.dropEffect = "move";
+                    event.dataTransfer.dropEffect = "link";
+                }
             } else {
                 event.dataTransfer.dropEffect = "none";
             }
@@ -86,16 +99,16 @@ exports.BindingExplorer = Component.specialize( /** @lends BindingsExplorer# */ 
                 transferObject = JSON.parse(data),
                 editingDocument = this.ownerComponent.ownerComponent.editingDocument,
                 self = this,
+                objectLabelConverter = new ObjectLabelConverter(),
                 converter;
-            var objectLabelConverter = new ObjectLabelConverter();
+
             objectLabelConverter.editingDocument = editingDocument;
             if (transferObject.converterLabel) {
                 converter = objectLabelConverter.revert(transferObject.converterLabel);
             }
             editingDocument.defineOwnedObjectBinding(targetObject, transferObject.targetPath, transferObject.oneway, transferObject.sourcePath, converter);
             // TODO when bindings return promises, move this into the then to create a transactional-like undo
-            var stillMoveBinding = !application.copyOnDragEvents;
-            if (stillMoveBinding && transferObject.movedBindingIndex !== undefined && transferObject.movedBindingIndex > -1) {
+            if (!this.acceptsBindingCopy(event) && transferObject.movedBindingIndex !== undefined && transferObject.movedBindingIndex > -1) {
                 var fromTargetObject = objectLabelConverter.revert(transferObject.targeObjectLabel);
                 if (fromTargetObject && fromTargetObject.bindings && fromTargetObject.bindings.length > transferObject.movedBindingIndex) {
                     var binding = fromTargetObject.bindings[transferObject.movedBindingIndex];
