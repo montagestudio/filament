@@ -157,6 +157,18 @@ exports.ToolsBox = Object.create(Object.prototype, {
             }
             return null;
         }
+    },
+
+    isPersonObjectEmpty: {
+        value: function (object) {
+            if (object && typeof object === "object") {
+                var propertiesCount = VALID_PERSON_PROPERTIES.reduce(function (propertiesCount, key) {
+                        return object[key] ? propertiesCount : propertiesCount - 1;
+                    }, VALID_PERSON_PROPERTIES.length);
+                return !propertiesCount;
+            }
+            return false;
+        }
     }
 
 });

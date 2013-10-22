@@ -1115,7 +1115,14 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function (url, dataWriter) {
             var self = this,
                 jsonPackage = JSON.stringify(this._package, function (key, value) {
-                    return (value !== null) ?  value : undefined;
+                    if (!value || (Array.isArray(value) && value.length === 0) ||
+                        (typeof value === "object" && (Object.keys(value).length === 0 ||
+                            (key === PACKAGE_PROPERTIES_ALLOWED_MODIFY.author && PackageTools.isPersonObjectEmpty(value))))) {
+
+                        return void 0;
+                    }
+
+                    return value;
                 }, 4);
 
             this._savingInProgress = Promise.when(dataWriter(jsonPackage, url)).then(function (value) {
