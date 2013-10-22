@@ -1,11 +1,10 @@
 /*global describe,beforeEach,it,expect,waitsFor,runs*/
+/* jshint node: true */
 
 var searchCommand = require('../../../backend_plugins/package-manager-library/search-command').searchCommand,
     loadPackageManager = require('../../../backend_plugins/package-manager').loadPackageManager,
     ErrorsCodes = require("../../../extensions/package-manager.filament-extension/core/package-tools.js").Errors.commands.search.codes,
-    npm = require("npm"),
     path = require("path"),
-    Q = require("q"),
     PackageManagerLoaded = false;
 
 describe("search command", function () {

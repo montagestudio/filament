@@ -3,8 +3,7 @@
 var viewCommand = require('../../../backend_plugins/package-manager-library/view-command').viewCommand,
     ErrorsCodes = require("../../../extensions/package-manager.filament-extension/core/package-tools.js").Errors.commands.view.codes,
     SandboxedModule = require('sandboxed-module'),
-    npm = require("npm"),
-    Q = require("q");
+    npm = require("npm");
 
 describe("view command", function () {
 

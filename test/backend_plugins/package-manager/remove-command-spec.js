@@ -1,7 +1,6 @@
 var SandboxedModule = require('sandboxed-module'),
     ProjectFSMocks = require("./mocks/project-fs-mocks").ProjectFSMocks,
     ErrorsCodes = require("../../../extensions/package-manager.filament-extension/core/package-tools.js").Errors.commands.remove.codes,
-    Q = require("q"),
     PROJECT_APP_NAME = 'MyProject';
 
 describe("remove command", function () {
