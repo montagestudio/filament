@@ -46,7 +46,7 @@ describe("package-tools", function () {
 
     describe("person Validation:", function () {
 
-        it("should be an object and have at least a property called 'name', which should be a string and not empty.", function() {
+        it("getValidPerson function should returns a valid Person Object or null", function() {
 
             expect(PackageTools.getValidPerson('hello_world')).toBeNull();
             expect(PackageTools.getValidPerson({})).toBeNull();
@@ -54,7 +54,7 @@ describe("package-tools", function () {
             expect(PackageTools.getValidPerson({name: 'bill'})).not.toBeNull();
             expect(PackageTools.getValidPerson({name: 'a'})).not.toBeNull();
             expect(PackageTools.getValidPerson({name: 4})).toBeNull();
-            expect(PackageTools.getValidPerson({name: ''})).toBeNull();
+            expect(PackageTools.getValidPerson({name: ''})).not.toBeNull();
         });
 
     });

@@ -136,9 +136,7 @@ exports.ToolsBox = Object.create(Object.prototype, {
      */
     getValidPerson: {
         value: function (person) {
-            if (person && typeof person === 'object' && person.hasOwnProperty('name') &&
-                typeof person.name === 'string' && person.name.length > 0) {
-
+            if (person && typeof person === 'object' && person.hasOwnProperty('name') && typeof person.name === 'string') {
                 return {
                     name: person.name,
                     email: (typeof person.email === 'string' && this.isEmailValid(person.email)) ? person.email : '',

@@ -60,6 +60,14 @@ exports.PackageDocument = EditingDocument.specialize( {
                         self._package = app.file || {};
                         self._classifyDependencies(app.dependencies, false); // classify dependencies
 
+                        var author = PackageTools.getValidPerson(self._package.author);
+
+                        self._package.author = author ? author : {
+                            name: "",
+                            email: "",
+                            url: ""
+                        };
+
                         self._getOutDatedDependencies();
                         return self;
                     });
