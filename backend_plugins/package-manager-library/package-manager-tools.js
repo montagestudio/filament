@@ -49,7 +49,7 @@ PackageManagerTools.prototype.isRequestValid = function (request) {
         return true;
     }
 
-    if (typeof request === 'string') { // Case: name[@version]
+    if (typeof request === 'string' && request.length > 0) { // Case: name[@version]
         var data = request.split('@'),
             name = data[0],
             version = data[1];

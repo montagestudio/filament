@@ -11,7 +11,7 @@ var Q = require("q"),
  */
 OutDatedCommand.prototype.run = function () {
     if (!npm.config.loaded) {
-        throw new Error("NPM should be loaded first");
+        return Q.reject(new Error("NPM should be loaded first"));
     }
     return this._invokeOutDatedCommand();
 };
@@ -35,8 +35,8 @@ OutDatedCommand.prototype._invokeOutDatedCommand = function () {
 /**
  * Formats the information gathered from the NPM command.
  * @function
- * @param {Array} contains all outdated dependencies.
- * @return {list} contains all outdated dependencies well formated.
+ * @param {Array} list contains all outdated dependencies.
+ * @return {Object} contains all outdated dependencies well formatted.
  * @private
  */
 OutDatedCommand.prototype._formatListDependenciesOutDated = function (list) {

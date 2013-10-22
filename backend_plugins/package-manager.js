@@ -19,6 +19,12 @@ var listCommand = require('./package-manager-library/list-command').listCommand,
 
 process.env.PATH += ":" +  Path.join(__dirname, "..", "node_modules", ".bin");
 
+/**
+ * Loads the NPM package.
+ * @function
+ * @param {String} projectUrl is a project path where NPM will operate.
+ * @return {Promise.<Boolean>} Promise for the loading of NPM.
+ */
 function loadNpm (projectUrl) {
     if (!npm.config.loaded) {
         return Q.ninvoke(npm, "load", {
@@ -30,36 +36,78 @@ function loadNpm (projectUrl) {
         });
     }
 
-    npm.prefix = projectUrl; // if the project url has changed.
+    npm.prefix = projectUrl; // if the project url has changed. (open a new project)
+
     return Q(true);
 }
 
-function loadDB (supportUrl) {
-    return PackageManagerDB.load(supportUrl);
+/**
+ * Loads the sqlite3 Database. (keeps just the url)
+ * @function
+ * @param {String} applicationSupportUrl is the path of the Application Support folder.
+ * @return {Promise.<Boolean>} Promise for the loading of the sqlite3 Database.
+ */
+function loadDB (applicationSupportUrl) {
+    return PackageManagerDB.load(applicationSupportUrl);
 }
 
-exports.loadPackageManager = function (projectUrl, supportUrl) {
+/**
+ * Loads several essential elements for the proper functioning of the PackageManager extension,
+ * such as NPM and the sqlite3 database.
+ * @function
+ * @param {String} projectUrl is a project path where NPM will operate.
+ * @param {String} applicationSupportUrl represents the path of the Application Support folder. (Database location)
+ * @return {Promise.<Boolean>} Promise for the loading of the PackageManager extension.
+ */
+exports.loadPackageManager = function (projectUrl, applicationSupportUrl) {
     return loadNpm(projectUrl).then(function (npmLoaded) {
         if (npmLoaded) {
-            return loadDB(supportUrl);
+            return loadDB(applicationSupportUrl);
         }
-        return false;
+
+        return Q(false);
     });
 };
 
-exports.listDependencies = function (where) {
-    return Q.invoke(listCommand, "run", where, true);
+/**
+ * Invokes the List Command that allows to list all dependencies of a lumieres project,
+ * and eventually to find some errors related to them.
+ * @function
+ * @param {String} projectUrl is the project path where to operate.
+ * @return {Promise.<Object>} Promise for a dependencies tree.
+ */
+exports.listDependencies = function (projectUrl) {
+    return listCommand.run(projectUrl, true); // true => returns a light tree (contains just the "root" dependencies)
 };
 
-exports.viewDependency = function (dependency) {
-    return Q.invoke(viewCommand, "run", dependency);
+/**
+ * Invokes the View Command [NPM] that will gather some information about a package.
+ * @function
+ * @param {String} requestPackage is a string that respects the following format: "packageName[@packageVersion]".
+ * @return {Promise.<Object>} Promise for the requested package.
+ */
+exports.viewDependency = function (requestPackage) {
+    return viewCommand.run(requestPackage);
 };
 
-exports.searchModules = function (request) {
-    return Q.invoke(searchCommand, "run", request);
+/**
+ * Invokes the Search Command that will try to find some packages according to the request.
+ * @function
+ * @param {String} requestPackageName is a string used to find some eventual packages.
+ * @return {Promise.<Array>} Promise for the search result.
+ */
+exports.searchModules = function (requestPackageName) {
+    return searchCommand.run(requestPackageName);
 };
 
-exports.installDependency = function (request, packageLocation) {
+/**
+ * Invokes the Install Command [NPM] that will install a package.
+ * @function
+ * @param {String} requestPackage is a string that respects the following format: "packageName[@packageVersion]".
+ * @param {String} packageLocation represents a path where the package will be installed.
+ * @return {Promise.<Object>} Promise for the installed package.
+ */
+exports.installDependency = function (requestPackage, packageLocation) {
     if (!npm.config.loaded) {
         return Q.reject(new Error("NPM should be loaded first"));
     }
@@ -68,17 +116,39 @@ exports.installDependency = function (request, packageLocation) {
         packageLocation = npm.prefix;
     }
 
-    return Q.invoke(installCommand, "run", request, packageLocation, false);
+    // false => Returns just some information about the "root" package installed.
+    return installCommand.run(requestPackage, packageLocation, false);
 };
 
-exports.removeDependency = function (dependencyName, dependencyLocation) {
-    return removeCommand.run(dependencyName, dependencyLocation);
+/**
+ * Invokes the Remove Command that will uninstall a package.
+ * @function
+ * @param {String} packageName is the package name.
+ * @param {String} packageLocation represents the location of the package to delete.
+ * @return {Promise.<Object>} Promise for the removed package.
+ */
+exports.removeDependency = function (packageName, packageLocation) {
+    return removeCommand.run(packageName, packageLocation);
 };
 
+/**
+ * Invokes the Outdated Command [NPM] that will find all outdated packages
+ * according to the current project's package.json file.
+ * @function
+ * @return {Promise.<Array>} Promise for the outdated packages.
+ */
 exports.getOutdatedDependencies = function () {
-    return Q.invoke(outDatedCommand, "run");
+    return outDatedCommand.run();
 };
 
-exports.saveModuleIntoFile = function (dependency, where) {
-    return saveModuleFileCommand.run(dependency, where);
+/**
+ * Will save a list of packages according their types into a package.json file.
+ * @function
+ * @param {Array} packageList is an array of dependency to save into a package.json file.
+ * (each dependency contains its name, version and type)
+ * @param {String} packageFileLocation represents where is located a package.json file.
+ * @return {Promise} Promise for the package.json file modified.
+ */
+exports.saveModuleIntoFile = function (packageList, packageFileLocation) {
+    return saveModuleFileCommand.run(packageList, packageFileLocation);
 };

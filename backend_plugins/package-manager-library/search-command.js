@@ -1,6 +1,7 @@
 var PackageManagerError = require("./core").PackageManagerError,
     Tools = require("./package-manager-tools").PackageManagerTools,
     PackageManagerRegistry = require("./package-manager-registry").PackageManagerRegistry,
+    Q = require('q'),
     SearchCommand =  function searchCommand () {},
 
     RANK_EXACT_NAME = 30,
@@ -14,27 +15,24 @@ var PackageManagerError = require("./core").PackageManagerError,
     CRITICAL_LENGTH = 2,
     MAX_RESULTS = 300,
 
-    ERROR_NAME_TYPE = 5000,
-    ERROR_INVALID_REQUEST = 5001;
+    ERROR_INVALID_REQUEST = 5000;
 
 /**
  * Prepares the search command, then invokes it.
  * @function
  * @param {String} name the dependency name to search.
- * @return {Promise.<Object>} Promise for the searched package.
+ * @return {Promise.<Array>} Promise for the searched package.
  */
 SearchCommand.prototype.run = function (name) {
     if (typeof name === 'string' && name.length > 0) {
         name = name.trim().toLowerCase();
-    } else {
-        throw new PackageManagerError("Dependency name invalid", ERROR_NAME_TYPE);
+
+        if (Tools.isNameValid(name, false)) {
+            return this._invokeSearchCommand(name);
+        }
     }
 
-    if (Tools.isNameValid(name, false)) {
-        return this._invokeSearchCommand(name);
-    } else {
-        throw new PackageManagerError("The request is invalid", ERROR_INVALID_REQUEST);
-    }
+    return Q.reject(new PackageManagerError("The request is invalid", ERROR_INVALID_REQUEST));
 };
 
 /**

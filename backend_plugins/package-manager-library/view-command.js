@@ -5,8 +5,7 @@ var PackageManagerError = require("./core").PackageManagerError,
     ViewCommand = function ViewCommand() {},
 
     ERROR_NOT_FOUND = 3000,
-    ERROR_REQUEST_INVALID = 3001,
-    ERROR_WRONG_FORMAT = 3002;
+    ERROR_REQUEST_INVALID = 3001;
 
 /**
  * Prepares the view command, then invokes it.
@@ -17,17 +16,16 @@ var PackageManagerError = require("./core").PackageManagerError,
 ViewCommand.prototype.run = function (request) {
     if (typeof request === 'string' && request.length > 0) {
         request = request.trim();
-    } else {
-        throw new PackageManagerError("Request invalid", ERROR_REQUEST_INVALID);
+
+        if (Tools.isRequestValid(request)) {
+            if (!npm.config.loaded) {
+                return Q.reject(new Error("NPM should be loaded first"));
+            }
+            return this._invokeViewCommand(request);
+        }
     }
 
-    if (Tools.isRequestValid(request)) {
-        if (!npm.config.loaded) {
-            throw new Error("NPM should be loaded first");
-        }
-        return this._invokeViewCommand(request);
-    }
-    throw new PackageManagerError("Should respect the following format: name[@version]", ERROR_WRONG_FORMAT);
+    return Q.reject(new PackageManagerError("Should respect the following format: name[@version]", ERROR_REQUEST_INVALID));
 };
 
 /**
