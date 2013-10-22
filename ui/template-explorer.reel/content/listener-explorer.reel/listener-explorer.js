@@ -106,8 +106,7 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
     handleDrop: {
         value: function (event) {
             var listenerModel,
-                self = this,
-                thisEvent = event;
+                self = this;
 
             if (!this.acceptsDrop(event)) {
                 return;
@@ -137,15 +136,23 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
                 objectLabelConverter.editingDocument = editingDocument;
                 listener = objectLabelConverter.revert(transferObject.listenerLabel);
 
+                var move = !self.acceptsListenerCopy(event);
+                if (move) {
+                    editingDocument.undoManager.openBatch("Move Listener");
+                }
+
                 editingDocument.addOwnedObjectEventListener(targetObject, transferObject.type, listener, transferObject.useCapture, transferObject.methodName)
                     .then(function() {
                         // If this is not a copy, remove the other listener from whence this came
-                        if (!self.acceptsListenerCopy(thisEvent) && transferObject.movedListenerIndex !== undefined && transferObject.movedListenerIndex > -1) {
+                        if (move && transferObject.movedListenerIndex !== undefined && transferObject.movedListenerIndex > -1) {
                             var fromTargetObject = objectLabelConverter.revert(transferObject.targeObjectLabel);
                             if (fromTargetObject && fromTargetObject.listeners && fromTargetObject.listeners.length > transferObject.movedListenerIndex) {
                                 var listener = fromTargetObject.listeners[transferObject.movedListenerIndex];
                                 editingDocument.removeOwnedObjectEventListener(fromTargetObject, listener);
                             }
+                        }
+                        if (move) {
+                            editingDocument.undoManager.closeBatch();
                         }
                     });
             }

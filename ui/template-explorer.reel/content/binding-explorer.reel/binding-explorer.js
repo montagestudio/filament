@@ -106,14 +106,24 @@ exports.BindingExplorer = Component.specialize( /** @lends BindingsExplorer# */ 
             if (transferObject.converterLabel) {
                 converter = objectLabelConverter.revert(transferObject.converterLabel);
             }
+
+            var move = !self.acceptsBindingCopy(event);
+            if (move) {
+                editingDocument.undoManager.openBatch("Move Binding");
+            }
+
             editingDocument.defineOwnedObjectBinding(targetObject, transferObject.targetPath, transferObject.oneway, transferObject.sourcePath, converter);
             // TODO when bindings return promises, move this into the then to create a transactional-like undo
-            if (!this.acceptsBindingCopy(event) && transferObject.movedBindingIndex !== undefined && transferObject.movedBindingIndex > -1) {
+            if (move && transferObject.movedBindingIndex !== undefined && transferObject.movedBindingIndex > -1) {
                 var fromTargetObject = objectLabelConverter.revert(transferObject.targeObjectLabel);
                 if (fromTargetObject && fromTargetObject.bindings && fromTargetObject.bindings.length > transferObject.movedBindingIndex) {
                     var binding = fromTargetObject.bindings[transferObject.movedBindingIndex];
                     editingDocument.cancelOwnedObjectBinding(fromTargetObject, binding);
                 }
+            }
+
+            if (move) {
+                editingDocument.undoManager.closeBatch();
             }
 
             self.isDropTarget = false;
