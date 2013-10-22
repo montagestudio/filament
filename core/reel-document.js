@@ -81,10 +81,10 @@ exports.ReelDocument = EditingDocument.specialize({
                         file: self.fileUrl,
                         error: {
                             id: "serializationError",
-                            reason: e.message
-                        }
+                            reason: e.message,
+                            stack: e.stack
+                        },
                     };
-
                     self.errors.push(error);
                 }
             } else {
@@ -97,6 +97,10 @@ exports.ReelDocument = EditingDocument.specialize({
                 };
 
                 self.errors.push(error);
+            }
+
+            if (self.errors.length) {
+                console.error("Errors loading document", self.errors);
             }
 
             return self;
