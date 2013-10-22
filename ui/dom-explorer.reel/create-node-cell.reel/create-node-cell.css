@@ -28,7 +28,7 @@
 
 .CreateNodeCell-segment-item {
     display: block;
-    padding: 0 12px;
+    padding: 0 10px;
     font-size: 11px;
     line-height: 22px;
     min-height: 22px;
@@ -38,6 +38,7 @@
 .CreateNodeCell-segment-item--tag {
     color: hsl(0,0%,60%);
     text-transform: lowercase;
+    overflow: hidden; /* Fixes text-transform Chrome bug */
 }
 
 .CreateNodeCell-segment-item--montageId {
@@ -95,7 +96,7 @@
     margin: 0;
     border-radius: 0;
     background-color: transparent;
-    width: 100px;
+    width: 100%;
     height: 20px;
     padding: 0;
     font-size: inherit;
@@ -110,7 +111,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    min-width: 20px;
+    min-width: 45px;
 }
 
 .CreateNodeCell-reset.matte-Button {
