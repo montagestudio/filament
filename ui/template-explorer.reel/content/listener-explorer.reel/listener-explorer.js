@@ -3,6 +3,7 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
+    application = require("montage/core/application").application,
     ObjectLabelConverter = require("core/object-label-converter").ObjectLabelConverter,
     MimeTypes = require("core/mime-types");
 
@@ -117,7 +118,18 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
                 objectLabelConverter = new ObjectLabelConverter();
                 objectLabelConverter.editingDocument = editingDocument;
                 listener = objectLabelConverter.revert(transferObject.listenerLabel);
-                editingDocument.addOwnedObjectEventListener(targetObject, transferObject.type, listener, transferObject.useCapture, transferObject.methodName);
+                editingDocument.addOwnedObjectEventListener(targetObject, transferObject.type, listener, transferObject.useCapture, transferObject.methodName)
+                    .then(function(){
+                        // If this is a move, remove the other listener from whence this came
+                        var stillMoveListener = !application.copyOnDragEvents;
+                        if (stillMoveListener && transferObject.movedListenerIndex !== undefined && transferObject.movedListenerIndex > -1) {
+                            var fromTargetObject = objectLabelConverter.revert(transferObject.targeObjectLabel);
+                            if (fromTargetObject && fromTargetObject.listeners && fromTargetObject.listeners.length > transferObject.movedListenerIndex) {
+                                var listener = fromTargetObject.listeners[transferObject.movedListenerIndex];
+                                editingDocument.removeOwnedObjectEventListener(fromTargetObject, listener);
+                            }
+                        }
+                    });
             }
 
             this._willAcceptDrop = false;
