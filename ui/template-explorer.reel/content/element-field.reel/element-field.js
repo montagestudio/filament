@@ -45,7 +45,7 @@ exports.ElementField = Component.specialize(/** @lends ElementField# */ {
                 // allows us to drop
                 event.preventDefault();
                 event.stopPropagation();
-                event.dataTransfer.dropEffect = "link";
+                event.dataTransfer.dropEffect = "copy";
                 this._willAcceptDrop = true;
             }
         }

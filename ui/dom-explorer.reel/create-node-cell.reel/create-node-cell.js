@@ -89,7 +89,7 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
         value: function (evt) {
             if (!this.tagName) {return;}
 
-            evt.dataTransfer.effectAllowed = "all";
+            evt.dataTransfer.effectAllowed = "copyMove";
             var element = document.createElement(this.tagName);
             if (this.montageArg){
                 element.dataset.arg = this.montageArg;
