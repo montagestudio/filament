@@ -77,7 +77,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
 
     handleDragstart: {
         value: function (event) {
-            event.dataTransfer.effectAllowed = 'all';
+            event.dataTransfer.effectAllowed = "copyMove";
 
             var nodeInfo = this.nodeInfo;
 

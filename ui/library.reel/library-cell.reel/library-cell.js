@@ -32,7 +32,7 @@ exports.LibraryCell = Montage.create(Component, /** @lends module:"ui/library-ce
 
     captureDragstart: {
         value: function (event) {
-            event.dataTransfer.effectAllowed = 'all';
+            event.dataTransfer.effectAllowed = "copyMove";
 
             // Although we could use "application/json" here, the stage is
             // expecting a specific object type. We also might specially handle

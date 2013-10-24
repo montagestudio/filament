@@ -61,8 +61,7 @@ exports.BindingExplorer = Component.specialize( /** @lends BindingsExplorer# */ 
                 if (this.acceptsBindingCopy(event)) {
                     event.dataTransfer.dropEffect = "copy";
                 } else {
-                    // event.dataTransfer.dropEffect = "move";
-                    event.dataTransfer.dropEffect = "link";
+                    event.dataTransfer.dropEffect = "move";
                 }
             } else {
                 event.dataTransfer.dropEffect = "none";

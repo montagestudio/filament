@@ -50,7 +50,7 @@ exports.BindingEntry = Montage.create(Component, /** @lends module:"./binding-en
 
     handleDragstart: {
         value: function (event) {
-            event.dataTransfer.effectAllowed = 'all';
+            event.dataTransfer.effectAllowed = "copyMove";
 
             if (this.targetObject && this.binding) {
                 var bindingModel = Object.create(null);

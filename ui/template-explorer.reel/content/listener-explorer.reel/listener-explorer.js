@@ -88,11 +88,10 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
                 if (this.acceptsListenerCopy(event)) {
                     event.dataTransfer.dropEffect = "copy";
                 } else {
-                    // event.dataTransfer.dropEffect = "move";
-                    event.dataTransfer.dropEffect = "link";
+                    event.dataTransfer.dropEffect = "copy";
                 }
             } else {
-                event.dataTransfer.dropEffect = "link";
+                event.dataTransfer.dropEffect = "copy";
             }
         }
     },
@@ -168,7 +167,7 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
                 transfer = event.dataTransfer;
 
             if (target === listenerButtonElement) {
-                transfer.effectAllowed = 'all';
+                transfer.effectAllowed = "copyMove";
 
                 var eventType = "action"; //TODO allow this to be inferred from somewhere
                 var transferObject = {

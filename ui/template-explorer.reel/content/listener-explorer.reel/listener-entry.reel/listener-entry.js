@@ -58,7 +58,7 @@ exports.ListenerEntry = Montage.create(Component, /** @lends module:"./listener-
 
     handleDragstart: {
         value: function (event) {
-            event.dataTransfer.effectAllowed = 'all';
+            event.dataTransfer.effectAllowed = "copyMove";
             var listenerModel = Object.create(null),
                 listener = this.listenerInfo.listener;
 
