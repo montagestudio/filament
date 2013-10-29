@@ -134,12 +134,12 @@
 <span class="cmt"># Define a new binding with the specified parameters
 </span><span class="kw">def</span> bind(targetPath, oneway, sourcePath):
     <span class="skw">sleep</span>(<span class="dig">1</span>)
-    checkboxBindingJig = <span class="skw">find</span>(<img src="1376294958706.png" />)
-    checkboxBindingJig.inside().<span class="skw">type</span>(Pattern(<img src="1374616220841.png" />).targetOffset(<span class="dig">0</span>,<span class="dig">6</span>), targetPath)
+    bindingJig = <span class="skw">find</span>(<img src="1383083906866.png" />)
+    bindingJig.inside().<span class="skw">type</span>(Pattern(<img src="1374616220841.png" />).targetOffset(<span class="dig">0</span>,<span class="dig">6</span>), targetPath)
     <span class="kw">if</span> (<span class="kw">not</span> oneway):
-        checkboxBindingJig.inside().<span class="skw">click</span>(<img src="1371627538325.png" />)
-    checkboxBindingJig.inside().<span class="skw">type</span>(Pattern(<img src="1374616197093.png" />).targetOffset(<span class="dig">0</span>,<span class="dig">6</span>), sourcePath)
-    checkboxBindingJig.inside().<span class="skw">click</span>(<img src="1371627635301.png" />)
+        bindingJig.inside().<span class="skw">click</span>(<img src="1371627538325.png" />)
+    bindingJig.inside().<span class="skw">type</span>(Pattern(<img src="1374616197093.png" />).targetOffset(<span class="dig">0</span>,<span class="dig">6</span>), sourcePath)
+    bindingJig.inside().<span class="skw">click</span>(<img src="1371627635301.png" />)
     <span class="skw">sleep</span>(<span class="dig">1</span>)
 
 <span class="kw">def</span> insertDomObject(object, targetNode, relationship=<span class="str">"self"</span>):
@@ -158,7 +158,7 @@
     dropAt(destination)
 
 <span class="kw">def</span> resizeDomExplorerY(distance):
-    divider = <span class="skw">find</span>(<img src="1380836949088.png" />).nearby(<span class="dig">100</span>).above().<span class="skw">find</span>(<img src="1380836989677.png" />)
+    divider = <span class="skw">find</span>(<img src="1383083299570.png" />).nearby(<span class="dig">100</span>).above().<span class="skw">find</span>(<img src="1380836989677.png" />)
     drag(divider)
 
     triggerDragDistance = <span class="dig">5</span>

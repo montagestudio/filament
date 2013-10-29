@@ -12,6 +12,10 @@ sleep(1)
 templateExplorer = lumieresRegion.find("1376294075874.png")
 
 digitPackageRegion = find("1372142584813.png")
+
+#Remove the placeholder list content
+lumieres.resizeDomExplorerY(-100)
+
 # Add a title
 lumieres.insertDomObject(digitPackageRegion.find(Pattern("1372142022209.png").similar(0.81)), "1380786943201.png", "child")
 
@@ -45,10 +49,8 @@ click("1379358296330.png")
 
 lumieres.save();
 
-#Remove the placeholder list content
-lumieres.resizeDomExplorerY(-100)
-hover("1380787922104.png")
-click(Pattern("1379348525259.png").similar(0.54).targetOffset(43,0))
+hover("1383083483378.png")
+click(Pattern("1383083500744.png").similar(0.90).targetOffset(59,1))
 
 lumieres.save();
 
@@ -62,8 +64,7 @@ wait("1371612473343.png", 2)
 type("task")
 click("1371601213234.png")
 sleep(3)
-explorer.wait("1371626266866.png", 2)
-wait("1376294233084.png", 2)
+wait(Pattern("1383083649632.png").similar(0.89), 2)
 #Add a checkbox to complete tasks
 lumieres.insertDomObject("1371626348331.png", "1380787145595.png", "child")
 checkboxCard = find("1376294261916.png")
@@ -90,7 +91,7 @@ click("1371628279454.png")
 
 sleep(2)
 #add our task component to the list
-lumieres.insertDomObject(Pattern("1371628340381.png").similar(0.73).targetOffset(1,-6), Pattern("1380787254026.png").similar(0.91), "child")
+lumieres.insertDomObject(Pattern("1371628340381.png").similar(0.73).targetOffset(1,-6), Pattern("1383084062319.png").similar(0.90), "child")
 sleep(1)
 
 taskCard = find("1376295091372.png")

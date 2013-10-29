@@ -62,12 +62,12 @@ def save(useShortcut=False):
 # Define a new binding with the specified parameters
 def bind(targetPath, oneway, sourcePath):
     sleep(1)
-    checkboxBindingJig = find("1376294958706.png")
-    checkboxBindingJig.inside().type(Pattern("1374616220841.png").targetOffset(0,6), targetPath)
+    bindingJig = find("1383083906866.png")
+    bindingJig.inside().type(Pattern("1374616220841.png").targetOffset(0,6), targetPath)
     if (not oneway):
-        checkboxBindingJig.inside().click("1371627538325.png")
-    checkboxBindingJig.inside().type(Pattern("1374616197093.png").targetOffset(0,6), sourcePath)
-    checkboxBindingJig.inside().click("1371627635301.png")
+        bindingJig.inside().click("1371627538325.png")
+    bindingJig.inside().type(Pattern("1374616197093.png").targetOffset(0,6), sourcePath)
+    bindingJig.inside().click("1371627635301.png")
     sleep(1)
     
 def insertDomObject(object, targetNode, relationship="self"):
@@ -86,7 +86,7 @@ def insertDomObject(object, targetNode, relationship="self"):
     dropAt(destination)
 
 def resizeDomExplorerY(distance):
-    divider = find("1380836949088.png").nearby(100).above().find("1380836989677.png")
+    divider = find("1383083299570.png").nearby(100).above().find("1380836989677.png")
     drag(divider)
 
     triggerDragDistance = 5
