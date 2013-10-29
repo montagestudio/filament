@@ -478,7 +478,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                             expect(definedBinding.targetPath).toBe("targetValue");
                             expect(definedBinding.oneway).toBe(true);
                             expect(definedBinding.sourcePath).toBe("@bar.sourceValue");
-                            expect(definedBinding.converter).toBe(null);
+                            expect(definedBinding.converter).toBeUndefined();
                         });
                     });
 
