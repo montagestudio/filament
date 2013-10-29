@@ -4,7 +4,7 @@ reload(lumieres)
 lumieres.focusLumieres();
 lumieresRegion = lumieres.makeNewApplication("focus")
 
-click(Pattern("1379635114233.png").targetOffset(62,2))
+click(Pattern("1383084350025.png").targetOffset(77,3))
 
 browserLaunched = False
 maxAttemptCount = 10
