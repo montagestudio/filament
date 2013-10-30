@@ -71,12 +71,12 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
             if (value) {
                 var nodeInfo = value.nodeInfo;
                 if (nodeInfo.canInsertBeforeNode) {
-                    this.element.classList.add('shift');
+                    this.classList.add('shiftUp');
                 } else {
-                    this.element.classList.remove('shift');
+                    this.classList.remove('shiftUp');
                 }
             } else {
-                this.element.classList.remove('shift');
+                this.classList.remove('shiftUp');
             }
             this._addElementNodeHover = value;
         }

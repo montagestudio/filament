@@ -70,6 +70,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             this.templateObjects.montageId.addEventListener("action", this);
             this.element.addEventListener("mouseover", this);
             this.element.addEventListener("mouseout", this);
+            this.element.addEventListener("dragleave", this, false);
 
             this.addEventListener("addelementout", this);
         }
@@ -170,17 +171,16 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             if (this.acceptsDrop(evt) && (this._nodeSegment === evt.target || this._nodeSegment.parentOf(evt.target))) {
                 this.isDropTarget = false;
             }
-        }
-    },
 
-    handleNodeCellDragleave: {
-        value: function (evt) {
-            this.dispatchEventNamed("highlightStageElement", true, true, {
-                xpath: getElementXPath(this.nodeInfo._templateNode),
-                proxy: this.nodeInfo,
-                component: this.nodeInfo.component,
-                highlight: false
-            });
+            if (evt.target.classList.contains("NodeCellWrapper")) {
+                this.domExplorer.addElementNodeHover = null;
+                this.dispatchEventNamed("highlightStageElement", true, true, {
+                    xpath: getElementXPath(this.nodeInfo._templateNode),
+                    proxy: this.nodeInfo,
+                    component: this.nodeInfo.component,
+                    highlight: false
+                });
+            }
         }
     },
 
