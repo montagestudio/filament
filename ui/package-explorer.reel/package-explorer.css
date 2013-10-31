@@ -41,6 +41,25 @@
     white-space: nowrap;
 }
 
+.PackageExplorer .Panel-title-name:before {
+    content: attr(data-tooltip);
+    position: fixed;
+    z-index: 1;
+    top: 16px;
+    left: 36px;
+    font: inherit;
+    line-height: inherit;
+    background: hsla(0, 0%, 96%, 1);
+    padding: 2px 8px;
+    pointer-events: none;
+    opacity: 0;
+    -webkit-transition: opacity .1s;
+}
+
+.PackageExplorer .Panel-title-name:hover:before {
+    opacity: 1;
+}
+
 .PackageExplorer .Panel-title-version {
    display: block;
    color: hsl(0,0%,70%);
