@@ -24,10 +24,19 @@ exports.ReelDocument = EditingDocument.specialize({
             this.super();
             this.sideData = Object.create(null);
             this.references = new ObjectReferences();
+            this.selectedElements = [];
         }
     },
 
     _editor: {
+        value: null
+    },
+
+    selectedElements: {
+        value: null
+    },
+
+    activeSelection: {
         value: null
     },
 
@@ -154,6 +163,21 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    selectElement: {
+        value: function (elem, singleSelection) {
+            if (singleSelection !== undefined && singleSelection) {
+                this.clearSelectedElements();
+            }
+            this.selectedElements.push(elem);
+        }
+    },
+
+    clearSelectedElements: {
+        value: function () {
+            this.selectedElements = [];
+        }
+    },
+
     handleMenuValidate: {
         value: function (evt) {
             var menuItem = evt.detail,
@@ -208,7 +232,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
     canDelete: {
         get: function () {
-            return !!this.getPath("selectedObjects.0");
+            return this.activeSelection && this.activeSelection.length;
         }
     },
 

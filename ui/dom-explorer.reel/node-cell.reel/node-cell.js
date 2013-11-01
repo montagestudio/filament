@@ -263,10 +263,18 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
-    handlePress: {
-        value: function () {
-            this.dispatchEventNamed("select", true, true, {
+    handleSelectComponentPress: {
+        value: function (evt) {
+            this.dispatchEventNamed("selectComponent", true, true, {
                 templateObject: this.nodeInfo.component
+            });
+        }
+    },
+
+    handleSelectElementPress: {
+        value: function (evt) {
+            this.dispatchEventNamed("selectElement", true, true, {
+                proxy: this.nodeInfo
             });
         }
     },
