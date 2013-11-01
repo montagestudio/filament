@@ -232,7 +232,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
     canDelete: {
         get: function () {
-            return this.activeSelection && this.activeSelection.length;
+            return !!this.activeSelection && this.activeSelection.length > 0;
         }
     },
 
