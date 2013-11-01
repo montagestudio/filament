@@ -206,7 +206,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             if ("delete" === identifier) {
                 if (this.canDelete) {
-                    this.deleteSelected().done();
+                    this.deleteSelected();
                 }
                 evt.stop();
             } else if ("undo" === identifier) {
@@ -1096,7 +1096,7 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    deleteSelected: {
+    deleteSelectedObject: {
         value: function () {
             var selectedObject = this.getPath("selectedObjects.0"),
                 result;
@@ -1107,7 +1107,25 @@ exports.ReelDocument = EditingDocument.specialize({
                 result = Promise.resolve(null);
             }
 
-            return result;
+            result.done();
+        }
+    },
+
+    deleteSelectedElement: {
+        value: function () {
+            var selectedElement = this.getPath("selectedElements.0");
+            this.removeTemplateNode(selectedElement);
+        }
+    },
+
+    deleteSelected: {
+        value: function () {
+            if (this.activeSelection === this.selectedElements) {
+                this.deleteSelectedElement();
+            }
+            else if (this.activeSelection === this.selectedObjects){
+                this.deleteSelectedObject();
+            }
         }
     },
 
