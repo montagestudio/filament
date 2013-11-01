@@ -1108,23 +1108,24 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             result.done();
+            return selectedObject;
         }
     },
 
     deleteSelectedElement: {
         value: function () {
             var selectedElement = this.getPath("selectedElements.0");
-            this.removeTemplateNode(selectedElement);
+            return this.removeTemplateNode(selectedElement);
         }
     },
 
     deleteSelected: {
         value: function () {
             if (this.activeSelection === this.selectedElements) {
-                this.deleteSelectedElement();
+                return this.deleteSelectedElement();
             }
             else if (this.activeSelection === this.selectedObjects){
-                this.deleteSelectedObject();
+                return this.deleteSelectedObject();
             }
         }
     },
