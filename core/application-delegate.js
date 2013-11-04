@@ -17,12 +17,12 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             var bridgePromise;
 
             if (IS_IN_LUMIERES) {
-                bridgePromise = require.async("core/lumieres-bridge").then(function (exported) {
-                    return new exported.LumiereBridge();
+                bridgePromise = require.async("adaptor/client/core/lumieres-bridge").then(function (exported) {
+                    return new exported.LumiereBridge().init("filament-backend");
                 });
             } else {
                 bridgePromise = require.async("core/browser-bridge").then(function (exported) {
-                    return new exported.BrowserBridge();
+                    return new exported.BrowserBridge().init("filament-backend");
                 });
             }
 

@@ -8,7 +8,7 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     Confirm = require("matte/ui/popup/confirm.reel").Confirm,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     ProjectController,
-    FileDescriptor = require("core/file-descriptor").FileDescriptor,
+    FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
     Template = require("montage/core/template").Template,
     URL = require("core/url");
 
@@ -1127,7 +1127,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 },
                 childrenByName;
 
-            while (segmentIndex < segmentCount && root.children) {
+            while (segmentIndex < segmentCount && root && root.children) {
                 pathSegment = hierarchy[segmentIndex];
                 childrenByName = root.children.reduce(collectChildrenByName, {});
                 root = childrenByName[pathSegment];

@@ -6,7 +6,7 @@ var Montage = require("montage").Montage,
     ViewController = require("core/view-controller").ViewController,
     ProjectController = require("core/project-controller").ProjectController,
     Promise = require("montage/core/promise").Promise,
-    FileDescriptor = require("core/file-descriptor").FileDescriptor,
+    FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
     WAITSFOR_TIMEOUT = 2500;
 
 describe("core/project-controller-filesystem-spec", function () {
@@ -28,9 +28,9 @@ describe("core/project-controller-filesystem-spec", function () {
             mainMenu: mockMenu,
             list: function (url) {
                 var files = [];
-                files.push(FileDescriptor.create().initWithUrlAndStat("projectUrl/package.json", {mode: 0}));
-                files.push(FileDescriptor.create().initWithUrlAndStat("projectUrl/README", {mode: 0}));
-                files.push(FileDescriptor.create().initWithUrlAndStat("projectUrl/ui/", {mode: 16384}));
+                files.push(new FileDescriptor().initWithUrlAndStat("projectUrl/package.json", {mode: 0}));
+                files.push(new FileDescriptor().initWithUrlAndStat("projectUrl/README", {mode: 0}));
+                files.push(new FileDescriptor().initWithUrlAndStat("projectUrl/ui/", {mode: 16384}));
                 return Promise.resolve(files);
             },
 
@@ -72,61 +72,17 @@ describe("core/project-controller-filesystem-spec", function () {
                 previousStat = null;
             });
 
-            describe("insertion order", function () {
-                it("is first if alphabetical ordering is first", function () {
-                    return projectControllerLoadedPromise.then(function () {
-                        watcher.simulateChange("create", "projectUrl/a", currentStat, previousStat);
-
-                        var parent = projectController.fileInTreeAtUrl("projectUrl");
-                        expect(parent.children.length).toBe(4);
-
-                        var file = parent.children.array.get(1);
-                        expect(file.name).toBe("a");
-                    }).timeout(WAITSFOR_TIMEOUT);
-                });
-
-                it("is last if alphabetical ordering is last", function () {
-                    return projectControllerLoadedPromise.then(function () {
-                        watcher.simulateChange("create", "projectUrl/z", currentStat, previousStat);
-
-                        var parent = projectController.fileInTreeAtUrl("projectUrl");
-                        expect(parent.children.length).toBe(4);
-
-                        var file = parent.children.array.get(3);
-                        expect(file.name).toBe("z");
-                    }).timeout(WAITSFOR_TIMEOUT);
-                });
-            });
-
-            it("should add the new file as a child of its parent", function () {
+            it("adds to the children", function () {
                 return projectControllerLoadedPromise.then(function () {
                     watcher.simulateChange("create", fullPath, currentStat, previousStat);
 
                     var parent = projectController.fileInTreeAtUrl("projectUrl");
-
                     expect(parent.children.length).toBe(4);
-                    expect(parent.children.array.get(1).fileUrl).toBe(fullPath);
-                }).timeout(WAITSFOR_TIMEOUT);
-            });
 
-            it("should be considered a directory if it was a directory", function () {
-                return projectControllerLoadedPromise.then(function () {
-                    currentStat = {mode: 16384};
-                    fullPath += "/";
-                    watcher.simulateChange("create", fullPath, currentStat, previousStat);
-
-                    var parent = projectController.fileInTreeAtUrl("projectUrl");
-                    expect(parent.children.array.get(0).fileUrl).toBe(fullPath);
-                    expect(parent.children.array.get(0).isDirectory).toBe(true);
-                }).timeout(WAITSFOR_TIMEOUT);
-            });
-
-            it("should not be considered a directory if it was not a directory", function () {
-                return projectControllerLoadedPromise.then(function () {
-                    watcher.simulateChange("create", fullPath, currentStat, previousStat);
-
-                    var parent = projectController.fileInTreeAtUrl("projectUrl");
-                    expect(parent.children.array.get(1).isDirectory).toBe(false);
+                    var file = projectController.fileInTreeAtUrl(fullPath);
+                    expect(parent.children.indexOf(file)).not.toBe(-1);
+                    expect(file.fileUrl).toBe(fullPath);
+                    expect(file.name).toBe("foo");
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
@@ -185,46 +141,10 @@ describe("core/project-controller-filesystem-spec", function () {
                     watcher.simulateChange("create", fullPath, currentStat, previousStat);
 
                     expect(parent.children.length).toBe(1);
-                    expect(parent.children.array.get(0).fileUrl).toBe(fullPath);
+                    var file = projectController.fileInTreeAtUrl(fullPath);
+                    expect(parent.children.indexOf(file)).not.toBe(-1);
                 }).timeout(WAITSFOR_TIMEOUT);
             });
-
-            it("should be ordered correctly", function () {
-                return projectControllerLoadedPromise.then(function () {
-                    var parent = exploreParent();
-
-                    watcher.simulateChange("create", parentPath + "/z", currentStat, previousStat);
-                    watcher.simulateChange("create", parentPath + "/a", currentStat, previousStat);
-
-                    expect(parent.children.length).toBe(2);
-
-                    var file = parent.children.array.get(0);
-                    expect(file.name).toBe("a");
-                }).timeout(WAITSFOR_TIMEOUT);
-            });
-
-
-            it("should be considered a directory if it was a directory", function () {
-                return projectControllerLoadedPromise.then(function () {
-                    var parent = exploreParent();
-
-                    currentStat = {mode: 16384};
-                    watcher.simulateChange("create", fullPath, currentStat, previousStat);
-
-                    expect(parent.children.array.get(0).isDirectory).toBe(true);
-                }).timeout(WAITSFOR_TIMEOUT);
-            });
-
-            it("should not be considered a directory if it was not a directory", function () {
-                return projectControllerLoadedPromise.then(function () {
-                    var parent = exploreParent();
-
-                    watcher.simulateChange("create", fullPath, currentStat, previousStat);
-
-                    expect(parent.children.array.get(0).isDirectory).toBe(false);
-                }).timeout(WAITSFOR_TIMEOUT);
-            });
-
 
         });
 
@@ -250,8 +170,12 @@ describe("core/project-controller-filesystem-spec", function () {
                     var parent = projectController.fileInTreeAtUrl("projectUrl");
 
                     expect(parent.children.length).toBe(2);
-                    expect(parent.children.array.get(1).name).toBe("package.json");
-                    expect(parent.children.array.get(0).name).toBe("ui");
+                    var file = projectController.fileInTreeAtUrl(fullPath);
+                    expect(file).toBe(null);
+
+                    // check that the others have been left alone
+                    expect(parent.children[0].name).toBe("package.json");
+                    expect(parent.children[1].name).toBe("ui");
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 

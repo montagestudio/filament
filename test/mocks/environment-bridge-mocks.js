@@ -1,8 +1,7 @@
 var Montage = require("montage").Montage,
-    EnvironmentBridge = require("core/environment-bridge").EnvironmentBridge,
     Promise = require("montage/core/promise").Promise;
 
-var Bridge = Montage.create(EnvironmentBridge, {
+var Bridge = Montage.specialize({
 
     setDocumentDirtyState: {
         value: Function.noop
