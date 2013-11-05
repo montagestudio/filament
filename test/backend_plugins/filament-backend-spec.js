@@ -2,6 +2,7 @@
 
 var SandboxedModule = require('sandboxed-module');
 var QFSMock = require("q-io/fs-mock");
+var Q = require("q");
 
 describe("filament backend", function () {
 
@@ -34,124 +35,140 @@ describe("filament backend", function () {
     });
 
     describe("createApplication", function () {
-        var mockFS, filamentBackend;
+        var mockFS, filamentBackend, minitCreateSpy;
 
         beforeEach(function () {
-            mockFS = QFSMock({
-                "root": {
-                    "extensions": {
-                        "a.filament-extension": 1,
-                        "b.filament-extension": 1
-                    }
-                }
-            });
+            mockFS = QFSMock();
+
+            minitCreateSpy = jasmine.createSpy("minitCreate").andCallFake(function () { return Q(); });
 
             filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
-                requires: {"q-io/fs": mockFS},
+                requires: {
+                    "q-io/fs": mockFS,
+                    "minit/lib/create": {
+                        create: minitCreateSpy
+                    }
+                },
                 globals: {clientPath: "/root"}
             });
         });
 
-        it("creates an app with a space in its name", function (done) {
-            var timestamp = Date.now();
-            filamentBackend.createApplication("my app" + timestamp, "/tmp/")
-            .then(function (minitResults) {
-                expect(minitResults.name).toEqual("my-app" + timestamp);
-            })
-            .then(done, done);
-        }, 5000);
+        it("calls minit create with with 'digit' template", function () {
+            return filamentBackend.createApplication("name", "dir")
+            .then(function () {
+                expect(minitCreateSpy).toHaveBeenCalledWith(
+                    "digit",
+                    { name : "name", packageHome : "dir" }
+                );
+            });
+        });
 
-        // Disabled due to timeout issue
-        xit("creates an app with a non-ascii characters in its name", function (done) {
-            var timestamp = Date.now();
-            return filamentBackend.createApplication("râțéăü" + timestamp, "/tmp/")
-            .then(function (minitResults) {
-                expect(minitResults.name).toEqual("rateau" + timestamp);
-            })
-            .then(done, done);
-        }, 5000);
     });
 
     describe("createComponent", function () {
-        var mockFS, filamentBackend;
+        var mockFS, filamentBackend, minitCreateSpy;
 
         beforeEach(function () {
-            mockFS = QFSMock({
-                "root": {
-                    "extensions": {
-                        "a.filament-extension": 1,
-                        "b.filament-extension": 1
-                    }
-                }
+            mockFS = QFSMock();
+
+            minitCreateSpy = jasmine.createSpy("minitCreate").andCallFake(function () {
+                return Q({resultPath: "resultPath"});
             });
 
             filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
-                requires: {"q-io/fs": mockFS},
+                requires: {
+                    "q-io/fs": mockFS,
+                    "minit/lib/create": {
+                        create: minitCreateSpy
+                    }
+                },
                 globals: {clientPath: "/root"}
+            });
+        });
+
+        it("calls minit create with with 'application' template", function () {
+            return filamentBackend.createComponent("name", "package", "dest")
+            .then(function () {
+                expect(minitCreateSpy).toHaveBeenCalledWith(
+                    "component",
+                    {name: "name", packageHome: "package", destination: "dest"}
+                );
+            });
+        });
+
+        it("uses the package location as the destination by default", function () {
+            return filamentBackend.createComponent("name", "package")
+            .then(function () {
+                expect(minitCreateSpy).toHaveBeenCalledWith(
+                    "component",
+                    {name: "name", packageHome: "package", destination: "."}
+                );
+            });
+        });
+
+        it("strips .reel from the name", function () {
+            return filamentBackend.createComponent("name.reel", "package", "dest")
+            .then(function () {
+                expect(minitCreateSpy).toHaveBeenCalledWith(
+                    "component",
+                    {name: "name", packageHome: "package", destination: "dest"}
+                );
             });
         });
 
         it("resolves as the path to the created component", function () {
-            var timestamp = Date.now();
-            return filamentBackend.createComponent("foo" + timestamp, "/tmp", "bar")
+            return filamentBackend.createComponent("name.reel", "package", "dest")
                 .then(function (path) {
-                    expect(path).toEqual("/tmp/bar/foo" + timestamp + ".reel");
+                    expect(path).toEqual("resultPath");
                 });
-        });
-
-        it("creates an component with a space in its name", function () {
-            var timestamp = Date.now();
-            return filamentBackend.createComponent("my component" + timestamp, "/tmp/", "")
-            .then(function (path) {
-                var pieces = path.split("/");
-                expect(pieces[pieces.length -1]).toEqual("my-component" + timestamp + ".reel");
-            });
-        });
-
-        it("creates an component with a non-ascii characters in its name", function () {
-            var timestamp = Date.now();
-            return filamentBackend.createComponent("føø" + timestamp, "/tmp/", "")
-            .then(function (path) {
-                var pieces = path.split("/");
-                expect(pieces[pieces.length -1]).toEqual("foo" + timestamp + ".reel");
-            });
         });
     });
 
     describe("createModule", function () {
-        var mockFS, filamentBackend;
+        var mockFS, filamentBackend, minitCreateSpy;
 
         beforeEach(function () {
-            mockFS = QFSMock({
-                "root": {
-                    "extensions": {
-                        "a.filament-extension": 1,
-                        "b.filament-extension": 1
-                    }
-                }
+            mockFS = QFSMock();
+
+            minitCreateSpy = jasmine.createSpy("minitCreate").andCallFake(function () {
+                return Q({name: "returnedName"});
             });
 
             filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
-                requires: {"q-io/fs": mockFS},
+                requires: {
+                    "q-io/fs": mockFS,
+                    "minit/lib/create": {
+                        create: minitCreateSpy
+                    }
+                },
                 globals: {clientPath: "/root"}
             });
         });
 
-        it("creates an module with a space in its name", function () {
-            var timestamp = Date.now();
-            return filamentBackend.createModule("my module" + timestamp, "/tmp/", "")
-            .then(function (path) {
-                var pieces = path.split("/");
-                expect(pieces[pieces.length -1]).toEqual("my-module" + timestamp);
+        it("calls minit create with with 'module' template", function () {
+            return filamentBackend.createModule("name", "package", "dest")
+            .then(function () {
+                expect(minitCreateSpy).toHaveBeenCalledWith(
+                    "module",
+                    {name: "name", packageHome: "package", destination: "dest"}
+                );
             });
         });
 
-        it("creates an module with a non-ascii characters in its name", function () {
-            var timestamp = Date.now();
-            return filamentBackend.createModule("bär" + timestamp, "/tmp/", "")
+        it("uses the package location as the destination by default", function () {
+            return filamentBackend.createModule("name", "package")
+            .then(function () {
+                expect(minitCreateSpy).toHaveBeenCalledWith(
+                    "module",
+                    {name: "name", packageHome: "package", destination: "."}
+                );
+            });
+        });
+
+        it("uses the package location as the destination by default", function () {
+            return filamentBackend.createModule("name", "package", "dest")
             .then(function (path) {
-                var pieces = path.split("/");
-                expect(pieces[pieces.length -1]).toEqual("bar" + timestamp);
+                expect(path).toEqual("package/dest/returnedName");
             });
         });
     });
