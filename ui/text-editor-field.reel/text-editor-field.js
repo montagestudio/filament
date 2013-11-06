@@ -173,7 +173,7 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
                 //this.templateObjects.inputText.element.focus();
                 var self = this;
                 setTimeout(function() {
-                    self.templateObjects.inputText.element.focus();
+                    self.templateObjects.inputText.element.select();
                 }, 200);
             }
         }

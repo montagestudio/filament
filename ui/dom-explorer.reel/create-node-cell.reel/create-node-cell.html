@@ -19,7 +19,7 @@
             "prototype": "ui/text-editor-field.reel",
             "properties": {
                 "element": {"#": "tagName"},
-                "placeholder": "tagName",
+                "placeholder": "Create element",
                 "tabindex": "1"
             },
             "bindings": {
@@ -38,46 +38,10 @@
             "properties": {
                 "element": {"#": "montageId"},
                 "placeholder": "montageId",
-                "tabindex": "4"
-            },
-            "bindings": {
-                "value": {"<->": "@owner.montageId"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
-        "montageArg": {
-            "prototype": "ui/text-editor-field.reel",
-            "properties": {
-                "element": {"#": "montageArg"},
-                "placeholder": "montageArg",
                 "tabindex": "2"
             },
             "bindings": {
-                "value": {"<->": "@owner.montageArg"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
-        "montageParam": {
-            "prototype": "ui/text-editor-field.reel",
-            "properties": {
-                "element": {"#": "montageParam"},
-                "placeholder": "montageParam",
-                "tabindex": "3"
-            },
-            "bindings": {
-                "value": {"<->": "@owner.montageParam"}
+                "value": {"<->": "@owner.montageId"}
             },
             "listeners": [
                 {
@@ -93,9 +57,7 @@
     <div data-montage-id="CreateNodeCell" class="CreateNodeCell">
         <div data-montage-id="nodeSegment" class="CreateNodeCell-segment"  draggable="false">
             <span data-montage-id="tagName" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--tag"></span>
-            <span data-montage-id="montageArg" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageArg"></span>
-            <span data-montage-id="montageParam" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageParam"></span>
-            <span data-montage-id="montageId" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageId"></span>
+            <span data-montage-id="montageId" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageId" style="display:none"></span>
         </div>
     </div>
 </body>

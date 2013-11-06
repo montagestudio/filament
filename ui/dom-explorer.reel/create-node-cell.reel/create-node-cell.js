@@ -3,7 +3,8 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    MimeTypes = require("core/mime-types");
+    MimeTypes = require("core/mime-types"),
+    emmet = require('core/filament-emmet');
 
 /**
  * @class CreateNodeCell
@@ -22,6 +23,9 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
     montageId: {
         set: function (value) {
             this._montageId = value;
+            if (this._emmetTree) {
+                this._emmetTree.children[0].attribute("data-montage-id", value);
+            }
             this.needsDraw = true;
         },
         get: function () {
@@ -29,45 +33,44 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
         }
     },
 
-    _montageArg: {
+    _emmetTree: {
         value: null
     },
-
-    montageArg: {
-        set: function (value) {
-            this._montageArg = value;
-            this.needsDraw = true;
-        },
-        get: function () {
-            return this._montageArg;
-        }
-    },
-
-    _montageParam: {
-        value: null
-    },
-
-    montageParam: {
-        set: function (value) {
-            this._montageParam = value;
-            this.needsDraw = true;
-        },
-        get: function () {
-            return this._montageParam;
-        }
-    },
-
     _tagName: {
         value: null
     },
-
     tagName: {
         set: function (value) {
             this._tagName = value;
             this.needsDraw = true;
         },
         get: function () {
+            this.needsDraw = true;
             return this._tagName;
+        }
+    },
+
+    handleBlur: {
+        value: function () {
+            var value = this.tagName;
+            var tree = emmet.expandAbbreviation(value);
+            if (!tree || !tree.children) {
+                return;
+            }
+            var node = tree.children[0];
+            this.tagName = node.name(); // binding not working ???
+            this._emmetTree = tree;
+            // look for any data-montage-id attribute
+            var id = null;
+            var attributes = node.attributeList();
+            for (var i = 0; i < attributes.length; i++) {
+                if (attributes[i].name === "data-montage-id") {
+                    id = attributes[i].value;
+                }
+            }
+            if (id) {
+                this.montageId = id;
+            }
         }
     },
 
@@ -88,6 +91,7 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
             if (!firstTime) { return; }
 
             this.element.addEventListener("dragstart", this);
+            this.templateObjects.tagName.templateObjects.inputText.element.addEventListener("blur", this);
         }
     },
 
@@ -96,18 +100,8 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
             if (!this.tagName) {return;}
 
             evt.dataTransfer.effectAllowed = "copyMove";
-            var element = document.createElement(this.tagName);
-            if (this.montageArg){
-                element.dataset.arg = this.montageArg;
-            }
-            if (this.montageParam){
-                element.dataset.param = this.montageParam;
-            }
-            if (this.montageId){
-                element.dataset.montageId = this.montageId;
-            }
-
-            evt.dataTransfer.setData(MimeTypes.HTML_ELEMENT, element.outerHTML);
+            var html = this._emmetTree.valueOf();
+            evt.dataTransfer.setData(MimeTypes.HTML_ELEMENT, html);
         }
     },
 
@@ -115,14 +109,7 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
         value: function () {
             this.tagName = null;
             this.montageId = null;
-            this.montageArg = null;
-            this.montageParam = null;
-        }
-    },
-
-    handleResetNodeButtonAction: {
-        value: function (evt) {
-            this.reset();
+            this._emmetTree = null;
         }
     },
 

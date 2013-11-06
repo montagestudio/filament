@@ -27,7 +27,7 @@ exports.expandAbbreviation = function(abbr) {
 
     var filtersList = filters.composeList(syntax, profile);
     filters.apply(outputTree, filtersList, profile);
-    return outputTree.valueOf();
+    return outputTree;
 };
 
 /**
