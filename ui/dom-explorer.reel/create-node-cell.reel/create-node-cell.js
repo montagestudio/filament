@@ -71,6 +71,12 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
         }
     },
 
+    focusTagName: {
+        value: function () {
+            this.templateObjects.tagName.toggle();
+        }
+    },
+
     constructor: {
         value: function CreateNodeCell() {
             this.super();

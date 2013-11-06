@@ -36,6 +36,10 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
         value: null
     },
 
+    isFocused: {
+        value: false
+    },
+
     prepareForActivationEvents: {
         value: function () {
             // Listen to start editing
@@ -68,11 +72,7 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
 
             this._inputValue = this.value;
             this.isEditing = true;
-
-            var self = this;
-            setTimeout(function () {
-                self.templateObjects.inputText.element.select();
-            }, 100);
+            this.isFocused = true;
         }
     },
 
@@ -131,9 +131,13 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
         value: function () {
             this.value = this._inputValue;
             this.isEditing = false;
+            this.isFocused = false;
         }
     },
 
+    /**
+     * handle tab selection
+     */
     handleFocusin: {
         value: function (evt) {
             if (evt.relatedTarget && evt.relatedTarget.getAttribute("tabindex")) {
@@ -158,6 +162,19 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
                 } else {
                     this.templateObjects.text.element.setAttribute("tabindex", this.tabindex);
                 }
+            }
+        }
+    },
+
+    didDraw: {
+        value: function () {
+            if (this.isFocused) {
+                // this needs to be fixed
+                //this.templateObjects.inputText.element.focus();
+                var self = this;
+                setTimeout(function() {
+                    self.templateObjects.inputText.element.focus();
+                }, 200);
             }
         }
     }

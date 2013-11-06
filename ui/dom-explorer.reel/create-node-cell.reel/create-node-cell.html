@@ -85,33 +85,18 @@
                     "listener": {"@": "owner"}
                 }
             ]
-        },
-
-        "resetNodeButton": {
-            "prototype": "matte/ui/button.reel",
-            "properties": {
-                "element": {"#": "resetNodeButton"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
         }
-
     }
     </script>
 </head>
 <body>
     <div data-montage-id="CreateNodeCell" class="CreateNodeCell">
         <div data-montage-id="nodeSegment" class="CreateNodeCell-segment"  draggable="false">
-            <span data-montage-id="tagName" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--tag">test</span>
-            <span data-montage-id="montageArg" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageArg">test</span>
-            <span data-montage-id="montageParam" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageParam">test</span>
-            <span data-montage-id="montageId" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageId">test</span>
+            <span data-montage-id="tagName" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--tag"></span>
+            <span data-montage-id="montageArg" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageArg"></span>
+            <span data-montage-id="montageParam" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageParam"></span>
+            <span data-montage-id="montageId" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageId"></span>
         </div>
-        <button data-montage-id="resetNodeButton" class="CreateNodeCell-reset Button Button--circle" title="Reset node">↺</button>
     </div>
 </body>
 </html>

@@ -88,7 +88,21 @@
                 "element": {"#": "createNodeCell"},
                 "domExplorer": {"@": "owner"}
             }
+        },
+
+        "toggleCreateNode": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "toggle-create-node"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
+
     }
     </script>
 </head>
@@ -98,6 +112,7 @@
             <div data-montage-id="nodeCell" data-arg="treeNode"></div>
         </div>
 
+        <button data-montage-id="toggle-create-node" class="toggleCreateNode Button Button--circle">+</button>
         <footer class="DomExplorer-footer Panel-bar">
             <div data-montage-id="createNodeCell"></div>
         </footer>

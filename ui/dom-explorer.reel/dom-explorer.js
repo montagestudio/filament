@@ -268,6 +268,43 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
             this.editingDocument.moveTemplateNodeChildNode(nodeProxy, parentNode);
         }
-    }
+    },
 
+    isFooterOpen: {
+        value: false
+    },
+
+    handleToggleCreateNodeAction: {
+        value: function (evt) {
+            this.isFooterOpen = !this.isFooterOpen;
+            if (this.isFooterOpen) {
+                this.templateObjects.createNodeCell.focusTagName();
+            } else {
+                this.templateObjects.createNodeCell.reset();
+            }
+            this.needsDraw = true;
+        }
+    },
+
+    draw: {
+        value: function () {
+            var footer = this.element.querySelector("footer");
+            var button = this.templateObjects.toggleCreateNode.element;
+            if (this.isFooterOpen) {
+                footer.classList.add("opened");
+                footer.classList.remove("closed");
+
+                button.classList.add("close");
+                button.classList.remove("open");
+
+            } else {
+                footer.classList.add("closed");
+                footer.classList.remove("opened");
+
+                button.classList.add("open");
+                button.classList.remove("close");
+            }
+        }
+    }
 });
+
