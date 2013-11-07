@@ -1771,10 +1771,9 @@ exports.ReelDocument = EditingDocument.specialize({
     createTemplateNodeFromJSONNode: {
         value: function (jsonNode) {
             var element = document.createElement(jsonNode.name);
-            for (var i = 0; i < jsonNode.attributes.length; i++) {
-                var attr = jsonNode.attributes[i];
+            jsonNode.attributes.forEach(function (attr) {
                 element.setAttribute(attr.name, attr.value);
-            }
+            });
             return NodeProxy.create().init(element, this);
         }
     },
