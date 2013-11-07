@@ -36,7 +36,7 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
         value: null
     },
 
-    isFocused: {
+    shouldBeFocus: {
         value: false
     },
 
@@ -80,7 +80,7 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
 
             this._inputValue = this.value;
             this.isEditing = true;
-            this.isFocused = true;
+            this.shouldBeFocus = true;
         }
     },
 
@@ -141,7 +141,7 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
                 this.save();
             }
             this.isEditing = false;
-            this.isFocused = false;
+            this.shouldBeFocus = false;
         }
     },
 
@@ -178,7 +178,7 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
 
     didDraw: {
         value: function () {
-            if (this.isFocused) {
+            if (this.shouldBeFocus) {
                 // this needs to be fixed
                 //this.templateObjects.inputText.element.focus();
                 var self = this;
