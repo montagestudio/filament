@@ -23,9 +23,6 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
     montageId: {
         set: function (value) {
             this._montageId = value;
-            if (this._emmetTree) {
-                this._emmetTree.children[0].attribute("data-montage-id", value);
-            }
             this.needsDraw = true;
         },
         get: function () {
@@ -109,6 +106,9 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
                     name: attributes[i].name,
                     value: attributes[i].value
                 });
+            }
+            if (this.montageId) {
+                json.attributes["data-montage-id"] = this.montageId;
             }
 
             evt.dataTransfer.effectAllowed = "copyMove";
