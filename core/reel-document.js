@@ -1768,6 +1768,20 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    createTemplateNodeFromJSONNode: {
+        value: function (jsonNode) {
+            var element = document.createElement(jsonNode.name);
+            for (var i = 0; i < jsonNode.attributes.length; i++) {
+                var attr = jsonNode.attributes[i];
+                element.setAttribute(attr.name, attr.value);
+            }
+            if (element.children.length) {
+                throw new Error("Cannot create template node for element with children");
+            }
+            return NodeProxy.create().init(element, this);
+        }
+    },
+
     canAppendToTemplateNode: {
         value: function (nodeProxy) {
             var isBody = "body" === nodeProxy.tagName.toLowerCase();

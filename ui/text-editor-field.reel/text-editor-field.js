@@ -40,6 +40,14 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
         value: false
     },
 
+    delegate: {
+        value: null
+    },
+
+    shouldSaveOnBlur: {
+        value: false
+    },
+
     prepareForActivationEvents: {
         value: function () {
             // Listen to start editing
@@ -129,7 +137,9 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
 
     handleBlur: {
         value: function () {
-            this.value = this._inputValue;
+            if (this.shouldSaveOnBlur) {
+                this.save();
+            }
             this.isEditing = false;
             this.isFocused = false;
         }

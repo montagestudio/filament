@@ -117,7 +117,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             return evt.dataTransfer.types &&
                 (
                     evt.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 ||
-                    evt.dataTransfer.types.indexOf(MimeTypes.HTML_ELEMENT) !== -1
+                    evt.dataTransfer.types.indexOf(MimeTypes.JSON_NODE) !== -1
                 );
         }
     },
@@ -273,7 +273,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function (evt) {
             this.dispatchEventNamed("insertAfterNode", true, true, {
                 previousSibling: this.nodeInfo,
-                htmlElement: evt.detail.htmlElement
+                jsonNode: evt.detail.jsonNode
             });
         }
     },
@@ -282,7 +282,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function (evt) {
             this.dispatchEventNamed("insertBeforeNode", true, true, {
                 nextSibling: this.nodeInfo,
-                htmlElement: evt.detail.htmlElement
+                jsonNode: evt.detail.jsonNode
             });
         }
     },
@@ -291,7 +291,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function (evt) {
             this.dispatchEventNamed("appendNode", true, true, {
                 parentNode: this.nodeInfo,
-                htmlElement: evt.detail.htmlElement
+                jsonNode: evt.detail.jsonNode
             });
         }
     },

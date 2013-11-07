@@ -45,21 +45,20 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
             this.needsDraw = true;
         },
         get: function () {
-            this.needsDraw = true;
             return this._tagName;
         }
     },
 
-    handleBlur: {
+    handleTagNameAction: {
         value: function () {
-            var value = this.tagName;
+            var value = this._tagName;
             var tree = emmet.expandAbbreviation(value);
             if (!tree || !tree.children) {
                 return;
             }
             var node = tree.children[0];
-            this.tagName = node.name(); // binding not working ???
             this._emmetTree = tree;
+            this.tagName =  node.name();
             // look for any data-montage-id attribute
             var id = null;
             var attributes = node.attributeList();
@@ -98,10 +97,23 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
     handleDragstart: {
         value: function (evt) {
             if (!this.tagName) {return;}
+            var node = this._emmetTree.children[0],
+                json = {
+                name: node.name(),
+                attributes: [],
+                children: []
+            };
+            var attributes = node.attributeList();
+            for (var i = 0; i < attributes.length; i++) {
+                json.attributes.push({
+                    name: attributes[i].name,
+                    value: attributes[i].value
+                });
+            }
 
             evt.dataTransfer.effectAllowed = "copyMove";
-            var html = this._emmetTree.valueOf();
-            evt.dataTransfer.setData(MimeTypes.HTML_ELEMENT, html);
+            evt.dataTransfer.setData(MimeTypes.JSON_NODE, JSON.stringify(json));
+            evt.dataTransfer.setData("text/plain", this._emmetTree.valueOf());
         }
     },
 

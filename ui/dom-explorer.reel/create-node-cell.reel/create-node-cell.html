@@ -20,7 +20,8 @@
             "properties": {
                 "element": {"#": "tagName"},
                 "placeholder": "Create element",
-                "tabindex": "1"
+                "tabindex": "1",
+                "shouldSaveOnBlur": true
             },
             "bindings": {
                 "value": {"<->": "@owner.tagName"}
@@ -57,7 +58,7 @@
     <div data-montage-id="CreateNodeCell" class="CreateNodeCell">
         <div data-montage-id="nodeSegment" class="CreateNodeCell-segment"  draggable="false">
             <span data-montage-id="tagName" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--tag"></span>
-            <span data-montage-id="montageId" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageId" style="display:none"></span>
+            <span data-montage-id="montageId" class="CreateNodeCell-segment-item CreateNodeCell-segment-item--montageId"></span>
         </div>
     </div>
 </body>
