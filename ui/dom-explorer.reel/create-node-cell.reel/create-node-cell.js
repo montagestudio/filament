@@ -87,7 +87,6 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
             if (!firstTime) { return; }
 
             this.element.addEventListener("dragstart", this);
-            this.templateObjects.tagName.templateObjects.inputText.element.addEventListener("blur", this);
         }
     },
 
