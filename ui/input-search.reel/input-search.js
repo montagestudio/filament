@@ -38,13 +38,7 @@ exports.InputSearch = InputText.specialize(/** @lends InputSearch# */ {
     prepareForActivationEvents: {
         value: function() {
             this.super();
-            // Due to a current issue with how the key manager works we need
-            // to listen on both the component and the key composer.
-            // The key composer dispatches the event on the activeTarget
-            // (the component), and we need to listen on the key composer so
-            // that the listeners are installed.
-            this.addEventListener("keyPress", this, false);
-            this._keyComposerCancel.addEventListener("keyPress", null, false);
+            this._keyComposerCancel.addEventListener("keyPress", this, false);
         }
     },
 

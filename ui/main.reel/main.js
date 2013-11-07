@@ -239,27 +239,6 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    //TODO this is a temporary solution until the keyComposer/activeTarget identifier is sorted out
-    handleKeyPress: {
-        value: function (evt) {
-            var identifier = evt.identifier;
-
-            switch (identifier) {
-            case "exitModalEditor":
-                this.handleExitModalEditorKeyPress(evt);
-                break;
-            case "toggleExtensions":
-                this.handleToggleExtensionsKeyPress(evt);
-                break;
-            case "togglePalette":
-                this.handleTogglePaletteKeyPress(evt);
-                break;
-            case "closeDocument":
-                this.handleCloseDocumentKeyPress(evt);
-            }
-        }
-    },
-
     _isUsingModalEditor: {
         value: false
     },
