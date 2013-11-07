@@ -1775,9 +1775,6 @@ exports.ReelDocument = EditingDocument.specialize({
                 var attr = jsonNode.attributes[i];
                 element.setAttribute(attr.name, attr.value);
             }
-            if (element.children.length) {
-                throw new Error("Cannot create template node for element with children");
-            }
             return NodeProxy.create().init(element, this);
         }
     },

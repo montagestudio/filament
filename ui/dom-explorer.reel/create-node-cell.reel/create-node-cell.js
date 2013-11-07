@@ -97,8 +97,7 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
             var node = this._emmetTree.children[0],
                 json = {
                 name: node.name(),
-                attributes: [],
-                children: []
+                attributes: []
             };
             var attributes = node.attributeList();
             for (var i = 0; i < attributes.length; i++) {
