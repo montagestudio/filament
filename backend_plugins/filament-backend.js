@@ -9,8 +9,15 @@ var path = require("path"),
     minimatch = require('minimatch'),
     opener = require("opener");
 
-// Faster promises
-Q.longStackJumpLimit = 0;
+var NPM_CACHE_DIR_PROMISE = Q.reject(new Error("npm cache directory not available. Call setup()"));
+
+exports.setup = function (firstLoad, server) {
+    NPM_CACHE_DIR_PROMISE = server.application.invoke("specialFolderURL", "application-support")
+    .then(function (info) {
+        var path = unescape(info.url).replace("fs://localhost", "");
+        return PATH.join(path, "npm-cache");
+    });
+};
 
 exports.getExtensions = function(extensionFolder) {
     extensionFolder = extensionFolder || path.join(global.clientPath, "extensions");
@@ -28,7 +35,9 @@ exports.getExtensions = function(extensionFolder) {
 };
 
 exports.createApplication = function(name, packageHome) {
-    return minitCreate("digit", {name: name, "packageHome": packageHome});
+    return NPM_CACHE_DIR_PROMISE.then(function (NPM_CACHE_DIRECTORY) {
+        return minitCreate("digit", {name: name, "packageHome": packageHome, npmCache: NPM_CACHE_DIRECTORY});
+    });
 };
 
 exports.createComponent = function(name, packageHome, destination) {

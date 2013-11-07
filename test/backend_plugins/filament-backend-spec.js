@@ -51,15 +51,38 @@ describe("filament backend", function () {
                 },
                 globals: {clientPath: "/root"}
             });
+
+            filamentBackend.setup(true, {
+                application: Q({
+                    specialFolderURL: function () {
+                        return Q({url: "fs://localhost/Application%20Support"});
+                    }
+                })
+            });
         });
 
-        it("calls minit create with with 'digit' template", function () {
+        it("calls minit create with 'digit' template", function () {
+            return filamentBackend.createApplication("", "")
+            .then(function () {
+                expect(minitCreateSpy).toHaveBeenCalled();
+                expect(minitCreateSpy.mostRecentCall.args[0]).toEqual("digit");
+            });
+        });
+
+        it("calls minit create with name and packageHome", function () {
             return filamentBackend.createApplication("name", "dir")
             .then(function () {
-                expect(minitCreateSpy).toHaveBeenCalledWith(
-                    "digit",
-                    { name : "name", packageHome : "dir" }
-                );
+                expect(minitCreateSpy).toHaveBeenCalled();
+                expect(minitCreateSpy.mostRecentCall.args[1].name).toEqual("name");
+                expect(minitCreateSpy.mostRecentCall.args[1].packageHome).toEqual("dir");
+            });
+        });
+
+        it("calls minit create with npmCache", function () {
+            return filamentBackend.createApplication("", "")
+            .then(function () {
+                expect(minitCreateSpy).toHaveBeenCalled();
+                expect(minitCreateSpy.mostRecentCall.args[1].npmCache).toEqual("/Application Support/npm-cache");
             });
         });
 
