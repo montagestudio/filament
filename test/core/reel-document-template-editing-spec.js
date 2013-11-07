@@ -88,6 +88,15 @@ describe("core/reel-document-template-editing-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
+        it("should create the node proxy with the expected element in JSON_NODE", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var json = {name:"div", children:[], attributes:[]};
+                var nodeProxy = reelDocument.createTemplateNodeFromJSONNode(json);
+                expect(nodeProxy).toBeTruthy();
+                expect(nodeProxy.tagName.toLowerCase()).toBe("div");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
         it("must not consider the nodeProxy part of the template", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var nodeProxy = reelDocument.createTemplateNode("<div>");
