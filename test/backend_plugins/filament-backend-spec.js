@@ -34,6 +34,54 @@ describe("filament backend", function () {
         });
     });
 
+    describe("setup", function () {
+        var mockFS, filamentBackend, serverMock;
+        beforeEach(function () {
+            mockFS = QFSMock({
+                "root": {
+                    "npm-cache": {
+                        "seed": 1
+                    }
+                },
+                "user": {}
+            });
+
+            serverMock = {
+                application: Q({
+                    specialFolderURL: function () {
+                        return Q({url: "/user"});
+                    }
+                })
+            };
+
+            filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
+                requires: {"q-io/fs": mockFS},
+                globals: {clientPath: "/root"}
+            });
+
+        });
+
+        it("seeds the npm cache if it doesn't exist", function () {
+            return filamentBackend.setup(true, serverMock)
+            .then(function () {
+                return mockFS.listTree("/user");
+            }).then(function (list) {
+                expect(list).toEqual(["/user", "/user/npm-cache", "/user/npm-cache/seed"]);
+            });
+        });
+
+        it("does not seed the npm cache if it does not exist", function () {
+            return mockFS.makeDirectory("/user/npm-cache")
+            .then(function () {
+                filamentBackend.setup(true, serverMock);
+            }).then(function () {
+                return mockFS.listTree("/user");
+            }).then(function (list) {
+                expect(list).toEqual(["/user", "/user/npm-cache"]);
+            });
+        });
+    });
+
     describe("createApplication", function () {
         var mockFS, filamentBackend, minitCreateSpy;
 
@@ -52,13 +100,13 @@ describe("filament backend", function () {
                 globals: {clientPath: "/root"}
             });
 
-            filamentBackend.setup(true, {
+            filamentBackend.setup(false, {
                 application: Q({
                     specialFolderURL: function () {
                         return Q({url: "fs://localhost/Application%20Support"});
                     }
                 })
-            });
+            }).done();
         });
 
         it("calls minit create with 'digit' template", function () {

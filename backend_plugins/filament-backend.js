@@ -16,6 +16,24 @@ exports.setup = function (firstLoad, server) {
         var path = unescape(info.url).replace("fs://localhost", "");
         return PATH.join(path, "npm-cache");
     });
+    if (firstLoad) {
+        // If this is the first load, then check if the npm-cache directory
+        // exists, and if not copy our seeded cache there. This allows people
+        // to create new apps more quickly and also when they have no
+        // connection to the internet, because `montage` and deps are
+        // already downloaded.
+        return NPM_CACHE_DIR_PROMISE.then(function (npmCache) {
+            return QFS.exists(npmCache)
+            .then(function (npmCacheExists) {
+                if (!npmCacheExists) {
+                    console.log("Seeding npm-cache");
+                    var seededCache = PATH.join(global.clientPath, "npm-cache");
+                    return QFS.copyTree(seededCache, npmCache);
+                }
+            });
+        });
+    }
+    return Q();
 };
 
 exports.getExtensions = function(extensionFolder) {
