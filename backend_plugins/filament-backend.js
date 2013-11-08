@@ -1,6 +1,5 @@
 /* global global,opener:true */
-var path = require("path"),
-    minitCreate = require("minit/lib/create").create,
+var minitCreate = require("minit/lib/create").create,
     Q = require("q"),
     npm = require("npm"),
     watchr = require("watchr"),
@@ -20,11 +19,11 @@ exports.setup = function (firstLoad, server) {
 };
 
 exports.getExtensions = function(extensionFolder) {
-    extensionFolder = extensionFolder || path.join(global.clientPath, "extensions");
+    extensionFolder = extensionFolder || PATH.join(global.clientPath, "extensions");
 
     console.log("getExtensions from " + extensionFolder);
     return QFS.listTree(extensionFolder, function (filePath) {
-        return path.extname(filePath).toLowerCase() === ".filament-extension" ? true : (filePath ===  extensionFolder ? false : null); // if false return null so directories aren't traversed
+        return PATH.extname(filePath).toLowerCase() === ".filament-extension" ? true : (filePath ===  extensionFolder ? false : null); // if false return null so directories aren't traversed
     }).then(function (filePaths) {
         return Q.all(filePaths.map(function (filePath) {
             return QFS.stat(filePath).then(function (stat) {
@@ -53,7 +52,7 @@ exports.createModule = function(name, packageHome, destination) {
     destination = destination || ".";
     return minitCreate("module", {name: name, packageHome: packageHome, destination: destination})
     .then(function (minitResults) {
-        return path.join(packageHome, destination, minitResults.name);
+        return PATH.join(packageHome, destination, minitResults.name);
     });
 };
 
