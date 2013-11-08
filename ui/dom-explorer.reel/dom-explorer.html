@@ -10,6 +10,9 @@
                 "element": {"#": "dom-explorer"},
                 "nodeTreeController": {"@": "nodeTreeController"}
             },
+            "bindings": {
+                "isDrawerOpen": {"<->":"@drawer.isOpen"}
+            },
             "listeners": [
                 {
                     "type": "removeNode",
@@ -90,10 +93,21 @@
             }
         },
 
-        "toggleCreateNode": {
+        "drawer": {
+            "prototype": "./drawer.reel",
+            "properties": {
+                "element": {"#": "drawer"},
+                "domExplorer": {"@": "owner"}
+            }
+        },
+
+        "toggleDrawer": {
             "prototype": "matte/ui/button.reel",
             "properties": {
-                "element": {"#": "toggle-create-node"}
+                "element": {"#": "toggleDrawer"}
+            },
+            "bindings": {
+                "classList.has('close')": {"<-": "@owner.isDrawerOpen"}
             },
             "listeners": [
                 {
@@ -111,10 +125,9 @@
         <div data-montage-id="nodeList" class="NodeList">
             <div data-montage-id="nodeCell" data-arg="treeNode"></div>
         </div>
-
-        <button data-montage-id="toggle-create-node" class="toggleCreateNode Button Button--circle">+</button>
-        <footer class="DomExplorer-footer Panel-bar">
-            <div data-montage-id="createNodeCell"></div>
+        <button data-montage-id="toggleDrawer" class="toggleDrawerButton Button--circle">+</button>
+        <footer data-montage-id="drawer" class="DomExplorer-footer Panel-bar">
+            <div data-montage-id="createNodeCell" data-arg="createElement"></div>
         </footer>
     </div>
 </body>

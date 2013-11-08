@@ -249,39 +249,17 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
-    isFooterOpen: {
-        value: false
+    isDrawerOpen: {
+        value: null
     },
 
-    handleToggleCreateNodeAction: {
+    handleToggleDrawerAction: {
         value: function (evt) {
-            this.isFooterOpen = !this.isFooterOpen;
-            if (this.isFooterOpen) {
+            this.isDrawerOpen = !this.isDrawerOpen;
+            if (this.isDrawerOpen) {
                 this.templateObjects.createNodeCell.focusTagName();
             } else {
                 this.templateObjects.createNodeCell.reset();
-            }
-            this.needsDraw = true;
-        }
-    },
-
-    draw: {
-        value: function () {
-            var footer = this.element.querySelector("footer");
-            var button = this.templateObjects.toggleCreateNode.element;
-            if (this.isFooterOpen) {
-                footer.classList.add("opened");
-                footer.classList.remove("closed");
-
-                button.classList.add("close");
-                button.classList.remove("open");
-
-            } else {
-                footer.classList.add("closed");
-                footer.classList.remove("opened");
-
-                button.classList.add("open");
-                button.classList.remove("close");
             }
         }
     }
