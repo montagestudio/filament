@@ -235,7 +235,9 @@ exports.ComponentEditor = Editor.specialize({
 
     handleSelectElement: {
         value: function (evt) {
-            this.currentDocument.selectElement(evt.detail.proxy, true);
+            // for now we only support single element selection
+            this.currentDocument.clearSelectedElements();
+            this.currentDocument.selectElement(evt.detail.proxy);
         }
     },
 

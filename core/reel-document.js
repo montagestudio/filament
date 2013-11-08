@@ -164,11 +164,10 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     selectElement: {
-        value: function (elem, singleSelection) {
-            if (singleSelection !== undefined && singleSelection) {
-                this.clearSelectedElements();
+        value: function (elem) {
+            if (this.selectedElements.indexOf(elem) === -1) {
+                this.selectedElements.push(elem);
             }
-            this.selectedElements.push(elem);
         }
     },
 
