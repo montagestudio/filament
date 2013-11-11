@@ -47,7 +47,12 @@
     "scripts": {
         "test": "node test/run.js",
         "lint": "./node_modules/.bin/jshint --verbose .",
-		"lumieres": "node test/functional/run.js"
+        "lumieres": "node test/functional/run.js",
+
+        "stage-deps": "git add --update node_modules && git add node_modules",
+        "package-deps": "npm install && npm run stage-deps",
+        "package-deps-clean": "rm -rf node_modules && npm run package-deps",
+        "package-deps-update": "npm update && npm run stage-deps"
     },
     "manifest": true
 }
