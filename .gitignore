@@ -1,7 +1,8 @@
+*$py.class
 .DS_Store
 .idea
-node_modules
-npm-debug.log
-*$py.class
 console.log
+node_modules
+npm-cache
+npm-debug.log
 SikuliLog.txt
