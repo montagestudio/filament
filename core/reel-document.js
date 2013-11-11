@@ -1102,11 +1102,8 @@ exports.ReelDocument = EditingDocument.specialize({
 
             if (selectedObject) {
                 result = this.removeObject(selectedObject);
-            } else {
-                result = Promise.resolve(null);
+                result.done();
             }
-
-            result.done();
             return selectedObject;
         }
     },
