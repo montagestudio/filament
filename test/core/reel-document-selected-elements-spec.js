@@ -69,15 +69,11 @@ describe("core/reel-document-template-editing-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
-        it("should select only one element", function() {
+        it("should select one element", function() {
             return reelDocumentPromise.then(function (reelDocument) {
-                var element1 = reelDocument.htmlDocument.getElementById("removeSubTree");
-                var nodeProxy1 = reelDocument.nodeProxyForNode(element1);
-                reelDocument.selectElement(nodeProxy1, true);
-
-                var element2 = reelDocument.htmlDocument.getElementById("removeSubTree");
-                var nodeProxy2 = reelDocument.nodeProxyForNode(element2);
-                reelDocument.selectElement(nodeProxy2, true);
+                var element = reelDocument.htmlDocument.getElementById("removeSubTree");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+                reelDocument.selectElement(nodeProxy);
 
                 expect(reelDocument.selectedElements.length).toBe(1);
             }).timeout(WAITSFOR_TIMEOUT);
@@ -85,13 +81,13 @@ describe("core/reel-document-template-editing-spec", function () {
 
         it("should select multiple elements", function() {
             return reelDocumentPromise.then(function (reelDocument) {
-                var element1 = reelDocument.htmlDocument.getElementById("removeSubTree");
+                var element1 = reelDocument.htmlDocument.getElementById("foo");
                 var nodeProxy1 = reelDocument.nodeProxyForNode(element1);
                 reelDocument.selectElement(nodeProxy1);
 
-                var element2 = reelDocument.htmlDocument.getElementById("removeSubTree");
+                var element2 = reelDocument.htmlDocument.getElementById("testDomAttribute");
                 var nodeProxy2 = reelDocument.nodeProxyForNode(element2);
-                reelDocument.selectElement(nodeProxy2, false);
+                reelDocument.selectElement(nodeProxy2);
 
                 expect(reelDocument.selectedElements.length).toBe(2);
             }).timeout(WAITSFOR_TIMEOUT);
