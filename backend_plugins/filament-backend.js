@@ -1,4 +1,4 @@
-/*global global */
+/* global global,unescape,module,exports:true */
 exports = module.exports = Object.create(require("adaptor/server/backend"));
 
 var minitCreate = require("minit/lib/create").create,
