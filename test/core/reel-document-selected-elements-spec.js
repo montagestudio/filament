@@ -69,16 +69,6 @@ describe("core/reel-document-template-editing-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
-        it("should select one element", function() {
-            return reelDocumentPromise.then(function (reelDocument) {
-                var element = reelDocument.htmlDocument.getElementById("removeSubTree");
-                var nodeProxy = reelDocument.nodeProxyForNode(element);
-                reelDocument.selectElement(nodeProxy);
-
-                expect(reelDocument.selectedElements.length).toBe(1);
-            }).timeout(WAITSFOR_TIMEOUT);
-        });
-
         it("should select multiple elements", function() {
             return reelDocumentPromise.then(function (reelDocument) {
                 var element1 = reelDocument.htmlDocument.getElementById("foo");
@@ -90,6 +80,33 @@ describe("core/reel-document-template-editing-spec", function () {
                 reelDocument.selectElement(nodeProxy2);
 
                 expect(reelDocument.selectedElements.length).toBe(2);
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should not delete an element", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element1 = reelDocument.htmlDocument.getElementById("removeMe");
+                var nodeProxy1 = reelDocument.nodeProxyForNode(element1);
+                var element2 = reelDocument.htmlDocument.getElementById("testDomAttribute");
+                var nodeProxy2 = reelDocument.nodeProxyForNode(element2);
+
+                reelDocument.selectElement(nodeProxy1);
+                reelDocument.selectObject(nodeProxy2.component);
+                reelDocument.deleteSelected();
+
+                expect(reelDocument.htmlDocument.getElementById("removeMe")).toBeTruthy();
+                expect(element1.dataset.montageId).toBeFalsy();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should delete an element", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var element = reelDocument.htmlDocument.getElementById("removeMe");
+                var nodeProxy = reelDocument.nodeProxyForNode(element);
+                reelDocument.selectElement(nodeProxy);
+                reelDocument.deleteSelected();
+
+                expect(reelDocument.htmlDocument.getElementById("removeMe")).toBeFalsy();
             }).timeout(WAITSFOR_TIMEOUT);
         });
     });
