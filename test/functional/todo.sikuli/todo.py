@@ -26,14 +26,14 @@ type("Things Worth Doing")
 
 # Add a rangeController to manage the collection of the owner's tasks
 
-dragDrop("1372142743355.png", templateExplorer)
+dragDrop("1384285662628.png", templateExplorer)
 
 # Add a list to present the tasks
 
 lumieres.insertDomObject(digitPackageRegion.find("1372142855514.png"), "1380787051214.png", "next")
 
 #Set the list to receive its content from the rangeController we created
-dragDrop(Pattern("1379357122124.png").similar(0.51), Pattern("1379357187665.png").targetOffset(33,59))
+dragDrop("1384285693714.png", Pattern("1379357187665.png").targetOffset(33,59))
 
 #Add a new task button
 lumieres.insertDomObject("1371708733359.png", "1380787319604.png", "next")
@@ -42,7 +42,7 @@ type("New Task")
 
 buttonCard = find("1379358342966.png")
 buttonEvent = buttonCard.find("1376294601972.png").right().find("1376294614002.png")
-rangeControllerCard = "1380790129750.png"
+rangeControllerCard = "1384285722421.png"
 dragDrop(buttonEvent, rangeControllerCard)
 type(Pattern("1380790176150.png").targetOffset(-1,8), "addContent")
 click("1379358296330.png")
@@ -103,7 +103,7 @@ lumieres.bind("task", True, "@list1.objectAtCurrentIteration")
 lumieres.save()
 
 #add a badge to count the remaining tasks
-lumieres.insertDomObject("1371711022203.png", Pattern("1380840214165.png").similar(0.91), "previous")
+lumieres.insertDomObject("1371711022203.png", Pattern("1384286331253.png").similar(0.91), "previous")
 
 badgeCard = find("1376295271102.png")
 badgeCard.find("1376294281054.png").right().click("1376294297971.png")

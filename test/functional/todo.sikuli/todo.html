@@ -98,14 +98,14 @@ digitPackageRegion = <span class="skw">find</span>(<img src="1372142584813.png" 
 
 <span class="cmt"># Add a rangeController to manage the collection of the owner's tasks
 </span>
-<span class="skw">dragDrop</span>(<img src="1372142743355.png" />, templateExplorer)
+<span class="skw">dragDrop</span>(<img src="1384285662628.png" />, templateExplorer)
 
 <span class="cmt"># Add a list to present the tasks
 </span>
 lumieres.insertDomObject(digitPackageRegion.<span class="skw">find</span>(<img src="1372142855514.png" />), <img src="1380787051214.png" />, <span class="str">"next"</span>)
 
 <span class="cmt">#Set the list to receive its content from the rangeController we created
-</span><span class="skw">dragDrop</span>(Pattern(<img src="1379357122124.png" />).similar(<span class="dig">0.51</span>), Pattern(<img src="1379357187665.png" />).targetOffset(<span class="dig">33</span>,<span class="dig">59</span>))
+</span><span class="skw">dragDrop</span>(<img src="1384285693714.png" />, Pattern(<img src="1379357187665.png" />).targetOffset(<span class="dig">33</span>,<span class="dig">59</span>))
 
 <span class="cmt">#Add a new task button
 </span>lumieres.insertDomObject(<img src="1371708733359.png" />, <img src="1380787319604.png" />, <span class="str">"next"</span>)
@@ -114,7 +114,7 @@ lumieres.insertDomObject(digitPackageRegion.<span class="skw">find</span>(<img s
 
 buttonCard = <span class="skw">find</span>(<img src="1379358342966.png" />)
 buttonEvent = buttonCard.<span class="skw">find</span>(<img src="1376294601972.png" />).right().<span class="skw">find</span>(<img src="1376294614002.png" />)
-rangeControllerCard = <img src="1380790129750.png" />
+rangeControllerCard = <img src="1384285722421.png" />
 <span class="skw">dragDrop</span>(buttonEvent, rangeControllerCard)
 <span class="skw">type</span>(Pattern(<img src="1380790176150.png" />).targetOffset(-<span class="dig">1</span>,<span class="dig">8</span>), <span class="str">"addContent"</span>)
 <span class="skw">click</span>(<img src="1379358296330.png" />)
@@ -175,7 +175,7 @@ taskCard.<span class="skw">find</span>(<img src="1376294281054.png" />).right().
 lumieres.save()
 
 <span class="cmt">#add a badge to count the remaining tasks
-</span>lumieres.insertDomObject(<img src="1371711022203.png" />, Pattern(<img src="1380840214165.png" />).similar(<span class="dig">0.91</span>), <span class="str">"previous"</span>)
+</span>lumieres.insertDomObject(<img src="1371711022203.png" />, Pattern(<img src="1384286331253.png" />).similar(<span class="dig">0.91</span>), <span class="str">"previous"</span>)
 
 badgeCard = <span class="skw">find</span>(<img src="1376295271102.png" />)
 badgeCard.<span class="skw">find</span>(<img src="1376294281054.png" />).right().<span class="skw">click</span>(<img src="1376294297971.png" />)
