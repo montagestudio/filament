@@ -38,13 +38,32 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
         }
     },
 
+    getMontageUUID: {
+        value: function (types) {
+            var uuid = false;
+            types.forEach(function (type, i) {
+                if (type.startsWith("x-montage-uuid")) {
+                    uuid = type.split("/")[1].toUpperCase();
+                }
+            });
+            return uuid;
+        }
+    },
+
     acceptsListenerDrop: {
         value: function(event) {
             var availableTypes = event.dataTransfer.types,
                 target = event.target,
-                element = this.element;
+                element = this.element,
+                uuid = this.getMontageUUID(availableTypes);
+            if (!availableTypes || !availableTypes.has(MimeTypes.MONTAGE_LISTENER)) {
+                return false;
+            }
 
-            return availableTypes && availableTypes.has(MimeTypes.MONTAGE_LISTENER) && (target === element || element.contains(target));
+            if (uuid && (uuid  === this.templateObject.uuid)) {
+                return false;
+            }
+            return target === element || element.contains(target);
         }
     },
 
