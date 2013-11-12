@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="flow-tree.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "flow-tree"},
+                "label": {"#": "label"},
+                "contentElement": {"#": "content"}
+            }
+        },
+        "close": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "close"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="flow-tree" class="FlowTree">
+        <div data-montage-id="close" class="close">×</div>
+        <div data-montage-id="label" class="label">Scene</div>
+        <div data-montage-id="content" class="content"></div>
+    </div>
+</body>
+</html>

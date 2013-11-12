@@ -1,0 +1,10 @@
+.Highlight {
+    pointer-events: none;
+    position: absolute;
+    border: none;
+    margin: 0px;
+    border-radius: 2px;
+    box-sizing: content-box;
+    box-shadow: none;
+    background-color: hsla(210, 90%, 60%, .3);
+}

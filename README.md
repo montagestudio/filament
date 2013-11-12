@@ -22,8 +22,7 @@ anything, lest it become difficult to accommodate future host environments.
 Installation
 ============
 1. Clone Filament
-2. Run `npm install` inside of filament
-3. Build a Development build of Lumieres (See Lumieres Repository)
+2. Build a Development build of Lumieres (See Lumieres Repository)
 
 Testing
 =======
@@ -44,7 +43,7 @@ Contributing
 - Run `jshint` on your code to ensure it conforms to Filament standards
 
 - Make sure all commit messages follow the 50 character subject/72 character
-body [formatting used throughout git](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) 
+body [formatting used throughout git](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
 
 - Make sure commit messages start with uppercase present tense commands
 e.g. Prefer "Clear selection when clicking templateExplorer" over
@@ -53,3 +52,18 @@ e.g. Prefer "Clear selection when clicking templateExplorer" over
 - When adding or updating dependencies list the EXACT version of the dependency
 to minimize differences when building at different times.
 i.e. treat package.json as a shrinkwrapped dependency specifier
+
+Updating dependencies
+---------------------
+
+To update a single dependency follow these steps:
+
+* Change the version in `package.json`
+* Remove that dependency from `node_modules`: `rm -rf node_modules/<name>`
+* Run `npm run package-deps`
+* The changes will be staged. Test and commit.
+
+There are also two other commands:
+
+* `npm run package-deps-clean`, to remove `node_modules` and install all dependencies again.
+* `npm run package-deps-update`, to run `npm update`.
