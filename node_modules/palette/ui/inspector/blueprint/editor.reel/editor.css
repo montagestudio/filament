@@ -1,0 +1,32 @@
+.Editor {
+}
+
+.Editor-header {
+    display: -webkit-flex;
+	font-size: 14px;
+	padding: 8px;
+	font-weight: bold;
+	color: hsl(0,0%,30%);
+	background: hsl(0,0%,95%);
+	border-top: 1px solid hsla(0,0%,100%,.5);
+	border-bottom: 1px solid hsla(0,0%,0%,.08);
+}
+
+.Editor-header-title {
+    -webkit-flex: 1;
+    font-weight: bold;
+    color: hsl(0,0%,30%);
+    background: hsl(0,0%,95%);
+    border: 1px solid transparent;
+}
+
+.Editor-header-title:hover, .Editor-header-title:focus{
+    background: white;
+    border: 1px solid #B3B3B3;
+}
+
+.Editor-header-button[data-icon]:before {
+    font-size: 40px;
+    line-height: .7;
+    color: hsl(0, 0%, 60%);
+}

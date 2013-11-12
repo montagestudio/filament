@@ -1,0 +1,7 @@
+{
+    "name": "specs",
+    "mappings": {
+        "montage": "../node_modules/montage",
+        "flow-editor": ".."
+    }
+}

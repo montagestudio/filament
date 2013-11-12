@@ -1,0 +1,54 @@
+{
+
+
+    "path_property": {
+        "prototype": "montage/core/meta/property-blueprint",
+        "properties": {
+            "name": "path",
+            "valueType": "string",
+            "blueprint": {
+                "@": "root"
+            }
+        }
+    },
+
+    "blueprint_parent": {
+        "prototype": "montage/core/meta/blueprint-reference",
+        "properties": {
+            "valueReference": {
+                "blueprintName": "Component3D",
+                "blueprintModule": {
+                    "%": "runtime/component-3d.meta"
+                },
+                "prototypeName": "Component3D"
+            }
+        }
+    },
+
+    "root": {
+        "prototype": "montage/core/meta/module-blueprint",
+        "properties": {
+            "parent": {"@": "blueprint_parent"},
+            "name": "Scene",
+            "propertyBlueprints": [
+                {
+                    "@": "path_property"
+                }
+            ],
+            "propertyBlueprintGroups": {
+                "Scene": [
+                    {
+                        "@": "path_property"
+                    }
+                ]
+            },
+            "blueprintModule": {
+                "%": "runtime/scene.meta"
+            },
+            "exportName": "Scene",
+            "module": {
+                "%": "runtime/scene"
+            }
+        }
+    }
+}
