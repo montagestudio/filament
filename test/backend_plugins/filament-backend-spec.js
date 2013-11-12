@@ -34,6 +34,54 @@ describe("filament backend", function () {
         });
     });
 
+    describe("setup", function () {
+        var mockFS, filamentBackend, serverMock;
+        beforeEach(function () {
+            mockFS = QFSMock({
+                "root": {
+                    "npm-cache": {
+                        "seed": 1
+                    }
+                },
+                "user": {}
+            });
+
+            serverMock = {
+                application: Q({
+                    specialFolderURL: function () {
+                        return Q({url: "/user"});
+                    }
+                })
+            };
+
+            filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
+                requires: {"q-io/fs": mockFS},
+                globals: {clientPath: "/root"}
+            });
+
+        });
+
+        it("seeds the npm cache if it doesn't exist", function () {
+            return filamentBackend.setup(true, serverMock)
+            .then(function () {
+                return mockFS.listTree("/user");
+            }).then(function (list) {
+                expect(list).toEqual(["/user", "/user/npm-cache", "/user/npm-cache/seed"]);
+            });
+        });
+
+        it("does not seed the npm cache if it does not exist", function () {
+            return mockFS.makeDirectory("/user/npm-cache")
+            .then(function () {
+                filamentBackend.setup(true, serverMock);
+            }).then(function () {
+                return mockFS.listTree("/user");
+            }).then(function (list) {
+                expect(list).toEqual(["/user", "/user/npm-cache"]);
+            });
+        });
+    });
+
     describe("createApplication", function () {
         var mockFS, filamentBackend, minitCreateSpy;
 
@@ -51,15 +99,38 @@ describe("filament backend", function () {
                 },
                 globals: {clientPath: "/root"}
             });
+
+            filamentBackend.setup(false, {
+                application: Q({
+                    specialFolderURL: function () {
+                        return Q({url: "fs://localhost/Application%20Support"});
+                    }
+                })
+            }).done();
         });
 
-        it("calls minit create with with 'digit' template", function () {
+        it("calls minit create with 'digit' template", function () {
+            return filamentBackend.createApplication("", "")
+            .then(function () {
+                expect(minitCreateSpy).toHaveBeenCalled();
+                expect(minitCreateSpy.mostRecentCall.args[0]).toEqual("digit");
+            });
+        });
+
+        it("calls minit create with name and packageHome", function () {
             return filamentBackend.createApplication("name", "dir")
             .then(function () {
-                expect(minitCreateSpy).toHaveBeenCalledWith(
-                    "digit",
-                    { name : "name", packageHome : "dir" }
-                );
+                expect(minitCreateSpy).toHaveBeenCalled();
+                expect(minitCreateSpy.mostRecentCall.args[1].name).toEqual("name");
+                expect(minitCreateSpy.mostRecentCall.args[1].packageHome).toEqual("dir");
+            });
+        });
+
+        it("calls minit create with npmCache", function () {
+            return filamentBackend.createApplication("", "")
+            .then(function () {
+                expect(minitCreateSpy).toHaveBeenCalled();
+                expect(minitCreateSpy.mostRecentCall.args[1].npmCache).toEqual("/Application Support/npm-cache");
             });
         });
 

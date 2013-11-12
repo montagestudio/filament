@@ -1,6 +1,5 @@
-/* global global,opener:true */
-var path = require("path"),
-    minitCreate = require("minit/lib/create").create,
+/* global global,unescape,opener:true */
+var minitCreate = require("minit/lib/create").create,
     Q = require("q"),
     npm = require("npm"),
     watchr = require("watchr"),
@@ -9,15 +8,40 @@ var path = require("path"),
     minimatch = require('minimatch'),
     opener = require("opener");
 
-// Faster promises
-Q.longStackJumpLimit = 0;
+var NPM_CACHE_DIR_PROMISE = Q.reject(new Error("npm cache directory not available. Call setup()"));
+
+exports.setup = function (firstLoad, server) {
+    NPM_CACHE_DIR_PROMISE = server.application.invoke("specialFolderURL", "application-support")
+    .then(function (info) {
+        var path = unescape(info.url).replace("fs://localhost", "");
+        return PATH.join(path, "npm-cache");
+    });
+    if (firstLoad) {
+        // If this is the first load, then check if the npm-cache directory
+        // exists, and if not copy our seeded cache there. This allows people
+        // to create new apps more quickly and also when they have no
+        // connection to the internet, because `montage` and deps are
+        // already downloaded.
+        return NPM_CACHE_DIR_PROMISE.then(function (npmCache) {
+            return QFS.exists(npmCache)
+            .then(function (npmCacheExists) {
+                if (!npmCacheExists) {
+                    console.log("Seeding npm-cache");
+                    var seededCache = PATH.join(global.clientPath, "npm-cache");
+                    return QFS.copyTree(seededCache, npmCache);
+                }
+            });
+        });
+    }
+    return Q();
+};
 
 exports.getExtensions = function(extensionFolder) {
-    extensionFolder = extensionFolder || path.join(global.clientPath, "extensions");
+    extensionFolder = extensionFolder || PATH.join(global.clientPath, "extensions");
 
     console.log("getExtensions from " + extensionFolder);
     return QFS.listTree(extensionFolder, function (filePath) {
-        return path.extname(filePath).toLowerCase() === ".filament-extension" ? true : (filePath ===  extensionFolder ? false : null); // if false return null so directories aren't traversed
+        return PATH.extname(filePath).toLowerCase() === ".filament-extension" ? true : (filePath ===  extensionFolder ? false : null); // if false return null so directories aren't traversed
     }).then(function (filePaths) {
         return Q.all(filePaths.map(function (filePath) {
             return QFS.stat(filePath).then(function (stat) {
@@ -28,7 +52,9 @@ exports.getExtensions = function(extensionFolder) {
 };
 
 exports.createApplication = function(name, packageHome) {
-    return minitCreate("digit", {name: name, "packageHome": packageHome});
+    return NPM_CACHE_DIR_PROMISE.then(function (NPM_CACHE_DIRECTORY) {
+        return minitCreate("digit", {name: name, "packageHome": packageHome, npmCache: NPM_CACHE_DIRECTORY});
+    });
 };
 
 exports.createComponent = function(name, packageHome, destination) {
@@ -44,7 +70,7 @@ exports.createModule = function(name, packageHome, destination) {
     destination = destination || ".";
     return minitCreate("module", {name: name, packageHome: packageHome, destination: destination})
     .then(function (minitResults) {
-        return path.join(packageHome, destination, minitResults.name);
+        return PATH.join(packageHome, destination, minitResults.name);
     });
 };
 
