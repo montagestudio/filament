@@ -22,6 +22,9 @@
 				},
                 "classList.has('NodeCell--highlighted')": {
                     "<-": "@owner.domExplorer.highlightedElement == @owner.nodeInfo"
+                },
+                "classList.has('NodeCell--selected')": { 
+                    "<-": "@owner.domExplorer.editingDocument.selectedElements.has(@owner.nodeInfo)"
                 }
             }
         },
@@ -111,10 +114,27 @@
             }
         },
 
-        "select": {
+        "selectComponent": {
             "prototype": "montage/composer/press-composer",
             "properties": {
-                "component": {"@": "componentLabel"}
+                "component": {"@": "owner"},
+                "element": {"#": "componentLabel"},
+                "identifier": "selectComponent"
+            },
+            "listeners": [
+                {
+                    "type": "press",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "selectElement": {
+            "prototype": "montage/composer/press-composer",
+            "properties": {
+                "component": {"@": "owner"},
+                "element": {"#": "nodeSegment"},
+                "identifier": "selectElement"
             },
             "listeners": [
                 {

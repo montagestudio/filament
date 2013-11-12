@@ -24,10 +24,22 @@ exports.ReelDocument = EditingDocument.specialize({
             this.super();
             this.sideData = Object.create(null);
             this.references = new ObjectReferences();
+            this.selectedElements = [];
+
+            this.addRangeAtPathChangeListener("selectedObjects", this, "handleSelectedObjectsChange");
+            this.addRangeAtPathChangeListener("selectedElements", this, "handleSelectedElementsChange");
         }
     },
 
     _editor: {
+        value: null
+    },
+
+    selectedElements: {
+        value: null
+    },
+
+    activeSelection: {
         value: null
     },
 
@@ -154,6 +166,20 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    selectElement: {
+        value: function (elem) {
+            if (this.selectedElements.indexOf(elem) === -1) {
+                this.selectedElements.push(elem);
+            }
+        }
+    },
+
+    clearSelectedElements: {
+        value: function () {
+            this.selectedElements = [];
+        }
+    },
+
     handleMenuValidate: {
         value: function (evt) {
             var menuItem = evt.detail,
@@ -182,7 +208,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             if ("delete" === identifier) {
                 if (this.canDelete) {
-                    this.deleteSelected().done();
+                    this.deleteSelected();
                 }
                 evt.stop();
             } else if ("undo" === identifier) {
@@ -208,7 +234,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
     canDelete: {
         get: function () {
-            return !!this.getPath("selectedObjects.0");
+            return !!this.activeSelection && this.activeSelection.length > 0;
         }
     },
 
@@ -1072,18 +1098,52 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    deleteSelected: {
+    deleteSelectedObject: {
         value: function () {
             var selectedObject = this.getPath("selectedObjects.0"),
                 result;
 
             if (selectedObject) {
                 result = this.removeObject(selectedObject);
-            } else {
-                result = Promise.resolve(null);
+                result.done();
             }
+            return selectedObject;
+        }
+    },
 
-            return result;
+    deleteSelectedElement: {
+        value: function () {
+            var selectedElement = this.getPath("selectedElements.0");
+            return this.removeTemplateNode(selectedElement);
+        }
+    },
+
+    deleteSelected: {
+        value: function () {
+            if (this.activeSelection === this.selectedElements) {
+                return this.deleteSelectedElement();
+            }
+            else if (this.activeSelection === this.selectedObjects){
+                return this.deleteSelectedObject();
+            }
+        }
+    },
+
+    handleSelectedObjectsChange: {
+        value: function (selectedObjects, oldSelectedObjects){
+            if (!selectedObjects || selectedObjects.length > 0) {
+                this.activeSelection = this.selectedObjects;
+                this.clearSelectedElements();
+            }
+        }
+    },
+
+    handleSelectedElementsChange: {
+        value: function (selectedElements, oldSelectedElements){
+            if (!selectedElements || selectedElements.length > 0) {
+                this.activeSelection = this.selectedElements;
+                this.clearSelectedObjects();
+            }
         }
     },
 

@@ -224,9 +224,17 @@ exports.ComponentEditor = Editor.specialize({
         }
     },
 
-    handleSelect: {
+    handleSelectComponent: {
         value: function (evt) {
             this.currentDocument.selectObject(evt.detail.templateObject);
+        }
+    },
+
+    handleSelectElement: {
+        value: function (evt) {
+            // for now we only support single element selection
+            this.currentDocument.clearSelectedElements();
+            this.currentDocument.selectElement(evt.detail.proxy);
         }
     },
 

@@ -20,7 +20,11 @@
                 },
                 "listeners": [
                     {
-                        "type": "select",
+                        "type": "selectElement",
+                        "listener": {"@": "owner"}
+                    },
+                    {
+                        "type": "selectComponent",
                         "listener": {"@": "owner"}
                     }
                 ]

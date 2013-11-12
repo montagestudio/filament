@@ -82,6 +82,16 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
+    handleClick: {
+        value: function (evt) {
+            var target = evt.target;
+            if (target === this.templateObjects.nodeList.element) {
+                this.editingDocument.clearSelectedElements();
+                this.editingDocument.clearSelectedObjects();
+            }
+        }
+    },
+
     handleRemoveNode: {
         value: function (evt) {
             this.editingDocument.removeTemplateNode(evt.detail);
@@ -94,7 +104,7 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
             this.element.addEventListener("mouseout", this, false);
             this.element.addEventListener("dragleave", this, false);
-
+            this.element.addEventListener("click", this, false);
             this.addEventListener("hideAddElements", this, false);
         }
     },

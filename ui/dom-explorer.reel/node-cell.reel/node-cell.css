@@ -19,6 +19,10 @@
     border: 1px solid hsla(0,0%,0%,.08);
 }
 
+.NodeCell--selected .NodeCell-segment{
+    border: 1px solid hsl(210,100%,60%);
+}
+
 .NodeCell-segment-item {
     display: block;
     padding: 0 12px;

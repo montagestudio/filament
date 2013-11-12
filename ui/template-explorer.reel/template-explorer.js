@@ -247,6 +247,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             if (target === this.element ||
                 target === this.templateObjects.objectList.element) {
                 this.editingDocument.clearSelectedObjects();
+                this.editingDocument.clearSelectedElements();
             }
         }
     },
