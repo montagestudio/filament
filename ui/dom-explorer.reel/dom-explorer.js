@@ -87,6 +87,7 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
             var target = evt.target;
             if (target === this.templateObjects.nodeList.element) {
                 this.editingDocument.clearSelectedElements();
+                this.editingDocument.clearSelectedObjects();
             }
         }
     },
