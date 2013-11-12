@@ -92,9 +92,6 @@ exports.ComponentEditor = Editor.specialize({
                 this.addEventListener("highlightComponent", this, false);
                 // deHighlight everywhere
                 this.addEventListener("deHighlight", this, false);
-
-                this.addRangeAtPathChangeListener("currentDocument.selectedObjects", this, "handleSelectedObjectsChange");
-                this.addRangeAtPathChangeListener("currentDocument.selectedElements", this, "handleSelectedElementsChange");
             }
         }
     },
@@ -238,24 +235,6 @@ exports.ComponentEditor = Editor.specialize({
             // for now we only support single element selection
             this.currentDocument.clearSelectedElements();
             this.currentDocument.selectElement(evt.detail.proxy);
-        }
-    },
-
-    handleSelectedObjectsChange: {
-        value: function (selectedObjects, oldSelectedObjects){
-            if (!selectedObjects || selectedObjects.length > 0) {
-                this.currentDocument.activeSelection = this.currentDocument.selectedObjects;
-                this.currentDocument.clearSelectedElements();
-            }
-        }
-    },
-
-    handleSelectedElementsChange: {
-        value: function (selectedElements, oldSelectedElements){
-            if (!selectedElements || selectedElements.length > 0) {
-                this.currentDocument.activeSelection = this.currentDocument.selectedElements;
-                this.currentDocument.clearSelectedObjects();
-            }
         }
     },
 

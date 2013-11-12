@@ -25,6 +25,9 @@ exports.ReelDocument = EditingDocument.specialize({
             this.sideData = Object.create(null);
             this.references = new ObjectReferences();
             this.selectedElements = [];
+
+            this.addRangeAtPathChangeListener("selectedObjects", this, "handleSelectedObjectsChange");
+            this.addRangeAtPathChangeListener("selectedElements", this, "handleSelectedElementsChange");
         }
     },
 
@@ -1122,6 +1125,24 @@ exports.ReelDocument = EditingDocument.specialize({
             }
             else if (this.activeSelection === this.selectedObjects){
                 return this.deleteSelectedObject();
+            }
+        }
+    },
+
+    handleSelectedObjectsChange: {
+        value: function (selectedObjects, oldSelectedObjects){
+            if (!selectedObjects || selectedObjects.length > 0) {
+                this.activeSelection = this.selectedObjects;
+                this.clearSelectedElements();
+            }
+        }
+    },
+
+    handleSelectedElementsChange: {
+        value: function (selectedElements, oldSelectedElements){
+            if (!selectedElements || selectedElements.length > 0) {
+                this.activeSelection = this.selectedElements;
+                this.clearSelectedObjects();
             }
         }
     },
