@@ -40,7 +40,13 @@ exports.BindingExplorer = Component.specialize( /** @lends BindingsExplorer# */ 
 
     acceptsDrop: {
         value: function(event) {
-            return event.dataTransfer.types && event.dataTransfer.types.has(MimeTypes.MONTAGE_BINDING);
+            var availableTypes = event.dataTransfer.types,
+                uuid = this._getMontageUUID(availableTypes);
+
+            if (!availableTypes || !availableTypes.has(MimeTypes.MONTAGE_BINDING)) {
+                return false;
+            }
+            return !(uuid && (uuid  === this.templateObject.uuid));
         }
     },
 
@@ -49,6 +55,21 @@ exports.BindingExplorer = Component.specialize( /** @lends BindingsExplorer# */ 
             var addButton = this.element.querySelector("[data-montage-id=addButton]");
 
             return event.dataTransfer.types && event.dataTransfer.types.has(MimeTypes.MONTAGE_BINDING) && event.target === addButton;
+        }
+    },
+
+    _getMontageUUID: {
+        value: function (types) {
+            if (!types) {
+                return false;
+            }
+            var uuid = false;
+            types.forEach(function (type, i) {
+                if (type.startsWith("x-montage-uuid")) {
+                    uuid = type.split("/")[1].toUpperCase();
+                }
+            });
+            return uuid;
         }
     },
 

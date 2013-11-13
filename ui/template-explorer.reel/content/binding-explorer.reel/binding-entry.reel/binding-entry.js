@@ -53,7 +53,9 @@ exports.BindingEntry = Montage.create(Component, /** @lends module:"./binding-en
             event.dataTransfer.effectAllowed = "copyMove";
 
             if (this.targetObject && this.binding) {
-                var bindingModel = Object.create(null);
+                var bindingModel = Object.create(null),
+                    uuid = this.targetObject.uuid,
+                    sourceUuid = "x-montage-uuid/" + uuid;
                 bindingModel.targetPath = this.binding.targetPath;
                 bindingModel.oneway = this.binding.oneway;
                 bindingModel.sourcePath = this.binding.sourcePath;
@@ -65,7 +67,7 @@ exports.BindingEntry = Montage.create(Component, /** @lends module:"./binding-en
                 bindingModel.movedBindingIndex = this.targetObject.bindings.indexOf(this.binding);
 
                 event.dataTransfer.setData(MimeTypes.MONTAGE_BINDING, JSON.stringify(bindingModel));
-                
+                event.dataTransfer.setData(sourceUuid, uuid);
             }
         }
     }
