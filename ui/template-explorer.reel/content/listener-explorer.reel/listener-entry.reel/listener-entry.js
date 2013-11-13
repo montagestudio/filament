@@ -62,7 +62,7 @@ exports.ListenerEntry = Montage.create(Component, /** @lends module:"./listener-
             var listenerModel = Object.create(null),
                 listener = this.listenerInfo.listener,
                 uuid = this.targetObject.uuid,
-                type = "x-montage-uuid/" + uuid;
+                sourceUuid = "x-montage-uuid/" + uuid;
 
             listenerModel.type = this.listenerInfo.type;
             listenerModel.useCapture = this.listenerInfo.useCapture;
@@ -78,7 +78,7 @@ exports.ListenerEntry = Montage.create(Component, /** @lends module:"./listener-
             listenerModel.movedListenerIndex = this.targetObject.listeners.indexOf(this.listenerInfo);
 
             event.dataTransfer.setData(MimeTypes.MONTAGE_LISTENER, JSON.stringify(listenerModel));
-            event.dataTransfer.setData(type, uuid);
+            event.dataTransfer.setData(sourceUuid, uuid);
         }
     }
 

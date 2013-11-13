@@ -38,8 +38,11 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
         }
     },
 
-    getMontageUUID: {
+    _getMontageUUID: {
         value: function (types) {
+            if (!types) {
+                return false;
+            }
             var uuid = false;
             types.forEach(function (type, i) {
                 if (type.startsWith("x-montage-uuid")) {
