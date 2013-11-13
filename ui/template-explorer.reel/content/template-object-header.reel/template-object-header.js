@@ -72,6 +72,7 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
             if (target === referenceProxyElement) {
                 transfer.setData(MimeTypes.SERIALIZATION_OBJECT_LABEL, this.templateObject.label);
                 transfer.setData("text/plain", "@" + this.templateObject.label);
+                evt.dataTransfer.effectAllowed = "copyMove";
             }
         }
     },
