@@ -41,7 +41,7 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
         }
     },
 
-    acceptsDrop: {
+    acceptsInsertionDrop: {
         value: function (evt) {
             return evt.dataTransfer.types &&
                 (
@@ -51,12 +51,25 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
         }
     },
 
+    acceptsMoveDrop: {
+        value: function (evt) {
+            return evt.dataTransfer.types &&
+                (
+                    evt.dataTransfer.types.indexOf(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) !== -1 ||
+                    evt.dataTransfer.types.indexOf(MimeTypes.MONTAGE_TEMPLATE_XPATH) !== -1
+                );
+        }
+    },
+
     handleDragover: {
         enumerable: false,
         value: function (evt) {
-            if (this.acceptsDrop(evt)) {
+            if (this.acceptsInsertionDrop(evt)) {
                 evt.preventDefault();
                 evt.dataTransfer.dropEffect = "copy";
+            } else if (this.acceptsMoveDrop(evt)) {
+                evt.preventDefault();
+                evt.dataTransfer.dropEffect = "move";
             } else {
                 evt.dataTransfer.dropEffect = "none";
             }
@@ -66,7 +79,7 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
     handleDragenter: {
         enumerable: false,
         value: function (evt) {
-            if (this.acceptsDrop(evt)) {
+            if (this.acceptsInsertionDrop(evt)) {
                 this.isDropTarget = true;
             }
         }
@@ -74,7 +87,7 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
 
     handleDragleave: {
         value: function (evt) {
-            if (this.acceptsDrop(evt)) {
+            if (this.acceptsInsertionDrop(evt)) {
                 this.isDropTarget = false;
             }
         }
@@ -86,12 +99,14 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
             evt.stop();
 
             if (evt.dataTransfer.types.indexOf(MimeTypes.HTML_ELEMENT) !== -1) {
+                // insert new element from html string
                 var html = evt.dataTransfer.getData(MimeTypes.HTML_ELEMENT);
                 this.dispatchEventNamed("insertElementAction", true, true, {
                     htmlElement: html
                 });
             } else {
                 // TODO: security issues?
+                // insert new element from
                 var data = evt.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
                     transferObject = JSON.parse(data);
 

@@ -112,8 +112,13 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
 
     acceptsDropAddElement: {
         value: function (evt) {
-            return evt.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 ||
-                evt.dataTransfer.types.indexOf(MimeTypes.HTML_ELEMENT) !== -1;
+            return evt.dataTransfer.types &&
+                (
+                    evt.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 ||
+                    evt.dataTransfer.types.indexOf(MimeTypes.HTML_ELEMENT) !== -1 ||
+                    evt.dataTransfer.types.indexOf(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) !== -1 ||
+                    evt.dataTransfer.types.indexOf(MimeTypes.MONTAGE_TEMPLATE_XPATH) !== -1
+                );
         }
     },
 
