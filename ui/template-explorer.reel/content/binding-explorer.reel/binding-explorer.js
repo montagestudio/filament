@@ -41,7 +41,7 @@ exports.BindingExplorer = Component.specialize( /** @lends BindingsExplorer# */ 
     acceptsDrop: {
         value: function(event) {
             var availableTypes = event.dataTransfer.types,
-                uuid = this.getMontageUUID(availableTypes);
+                uuid = this._getMontageUUID(availableTypes);
 
             if (!availableTypes || !availableTypes.has(MimeTypes.MONTAGE_BINDING)) {
                 return false;

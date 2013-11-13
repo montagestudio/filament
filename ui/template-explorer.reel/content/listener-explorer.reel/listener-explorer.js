@@ -58,7 +58,7 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
             var availableTypes = event.dataTransfer.types,
                 target = event.target,
                 element = this.element,
-                uuid = this.getMontageUUID(availableTypes);
+                uuid = this._getMontageUUID(availableTypes);
             if (!availableTypes || !availableTypes.has(MimeTypes.MONTAGE_LISTENER)) {
                 return false;
             }
