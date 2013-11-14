@@ -1153,8 +1153,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      */
     filesAtUrl: {
         value: function (url) {
-            var path = this.environmentBridge.convertBackendUrlToPath(url);
-            return this.environmentBridge.list(path);
+            return this.environmentBridge.list(url);
         }
     },
 
