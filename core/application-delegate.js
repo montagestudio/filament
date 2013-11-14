@@ -21,8 +21,8 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                     return new exported.LumiereBridge().init("filament-backend");
                 });
             } else {
-                bridgePromise = require.async("core/browser-bridge").then(function (exported) {
-                    return new exported.BrowserBridge().init("filament-backend");
+                bridgePromise = require.async("adaptor/client/core/environment-bridge").then(function (exported) {
+                    return new exported.EnvironmentBridge().init("filament-backend");
                 });
             }
 
