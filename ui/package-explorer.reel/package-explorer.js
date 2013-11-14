@@ -32,6 +32,8 @@ exports.PackageExplorer = Component.specialize({
         value: function () {
             var self = this;
 
+            return;
+
             var viewMenu;
             var items = defaultMenu.items;
             for (var i = 0; i < items.length; i++) {
