@@ -1,6 +1,4 @@
 /* global global,unescape,module,exports:true */
-exports = module.exports = Object.create(require("../../firefly/inject/adaptor/server/backend"));
-
 var minitCreate = require("minit/lib/create").create,
     Q = require("q"),
     QFS = require("q-io/fs"),
