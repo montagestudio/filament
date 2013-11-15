@@ -1,7 +1,7 @@
 
 /* Window size: ~ 900x540 */
 
-.Welcome {
+.Projects {
     display: -webkit-flex;
     height: 100%;
     padding: 40px;
@@ -46,7 +46,7 @@
     width: 200px;
     height: 200px;
     /* Using background image to fix Flexbox + Image resize issue. */
-    background: url(../../../assets/img/logo.png) no-repeat center;    
+    background: url(../../../assets/img/logo.png) no-repeat center;
     background-size: auto 100%;
 }
 
@@ -150,7 +150,7 @@
 }
 
 
-/* New */ 
+/* New */
 
 .Action-button--new {
     border-color: hsl(210,100%,56%);
@@ -170,7 +170,7 @@
 }
 
 
-/* Open */ 
+/* Open */
 
 .Action-button--open {
     border-color: hsl(170,80%,40%);
@@ -193,7 +193,7 @@
 /* List --------------------------------- */
 
 .isFirstRun .History {
-    display: none;
+    /*display: none;*/
 }
 
 .History {
@@ -219,7 +219,7 @@
     border-top: 1px solid hsla(0, 0%, 100%, .5);
     border-bottom: 1px solid hsla(0, 0%, 0%, .1);
     background-color: hsla(0,0%,100%,.6);
-    cursor: pointer;    
+    cursor: pointer;
     display: block;
     text-overflow: ellipsis;
     overflow: hidden;

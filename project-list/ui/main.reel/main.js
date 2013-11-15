@@ -1,6 +1,8 @@
 /* global lumieres */
-var Montage = require("montage/core/core").Montage,
-    Component = require("montage/ui/component").Component;
+var Montage = require("montage/core/core").Montage;
+var Component = require("montage/ui/component").Component;
+var GithubApi = require("adaptor/client/core/github-api");
+var Promise = require("montage/core/promise").Promise;
 
 var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
@@ -41,9 +43,18 @@ exports.Main = Montage.create(Component, {
 
                 });
             } else {
-                require.async("core/browser-bridge").then(function (exported) {
+                require.async("adaptor/client/core/browser-bridge").then(function (exported) {
                     self.environmentBridge = exported.BrowserBridge.create();
+
                 });
+                AuthToken().then(function (token) {
+                    // get repo list from github
+                    this._githubApi = new GithubApi(token);
+                    this._githubApi.listRepositories("francoisfrisch").then(function (repos) {
+                        debugger
+                        this.recentDocuments = repos;
+                    });
+                })
             }
         }
     },
@@ -94,3 +105,27 @@ exports.Main = Montage.create(Component, {
     }
 
 });
+
+function AuthToken() {
+    var pendingTimeout;
+    var timeout = 500;
+    var response = Promise.defer();
+    var request = new XMLHttpRequest();
+    request.open("GET", "/auth/github/token", true);
+    request.onreadystatechange = function () {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                if(pendingTimeout) {
+                    clearTimeout(pendingTimeout);
+                }
+                response.resolve(request.responseText);
+            } else {
+                response.reject("HTTP " + request.status + " for /auth/token");
+            }
+        }
+    };
+    pendingTimeout = setTimeout(response.reject, timeout - 50);
+    request.send();
+    return response.promise.timeout(timeout);
+
+}

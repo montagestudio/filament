@@ -39,7 +39,7 @@
                     }
                 ]
             },
-            
+
             "openAppButton": {
                 "prototype": "matte/ui/button.reel",
                 "properties": {
@@ -102,11 +102,11 @@
             },
 
             "historyItemConverter": {
-                "prototype": "welcome/core/history-item-converter"
+                "prototype": "../../core/history-item-converter"
             },
 
             "historyListItem": {
-                "prototype": "welcome/ui/history-list-item.reel",
+                "prototype": "../history-list-item.reel",
                 "properties": {
                     "element": {"#": "historyListItem"}
                 },
@@ -124,7 +124,7 @@
 </head>
 <body>
 
-    <div data-montage-id="main" class="main Welcome">
+    <div data-montage-id="main" class="main Projects">
 
         <section class="Intro">
             <div class="Intro-logo"></div>
@@ -133,7 +133,7 @@
         </section>
 
         <section class="Launcher">
-            
+
             <section class="Launcher-section Action">
                 <button data-montage-id="newAppButton" class="Action-button Action-button--new"></button>
                 <button data-montage-id="openAppButton" class="Action-button Action-button--open"></button>
@@ -145,10 +145,10 @@
                     <li class="History-list-item" data-montage-id="historyListItem"></li>
                 </ul>
             </section>
-            
+
         </section>
-        
-        
+
+
 
     </div>
 
