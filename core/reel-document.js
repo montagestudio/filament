@@ -1844,10 +1844,10 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     /**
-     * Move a given nodeProxy to become the previousSibling of a given node
+     * Move a nodeProxy to become the previous sibling of a given node
      *
-     * @param {NodeProxy} nodeProxy The node to be moved
-     * @param {NodeProxy} nextSiblingProxy The node which will become the nextSibling
+     * @param {NodeProxy} nodeProxy The node to move
+     * @param {NodeProxy} nextSiblingProxy The node before wich to move
      * @return {NodeProxy} The node proxy that has been moved
      */
     moveTemplateNodeBeforeNode: {
@@ -1866,6 +1866,12 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    /**
+     * Move a nodeProxy to be the next sibling of the a given node
+     * @param {nodeProxy} nodeProxy The node to move
+     * @param {NodeProxy} previousSiblingProxy The node after wich to move
+     * @return {NodeProxy} The node proxy that has been moved
+     */
     moveTemplateNodeAfterNode: {
         value: function (nodeProxy, previousSiblingProxy) {
             var oldNextSibling = nodeProxy.nextSibling,
@@ -1884,6 +1890,12 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    /**
+     * Move a nodeProxy to be the first child of the a given node
+     * @param {nodeProxy} nodeProxy The node to move
+     * @param {NodeProxy} previousSiblingProxy The node to become the parent node
+     * @return {NodeProxy} The node proxy that has been moved
+     */
     moveTemplateNodeChildNode: {
         value: function (nodeProxy, parentNode) {
             var oldParentNode = nodeProxy.parentNode,
