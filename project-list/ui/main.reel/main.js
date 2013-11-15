@@ -69,6 +69,12 @@ exports.Main = Montage.create(Component, {
                 self.totalDocuments = repos.length;
                 self.processedDocuments = 0;
 
+                // HACK: workaround for progress not being able to have max = 0
+                // it's set as 1. (MON-402)
+                if (self.totalDocuments == 0) {
+                    self.processedDocuments = 1;
+                }
+
                 repos.forEach(function(repo) {
                     return self._isMontageRepository(repo)
                     .then(function(isMontageRepository) {
