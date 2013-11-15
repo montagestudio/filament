@@ -65,7 +65,8 @@ exports.Main = Montage.create(Component, {
 
             // get repo list from github
             this._githubApi = new GithubApi(this._accessToken);
-            return this._githubApi.listRepositories().then(function (repos) {
+            return this._githubApi.listRepositories({type: "public"})
+            .then(function (repos) {
                 self.totalDocuments = repos.length;
                 self.processedDocuments = 0;
 
