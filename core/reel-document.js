@@ -1831,6 +1831,36 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     /**
+     * Move a given nodeProxy to become the previousSibling of a given node
+     *
+     * @param {NodeProxy} nodeProxy The node to be moved
+     * @param {NodeProxy} nextSiblingProxy The node which will become the nextSibling
+     * @return {NodeProxy} The node proxy that has been moved
+     */
+    moveTemplateNodeBeforeNode: {
+        value: function (nodeProxy, nextSiblingProxy) {
+            var oldNextSibling = nodeProxy.nextSibling;
+            nodeProxy.parentNode.removeChild(nodeProxy);
+            nextSiblingProxy.parentNode.insertBefore(nodeProxy, nextSiblingProxy);
+
+            if (oldNextSibling) {
+                this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeBeforeNode, this, nodeProxy, oldNextSibling]));
+            } else {
+                this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeChildNode, this, nodeProxy, nodeProxy.parentNode]));
+            }
+            this.editor.refresh();
+
+            return nodeProxy;
+        }
+    },
+
+    moveTemplateNodeChildNode: {
+        value: function (nodeProxy, parentNode) {
+            return nodeProxy;
+        }
+    },
+
+    /**
      * Insert the specified nodeProxy after the specified sibling proxy
      *
      * @param {NodeProxy} nodeProxy The nodeProxy to insert

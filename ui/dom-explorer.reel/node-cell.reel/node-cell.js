@@ -268,6 +268,37 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
+    handleMoveTemplate: {
+        value: function (evt) {
+            var nodeInfo = this.nodeInfo,
+                editingDocument = nodeInfo._editingDocument,
+                detail = evt.detail,
+                montageId = detail.montageId,
+                xpath = detail.xpath,
+                nodeProxy;
+
+            if (montageId) {
+                nodeProxy = editingDocument.nodeProxyForMontageId(montageId);
+            } else if (xpath) {
+                var element = editingDocument.htmlDocument.evaluate(
+                        xpath,
+                        editingDocument.htmlDocument,
+                        null,
+                        XPathResult.FIRST_ORDERED_NODE_TYPE,
+                        null
+                    ).singleNodeValue;
+                nodeProxy = editingDocument.nodeProxyForNode(element);
+            } else {
+                throw new Error("Can not find the node to move");
+            }
+
+            this.dispatchEventNamed("moveBeforeNode", true, true, {
+                nextSibling: this.nodeInfo,
+                nodeProxy: nodeProxy
+            });
+        }
+    },
+
     handleSelectComponentPress: {
         value: function (evt) {
             this.dispatchEventNamed("selectComponent", true, true, {
