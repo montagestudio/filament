@@ -2,7 +2,9 @@
 var Montage = require("montage/core/core").Montage;
 var Component = require("montage/ui/component").Component;
 var GithubApi = require("adaptor/client/core/github-api");
+var GithubFs = require("adaptor/client/core/fs-github");
 var Promise = require("montage/core/promise").Promise;
+var Q = require("q");
 
 var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
@@ -48,13 +50,60 @@ exports.Main = Montage.create(Component, {
 
                 });
                 AuthToken().then(function (token) {
-                    // get repo list from github
-                    self._githubApi = new GithubApi(token);
-                    self._githubApi.listRepositories().then(function (repos) {
-                        self.recentDocuments = repos;
-                    });
-                })
+                    self._accessToken = token;
+                    self._updateUserRepositories(self.recentDocuments = []);
+                });
             }
+        }
+    },
+
+    _updateUserRepositories: {
+        value: function(userRepositories) {
+            var self = this;
+
+            userRepositories.clear();
+
+            // get repo list from github
+            this._githubApi = new GithubApi(this._accessToken);
+            return this._githubApi.listRepositories().then(function (repos) {
+                repos.forEach(function(repo) {
+                    return self._isMontageRepository(repo)
+                    .then(function(isMontageRepository) {
+                        if (isMontageRepository) {
+                            repo.pushed_at = +new Date(repo.pushed_at);
+                            userRepositories.push(repo);
+                        }
+                    }).done();
+                });
+            });
+        }
+    },
+
+    _isMontageRepository: {
+        value: function(repo) {
+            var githubFs = new GithubFs(repo.owner.login, repo.name, this._accessToken);
+
+            return githubFs.exists("/package.json").then(function(exists) {
+                if (exists) {
+                    return githubFs.read("/package.json").then(function(content) {
+                        try {
+                            var packageDescription = JSON.parse(content);
+                        } catch(ex) {
+                            // not a JSON file
+                            return false;
+                        }
+
+                        if (packageDescription.dependencies &&
+                            "montage" in packageDescription.dependencies) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            });
         }
     },
 

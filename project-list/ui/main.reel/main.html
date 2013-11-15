@@ -97,7 +97,8 @@
                     "element": {"#": "historyList"}
                 },
                 "bindings": {
-                    "content": {"<-": "@owner.recentDocuments"}
+                    "content": {"<-": "@owner.recentDocuments"},
+                    "contentController.sortPath": {"<-": "'-pushed_at'"}
                 }
             },
 
