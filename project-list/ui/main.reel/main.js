@@ -49,10 +49,9 @@ exports.Main = Montage.create(Component, {
                 });
                 AuthToken().then(function (token) {
                     // get repo list from github
-                    this._githubApi = new GithubApi(token);
-                    this._githubApi.listRepositories("francoisfrisch").then(function (repos) {
-                        debugger
-                        this.recentDocuments = repos;
+                    self._githubApi = new GithubApi(token);
+                    self._githubApi.listRepositories().then(function (repos) {
+                        self.recentDocuments = repos;
                     });
                 })
             }
