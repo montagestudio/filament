@@ -91,6 +91,17 @@
                 }
             },
 
+            "historyProgress": {
+                "prototype": "matte/ui/progress.reel",
+                "properties": {
+                    "element": {"#": "historyProgress"}
+                },
+                "bindings": {
+                    "max": {"<-": "@owner.totalDocuments"},
+                    "value": {"<-": "@owner.processedDocuments"}
+                }
+            },
+
             "historyList": {
                 "prototype": "montage/ui/repetition.reel",
                 "properties": {
@@ -141,6 +152,7 @@
 
             <section class="Launcher-section History">
                 <h2 class="Launcher-title" data-montage-id="recentTitle">Recent Projects</h2>
+                <div data-montage-id="historyProgress" class="History-progress"></div>
                 <ul class="History-list" data-montage-id="historyList">
                     <li class="History-list-item" data-montage-id="historyListItem"></li>
                 </ul>

@@ -202,6 +202,11 @@
     -webkit-flex-direction: column;
 }
 
+.History-progress {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
 .History-list {
     position: relative;
     margin: 0;

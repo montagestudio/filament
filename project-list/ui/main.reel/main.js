@@ -66,6 +66,9 @@ exports.Main = Montage.create(Component, {
             // get repo list from github
             this._githubApi = new GithubApi(this._accessToken);
             return this._githubApi.listRepositories().then(function (repos) {
+                self.totalDocuments = repos.length;
+                self.processedDocuments = 0;
+
                 repos.forEach(function(repo) {
                     return self._isMontageRepository(repo)
                     .then(function(isMontageRepository) {
@@ -73,6 +76,7 @@ exports.Main = Montage.create(Component, {
                             repo.pushed_at = +new Date(repo.pushed_at);
                             userRepositories.push(repo);
                         }
+                        self.processedDocuments++;
                     }).done();
                 });
             });
