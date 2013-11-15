@@ -77,9 +77,9 @@ exports.Main = Montage.create(Component, {
                 }
 
                 repos.forEach(function(repo) {
-                    return self._isMontageRepository(repo)
-                    .then(function(isMontageRepository) {
-                        if (isMontageRepository) {
+                    self._isValidRepository(repo)
+                    .then(function(isValidRepository) {
+                        if (isValidRepository) {
                             repo.pushed_at = +new Date(repo.pushed_at);
                             userRepositories.push(repo);
                         }
@@ -90,6 +90,25 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    /**
+     * A repository is valid if it's a Montage repository or an empty
+     * repository.
+     */
+    _isValidRepository: {
+        value: function(repo) {
+            var self = this;
+
+            return this._isMontageRepository(repo)
+            .then(function(value) {
+                return value || self._isEmptyRepository(repo);
+            });
+        }
+    },
+
+    /**
+     * A Montage repository as a package.json and declares a dependency on
+     * montage.
+     */
     _isMontageRepository: {
         value: function(repo) {
             var githubFs = new GithubFs(repo.owner.login, repo.name, this._accessToken);
@@ -114,6 +133,18 @@ exports.Main = Montage.create(Component, {
                 } else {
                     return false;
                 }
+            });
+        }
+    },
+
+    /**
+     * An empty repository doesn't have branches.
+     */
+    _isEmptyRepository: {
+        value: function(repo) {
+            return this._githubApi.listBranches(repo.owner.login, repo.name)
+            .then(function(branches) {
+                return branches.length === 0;
             });
         }
     },
