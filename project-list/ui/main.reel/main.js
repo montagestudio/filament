@@ -146,9 +146,29 @@ exports.Main = Montage.create(Component, {
 
     handleNewAppButtonAction: {
         value: function () {
-            this.environmentBridge.openNewApplication().then(function () {
-                window.close();
-            }).done();
+            this.templateObjects.newAppFormCondition.condition = true;
+        }
+    },
+
+    handleCancelNewAppButtonAction: {
+        value: function () {
+            this.templateObjects.newAppFormCondition.condition = false;
+        }
+    },
+
+    handleCreateNewAppButtonAction: {
+        value: function () {
+            var name = this.templateObjects.newAppName.value,
+                description = this.templateObjects.newAppDescription.value,
+                self = this;
+
+            this._githubApi.createRepository(name, {
+                description: description
+            }).then(function(repo) {
+                repo.pushed_at = +new Date(repo.pushed_at);
+                self.recentDocuments.push(repo);
+                self.templateObjects.newAppFormCondition.condition = false;
+            });
         }
     },
 

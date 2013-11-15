@@ -110,7 +110,7 @@
 
 /* Action --------------------------------- */
 
-.Launcher-section.Action {
+.Launcher-section .Action {
     display: -webkit-flex;
     padding: 15px 7px;
 }
@@ -189,6 +189,11 @@
     background-image: url(../../assets/images/open.svg);
 }
 
+/* Form Fields --------------------------------- */
+
+.Action-formField {
+    vertical-align: top;
+}
 
 /* List --------------------------------- */
 
