@@ -248,6 +248,26 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
             this.editingDocument.moveTemplateNodeBeforeNode(nodeProxy, nextSibling);
         }
+    },
+
+    handleMoveAfterNode: {
+        value: function (evt) {
+            var detail = evt.detail,
+                nodeProxy = detail.nodeProxy,
+                previousSibling = detail.previousSibling;
+
+            this.editingDocument.moveTemplateNodeAfterNode(nodeProxy, previousSibling);
+        }
+    },
+
+    handleMoveChildNode: {
+        value: function (evt) {
+            var detail = evt.detail,
+                nodeProxy = detail.nodeProxy,
+                parentNode = detail.parentNode;
+
+            this.editingDocument.moveTemplateNodeChildNode(nodeProxy, parentNode);
+        }
     }
 
 });

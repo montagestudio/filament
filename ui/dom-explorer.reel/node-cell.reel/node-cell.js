@@ -275,27 +275,33 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                 detail = evt.detail,
                 montageId = detail.montageId,
                 xpath = detail.xpath,
-                nodeProxy;
+                dispatchedDetail = {},
+                eventName;
 
             if (montageId) {
-                nodeProxy = editingDocument.nodeProxyForMontageId(montageId);
+                dispatchedDetail.nodeProxy = editingDocument.nodeProxyForMontageId(montageId);
             } else if (xpath) {
-                var element = editingDocument.htmlDocument.evaluate(
-                        xpath,
-                        editingDocument.htmlDocument,
-                        null,
-                        XPathResult.FIRST_ORDERED_NODE_TYPE,
-                        null
-                    ).singleNodeValue;
-                nodeProxy = editingDocument.nodeProxyForNode(element);
+                dispatchedDetail.nodeProxy = editingDocument.nodeProxyForXPath(xpath);
             } else {
                 throw new Error("Can not find the node to move");
             }
 
-            this.dispatchEventNamed("moveBeforeNode", true, true, {
-                nextSibling: this.nodeInfo,
-                nodeProxy: nodeProxy
-            });
+            switch (evt._target.identifier) {
+                case "addElementBefore":
+                    dispatchedDetail.nextSibling = this.nodeInfo;
+                    eventName = "moveBeforeNode";
+                    break;
+                case "addElementAfter":
+                    dispatchedDetail.previousSibling = this.nodeInfo;
+                    eventName = "moveAfterNode";
+                    break;
+                case "addChildElement":
+                    dispatchedDetail.parentNode = this.nodeInfo;
+                    eventName = "moveChildNode";
+                    break;
+            }
+
+            this.dispatchEventNamed(eventName, true, true, dispatchedDetail);
         }
     },
 

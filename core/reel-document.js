@@ -14,7 +14,8 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     URL = require("core/node/url"),
     PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint,
     EventBlueprint = require("montage/core/meta/event-blueprint").EventBlueprint,
-    ObjectReferences = require("core/object-references").ObjectReferences;
+    ObjectReferences = require("core/object-references").ObjectReferences,
+    getElementXPath = require("palette/core/xpath").getElementXPath;
 
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = EditingDocument.specialize({
@@ -335,6 +336,19 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return foundNode;
+        }
+    },
+
+    nodeProxyForXPath: {
+        value: function (xpath) {
+            var element = this.htmlDocument.evaluate(
+                        xpath,
+                        this.htmlDocument,
+                        null,
+                        XPathResult.FIRST_ORDERED_NODE_TYPE,
+                        null
+                    ).singleNodeValue;
+            return this.nodeProxyForNode(element);
         }
     },
 
@@ -1849,13 +1863,42 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeChildNode, this, nodeProxy, nodeProxy.parentNode]));
             }
             this.editor.refresh();
+            return nodeProxy;
+        }
+    },
 
+    moveTemplateNodeAfterNode: {
+        value: function (nodeProxy, previousSiblingProxy) {
+            var oldNextSibling = nodeProxy.nextSibling,
+                parentNode = nodeProxy.parentNode;
+            parentNode.removeChild(nodeProxy);
+            previousSiblingProxy.parentNode.insertBefore(nodeProxy, previousSiblingProxy.nextSibling);
+
+            if (oldNextSibling) {
+                this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeBeforeNode, this, nodeProxy, oldNextSibling]));
+            } else {
+                this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeChildNode, this, nodeProxy, parentNode]));
+            }
+
+            this.editor.refresh();
             return nodeProxy;
         }
     },
 
     moveTemplateNodeChildNode: {
         value: function (nodeProxy, parentNode) {
+            var oldParentNode = nodeProxy.parentNode,
+                oldNextSibling = nodeProxy.nextSibling;
+            oldParentNode.removeChild(nodeProxy);
+            parentNode.appendChild(nodeProxy);
+
+            if (oldNextSibling) {
+                this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeBeforeNode, this, nodeProxy, oldNextSibling]));
+            } else {
+                this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeChildNode, this, nodeProxy, parentNode]));
+            }
+
+            this.editor.refresh();
             return nodeProxy;
         }
     },
