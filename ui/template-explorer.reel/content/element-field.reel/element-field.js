@@ -80,16 +80,8 @@ exports.ElementField = Component.specialize(/** @lends ElementField# */ {
 
                 if (!montageId) {
                     var xpath = event.dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_XPATH);
-                    // get element from template
-                    var element = editingDocument.htmlDocument.evaluate(
-                        xpath,
-                        editingDocument.htmlDocument,
-                        null,
-                        XPathResult.FIRST_ORDERED_NODE_TYPE,
-                        null
-                    ).singleNodeValue;
                     // get node proxy
-                    var nodeProxy = editingDocument.nodeProxyForNode(element);
+                    var nodeProxy = editingDocument.nodeProxyForXPath(xpath);
                     // generate montageId
                     montageId = editingDocument.createMontageIdForProxy(templateObject.label, templateObject.moduleId, nodeProxy);
                 }

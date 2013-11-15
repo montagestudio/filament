@@ -287,18 +287,18 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             }
 
             switch (evt._target.identifier) {
-                case "addElementBefore":
-                    dispatchedDetail.nextSibling = this.nodeInfo;
-                    eventName = "moveBeforeNode";
-                    break;
-                case "addElementAfter":
-                    dispatchedDetail.previousSibling = this.nodeInfo;
-                    eventName = "moveAfterNode";
-                    break;
-                case "addChildElement":
-                    dispatchedDetail.parentNode = this.nodeInfo;
-                    eventName = "moveChildNode";
-                    break;
+            case "addElementBefore":
+                dispatchedDetail.nextSibling = this.nodeInfo;
+                eventName = "moveBeforeNode";
+                break;
+            case "addElementAfter":
+                dispatchedDetail.previousSibling = this.nodeInfo;
+                eventName = "moveAfterNode";
+                break;
+            case "addChildElement":
+                dispatchedDetail.parentNode = this.nodeInfo;
+                eventName = "moveChildNode";
+                break;
             }
 
             this.dispatchEventNamed(eventName, true, true, dispatchedDetail);

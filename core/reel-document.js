@@ -14,8 +14,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     URL = require("core/node/url"),
     PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint,
     EventBlueprint = require("montage/core/meta/event-blueprint").EventBlueprint,
-    ObjectReferences = require("core/object-references").ObjectReferences,
-    getElementXPath = require("palette/core/xpath").getElementXPath;
+    ObjectReferences = require("core/object-references").ObjectReferences;
 
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = EditingDocument.specialize({
