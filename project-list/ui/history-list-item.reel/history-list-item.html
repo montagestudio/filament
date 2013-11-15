@@ -25,10 +25,6 @@
                 ]
             },
 
-            "historyItemNameConverter": {
-                "prototype": "welcome/core/history-item-name-converter"
-            },
-
             "documentName": {
                 "prototype": "montage/ui/text.reel",
                 "properties": {
@@ -36,8 +32,7 @@
                 },
                 "bindings": {
                     "value": {
-                        "<-": "@owner.historyItem.name",
-                        "converter": {"@": "historyItemNameConverter"}
+                        "<-": "@owner.repository.name"
                     }
                 }
             }

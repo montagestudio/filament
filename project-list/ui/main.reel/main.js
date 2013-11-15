@@ -1,12 +1,8 @@
 /* global lumieres */
 var Montage = require("montage/core/core").Montage;
 var Component = require("montage/ui/component").Component;
-var GithubApi = require("adaptor/client/core/github-api");
-var GithubFs = require("adaptor/client/core/fs-github");
-var Promise = require("montage/core/promise").Promise;
-var Q = require("q");
+var repositoriesController = require("../../core/repositories-controller").repositoriesController;
 
-var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
 exports.Main = Montage.create(Component, {
 
@@ -27,114 +23,27 @@ exports.Main = Montage.create(Component, {
             this.super();
 
             var self = this;
-            if (IS_IN_LUMIERES) {
-                this.version = lumieres.version;
+            require.async("adaptor/client/core/browser-bridge").then(function (exported) {
+                self.environmentBridge = exported.BrowserBridge.create();
 
-                this.defineBinding("recentDocuments", {
-                    "<-": "recentDocuments",
-                    source: lumieres
-                });
-
-                require.async("adaptor/client/core/lumieres-bridge").then(function (exported) {
-                    self.environmentBridge = new exported.LumiereBridge().init("filament-backend");
-                    self.environmentBridge.userPreferences.then(function (prefs) {
-                        self.isFirstRun = prefs.firstRun;
-                        //TODO I don't want firstrun to be set-able as an API, but this feels a little weird
-                        self.needsDraw = true;
-                    });
-
-                });
-            } else {
-                require.async("adaptor/client/core/browser-bridge").then(function (exported) {
-                    self.environmentBridge = exported.BrowserBridge.create();
-
-                });
-                AuthToken().then(function (token) {
-                    self._accessToken = token;
-                    self._updateUserRepositories(self.recentDocuments = []);
-                });
-            }
+            });
+            this.templateObjects = {
+                repositoriesController: repositoriesController
+            };
         }
     },
 
-    _updateUserRepositories: {
-        value: function(userRepositories) {
-            var self = this;
+    templateObjects: {
+        value: null
+    },
 
-            userRepositories.clear();
-
-            // get repo list from github
-            this._githubApi = new GithubApi(this._accessToken);
-            return this._githubApi.listRepositories({type: "public"})
-            .then(function (repos) {
-                self.totalDocuments = repos.length;
-                self.processedDocuments = 0;
-
-                // HACK: workaround for progress not being able to have max = 0
-                // it's set as 1. (MON-402)
-                if (self.totalDocuments == 0) {
-                    self.processedDocuments = 1;
-                }
-
-                repos.forEach(function(repo) {
-                    self._isValidRepository(repo)
-                    .then(function(isValidRepository) {
-                        if (isValidRepository) {
-                            repo.pushed_at = +new Date(repo.pushed_at);
-                            userRepositories.push(repo);
-                        }
-                        self.processedDocuments++;
-                    }).done();
-                });
-            });
+    templateDidLoad: {
+        value: function() {
         }
     },
 
-    /**
-     * A repository is valid if it's a Montage repository or an empty
-     * repository.
-     */
-    _isValidRepository: {
-        value: function(repo) {
-            var self = this;
-
-            return this._isMontageRepository(repo)
-            .then(function(value) {
-                return value || self._isEmptyRepository(repo);
-            });
-        }
-    },
-
-    /**
-     * A Montage repository as a package.json and declares a dependency on
-     * montage.
-     */
-    _isMontageRepository: {
-        value: function(repo) {
-            var githubFs = new GithubFs(repo.owner.login, repo.name, this._accessToken);
-
-            return githubFs.exists("/package.json").then(function(exists) {
-                if (exists) {
-                    return githubFs.read("/package.json").then(function(content) {
-                        try {
-                            var packageDescription = JSON.parse(content);
-                        } catch(ex) {
-                            // not a JSON file
-                            return false;
-                        }
-
-                        if (packageDescription.dependencies &&
-                            "montage" in packageDescription.dependencies) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    });
-                } else {
-                    return false;
-                }
-            });
-        }
+    radioButtonController: {
+        value: null
     },
 
     /**
@@ -215,27 +124,3 @@ exports.Main = Montage.create(Component, {
     }
 
 });
-
-function AuthToken() {
-    var pendingTimeout;
-    var timeout = 500;
-    var response = Promise.defer();
-    var request = new XMLHttpRequest();
-    request.open("GET", "/auth/github/token", true);
-    request.onreadystatechange = function () {
-        if (request.readyState === 4) {
-            if (request.status === 200) {
-                if(pendingTimeout) {
-                    clearTimeout(pendingTimeout);
-                }
-                response.resolve(request.responseText);
-            } else {
-                response.reject("HTTP " + request.status + " for /auth/token");
-            }
-        }
-    };
-    pendingTimeout = setTimeout(response.reject, timeout - 50);
-    request.send();
-    return response.promise.timeout(timeout);
-
-}

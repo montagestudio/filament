@@ -3,15 +3,17 @@ var Montage = require("montage/core/core").Montage,
 
 exports.HistoryListItem = Montage.create(Component, {
 
-    historyItem: {
+    repository: {
+        value: null
+    },
+
+    repositoriesController: {
         value: null
     },
 
     handlePress: {
         value: function (evt) {
-            this.dispatchEventNamed("openDocument", true, true, {
-                url: this.historyItem.url
-            });
+            this.repositoriesController.open(this.repository);
         }
     }
 
