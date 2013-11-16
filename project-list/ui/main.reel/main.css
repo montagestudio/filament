@@ -102,13 +102,11 @@
 
 .Launcher-title {
     margin: 0 0 15px 0;
-    padding-bottom: .2em;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: normal;
     color: hsl(0, 0%, 50%);
     text-shadow: 0 1px 0 hsla(0, 0%, 100%, .3);
     text-align: center;
-    border-bottom: 1px dotted hsl(0, 0%, 70%);
 }
 
 /* Action --------------------------------- */
@@ -245,8 +243,9 @@
 }
 
 .History-filter-item {
-    margin: 0 5px;
     display: inline-block;
+    margin: 0 5px;
+    font-size: .9em;
 }
 
 
@@ -308,4 +307,28 @@
 .History .matte-RadioButton:focus {
     border-color: hsl(210,100%,70%);
     background-color: hsla(0,0%,100%,1);
+}
+
+/* User --------------------------------- */
+
+.User {
+    display: block;
+    margin: 15px 0 0 0;
+    text-align: center;
+    text-decoration: none;
+}
+
+.User-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+.User-name {
+    margin-left: 10px;
+    line-height: 24px;
+    font-size: 16px;
+    vertical-align: middle;
+    color: hsl(0, 0%, 50%);
 }
