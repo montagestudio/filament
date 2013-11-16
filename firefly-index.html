@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+    <title>Montage Builder</title>
+    <meta charset="utf-8">
+
+    <base href="/app/">
+
+    <link rel="shortcut icon" href="assets/img/favicon.ico">
+
+    <link href="assets/styles/firefly.css" rel="stylesheet">
+    <link href="assets/styles/filament.css" rel="stylesheet">
+    <link href="assets/styles/bootstrapping.css" rel="stylesheet">
+
+    <script src="node_modules/montage/montage.js" data-package="/app"></script>
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "prototype": "montage/ui/loader.reel",
+                "properties": {
+                    "element": {"#": "loader"}
+                },
+                "listeners": [
+                    {
+                        "type": "componentLoaded",
+                        "listener": {"@": "applicationDelegate"}
+                    }
+                ]
+            },
+
+            "toolbar": {
+                "prototype": "adaptor/client/ui/toolbar.reel",
+                "properties": {
+                    "element": {"#": "toolbar"}
+                }
+            },
+
+            "applicationDelegate": {
+                "prototype": "core/application-delegate"
+            },
+
+            "application": {
+                "prototype": "montage/core/application",
+                "properties": {
+                    "delegate": {"@": "applicationDelegate"}
+                }
+            }
+
+        }
+    </script>
+
+</head>
+<body class="Filament">
+<div data-montage-id="toolbar"></div>
+<div class="LoaderWrapper" data-montage-id="loader">
+    <div class="Loader">
+        <div class="Loader-cube"></div>
+        <div class="Loader-cube"></div>
+        <div class="Loader-cube"></div>
+    </div>
+</div>
+</body>
+</html>
