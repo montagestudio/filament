@@ -29,11 +29,10 @@ describe("filament backend", function () {
 
             filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
                 requires: {
-                    "q-io/fs": mockFS,
                     "adaptor/server/backend": {}
                 },
                 globals: {clientPath: "/root"}
-            });
+            })(mockFS);
 
         });
 
@@ -68,14 +67,13 @@ describe("filament backend", function () {
 
             filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
                 requires: {
-                    "q-io/fs": mockFS,
                     "minit/lib/create": {
                         create: minitCreateSpy
                     },
                     "adaptor/server/backend": {}
                 },
                 globals: {clientPath: "/root"}
-            });
+            })(mockFS);
 
             filamentBackend.setup(false, {
                 application: Q({
@@ -125,14 +123,13 @@ describe("filament backend", function () {
 
             filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
                 requires: {
-                    "q-io/fs": mockFS,
                     "minit/lib/create": {
                         create: minitCreateSpy
                     },
                     "adaptor/server/backend": {}
                 },
                 globals: {clientPath: "/root"}
-            });
+            })(mockFS);
         });
 
         it("calls minit create with with 'application' template", function () {
@@ -185,14 +182,13 @@ describe("filament backend", function () {
 
             filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
                 requires: {
-                    "q-io/fs": mockFS,
                     "minit/lib/create": {
                         create: minitCreateSpy
                     },
                     "adaptor/server/backend": {}
                 },
                 globals: {clientPath: "/root"}
-            });
+            })(mockFS);
         });
 
         it("calls minit create with with 'module' template", function () {
