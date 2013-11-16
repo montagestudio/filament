@@ -46,18 +46,6 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-    /**
-     * An empty repository doesn't have branches.
-     */
-    _isEmptyRepository: {
-        value: function(repo) {
-            return this._githubApi.listBranches(repo.owner.login, repo.name)
-            .then(function(branches) {
-                return branches.length === 0;
-            });
-        }
-    },
-
     //TODO not show ui until we have an environment bridge
     //This would be a good case of the whole "custom loading scenario" idea
     environmentBridge: {
@@ -103,13 +91,11 @@ exports.Main = Montage.create(Component, {
                 description = this.templateObjects.newAppDescription.value,
                 self = this;
 
-            this._githubApi.createRepository(name, {
+            this.templateObjects.repositoriesController.createRepository(name, {
                 description: description
-            }).then(function(repo) {
-                repo.pushed_at = +new Date(repo.pushed_at);
-                self.recentDocuments.push(repo);
+            }).then(function() {
                 self.templateObjects.newAppFormCondition.condition = false;
-            });
+            }).done();
         }
     },
 

@@ -47,10 +47,23 @@ var RepositoriesController = Montage.specialize({
         }
     },
 
+    createRepository: {
+        value: function(name, description) {
+            var self = this;
+
+            return this._githubApi.then(function(githubApi) {
+                return githubApi.createRepository(name, {
+                    description: description
+                }).then(function(repo) {
+                    repo.pushed_at = +new Date(repo.pushed_at);
+                    self.ownedRepositoriesContent.content.push(repo);
+                });
+            });
+        }
+    },
 
     _getListOfRepositories: {
         value: function() {
-            var self = this;
             if (this.selectedGroup === this.recent) {
                 this.contentController = this.recentRepositoriesContent;
             } else if (this.selectedGroup === this.owned) {
