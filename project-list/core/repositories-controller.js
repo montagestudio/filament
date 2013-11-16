@@ -52,9 +52,8 @@ var RepositoriesController = Montage.specialize({
             var self = this;
 
             return this._githubApi.then(function(githubApi) {
-                return githubApi.createRepository(name, {
-                    description: description
-                }).then(function(repo) {
+                return githubApi.createRepository(name, description)
+                .then(function(repo) {
                     repo.pushed_at = +new Date(repo.pushed_at);
                     self.ownedRepositoriesContent.content.push(repo);
                 });
