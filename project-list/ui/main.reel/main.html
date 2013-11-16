@@ -5,6 +5,7 @@
     <meta charset="utf-8">
 
     <link href="main.css" rel="stylesheet" />
+    <link href="/assets/styles/filament-matte.css" rel="stylesheet" />
 
     <script type="text/montage-serialization">
         {
@@ -236,15 +237,17 @@
                 <div class="Action">
                     <button data-montage-id="newAppButton" class="Action-button Action-button--new"></button>
                 </div>
-                <div data-montage-id="newAppFormCondition">
-                    <p class="Action-formField">
-                        Name <input type="text" data-montage-id="newAppName" class="Action-nameField">
-                    </p>
-                    <p class="Action-formField">
-                        Description <textarea data-montage-id="newAppDescription"></textarea>
-                    </p>
-                    <button data-montage-id="createNewAppButton"></button>
-                    <button data-montage-id="cancelNewAppButton"></button>
+                <div data-montage-id="newAppFormCondition" class="NewForm">
+                    <label class="NewForm-field">
+                        Name <input type="text" data-montage-id="newAppName" placeholder="my-app">
+                    </label>
+                    <label class="NewForm-field">
+                        Description <textarea data-montage-id="newAppDescription" placeholder="(optional)"></textarea>
+                    </label>
+                    <footer class="NewForm-bar">
+                        <button data-montage-id="cancelNewAppButton" class="Button"></button>
+                        <button data-montage-id="createNewAppButton" class="Button Button--action"></button>
+                    </footer>
                 </div>
             </section>
 
