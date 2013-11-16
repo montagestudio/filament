@@ -1,6 +1,5 @@
 var Component = require("montage/ui/component").Component;
 
-var defaultMenu = require("adaptor/client/ui/native/menu").defaultMenu;
 var MenuItem = require("adaptor/client/ui/native/menu-item").MenuItem;
 var application = require("montage/core/application").application;
 
@@ -30,29 +29,25 @@ exports.PackageExplorer = Component.specialize({
 
     _initMenuItem: {
         value: function () {
-            var self = this;
+            var mainMenu = application.mainMenu,
+                self = this,
+                viewMenu;
 
-            return;
+            if (mainMenu) {
+                viewMenu = application.mainMenu.menuItemForIdentifier("View");
 
-            var viewMenu;
-            var items = defaultMenu.items;
-            for (var i = 0; i < items.length; i++) {
-                if (items[i].title === "View") {
-                    viewMenu = items[i];
-                    break;
+                if (viewMenu) {
+                    var item = MenuItem.create();
+                    item.title = HIDE_MENU_TEXT;
+                    item.identifier = MENU_IDENTIFIER;
+                    item.keyEquivalent = MENU_KEY;
+                    viewMenu.insertItem(item)
+                    .then(function (item) {
+                        self._menuItem = item;
+                        application.addEventListener("menuAction", self, false);
+                    }).done();
                 }
             }
-
-            var item = MenuItem.create();
-            item.title = HIDE_MENU_TEXT;
-            item.identifier = MENU_IDENTIFIER;
-            item.keyEquivalent = MENU_KEY;
-            viewMenu.insertItem(item)
-            .then(function (item) {
-                self._menuItem = item;
-                application.addEventListener("menuAction", self, false);
-            })
-            .done();
         }
     },
 

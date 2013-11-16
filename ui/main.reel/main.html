@@ -178,6 +178,17 @@
                     "containerElement": {"#": "containerElement"},
                     "controlledComponent": {"@": "packageExplorer"}
                 }
+            },
+
+            "menuBarSlot": {
+                "prototype": "montage/ui/slot.reel",
+                "properties": {
+                    "element": {"#": "menuBarSlot"},
+                    "delegate": {"@": "owner"}
+                },
+                "bindings": {
+                    "content": {"<-": "@owner._menuContentComponent"}
+                }
             }
 
         }
@@ -188,6 +199,7 @@
 
     <div data-montage-id="main" class="Main-wrap">
 
+        <div data-montage-id="menuBarSlot"></div>
         <div data-montage-id="tasksInfobar"></div>
 
         <div data-montage-id="containerElement" class="Main">

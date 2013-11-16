@@ -111,7 +111,8 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                 promisedMainComponent = this._deferredMainComponent.promise,
                 promisedBridge = this.detectEnvironmentBridge(),
                 promisedLoadedExtensions,
-                extensionController;
+                extensionController,
+                mainComponentInstance;
 
             promisedLoadedExtensions = Promise.all([promisedApplication, promisedBridge])
                 .spread(function (app, bridge) {
@@ -119,7 +120,15 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                     self.environmentBridge = bridge;
 
                     extensionController = self.extensionController = ExtensionController.create().init(self);
-                    return extensionController.loadExtensions();
+
+                    // Make sure the mainMenu is made available throughout the application for consumption
+                    return bridge.mainMenu.then(function (mainMenu) {
+                        //TODO maybe this is best stored elsewhere
+                        // I'm not sure how to expose menus throughout the entire application; this will do for now
+                        app.mainMenu = mainMenu;
+                    }).then(function () {
+                        return extensionController.loadExtensions();
+                    });
 
                 }, function(error) {
                     //TODO improve handling if the application or the environment are rejected
@@ -129,6 +138,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
             Promise.all([promisedMainComponent, promisedLoadedExtensions])
                 .spread(function (mainComponent, loadedExtensions) {
+                    mainComponentInstance = mainComponent;
                     self.projectController = ProjectController.create().init(self.environmentBridge, self.viewController, mainComponent, extensionController);
 
                     self.projectController.registerUrlMatcherForDocumentType(function (fileUrl) {
@@ -155,6 +165,15 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                     }
 
                     return promisedProjectUrl;
+                }).then(function (projectUrl) {
+
+                    if (typeof self.environmentBridge.getMainMenuComponentConstructor === "function") {
+                        self.environmentBridge.getMainMenuComponentConstructor().then(function (mainMenuConstructor) {
+                            return mainComponentInstance.injectMainMenu(mainMenuConstructor);
+                        }).done();
+                    }
+
+                    return projectUrl;
                 }).then(function (projectUrl) {
                     //TODO only do this if we have an index.html
                     return self.previewController.registerPreview(projectUrl, projectUrl + "/index.html").then(function () {
