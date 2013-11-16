@@ -1,6 +1,6 @@
 var Component = require("montage/ui/component").Component;
 
-var MenuItem = require("adaptor/client/ui/native/menu-item").MenuItem;
+var MenuItem = require("adaptor/client/core/menu-item").MenuItem;
 var application = require("montage/core/application").application;
 
 // TODO: localize
