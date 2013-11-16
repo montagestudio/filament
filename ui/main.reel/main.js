@@ -4,10 +4,6 @@ var Montage = require("montage/core/core").Montage,
 
 exports.Main = Montage.create(Component, {
 
-    _menuContentComponent: {
-        value: null
-    },
-
     projectController: {
         value: null
     },
@@ -24,23 +20,6 @@ exports.Main = Montage.create(Component, {
 
             this.addPathChangeListener("projectController.currentDocument.title", this, "handleTitleWillChange", true);
             this.addPathChangeListener("projectController.currentDocument.title", this, "handleTitleChange");
-        }
-    },
-
-    slotDidSwitchContent: {
-        value: function (slot, newContent, oldContent) {
-            if (this.templateObjects.menuBarSlot === slot) {
-                // Wait for the menuContentComponent to be expanded and put in place
-                // this is detected by the element that is used as content being
-                // TODO improve this
-                if (oldContent && oldContent.component) {
-                    oldContent.component.cancelBinding("menuModel");
-                }
-
-                if (newContent && newContent.component) {
-                    newContent.component.defineBinding("menuModel", {"<-": "mainMenu", source: application});
-                }
-            }
         }
     },
 
