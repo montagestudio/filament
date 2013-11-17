@@ -59,6 +59,19 @@
                 "properties": {
                     "delegate": {"@": "applicationDelegate"}
                 }
+            },
+
+            "initializeRepoPanel": {
+                "prototype": "adaptor/client/ui/initialize-repository-panel.reel",
+                "properties": {
+                    "element": {"#": "initializeRepoPanel"}
+                },
+                "listeners": [
+                    {
+                        "type": "initializeRepository",
+                        "listener": {"@": "applicationDelegate"}
+                    }
+                ]
             }
 
         }
@@ -66,6 +79,7 @@
 
 </head>
 <body class="Filament">
+<div data-montage-id="initializeRepoPanel" style="position: absolute; top: 15px; right: 200px; z-index: 100; padding: 10px; background-color: yellow;"></div>
 <div data-montage-id="toolbar"></div>
 <div class="LoaderWrapper" data-montage-id="loader">
     <div class="Loader">
