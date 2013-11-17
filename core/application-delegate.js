@@ -16,7 +16,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
         value: null
     },
 
-    detectEnvironmentBridge: {
+    getEnvironmentBridge: {
         value: function () {
             var bridgePromise = this._bridgePromise;
 
@@ -116,7 +116,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             var self = this,
                 promisedApplication = this._deferredApplication.promise,
                 promisedMainComponent = this._deferredMainComponent.promise,
-                promisedBridge = this.detectEnvironmentBridge(),
+                promisedBridge = this.getEnvironmentBridge(),
                 promisedLoadedExtensions,
                 extensionController,
                 mainComponentInstance;
