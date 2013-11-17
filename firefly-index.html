@@ -49,6 +49,19 @@
                 }
             },
 
+            "unknownRepositoryPanel": {
+                "prototype": "adaptor/client/ui/unknown-repository-panel.reel",
+                "properties": {
+                    "element": {"#": "unknownRepositoryPanel"}
+                },
+                "listeners": [
+                    {
+                        "type": "createRepository",
+                        "listener": {"@": "applicationDelegate"}
+                    }
+                ]
+            },
+
             "initializeRepoPanel": {
                 "prototype": "adaptor/client/ui/initialize-repository-panel.reel",
                 "properties": {
@@ -65,10 +78,34 @@
         }
     </script>
 
+    <style type="text/css">
+
+        .modalOverlay {
+            position: absolute;
+            top: 15px;
+            right: 200px;
+            padding: 10px;
+            z-index: 100;
+            background-color: hsla(42,83%,95%,0.6);
+        }
+
+        .modalOverlay>div {
+            border: 1px solid hsla(0,0%,0%, 0.2);
+            margin: 5px;
+            padding: 5px;
+        }
+
+    </style>
+
 </head>
 <body class="Filament">
-<div data-montage-id="initializeRepoPanel" style="position: absolute; top: 15px; right: 200px; z-index: 100; padding: 10px; background-color: yellow;"></div>
-<div data-montage-id="toolbar"></div>
+
+<section class="modalOverlay">
+    <div data-montage-id="unknownRepositoryPanel"></div>
+    <div data-montage-id="initializeRepoPanel"></div>
+</section>
+
+<nav data-montage-id="toolbar"></nav>
 <div class="LoaderWrapper" data-montage-id="loader">
     <div class="Loader">
         <div class="Loader-cube"></div>
