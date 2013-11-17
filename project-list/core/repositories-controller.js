@@ -22,6 +22,8 @@ var RepositoriesController = Montage.specialize({
 
     constructor: {
         value: function RepositoriesController() {
+            var self = this;
+
             this.groups = [this.recent, this.owned];
             this.addPathChangeListener("selectedGroup", this, "_getListOfRepositories");
             this._initRecentRepositories();
@@ -33,6 +35,18 @@ var RepositoriesController = Montage.specialize({
 
             //initialize default value
             this.selectedGroup = this.owned;
+
+            this._githubApi.then(function (githubApi) {
+                return githubApi.getUser();
+            }).then(function(user) {
+                self.user = {
+                    name: user.name || user.login,
+                    //jshint -W106
+                    avatarUrl: user.avatar_url,
+                    url: user.html_url
+                    //jshint +W106
+                };
+            }).done();
         }
     },
 

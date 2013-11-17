@@ -216,6 +216,30 @@
                          "<-": "@repositoryGroupList.objectAtCurrentIteration.name"
                      }
                  }
+              },
+
+              "username": {
+                  "prototype": "montage/ui/text.reel",
+                  "properties": {
+                      "element": {"#": "username"}
+                  },
+                  "bindings": {
+                      "value": {
+                          "<-": "@repositoriesController.user.name"
+                      }
+                  }
+              },
+
+              "avatar": {
+                  "prototype": "matte/ui/image.reel",
+                  "properties": {
+                      "element": {"#": "avatar"}
+                  },
+                  "bindings": {
+                      "src": {
+                          "<-": "@repositoriesController.user.avatarUrl"
+                      }
+                  }
               }
         }
     </script>
@@ -264,9 +288,9 @@
                 <ul class="History-list" data-montage-id="historyList">
                     <li class="History-list-item" data-montage-id="historyListItem"></li>
                 </ul>
-                <a class="User" href="https://github.com/aadsm?tab=repositories">
-                    <img class="User-avatar" src="https://0.gravatar.com/avatar/61bfa3de1db650d1d4bd32525dc451ea">
-                    <span class="User-name">António Afonso</span>
+                <a class="User">
+                    <img data-montage-id="avatar" class="User-avatar" src="">
+                    <span data-montage-id="username" class="User-name"></span>
                 </a>
             </section>
 
