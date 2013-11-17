@@ -12,18 +12,25 @@ var InnerTemplateInspector = require("contextual-inspectors/inner-template/ui/in
 
 exports.ApplicationDelegate = Montage.create(Montage, {
 
+    _bridgePromise: {
+        value: null
+    },
+
     detectEnvironmentBridge: {
         value: function () {
-            var bridgePromise;
+            var bridgePromise = this._bridgePromise;
 
-            if (IS_IN_LUMIERES) {
-                bridgePromise = require.async("adaptor/client/core/lumieres-bridge").then(function (exported) {
-                    return new exported.LumiereBridge().init("filament-backend");
-                });
-            } else {
-                bridgePromise = require.async("adaptor/client/core/environment-bridge").then(function (exported) {
-                    return new exported.EnvironmentBridge().init("filament-backend");
-                });
+            if (!bridgePromise) {
+                if (IS_IN_LUMIERES) {
+                    bridgePromise = require.async("adaptor/client/core/lumieres-bridge").then(function (exported) {
+                        return new exported.LumiereBridge().init("filament-backend");
+                    });
+                } else {
+                    bridgePromise = require.async("adaptor/client/core/environment-bridge").then(function (exported) {
+                        return new exported.EnvironmentBridge().init("filament-backend");
+                    });
+                }
+                this._bridgePromise = bridgePromise;
             }
 
             return bridgePromise;
