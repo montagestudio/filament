@@ -39,7 +39,7 @@ var RepositoriesController = Montage.specialize({
 
     open: {
         value: function(repository) {
-            this._addRepositoryToRecent(repository);
+            window.location.pathname = "/" + repository.owner.login + "/" + repository.name;
         }
     },
 

@@ -12,7 +12,7 @@ exports.HistoryListItem = Montage.create(Component, {
     },
 
     handlePress: {
-        value: function (evt) {
+        value: function () {
             this.repositoriesController.open(this.repository);
         }
     }
