@@ -1,5 +1,4 @@
 var ApplicationDelegate = require("./application-delegate").ApplicationDelegate,
-    RepositoryController = require("core/repository-controller").RepositoryController,
     Promise = require("montage/core/promise").Promise;
 
 exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
@@ -18,35 +17,20 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         value: null
     },
 
-    _deferredRepositoryIntialization: {
-        value: null
-    },
-
     willLoadProject: {
         value: function () {
-            var populatedRepositoryPromise;
-
-            if (this.isBareRepository) {
-                this._deferredRepositoryIntialization = Promise.defer();
-                populatedRepositoryPromise = this._deferredRepositoryIntialization.promise;
-            } else {
-                populatedRepositoryPromise = Promise.resolve();
-            }
-
-            return populatedRepositoryPromise;
-        }
-    },
-
-    handleInitializeRepository: {
-        value: function () {
-            //TODO there should be some functions to give the owner/repo
-            var paths = window.location.pathname.split("/"),
-                owner = paths[1],
-                repo = paths[2];
-
-            var repositoryController = new RepositoryController().init(owner, repo);
-            repositoryController.initializeRepositoryWorkspace().done();
+            return this.getEnvironmentBridge()
+            .then(function(environmentBridge) {
+                return environmentBridge.initializeProject();
+//                return environmentBridge.isProjectEmpty()
+//                .then(function(isProjectEmpty) {
+//                    if (isProjectEmpty) {
+//                        // Ask user if he wants to initialize it
+//                    } else {
+//                        return environmentBridge.initializeProject();
+//                    }
+//                });
+            });
         }
     }
-
 });
