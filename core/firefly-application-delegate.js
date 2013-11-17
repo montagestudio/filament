@@ -1,4 +1,5 @@
 var ApplicationDelegate = require("./application-delegate").ApplicationDelegate;
+var RepositoryController = require("core/repository-controller").RepositoryController;
 
 exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
 
@@ -18,8 +19,13 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
 
     handleInitializeRepository: {
         value: function () {
-            //TODO only if the repository exists, and is bare: go an initialize it with the result of minit create
-            debugger
+            //TODO there should be some functions to give the owner/repo
+            var paths = window.location.pathname.split("/"),
+                owner = paths[1],
+                repo = paths[2];
+
+            var repositoryController = new RepositoryController().init(owner, repo);
+            repositoryController.initializeRepositoryWorkspace().done();
         }
     }
 
