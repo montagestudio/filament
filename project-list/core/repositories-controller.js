@@ -1,9 +1,8 @@
 /* global localStorage */
 var Montage = require("montage/core/core").Montage;
-var GithubApi = require("adaptor/client/core/github-api");
+var github = require("adaptor/client/core/github");
 var Promise = require("montage/core/promise").Promise;
 var RangeController = require("montage/core/range-controller").RangeController;
-var GithubFs = require("adaptor/client/core/fs-github");
 
 var Group = Montage.specialize( {
 
@@ -18,7 +17,7 @@ var Group = Montage.specialize( {
     }
 
 });
-var _accessToken;
+
 var RepositoriesController = Montage.specialize({
 
     constructor: {
@@ -27,10 +26,7 @@ var RepositoriesController = Montage.specialize({
             this.addPathChangeListener("selectedGroup", this, "_getListOfRepositories");
             this._initRecentRepositories();
             this.recentRepositoriesContent = new RangeController().initWithContent(this._recentRepositoriesCache);
-            this._githubApi = AuthToken().then(function (token) {
-                _accessToken = token;
-                return new GithubApi(token);
-            });
+            this._githubApi = github.githubApi();
             this.ownedRepositoriesContent = new RangeController().initWithContent([]);
             this.ownedRepositoriesContent.sortPath = "-pushed_at";
             this._updateUserRepositories();
@@ -102,7 +98,7 @@ var RepositoriesController = Montage.specialize({
                             self.processedDocuments++;
                         }).done();
                     });
-                });
+                }).done();
             }
         }
     },
@@ -124,28 +120,29 @@ var RepositoriesController = Montage.specialize({
 
     _isMontageRepository: {
         value: function(repo) {
-            var githubFs = new GithubFs(repo.owner.login, repo.name, _accessToken);
-
-            return githubFs.exists("/package.json").then(function(exists) {
-                if (exists) {
-                    return githubFs.read("/package.json").then(function(content) {
-                        var packageDescription;
-                        try {
-                            packageDescription = JSON.parse(content);
-                        } catch(ex) {
-                            // not a JSON file
-                            return false;
-                        }
-                        if (packageDescription.dependencies &&
-                            "montage" in packageDescription.dependencies) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    });
-                } else {
-                    return false;
-                }
+            return github.githubFs(repo.owner.login, repo.name)
+            .then(function(githubFs) {
+                return githubFs.exists("/package.json").then(function(exists) {
+                    if (exists) {
+                        return githubFs.read("/package.json").then(function(content) {
+                            var packageDescription;
+                            try {
+                                packageDescription = JSON.parse(content);
+                            } catch(ex) {
+                                // not a JSON file
+                                return false;
+                            }
+                            if (packageDescription.dependencies &&
+                                "montage" in packageDescription.dependencies) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        });
+                    } else {
+                        return false;
+                    }
+                });
             });
         }
     },
@@ -256,29 +253,3 @@ var RepositoriesController = Montage.specialize({
 
 
 exports.repositoriesController = new RepositoriesController();
-
-
-
-function AuthToken() {
-    var pendingTimeout;
-    var timeout = 500;
-    var response = Promise.defer();
-    var request = new XMLHttpRequest();
-    request.open("GET", "/auth/github/token", true);
-    request.onreadystatechange = function () {
-        if (request.readyState === 4) {
-            if (request.status === 200) {
-                if(pendingTimeout) {
-                    clearTimeout(pendingTimeout);
-                }
-                response.resolve(request.responseText);
-            } else {
-                response.reject("HTTP " + request.status + " for /auth/token");
-            }
-        }
-    };
-    pendingTimeout = setTimeout(response.reject, timeout - 50);
-    request.send();
-    return response.promise.timeout(timeout);
-
-}
