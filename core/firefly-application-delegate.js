@@ -17,20 +17,49 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         value: null
     },
 
+    _deferredRepositoryIntialization: {
+        value: null
+    },
+
     willLoadProject: {
         value: function () {
-            return this.getEnvironmentBridge()
-            .then(function(environmentBridge) {
-                return environmentBridge.initializeProject();
-//                return environmentBridge.isProjectEmpty()
-//                .then(function(isProjectEmpty) {
-//                    if (isProjectEmpty) {
-//                        // Ask user if he wants to initialize it
-//                    } else {
-//                        return environmentBridge.initializeProject();
-//                    }
-//                });
+            var self = this,
+                bridge = this.environmentBridge,
+                populatedRepositoryPromise;
+
+            return bridge.isProjectEmpty().then(function (isEmpty) {
+                self.isBareRepository = isEmpty;
+
+                if (isEmpty) {
+                    self._deferredRepositoryIntialization = Promise.defer();
+                    populatedRepositoryPromise = self._deferredRepositoryIntialization.promise;
+                } else {
+                    populatedRepositoryPromise = Promise.resolve();
+                }
+
+                return populatedRepositoryPromise;
             });
         }
+    },
+
+    handleInitializeRepository: {
+        value: function () {
+            var bridge = this.environmentBridge,
+                self = this;
+
+            if (bridge) {
+                bridge.isProjectEmpty().then(function (isEmpty) {
+                    if (isEmpty) {
+                        self.isPreparingProjectWorkspace = true;
+                        return bridge.initializeProject().then(function () {
+                            self.isBareRepository = false;
+                            self.isPreparingProjectWorkspace = false;
+                            self._deferredRepositoryIntialization.resolve();
+                        });
+                    }
+                }).done();
+            }
+        }
     }
+
 });
