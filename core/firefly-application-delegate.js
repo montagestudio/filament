@@ -1,5 +1,6 @@
-var ApplicationDelegate = require("./application-delegate").ApplicationDelegate;
-var RepositoryController = require("core/repository-controller").RepositoryController;
+var ApplicationDelegate = require("./application-delegate").ApplicationDelegate,
+    RepositoryController = require("core/repository-controller").RepositoryController,
+    Promise = require("montage/core/promise").Promise;
 
 exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
 
@@ -10,11 +11,30 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
     },
 
     isBareRepository: {
-        value: false
+        value: null
     },
 
     isPreparingProjectWorkspace: {
-        value: false
+        value: null
+    },
+
+    _deferredRepositoryIntialization: {
+        value: null
+    },
+
+    willLoadProject: {
+        value: function () {
+            var populatedRepositoryPromise;
+
+            if (this.isBareRepository) {
+                this._deferredRepositoryIntialization = Promise.defer();
+                populatedRepositoryPromise = this._deferredRepositoryIntialization.promise;
+            } else {
+                populatedRepositoryPromise = Promise.resolve();
+            }
+
+            return populatedRepositoryPromise;
+        }
     },
 
     handleInitializeRepository: {

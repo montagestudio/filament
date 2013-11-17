@@ -118,8 +118,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                 promisedMainComponent = this._deferredMainComponent.promise,
                 promisedBridge = this.getEnvironmentBridge(),
                 promisedLoadedExtensions,
-                extensionController,
-                mainComponentInstance;
+                extensionController;
 
             promisedLoadedExtensions = Promise.all([promisedApplication, promisedBridge])
                 .spread(function (app, bridge) {
@@ -127,25 +126,27 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                     self.environmentBridge = bridge;
 
                     extensionController = self.extensionController = ExtensionController.create().init(self);
-
-                    // Make sure the mainMenu is made available throughout the application for consumption
-                    return bridge.mainMenu.then(function (mainMenu) {
-                        //TODO maybe this is best stored elsewhere
-                        // I'm not sure how to expose menus throughout the entire application; this will do for now
-                        app.mainMenu = mainMenu;
-                    }).then(function () {
-                        return extensionController.loadExtensions();
+                    var loadedExtensions = extensionController.loadExtensions().fail(function (error) {
+                        console.log("Failed loading extensions, proceeding with none");
+                        return [];
                     });
 
+                    return Promise.all([loadedExtensions, bridge.mainMenu])
+                        .spread(function(extensions, mainMenu) {
+                            app.mainMenu = mainMenu;
+                            return extensions;
+                        });
+
                 }, function(error) {
-                    //TODO improve handling if the application or the environment are rejected
-                    console.log("Cannot load the extensions ", error);
-                    return [];
+                    console.error("Failed loading application");
+                    return error;
                 });
 
             Promise.all([promisedMainComponent, promisedLoadedExtensions])
-                .spread(function (mainComponent, loadedExtensions) {
-                    mainComponentInstance = mainComponent;
+                .then(function (necessaryObjects) {
+                    // Give subclasses a way to interject before proceeding to load the project
+                    return self.willLoadProject().thenResolve(necessaryObjects);
+                }).spread(function (mainComponent, loadedExtensions) {
                     self.projectController = ProjectController.create().init(self.environmentBridge, self.viewController, mainComponent, extensionController);
 
                     self.projectController.registerUrlMatcherForDocumentType(function (fileUrl) {
@@ -173,21 +174,24 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
                     return promisedProjectUrl;
                 }).then(function (projectUrl) {
-
-                    if (typeof self.environmentBridge.getMainMenuComponentConstructor === "function") {
-                        self.environmentBridge.getMainMenuComponentConstructor().then(function (mainMenuConstructor) {
-                            return mainComponentInstance.injectMainMenu(mainMenuConstructor);
-                        }).done();
-                    }
-
-                    return projectUrl;
-                }).then(function (projectUrl) {
                     //TODO only do this if we have an index.html
                     return self.previewController.registerPreview(projectUrl, projectUrl + "/index.html").then(function () {
                         //TODO not launch the preview automatically?
                         return self.previewController.launchPreview();
                     });
                 }).done();
+        }
+    },
+
+    /**
+     * Template method available for subclasses to implement their own logic
+     * ahead of loading the project as directed by the environment.
+     *
+     * @return {Promise} A promise to continue the loading sequence
+     */
+    willLoadProject: {
+        value: function () {
+            return Promise.resolve();
         }
     },
 
