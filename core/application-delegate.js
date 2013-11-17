@@ -174,6 +174,8 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                             //TODO not launch the preview automatically?
                             return self.previewController.launchPreview();
                         });
+                    }).then(function () {
+                        return self.didLoadProject();
                     });
 
                 }, function(error) {
@@ -190,6 +192,18 @@ exports.ApplicationDelegate = Montage.create(Montage, {
      * @return {Promise} A promise to continue the loading sequence
      */
     willLoadProject: {
+        value: function () {
+            return Promise.resolve();
+        }
+    },
+
+    /**
+     * Template method available for subclasses to implement their own logic
+     * after a project has been loaded as directed by the environment
+     *
+     * @return {Promise} A promise to continue
+     */
+    didLoadProject: {
         value: function () {
             return Promise.resolve();
         }
