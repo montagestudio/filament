@@ -168,9 +168,9 @@ var RepositoriesController = Montage.specialize({
         value: function(repo) {
             return this._githubApi.then(function (githubApi) {
                 return githubApi.listBranches(repo.owner.login, repo.name)
-                    .then(function(branches) {
-                        return branches.length === 0;
-                    });
+                .then(function(branches) {
+                    return branches.length === 0;
+                });
             });
         }
     },
