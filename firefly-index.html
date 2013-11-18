@@ -54,6 +54,13 @@
                 }
             },
 
+            "modalOverlay": {
+                "prototype": "adaptor/client/ui/modal-overlay.reel",
+                "properties": {
+                    "element": {"#": "modalOverlay"}
+                }
+            },
+
             "unknownRepositoryPanel": {
                 "prototype": "adaptor/client/ui/unknown-repository-panel.reel",
                 "properties": {
@@ -97,74 +104,15 @@
         }
     </script>
 
-    <style type="text/css">
-
-        .modalOverlay {
-            position: absolute;
-            display: flex;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 100;
-            background-color: hsla(0, 0%, 25%, 0.9);
-        }
-
-        .modalOverlay-box {
-            margin: auto;
-            max-width: 400px;
-            color: hsl(0, 0%, 40%);
-            font-size: .9em;
-            line-height: 1.2;
-            border-radius: 8px;
-            background-color: hsl(0, 0%, 98%);
-            box-shadow: 0 3px 6px hsla(0, 0%, 0%, 0.4);
-        }
-
-        .modalOverlay-item {
-            margin: 16px;
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid hsla(0, 0%, 0%, 0.1);
-            background-color: hsl(0, 0%, 96%);
-            box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, 0.05);
-        }
-
-        .modalOverlay-warning {
-            margin: 0 0 16px 0;
-            padding-left: 8px;
-            font-size: 1.2em;
-            border-left: 2px solid red;
-        }
-
-        .modalOverlay-warning em {
-            color: black;
-        }
-
-        .modalOverlay-message {
-            margin: 0;
-        }
-
-        .modalOverlay-footer {
-            margin-top: 16px;
-            text-align: right;
-        }
-
-        .modalOverlay-footer .matte-Button:last-child {
-            margin-right: 0;
-        }
-
-    </style>
-
 </head>
 <body class="Filament">
 
-    <section class="modalOverlay">
-        <div class="modalOverlay-box">
-            <div data-montage-id="unknownRepositoryPanel" class="modalOverlay-item"></div>
-            <div data-montage-id="initializeRepoPanel" class="modalOverlay-item"></div>
-            <div data-montage-id="progressPanel" class="modalOverlay-item"></div>
-            <div data-montage-id="promptPanel" class="modalOverlay-item"></div>
+    <section data-montage-id="modalOverlay">
+        <div data-montage-id="panelSwitcher" data-arg="panel">
+            <div data-montage-id="unknownRepositoryPanel" class="ModalOverlay-item"></div>
+            <div data-montage-id="initializeRepoPanel" class="ModalOverlay-item"></div>
+            <div data-montage-id="progressPanel" class="ModalOverlay-item"></div>
+            <div data-montage-id="promptPanel" class="ModalOverlay-item"></div>
         </div>
     </section>
 
