@@ -102,6 +102,16 @@
                 "properties": {
                     "element": {"#": "promptPanel"}
                 }
+            },
+
+            "panelSwitcher": {
+                "prototype": "montage/ui/substitution.reel",
+                "properties": {
+                    "element": {"#": "panelSwitcher"}
+                },
+                "bindings": {
+                    "switchValue": {"<-": "@applicationDelegate.currentPanelKey"}
+                }
             }
 
         }
@@ -112,10 +122,10 @@
 
     <section data-montage-id="modalOverlay">
         <div data-montage-id="panelSwitcher" data-arg="panel">
-            <div data-montage-id="unknownRepositoryPanel" class="ModalOverlay-item"></div>
-            <div data-montage-id="initializeRepoPanel" class="ModalOverlay-item"></div>
-            <div data-montage-id="progressPanel" class="ModalOverlay-item"></div>
-            <div data-montage-id="promptPanel" class="ModalOverlay-item"></div>
+            <div data-arg="unknown" data-montage-id="unknownRepositoryPanel" class="ModalOverlay-item"></div>
+            <div data-arg="initialize" data-montage-id="initializeRepoPanel" class="ModalOverlay-item"></div>
+            <div data-arg="progress" data-montage-id="progressPanel" class="ModalOverlay-item"></div>
+            <div data-arg="prompt" data-montage-id="promptPanel" class="ModalOverlay-item"></div>
         </div>
     </section>
 

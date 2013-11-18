@@ -9,14 +9,6 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         }
     },
 
-    isBareRepository: {
-        value: null
-    },
-
-    isPreparingProjectWorkspace: {
-        value: null
-    },
-
     _deferredRepositoryIntialization: {
         value: null
     },
@@ -31,6 +23,10 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
 
     showModal: {
         value: false
+    },
+
+    currentPanelKey: {
+        value: null
     },
 
     didLoadEnvironmentBridge: {
@@ -49,9 +45,9 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 populatedRepositoryPromise;
 
             return bridge.isProjectEmpty().then(function (isEmpty) {
-                self.isBareRepository = isEmpty;
-
                 if (isEmpty) {
+                    self.showModal = true;
+                    self.currentPanelKey = "initialize";
                     self._deferredRepositoryIntialization = Promise.defer();
                     populatedRepositoryPromise = self._deferredRepositoryIntialization.promise;
                 } else {
@@ -71,10 +67,10 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
             if (bridge) {
                 bridge.isProjectEmpty().then(function (isEmpty) {
                     if (isEmpty) {
-                        self.isPreparingProjectWorkspace = true;
+                        self.currentPanelKey = "progress";
                         return bridge.initializeProject().then(function () {
-                            self.isBareRepository = false;
-                            self.isPreparingProjectWorkspace = false;
+                            self.showModal = false;
+                            self.currentPanelKey = null;
                             self._deferredRepositoryIntialization.resolve();
                         });
                     }
