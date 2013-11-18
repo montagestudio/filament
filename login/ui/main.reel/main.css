@@ -1,6 +1,7 @@
 
 .Main {
     display: -webkit-flex;
+    justify-content: center;
     height: 100%;
     padding: 40px;
     text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
@@ -14,6 +15,7 @@
 
 .Intro {
     -webkit-flex: 1;
+    max-width: 340px;
     display: -webkit-flex;
     -webkit-flex-direction: column;
     -webkit-align-items: center;
