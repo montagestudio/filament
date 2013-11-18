@@ -69,6 +69,10 @@
                 "properties": {
                     "element": {"#": "unknownRepositoryPanel"}
                 },
+                "bindings": {
+                    "owner": {"<-": "@applicationDelegate.environmentBridge.repositoryController.owner"},
+                    "repo": {"<-": "@applicationDelegate.environmentBridge.repositoryController.repo"}
+                },
                 "listeners": [
                     {
                         "type": "createRepository",
@@ -81,6 +85,10 @@
                 "prototype": "adaptor/client/ui/initialize-repository-panel.reel",
                 "properties": {
                     "element": {"#": "initializeRepoPanel"}
+                },
+                "bindings": {
+                    "owner": {"<-": "@applicationDelegate.environmentBridge.repositoryController.owner"},
+                    "repo": {"<-": "@applicationDelegate.environmentBridge.repositoryController.repo"}
                 },
                 "listeners": [
                     {
