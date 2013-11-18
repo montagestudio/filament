@@ -43,9 +43,13 @@ exports.Main = Montage.create(Component, {
             }
 
             if (window.location.hash === "#new") {
-                this.templateObjects.newAppFormCondition.condition = true;
+                this.showNewAppForm = true;
             }
         }
+    },
+
+    showNewAppForm: {
+        value: false
     },
 
     userController: {
@@ -94,13 +98,13 @@ exports.Main = Montage.create(Component, {
 
     handleNewAppButtonAction: {
         value: function () {
-            this.templateObjects.newAppFormCondition.condition = true;
+            this.showNewAppForm = true;
         }
     },
 
     handleCancelNewAppButtonAction: {
         value: function () {
-            this.templateObjects.newAppFormCondition.condition = false;
+            this.showNewAppForm = false;
         }
     },
 
@@ -113,7 +117,7 @@ exports.Main = Montage.create(Component, {
             this.templateObjects.repositoriesController.createRepository(name, {
                 description: description
             }).then(function() {
-                self.templateObjects.newAppFormCondition.condition = false;
+                self.showNewAppForm = false;
             }).done();
         }
     },

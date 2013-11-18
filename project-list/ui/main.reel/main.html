@@ -25,6 +25,17 @@
                 ]
             },
 
+            "newAppButtonCondition": {
+                "prototype": "montage/ui/condition.reel",
+                "properties": {
+                    "element": {"#": "newAppButtonCondition"},
+                    "removalStrategy": "hide"
+                },
+                "bindings": {
+                    "condition": {"<-": "!@owner.showNewAppForm"}
+                }
+            },
+
             "newAppButton": {
                 "prototype": "matte/ui/button.reel",
                 "properties": {
@@ -45,8 +56,10 @@
                 "prototype": "montage/ui/condition.reel",
                 "properties": {
                     "element": {"#": "newAppFormCondition"},
-                    "removalStrategy": "hide",
-                    "condition": false
+                    "removalStrategy": "hide"
+                },
+                "bindings": {
+                    "condition": {"<-": "@owner.showNewAppForm"}
                 }
             },
 
@@ -263,8 +276,10 @@
             </section>
 
             <section class="Launcher-section">
-                <div class="Action">
-                    <button data-montage-id="newAppButton" class="Action-button Action-button--new"></button>
+                <div data-montage-id="newAppButtonCondition">
+                    <div class="Action">
+                        <button data-montage-id="newAppButton" class="Action-button Action-button--new"></button>
+                    </div>
                 </div>
                 <div data-montage-id="newAppFormCondition" class="NewForm">
                     <label class="NewForm-field">
