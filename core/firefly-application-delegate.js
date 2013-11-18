@@ -21,6 +21,23 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         value: null
     },
 
+    progressPanel: {
+        value: null
+    },
+
+    promptPanel: {
+        value: null
+    },
+
+    didLoadEnvironmentBridge: {
+        value: function () {
+            var bridge = this.environmentBridge;
+            bridge.progressPanel = this.progressPanel;
+            bridge.promptPanel = this.promptPanel;
+            return Promise.resolve();
+        }
+    },
+
     willLoadProject: {
         value: function () {
             var self = this,

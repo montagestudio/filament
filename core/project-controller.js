@@ -882,19 +882,18 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 throw new Error("Cannot create " + thing + " without an open project"); // TODO localize
             }
 
-            var packagePath = this.environmentBridge.convertBackendUrlToPath(this.packageUrl),
-                options = {
-                    //TODO so what if the ui doesn't exist?
-                    defaultDirectory: "file://localhost" + packagePath + "/" + subdirectory,
+            var options = {
+                    defaultDirectory: URL.resolve(this.packageUrl, subdirectory),
                     defaultName: "my-" + thing, // TODO localize
-                    prompt: "Create" //TODO localize
+                    prompt: "Create " + thing, //TODO localize
+                    submitLabel: "Create"
                 },
                 self = this;
 
             return this.environmentBridge.promptForSave(options)
                 .then(function (destination) {
                     if (!destination) {
-                        throw new Error(thing + " creation cancelled");
+                        return Promise.resolve(null);
                     }
                     // remove trailing slash
                     destination = destination.replace(/\/$/, "");

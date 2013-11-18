@@ -39,7 +39,11 @@
             },
 
             "applicationDelegate": {
-                "prototype": "core/firefly-application-delegate"
+                "prototype": "core/firefly-application-delegate",
+                "properties": {
+                    "promptPanel": {"@": "promptPanel"},
+                    "progressPanel": {"@": "progressPanel"}
+                }
             },
 
             "application": {
@@ -82,7 +86,7 @@
                 }
             },
 
-             "promptPanel": {
+            "promptPanel": {
                 "prototype": "adaptor/client/ui/prompt-panel.reel",
                 "properties": {
                     "element": {"#": "promptPanel"}

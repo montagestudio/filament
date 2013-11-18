@@ -129,7 +129,10 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
                     extensionController = self.extensionController = ExtensionController.create().init(self);
 
-                    return bridge.mainMenu.then(function(mainMenu) {
+                    //TODO move this elsewhere, maybe rename to specifically reflect the stage of bootstrapping
+                    return self.didLoadEnvironmentBridge().then(function () {
+                        return bridge.mainMenu;
+                    }).then(function(mainMenu) {
                         app.mainMenu = mainMenu;
                     }).then(function () {
                         // Give subclasses a way to interject before proceeding to load the project
@@ -182,6 +185,18 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                     console.error("Failed loading application");
                     return error;
                 }).done();
+        }
+    },
+
+    /**
+     * Template method available for subclasses to implement their own logic
+     * as soon as an environment bridge is available
+     *
+     * @return {Promise} A promise to continue
+     */
+    didLoadEnvironmentBridge: {
+        value: function () {
+            return Promise.resolve();
         }
     },
 
