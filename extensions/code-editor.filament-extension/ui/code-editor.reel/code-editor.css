@@ -1,0 +1,10 @@
+.CodeEditor {
+    display: -webkit-flex;
+    -webkit-flex: auto;
+    -webkit-justify-content: center;
+    -webkit-align-items: center;
+}
+
+.CodeEditor .CodeEditorView {
+    -webkit-box-shadow: 0 2px 5px hsl(0,0%,20%);
+}
