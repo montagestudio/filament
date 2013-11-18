@@ -9,7 +9,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         }
     },
 
-    _deferredRepositoryIntialization: {
+    _deferredRepositoryInitialization: {
         value: null
     },
 
@@ -46,12 +46,28 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
 
             return bridge.isProjectEmpty().then(function (isEmpty) {
                 if (isEmpty) {
+                    // Bare repository, create a project and commit
                     self.showModal = true;
                     self.currentPanelKey = "initialize";
-                    self._deferredRepositoryIntialization = Promise.defer();
-                    populatedRepositoryPromise = self._deferredRepositoryIntialization.promise;
+                    self._deferredRepositoryInitialization = Promise.defer();
+                    populatedRepositoryPromise = self._deferredRepositoryInitialization.promise;
                 } else {
-                    populatedRepositoryPromise = Promise.resolve();
+                    //Repository exists, do we have a project workspace for it?
+                    populatedRepositoryPromise = bridge.projectExists().then(function (exists) {
+                        if (!exists) {
+                            //TODO check if it's a montage project or not: cute message otherwise
+                            // No workspace, make one
+                            self.showModal = true;
+                            self.currentPanelKey = "progress";
+                            return bridge.initializeProject().then(function () {
+                                self.showModal = false;
+                                self.currentPanelKey = null;
+                            });
+                        } else {
+                            // Workspace found, all systems go!
+                            return Promise.resolve();
+                        }
+                    });
                 }
 
                 return populatedRepositoryPromise;
@@ -71,7 +87,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                         return bridge.initializeProject().then(function () {
                             self.showModal = false;
                             self.currentPanelKey = null;
-                            self._deferredRepositoryIntialization.resolve();
+                            self._deferredRepositoryInitialization.resolve();
                         });
                     }
                 }).done();
