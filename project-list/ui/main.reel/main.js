@@ -45,6 +45,39 @@ exports.Main = Montage.create(Component, {
             if (window.location.hash === "#new") {
                 this.showNewAppForm = true;
             }
+
+            this._upkeepProgressBar();
+        }
+    },
+
+    /**
+     * This function makes sure that the progress bar gets updated every so
+     * often, even if the projects haven't started being processed.
+     */
+    _upkeepProgressBar: {
+        value: function() {
+            var UPKEEP_INTERVAL = 500,
+                UPKEEP_INCREASE = 100,
+                historyProgress = this.templateObjects.historyProgress,
+                repositoriesController = this.templateObjects.repositoriesController,
+                totalDocuments = repositoriesController.totalDocuments,
+                processedDocuments = 0;
+
+            setTimeout(function upkeep() {
+                var newProcessedDocuments = repositoriesController.processedDocuments;
+
+                if (totalDocuments === newProcessedDocuments ||
+                    // make sure we don't go to 100%
+                    historyProgress.value >= (historyProgress.max - 1)) {
+                    return;
+                } else if (processedDocuments === newProcessedDocuments) {
+                    historyProgress.value++;
+                }
+
+                processedDocuments = newProcessedDocuments;
+
+                window.setTimeout(upkeep, UPKEEP_INTERVAL += UPKEEP_INCREASE);
+            }, UPKEEP_INTERVAL);
         }
     },
 

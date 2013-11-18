@@ -152,7 +152,7 @@
                 },
                 "bindings": {
                     "max": {"<-": "@repositoriesController.totalDocuments"},
-                    "value": {"<-": "@repositoriesController.processedDocuments"}
+                    "value": {"<-": "[value, @repositoriesController.processedDocuments].max{}"}
                 }
             },
 
