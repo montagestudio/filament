@@ -31,9 +31,11 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
 
     didLoadEnvironmentBridge: {
         value: function () {
+            //TODO the bridge and the appDelegate are fighting over responsibilities…
             var bridge = this.environmentBridge;
             bridge.progressPanel = this.progressPanel;
             bridge.promptPanel = this.promptPanel;
+            bridge.applicationDelegate = this;
             return Promise.resolve();
         }
     },
