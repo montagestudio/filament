@@ -100,17 +100,29 @@
 
         .modalOverlay {
             position: absolute;
-            top: 15px;
-            right: 200px;
-            padding: 10px;
+            display: flex;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             z-index: 100;
-            background-color: hsla(42,83%,95%,0.6);
+            background-color: hsla(0, 0%, 25%, 0.9);
         }
 
-        .modalOverlay>div {
-            border: 1px solid hsla(0,0%,0%, 0.2);
-            margin: 5px;
-            padding: 5px;
+        .modalOverlay-box {
+            margin: auto;
+            border-radius: 8px;
+            background-color: hsl(0, 0%, 98%);
+            box-shadow: 0 3px 6px hsla(0, 0%, 0%, 0.4);
+        }
+
+        .modalOverlay-item {
+            margin: 16px;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid hsla(0, 0%, 0%, 0.1);
+            background-color: hsl(0, 0%, 96%);
+            box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, 0.05);
         }
 
     </style>
@@ -118,20 +130,24 @@
 </head>
 <body class="Filament">
 
-<section class="modalOverlay">
-    <div data-montage-id="unknownRepositoryPanel"></div>
-    <div data-montage-id="initializeRepoPanel"></div>
-    <div data-montage-id="progressPanel"></div>
-    <div data-montage-id="promptPanel"></div>
-</section>
-
-<nav data-montage-id="toolbar"></nav>
-<div class="LoaderWrapper" data-montage-id="loader">
-    <div class="Loader">
-        <div class="Loader-cube"></div>
-        <div class="Loader-cube"></div>
-        <div class="Loader-cube"></div>
+    <section class="modalOverlay">
+        <div class="modalOverlay-box">
+            <div data-montage-id="unknownRepositoryPanel" class="modalOverlay-item"></div>
+            <div data-montage-id="initializeRepoPanel" class="modalOverlay-item"></div>
+            <div data-montage-id="progressPanel" class="modalOverlay-item"></div>
+            <div data-montage-id="promptPanel" class="modalOverlay-item"></div>
+        </div>
+    </section>
+    
+    <nav data-montage-id="toolbar"></nav>
+    
+    <div class="LoaderWrapper" data-montage-id="loader">
+        <div class="Loader">
+            <div class="Loader-cube"></div>
+            <div class="Loader-cube"></div>
+            <div class="Loader-cube"></div>
+        </div>
     </div>
-</div>
+
 </body>
 </html>
