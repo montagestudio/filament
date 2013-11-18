@@ -35,6 +35,7 @@
                 },
                 "bindings": {
                     "mainMenu": {"<-": "@application.mainMenu"}
+                    "environmentBridge": {"<-": "@applicationDelegate.environmentBridge"}
                 }
             },
 
@@ -128,14 +129,14 @@
             background-color: hsl(0, 0%, 96%);
             box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, 0.05);
         }
-        
+
         .modalOverlay-warning {
             margin: 0 0 16px 0;
             padding-left: 8px;
             font-size: 1.2em;
             border-left: 2px solid red;
         }
-        
+
         .modalOverlay-warning em {
             color: black;
         }
@@ -166,9 +167,9 @@
             <div data-montage-id="promptPanel" class="modalOverlay-item"></div>
         </div>
     </section>
-    
+
     <nav data-montage-id="toolbar"></nav>
-    
+
     <div class="LoaderWrapper" data-montage-id="loader">
         <div class="Loader">
             <div class="Loader-cube"></div>
