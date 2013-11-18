@@ -111,6 +111,7 @@
 
         .modalOverlay-box {
             margin: auto;
+            max-width: 400px;
             border-radius: 8px;
             background-color: hsl(0, 0%, 98%);
             box-shadow: 0 3px 6px hsla(0, 0%, 0%, 0.4);
@@ -123,6 +124,35 @@
             border: 1px solid hsla(0, 0%, 0%, 0.1);
             background-color: hsl(0, 0%, 96%);
             box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, 0.05);
+        }
+        
+        .modalOverlay-warning {
+            margin-top: 0;
+            padding: 8px;
+            font-weight: normal;
+            font-size: 1em;
+            line-height: 1.2;
+            color: hsl(0, 75%, 40%);
+            border-radius: 4px;
+            background: hsl(5, 100%, 89%);
+        }
+        
+        .modalOverlay-warning em {
+            color: black;
+        }
+
+        .modalOverlay-message {
+            font-size: .9em;
+            margin: 0;
+        }
+
+        .modalOverlay-footer {
+            margin-top: 1em;
+            text-align: right;
+        }
+
+        .modalOverlay-footer .matte-Button:last-child {
+            margin-right: 0;
         }
 
     </style>
