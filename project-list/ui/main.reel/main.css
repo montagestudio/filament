@@ -317,15 +317,11 @@
     display: block;
     margin: 0 0 15px 0;
     text-align: center;
-    padding: 8px;
-    border-radius: 3px;
-    border: 1px solid hsl(0, 0%, 80%);
-    background: hsla(0, 0%, 0%, 0.05);
 }
 
 .User-avatar {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     border-radius: 4px;
     vertical-align: middle;
     border: 1px solid hsla(0, 0%, 0%, 0.15);
