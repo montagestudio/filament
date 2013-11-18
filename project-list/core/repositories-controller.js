@@ -127,7 +127,7 @@ var RepositoriesController = Montage.specialize({
         value: null
     },
 
-    _addRepositoryToRecent: {
+    addRepositoryToRecent: {
         value: function(repository) {
             var recentRepositories = this._recentRepositoriesCache;
 
@@ -148,9 +148,13 @@ var RepositoriesController = Montage.specialize({
 
     _createRepositoryArchive: {
         value: function(repository) {
-            return  {
-                "name": repository.name
+            var project = {
+                owner: {
+                    login: repository.owner
+                },
+                name: repository.repo
             };
+            return project;
         }
     },
 

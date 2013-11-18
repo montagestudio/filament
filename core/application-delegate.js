@@ -6,7 +6,9 @@ var Montage = require("montage/core/core").Montage,
     PreviewController = require("core/preview-controller").PreviewController,
     ProjectController = require("core/project-controller").ProjectController,
     ReelDocument = require("core/reel-document").ReelDocument,
-    IS_IN_LUMIERES = (typeof lumieres !== "undefined");
+    repositoriesController = require("project-list/core/repositories-controller").repositoriesController;
+
+var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
 var InnerTemplateInspector = require("contextual-inspectors/inner-template/ui/inner-template-inspector.reel").InnerTemplateInspector;
 
@@ -221,6 +223,13 @@ exports.ApplicationDelegate = Montage.create(Montage, {
      */
     didLoadProject: {
         value: function () {
+            this._bridgePromise.then(function (bridge) {
+                var project = {
+                    owner: bridge.repositoryController.owner,
+                    repo: bridge.repositoryController.repo
+                };
+                repositoriesController.addRepositoryToRecent(project);
+            }).done();
             return Promise.resolve();
         }
     },
