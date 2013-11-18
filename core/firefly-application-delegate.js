@@ -29,6 +29,16 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         value: null
     },
 
+    willFinishLoading: {
+        value: function (app) {
+            this.super(app);
+
+            // TODO this is a temporary workaround to redirect keyEquivalents to the
+            // toolbar as a last resort if they make it up here
+            app.addEventListener("keyPress", this);
+        }
+    },
+
     didLoadEnvironmentBridge: {
         value: function () {
             //TODO the bridge and the appDelegate are fighting over responsibilities…
@@ -93,6 +103,17 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                         });
                     }
                 }).done();
+            }
+        }
+    },
+
+    handleKeyPress: {
+        value: function (evt) {
+            if ("menuAction" === evt.identifier) {
+                var component = evt.keyComposer.component;
+                if (typeof component.handleKeyPress === "function") {
+                    component.handleKeyPress(evt);
+                }
             }
         }
     }
