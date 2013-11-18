@@ -3,6 +3,7 @@ var Montage = require("montage/core/core").Montage;
 var github = require("adaptor/client/core/github");
 var Promise = require("montage/core/promise").Promise;
 var RangeController = require("montage/core/range-controller").RangeController;
+var RepositoryController = require("adaptor/client/core/repository-controller").RepositoryController;
 
 var Group = Montage.specialize( {
 
@@ -123,54 +124,13 @@ var RepositoriesController = Montage.specialize({
      */
     _isValidRepository: {
         value: function(repo) {
-            var self = this;
+            var repositoryController = new RepositoryController();
 
-            return this._isMontageRepository(repo)
+            repositoryController.init(repo.owner.login, repo.name);
+
+            return repositoryController.isMontageRepository()
             .then(function(value) {
-                return value || self._isEmptyRepository(repo);
-            });
-        }
-    },
-
-    _isMontageRepository: {
-        value: function(repo) {
-            return github.githubFs(repo.owner.login, repo.name)
-            .then(function(githubFs) {
-                return githubFs.exists("/package.json").then(function(exists) {
-                    if (exists) {
-                        return githubFs.read("/package.json").then(function(content) {
-                            var packageDescription;
-                            try {
-                                packageDescription = JSON.parse(content);
-                            } catch(ex) {
-                                // not a JSON file
-                                return false;
-                            }
-                            if (packageDescription.dependencies &&
-                                "montage" in packageDescription.dependencies) {
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        });
-                    } else {
-                        return false;
-                    }
-                });
-            });
-        }
-    },
-
-    /**
-     * An empty repository doesn't have branches.
-     */
-    _isEmptyRepository: {
-        value: function(repo) {
-            return this._githubApi.then(function (githubApi) {
-                return githubApi.listBranches(repo.owner.login, repo.name)
-                .then(function(branches) {
-                    return branches.length === 0;
-                });
+                return value || repositoryController.isRepositoryEmpty();
             });
         }
     },
