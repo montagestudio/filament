@@ -29,6 +29,10 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         value: null
     },
 
+    showModal: {
+        value: false
+    },
+
     didLoadEnvironmentBridge: {
         value: function () {
             var bridge = this.environmentBridge;
