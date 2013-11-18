@@ -160,8 +160,9 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                             return extensionController.activateExtension(extension);
                         }));
                     }).then(function () {
-                        var projectUrl = bridge.projectUrl,
-                            promisedProjectUrl;
+                        return bridge.projectUrl;
+                    }).then(function (projectUrl) {
+                        var promisedProjectUrl;
 
                         // With extensions now loaded and activated, load a project
                         if (projectUrl) {
