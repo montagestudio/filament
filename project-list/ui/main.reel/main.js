@@ -143,16 +143,28 @@ exports.Main = Montage.create(Component, {
 
     handleCreateNewAppButtonAction: {
         value: function () {
+            this._createNewApplication().done();
+        }
+    },
+
+    handleNewAppNameAction: {
+        value: function () {
+            this._createNewApplication().done();
+        }
+    },
+
+    _createNewApplication: {
+        value: function () {
             var name = this.templateObjects.newAppName.value,
                 description = this.templateObjects.newAppDescription.value,
                 self = this;
 
-            this.templateObjects.repositoriesController.createRepository(name, {
+            return this.templateObjects.repositoriesController.createRepository(name, {
                 description: description
             }).then(function() {
                 window.location.pathname = self.userController.login + "/" + name;
                 self.showNewAppForm = false;
-            }).done();
+            });
         }
     },
 
