@@ -117,6 +117,7 @@ exports.Main = Montage.create(Component, {
             this.templateObjects.repositoriesController.createRepository(name, {
                 description: description
             }).then(function() {
+                window.location.pathname = self.userController.login + "/" + name;
                 self.showNewAppForm = false;
             }).done();
         }
