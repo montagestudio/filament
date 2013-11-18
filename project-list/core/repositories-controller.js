@@ -36,18 +36,6 @@ var RepositoriesController = Montage.specialize({
 
             //initialize default value
             this.selectedGroup = this.owned;
-
-            this._githubApi.then(function (githubApi) {
-                return githubApi.getUser();
-            }).then(function(user) {
-                self.user = {
-                    name: user.name || user.login,
-                    //jshint -W106
-                    avatarUrl: user.avatar_url,
-                    url: user.html_url
-                    //jshint +W106
-                };
-            }).done();
         }
     },
 

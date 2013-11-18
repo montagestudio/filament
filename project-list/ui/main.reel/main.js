@@ -2,7 +2,7 @@
 var Montage = require("montage/core/core").Montage;
 var Component = require("montage/ui/component").Component;
 var repositoriesController = require("../../core/repositories-controller").repositoriesController;
-
+var userController = require("adaptor/client/core/user-controller").userController;
 
 exports.Main = Montage.create(Component, {
 
@@ -30,6 +30,9 @@ exports.Main = Montage.create(Component, {
             this.templateObjects = {
                 repositoriesController: repositoriesController
             };
+            userController.then(function(userController) {
+                self.userController = userController;
+            });
         }
     },
 
@@ -43,6 +46,10 @@ exports.Main = Montage.create(Component, {
                 this.templateObjects.newAppFormCondition.condition = true;
             }
         }
+    },
+
+    userController: {
+        value: null
     },
 
     templateObjects: {
