@@ -33,6 +33,18 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    enterDocument: {
+        value: function (firstTime) {
+            if (!firstTime) {
+                return;
+            }
+
+            if (window.location.hash === "#new") {
+                this.templateObjects.newAppFormCondition.condition = true;
+            }
+        }
+    },
+
     templateObjects: {
         value: null
     },
