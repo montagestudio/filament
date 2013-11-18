@@ -741,7 +741,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 };
                 item.name = objectName;
                 item.html = '<div data-montage-id="' + montageId + '"></div>';
-                item.icon = "http://client/assets/img/library-icon.png";
+                //TODO well this can't be hardcoded
+                item.icon = "/assets/img/library-icon.png";
             }
 
             return item;
