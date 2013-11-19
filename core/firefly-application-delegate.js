@@ -1,5 +1,7 @@
 var ApplicationDelegate = require("./application-delegate").ApplicationDelegate,
-    Promise = require("montage/core/promise").Promise;
+    Promise = require("montage/core/promise").Promise,
+    //TODO I wouldn't expect the project list to house this functionality
+    repositoriesController = require("project-list/core/repositories-controller").repositoriesController;
 
 exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
 
@@ -84,6 +86,24 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
 
                 return populatedRepositoryPromise;
             });
+        }
+    },
+
+    didLoadProject: {
+        value: function () {
+            var superPromise = this.super();
+
+            superPromise.then(function () {
+                return this._bridgePromise;
+            }).then(function (bridge) {
+                var project = {
+                    owner: bridge.repositoryController.owner,
+                    repo: bridge.repositoryController.repo
+                };
+                repositoriesController.addRepositoryToRecent(project);
+            }).done();
+
+            return superPromise;
         }
     },
 

@@ -5,8 +5,7 @@ var Montage = require("montage/core/core").Montage,
     ViewController = require("core/view-controller").ViewController,
     PreviewController = require("core/preview-controller").PreviewController,
     ProjectController = require("core/project-controller").ProjectController,
-    ReelDocument = require("core/reel-document").ReelDocument,
-    repositoriesController = require("project-list/core/repositories-controller").repositoriesController;
+    ReelDocument = require("core/reel-document").ReelDocument;
 
 var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
@@ -223,13 +222,6 @@ exports.ApplicationDelegate = Montage.create(Montage, {
      */
     didLoadProject: {
         value: function () {
-            this._bridgePromise.then(function (bridge) {
-                var project = {
-                    owner: bridge.repositoryController.owner,
-                    repo: bridge.repositoryController.repo
-                };
-                repositoriesController.addRepositoryToRecent(project);
-            }).done();
             return Promise.resolve();
         }
     },
