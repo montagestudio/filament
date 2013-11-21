@@ -56,7 +56,7 @@ exports.BindingJig = Montage.create(Component, {
         value: function (overlay, target) {
             // don't dismiss the overlay if the user can drag the target
             while (target) {
-                if (target.draggable) {
+                if (target.draggable || target.classList.contains("matte-Autocomplete--popup")) {
                     return false;
                 }
                 target = target.parentElement;
