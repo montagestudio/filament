@@ -1,10 +1,25 @@
 .CodeEditor {
+    position: relative;
+    -webkit-flex: 1;
     display: -webkit-flex;
-    -webkit-flex: auto;
-    -webkit-justify-content: center;
-    -webkit-align-items: center;
 }
 
-.CodeEditor .CodeEditorView {
-    -webkit-box-shadow: 0 2px 5px hsl(0,0%,20%);
+
+/* CodeMirror overrides ------------------------------ */
+
+.CodeEditor .CodeMirror {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: auto;
+}
+
+.CodeEditor .CodeMirror-lines {
+  padding: 12px 0; /* Vertical padding around content */
+}
+
+.CodeEditor .CodeMirror pre {
+  padding: 0 12px; /* Horizontal padding of content */
 }
