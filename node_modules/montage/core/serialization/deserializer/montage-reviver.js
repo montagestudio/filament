@@ -4,6 +4,7 @@ var PropertiesDeserializer = require("./properties-deserializer").PropertiesDese
 var SelfDeserializer = require("./self-deserializer").SelfDeserializer;
 var UnitDeserializer = require("./unit-deserializer").UnitDeserializer;
 var ModuleReference = require("core/module-reference").ModuleReference;
+var Alias = require("core/serialization/alias").Alias;
 
 var Promise = require("core/promise").Promise;
 
@@ -76,7 +77,10 @@ var ModuleLoader = Montage.specialize( {
     }
 });
 
-var MontageReviver = exports.MontageReviver = Montage.specialize.call(Reviver, {
+/**
+ * @class MontageReviver
+ */
+var MontageReviver = exports.MontageReviver = Montage.specialize.call(Reviver, /** @lends MontageReviver# */ {
     moduleLoader: {value: null},
 
     /**
@@ -111,6 +115,35 @@ var MontageReviver = exports.MontageReviver = Montage.specialize.call(Reviver, {
         }
     },
 
+    _checkLabel: {
+        value: function(label, isTemplateProperty) {
+            if (isTemplateProperty && label[0] !== ":") {
+                return new Error("Aliases can only be defined in template properties (start with a colon (:)), \"" + label + "\".");
+            } else if (!isTemplateProperty && label[0] === ":") {
+                return new Error("Only aliases are allowed as template properties (start with a colon (:), \"" + label + "\".");
+            }
+        }
+    },
+
+    reviveRootObject: {
+        value: function(value, context, label) {
+            var error,
+                isAlias = "alias" in value;
+
+            // Only aliases are allowed as template properties, everything else
+            // should be rejected as an error.
+            error = this._checkLabel(label, isAlias);
+            if (error) {
+                return Promise.reject(error);
+            }
+
+            // TODO: this.super returns noop here in some situations (just run
+            // montage-deserializer-spec to reproduce
+            //return this.super(value, context, label);
+            return Reviver.prototype.reviveRootObject.apply(this, arguments);
+        }
+    },
+
     reviveElement: {
         value: function(value, context, label) {
             var elementId = value["#"],
@@ -141,9 +174,11 @@ var MontageReviver = exports.MontageReviver = Montage.specialize.call(Reviver, {
 
     reviveCustomObject: {
         value: function(value, context, label) {
-            //if ("prototype" in value || "object" in value) {
+            if ("alias" in value) {
+                return this.reviveAlias(value, context, label);
+            } else {
                 return this.reviveMontageObject(value, context, label);
-            //}
+            }
         }
     },
 
@@ -307,6 +342,16 @@ var MontageReviver = exports.MontageReviver = Montage.specialize.call(Reviver, {
         }
     },
 
+    reviveAlias: {
+        value: function(value, context, label) {
+            var alias = new Alias();
+            alias.value = value.alias;
+
+            context.setObjectLabel(alias, label);
+            return alias;
+        }
+    },
+
     didReviveObjects: {
         value: function(objects, context) {
             var self = this,
@@ -354,21 +399,25 @@ var MontageReviver = exports.MontageReviver = Montage.specialize.call(Reviver, {
                 unitNames,
                 unitDeserializer;
 
-            for (var i = 0, unitsDesc; unitsDesc = unitsToDeserialize[i]; i++) {
-                unitNames = unitsDesc.unitNames;
+            try {
+                for (var i = 0, unitsDesc; unitsDesc = unitsToDeserialize[i]; i++) {
+                    unitNames = unitsDesc.unitNames;
 
-                for (var j = 0, unitName; unitName = unitNames[j]; j++) {
-                    if (unitName in unitsDesc.objectDesc) {
-                        unitDeserializer = new UnitDeserializer()
-                            .initWithContext(context);
-                        units[unitName](unitDeserializer, unitsDesc.object, unitsDesc.objectDesc[unitName]);
+                    for (var j = 0, unitName; unitName = unitNames[j]; j++) {
+                        if (unitName in unitsDesc.objectDesc) {
+                            unitDeserializer = new UnitDeserializer()
+                                .initWithContext(context);
+                            units[unitName](unitDeserializer, unitsDesc.object, unitsDesc.objectDesc[unitName]);
+                        }
                     }
                 }
+            } catch (ex) {
+                return Promise.reject(ex);
             }
         }
     }
 
-}, {
+}, /** @lends MontageReviver. */ {
     _unitRevivers: {value: Object.create(null)},
     _unitNames: {value: []},
 
