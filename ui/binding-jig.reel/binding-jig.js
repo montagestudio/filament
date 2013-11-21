@@ -143,6 +143,20 @@ exports.BindingJig = Montage.create(Component, {
             this.existingBinding = null;
             this.bindingModel = null;
         }
-    }
+    },
 
+    targetPathAutocompleteShouldGetSuggestions: {
+        value: function(autocomplete, searchTerm) {
+            if (searchTerm.trim()[0] === "@") {
+                var search = searchTerm.slice(1);
+                var suggestions = [];
+                this.editingDocument.templateNodes.forEach(function (node) {
+                    if (node.component && node.component.identifier.startsWith(search)) {
+                        suggestions.push("@" + node.component.identifier);
+                    }
+                });
+                autocomplete.suggestions = suggestions;
+            }
+        }
+    }
 });

@@ -134,6 +134,20 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
+
+        "targetPathAutocomplete": {
+            "prototype": "matte/ui/autocomplete/autocomplete.reel",
+            "properties": {
+                "element": {"#": "targetPathAutocomplete"},
+                "delegate": {"@": "owner"},
+                "delay": 100,
+                "minLength": 2,
+                "separator": {
+                    "value" : " ",
+                    "distinct" : false
+                }
+            }
         }
 
     }
@@ -147,7 +161,8 @@
             
         <section class="Jig-section BindingJig-section--target">
             <label class="Jig-label">Target Path</label>
-            <input data-montage-id="targetPath" class="Jig-input" type="text">
+            <input style="display:none" data-montage-id="targetPath" class="Jig-input" type="text">
+            <input data-montage-id="targetPathAutocomplete" class="Jig-input" type="text"></input>
         </section>
 
         <section class="Jig-section BindingJig-section--direction">
