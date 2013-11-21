@@ -338,6 +338,19 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    nodeProxyForXPath: {
+        value: function (xpath) {
+            var element = this.htmlDocument.evaluate(
+                        xpath,
+                        this.htmlDocument,
+                        null,
+                        XPathResult.FIRST_ORDERED_NODE_TYPE,
+                        null
+                    ).singleNodeValue;
+            return this.nodeProxyForNode(element);
+        }
+    },
+
     _buildSerializationObjects: {
         value: function () {
             var template = this._template,
@@ -1827,6 +1840,77 @@ exports.ReelDocument = EditingDocument.specialize({
                 isOwner = !!(nodeProxy.component && "owner" === nodeProxy.component.label);
 
             return !(isBody || isOwner);
+        }
+    },
+
+    /**
+     * Move a nodeProxy to become the previous sibling of a given node
+     *
+     * @param {NodeProxy} nodeProxy The node to move
+     * @param {NodeProxy} nextSiblingProxy The node before wich to move
+     * @return {NodeProxy} The node proxy that has been moved
+     */
+    moveTemplateNodeBeforeNode: {
+        value: function (nodeProxy, nextSiblingProxy) {
+            var oldNextSibling = nodeProxy.nextSibling;
+            nodeProxy.parentNode.removeChild(nodeProxy);
+            nextSiblingProxy.parentNode.insertBefore(nodeProxy, nextSiblingProxy);
+
+            if (oldNextSibling) {
+                this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeBeforeNode, this, nodeProxy, oldNextSibling]));
+            } else {
+                this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeChildNode, this, nodeProxy, nodeProxy.parentNode]));
+            }
+            this.editor.refresh();
+            return nodeProxy;
+        }
+    },
+
+    /**
+     * Move a nodeProxy to be the next sibling of the a given node
+     * @param {nodeProxy} nodeProxy The node to move
+     * @param {NodeProxy} previousSiblingProxy The node after wich to move
+     * @return {NodeProxy} The node proxy that has been moved
+     */
+    moveTemplateNodeAfterNode: {
+        value: function (nodeProxy, previousSiblingProxy) {
+            var oldNextSibling = nodeProxy.nextSibling,
+                parentNode = nodeProxy.parentNode;
+            parentNode.removeChild(nodeProxy);
+            previousSiblingProxy.parentNode.insertBefore(nodeProxy, previousSiblingProxy.nextSibling);
+
+            if (oldNextSibling) {
+                this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeBeforeNode, this, nodeProxy, oldNextSibling]));
+            } else {
+                this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeChildNode, this, nodeProxy, parentNode]));
+            }
+
+            this.editor.refresh();
+            return nodeProxy;
+        }
+    },
+
+    /**
+     * Move a nodeProxy to be the first child of the a given node
+     * @param {nodeProxy} nodeProxy The node to move
+     * @param {NodeProxy} previousSiblingProxy The node to become the parent node
+     * @return {NodeProxy} The node proxy that has been moved
+     */
+    moveTemplateNodeChildNode: {
+        value: function (nodeProxy, parentNode) {
+            var oldParentNode = nodeProxy.parentNode,
+                oldNextSibling = nodeProxy.nextSibling;
+            oldParentNode.removeChild(nodeProxy);
+            parentNode.appendChild(nodeProxy);
+
+            if (oldNextSibling) {
+                this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeBeforeNode, this, nodeProxy, oldNextSibling]));
+            } else {
+                this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeChildNode, this, nodeProxy, parentNode]));
+            }
+
+            this.editor.refresh();
+            return nodeProxy;
         }
     },
 

@@ -80,9 +80,11 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function (event) {
             event.dataTransfer.effectAllowed = "copyMove";
 
-            var nodeInfo = this.nodeInfo;
-
-            var component = nodeInfo.component;
+            var nodeInfo = this.nodeInfo,
+                component = nodeInfo.component,
+                uuid = this.nodeInfo.uuid,
+                sourceUuid = "x-montage-uuid/" + uuid;
+            event.dataTransfer.setData(sourceUuid, uuid);
             if (component) {
                 event.dataTransfer.setData(MimeTypes.SERIALIZATION_OBJECT_LABEL, component.label);
             }
@@ -112,8 +114,24 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
 
     acceptsDropAddElement: {
         value: function (evt) {
-            return evt.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 ||
-                evt.dataTransfer.types.indexOf(MimeTypes.HTML_ELEMENT) !== -1;
+            return evt.dataTransfer.types &&
+                (
+                    evt.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 ||
+                    evt.dataTransfer.types.indexOf(MimeTypes.HTML_ELEMENT) !== -1
+                );
+        }
+    },
+
+    acceptsMoveDrop: {
+        value: function (evt) {
+            var types = evt.dataTransfer.types,
+                uuid = this._getMontageUUID(types);
+
+            return types && (uuid && uuid !== this.nodeInfo.uuid) &&
+                (
+                    types.indexOf(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) !== -1 ||
+                    types.indexOf(MimeTypes.MONTAGE_TEMPLATE_XPATH) !== -1
+                );
         }
     },
 
@@ -132,6 +150,21 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     handleAddelementout: {
         value: function (evt) {
             this.addElementOut();
+        }
+    },
+
+    _getMontageUUID: {
+        value: function (types) {
+            if (!types) {
+                return false;
+            }
+            var uuid = false;
+            types.forEach(function (type, i) {
+                if (type.startsWith("x-montage-uuid")) {
+                    uuid = type.split("/")[1].toUpperCase();
+                }
+            });
+            return uuid;
         }
     },
 
@@ -157,7 +190,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     handleDragenter: {
         enumerable: false,
         value: function (evt) {
-            if (this.acceptsDropAddElement(evt)) {
+            if (this.acceptsDropAddElement(evt) || this.acceptsMoveDrop(evt)) {
                 this.addElementOver();
             }
             if (this.acceptsDrop(evt) && (this._nodeSegment === evt.target || this._nodeSegment.parentOf(evt.target))) {
@@ -260,6 +293,43 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                 parentNode: this.nodeInfo,
                 htmlElement: evt.detail.htmlElement
             });
+        }
+    },
+
+    handleMoveTemplate: {
+        value: function (evt) {
+            var nodeInfo = this.nodeInfo,
+                editingDocument = nodeInfo._editingDocument,
+                detail = evt.detail,
+                montageId = detail.montageId,
+                xpath = detail.xpath,
+                dispatchedDetail = {},
+                eventName;
+
+            if (montageId) {
+                dispatchedDetail.nodeProxy = editingDocument.nodeProxyForMontageId(montageId);
+            } else if (xpath) {
+                dispatchedDetail.nodeProxy = editingDocument.nodeProxyForXPath(xpath);
+            } else {
+                throw new Error("Can not find the node to move");
+            }
+
+            switch (evt._target.identifier) {
+            case "addElementBefore":
+                dispatchedDetail.nextSibling = this.nodeInfo;
+                eventName = "moveBeforeNode";
+                break;
+            case "addElementAfter":
+                dispatchedDetail.previousSibling = this.nodeInfo;
+                eventName = "moveAfterNode";
+                break;
+            case "addChildElement":
+                dispatchedDetail.parentNode = this.nodeInfo;
+                eventName = "moveChildNode";
+                break;
+            }
+
+            this.dispatchEventNamed(eventName, true, true, dispatchedDetail);
         }
     },
 

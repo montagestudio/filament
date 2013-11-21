@@ -274,7 +274,8 @@ exports.ComponentEditor = Editor.specialize({
                 documentEditor = this.currentDocument,
                 domExplorer = this.templateObjects.domExplorer,
                 templateExplorer = this.templateObjects.templateExplorer,
-                parentComponentId;
+                parentComponentId,
+                element;
 
             this.clearHighlighting();
             if (!highlight) {return;}
@@ -283,15 +284,7 @@ exports.ComponentEditor = Editor.specialize({
             if (xpath === "/html/body") {
                 return;
             }
-
-            var element = documentEditor.htmlDocument.evaluate(
-                    xpath,
-                    documentEditor.htmlDocument,
-                    null,
-                    XPathResult.FIRST_ORDERED_NODE_TYPE,
-                    null
-                ).singleNodeValue;
-            var nodeProxy = documentEditor.nodeProxyForNode(element);
+            var nodeProxy = documentEditor.nodeProxyForXPath(xpath);
             // handle highlighting at the component level if the DOM element is not found
             while (!nodeProxy && parentComponents.length > 0 && (parentComponentId = parentComponents.shift())) {
                 nodeProxy = documentEditor.nodeProxyForMontageId(parentComponentId);

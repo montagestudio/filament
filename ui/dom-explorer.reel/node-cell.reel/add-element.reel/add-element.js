@@ -41,12 +41,24 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
         }
     },
 
-    acceptsDrop: {
+    acceptsInsertionDrop: {
         value: function (evt) {
-            return evt.dataTransfer.types &&
+            var types = evt.dataTransfer.types;
+            return types &&
                 (
-                    evt.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 ||
-                    evt.dataTransfer.types.indexOf(MimeTypes.HTML_ELEMENT) !== -1
+                    types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 ||
+                    types.indexOf(MimeTypes.HTML_ELEMENT) !== -1
+                );
+        }
+    },
+
+    acceptsMoveDrop: {
+        value: function (evt) {
+            var types = evt.dataTransfer.types;
+            return types &&
+                (
+                    types.indexOf(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) !== -1 ||
+                    types.indexOf(MimeTypes.MONTAGE_TEMPLATE_XPATH) !== -1
                 );
         }
     },
@@ -54,7 +66,10 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
     handleDragover: {
         enumerable: false,
         value: function (evt) {
-            if (this.acceptsDrop(evt)) {
+            if (this.acceptsInsertionDrop(evt)) {
+                evt.preventDefault();
+                evt.dataTransfer.dropEffect = "copy";
+            } else if (this.acceptsMoveDrop(evt)) {
                 evt.preventDefault();
                 evt.dataTransfer.dropEffect = "copy";
             } else {
@@ -66,7 +81,7 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
     handleDragenter: {
         enumerable: false,
         value: function (evt) {
-            if (this.acceptsDrop(evt)) {
+            if (this.acceptsInsertionDrop(evt)) {
                 this.isDropTarget = true;
             }
         }
@@ -74,7 +89,7 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
 
     handleDragleave: {
         value: function (evt) {
-            if (this.acceptsDrop(evt)) {
+            if (this.acceptsInsertionDrop(evt)) {
                 this.isDropTarget = false;
             }
         }
@@ -83,20 +98,36 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
     handleDrop: {
         enumerable: false,
         value: function (evt) {
+            var dataTransfer = evt.dataTransfer,
+                types = dataTransfer.types;
             evt.stop();
 
-            if (evt.dataTransfer.types.indexOf(MimeTypes.HTML_ELEMENT) !== -1) {
-                var html = evt.dataTransfer.getData(MimeTypes.HTML_ELEMENT);
+            if (types.indexOf(MimeTypes.HTML_ELEMENT) !== -1) {
+                // insert new element from html string
+                var html = dataTransfer.getData(MimeTypes.HTML_ELEMENT);
                 this.dispatchEventNamed("insertElementAction", true, true, {
                     htmlElement: html
                 });
-            } else {
+            } else if (types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1) {
+                // insert new element from
                 // TODO: security issues?
-                var data = evt.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
+                var data = dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
                     transferObject = JSON.parse(data);
 
                 this.dispatchEventNamed("insertTemplateAction", true, true, {
                     transferObject: transferObject
+                });
+            } else if (types.indexOf(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) !== -1) {
+                // move a component
+                var montageId = dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_ELEMENT);
+                this.dispatchEventNamed("moveTemplate", true, true, {
+                    montageId: montageId
+                });
+            } else if (types.indexOf(MimeTypes.MONTAGE_TEMPLATE_XPATH) !== -1) {
+                // move an HTML node
+                var xpath = dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_XPATH);
+                this.dispatchEventNamed("moveTemplate", true, true, {
+                    xpath: xpath
                 });
             }
             this.isDropTarget = false;

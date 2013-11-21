@@ -220,6 +220,48 @@ describe("core/reel-document-template-editing-spec", function () {
         });
     });
 
+    describe("moving a node", function () {
+
+        it("should move a node before a given node", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var movedElement = reelDocument.htmlDocument.getElementById("foo"),
+                    movedNodeProxy = reelDocument.nodeProxyForNode(movedElement),
+                    beforeElement = reelDocument.htmlDocument.getElementById("removeMe"),
+                    beforeNodeProxy = reelDocument.nodeProxyForNode(beforeElement);
+
+                reelDocument.moveTemplateNodeBeforeNode(movedNodeProxy, beforeNodeProxy);
+                expect(movedNodeProxy.nextSibling).toBe(beforeNodeProxy);
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should move a node after a given node", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var movedElement = reelDocument.htmlDocument.getElementById("foo"),
+                    movedNodeProxy = reelDocument.nodeProxyForNode(movedElement),
+                    afterElement = reelDocument.htmlDocument.getElementById("removeMe"),
+                    afterNodeProxy = reelDocument.nodeProxyForNode(afterElement);
+
+                reelDocument.moveTemplateNodeAfterNode(movedNodeProxy, afterNodeProxy);
+                expect(movedNodeProxy).toBe(afterNodeProxy.nextSibling);
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should move a node to be child of a given node", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var movedElement = reelDocument.htmlDocument.getElementById("foo"),
+                    movedNodeProxy = reelDocument.nodeProxyForNode(movedElement),
+                    parentElement = reelDocument.htmlDocument.getElementById("removeMe"),
+                    parentNodeProxy = reelDocument.nodeProxyForNode(parentElement);
+
+                reelDocument.moveTemplateNodeChildNode(movedNodeProxy, parentNodeProxy);
+                expect(movedNodeProxy.parentNode).toBe(parentNodeProxy);
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+    });
+
     describe("removing a component-associated leaf node", function () {
 
         it("should remove the node from the template's DOM", function () {
