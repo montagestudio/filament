@@ -91,8 +91,6 @@ var CodeEditorDocument = exports.CodeEditorDocument = EditingDocument.specialize
                 return "html";
             } else if (CodeEditorDocument.editorFileMatchJson(fileUrl)) {
                 return "json";
-            } else if (CodeEditorDocument.editorFileMatchMeta(fileUrl)) {
-                return "meta";
             }
             return "text";
         }
@@ -123,13 +121,6 @@ var CodeEditorDocument = exports.CodeEditorDocument = EditingDocument.specialize
         enumerable:false,
         value:function (fileUrl) {
             return (/\.json\/?$/).test(fileUrl);
-        }
-    },
-
-    editorFileMatchMeta:{
-        enumerable:false,
-        value:function (fileUrl) {
-            return (/\.meta\/?$/).test(fileUrl);
         }
     },
 
