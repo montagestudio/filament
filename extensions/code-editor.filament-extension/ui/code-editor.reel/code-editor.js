@@ -95,19 +95,6 @@ exports.CodeEditor = Editor.specialize ({
                 if (this.currentDocument && this.currentDocument.codeEditorEmbeddedDocument) {
                     this._codeMirror.swapDoc(this.currentDocument.codeEditorEmbeddedDocument);
                 }
-
-                // HACK need to wait until the styling affects the element in
-                // order to ask codemirror to recalculate its size correctly.
-                var element = this.element;
-                var parentElement = (this.ownerComponent ? this.ownerComponent.element.parentElement : this.element.parentElement);
-
-                setTimeout(function styleChecker() {
-                    if (getComputedStyle(element).width === getComputedStyle(parentElement).width) {
-                        setTimeout(styleChecker, 50);
-                    } else {
-                        codemirror.refresh();
-                    }
-                }, 0);
             }
         }
     },
