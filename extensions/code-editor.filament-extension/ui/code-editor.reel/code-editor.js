@@ -71,9 +71,11 @@ exports.CodeEditor = Editor.specialize ({
         }
     },
 
-    draw: {
+    getContent: {
         value: function() {
-
+            if (this._codeMirror) {
+                return this._codeMirror.getValue();
+            }
         }
     },
 
