@@ -8,10 +8,10 @@ var Editor = require("palette/ui/editor.reel").Editor;
 var Promise = require("montage/core/promise").Promise;
 require("./lib/codemirror");
 var CodeMirror = window.CodeMirror;
-require("./mode/javascript/javascript");
-require("./mode/css/css");
-require("./mode/xml/xml");
-require("./mode/htmlmixed/htmlmixed");
+require("./lib/mode/javascript/javascript");
+require("./lib/mode/css/css");
+require("./lib/mode/xml/xml");
+require("./lib/mode/htmlmixed/htmlmixed");
 
 /**
  Description TODO
