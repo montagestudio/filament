@@ -1,9 +1,8 @@
 var Promise = require("montage/core/promise").Promise;
 var CodeEditor = require("ui/code-editor.reel").CodeEditor;
-var EditingDocument = require("palette/core/editing-document").EditingDocument;
+var Document = require("palette/core/document").Document;
 
-
-var CodeEditorDocument = exports.CodeEditorDocument = EditingDocument.specialize({
+var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
 
     constructor: {
         value: function CodeEditorDocument() {
@@ -17,7 +16,7 @@ var CodeEditorDocument = exports.CodeEditorDocument = EditingDocument.specialize
 
     init: {
         value: function (fileUrl, packageRequire, content) {
-            var self = EditingDocument.init.call(this, fileUrl, packageRequire);
+            var self = this.super(fileUrl);
             self.content = content;
 
             self._fileType = CodeEditorDocument.editorFileType(fileUrl);
