@@ -23,6 +23,7 @@ exports.CodeEditor = Editor.specialize ({
     constructor: {
         value: function CodeEditor() {
             this.super();
+            this._openDocuments = Object.create(null);
         }
     },
 
@@ -71,6 +72,13 @@ exports.CodeEditor = Editor.specialize ({
         }
     },
 
+    /**
+     * A dictionary of document uuid -> codemirror document.
+     */
+    _openDocuments: {
+        value: null
+    },
+
     getContent: {
         value: function() {
             if (this._codeMirror) {
@@ -105,14 +113,27 @@ exports.CodeEditor = Editor.specialize ({
         }
     },
 
+    _isDocumentOpen: {
+        value: function(document) {
+            return document.uuid in this._openDocuments;
+        }
+    },
 
     openDocument: {
         value: function (document) {
             this.super(document);
+            // This function can be called with null.
+            if (!document) {
+                return;
+            }
+
             this._mode = null;
+            if (!this._isDocumentOpen(document)) {
+                this._openDocuments[document.uuid] = CodeMirror.Doc(this.currentDocument.content, this.mode, 0);
+            }
             if (this.currentDocument) {
                 if (this.currentDocument.codeEditorEmbeddedDocument === null) {
-                    this.currentDocument.codeEditorEmbeddedDocument = CodeMirror.Doc(this.currentDocument.content, this.mode, 0);
+                    this.currentDocument.codeEditorEmbeddedDocument = this._openDocuments[document.uuid];
                 }
                 if (this._codeMirror) {
                     this._codeMirror.swapDoc(this.currentDocument.codeEditorEmbeddedDocument);
@@ -124,6 +145,7 @@ exports.CodeEditor = Editor.specialize ({
     closeDocument: {
         value: function (document) {
             this.super(document);
+            delete this._openDocuments[document.uuid];
             if (document) {
                 if (document.codeEditorEmbeddedDocument) {
                     document.content = document.codeEditorEmbeddedDocument.getValue();
