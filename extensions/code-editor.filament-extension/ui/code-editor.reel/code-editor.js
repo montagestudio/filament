@@ -131,6 +131,7 @@ exports.CodeEditor = Editor.specialize ({
             if (!this._isDocumentOpen(document)) {
                 this._openDocuments[document.uuid] = CodeMirror.Doc(this.currentDocument.content, this.mode, 0);
                 document.addEventListener("didSave", this, false);
+                document.addEventListener("willSave", this, false);
             }
             if (this.currentDocument) {
                 if (this.currentDocument.codeEditorEmbeddedDocument === null) {
@@ -148,11 +149,22 @@ exports.CodeEditor = Editor.specialize ({
             this.super(document);
             delete this._openDocuments[document.uuid];
             document.removeEventListener("didSave", this, false);
+            document.removeEventListener("willSave", this, false);
             if (document) {
                 if (document.codeEditorEmbeddedDocument) {
                     document.content = document.codeEditorEmbeddedDocument.getValue();
                 }
                 document.codeEditorInstance = null;
+            }
+        }
+    },
+
+    handleWillSave: {
+        value: function(event) {
+            var document = event.target;
+
+            if (this._codeMirror && document === this._currentDocument) {
+                document.content = this.getContent();
             }
         }
     },

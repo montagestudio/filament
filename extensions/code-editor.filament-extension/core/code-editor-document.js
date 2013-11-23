@@ -46,8 +46,8 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
     save: {
         value: function (location, dataWriter) {
             var self = this;
-            this.content = this.codeEditorEmbeddedDocument.getValue();
 
+            this.dispatchEventNamed("willSave", true, false);
             return Promise.when(dataWriter(self.content, location)).then(function (value) {
                 self._changeCount = 0;
                 self.dispatchEventNamed("didSave", true, false);
