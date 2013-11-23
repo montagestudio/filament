@@ -54,28 +54,6 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
                 return value;
             });
         }
-    },
-
-    _codeEditorEmbeddedDocument: {
-        value: null
-    },
-
-    codeEditorEmbeddedDocument: {
-        get: function() {
-            return this._codeEditorEmbeddedDocument;
-        },
-        set: function(document) {
-            if (this._codeEditorEmbeddedDocument) {
-                this._codeEditorEmbeddedDocument.off("change");
-            }
-            this._codeEditorEmbeddedDocument = document;
-            if (this._codeEditorEmbeddedDocument) {
-                var self = this;
-                this._codeEditorEmbeddedDocument.on("change", function(document, changes) {
-                    self._changeCount = (self._codeEditorEmbeddedDocument.isClean() ? 0 : 1);
-                });
-            }
-        }
     }
 
 },{

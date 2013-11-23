@@ -24,6 +24,7 @@ exports.CodeEditor = Editor.specialize ({
         value: function CodeEditor() {
             this.super();
             this._openDocuments = Object.create(null);
+            this.handleCodeMirrorDocumentChange = this.handleCodeMirrorDocumentChange.bind(this);
         }
     },
 
@@ -123,6 +124,7 @@ exports.CodeEditor = Editor.specialize ({
 
     openDocument: {
         value: function (document) {
+            var codeMirrorDocument;
             this.super(document);
             // This function can be called with null.
             if (!document) {
@@ -131,33 +133,36 @@ exports.CodeEditor = Editor.specialize ({
 
             this._mode = null;
             if (!this._isDocumentOpen(document)) {
-                this._openDocuments[document.uuid] = CodeMirror.Doc(this.currentDocument.content, this.mode, 0);
+                codeMirrorDocument = CodeMirror.Doc(this.currentDocument.content, this.mode, 0);
+                this._openDocuments[document.uuid] = codeMirrorDocument;
                 document.addEventListener("didSave", this, false);
                 document.addEventListener("willSave", this, false);
+                codeMirrorDocument.on("change", this.handleCodeMirrorDocumentChange);
             }
-            if (this.currentDocument) {
-                if (this.currentDocument.codeEditorEmbeddedDocument === null) {
-                    this.currentDocument.codeEditorEmbeddedDocument = this._openDocuments[document.uuid];
-                }
-                if (this._codeMirror) {
-                    this._codeMirror.swapDoc(this.currentDocument.codeEditorEmbeddedDocument);
-                }
+
+            if (this._codeMirror) {
+                this._codeMirror.swapDoc(this._openDocuments[document.uuid]);
             }
         }
     },
 
     closeDocument: {
         value: function (document) {
+            var codeMirrorDocument;
             this.super(document);
-            delete this._openDocuments[document.uuid];
+            // Not sure if this can be called with null just like openDocument
+            // so guard against it anyway.
+            if (!document) {
+                return;
+            }
+
+            codeMirrorDocument = this._openDocuments[document.uuid];
+            codeMirrorDocument.off("change", this.handleCodeMirrorDocumentChange);
             document.removeEventListener("didSave", this, false);
             document.removeEventListener("willSave", this, false);
-            if (document) {
-                if (document.codeEditorEmbeddedDocument) {
-                    document.content = document.codeEditorEmbeddedDocument.getValue();
-                }
-                document.codeEditorInstance = null;
-            }
+
+            delete this._openDocuments[document.uuid];
+            document.content = this.getContent();
         }
     },
 
@@ -174,8 +179,20 @@ exports.CodeEditor = Editor.specialize ({
     handleDidSave: {
         value: function() {
             if (this._codeMirror) {
-                console.log("change generation");
                 this._codeMirror.changeGeneration();
+            }
+        }
+    },
+
+    handleCodeMirrorDocumentChange: {
+        value: function(document) {
+            var codeMirrorDocument = this._openDocuments[this.currentDocument.uuid];
+
+            if (codeMirrorDocument === document) {
+                this.currentDocument.isDirty = true;
+            } else {
+                console.log(codeMirrorDocument, document);
+                console.log("Warning: Change in CodeMirror document that is not the current document!");
             }
         }
     }
