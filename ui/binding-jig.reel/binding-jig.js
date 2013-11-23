@@ -151,8 +151,8 @@ exports.BindingJig = Montage.create(Component, {
                 return;
             }
             var searchLabel = searchTerm.slice(1);
-            var i = searchLabel.indexOf("."); 
-            if (i != -1) {
+            var i = searchLabel.indexOf(".");
+            if (i !== -1) {
                 var searchProperty = searchLabel.slice(i + 1),
                     componentLabel = searchLabel.slice(0, i),
                     nodeProxy = this.editingDocument.nodeProxyForComponentLabel(componentLabel),
