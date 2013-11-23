@@ -170,7 +170,7 @@ exports.CodeEditor = Editor.specialize ({
         value: function(event) {
             var document = event.target;
 
-            if (this._codeMirror && document === this._currentDocument) {
+            if (this._codeMirror && document === this.currentDocument) {
                 document.content = this.getContent();
             }
         }
