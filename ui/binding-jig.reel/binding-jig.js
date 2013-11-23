@@ -147,11 +147,32 @@ exports.BindingJig = Montage.create(Component, {
 
     targetPathAutocompleteShouldGetSuggestions: {
         value: function(autocomplete, searchTerm) {
-            if (searchTerm.trim()[0] === "@") {
-                var search = searchTerm.slice(1);
+            if (searchTerm.trim()[0] !== "@") {
+                return;
+            }
+            var searchLabel = searchTerm.slice(1);
+            var i = searchLabel.indexOf("."); 
+            if (i != -1) {
+                var searchProperty = searchLabel.slice(i + 1),
+                    componentLabel = searchLabel.slice(0, i),
+                    nodeProxy = this.editingDocument.nodeProxyForComponentLabel(componentLabel),
+                    component = nodeProxy.component;
+                component.packageRequire.async(component.moduleId).get(component.exportName).get("blueprint")
+                    .then(function (blueprint) {
+                        var suggestions = [];
+                        blueprint.propertyBlueprints.forEach(function (property) {
+                            if (property.name.startsWith(searchProperty)) {
+                                suggestions.push("@" + componentLabel + "." + property.name);
+                            }
+                        });
+                        autocomplete.suggestions = suggestions;
+                    }, function (reason) {
+                        console.warn("Unable to load blueprint: ", reason.message ? reason.message : reason);
+                    }).done();
+            } else {
                 var suggestions = [];
                 this.editingDocument.templateNodes.forEach(function (node) {
-                    if (node.component && node.component.identifier.startsWith(search)) {
+                    if (node.component && node.component.identifier.startsWith(searchLabel)) {
                         suggestions.push("@" + node.component.identifier);
                     }
                 });
