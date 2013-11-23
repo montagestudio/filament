@@ -31,7 +31,7 @@ exports.CodeEditor = Editor.specialize ({
     tabSize: {value: 4},
     indentUnit: {value: 4},
     matchBrackets: {value: false},
-    lineNumbers: {value: false},
+    lineNumbers: {value: true},
     readOnly: {value: false},
 
     _codeMirror: {
