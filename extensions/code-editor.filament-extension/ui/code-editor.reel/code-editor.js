@@ -162,7 +162,6 @@ exports.CodeEditor = Editor.specialize ({
             document.removeEventListener("willSave", this, false);
 
             delete this._openDocuments[document.uuid];
-            document.content = this.getContent();
         }
     },
 
