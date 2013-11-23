@@ -145,7 +145,26 @@ exports.BindingJig = Montage.create(Component, {
         }
     },
 
-    targetPathAutocompleteShouldGetSuggestions: {
+    targetPathShouldGetSuggestions: {
+        value: function(autocomplete, searchTerm) {
+            var searchProperty = searchTerm,
+                component = this.bindingModel.targetObject;
+            component.packageRequire.async(component.moduleId).get(component.exportName).get("blueprint")
+                .then(function (blueprint) {
+                    var suggestions = [];
+                    blueprint.propertyBlueprints.forEach(function (property) {
+                        if (property.name.startsWith(searchProperty)) {
+                            suggestions.push(property.name);
+                        }
+                    });
+                    autocomplete.suggestions = suggestions;
+                }, function (reason) {
+                    console.warn("Unable to load blueprint: ", reason.message ? reason.message : reason);
+                }).done();
+        }
+    },
+
+    sourcePathShouldGetSuggestions: {
         value: function(autocomplete, searchTerm) {
             if (searchTerm.trim()[0] !== "@") {
                 return;
