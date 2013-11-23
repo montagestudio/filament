@@ -49,7 +49,7 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
 
             this.dispatchEventNamed("willSave", true, false);
             return Promise.when(dataWriter(self.content, location)).then(function (value) {
-                self._changeCount = 0;
+                self.isDirty = false;
                 self.dispatchEventNamed("didSave", true, false);
                 return value;
             });
