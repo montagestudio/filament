@@ -100,8 +100,10 @@ exports.CodeEditor = Editor.specialize ({
                     value: ""
                 });
 
-                if (this.currentDocument && this.currentDocument.codeEditorEmbeddedDocument) {
-                    this._codeMirror.swapDoc(this.currentDocument.codeEditorEmbeddedDocument);
+
+                if (this.currentDocument) {
+                    var codeMirrorDocument = this._openDocuments[this.currentDocument.uuid];
+                    codemirror.swapDoc(codeMirrorDocument);
                 }
             }
         }
