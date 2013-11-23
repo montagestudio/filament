@@ -49,8 +49,8 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
             this.content = this.codeEditorEmbeddedDocument.getValue();
 
             return Promise.when(dataWriter(self.content, location)).then(function (value) {
-                self.codeEditorEmbeddedDocument.changeGeneration();
                 self._changeCount = 0;
+                self.dispatchEventNamed("didSave", true, false);
                 return value;
             });
         }

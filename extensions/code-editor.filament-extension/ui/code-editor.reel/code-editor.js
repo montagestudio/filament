@@ -130,6 +130,7 @@ exports.CodeEditor = Editor.specialize ({
             this._mode = null;
             if (!this._isDocumentOpen(document)) {
                 this._openDocuments[document.uuid] = CodeMirror.Doc(this.currentDocument.content, this.mode, 0);
+                document.addEventListener("didSave", this, false);
             }
             if (this.currentDocument) {
                 if (this.currentDocument.codeEditorEmbeddedDocument === null) {
@@ -146,11 +147,21 @@ exports.CodeEditor = Editor.specialize ({
         value: function (document) {
             this.super(document);
             delete this._openDocuments[document.uuid];
+            document.removeEventListener("didSave", this, false);
             if (document) {
                 if (document.codeEditorEmbeddedDocument) {
                     document.content = document.codeEditorEmbeddedDocument.getValue();
                 }
                 document.codeEditorInstance = null;
+            }
+        }
+    },
+
+    handleDidSave: {
+        value: function() {
+            if (this._codeMirror) {
+                console.log("change generation");
+                this._codeMirror.changeGeneration();
             }
         }
     }
