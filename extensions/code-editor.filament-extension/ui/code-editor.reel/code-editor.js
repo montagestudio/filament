@@ -6,12 +6,12 @@
 var CodeEditorDocument = require("core/code-editor-document").CodeEditorDocument;
 var Editor = require("palette/ui/editor.reel").Editor;
 var Promise = require("montage/core/promise").Promise;
-require("./lib/codemirror");
+require("./codemirror/lib/codemirror");
 var CodeMirror = window.CodeMirror;
-require("./lib/mode/javascript/javascript");
-require("./lib/mode/css/css");
-require("./lib/mode/xml/xml");
-require("./lib/mode/htmlmixed/htmlmixed");
+require("./codemirror/mode/javascript/javascript");
+require("./codemirror/mode/css/css");
+require("./codemirror/mode/xml/xml");
+require("./codemirror/mode/htmlmixed/htmlmixed");
 
 /**
  Description TODO
