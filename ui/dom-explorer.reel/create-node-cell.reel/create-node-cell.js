@@ -3,7 +3,8 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    MimeTypes = require("core/mime-types");
+    MimeTypes = require("core/mime-types"),
+    emmet = require('core/filament-emmet');
 
 /**
  * @class CreateNodeCell
@@ -29,38 +30,12 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
         }
     },
 
-    _montageArg: {
+    _emmetTree: {
         value: null
     },
-
-    montageArg: {
-        set: function (value) {
-            this._montageArg = value;
-            this.needsDraw = true;
-        },
-        get: function () {
-            return this._montageArg;
-        }
-    },
-
-    _montageParam: {
-        value: null
-    },
-
-    montageParam: {
-        set: function (value) {
-            this._montageParam = value;
-            this.needsDraw = true;
-        },
-        get: function () {
-            return this._montageParam;
-        }
-    },
-
     _tagName: {
         value: null
     },
-
     tagName: {
         set: function (value) {
             this._tagName = value;
@@ -68,6 +43,36 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
         },
         get: function () {
             return this._tagName;
+        }
+    },
+
+    handleTagNameAction: {
+        value: function () {
+            var value = this._tagName;
+            var tree = emmet.expandAbbreviation(value);
+            if (!tree || !tree.children) {
+                return;
+            }
+            var node = tree.children[0];
+            this._emmetTree = tree;
+            this.tagName =  node.name();
+            // look for any data-montage-id attribute
+            var id = null;
+            var attributes = node.attributeList();
+            for (var i = 0; i < attributes.length; i++) {
+                if (attributes[i].name === "data-montage-id") {
+                    id = attributes[i].value;
+                }
+            }
+            if (id) {
+                this.montageId = id;
+            }
+        }
+    },
+
+    focusTagName: {
+        value: function () {
+            this.templateObjects.tagName.toggle();
         }
     },
 
@@ -88,20 +93,25 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
     handleDragstart: {
         value: function (evt) {
             if (!this.tagName) {return;}
+            var node = this._emmetTree.children[0],
+                json = {
+                name: node.name(),
+                attributes: []
+            };
+            var attributes = node.attributeList();
+            for (var i = 0; i < attributes.length; i++) {
+                json.attributes.push({
+                    name: attributes[i].name,
+                    value: attributes[i].value
+                });
+            }
+            if (this.montageId) {
+                json.attributes["data-montage-id"] = this.montageId;
+            }
 
             evt.dataTransfer.effectAllowed = "copyMove";
-            var element = document.createElement(this.tagName);
-            if (this.montageArg){
-                element.dataset.arg = this.montageArg;
-            }
-            if (this.montageParam){
-                element.dataset.param = this.montageParam;
-            }
-            if (this.montageId){
-                element.dataset.montageId = this.montageId;
-            }
-
-            evt.dataTransfer.setData(MimeTypes.HTML_ELEMENT, element.outerHTML);
+            evt.dataTransfer.setData(MimeTypes.JSON_NODE, JSON.stringify(json));
+            evt.dataTransfer.setData("text/plain", this._emmetTree.valueOf());
         }
     },
 
@@ -109,14 +119,7 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
         value: function () {
             this.tagName = null;
             this.montageId = null;
-            this.montageArg = null;
-            this.montageParam = null;
-        }
-    },
-
-    handleResetNodeButtonAction: {
-        value: function (evt) {
-            this.reset();
+            this._emmetTree = null;
         }
     },
 

@@ -47,7 +47,7 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
             return types &&
                 (
                     types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 ||
-                    types.indexOf(MimeTypes.HTML_ELEMENT) !== -1
+                    types.indexOf(MimeTypes.JSON_NODE) !== -1
                 );
         }
     },
@@ -81,7 +81,7 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
     handleDragenter: {
         enumerable: false,
         value: function (evt) {
-            if (this.acceptsInsertionDrop(evt)) {
+            if (this.acceptsInsertionDrop(evt) || this.acceptsMoveDrop(evt)) {
                 this.isDropTarget = true;
             }
         }
@@ -89,7 +89,7 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
 
     handleDragleave: {
         value: function (evt) {
-            if (this.acceptsInsertionDrop(evt)) {
+            if (this.acceptsInsertionDrop(evt) || this.acceptsMoveDrop(evt)) {
                 this.isDropTarget = false;
             }
         }
@@ -102,14 +102,15 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
                 types = dataTransfer.types;
             evt.stop();
 
-            if (types.indexOf(MimeTypes.HTML_ELEMENT) !== -1) {
-                // insert new element from html string
-                var html = dataTransfer.getData(MimeTypes.HTML_ELEMENT);
+            if (types.indexOf(MimeTypes.JSON_NODE) !== -1) {
+                // insert new element from json
+                var node = JSON.parse(dataTransfer.getData(MimeTypes.JSON_NODE));
+
                 this.dispatchEventNamed("insertElementAction", true, true, {
-                    htmlElement: html
+                    jsonNode: node
                 });
             } else if (types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1) {
-                // insert new element from
+                // insert new element from prototype
                 // TODO: security issues?
                 var data = dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
                     transferObject = JSON.parse(data);

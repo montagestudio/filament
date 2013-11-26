@@ -36,6 +36,18 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
         value: null
     },
 
+    shouldBeFocus: {
+        value: false
+    },
+
+    delegate: {
+        value: null
+    },
+
+    shouldSaveOnBlur: {
+        value: false
+    },
+
     prepareForActivationEvents: {
         value: function () {
             // Listen to start editing
@@ -68,11 +80,7 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
 
             this._inputValue = this.value;
             this.isEditing = true;
-
-            var self = this;
-            setTimeout(function () {
-                self.templateObjects.inputText.element.select();
-            }, 100);
+            this.shouldBeFocus = true;
         }
     },
 
@@ -129,11 +137,17 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
 
     handleBlur: {
         value: function () {
-            this.value = this._inputValue;
+            if (this.shouldSaveOnBlur && this.isEditing) {
+                this.save();
+            }
             this.isEditing = false;
+            this.shouldBeFocus = false;
         }
     },
 
+    /**
+     * handle tab selection
+     */
     handleFocusin: {
         value: function (evt) {
             if (evt.relatedTarget && evt.relatedTarget.getAttribute("tabindex")) {
@@ -158,6 +172,19 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
                 } else {
                     this.templateObjects.text.element.setAttribute("tabindex", this.tabindex);
                 }
+            }
+        }
+    },
+
+    didDraw: {
+        value: function () {
+            if (this.shouldBeFocus) {
+                // this needs to be fixed
+                //this.templateObjects.inputText.element.focus();
+                var self = this;
+                setTimeout(function() {
+                    self.templateObjects.inputText.element.select();
+                }, 200);
             }
         }
     }

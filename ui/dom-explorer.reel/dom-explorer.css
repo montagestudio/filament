@@ -2,6 +2,7 @@
     display: -webkit-flex;
     -webkit-flex-direction: column;
     overflow: hidden;
+    position: relative;
 }
 
 .NodeList {
@@ -31,6 +32,48 @@
     padding-top: 0px;
 }
 
+/* drawer toggle button */
+.DomExplorer .toggleDrawerButton {
+    position: absolute;
+    bottom: 14px;
+    left: 10px;
+    z-index: 1000;
+}
+
+.DomExplorer.drawerOpen .toggleDrawerButton {
+    -webkit-animation-duration: .5s;
+    -webkit-animation-name: plusToCross;
+    -webkit-transform:rotate(45deg);
+}
+
+.DomExplorer .toggleDrawerButton {
+    -webkit-animation-duration: .5s;
+    -webkit-animation-name: crossToPlus;
+    -webkit-transform:rotate(0deg);
+}
+
+@-webkit-keyframes plusToCross {
+    from {
+        -webkit-transform:rotate(0deg);
+    }
+    to {
+        -webkit-transform:rotate(45deg);
+    }
+}
+
+@-webkit-keyframes crossToPlus {
+    from {
+        -webkit-transform:rotate(45deg);
+    }
+    to {
+        -webkit-transform:rotate(0deg);
+    }
+}
+
+/* footer */
 .DomExplorer-footer.Panel-bar {
     border-top: 1px solid hsl(0,0%,85%);
+    overflow: hidden;
+    box-sizing: content-box;
+    border-radius: 0px;
 }

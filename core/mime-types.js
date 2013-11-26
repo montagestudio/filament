@@ -31,3 +31,7 @@ exports.MONTAGE_BINDING = "x-filament/x-montage-binding";
 // Represents a listener 
 // Value is an object with type, useCapture, listenerLabel and methodName properties
 exports.MONTAGE_LISTENER = "x-filament/x-montage-listener";
+
+// Represents an node 
+// Value is an HTML node element in a json simple format
+exports.JSON_NODE = "x-filament/x-montage-json-node";

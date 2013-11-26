@@ -1,0 +1,58 @@
+.Drawer.open {
+    -webkit-animation-duration: .5s;
+    -webkit-animation-name: slidein;
+    width: 100%;
+    visibility: visible;
+}
+
+.Drawer {
+    -webkit-animation-duration: .5s;
+    -webkit-animation-name: slideout;
+    width: 0;
+    visibility: hidden;
+    display: block;
+}
+
+.Drawer.hide {
+    display: none;
+}
+
+@-webkit-keyframes slidein {
+    0% {
+        width: 0;
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+    }
+    10% {
+        border-top-right-radius: 60px;
+        border-bottom-right-radius: 60px;
+    }
+    99%{
+        border-top-right-radius: 60px;
+        border-bottom-right-radius: 60px;
+    }
+    100% {
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+        width: 100%;
+    }
+}
+
+@-webkit-keyframes slideout {
+    0% {
+        width: 100%;
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+        visibility: visible;
+    }
+    10% {
+        border-top-right-radius: 60px;
+        border-bottom-right-radius: 60px;
+    }
+    100% {
+        width: 0;
+        border-top-right-radius: 60px;
+        border-bottom-right-radius: 60px;
+        visibility: hidden;
+    }
+}

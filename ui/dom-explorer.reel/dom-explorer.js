@@ -158,26 +158,19 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
             var detail = evt.detail,
                 transferObject,
-                html;
-
+                jsonNode;
+            // from library template
             if (transferObject = detail.transferObject) {
-
                 var serializationFragment = transferObject.serializationFragment;
                 var htmlFragment = transferObject.htmlFragment;
                 var parentNode = detail.parentNode;
 
                 this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, null, null).done();
-            } else if (html = detail.htmlElement) {
-                var newNode = this.editingDocument.createTemplateNode(html);
+            // from user input
+            } else if (jsonNode = detail.jsonNode) {
+                var newNode = this.editingDocument.createTemplateNodeFromJSONNode(jsonNode);
                 this.editingDocument.appendChildToTemplateNode(newNode, evt.detail.parentNode);
                 this.templateObjects.createNodeCell.reset();
-            } else {
-                var self =  this;
-                var insertionFunction = function (newNode) {
-                    self.editingDocument.appendChildToTemplateNode(newNode, evt.detail.parentNode);
-                };
-
-                this._insertElement(insertionFunction);
             }
         }
     },
@@ -186,7 +179,7 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         value: function (evt) {
             var detail = evt.detail,
                 transferObject,
-                html;
+                jsonNode;
 
             if (transferObject = detail.transferObject) {
                 var serializationFragment = transferObject.serializationFragment;
@@ -196,17 +189,10 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
                 this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, nextSibling, null).done();
 
-            } else if (html = detail.htmlElement) {
-                var newNode = this.editingDocument.createTemplateNode(html);
+            } else if (jsonNode = detail.jsonNode) {
+                var newNode = this.editingDocument.createTemplateNodeFromJSONNode(jsonNode);
                 this.editingDocument.insertNodeBeforeTemplateNode(newNode, evt.detail.nextSibling);
                 this.templateObjects.createNodeCell.reset();
-            } else {
-                var self =  this;
-                var insertionFunction = function (newNode) {
-                    self.editingDocument.insertNodeBeforeTemplateNode(newNode, evt.detail.nextSibling);
-                };
-
-                this._insertElement(insertionFunction);
             }
         }
     },
@@ -215,7 +201,7 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         value: function (evt) {
             var detail = evt.detail,
                 transferObject,
-                html;
+                jsonNode;
 
             if (transferObject = detail.transferObject) {
                 var serializationFragment = transferObject.serializationFragment;
@@ -225,17 +211,10 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
                 this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, nextSibling, null).done();
 
-            } else if (html = detail.htmlElement) {
-                var newNode = this.editingDocument.createTemplateNode(html);
+            } else if (jsonNode = detail.jsonNode) {
+                var newNode = this.editingDocument.createTemplateNodeFromJSONNode(jsonNode);
                 this.editingDocument.insertNodeAfterTemplateNode(newNode, evt.detail.previousSibling);
                 this.templateObjects.createNodeCell.reset();
-            } else {
-                var self =  this;
-                var insertionFunction = function (newNode) {
-                    self.editingDocument.insertNodeAfterTemplateNode(newNode, evt.detail.previousSibling);
-                };
-
-                this._insertElement(insertionFunction);
             }
         }
     },
@@ -268,6 +247,21 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
             this.editingDocument.moveTemplateNodeChildNode(nodeProxy, parentNode);
         }
-    }
+    },
 
+    isDrawerOpen: {
+        value: null
+    },
+
+    handleToggleDrawerAction: {
+        value: function (evt) {
+            this.isDrawerOpen = !this.isDrawerOpen;
+            if (this.isDrawerOpen) {
+                this.templateObjects.createNodeCell.focusTagName();
+            } else {
+                this.templateObjects.createNodeCell.reset();
+            }
+        }
+    }
 });
+

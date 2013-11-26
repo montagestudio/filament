@@ -1768,6 +1768,16 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    createTemplateNodeFromJSONNode: {
+        value: function (jsonNode) {
+            var element = document.createElement(jsonNode.name);
+            jsonNode.attributes.forEach(function (attr) {
+                element.setAttribute(attr.name, attr.value);
+            });
+            return NodeProxy.create().init(element, this);
+        }
+    },
+
     canAppendToTemplateNode: {
         value: function (nodeProxy) {
             var isBody = "body" === nodeProxy.tagName.toLowerCase();
