@@ -10,6 +10,11 @@
     -webkit-animation-name: slideout;
     width: 0;
     visibility: hidden;
+    display: block;
+}
+
+.Drawer.hide {
+    display: none;
 }
 
 @-webkit-keyframes slidein {

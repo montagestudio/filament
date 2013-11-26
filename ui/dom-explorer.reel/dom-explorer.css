@@ -40,7 +40,7 @@
     z-index: 1000;
 }
 
-.DomExplorer .toggleDrawerButton.close {
+.DomExplorer.drawerOpen .toggleDrawerButton {
     -webkit-animation-duration: .5s;
     -webkit-animation-name: plusToCross;
     -webkit-transform:rotate(45deg);

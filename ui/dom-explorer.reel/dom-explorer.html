@@ -11,7 +11,8 @@
                 "nodeTreeController": {"@": "nodeTreeController"}
             },
             "bindings": {
-                "isDrawerOpen": {"<->":"@drawer.isOpen"}
+                "isDrawerOpen": {"<->":"@drawer.isOpen"},
+                "classList.has('drawerOpen')": {"<-": "isDrawerOpen"}
             },
             "listeners": [
                 {
@@ -105,9 +106,6 @@
             "prototype": "matte/ui/button.reel",
             "properties": {
                 "element": {"#": "toggleDrawer"}
-            },
-            "bindings": {
-                "classList.has('close')": {"<-": "@owner.isDrawerOpen"}
             },
             "listeners": [
                 {
