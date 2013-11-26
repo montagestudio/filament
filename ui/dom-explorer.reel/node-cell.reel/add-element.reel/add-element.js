@@ -47,7 +47,7 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
             return types &&
                 (
                     types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 ||
-                    types.indexOf(MimeTypes.HTML_ELEMENT) !== -1
+                    types.indexOf(MimeTypes.JSON_NODE) !== -1
                 );
         }
     },
@@ -102,15 +102,15 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
                 types = dataTransfer.types;
             evt.stop();
 
-            if (evt.dataTransfer.types.indexOf(MimeTypes.JSON_NODE) !== -1) {
-                // insert new element json
-                var node = JSON.parse(evt.dataTransfer.getData(MimeTypes.JSON_NODE));
+            if (types.indexOf(MimeTypes.JSON_NODE) !== -1) {
+                // insert new element from json
+                var node = JSON.parse(dataTransfer.getData(MimeTypes.JSON_NODE));
 
                 this.dispatchEventNamed("insertElementAction", true, true, {
                     jsonNode: node
                 });
             } else if (types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1) {
-                // insert new element from
+                // insert new element from prototype
                 // TODO: security issues?
                 var data = dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
                     transferObject = JSON.parse(data);
