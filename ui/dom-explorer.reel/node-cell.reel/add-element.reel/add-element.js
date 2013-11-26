@@ -81,7 +81,7 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
     handleDragenter: {
         enumerable: false,
         value: function (evt) {
-            if (this.acceptsInsertionDrop(evt)) {
+            if (this.acceptsInsertionDrop(evt) || this.acceptsMoveDrop(evt)) {
                 this.isDropTarget = true;
             }
         }
@@ -89,7 +89,7 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
 
     handleDragleave: {
         value: function (evt) {
-            if (this.acceptsInsertionDrop(evt)) {
+            if (this.acceptsInsertionDrop(evt) || this.acceptsMoveDrop(evt)) {
                 this.isDropTarget = false;
             }
         }
