@@ -324,10 +324,10 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
             if (logger.isDebug) {
                 logger.debug('got suggestions: ', value);
             }
-
             this.loadingStatus = 'complete';
             this._suggestions = value;
             this.showPopup = (value && value.length > 0);
+            this.needsDraw = true;
         }
     },
 
@@ -352,7 +352,6 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
                 this.activeItemIndex = 0;
                 this.loadingStatus = 'loading';
                 var delegateFn = this.callDelegateMethod('ShouldGetSuggestions', this, searchTerm);
-
             }
         }
     },
@@ -414,6 +413,10 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
                 this._addEventListeners();
                 this.element.classList.add('matte-Autocomplete');
 
+                if (this.minLength === 0) {
+                    this.element.addEventListener("focus", this);
+                }
+
                 // create the Repetition for the suggestions
                 this.resultsController = new RangeController();
                 this.defineBinding("resultsController.content", {
@@ -462,7 +465,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
                 this._valueSyncedWithInputField = true;
             }
             var showPopup = this.showPopup;
-            if(this.value === '') {
+            if(this.value === '' && this.minLength > 0) {
                 showPopup = false;
             }
 
@@ -483,6 +486,12 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
         }
     },
 
+    handleFocus: {
+        value: function (evt) {
+            var searchTerm = this._tokens[this.activeTokenIndex];
+            this.performSearch("");
+        }
+    },
 
     handleKeyup: {
         enumerable: false,

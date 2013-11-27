@@ -172,6 +172,7 @@ exports.BindingJig = Montage.create(Component, {
             var searchLabel = searchTerm.slice(1);
             var i = searchLabel.indexOf(".");
             if (i !== -1) {
+                // looks for properties in blueprint
                 var searchProperty = searchLabel.slice(i + 1),
                     componentLabel = searchLabel.slice(0, i),
                     nodeProxy = this.editingDocument.nodeProxyForComponentLabel(componentLabel),
@@ -189,6 +190,7 @@ exports.BindingJig = Montage.create(Component, {
                         console.warn("Unable to load blueprint: ", reason.message ? reason.message : reason);
                     }).done();
             } else {
+                // list available components
                 var suggestions = [];
                 this.editingDocument.templateNodes.forEach(function (node) {
                     if (node.component && node.component.identifier.startsWith(searchLabel)) {
