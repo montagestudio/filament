@@ -222,7 +222,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
     _findActiveTokenIndex: {
         enumerable: false,
         value: function(before, after) {
-            if(before == null || after == null) {
+            if(before == null || after == null || !before.length) {
                 return 0;
             }
             var i=0, len = after.length;
