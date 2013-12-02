@@ -166,10 +166,7 @@ exports.BindingJig = Montage.create(Component, {
 
     sourcePathShouldGetSuggestions: {
         value: function(autocomplete, searchTerm) {
-            if (searchTerm.trim()[0] !== "@") {
-                return;
-            }
-            var searchLabel = searchTerm.slice(1);
+            var searchLabel = (searchTerm.trim()[0] === "@") ? searchTerm.slice(1) : searchTerm;
             var i = searchLabel.indexOf(".");
             if (i !== -1) {
                 // looks for properties in blueprint

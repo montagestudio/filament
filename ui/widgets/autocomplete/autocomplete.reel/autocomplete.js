@@ -413,10 +413,6 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
                 this._addEventListeners();
                 this.element.classList.add('matte-Autocomplete');
 
-                if (this.minLength === 0) {
-                    this.element.addEventListener("focus", this);
-                }
-
                 // create the Repetition for the suggestions
                 this.resultsController = new RangeController();
                 this.defineBinding("resultsController.content", {
@@ -486,13 +482,6 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
         }
     },
 
-    handleFocus: {
-        value: function (evt) {
-            var searchTerm = this._tokens[this.activeTokenIndex];
-            this.performSearch("");
-        }
-    },
-
     handleKeyup: {
         enumerable: false,
         value: function(e) {
@@ -502,6 +491,8 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
                 case KEY_DOWN:
                 if(!popup.displayed) {
                     popup.show();
+                    var searchTerm = this._tokens[this.activeTokenIndex] || "";
+                    this.performSearch(searchTerm);
                     this.activeItemIndex = 0;
                 } else {
                     var list = this.suggestions || [];
