@@ -1,0 +1,325 @@
+<!doctype html>
+<html>
+<head>
+    <title>Main</title>
+    <meta charset="utf-8">
+
+    <link href="main.css" rel="stylesheet" />
+    <link href="/assets/styles/filament-matte.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "localizer": {
+                "object": "montage/core/localizer[defaultLocalizer]"
+            },
+
+            "owner": {
+                "properties": {
+                    "element": {"#": "main"}
+                },
+                "listeners": [
+                    {
+                        "type": "openDocument",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "newAppButtonCondition": {
+                "prototype": "montage/ui/condition.reel",
+                "properties": {
+                    "element": {"#": "newAppButtonCondition"},
+                    "removalStrategy": "hide"
+                },
+                "bindings": {
+                    "condition": {"<-": "!@owner.showNewAppForm"}
+                }
+            },
+
+            "newAppButton": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "newAppButton"}
+                },
+                "localizations": {
+                    "label": {"key": "new_application"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "newAppFormCondition": {
+                "prototype": "montage/ui/condition.reel",
+                "properties": {
+                    "element": {"#": "newAppFormCondition"},
+                    "removalStrategy": "hide"
+                },
+                "bindings": {
+                    "condition": {"<-": "@owner.showNewAppForm"}
+                }
+            },
+
+            "newAppName": {
+                "prototype": "matte/ui/input-text.reel",
+                "properties": {
+                    "element": {"#": "newAppName"},
+                    "value": ""
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "newAppDescription": {
+                "prototype": "matte/ui/textarea.reel",
+                "properties": {
+                    "element": {"#": "newAppDescription"},
+                    "value": ""
+                }
+            },
+
+            "createNewAppButton": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "createNewAppButton"},
+                    "label": "Create"
+                },
+                "bindings": {
+                    "disabled": {"<-": "@newAppName.value.length == 0"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "cancelNewAppButton": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "cancelNewAppButton"},
+                    "label": "Cancel"
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "versionText": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "versionText"}
+                },
+                "localizations": {
+                    "value": {
+                        "key": "version",
+                        "data": {
+                            "number": {"<-": "@owner.version"}
+                        }
+                    }
+                }
+            },
+
+            "introMeta": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "introMeta"}
+                },
+                "localizations": {
+                    "value": {"key": "copyright"}
+                }
+            },
+
+            "recentTitle": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "recentTitle"}
+                },
+                "localizations": {
+                    "value": {"key": "recent_projects"}
+                }
+            },
+
+            "historyProgress": {
+                "prototype": "matte/ui/progress.reel",
+                "properties": {
+                    "element": {"#": "historyProgress"}
+                },
+                "bindings": {
+                    "max": {"<-": "@repositoriesController.totalDocuments"},
+                    "value": {"<-": "[value, @repositoriesController.processedDocuments].max{}"}
+                }
+            },
+
+            "historyEmpty": {
+                "prototype": "montage/ui/condition.reel",
+                "properties": {
+                    "element": {"#": "historyEmpty"},
+                    "removalStrategy": "hide"
+                },
+                "bindings": {
+                    "condition": {"<-": "@historyProgress.max == @historyProgress.value && @owner.recentDocuments.length == 0"}
+                }
+            },
+
+            "historyList": {
+                "prototype": "montage/ui/repetition.reel",
+                "properties": {
+                    "element": {"#": "historyList"}
+                },
+                "bindings": {
+                    "contentController": {"<-": "@repositoriesController.contentController"}
+                }
+            },
+            "historyListItem": {
+                "prototype": "../history-list-item.reel",
+                "properties": {
+                    "element": {"#": "historyListItem"},
+                    "repositoriesController": {"@": "repositoriesController"}
+                },
+                "bindings": {
+                    "repository": {
+                        "<-": "@historyList.objectAtCurrentIteration"
+                    }
+                }
+            },
+            "repositoriesController": {
+                "prototype": "../../core/repositories-controller"
+            },
+            "radioButtonController": {
+                "prototype": "montage/core/radio-button-controller",
+                "bindings": {
+                    "content": { "<-": "@repositoriesController.groups" },
+                    "value": { "<->": "@repositoriesController.selectedGroup" }
+                }
+            },
+            "repositoryGroupList": {
+                "prototype": "montage/ui/repetition.reel",
+                "properties": {
+                    "element": {"#": "repositoryGroupList"}
+                },
+                "bindings": {
+                    "contentController": {"<-": "@radioButtonController.contentController"}
+                }
+            },
+            "radioButton": {
+                "prototype": "matte/ui/radio-button.reel",
+                "properties": {
+                    "element": {"#": "radioButton"},
+                    "radioButtonController": {"@": "radioButtonController"}
+                },
+                "bindings": {
+                    "value": {
+                        "<-": "@repositoryGroupList.objectAtCurrentIteration"
+                    }
+                }
+             },
+             "radioButtonLabel": {
+                 "prototype": "montage/ui/text.reel",
+                 "properties": {
+                     "element": {"#": "radioButtonLabel"}
+                 },
+                 "bindings": {
+                     "value": {
+                         "<-": "@repositoryGroupList.objectAtCurrentIteration.name"
+                     }
+                 }
+              },
+
+              "username": {
+                  "prototype": "montage/ui/text.reel",
+                  "properties": {
+                      "element": {"#": "username"}
+                  },
+                  "bindings": {
+                      "value": {
+                          "<-": "@owner.userController.name"
+                      }
+                  }
+              },
+
+              "avatar": {
+                  "prototype": "matte/ui/image.reel",
+                  "properties": {
+                      "element": {"#": "avatar"}
+                  },
+                  "bindings": {
+                      "src": {
+                          "<-": "@owner.userController.avatarUrl"
+                      }
+                  }
+              }
+        }
+    </script>
+
+</head>
+<body>
+
+    <div data-montage-id="main" class="main Projects">
+
+        <section class="Intro">
+            <div class="Intro-logo"></div>
+            <p class="Intro-version" data-montage-id="versionText"></p>
+            <p class="Intro-meta" data-montage-id="introMeta">&copy; 2012–2013 Declarativ Inc.</p>
+        </section>
+
+        <section class="Launcher">
+
+            <section class="Launcher-section">
+                <img data-montage-id="avatar" class="User-avatar" src="">
+                <span data-montage-id="username" class="User-name"></span>
+            </section>
+
+            <section class="Launcher-section">
+                <div data-montage-id="newAppButtonCondition">
+                    <div class="Action">
+                        <button data-montage-id="newAppButton" class="Action-button Action-button--new"></button>
+                    </div>
+                </div>
+                <div data-montage-id="newAppFormCondition" class="NewForm">
+                    <label class="NewForm-field">
+                        Name <input type="text" data-montage-id="newAppName" placeholder="my-app">
+                    </label>
+                    <label class="NewForm-field">
+                        Description <textarea data-montage-id="newAppDescription" placeholder="(optional)"></textarea>
+                    </label>
+                    <footer class="NewForm-bar">
+                        <button data-montage-id="cancelNewAppButton" class="Button"></button>
+                        <button data-montage-id="createNewAppButton" class="Button Button--action"></button>
+                    </footer>
+                </div>
+            </section>
+
+            <section class="Launcher-section History">
+                <h2 data-montage-id="recentTitle" class="Launcher-title"></h2>
+                <ul data-montage-id="repositoryGroupList" class="History-filter">
+                    <li class="History-filter-item">
+                        <input type="radio" data-montage-id="radioButton" class="InputRadio"> <span data-montage-id="radioButtonLabel"></span>
+                    </li>
+                </ul>
+                <div data-montage-id="historyProgress" class="History-progress"></div>
+                <div data-montage-id="historyEmpty">No Montage repositories where found :(</div>
+                <ul class="History-list" data-montage-id="historyList">
+                    <li class="History-list-item" data-montage-id="historyListItem"></li>
+                </ul>
+            </section>
+
+        </section>
+
+
+
+    </div>
+
+</body>
+</html>

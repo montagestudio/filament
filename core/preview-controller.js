@@ -63,7 +63,10 @@ exports.PreviewController = Target.specialize({
 
     previewUrl: {
         get: function () {
-            return this._previewId ? this.environmentBridge.previewUrl + "/" + this._previewId + "/" : null;
+            if (this.environmentBridge) {
+                var url = this.environmentBridge.previewUrl;
+                return this._previewId ?  url + "/" + this._previewId + "/" : url;
+            }
         }
     },
 

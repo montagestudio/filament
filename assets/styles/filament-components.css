@@ -207,7 +207,7 @@
 
 /* Toolbar Button */
 
-.Toolbar-button {
+.Toolbar-button.matte-Button {
     height: 20px;
     font-size: 10px;
     margin: 0 7px;

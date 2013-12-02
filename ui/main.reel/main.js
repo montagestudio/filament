@@ -33,7 +33,12 @@ exports.Main = Montage.create(Component, {
                 application.addEventListener("addModule", this);
                 application.addEventListener("expandTree", this);
 
-                document.addEventListener("save", this, false);
+                //TODO make this less environment specific
+                if (typeof lumieres === "undefined") {
+                    application.addEventListener("menuAction", this);
+                } else {
+                    document.addEventListener("save", this, false);
+                }
             }
         }
     },
@@ -137,6 +142,21 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    handleMenuAction: {
+        enumerable: false,
+        value: function (evt) {
+            switch (evt.detail.identifier) {
+            case "save":
+                evt.preventDefault();
+                evt.stopPropagation();
+
+                this.projectController.save(evt.detail.url).done();
+
+                break;
+            }
+        }
+    },
+
     handleTitleWillChange: {
         value: function () {
             this.dispatchBeforeOwnPropertyChange("windowTitle", this.windowTitle);
@@ -167,6 +187,19 @@ exports.Main = Montage.create(Component, {
             }
 
             return projectTitle.join(" - ");
+        }
+    },
+
+    injectMainMenu: {
+        value: function (menuConstructor) {
+            var menuComponent = new menuConstructor();
+            this._menuContentComponent = menuComponent;
+        }
+    },
+
+    retractMainMenu: {
+        value: function () {
+            this._menuContentComponent = null;
         }
     },
 

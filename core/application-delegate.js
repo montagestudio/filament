@@ -5,25 +5,33 @@ var Montage = require("montage/core/core").Montage,
     ViewController = require("core/view-controller").ViewController,
     PreviewController = require("core/preview-controller").PreviewController,
     ProjectController = require("core/project-controller").ProjectController,
-    ReelDocument = require("core/reel-document").ReelDocument,
-    IS_IN_LUMIERES = (typeof lumieres !== "undefined");
+    ReelDocument = require("core/reel-document").ReelDocument;
+
+var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
 var InnerTemplateInspector = require("contextual-inspectors/inner-template/ui/inner-template-inspector.reel").InnerTemplateInspector;
 
 exports.ApplicationDelegate = Montage.create(Montage, {
 
-    detectEnvironmentBridge: {
-        value: function () {
-            var bridgePromise;
+    _bridgePromise: {
+        value: null
+    },
 
-            if (IS_IN_LUMIERES) {
-                bridgePromise = require.async("adaptor/client/core/lumieres-bridge").then(function (exported) {
-                    return new exported.LumiereBridge().init("filament-backend");
-                });
-            } else {
-                bridgePromise = require.async("core/browser-bridge").then(function (exported) {
-                    return new exported.BrowserBridge().init("filament-backend");
-                });
+    getEnvironmentBridge: {
+        value: function () {
+            var bridgePromise = this._bridgePromise;
+
+            if (!bridgePromise) {
+                if (IS_IN_LUMIERES) {
+                    bridgePromise = require.async("adaptor/client/core/lumieres-bridge").then(function (exported) {
+                        return new exported.LumiereBridge().init("filament-backend");
+                    });
+                } else {
+                    bridgePromise = require.async("adaptor/client/core/environment-bridge").then(function (exported) {
+                        return new exported.EnvironmentBridge().init("filament-backend");
+                    });
+                }
+                this._bridgePromise = bridgePromise;
             }
 
             return bridgePromise;
@@ -109,59 +117,112 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             var self = this,
                 promisedApplication = this._deferredApplication.promise,
                 promisedMainComponent = this._deferredMainComponent.promise,
-                promisedBridge = this.detectEnvironmentBridge(),
+                promisedBridge = this.getEnvironmentBridge(),
                 promisedLoadedExtensions,
-                extensionController;
+                extensionController,
+                loadedExtensions,
+                projectController;
 
-            promisedLoadedExtensions = Promise.all([promisedApplication, promisedBridge])
-                .spread(function (app, bridge) {
+            Promise.all([promisedApplication, promisedBridge, promisedMainComponent])
+                .spread(function (app, bridge, mainComponent) {
                     self.application = app;
                     self.environmentBridge = bridge;
 
                     extensionController = self.extensionController = ExtensionController.create().init(self);
-                    return extensionController.loadExtensions();
+
+                    //TODO move this elsewhere, maybe rename to specifically reflect the stage of bootstrapping
+                    return self.didLoadEnvironmentBridge().then(function () {
+                        return bridge.mainMenu;
+                    }).then(function(mainMenu) {
+                        app.mainMenu = mainMenu;
+                    }).then(function () {
+                        // Give subclasses a way to interject before proceeding to load the project
+                        return self.willLoadProject();
+                    }).then(function () {
+                        return extensionController.loadExtensions().fail(function (error) {
+                            console.log("Failed loading extensions, proceeding with none");
+                            return [];
+                        }).then(function(extensions) {
+                            loadedExtensions = extensions;
+                        });
+                    }).then(function () {
+                        projectController = self.projectController = ProjectController.create().init(self.environmentBridge, self.viewController, mainComponent, extensionController);
+
+                        projectController.registerUrlMatcherForDocumentType(function (fileUrl) {
+                            return (/\.reel\/?$/).test(fileUrl);
+                        }, ReelDocument);
+
+                        // Ensure that the currentEditor is considered the nextTarget before the application
+                        //TODO should probably be the document
+                        mainComponent.defineBinding("nextTarget", {"<-": "projectController.currentEditor", source: self});
+
+                        //TODO not activate all extensions by default
+                        return Promise.all(loadedExtensions.map(function (extension) {
+                            return extensionController.activateExtension(extension);
+                        }));
+                    }).then(function () {
+                        return bridge.projectUrl;
+                    }).then(function (projectUrl) {
+                        var promisedProjectUrl;
+
+                        // With extensions now loaded and activated, load a project
+                        if (projectUrl) {
+                            promisedProjectUrl = projectController.loadProject(projectUrl);
+                        } else {
+                            promisedProjectUrl = projectController.createApplication();
+                        }
+
+                        return promisedProjectUrl;
+                    }).then(function (projectUrl) {
+                        //TODO only do this if we have an index.html
+                        return self.previewController.registerPreview(projectUrl, projectUrl + "/index.html").then(function () {
+                            //TODO not launch the preview automatically?
+                            return self.previewController.launchPreview();
+                        });
+                    }).then(function () {
+                        return self.didLoadProject();
+                    });
 
                 }, function(error) {
-                    //TODO improve handling if the application or the environment are rejected
-                    console.log("Cannot load the extensions ", error);
-                    return [];
-                });
-
-            Promise.all([promisedMainComponent, promisedLoadedExtensions])
-                .spread(function (mainComponent, loadedExtensions) {
-                    self.projectController = ProjectController.create().init(self.environmentBridge, self.viewController, mainComponent, extensionController);
-
-                    self.projectController.registerUrlMatcherForDocumentType(function (fileUrl) {
-                        return (/\.reel\/?$/).test(fileUrl);
-                    }, ReelDocument);
-
-                    // Ensure that the currentEditor is considered the nextTarget before the application
-                    //TODO should probably be the document
-                    mainComponent.defineBinding("nextTarget", {"<-": "projectController.currentEditor", source: self});
-
-                    //TODO not activate all extensions by default
-                    return Promise.all(extensionController.loadedExtensions.map(function (extension) {
-                        return extensionController.activateExtension(extension);
-                    }));
-                }).then(function (activatedExtensions) {
-                    var projectUrl = self.environmentBridge.projectUrl,
-                        promisedProjectUrl;
-
-                    // With extensions now loaded and activated, load a project
-                    if (projectUrl) {
-                        promisedProjectUrl = self.projectController.loadProject(projectUrl);
-                    } else {
-                        promisedProjectUrl = self.projectController.createApplication();
-                    }
-
-                    return promisedProjectUrl;
-                }).then(function (projectUrl) {
-                    //TODO only do this if we have an index.html
-                    return self.previewController.registerPreview(projectUrl, projectUrl + "/index.html").then(function () {
-                        //TODO not launch the preview automatically?
-                        return self.previewController.launchPreview();
-                    });
+                    console.error("Failed loading application");
+                    return error;
                 }).done();
+        }
+    },
+
+    /**
+     * Template method available for subclasses to implement their own logic
+     * as soon as an environment bridge is available
+     *
+     * @return {Promise} A promise to continue
+     */
+    didLoadEnvironmentBridge: {
+        value: function () {
+            return Promise.resolve();
+        }
+    },
+
+    /**
+     * Template method available for subclasses to implement their own logic
+     * ahead of loading the project as directed by the environment.
+     *
+     * @return {Promise} A promise to continue the loading sequence
+     */
+    willLoadProject: {
+        value: function () {
+            return Promise.resolve();
+        }
+    },
+
+    /**
+     * Template method available for subclasses to implement their own logic
+     * after a project has been loaded as directed by the environment
+     *
+     * @return {Promise} A promise to continue
+     */
+    didLoadProject: {
+        value: function () {
+            return Promise.resolve();
         }
     },
 

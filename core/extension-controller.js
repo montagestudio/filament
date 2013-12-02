@@ -58,16 +58,13 @@ exports.ExtensionController = Montage.create(Target, {
                     return Promise.reject(new Error("Could not load extensions", error));
                 });
             }).then(function (extensions) {
-                    self.loadedExtensions = extensions;
+                self.loadedExtensions = extensions;
 
-                    application.addEventListener("activateExtension", self);
-                    application.addEventListener("deactivateExtension", self);
+                application.addEventListener("activateExtension", self);
+                application.addEventListener("deactivateExtension", self);
 
-                    return extensions;
-                }, function (error) {
-                    console.log("Could not load extensions", error);
-                    return [];
-                });
+                return extensions;
+            });
         }
     },
 

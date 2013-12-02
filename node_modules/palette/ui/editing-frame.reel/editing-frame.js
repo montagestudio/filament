@@ -228,6 +228,14 @@ exports.EditingFrame = Montage.create(Component, /** @lends module:"montage/ui/e
                 booted.resolve([frameWindow.require, frameWindow.montageRequire]);
             };
 
+            // Need all XHRs to have withCredentials.
+            var XHR = frameWindow.XMLHttpRequest;
+            frameWindow.XMLHttpRequest = function () {
+                var xhr = new XHR();
+                xhr.withCredentials = true;
+                return xhr;
+            };
+
             // Can't use the mappings Montage location as this package
             // has been loaded through filament's require, and so maps
             // Montage to filament's Montage

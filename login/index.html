@@ -1,20 +1,23 @@
 <!doctype html>
 <html>
 <head>
-    <title>Welcome</title>
+    <title>Login</title>
     <meta charset="utf-8">
+
     <link rel="shortcut icon" href="../assets/img/favicon.ico">
+
+    <base href="/app/login/">
     <link href="../assets/fonts/fonts.css" rel="stylesheet" />
     <link href="../assets/styles/bootstrapping.css" rel="stylesheet" />
     <link href="../assets/styles/filament.css" rel="stylesheet" />
-    
-    <script src="../node_modules/montage/montage.js" data-package=".."></script>
+
+    <script src="../node_modules/montage/montage.js" data-package="/app"></script>
     <script type="text/montage-serialization">
         {
             "owner": {
                 "prototype": "montage/ui/loader.reel",
                 "properties": {
-                    "mainModule": "welcome/ui/main.reel"
+                    "mainModule": "login/ui/main.reel"
                 }
             }
         }

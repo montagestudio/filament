@@ -1,7 +1,6 @@
 var CoreExtension = require("filament-extension/core/extension").Extension,
     Promise = require("montage/core/promise").Promise,
-    defaultMenu = require("filament/adaptor/client/ui/native/menu").defaultMenu,
-    MenuItem = require("filament/adaptor/client/ui/native/menu-item").MenuItem;
+    MenuItem = require("filament/adaptor/client/core/menu-item").MenuItem;
 
 var PARENT_MENU = "Tools";
 
@@ -42,19 +41,20 @@ exports.Extension = CoreExtension.specialize( {
 
             this.application = application;
             this.projectController = projectController;
+            var mainMenu = application.mainMenu;
 
-            var existingMenu = defaultMenu.menuItemForIdentifier(PARENT_MENU);
+            var existingMenu = mainMenu.menuItemForIdentifier(PARENT_MENU);
             if (existingMenu) {
                 this.parentMenu = Promise.resolve(existingMenu);
             } else {
-                var parentMenu = MenuItem.create();
+                var parentMenu = new MenuItem();
                 parentMenu.identifier = PARENT_MENU.toLowerCase();
                 parentMenu.title = PARENT_MENU; // This should be localized
-                this.parentMenu = defaultMenu.insertItem(parentMenu, 5);
+                this.parentMenu = mainMenu.insertItem(parentMenu, 5);
             }
 
             this.mopMenu = this.parentMenu.then(function (parentMenu) {
-                var mopItem = MenuItem.create();
+                var mopItem = new MenuItem();
                 mopItem.title = "Mop"; // This should be localized
                 mopItem.identifier = "mop";
                 return parentMenu.insertItem(mopItem);
@@ -75,7 +75,7 @@ exports.Extension = CoreExtension.specialize( {
             return Promise.all([this.parentMenu, this.mopMenu]).spread(function (parentMenu, mopMenu) {
                 return parentMenu.removeItem(mopMenu).then(function () {
                     if (parentMenu.items.length === 0) {
-                        return defaultMenu.removeItem(parentMenu);
+                        return this.application.mainMenu.removeItem(parentMenu);
                     }
                 });
             }).then(function () {
