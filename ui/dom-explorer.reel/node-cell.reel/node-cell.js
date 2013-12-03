@@ -59,6 +59,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             if (!firstTime) { return; }
 
             this._nodeSegment.addEventListener("dragstart", this);
+            this._nodeSegment.addEventListener("dragend", this);
             this._nodeSegment.addEventListener("dragover", this, false);
             this._nodeSegment.addEventListener("dragenter", this, false);
             this._nodeSegment.addEventListener("dragleave", this, false);
@@ -79,7 +80,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     handleDragstart: {
         value: function (event) {
             event.dataTransfer.effectAllowed = "copyMove";
-
+            this.classList.add("NodeCell--dragged");
             var nodeInfo = this.nodeInfo,
                 component = nodeInfo.component,
                 uuid = this.nodeInfo.uuid,
@@ -96,6 +97,12 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             } else {
                 event.dataTransfer.setData(MimeTypes.MONTAGE_TEMPLATE_XPATH, getElementXPath(this.nodeInfo._templateNode));
             }
+        }
+    },
+
+    handleDragend: {
+        value: function (evt) {
+            this.classList.remove("NodeCell--dragged");
         }
     },
 
