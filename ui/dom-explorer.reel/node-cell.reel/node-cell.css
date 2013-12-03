@@ -10,6 +10,10 @@
     background: hsl(210,100%,90%);
 }
 
+.NodeCell--dragged .NodeCell-segment {
+    opacity: 0.4;
+}
+
 .NodeCell-segment {
     display: -webkit-inline-flex;
     margin: 2px 0;
