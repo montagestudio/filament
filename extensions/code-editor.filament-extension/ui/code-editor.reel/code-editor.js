@@ -46,28 +46,10 @@ exports.CodeEditor = Editor.specialize ({
     mode: {
         get: function() {
             if (!this._mode) {
-                if (this.currentDocument && this.currentDocument.fileType) {
-                    switch (this.currentDocument.fileType) {
-                    case "javascript":
-                        this._mode = {name: "javascript", json: true};
-                        break;
-                    case "css":
-                        this._mode = {name: "css", json: true};
-                        break;
-                    case "html":
-                        this._mode = {name: "htmlmixed", json: true};
-                        break;
-                    case "json":
-                        this._mode = {name: "javascript", json: true};
-                        break;
-                    case "meta":
-                        this._mode = {name: "javascript", json: true};
-                        break;
-                    default:
-                        this._mode = {name: "javascript", json: true};
-                    }
+                if (this.currentDocument && this.currentDocument.mimeType) {
+                    this._mode = this.currentDocument.mimeType;
                 } else {
-                    return {name: "javascript", json: true};
+                    return {};
                 }
             }
             return this._mode;

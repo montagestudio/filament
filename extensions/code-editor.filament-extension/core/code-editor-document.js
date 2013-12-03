@@ -19,7 +19,7 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
             var self = this.super(fileUrl);
             self.content = content;
 
-            self._fileType = CodeEditorDocument.editorFileType(fileUrl);
+            self._mimeType = CodeEditorDocument.editorMimeType(fileUrl);
             self.codeEditorInstance = null;
 
             self.addPathChangeListener("content", self, "handleContentChange");
@@ -28,13 +28,13 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
         }
     },
 
-    _fileType: {
+    _mimeType: {
         value: null
     },
 
-    fileType: {
+    mimeType: {
         get: function() {
-            return this._fileType;
+            return this._mimeType;
         }
     },
 
@@ -58,18 +58,18 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
 
 },{
 
-    editorFileType:{
+    editorMimeType:{
         value: function(fileUrl) {
             if (CodeEditorDocument.editorFileMatchJavaScript(fileUrl)) {
-                return "javascript";
+                return "application/javascript";
             } else if (CodeEditorDocument.editorFileMatchCss(fileUrl)) {
-                return "css";
+                return "text/css";
             } else if (CodeEditorDocument.editorFileMatchHtml(fileUrl)) {
-                return "html";
+                return "text/html";
             } else if (CodeEditorDocument.editorFileMatchJson(fileUrl)) {
-                return "json";
+                return "application/json";
             }
-            return "text";
+            return "text/plain";
         }
     },
 

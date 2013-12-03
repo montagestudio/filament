@@ -15,7 +15,7 @@ var Extension = exports.Extension = CoreExtension.specialize( {
     editorFileMatchFunction:{
         enumerable:false,
         value:function (fileUrl) {
-            return CodeEditorDocument.editorFileType(fileUrl) !== "text";
+            return CodeEditorDocument.editorMimeType(fileUrl) !== "text/plain";
         }
     },
 
