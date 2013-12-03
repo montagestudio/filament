@@ -94,6 +94,12 @@ exports.CodeEditor = Editor.specialize ({
         }
     },
 
+    didDraw: {
+        value: function() {
+            this._codeMirror.refresh();
+        }
+    },
+
     hasModeErrors: {
         value: function() {
             return !!this.element.querySelector("*[class~='cm-error']");
@@ -126,6 +132,7 @@ exports.CodeEditor = Editor.specialize ({
 
             if (this._codeMirror) {
                 this._codeMirror.swapDoc(this._openDocuments[document.uuid]);
+                this.needsDraw = true;
             }
         }
     },
