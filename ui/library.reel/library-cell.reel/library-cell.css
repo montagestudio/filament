@@ -25,7 +25,11 @@
 }
 
 .LibraryCell .LibraryCell-button:hover {
-	background: hsl(0,0%,98%);
+    background: hsl(0,0%,98%);
+}
+
+.LibraryCell .LibraryCell-button:focus {
+	border-color: transparent;
 }
 
 .LibraryCell:last-child .LibraryCell-button {
