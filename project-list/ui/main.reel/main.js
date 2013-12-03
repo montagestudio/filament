@@ -1,4 +1,3 @@
-/* global lumieres */
 var Montage = require("montage/core/core").Montage;
 var Component = require("montage/ui/component").Component;
 var repositoriesController = require("../../core/repositories-controller").repositoriesController;

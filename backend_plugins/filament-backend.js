@@ -1,4 +1,4 @@
-/* global global,unescape,module,exports:true */
+/* global global,unescape,module */
 var minitCreate = require("minit/lib/create").create,
     Q = require("q"),
     npm = require("npm"),

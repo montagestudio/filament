@@ -118,7 +118,6 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                 promisedApplication = this._deferredApplication.promise,
                 promisedMainComponent = this._deferredMainComponent.promise,
                 promisedBridge = this.getEnvironmentBridge(),
-                promisedLoadedExtensions,
                 extensionController,
                 loadedExtensions,
                 projectController;

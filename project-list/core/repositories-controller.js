@@ -1,7 +1,6 @@
 /* global localStorage */
 var Montage = require("montage/core/core").Montage;
 var github = require("adaptor/client/core/github");
-var Promise = require("montage/core/promise").Promise;
 var RangeController = require("montage/core/range-controller").RangeController;
 var RepositoryController = require("adaptor/client/core/repository-controller").RepositoryController;
 
@@ -23,8 +22,6 @@ var RepositoriesController = Montage.specialize({
 
     constructor: {
         value: function RepositoriesController() {
-            var self = this;
-
             this.groups = [this.recent, this.owned];
             this.addPathChangeListener("selectedGroup", this, "_getListOfRepositories");
             this._initRecentRepositories();
@@ -53,7 +50,10 @@ var RepositoriesController = Montage.specialize({
             return this._githubApi.then(function(githubApi) {
                 return githubApi.createRepository(name, description)
                 .then(function(repo) {
+                    /* jshint -W106 */
+                    // This is the format expected by the github API, ignoring for now
                     repo.pushed_at = +new Date(repo.pushed_at);
+                    /* jshint +W106 */
                     self.ownedRepositoriesContent.content.push(repo);
                 });
             });
@@ -161,7 +161,6 @@ var RepositoriesController = Montage.specialize({
 
     _initRecentRepositories: {
         value: function() {
-            var self = this;
             //init local storage if needed
             var recentRepositories = localStorage.getItem("recent_repositories");
             if (!recentRepositories) {
