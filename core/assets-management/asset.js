@@ -52,6 +52,35 @@ exports.Asset = Montage.specialize({
         }
     },
 
+    _fileFormat: {
+        value: null
+    },
+
+    fileFormat: {
+        get: function () {
+            return this._fileFormat;
+        }
+    },
+
+    _mimeType: {
+        value: null
+    },
+
+    mimeType: {
+        set: function (mimeType) {
+            if (this._type) {
+                this._mimeType = AssetTools.isMimeTypeValid(mimeType, this._type) ? mimeType : null;
+
+                if (this._mimeType) {
+                    this._fileFormat = AssetTools.findFileFormatFromMimeType(mimeType);
+                }
+            }
+        },
+        get: function () {
+            return this._mimeType;
+        }
+    },
+
     _type: {
         value: null
     },

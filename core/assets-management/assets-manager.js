@@ -19,17 +19,18 @@ exports.AssetsManager = Montage.specialize({
             this.super();
             this.assets = {};
             this.assetTypes = {};
+            this.fileFormats = {};
 
             var self = this,
-                assetTypes = AssetsConfig.types;
+                assetTypes = AssetsConfig.assetTypes;
 
-            Object.keys(assetTypes).forEach(function (currentAssetType) {
+            Object.keys(assetTypes).forEach(function (assetTypeName) {
 
-                var currentAssetConfigType = assetTypes[currentAssetType];
-                currentAssetConfigType.defaultIconUrl = PackageLocation + currentAssetConfigType.defaultIconUrl;
-                self.assetTypes[currentAssetType] = currentAssetType;
-                self.assets[currentAssetType] = [];
-
+                var currentAssetType = assetTypes[assetTypeName];
+                currentAssetType.defaultIconUrl = PackageLocation + currentAssetType.defaultIconUrl;
+                self.assetTypes[assetTypeName] = assetTypeName;
+                self.assets[assetTypeName] = [];
+                self._populateFileFormats(currentAssetType.fileFormats);
             });
 
             Application.addEventListener("fileSystemChange", this);
@@ -41,6 +42,10 @@ exports.AssetsManager = Montage.specialize({
     },
 
     assets: {
+        value: null
+    },
+
+    fileFormats: {
         value: null
     },
 
@@ -62,12 +67,24 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    _populateFileFormats: {
+        value: function (assetType) {
+            if (assetType && typeof assetType === "object" && this.fileFormats) {
+                var self = this;
+
+                Object.keys(assetType).forEach(function (fileFormatName) {
+                    self.fileFormats[fileFormatName] = assetType[fileFormatName];
+                });
+            }
+        }
+    },
+
     _defineAssetTypeWithFileDescriptor: {
         value: function (currentFile) {
             if (currentFile && typeof currentFile === "object") {
 
                 if (currentFile.isCollada) {
-                    return this.assetTypes["3D"];
+                    return this.assetTypes.MODEL;
                 } else if (currentFile.isImage) {
                     return this.assetTypes.IMAGE;
                 }
@@ -111,7 +128,7 @@ exports.AssetsManager = Montage.specialize({
     getDefaultIconUrlByType: {
         value: function (assetType) {
             if (AssetTools.isAssetTypeValid(assetType)) {
-                return AssetsConfig.types[assetType].defaultIconUrl;
+                return AssetsConfig.assetTypes[assetType].defaultIconUrl;
             }
 
             return null;
@@ -151,10 +168,46 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
-    getAssetsListByType: {
-        value: function (type) {
-            if (AssetTools.isAssetTypeValid(type)) {
-                return this.assets[type];
+    getAssetsListByAssetType: {
+        value: function (assetTypeName) {
+            if (AssetTools.isAssetTypeValid(assetTypeName)) {
+                return this.assets[assetTypeName];
+            }
+
+            return [];
+        }
+    },
+
+    _filterAssets: {
+        value: function (property, condition, assetType) {
+            var assetsList = [];
+
+            this.assets[assetType].forEach(function (asset) {
+                if (asset[property] === condition) {
+                    assetsList.push(asset);
+                }
+            });
+
+            return assetsList;
+        }
+    },
+
+    getAssetsListByFileFormat: {
+        value: function (fileFormatName) {
+            if (this.fileFormats.hasOwnProperty(fileFormatName)) {
+                var assetType = AssetTools.findAssetTypeFromFileFormat(fileFormatName);
+                return this._filterAssets("fileFormat", fileFormatName, assetType);
+            }
+
+            return [];
+        }
+    },
+
+    getAssetsListByMimeType: {
+        value: function (mimeType) {
+            if (AssetTools.isMimeTypeValid(mimeType)) {
+                var assetType = AssetTools.findAssetTypeFromMimeType(mimeType);
+                return this._filterAssets("mimeType", mimeType, assetType);
             }
 
             return [];
