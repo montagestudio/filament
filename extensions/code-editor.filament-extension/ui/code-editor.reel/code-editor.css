@@ -26,34 +26,18 @@
   padding: 0 12px; /* Horizontal padding of content */
 }
 
-.CodeEditor .cm-s-default span.cm-keyword {color: #708;}
-.CodeEditor .cm-s-default span.cm-atom {color: #219;}
-.CodeEditor .cm-s-default span.cm-number {color: #164;}
-.CodeEditor .cm-s-default span.cm-def {color: #00f;}
-.CodeEditor .cm-s-default span.cm-variable {color: black;}
-.CodeEditor .cm-s-default span.cm-variable-2 {color: #05a;}
-.CodeEditor .cm-s-default span.cm-variable-3 {color: #085;}
-.CodeEditor .cm-s-default span.cm-property {color: black;}
-.CodeEditor .cm-s-default span.cm-operator {color: black;}
-.CodeEditor .cm-s-default span.cm-comment {color: #a50;}
-.CodeEditor .cm-s-default span.cm-string {color: #a11;}
-.CodeEditor .cm-s-default span.cm-string-2 {color: #f50;}
-.CodeEditor .cm-s-default span.cm-meta {color: #555;}
-.CodeEditor .cm-s-default span.cm-error {color: #f00;}
-.CodeEditor .cm-s-default span.cm-qualifier {color: #555;}
-.CodeEditor .cm-s-default span.cm-builtin {color: #30a;}
-.CodeEditor .cm-s-default span.cm-bracket {color: #cc7;}
-.CodeEditor .cm-s-default span.cm-tag {color: #170;}
-.CodeEditor .cm-s-default span.cm-attribute {color: #00c;}
-.CodeEditor .cm-s-default span.cm-header {color: #a0a;}
-.CodeEditor .cm-s-default span.cm-quote {color: #090;}
-.CodeEditor .cm-s-default span.cm-hr {color: #999;}
-.CodeEditor .cm-s-default span.cm-link {color: #00c;}
-.CodeEditor
-.CodeEditor span.cm-header, span.cm-strong {font-weight: bold;}
-.CodeEditor span.cm-em {font-style: italic;}
-.CodeEditor span.cm-emstrong {font-style: italic; font-weight: bold;}
-.CodeEditor span.cm-link {text-decoration: underline;}
 
-.CodeEditor .CodeMirror-matchingbracket {color: #0f0;}
-.CodeEditor .CodeMirror-nonmatchingbracket {color: #f22;}
+/* Solarized Theme overrides ------------------------------ */
+
+.CodeEditor .cm-s-solarized.cm-s-light {
+    text-shadow: none;
+}
+
+.CodeEditor .cm-s-solarized.cm-s-light .CodeMirror-gutters {
+    border-color: hsl(46, 42%, 78%);
+    box-shadow: none;
+}
+
+.CodeEditor .cm-s-solarized.cm-s-light .CodeMirror-linenumber {
+    color: hsl(46, 22%, 70%);
+}

@@ -33,6 +33,7 @@ exports.CodeEditor = Editor.specialize ({
     matchBrackets: {value: false},
     lineNumbers: {value: true},
     readOnly: {value: false},
+    theme: {value: "solarized light"},
 
     _codeMirror: {
         value: null
@@ -98,6 +99,7 @@ exports.CodeEditor = Editor.specialize ({
                     matchBrackets: this.matchBracket,
                     lineNumbers: this.lineNumbers,
                     readOnly: this.readOnly,
+                    theme: this.theme,
                     value: ""
                 });
 
