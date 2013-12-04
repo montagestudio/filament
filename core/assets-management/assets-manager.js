@@ -54,12 +54,8 @@ exports.AssetsManager = Montage.specialize({
             if (filesList && Array.isArray(filesList)) {
                 var self = this;
 
-                filesList.forEach(function (currentFile) {
-                    var assetType = self._defineAssetTypeWithFileDescriptor(currentFile);
-
-                    if (assetType) { // If a type has been found, then the current file is an asset.
-                        self.addAsset(currentFile.fileUrl, assetType);
-                    }
+                filesList.forEach(function (fileDescriptor) {
+                    self.addAsset(fileDescriptor); // try to add an asset
                 });
             }
 
@@ -117,18 +113,25 @@ exports.AssetsManager = Montage.specialize({
     },
 
     addAsset: {
-        value: function (fileUrl, assetType, iconUrl) {
-            if (AssetTools.isAssetUrlAndTypeValid(fileUrl, assetType)) {
+        value: function (fileDescriptor, iconUrl) {
+            var assetType = this._defineAssetTypeWithFileDescriptor(fileDescriptor);
 
-                var assetCreated = Asset.create().initWithFileUrlAndAssetType(fileUrl, assetType);
+            if (assetType) { // If a type has been found, then the current file is an asset.
+                var fileUrl = fileDescriptor.fileUrl;
 
-                if (assetCreated) {
-                    assetCreated.iconUrl = AssetTools.isFileUrlValid(iconUrl) ?
-                        iconUrl : this.getIconWithFileUrlAndAssetType(fileUrl, assetType);
+                if (AssetTools.isAssetUrlAndTypeValid(fileUrl, assetType)) {
+                    var assetCreated = Asset.create().initWithFileUrlAndAssetType(fileUrl, assetType);
 
-                    this.assets[assetType].push(assetCreated);
+                    if (assetCreated) {
+                        assetCreated.iconUrl = AssetTools.isFileUrlValid(iconUrl) ?
+                            iconUrl : this.getIconWithFileUrlAndAssetType(fileUrl, assetType);
 
-                    return assetCreated;
+                        assetCreated.mimeType = fileDescriptor.mimeType;
+
+                        this.assets[assetType].push(assetCreated);
+
+                        return assetCreated;
+                    }
                 }
             }
 
@@ -217,7 +220,7 @@ exports.AssetsManager = Montage.specialize({
     getAssetsBySubAssetType: {
         value: function (subAssetTypeName) {
             if (this.subAssetTypes.hasOwnProperty(subAssetTypeName)) {
-                var assetType = AssetTools.findAssetTypeFromsubAssetType(subAssetTypeName);
+                var assetType = AssetTools.findAssetTypeFromSubAssetType(subAssetTypeName);
                 return this._filterAssets("subAssetType", subAssetTypeName, assetType);
             }
 
@@ -242,20 +245,21 @@ exports.AssetsManager = Montage.specialize({
 
             if (fileChangeDetail && typeof fileChangeDetail === "object" && fileChangeDetail.hasOwnProperty('fileUrl')) {
                 var fileUrl = fileChangeDetail.fileUrl,
-                    tmpFileDescriptor = FileDescriptor.create().initWithUrlAndStat(fileUrl, fileChangeDetail.currentStat),
-                    assetType = this._defineAssetTypeWithFileDescriptor(tmpFileDescriptor);
+                    fileDescriptor = FileDescriptor.create().initWithUrlAndStat(fileUrl, fileChangeDetail.currentStat);
 
-                if (assetType) {
+                switch (fileChangeDetail.change) {
 
-                    switch (fileChangeDetail.change) {
+                case FILE_SYSTEM_CHANGES.CREATE:
+                    this.addAsset(fileDescriptor);
+                    break;
 
-                    case FILE_SYSTEM_CHANGES.CREATE:
-                        this.addAsset(fileUrl, assetType);
-                        break;
-                    case FILE_SYSTEM_CHANGES.DELETE:
+                case FILE_SYSTEM_CHANGES.DELETE:
+                    var assetType = this._defineAssetTypeWithFileDescriptor(fileDescriptor);
+
+                    if (assetType) {
                         this.removeAsset(fileUrl, assetType);
-                        break;
                     }
+                    break;
                 }
             }
         }
