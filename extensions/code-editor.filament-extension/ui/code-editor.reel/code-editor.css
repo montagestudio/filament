@@ -61,3 +61,7 @@
 .CodeEditor .cm-s-solarized .CodeMirror-gutters {
     background-image: none;
 }
+
+.CodeEditor .cm-s-solarized.cm-s-light .cm-string {
+    color: rgb(101, 123, 131);
+}

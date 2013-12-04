@@ -12,6 +12,8 @@ require("./codemirror/mode/javascript/javascript");
 require("./codemirror/mode/css/css");
 require("./codemirror/mode/xml/xml");
 require("./codemirror/mode/htmlmixed/htmlmixed");
+require("./codemirror/mode/montage/serialization");
+require("./codemirror/mode/montage/template");
 
 /**
  Description TODO
