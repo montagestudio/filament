@@ -1,10 +1,9 @@
-var Montage = require("montage").Montage;
 var CoreExtension = require("filament-extension/core/extension").Extension;
 var CodeEditorDocument = require("core/code-editor-document").CodeEditorDocument;
 var Promise = require("montage/core/promise").Promise;
 
 
-var Extension = exports.Extension = CoreExtension.specialize( {
+exports.Extension = CoreExtension.specialize( {
 
     constructor: {
         value: function Extension() {

@@ -2,3 +2,4 @@ node_modules/**
 npm-cache/**
 core/emmet.js
 core/node/*
+extensions/code-editor.filament-extension/ui/code-editor.reel/codemirror/*

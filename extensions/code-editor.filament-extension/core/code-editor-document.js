@@ -103,8 +103,6 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
 
     load: {
         value: function (fileUrl, packageUrl) {
-            var self = this;
-
             return require.loadPackage(packageUrl).then(function (packageRequire) {
 
                 var deferredDocument = Promise.defer();
