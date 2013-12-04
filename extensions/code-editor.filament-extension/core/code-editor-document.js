@@ -109,6 +109,7 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
 
                 var deferredDocument = Promise.defer();
                 var request = new XMLHttpRequest();
+                request.withCredentials = true;
 
                 request.open("GET", fileUrl);
                 request.addEventListener("load", function () {
