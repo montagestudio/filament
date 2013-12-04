@@ -59,8 +59,6 @@ exports.AssetsManager = Montage.specialize({
                 });
             }
 
-            this.assets.length = this._assetsLength;
-
             return this;
         }
     },
@@ -96,7 +94,7 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
-    _assetsLength: {
+    assetsLength: {
         get:  function () {
             var assets = this.assets;
 
