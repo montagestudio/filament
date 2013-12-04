@@ -212,7 +212,7 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
             } else if (CodeEditorDocument.editorFileMatchCss(fileUrl)) {
                 return "text/css";
             } else if (CodeEditorDocument.editorFileMatchHtml(fileUrl)) {
-                return "text/html";
+                return "text/montage-template";
             } else if (CodeEditorDocument.editorFileMatchJson(fileUrl)) {
                 return "application/json";
             }
