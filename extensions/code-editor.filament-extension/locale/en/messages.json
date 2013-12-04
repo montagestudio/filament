@@ -1,0 +1,12 @@
+{
+    "en": "English",
+    "en-x-test": "English (Test)",
+
+    "Tools": {
+        "message": "Tools",
+        "description": "Tool main menu",
+        "locations": [
+        ]
+    }
+
+}
