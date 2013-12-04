@@ -224,13 +224,15 @@ exports.AssetsManager = Montage.specialize({
                     assetType = this._defineAssetTypeWithFileDescriptor(tmpFileDescriptor);
 
                 if (assetType) {
+
                     switch (fileChangeDetail.change) {
-                        case FILE_SYSTEM_CHANGES.CREATE:
-                            this.addAsset(fileUrl, assetType);
-                            break;
-                        case FILE_SYSTEM_CHANGES.DELETE:
-                            this.removeAsset(fileUrl, assetType);
-                            break;
+
+                    case FILE_SYSTEM_CHANGES.CREATE:
+                        this.addAsset(fileUrl, assetType);
+                        break;
+                    case FILE_SYSTEM_CHANGES.DELETE:
+                        this.removeAsset(fileUrl, assetType);
+                        break;
                     }
                 }
             }

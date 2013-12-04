@@ -134,6 +134,7 @@ var AssetsConfig = {
 
         },
 
+        //TODO add more mime-types
         VIDEO: {
             typeName: "VIDEO",
             defaultIconUrl: "assets/icons/default-video-icon.png",
