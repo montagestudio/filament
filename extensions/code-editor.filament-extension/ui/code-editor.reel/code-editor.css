@@ -1,0 +1,63 @@
+.CodeEditor {
+    position: relative;
+    -webkit-flex: 1;
+    display: -webkit-flex;
+}
+
+
+/* CodeMirror overrides ------------------------------ */
+
+.CodeEditor .CodeMirror {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: auto;
+}
+
+.CodeEditor .CodeMirror-lines {  
+  padding: 12px 0; /* Vertical padding around content */
+}
+
+.CodeEditor .CodeMirror pre {
+  padding: 0 12px; /* Horizontal padding of content */
+}
+
+
+/* Solarized Theme overrides ------------------------------ */
+
+.CodeEditor .cm-s-solarized.cm-s-light {
+    font-size: 13px;
+    line-height: 16px;
+    text-shadow: none;
+    background-color: hsl(44, 87%, 96%);
+}
+
+.CodeEditor .cm-s-solarized.cm-s-light .CodeMirror-gutters {
+    border-color: hsl(46, 32%, 86%);
+    background-color: hsl(46, 32%, 92%);
+    box-shadow: none;
+}
+
+.CodeEditor .cm-s-solarized.cm-s-light .CodeMirror-linenumber {
+    color: hsl(46, 12%, 75%);
+    -webkit-font-smoothing: antialiased;
+}
+
+.CodeEditor .cm-s-solarized.cm-s-light .cm-tab:before {
+    position: absolute;
+    top: 2px;
+    color: hsl(194, 14%, 80%);
+    font-size: 0.7em;
+}
+
+.CodeEditor .cm-s-solarized.cm-s-light .cm-comment {
+    color: hsl(44, 20%, 64%);
+    -webkit-font-smoothing: antialiased;
+}
+
+.CodeEditor .cm-s-solarized.CodeMirror, 
+.CodeEditor .cm-s-solarized .CodeMirror-gutters {
+    background-image: none;
+}
