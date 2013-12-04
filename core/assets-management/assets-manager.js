@@ -19,7 +19,7 @@ exports.AssetsManager = Montage.specialize({
             this.super();
             this.assets = {};
             this.assetTypes = {};
-            this.fileFormats = {};
+            this.subAssetTypes = {};
 
             var self = this,
                 assetTypes = AssetsConfig.assetTypes;
@@ -30,7 +30,7 @@ exports.AssetsManager = Montage.specialize({
                 currentAssetType.defaultIconUrl = PackageLocation + currentAssetType.defaultIconUrl;
                 self.assetTypes[assetTypeName] = assetTypeName;
                 self.assets[assetTypeName] = [];
-                self._populateFileFormats(currentAssetType.fileFormats);
+                self._populateSubAssetTypes(currentAssetType.subAssetTypes);
             });
 
             Application.addEventListener("fileSystemChange", this);
@@ -45,7 +45,7 @@ exports.AssetsManager = Montage.specialize({
         value: null
     },
 
-    fileFormats: {
+    subAssetTypes: {
         value: null
     },
 
@@ -63,17 +63,19 @@ exports.AssetsManager = Montage.specialize({
                 });
             }
 
+            this.assets.length = this._assetsLength;
+
             return this;
         }
     },
 
-    _populateFileFormats: {
+    _populateSubAssetTypes: {
         value: function (assetType) {
-            if (assetType && typeof assetType === "object" && this.fileFormats) {
+            if (assetType && typeof assetType === "object" && this.subAssetTypes) {
                 var self = this;
 
-                Object.keys(assetType).forEach(function (fileFormatName) {
-                    self.fileFormats[fileFormatName] = assetType[fileFormatName];
+                Object.keys(assetType).forEach(function (subAssetTypeName) {
+                    self.subAssetTypes[subAssetTypeName] = assetType[subAssetTypeName];
                 });
             }
         }
@@ -87,10 +89,30 @@ exports.AssetsManager = Montage.specialize({
                     return this.assetTypes.MODEL;
                 } else if (currentFile.isImage) {
                     return this.assetTypes.IMAGE;
+                } else if (currentFile.isAudio) {
+                    return this.assetTypes.AUDIO;
+                } else if (currentFile.isVideo) {
+                    return this.assetTypes.VIDEO;
                 }
 
             }
             return null;
+        }
+    },
+
+    _assetsLength: {
+        get:  function () {
+            var assets = this.assets;
+
+            if (assets) {
+                var length = 0;
+
+                Object.keys(assets).forEach(function (assetTypeName) {
+                    length = length + assets[assetTypeName].length;
+                });
+
+                return length;
+            }
         }
     },
 
@@ -168,7 +190,7 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
-    getAssetsListByAssetType: {
+    getAssetsByAssetType: {
         value: function (assetTypeName) {
             if (AssetTools.isAssetTypeValid(assetTypeName)) {
                 return this.assets[assetTypeName];
@@ -192,18 +214,18 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
-    getAssetsListByFileFormat: {
-        value: function (fileFormatName) {
-            if (this.fileFormats.hasOwnProperty(fileFormatName)) {
-                var assetType = AssetTools.findAssetTypeFromFileFormat(fileFormatName);
-                return this._filterAssets("fileFormat", fileFormatName, assetType);
+    getAssetsBySubAssetType: {
+        value: function (subAssetTypeName) {
+            if (this.subAssetTypes.hasOwnProperty(subAssetTypeName)) {
+                var assetType = AssetTools.findAssetTypeFromsubAssetType(subAssetTypeName);
+                return this._filterAssets("subAssetType", subAssetTypeName, assetType);
             }
 
             return [];
         }
     },
 
-    getAssetsListByMimeType: {
+    getAssetsByMimeType: {
         value: function (mimeType) {
             if (AssetTools.isMimeTypeValid(mimeType)) {
                 var assetType = AssetTools.findAssetTypeFromMimeType(mimeType);

@@ -52,13 +52,13 @@ exports.Asset = Montage.specialize({
         }
     },
 
-    _fileFormat: {
+    _subAssetType: {
         value: null
     },
 
-    fileFormat: {
+    subAssetType: {
         get: function () {
-            return this._fileFormat;
+            return this._subAssetType;
         }
     },
 
@@ -72,7 +72,7 @@ exports.Asset = Montage.specialize({
                 this._mimeType = AssetTools.isMimeTypeValid(mimeType, this._type) ? mimeType : null;
 
                 if (this._mimeType) {
-                    this._fileFormat = AssetTools.findFileFormatFromMimeType(mimeType);
+                    this._subAssetType = AssetTools.findSubAssetTypeFromMimeType(mimeType);
                 }
             }
         },

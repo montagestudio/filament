@@ -25,26 +25,26 @@ var AssetTools = {
         return assetType && typeof assetType === 'string' && AssetsConfig.assetTypes.hasOwnProperty(assetType);
     },
 
-    isFileFormatExist: function (fileFormatName, assetType) {
+    isSubAssetTypeExist: function (subAssetTypeName, assetType) {
         if (this.isAssetTypeValid(assetType)) {
-            return Object.keys(AssetsConfig.assetTypes[assetType].fileFormats).some(function (subTypeName) {
-                return fileFormatName === subTypeName;
+            return Object.keys(AssetsConfig.assetTypes[assetType].subAssetTypes).some(function (subTypeName) {
+                return subAssetTypeName === subTypeName;
             });
         }
 
         var self = this;
 
         return Object.keys(AssetsConfig.assetTypes).some(function (assetType) {
-            return self.isFileFormatExist(fileFormatName, assetType);
+            return self.isSubAssetTypeExist(subAssetTypeName, assetType);
         });
     },
 
     isMimeTypeValid: function (mimeType, assetTypeName) {
         if (this.isAssetTypeValid(assetTypeName)) {
-            var fileFormats = AssetsConfig.assetTypes[assetTypeName].fileFormats;
+            var subAssetTypes = AssetsConfig.assetTypes[assetTypeName].subAssetTypes;
 
-            return Object.keys(fileFormats).some(function (fileFormatName) {
-                return fileFormats[fileFormatName].mimeTypes.indexOf(mimeType) >= 0;
+            return Object.keys(subAssetTypes).some(function (subAssetTypeName) {
+                return subAssetTypes[subAssetTypeName].mimeTypes.indexOf(mimeType) >= 0;
             });
         }
 
@@ -57,29 +57,29 @@ var AssetTools = {
         return this.isFileUrlValid(fileUrl) && this.isAssetTypeValid(assetType);
     },
 
-    findFileFormatFromMimeType: function (mimeType, assetTypeName) {
+    findSubAssetTypeFromMimeType: function (mimeType, assetTypeName) {
         if (this.isAssetTypeValid(assetTypeName)) {
-            var fileFormats = AssetsConfig.assetTypes[assetTypeName].fileFormats,
-                fileFormat = null,
+            var subAssetTypes = AssetsConfig.assetTypes[assetTypeName].subAssetTypes,
+                subAssetType = null,
 
-                fileFormatFound = Object.keys(fileFormats).some(function (fileFormatName) {
-                    fileFormat = fileFormatName;
-                    return fileFormats[fileFormat].mimeTypes.indexOf(mimeType) >= 0 ? fileFormat : false;
+                subAssetTypeFound = Object.keys(subAssetTypes).some(function (subAssetTypeName) {
+                    subAssetType = subAssetTypeName;
+                    return subAssetTypes[subAssetType].mimeTypes.indexOf(mimeType) >= 0 ? subAssetType : false;
                 });
 
-            return fileFormatFound ? fileFormat : void 0;
+            return subAssetTypeFound ? subAssetType : void 0;
         }
 
         assetTypeName = this.findAssetTypeFromMimeType(mimeType);
 
-        return this.isAssetTypeValid(assetTypeName) ? this.findFileFormatFromMimeType(mimeType, assetTypeName): void 0;
+        return this.isAssetTypeValid(assetTypeName) ? this.findSubAssetTypeFromMimeType(mimeType, assetTypeName): void 0;
     },
 
-    findAssetTypeFromFileFormat: function (fileFormatName) {
+    findAssetTypeFromSubAssetType: function (subAssetTypeName) {
         var assetTypeFound = null;
 
         Object.keys(AssetsConfig.assetTypes).some(function (assetType) {
-            assetTypeFound = AssetsConfig.assetTypes[assetType].fileFormats.hasOwnProperty(fileFormatName) ? assetType : null;
+            assetTypeFound = AssetsConfig.assetTypes[assetType].subAssetTypes.hasOwnProperty(subAssetTypeName) ? assetType : null;
             return !!assetTypeFound;
         });
 

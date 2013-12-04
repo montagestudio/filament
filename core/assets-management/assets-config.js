@@ -5,10 +5,10 @@ var AssetsConfig = {
         MODEL: {
             typeName: "MODEL",
             defaultIconUrl: "assets/icons/default-model-icon.png",
-            fileFormats: {
+            subAssetTypes: {
 
                 COLLADA: { //http://www.iana.org/assignments/media-types/model/vnd.collada+xml
-                    fileFormatName: "COLLADA",
+                    subAssetTypeName: "COLLADA",
                     detailedName: "Collaborative Design Activity",
                     mimeTypes: [
                         "model/vnd.collada+xml"
@@ -20,10 +20,10 @@ var AssetsConfig = {
         IMAGE: {
             typeName: "IMAGE",
             defaultIconUrl: "assets/icons/default-image-icon.png",
-            fileFormats: {
+            subAssetTypes: {
 
                 JPEG: { // RFC-2045, RFC-2046
-                    fileFormatName: "JPEG",
+                    subAssetTypeName: "JPEG",
                     detailedName: "JPEG Image",
                     mimeTypes: [
                         "image/jpeg"
@@ -31,7 +31,7 @@ var AssetsConfig = {
                 },
 
                 JP2: { // RFC-3745
-                    fileFormatName: "JP2",
+                    subAssetTypeName: "JP2",
                     detailedName: "JPEG 2000",
                     mimeTypes: [
                         "image/jp2"
@@ -39,7 +39,7 @@ var AssetsConfig = {
                 },
 
                 PNG: { // RFC-2045, RFC-2048
-                    fileFormatName: "PNG",
+                    subAssetTypeName: "PNG",
                     detailedName: "Portable Network Graphics",
                     mimeTypes: [
                         "image/png"
@@ -47,7 +47,7 @@ var AssetsConfig = {
                 },
 
                 GIF: { // RFC-2045, RFC-2046
-                    fileFormatName: "GIF",
+                    subAssetTypeName: "GIF",
                     detailedName: "Graphics Interchange Format",
                     mimeTypes: [
                         "image/gif"
@@ -55,7 +55,7 @@ var AssetsConfig = {
                 },
 
                 SVG: { // RFC-3023
-                    fileFormatName: "SVG",
+                    subAssetTypeName: "SVG",
                     detailedName: "Scalable Vector Graphics",
                     mimeTypes: [
                         "image/svg+xml"
@@ -67,10 +67,10 @@ var AssetsConfig = {
         AUDIO: {
             typeName: "AUDIO",
             defaultIconUrl: "assets/icons/default-audio-icon.png",
-            fileFormats: {
+            subAssetTypes: {
 
                 AAC: {
-                    fileFormatName: "AAC",
+                    subAssetTypeName: "AAC",
                     detailedName: "Advanced Audio Coding",
                     mimeTypes: [
                         "audio/aac",
@@ -87,7 +87,7 @@ var AssetsConfig = {
                 },
 
                 AIFF: {
-                    fileFormatName: "AIFF",
+                    subAssetTypeName: "AIFF",
                     detailedName: "Audio Interchange File Format",
                     mimeTypes: [
                         "audio/aiff",
@@ -96,7 +96,7 @@ var AssetsConfig = {
                 },
 
                 FLAC: {
-                    fileFormatName: "FLAC",
+                    subAssetTypeName: "FLAC",
                     detailedName: "Free Lossless Audio Codec",
                     mimeTypes: [
                         "audio/x-flac",
@@ -105,7 +105,7 @@ var AssetsConfig = {
                 },
 
                 MPEG: { // RFC-3003
-                    fileFormatName: "MPEG",
+                    subAssetTypeName: "MPEG",
                     detailedName: "MPEG-1/2 Audio",
                     mimeTypes: [
                         "audio/mpeg"
@@ -113,7 +113,7 @@ var AssetsConfig = {
                 },
 
                 OGG: { // RFC-5334
-                    fileFormatName: "OGG",
+                    subAssetTypeName: "OGG",
                     detailedName: "Ogg",
                     mimeTypes: [
                         "audio/ogg"
@@ -121,7 +121,7 @@ var AssetsConfig = {
                 },
 
                 WAVE: { // RFC-2361
-                    fileFormatName: "WAVE",
+                    subAssetTypeName: "WAVE",
                     detailedName: "Waveform Audio File Format",
                     mimeTypes: [
                         "audio/vnd.wave",
@@ -138,10 +138,10 @@ var AssetsConfig = {
         VIDEO: {
             typeName: "VIDEO",
             defaultIconUrl: "assets/icons/default-video-icon.png",
-            fileFormats: {
+            subAssetTypes: {
 
                 MP4: { // RFC-4337
-                    fileFormatName: "MP4",
+                    subAssetTypeName: "MP4",
                     detailedName: "MPEG-4 Part 10",
                     mimeTypes: [
                         "video/mp4"
