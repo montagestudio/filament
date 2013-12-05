@@ -5,6 +5,7 @@ var AssetsConfig = {
         MODEL: {
             typeName: "MODEL",
             defaultIconUrl: "assets/icons/default-model-icon.png",
+            fileDescriptorIdentifier: "isCollada",
             subAssetTypes: {
 
                 COLLADA: { //http://www.iana.org/assignments/media-types/model/vnd.collada+xml
@@ -20,6 +21,7 @@ var AssetsConfig = {
         IMAGE: {
             typeName: "IMAGE",
             defaultIconUrl: "assets/icons/default-image-icon.png",
+            fileDescriptorIdentifier: "isImage",
             subAssetTypes: {
 
                 JPEG: { // RFC-2045, RFC-2046
@@ -67,6 +69,7 @@ var AssetsConfig = {
         AUDIO: {
             typeName: "AUDIO",
             defaultIconUrl: "assets/icons/default-audio-icon.png",
+            fileDescriptorIdentifier: "isAudio",
             subAssetTypes: {
 
                 AAC: {
@@ -138,6 +141,7 @@ var AssetsConfig = {
         VIDEO: {
             typeName: "VIDEO",
             defaultIconUrl: "assets/icons/default-video-icon.png",
+            fileDescriptorIdentifier: "isVideo",
             subAssetTypes: {
 
                 MP4: { // RFC-4337

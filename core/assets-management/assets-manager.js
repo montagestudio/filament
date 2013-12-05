@@ -20,6 +20,7 @@ exports.AssetsManager = Montage.specialize({
             this.assets = {};
             this.assetTypes = {};
             this.subAssetTypes = {};
+            this._fileDescriptorIdentifiers = {};
 
             var self = this,
                 assetTypes = AssetsConfig.assetTypes;
@@ -31,6 +32,7 @@ exports.AssetsManager = Montage.specialize({
                 self.assetTypes[assetTypeName] = assetTypeName;
                 self.assets[assetTypeName] = [];
                 self._populateSubAssetTypes(currentAssetType.subAssetTypes);
+                self._fileDescriptorIdentifiers[currentAssetType.fileDescriptorIdentifier] = assetTypeName;
             });
 
             Application.addEventListener("fileSystemChange", this);
@@ -46,6 +48,10 @@ exports.AssetsManager = Montage.specialize({
     },
 
     subAssetTypes: {
+        value: null
+    },
+
+    _fileDescriptorIdentifiers: {
         value: null
     },
 
@@ -77,20 +83,18 @@ exports.AssetsManager = Montage.specialize({
 
     _defineAssetTypeWithFileDescriptor: {
         value: function (currentFile) {
-            if (currentFile && typeof currentFile === "object") {
+            var assetTypeFound = null;
 
-                if (currentFile.isCollada) {
-                    return this.assetTypes.MODEL;
-                } else if (currentFile.isImage) {
-                    return this.assetTypes.IMAGE;
-                } else if (currentFile.isAudio) {
-                    return this.assetTypes.AUDIO;
-                } else if (currentFile.isVideo) {
-                    return this.assetTypes.VIDEO;
-                }
+            if (currentFile && typeof currentFile === "object" && this._fileDescriptorIdentifiers) {
+                var self = this;
 
+                Object.keys(this._fileDescriptorIdentifiers).some(function (identifier) {
+                    assetTypeFound = currentFile[identifier] ? self._fileDescriptorIdentifiers[identifier] : void 0;
+                    return !!assetTypeFound;
+                });
             }
-            return null;
+
+            return assetTypeFound;
         }
     },
 
