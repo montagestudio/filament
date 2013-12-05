@@ -76,20 +76,20 @@ describe("asset-manager-spec", function () {
 
                 switch (file.assetType) {
 
-                    case AssetTypes.MODEL:
-                        fileDescriptor.isCollada = true;
-                        break;
-                    case AssetTypes.IMAGE:
-                        fileDescriptor.isImage = true;
-                        break;
-                    case AssetTypes.AUDIO:
-                        fileDescriptor.isAudio = true;
-                        break;
-                    case AssetTypes.VIDEO:
-                        fileDescriptor.isVideo = true;
-                        break;
-                    default:
-                        break;
+                case AssetTypes.MODEL:
+                    fileDescriptor.isCollada = true;
+                    break;
+                case AssetTypes.IMAGE:
+                    fileDescriptor.isImage = true;
+                    break;
+                case AssetTypes.AUDIO:
+                    fileDescriptor.isAudio = true;
+                    break;
+                case AssetTypes.VIDEO:
+                    fileDescriptor.isVideo = true;
+                    break;
+                default:
+                    break;
                 }
 
                 filesList.push(fileDescriptor);
