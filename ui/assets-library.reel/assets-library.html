@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="assets-library.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "assetsLibrary"}
+            },
+            "bindings": {
+                "selectedAssetType": {"<-": "@assetsTypesBar.selectedAssetType"}
+            }
+        },
+
+        "assetsTypesBar": {
+            "prototype": "./assets-types-bar.reel",
+            "properties": {
+                "element": {"#": "assetsTypesBar"}
+            },
+            "bindings": {
+                "assetTypes": {"<-": "@owner.assetTypes"}
+            }
+        },
+
+        "assetsLibraryItems": {
+            "prototype": "./assets-library-items.reel",
+            "properties": {
+                "element": {"#": "assetsLibraryItems"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.content"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="assetsLibrary" class="AssetsLibrary">
+        <div data-montage-id="assetsTypesBar" class="AssetsTypesBar"></div>
+        <div data-montage-id="assetsLibraryItems" class="AssetsLibraryItems"></div>
+    </div>
+</body>
+</html>
