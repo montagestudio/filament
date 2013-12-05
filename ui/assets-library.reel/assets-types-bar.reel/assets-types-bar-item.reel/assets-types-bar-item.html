@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="assets-types-bar-item.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "assetTypesBar-item"}
+            }
+        },
+
+        "prototypeName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "barItem-name"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.assetTypeName"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <li data-montage-id="assetTypesBar-item" class="AssetsTypesBarItem">
+        <span data-montage-id="barItem-name" class="AssetsTypesBarItem-label"></span>
+    </li>
+</body>
+</html>
