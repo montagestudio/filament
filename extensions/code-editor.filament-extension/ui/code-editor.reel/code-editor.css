@@ -65,3 +65,16 @@
 .CodeEditor .cm-s-solarized.cm-s-light .cm-string {
     color: rgb(101, 123, 131);
 }
+
+.CodeEditor .cm-s-solarized .cm-label {
+    color: #6c71c4;
+    font-weight: bold;
+}
+
+.CodeEditor .cm-s-solarized .cm-object-reference {
+    color: #6c71c4;
+}
+
+.CodeEditor .cm-s-solarized .cm-module {
+    color: #268bd2;
+}

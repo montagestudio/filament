@@ -35,7 +35,9 @@ CodeMirror.defineMode("montagehtml", function(config, parserConfig) {
                 }
 
                 if (state.labels.indexOf(string) >= 0) {
-                    token = "operator";
+                    token = "label";
+                } else {
+                    token = "element";
                 }
             }
 

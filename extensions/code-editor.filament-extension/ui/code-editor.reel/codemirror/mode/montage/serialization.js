@@ -121,17 +121,17 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
 
     function tokenModuleId(stream, state) {
         consumeString(stream, state);
-        return "variable";
+        return "module";
     }
 
     function tokenObjectReference(stream, state) {
         consumeString(stream, state);
-        return "operator";
+        return "object-reference";
     }
 
     function tokenLabel(stream, state) {
         consumeString(stream, state);
-        return "operator";
+        return "label";
     }
 
     function addProperty(state, name) {
