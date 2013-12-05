@@ -6,7 +6,7 @@ CodeMirror.defineMode("montagetemplate", function(config, parserConfig) {
         serializationEndRegex = parserConfig.serializationEndRegex || /^<\/script>/i;
 
     //inner modes
-    var serializationMode, htmlMixedMode;
+    var serializationMode, htmlMode;
 
     //tokenizer when in html mode
     function htmlDispatch(stream, state) {
@@ -24,7 +24,7 @@ CodeMirror.defineMode("montagetemplate", function(config, parserConfig) {
             } else if (stream.match(serializationStartRegex, false)) {
                 state.prepareToChangeToSerialization = true;
             }
-            return htmlMixedMode.token(stream, state.htmlState);
+            return htmlMode.token(stream, state.htmlState);
         }
     }
 
@@ -32,7 +32,7 @@ CodeMirror.defineMode("montagetemplate", function(config, parserConfig) {
     function serializationDispatch(stream, state) {
         if (stream.match(serializationEndRegex, false))  {
             state.token=htmlDispatch;
-            return htmlMixedMode.token(stream, state.htmlState);
+            return htmlMode.token(stream, state.htmlState);
         }
         else {
             return serializationMode.token(stream, state.serializationState);
@@ -43,10 +43,10 @@ CodeMirror.defineMode("montagetemplate", function(config, parserConfig) {
     return {
         startState: function() {
             serializationMode = serializationMode || CodeMirror.getMode(config, "text/montage-serialization");
-            htmlMixedMode = htmlMixedMode || CodeMirror.getMode(config, "htmlmixed");
+            htmlMode = htmlMode || CodeMirror.getMode(config, "montagehtml");
             return {
                 token :  parserConfig.startOpen ? serializationDispatch : htmlDispatch,
-                htmlState : CodeMirror.startState(htmlMixedMode),
+                htmlState : CodeMirror.startState(htmlMode),
                 serializationState : CodeMirror.startState(serializationMode)
             };
         },
@@ -57,7 +57,7 @@ CodeMirror.defineMode("montagetemplate", function(config, parserConfig) {
 
         indent: function(state, textAfter) {
             if (state.token == htmlDispatch)
-                return htmlMixedMode.indent(state.htmlState, textAfter);
+                return htmlMode.indent(state.htmlState, textAfter);
             else if (serializationMode.indent)
                 return serializationMode.indent(state.serializationState, textAfter);
         },
@@ -65,7 +65,7 @@ CodeMirror.defineMode("montagetemplate", function(config, parserConfig) {
         copyState: function(state) {
             return {
                 token : state.token,
-                htmlState : CodeMirror.copyState(htmlMixedMode, state.htmlState),
+                htmlState : CodeMirror.copyState(htmlMode, state.htmlState),
                 serializationState : CodeMirror.copyState(serializationMode, state.serializationState)
             };
         },
@@ -74,9 +74,9 @@ CodeMirror.defineMode("montagetemplate", function(config, parserConfig) {
 
         innerMode: function(state) {
             if (state.token == serializationDispatch) return {state: state.serializationState, mode: serializationMode};
-            else return {state: state.htmlState, mode: htmlMixedMode};
+            else return {state: state.htmlState, mode: htmlMode};
         }
     };
-}, "htmlmixed");
+}, "montagehtml", "montageserialization");
 
 CodeMirror.defineMIME("text/montage-template", { name: "montagetemplate"});
