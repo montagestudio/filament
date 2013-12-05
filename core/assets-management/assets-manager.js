@@ -69,7 +69,7 @@ exports.AssetsManager = Montage.specialize({
                 var self = this;
 
                 Object.keys(assetType).forEach(function (subAssetTypeName) {
-                    self.subAssetTypes[subAssetTypeName] = assetType[subAssetTypeName];
+                    self.subAssetTypes[subAssetTypeName] = subAssetTypeName;
                 });
             }
         }
@@ -124,7 +124,10 @@ exports.AssetsManager = Montage.specialize({
                         assetCreated.iconUrl = AssetTools.isFileUrlValid(iconUrl) ?
                             iconUrl : this.getIconWithFileUrlAndAssetType(fileUrl, assetType);
 
-                        assetCreated.mimeType = fileDescriptor.mimeType;
+                        //TODO Once a mimeType checking system will be supported, it should help to determine the validity of an asset.
+                        if (fileDescriptor.mimeType && AssetTools.isMimeTypeValid(fileDescriptor.mimeType, assetType)) {
+                            assetCreated.mimeType = fileDescriptor.mimeType;
+                        }
 
                         this.assets[assetType].push(assetCreated);
 

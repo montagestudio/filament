@@ -4,28 +4,29 @@ var AssetTools = {
 
     defineFileDataWithUrl: function (fileUrl) {
         if (this.isFileUrlValid(fileUrl)) {
-            var fileData = /([^\/]+)\.([^\.]+)$/.exec(fileUrl);
+            var fileData = /([^\/]+)\.([^\.]+)$|([^\/]+)$/.exec(fileUrl);
 
-            if (fileData && Array.isArray(fileData) && fileData.length === 3) {
-                return fileData;
+            if (fileData && Array.isArray(fileData) && fileData.length === 4) {
+                return {
+                    fileName: fileData[0],
+                    name: fileData[1] ? fileData[1] : fileData[0],
+                    extension: fileData[2]
+                };
             }
         }
 
         return null;
     },
 
-    isFileUrlValid: function (fileUrl, strict) {
-        var urlValidity = fileUrl && typeof fileUrl === 'string' && fileUrl.length > 0 &&
-            fileUrl.charAt(fileUrl.length-1) !== '/';
-
-        return !!strict && urlValidity ? /\.([^\.]+)$/.test(fileUrl) : urlValidity;
+    isFileUrlValid: function (fileUrl) {
+        return typeof fileUrl === 'string' && fileUrl.length > 0 && fileUrl.charAt(fileUrl.length-1) !== '/';
     },
 
     isAssetTypeValid: function (assetType) {
-        return assetType && typeof assetType === 'string' && AssetsConfig.assetTypes.hasOwnProperty(assetType);
+        return typeof assetType === 'string' && assetType.length > 0 && AssetsConfig.assetTypes.hasOwnProperty(assetType);
     },
 
-    isSubAssetTypeExist: function (subAssetTypeName, assetType) {
+    isSubAssetTypeValid: function (subAssetTypeName, assetType) {
         if (this.isAssetTypeValid(assetType)) {
             return Object.keys(AssetsConfig.assetTypes[assetType].subAssetTypes).some(function (subTypeName) {
                 return subAssetTypeName === subTypeName;
@@ -35,7 +36,7 @@ var AssetTools = {
         var self = this;
 
         return Object.keys(AssetsConfig.assetTypes).some(function (assetType) {
-            return self.isSubAssetTypeExist(subAssetTypeName, assetType);
+            return self.isSubAssetTypeValid(subAssetTypeName, assetType);
         });
     },
 
@@ -60,14 +61,14 @@ var AssetTools = {
     findSubAssetTypeFromMimeType: function (mimeType, assetTypeName) {
         if (this.isAssetTypeValid(assetTypeName)) {
             var subAssetTypes = AssetsConfig.assetTypes[assetTypeName].subAssetTypes,
-                subAssetType = null,
+                subAssetTypeFound = void 0;
 
-                subAssetTypeFound = Object.keys(subAssetTypes).some(function (subAssetTypeName) {
-                    subAssetType = subAssetTypeName;
-                    return subAssetTypes[subAssetType].mimeTypes.indexOf(mimeType) >= 0 ? subAssetType : false;
-                });
+            Object.keys(subAssetTypes).some(function (subAssetTypeName) {
+                subAssetTypeFound = subAssetTypes[subAssetTypeName].mimeTypes.indexOf(mimeType) >= 0 ? subAssetTypeName : void 0;
+                return !!subAssetTypeFound;
+            });
 
-            return subAssetTypeFound ? subAssetType : void 0;
+            return subAssetTypeFound;
         }
 
         assetTypeName = this.findAssetTypeFromMimeType(mimeType);
@@ -76,10 +77,11 @@ var AssetTools = {
     },
 
     findAssetTypeFromSubAssetType: function (subAssetTypeName) {
-        var assetTypeFound = null;
+        var assetTypeFound = void 0;
 
-        Object.keys(AssetsConfig.assetTypes).some(function (assetType) {
-            assetTypeFound = AssetsConfig.assetTypes[assetType].subAssetTypes.hasOwnProperty(subAssetTypeName) ? assetType : null;
+        Object.keys(AssetsConfig.assetTypes).some(function (assetTypeName) {
+            var assetType = AssetsConfig.assetTypes[assetTypeName];
+            assetTypeFound = assetType.subAssetTypes.hasOwnProperty(subAssetTypeName) ? assetTypeName : void 0;
             return !!assetTypeFound;
         });
 
@@ -87,7 +89,7 @@ var AssetTools = {
     },
 
     findAssetTypeFromMimeType: function (mimeType) {
-        if (mimeType && typeof mimeType === 'string') {
+        if (typeof mimeType === 'string' && mimeType.length > 0) {
             var dataMimeType = mimeType.split('/');
 
             if (Array.isArray(dataMimeType) && dataMimeType.length === 2) {

@@ -103,10 +103,9 @@ exports.Asset = Montage.specialize({
             var fileData = AssetTools.defineFileDataWithUrl(fileUrl);
 
             if (fileData) {
-
-                this._fileName = fileData[0];
-                this._name = fileData[1];
-                this._extension = fileData[2];
+                this._fileName = fileData.fileName;
+                this._name = fileData.name;
+                this._extension = fileData.extension;
                 this._fileUrl = fileUrl;
 
             } else {
