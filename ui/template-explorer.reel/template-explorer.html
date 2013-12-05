@@ -101,6 +101,16 @@
             "bindings": {
                 "value": {"<->": "@owner.templateObjectFilterTerm"}
             }
+        },
+        "templateTreeController": {
+            "prototype": "montage/core/tree-controller",
+            "properties": {
+                "childrenPath": "children",
+                "initiallyExpanded": true
+            },
+            "bindings": {
+                "content": {"<-": "@owner.templateTree"}
+            }
         }
     }
     </script>

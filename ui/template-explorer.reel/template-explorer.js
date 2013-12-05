@@ -6,6 +6,7 @@
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     application = require("montage/core/application").application,
+    WeakMap = require("montage/collections/weak-map"),
     MimeTypes = require("core/mime-types");
 
 /**
@@ -104,11 +105,56 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         }
     },
 
+    templateObjectsTree: {
+        value: null
+    },
+
     constructor: {
         value: function TemplateExplorer() {
             this.super();
 
             this.defineBinding("templateObjectsController.filterPath", {"<-": "templateObjectFilterPath"});
+        }
+    },
+
+    buildTree: {
+        value: function () {
+            // map of component to tree node
+            var map = new WeakMap();
+            // root
+            var node = {
+                templateObject: this.ownerObject.stageObject,
+                children: []
+            };
+            this.templateObjectsTree = node;
+            map.set(this.ownerObject.stageObject, node);
+
+            // nodes
+            // keep track of nodes to be added
+            var proxies = this.templateObjectsController.content.slice(0), // === .clone(1) ???
+                object, proxy, parentObject;
+            while (proxy = proxies.shift()) {
+                object = proxy.stageObject || proxy; // wtf
+                if (!object) {
+                    debugger
+                    continue;
+                }
+                parentObject = object.parentComponent || this.ownerObject.stageObject; // RLY ?
+                
+                if (map.has(parentObject)) {
+                    // let's add it to the tree
+                    node = {
+                        proxy: proxy,
+                        templateObject: object,
+                        children: []
+                    };
+                    map.get(parentObject).children.push(node);
+                    map.set(object, node);
+                } else {
+                    // let's try later
+                    proxies.push(object);
+                }
+            }
         }
     },
 
@@ -134,6 +180,10 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             application.addEventListener("editListenerForObject", this, false);
 
             this.addRangeAtPathChangeListener("editingDocument.selectedObjects", this, "handleSelectedObjectsChange");
+            var self = this;
+            setTimeout(function() {
+                self.buildTree();
+            }, 3000);
         }
     },
 
