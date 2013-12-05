@@ -5,7 +5,7 @@ var AssetsConfig = {
         MODEL: {
             typeName: "MODEL",
             defaultIconUrl: "assets/icons/default-model-icon.png",
-            fileDescriptorIdentifier: "isCollada",
+            fileDescriptorIdentifier: "isModel",
             subAssetTypes: {
 
                 COLLADA: { //http://www.iana.org/assignments/media-types/model/vnd.collada+xml
