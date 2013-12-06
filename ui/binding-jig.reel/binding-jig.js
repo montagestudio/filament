@@ -172,8 +172,8 @@ exports.BindingJig = Montage.create(Component, {
                 // looks for properties in blueprint
                 var searchProperty = searchLabel.slice(i + 1),
                     componentLabel = searchLabel.slice(0, i),
-                    nodeProxy = this.editingDocument.nodeProxyForComponentLabel(componentLabel),
-                    component = nodeProxy.component;
+                    component = this.editingDocument.editingProxyMap[componentLabel];
+
                 component.packageRequire.async(component.moduleId).get(component.exportName).get("blueprint")
                     .then(function (blueprint) {
                         var suggestions = [];
