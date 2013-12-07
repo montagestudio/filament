@@ -130,7 +130,8 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
     }
 
     function tokenLabel(stream, state) {
-        consumeString(stream, state);
+        var string = consumeString(stream, state);
+        state.labels.push(string);
         return "label";
     }
 
@@ -172,7 +173,8 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
                 tokenize: null,
                 blocks: [],
                 block: null,
-                blockLevel: 0
+                blockLevel: 0,
+                labels: []
             };
         },
 
@@ -189,7 +191,8 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
         copyState: function(state) {
             var newState = {
                 tokenize: state.tokenize,
-                blockLevel: state.blockLevel
+                blockLevel: state.blockLevel,
+                labels: state.labels.slice(0)
             };
 
             newState.blocks = JSON.parse(JSON.stringify(state.blocks));
