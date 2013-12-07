@@ -105,8 +105,22 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         }
     },
 
-    templateObjectsTree: {
+    _templateObjectsTree: {
         value: null
+    },
+
+    templateObjectsTree: {
+        get : function () {
+            if (!this._templateObjectsTree) {
+                this.buildTemplateObjectTree();
+            }
+            return this._templateObjectsTree;
+        },
+        set: function (value) {
+            if (value !== this._templateObjectsTree) {
+                this._templateObjectsTree = value;
+            }
+        }
     },
 
     constructor: {
@@ -116,44 +130,53 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         }
     },
 
-    buildTree: {
+    buildTemplateObjectTree: {
         value: function () {
-            // map of component to tree node
+            var self = this;
+            // map of ReelProxy to tree node
             var map = new WeakMap();
-            // root
+            // add the root
             var node = {
-                proxy: this.ownerObject,
+                templateObject: this.ownerObject,
                 children: []
             };
             this.templateObjectsTree = node;
-            map.set(this.ownerObject.stageObject, node);
+            map.set(this.ownerObject, node);
 
-            // nodes
-            // keep track of nodes to be added
-            var proxies = this.templateObjectsController.content.slice(0), // === .clone(1) ???
-                retry = 1000,
-                object, proxy, parentObject, parentNode;
-            while ((proxy = proxies.shift()) && retry--) {
-                object = proxy.stageObject || proxy; // wtf
-                if (!object) {
-                    debugger
-                    continue;
+            // add the nodes
+            var lastNodeProxy, reelProxy, nodeProxy, parentReelProxy, parentNodeProxy,
+                nodeProxies = this.editingDocument.templateNodes.filter(function(nodeProxy) {
+                    return nodeProxy.component && (nodeProxy.component !== self.ownerObject);
+                });
+            while (nodeProxy = nodeProxies.shift()) {
+                // to be safe, guard to prevent an infinite loop
+                if (lastNodeProxy && lastNodeProxy === nodeProxy) {
+                    throw new Error("Can not build templateObjectsTree");
                 }
-                parentObject = object.parentComponent || this.ownerObject.stageObject; // RLY ?
-                
-                if (map.has(parentObject)) {
-                    // let's add it to the tree
+                reelProxy = nodeProxy.component;
+                // find the parent component
+                parentNodeProxy = nodeProxy;
+                while (parentNodeProxy = parentNodeProxy.parentNode) {
+                    if (parentNodeProxy.component) {
+                        parentReelProxy = parentNodeProxy.component;
+                        break;
+                    }
+                }
+
+                if (map.has(parentReelProxy)) {
+                    // add the node to the tree
                     node = {
-                        proxy: proxy,
+                        templateObject: reelProxy,
                         children: []
                     };
-                    parentNode = map.get(parentObject)
+                    var parentNode = map.get(parentReelProxy);
                     parentNode.children.push(node);
-                    map.set(object, node);
+                    map.set(reelProxy, node);
                 } else {
-                    // let's try later
-                    proxies.push(object);
+                    // parentReelProxy not found -> has not been added to the tree yet
+                    nodeProxies.push(nodeProxy);
                 }
+                lastNodeProxy = nodeProxy;
             }
         }
     },
@@ -180,10 +203,6 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             application.addEventListener("editListenerForObject", this, false);
 
             this.addRangeAtPathChangeListener("editingDocument.selectedObjects", this, "handleSelectedObjectsChange");
-            var self = this;
-            setTimeout(function() {
-                self.buildTree();
-            }, 3000);
         }
     },
 
