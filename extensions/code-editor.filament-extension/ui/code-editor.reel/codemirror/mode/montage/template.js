@@ -32,6 +32,7 @@ CodeMirror.defineMode("montagetemplate", function(config, parserConfig) {
     function serializationDispatch(stream, state) {
         if (stream.match(serializationEndRegex, false))  {
             state.token=htmlDispatch;
+            state.htmlState.labels = state.serializationState.labels;
             return htmlMode.token(stream, state.htmlState);
         }
         else {
