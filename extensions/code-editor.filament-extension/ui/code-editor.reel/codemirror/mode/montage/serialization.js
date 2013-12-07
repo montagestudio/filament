@@ -35,7 +35,7 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
         }
 
         if (ch === "{") {
-            startBlock(state);
+            startBlock(stream, state);
 
             // Recognize serialization syntax like {"@".
             // This only works when the property name is in the same line as the
@@ -148,7 +148,11 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
         }
     }
 
-    function startBlock(state) {
+    function startBlock(stream, state) {
+        if (state.blocks.length === 0) {
+            state.baseColumn = stream.column();
+        }
+
         state.blocks.push({
             readingPropertyName: true,
             properties: []
@@ -174,7 +178,8 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
                 blocks: [],
                 block: null,
                 blockLevel: 0,
-                labels: []
+                labels: [],
+                baseColumn: 0
             };
         },
 
@@ -192,7 +197,8 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
             var newState = {
                 tokenize: state.tokenize,
                 blockLevel: state.blockLevel,
-                labels: state.labels.slice(0)
+                labels: state.labels.slice(0),
+                baseColumn: state.baseColumn
             };
 
             newState.blocks = JSON.parse(JSON.stringify(state.blocks));
@@ -213,7 +219,7 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
                 indentLevel--;
             }
 
-            return indentLevel * indentUnit;
+            return state.baseColumn + indentLevel * indentUnit;
         },
 
         newlineAfterToken: function(type, content, textAfter/*, state*/) {
