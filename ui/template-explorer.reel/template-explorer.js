@@ -112,7 +112,6 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     constructor: {
         value: function TemplateExplorer() {
             this.super();
-
             this.defineBinding("templateObjectsController.filterPath", {"<-": "templateObjectFilterPath"});
         }
     },
@@ -123,7 +122,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             var map = new WeakMap();
             // root
             var node = {
-                templateObject: this.ownerObject.stageObject,
+                proxy: this.ownerObject,
                 children: []
             };
             this.templateObjectsTree = node;
@@ -132,8 +131,9 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             // nodes
             // keep track of nodes to be added
             var proxies = this.templateObjectsController.content.slice(0), // === .clone(1) ???
-                object, proxy, parentObject;
-            while (proxy = proxies.shift()) {
+                retry = 1000,
+                object, proxy, parentObject, parentNode;
+            while ((proxy = proxies.shift()) && retry--) {
                 object = proxy.stageObject || proxy; // wtf
                 if (!object) {
                     debugger
@@ -145,10 +145,10 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                     // let's add it to the tree
                     node = {
                         proxy: proxy,
-                        templateObject: object,
                         children: []
                     };
-                    map.get(parentObject).children.push(node);
+                    parentNode = map.get(parentObject)
+                    parentNode.children.push(node);
                     map.set(object, node);
                 } else {
                     // let's try later
@@ -188,6 +188,10 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     },
 
     templateObjectsController: {
+        value: null
+    },
+
+    Controller: {
         value: null
     },
 
@@ -312,7 +316,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             var target = evt.target;
 
             if (target === this.element ||
-                target === this.templateObjects.objectList.element) {
+                target === this.templateObjects.templateNodeList.element) {
                 this.editingDocument.clearSelectedObjects();
                 this.editingDocument.clearSelectedElements();
             }
@@ -333,7 +337,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
 
             //TODO do something sane if multiple objects are selected
             var selectedObject = selectedObjects[0],
-                iterations = this.templateObjects.objectList.iterations,
+                iterations = this.templateObjects.templateNodeList.iterations,
                 iterationCount,
                 iteration,
                 i,

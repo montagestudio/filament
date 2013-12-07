@@ -8,7 +8,8 @@
         "owner": {
             "prototype": "ui/template-explorer.reel",
             "properties": {
-                "element": {"#": "template-explorer"}
+                "element": {"#": "template-explorer"},
+                "templateTreeController": {"@": "templateTreeController"}
             },
             "bindings": {
                 "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"},
@@ -30,16 +31,6 @@
             },
             "bindings": {
                 "value": {"<-": "@owner.hiddenCardsCount"}
-            }
-        },
-        "objectList": {
-            "prototype": "montage/ui/repetition.reel",
-            "properties": {
-                "element": {"#": "objectList"},
-                "isSelectionEnabled": "true"
-            },
-            "bindings": {
-                "contentController": {"<-": "@owner.templateObjectsController"}
             }
         },
         "ownerObjectCell": {
@@ -90,7 +81,7 @@
                 "showBindings": {"<-": "@owner.showBindings"},
                 "showListeners": {"<-": "@owner.showListeners"},
                 "templateExplorer": {"<-": "@owner"},
-                "templateObject": {"<-": "@objectList.objectAtCurrentIteration"}
+                "templateObject": {"<-": "@templateObjectCell.parentComponent.object.proxy"}
             }
         },
         "templateObjectFilter": {
@@ -109,7 +100,17 @@
                 "initiallyExpanded": true
             },
             "bindings": {
-                "content": {"<-": "@owner.templateTree"}
+                "content": {"<-": "@owner.templateObjectsTree"}
+            }
+        },
+        "templateNodeList": {
+            "prototype": "ui/tree.reel",
+            "properties": {
+                "element": {"#": "templateNodeList"},
+                "isSelectionEnabled": true
+            },
+            "bindings": {
+                "treeController": {"<-": "@owner.templateTreeController"}
             }
         }
     }
@@ -129,8 +130,8 @@
             </label>
         </header>
         <section data-montage-id="ownerObjectCell"></section>
-        <ul data-montage-id="objectList" class="TemplateExplorer-list">
-            <li data-montage-id="templateObjectCell" class="TemplateExplorer-list-item"></li>
+        <ul data-montage-id="templateNodeList" class="TemplateExplorer-list">
+            <li data-montage-id="templateObjectCell" data-arg="treeNode" class="TemplateExplorer-list-item"></li>
         </ul>
     </div>
 </body>
