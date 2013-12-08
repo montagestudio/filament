@@ -222,18 +222,6 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
             return state.baseColumn + indentLevel * indentUnit;
         },
 
-        newlineAfterToken: function(type, content, textAfter/*, state*/) {
-            if (textAfter[0] === "}") {
-                return true;
-            }
-
-            if (content === "}" && textAfter[0] === ".") {
-                return false;
-            }
-
-            return /^[\{\}]$/.test(content);
-        },
-
         electricChars: "{}"
     };
 });
