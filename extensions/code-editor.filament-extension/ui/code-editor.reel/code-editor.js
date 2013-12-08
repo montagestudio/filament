@@ -21,7 +21,7 @@ require("./codemirror/mode/montage/template");
  @class module:"./Editor.reel".Editor
  @extends module:palette/ui/editor.reel.Editor
  */
-exports.CodeEditor = Editor.specialize ({
+var CodeEditor = exports.CodeEditor = Editor.specialize ({
 
     constructor: {
         value: function CodeEditor() {
@@ -62,6 +62,10 @@ exports.CodeEditor = Editor.specialize ({
         }
     },
 
+    indentWithSpaces: {
+        value: true
+    },
+
     /**
      * A dictionary of document uuid -> codemirror document.
      */
@@ -77,38 +81,56 @@ exports.CodeEditor = Editor.specialize ({
         }
     },
 
+    _createCodeMirror: {
+        value: function() {
+            var self = this,
+                extraKeys = {};
+
+            extraKeys.Tab = function(cm) {
+                if (cm.somethingSelected() || !self.indentWithSpaces) {
+                    return CodeMirror.Pass;
+                }
+
+                var spaces = new Array(cm.getOption("indentUnit") + 1).join(" ");
+                cm.replaceSelection(spaces, "end", "+input");
+            };
+
+            //Remove Key handling that we'll handle ourselves
+            var defaultKeyMap = CodeMirror.keyMap.default;
+            delete defaultKeyMap["Shift-Cmd-Z"];
+            delete defaultKeyMap["Cmd-Z"];
+            delete defaultKeyMap["Cmd-Y"];
+            delete defaultKeyMap["Cmd-S"];
+
+            var macKeyMap = CodeMirror.keyMap.macDefault;
+            delete macKeyMap["Cmd-Z"];
+            delete macKeyMap["Shift-Cmd-Z"];
+            delete macKeyMap["Cmd-Y"];
+
+            var pcKeyMap = CodeMirror.keyMap.pcDefault;
+            delete pcKeyMap["Ctrl-Z"];
+            delete pcKeyMap["Shift-Ctrl-Z"];
+            delete pcKeyMap["Ctrl-Y"];
+            delete pcKeyMap["Ctrl-S"];
+
+            return CodeMirror(this.element, {
+                mode: this.mode,
+                extraKeys: extraKeys,
+                tabSize: this.tabSize,
+                indentUnit: this.indentUnit,
+                matchBrackets: this.matchBracket,
+                lineNumbers: this.lineNumbers,
+                readOnly: this.readOnly,
+                theme: this.theme,
+                value: ""
+            });
+        }
+    },
+
     enterDocument: {
         value: function(firstTime) {
             if (firstTime) {
-
-                //Remove Key handling that we'll handle ourselves
-                var defaultKeyMap = CodeMirror.keyMap.default;
-                delete defaultKeyMap["Shift-Cmd-Z"];
-                delete defaultKeyMap["Cmd-Z"];
-                delete defaultKeyMap["Cmd-Y"];
-                delete defaultKeyMap["Cmd-S"];
-
-                var macKeyMap = CodeMirror.keyMap.macDefault;
-                delete macKeyMap["Cmd-Z"];
-                delete macKeyMap["Shift-Cmd-Z"];
-                delete macKeyMap["Cmd-Y"];
-
-                var pcKeyMap = CodeMirror.keyMap.pcDefault;
-                delete pcKeyMap["Ctrl-Z"];
-                delete pcKeyMap["Shift-Ctrl-Z"];
-                delete pcKeyMap["Ctrl-Y"];
-                delete pcKeyMap["Ctrl-S"];
-
-                var codemirror = this._codeMirror = CodeMirror(this.element, {
-                    mode: this.mode,
-                    tabSize: this.tabSize,
-                    indentUnit: this.indentUnit,
-                    matchBrackets: this.matchBracket,
-                    lineNumbers: this.lineNumbers,
-                    readOnly: this.readOnly,
-                    theme: this.theme,
-                    value: ""
-                });
+                var codemirror = this._codeMirror = this._createCodeMirror();
 
                 if (this.currentDocument) {
                     var codeMirrorDocument = this._openDocuments[this.currentDocument.uuid];
