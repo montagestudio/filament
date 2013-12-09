@@ -222,6 +222,8 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
             return state.baseColumn + indentLevel * indentUnit;
         },
 
-        electricChars: "{}"
+        electricChars: "{}",
+
+        helperType: "montageserialization"
     };
 });

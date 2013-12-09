@@ -16,6 +16,9 @@ require("./codemirror/mode/montage/html");
 require("./codemirror/mode/montage/serialization");
 require("./codemirror/mode/montage/template");
 
+require("./codemirror/addon/hint/show-hint");
+require("./codemirror/addon/hint/montage-serialization-hint");
+
 /**
  Description TODO
  @class module:"./Editor.reel".Editor
@@ -93,6 +96,10 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
 
                 var spaces = new Array(cm.getOption("indentUnit") + 1).join(" ");
                 cm.replaceSelection(spaces, "end", "+input");
+            };
+
+            extraKeys["Ctrl-Space"] = function(cm) {
+                CodeMirror.showHint(cm, null, CodeEditor.autocompleteOptions);
             };
 
             //Remove Key handling that we'll handle ourselves
@@ -238,3 +245,41 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
     }
 
 });
+
+CodeEditor.autocompleteOptions = {
+    closeCharacters: /["]/,
+    alignWithWord: true,
+    // TODO: there must be a way in filament to get a hold of this.
+    serializationModules: createAutocompleteModuleOptions({"montage": {
+        "composer": {"key-composer": 1, "press-composer": 1, "swipe-composer": 1, "translate-composer": 1},
+        "core": {
+            "converter": {"bytes-converter": 1, "currency-converter": 1, "date-converter": 1, "invert-converter": 1, "lower-case-converter": 1, "new-line-to-br-converter": 1, "number-converter": 1, "trim-converter": 1, "upper-case-converter": 1},
+            "event": {"action-event-listener": 1},
+            "media-controller": 1,
+            "radio-button-controller": 1,
+            "range-controller": 1,
+            "tree-controller": 1
+        },
+        "ui": {
+            "condition.reel": 1, "flow.reel": 1, "loader.reel": 1, "modal-overlay.reel": 1, "overlay.reel": 1, "repetition.reel": 1, "slot.reel": 1, "substitution.reel": 1, "text.reel": 1}
+    }})
+};
+
+function createAutocompleteModuleOptions(structure) {
+    var modules = [];
+
+    var createOptions = function(structure, base) {
+        Object.keys(structure).forEach(function(moduleId) {
+            if (typeof structure[moduleId] === "object") {
+                createOptions(structure[moduleId], base + moduleId + "/")
+            } else {
+                modules.push(base + moduleId);
+            }
+        });
+    };
+
+    createOptions(structure, "");
+    modules.sort();
+
+    return modules;
+}
