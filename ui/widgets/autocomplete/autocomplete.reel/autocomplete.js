@@ -305,7 +305,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
             return this._showPopup;
         },
         set: function(value) {
-            if(value != this._showPopup) {
+            if(value !== this._showPopup) {
                 this._showPopup = value;
                 this.needsDraw = true;
             }
@@ -351,7 +351,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
                 // index on the popup
                 this.activeItemIndex = 0;
                 this.loadingStatus = 'loading';
-                var delegateFn = this.callDelegateMethod('ShouldGetSuggestions', this, searchTerm);
+                this.callDelegateMethod('ShouldGetSuggestions', this, searchTerm);
             }
         }
     },
@@ -456,7 +456,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
                 if(this.tokens) {
                     this.value = this.tokens.join(this.separator.value);
                 }
-                if(this.value && this.value.charAt(this.value.length-1) != this.separator.value) {
+                if(this.value && this.value.charAt(this.value.length-1) !== this.separator.value) {
                     this.value += this.separator.value;
                 }
                 this.element.value = this.value;
@@ -505,7 +505,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
             var code = e.keyCode, popup = this._getPopup();
 
             switch(code) {
-                case KEY_DOWN:
+            case KEY_DOWN:
                 if(!popup.displayed) {
                     popup.show();
                     var searchTerm = this._tokens[this.activeTokenIndex] || "";
@@ -523,7 +523,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
 
                 break;
 
-                case KEY_UP:
+            case KEY_UP:
                 if(popup.displayed === true) {
                     if(this.activeItemIndex > 0) {
                         this.activeItemIndex --;
@@ -534,7 +534,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
 
                 break;
 
-                case KEY_ENTER:
+            case KEY_ENTER:
                 if(popup.displayed === true) {
                     this.resultsController.selection = [this.suggestions[this.activeItemIndex]];
                     e.preventDefault();
