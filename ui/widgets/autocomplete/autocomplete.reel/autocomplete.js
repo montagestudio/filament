@@ -361,6 +361,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
         enumerable: false,
         value: function() {
             this.element.addEventListener("keyup", this);
+            this.element.addEventListener("keydown", this);
             this.element.addEventListener("input", this);
         }
     },
@@ -369,6 +370,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
         enumerable: false,
         value: function() {
             this.element.removeEventListener("keyup", this);
+            this.element.addEventListener("keydown", this);
             this.element.removeEventListener("input", this);
         }
     },
@@ -479,6 +481,21 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
             this.element.classList[isLoading ? 'add' : 'remove']('matte-Autocomplete--loading');
 
 
+        }
+    },
+
+    handleKeydown: {
+        value: function (evt) {
+            var code = evt.keyCode;
+            switch(code) {
+            case KEY_DOWN:
+                evt.preventDefault();
+                break;
+
+            case KEY_UP:
+                evt.preventDefault();
+                break;
+            }
         }
     },
 
