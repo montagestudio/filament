@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="assets-library-items.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "assetsLibraryItems"}
+            }
+        },
+
+        "assetsLibraryItemsController": {
+            "prototype": "montage/core/range-controller",
+            "properties": {
+                "sortPath": "name"
+            },
+            "bindings": {
+                "content": {"<-": "@owner.content"}
+            }
+        },
+
+        "noAssetsCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "noAssetsCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.content.length == 0"}
+            }
+        },
+
+        "noAssetsText": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "noAssetsText"},
+                "value": "No items"
+            }
+        },
+
+        "assetsLibraryItemsList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "assetsLibraryItemsList"}
+            },
+            "bindings": {
+                "contentController": {"<-": "@owner.templateObjects.assetsLibraryItemsController"},
+                "classList.has('montage-invisible')" : { "<-" : "@owner.content.length == 0"}
+            }
+        },
+
+        "assetsLibraryItem": {
+            "prototype": "./assets-library-item.reel",
+            "properties": {
+                "element": {"#": "assetsLibraryItem"}
+            },
+            "bindings": {
+                "prototypeAsset": {"<-": "@assetsLibraryItemsList.objectAtCurrentIteration"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="assetsLibraryItems" class="AssetsLibraryItems">
+        <div data-montage-id="noAssetsCondition" class="AssetsLibraryItems-noItems">
+            <span data-montage-id="noAssetsText"></span>
+        </div>
+        <ul data-montage-id="assetsLibraryItemsList" class="AssetsLibraryItems-list">
+            <li data-montage-id="assetsLibraryItem"></li>
+        </ul>
+    </div>
+</body>
+</html>

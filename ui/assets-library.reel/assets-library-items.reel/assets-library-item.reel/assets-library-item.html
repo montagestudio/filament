@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="assets-library-item.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "assetsLibrary-item"}
+            }
+        },
+
+        "prototypeAssetIcon": {
+            "prototype": "matte/ui/image.reel",
+            "properties": {
+                "element": {"#": "prototypeAsset-icon"}
+            },
+            "bindings": {
+                "src": {"<-": "@owner.prototypeAsset.iconUrl"}
+            }
+        },
+
+        "prototypeAssetName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "prototypeAsset-name"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.prototypeAsset.name"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <li data-montage-id="assetsLibrary-item" class="AssetsLibraryItem">
+        <button data-montage-id="add-button" class="AssetsLibraryItem-button" draggable="true">
+            <img data-montage-id="prototypeAsset-icon" class="AssetsLibraryItem-button-icon" draggable="false">
+            <span data-montage-id="prototypeAsset-name" class="AssetsLibraryItem-button-label"></span>
+        </button>
+    </li>
+</body>
+</html>

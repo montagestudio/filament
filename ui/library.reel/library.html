@@ -53,6 +53,16 @@
                 "bindings": {
                     "value": {"<->": "@owner.filterTerm"}
                 }
+            },
+
+            "assetsLibrary": {
+                "prototype": "ui/assets-library.reel",
+                "properties": {
+                    "element": {"#": "assetsLibrary"}
+                },
+                "bindings": {
+                    "assetsManager": {"<-": "@owner.assetsManager"}
+                }
             }
 
         }
@@ -67,6 +77,7 @@
 		<div data-montage-id="groupList" class="Library-list">
 		    <details data-montage-id="group"></details>
 		</div>
+        <div data-montage-id="assetsLibrary"></div>
     </aside>
 
 </body>
