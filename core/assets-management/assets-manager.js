@@ -31,7 +31,6 @@ exports.AssetsManager = Montage.specialize({
                 self.assets[assetTypeName] = [];
             });
 
-            Application.addEventListener("fileSystemChange", this);
         }
     },
 
@@ -180,7 +179,8 @@ exports.AssetsManager = Montage.specialize({
 
             if (fileChangeDetail && typeof fileChangeDetail === "object" && fileChangeDetail.hasOwnProperty('fileUrl')) {
                 var fileUrl = fileChangeDetail.fileUrl,
-                    fileDescriptor = FileDescriptor.create().initWithUrlAndStat(fileUrl, fileChangeDetail.currentStat);
+                    mimeType = fileChangeDetail.mimeType,
+                    fileDescriptor = FileDescriptor.create().init(fileUrl, fileChangeDetail.currentStat, mimeType);
 
                 switch (fileChangeDetail.change) {
 
@@ -189,8 +189,8 @@ exports.AssetsManager = Montage.specialize({
                     break;
 
                 case FILE_SYSTEM_CHANGES.DELETE:
-                    if (AssetTools.isMimeTypeSupported(fileDescriptor.mimeType)) {
-                        this.removeAsset(fileUrl, AssetTools.findAssetTypeFromMimeType(fileDescriptor.mimeType));
+                    if (AssetTools.isMimeTypeSupported(mimeType)) {
+                        this.removeAsset(fileUrl);
                     }
                     break;
                 }
