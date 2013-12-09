@@ -1,0 +1,20 @@
+.AssetsTypesBarItem {
+    width: auto;
+    height: 18px;
+    font-size: 8px;
+    margin: 0;
+    border: none;
+    padding: 4px;
+    line-height: inherit;
+    background: transparent;
+}
+
+.AssetsTypesBarItem:hover {
+    background-color: #E9E9E9;
+    border-radius: 3px;
+}
+
+.AssetsTypesBarItem.selected {
+    background-color: #E9E9E9;
+    border-radius: 3px;
+}
