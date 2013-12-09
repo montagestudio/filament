@@ -69,6 +69,10 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
         value: true
     },
 
+    autoIndent: {
+        value: true
+    },
+
     /**
      * A dictionary of document uuid -> codemirror document.
      */
@@ -120,7 +124,7 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
             delete pcKeyMap["Ctrl-Y"];
             delete pcKeyMap["Ctrl-S"];
 
-            return CodeMirror(this.element, {
+            var codemirror = CodeMirror(this.element, {
                 mode: this.mode,
                 extraKeys: extraKeys,
                 tabSize: this.tabSize,
@@ -131,6 +135,38 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
                 theme: this.theme,
                 value: ""
             });
+
+            codemirror.on("beforeChange", function(cm, changeObj) {
+                if (!self.autoIndent) {
+                    return CodeMirror.Pass;
+                }
+
+                if (changeObj.origin === "paste") {
+                    // the first line is not indented
+                    var fromLine = changeObj.from.line + 1;
+                    var toLine = fromLine + changeObj.text.length - 2;
+
+                    // In order to make the paste operation and the
+                    // indentation a single history item we need to
+                    // use the operation() function to create an atomic
+                    // change. To do this we cancel the paste and do it
+                    // ourselves on the nextTick since we shouldn't change the
+                    // document during a "beforeChange" event.
+                    changeObj.cancel();
+                    Promise.nextTick(function() {
+                        cm.operation(function() {
+                            cm.getDoc().replaceRange(
+                                changeObj.text.join("\n"),
+                                changeObj.from, changeObj.to);
+                            for (var i = fromLine; i <= toLine; i++) {
+                                cm.indentLine(i);
+                            }
+                        });
+                    })
+                }
+            });
+
+            return codemirror;
         }
     },
 
