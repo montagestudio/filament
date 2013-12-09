@@ -8,6 +8,7 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     Confirm = require("matte/ui/popup/confirm.reel").Confirm,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     ProjectController,
+    AssetsManager = require("./assets-management/assets-manager").AssetsManager,
     FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
     Template = require("montage/core/template").Template,
     URL = require("core/url");
@@ -199,7 +200,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             // Do these operations sequentially because populateLibrary and
             // watchForFileChanges send a lot of data across the websocket,
             // preventing the file list from appearing in a timely manner.
-            return Promise.all([this.populateFiles(), packagePromise])
+            return Promise.all([this.populateFiles(), this.populateAssets(), packagePromise])
                 .then(function () {
                     // don't need to wait for this to complete
                     self.watchForFileChanges();
@@ -1186,6 +1187,17 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             var self = this;
             return this.findLibraryItems(this.dependencies).then(function (dependencyLibraryEntries) {
                 self.libraryGroups = dependencyLibraryEntries;
+            });
+        }
+    },
+
+    populateAssets: {
+        value: function () {
+            var self = this,
+                path = this.environmentBridge.convertBackendUrlToPath(this.projectUrl);
+
+            return this.environmentBridge.listTreeAtUrl(path).then(function (listFiles) {
+                self.assetsManager = AssetsManager.create().init(listFiles);
             });
         }
     }
