@@ -52,6 +52,8 @@ CodeMirror.defineMode("montagehtml", function(config, parserConfig) {
 
         innerMode: function(state) {
             return htmlMixedMode.innerMode(state);
-        }
+        },
+
+        helperType: "html"
     };
 }, "htmlmixed");

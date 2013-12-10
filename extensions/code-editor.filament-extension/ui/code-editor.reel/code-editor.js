@@ -18,6 +18,10 @@ require("./codemirror/mode/montage/template");
 
 require("./codemirror/addon/hint/show-hint");
 require("./codemirror/addon/hint/montage-serialization-hint");
+require("./codemirror/addon/hint/xml-hint");
+require("./codemirror/addon/hint/html-hint");
+require("./codemirror/addon/hint/css-hint");
+require("./codemirror/addon/hint/javascript-hint");
 
 /**
  Description TODO
@@ -92,6 +96,12 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
         value: function() {
             var self = this,
                 extraKeys = {};
+
+            // Configure html-hint
+            ["data-montage-id", "data-param", "data-arg"]
+            .forEach(function(attr) {
+                    CodeMirror.htmlSchema.s.attrs[attr] = null;
+            });
 
             extraKeys.Tab = function(cm) {
                 if (cm.somethingSelected() || !self.indentWithSpaces) {
