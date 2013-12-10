@@ -308,6 +308,8 @@ CodeEditor.autocompleteOptions = {
         },
         "ui": {
             "condition.reel": 1, "flow.reel": 1, "loader.reel": 1, "modal-overlay.reel": 1, "overlay.reel": 1, "repetition.reel": 1, "slot.reel": 1, "substitution.reel": 1, "text.reel": 1}
+    }, "digit": {
+        "ui": {"badge.reel": 1, "button.reel": 1, "checkbox.reel": 1, "image.reel": 1, "list-item.reel": 1, "list.reel": 1, "number-field.reel": 1, "radio-button.reel": 1, "select.reel": 1, "slider.reel": 1, "text-area.reel": 1, "text-field.reel": 1, "text.reel": 1, "title.reel": 1, "toggle-switch.reel": 1, "video-control.reel": 1, "video.reel": 1}
     }})
 };
 
