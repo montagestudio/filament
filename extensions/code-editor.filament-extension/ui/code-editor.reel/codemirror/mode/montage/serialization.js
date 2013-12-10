@@ -97,6 +97,8 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
         if (state.blockLevel === 1) {
             addLabel(state, string);
             return "label";
+        } else if (state.blockLevel === 2) {
+            return "unit";
         } else {
             return "string";
         }
