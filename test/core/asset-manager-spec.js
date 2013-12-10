@@ -1,7 +1,7 @@
 var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
     AssetsManager = require("core/assets-management/assets-manager").AssetsManager,
     AssetTools = require("core/assets-management/asset-tools").AssetTools,
-    AssetTypes = AssetsManager.create().assetTypes;
+    AssetCategories = AssetsManager.create().assetCategories;
 
 describe("asset-manager-spec", function () {
 
@@ -18,42 +18,42 @@ describe("asset-manager-spec", function () {
                     {
                         url: "/a/b/c/duck.dae",
                         mimeType: "model/vnd.collada+xml",
-                        assetType: AssetTypes.MODEL
+                        assetType: AssetCategories.MODEL
                     },
                     {
                         url: "/a/b/c/wine.dae",
                         mimeType: "model/vnd.collada+xml",
-                        assetType: AssetTypes.MODEL
+                        assetType: AssetCategories.MODEL
                     },
                     {
                         url: "/a/b/c/fall.png",
                         mimeType: "image/png",
-                        assetType: AssetTypes.IMAGE
+                        assetType: AssetCategories.IMAGE
                     },
                     {
                         url: "/a/b/c/winter.jpg",
                         mimeType: "image/jpeg",
-                        assetType: AssetTypes.IMAGE
+                        assetType: AssetCategories.IMAGE
                     },
                     {
                         url: "/a/b/c/beach.aac",
                         mimeType: "audio/aac",
-                        assetType: AssetTypes.AUDIO
+                        assetType: AssetCategories.AUDIO
                     },
                     {
                         url: "/a/b/c/city.mp3",
                         mimeType: "audio/mpeg",
-                        assetType: AssetTypes.AUDIO
+                        assetType: AssetCategories.AUDIO
                     },
                     {
                         url: "/a/b/c/mountain.mp4",
                         mimeType: "audio/aac",
-                        assetType: AssetTypes.AUDIO
+                        assetType: AssetCategories.AUDIO
                     },
                     {
                         url: "/a/b/c/holiday.mp4",
                         mimeType: "video/mp4",
-                        assetType: AssetTypes.VIDEO
+                        assetType: AssetCategories.VIDEO
                     },
 
                     // Not valid
@@ -86,7 +86,7 @@ describe("asset-manager-spec", function () {
 
         it("must has been correctly initialized", function () {
             var assets = assetsManager.assets;
-            expect(assetsManager.assetsLength).toEqual(8); // do no include not asset files.
+            expect(assetsManager.assetsCount).toEqual(8); // do no include not asset files.
             expect(assets.MODEL.length).toEqual(2);
             expect(assets.IMAGE.length).toEqual(2);
             expect(assets.AUDIO.length).toEqual(3);
@@ -95,31 +95,37 @@ describe("asset-manager-spec", function () {
 
 
         it("should be able to get assets by type", function () {
-            expect(assetsManager.getAssetsByAssetType(AssetTypes.IMAGE).length).toEqual(2);
+            expect(assetsManager.getAssetsByAssetCategory(AssetCategories.IMAGE).length).toEqual(2);
         });
 
 
         it("should be able to get assets by mime-type", function () {
             expect(assetsManager.getAssetsByMimeType("audio/mpeg").length).toEqual(1);
             expect(assetsManager.getAssetsByMimeType("model/vnd.collada+xml").length).toEqual(2);
-            expect(assetsManager.getAssetsByMimeType("application/xml").length).toEqual(0);
+
+            var mimeTypeNoSupported = function () {
+                assetsManager.getAssetsByMimeType("application/xml");
+            };
+
+            expect(mimeTypeNoSupported).toThrow();
         });
 
 
         it("should be able to get add an asset", function () {
-            var fileDescriptor = new FileDescriptor().init("/assets/apple.png", {mode: 0}, "image/png");
+            var fileDescriptor = new FileDescriptor().init("/assets/apple.png", {mode: 0}, "image/png"),
+                createdAsset = assetsManager.createAssetWithFileDescriptor(fileDescriptor);
 
-            assetsManager.addAsset(fileDescriptor);
+            assetsManager.addAsset(createdAsset);
 
-            expect(assetsManager.assetsLength).toEqual(9);
+            expect(assetsManager.assetsCount).toEqual(9);
             expect(assetsManager.assets.IMAGE.length).toEqual(3);
         });
 
 
         it("should be able to remove an asset", function () {
-            assetsManager.removeAsset("/assets/apple.png");
+            assetsManager.removeAssetWithFileUrl("/assets/apple.png");
 
-            expect(assetsManager.assetsLength).toEqual(8);
+            expect(assetsManager.assetsCount).toEqual(8);
             expect(assetsManager.assets.IMAGE.length).toEqual(2);
         });
 
@@ -149,13 +155,13 @@ describe("asset-manager-spec", function () {
 
 
         it("should be able to find an 'asset type' from a supported mimeType", function () {
-            var assetType = AssetTools.findAssetTypeFromMimeType("audio/aac");
-            expect(assetType).toBe(AssetTypes.AUDIO);
+            var assetType = AssetTools.findAssetCategoryFromMimeType("audio/aac");
+            expect(assetType).toBe(AssetCategories.AUDIO);
 
-            assetType = AssetTools.findAssetTypeFromMimeType("video/mp4");
-            expect(assetType).toBe(AssetTypes.VIDEO);
+            assetType = AssetTools.findAssetCategoryFromMimeType("video/mp4");
+            expect(assetType).toBe(AssetCategories.VIDEO);
 
-            assetType = AssetTools.findAssetTypeFromMimeType("application/mp4");
+            assetType = AssetTools.findAssetCategoryFromMimeType("application/mp4");
             expect(assetType).not.toBeDefined();
         });
 
@@ -169,10 +175,10 @@ describe("asset-manager-spec", function () {
 
 
         it("should be able to define if a AssetType is supported or not", function () {
-            expect(AssetTools.isAssetTypeValid(AssetTypes.AUDIO)).toBe(true);
-            expect(AssetTools.isAssetTypeValid(AssetTypes.MODEL)).toBe(true);
-            expect(AssetTools.isAssetTypeValid("APPLICATION")).toBe(false);
-            expect(AssetTools.isAssetTypeValid(0)).toBe(false);
+            expect(AssetTools.isAssetCategoryValid(AssetCategories.AUDIO)).toBe(true);
+            expect(AssetTools.isAssetCategoryValid(AssetCategories.MODEL)).toBe(true);
+            expect(AssetTools.isAssetCategoryValid("APPLICATION")).toBe(false);
+            expect(AssetTools.isAssetCategoryValid(0)).toBe(false);
         });
 
 

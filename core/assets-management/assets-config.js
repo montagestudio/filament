@@ -1,9 +1,9 @@
 var AssetsConfig = {
 
-    assetTypes: {
+    assetCategories: {
 
         MODEL: {
-            typeName: "MODEL",
+            categoryName: "MODEL",
             defaultIconUrl: "assets/icons/default-model-icon.png",
             mimeTypes: [
                 "model/vnd.collada+xml"
@@ -11,7 +11,7 @@ var AssetsConfig = {
         },
 
         IMAGE: {
-            typeName: "IMAGE",
+            categoryName: "IMAGE",
             defaultIconUrl: "assets/icons/default-image-icon.png",
             mimeTypes: [
                 "image/jpeg",
@@ -23,7 +23,7 @@ var AssetsConfig = {
         },
 
         AUDIO: {
-            typeName: "AUDIO",
+            categoryName: "AUDIO",
             defaultIconUrl: "assets/icons/default-audio-icon.png",
             mimeTypes: [
                 "audio/aac",
@@ -37,7 +37,7 @@ var AssetsConfig = {
 
         //TODO add more mime-types
         VIDEO: {
-            typeName: "VIDEO",
+            categoryName: "VIDEO",
             defaultIconUrl: "assets/icons/default-video-icon.png",
             mimeTypes: [
                 "video/mp4",

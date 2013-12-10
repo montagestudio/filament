@@ -1,25 +1,25 @@
 /**
- * @module ui/assets-types-bar.reel
+ * @module ui/assets-categories-bar.reel
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component;
 
 /**
- * @class AssetsTypesBar
+ * @class AssetsCategoriesBar
  * @extends Component
  */
-exports.AssetsTypesBar = Component.specialize(/** @lends AssetsTypesBar# */ {
+exports.AssetsCategoriesBar = Component.specialize(/** @lends AssetsCategoriesBar# */ {
     constructor: {
-        value: function AssetsTypesBar() {
+        value: function AssetsCategoriesBar() {
             this.super();
         }
     },
 
-    assetTypes: {
+    assetCategories: {
         value: null
     },
 
-    selectedAssetType: {
+    selectedAssetCategory: {
         value: null
     },
 

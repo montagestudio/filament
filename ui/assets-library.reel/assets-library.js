@@ -19,21 +19,21 @@ exports.AssetsLibrary = Component.specialize(/** @lends AssetsLibrary# */ {
     enterDocument: {
         value: function (firstTime) {
             if (firstTime) {
-                this.addOwnPropertyChangeListener("selectedAssetType", this);
-                this.assetTypes = Object.keys(this.assetsManager.assetTypes);
+                this.addOwnPropertyChangeListener("selectedAssetCategory", this);
+                this.assetCategories = Object.keys(this.assetsManager.assetCategories);
 
-                if (this.assetTypes.length > 0) {
-                    this.templateObjects.assetsTypesBar.toolBarController.select(this.assetTypes[0]);
+                if (this.assetCategories.length > 0) {
+                    this.templateObjects.assetsCategoriesBar.toolBarController.select(this.assetCategories[0]);
                 }
             }
         }
     },
 
-    assetTypes: {
+    assetCategories: {
         value: null
     },
 
-    selectedAssetType: {
+    selectedAssetCategory: {
         value: null
     },
 
@@ -45,15 +45,15 @@ exports.AssetsLibrary = Component.specialize(/** @lends AssetsLibrary# */ {
         value: null
     },
 
-    selectAssetsListByType: {
-        value: function (assetType) {
-            this.content = this.assetsManager.getAssetsByAssetType(assetType);
+    selectAssetsListByCategory: {
+        value: function (assetCategory) {
+            this.content = this.assetsManager.getAssetsByAssetCategory(assetCategory);
         }
     },
 
-    handleSelectedAssetTypeChange: {
-        value: function (assetTypeSelected) {
-            this.selectAssetsListByType(assetTypeSelected);
+    handleSelectedAssetCategoryChange: {
+        value: function (selectedAssetCategory) {
+            this.selectAssetsListByCategory(selectedAssetCategory);
         }
     }
 

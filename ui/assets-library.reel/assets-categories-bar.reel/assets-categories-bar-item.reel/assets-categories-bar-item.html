@@ -2,12 +2,12 @@
 <html>
 <head>
     <title></title>
-    <link rel="stylesheet" type="text/css" href="assets-types-bar-item.css">
+    <link rel="stylesheet" type="text/css" href="assets-categories-bar-item.css">
     <script type="text/montage-serialization">
     {
         "owner": {
             "properties": {
-                "element": {"#": "assetTypesBar-item"}
+                "element": {"#": "assetCategoriesBar-item"}
             }
         },
 
@@ -17,15 +17,15 @@
                 "element": {"#": "barItem-name"}
             },
             "bindings": {
-                "value": {"<-": "@owner.assetTypeName"}
+                "value": {"<-": "@owner.assetCategoryName"}
             }
         }
     }
     </script>
 </head>
 <body>
-    <li data-montage-id="assetTypesBar-item" class="AssetsTypesBarItem">
-        <span data-montage-id="barItem-name" class="AssetsTypesBarItem-label"></span>
+    <li data-montage-id="assetCategoriesBar-item" class="AssetsCategoriesBarItem">
+        <span data-montage-id="barItem-name" class="AssetsCategoriesBarItem-label"></span>
     </li>
 </body>
 </html>
