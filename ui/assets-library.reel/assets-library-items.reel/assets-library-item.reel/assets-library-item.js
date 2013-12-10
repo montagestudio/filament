@@ -2,8 +2,7 @@
  * @module ui/assets-library-item.reel
  * @requires montage/ui/component
  */
-var Component = require("montage/ui/component").Component,
-    MimeTypes = require("core/mime-types");
+var Component = require("montage/ui/component").Component;
 
 /**
  * @class AssetsLibraryItem
