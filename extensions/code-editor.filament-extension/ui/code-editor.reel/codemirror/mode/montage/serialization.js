@@ -10,22 +10,24 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
         return obj;
     }
 
+    function getPropertyName(state) {
+        var properties = state.block && state.block.properties;
+
+        if (properties) {
+            return properties[properties.length - 1].name
+        }
+    }
+
     function tokenBase(stream, state) {
         var ch = stream.next();
         var properties = state.block && state.block.properties;
 
         // String
         if (ch == '"') {
-            if (state.blockLevel === 1) {
-                return tokenLabel(stream, state);
-            } else if (state.block.readingPropertyName) {
+            if (state.block.readingPropertyName) {
                 return tokenPropertyName(stream, state);
-            } else if (properties[properties.length - 1].name === "prototype") {
-                return tokenModuleId(stream, state);
-            } else if (properties[properties.length - 1].name === "@") {
-                return tokenObjectReference(stream, state);
             } else {
-                return tokenString(stream, state);
+                return tokenPropertyValueString(stream, state);
             }
         }
 
@@ -42,7 +44,7 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
             // opening bracket due to the line by line nature of the tokenizer.
             if (!isEOL(stream, state)) {
                 tokenPropertyName(stream, state, true);
-                var propertyName = state.block.properties[0].name;
+                var propertyName = getPropertyName(state);
                 if (serializationSyntax.propertyIsEnumerable(propertyName)) {
                     return "keyword";
                 }
@@ -87,16 +89,35 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
         return "error";
     }
 
-    function tokenString(stream, state) {
-        consumeString(stream, state);
-        return "string-2";
-    }
-
     function tokenPropertyName(stream, state, readInitialQuote) {
         var string = consumeString(stream, state, readInitialQuote);
         state.block.readingPropertyName = false;
         addProperty(state, string);
-        return "string";
+
+        if (state.blockLevel === 1) {
+            addLabel(state, string);
+            return "label";
+        } else {
+            return "string";
+        }
+    }
+
+    function tokenPropertyValueString(stream, state) {
+        var propertyName = getPropertyName(state);
+        var token = tokenString(stream, state);
+
+        if (propertyName === "prototype") {
+            return "module";
+        } else if (propertyName === "@") {
+            return "object-reference";
+        } else {
+            return token;
+        }
+    }
+
+    function tokenString(stream, state) {
+        consumeString(stream, state);
+        return "string-2";
     }
 
     function consumeString(stream, state, readInitialQuote) {
@@ -119,22 +140,6 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
         return stream.match(/\s*$/, false);
     }
 
-    function tokenModuleId(stream, state) {
-        consumeString(stream, state);
-        return "module";
-    }
-
-    function tokenObjectReference(stream, state) {
-        consumeString(stream, state);
-        return "object-reference";
-    }
-
-    function tokenLabel(stream, state) {
-        var string = consumeString(stream, state);
-        state.labels.push(string);
-        return "label";
-    }
-
     function addProperty(state, name) {
         state.block.properties.push({
             name: name
@@ -146,6 +151,10 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
         if (state.block) {
             state.block.readingPropertyName = true;
         }
+    }
+
+    function addLabel(state, label) {
+        state.labels.push(label);
     }
 
     function startBlock(stream, state) {
