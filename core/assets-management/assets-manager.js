@@ -1,5 +1,4 @@
 var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
-    Application = require("montage/core/application").application,
     AssetsConfig = require("./assets-config").AssetsConfig,
     AssetTools = require("./asset-tools").AssetTools,
     Montage = require("montage/core/core").Montage,
