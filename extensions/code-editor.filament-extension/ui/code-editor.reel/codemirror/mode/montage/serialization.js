@@ -18,6 +18,15 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
         }
     }
 
+    function getParentPropertyName(state) {
+        var block = state.blocks[state.blocks.length - 2];
+
+        if (block) {
+            var properties = block.properties;
+            return properties[properties.length - 1].name;
+        }
+    }
+
     function tokenBase(stream, state) {
         var ch = stream.next();
         var properties = state.block && state.block.properties;
@@ -99,6 +108,9 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
             return "label";
         } else if (state.blockLevel === 2) {
             return "unit";
+        } else if (state.blockLevel === 3
+            && getParentPropertyName(state) === "properties") {
+            return "montage-property-name";
         } else {
             return "string";
         }
