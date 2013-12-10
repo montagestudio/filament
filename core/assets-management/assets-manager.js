@@ -3,7 +3,7 @@ var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescript
     AssetsConfig = require("./assets-config").AssetsConfig,
     AssetTools = require("./asset-tools").AssetTools,
     Montage = require("montage/core/core").Montage,
-    PackageLocation = require.location,
+    PACKAGE_LOCATION = require.location,
     Asset = require("./asset").Asset,
 
     FILE_SYSTEM_CHANGES = {
@@ -18,23 +18,23 @@ exports.AssetsManager = Montage.specialize({
         value: function AssetsManager() {
             this.super();
             this.assets = {};
-            this.assetTypes = {};
+            this.assetCategories = {};
 
             var self = this,
-                assetTypes = AssetsConfig.assetTypes;
+                assetCategories = AssetsConfig.assetCategories;
 
-            Object.keys(assetTypes).forEach(function (assetTypeName) {
+            Object.keys(assetCategories).forEach(function (assetCategoryName) {
 
-                var currentAssetType = assetTypes[assetTypeName];
-                currentAssetType.defaultIconUrl = PackageLocation + currentAssetType.defaultIconUrl;
-                self.assetTypes[assetTypeName] = assetTypeName;
-                self.assets[assetTypeName] = [];
+                var currentAssetCategory = assetCategories[assetCategoryName];
+                currentAssetCategory.defaultIconUrl = PACKAGE_LOCATION + currentAssetCategory.defaultIconUrl;
+                self.assetCategories[assetCategoryName] = assetCategoryName;
+                self.assets[assetCategoryName] = [];
             });
 
         }
     },
 
-    assetTypes: {
+    assetCategories: {
         value: null
     },
 
@@ -48,7 +48,10 @@ exports.AssetsManager = Montage.specialize({
                 var self = this;
 
                 filesList.forEach(function (fileDescriptor) {
-                    self.addAsset(fileDescriptor); // try to add an asset
+                    if (AssetTools.isFileUrlValid(fileDescriptor.fileUrl) && AssetTools.isMimeTypeSupported(fileDescriptor.mimeType)) {
+                        var createdAsset = self.createAssetWithFileDescriptor(fileDescriptor);
+                        self.addAsset(createdAsset);
+                    }
                 });
             }
 
@@ -56,57 +59,58 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
-    assetsLength: {
+    assetsCount: {
         get:  function () {
             var assets = this.assets;
 
             if (assets) {
-                var length = 0;
-
-                Object.keys(assets).forEach(function (assetTypeName) {
-                    length = length + assets[assetTypeName].length;
-                });
-
-                return length;
+                return Object.keys(assets).reduce(function (count, assetCategory) {
+                    return count + assets[assetCategory].length;
+                }, 0);
             }
         }
     },
 
     addAsset: {
-        value: function (fileDescriptor, iconUrl) {
-            var fileUrl = fileDescriptor.fileUrl,
-                assetCreated = Asset.create().initWithFileUrlAndMimeType(fileUrl, fileDescriptor.mimeType);
-
-            if (assetCreated) {
-                var assetType = assetCreated.type;
-
-                assetCreated.iconUrl = AssetTools.isFileUrlValid(iconUrl) ?
-                    iconUrl : this.getIconWithFileUrlAndAssetType(fileUrl, assetType);
-
-                this.assets[assetType].push(assetCreated);
-
-                return assetCreated;
+        value: function (asset) {
+            if (AssetTools.isAssetValid(asset)) {
+                this.assets[asset.category].push(asset);
+                return true;
             }
 
-            return null;
+            return false;
         }
     },
 
-    getIconWithFileUrlAndAssetType: {
-        value: function (fileUrl, assetType) {
-            if (AssetTools.isAssetUrlAndTypeValid(fileUrl, assetType)) {
+    createAssetWithFileUrlAndMimeType: {
+        value: function (fileUrl, mimeType) {
+            var createdAsset = Asset.create().initWithFileUrlAndMimeType(fileUrl, mimeType);
+            createdAsset.iconUrl =  this.getIconWithAsset(createdAsset);
+            return createdAsset;
+        }
+    },
+
+    createAssetWithFileDescriptor: {
+        value: function (fileDescriptor) {
+            return this.createAssetWithFileUrlAndMimeType(fileDescriptor.fileUrl, fileDescriptor.mimeType);
+        }
+    },
+
+    getIconWithAsset: {
+        value: function (asset) {
+            if (AssetTools.isAssetValid(asset)) {
                 //Todo implement a way to make a thumbnail for an asset.
-                return this.getDefaultIconUrlByType(assetType);
+                return this.getDefaultIconUrlByAssetCategory(asset.category);
             }
 
             return null;
         }
     },
 
-    getDefaultIconUrlByType: {
-        value: function (assetType) {
-            if (AssetTools.isAssetTypeValid(assetType)) {
-                return AssetsConfig.assetTypes[assetType].defaultIconUrl;
+    getDefaultIconUrlByAssetCategory: {
+        value: function (assetCategory) {
+            if (AssetTools.isAssetCategoryValid(assetCategory)) {
+                return AssetsConfig.assetCategories[assetCategory].defaultIconUrl;
             }
 
             return null;
@@ -114,12 +118,12 @@ exports.AssetsManager = Montage.specialize({
     },
 
     removeAsset: {
-        value: function (fileUrl, assetType) {
-            if (AssetTools.isAssetUrlAndTypeValid(fileUrl, assetType)) {
-                var index = this._findAssetIndex(fileUrl, assetType);
+        value: function (asset) {
+            if (AssetTools.isAssetValid(asset)) {
+                var index = this._findAssetIndex(asset);
 
                 if (index >= 0) {
-                    this.assets[assetType].splice(index, 1);
+                    this.assets[asset.category].splice(index, 1);
                 }
 
                 return true;
@@ -128,28 +132,66 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
-    _findAssetIndex: {
-        value: function (fileUrl, assetType) {
-            if (AssetTools.isAssetUrlAndTypeValid(fileUrl, assetType)) {
-                var assetsList = this.assets[assetType];
-
-                for (var i = 0, length = assetsList.length; i < length; i++) {
-                    var currentAsset = assetsList[i];
-
-                    if (fileUrl === currentAsset.fileUrl) {
-                        return i;
-                    }
-                }
+    removeAssetWithFileUrl: {
+        value: function (fileUrl) {
+            if (AssetTools.isFileUrlValid(fileUrl)) {
+                var assetFound = this._findAssetWithFileUrl(fileUrl);
+                return this.removeAsset(assetFound);
             }
 
-            return -1;
+            return false;
         }
     },
 
-    getAssetsByAssetType: {
-        value: function (assetTypeName) {
-            if (AssetTools.isAssetTypeValid(assetTypeName)) {
-                return this.assets[assetTypeName];
+    _findAssetIndex: {
+        value: function (asset) {
+            var assetsList = this.assets[asset.category],
+                fileUrl = asset.fileUrl;
+
+            for (var i = 0, length = assetsList.length; i < length; i++) {
+                var currentAsset = assetsList[i];
+
+                if (fileUrl === currentAsset.fileUrl) {
+                    return i;
+                }
+            }
+
+            return - 1;
+        }
+    },
+
+    _findAssetWithFileUrl: {
+        value: function (fileUrl, assetCategory) {
+            var assetFound = null;
+            //debugger
+
+            if (AssetTools.isAssetCategoryValid(assetCategory)) {
+                var assetSet = this.assets[assetCategory];
+
+                assetSet.some(function (asset) {
+                    assetFound = asset.fileUrl === fileUrl ? asset : null;
+                    return !!assetFound;
+                });
+
+                return assetFound;
+            }
+
+            var assetCategories = this.assetCategories,
+                self = this;
+
+            Object.keys(assetCategories).some(function (assetCategory) {
+                assetFound = self._findAssetWithFileUrl(fileUrl, assetCategory);
+                return !!assetFound;
+            });
+
+            return assetFound;
+        }
+    },
+
+    getAssetsByAssetCategory: {
+        value: function (assetCategory) {
+            if (AssetTools.isAssetCategoryValid(assetCategory)) {
+                return this.assets[assetCategory];
             }
 
             return [];
@@ -158,18 +200,16 @@ exports.AssetsManager = Montage.specialize({
 
     getAssetsByMimeType: {
         value: function (mimeType) {
-            var assetType = AssetTools.findAssetTypeFromMimeType(mimeType),
-                assetsList = [];
-
-            if (assetType) {
-                this.assets[assetType].forEach(function (asset) {
-                    if (asset.mimeType === mimeType) {
-                        assetsList.push(asset);
-                    }
-                });
+            if (!AssetTools.isMimeTypeSupported(mimeType)) {
+                throw new Error("Cannot get assets because the mime-type:" + mimeType + " is not supported");
             }
 
-            return assetsList;
+            var assetCategory = AssetTools.findAssetCategoryFromMimeType(mimeType),
+                assetSet = this.assets[assetCategory];
+
+            return assetSet.filter(function (asset) {
+                return asset.mimeType === mimeType;
+            });
         }
     },
 
@@ -185,13 +225,12 @@ exports.AssetsManager = Montage.specialize({
                 switch (fileChangeDetail.change) {
 
                 case FILE_SYSTEM_CHANGES.CREATE:
-                    this.addAsset(fileDescriptor);
+                    var createdAsset = this.createAssetWithFileDescriptor(fileDescriptor);
+                    this.addAsset(createdAsset);
                     break;
 
                 case FILE_SYSTEM_CHANGES.DELETE:
-                    if (AssetTools.isMimeTypeSupported(mimeType)) {
-                        this.removeAsset(fileUrl);
-                    }
+                    this.removeAssetWithFileUrl(fileUrl);
                     break;
                 }
             }

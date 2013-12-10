@@ -11,14 +11,15 @@ exports.Asset = Montage.specialize({
 
     initWithFileUrlAndMimeType: {
         value: function (fileUrl, mimeType) {
-            this.mimeType = mimeType;
-            this.fileUrl = fileUrl;
-
-            if (this.type && this.fileUrl) {
-                return this;
+            if (!AssetTools.isMimeTypeSupported(mimeType)) {
+                throw new Error("Cannot init Asset object because the mime-type: " + mimeType + " is not supported");
             }
 
-            return null;
+            this.fileUrl = fileUrl;
+            this._mimeType = mimeType;
+            this._category = AssetTools.findAssetCategoryFromMimeType(mimeType);
+
+            return this;
         }
     },
 
@@ -57,26 +58,18 @@ exports.Asset = Montage.specialize({
     },
 
     mimeType: {
-        set: function (mimeType) {
-            var type =  AssetTools.findAssetTypeFromMimeType(mimeType);
-            this._mimeType = AssetTools.isMimeTypeSupported(mimeType, type) ? mimeType : null;
-            this._type = this._mimeType ? type : null;
-        },
         get: function () {
             return this._mimeType;
         }
     },
 
-    _type: {
+    _category: {
         value: null
     },
 
-    type: {
-        set: function (type) {
-            this._type = AssetTools.isAssetTypeValid(type) ? type : null;
-        },
+    category: {
         get: function () {
-            return this._type;
+            return this._category;
         }
     },
 
@@ -88,15 +81,14 @@ exports.Asset = Montage.specialize({
         set: function (fileUrl) {
             var fileData = AssetTools.defineFileDataWithUrl(fileUrl);
 
-            if (fileData) {
-                this._fileName = fileData.fileName;
-                this._name = fileData.name;
-                this._extension = fileData.extension;
-                this._fileUrl = fileUrl;
-
-            } else {
-                this._fileUrl = null;
+            if (!fileData) {
+                throw new Error("Cannot set the Asset's fileUrl because the file url is not valid");
             }
+
+            this._fileName = fileData.fileName;
+            this._name = fileData.name;
+            this._extension = fileData.extension;
+            this._fileUrl = fileUrl;
         },
         get: function () {
             return this._fileUrl;

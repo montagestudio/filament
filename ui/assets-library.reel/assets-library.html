@@ -10,17 +10,17 @@
                 "element": {"#": "assetsLibrary"}
             },
             "bindings": {
-                "selectedAssetType": {"<-": "@assetsTypesBar.selectedAssetType"}
+                "selectedAssetCategory": {"<-": "@assetsCategoriesBar.selectedAssetCategory"}
             }
         },
 
-        "assetsTypesBar": {
-            "prototype": "./assets-types-bar.reel",
+        "assetsCategoriesBar": {
+            "prototype": "./assets-categories-bar.reel",
             "properties": {
-                "element": {"#": "assetsTypesBar"}
+                "element": {"#": "assetsCategoriesBar"}
             },
             "bindings": {
-                "assetTypes": {"<-": "@owner.assetTypes"}
+                "assetCategories": {"<-": "@owner.assetCategories"}
             }
         },
 
@@ -38,7 +38,7 @@
 </head>
 <body>
     <div data-montage-id="assetsLibrary" class="AssetsLibrary">
-        <div data-montage-id="assetsTypesBar" class="AssetsTypesBar"></div>
+        <div data-montage-id="assetsCategoriesBar" class="AssetsCategoriesBar"></div>
         <div data-montage-id="assetsLibraryItems" class="AssetsLibraryItems"></div>
     </div>
 </body>
