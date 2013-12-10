@@ -33,14 +33,31 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    /**
+     * Contains all AssetCategories supported.
+     * @public
+     * @type {Array.<String>}
+     */
     assetCategories: {
         value: null
     },
 
+    /**
+     * Contains all asset of the AssetManager, sorted by AssetCategory.
+     * @public
+     * @type {Object}
+     */
     assets: {
         value: null
     },
 
+    /**
+     * Init the AssetManager with an Array of FileDescriptors.
+     * @function
+     * @public
+     * @param {Array.<FileDescriptor>} filesList - an Array of FileDescriptors.
+     * @return {Object}
+     */
     init: {
         value: function (filesList) {
             if (filesList && Array.isArray(filesList)) {
@@ -58,6 +75,11 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    /**
+     * Defines the number of assets within the AssetManager.
+     * @public
+     * @return {number}
+     */
     assetsCount: {
         get:  function () {
             var assets = this.assets;
@@ -70,6 +92,14 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    /**
+     * Adds an asset within the asset list of the AssetManager.
+     * @function
+     * @public
+     * @param {Object} asset - an Asset object.
+     * @param {String} asset.category - an Asset Category.
+     * @return {Boolean}
+     */
     addAsset: {
         value: function (asset) {
             if (AssetTools.isAssetValid(asset)) {
@@ -81,6 +111,14 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    /**
+     * Creates an Asset Object with an url and a mime-type from an "asset" file.
+     * @function
+     * @public
+     * @param {String} fileUrl - a file url.
+     * @param {String} mimeType - a supported mime-type.
+     * @return {Asset} created Asset Object.
+     */
     createAssetWithFileUrlAndMimeType: {
         value: function (fileUrl, mimeType) {
             var createdAsset = Asset.create().initWithFileUrlAndMimeType(fileUrl, mimeType);
@@ -89,12 +127,29 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    /**
+     * Creates an Asset Object with some information within an FileDescriptor Object.
+     * @function
+     * @public
+     * @param {Object} fileDescriptor - a FileDescriptor Object.
+     * @param {String} fileDescriptor.fileUrl - a file url.
+     * @param {String} fileDescriptor.mimeType - an supported mime-type.
+     * @return {Asset} created Asset Object.
+     */
     createAssetWithFileDescriptor: {
         value: function (fileDescriptor) {
             return this.createAssetWithFileUrlAndMimeType(fileDescriptor.fileUrl, fileDescriptor.mimeType);
         }
     },
 
+    /**
+     * Gets an iconUrl for an Asset Object.
+     * @function
+     * @public
+     * @param {Object} asset - an Asset object.
+     * @param {String} asset.category - an Asset Category.
+     * @return {(String|null)} icon url.
+     */
     getIconWithAsset: {
         value: function (asset) {
             if (AssetTools.isAssetValid(asset)) {
@@ -106,6 +161,13 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    /**
+     * Gets a default iconUrl for an Asset Category.
+     * @function
+     * @public
+     * @param {String} assetCategory - an Asset Category.
+     * @return {(String|null)} icon url.
+     */
     getDefaultIconUrlByAssetCategory: {
         value: function (assetCategory) {
             if (AssetTools.isAssetCategoryValid(assetCategory)) {
@@ -116,6 +178,14 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    /**
+     * Removes an Asset from the list of the AssetManager.
+     * @function
+     * @public
+     * @param {Object} asset - an Asset object.
+     * @param {String} asset.category - an Asset Category.
+     * @return {Boolean}.
+     */
     removeAsset: {
         value: function (asset) {
             if (AssetTools.isAssetValid(asset)) {
@@ -131,6 +201,14 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    /**
+     * Removes an Asset from the list of the AssetManager,
+     * with a file url.
+     * @function
+     * @public
+     * @param {String} fileUrl - a file Url.
+     * @return {Boolean}.
+     */
     removeAssetWithFileUrl: {
         value: function (fileUrl) {
             if (AssetTools.isFileUrlValid(fileUrl)) {
@@ -142,6 +220,14 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    /**
+     * Finds the "location" of an Asset with the list of Asset of the AssetManager.
+     * @function
+     * @private
+     * @param {Object} asset - an Asset object.
+     * @param {String} asset.category - an Asset Category.
+     * @return {number}.
+     */
     _findAssetIndex: {
         value: function (asset) {
             var assetsList = this.assets[asset.category],
@@ -159,11 +245,19 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    /**
+     * Finds an Asset with the list of Asset of the AssetManager.
+     * @function
+     * @private
+     * @param {String} fileUrl - a file Url.
+     * @param {String} [category] - an Asset Category.
+     * @return {(Object|null)} an Asset Object that has been found.
+     */
     _findAssetWithFileUrl: {
         value: function (fileUrl, assetCategory) {
             var assetFound = null;
-            //debugger
 
+            // If assetCategory is not undefined looks into the Asset category, in order to find an asset
             if (AssetTools.isAssetCategoryValid(assetCategory)) {
                 var assetSet = this.assets[assetCategory];
 
@@ -175,6 +269,7 @@ exports.AssetsManager = Montage.specialize({
                 return assetFound;
             }
 
+            // If assetCategory is undefined looks into each Asset categories.
             var assetCategories = this.assetCategories,
                 self = this;
 
@@ -187,6 +282,13 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    /**
+     * Gets an Assets list in term of an Asset Category.
+     * @function
+     * @public
+     * @param {String} category - an Asset Category.
+     * @return {Array.<Asset>} an Array of Assets Object.
+     */
     getAssetsByAssetCategory: {
         value: function (assetCategory) {
             if (AssetTools.isAssetCategoryValid(assetCategory)) {
@@ -197,6 +299,13 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    /**
+     * Gets an Assets list in term of a mime-type.
+     * @function
+     * @public
+     * @param {String} mimeType - a supported mime-type.
+     * @return {Array.<Asset>} an Array of Assets Object.
+     */
     getAssetsByMimeType: {
         value: function (mimeType) {
             if (!AssetTools.isMimeTypeSupported(mimeType)) {
@@ -212,6 +321,15 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    /**
+     * handles any changes of an asset from the file system.
+     * [! Not completely implemented yet !]
+     * @function
+     * @public
+     * @param {Object} event - Event Object.
+     * @param {Object} event.detail - Contains some information about the file changes;
+     * @param {String} fileUrl - a file Url.
+     */
     handleFileSystemChange: {
         value: function (event) {
             var fileChangeDetail = event.detail;
