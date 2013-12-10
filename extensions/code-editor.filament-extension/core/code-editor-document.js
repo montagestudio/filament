@@ -7,11 +7,53 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
     constructor: {
         value: function CodeEditorDocument() {
             this.super();
+            this.handleCodeMirrorDocumentChange = this.handleCodeMirrorDocumentChange.bind(this);
         }
     },
 
     content: {
         value: null
+    },
+
+    _codeMirrorDocument: {
+        value: null
+    },
+
+    codeMirrorDocument: {
+        get: function () {
+            return this._codeMirrorDocument;
+        },
+        set: function (value) {
+            if (value === this._codeMirrorDocument) {
+                return;
+            }
+
+            this.undoManager.clearUndo();
+            this.undoManager.clearRedo();
+            this._expectedUndoCount = 0;
+            this._expectedRedoCount = 0;
+
+            if (this._codeMirrorDocument) {
+                this._codeMirrorDocument.off("change", this.handleCodeMirrorDocumentChange);
+            }
+
+            this._codeMirrorDocument = value;
+
+            if (this._codeMirrorDocument) {
+                this._codeMirrorDocument.on("change", this.handleCodeMirrorDocumentChange);
+
+                var historySize = this._codeMirrorDocument.historySize();
+                this._expectedUndoCount = historySize.undo;
+                this._expectedRedoCount = historySize.redo;
+
+                // TODO build an appropriate undo redo stack
+                // should be as simple as creating the right number of undos and redos
+                // unfortunately, this is easy to do for undos, but redos are only registered
+                // as inverses of an existing undo; we'll need to figure out how to resolve this
+                // mismatch
+                // NOTE assuming the CM document is actually not changed once set for now...
+            }
+        }
     },
 
     init: {
@@ -22,9 +64,71 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
             self._mimeType = CodeEditorDocument.editorMimeType(fileUrl);
             self.codeEditorInstance = null;
 
-            self.addPathChangeListener("content", self, "handleContentChange");
-
             return self;
+        }
+    },
+
+    _editor: {
+        value: null
+    },
+
+    editor: {
+        get: function () {
+            return this._editor;
+        },
+        set: function (value) {
+            if (value === this._editor) {
+                return;
+            }
+
+            if (this._editor) {
+                this._editor.removeEventListener("menuValidate", this);
+                this._editor.removeEventListener("menuAction", this);
+            }
+
+            this._editor = value;
+
+            if (this._editor) {
+                this._editor.addEventListener("menuValidate", this);
+                this._editor.addEventListener("menuAction", this);
+            }
+        }
+    },
+
+    handleMenuValidate: {
+        value: function (evt) {
+            var menuItem = evt.detail,
+                identifier = evt.detail.identifier;
+
+            if ("undo" === identifier) {
+                menuItem.enabled = this.canUndo;
+                //TODO localize
+                menuItem.title = this.canUndo ? "Undo " + this.undoManager.undoLabel : "Undo";
+                evt.stop();
+            } else if ("redo" === identifier) {
+                menuItem.enabled = this.canRedo;
+                //TODO localize
+                menuItem.title = this.canRedo ? "Redo " + this.undoManager.redoLabel : "Redo";
+                evt.stop();
+            }
+        }
+    },
+
+    handleMenuAction: {
+        value: function (evt) {
+            var identifier = evt.detail.identifier;
+
+            if ("undo" === identifier) {
+                if (this.canUndo) {
+                    this.undo().done();
+                }
+                evt.stop();
+            } else if ("redo" === identifier) {
+                if (this.canRedo) {
+                    this.redo().done();
+                }
+                evt.stop();
+            }
         }
     },
 
@@ -38,11 +142,6 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
         }
     },
 
-    handleContentChange: {
-        value: function () {
-        }
-    },
-
     save: {
         value: function (location, dataWriter) {
             var self = this;
@@ -53,6 +152,54 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
                 self.dispatchEventNamed("didSave", true, false);
                 return value;
             });
+        }
+    },
+
+    _expectedRedoCount: {
+        value: null
+    },
+
+    _expectedUndoCount: {
+        value: null
+    },
+
+    handleCodeMirrorDocumentChange: {
+        value: function(codeDoc, change) {
+            var historySize = codeDoc.historySize(),
+                undoHistoryCount = historySize.undo,
+                redoHistoryCount = historySize.redo,
+                undoDelta = undoHistoryCount - this._expectedUndoCount,
+                redoDelta = redoHistoryCount - this._expectedRedoCount,
+                undoManager = this.undoManager;
+
+            // new undo discovered after this change applied; register a new undo
+            if (0 !== undoDelta) {
+                if (1 === undoDelta) {
+                    this.undoManager.register("Edit", Promise.resolve([codeDoc.undo, codeDoc]));
+                } else if (!(-1 === undoDelta && undoManager.isUndoing)) {
+                    throw new Error("CodeMirror unexpectedly altered the number of undo operations");
+                }
+
+                this._expectedUndoCount = undoHistoryCount;
+            }
+
+            // new redo discovered after this change applied; register a new redo
+            if (0 !== redoDelta) {
+
+                if (1 === redoDelta && undoManager.isUndoing) {
+                    this.undoManager.register("Edit", Promise.resolve([codeDoc.redo, codeDoc]));
+                } else if (!(-1 === redoDelta && undoManager.isRedoing)) {
+                    // A new operation was performed, forking the CM history; the redo stack has been cleared
+                    // The stack cleared should match the count of our own redo stack
+                    if (redoDelta < 0 && redoDelta === (this._expectedRedoCount * -1) && !undoManager.isUndoing && !undoManager.isRedoing) {
+                        undoManager.clearRedo();
+                    } else {
+                        throw new Error("CodeMirror unexpectedly altered the number of redo operations");
+                    }
+                }
+
+                this._expectedRedoCount = redoHistoryCount;
+            }
         }
     }
 

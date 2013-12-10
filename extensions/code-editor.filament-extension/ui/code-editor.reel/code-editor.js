@@ -24,8 +24,11 @@ exports.CodeEditor = Editor.specialize ({
         value: function CodeEditor() {
             this.super();
             this._openDocuments = Object.create(null);
-            this.handleCodeMirrorDocumentChange = this.handleCodeMirrorDocumentChange.bind(this);
         }
+    },
+
+    acceptsActiveTarget: {
+        value: true
     },
 
     tabSize: {value: 4},
@@ -74,6 +77,25 @@ exports.CodeEditor = Editor.specialize ({
     enterDocument: {
         value: function(firstTime) {
             if (firstTime) {
+
+                //Remove Key handling that we'll handle ourselves
+                var defaultKeyMap = CodeMirror.keyMap.default;
+                delete defaultKeyMap["Shift-Cmd-Z"];
+                delete defaultKeyMap["Cmd-Z"];
+                delete defaultKeyMap["Cmd-Y"];
+                delete defaultKeyMap["Cmd-S"];
+
+                var macKeyMap = CodeMirror.keyMap.macDefault;
+                delete macKeyMap["Cmd-Z"];
+                delete macKeyMap["Shift-Cmd-Z"];
+                delete macKeyMap["Cmd-Y"];
+
+                var pcKeyMap = CodeMirror.keyMap.pcDefault;
+                delete pcKeyMap["Ctrl-Z"];
+                delete pcKeyMap["Shift-Ctrl-Z"];
+                delete pcKeyMap["Ctrl-Y"];
+                delete pcKeyMap["Ctrl-S"];
+
                 var codemirror = this._codeMirror = CodeMirror(this.element, {
                     mode: this.mode,
                     tabSize: this.tabSize,
@@ -84,7 +106,6 @@ exports.CodeEditor = Editor.specialize ({
                     theme: this.theme,
                     value: ""
                 });
-
 
                 if (this.currentDocument) {
                     var codeMirrorDocument = this._openDocuments[this.currentDocument.uuid];
@@ -113,46 +134,49 @@ exports.CodeEditor = Editor.specialize ({
     },
 
     openDocument: {
-        value: function (document) {
+        value: function (editingDocument) {
             var codeMirrorDocument;
-            this.super(document);
+            this.super(editingDocument);
             // This function can be called with null.
-            if (!document) {
+            if (!editingDocument) {
                 return;
             }
 
             this._mode = null;
-            if (!this._isDocumentOpen(document)) {
+            if (!this._isDocumentOpen(editingDocument)) {
                 codeMirrorDocument = CodeMirror.Doc(this.currentDocument.content, this.mode, 0);
-                this._openDocuments[document.uuid] = codeMirrorDocument;
-                document.addEventListener("didSave", this, false);
-                document.addEventListener("willSave", this, false);
-                codeMirrorDocument.on("change", this.handleCodeMirrorDocumentChange);
+                editingDocument.codeMirrorDocument = codeMirrorDocument;
+                editingDocument.editor = this;
+                //TODO why put the code mirror document into the openDocument list and not the code-editor-doc?
+                this._openDocuments[editingDocument.uuid] = codeMirrorDocument;
+                editingDocument.addEventListener("didSave", this, false);
+                editingDocument.addEventListener("willSave", this, false);
             }
 
             if (this._codeMirror) {
-                this._codeMirror.swapDoc(this._openDocuments[document.uuid]);
+                this._codeMirror.swapDoc(this._openDocuments[editingDocument.uuid]);
                 this.needsDraw = true;
             }
         }
     },
 
     closeDocument: {
-        value: function (document) {
+        value: function (editingDocument) {
             var codeMirrorDocument;
-            this.super(document);
+            this.super(editingDocument);
             // Not sure if this can be called with null just like openDocument
             // so guard against it anyway.
-            if (!document) {
+            if (!editingDocument) {
                 return;
             }
 
-            codeMirrorDocument = this._openDocuments[document.uuid];
-            codeMirrorDocument.off("change", this.handleCodeMirrorDocumentChange);
-            document.removeEventListener("didSave", this, false);
-            document.removeEventListener("willSave", this, false);
+            codeMirrorDocument = this._openDocuments[editingDocument.uuid];
+            editingDocument.removeEventListener("didSave", this, false);
+            editingDocument.removeEventListener("willSave", this, false);
 
-            delete this._openDocuments[document.uuid];
+            //TODO need to remove the editor from the codeEditorDocument instance that was associated with this codeMirrorDocument
+
+            delete this._openDocuments[editingDocument.uuid];
         }
     },
 
@@ -170,19 +194,6 @@ exports.CodeEditor = Editor.specialize ({
         value: function() {
             if (this._codeMirror) {
                 this._codeMirror.changeGeneration();
-            }
-        }
-    },
-
-    handleCodeMirrorDocumentChange: {
-        value: function(document) {
-            var codeMirrorDocument = this._openDocuments[this.currentDocument.uuid];
-
-            if (codeMirrorDocument === document) {
-                this.currentDocument.isDirty = true;
-            } else {
-                console.log(codeMirrorDocument, document);
-                console.log("Warning: Change in CodeMirror document that is not the current document!");
             }
         }
     }
