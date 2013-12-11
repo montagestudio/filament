@@ -76,7 +76,7 @@ describe("asset-manager-spec", function () {
                 ];
 
             fakeFiles.forEach(function (file) {
-                filesList.push(new FileDescriptor().init(file.url, {mode: 0}, file.mimeType));
+                filesList.push(new FileDescriptor().init(file.url, {mode: 0, size:1024}, file.mimeType));
             });
 
             assetsManager = AssetsManager.create().init(filesList);
