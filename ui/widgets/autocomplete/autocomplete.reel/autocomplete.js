@@ -3,13 +3,13 @@
     @module "matte/ui/autocomplete/autocomplete.reel"
 */
 
-var Component = require("montage/ui/component").Component,
-    TextInput = require("matte/ui/text-input").TextInput,
+var TextInput = require("matte/ui/text-input").TextInput,
     logger = require("montage/core/logger").logger("autocomplete"),
     ResultsList = require("../results-list.reel/results-list").ResultsList,
     Popup = require("matte/ui/popup/popup.reel").Popup,
     PressComposer = require("montage/composer/press-composer").PressComposer,
-    RangeController = require("montage/core/range-controller").RangeController;
+    RangeController = require("montage/core/range-controller").RangeController,
+    KeyComposer = require("montage/composer/key-composer").KeyComposer;
 
 var KEY_UP = 38,
     KEY_DOWN = 40,
@@ -128,6 +128,10 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
         modify: function(v) {
             this._tokens = v;
         }
+    },
+
+    acceptsActiveTarget: {
+        value: true
     },
 
     // overridden here to get the substring/searchString
@@ -370,7 +374,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
         enumerable: false,
         value: function() {
             this.element.removeEventListener("keyup", this);
-            this.element.addEventListener("keydown", this);
+            this.element.removeEventListener("keydown", this);
             this.element.removeEventListener("input", this);
         }
     },
@@ -409,11 +413,18 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
         }
     },
 
+    cancelCompletionComposer: {
+        value: null
+    },
+
     enterDocument: {
         value: function(firstTime) {
             if (firstTime) {
                 this._addEventListeners();
                 this.element.classList.add('matte-Autocomplete');
+
+                this.cancelCompletionComposer = KeyComposer.createKey(this, "escape", "cancelCompletion");
+                this.cancelCompletionComposer.addEventListener("keyPress", this);
 
                 // create the Repetition for the suggestions
                 this.resultsController = new RangeController();
@@ -499,6 +510,16 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
         }
     },
 
+    handleCancelCompletionKeyPress: {
+        value: function (evt) {
+            if (this.showPopup) {
+                evt.stopPropagation();
+                evt.preventDefault();
+                this.showPopup = false;
+            }
+        }
+    },
+
     handleKeyup: {
         enumerable: false,
         value: function(e) {
@@ -524,7 +545,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
                 break;
 
             case KEY_UP:
-                if(popup.displayed === true) {
+                if(popup.displayed) {
                     if(this.activeItemIndex > 0) {
                         this.activeItemIndex --;
                     } else {
@@ -535,7 +556,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
                 break;
 
             case KEY_ENTER:
-                if(popup.displayed === true) {
+                if(popup.displayed) {
                     this.resultsController.selection = [this.suggestions[this.activeItemIndex]];
                     e.preventDefault();
                     // select the currently active item in the results list

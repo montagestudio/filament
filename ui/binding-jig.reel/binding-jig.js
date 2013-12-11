@@ -52,6 +52,14 @@ exports.BindingJig = Montage.create(Component, {
         value: null
     },
 
+    targetPath: {
+        value: null
+    },
+
+    sourcePath: {
+        value: null
+    },
+
     shouldDismissOverlay: {
         value: function (overlay, target) {
             // don't dismiss the overlay if the user can drag the target
@@ -91,6 +99,18 @@ exports.BindingJig = Montage.create(Component, {
 
     handleKeyPress: {
         value: function(evt) {
+            /*
+                TODO: FIXME: This is a hack to by pass the fact that the keycomposer does not play nice with child keycomposers
+            */
+            var sourcePath = this.templateObjects.sourcePath,
+                targetPath = this.templateObjects.targetPath;
+            if (sourcePath.showPopup || targetPath.showPopup) {
+                console.log("trapped")
+                return;
+            }
+            /*
+                EOH: End Of Hack
+            */
             if ("cancelEditing" === evt.identifier) {
                 this._discardBindingEdits();
             }
