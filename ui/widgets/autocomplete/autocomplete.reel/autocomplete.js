@@ -11,13 +11,9 @@ var TextInput = require("matte/ui/text-input").TextInput,
     RangeController = require("montage/core/range-controller").RangeController,
     KeyComposer = require("montage/composer/key-composer").KeyComposer;
 
-//jshint -W098
 var KEY_UP = 38,
     KEY_DOWN = 40,
-    KEY_RIGHT = 39,
-    KEY_ENTER = 13,
-    KEY_ESC = 27;
-//jshint +W098
+    KEY_ENTER = 13;
 
 var getElementPosition = function(obj) {
     var curleft = 0, curtop = 0, curHt = 0, curWd = 0;
