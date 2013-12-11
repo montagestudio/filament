@@ -534,9 +534,10 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
     handleKeyup: {
         enumerable: false,
         value: function(e) {
-            var code = e.keyCode, popup = this._getPopup();
+            var code = e.keyCode,
+                popup = this._getPopup();
 
-            switch(code) {
+            switch (code) {
             case KEY_DOWN:
                 if (!popup.displayed) {
                     popup.show();
@@ -544,24 +545,14 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
                     this.performSearch(searchTerm);
                     this.activeItemIndex = 0;
                 } else {
-                    var list = this.suggestions || [];
-                    if (list.length > 0 && this.activeItemIndex < list.length-1) {
-                        this.activeItemIndex++;
-                    } else {
-                        this.activeItemIndex = 0;
-                    }
-
+                    this._highlightNext();
                 }
 
                 break;
 
             case KEY_UP:
                 if (popup.displayed) {
-                    if(this.activeItemIndex > 0) {
-                        this.activeItemIndex --;
-                    } else {
-                        this.activeItemIndex = 0;
-                    }
+                    this._highlightPrevious();
                 }
 
                 break;
@@ -579,6 +570,27 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
 
             }
             this.element.focus();
+        }
+    },
+    
+    _highlightPrevious: {
+        value: function () {
+            if (this.activeItemIndex > 0) {
+                this.activeItemIndex--;
+            } else {
+                this.activeItemIndex = 0;
+            }
+        }
+    },
+    
+    _highlightNext: {
+        value: function () {
+            var list = this.suggestions || [];
+            if (list.length > 0 && this.activeItemIndex < list.length-1) {
+                this.activeItemIndex++;
+            } else {
+                this.activeItemIndex = 0;
+            }
         }
     }
 
