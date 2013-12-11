@@ -52,11 +52,19 @@ exports.BindingJig = Montage.create(Component, {
         value: null
     },
 
+    targetPath: {
+        value: null
+    },
+
+    sourcePath: {
+        value: null
+    },
+
     shouldDismissOverlay: {
         value: function (overlay, target) {
             // don't dismiss the overlay if the user can drag the target
             while (target) {
-                if (target.draggable) {
+                if (target.draggable || target.classList.contains("matte-Autocomplete--popup")) {
                     return false;
                 }
                 target = target.parentElement;
@@ -91,6 +99,17 @@ exports.BindingJig = Montage.create(Component, {
 
     handleKeyPress: {
         value: function(evt) {
+            /*
+                TODO: FIXME: This is a hack to by pass the fact that the keycomposer does not play nice with child keycomposers
+            */
+            var sourcePath = this.templateObjects.sourcePath,
+                targetPath = this.templateObjects.targetPath;
+            if (sourcePath.showPopup || targetPath.showPopup) {
+                return;
+            }
+            /*
+                EOH: End Of Hack
+            */
             if ("cancelEditing" === evt.identifier) {
                 this._discardBindingEdits();
             }
@@ -143,6 +162,64 @@ exports.BindingJig = Montage.create(Component, {
             this.existingBinding = null;
             this.bindingModel = null;
         }
-    }
+    },
 
+    targetPathShouldGetSuggestions: {
+        value: function(autocomplete, searchTerm) {
+            var searchProperty = searchTerm,
+                component = this.bindingModel.targetObject;
+            component.packageRequire.async(component.moduleId).get(component.exportName).get("blueprint")
+                .then(function (blueprint) {
+                    var suggestions = [];
+                    blueprint.propertyBlueprints.forEach(function (property) {
+                        if (property.name.startsWith(searchProperty)) {
+                            suggestions.push(property.name);
+                        }
+                    });
+                    autocomplete.suggestions = suggestions;
+                }, function (reason) {
+                    console.warn("Unable to load blueprint: ", reason.message ? reason.message : reason);
+                }).done();
+        }
+    },
+
+    sourcePathShouldGetSuggestions: {
+        value: function(autocomplete, searchTerm) {
+            var searchLabel = (searchTerm.trim()[0] === "@") ? searchTerm.slice(1) : searchTerm;
+            var i = searchLabel.indexOf(".");
+            if (i !== -1) {
+                // looks for properties in blueprint
+                var searchProperty = searchLabel.slice(i + 1),
+                    componentLabel = searchLabel.slice(0, i),
+                    component = this.editingDocument.editingProxyMap[componentLabel];
+
+                if (!component) {
+                    autocomplete.suggestions = [];
+                    return;
+                }
+
+                component.packageRequire.async(component.moduleId).get(component.exportName).get("blueprint")
+                    .then(function (blueprint) {
+                        var suggestions = [];
+                        blueprint.propertyBlueprints.forEach(function (property) {
+                            if (property.name.startsWith(searchProperty)) {
+                                suggestions.push("@" + componentLabel + "." + property.name);
+                            }
+                        });
+                        autocomplete.suggestions = suggestions;
+                    }, function (reason) {
+                        console.warn("Unable to load blueprint: ", reason.message ? reason.message : reason);
+                    }).done();
+            } else {
+                // list available components
+                var suggestions = [];
+                this.editingDocument.editingProxies.forEach(function (proxy) {
+                    if (proxy.identifier.startsWith(searchLabel)) {
+                        suggestions.push("@" + proxy.identifier);
+                    }
+                });
+                autocomplete.suggestions = suggestions;
+            }
+        }
+    }
 });

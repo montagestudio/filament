@@ -31,16 +31,6 @@
             }
         },
 
-        "targetPath": {
-            "prototype": "matte/ui/input-text.reel",
-            "properties": {
-                "element": {"#": "targetPath"}
-            },
-            "bindings": {
-                "value": {"<->": "@owner.bindingModel.targetPath"}
-            }
-        },
-
         "bindingDirectionController": {
             "prototype": "montage/core/radio-button-controller",
             "bindings": {
@@ -63,16 +53,6 @@
                 "element": {"#":"bidirectional"},
                 "radioButtonController": {"@": "bindingDirectionController"},
                 "value": false
-            }
-        },
-
-        "sourcePath": {
-            "prototype": "matte/ui/input-text.reel",
-            "properties": {
-                "element": {"#": "sourcePath"}
-            },
-            "bindings": {
-                "value": {"<->": "@owner.bindingModel.sourcePath"}
             }
         },
 
@@ -134,6 +114,40 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
+
+        "targetPath": {
+            "prototype": "ui/widgets/autocomplete/autocomplete.reel",
+            "properties": {
+                "element": {"#": "targetPathAutocomplete"},
+                "delegate": {"@": "owner"},
+                "delay": 100,
+                "minLength": 0,
+                "separator": {
+                    "value" : " ",
+                    "distinct" : false
+                }
+            },
+            "bindings": {
+                "value": {"<->": "@owner.bindingModel.targetPath"}
+            }
+        },
+
+        "sourcePath": {
+            "prototype": "ui/widgets/autocomplete/autocomplete.reel",
+            "properties": {
+                "element": {"#": "sourcePathAutocomplete"},
+                "delegate": {"@": "owner"},
+                "delay": 100,
+                "minLength": 1,
+                "separator": {
+                    "value" : " ",
+                    "distinct" : false
+                }
+            },
+            "bindings": {
+                "value": {"<->": "@owner.bindingModel.sourcePath"}
+            }
         }
 
     }
@@ -147,7 +161,7 @@
             
         <section class="Jig-section BindingJig-section--target">
             <label class="Jig-label">Target Path</label>
-            <input data-montage-id="targetPath" class="Jig-input" type="text">
+            <input data-montage-id="targetPathAutocomplete" class="Jig-input" type="text"></input>
         </section>
 
         <section class="Jig-section BindingJig-section--direction">
@@ -160,7 +174,7 @@
 
         <section class="Jig-section BindingJig-section--source">
             <label class="Jig-label">Source Path</label>
-            <input data-montage-id="sourcePath" class="Jig-input" type="text">
+            <input data-montage-id="sourcePathAutocomplete" class="Jig-input" type="text"></input>
         </section>
 
         <section class="Jig-section BindingJig-section--source">
