@@ -105,7 +105,6 @@ exports.BindingJig = Montage.create(Component, {
             var sourcePath = this.templateObjects.sourcePath,
                 targetPath = this.templateObjects.targetPath;
             if (sourcePath.showPopup || targetPath.showPopup) {
-                console.log("trapped")
                 return;
             }
             /*
@@ -193,6 +192,11 @@ exports.BindingJig = Montage.create(Component, {
                 var searchProperty = searchLabel.slice(i + 1),
                     componentLabel = searchLabel.slice(0, i),
                     component = this.editingDocument.editingProxyMap[componentLabel];
+
+                if (!component) {
+                    autocomplete.suggestions = [];
+                    return;
+                }
 
                 component.packageRequire.async(component.moduleId).get(component.exportName).get("blueprint")
                     .then(function (blueprint) {
