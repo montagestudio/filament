@@ -176,7 +176,7 @@ describe("asset-manager-spec", function () {
 
             var assetModified = assetsManager.getAssetByFileUrl("/a/b/c/winter.jpg");
 
-            expect(assetModified.size).toEqual(2048);
+            expect(assetModified.size).not.toEqual(size);
         });
 
     });
