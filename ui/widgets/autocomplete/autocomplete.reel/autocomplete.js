@@ -520,6 +520,19 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
         }
     },
 
+    surrendersActiveTarget: {
+        value: function (newTarget) {
+            var popup = this._getPopup();
+            if(popup.displayed) {
+                this.resultsController.selection = [this.suggestions[this.activeItemIndex]];
+            }
+            else {
+                this.suggestedValue = this.tokens[this.tokens.length-1];
+            }
+            return true;
+        }
+    },
+
     handleKeyup: {
         enumerable: false,
         value: function(e) {
