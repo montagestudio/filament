@@ -2,8 +2,7 @@
 /**
     @module "matte/ui/autocomplete/result-item.reel"
 */
-var Component = require("montage/ui/component").Component,
-    Text = require("montage/ui/text.reel").Text;
+var Text = require("montage/ui/text.reel").Text;
 
 /**
     @class module:"matte/ui/autocomplete/result-item.reel".ResultItem
@@ -20,7 +19,7 @@ exports.ResultItem = Text.specialize({
         },
         set: function(aValue) {
             if(aValue) {
-               this._object = aValue;
+                this._object = aValue;
             }
             if(this._object) {
                 if(this.textPropertyPath) {
