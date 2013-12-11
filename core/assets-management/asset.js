@@ -124,6 +124,11 @@ exports.Asset = Montage.specialize({
     },
 
     size: {
+        set: function (size) {
+            if (typeof size === "number") {
+                this._size = size;
+            }
+        },
         get: function () {
             return this._size;
         }

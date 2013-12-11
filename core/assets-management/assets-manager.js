@@ -471,7 +471,7 @@ exports.AssetsManager = Montage.specialize({
                     var createdAsset = this.createAssetWithFileDescriptor(fileDescriptor),
                         deletedAsset = this._findAssetFromDeletedAssetPool(createdAsset);
 
-                    if (!deletedAsset) {
+                    if (deletedAsset) {
                         createdAsset.iconUrl = deletedAsset.iconUrl; // No thumbnail mechanism for now, kind of useless.
                     }
 
