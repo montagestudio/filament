@@ -350,7 +350,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
     performSearch: {
         enumerable: false,
         value: function(searchTerm) {
-            if(this.delegate) {
+            if (this.delegate) {
                 this.resultsController.selectedIndexes = [];
                 // index on the popup
                 this.activeItemIndex = 0;
@@ -385,7 +385,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
 
             var popup = this.popup;
 
-            if(!popup) {
+            if (!popup) {
                 popup = new Popup();
                 popup.content = this.resultsList;
                 popup.classList.add("matte-Autocomplete--popup");
@@ -464,26 +464,26 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
             this.super();
 
             if (!this._valueSyncedWithInputField) {
-                if(this.tokens) {
+                if (this.tokens) {
                     this.value = this.tokens.join(this.separator.value);
                 }
-                if(this.value && this.value.charAt(this.value.length-1) !== this.separator.value) {
+                if (this.value && this.value.charAt(this.value.length-1) !== this.separator.value) {
                     this.value += this.separator.value;
                 }
                 this.element.value = this.value;
                 this._valueSyncedWithInputField = true;
             }
             var showPopup = this.showPopup;
-            if(this.value === '' && this.minLength > 0) {
+            if (this.value === '' && this.minLength > 0) {
                 showPopup = false;
             }
 
-            if(showPopup) {
+            if (showPopup) {
                 this.popup.show();
                 // reset active index
                 this.activeItemIndex = 0;
             } else {
-                if(this.popup && this.popup.displayed) {
+                if (this.popup && this.popup.displayed) {
                     this.popup.hide();
                 }
             }
@@ -523,7 +523,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
     surrendersActiveTarget: {
         value: function (newTarget) {
             var popup = this._getPopup();
-            if(popup.displayed) {
+            if (popup.displayed) {
                 this.resultsController.selection = [this.suggestions[this.activeItemIndex]];
             }
             else {
@@ -540,14 +540,14 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
 
             switch(code) {
             case KEY_DOWN:
-                if(!popup.displayed) {
+                if (!popup.displayed) {
                     popup.show();
                     var searchTerm = this._tokens[this.activeTokenIndex] || "";
                     this.performSearch(searchTerm);
                     this.activeItemIndex = 0;
                 } else {
                     var list = this.suggestions || [];
-                    if(list.length > 0 && this.activeItemIndex < list.length-1) {
+                    if (list.length > 0 && this.activeItemIndex < list.length-1) {
                         this.activeItemIndex++;
                     } else {
                         this.activeItemIndex = 0;
@@ -558,7 +558,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
                 break;
 
             case KEY_UP:
-                if(popup.displayed) {
+                if (popup.displayed) {
                     if(this.activeItemIndex > 0) {
                         this.activeItemIndex --;
                     } else {
@@ -569,7 +569,7 @@ var Autocomplete = exports.Autocomplete = TextInput.specialize(/** @lends module
                 break;
 
             case KEY_ENTER:
-                if(popup.displayed) {
+                if (popup.displayed) {
                     this.resultsController.selection = [this.suggestions[this.activeItemIndex]];
                     e.preventDefault();
                     // select the currently active item in the results list
