@@ -257,28 +257,44 @@ exports.AssetsManager = Montage.specialize({
         value: function (fileUrl, assetCategory) {
             var assetFound = null;
 
-            // If assetCategory is not undefined looks into the Asset category, in order to find an asset
-            if (AssetTools.isAssetCategoryValid(assetCategory)) {
-                var assetSet = this.assets[assetCategory];
+            if (AssetTools.isFileUrlValid(fileUrl)) {
 
-                assetSet.some(function (asset) {
-                    assetFound = asset.fileUrl === fileUrl ? asset : null;
+                // If assetCategory is not undefined looks into the Asset category, in order to find an asset
+                if (AssetTools.isAssetCategoryValid(assetCategory)) {
+                    var assetSet = this.assets[assetCategory];
+
+                    assetSet.some(function (asset) {
+                        assetFound = asset.fileUrl === fileUrl ? asset : null;
+                        return !!assetFound;
+                    });
+
+                    return assetFound;
+                }
+
+                // If assetCategory is undefined looks into each Asset categories.
+                var assetCategories = this.assetCategories,
+                    self = this;
+
+                Object.keys(assetCategories).some(function (assetCategory) {
+                    assetFound = self._findAssetWithFileUrl(fileUrl, assetCategory);
                     return !!assetFound;
                 });
-
-                return assetFound;
             }
 
-            // If assetCategory is undefined looks into each Asset categories.
-            var assetCategories = this.assetCategories,
-                self = this;
-
-            Object.keys(assetCategories).some(function (assetCategory) {
-                assetFound = self._findAssetWithFileUrl(fileUrl, assetCategory);
-                return !!assetFound;
-            });
-
             return assetFound;
+        }
+    },
+
+    /**
+     * Finds and Gets an Asset with a file url.
+     * @function
+     * @public
+     * @param {String} fileUrl - a file Url.
+     * @return {(Object|null)} Asset Object.
+     */
+    getAssetByFileUrl: {
+        value: function (fileUrl) {
+            return this._findAssetWithFileUrl(fileUrl);
         }
     },
 
