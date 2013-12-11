@@ -1,6 +1,10 @@
 var Montage = require("montage/core/core").Montage,
     AssetTools = require("./asset-tools").AssetTools;
 
+/**
+ * @class Asset
+ * @extends module:montage.Montage
+ */
 exports.Asset = Montage.specialize({
 
     constructor: {

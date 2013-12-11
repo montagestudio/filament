@@ -1,3 +1,12 @@
+/**
+ * Contains the configuration for the Asset Management:
+ * - Supported Asset Categories.
+ * - Supported Mime-Types.
+ * - Default icon url for each Asset Category.
+ **/
+
+//TODO add more mime-types and Asset Category?
+
 var AssetsConfig = {
 
     assetCategories: {
@@ -35,7 +44,6 @@ var AssetsConfig = {
 
         },
 
-        //TODO add more mime-types
         VIDEO: {
             categoryName: "VIDEO",
             defaultIconUrl: "assets/icons/default-video-icon.png",
