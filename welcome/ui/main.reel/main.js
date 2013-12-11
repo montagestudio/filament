@@ -30,21 +30,17 @@ exports.Main = Montage.create(Component, {
                     "<-": "recentDocuments",
                     source: lumieres
                 });
-
-                require.async("adaptor/client/core/lumieres-bridge").then(function (exported) {
-                    self.environmentBridge = new exported.LumiereBridge().init("filament-backend");
-                    self.environmentBridge.userPreferences.then(function (prefs) {
-                        self.isFirstRun = prefs.firstRun;
-                        //TODO I don't want firstrun to be set-able as an API, but this feels a little weird
-                        self.needsDraw = true;
-                    });
-
-                });
-            } else {
-                require.async("core/browser-bridge").then(function (exported) {
-                    self.environmentBridge = exported.BrowserBridge.create();
-                });
             }
+
+            require.async("adaptor/client/core/environment-bridge").then(function (exported) {
+                self.environmentBridge = new exported.EnvironmentBridge().init("filament-backend");
+                self.environmentBridge.userPreferences.then(function (prefs) {
+                    self.isFirstRun = prefs.firstRun;
+                    //TODO I don't want firstrun to be set-able as an API, but this feels a little weird
+                    self.needsDraw = true;
+                });
+
+            });
         }
     },
 
