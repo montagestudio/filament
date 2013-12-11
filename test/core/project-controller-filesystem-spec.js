@@ -180,6 +180,38 @@ describe("core/project-controller-filesystem-spec", function () {
             });
 
         });
+
+        describe("when the deletion is inside an unexplored subdirectory", function () {
+
+            var fullPath, currentStat, previousStat, parentPath;
+
+            beforeEach(function () {
+                parentPath = "projectUrl/ui";
+                fullPath = "projectUrl/ui/unexplored/foo.png";
+                currentStat = {};
+                previousStat = null;
+            });
+
+            var exploreParent = function () {
+                var parent = projectController.fileInTreeAtUrl(parentPath);
+                parent.expanded = true;
+                return parent;
+            };
+
+            it("it must not learn about the deleted file upon exploration", function () {
+                return projectControllerLoadedPromise.then(function () {
+
+                    watcher.simulateChange("delete", fullPath, currentStat, previousStat);
+
+                    var parent = exploreParent();
+
+                    expect(parent.children.length).toBe(0);
+                    var file = projectController.fileInTreeAtUrl(fullPath);
+                    expect(parent.children.indexOf(file)).toBe(-1);
+                }).timeout(WAITSFOR_TIMEOUT);
+            });
+
+        });
     });
 
     describe("file changes", function () {
