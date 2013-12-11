@@ -130,6 +130,14 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         }
     },
 
+    /*
+        Build the templateObjectsTree from the templatesNodes
+        Steps:
+            - create a list of components to be arranged in the tree "nodeProxies"
+            - pick the head element, "nodeProxy" of the list and try to add it to the tree. 
+              While adding to the tree we keep a map of elements to tree node updated.
+            - if it fails, the element's parent is not in the map, the element is added back to the list
+    */
     buildTemplateObjectTree: {
         value: function () {
             var self = this;
@@ -144,23 +152,24 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             map.set(this.ownerObject, node);
 
             // add the nodes
-            var lastNodeProxy, reelProxy, nodeProxy, parentReelProxy, parentNodeProxy,
+            var successivePushes = 0,
+                nodeProxy,
                 nodeProxies = this.editingDocument.templateNodes.filter(function(nodeProxy) {
                     return nodeProxy.component && (nodeProxy.component !== self.ownerObject);
                 });
             while (nodeProxy = nodeProxies.shift()) {
-                // to be safe, guard to prevent an infinite loop
-                if (lastNodeProxy && lastNodeProxy === nodeProxy) {
-                    throw new Error("Can not build templateObjectsTree");
-                }
-                reelProxy = nodeProxy.component;
+                var reelProxy = nodeProxy.component;
                 // find the parent component
-                parentNodeProxy = nodeProxy;
+                var parentNodeProxy = nodeProxy,
+                    parentReelProxy;
                 while (parentNodeProxy = parentNodeProxy.parentNode) {
                     if (parentNodeProxy.component) {
                         parentReelProxy = parentNodeProxy.component;
                         break;
                     }
+                }
+                if (!parentReelProxy) {
+                    throw new Error("Can not build templateObjectsTree: can't find parent component");
                 }
 
                 if (map.has(parentReelProxy)) {
@@ -172,11 +181,18 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                     var parentNode = map.get(parentReelProxy);
                     parentNode.children.push(node);
                     map.set(reelProxy, node);
+                    // reset the infinite loop guard
+                    successivePushes = 0;
                 } else {
                     // parentReelProxy not found -> has not been added to the tree yet
                     nodeProxies.push(nodeProxy);
+                    
+                    // to be safe, guard to prevent an infinite loop
+                    successivePushes++;
+                    if (successivePushes > nodeProxies.length) {
+                        throw new Error("Can not build templateObjectsTree: looping on the same components");
+                    }
                 }
-                lastNodeProxy = nodeProxy;
             }
         }
     },
