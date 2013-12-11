@@ -1056,7 +1056,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 parent = this.fileInTreeAtUrl(parentUrl),
                 child = this.fileInTreeAtUrl(fileUrl);
 
-            parent.children.delete(child);
+            if (parent && parent.expanded) {
+                parent.children.delete(child);
+            }
 
             //TODO try to be more focused about this based upon the file that was deleted
             this.populateLibrary().done();
