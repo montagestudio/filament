@@ -17,61 +17,50 @@ describe("asset-manager-spec", function () {
                     // Valid
                     {
                         url: "/a/b/c/duck.dae",
-                        mimeType: "model/vnd.collada+xml",
-                        assetType: AssetCategories.MODEL
+                        mimeType: "model/vnd.collada+xml"
                     },
                     {
                         url: "/a/b/c/wine.dae",
-                        mimeType: "model/vnd.collada+xml",
-                        assetType: AssetCategories.MODEL
+                        mimeType: "model/vnd.collada+xml"
                     },
                     {
                         url: "/a/b/c/fall.png",
-                        mimeType: "image/png",
-                        assetType: AssetCategories.IMAGE
+                        mimeType: "image/png"
                     },
                     {
                         url: "/a/b/c/winter.jpg",
-                        mimeType: "image/jpeg",
-                        assetType: AssetCategories.IMAGE
+                        mimeType: "image/jpeg"
                     },
                     {
                         url: "/a/b/c/beach.aac",
-                        mimeType: "audio/aac",
-                        assetType: AssetCategories.AUDIO
+                        mimeType: "audio/aac"
                     },
                     {
                         url: "/a/b/c/city.mp3",
-                        mimeType: "audio/mpeg",
-                        assetType: AssetCategories.AUDIO
+                        mimeType: "audio/mpeg"
                     },
                     {
                         url: "/a/b/c/mountain.mp4",
-                        mimeType: "audio/aac",
-                        assetType: AssetCategories.AUDIO
+                        mimeType: "audio/aac"
                     },
                     {
                         url: "/a/b/c/holiday.mp4",
-                        mimeType: "video/mp4",
-                        assetType: AssetCategories.VIDEO
+                        mimeType: "video/mp4"
                     },
 
                     // Not valid
                     {
                         url: "/a/b/c/file.zip",
-                        mimeType: "application/zip",
-                        assetType: null
+                        mimeType: "application/zip"
                     },
                     {
                         url: "/a/b/c/file.json",
-                        mimeType: "application/json",
-                        assetType: null
+                        mimeType: "application/json"
                     },
 
                     {
                         url: "/a/b/c/file.au",
-                        mimeType: "audio/basic",
-                        assetType: null
+                        mimeType: "audio/basic"
                     }
                 ];
 
@@ -127,6 +116,67 @@ describe("asset-manager-spec", function () {
 
             expect(assetsManager.assetsCount).toEqual(8);
             expect(assetsManager.assets.IMAGE.length).toEqual(2);
+        });
+
+        it("should be able to add an asset when a file has been added to the project", function () {
+            var event = {
+                detail: {
+                    change: "create",
+                    mimeType: "image/png",
+                    currentStat: {
+                        size: 1024
+                    },
+                    fileUrl: "/a/b/c/chocolate.jpg"
+                }
+            };
+
+            assetsManager.handleFileSystemChange(event);
+
+            expect(assetsManager.assetsCount).toEqual(9);
+            expect(assetsManager.assets.IMAGE.length).toEqual(3);
+            expect(assetsManager.assets.IMAGE[2].name).toEqual("chocolate");
+        });
+
+        it("should be able to delete an asset when a file has been removed", function () {
+            var event = {
+                detail: {
+                    change: "delete",
+                    mimeType: "image/png",
+                    currentStat: {
+                        size: 1024
+                    },
+                    fileUrl: "/a/b/c/chocolate.jpg"
+                }
+            };
+
+            assetsManager.handleFileSystemChange(event);
+
+            expect(assetsManager.assetsCount).toEqual(8);
+            expect(assetsManager.assets.IMAGE.length).toEqual(2);
+            expect(assetsManager.assets.IMAGE[1].name).not.toEqual("chocolate");
+        });
+
+        it("should be able to update an asset when a file has been modified", function () {
+            var asset = assetsManager.getAssetByFileUrl("/a/b/c/winter.jpg"),
+                event = {
+                    detail: {
+                        change: "update",
+                        mimeType: asset.mimeType,
+                        currentStat: {
+                            size: 2048
+                        },
+                        fileUrl: asset.fileUrl
+                    }
+                },
+                size = asset.size;
+
+            assetsManager.handleFileSystemChange(event);
+
+            expect(assetsManager.assetsCount).toEqual(8);
+
+            var assetModified = assetsManager.getAssetByFileUrl("/a/b/c/winter.jpg");
+
+            expect(assetModified.size).toEqual(2048);
         });
 
     });
