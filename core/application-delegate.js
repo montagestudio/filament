@@ -1,4 +1,3 @@
-/* global lumieres */
 var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
     ExtensionController = require("core/extension-controller").ExtensionController,
@@ -6,8 +5,6 @@ var Montage = require("montage/core/core").Montage,
     PreviewController = require("core/preview-controller").PreviewController,
     ProjectController = require("core/project-controller").ProjectController,
     ReelDocument = require("core/reel-document").ReelDocument;
-
-var IS_IN_LUMIERES = (typeof lumieres !== "undefined");
 
 var InnerTemplateInspector = require("contextual-inspectors/inner-template/ui/inner-template-inspector.reel").InnerTemplateInspector;
 
@@ -22,15 +19,9 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             var bridgePromise = this._bridgePromise;
 
             if (!bridgePromise) {
-                if (IS_IN_LUMIERES) {
-                    bridgePromise = require.async("adaptor/client/core/lumieres-bridge").then(function (exported) {
-                        return new exported.LumiereBridge().init("filament-backend");
-                    });
-                } else {
-                    bridgePromise = require.async("adaptor/client/core/environment-bridge").then(function (exported) {
-                        return new exported.EnvironmentBridge().init("filament-backend");
-                    });
-                }
+                bridgePromise = require.async("adaptor/client/core/environment-bridge").then(function (exported) {
+                    return new exported.EnvironmentBridge().init("filament-backend");
+                });
                 this._bridgePromise = bridgePromise;
             }
 
