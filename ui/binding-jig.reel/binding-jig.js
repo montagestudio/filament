@@ -213,9 +213,9 @@ exports.BindingJig = Montage.create(Component, {
             } else {
                 // list available components
                 var suggestions = [];
-                this.editingDocument.templateNodes.forEach(function (node) {
-                    if (node.component && node.component.identifier.startsWith(searchLabel)) {
-                        suggestions.push("@" + node.component.identifier);
+                this.editingDocument.editingProxies.forEach(function (proxy) {
+                    if (proxy.identifier.startsWith(searchLabel)) {
+                        suggestions.push("@" + proxy.identifier);
                     }
                 });
                 autocomplete.suggestions = suggestions;
