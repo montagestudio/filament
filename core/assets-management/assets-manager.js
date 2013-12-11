@@ -5,6 +5,8 @@ var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescript
     PACKAGE_LOCATION = require.location,
     Asset = require("./asset").Asset,
 
+    TIMEOUT_RELEASE_DELETED_ASSET_POOL = 5000,
+
     FILE_SYSTEM_CHANGES = {
         CREATE: "create",
         DELETE: "delete",
@@ -22,6 +24,9 @@ exports.AssetsManager = Montage.specialize({
             this.super();
             this.assets = {};
             this.assetCategories = {};
+            this._deletedAssetPool = [];
+
+            this.addRangeAtPathChangeListener("_deletedAssetPool", this, "handleDeletedAssetPoolChange");
 
             var self = this,
                 assetCategories = AssetsConfig.assetCategories;
@@ -52,6 +57,14 @@ exports.AssetsManager = Montage.specialize({
      * @type {Object}
      */
     assets: {
+        value: null
+    },
+
+    _deletedAssetPool: {
+        value: null
+    },
+
+    _programmedReleasePool: {
         value: null
     },
 
@@ -116,33 +129,17 @@ exports.AssetsManager = Montage.specialize({
     },
 
     /**
-     * Creates an Asset Object with an url and a mime-type from an "asset" file.
-     * @function
-     * @public
-     * @param {String} fileUrl - a file url.
-     * @param {String} mimeType - a supported mime-type.
-     * @return {Asset} created Asset Object.
-     */
-    createAssetWithFileUrlAndMimeType: {
-        value: function (fileUrl, mimeType) {
-            var createdAsset = Asset.create().initWithFileUrlAndMimeType(fileUrl, mimeType);
-            createdAsset.iconUrl =  this.getIconWithAsset(createdAsset);
-            return createdAsset;
-        }
-    },
-
-    /**
      * Creates an Asset Object with some information within an FileDescriptor Object.
      * @function
      * @public
      * @param {Object} fileDescriptor - a FileDescriptor Object.
-     * @param {String} fileDescriptor.fileUrl - a file url.
-     * @param {String} fileDescriptor.mimeType - an supported mime-type.
      * @return {Asset} created Asset Object.
      */
     createAssetWithFileDescriptor: {
         value: function (fileDescriptor) {
-            return this.createAssetWithFileUrlAndMimeType(fileDescriptor.fileUrl, fileDescriptor.mimeType);
+            var createdAsset = Asset.create().initWithFileDescriptor(fileDescriptor);
+            createdAsset.iconUrl =  this.getIconWithAsset(createdAsset);
+            return createdAsset;
         }
     },
 
@@ -197,10 +194,10 @@ exports.AssetsManager = Montage.specialize({
 
                 if (index >= 0) {
                     this.assets[asset.category].splice(index, 1);
+                    return true;
                 }
-
-                return true;
             }
+
             return false;
         }
     },
@@ -342,8 +339,109 @@ exports.AssetsManager = Montage.specialize({
     },
 
     /**
+     * Detach an Asset Object from the list with a file url.
+     * @function
+     * @private
+     * @param {String} fileUrl - a file Url.
+     * @return {(Object|null)} an Asset Object detached.
+     */
+    _detachAssetWithFileUrl: {
+        value: function (fileUrl) {
+            var asset = this._findAssetWithFileUrl(fileUrl);
+            return this._detachAsset(asset);
+        }
+    },
+
+    /**
+     * Detach an Asset Object from the list.
+     * @function
+     * @private
+     * @param {Object} asset - an Asset Object.
+     * @param {String} asset.category - an Asset Category.
+     * @return {(Object|null)} an Asset Object detached.
+     */
+    _detachAsset: {
+        value: function (asset) {
+            if (AssetTools.isAssetValid(asset)) {
+                var index = this._findAssetIndex(asset);
+
+                if (index >= 0) {
+                    return this.assets[asset.category].splice(index, 1)[0];
+                }
+            }
+
+            return null;
+        }
+    },
+
+    /**
+     * Tries to find an Asset Object from the deleted assets list.
+     * @function
+     * @private
+     * @param {Object} asset - an Asset Object.
+     * @param {String} asset.fileName - a fileName.
+     * @param {String} asset.mimeType - a supported mime-type.
+     * @param {number} asset.size - size of an asset.
+     * @return {(Object|null)} a deleted Asset Object.
+     */
+    _findAssetFromDeletedAssetPool: {
+        value: function (asset) {
+            var deletedAsset  = null;
+
+            this._deletedAssetPool.some(function (currentDeletedAsset) {
+
+                //Todo improve this checking by using mtime.
+
+                if (asset.fileName === currentDeletedAsset.fileName && asset.mimeType === currentDeletedAsset.mimeType &&
+                    asset.size && currentDeletedAsset.size) {
+
+                    deletedAsset = currentDeletedAsset;
+                }
+
+                return !!currentDeletedAsset;
+            });
+
+            return deletedAsset;
+        }
+    },
+
+    /**
+     * Programs to empty the deleted asset list.
+     * @function
+     * @private
+     */
+    _programReleasePool: {
+        value: function () {
+            if (this._programmedReleasePool) {
+                clearTimeout(this._programmedReleasePool);
+            }
+
+            if (this._deletedAssetPool.length > 0) {
+                var self = this;
+
+                this._programmedReleasePool = setTimeout(function () {
+                    self._deletedAssetPool = [];
+                }, TIMEOUT_RELEASE_DELETED_ASSET_POOL);
+            }
+        }
+    },
+
+    /**
+     * Programs to release the deletedAssetPool,
+     * when an Asset Object has been added to it.
+     * @function
+     * @public
+     */
+    handleDeletedAssetPoolChange: {
+        value: function (plus, minus, index) {
+            if (plus) {
+                this._programReleasePool();
+            }
+        }
+    },
+
+    /**
      * handles any changes of an asset from the file system.
-     * [! Not completely implemented yet !]
      * @function
      * @public
      * @param {Object} event - Event Object.
@@ -362,13 +460,43 @@ exports.AssetsManager = Montage.specialize({
                 switch (fileChangeDetail.change) {
 
                 case FILE_SYSTEM_CHANGES.CREATE:
-                    var createdAsset = this.createAssetWithFileDescriptor(fileDescriptor);
+
+                    /* When moving or renaming a file, trigger two events,
+                     * a first an event with the "delete" change, then a second with the "create" change.
+                     * So in order to avoid to make again a new thumbnail,
+                     * we keep for a while the last Asset Objects which have been removed,
+                     * and then we check if they can be "reused".
+                     */
+
+                    var createdAsset = this.createAssetWithFileDescriptor(fileDescriptor),
+                        deletedAsset = this._findAssetFromDeletedAssetPool(createdAsset);
+
+                    if (!deletedAsset) {
+                        createdAsset.iconUrl = deletedAsset.iconUrl; // No thumbnail mechanism for now, kind of useless.
+                    }
+
                     this.addAsset(createdAsset);
+
                     break;
 
                 case FILE_SYSTEM_CHANGES.DELETE:
-                    this.removeAssetWithFileUrl(fileUrl);
+                    var detachedAsset = this._detachAssetWithFileUrl(fileUrl);
+                    this._deletedAssetPool.push(detachedAsset);
                     break;
+
+                case FILE_SYSTEM_CHANGES.UPDATE:
+                    var updatedAsset = this.createAssetWithFileDescriptor(fileDescriptor),
+                        index = this._findAssetIndex(updatedAsset);
+
+                    if (index >= 0) {
+                        // TODO once a thumbnail mechanism will has been implemented,
+                        // trigger it and update the iconUrl property
+
+                        var assetFound = this.assets[updatedAsset.category][index];
+                        assetFound.size = updatedAsset.size;
+                    }
+                    break;
+
                 }
             }
         }

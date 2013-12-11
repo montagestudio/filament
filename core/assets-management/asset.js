@@ -13,14 +13,19 @@ exports.Asset = Montage.specialize({
         }
     },
 
-    initWithFileUrlAndMimeType: {
-        value: function (fileUrl, mimeType) {
+    initWithFileDescriptor: {
+        value: function (fileDescriptor) {
+            var fileUrl = fileDescriptor.fileUrl,
+                mimeType = fileDescriptor.mimeType,
+                size = fileDescriptor._stat.size;
+
             if (!AssetTools.isMimeTypeSupported(mimeType)) {
                 throw new Error("Cannot init Asset object because the mime-type: " + mimeType + " is not supported");
             }
 
             this.fileUrl = fileUrl;
             this._mimeType = mimeType;
+            this._size = size;
             this._category = AssetTools.findAssetCategoryFromMimeType(mimeType);
 
             return this;
@@ -111,6 +116,16 @@ exports.Asset = Montage.specialize({
         },
         get: function () {
             return this._iconUrl;
+        }
+    },
+
+    _size: {
+        value: null
+    },
+
+    size: {
+        get: function () {
+            return this._size;
         }
     }
 
