@@ -11,6 +11,10 @@ var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescript
         UPDATE: "update"
     };
 
+/**
+ * @class AssetsManager
+ * @extends module:montage.Montage
+ */
 exports.AssetsManager = Montage.specialize({
 
     constructor: {
