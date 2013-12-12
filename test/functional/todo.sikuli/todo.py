@@ -1,10 +1,11 @@
 # This will build the basic todo application
-# Precondition: The instance of lumieres you want touse is up and running with is welcome screen visible
+# Precondition: The instance of lumieres you want to use is up and running with is welcome screen visible
 # Postcondition: A `todo` application will be successfully assembled on the desktop
 
 import lumieres
 reload(lumieres)
 
+# Activate lumieres
 lumieres.focusLumieres();
 lumieresRegion = lumieres.makeNewApplication("todo")
 explorer = lumieresRegion.find(Pattern("1371631581983.png").similar(0.60)).below(500)
@@ -13,10 +14,10 @@ templateExplorer = lumieresRegion.find("1376294075874.png")
 
 digitPackageRegion = find("1372142584813.png")
 
-#Remove the placeholder list content
+ # Make the domExplorer taller buy dragging the divider
 lumieres.resizeDomExplorerY(-100)
 
-# Add a title
+# Add a title and set its value
 lumieres.insertDomObject(digitPackageRegion.find(Pattern("1372142022209.png").similar(0.81)), "1380786943201.png", "child")
 
 wait(Pattern("1371600653629.png").targetOffset(20,12), 3)
@@ -25,11 +26,9 @@ doubleClick(getLastMatch())
 type("Things Worth Doing")
 
 # Add a rangeController to manage the collection of the owner's tasks
-
 dragDrop("1384285662628.png", templateExplorer)
 
 # Add a list to present the tasks
-
 lumieres.insertDomObject(digitPackageRegion.find("1372142855514.png"), "1380787051214.png", "next")
 
 #Set the list to receive its content from the rangeController we created
@@ -40,6 +39,7 @@ lumieres.insertDomObject("1371708733359.png", "1380787319604.png", "next")
 doubleClick("1371708858768.png")
 type("New Task")
 
+# Listen for action events from that button; call the rangeController's addContent in reaction
 buttonCard = find("1379358342966.png")
 buttonEvent = buttonCard.find("1376294601972.png").right().find("1376294614002.png")
 rangeControllerCard = "1384285722421.png"

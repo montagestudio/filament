@@ -71,13 +71,14 @@
 </div>
 <pre class="sikuli-code">
 <span class="cmt"># This will build the basic todo application
-</span><span class="cmt"># Precondition: The instance of lumieres you want touse is up and running with is welcome screen visible
+</span><span class="cmt"># Precondition: The instance of lumieres you want to use is up and running with is welcome screen visible
 </span><span class="cmt"># Postcondition: A `todo` application will be successfully assembled on the desktop
 </span>
 <span class="kw">import</span> lumieres
 reload(lumieres)
 
-lumieres.focusLumieres();
+<span class="cmt"># Activate lumieres
+</span>lumieres.focusLumieres();
 lumieresRegion = lumieres.makeNewApplication(<span class="str">"todo"</span>)
 explorer = lumieresRegion.<span class="skw">find</span>(Pattern(<img src="1371631581983.png" />).similar(<span class="dig">0.60</span>)).below(<span class="dig">500</span>)
 <span class="skw">sleep</span>(<span class="dig">1</span>)
@@ -85,10 +86,10 @@ templateExplorer = lumieresRegion.<span class="skw">find</span>(<img src="137629
 
 digitPackageRegion = <span class="skw">find</span>(<img src="1372142584813.png" />)
 
-<span class="cmt">#Remove the placeholder list content
+ <span class="cmt"># Make the domExplorer taller buy dragging the divider
 </span>lumieres.resizeDomExplorerY(-<span class="dig">100</span>)
 
-<span class="cmt"># Add a title
+<span class="cmt"># Add a title and set its value
 </span>lumieres.insertDomObject(digitPackageRegion.<span class="skw">find</span>(Pattern(<img src="1372142022209.png" />).similar(<span class="dig">0.81</span>)), <img src="1380786943201.png" />, <span class="str">"child"</span>)
 
 <span class="skw">wait</span>(Pattern(<img src="1371600653629.png" />).targetOffset(<span class="dig">20</span>,<span class="dig">12</span>), <span class="dig">3</span>)
@@ -97,12 +98,10 @@ digitPackageRegion = <span class="skw">find</span>(<img src="1372142584813.png" 
 <span class="skw">type</span>(<span class="str">"Things Worth Doing"</span>)
 
 <span class="cmt"># Add a rangeController to manage the collection of the owner's tasks
-</span>
-<span class="skw">dragDrop</span>(<img src="1384285662628.png" />, templateExplorer)
+</span><span class="skw">dragDrop</span>(<img src="1384285662628.png" />, templateExplorer)
 
 <span class="cmt"># Add a list to present the tasks
-</span>
-lumieres.insertDomObject(digitPackageRegion.<span class="skw">find</span>(<img src="1372142855514.png" />), <img src="1380787051214.png" />, <span class="str">"next"</span>)
+</span>lumieres.insertDomObject(digitPackageRegion.<span class="skw">find</span>(<img src="1372142855514.png" />), <img src="1380787051214.png" />, <span class="str">"next"</span>)
 
 <span class="cmt">#Set the list to receive its content from the rangeController we created
 </span><span class="skw">dragDrop</span>(<img src="1384285693714.png" />, Pattern(<img src="1379357187665.png" />).targetOffset(<span class="dig">33</span>,<span class="dig">59</span>))
@@ -112,7 +111,8 @@ lumieres.insertDomObject(digitPackageRegion.<span class="skw">find</span>(<img s
 <span class="skw">doubleClick</span>(<img src="1371708858768.png" />)
 <span class="skw">type</span>(<span class="str">"New Task"</span>)
 
-buttonCard = <span class="skw">find</span>(<img src="1379358342966.png" />)
+<span class="cmt"># Listen for action events from that button; call the rangeController's addContent in reaction
+</span>buttonCard = <span class="skw">find</span>(<img src="1379358342966.png" />)
 buttonEvent = buttonCard.<span class="skw">find</span>(<img src="1376294601972.png" />).right().<span class="skw">find</span>(<img src="1376294614002.png" />)
 rangeControllerCard = <img src="1384285722421.png" />
 <span class="skw">dragDrop</span>(buttonEvent, rangeControllerCard)
