@@ -1,7 +1,9 @@
 var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
+    application = require("montage/core/application").application
     AssetsConfig = require("./assets-config").AssetsConfig,
     AssetTools = require("./asset-tools").AssetTools,
     Montage = require("montage/core/core").Montage,
+
     PACKAGE_LOCATION = require.location,
     Asset = require("./asset").Asset,
 
@@ -39,6 +41,7 @@ exports.AssetsManager = Montage.specialize({
                 self.assets[assetCategoryName] = [];
             });
 
+            application.addEventListener("didOpenPackage", this);
         }
     },
 
@@ -60,38 +63,6 @@ exports.AssetsManager = Montage.specialize({
         value: null
     },
 
-    _deletedAssetPool: {
-        value: null
-    },
-
-    _programmedReleasePool: {
-        value: null
-    },
-
-    /**
-     * Init the AssetManager with an Array of FileDescriptors.
-     * @function
-     * @public
-     * @param {Array.<FileDescriptor>} filesList - an Array of FileDescriptors.
-     * @return {Object}
-     */
-    init: {
-        value: function (filesList) {
-            if (filesList && Array.isArray(filesList)) {
-                var self = this;
-
-                filesList.forEach(function (fileDescriptor) {
-                    if (AssetTools.isFileUrlValid(fileDescriptor.fileUrl) && AssetTools.isMimeTypeSupported(fileDescriptor.mimeType)) {
-                        var createdAsset = self.createAssetWithFileDescriptor(fileDescriptor);
-                        self.addAsset(createdAsset);
-                    }
-                });
-            }
-
-            return this;
-        }
-    },
-
     /**
      * Defines the number of assets within the AssetManager.
      * @public
@@ -106,6 +77,83 @@ exports.AssetsManager = Montage.specialize({
                     return count + assets[assetCategory].length;
                 }, 0);
             }
+        }
+    },
+
+    _deletedAssetPool: {
+        value: null
+    },
+
+    _programmedReleasePool: {
+        value: null
+    },
+
+    _projectController: {
+        value: null
+    },
+
+    /**
+     * Init the AssetManager with a reference to the Project Controller.
+     * @function
+     * @public
+     * @param {Object} projectController - Project Controller.
+     * @return {Object}
+     */
+    init: {
+        value: function (projectController) {
+            this._projectController = projectController;
+            return this;
+        }
+    },
+
+    /**
+     * Scedules to populate the Asset Manager once the project has been opened.
+     * @function
+     * @public
+     * @param {Object} event.
+     */
+    handleDidOpenPackage: {
+        value: function (event) {
+            this._populateAssets().done();
+        }
+    },
+
+    /**
+     * Schedules to populate the Asset Manager once the project has been opened.
+     * @function
+     * @public
+     * @param {Object} event.
+     * @return {Promise} a promise for the list of Assets.
+     */
+    _populateAssets: {
+        value: function () {
+            var self = this;
+
+            return this._projectController.environmentBridge.listAssetAtUrl(this._projectController.projectUrl).then(function (fileDescriptors) {
+                self.addAssetsWithFileDescriptors(fileDescriptors);
+            });
+        }
+    },
+
+    /**
+     * Creates ans adds a list of assets from an array of FileDescriptors.
+     * @function
+     * @public
+     * @param {Array.<FileDescriptor>} fileDescriptors - list of fileDescriptors.
+     */
+    addAssetsWithFileDescriptors: {
+        value: function (fileDescriptors) {
+            if (fileDescriptors && Array.isArray(fileDescriptors)) {
+                var self = this;
+
+                fileDescriptors.forEach(function (fileDescriptor) {
+                    if (AssetTools.isFileUrlValid(fileDescriptor.fileUrl) && AssetTools.isMimeTypeSupported(fileDescriptor.mimeType)) {
+                        var createdAsset = self.createAssetWithFileDescriptor(fileDescriptor);
+                        self.addAsset(createdAsset);
+                    }
+                });
+            }
+
         }
     },
 
