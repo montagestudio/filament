@@ -2,7 +2,6 @@
 var minitCreate = require("minit/lib/create").create,
     Q = require("q"),
     npm = require("npm"),
-    watchr = require("watchr"),
     PATH = require('path');
 
 module.exports = FilamentBackend;
