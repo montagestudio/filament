@@ -10,7 +10,7 @@ describe("asset-manager-spec", function () {
         var assetsManager = null;
 
         beforeEach(function () {
-            var filesList = [],
+            var fileDescriptors = [],
 
                 fakeFiles = [
 
@@ -65,10 +65,11 @@ describe("asset-manager-spec", function () {
                 ];
 
             fakeFiles.forEach(function (file) {
-                filesList.push(new FileDescriptor().init(file.url, {mode: 0, size:1024}, file.mimeType));
+                fileDescriptors.push(new FileDescriptor().init(file.url, {mode: 0, size:1024}, file.mimeType));
             });
 
-            assetsManager = AssetsManager.create().init(filesList);
+            assetsManager = AssetsManager.create();
+            assetsManager.addAssetsWithFileDescriptors(fileDescriptors);
 
         });
 
