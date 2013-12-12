@@ -36,6 +36,7 @@ var AssetsConfig = {
             defaultIconUrl: "assets/icons/default-audio-icon.png",
             mimeTypes: [
                 "audio/aac",
+                "audio/mp4",
                 "audio/mpeg",
                 "audio/x-flac",
                 "audio/x-aiff",
