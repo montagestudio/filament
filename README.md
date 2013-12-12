@@ -29,7 +29,7 @@ Testing
 `npm test` Tests server side portions of Filament
 `FILAMENT_URL/run-tests.html` Tests the client-side portions of Filament
 
-Integration Tests
+Functional Tests
 =================
 1. Install sikuli http://www.sikuli.org/index.html (You'll want Pack 1 and Pack 2) installed seperately)
 3. Set an environment variable $SIKULI to point to the `runScript` built by the Sikuli installer
