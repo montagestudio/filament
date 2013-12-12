@@ -524,9 +524,6 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
             if (popup.displayed) {
                 this.resultsController.selection = [this.suggestions[this.activeItemIndex]];
             }
-            else {
-                this.suggestedValue = this.tokens[this.tokens.length-1];
-            }
             return true;
         }
     },
