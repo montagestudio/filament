@@ -70,20 +70,27 @@
 <h2>auto-refresh-preview.sikuli</h2> <a href="auto-refresh-preview.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
-<span class="kw">import</span> lumieres
+<span class="cmt"># This verifies that a preview in a user agent updates whenever the project is updated
+</span><span class="cmt"># Precondition: The instance of lumieres you want to use is up and running with is welcome screen visible
+</span><span class="cmt"># Postcondition: A project will be created, the default browser will be opened, the project will be
+</span><span class="cmt"># updated, and the preview should reflect that without user intervention
+</span><span class="kw">import</span> lumieres
 reload(lumieres)
 
-lumieres.focusLumieres();
+<span class="cmt"># Activate lumieres
+</span>lumieres.focusLumieres();
 lumieresRegion = lumieres.makeNewApplication(<span class="str">"focus"</span>)
 
-<span class="skw">click</span>(Pattern(<img src="1383084350025.png" />).targetOffset(<span class="dig">77</span>,<span class="dig">3</span>))
+<span class="cmt">#Open the preview
+</span><span class="skw">click</span>(Pattern(<img src="1383084350025.png" />).targetOffset(<span class="dig">77</span>,<span class="dig">3</span>))
 
 browserLaunched = False
 maxAttemptCount = <span class="dig">10</span>
 attemptCount = <span class="dig">0</span>
 browserRegion = None
 
-<span class="kw">while</span> <span class="kw">not</span> browserLaunched <span class="kw">or</span> attemptCount &gt; maxAttemptCount:
+<span class="cmt"># Look for the browser
+</span><span class="kw">while</span> <span class="kw">not</span> browserLaunched <span class="kw">or</span> attemptCount &gt; maxAttemptCount:
     <span class="skw">sleep</span>(<span class="dig">1</span>)
     attemptCount = attemptCount + <span class="dig">1</span>
     browserRegion = App.focusedWindow()
@@ -98,13 +105,14 @@ browserRegion = None
 <span class="kw">if</span> (<span class="kw">not</span> browserRegion):
     <span class="kw">raise</span> Exception(<span class="str">"Could not find Browser"</span>)
 
-<span class="skw">type</span>(Key.TAB, Key.META)
+<span class="cmt"># Switch back to Lumieres
+</span><span class="skw">type</span>(Key.TAB, Key.META)
 
-<span class="cmt">#Edit the applications
+<span class="cmt">#Edit the application
 </span>lumieres.insertDomObject(<img src="1379636068715.png" />, <img src="1379636076570.png" />, <span class="str">"child"</span>)
 lumieres.save()
 
-<span class="cmt"># Meanwhile, back in the browser we should see the result
+<span class="cmt"># Meanwhile, back in the browser we should see the result, switch to it and verify
 </span><span class="skw">type</span>(Key.TAB, Key.META)
 browserRegion.<span class="skw">wait</span>(<img src="1379636165608.png" />, <span class="dig">1</span>)
 </pre>
