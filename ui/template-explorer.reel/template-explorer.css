@@ -130,6 +130,14 @@
     border-style: dashed;
 }
 
+.TemplateObjectCell--owner-cell {
+    display: none;
+}
+
+.TemplateObjectCell--excluded {
+    opacity: 0.5;
+}
+
 .TemplateObjectCell.selected {
     border-color: hsl(210,100%,60%);
     background-color: hsl(0,0%,98%)
