@@ -1,3 +1,5 @@
+/*global describe,beforeEach,it,expect,waitsFor,runs*/
+
 var environmentBridgeMock = require("test/mocks/environment-bridge-mocks").environmentBridgeMock,
     FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
     AssetsManager = require("core/assets-management/assets-manager").AssetsManager,
@@ -22,12 +24,12 @@ describe("asset-manager-spec", function () {
                                     mimeType = null;
 
                                 switch (fileData.extension) {
-                                    case 'png':
-                                        mimeType = "image/png";
-                                        break;
-                                    case 'jpg':
-                                        mimeType = "image/jpeg";
-                                        break;
+                                case 'png':
+                                    mimeType = "image/png";
+                                    break;
+                                case 'jpg':
+                                    mimeType = "image/jpeg";
+                                    break;
                                 }
 
                                 return mimeType;
