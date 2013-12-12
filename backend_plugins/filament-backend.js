@@ -68,39 +68,5 @@ function FilamentBackend (fs) {
             });
     };
 
-    backend.watch = function (path, ignoreSubPaths, handlers) {
-        var ignorePaths = ignoreSubPaths.map(function (ignorePath) {
-            return PATH.resolve(path, ignorePath) + PATH.sep;
-        });
-
-        //TODO make sure we return whatever watcher handle we need to stop watching, probably
-        return Q.invoke(watchr, "watch", {
-            path: path,
-            ignorePaths: ignorePaths,
-            ignoreCommonPatterns: true,
-            listeners: {
-                change: function(changeType, filePath, fileCurrentStat, filePreviousStat) {
-
-                    //The client expects directories to hav a trailing slash
-                    var fileStat = fileCurrentStat || filePreviousStat;
-                    if (fileStat.isDirectory() && !/\/$/.test(filePath)) {
-                        filePath += "/";
-                    }
-
-                    handlers.invoke("handleChange", changeType, "fs://localhost" + filePath, fileCurrentStat, filePreviousStat).fail(function (err) {
-                        console.log(err);
-                        throw err;
-                    }).done();
-                },
-                error: function(err) {
-                    handlers.invoke("handleError", err).then(function (err) {
-                        console.log(err);
-                        throw err;
-                    }).done();
-                }
-            }
-        });
-    };
-
     return backend;
 }
