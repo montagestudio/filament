@@ -1,7 +1,9 @@
-var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
+var environmentBridgeMock = require("test/mocks/environment-bridge-mocks").environmentBridgeMock,
+    FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
     AssetsManager = require("core/assets-management/assets-manager").AssetsManager,
     AssetTools = require("core/assets-management/asset-tools").AssetTools,
-    AssetCategories = AssetsManager.create().assetCategories;
+    AssetCategories = AssetsManager.create().assetCategories,
+    Promise = require("montage/core/promise").Promise;
 
 describe("asset-manager-spec", function () {
 
@@ -11,6 +13,28 @@ describe("asset-manager-spec", function () {
 
         beforeEach(function () {
             var fileDescriptors = [],
+
+                projectController = {
+                    environmentBridge: environmentBridgeMock({
+                        detectMimeTypeAtUrl: function (url) {
+                            return Promise.fcall(function () {
+                                var fileData = AssetTools.defineFileDataWithUrl(url),
+                                    mimeType = null;
+
+                                switch (fileData.extension) {
+                                    case 'png':
+                                        mimeType = "image/png";
+                                        break;
+                                    case 'jpg':
+                                        mimeType = "image/jpeg";
+                                        break;
+                                }
+
+                                return mimeType;
+                            });
+                        }
+                    })
+                },
 
                 fakeFiles = [
 
@@ -68,7 +92,9 @@ describe("asset-manager-spec", function () {
                 fileDescriptors.push(new FileDescriptor().init(file.url, {mode: 0, size:1024}, file.mimeType));
             });
 
-            assetsManager = AssetsManager.create();
+
+
+            assetsManager = AssetsManager.create().init(projectController);
             assetsManager.addAssetsWithFileDescriptors(fileDescriptors);
 
         });
@@ -123,26 +149,36 @@ describe("asset-manager-spec", function () {
             var event = {
                 detail: {
                     change: "create",
-                    mimeType: "image/png",
+                    mimeType: "image/jpeg",
                     currentStat: {
                         size: 1024
                     },
                     fileUrl: "/a/b/c/chocolate.jpg"
                 }
-            };
+            },
+                oldCount = assetsManager.assetsCount;
 
-            assetsManager.handleFileSystemChange(event);
+            runs(function() {
+                assetsManager.handleFileSystemChange(event);
+            });
 
-            expect(assetsManager.assetsCount).toEqual(9);
-            expect(assetsManager.assets.IMAGE.length).toEqual(3);
-            expect(assetsManager.assets.IMAGE[2].name).toEqual("chocolate");
+            waitsFor(function() {
+                return assetsManager.assetsCount > oldCount;
+            }, "the asset should has been added", 250);
+
+            runs(function() {
+                expect(assetsManager.assetsCount).toEqual(9);
+                expect(assetsManager.assets.IMAGE.length).toEqual(3);
+                expect(assetsManager.assets.IMAGE[2].name).toEqual("chocolate");
+            });
+
         });
 
         it("should be able to delete an asset when a file has been removed", function () {
             var event = {
                 detail: {
                     change: "delete",
-                    mimeType: "image/png",
+                    mimeType: "image/jpeg",
                     currentStat: {
                         size: 1024
                     },
@@ -169,15 +205,27 @@ describe("asset-manager-spec", function () {
                         fileUrl: asset.fileUrl
                     }
                 },
-                size = asset.size;
 
-            assetsManager.handleFileSystemChange(event);
+                size = asset.size,
+                flag = false;
 
-            expect(assetsManager.assetsCount).toEqual(8);
+            runs(function() {
+                assetsManager.handleFileSystemChange(event);
 
-            var assetModified = assetsManager.getAssetByFileUrl("/a/b/c/winter.jpg");
+                setTimeout(function () { // Wait for the modification be applied
+                    flag = true;
+                }, 150);
+            });
 
-            expect(assetModified.size).not.toEqual(size);
+            waitsFor(function() {
+                return flag;
+            }, "the asset should has been modified", 250);
+
+            runs(function() {
+                expect(assetsManager.assetsCount).toEqual(8);
+                var assetModified = assetsManager.getAssetByFileUrl("/a/b/c/winter.jpg");
+                expect(assetModified.size).not.toEqual(size);
+            });
         });
 
     });

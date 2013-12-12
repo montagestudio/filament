@@ -41,6 +41,7 @@ exports.environmentBridgeMock = function (options) {
         watchPromise = Promise.resolve(),
         listTreePromise = Promise.resolve(),
         listAssetAtUrl = Promise.resolve(),
+        detectMimeTypeAtUrl = Promise.resolve(),
         listPromise = Promise.resolve(),
         componentsInPackagePromise = Promise.resolve(),
         registerPreviewPromise = Promise.resolve(),
@@ -58,7 +59,8 @@ exports.environmentBridgeMock = function (options) {
     bridge.getExtensionsAt = options.getExtensionsAt || promiseFunction(getExtensionsAtPromise);
 
     bridge.listTreeAtUrl = options.listTreeAtUrl || promiseFunction(listTreePromise);
-    bridge.listAssetAtUrl = options.listAssetAtUrl || promiseFunction(listTreePromise);
+    bridge.listAssetAtUrl = options.listAssetAtUrl || promiseFunction(listAssetAtUrl);
+    bridge.detectMimeTypeAtUrl = options.detectMimeTypeAtUrl || promiseFunction(detectMimeTypeAtUrl);
     bridge.list = options.list || promiseFunction(listPromise);
     bridge.watch = options.watch || promiseFunction(watchPromise);
     bridge.componentsInPackage = options.componentsInPackage || promiseFunction(componentsInPackagePromise);
