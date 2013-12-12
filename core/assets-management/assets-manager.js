@@ -7,7 +7,7 @@ var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescript
     PACKAGE_LOCATION = require.location,
     Asset = require("./asset").Asset,
 
-    TIMEOUT_RELEASE_DELETED_ASSET_POOL = 5000,
+    TIMEOUT_RELEASE_DELETED_ASSET_POOL = 350,// After 350ms the pool of deleted assets will be released.
 
     FILE_SYSTEM_CHANGES = {
         CREATE: "create",
@@ -42,6 +42,7 @@ exports.AssetsManager = Montage.specialize({
             });
 
             application.addEventListener("didOpenPackage", this);
+            application.addEventListener("fileSystemChange", this);
         }
     },
 
@@ -114,7 +115,9 @@ exports.AssetsManager = Montage.specialize({
      */
     handleDidOpenPackage: {
         value: function (event) {
-            this._populateAssets().done();
+            if (this._projectController) {
+                this._populateAssets().done();
+            }
         }
     },
 
@@ -147,10 +150,8 @@ exports.AssetsManager = Montage.specialize({
                 var self = this;
 
                 fileDescriptors.forEach(function (fileDescriptor) {
-                    if (AssetTools.isFileUrlValid(fileDescriptor.fileUrl) && AssetTools.isMimeTypeSupported(fileDescriptor.mimeType)) {
-                        var createdAsset = self.createAssetWithFileDescriptor(fileDescriptor);
-                        self.addAsset(createdAsset);
-                    }
+                    var createdAsset = self.createAssetWithFileDescriptor(fileDescriptor);
+                    self.addAsset(createdAsset);
                 });
             }
 
@@ -181,13 +182,15 @@ exports.AssetsManager = Montage.specialize({
      * @function
      * @public
      * @param {Object} fileDescriptor - a FileDescriptor Object.
-     * @return {Asset} created Asset Object.
+     * @return {(Asset|null)} created Asset Object.
      */
     createAssetWithFileDescriptor: {
         value: function (fileDescriptor) {
-            var createdAsset = Asset.create().initWithFileDescriptor(fileDescriptor);
-            createdAsset.iconUrl =  this.getIconWithAsset(createdAsset);
-            return createdAsset;
+            if (AssetTools.isFileUrlValid(fileDescriptor.fileUrl) && AssetTools.isMimeTypeSupported(fileDescriptor.mimeType)) {
+                var createdAsset = Asset.create().initWithFileDescriptor(fileDescriptor);
+                createdAsset.iconUrl =  this.getIconWithAsset(createdAsset);
+                return createdAsset;
+            }
         }
     },
 
@@ -488,6 +491,12 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    _detectMimeTypeWithFileUrl: {
+        value: function (fileUrl) {
+            return this._projectController.environmentBridge.detectMimeTypeAtUrl(fileUrl);
+        }
+    },
+
     /**
      * handles any changes of an asset from the file system.
      * @function
@@ -500,10 +509,9 @@ exports.AssetsManager = Montage.specialize({
         value: function (event) {
             var fileChangeDetail = event.detail;
 
-            if (fileChangeDetail && typeof fileChangeDetail === "object" && fileChangeDetail.hasOwnProperty('fileUrl')) {
+            if (this._projectController && fileChangeDetail && typeof fileChangeDetail === "object" && AssetTools.isFileUrlValid('fileUrl')) {
                 var fileUrl = fileChangeDetail.fileUrl,
-                    mimeType = fileChangeDetail.mimeType,
-                    fileDescriptor = FileDescriptor.create().init(fileUrl, fileChangeDetail.currentStat, mimeType);
+                    self = this;
 
                 switch (fileChangeDetail.change) {
 
@@ -516,15 +524,17 @@ exports.AssetsManager = Montage.specialize({
                      * and then we check if they can be "reused".
                      */
 
-                    var createdAsset = this.createAssetWithFileDescriptor(fileDescriptor),
-                        deletedAsset = this._findAssetFromDeletedAssetPool(createdAsset);
+                    this._detectMimeTypeWithFileUrl(fileUrl).then(function (mimeType) {
+                        var fileDescriptor = FileDescriptor.create().init(fileUrl, fileChangeDetail.currentStat, mimeType),
+                            createdAsset = self.createAssetWithFileDescriptor(fileDescriptor),
+                            deletedAsset = self._findAssetFromDeletedAssetPool(createdAsset);
 
-                    if (deletedAsset) {
-                        createdAsset.iconUrl = deletedAsset.iconUrl; // No thumbnail mechanism for now, kind of useless.
-                    }
+                        if (deletedAsset) {
+                            createdAsset.iconUrl = deletedAsset.iconUrl; // No thumbnail mechanism for now, kind of useless.
+                        }
 
-                    this.addAsset(createdAsset);
-
+                        self.addAsset(createdAsset);
+                    });
                     break;
 
                 case FILE_SYSTEM_CHANGES.DELETE:
@@ -533,18 +543,19 @@ exports.AssetsManager = Montage.specialize({
                     break;
 
                 case FILE_SYSTEM_CHANGES.UPDATE:
-                    var updatedAsset = this.createAssetWithFileDescriptor(fileDescriptor),
-                        index = this._findAssetIndex(updatedAsset);
+                    var updatedAsset = this._findAssetWithFileUrl(fileUrl);
 
-                    if (index >= 0) {
-                        // TODO once a thumbnail mechanism will has been implemented,
-                        // trigger it and update the iconUrl property
+                    if (updatedAsset) {
+                        // Todo improve it by checking the mtime
+                        this._detectMimeTypeWithFileUrl(fileUrl).then(function (mimeType) {
 
-                        var assetFound = this.assets[updatedAsset.category][index];
-                        assetFound.size = updatedAsset.size;
+                            // TODO once a thumbnail mechanism will has been implemented,
+                            // trigger it and update the iconUrl property
+                            updatedAsset.size = fileChangeDetail.currentStat.size;
+                            updatedAsset.mimetype = mimeType;
+                        });
                     }
                     break;
-
                 }
             }
         }
