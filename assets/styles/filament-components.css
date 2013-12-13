@@ -255,6 +255,10 @@
     border-right: 1px solid hsla(0, 0%, 0%, 0.2);
 }
 
+.Toolbar--dark .Toolbar-group:first-child {
+    border-right: none;
+}
+
 .Toolbar--dark .Toolbar-button {
     height: 33px;
     margin: 0;
