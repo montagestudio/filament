@@ -7,7 +7,8 @@ var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     application = require("montage/core/application").application,
     WeakMap = require("montage/collections/weak-map"),
-    MimeTypes = require("core/mime-types");
+    MimeTypes = require("core/mime-types"),
+    Promise = require("montage/core/promise").Promise;
 
 /**
     Description TODO
@@ -39,7 +40,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
 
     showHidden: {
         get: function () {
-            return this._hidden;
+            return this._showHidden;
         },
         set: function (value) {
             if (value === this._showHidden) {
@@ -219,6 +220,8 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             application.addEventListener("editListenerForObject", this, false);
 
             this.addRangeAtPathChangeListener("editingDocument.selectedObjects", this, "handleSelectedObjectsChange");
+            // listen to change on editingProxies to refresh the tree
+            this.addRangeAtPathChangeListener("editingDocument.editingProxies", this, "handleEditingProxiesChange");
         }
     },
 
@@ -388,6 +391,17 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                 this._scrollToElement = selectedIteration.firstElement;
                 this.needsDraw = true;
             }
+        }
+    },
+
+    handleEditingProxiesChange: {
+        value: function (plus, minus, index) {
+            var self = this;
+            // nodeProxy's component property is set with a binding on editingProxy too
+            // Using a nextTick assure us to be called after that binding has been set
+            Promise.nextTick(function(){
+                self.buildTemplateObjectTree();
+            });
         }
     },
 

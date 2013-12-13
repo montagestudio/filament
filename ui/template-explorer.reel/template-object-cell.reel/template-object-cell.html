@@ -14,9 +14,10 @@
                         "<-": "@owner.templateObject.label == 'owner'"
                     },
                     "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"},
-                    "classList.has('TemplateObjectCell--isInProjectPackage')": {"<-": "@owner.isInProjectPackage"},
-                    "classList.has('TemplateObjectCell--highlighted')": {"<-": "@owner.templateExplorer.highlightedComponent == @owner.templateObject"},
-                    "classList.has('TemplateObjectCell--hidden')": {"<-": "@owner.templateObject.editorMetadata.get('isHidden')"},
+                    "classList.has('TemplateObjectCell--isInProjectPackage')": {
+                        "<-": "@owner.isInProjectPackage"},
+                    "classList.has('TemplateObjectCell--highlighted')": {
+                        "<-": "@owner.templateExplorer.highlightedComponent == @owner.templateObject"},
                     "classList.has('TemplateObjectCell--excluded')": {
                         "<-": "!@owner.templateExplorer.templateObjectsController.organizedContent.has(@owner.templateObject)"
                     }

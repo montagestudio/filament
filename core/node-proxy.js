@@ -14,6 +14,7 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
             this.defineBindings({
                 // The node proxy's component is the editing proxy that has this
                 // node as an element.
+                // FIXME: this lead to issue when you a relying on a nodeProxy change 
                 "component": {"<-": "_editingDocument.editingProxies.filter{properties.get('element') == $self}[0]"}
             }, {
                 parameters: {

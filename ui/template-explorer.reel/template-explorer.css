@@ -126,10 +126,6 @@
     background-color: hsl(0,0%,96%);
 }
 
-.TemplateObjectCell--hidden {
-    border-style: dashed;
-}
-
 .TemplateObjectCell--owner-cell {
     display: none;
 }
