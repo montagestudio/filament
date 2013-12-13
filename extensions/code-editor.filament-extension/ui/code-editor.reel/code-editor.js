@@ -15,6 +15,7 @@ require("./codemirror/mode/htmlmixed/htmlmixed");
 require("./codemirror/mode/montage/html");
 require("./codemirror/mode/montage/serialization");
 require("./codemirror/mode/montage/template");
+require("./codemirror/mode/clike/clike");
 
 require("./codemirror/addon/hint/show-hint");
 require("./codemirror/addon/hint/montage-serialization-hint");
