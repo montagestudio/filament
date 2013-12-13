@@ -118,12 +118,26 @@
 
 /* TemplateObject Cell ---------------------------- */
 
+.TemplateObjectCell-Wrapper {
+    display: -webkit-flex;
+    align-items: center;
+    justify-content:center;
+}
+
+.TemplateObjectCell-Wrapper .toggle {
+    -wekit-flex-direction: column;
+    width: 20px;
+    height: 100%;
+}
+
 .TemplateExplorer-list-item.TemplateObjectCell--isInProjectPackage {
     border-radius: 0;
 }
 
 .TemplateObjectCell {
     background-color: hsl(0,0%,96%);
+    -webkit-flex-direction: column;
+    width: 100%;
 }
 
 .TemplateObjectCell--owner-cell {

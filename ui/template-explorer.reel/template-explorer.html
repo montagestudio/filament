@@ -81,7 +81,8 @@
                 "showBindings": {"<-": "@owner.showBindings"},
                 "showListeners": {"<-": "@owner.showListeners"},
                 "templateExplorer": {"<-": "@owner"},
-                "templateObject": {"<-": "@templateObjectCell.parentComponent.object.templateObject"}
+                "templateObject": {"<-": "@templateObjectCell.parentComponent.object.templateObject"},
+                "isExpanded": {"<->": "@templateObjectCell.parentComponent.iteration.expanded"}
             }
         },
         "templateObjectFilter": {
@@ -131,7 +132,7 @@
         </header>
         <section data-montage-id="ownerObjectCell"></section>
         <ul data-montage-id="templateNodeList" class="TemplateExplorer-list">
-            <li data-montage-id="templateObjectCell" data-arg="treeNode" class="TemplateExplorer-list-item"></li>
+            <li data-montage-id="templateObjectCell" data-arg="treeNode"></li>
         </ul>
     </div>
 </body>

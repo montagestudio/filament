@@ -131,16 +131,40 @@
                 "bindings": {
                     "templateObject": {"<-": "@owner.templateObject"}
                 }
-            }
+            },
 
+            "hasChildrenCondition": {
+                "prototype": "montage/ui/condition.reel",
+                "properties": {
+                    "element": {"#": "hasChildrenCondition"},
+                    "removalStrategy": "hide"
+                },
+                "bindings": {
+                    "condition": {"<-": "@owner.templateObject.properties.get('element').children.length"}
+                } 
+            },
+
+            "toggleExpanded": {
+                "prototype": "ui/dom-explorer.reel/node-cell.reel/toggle.reel",
+                "properties": {
+                    "element": {"#": "toggleExpanded"}
+                },
+                "bindings": {
+                    "isOpen": {"<->": "@owner.isExpanded"}
+                }
+            }
         }
     </script>
 </head>
 <body>
 <ul>
 
-<li data-montage-id="template-object-cell" class="TemplateObjectCell">
+<div data-montage-id="template-object-cell" class="TemplateObjectCell-Wrapper">
+    <div data-montage-id="hasChildrenCondition" class="toggle">
+        <div data-montage-id="toggleExpanded"></div>
+    </div>
 
+    <li class="TemplateObjectCell TemplateExplorer-list-item">
     <header data-montage-id="header">
         <div data-arg="title" data-montage-id="objectLabel"></div>
         <div data-arg="toolbar">
@@ -160,6 +184,7 @@
         <div data-montage-id="listenerExplorer"></div>
     </section>
 </li>
+</div>
 
 </ul>
 </body>

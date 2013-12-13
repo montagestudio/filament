@@ -48,7 +48,7 @@ exports.Toggle = Component.specialize(/** @lends Toggle# */ {
     draw: {
         value: function() {
             if (this.isOpen) {
-                this.element.setAttribute("open");
+                this.element.setAttribute("open", "true");
             } else {
                 this.element.removeAttribute("open");
             }
