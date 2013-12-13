@@ -186,7 +186,7 @@ exports.AssetsManager = Montage.specialize({
      */
     createAssetWithFileDescriptor: {
         value: function (fileDescriptor) {
-            if (AssetTools.isFileUrlValid(fileDescriptor.fileUrl) && AssetTools.isMimeTypeSupported(fileDescriptor.mimeType)) {
+            if (AssetTools.isAFile(fileDescriptor.fileUrl) && AssetTools.isMimeTypeSupported(fileDescriptor.mimeType)) {
                 var createdAsset = Asset.create().initWithFileDescriptor(fileDescriptor);
                 createdAsset.iconUrl =  this.getIconWithAsset(createdAsset);
                 return createdAsset;
@@ -263,7 +263,7 @@ exports.AssetsManager = Montage.specialize({
      */
     removeAssetWithFileUrl: {
         value: function (fileUrl) {
-            if (AssetTools.isFileUrlValid(fileUrl)) {
+            if (AssetTools.isAFile(fileUrl)) {
                 var assetFound = this._findAssetWithFileUrl(fileUrl);
                 return this.removeAsset(assetFound);
             }
@@ -309,7 +309,7 @@ exports.AssetsManager = Montage.specialize({
         value: function (fileUrl, assetCategory) {
             var assetFound = null;
 
-            if (AssetTools.isFileUrlValid(fileUrl)) {
+            if (AssetTools.isAFile(fileUrl)) {
 
                 // If assetCategory is not undefined looks into the Asset category, in order to find an asset
                 if (AssetTools.isAssetCategoryValid(assetCategory)) {
@@ -509,7 +509,7 @@ exports.AssetsManager = Montage.specialize({
         value: function (event) {
             var fileChangeDetail = event.detail;
 
-            if (this._projectController && fileChangeDetail && typeof fileChangeDetail === "object" && AssetTools.isFileUrlValid('fileUrl')) {
+            if (this._projectController && fileChangeDetail && typeof fileChangeDetail === "object" && AssetTools.isAFile('fileUrl')) {
                 var fileUrl = fileChangeDetail.fileUrl,
                     self = this;
 

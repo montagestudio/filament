@@ -13,7 +13,7 @@ var AssetTools = {
      * @return {Object}
      */
     defineFileDataWithUrl: function (fileUrl) {
-        if (this.isFileUrlValid(fileUrl)) {
+        if (this.isAFile(fileUrl)) {
             var fileData = /([^\/]+)\.([^\.]+)$|([^\/]+)$/.exec(fileUrl);
 
             if (fileData && Array.isArray(fileData) && fileData.length === 4) {
@@ -35,7 +35,7 @@ var AssetTools = {
      * @param {String} fileUrl - a file Url.
      * @return {Boolean}
      */
-    isFileUrlValid: function (fileUrl) {
+    isAFile: function (fileUrl) {
         return typeof fileUrl === 'string' && fileUrl.length > 0 && fileUrl.charAt(fileUrl.length-1) !== '/';
     },
 
@@ -82,7 +82,7 @@ var AssetTools = {
      * @return {Boolean}
      */
     isAssetValid: function (asset) {
-        return asset && typeof asset && this.isFileUrlValid(asset.fileUrl) && this.isMimeTypeSupported(asset.mimeType);
+        return asset && typeof asset && this.isAFile(asset.fileUrl) && this.isMimeTypeSupported(asset.mimeType);
     },
 
     /**

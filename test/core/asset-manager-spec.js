@@ -284,9 +284,9 @@ describe("asset-manager-spec", function () {
 
 
         it("should be able to define if a fileUrl is valid", function () {
-            expect(AssetTools.isFileUrlValid('/a/b/d.js')).toBe(true);
-            expect(AssetTools.isFileUrlValid('rrr.a/b/d.js')).toBe(true);
-            expect(AssetTools.isFileUrlValid('rrr.a/b/d.js/')).toBe(false);
+            expect(AssetTools.isAFile('/a/b/d.js')).toBe(true);
+            expect(AssetTools.isAFile('rrr.a/b/d.js')).toBe(true);
+            expect(AssetTools.isAFile('rrr.a/b/d.js/')).toBe(false);
         });
 
     });
