@@ -193,6 +193,7 @@
     height: 34px;
     padding-bottom: 1px; /* Fixes vertical centering */
     border-top: 1px solid hsla(0, 0%, 100%, 1);
+    border-bottom: 1px solid hsla(0, 0%, 100%, 0);
     background: -webkit-linear-gradient( hsl(0, 0%, 98%), hsl(0, 0%, 94%) );
 }
 
@@ -240,3 +241,45 @@
     background-image: -webkit-linear-gradient(top, hsl(0, 0%, 98%), hsl(0, 0%, 90%) );
     box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, .8), inset 0 -1px 1px hsla(0, 0%, 0%, .04);
 }
+
+
+/* Dark Toolbar */
+
+.Toolbar--dark {
+    border-top-color: hsla(0, 0%, 100%, .1);
+    border-bottom-color: hsla(0, 0%, 0%, .2);
+    background: hsl(0, 0%, 25%);
+}
+
+.Toolbar--dark .Toolbar-group {
+    border-right: 1px solid hsla(0, 0%, 0%, 0.2);
+}
+
+.Toolbar--dark .Toolbar-button {
+    height: 33px;
+    margin: 0;
+    font-family: inherit;
+    font-size: 11px;
+    color: hsl(0, 0%, 70%);
+    text-shadow: none;
+    box-shadow: none;
+    border-radius: 0;
+    border: none;
+    border-left: 1px solid hsla(0, 0%, 0%, 0.2);
+    background: hsla(0,0%,0%,0);
+}
+
+.Toolbar--dark .Toolbar-button:hover {
+    background: hsl(0, 0%, 28%);
+}
+
+.Toolbar--dark .Toolbar-button.active {
+    background: hsl(0, 0%, 20%);
+}
+
+.Toolbar--dark .Toolbar-button:focus {
+    border-color: hsla(0, 0%, 0%, 0.3);
+}
+
+
+
