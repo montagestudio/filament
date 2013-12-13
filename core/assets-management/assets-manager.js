@@ -435,16 +435,16 @@ exports.AssetsManager = Montage.specialize({
      * @param {number} asset.size - size of an asset.
      * @return {(Object|null)} a deleted Asset Object.
      */
-    _findAssetFromDeletedAssetPool: {
-        value: function (asset) {
+    _findAssetFromDeletedAssetPoolWithFileDescriptor: {
+        value: function (fileDescriptor) {
             var deletedAsset  = null;
 
             this._deletedAssetPool.some(function (currentDeletedAsset) {
 
                 //Todo improve this checking by using mtime.
 
-                if (asset.fileName === currentDeletedAsset.fileName && asset.mimeType === currentDeletedAsset.mimeType &&
-                    asset.size && currentDeletedAsset.size) {
+                if (fileDescriptor.name === currentDeletedAsset.fileName && fileDescriptor.mimeType === currentDeletedAsset.mimeType &&
+                    fileDescriptor._stat.size && currentDeletedAsset.size) {
 
                     deletedAsset = currentDeletedAsset;
                 }
@@ -526,12 +526,8 @@ exports.AssetsManager = Montage.specialize({
 
                     this._detectMimeTypeWithFileUrl(fileUrl).then(function (mimeType) {
                         var fileDescriptor = FileDescriptor.create().init(fileUrl, fileChangeDetail.currentStat, mimeType),
-                            createdAsset = self.createAssetWithFileDescriptor(fileDescriptor),
-                            deletedAsset = self._findAssetFromDeletedAssetPool(createdAsset);
-
-                        if (deletedAsset) {
-                            createdAsset.iconUrl = deletedAsset.iconUrl; // No thumbnail mechanism for now, kind of useless.
-                        }
+                            deletedAsset = self._findAssetFromDeletedAssetPoolWithFileDescriptor(fileDescriptor),
+                            createdAsset = deletedAsset ? deletedAsset : self.createAssetWithFileDescriptor(fileDescriptor);
 
                         self.addAsset(createdAsset);
                     });
