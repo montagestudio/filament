@@ -15,6 +15,10 @@ exports.Asset = Montage.specialize({
 
     initWithFileDescriptor: {
         value: function (fileDescriptor) {
+            if (!fileDescriptor || typeof fileDescriptor !== "object") {
+                throw new Error("Cannot init Asset object the parameter FileDescriptor is missing");
+            }
+
             var fileUrl = fileDescriptor.fileUrl,
                 mimeType = fileDescriptor.mimeType,
                 size = fileDescriptor._stat.size;
@@ -110,7 +114,7 @@ exports.Asset = Montage.specialize({
 
     iconUrl: {
         set: function (iconUrl) {
-            if (AssetTools.isFileUrlValid(iconUrl)) {
+            if (AssetTools.isAFile(iconUrl)) {
                 this._iconUrl = iconUrl;
             }
         },
