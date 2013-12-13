@@ -242,7 +242,6 @@
     box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, .8), inset 0 -1px 1px hsla(0, 0%, 0%, .04);
 }
 
-
 /* Dark Toolbar */
 
 .Toolbar--dark {
@@ -260,11 +259,12 @@
 }
 
 .Toolbar--dark .Toolbar-button {
+    display: inline-block;
     height: 33px;
     margin: 0;
     font-family: inherit;
     font-size: 11px;
-    color: hsl(0, 0%, 70%);
+    color: hsl(0, 0%, 50%);
     text-shadow: none;
     box-shadow: none;
     border-radius: 0;
@@ -285,5 +285,28 @@
     border-color: hsla(0, 0%, 0%, 0.3);
 }
 
+/* Icons */
 
+/* TODO: Refactor. Best to use only buttons */
+
+.Toolbar--dark .Toolbar-button[data-icon],
+.Toolbar--dark .MenuItem[data-icon] {
+    position: relative;
+}
+
+.Toolbar--dark .Toolbar-button[data-icon],
+.Toolbar--dark .MenuItem[data-icon] .Toolbar-button {
+    padding-left: 30px;
+}
+
+.Toolbar--dark [data-icon]:before {
+    right: auto;
+    left: 12px;
+    width: 12px;
+    font-size: 26px;
+    line-height: 33px;
+    text-align: center;
+    color: hsl(0, 0%, 80%);
+    pointer-events: none;
+}
 
