@@ -42,16 +42,14 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
 
         if (ch === ",") {
             endProperty(state);
-            return null;
         }
 
         if (ch === "[") {
             startBlock(stream, state, "array");
         }
 
-        if (ch === "]") {
+        if (ch === "]" && state.block) {
             endBlock(state);
-            endProperty(state);
         }
 
         if (ch === "{") {
@@ -69,9 +67,8 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
             }
         }
 
-        if (ch === "}") {
+        if (ch === "}" && state.block) {
             endBlock(state);
-            endProperty(state);
 
             // recognize the closing } of serialization syntax.
             for (var i = 0; i < properties.length; i++) {
@@ -202,9 +199,6 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
         state.blockLevel--;
         state.block = state.blocks[state.blockLevel-1];
         state.blocks.pop();
-        if (state.block) {
-            //console.log("go up", state.block.properties.map(function(value) {return value.name}), state.block.uuid);
-        }
     }
 
     return {
