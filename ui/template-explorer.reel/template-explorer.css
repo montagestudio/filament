@@ -148,6 +148,10 @@
     opacity: 0.5;
 }
 
+.TemplateObjectCell--notCollapsible {
+    margin-left: 20px;
+}
+
 .TemplateObjectCell.selected {
     border-color: hsl(210,100%,60%);
     background-color: hsl(0,0%,98%)

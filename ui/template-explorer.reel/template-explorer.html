@@ -82,7 +82,8 @@
                 "showListeners": {"<-": "@owner.showListeners"},
                 "templateExplorer": {"<-": "@owner"},
                 "templateObject": {"<-": "@templateObjectCell.parentComponent.object.templateObject"},
-                "isExpanded": {"<->": "@templateObjectCell.parentComponent.iteration.expanded"}
+                "isExpanded": {"<->": "@templateObjectCell.parentComponent.iteration.expanded"},
+                "isCollapsible": {"<->": "@templateObjectCell.parentComponent.iteration.children.length"}
             }
         },
         "templateObjectFilter": {

@@ -13,13 +13,21 @@
                     "classList.has('TemplateObjectCell--owner-cell')": {
                         "<-": "@owner.templateObject.label == 'owner'"
                     },
-                    "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"},
+                    "classList.has('Filament--willAcceptDrop')": {
+                        "<-": "@owner._willAcceptDrop"},
+
                     "classList.has('TemplateObjectCell--isInProjectPackage')": {
                         "<-": "@owner.isInProjectPackage"},
+
                     "classList.has('TemplateObjectCell--highlighted')": {
                         "<-": "@owner.templateExplorer.highlightedComponent == @owner.templateObject"},
+
                     "classList.has('TemplateObjectCell--excluded')": {
                         "<-": "!@owner.templateExplorer.templateObjectsController.organizedContent.has(@owner.templateObject)"
+                    },
+
+                    "classList.has('TemplateObjectCell--notCollapsible')": {
+                        "<-": "!isCollapsible"
                     }
                 }
             },
@@ -140,7 +148,7 @@
                     "removalStrategy": "hide"
                 },
                 "bindings": {
-                    "condition": {"<-": "@owner.templateObject.properties.get('element').children.length"}
+                    "condition": {"<-": "@owner.isCollapsible"}
                 } 
             },
 
