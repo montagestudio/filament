@@ -13,7 +13,7 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
     function getPropertyName(state) {
         var properties = state.block && state.block.properties;
 
-        if (properties) {
+        if (properties && properties.length > 0) {
             return properties[properties.length - 1].name
         }
     }
@@ -43,6 +43,15 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
         if (ch === ",") {
             endProperty(state);
             return null;
+        }
+
+        if (ch === "[") {
+            startBlock(stream, state, "array");
+        }
+
+        if (ch === "]") {
+            endBlock(state);
+            endProperty(state);
         }
 
         if (ch === "{") {
@@ -101,7 +110,7 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
     function tokenPropertyName(stream, state, readInitialQuote) {
         var string = consumeString(stream, state, readInitialQuote);
         state.block.readingPropertyName = false;
-        addProperty(state, string);
+        startProperty(state, string);
 
         if (state.blockLevel === 1) {
             addLabel(state, string);
@@ -157,7 +166,7 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
         return stream.match(/\s*"/, false);
     }
 
-    function addProperty(state, name) {
+    function startProperty(state, name) {
         state.block.properties.push({
             name: name
         });
@@ -165,7 +174,7 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
     }
 
     function endProperty(state) {
-        if (state.block) {
+        if (state.block && state.block.type === "object") {
             state.block.readingPropertyName = true;
         }
     }
@@ -174,13 +183,14 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
         state.labels.push(label);
     }
 
-    function startBlock(stream, state) {
+    function startBlock(stream, state, type) {
         if (state.blocks.length === 0) {
             state.baseColumn = stream.column();
         }
 
         state.blocks.push({
-            readingPropertyName: true,
+            type: type || "object",
+            readingPropertyName: type === "array" ? false : true,
             properties: []
         });
         state.block = state.blocks[state.blockLevel];
@@ -248,7 +258,7 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
             return state.baseColumn + indentLevel * indentUnit;
         },
 
-        electricChars: "{}",
+        electricChars: "[]{}",
 
         helperType: "montageserialization"
     };
