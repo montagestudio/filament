@@ -3,7 +3,7 @@
 
 /* LibraryCell Button --------------------------------- */
 
-.LibraryCell .LibraryCell-button {
+.LibraryCell-button.matte-Button {
 	-webkit-appearance: none;
 	display: block;
 	width: 100%;
@@ -24,19 +24,19 @@
 	cursor: pointer;
 }
 
-.LibraryCell .LibraryCell-button:hover {
+.LibraryCell-button.matte-Button:hover {
     background: hsl(0,0%,98%);
 }
 
-.LibraryCell .LibraryCell-button:focus {
+.LibraryCell-button.matte-Button:focus {
 	border-color: transparent;
 }
 
-.LibraryCell:last-child .LibraryCell-button {
+.LibraryCell:last-child .LibraryCell-button.matte-Button {
     border-radius: 0 0 4px 4px;
 }
 
-.LibraryCell-button[draggable=false] {
+.LibraryCell-button[draggable=false].matte-Button {
     background-color: hsl(43, 100%, 85%) !important;
     opacity: .5 !important;
 }
@@ -72,47 +72,65 @@
 
 /* Grid --------------------------------- */
 
-.Library--grid {
+.LibraryGroup {
     font-size: 0;
     background: hsl(0,0%,94%);
     border-radius: 4px;
 }
 
-.Library--grid .LibraryGroup-list {
+.LibraryGroup-list {
     display: -webkit-flex;
     -webkit-flex-flow: row wrap;
 }
 
-.Library--grid .LibraryCell {
+.LibraryCell {
     -webkit-flex: 1 0 61px;
     max-width: 61px;
 }
 
-.Library--grid .LibraryCell-button {
-    padding: 4px 0 0 0;
+.LibraryCell-button.matte-Button,
+.LibraryCell-button.matte-Button:focus {
+    padding: 4px;
+    text-align: center;
     background: transparent;
     border-right: 1px solid hsla(0, 0%, 0%, 0.05);
 }
 
-.Library--grid .LibraryCell:nth-child(3n) .LibraryCell-button {
+.LibraryCell:nth-child(3n) .LibraryCell-button.matte-Button {
     border-right: none;
 }
 
-.Library--grid .LibraryCell:last-child .LibraryCell-button {
+.LibraryCell:last-child .LibraryCell-button.matte-Button {
     border-radius: 0;
 }
 
-.Library--grid .LibraryCell-button {
-	padding: 4px;
-	text-align: center;
-}
-
-.Library--grid .LibraryCell-button-icon {
+.LibraryCell-button-icon {
     margin: 0;
 }
 
-.Library--grid .LibraryCell-button-label {
+.LibraryCell-button-label {
     display: block;
     font-size: 9px;
     text-align: center;
 }
+
+
+/* List --------------------------------- */
+
+.LibraryGroup.isList .LibraryGroup-list {
+    display: initial;
+} 
+
+.LibraryGroup.isList .LibraryCell {
+    max-width: initial;
+}
+
+.LibraryGroup.isList .LibraryCell-button-label {
+    display: inline-block;
+    font-size: 12px;
+    text-align: left;
+    width: 114px;
+    margin-left: 4px;
+    line-height: 28px;
+}
+
