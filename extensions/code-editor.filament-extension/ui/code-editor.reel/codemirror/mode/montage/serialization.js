@@ -188,17 +188,42 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
         state.blocks.push({
             type: type || "object",
             readingPropertyName: type === "array" ? false : true,
-            properties: []
+            properties: [],
+            inSameLineAsPreviousBlock: countOpenBlocksInLine(stream, state) > 0
         });
         state.block = state.blocks[state.blockLevel];
         state.blockLevel++;
         //console.log("new block", state.block.uuid);
+        // Avoid increasing the indentation level when several blocks are opened
+        // in the same line. Prevents adding 2 or more indentation levels in
+        // the next line with code like [{ or [[.
+        if (!state.block.inSameLineAsPreviousBlock) {
+            state.indentLevel++;
+        }
     }
 
     function endBlock(state) {
         state.blockLevel--;
+        if (!state.block.inSameLineAsPreviousBlock) {
+            state.indentLevel--;
+        }
         state.block = state.blocks[state.blockLevel-1];
         state.blocks.pop();
+    }
+
+    function countOpenBlocksInLine(stream, state) {
+        var openBlocksInLine = 0;
+
+        for (var i = 0; i < stream.pos - 1; i++) {
+            var ch = stream.string[i];
+            if (/[\{\[]/.test(ch)) {
+                openBlocksInLine++;
+            } else if (/[\}\]]/.test(ch)) {
+                openBlocksInLine--;
+            }
+        }
+
+        return openBlocksInLine;
     }
 
     return {
@@ -208,6 +233,7 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
                 blocks: [],
                 block: null,
                 blockLevel: 0,
+                indentLevel: 0,
                 labels: [],
                 baseColumn: 0
             };
@@ -227,6 +253,7 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
             var newState = {
                 tokenize: state.tokenize,
                 blockLevel: state.blockLevel,
+                indentLevel: state.indentLevel,
                 labels: state.labels.slice(0),
                 baseColumn: state.baseColumn
             };
@@ -243,7 +270,7 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
                 return CodeMirror.Pass;
             }
 
-            var indentLevel = state.blockLevel;
+            var indentLevel = state.indentLevel;
 
             if (textAfter[0] === "}") {
                 indentLevel--;
