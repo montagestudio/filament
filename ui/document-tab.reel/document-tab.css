@@ -64,6 +64,10 @@
     cursor: default;
 }
 
+.DocumentTab.selected:first-child {
+    border-left: 1px solid hsl(0, 0%, 75%);
+}
+
 
 .DocumentTab .DocumentTab-label {
     display: block;

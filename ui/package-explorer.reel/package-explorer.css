@@ -1,6 +1,5 @@
 
 .PackageExplorer {
-    border-right: 1px solid hsl(0,0%,75%);
     -webkit-backface-visibility: hidden; /* Fixes flickering when hovering the name or toggle the tree menu */
 }
 
