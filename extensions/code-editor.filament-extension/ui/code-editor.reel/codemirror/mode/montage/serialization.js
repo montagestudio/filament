@@ -51,7 +51,7 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
             // Recognize serialization syntax like {"@".
             // This only works when the property name is in the same line as the
             // opening bracket due to the line by line nature of the tokenizer.
-            if (!isEOL(stream, state)) {
+            if (canConsumeString(stream, state)) {
                 tokenPropertyName(stream, state, true);
                 var propertyName = getPropertyName(state);
                 if (serializationSyntax.propertyIsEnumerable(propertyName)) {
@@ -137,7 +137,10 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
     function consumeString(stream, state, readInitialQuote) {
         var escaped = false, next, end = false, string = "";
         if (readInitialQuote) {
-            stream.eat("\"");
+            while(stream.eatSpace()) {}
+            if (!stream.eat("\"")) {
+                throw new Error("Montage serialization read error, expecting a quote, found "+ stream.string.slice(stream.pos));
+            }
         }
         while ((next = stream.next()) != null) {
             if (next == '"' && !escaped) {end = true; break;}
@@ -150,8 +153,8 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
         return string;
     }
 
-    function isEOL(stream, state) {
-        return stream.match(/\s*$/, false);
+    function canConsumeString(stream, state) {
+        return stream.match(/\s*"/, false);
     }
 
     function addProperty(state, name) {
