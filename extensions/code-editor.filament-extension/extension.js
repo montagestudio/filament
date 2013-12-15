@@ -1,5 +1,6 @@
 var CoreExtension = require("filament-extension/core/extension").Extension;
 var CodeEditorDocument = require("core/code-editor-document").CodeEditorDocument;
+var CodeEditor = require("./ui/code-editor.reel").CodeEditor;
 var Promise = require("montage/core/promise").Promise;
 
 
@@ -36,6 +37,8 @@ exports.Extension = CoreExtension.specialize( {
 
             application.addEventListener("didOpenDocument", self, false);
             application.addEventListener("willCloseDocument", self, false);
+
+            CodeEditor.configureAutocompleteOptions(projectController);
 
             return Promise.resolve(self);
         }

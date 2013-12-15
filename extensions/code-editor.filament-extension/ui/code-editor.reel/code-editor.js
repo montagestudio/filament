@@ -8,6 +8,7 @@ var Editor = require("palette/ui/editor.reel").Editor;
 var Promise = require("montage/core/promise").Promise;
 require("./codemirror/lib/codemirror");
 var CodeMirror = window.CodeMirror;
+var MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver;
 require("./codemirror/mode/javascript/javascript");
 require("./codemirror/mode/css/css");
 require("./codemirror/mode/xml/xml");
@@ -114,7 +115,7 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
             };
 
             extraKeys["Ctrl-Space"] = function(cm) {
-                CodeMirror.showHint(cm, null, CodeEditor.autocompleteOptions);
+                CodeMirror.showHint(cm, null, CodeEditor.getAutocompleteOptions(self.projectController));
             };
 
             //Remove Key handling that we'll handle ourselves
@@ -289,73 +290,88 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
                 return Promise.resolve(document);
             });
         }
+    },
+
+    _autocompleteOptions: {
+        value: {}
+    },
+    configureAutocompleteOptions: {
+        value: function(projectController) {
+            var autocompleteOptions = {
+                    serializationProperties: {},
+                    serializationModules: []
+                },
+                moduleLibraryItemMap = projectController.moduleLibraryItemMap,
+                packageRequire,
+                updateAutocompleteOptions,
+                isADependency,
+                addModule;
+
+            // Get the package require
+            projectController.addPathChangeListener("packageUrl", function(packageUrl) {
+                // Guard against pathChange listener installation
+                if (!packageUrl) {
+                    return;
+                }
+
+                require.loadPackage(projectController.packageUrl)
+                .then(function (value) {
+                    packageRequire = value;
+                    // Listen for new module ids available and add them.
+                    // This listener will be called on installation too.
+                    projectController.addRangeAtPathChangeListener("moduleLibraryItemMap.keys()", updateAutocompleteOptions);
+                }).done();
+            });
+
+            isADependency = function(moduleId) {
+                var dependencyName = moduleId.split("/")[0],
+                    isADependency = false;
+
+                projectController.dependencies.forEach(function(dependency) {
+                    if (dependency.dependency === dependencyName) {
+                        isADependency = true;
+                    }
+                });
+
+                return isADependency;
+            };
+
+            updateAutocompleteOptions = function(moduleIds) {
+                moduleIds.forEach(addModule);
+            };
+
+            addModule = function(moduleId) {
+                if (!isADependency(moduleId)) {
+                    return;
+                }
+                autocompleteOptions.serializationModules.push(moduleId);
+                autocompleteOptions.serializationProperties[moduleId] = [];
+
+                var location = MontageReviver.parseObjectLocationId(moduleId);
+                packageRequire.async(moduleId).then(function(exports) {
+                    var object = exports[location.objectName];
+                    if (object) {
+                        return object.blueprint.fail(function(reason) {
+                            console.log("FIXME: " + moduleId + " blueprint", reason);
+                        });
+                    }
+                })
+                .then(function(blueprint) {
+                    if (blueprint) {
+                        blueprint.propertyBlueprints.forEach(function(property) {
+                            autocompleteOptions.serializationProperties[moduleId].push(property.name);
+                        });
+                    }
+                }).done();
+            };
+
+            this._autocompleteOptions[projectController.uuid] = autocompleteOptions;
+        }
+    },
+    getAutocompleteOptions: {
+        value: function(projectController) {
+            return this._autocompleteOptions[projectController.uuid];
+        }
     }
 
 });
-
-CodeEditor.autocompleteOptions = {
-    closeCharacters: /["]/,
-    alignWithWord: true,
-    // TODO: there must be a way in filament to get a hold of this.
-    serializationModules: createAutocompleteModuleOptions({"montage": {
-        "composer": {"key-composer": 1, "press-composer": 1, "swipe-composer": 1, "translate-composer": 1},
-        "core": {
-            "converter": {"bytes-converter": 1, "currency-converter": 1, "date-converter": 1, "invert-converter": 1, "lower-case-converter": 1, "new-line-to-br-converter": 1, "number-converter": 1, "trim-converter": 1, "upper-case-converter": 1},
-            "event": {"action-event-listener": 1},
-            "media-controller": 1,
-            "radio-button-controller": 1,
-            "range-controller": 1,
-            "tree-controller": 1
-        },
-        "ui": {
-            "condition.reel": 1,
-            "flow.reel": 1,
-            "loader.reel": 1,
-            "modal-overlay.reel": 1,
-            "overlay.reel": 1,
-            "repetition.reel": 1,
-            "slot.reel": 1,
-            "substitution.reel": 1,
-            "text.reel": 1
-        }
-    }, "digit": {
-        "ui": {
-            "badge.reel": 1,
-            "button.reel": 1,
-            "checkbox.reel": 1,
-            "image.reel": 1,
-            "list-item.reel": 1,
-            "list.reel": 1,
-            "number-field.reel": 1,
-            "radio-button.reel": 1,
-            "select.reel": 1,
-            "slider.reel": 1,
-            "text-area.reel": 1,
-            "text-field.reel": 1,
-            "text.reel": 1,
-            "title.reel": 1,
-            "toggle-switch.reel": 1,
-            "video-control.reel": 1,
-            "video.reel": 1
-        }
-    }})
-};
-
-function createAutocompleteModuleOptions(structure) {
-    var modules = [];
-
-    var createOptions = function(structure, base) {
-        Object.keys(structure).forEach(function(moduleId) {
-            if (typeof structure[moduleId] === "object") {
-                createOptions(structure[moduleId], base + moduleId + "/");
-            } else {
-                modules.push(base + moduleId);
-            }
-        });
-    };
-
-    createOptions(structure, "");
-    modules.sort();
-
-    return modules;
-}
