@@ -93,6 +93,14 @@ exports.AssetsManager = Montage.specialize({
         value: null
     },
 
+    projectUrl: {
+        get: function () {
+            if (this._projectController) {
+                return this._projectController.projectUrl;
+            }
+        }
+    },
+
     /**
      * Init the AssetManager with a reference to the Project Controller.
      * @function
@@ -103,6 +111,7 @@ exports.AssetsManager = Montage.specialize({
     init: {
         value: function (projectController) {
             this._projectController = projectController;
+            this._projectUrl = projectController.projectUrl;
             return this;
         }
     },
