@@ -18,8 +18,26 @@ exports.AssetsLibraryItem = Component.specialize(/** @lends AssetsLibraryItem# *
         }
     },
 
+    projectUrl: {
+        value: null
+    },
+
     prototypeAsset: {
         value: null
+    },
+
+    _getRelativeUrl: {
+        value: function () {
+            if (this.projectUrl && this.prototypeAsset) {
+                var length = this.projectUrl.length;
+
+                if (this.projectUrl.charAt(length - 1) !== '/') {
+                    length++;
+                }
+
+                return this.prototypeAsset.fileUrl.substring(length); // this.projectUrl + trailing slash.
+            }
+        }
     },
 
     captureDragstart: {
@@ -28,7 +46,7 @@ exports.AssetsLibraryItem = Component.specialize(/** @lends AssetsLibraryItem# *
 
             if (dataTransfer) {
                 dataTransfer.effectAllowed = "copyMove";
-                dataTransfer.setData("text/plain", this.prototypeAsset.fileUrl);
+                dataTransfer.setData("text/plain", this._getRelativeUrl());
 
                 var iconElement = this.templateObjects.prototypeAssetIcon.element;
 
