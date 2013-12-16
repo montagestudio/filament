@@ -28,7 +28,7 @@ exports.Asset = Montage.specialize({
             this.fileUrl = fileDescriptor.fileUrl;
             this._mimeType = mimeType;
             this.size = fileDescriptor._stat.size;
-            this.inode = fileDescriptor._stat.node ? fileDescriptor._stat.node.ino : stat.ino;
+            this.inode = fileDescriptor._stat.node ? fileDescriptor._stat.node.ino : fileDescriptor._stat.ino;
             this._category = AssetTools.findAssetCategoryFromMimeType(mimeType);
 
             return this;
