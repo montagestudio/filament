@@ -14,9 +14,9 @@ var AssetTools = {
      */
     defineFileDataWithUrl: function (fileUrl) {
         if (this.isAFile(fileUrl)) {
-            var fileData = /([^\/]+)\.([^\.]+)$|([^\/]+)$/.exec(fileUrl);
+            var fileData = /([^\/]+)\.([^\.]+)$|(?:[^\/]+)$/.exec(fileUrl);
 
-            if (fileData && Array.isArray(fileData) && fileData.length === 4) {
+            if (fileData && Array.isArray(fileData) && fileData.length === 3) {
                 return {
                     fileName: fileData[0],
                     name: fileData[1] ? fileData[1] : fileData[0],
