@@ -19,17 +19,16 @@ exports.Asset = Montage.specialize({
                 throw new Error("Cannot init Asset object the parameter FileDescriptor is missing");
             }
 
-            var fileUrl = fileDescriptor.fileUrl,
-                mimeType = fileDescriptor.mimeType,
-                size = fileDescriptor._stat.size;
+            var mimeType = fileDescriptor.mimeType;
 
             if (!AssetTools.isMimeTypeSupported(mimeType)) {
                 throw new Error("Cannot init Asset object because the mime-type: " + mimeType + " is not supported");
             }
 
-            this.fileUrl = fileUrl;
+            this.fileUrl = fileDescriptor.fileUrl;
             this._mimeType = mimeType;
-            this._size = size;
+            this.size = fileDescriptor._stat.size;
+            this.inode = fileDescriptor._stat.node ? fileDescriptor._stat.node.ino : stat.ino;
             this._category = AssetTools.findAssetCategoryFromMimeType(mimeType);
 
             return this;
@@ -129,12 +128,31 @@ exports.Asset = Montage.specialize({
 
     size: {
         set: function (size) {
-            if (typeof size === "number") {
-                this._size = size;
+            if (size && typeof size !== "number") {
+                throw new Error("Cannot set the Asset's size because the given size is not a number");
             }
+
+            this._size = size;
         },
         get: function () {
             return this._size;
+        }
+    },
+
+    _inode: {
+        value: null
+    },
+
+    inode: {
+        set: function (inode) {
+            if (inode && typeof inode !== "number") {
+                throw new Error("Cannot set the Asset's inode because the given inode is not a number");
+            }
+
+            this._inode = inode;
+        },
+        get: function () {
+            return this._inode;
         }
     }
 

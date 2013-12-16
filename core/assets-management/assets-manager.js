@@ -426,13 +426,14 @@ exports.AssetsManager = Montage.specialize({
     },
 
     /**
-     * Tries to find an Asset Object from the deleted assets list.
+     * Tries to find an Asset Object from the deleted assets list,
+     * by comparing data within a FileDescriptor Object.
      * @function
      * @private
-     * @param {Object} asset - an Asset Object.
-     * @param {String} asset.fileName - a fileName.
-     * @param {String} asset.mimeType - a supported mime-type.
-     * @param {number} asset.size - size of an asset.
+     * @param {Object} fileDescriptor - an FileDescriptor Object.
+     * @param {String} fileDescriptor.name - a fileName.
+     * @param {String} fileDescriptor.mimeType - a supported mime-type.
+     * @param {number} fileDescriptor.stat - stats of an fileDescriptor.
      * @return {(Object|null)} a deleted Asset Object.
      */
     _findAssetFromDeletedAssetPoolWithFileDescriptor: {
@@ -440,11 +441,10 @@ exports.AssetsManager = Montage.specialize({
             var deletedAsset  = null;
 
             this._deletedAssetPool.some(function (currentDeletedAsset) {
-
-                //Todo improve this checking by using mtime.
-
-                if (fileDescriptor.name === currentDeletedAsset.fileName && fileDescriptor.mimeType === currentDeletedAsset.mimeType &&
-                    fileDescriptor._stat.size && currentDeletedAsset.size) {
+                if (fileDescriptor.name === currentDeletedAsset.fileName &&
+                    fileDescriptor._stat.size === currentDeletedAsset.size &&
+                    fileDescriptor._stat.ino === currentDeletedAsset.inode &&
+                    fileDescriptor.mimeType === currentDeletedAsset.mimeType) {
 
                     deletedAsset = currentDeletedAsset;
                 }
@@ -525,11 +525,17 @@ exports.AssetsManager = Montage.specialize({
                      */
 
                     this._detectMimeTypeWithFileUrl(fileUrl).then(function (mimeType) {
-                        var fileDescriptor = FileDescriptor.create().init(fileUrl, fileChangeDetail.currentStat, mimeType),
-                            deletedAsset = self._findAssetFromDeletedAssetPoolWithFileDescriptor(fileDescriptor),
-                            createdAsset = deletedAsset ? deletedAsset : self.createAssetWithFileDescriptor(fileDescriptor);
+                        if (AssetTools.isMimeTypeSupported(mimeType)) {
+                            var fileDescriptor = FileDescriptor.create().init(fileUrl, fileChangeDetail.currentStat, mimeType),
+                                deletedAsset = self._findAssetFromDeletedAssetPoolWithFileDescriptor(fileDescriptor);
 
-                        self.addAsset(createdAsset);
+                            if (deletedAsset) {
+                                deletedAsset.fileUrl = fileUrl;
+                                self.addAsset(deletedAsset);
+                            } else {
+                                self.addAsset(self.createAssetWithFileDescriptor(fileDescriptor));
+                            }
+                        }
                     });
                     break;
 
@@ -542,12 +548,12 @@ exports.AssetsManager = Montage.specialize({
                     var updatedAsset = this._findAssetWithFileUrl(fileUrl);
 
                     if (updatedAsset) {
-                        // Todo improve it by checking the mtime
                         this._detectMimeTypeWithFileUrl(fileUrl).then(function (mimeType) {
 
                             // TODO once a thumbnail mechanism will has been implemented,
                             // trigger it and update the iconUrl property
                             updatedAsset.size = fileChangeDetail.currentStat.size;
+                            updatedAsset.inode = fileChangeDetail.currentStat.ino;
                             updatedAsset.mimetype = mimeType;
                         });
                     }
