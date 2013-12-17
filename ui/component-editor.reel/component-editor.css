@@ -10,7 +10,7 @@
     min-width: 0;
     display: -webkit-flex;
     -webkit-flex-direction: column;
-    border-right: 1px solid hsl(0, 0%, 75%);
+    border-left: 1px solid hsl(0, 0%, 75%);
 }
 
 .ComponentEditor-column-row {

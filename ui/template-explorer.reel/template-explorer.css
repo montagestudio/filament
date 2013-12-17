@@ -4,6 +4,10 @@
     background: hsl(0, 0%, 80%);
 }
 
+.TemplateExplorer.ComponentEditor-column {
+    border-left: none;
+}
+
 .TemplateExplorer.Filament--willAcceptDrop {
     outline: none;
 }
