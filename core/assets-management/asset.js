@@ -91,16 +91,20 @@ exports.Asset = Montage.specialize({
 
     fileUrl: {
         set: function (fileUrl) {
-            var fileData = AssetTools.defineFileDataWithUrl(fileUrl);
+            if (fileUrl) {
+                var fileData = AssetTools.defineFileDataWithUrl(fileUrl);
 
-            if (!fileData) {
-                throw new Error("Cannot set the Asset's fileUrl because the file url is not valid");
+                if (!fileData) {
+                    throw new Error("Cannot set the Asset's fileUrl because the file url is not valid");
+                }
+
+                this._fileName = fileData.fileName;
+                this._name = fileData.name;
+                this._extension = fileData.extension;
+                this._fileUrl = fileUrl;
+            } else {
+                this._fileUrl = null;
             }
-
-            this._fileName = fileData.fileName;
-            this._name = fileData.name;
-            this._extension = fileData.extension;
-            this._fileUrl = fileUrl;
         },
         get: function () {
             return this._fileUrl;

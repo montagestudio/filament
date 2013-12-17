@@ -14,10 +14,6 @@ exports.AssetsLibraryItems = Component.specialize(/** @lends AssetsLibraryItems#
         value: function AssetsLibraryItems() {
             this.super();
         }
-    },
-
-    projectUrl: {
-        value: null
     }
 
 });
