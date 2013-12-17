@@ -559,7 +559,7 @@ exports.AssetsManager = Montage.specialize({
                                 self.addAsset(self.createAssetWithFileDescriptor(fileDescriptor));
                             }
                         }
-                    });
+                    }).done();
                     break;
 
                 case FILE_SYSTEM_CHANGES.DELETE:
