@@ -16,7 +16,8 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint,
     EventBlueprint = require("montage/core/meta/event-blueprint").EventBlueprint,
     WeakMap = require("montage/collections/weak-map"),
-    ObjectReferences = require("core/object-references").ObjectReferences;
+    ObjectReferences = require("core/object-references").ObjectReferences,
+    sandboxMontageApp = require("palette/core/sandbox-montage-app");
 
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = EditingDocument.specialize({
@@ -2315,7 +2316,11 @@ exports.ReelDocument = EditingDocument.specialize({
 
             var objectName = MontageReviver.parseObjectLocationId(componentModuleId).objectName;
 
-            return require.loadPackage(packageUrl).then(function (packageRequire) {
+            return sandboxMontageApp(packageUrl)
+            .spread(function (packageRequire, montageRequire) {
+                return packageRequire;
+            })
+            .then(function (packageRequire) {
                 return packageRequire.async(componentModuleId).get(objectName).then(function (componentPrototype) {
                     if (!componentPrototype) {
                         throw new Error("Cannot load component: Syntax error in " + componentModuleId + "[" + objectName + "] implementation");
