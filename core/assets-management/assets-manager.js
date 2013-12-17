@@ -93,14 +93,6 @@ exports.AssetsManager = Montage.specialize({
         value: null
     },
 
-    projectUrl: {
-        get: function () {
-            if (this._projectController) {
-                return this._projectController.projectUrl;
-            }
-        }
-    },
-
     /**
      * Init the AssetManager with a reference to the Project Controller.
      * @function
@@ -111,7 +103,6 @@ exports.AssetsManager = Montage.specialize({
     init: {
         value: function (projectController) {
             this._projectController = projectController;
-            this._projectUrl = projectController.projectUrl;
             return this;
         }
     },
@@ -465,6 +456,23 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    _removeAssetFromDeletedAsset: {
+        value: function (asset) {
+            var self = this;
+
+            return this._deletedAssetPool.some(function (currentDeletedAsset, index) {
+                if (asset.fileName === currentDeletedAsset.fileName && asset.size === currentDeletedAsset.size &&
+                    asset.inode === currentDeletedAsset.inode && asset.mimeType === currentDeletedAsset.mimeType) {
+
+                    self._deletedAssetPool.splice(index, 1);
+                    return true;
+                }
+
+                return false;
+            });
+        }
+    },
+
     /**
      * Programs to empty the deleted asset list.
      * @function
@@ -480,6 +488,11 @@ exports.AssetsManager = Montage.specialize({
                 var self = this;
 
                 this._programmedReleasePool = setTimeout(function () {
+                    self._deletedAssetPool.forEach(function (deletedAsset) {
+                        deletedAsset.fileUrl = null;
+                        deletedAsset = null;
+                    });
+
                     self._deletedAssetPool = [];
                 }, TIMEOUT_RELEASE_DELETED_ASSET_POOL);
             }
@@ -539,6 +552,7 @@ exports.AssetsManager = Montage.specialize({
                                 deletedAsset = self._findAssetFromDeletedAssetPoolWithFileDescriptor(fileDescriptor);
 
                             if (deletedAsset) {
+                                self._removeAssetFromDeletedAsset(deletedAsset);
                                 deletedAsset.fileUrl = fileUrl;
                                 self.addAsset(deletedAsset);
                             } else {
