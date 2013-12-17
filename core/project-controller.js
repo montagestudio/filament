@@ -696,7 +696,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     //TODO handle multiple extensions possibly registering for the same moduleId, latest one wins?
     registerLibraryItemForModuleId: {
         value: function (libraryItem, moduleId) {
-            this.moduleLibraryItemMap[moduleId] = libraryItem;
+            this.moduleLibraryItemMap.set(moduleId, libraryItem);
 
             //TODO don't refresh the library each time
             if (this.dependencies) {
@@ -708,7 +708,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     //TODO allow for multiple extensions to unregister for same moduleId, don't disrupt current order
     unregisterLibraryItemForModuleId: {
         value: function (moduleId) {
-            delete this.moduleLibraryItemMap[moduleId];
+            this.moduleLibraryItemMap.delete(moduleId);
 
             //TODO don't refresh the library each time
             if (this.dependencies) {
@@ -719,7 +719,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     libraryItemForModuleId: {
         value: function (moduleId, objectName) {
-            var libraryEntry = this.moduleLibraryItemMap[moduleId],
+            var libraryEntry = this.moduleLibraryItemMap.get(moduleId),
                 item;
 
             if (libraryEntry) {
