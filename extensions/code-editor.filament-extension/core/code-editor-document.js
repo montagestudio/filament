@@ -118,6 +118,10 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
         value: function (evt) {
             var identifier = evt.detail.identifier;
 
+            if (this.editor.currentDocument !== this) {
+                return;
+            }
+
             if ("undo" === identifier) {
                 if (this.canUndo) {
                     this.undo().done();
