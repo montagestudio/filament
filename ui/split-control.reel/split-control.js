@@ -23,8 +23,20 @@ exports.SplitControl = Montage.create(AbstractSlider, /** @lends SplitControl# *
         }
     },
 
-    initValuePercentage: {
+    _valuePercentage: {
         value: null
+    },
+
+    valuePercentage: {
+        set: function (value) {
+            if (this._valuePercentage !== value) {
+                this._valuePercentage = value;
+                this.needsDraw = true;
+            }
+        },
+        get: function () {
+            return this._valuePercentage;
+        }
     },
 
     enterDocument: {
@@ -55,7 +67,7 @@ exports.SplitControl = Montage.create(AbstractSlider, /** @lends SplitControl# *
 
     willDraw: {
         value: function () {
-            if (!this._completedFirstDraw && !this.initValuePercentage) {
+            if (!this._completedFirstDraw && !this.valuePercentage) {
                 this._updateValueFromDom();
             }
             this.super();
