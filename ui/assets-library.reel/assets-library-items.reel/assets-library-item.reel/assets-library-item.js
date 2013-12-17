@@ -46,7 +46,7 @@ exports.AssetsLibraryItem = Component.specialize(/** @lends AssetsLibraryItem# *
 
             if (dataTransfer) {
                 dataTransfer.effectAllowed = "copyMove";
-                dataTransfer.setData("text/plain", this._getRelativeUrl());
+                dataTransfer.setData("text/plain", this.prototypeAsset.fileUrl);
 
                 var iconElement = this.templateObjects.prototypeAssetIcon.element;
 
