@@ -43,9 +43,6 @@ exports.SplitControl = Montage.create(AbstractSlider, /** @lends SplitControl# *
         value: function (firstTime) {
             AbstractSlider.enterDocument.apply(this, arguments);
             if (firstTime) {
-                if (this.initValuePercentage) {
-                    this._valuePercentage = this.initValuePercentage;
-                }
                 this.defineBinding("axis",
                     {"<-": "splitAxis == 'horizontal' ? 'vertical' : 'horizontal'", source: this});
             }
