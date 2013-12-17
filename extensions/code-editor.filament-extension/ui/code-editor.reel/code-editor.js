@@ -12,13 +12,24 @@ require("./codemirror/mode/javascript/javascript");
 require("./codemirror/mode/css/css");
 require("./codemirror/mode/xml/xml");
 require("./codemirror/mode/htmlmixed/htmlmixed");
+require("./codemirror/mode/montage/html");
+require("./codemirror/mode/montage/serialization");
+require("./codemirror/mode/montage/template");
+require("./codemirror/mode/clike/clike");
+
+require("./codemirror/addon/hint/show-hint");
+require("./codemirror/addon/hint/montage-serialization-hint");
+require("./codemirror/addon/hint/xml-hint");
+require("./codemirror/addon/hint/html-hint");
+require("./codemirror/addon/hint/css-hint");
+require("./codemirror/addon/hint/javascript-hint");
 
 /**
  Description TODO
  @class module:"./Editor.reel".Editor
  @extends module:palette/ui/editor.reel.Editor
  */
-exports.CodeEditor = Editor.specialize ({
+var CodeEditor = exports.CodeEditor = Editor.specialize ({
 
     constructor: {
         value: function CodeEditor() {
@@ -59,6 +70,14 @@ exports.CodeEditor = Editor.specialize ({
         }
     },
 
+    indentWithSpaces: {
+        value: true
+    },
+
+    autoIndent: {
+        value: true
+    },
+
     /**
      * A dictionary of document uuid -> codemirror document.
      */
@@ -74,38 +93,98 @@ exports.CodeEditor = Editor.specialize ({
         }
     },
 
+    _createCodeMirror: {
+        value: function() {
+            var self = this,
+                extraKeys = {};
+
+            // Configure html-hint
+            ["data-montage-id", "data-param", "data-arg"]
+            .forEach(function(attr) {
+                    CodeMirror.htmlSchema.s.attrs[attr] = null;
+            });
+
+            extraKeys.Tab = function(cm) {
+                if (cm.somethingSelected() || !self.indentWithSpaces) {
+                    return CodeMirror.Pass;
+                }
+
+                var spaces = new Array(cm.getOption("indentUnit") + 1).join(" ");
+                cm.replaceSelection(spaces, "end", "+input");
+            };
+
+            extraKeys["Ctrl-Space"] = function(cm) {
+                CodeMirror.showHint(cm, null, CodeEditor.autocompleteOptions);
+            };
+
+            //Remove Key handling that we'll handle ourselves
+            var defaultKeyMap = CodeMirror.keyMap.default;
+            delete defaultKeyMap["Shift-Cmd-Z"];
+            delete defaultKeyMap["Cmd-Z"];
+            delete defaultKeyMap["Cmd-Y"];
+            delete defaultKeyMap["Cmd-S"];
+
+            var macKeyMap = CodeMirror.keyMap.macDefault;
+            delete macKeyMap["Cmd-Z"];
+            delete macKeyMap["Shift-Cmd-Z"];
+            delete macKeyMap["Cmd-Y"];
+
+            var pcKeyMap = CodeMirror.keyMap.pcDefault;
+            delete pcKeyMap["Ctrl-Z"];
+            delete pcKeyMap["Shift-Ctrl-Z"];
+            delete pcKeyMap["Ctrl-Y"];
+            delete pcKeyMap["Ctrl-S"];
+
+            var codemirror = CodeMirror(this.element, {
+                mode: this.mode,
+                extraKeys: extraKeys,
+                tabSize: this.tabSize,
+                indentUnit: this.indentUnit,
+                matchBrackets: this.matchBracket,
+                lineNumbers: this.lineNumbers,
+                readOnly: this.readOnly,
+                theme: this.theme,
+                value: ""
+            });
+
+            codemirror.on("beforeChange", function(cm, changeObj) {
+                if (!self.autoIndent) {
+                    return CodeMirror.Pass;
+                }
+
+                if (changeObj.origin === "paste") {
+                    // the first line is not indented
+                    var fromLine = changeObj.from.line + 1;
+                    var toLine = fromLine + changeObj.text.length - 2;
+
+                    // In order to make the paste operation and the
+                    // indentation a single history item we need to
+                    // use the operation() function to create an atomic
+                    // change. To do this we cancel the paste and do it
+                    // ourselves on the nextTick since we shouldn't change the
+                    // document during a "beforeChange" event.
+                    changeObj.cancel();
+                    Promise.nextTick(function() {
+                        cm.operation(function() {
+                            cm.getDoc().replaceRange(
+                                changeObj.text.join("\n"),
+                                changeObj.from, changeObj.to);
+                            for (var i = fromLine; i <= toLine; i++) {
+                                cm.indentLine(i);
+                            }
+                        });
+                    })
+                }
+            });
+
+            return codemirror;
+        }
+    },
+
     enterDocument: {
         value: function(firstTime) {
             if (firstTime) {
-
-                //Remove Key handling that we'll handle ourselves
-                var defaultKeyMap = CodeMirror.keyMap.default;
-                delete defaultKeyMap["Shift-Cmd-Z"];
-                delete defaultKeyMap["Cmd-Z"];
-                delete defaultKeyMap["Cmd-Y"];
-                delete defaultKeyMap["Cmd-S"];
-
-                var macKeyMap = CodeMirror.keyMap.macDefault;
-                delete macKeyMap["Cmd-Z"];
-                delete macKeyMap["Shift-Cmd-Z"];
-                delete macKeyMap["Cmd-Y"];
-
-                var pcKeyMap = CodeMirror.keyMap.pcDefault;
-                delete pcKeyMap["Ctrl-Z"];
-                delete pcKeyMap["Shift-Ctrl-Z"];
-                delete pcKeyMap["Ctrl-Y"];
-                delete pcKeyMap["Ctrl-S"];
-
-                var codemirror = this._codeMirror = CodeMirror(this.element, {
-                    mode: this.mode,
-                    tabSize: this.tabSize,
-                    indentUnit: this.indentUnit,
-                    matchBrackets: this.matchBracket,
-                    lineNumbers: this.lineNumbers,
-                    readOnly: this.readOnly,
-                    theme: this.theme,
-                    value: ""
-                });
+                var codemirror = this._codeMirror = this._createCodeMirror();
 
                 if (this.currentDocument) {
                     var codeMirrorDocument = this._openDocuments[this.currentDocument.uuid];
@@ -213,3 +292,43 @@ exports.CodeEditor = Editor.specialize ({
     }
 
 });
+
+CodeEditor.autocompleteOptions = {
+    closeCharacters: /["]/,
+    alignWithWord: true,
+    // TODO: there must be a way in filament to get a hold of this.
+    serializationModules: createAutocompleteModuleOptions({"montage": {
+        "composer": {"key-composer": 1, "press-composer": 1, "swipe-composer": 1, "translate-composer": 1},
+        "core": {
+            "converter": {"bytes-converter": 1, "currency-converter": 1, "date-converter": 1, "invert-converter": 1, "lower-case-converter": 1, "new-line-to-br-converter": 1, "number-converter": 1, "trim-converter": 1, "upper-case-converter": 1},
+            "event": {"action-event-listener": 1},
+            "media-controller": 1,
+            "radio-button-controller": 1,
+            "range-controller": 1,
+            "tree-controller": 1
+        },
+        "ui": {
+            "condition.reel": 1, "flow.reel": 1, "loader.reel": 1, "modal-overlay.reel": 1, "overlay.reel": 1, "repetition.reel": 1, "slot.reel": 1, "substitution.reel": 1, "text.reel": 1}
+    }, "digit": {
+        "ui": {"badge.reel": 1, "button.reel": 1, "checkbox.reel": 1, "image.reel": 1, "list-item.reel": 1, "list.reel": 1, "number-field.reel": 1, "radio-button.reel": 1, "select.reel": 1, "slider.reel": 1, "text-area.reel": 1, "text-field.reel": 1, "text.reel": 1, "title.reel": 1, "toggle-switch.reel": 1, "video-control.reel": 1, "video.reel": 1}
+    }})
+};
+
+function createAutocompleteModuleOptions(structure) {
+    var modules = [];
+
+    var createOptions = function(structure, base) {
+        Object.keys(structure).forEach(function(moduleId) {
+            if (typeof structure[moduleId] === "object") {
+                createOptions(structure[moduleId], base + moduleId + "/")
+            } else {
+                modules.push(base + moduleId);
+            }
+        });
+    };
+
+    createOptions(structure, "");
+    modules.sort();
+
+    return modules;
+}
