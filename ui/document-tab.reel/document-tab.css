@@ -59,8 +59,7 @@
     color: hsl(0,0%,30%);
     text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
     border-top: 1px solid hsla(0,0%,100%,1);
-    border-bottom: 1px solid hsla(0,0%,0%,0.24);
-    background: -webkit-linear-gradient( hsl(0,0%,98%), hsl(0,0%,86%) );
+    background-color: hsl(0, 0%, 96%);
     cursor: default;
 }
 

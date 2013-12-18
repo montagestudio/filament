@@ -4,7 +4,7 @@
 }
 
 .PackageExplorer .Panel-shadow {
-    top: 76px; /* Same as Panel-title height */
+    top: 75px; /* Same as Panel-title height */
 }
 
 .PackageExplorer .Panel-title {
@@ -12,7 +12,7 @@
     -webkit-justify-content: space-between;
     -webkit-align-items: center;
     padding: 8px;
-    height: 76px;
+    height: 75px;
 }
 
 .PackageExplorer-icon {

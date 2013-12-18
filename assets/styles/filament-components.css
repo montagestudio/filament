@@ -59,8 +59,8 @@
     position: absolute;
     z-index: 1;
     width: 1px;
-    height: 68px;
-    background: linear-gradient( hsl(0, 0%, 98%), hsl(0, 0%, 95%) 17px, hsl(0, 0%, 75%) );
+    height: 46px; /* Height of Bar - 1px border */
+    background: linear-gradient( hsl(0, 0%, 96%), hsl(0, 0%, 95%) 8px, hsl(0, 0%, 75%) );
     left: -1px;
     top: 0;
 }
@@ -69,6 +69,15 @@
     content: none;
 }
 
+
+/* Bar --------------------------------- */
+
+.Bar {
+    padding: 8px;
+    margin: 0;
+    border-bottom: 1px solid hsl(0,0%,75%);
+    background: -webkit-linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
+}
 
 
 /* Panel --------------------------------- */
@@ -148,16 +157,6 @@
     background-image: -webkit-radial-gradient(center 0%, ellipse farthest-side, hsla(0,0%,0%,0.1), hsla(0,0%,0%,.02) 110% );
 }
 
-
-/* Bar --------------------------------- */
-
-.Bar {
-    padding: 8px;
-    margin: 0;
-    border-top: 1px solid hsla(0,0%,100%,1);
-    border-bottom: 1px solid hsla(0,0%,0%,.2);
-    background: -webkit-linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
-}
 
 
 /* List --------------------------------- */
