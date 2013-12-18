@@ -293,7 +293,7 @@ exports.AssetsManager = Montage.specialize({
                 }
             }
 
-            return - 1;
+            return -1;
         }
     },
 
@@ -428,48 +428,40 @@ exports.AssetsManager = Montage.specialize({
     /**
      * Tries to find an Asset Object from the deleted assets list,
      * by comparing data within a FileDescriptor Object.
+     * Whether a Asset has been found, it will be updated and added to the assets list.
      * @function
      * @private
      * @param {Object} fileDescriptor - an FileDescriptor Object.
      * @param {String} fileDescriptor.name - a fileName.
      * @param {String} fileDescriptor.mimeType - a supported mime-type.
      * @param {number} fileDescriptor.stat - stats of an fileDescriptor.
-     * @return {(Object|null)} a deleted Asset Object.
+     * @return {Boolean} if an asset has been revived.
      */
-    _findAssetFromDeletedAssetPoolWithFileDescriptor: {
+    _reviveAssetWithFileDescriptor: {
         value: function (fileDescriptor) {
-            var deletedAsset  = null;
+            var self = this,
+                deletedAsset = null;
 
-            this._deletedAssetPool.some(function (currentDeletedAsset) {
+            this._deletedAssetPool.some(function (currentDeletedAsset, index) {
                 if (fileDescriptor.name === currentDeletedAsset.fileName &&
-                    fileDescriptor._stat.size === currentDeletedAsset.size &&
                     fileDescriptor._stat.ino === currentDeletedAsset.inode &&
                     fileDescriptor.mimeType === currentDeletedAsset.mimeType) {
 
+                    self._deletedAssetPool.splice(index, 1);
                     deletedAsset = currentDeletedAsset;
                 }
 
-                return !!currentDeletedAsset;
+                return !!deletedAsset;
             });
 
-            return deletedAsset;
-        }
-    },
+            if (deletedAsset) {
+                deletedAsset.updateWithFileDescriptor(fileDescriptor);
+                self.addAsset(deletedAsset);
 
-    _removeAssetFromDeletedAsset: {
-        value: function (asset) {
-            var self = this;
+                return true;
+            }
 
-            return this._deletedAssetPool.some(function (currentDeletedAsset, index) {
-                if (asset.fileName === currentDeletedAsset.fileName && asset.size === currentDeletedAsset.size &&
-                    asset.inode === currentDeletedAsset.inode && asset.mimeType === currentDeletedAsset.mimeType) {
-
-                    self._deletedAssetPool.splice(index, 1);
-                    return true;
-                }
-
-                return false;
-            });
+            return false;
         }
     },
 
@@ -548,14 +540,9 @@ exports.AssetsManager = Montage.specialize({
 
                     this._detectMimeTypeWithFileUrl(fileUrl).then(function (mimeType) {
                         if (AssetTools.isMimeTypeSupported(mimeType)) {
-                            var fileDescriptor = FileDescriptor.create().init(fileUrl, fileChangeDetail.currentStat, mimeType),
-                                deletedAsset = self._findAssetFromDeletedAssetPoolWithFileDescriptor(fileDescriptor);
+                            var fileDescriptor = FileDescriptor.create().init(fileUrl, fileChangeDetail.currentStat, mimeType);
 
-                            if (deletedAsset) {
-                                self._removeAssetFromDeletedAsset(deletedAsset);
-                                deletedAsset.fileUrl = fileUrl;
-                                self.addAsset(deletedAsset);
-                            } else {
+                            if (!self._reviveAssetWithFileDescriptor(fileDescriptor)) {
                                 self.addAsset(self.createAssetWithFileDescriptor(fileDescriptor));
                             }
                         }
@@ -572,13 +559,14 @@ exports.AssetsManager = Montage.specialize({
 
                     if (updatedAsset) {
                         this._detectMimeTypeWithFileUrl(fileUrl).then(function (mimeType) {
+                            if (AssetTools.isMimeTypeSupported(mimeType)) {
+                                var fileDescriptor = FileDescriptor.create().init(fileUrl, fileChangeDetail.currentStat, mimeType);
 
-                            // TODO once a thumbnail mechanism will has been implemented,
-                            // trigger it and update the iconUrl property
-                            updatedAsset.size = fileChangeDetail.currentStat.size;
-                            updatedAsset.inode = fileChangeDetail.currentStat.ino;
-                            updatedAsset.mimetype = mimeType;
-                        });
+                                // TODO once a thumbnail mechanism will has been implemented,
+                                // trigger it and update the iconUrl property
+                                updatedAsset.updateWithFileDescriptor(fileDescriptor);
+                            }
+                        }).done();
                     }
                     break;
                 }

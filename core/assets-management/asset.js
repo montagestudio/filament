@@ -15,23 +15,43 @@ exports.Asset = Montage.specialize({
 
     initWithFileDescriptor: {
         value: function (fileDescriptor) {
+            this._fill(fileDescriptor);
+            return this;
+        }
+    },
+
+    _fill: {
+        value: function (fileDescriptor) {
+            var mimeType = fileDescriptor.mimeType,
+                fileUrl = fileDescriptor.fileUrl;
+
             if (!fileDescriptor || typeof fileDescriptor !== "object") {
                 throw new Error("Cannot init Asset object the parameter FileDescriptor is missing");
             }
-
-            var mimeType = fileDescriptor.mimeType;
 
             if (!AssetTools.isMimeTypeSupported(mimeType)) {
                 throw new Error("Cannot init Asset object because the mime-type: " + mimeType + " is not supported");
             }
 
-            this.fileUrl = fileDescriptor.fileUrl;
-            this._mimeType = mimeType;
-            this.size = fileDescriptor._stat.size;
-            this.inode = fileDescriptor._stat.node ? fileDescriptor._stat.node.ino : fileDescriptor._stat.ino;
-            this._category = AssetTools.findAssetCategoryFromMimeType(mimeType);
+            if (fileUrl) {
+                var fileData = AssetTools.defineFileDataWithUrl(fileUrl);
 
-            return this;
+                if (!fileData) {
+                    throw new Error("Cannot set the Asset's fileUrl because the file url is not valid");
+                }
+
+                this._fileName = fileData.fileName;
+                this._name = fileData.name;
+                this._extension = fileData.extension;
+
+                this.dispatchBeforeOwnPropertyChange("fileUrl", this._fileUrl);
+                this._fileUrl = fileUrl;
+                this.dispatchOwnPropertyChange("fileUrl", fileUrl);
+            }
+
+            this._mimeType = mimeType;
+            this._inode = fileDescriptor._stat.node ? fileDescriptor._stat.node.ino : fileDescriptor._stat.ino;
+            this._category = AssetTools.findAssetCategoryFromMimeType(mimeType);
         }
     },
 
@@ -90,22 +110,6 @@ exports.Asset = Montage.specialize({
     },
 
     fileUrl: {
-        set: function (fileUrl) {
-            if (fileUrl) {
-                var fileData = AssetTools.defineFileDataWithUrl(fileUrl);
-
-                if (!fileData) {
-                    throw new Error("Cannot set the Asset's fileUrl because the file url is not valid");
-                }
-
-                this._fileName = fileData.fileName;
-                this._name = fileData.name;
-                this._extension = fileData.extension;
-                this._fileUrl = fileUrl;
-            } else {
-                this._fileUrl = null;
-            }
-        },
         get: function () {
             return this._fileUrl;
         }
@@ -126,37 +130,19 @@ exports.Asset = Montage.specialize({
         }
     },
 
-    _size: {
-        value: null
-    },
-
-    size: {
-        set: function (size) {
-            if (size && typeof size !== "number") {
-                throw new Error("Cannot set the Asset's size because the given size is not a number");
-            }
-
-            this._size = size;
-        },
-        get: function () {
-            return this._size;
-        }
-    },
-
     _inode: {
         value: null
     },
 
     inode: {
-        set: function (inode) {
-            if (inode && typeof inode !== "number") {
-                throw new Error("Cannot set the Asset's inode because the given inode is not a number");
-            }
-
-            this._inode = inode;
-        },
         get: function () {
             return this._inode;
+        }
+    },
+
+    updateWithFileDescriptor: {
+        value: function (fileDescriptor) {
+            this._fill(fileDescriptor);
         }
     }
 
