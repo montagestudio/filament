@@ -4,6 +4,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     Template = require("montage/core/template").Template,
     Promise = require("montage/core/promise").Promise,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
+    MontageLabeler = require("montage/core/serialization/serializer/montage-labeler").MontageLabeler,
     SORTERS = require("palette/core/sorters"),
     ComponentEditor = require("ui/component-editor.reel").ComponentEditor,
     ReelSerializer = require("core/serialization/reel-serializer").ReelSerializer,
@@ -682,10 +683,17 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    _generateLabelFromModuleId: {
+        value: function(moduleId) {
+            var name = MontageReviver.parseObjectLocationId(moduleId).objectName;
+
+            return name.substring(0, 1).toLowerCase() + name.substring(1);
+        }
+    },
+
     _generateLabel: {
         value: function (serialization) {
-            var name = MontageReviver.parseObjectLocationId(serialization.prototype).objectName,
-                label = name.substring(0, 1).toLowerCase() + name.substring(1),
+            var label = this._generateLabelFromModuleId(serialization.prototype),
                 existingLabels = Object.keys(this.editingProxyMap);
 
             return this._generateUniqueName(label, existingLabels);
@@ -764,10 +772,9 @@ exports.ReelDocument = EditingDocument.specialize({
                 serializationElement;
 
             // Try and use the montageId as the label, if not generate one from the prototype name
-            if (!label || Object.keys(this.editingProxyMap).indexOf(label) > -1) {
-                label = this._generateLabel(serializationFragment);
+            if (!label) {
+                label = this._generateLabelFromModuleId(serializationFragment.prototype);
             }
-
             templateSerialization[label] = serializationFragment;
 
             // If there's no htmlFragment given then none of the element
@@ -892,6 +899,7 @@ exports.ReelDocument = EditingDocument.specialize({
                     uniqueLabel = this._generateLabel(serializationText[label]);
                 } else {
                     uniqueLabel = montageId;
+                    properties.element["#"] = montageId;
                 }
 
                 serializationObject[uniqueLabel] = serializationObject[label];
@@ -970,13 +978,11 @@ exports.ReelDocument = EditingDocument.specialize({
             var destinationTemplate = this._template,
                 context,
                 self = this,
-                revisedTemplate,
-                ownerProxy;
+                revisedTemplate;
 
             this.undoManager.openBatch("Add Objects");
 
             revisedTemplate = this._merge(destinationTemplate, sourceTemplate, parentElement, nextSiblingElement);
-            ownerProxy = this.editingProxyMap.owner;
 
             // Prepare a context that knows about the existing editing proxies prior to
             // creating new editing proxies
@@ -1040,7 +1046,8 @@ exports.ReelDocument = EditingDocument.specialize({
                 newChildNodes,
                 i,
                 iChild,
-                insertionParent = parentElement || this._ownerElement;
+                insertionParent = parentElement || this._ownerElement,
+                mergeDelegate;
 
             sourceContentRange = sourceDocument.createRange();
             sourceContentRange.selectNodeContents(sourceDocument.body);
@@ -1055,10 +1062,18 @@ exports.ReelDocument = EditingDocument.specialize({
             // Merge markup
             // NOTE operations are performed on the template with real template DOM nodes
             //TODO this is a it mof a mess where we perform the merge with the template DOM, but then do the "same" operation to associate the nodeProxies with their parent right afterwards
+            // Make sure the generated data-module-ids to solve collisions do
+            // not clash with any of the labels. This allow us to easily rename
+            // the labels when merging the serialization to make sure they match
+            // their data-montage-id counterpart.
+            var labeler = new MontageLabeler();
+            labeler.addLabels(templateSerialization.getSerializationLabels());
+            labeler.addLabels(serializationToMerge.getSerializationLabels());
+
             if (nextSiblingElement) {
-                idsCollisionTable = destinationTemplate.insertNodeBefore(sourceContentFragment, nextSiblingElement._templateNode);
+                idsCollisionTable = destinationTemplate.insertNodeBefore(sourceContentFragment, nextSiblingElement._templateNode, labeler);
             } else {
-                idsCollisionTable = destinationTemplate.appendNode(sourceContentFragment, insertionParent._templateNode);
+                idsCollisionTable = destinationTemplate.appendNode(sourceContentFragment, insertionParent._templateNode, labeler);
             }
 
             if (idsCollisionTable) {
@@ -1077,7 +1092,27 @@ exports.ReelDocument = EditingDocument.specialize({
             }, this);
 
             // Merge serialization
-            labelsCollisionTable = templateSerialization.mergeSerialization(serializationToMerge);
+            labeler = new MontageLabeler();
+            // Add all the data-montage-ids to make sure we don't use
+            // these strings when solving label conflicts. Since we're going
+            // to rename some labels with their data-montage-id counterpart we
+            // avoid generating labels that match a used data-montage-id.
+            labeler.addLabels(destinationTemplate.getElementIds());
+            mergeDelegate = {
+                labeler: labeler,
+                willMergeObjectWithLabel: function(label, collisionLabel) {
+                    var id = serializationToMerge.getElementId(label);
+                    if (collisionLabel) {
+                        if (id !== collisionLabel) {
+                            return id;
+                        }
+                    } else if (id !== label) {
+                        return id;
+                    }
+                }
+            };
+
+            labelsCollisionTable = templateSerialization.mergeSerialization(serializationToMerge, mergeDelegate);
 
             //Update underlying template string
             destinationTemplate.objectsString = templateSerialization.getSerializationString();

@@ -702,7 +702,32 @@ describe("core/reel-document-template-editing-spec", function () {
                         }
                     }
                 }, nodeProxy).then(function (objects) {
-                    expect(objects[0].label).toBe("pass1");
+                    expect(objects[0].label).toBe("unexistingId");
+                });
+
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("generates a unique label if the element's data-montage-id is already a label", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                // setup
+                var nodeProxy = reelDocument.createTemplateNode('<p data-montage-id="bar">');
+                var collision = reelDocument.createTemplateNode('<p data-montage-id="pass1">');
+                reelDocument.appendChildToTemplateNode(nodeProxy);
+                reelDocument.appendChildToTemplateNode(collision);
+                expect(nodeProxy.isInTemplate).toBeTruthy();
+
+                // test
+                return reelDocument.insertTemplateObjectFromSerialization({
+                    "passLabel": {
+                        "prototype": "ui/pass.reel",
+                        "properties": {
+                            "element": {"#": "unexistingId"}
+                        }
+                    }
+                }, nodeProxy).then(function (objects) {
+                    console.log(reelDocument.templateNodes);
+                    expect(objects[0].label).not.toBe("pass1");
                 });
 
             }).timeout(WAITSFOR_TIMEOUT);
