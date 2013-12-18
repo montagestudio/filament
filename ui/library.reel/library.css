@@ -1,7 +1,5 @@
 .Library.Panel {
     -webkit-user-select: none;
-    border-left: 1px solid hsl(0, 0%, 75%);
-    background: hsl(0, 0%, 86%);
 }
 
 .Library-search {

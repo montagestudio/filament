@@ -45,6 +45,32 @@
 }
 
 
+/* Column --------------------------------- */
+
+.Column {
+    position: relative;
+    border-left: 1px solid hsl(0, 0%, 75%);
+    background: hsl(0, 0%, 86%);
+}
+
+
+.Column:before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    width: 1px;
+    height: 68px;
+    background: linear-gradient( hsl(0, 0%, 98%), hsl(0, 0%, 95%) 17px, hsl(0, 0%, 75%) );
+    left: -1px;
+    top: 0;
+}
+
+.Column.Panel--hidden:before {
+    content: none;
+}
+
+
+
 /* Panel --------------------------------- */
 
 .Panel.Panel--hidden {
@@ -71,12 +97,9 @@
 .Panel {
     -webkit-flex: 0 0 200px;
     min-width: 0;
-    overflow: hidden;
     display: -webkit-flex;
     -webkit-flex-flow: column;
     position: relative;
-    border-left: 1px solid hsl(0, 0%, 75%);
-    background: hsl(0, 0%, 86%);
     -webkit-transition: -webkit-flex .3s cubic-bezier(.26, .06, .08, 1);
 }
 
@@ -135,6 +158,7 @@
     border-bottom: 1px solid hsla(0,0%,0%,.2);
     background: -webkit-linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
 }
+
 
 /* List --------------------------------- */
 
