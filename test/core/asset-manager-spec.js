@@ -43,55 +43,66 @@ describe("asset-manager-spec", function () {
                     // Valid
                     {
                         url: "/a/b/c/duck.dae",
-                        mimeType: "model/vnd.collada+xml"
+                        mimeType: "model/vnd.collada+xml",
+                        ino: 1
                     },
                     {
                         url: "/a/b/c/wine.dae",
-                        mimeType: "model/vnd.collada+xml"
+                        mimeType: "model/vnd.collada+xml",
+                        ino: 2
                     },
                     {
                         url: "/a/b/c/fall.png",
-                        mimeType: "image/png"
+                        mimeType: "image/png",
+                        ino: 3
                     },
                     {
                         url: "/a/b/c/winter.jpg",
-                        mimeType: "image/jpeg"
+                        mimeType: "image/jpeg",
+                        ino: 4
                     },
                     {
                         url: "/a/b/c/beach.aac",
-                        mimeType: "audio/aac"
+                        mimeType: "audio/aac",
+                        ino: 5
                     },
                     {
                         url: "/a/b/c/city.mp3",
-                        mimeType: "audio/mpeg"
+                        mimeType: "audio/mpeg",
+                        ino: 6
                     },
                     {
                         url: "/a/b/c/mountain.mp4",
-                        mimeType: "audio/aac"
+                        mimeType: "audio/aac",
+                        ino: 7
                     },
                     {
                         url: "/a/b/c/holiday.mp4",
-                        mimeType: "video/mp4"
+                        mimeType: "video/mp4",
+                        ino: 8
                     },
 
                     // Not valid
                     {
                         url: "/a/b/c/file.zip",
-                        mimeType: "application/zip"
+                        mimeType: "application/zip",
+                        ino: 9
                     },
                     {
                         url: "/a/b/c/file.json",
-                        mimeType: "application/json"
+                        mimeType: "application/json",
+                        ino: 10
                     },
 
                     {
                         url: "/a/b/c/file.au",
-                        mimeType: "audio/basic"
+                        mimeType: "audio/basic",
+                        ino: 11
                     }
                 ];
 
             fakeFiles.forEach(function (file) {
-                fileDescriptors.push(new FileDescriptor().init(file.url, {mode: 0, size:1024}, file.mimeType));
+                fileDescriptors.push(new FileDescriptor().init(file.url, file.ino, file.mimeType));
             });
 
 
@@ -153,7 +164,7 @@ describe("asset-manager-spec", function () {
                     change: "create",
                     mimeType: "image/jpeg",
                     currentStat: {
-                        size: 1024
+                        ino: 12
                     },
                     fileUrl: "/a/b/c/chocolate.jpg"
                 }
@@ -182,7 +193,7 @@ describe("asset-manager-spec", function () {
                     change: "delete",
                     mimeType: "image/jpeg",
                     currentStat: {
-                        size: 1024
+                        ino: 12
                     },
                     fileUrl: "/a/b/c/chocolate.jpg"
                 }
@@ -202,13 +213,13 @@ describe("asset-manager-spec", function () {
                         change: "update",
                         mimeType: asset.mimeType,
                         currentStat: {
-                            size: 2048
+                            ino: 23
                         },
                         fileUrl: asset.fileUrl
                     }
                 },
 
-                size = asset.size,
+                inode = asset.inode,
                 flag = false;
 
             runs(function() {
@@ -226,7 +237,7 @@ describe("asset-manager-spec", function () {
             runs(function() {
                 expect(assetsManager.assetsCount).toEqual(8);
                 var assetModified = assetsManager.getAssetByFileUrl("/a/b/c/winter.jpg");
-                expect(assetModified.size).not.toEqual(size);
+                expect(assetModified.inode).not.toEqual(inode);
             });
         });
 

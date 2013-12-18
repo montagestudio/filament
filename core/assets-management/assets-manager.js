@@ -540,7 +540,8 @@ exports.AssetsManager = Montage.specialize({
 
                     this._detectMimeTypeWithFileUrl(fileUrl).then(function (mimeType) {
                         if (AssetTools.isMimeTypeSupported(mimeType)) {
-                            var fileDescriptor = FileDescriptor.create().initWithUrlAndStat(fileUrl, fileChangeDetail.currentStat, mimeType);
+                            var fileDescriptor = FileDescriptor.create().initWithUrlAndStat(fileUrl, fileChangeDetail.currentStat);
+                            fileDescriptor.mimeType = mimeType;
 
                             if (!self._reviveAssetWithFileDescriptor(fileDescriptor)) {
                                 self.addAsset(self.createAssetWithFileDescriptor(fileDescriptor));
@@ -560,7 +561,8 @@ exports.AssetsManager = Montage.specialize({
                     if (updatedAsset) {
                         this._detectMimeTypeWithFileUrl(fileUrl).then(function (mimeType) {
                             if (AssetTools.isMimeTypeSupported(mimeType)) {
-                                var fileDescriptor = FileDescriptor.create().initWithUrlAndStat(fileUrl, fileChangeDetail.currentStat, mimeType);
+                                var fileDescriptor = FileDescriptor.create().initWithUrlAndStat(fileUrl, fileChangeDetail.currentStat);
+                                fileDescriptor.mimeType = mimeType;
 
                                 // TODO once a thumbnail mechanism will has been implemented,
                                 // trigger it and update the iconUrl property
