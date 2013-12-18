@@ -41,8 +41,11 @@ exports.Asset = Montage.specialize({
                 }
 
                 this._fileName = fileData.fileName;
-                this._name = fileData.name;
                 this._extension = fileData.extension;
+
+                this.dispatchBeforeOwnPropertyChange("name", this._name);
+                this._name = fileData.name;
+                this.dispatchOwnPropertyChange("name", fileData.name);
 
                 this.dispatchBeforeOwnPropertyChange("fileUrl", this._fileUrl);
                 this._fileUrl = fileUrl;

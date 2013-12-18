@@ -432,9 +432,7 @@ exports.AssetsManager = Montage.specialize({
      * @function
      * @private
      * @param {Object} fileDescriptor - an FileDescriptor Object.
-     * @param {String} fileDescriptor.name - a fileName.
-     * @param {String} fileDescriptor.mimeType - a supported mime-type.
-     * @param {number} fileDescriptor.stat - stats of an fileDescriptor.
+     * @param {number} fileDescriptor._stat - stats of an fileDescriptor.
      * @return {Boolean} if an asset has been revived.
      */
     _reviveAssetWithFileDescriptor: {
@@ -443,9 +441,7 @@ exports.AssetsManager = Montage.specialize({
                 deletedAsset = null;
 
             this._deletedAssetPool.some(function (currentDeletedAsset, index) {
-                if (fileDescriptor.name === currentDeletedAsset.fileName &&
-                    fileDescriptor._stat.ino === currentDeletedAsset.inode &&
-                    fileDescriptor.mimeType === currentDeletedAsset.mimeType) {
+                if (fileDescriptor._stat.ino === currentDeletedAsset.inode) {
 
                     self._deletedAssetPool.splice(index, 1);
                     deletedAsset = currentDeletedAsset;
@@ -481,7 +477,7 @@ exports.AssetsManager = Montage.specialize({
 
                 this._programmedReleasePool = setTimeout(function () {
                     self._deletedAssetPool.forEach(function (deletedAsset) {
-                        deletedAsset.fileUrl = null;
+                        deletedAsset.dispatchOwnPropertyChange("fileUrl", null);
                         deletedAsset = null;
                     });
 
