@@ -4,6 +4,59 @@
 }
 
 .Configurator-inspectorCondition {
+    display: flex;
+    flex-flow: column;
+}
+
+
+/* Inspector -------------------------------- */
+
+.Inspector {
+    display: -webkit-flex;
+    flex-flow: column;
+    position: relative;
+}
+
+
+/* Header -------------------------------- */
+
+.Inspector-header {
+    display: -webkit-flex;
+}
+
+.Inspector-header-title {
+    -webkit-flex: 1;
+    font-weight: bold;
+    color: hsl(0,0%,30%);
+    background: hsl(0,0%,95%);
+    border: 1px solid transparent;
+}
+
+.Inspector-header-title:hover, .Inspector-header-title:focus{
+    background: white;
+    border: 1px solid #B3B3B3;
+}
+
+.Inspector-header-title.matte-InputText {
+    border-color: hsl(0,0%,85%);
+    width: auto;
+}
+
+.Inspector-header-button[data-icon]:before {
+    font-size: 40px;
+    line-height: .7;
+    color: hsl(0, 0%, 60%);
+}
+
+.Inspector-header-button {
+    position: relative;
+}
+
+
+
+/* BlueprintEditor -------------------------------- */
+
+.BlueprintEditor {
     -webkit-flex: 1;
     min-height: 0;
     overflow-x: hidden;
@@ -11,41 +64,18 @@
     padding: 8px 0 8px 8px;
 }
 
-/* Scrollbar -------------------------------- */
-
-.Configurator ::-webkit-scrollbar {
+.BlueprintEditor::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 8px;
     height: 0px;
     background-color: hsla(0,0%,0%,0);
 }
 
-.Configurator ::-webkit-scrollbar-thumb {
+.BlueprintEditor::-webkit-scrollbar-thumb {
     border-radius: 2px;
     border: 3px solid hsla(0,0%,0%,0);
     background-clip: padding-box;
     background-color: hsla(0,0%,0%,.15);
-}
-
-
-/* Inspector Header -------------------------------- */
-
-.Inspector-header {
-    padding: 8px;
-    margin: 0 0 8px 0;
-    font-size: 12px;
-    font-weight: bold;
-    color: hsl(0,0%,50%);
-    border-radius: 4px;
-    text-shadow: 0 1px 0 hsla(0,0%,100%,.8);
-    border-bottom: 1px solid hsla(0,0%,0%,.1);
-    box-shadow: inset 0 1px 0 hsla(0,0%,100%,1);
-    background: -webkit-linear-gradient( hsl(0,0%,99%), hsl(0,0%,96%) );
-}
-
-.Inspector-header-title.matte-InputText {
-    border-color: hsl(0,0%,85%);
-    width: auto;
 }
 
 
