@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="assets-categories-bar.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "assetsCategoriesBar"}
+            },
+            "bindings": {
+                "selectedAssetCategory": {"<-": "@assetsCategoriesBarListController.selection.0"},
+                "toolBarController": {"<-": "@assetsCategoriesBarListController"}
+            }
+        },
+
+        "assetsCategoriesBarListController": {
+            "prototype": "montage/core/range-controller",
+            "bindings": {
+                "content": {"<-": "@owner.assetCategories"}
+            }
+        },
+
+        "assetsCategoriesBarList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "assetsCategoriesBarList"},
+                "isSelectionEnabled": true
+            },
+            "bindings": {
+                "contentController": {"<-": "@assetsCategoriesBarListController"}
+            }
+        },
+
+        "assetsLibraryItem": {
+            "prototype": "./assets-categories-bar-item.reel",
+            "properties": {
+                "element": {"#": "assetsCategoriesBarItem"}
+            },
+            "bindings": {
+                "assetCategoryName": {"<-": "@assetsCategoriesBarList.objectAtCurrentIteration"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="assetsCategoriesBar" class="AssetsCategoriesBar">
+        <ul data-montage-id="assetsCategoriesBarList" class="AssetsCategoriesBar-List">
+            <li data-montage-id="assetsCategoriesBarItem"></li>
+        </ul>
+    </div>
+</body>
+</html>

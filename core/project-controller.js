@@ -8,6 +8,7 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     Confirm = require("matte/ui/popup/confirm.reel").Confirm,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     ProjectController,
+    AssetsManager = require("./assets-management/assets-manager").AssetsManager,
     FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
     Template = require("montage/core/template").Template,
     URL = require("core/url");
@@ -132,6 +133,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._editorTypeInstanceMap = new WeakMap();
 
             this.openDocumentsController = RangeController.create().initWithContent(this.documents);
+
+            this.assetsManager = AssetsManager.create().init(this);
 
             //TODO get rid of this once we have property dependencies
             this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyWillChange", true);
