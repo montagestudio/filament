@@ -106,29 +106,24 @@
 </head>
 <body>
     <div data-montage-id="template-explorer" class="TemplateExplorer">
+        <header class="TemplateExplorer-bar Bar">
+            <form class="TemplateExplorerFilter">
+                <input data-montage-id="templateObjectFilter" class="Search" type="search" placeholder="Search">
+                <label class="TemplateExplorerFilter-label">
+                    <input data-montage-id="showHidden" type="checkbox">Show<span data-montage-id="hiddenCount"></span>Hidden
+                </label>
+                <label class="TemplateExplorerFilter-label">
+                    <input data-montage-id="showBindings" type="checkbox">Show Bindings
+                </label>
+                <label class="TemplateExplorerFilter-label">
+                    <input data-montage-id="showListeners" type="checkbox">Show Listeners
+                </label>
+            </form>
+        </header>
         <section data-montage-id="ownerObjectCell"></section>
         <ul data-montage-id="objectList" class="TemplateExplorer-list">
             <li data-montage-id="templateObjectCell" class="TemplateExplorer-list-item"></li>
         </ul>
-        <footer class="TemplateExplorer-footer Panel-bar">
-            <form class="TemplateExplorerFilter">
-                <input data-montage-id="templateObjectFilter" class="Search" type="search" placeholder="Search">
-                <label class="TemplateExplorerFilter-label">
-                    <input data-montage-id="showHidden" type="checkbox">
-                    Show
-                    <span data-montage-id="hiddenCount"></span>
-                    Hidden
-                </label>
-                <label class="TemplateExplorerFilter-label">
-                    <input data-montage-id="showBindings" type="checkbox">
-                    Show Bindings
-                </label>
-                <label class="TemplateExplorerFilter-label">
-                    <input data-montage-id="showListeners" type="checkbox">
-                    Show Listeners
-                </label>
-            </form>
-        </footer>
     </div>
 </body>
 </html>
