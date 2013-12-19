@@ -3,6 +3,7 @@ var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescript
     AssetsConfig = require("./assets-config").AssetsConfig,
     AssetTools = require("./asset-tools").AssetTools,
     Montage = require("montage/core/core").Montage,
+    ReelDocument = require("core/reel-document").ReelDocument,
 
     PACKAGE_LOCATION = require.location,
     Asset = require("./asset").Asset,
@@ -91,6 +92,22 @@ exports.AssetsManager = Montage.specialize({
 
     _projectController: {
         value: null
+    },
+
+    _projectUrl: {
+        get: function () {
+            if (this._projectController) {
+                return this._projectController.projectUrl;
+            }
+        }
+    },
+
+    _currentDocument: {
+        get: function () {
+            if (this._projectController) {
+                return this._projectController.currentDocument;
+            }
+        }
     },
 
     /**
@@ -227,6 +244,62 @@ exports.AssetsManager = Montage.specialize({
             }
 
             return null;
+        }
+    },
+
+    /**
+     * Gets a relative project path for an Asset.
+     * @function
+     * @public
+     * @param {Object} asset - an Asset object.
+     * @param {String} asset.fileUrl - an Asset fileUrl.
+     * @return {(String|undefined)} relative url.
+     */
+    getRelativePathWithAsset: {
+        value: function (asset) {
+            var projectUrl = this._projectUrl;
+
+            if (projectUrl && AssetTools.isAssetValid(asset)) {
+                var length = projectUrl.length;
+
+                if (projectUrl.charAt(length - 1) !== '/') {
+                    length++;
+                }
+
+                return asset.fileUrl.substring(length); // this.projectUrl + trailing slash.
+            }
+        }
+    },
+
+    /**
+     * Gets a relative project path for an Asset from a reel document.
+     * @function
+     * @public
+     * @param {Object} asset - an Asset object.
+     * @return {(String|undefined)} relative url.
+     */
+    getRelativePathWithAssetFromCurrentReelDocument: {
+        value: function (asset) {
+            var projectUrl = this._projectUrl,
+                currentReelDocument = this._currentDocument;
+
+            if (projectUrl && AssetTools.isAssetValid(asset) && currentReelDocument instanceof ReelDocument) {
+                var reelDocumentRelativeUrl = currentReelDocument.url.substring(projectUrl.length);
+
+                if (reelDocumentRelativeUrl) {
+                    var relativeUrl = this.getRelativeUrlWithAsset(asset),
+                        parts = reelDocumentRelativeUrl.split("/"),
+                        parents = "";
+
+                    parts.forEach(function (part) {
+                        if (part.length > 0) {
+                            parents += "../";
+                        }
+                    });
+
+                    return parents + relativeUrl;
+                }
+            }
         }
     },
 
