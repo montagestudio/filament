@@ -7,12 +7,16 @@
     top: 75px; /* Same as Panel-title height */
 }
 
-.PackageExplorer .Panel-title {
+.PackageExplorer-header {
     display: -webkit-flex;
     -webkit-justify-content: space-between;
     -webkit-align-items: center;
+    margin: 0;
     padding: 8px;
     height: 75px;
+    border-top: 1px solid hsla(0,0%,100%,1);
+    border-bottom: 1px solid hsl(0,0%,75%);
+    background: -webkit-linear-gradient( hsl(0,0%,96%), hsl(0,0%,96%) 28px, hsl(0,0%,92%) );
 }
 
 .PackageExplorer-icon {
@@ -22,14 +26,14 @@
     border-radius: 5px;
 }
 
-.PackageExplorer-title-flex {
+.PackageExplorer-info {
     -webkit-flex: 1;
     min-width: 0;
     line-height: 18px;
     margin-left: 8px;
 }
 
-.PackageExplorer .Panel-title-name {
+.PackageExplorer-name {
     margin: 0;
     padding: 0;
     color: hsl(0,0%,30%);
@@ -41,7 +45,7 @@
     white-space: nowrap;
 }
 
-.PackageExplorer .Panel-title-version {
+.PackageExplorer-version {
    display: block;
    color: hsl(0,0%,70%);
    font-size: 11px;
