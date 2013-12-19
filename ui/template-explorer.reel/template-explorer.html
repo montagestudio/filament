@@ -106,19 +106,15 @@
 </head>
 <body>
     <div data-montage-id="template-explorer" class="TemplateExplorer">
-        <header class="TemplateExplorer-bar Bar">
-            <form class="TemplateExplorerFilter">
-                <input data-montage-id="templateObjectFilter" class="Search" type="search" placeholder="Search">
-                <label class="TemplateExplorerFilter-label">
-                    <input data-montage-id="showHidden" type="checkbox">Show<span data-montage-id="hiddenCount"></span>Hidden
-                </label>
-                <label class="TemplateExplorerFilter-label">
-                    <input data-montage-id="showBindings" type="checkbox">Show Bindings
-                </label>
-                <label class="TemplateExplorerFilter-label">
-                    <input data-montage-id="showListeners" type="checkbox">Show Listeners
-                </label>
-            </form>
+        <header class="TemplateExplorer-header Bar">
+            <input data-montage-id="templateObjectFilter" class="Search" type="search" placeholder="Search">
+            <span>
+                <input data-montage-id="showBindings" class="TemplateExplorer-filterToggle TemplateExplorer-filterToggle--binding" type="checkbox" title="Toggle Bindings">
+                <input data-montage-id="showListeners" class="TemplateExplorer-filterToggle TemplateExplorer-filterToggle--listener" type="checkbox" title="Toggle Listeners">
+            </span>
+            <label class="TemplateExplorer-header-label">
+                <input data-montage-id="showHidden" type="checkbox">Show<span data-montage-id="hiddenCount" class="TemplateExplorer-header-counter"></span>Hidden
+            </label>
         </header>
         <section data-montage-id="ownerObjectCell"></section>
         <ul data-montage-id="objectList" class="TemplateExplorer-list">
