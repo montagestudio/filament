@@ -22,21 +22,33 @@ exports.AssetsLibraryItem = Component.specialize(/** @lends AssetsLibraryItem# *
         value: null
     },
 
+    assetsManager: {
+        value: null
+    },
+
     captureDragstart: {
         value: function (event) {
-            var dataTransfer = event.dataTransfer;
+            if (this.assetsManager) {
+                var relativeUrl = this.assetsManager.getRelativePathWithAssetFromCurrentReelDocument(this.prototypeAsset);
 
-            if (dataTransfer) {
-                dataTransfer.effectAllowed = "copyMove";
-                dataTransfer.setData("text/plain", this.prototypeAsset.fileUrl);
+                if (relativeUrl) {
+                    var dataTransfer = event.dataTransfer;
 
-                var iconElement = this.templateObjects.prototypeAssetIcon.element;
+                    if (dataTransfer) {
+                        dataTransfer.effectAllowed = "copyMove";
 
-                dataTransfer.setDragImage(
-                    iconElement,
-                    iconElement.width / 2,
-                    iconElement.height / 2
-                );
+
+                        dataTransfer.setData("text/plain", relativeUrl);
+
+                        var iconElement = this.templateObjects.prototypeAssetIcon.element;
+
+                        dataTransfer.setDragImage(
+                            iconElement,
+                            iconElement.width / 2,
+                            iconElement.height / 2
+                        );
+                    }
+                }
             }
         }
     }

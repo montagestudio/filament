@@ -14,6 +14,10 @@ exports.AssetsLibraryItems = Component.specialize(/** @lends AssetsLibraryItems#
         value: function AssetsLibraryItems() {
             this.super();
         }
+    },
+
+    assetsManager: {
+        value: null
     }
 
 });
