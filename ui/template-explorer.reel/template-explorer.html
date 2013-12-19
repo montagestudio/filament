@@ -107,13 +107,14 @@
 <body>
     <div data-montage-id="template-explorer" class="TemplateExplorer">
         <header class="TemplateExplorer-header Bar">
-            <input data-montage-id="templateObjectFilter" class="Search" type="search" placeholder="Search">
-            <span>
+            <div>
+                <input data-montage-id="templateObjectFilter" class="Search" type="search" placeholder="Search">
                 <input data-montage-id="showBindings" class="TemplateExplorer-filterToggle TemplateExplorer-filterToggle--binding" type="checkbox" title="Toggle Bindings">
                 <input data-montage-id="showListeners" class="TemplateExplorer-filterToggle TemplateExplorer-filterToggle--listener" type="checkbox" title="Toggle Listeners">
-            </span>
+            </div>
             <label class="TemplateExplorer-header-label">
-                <input data-montage-id="showHidden" type="checkbox">Show<span data-montage-id="hiddenCount" class="TemplateExplorer-header-counter"></span>Hidden
+                <input data-montage-id="showHidden" type="checkbox" class="TemplateExplorer-filterToggle TemplateExplorer-filterToggle--eye" title="Toggle Hidden">
+                <span data-montage-id="hiddenCount" class="TemplateExplorer-header-counter"></span>
             </label>
         </header>
         <section data-montage-id="ownerObjectCell"></section>
