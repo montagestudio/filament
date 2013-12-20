@@ -136,9 +136,7 @@ exports.ToolsBox = Object.create(Object.prototype, {
      */
     getValidPerson: {
         value: function (person) {
-            if (person && typeof person === 'object' && person.hasOwnProperty('name') &&
-                typeof person.name === 'string' && person.name.length > 0) {
-
+            if (person && typeof person === 'object' && person.hasOwnProperty('name') && typeof person.name === 'string') {
                 return {
                     name: person.name,
                     email: (typeof person.email === 'string' && this.isEmailValid(person.email)) ? person.email : '',
@@ -156,6 +154,18 @@ exports.ToolsBox = Object.create(Object.prototype, {
                 return this.isGitUrl(module.version) ? module.version : version ? module.name + '@' + version : module.name;
             }
             return null;
+        }
+    },
+
+    isPersonObjectEmpty: {
+        value: function (object) {
+            if (object && typeof object === "object") {
+                var propertiesCount = VALID_PERSON_PROPERTIES.reduce(function (propertiesCount, key) {
+                        return object[key] ? propertiesCount : propertiesCount - 1;
+                    }, VALID_PERSON_PROPERTIES.length);
+                return !propertiesCount;
+            }
+            return false;
         }
     }
 

@@ -60,6 +60,14 @@ exports.PackageDocument = EditingDocument.specialize( {
                         self._package = app.file || {};
                         self._classifyDependencies(app.dependencies, false); // classify dependencies
 
+                        var author = PackageTools.getValidPerson(self._package.author);
+
+                        self._package.author = author ? author : {
+                            name: "",
+                            email: "",
+                            url: ""
+                        };
+
                         self._getOutDatedDependencies();
                         return self;
                     });
@@ -244,10 +252,8 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     homepage: {
         set: function (homepage) {
-            if (PackageTools.isUrlValid(homepage)) {
-                this._package.homepage = homepage;
-                this._modificationsAccepted();
-            }
+            this._package.homepage = PackageTools.isUrlValid(homepage) ? homepage : '';
+            this._modificationsAccepted();
         },
         get: function () {
             return this._package.homepage;
@@ -1115,7 +1121,14 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function (url, dataWriter) {
             var self = this,
                 jsonPackage = JSON.stringify(this._package, function (key, value) {
-                    return (value !== null) ?  value : undefined;
+                    if (!value || (Array.isArray(value) && value.length === 0) ||
+                        (typeof value === "object" && (Object.keys(value).length === 0 ||
+                            (key === PACKAGE_PROPERTIES_ALLOWED_MODIFY.author && PackageTools.isPersonObjectEmpty(value))))) {
+
+                        return void 0;
+                    }
+
+                    return value;
                 }, 4);
 
             this._savingInProgress = Promise.when(dataWriter(jsonPackage, url)).then(function (value) {
