@@ -28,13 +28,17 @@
     margin-right: 12px;
 }
 
-.TemplateExplorer-header-label {
+.TemplateExplorer-hiddenControl {
     display: inline-block;
     margin: 0;
     vertical-align: middle;
     font-size: 11px;
     color: hsl(0,0%,50%);
     white-space: nowrap;
+}
+
+.TemplateExplorer-hiddenControl.is-hidden {
+    visibility: hidden;
 }
 
 .TemplateExplorer-header-counter {
