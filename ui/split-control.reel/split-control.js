@@ -23,6 +23,22 @@ exports.SplitControl = Montage.create(AbstractSlider, /** @lends SplitControl# *
         }
     },
 
+    _valuePercentage: {
+        value: null
+    },
+
+    valuePercentage: {
+        set: function (value) {
+            if (this._valuePercentage !== value) {
+                this._valuePercentage = value;
+                this.needsDraw = true;
+            }
+        },
+        get: function () {
+            return this._valuePercentage;
+        }
+    },
+
     enterDocument: {
         value: function (firstTime) {
             AbstractSlider.enterDocument.apply(this, arguments);
@@ -48,7 +64,7 @@ exports.SplitControl = Montage.create(AbstractSlider, /** @lends SplitControl# *
 
     willDraw: {
         value: function () {
-            if (!this._completedFirstDraw) {
+            if (!this._completedFirstDraw && !this.valuePercentage) {
                 this._updateValueFromDom();
             }
             this.super();
@@ -155,6 +171,20 @@ exports.SplitControl = Montage.create(AbstractSlider, /** @lends SplitControl# *
 
     _initialOffset: {
         value: 0
-    }
+    },
 
+    // Override abstract-slider.js
+    // because this slider does not use any thumb, the abstract-slider is missing a component.
+    prepareForActivationEvents: {
+        value: function () {
+            this._translateComposer.addEventListener('translateStart', this, false);
+            this._translateComposer.addEventListener('translate', this, false);
+            this._translateComposer.addEventListener('translateEnd', this, false);
+
+            this._upKeyComposer.addEventListener("keyPress", this, false);
+            this._downKeyComposer.addEventListener("keyPress", this, false);
+            this._leftKeyComposer.addEventListener("keyPress", this, false);
+            this._rightKeyComposer.addEventListener("keyPress", this, false);
+        }
+    }
 });
