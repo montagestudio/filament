@@ -37,6 +37,20 @@
     display: none;
 }
 
+/* Tabs --------------------------------- */
+
+.Tabs {
+    display: -webkit-flex;
+    -webkit-align-items: flex-end;
+    overflow: hidden;
+    position: relative;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: hsl(0,0%,30%);
+}
+
 /* Editor Area ----------------------- */
 
 .componentEditorArea {
