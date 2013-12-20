@@ -16,6 +16,7 @@ exports.Asset = Montage.specialize({
     initWithFileDescriptor: {
         value: function (fileDescriptor) {
             this._fill(fileDescriptor);
+            this.exist = true;
             return this;
         }
     },
@@ -141,6 +142,10 @@ exports.Asset = Montage.specialize({
         get: function () {
             return this._inode;
         }
+    },
+
+    exist: {
+        value: null
     },
 
     updateWithFileDescriptor: {

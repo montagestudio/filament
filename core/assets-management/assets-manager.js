@@ -8,8 +8,6 @@ var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescript
     PACKAGE_LOCATION = require.location,
     Asset = require("./asset").Asset,
 
-    TIMEOUT_RELEASE_DELETED_ASSET_POOL = 350,// After 350ms the pool of deleted assets will be released.
-
     FILE_SYSTEM_CHANGES = {
         CREATE: "create",
         DELETE: "delete",
@@ -27,9 +25,6 @@ exports.AssetsManager = Montage.specialize({
             this.super();
             this.assets = {};
             this.assetCategories = {};
-            this._deletedAssetPool = [];
-
-            this.addRangeAtPathChangeListener("_deletedAssetPool", this, "handleDeletedAssetPoolChange");
 
             var self = this,
                 assetCategories = AssetsConfig.assetCategories;
@@ -80,14 +75,6 @@ exports.AssetsManager = Montage.specialize({
                 }, 0);
             }
         }
-    },
-
-    _deletedAssetPool: {
-        value: null
-    },
-
-    _programmedReleasePool: {
-        value: null
     },
 
     _projectController: {
@@ -263,10 +250,10 @@ exports.AssetsManager = Montage.specialize({
                 var length = projectUrl.length;
 
                 if (projectUrl.charAt(length - 1) !== '/') {
-                    length++;
+                    length++;  // projectUrl + trailing slash.
                 }
 
-                return asset.fileUrl.substring(length); // this.projectUrl + trailing slash.
+                return asset.fileUrl.substring(length);
             }
         }
     },
@@ -287,7 +274,7 @@ exports.AssetsManager = Montage.specialize({
                 var reelDocumentRelativeUrl = currentReelDocument.url.substring(projectUrl.length);
 
                 if (reelDocumentRelativeUrl) {
-                    var relativeUrl = this.getRelativeUrlWithAsset(asset),
+                    var relativeUrl = this.getRelativePathWithAsset(asset),
                         parts = reelDocumentRelativeUrl.split("/"),
                         parents = "";
 
@@ -371,7 +358,45 @@ exports.AssetsManager = Montage.specialize({
     },
 
     /**
-     * Finds an Asset with the list of Asset of the AssetManager.
+     * Finds an Asset within the list of Assets in terms of a file url.
+     * @function
+     * @private
+     * @param {String} property - an Asset property.
+     * @param {String} value - a value.
+     * @param {String} [category] - an Asset Category.
+     * @return {(Object|null)} an Asset Object that has been found.
+     */
+    _findAssetWithPropertyAndValue: {
+        value: function (property, value, assetCategory) {
+            var assetFound = null;
+
+            // If assetCategory is not undefined looks into the Asset category, in order to find an asset
+            if (AssetTools.isAssetCategoryValid(assetCategory)) {
+                var assetSet = this.assets[assetCategory];
+
+                assetSet.some(function (asset) {
+                    assetFound = asset[property] === value ? asset : null;
+                    return !!assetFound;
+                });
+
+                return assetFound;
+            }
+
+            // If assetCategory is undefined looks into each Asset categories.
+            var assetCategories = this.assetCategories,
+                self = this;
+
+            Object.keys(assetCategories).some(function (assetCategory) {
+                assetFound = self._findAssetWithPropertyAndValue(property, value, assetCategory);
+                return !!assetFound;
+            });
+
+            return assetFound;
+        }
+    },
+
+    /**
+     * Finds an Asset within the list of Assets in terms of a file url.
      * @function
      * @private
      * @param {String} fileUrl - a file Url.
@@ -380,33 +405,25 @@ exports.AssetsManager = Montage.specialize({
      */
     _findAssetWithFileUrl: {
         value: function (fileUrl, assetCategory) {
-            var assetFound = null;
-
             if (AssetTools.isAFile(fileUrl)) {
-
-                // If assetCategory is not undefined looks into the Asset category, in order to find an asset
-                if (AssetTools.isAssetCategoryValid(assetCategory)) {
-                    var assetSet = this.assets[assetCategory];
-
-                    assetSet.some(function (asset) {
-                        assetFound = asset.fileUrl === fileUrl ? asset : null;
-                        return !!assetFound;
-                    });
-
-                    return assetFound;
-                }
-
-                // If assetCategory is undefined looks into each Asset categories.
-                var assetCategories = this.assetCategories,
-                    self = this;
-
-                Object.keys(assetCategories).some(function (assetCategory) {
-                    assetFound = self._findAssetWithFileUrl(fileUrl, assetCategory);
-                    return !!assetFound;
-                });
+                return this._findAssetWithPropertyAndValue("fileUrl", fileUrl, assetCategory);
             }
 
-            return assetFound;
+            return null;
+        }
+    },
+
+    /**
+     * Finds an Asset within the list of Assets in terms of an index node.
+     * @function
+     * @private
+     * @param {String} fileUrl - an index node.
+     * @param {String} [category] - an Asset Category.
+     * @return {(Object|null)} an Asset Object that has been found.
+     */
+    _findAssetWithInode: {
+        value: function (inode, assetCategory) {
+            return this._findAssetWithPropertyAndValue("inode", inode, assetCategory);
         }
     },
 
@@ -420,6 +437,32 @@ exports.AssetsManager = Montage.specialize({
     getAssetByFileUrl: {
         value: function (fileUrl) {
             return this._findAssetWithFileUrl(fileUrl);
+        }
+    },
+
+    /**
+     * Finds and Gets an Asset with a relative path.
+     * @function
+     * @public
+     * @param {String} relativePath - a relative path.
+     * @return {(Object|null)} Asset Object.
+     */
+    getAssetByRelativePath: {
+        value: function (relativePath) {
+            if (typeof relativePath === "string" && relativePath.length > 0 && this._projectUrl) {
+                var relativePathCleaned = relativePath.replace(/\.\.\//g, ''),
+                    projectUrl = this._projectUrl;
+
+                if (projectUrl.charAt(length - 1) !== '/') {
+                    projectUrl += '/';
+                }
+
+                if (relativePathCleaned.charAt(0) === '/') {
+                    relativePathCleaned = relativePathCleaned.substring(1);
+                }
+
+                return this._findAssetWithFileUrl(projectUrl + relativePathCleaned);
+            }
         }
     },
 
@@ -463,42 +506,6 @@ exports.AssetsManager = Montage.specialize({
     },
 
     /**
-     * Detach an Asset Object from the list with a file url.
-     * @function
-     * @private
-     * @param {String} fileUrl - a file Url.
-     * @return {(Object|null)} an Asset Object detached.
-     */
-    _detachAssetWithFileUrl: {
-        value: function (fileUrl) {
-            var asset = this._findAssetWithFileUrl(fileUrl);
-            return this._detachAsset(asset);
-        }
-    },
-
-    /**
-     * Detach an Asset Object from the list.
-     * @function
-     * @private
-     * @param {Object} asset - an Asset Object.
-     * @param {String} asset.category - an Asset Category.
-     * @return {(Object|null)} an Asset Object detached.
-     */
-    _detachAsset: {
-        value: function (asset) {
-            if (AssetTools.isAssetValid(asset)) {
-                var index = this._findAssetIndex(asset);
-
-                if (index >= 0) {
-                    return this.assets[asset.category].splice(index, 1)[0];
-                }
-            }
-
-            return null;
-        }
-    },
-
-    /**
      * Tries to find an Asset Object from the deleted assets list,
      * by comparing data within a FileDescriptor Object.
      * Whether a Asset has been found, it will be updated and added to the assets list.
@@ -510,67 +517,15 @@ exports.AssetsManager = Montage.specialize({
      */
     _reviveAssetWithFileDescriptor: {
         value: function (fileDescriptor) {
-            var self = this,
-                deletedAsset = null;
+            var asset = this._findAssetWithInode(fileDescriptor._stat.ino);
 
-            this._deletedAssetPool.some(function (currentDeletedAsset, index) {
-                if (fileDescriptor._stat.ino === currentDeletedAsset.inode) {
-
-                    self._deletedAssetPool.splice(index, 1);
-                    deletedAsset = currentDeletedAsset;
-                }
-
-                return !!deletedAsset;
-            });
-
-            if (deletedAsset) {
-                deletedAsset.updateWithFileDescriptor(fileDescriptor);
-                self.addAsset(deletedAsset);
-
+            if (asset && !asset.exist) {
+                asset.exist = true;
+                asset.updateWithFileDescriptor(fileDescriptor);
                 return true;
             }
 
             return false;
-        }
-    },
-
-    /**
-     * Programs to empty the deleted asset list.
-     * @function
-     * @private
-     */
-    _programReleasePool: {
-        value: function () {
-            if (this._programmedReleasePool) {
-                clearTimeout(this._programmedReleasePool);
-            }
-
-            if (this._deletedAssetPool.length > 0) {
-                var self = this;
-
-                this._programmedReleasePool = setTimeout(function () {
-                    self._deletedAssetPool.forEach(function (deletedAsset) {
-                        deletedAsset.dispatchOwnPropertyChange("fileUrl", null);
-                        deletedAsset = null;
-                    });
-
-                    self._deletedAssetPool = [];
-                }, TIMEOUT_RELEASE_DELETED_ASSET_POOL);
-            }
-        }
-    },
-
-    /**
-     * Programs to release the deletedAssetPool,
-     * when an Asset Object has been added to it.
-     * @function
-     * @public
-     */
-    handleDeletedAssetPoolChange: {
-        value: function (plus, minus, index) {
-            if (plus) {
-                this._programReleasePool();
-            }
         }
     },
 
@@ -620,8 +575,11 @@ exports.AssetsManager = Montage.specialize({
                     break;
 
                 case FILE_SYSTEM_CHANGES.DELETE:
-                    var detachedAsset = this._detachAssetWithFileUrl(fileUrl);
-                    this._deletedAssetPool.push(detachedAsset);
+                    var asset = this._findAssetWithFileUrl(fileUrl);
+
+                    if (asset) {
+                        asset.exist = false;
+                    }
                     break;
 
                 case FILE_SYSTEM_CHANGES.UPDATE:

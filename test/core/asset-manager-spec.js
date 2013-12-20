@@ -17,19 +17,21 @@ describe("asset-manager-spec", function () {
             var fileDescriptors = [],
 
                 projectController = {
-                    environmentBridge: environmentBridgeMock({
+                    environmentBridge: new environmentBridgeMock({
                         detectMimeTypeAtUrl: function (url) {
                             return Promise.fcall(function () {
                                 var fileData = AssetTools.defineFileDataWithUrl(url),
                                     mimeType = null;
 
-                                switch (fileData.extension) {
-                                case 'png':
-                                    mimeType = "image/png";
-                                    break;
-                                case 'jpg':
-                                    mimeType = "image/jpeg";
-                                    break;
+                                if (fileData) {
+                                    switch (fileData.extension) {
+                                        case 'png':
+                                            mimeType = "image/png";
+                                            break;
+                                        case 'jpg':
+                                            mimeType = "image/jpeg";
+                                            break;
+                                    }
                                 }
 
                                 return mimeType;
@@ -195,15 +197,15 @@ describe("asset-manager-spec", function () {
                     currentStat: {
                         ino: 12
                     },
-                    fileUrl: "/a/b/c/chocolate.jpg"
+                    fileUrl: "/a/b/c/winter.jpg"
                 }
             };
 
             assetsManager.handleFileSystemChange(event);
+            var asset = assetsManager.getAssetByFileUrl("/a/b/c/winter.jpg");
 
             expect(assetsManager.assetsCount).toEqual(8);
-            expect(assetsManager.assets.IMAGE.length).toEqual(2);
-            expect(assetsManager.assets.IMAGE[1].name).not.toEqual("chocolate");
+            expect(asset.exist).toEqual(false);
         });
 
         it("should be able to update an asset when a file has been modified", function () {
