@@ -7,6 +7,7 @@ require("montage-testing").run(require, [
     "extensions/package-manager.filament-extension/test/package-tools-spec.js",
     "test/core/node-proxy-spec",
     "test/core/object-references-spec",
+    "test/core/add-value-to-set-at-spec",
     "test/core/project-controller-extensions-spec",
     "test/core/project-controller-file-spec",
     "test/core/project-controller-filesystem-spec",

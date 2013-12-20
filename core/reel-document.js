@@ -14,7 +14,8 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     URL = require("core/node/url"),
     PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint,
     EventBlueprint = require("montage/core/meta/event-blueprint").EventBlueprint,
-    ObjectReferences = require("core/object-references").ObjectReferences;
+    ObjectReferences = require("core/object-references").ObjectReferences,
+    addValueToSetAt = require("core/add-value-to-set-at");
 
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = EditingDocument.specialize({
@@ -1951,7 +1952,7 @@ exports.ReelDocument = EditingDocument.specialize({
     // Owner blueprint
 
     addOwnerBlueprintProperty: {
-        value: function (name, valueType, cardinality, collectionValueType) {
+        value: function (name, index, valueType, cardinality, collectionValueType) {
             var self = this;
             return this.undoManager.register(
                 "Add owner property",
@@ -1969,7 +1970,13 @@ exports.ReelDocument = EditingDocument.specialize({
                     }
 
                     blueprint.addPropertyBlueprint(propertyBlueprint);
-                    blueprint.addPropertyBlueprintToGroupNamed(propertyBlueprint, self._exportName);
+
+                    if (index !== void 0) {
+                        blueprint.propertyBlueprintGroupForName(self._exportName).splice(index, 0, propertyBlueprint);
+                    } else {
+                        blueprint.addPropertyBlueprintToGroupNamed(propertyBlueprint, self._exportName);
+                    }
+
                     return [self.removeOwnerBlueprintProperty, self, name];
                 })
             );
@@ -2003,16 +2010,19 @@ exports.ReelDocument = EditingDocument.specialize({
                 "Remove owner property",
                 this._ownerBlueprint.then(function (blueprint) {
                     var propertyBlueprint = blueprint.propertyBlueprintForName(name);
+
+                    var index = blueprint.propertyBlueprintGroupForName(self._exportName).indexOf(propertyBlueprint);
+
                     blueprint.removePropertyBlueprint(propertyBlueprint);
                     blueprint.removePropertyBlueprintFromGroupNamed(propertyBlueprint, self._exportName);
-                    return [self.addOwnerBlueprintProperty, self, name, propertyBlueprint.valueType, propertyBlueprint.cardinality, propertyBlueprint.collectionValueType];
+                    return [self.addOwnerBlueprintProperty, self, name, index, propertyBlueprint.valueType, propertyBlueprint.cardinality, propertyBlueprint.collectionValueType];
                 })
             );
         }
     },
 
     addOwnerBlueprintEvent: {
-        value: function (name) {
+        value: function (name, index) {
             var self = this;
             return this.undoManager.register(
                 "Add owner event",
@@ -2023,6 +2033,10 @@ exports.ReelDocument = EditingDocument.specialize({
                     );
 
                     blueprint.addEventBlueprint(eventBlueprint);
+                    if (index !== void 0) {
+                        blueprint.ownEventBlueprints.delete(eventBlueprint);
+                        addValueToSetAt(blueprint.ownEventBlueprints, eventBlueprint, index);
+                    }
                     return [self.removeOwnerBlueprintEvent, self, name];
                 })
             );
@@ -2036,8 +2050,13 @@ exports.ReelDocument = EditingDocument.specialize({
                 "Remove owner event",
                 this._ownerBlueprint.then(function (blueprint) {
                     var eventBlueprint = blueprint.eventBlueprintForName(name);
+
+                    var order = blueprint.ownEventBlueprints.order;
+                    var index = order.find(eventBlueprint).index;
+
                     blueprint.removeEventBlueprint(eventBlueprint);
-                    return [self.addOwnerBlueprintEvent, self, name];
+
+                    return [self.addOwnerBlueprintEvent, self, name, index];
                 })
             );
         }
