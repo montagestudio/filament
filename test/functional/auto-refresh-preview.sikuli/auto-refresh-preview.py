@@ -42,4 +42,4 @@ lumieres.save()
 
 # Meanwhile, back in the browser we should see the result, switch to it and verify
 type(Key.TAB, Key.META)
-browserRegion.wait("1379636165608.png", 1)
+browserRegion.wait("1387523152393.png", 5)
