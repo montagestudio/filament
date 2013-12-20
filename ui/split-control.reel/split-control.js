@@ -171,6 +171,20 @@ exports.SplitControl = Montage.create(AbstractSlider, /** @lends SplitControl# *
 
     _initialOffset: {
         value: 0
-    }
+    },
 
+    // Override abstract-slider.js
+    // because this slider does not use any thumb, the abstract-slider is missing a component.
+    prepareForActivationEvents: {
+        value: function () {
+            this._translateComposer.addEventListener('translateStart', this, false);
+            this._translateComposer.addEventListener('translate', this, false);
+            this._translateComposer.addEventListener('translateEnd', this, false);
+
+            this._upKeyComposer.addEventListener("keyPress", this, false);
+            this._downKeyComposer.addEventListener("keyPress", this, false);
+            this._leftKeyComposer.addEventListener("keyPress", this, false);
+            this._rightKeyComposer.addEventListener("keyPress", this, false);
+        }
+    }
 });
