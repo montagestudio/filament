@@ -66,6 +66,9 @@ describe("package document", function () {
 
         expect(packageDocument.setProperty('version', '#1.2.3')).toEqual(false);
         expect(packageDocument._modificationsAccepted).not.toHaveBeenCalled();
+
+        expect(packageDocument.setProperty('version', '')).toEqual(false);
+        expect(packageDocument._modificationsAccepted).not.toHaveBeenCalled();
     });
 
     it('should be able to save a valid package private value.', function () {
