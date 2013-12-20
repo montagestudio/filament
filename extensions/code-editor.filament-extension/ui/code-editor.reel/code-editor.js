@@ -101,7 +101,7 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
             // Configure html-hint
             ["data-montage-id", "data-param", "data-arg"]
             .forEach(function(attr) {
-                    CodeMirror.htmlSchema.s.attrs[attr] = null;
+                CodeMirror.htmlSchema.s.attrs[attr] = null;
             });
 
             extraKeys.Tab = function(cm) {
@@ -173,7 +173,7 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
                                 cm.indentLine(i);
                             }
                         });
-                    })
+                    });
                 }
             });
 
@@ -308,9 +308,36 @@ CodeEditor.autocompleteOptions = {
             "tree-controller": 1
         },
         "ui": {
-            "condition.reel": 1, "flow.reel": 1, "loader.reel": 1, "modal-overlay.reel": 1, "overlay.reel": 1, "repetition.reel": 1, "slot.reel": 1, "substitution.reel": 1, "text.reel": 1}
+            "condition.reel": 1,
+            "flow.reel": 1,
+            "loader.reel": 1,
+            "modal-overlay.reel": 1,
+            "overlay.reel": 1,
+            "repetition.reel": 1,
+            "slot.reel": 1,
+            "substitution.reel": 1,
+            "text.reel": 1
+        }
     }, "digit": {
-        "ui": {"badge.reel": 1, "button.reel": 1, "checkbox.reel": 1, "image.reel": 1, "list-item.reel": 1, "list.reel": 1, "number-field.reel": 1, "radio-button.reel": 1, "select.reel": 1, "slider.reel": 1, "text-area.reel": 1, "text-field.reel": 1, "text.reel": 1, "title.reel": 1, "toggle-switch.reel": 1, "video-control.reel": 1, "video.reel": 1}
+        "ui": {
+            "badge.reel": 1,
+            "button.reel": 1,
+            "checkbox.reel": 1,
+            "image.reel": 1,
+            "list-item.reel": 1,
+            "list.reel": 1,
+            "number-field.reel": 1,
+            "radio-button.reel": 1,
+            "select.reel": 1,
+            "slider.reel": 1,
+            "text-area.reel": 1,
+            "text-field.reel": 1,
+            "text.reel": 1,
+            "title.reel": 1,
+            "toggle-switch.reel": 1,
+            "video-control.reel": 1,
+            "video.reel": 1
+        }
     }})
 };
 
@@ -320,7 +347,7 @@ function createAutocompleteModuleOptions(structure) {
     var createOptions = function(structure, base) {
         Object.keys(structure).forEach(function(moduleId) {
             if (typeof structure[moduleId] === "object") {
-                createOptions(structure[moduleId], base + moduleId + "/")
+                createOptions(structure[moduleId], base + moduleId + "/");
             } else {
                 modules.push(base + moduleId);
             }
