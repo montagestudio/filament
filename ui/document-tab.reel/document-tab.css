@@ -1,14 +1,15 @@
 /* Tab --------------------------------- */
 
 .DocumentTab:first-child {
-    border-top-left-radius: 0;
     margin-left: 0;
+    border-top-left-radius: 0;
 }
 
 .DocumentTab {
     -webkit-flex: 1 1 auto;
     min-width: 0;
     max-width: 180px;
+    position: relative;
     display: -webkit-flex;
     -webkit-align-items: center;
     height: 28px;
@@ -17,11 +18,10 @@
     line-height: 26px;
     font-size: 11px;
     font-weight: normal;
-    border-radius: 6px 6px 0 0;
     color: hsl(0,0%,70%);
-    background-color: hsla(0,0%,100%,.1);
+    border-radius: 4px 4px 0 0;
+    background-color: hsl(0, 0%, 36%);
     cursor: pointer;
-    -webkit-transition: background-color .1s;
 }
 
 .DocumentTab:hover {
@@ -31,10 +31,10 @@
 .DocumentTab:active,
 .DocumentTab:focus {
     background-color: hsla(0,0%,100%,.06);
-    -webkit-transition-duration: .1s;
 }
 
 .DocumentTab.selected {
+    z-index: 1;
     color: hsl(0,0%,30%);
     text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
     border-top: 1px solid hsla(0,0%,100%,1);
@@ -45,6 +45,37 @@
 .DocumentTab.selected:first-child {
     border-left: 1px solid hsl(0, 0%, 75%);
 }
+
+/* Corners */
+
+.DocumentTab-corner {
+    position: absolute;
+    bottom: 0;
+    display: none;
+    pointer-events: none;
+}
+
+.DocumentTab.selected .DocumentTab-corner {
+    display: block;
+}
+
+.DocumentTab.selected:first-child .DocumentTab-corner--left {
+    display: none;
+}
+
+.DocumentTab-corner--left {
+    left: -6px;
+}
+
+.DocumentTab-corner--right {
+    right: -6px;
+}
+
+.DocumentTab.selected .DocumentTab-corner-shape {
+    fill: hsl(0, 0%, 96%);
+}
+
+
 
 
 .DocumentTab .DocumentTab-label {
