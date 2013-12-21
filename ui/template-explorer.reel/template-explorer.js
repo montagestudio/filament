@@ -134,69 +134,90 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     /*
         Build the templateObjectsTree from the templatesNodes
         Steps:
-            - create a list of components to be arranged in the tree "nodeProxies"
+            - add the root element
+            - create a list of components to be arranged in the tree, "proxyFIFO"
             - pick the head element, "nodeProxy" of the list and try to add it to the tree. 
               While adding to the tree we keep a map of elements to tree node updated.
-            - if it fails, the element's parent is not in the map, the element is added back to the list
+            - if the element has no DOM representation it is added to the root of the tree as first child
+            - otherwise we seek the element's parentComponent to then add it
+            - if the parentComponent has not yet been added we postpone adding this node for later by pushing back into the FIFO
     */
     buildTemplateObjectTree: {
-        value: function () {
-            var self = this;
-            // map of ReelProxy to tree node
-            var map = new WeakMap();
+        value: function() {
+            var editingDocument = this.editingDocument,
+                proxyFIFO = [],
+                successivePushes = 0,
+                reelProxy;
+
+            // map of ReelProxy to tree node, for quick tree node access
+            var insertionMap = new WeakMap();
+
             // add the root
-            var node = {
+            var root = {
                 templateObject: this.ownerObject,
                 children: []
             };
-            this.templateObjectsTree = node;
-            map.set(this.ownerObject, node);
+            this.templateObjectsTree = root;
+            insertionMap.set(this.ownerObject, root);
 
-            // add the nodes
-            var successivePushes = 0,
-                nodeProxy,
-                nodeProxies = this.editingDocument.templateNodes.filter(function(nodeProxy) {
-                    return nodeProxy.component && (nodeProxy.component !== self.ownerObject);
-                });
-            while (nodeProxy = nodeProxies.shift()) {
-                var reelProxy = nodeProxy.component;
-                // find the parent component
-                var parentNodeProxy = nodeProxy,
-                    parentReelProxy;
-                while (parentNodeProxy = parentNodeProxy.parentNode) {
-                    if (parentNodeProxy.component) {
-                        parentReelProxy = parentNodeProxy.component;
-                        break;
+            // filling the FIFO
+            for (var componentName in editingDocument.editingProxyMap) {
+                var component = editingDocument.editingProxyMap[componentName];
+                if (component !== this.ownerObject) {
+                    proxyFIFO.push(component);
+                }
+            }
+
+            while (reelProxy = proxyFIFO.shift()) {
+                //debugger
+                if (reelProxy.properties && reelProxy.properties.get('element')) {
+                    // find the parent component
+                    var nodeProxy = reelProxy.properties.get('element'),
+                        parentNodeProxy = nodeProxy,
+                        parentReelProxy;
+                    while (parentNodeProxy = parentNodeProxy.parentNode) {
+                        if (parentNodeProxy.component) {
+                            parentReelProxy = parentNodeProxy.component;
+                            break;
+                        }
                     }
-                }
-                if (!parentReelProxy) {
-                    throw new Error("Can not build templateObjectsTree: can't find parent component");
-                }
+                    if (!parentReelProxy) {
+                        throw new Error("Can not build templateObjectsTree: can't find parent component");
+                    }
 
-                if (map.has(parentReelProxy)) {
-                    // add the node to the tree
-                    node = {
+                    if (insertionMap.has(parentReelProxy)) {
+                        // add the node to the tree
+                        var node = {
+                            templateObject: reelProxy,
+                            children: []
+                        };
+                        var parentNode = insertionMap.get(parentReelProxy);
+                        parentNode.children.push(node);
+                        insertionMap.set(reelProxy, node);
+                        // reset the infinite loop guard
+                        successivePushes = 0;
+                    } else {
+                        // parentReelProxy not found -> has not been added to the tree yet
+                        proxyFIFO.push(reelProxy);
+                        successivePushes++;
+                    }
+                } else {
+                    // has not DOM representation, added as root children
+                    var node = {
                         templateObject: reelProxy,
                         children: []
                     };
-                    var parentNode = map.get(parentReelProxy);
-                    parentNode.children.push(node);
-                    map.set(reelProxy, node);
-                    // reset the infinite loop guard
-                    successivePushes = 0;
-                } else {
-                    // parentReelProxy not found -> has not been added to the tree yet
-                    nodeProxies.push(nodeProxy);
-                    
-                    // to be safe, guard to prevent an infinite loop
-                    successivePushes++;
-                    if (successivePushes > nodeProxies.length) {
-                        throw new Error("Can not build templateObjectsTree: looping on the same components");
-                    }
+                    // let's add them in top to keep the tree "cleaner"
+                    root.children.unshift(node);
+                }
+
+                // to be safe, guard to prevent an infinite loop
+                if (successivePushes > proxyFIFO.length) {
+                    throw new Error("Can not build templateObjectsTree: looping on the same components");
                 }
             }
         }
-    },
+   },
 
     _willAcceptDrop: {
         value: false
