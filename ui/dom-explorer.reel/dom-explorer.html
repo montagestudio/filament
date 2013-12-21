@@ -12,7 +12,7 @@
             },
             "bindings": {
                 "isDrawerOpen": {"<->":"@drawer.isOpen"},
-                "classList.has('drawerOpen')": {"<-": "isDrawerOpen"}
+                "classList.has('is-drawerOpen')": {"<-": "isDrawerOpen"}
             },
             "listeners": [
                 {
@@ -123,10 +123,10 @@
         <div data-montage-id="nodeList" class="NodeList">
             <div data-montage-id="nodeCell" data-arg="treeNode"></div>
         </div>
-        <button data-montage-id="toggleDrawer" class="toggleDrawerButton Button--circle">+</button>
-        <footer data-montage-id="drawer" class="DomExplorer-footer Panel-bar">
+        <footer data-montage-id="drawer">
             <div data-montage-id="createNodeCell" data-arg="createElement"></div>
         </footer>
+        <button data-montage-id="toggleDrawer" class="DomExplorer-drawerButton">+</button>
     </div>
 </body>
 </html>

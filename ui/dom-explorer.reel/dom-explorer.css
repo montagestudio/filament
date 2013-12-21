@@ -32,48 +32,41 @@
     padding-top: 0px;
 }
 
+.DomExplorer.is-drawerOpen {
+    padding-bottom: 48px;
+}
+
 /* drawer toggle button */
-.DomExplorer .toggleDrawerButton {
+.DomExplorer-drawerButton.matte-Button {
     position: absolute;
-    bottom: 14px;
-    left: 10px;
-    z-index: 1;
+    bottom: 8px;
+    right: 8px;
+    font-size: 20px;
+    color: hsl(0, 0%, 50%);
+    -webkit-font-smoothing: none;
+    -webkit-transition: -webkit-transform .12s;
+    margin: 0;
+    padding: 0;
+    height: 32px;
+    width: 32px;
+    min-width: 0;
+    border: none;
+    background-color: hsl(0, 0%, 92%);
+    font-weight: bold;
+    border-radius: 16px;
+    line-height: 0;
+    text-align: center;
 }
 
-.DomExplorer.drawerOpen .toggleDrawerButton {
-    -webkit-animation-duration: .5s;
-    -webkit-animation-name: plusToCross;
-    -webkit-transform:rotate(45deg);
+.DomExplorer-drawerButton.matte-Button:hover {
+    background-color: hsl(0, 0%, 96%);
 }
 
-.DomExplorer .toggleDrawerButton {
-    -webkit-animation-duration: .5s;
-    -webkit-animation-name: crossToPlus;
-    -webkit-transform:rotate(0deg);
+.DomExplorer-drawerButton.matte-Button:active {
+    background-color: hsl(0, 0%, 88%);
 }
 
-@-webkit-keyframes plusToCross {
-    from {
-        -webkit-transform:rotate(0deg);
-    }
-    to {
-        -webkit-transform:rotate(45deg);
-    }
-}
-
-@-webkit-keyframes crossToPlus {
-    from {
-        -webkit-transform:rotate(45deg);
-    }
-    to {
-        -webkit-transform:rotate(0deg);
-    }
-}
-
-/* footer */
-.DomExplorer-footer.Panel-bar {
-    border-top: 1px solid hsl(0,0%,85%);
-    overflow: hidden;
-    box-sizing: content-box;
-    border-radius: 0px;
+.DomExplorer.is-drawerOpen .DomExplorer-drawerButton {
+    -webkit-transform: rotate(45deg);
+    background-color: hsla(0, 0%, 92%, 0);
 }

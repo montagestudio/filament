@@ -5,6 +5,12 @@
     -webkit-align-items: center;
     -webkit-justify-content: center;
     padding: 1px 0 2px 0; /* TODO: Fix consistent footer height */
+    opacity: 0;
+}
+
+.DomExplorer.is-drawerOpen .CreateNodeCell {
+    opacity: 1;
+    -webkit-transition: opacity .12s .12s;
 }
 
 .CreateNodeCell-segment {
@@ -111,7 +117,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    min-width: 45px;
+    min-width: 80px;
+}
+.CreateNodeCell .matte-InputText {
+    width: 80px;
 }
 
 .CreateNodeCell-reset.matte-Button:hover {
