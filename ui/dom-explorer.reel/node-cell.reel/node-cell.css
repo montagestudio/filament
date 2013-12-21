@@ -3,29 +3,34 @@
     -webkit-flex-flow: row nowrap;
     -webkit-align-items: center;
     position: relative;
+    background: hsl(0,0%,92%);
+}
+
+
+/* NodeCell-segment ------------------------- */
+
+.NodeCell-segment {
+    display: -webkit-inline-flex;
+    margin: 3px 0;
+    border-radius: 22px;
     background: hsl(0,0%,96%);
+    border: 1px solid hsl(0, 0%, 80%);
 }
 
 .NodeCell--highlighted .NodeCell-segment {
-    background: hsl(210,100%,90%);
+    background: hsl(210,100%,92%);
 }
 
 .NodeCell--dragged .NodeCell-segment {
     opacity: 0.4;
 }
 
-.NodeCell-segment {
-    display: -webkit-inline-flex;
-    margin: 2px 0;
-    border-radius: 22px;
-    background: hsl(0,0%,90%);
-    padding: 1px;
-    border: 1px solid hsla(0,0%,0%,.08);
-}
-
-.NodeCell--selected .NodeCell-segment{
+.NodeCell--selected .NodeCell-segment {
     border: 1px solid hsl(210,100%,60%);
 }
+
+
+/* NodeCell-segment-item ------------------------- */
 
 .NodeCell-segment-item {
     display: block;

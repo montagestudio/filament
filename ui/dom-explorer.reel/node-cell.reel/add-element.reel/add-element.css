@@ -1,17 +1,20 @@
 .AddElement {
     margin: 0px;
-    padding: 2px 22px;
+    padding: 3px 22px;
     margin: 0px;
-    background: hsl(0,0%,96%);
+    background: hsl(0,0%,92%);
     display: none;
 }
 
 .AddElement .AddElement-segment {
-    border: 2px dashed hsl(0,0%,90%);
+    border: 2px dashed hsl(0,0%,84%);
     border-radius: 22px;
     display: inline-block;
     text-align: center;
     width: 140px;
+    font-size: 11px;
+    line-height: 22px;
+    color: hsl(0,0%,60%);
 }
 
 .AddElement .AddElement-segment input{
@@ -22,12 +25,6 @@
     border-radius: 22px;
     line-height: 22px;
     font-size: 11px;
-}
-
-.AddElement .AddElement-segment:before {
-    font-size: 11px;
-    line-height: 22px;
-    color: hsl(0,0%,60%);
 }
 
 .AddElement.child .AddElement-segment:before {
@@ -48,15 +45,9 @@
     margin-left: 0px;
 }
 
-
 .AddElement--dropTarget .AddElement-segment{
-    border-style: dashed;
-    border-color: hsl(216,100%,70%);
-    color: hsl(216,100%,70%);
-}
-
-.AddElement--dropTarget .AddElement-segment:before {
-    color: hsl(216,100%,70%);
+    color: hsl(216,100%,66%);
+    border-color: hsl(216,100%,72%);
 }
 
 .AddElement.dropover {
