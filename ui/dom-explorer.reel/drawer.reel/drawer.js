@@ -14,7 +14,9 @@ exports.Drawer = Component.specialize(/** @lends Drawer# */ {
             this.super();
         }
     },
-
+    
+    // TODO: Clean up below, since the "hide" class is not needed anymore.
+    
     enterDocument: {
         value: function (firstTime) {
             if (!firstTime) { return; }

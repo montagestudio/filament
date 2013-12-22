@@ -17,15 +17,14 @@
     display: -webkit-inline-flex;
     margin: 2px 0;
     border-radius: 22px;
-    border: 1px solid hsla(0,0%,85%, 1);
-    background-color: hsl(0,0%,90%);
-    background-image: repeating-linear-gradient(-45deg, transparent, transparent 5px, hsla(0,0%,100%,.3) 5px, hsla(0,0%,100%,.3) 10px);
-    background-clip: content-box;
+    border: 1px solid hsl(0, 0%, 75%);
+    background-color: hsl(0, 0%, 90%);
+    box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, 0.08), 0 1px 1px hsla(0, 100%, 100%, 0.8);
 }
 
 .CreateNodeCell-segment[draggable=true]:hover {
-    background: hsl(0,0%,90%);
     box-shadow: 0 1px 2px hsla(0,0%,0%,.2);
+    background: hsl(0,0%,96%);
 }
 
 .CreateNodeCell--draggable {
@@ -42,7 +41,7 @@
 }
 
 .CreateNodeCell-segment-item--tag {
-    color: hsl(0,0%,60%);
+    color: hsl(0,0%,50%);
     text-transform: lowercase;
     overflow: hidden; /* Fixes text-transform Chrome bug */
 }
@@ -68,7 +67,7 @@
 .CreateNodeCell-segment-item.TextEditorField--editing {
     z-index: 10;
     box-shadow: 0 0 0 1px hsl(210,100%,70%);
-    background-color: hsla(210,100%,60%,.1);
+    background-color: hsla(210,100%,96%,1);
 }
 
 .CreateNodeCell-segment-item.TextEditorField--editing:first-child {
@@ -102,10 +101,10 @@
     margin: 0;
     border-radius: 0;
     background-color: transparent;
-    width: 100%;
+    width: 80px;
     height: 20px;
     padding: 0;
-    font-size: inherit;
+    font: inherit;
     line-height: 20px;
     font-weight: inherit;
     font-style: inherit;
@@ -114,13 +113,12 @@
 .CreateNodeCell .montage-Text {
     display: block;
     outline: none;
+    font: inherit;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     min-width: 80px;
-}
-.CreateNodeCell .matte-InputText {
-    width: 80px;
+    border-top: 1px solid hsla(0, 0%, 0%, 0);
 }
 
 .CreateNodeCell-reset.matte-Button:hover {
