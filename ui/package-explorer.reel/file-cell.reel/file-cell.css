@@ -1,4 +1,5 @@
 .FileCell {
+    display: flex;
     font-size: 11px;
     white-space: nowrap;
 }
@@ -16,6 +17,7 @@
     position: relative;
 	margin: 0;
 	width: 14px;
+	height: 14px;
 	color: hsl(0,0%,50%);
 	border: none;
 	border-radius: 0;
@@ -33,20 +35,11 @@
 
 /* Button --------------------------------- */
 
-.FileCell .FileCell-button.open,
-.FileCell .FileCell-button.open:hover {
-    font-weight: bold;
-    color: hsl(0,0%,20%);
-    border-radius: 4px;
-    background-color: hsla(0,0%,100%,1);
-    box-shadow: 0 1px 3px hsla(0,0%,0%,0.1);
-}
-
 .FileCell .FileCell-button {
 	-webkit-appearance: none;
 	text-align: left;
 	height: auto;
-    min-height: 16px;
+    min-height: 20px;
 	min-width: 0;
 	margin: 0;
 	border-radius: 0;
@@ -56,7 +49,7 @@
     text-shadow: 0 1px 0 hsla(0,0%,100%,.3);    
     background: none;
     background-repeat: no-repeat;
-    padding-left: 22px;
+    padding-left: 18px; /* Same as indentValue of tree.reel/indent.js */
     background-size: 14px;
     background-position: 2px center;
 }
@@ -77,3 +70,16 @@
 .FileCell .FileCell-button.image {      background-image: url(/assets/icons/image.svg); }
 .FileCell .FileCell-button.reel {       background-image: url(/assets/icons/reel.png); }
 .FileCell .FileCell-button.package {    background-image: url(/assets/icons/package.png); }
+
+
+.FileCell-button-label {
+    padding: 1px 3px;
+}
+
+.FileCell-button.open .FileCell-button-label {
+    font-weight: bold;
+    color: hsl(0, 0%, 20%);
+    border-radius: 2px;
+    background-color: hsl(0, 100%, 100%);
+    box-shadow: 0 1px 1px hsla(0, 0%, 0%, 0.06);
+}

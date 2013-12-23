@@ -1,11 +1,10 @@
 .PackageExplorer .Tree-list {
     /* TODO: Remove the first item so the minus margin is not needed */
-    margin: -20px 0 0 -12px;
+    margin: 8px 0 0 -8px;
 }
 
-.Tree-list-row {
-    padding-top: 2px;
-    padding-bottom: 2px;
+.PackageExplorer .Tree-list-row:first-child {
+    display: none; /* Hide first item */
 }
 
 .Tree-list-row.selected {
