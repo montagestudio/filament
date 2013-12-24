@@ -21,6 +21,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this.super();
             this._fileChangesHead = { next: null };
             this._lastFileChangeForDocumentMap = new WeakMap();
+            this._filesMap = new Map();
         }
     },
 
@@ -95,8 +96,13 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: null
     },
 
-    // The flat list of files to present in the package explorer
+    // The tree list of files to present in the package explorer
     files: {
+        value: null
+    },
+
+    // A map with all files loaded (fileUrl -> file)
+    _filesMap: {
         value: null
     },
 
@@ -1181,6 +1187,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 newFile = FileDescriptor.create().initWithUrlAndStat(fileUrl, currentStat);
                 //TODO account for some sort of sorting at this point?
                 parent.children.add(newFile);
+                this._storeFile(newFile);
             }
 
             //TODO try to be more focused about this based upon the file that was created
@@ -1203,6 +1210,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             if (parent && parent.expanded) {
                 parent.children.delete(child);
+                this._evictFile(child);
             }
 
             //TODO try to be more focused about this based upon the file that was deleted
@@ -1300,7 +1308,65 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      */
     filesAtUrl: {
         value: function (url) {
-            return this.environmentBridge.list(url);
+            var self = this,
+                filesMap = this._filesMap;
+
+            return this.environmentBridge.list(url)
+            .then(function(files) {
+                for (var i = 0, file; (file = files[i]); i++) {
+                    if (!filesMap.has(file.fileUrl)) {
+                        self._storeFile(file);
+                    }
+                }
+                return files;
+            });
+        }
+    },
+
+    /**
+     * Gets a map of all the files in the project.
+     */
+    getFilesMap: {
+        value: function() {
+            var self = this,
+                filesMap = this._filesMap;
+
+            return this.environmentBridge.listTreeAtUrl(this.projectUrl)
+            .then(function(files) {
+                for (var i = 0, file; (file = files[i]); i++) {
+                    var fileUrl = file.fileUrl;
+                    if (!filesMap.has(fileUrl)) {
+                        self._storeFile(file);
+                        // Wire the tree
+                        var parentUrl = fileUrl.substring(0, fileUrl.replace(/\/$/, "").lastIndexOf("/") + 1);
+                        var parent = filesMap.get(parentUrl);
+                        if (parent) {
+                            parent.expanded = true;
+                            parent.children.add(file);
+                        }
+                    }
+                }
+                return filesMap;
+            });
+        }
+    },
+
+    /**
+     * Stores the file in the files map.
+     */
+    _storeFile: {
+        value: function(file) {
+            file.filename = file.fileUrl.slice(this.projectUrl.length);
+            this._filesMap.set(file.fileUrl, file);
+        }
+    },
+
+    /**
+     * Evicts the file from the files map.
+     */
+    _evictFile: {
+        value: function(file) {
+            this._filesMap.delete(file.fileUrl);
         }
     },
 

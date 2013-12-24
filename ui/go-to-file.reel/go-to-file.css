@@ -1,0 +1,35 @@
+.GoToFile-container {
+    width: 800px;
+    background-color: white;
+    border: 1px solid gray;
+    padding: 3px;
+}
+
+.GoToFile-input {
+    width: 100%;
+}
+
+.GoToFile-matchList {
+    padding: 2px;
+    margin: 0;
+    list-style-type: none;
+}
+
+.GoToFile-matchList > li {
+    padding: 3px;
+}
+
+.GoToFile-matchList .selected {
+    background-color: #c9f3ff;
+}
+
+.GoToFile-filename {
+    color: gray;
+}
+
+.GoToFile-info {
+    margin-top: 6px;
+    text-align: center;
+    font-style: italic;
+    color: gray;
+}

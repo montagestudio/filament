@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="go-to-file.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "prototype": "ui/go-to-file.reel",
+            "properties": {
+                "element": {"#": "owner"}
+            }
+        },
+        "name": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "name"}
+            },
+            "bindings": {
+                "value": {"<-": "@matchList:iteration.object.name"}
+            }
+        },
+        "filename": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "filename"}
+            },
+            "bindings": {
+                "value": {"<-": "@matchList:iteration.object.filename"}
+            }
+        },
+        "matchList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "matchList"}
+            }
+        },
+        "overlay": {
+            "prototype": "montage/ui/overlay.reel",
+            "properties": {
+                "element": {"#": "overlay"},
+                "delegate": {"@": "owner"}
+            }
+        },
+        "searchField": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "searchField"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.searchText"}
+            },
+            "listeners": [{
+                "type": "action",
+                "listener": {"@": "owner"}
+            }]
+        },
+
+        "noFiles": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "noFiles"}
+            },
+            "bindings": {
+                "condition": {"<-": "!@owner.files && @owner.searchText"}
+            }
+        },
+
+        "noMatches": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "noMatches"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.searchText && @matchList.content.length == 0"}
+            }
+        },
+
+        "goUp": {
+            "prototype": "montage/composer/key-composer",
+            "properties": {
+                "keys": "up",
+                "identifier": "goUp",
+                "component": {"@": "overlay"}
+            },
+            "listeners": [
+                {
+                    "type": "keyPress",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "goDown": {
+            "prototype": "montage/composer/key-composer",
+            "properties": {
+                "keys": "down",
+                "identifier": "goDown",
+                "component": {"@": "overlay"}
+            },
+            "listeners": [
+                {
+                    "type": "keyPress",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="GoToFile">
+        <div data-montage-id="overlay" class="GoToFile-overlay">
+            <div class="GoToFile-container">
+                <input data-montage-id="searchField" type="text" class="GoToFile-input">
+                <div data-montage-id="noFiles" class="GoToFile-info">Loading...</div>
+                <div data-montage-id="noMatches" class="GoToFile-info">No Matches</div>
+                <ul data-montage-id="matchList" class="GoToFile-matchList">
+                    <li>
+                        <span data-montage-id="name"></span> <span class="GoToFile-filename">(<span data-montage-id="filename"></span>)</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

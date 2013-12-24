@@ -11,6 +11,9 @@ describe("core/project-controller-extensions-spec", function () {
 
     beforeEach(function () {
         bridge = environmentBridgeMock({
+            list: function() {
+                return Promise([]);
+            },
             componentsInPackage: function () {
                 return Promise(["projectUrl/ui/pass.reel"]);
             },

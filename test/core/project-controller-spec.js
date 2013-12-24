@@ -3,7 +3,8 @@ var Montage = require("montage").Montage,
     menuMock = require("test/mocks/menu-mocks").menuMock,
     editorControllerMock = require("test/mocks/editor-controller-mocks").editorControllerMock,
     ViewController = require("core/view-controller").ViewController,
-    ProjectController = require("core/project-controller").ProjectController;
+    ProjectController = require("core/project-controller").ProjectController,
+    Promise = require("montage/core/promise").Promise;
 
 describe("core/project-controller-spec", function () {
 
@@ -18,6 +19,9 @@ describe("core/project-controller-spec", function () {
         });
 
         bridge = environmentBridgeMock({
+            list: function() {
+                return Promise([]);
+            },
             mainMenu: mockMenu
         });
 
