@@ -12,6 +12,7 @@
 
 /* Workbench --------------------------------- */
 
-.DocumentEditor .Workbench {
+.DocumentEditor-workbench {
 	-webkit-flex: 1;
+	background: hsl(0, 100%, 92%) url(bg-stage.svg);
 }
