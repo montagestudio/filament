@@ -17,3 +17,9 @@
 	background: hsl(0, 0%, 92%) url(bg-stage.svg);
 	background-position: 5px;
 }
+
+
+/* Fixes scrollbar appearing while stage is loading */
+.editing-frame::-webkit-scrollbar {
+    width: 0;
+}
