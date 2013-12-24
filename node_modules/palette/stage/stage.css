@@ -7,7 +7,6 @@ body {
 	-webkit-box-pack: center;
 	-webkit-box-align: center;
 	margin: 0;
-	background: url(bg-stage.svg) hsl(0, 0%, 90%);
 }
 
 [data-montage-id="owner"] {
