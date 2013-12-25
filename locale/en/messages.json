@@ -10,14 +10,14 @@
         ]
     },
     "add_component": {
-        "message": "Add Component…",
+        "message": "Component",
         "description": "Button to add a component to the stage",
         "locations": [
             "ui/package-explorer.reel/package-explorer.html"
         ]
     },
     "add_module": {
-        "message": "Add Module…",
+        "message": "Module",
         "description": "Button to add a module to a package",
         "locations": [
             "ui/package-explorer.reel/package-explorer.html"
