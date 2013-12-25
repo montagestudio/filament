@@ -42,15 +42,11 @@
 }
 
 .TemplateExplorer-header-counter {
-    position: relative;
-    top: -3px;
-    left: -3px;
-    color: hsl(0, 0%, 50%);
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
     font-weight: bold;
-    background: hsl(0,0%,100%);
-    padding: 0.1em 0.5em;
-    border-radius: 1em;
-    box-shadow: 0 1px 1px hsla(0, 0%, 0%, 0.13);
+    line-height: 0;
 }
 
 .TemplateExplorer-filterToggle.matte-InputCheckbox {
