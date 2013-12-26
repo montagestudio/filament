@@ -16,29 +16,26 @@
 	color: hsl(0,0%,30%);
 	text-align: left;
 	text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
-	border-radius: 0;
 	border: none;
-	border-top: 1px solid hsla(0,0%,100%,0.2);
-	border-bottom: 1px solid hsla(0,0%,0%,0.05);
-	background: hsl(0,0%,95%);
-	cursor: pointer;
+	background: transparent;
+	cursor: move;
 }
 
-.LibraryCell-button.matte-Button:hover {
-    background: hsl(0,0%,98%);
+.LibraryCell-button.matte-Button:hover,
+.LibraryCell-button.matte-Button.active,
+.LibraryCell-button.matte-Button.active:hover {
+    background: transparent;
 }
 
 .LibraryCell-button.matte-Button:focus {
 	border-color: transparent;
-}
-
-.LibraryCell:last-child .LibraryCell-button.matte-Button {
-    border-radius: 0 0 4px 4px;
+	background: transparent;
 }
 
 .LibraryCell-button[draggable=false].matte-Button {
-    background-color: hsl(43, 100%, 85%) !important;
-    opacity: .5 !important;
+    background-color: hsl(43, 100%, 85%);
+    pointer-events: none;
+    cursor: default;
 }
 
 /* Icon --------------------------------- */
@@ -54,10 +51,6 @@
 /* Label --------------------------------- */
 
 .LibraryCell-button-label {
-	display: inline-block;
-	text-align: left;
-	font-size: 12px;
-	line-height: 20px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
@@ -74,7 +67,7 @@
 
 .LibraryGroup {
     font-size: 0;
-    background: hsl(0,0%,94%);
+    background: hsl(0,0%,96%);
     border-radius: 4px;
 }
 
@@ -88,20 +81,14 @@
     max-width: 61px;
 }
 
-.LibraryCell-button.matte-Button,
-.LibraryCell-button.matte-Button:focus {
-    padding: 4px;
+.LibraryCell-button.matte-Button {
+    padding: 8px 3px;
     text-align: center;
-    background: transparent;
-    border-right: 1px solid hsla(0, 0%, 0%, 0.05);
+    border-radius: 4px;
 }
 
-.LibraryCell:nth-child(3n) .LibraryCell-button.matte-Button {
-    border-right: none;
-}
-
-.LibraryCell:last-child .LibraryCell-button.matte-Button {
-    border-radius: 0;
+.LibraryCell-button.matte-Button:hover {
+    background: hsl(0,0%,100%);
 }
 
 .LibraryCell-button-icon {
@@ -111,7 +98,13 @@
 .LibraryCell-button-label {
     display: block;
     font-size: 9px;
+    color: hsl(0, 0%, 60%);
     text-align: center;
+    line-height: 16px;
+}
+
+.LibraryCell-button:hover .LibraryCell-button-label {
+    color: hsl(0, 0%, 30%);
 }
 
 
@@ -125,12 +118,30 @@
     max-width: initial;
 }
 
+.LibraryGroup.isList .LibraryCell-button.matte-Button {
+    display: flex;
+    padding: 4px 4px 4px 12px;
+    border-radius: 0;
+}
+
+.LibraryGroup.isList .LibraryCell:last-child .LibraryCell-button.matte-Button {
+    border-radius: 0 0 4px 4px;
+}
+
+.LibraryGroup.isList .LibraryCell-button-icon {
+    width: 28px;
+}
+
 .LibraryGroup.isList .LibraryCell-button-label {
-    display: inline-block;
+    flex: 1;
     font-size: 12px;
     text-align: left;
-    width: 114px;
-    margin-left: 4px;
-    line-height: 28px;
+    margin-left: 12px;
+    line-height: 19px;
+    color: hsl(0, 0%, 50%);
+}
+
+.LibraryGroup.isList .LibraryCell-button:hover .LibraryCell-button-label {
+    color: hsl(0, 0%, 30%);
 }
 
