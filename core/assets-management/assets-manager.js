@@ -409,6 +409,31 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    _resolvePaths: {
+        value: function (path, path2) {
+            if (path.charAt(path.length-1) !== "/") {
+                path += "/";
+            }
+
+            var parents = path2.match(/\.\.\//g),
+                count = parents ? parents.length : 0,
+                endPath = path2.substring(count * 3); // ../ => 3 characters
+
+            if (count > 0) {
+                var parts = this._decomposePath(path),
+                    startPath = "/";
+
+                for (var i = 0, length = parts.length - count; i < length;  i++) {
+                    startPath += parts[i] + "/";
+                }
+
+                return startPath + endPath;
+            }
+
+            return path + endPath;
+        }
+    },
+
     /**
      * Gets a relative project path for an Asset from a reel document.
      * @function
@@ -604,19 +629,11 @@ exports.AssetsManager = Montage.specialize({
      */
     getAssetByRelativePath: {
         value: function (relativePath) {
-            if (typeof relativePath === "string" && relativePath.length > 0 && this._projectUrl) {
-                var relativePathCleaned = relativePath.replace(/\.\.\//g, ''),
-                    projectUrl = this._projectUrl;
-
-                if (projectUrl.charAt(length - 1) !== '/') {
-                    projectUrl += '/';
-                }
-
-                if (relativePathCleaned.charAt(0) === '/') {
-                    relativePathCleaned = relativePathCleaned.substring(1);
-                }
-
-                return this._findAssetWithFileUrl(projectUrl + relativePathCleaned);
+            if (typeof relativePath === "string" && relativePath.length > 0 && this._currentDocument) {
+                var documentUrlPath = this._currentDocument.url.replace(/^fs:\//, ''),
+                    relativePath = relativePath.replace(/^\.\//, ''),
+                    assetUrl = this._resolvePaths(documentUrlPath, relativePath);
+                return this._findAssetWithFileUrl("fs:/" + assetUrl);
             }
         }
     },

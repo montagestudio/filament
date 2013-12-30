@@ -231,6 +231,25 @@ describe("asset-manager-spec", function () {
 
         });
 
+        it("should be able to find an asset with a relative path in terms of the current reel document", function () {
+            assetsManager._projectUrl = 'fs://a/b/c/';
+
+            var fileDescriptor = new FileDescriptor().init("fs://a/b/c/d/e/f.png", {mode: 0}, "image/png"),
+                asset = assetsManager.createAssetWithFileDescriptor(fileDescriptor);
+
+            var fileDescriptor2 = new FileDescriptor().init("fs://a/b/c/e/f.png", {mode: 0}, "image/png"),
+                asset2 = assetsManager.createAssetWithFileDescriptor(fileDescriptor2);
+
+            assetsManager.addAsset(asset);
+            assetsManager.addAsset(asset2);
+            assetsManager._projectController.currentDocument._url = 'fs://a/b/c/d/';
+
+            expect(assetsManager.getAssetByRelativePath("e/f.png").fileUrl).toEqual(asset.fileUrl);
+            expect(assetsManager.getAssetByRelativePath("./e/f.png").fileUrl).toEqual(asset.fileUrl);
+            expect(assetsManager.getAssetByRelativePath("../e/f.png").fileUrl).toEqual(asset2.fileUrl);
+            expect(assetsManager.getAssetByRelativePath("../../e/f.png")).toBe(null);
+        });
+
         it("should be able to update an asset when a file has been modified", function () {
             var asset = assetsManager.getAssetByFileUrl("/a/b/c/winter.jpg"),
                 event = {
