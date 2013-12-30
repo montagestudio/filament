@@ -384,26 +384,28 @@ exports.AssetsManager = Montage.specialize({
     },
 
     /**
-     * Gets a relative project path for an Asset.
+     * Decompose a path into an array,
+     * Where each entry represent a level
+     * "/a/b/c/d/ => ["a", "b", "c", "d"]
      * @function
-     * @public
-     * @param {Object} asset - an Asset object.
-     * @param {String} asset.fileUrl - an Asset fileUrl.
-     * @return {(String|undefined)} relative url.
+     * @private
+     * @param {String} path - an path.
+     * @return {Array}
      */
-    getRelativePathWithAsset: {
-        value: function (asset) {
-            var projectUrl = this._projectUrl;
+    _decomposePath: {
+        value: function (path) {
+            var tmp = path.split("/"),
+                parts = [];
 
-            if (projectUrl && AssetTools.isAssetValid(asset)) {
-                var length = projectUrl.length;
+            for (var i = 0, length = tmp.length; i < length; i++) {
+                var part = tmp[i];
 
-                if (projectUrl.charAt(length - 1) !== '/') {
-                    length++;  // projectUrl + trailing slash.
+                if (part.length > 0) {
+                    parts.push(part);
                 }
-
-                return asset.fileUrl.substring(length);
             }
+
+            return parts;
         }
     },
 
@@ -420,20 +422,24 @@ exports.AssetsManager = Montage.specialize({
                 currentReelDocument = this._currentDocument;
 
             if (projectUrl && AssetTools.isAssetValid(asset) && currentReelDocument instanceof ReelDocument) {
-                var reelDocumentRelativeUrl = currentReelDocument.url.substring(projectUrl.length);
+                var reelDocumentRelativeUrl = currentReelDocument.url.substring(projectUrl.length),
+                    assetRelativeUrl = asset.fileUrl.substring(projectUrl.length);
 
-                if (reelDocumentRelativeUrl) {
-                    var relativeUrl = this.getRelativePathWithAsset(asset),
-                        parts = reelDocumentRelativeUrl.split("/"),
-                        parents = "";
+                if (reelDocumentRelativeUrl && assetRelativeUrl) {
+                    var pos = 0;
 
-                    parts.forEach(function (part) {
-                        if (part.length > 0) {
-                            parents += "../";
-                        }
-                    });
+                    while (reelDocumentRelativeUrl.charAt(pos) === assetRelativeUrl.charAt(pos)) {
+                        ++pos;
+                    }
 
-                    return parents + relativeUrl;
+                    var deepPart = this._decomposePath(reelDocumentRelativeUrl.substring(pos)),
+                        relativePath = "";
+
+                    for (var i = 0, length = deepPart.length; i < length; i++) {
+                        relativePath += "../";
+                    }
+
+                    return relativePath + assetRelativeUrl.substring(pos);
                 }
             }
         }

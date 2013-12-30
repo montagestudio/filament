@@ -4,6 +4,7 @@ var environmentBridgeMock = require("test/mocks/environment-bridge-mocks").envir
     FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
     AssetsManager = require("core/assets-management/assets-manager").AssetsManager,
     AssetTools = require("core/assets-management/asset-tools").AssetTools,
+    ReelDocument = require("core/reel-document").ReelDocument,
     AssetCategories = AssetsManager.create().assetCategories,
     Promise = require("montage/core/promise").Promise;
 
@@ -15,6 +16,8 @@ describe("asset-manager-spec", function () {
 
         beforeEach(function () {
             var fileDescriptors = [],
+
+                reelDocument = ReelDocument.create(),
 
                 projectController = {
                     environmentBridge: new environmentBridgeMock({
@@ -37,7 +40,8 @@ describe("asset-manager-spec", function () {
                                 return mimeType;
                             });
                         }
-                    })
+                    }),
+                    currentDocument: reelDocument
                 },
 
                 fakeFiles = [
@@ -106,8 +110,6 @@ describe("asset-manager-spec", function () {
             fakeFiles.forEach(function (file) {
                 fileDescriptors.push(new FileDescriptor().init(file.url, file.ino, file.mimeType));
             });
-
-
 
             assetsManager = AssetsManager.create();
             assetsManager._projectController = projectController;
@@ -207,6 +209,26 @@ describe("asset-manager-spec", function () {
 
             expect(assetsManager.assetsCount).toEqual(8);
             expect(asset.exist).toEqual(false);
+        });
+
+        it("should be able to get a relative path for an asset from the current reel document", function () {
+            var fileDescriptor = new FileDescriptor().init("/a/b/c/d/e/f.png", {mode: 0}, "image/png"),
+                asset = assetsManager.createAssetWithFileDescriptor(fileDescriptor),
+                assetRoot = assetsManager.getAssetByFileUrl("/a/b/c/winter.jpg");
+
+            assetsManager.addAsset(asset);
+            assetsManager._projectUrl = '/a/b/c/';
+            assetsManager._projectController.currentDocument._url = '/a/b/c/d/';
+
+            expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(assetRoot)).toEqual('../winter.jpg');
+            expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(asset)).toEqual('e/f.png');
+
+            assetsManager._projectController.currentDocument._url = '/a/b/c/w/x/y';
+            expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(asset)).toEqual('../../../d/e/f.png');
+
+            assetsManager._projectController.currentDocument._url = '/a/b/c/d/z/g/';
+            expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(asset)).toEqual('../../e/f.png');
+
         });
 
         it("should be able to update an asset when a file has been modified", function () {
