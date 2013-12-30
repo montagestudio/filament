@@ -25,12 +25,12 @@ describe("asset-manager-spec", function () {
 
                                 if (fileData) {
                                     switch (fileData.extension) {
-                                        case 'png':
-                                            mimeType = "image/png";
-                                            break;
-                                        case 'jpg':
-                                            mimeType = "image/jpeg";
-                                            break;
+                                    case 'png':
+                                        mimeType = "image/png";
+                                        break;
+                                    case 'jpg':
+                                        mimeType = "image/jpeg";
+                                        break;
                                     }
                                 }
 
