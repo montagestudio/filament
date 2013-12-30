@@ -1,12 +1,15 @@
 var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
     application = require("montage/core/application").application,
+    ReelDocument = require("core/reel-document").ReelDocument,
     AssetsConfig = require("./assets-config").AssetsConfig,
+    Promise = require("montage/core/promise").Promise,
     AssetTools = require("./asset-tools").AssetTools,
     Montage = require("montage/core/core").Montage,
-    ReelDocument = require("core/reel-document").ReelDocument,
+    Asset = require("./asset").Asset,
 
     PACKAGE_LOCATION = require.location,
-    Asset = require("./asset").Asset,
+    MONTAGE_MODEL_MIME_TYPE = "model/montage-serialization",
+    ASSET_COMPILER_URL = PACKAGE_LOCATION + "asset-compilers/collada.asset-compiler",
 
     FILE_SYSTEM_CHANGES = {
         CREATE: "create",
@@ -23,8 +26,11 @@ exports.AssetsManager = Montage.specialize({
     constructor: {
         value: function AssetsManager() {
             this.super();
+
             this.assets = {};
             this.assetCategories = {};
+            this.assetsToHide = [];
+            this.assetsTemplate = [];
 
             var self = this,
                 assetCategories = AssetsConfig.assetCategories;
@@ -35,6 +41,14 @@ exports.AssetsManager = Montage.specialize({
                 currentAssetCategory.defaultIconUrl = PACKAGE_LOCATION + currentAssetCategory.defaultIconUrl;
                 self.assetCategories[assetCategoryName] = assetCategoryName;
                 self.assets[assetCategoryName] = [];
+
+                if (currentAssetCategory.hidden) {
+                    self.assetsToHide = self.assetsToHide.concat(currentAssetCategory.hidden);
+                }
+
+                if (currentAssetCategory.templates) {
+                    self.assetsTemplate = self.assetsTemplate.concat(currentAssetCategory.templates);
+                }
             });
 
             application.addEventListener("didOpenPackage", this);
@@ -77,18 +91,47 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    /**
+     * Contains a list of mime-types which have to be hidden from the Asset library.
+     * @public
+     * @return {Array}
+     */
+    assetsToHide: {
+        value: null
+    },
+
+    /**
+     * Contains a list of mime-types which represent the assets that can be used as a template.
+     * @public
+     * @return {Array}
+     */
+    assetsTemplate: {
+        value: null
+    },
+
+    /**
+     * Reference to the projectController
+     * @public
+     * @return {Object}
+     */
     _projectController: {
         value: null
     },
 
+    /**
+     * Reference to the project Url
+     * @public
+     * @return {String}
+     */
     _projectUrl: {
-        get: function () {
-            if (this._projectController) {
-                return this._projectController.projectUrl;
-            }
-        }
+        value: null
     },
 
+    /**
+     * Reference to the current Document Object.
+     * @public
+     * @return {Object}
+     */
     _currentDocument: {
         get: function () {
             if (this._projectController) {
@@ -98,21 +141,36 @@ exports.AssetsManager = Montage.specialize({
     },
 
     /**
-     * Init the AssetManager with a reference to the Project Controller.
-     * @function
+     * Reference to the AssetCompiler.
      * @public
-     * @param {Object} projectController - Project Controller.
      * @return {Object}
      */
-    init: {
-        value: function (projectController) {
-            this._projectController = projectController;
-            return this;
+    _assetCompiler: {
+        value: null
+    },
+
+    /**
+     * Loads some content for the Asset Manager,
+     * such as the projectController, the projectUrl and the AssetCompiler.
+     * @public
+     * @return {Promise}
+     */
+    load: {
+        value: function (projectController, projectUrl) {
+            var self = this;
+
+            return require.loadPackage(ASSET_COMPILER_URL).then(function (packageRequire) {
+                return packageRequire.async("asset-compiler").then(function (exports) {
+                    self._projectController = projectController;
+                    self._projectUrl = projectUrl;
+                    self._assetCompiler = exports.AssetCompiler;
+                });
+            });
         }
     },
 
     /**
-     * Scedules to populate the Asset Manager once the project has been opened.
+     * Schedules to populate the Asset Manager once the project has been opened.
      * @function
      * @public
      * @param {Object} event.
@@ -126,7 +184,7 @@ exports.AssetsManager = Montage.specialize({
     },
 
     /**
-     * Schedules to populate the Asset Manager once the project has been opened.
+     * Populates the Asset Manager with a list of Assets.
      * @function
      * @public
      * @param {Object} event.
@@ -158,7 +216,6 @@ exports.AssetsManager = Montage.specialize({
                     self.addAsset(createdAsset);
                 });
             }
-
         }
     },
 
@@ -173,10 +230,18 @@ exports.AssetsManager = Montage.specialize({
     addAsset: {
         value: function (asset) {
             if (AssetTools.isAssetValid(asset)) {
+                var assetFound = this._findAssetWithFileUrl(asset.fileUrl);
+
+                if (assetFound) {
+                    if (assetFound.exist) {
+                        return false;
+                    }
+                    this.removeAsset(assetFound);
+                }
+
                 this.assets[asset.category].push(asset);
                 return true;
             }
-
             return false;
         }
     },
@@ -192,9 +257,93 @@ exports.AssetsManager = Montage.specialize({
         value: function (fileDescriptor) {
             if (AssetTools.isAFile(fileDescriptor.fileUrl) && AssetTools.isMimeTypeSupported(fileDescriptor.mimeType)) {
                 var createdAsset = Asset.create().initWithFileDescriptor(fileDescriptor);
-                createdAsset.iconUrl =  this.getIconWithAsset(createdAsset);
+
+                createdAsset.iconUrl = this.getIconWithAsset(createdAsset);
+                createdAsset.isHidden = this.assetsToHide.indexOf(createdAsset.mimeType) >= 0;
+                createdAsset.isTemplate = this.assetsTemplate.indexOf(createdAsset.mimeType) >= 0;
+
                 return createdAsset;
             }
+        }
+    },
+
+    /**
+     * Creates an Asset Object from another asset and save it.
+     * @function
+     * @public
+     * @param {Object} asset - an Asset Object which represents a "Template".
+     * @param {String} [location="asset.fileUrl"] - the path where the new asset wants to be saved.
+     * @return {Promise} for the created Asset Object.
+     */
+    createAndSaveAssetFromTemplate: {
+        value: function (assetTemplate, location) {
+            if (AssetTools.isAssetValid(assetTemplate) && assetTemplate.isTemplate) {
+                var promise = null;
+
+                // If the asset template is a 3D model, we create a new "Montage 3D Model"
+                if (AssetsConfig.assetCategories.MODEL.templates.indexOf(assetTemplate.mimeType) >= 0) {
+                    promise = this._createAndSaveMontageModelAsset(assetTemplate, location);
+                }
+
+                if (promise) {
+                    this._currentDocument.dispatchEventNamed("asyncActivity", true, false, {
+                        promise: promise,
+                        status: assetTemplate.fileName,
+                        title: "Converting asset"
+                    });
+
+                    return promise;
+                }
+            }
+
+            return Promise.reject("Can not create an asset with the template given");
+        }
+    },
+
+    /**
+     * Creates an Montage 3D Asset from a 3D asset and save it.
+     * @function
+     * @public
+     * @param {Object} asset - an Asset 3D Object which represents a "Template".
+     * @param {String} location - the path where the new asset wants to be saved.
+     * @return {Promise} for the created Asset Object.
+     */
+    _createAndSaveMontageModelAsset: {
+        value: function (assetTemplate, location) {
+            var self = this;
+
+            return this._assetCompiler.convert(assetTemplate.fileUrl, location).then(function(outputURL) {
+                return self._getStatsAtUrl(outputURL).then(function (stat) {
+                    var fileDescriptor = FileDescriptor.create().initWithUrlAndStat(outputURL, stat);
+                    fileDescriptor.mimeType = MONTAGE_MODEL_MIME_TYPE;
+
+                    var assetFound = self._findAssetWithFileUrl(outputURL);
+
+                    if (assetFound && assetFound.exist) {
+                        assetFound.updateWithFileDescriptor(fileDescriptor);
+                        return assetFound;
+                    }
+
+                    var assetCreated = self.createAssetWithFileDescriptor(fileDescriptor);
+
+                    if (self.addAsset(assetCreated)) {
+                        return assetCreated;
+                    }
+                });
+            });
+        }
+    },
+
+    /**
+     * Get the Stats object at an url.
+     * @function
+     * @public
+     * @param {String} fileUrl - an url.
+     * @return {Promise} for the url.
+     */
+    _getStatsAtUrl: {
+        value: function (fileUrl) {
+            return this._projectController.environmentBridge.getStatsAtUrl(fileUrl);
         }
     },
 
@@ -517,7 +666,8 @@ exports.AssetsManager = Montage.specialize({
      */
     _reviveAssetWithFileDescriptor: {
         value: function (fileDescriptor) {
-            var asset = this._findAssetWithInode(fileDescriptor._stat.ino);
+            var inode = fileDescriptor._stat.node ? fileDescriptor._stat.node.ino : fileDescriptor._stat.ino,
+                asset = this._findAssetWithInode(inode);
 
             if (asset && !asset.exist) {
                 asset.exist = true;
@@ -529,6 +679,14 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    /**
+     * Invokes the detectMimeTypeAtUrl function from the environmentBridge
+     * Will get a mime-type for a file at a given url.
+     * @function
+     * @private
+     * @param {String} fileUrl - a file Url.
+     * @return {Promise} for the file analyzed.
+     */
     _detectMimeTypeWithFileUrl: {
         value: function (fileUrl) {
             return this._projectController.environmentBridge.detectMimeTypeAtUrl(fileUrl);

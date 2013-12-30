@@ -133,8 +133,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._editorTypeInstanceMap = new WeakMap();
 
             this.openDocumentsController = RangeController.create().initWithContent(this.documents);
-
-            this.assetsManager = AssetsManager.create().init(this);
+            this.assetsManager = AssetsManager.create();
 
             //TODO get rid of this once we have property dependencies
             this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyWillChange", true);
@@ -168,10 +167,11 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             this._projectUrl = url;
 
-            return self.environmentBridge.projectInfo(url)
-                .then(function (projectInfo) {
+            return this.assetsManager.load(this, url).then(function () {
+                return self.environmentBridge.projectInfo(url).then(function (projectInfo) {
                     return self._openProject(projectInfo.packageUrl, projectInfo.dependencies);
                 });
+            });
         }
     },
 

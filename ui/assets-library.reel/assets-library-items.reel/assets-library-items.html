@@ -15,7 +15,7 @@
             "prototype": "montage/core/range-controller",
             "properties": {
                 "sortPath": "name",
-                 "filterPath": "exist == true"
+                 "filterPath": "isHidden == false && exist == true"
             },
             "bindings": {
                 "content": {"<-": "@owner.content"}

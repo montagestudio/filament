@@ -15,7 +15,14 @@ var AssetsConfig = {
             categoryName: "MODEL",
             defaultIconUrl: "assets/icons/default-model-icon.png",
             mimeTypes: [
+                "model/vnd.collada+xml",
+                "model/montage-serialization"
+            ],
+            templates: [
                 "model/vnd.collada+xml"
+            ],
+            hidden: [
+                "model/montage-serialization"
             ]
         },
 

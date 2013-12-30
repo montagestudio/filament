@@ -17,6 +17,8 @@ exports.Asset = Montage.specialize({
         value: function (fileDescriptor) {
             this._fill(fileDescriptor);
             this.exist = true;
+            this.isHidden = false;
+            this.isTemplate = false;
             return this;
         }
     },
@@ -67,6 +69,19 @@ exports.Asset = Montage.specialize({
         get: function () {
             return this._name;
         }
+    },
+
+    /**
+     * Define if an Asset is designed to create another asset from itself.
+     * @public
+     * @type {Boolean}
+     */
+    isTemplate: {
+        value: null
+    },
+
+    isHidden: {
+        value: null
     },
 
     _extension: {
@@ -151,6 +166,12 @@ exports.Asset = Montage.specialize({
     updateWithFileDescriptor: {
         value: function (fileDescriptor) {
             this._fill(fileDescriptor);
+        }
+    },
+
+    toString: {
+        value: function() {
+            return this.fileName;
         }
     }
 

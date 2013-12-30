@@ -109,7 +109,8 @@ describe("asset-manager-spec", function () {
 
 
 
-            assetsManager = AssetsManager.create().init(projectController);
+            assetsManager = AssetsManager.create();
+            assetsManager._projectController = projectController;
             assetsManager.addAssetsWithFileDescriptors(fileDescriptors);
 
         });
