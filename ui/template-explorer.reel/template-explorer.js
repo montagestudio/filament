@@ -132,16 +132,8 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     },
 
     /*
-        Build the templateObjectsTree from the templatesNodes
-        Steps:
-            - add the root element
-            - create a list of components to be arranged in the tree, "proxyFIFO"
-            - pick the head element, "nodeProxy" of the list and try to add it to the tree. 
-              While adding to the tree we keep a map of elements to tree node updated.
-            - if the element has no DOM representation it is added to the root of the tree as first child
-            - otherwise we seek the element's parentComponent to then add it
-            - if the parentComponent has not yet been added we postpone adding this node for later by pushing back into the FIFO
-    */
+        Subroutines for buildTemplateObjectTree
+     */
     _buildTreeAddRoot: {
         value: function (insertionMap) {
             var root = {
@@ -154,7 +146,10 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         }
     },
     _buildTreeFillFIFO: {
-        value: function (proxyFIFO) {
+        value: function () {
+            var proxyFIFO = [];
+            var editingDocument = this.editingDocument,
+                proxyMap = editingDocument.editingProxyMap;
             for (var componentName in proxyMap) {
                 if (proxyMap.hasOwnProperty(componentName)) {
                     var component = proxyMap[componentName];
@@ -163,38 +158,48 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                     }
                 }
             }
+            return proxyFIFO;
         }
     },
+    _buildTreeFindParentComponent: {
+        value: function (reelProxy) {
+            var nodeProxy = reelProxy.properties.get('element'),
+                parentNodeProxy = nodeProxy,
+                parentReelProxy;
+            while (parentNodeProxy = parentNodeProxy.parentNode) {
+                if (parentNodeProxy.component) {
+                    parentReelProxy = parentNodeProxy.component;
+                    break;
+                }
+            }
+            return parentReelProxy;
+        }
+    },
+    /*
+        Build the templateObjectsTree from the templatesNodes
+        Steps:
+            - add the root element
+            - create a list of components to be arranged in the tree, "proxyFIFO"
+            - pick the head element, "nodeProxy" of the list and try to add it to the tree. 
+              While adding to the tree we keep a map of elements to tree node updated.
+            - if the element has no DOM representation it is added to the root of the tree as first child
+            - otherwise we seek the element's parentComponent to then add it
+            - if the parentComponent has not yet been added we postpone adding this node for later by pushing back into the FIFO
+    */
     buildTemplateObjectTree: {
         value: function () {
-            var editingDocument = this.editingDocument,
-                proxyMap = editingDocument.editingProxyMap,
-                proxyFIFO = [],
-                successivePushes = 0,
-                reelProxy;
-
+            var successivePushes = 0;
             // map of ReelProxy to tree node, for quick tree node access
             var insertionMap = new WeakMap();
             // add the root
             var root = this._buildTreeAddRoot(insertionMap);
-
-
             // filling the FIFO
-            
-
+            var proxyFIFO = this._buildTreeFillFIFO(proxyFIFO);
+            var reelProxy;
             while (reelProxy = proxyFIFO.shift()) {
-                //debugger
                 if (reelProxy.properties && reelProxy.properties.get('element')) {
                     // find the parent component
-                    var nodeProxy = reelProxy.properties.get('element'),
-                        parentNodeProxy = nodeProxy,
-                        parentReelProxy;
-                    while (parentNodeProxy = parentNodeProxy.parentNode) {
-                        if (parentNodeProxy.component) {
-                            parentReelProxy = parentNodeProxy.component;
-                            break;
-                        }
-                    }
+                    var parentReelProxy = this._buildTreeFindParentComponent(reelProxy);
                     if (!parentReelProxy) {
                         throw new Error("Can not build templateObjectsTree: can't find parent component");
                     }
@@ -224,7 +229,6 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                     // let's add them in top to keep the tree "cleaner"
                     root.children.unshift(nodeTemplateLess);
                 }
-
                 // to be safe, guard to prevent an infinite loop
                 if (successivePushes > proxyFIFO.length) {
                     throw new Error("Can not build templateObjectsTree: looping on the same components");
