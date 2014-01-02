@@ -48,67 +48,70 @@ describe("asset-manager-spec", function () {
 
                     // Valid
                     {
-                        url: "/a/b/c/duck.dae",
+                        url: "fs://a/b/c/duck.dae",
                         mimeType: "model/vnd.collada+xml",
+
                         ino: 1
                     },
                     {
-                        url: "/a/b/c/wine.dae",
+                        url: "fs://a/b/c/wine.dae",
                         mimeType: "model/vnd.collada+xml",
                         ino: 2
                     },
                     {
-                        url: "/a/b/c/fall.png",
+                        url: "fs://a/b/c/fall.png",
                         mimeType: "image/png",
                         ino: 3
                     },
                     {
-                        url: "/a/b/c/winter.jpg",
+                        url: "fs://a/b/c/winter.jpg",
                         mimeType: "image/jpeg",
                         ino: 4
                     },
                     {
-                        url: "/a/b/c/beach.aac",
+                        url: "fs://a/b/c/beach.aac",
                         mimeType: "audio/aac",
                         ino: 5
                     },
                     {
-                        url: "/a/b/c/city.mp3",
+                        url: "fs://a/b/c/city.mp3",
                         mimeType: "audio/mpeg",
                         ino: 6
                     },
                     {
-                        url: "/a/b/c/mountain.mp4",
+                        url: "fs://a/b/c/mountain.mp4",
                         mimeType: "audio/aac",
                         ino: 7
                     },
                     {
-                        url: "/a/b/c/holiday.mp4",
+                        url: "fs://a/b/c/holiday.mp4",
                         mimeType: "video/mp4",
                         ino: 8
                     },
 
                     // Not valid
                     {
-                        url: "/a/b/c/file.zip",
+                        url: "fs://a/b/c/file.zip",
                         mimeType: "application/zip",
                         ino: 9
                     },
                     {
-                        url: "/a/b/c/file.json",
+                        url: "fs://a/b/c/file.json",
                         mimeType: "application/json",
                         ino: 10
                     },
 
                     {
-                        url: "/a/b/c/file.au",
+                        url: "fs://a/b/c/file.au",
                         mimeType: "audio/basic",
                         ino: 11
                     }
                 ];
 
             fakeFiles.forEach(function (file) {
-                fileDescriptors.push(new FileDescriptor().init(file.url, file.ino, file.mimeType));
+                var fileDescriptorTmp = new FileDescriptor().initWithUrlAndStat(file.url, {ino: file.ino});
+                fileDescriptorTmp.mimeType = file.mimeType;
+                fileDescriptors.push(fileDescriptorTmp);
             });
 
             assetsManager = AssetsManager.create();
@@ -120,7 +123,7 @@ describe("asset-manager-spec", function () {
 
         it("must has been correctly initialized", function () {
             var assets = assetsManager.assets;
-            expect(assetsManager.assetsCount).toEqual(8); // do no include not asset files.
+            expect(assetsManager.assetsCount).toEqual(8); // Should not include files which are not asset files.
             expect(assets.MODEL.length).toEqual(2);
             expect(assets.IMAGE.length).toEqual(2);
             expect(assets.AUDIO.length).toEqual(3);
@@ -130,6 +133,7 @@ describe("asset-manager-spec", function () {
 
         it("should be able to get assets by type", function () {
             expect(assetsManager.getAssetsByAssetCategory(AssetCategories.IMAGE).length).toEqual(2);
+            expect(assetsManager.getAssetsByAssetCategory(AssetCategories.AUDIO).length).toEqual(3);
         });
 
 
@@ -137,27 +141,45 @@ describe("asset-manager-spec", function () {
             expect(assetsManager.getAssetsByMimeType("audio/mpeg").length).toEqual(1);
             expect(assetsManager.getAssetsByMimeType("model/vnd.collada+xml").length).toEqual(2);
 
-            var mimeTypeNoSupported = function () {
+            var mimeTypeNotSupported = function () {
                 assetsManager.getAssetsByMimeType("application/xml");
             };
 
-            expect(mimeTypeNoSupported).toThrow();
+            expect(mimeTypeNotSupported).toThrow();
         });
 
 
-        it("should be able to get add an asset", function () {
-            var fileDescriptor = new FileDescriptor().init("/assets/apple.png", {mode: 0}, "image/png"),
-                createdAsset = assetsManager.createAssetWithFileDescriptor(fileDescriptor);
+        it("should be able to create and add an asset with a FileDescriptor", function () {
+            var fileDescriptor = new FileDescriptor().initWithUrlAndStat("fs://assets/apple.png", {ino: 1024});
+            fileDescriptor.mimeType = "image/png";
 
-            assetsManager.addAsset(createdAsset);
+            var createdAsset = assetsManager.createAssetWithFileDescriptor(fileDescriptor);
 
+            expect(assetsManager.addAsset(createdAsset)).toBe(true);
             expect(assetsManager.assetsCount).toEqual(9);
             expect(assetsManager.assets.IMAGE.length).toEqual(3);
+
+            // Mime-Type not supported case:
+            var fileDescriptorWrong = new FileDescriptor().initWithUrlAndStat("fs://assets/apple.png", {ino: 1025});
+            fileDescriptorWrong.mimeType = "image/not_supported";
+
+            var createdAssetWrong = assetsManager.createAssetWithFileDescriptor(fileDescriptorWrong);
+
+            expect(createdAssetWrong).toBeUndefined();
+        });
+
+        it("should be not able to add an asset when a fileUrl is already used", function () {
+            var fileDescriptor = new FileDescriptor().initWithUrlAndStat("fs://a/b/c/winter.jpg", {ino: 4});
+            fileDescriptor.mimeType = "image/jpeg";
+
+            var createdAsset = assetsManager.createAssetWithFileDescriptor(fileDescriptor);
+
+            expect(assetsManager.addAsset(createdAsset)).toBe(false);
         });
 
 
         it("should be able to remove an asset", function () {
-            assetsManager.removeAssetWithFileUrl("/assets/apple.png");
+            assetsManager.removeAssetWithFileUrl("fs://assets/apple.png");
 
             expect(assetsManager.assetsCount).toEqual(8);
             expect(assetsManager.assets.IMAGE.length).toEqual(2);
@@ -192,66 +214,86 @@ describe("asset-manager-spec", function () {
 
         });
 
-        it("should be able to delete an asset when a file has been removed", function () {
+        it("should be able to find an asset with a fileUrl or a index node", function () {
+            var asset = assetsManager.getAssetByFileUrl("fs://a/b/c/beach.aac");
+
+            expect(asset.name).toEqual("beach");
+            expect(asset.exist).toEqual(true);
+
+            asset = assetsManager._findAssetWithInode(6);
+            expect(asset.name).toEqual("city");
+        });
+
+        it("should be able to detect when an asset file has been removed and to set it as not existing anymore", function () {
             var event = {
                 detail: {
                     change: "delete",
                     mimeType: "image/jpeg",
                     currentStat: {
-                        ino: 12
+                        ino: 4
                     },
-                    fileUrl: "/a/b/c/winter.jpg"
+                    fileUrl: "fs://a/b/c/winter.jpg"
                 }
             };
 
             assetsManager.handleFileSystemChange(event);
-            var asset = assetsManager.getAssetByFileUrl("/a/b/c/winter.jpg");
+            var asset = assetsManager.getAssetByFileUrl("fs://a/b/c/winter.jpg");
 
             expect(assetsManager.assetsCount).toEqual(8);
             expect(asset.exist).toEqual(false);
         });
 
-        it("should be able to get a relative path for an asset from the current reel document", function () {
-            var fileDescriptor = new FileDescriptor().init("/a/b/c/d/e/f.png", {mode: 0}, "image/png"),
-                asset = assetsManager.createAssetWithFileDescriptor(fileDescriptor),
-                assetRoot = assetsManager.getAssetByFileUrl("/a/b/c/winter.jpg");
+        it("should be able to 'revive' an Asset Object when it's file is back within a project", function () {
+            var event = {
+                detail: {
+                    change: "delete",
+                    mimeType: "image/jpeg",
+                    currentStat: {
+                        ino: 4
+                    },
+                    fileUrl: "fs://a/b/c/winter.jpg"
+                }
+            };
 
-            assetsManager.addAsset(asset);
-            assetsManager._projectUrl = '/a/b/c/';
-            assetsManager._projectController.currentDocument._url = '/a/b/c/d/';
+            assetsManager.handleFileSystemChange(event);
 
-            expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(assetRoot)).toEqual('../winter.jpg');
-            expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(asset)).toEqual('e/f.png');
+            var asset = assetsManager.getAssetByFileUrl("fs://a/b/c/winter.jpg"),
+                flag = false;
 
-            assetsManager._projectController.currentDocument._url = '/a/b/c/w/x/y';
-            expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(asset)).toEqual('../../../d/e/f.png');
+            expect(assetsManager.assetsCount).toEqual(8);
+            expect(asset.exist).toEqual(false);
 
-            assetsManager._projectController.currentDocument._url = '/a/b/c/d/z/g/';
-            expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(asset)).toEqual('../../e/f.png');
+            var backEvent = {
+                detail: {
+                    change: "create",
+                    mimeType: "image/jpeg",
+                    currentStat: {
+                        ino: 4
+                    },
+                    fileUrl: "fs://a/b/c/winter.jpg"
+                }
+            };
 
-        });
+            runs(function() {
+                assetsManager.handleFileSystemChange(backEvent);
 
-        it("should be able to find an asset with a relative path in terms of the current reel document", function () {
-            assetsManager._projectUrl = 'fs://a/b/c/';
+                setTimeout(function() {
+                    flag = true;
+                }, 200);
+            });
 
-            var fileDescriptor = new FileDescriptor().init("fs://a/b/c/d/e/f.png", {mode: 0}, "image/png"),
-                asset = assetsManager.createAssetWithFileDescriptor(fileDescriptor);
+            waitsFor(function() {
+                return asset.exist === true;
+            }, "the asset should has been added", 400);
 
-            var fileDescriptor2 = new FileDescriptor().init("fs://a/b/c/e/f.png", {mode: 0}, "image/png"),
-                asset2 = assetsManager.createAssetWithFileDescriptor(fileDescriptor2);
+            runs(function() {
+                expect(asset.exist).toEqual(true);
+            });
 
-            assetsManager.addAsset(asset);
-            assetsManager.addAsset(asset2);
-            assetsManager._projectController.currentDocument._url = 'fs://a/b/c/d/';
-
-            expect(assetsManager.getAssetByRelativePath("e/f.png").fileUrl).toEqual(asset.fileUrl);
-            expect(assetsManager.getAssetByRelativePath("./e/f.png").fileUrl).toEqual(asset.fileUrl);
-            expect(assetsManager.getAssetByRelativePath("../e/f.png").fileUrl).toEqual(asset2.fileUrl);
-            expect(assetsManager.getAssetByRelativePath("../../e/f.png")).toBe(null);
         });
 
         it("should be able to update an asset when a file has been modified", function () {
-            var asset = assetsManager.getAssetByFileUrl("/a/b/c/winter.jpg"),
+            var asset = assetsManager.getAssetByFileUrl("fs://a/b/c/winter.jpg"),
                 event = {
                     detail: {
                         change: "update",
@@ -269,7 +311,7 @@ describe("asset-manager-spec", function () {
             runs(function() {
                 assetsManager.handleFileSystemChange(event);
 
-                setTimeout(function () { // Wait for the modification be applied
+                setTimeout(function () { // Wait for the modification be applied.
                     flag = true;
                 }, 150);
             });
@@ -280,22 +322,80 @@ describe("asset-manager-spec", function () {
 
             runs(function() {
                 expect(assetsManager.assetsCount).toEqual(8);
-                var assetModified = assetsManager.getAssetByFileUrl("/a/b/c/winter.jpg");
+                var assetModified = assetsManager.getAssetByFileUrl("fs://a/b/c/winter.jpg");
                 expect(assetModified.inode).not.toEqual(inode);
             });
+        });
+
+        it("should be able to get a relative path for an asset from the current reel document", function () {
+            var fileDescriptor = new FileDescriptor().initWithUrlAndStat("fs://a/b/c/d/e/f.png", {ino: 2048});
+            fileDescriptor.mimeType = "image/png";
+
+            var asset = assetsManager.createAssetWithFileDescriptor(fileDescriptor),
+                assetRoot = assetsManager.getAssetByFileUrl("fs://a/b/c/winter.jpg");
+
+            assetsManager.addAsset(asset);
+            assetsManager._projectUrl = 'fs://a/b/c/';
+            assetsManager._projectController.currentDocument._url = 'fs://a/b/c/d/';
+
+            expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(assetRoot)).toEqual('../winter.jpg');
+            expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(asset)).toEqual('e/f.png');
+
+            assetsManager._projectController.currentDocument._url = 'fs://a/b/c/w/x/y';
+            expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(asset)).toEqual('../../../d/e/f.png');
+
+            assetsManager._projectController.currentDocument._url = 'fs://a/b/c/d/z/g/';
+            expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(asset)).toEqual('../../e/f.png');
+
+        });
+
+        it("should be able to find an asset with a relative path in terms of the current reel document", function () {
+            assetsManager._projectUrl = 'fs://a/b/c/';
+
+            var fileDescriptor = new FileDescriptor().initWithUrlAndStat("fs://a/b/c/d/e/f.png", {ino: 2065});
+            fileDescriptor.mimeType = "image/png";
+            var asset = assetsManager.createAssetWithFileDescriptor(fileDescriptor);
+
+            var fileDescriptor2 = new FileDescriptor().initWithUrlAndStat("fs://a/b/c/e/f.png", {ino: 2066});
+            fileDescriptor2.mimeType = "image/png";
+            var asset2 = assetsManager.createAssetWithFileDescriptor(fileDescriptor2);
+
+            assetsManager.addAsset(asset);
+            assetsManager.addAsset(asset2);
+            assetsManager._projectController.currentDocument._url = 'fs://a/b/c/d/';
+
+            expect(assetsManager.getAssetByRelativePath("e/f.png").fileUrl).toEqual(asset.fileUrl);
+            expect(assetsManager.getAssetByRelativePath("./e/f.png").fileUrl).toEqual(asset.fileUrl);
+            expect(assetsManager.getAssetByRelativePath("/e/f.png").fileUrl).toEqual(asset.fileUrl);
+            expect(assetsManager.getAssetByRelativePath("../e/f.png").fileUrl).toEqual(asset2.fileUrl);
+            expect(assetsManager.getAssetByRelativePath("../../e/f.png")).toBe(null);
+
+            // Some tests about the private _resolvePaths & _decomposePath functions.
+            expect(assetsManager._resolvePaths('/root/', 'file.zip')).toEqual('/root/file.zip');
+            expect(assetsManager._resolvePaths('/root/', '/file.zip')).toEqual('/root/file.zip');
+            expect(assetsManager._resolvePaths('root/', '/file.zip')).toEqual('/root/file.zip');
+            expect(assetsManager._resolvePaths('root', 'file.zip')).toEqual('/root/file.zip');
+            expect(assetsManager._resolvePaths('/root/media/', '../file.zip')).toEqual('/root/file.zip');
+            expect(assetsManager._resolvePaths('/root/home/project', '../../file.zip')).toEqual('/root/file.zip');
+            expect(assetsManager._resolvePaths('  root/home/project  ', '../../file.zip')).toEqual('/root/file.zip');
+
+            expect(assetsManager._decomposePath('root/home/project').length).toEqual(3);
+            expect(assetsManager._decomposePath('/root/home/project').length).toEqual(3);
+            expect(assetsManager._decomposePath('/root/home/project/test').length).toEqual(4);
+            expect(assetsManager._decomposePath('   root/home/project/test').length).toEqual(4);
         });
 
     });
 
     describe("asset-tools", function () {
 
-        it("should be able to get some information from a fileUrl such as filename, name, extension", function () {
-            var fileData = AssetTools.defineFileDataWithUrl("/a/b/c/winter.png");
+        it("should be able to get some information from a fileUrl such as its filename, name or extension", function () {
+            var fileData = AssetTools.defineFileDataWithUrl("fs://a/b/c/winter.png");
             expect(fileData.fileName).toBe("winter.png");
             expect(fileData.name).toBe("winter");
             expect(fileData.extension).toBe("png");
 
-            fileData = AssetTools.defineFileDataWithUrl("/a/b/c/winter.2003.jpg");
+            fileData = AssetTools.defineFileDataWithUrl("fs://a/b/c/winter.2003.jpg");
             expect(fileData.fileName).toBe("winter.2003.jpg");
             expect(fileData.name).toBe("winter.2003");
             expect(fileData.extension).toBe("jpg");
@@ -310,14 +410,14 @@ describe("asset-manager-spec", function () {
         });
 
 
-        it("should be able to find an 'asset type' from a supported mimeType", function () {
+        it("should be able to find an 'asset type/category' from a supported mimeType", function () {
             var assetType = AssetTools.findAssetCategoryFromMimeType("audio/aac");
             expect(assetType).toBe(AssetCategories.AUDIO);
 
             assetType = AssetTools.findAssetCategoryFromMimeType("video/mp4");
             expect(assetType).toBe(AssetCategories.VIDEO);
 
-            assetType = AssetTools.findAssetCategoryFromMimeType("application/mp4");
+            assetType = AssetTools.findAssetCategoryFromMimeType("application/xml+not+supported");
             expect(assetType).not.toBeDefined();
         });
 
@@ -325,7 +425,7 @@ describe("asset-manager-spec", function () {
         it("should be able to define if a mimeType is supported or not", function () {
             expect(AssetTools.isMimeTypeSupported("audio/aac")).toBe(true);
             expect(AssetTools.isMimeTypeSupported("model/vnd.collada+xml")).toBe(true);
-            expect(AssetTools.isMimeTypeSupported("audio/wma")).toBe(false);
+            expect(AssetTools.isMimeTypeSupported("audio/wma+not+supported")).toBe(false);
             expect(AssetTools.isMimeTypeSupported(0)).toBe(false);
         });
 
@@ -338,10 +438,12 @@ describe("asset-manager-spec", function () {
         });
 
 
-        it("should be able to define if a fileUrl is valid", function () {
-            expect(AssetTools.isAFile('/a/b/d.js')).toBe(true);
+        it("should be able to define if a url is a valid fileUrl", function () {
+            expect(AssetTools.isAFile('fs://a/b/d.js')).toBe(true);
+            expect(AssetTools.isAFile('rrr.a/b/d.js')).toBe(true);
             expect(AssetTools.isAFile('rrr.a/b/d.js')).toBe(true);
             expect(AssetTools.isAFile('rrr.a/b/d.js/')).toBe(false);
+            expect(AssetTools.isAFile(4)).toBe(false);
         });
 
     });

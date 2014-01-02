@@ -20,15 +20,6 @@ exports.FileDescriptor = Montage.specialize({
 
             return this;
         }
-    },
-
-    init: {
-        value: function (url, stat, mimeType) {
-            var self = this.initWithUrlAndStat(url, stat);
-            self.mimeType = mimeType;
-
-            return self;
-        }
     }
 
 });

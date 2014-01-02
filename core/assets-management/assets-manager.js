@@ -394,6 +394,8 @@ exports.AssetsManager = Montage.specialize({
      */
     _decomposePath: {
         value: function (path) {
+            path = path.trim();
+
             var tmp = path.split("/"),
                 parts = [];
 
@@ -409,33 +411,72 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
-    _resolvePaths: {
-        value: function (path, path2) {
-            if (path.charAt(path.length-1) !== "/") {
-                path += "/";
+    /**
+     * Removes whitespace & add missing first trailing slash.
+     * @function
+     * @private
+     * @param {String} path - an path.
+     * @return {String} a string cleaned.
+     */
+    _cleanPath: {
+        value: function (path) {
+            path = path.trim();
+
+            if (path.indexOf('/', 0) !== 0) { // add first trailing slash.
+                path = "/" + path;
             }
 
-            var parents = path2.match(/\.\.\//g),
-                count = parents ? parents.length : 0,
-                endPath = path2.substring(count * 3); // ../ => 3 characters
-
-            if (count > 0) {
-                var parts = this._decomposePath(path),
-                    startPath = "/";
-
-                for (var i = 0, length = parts.length - count; i < length;  i++) {
-                    startPath += parts[i] + "/";
-                }
-
-                return startPath + endPath;
-            }
-
-            return path + endPath;
+            return path;
         }
     },
 
     /**
-     * Gets a relative project path for an Asset from a reel document.
+     * Appends two paths.
+     * @function
+     * @private
+     * @param {String} rootPath - an 'root' path.
+     * @param {String} appendPath - an path to append.
+     * @return {String} a path concatenated‎.
+     */
+    _resolvePaths: {
+        value: function (rootPath, appendPath) {
+            if (typeof rootPath === 'string' && typeof appendPath === 'string') {
+                rootPath = this._cleanPath(rootPath);
+                appendPath = this._cleanPath(appendPath);
+
+                if (rootPath.charAt(rootPath.length - 1) === "/") { // remove last trailing slash.
+                    rootPath = rootPath.slice(0, -1);
+                }
+
+                var rootPathParts = this._decomposePath(rootPath),
+
+                    // Determine the number of parent directories.
+                    parents = appendPath.match(/\.\.\//g),
+                    parentsNumber = parents ? parents.length : 0,
+
+                    // remove the '../' characters.
+                    endPath = appendPath.substring(parentsNumber * 3); // ../ => 3 characters
+
+                // can not have more parents than the root path decomposed.
+                if (rootPathParts.length >= parentsNumber) {
+                    if (parentsNumber > 0) {
+                        var startPath = "/";
+
+                        for (var i = 0, length = rootPathParts.length - parentsNumber; i < length;  i++) {
+                            startPath += rootPathParts[i] + "/";
+                        }
+
+                        return startPath + endPath.slice(1);
+                    }
+
+                    return rootPath + endPath;
+                }
+            }
+        }
+    },
+
+    /**
+     * Gets a relative project path for an Asset from the current reel document.
      * @function
      * @public
      * @param {Object} asset - an Asset object.
@@ -630,9 +671,11 @@ exports.AssetsManager = Montage.specialize({
     getAssetByRelativePath: {
         value: function (relativePath) {
             if (typeof relativePath === "string" && relativePath.length > 0 && this._currentDocument) {
+                relativePath = relativePath.replace(/^\.\/|^\//, ''); // remove ./ or / from the begin of a path.
+
                 var documentUrlPath = this._currentDocument.url.replace(/^fs:\//, ''),
-                    relativePath = relativePath.replace(/^\.\//, ''),
                     assetUrl = this._resolvePaths(documentUrlPath, relativePath);
+
                 return this._findAssetWithFileUrl("fs:/" + assetUrl);
             }
         }
