@@ -142,31 +142,45 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             - otherwise we seek the element's parentComponent to then add it
             - if the parentComponent has not yet been added we postpone adding this node for later by pushing back into the FIFO
     */
-    buildTemplateObjectTree: {
-        value: function() {
-            var editingDocument = this.editingDocument,
-                proxyFIFO = [],
-                successivePushes = 0,
-                reelProxy;
-
-            // map of ReelProxy to tree node, for quick tree node access
-            var insertionMap = new WeakMap();
-
-            // add the root
+    _buildTreeAddRoot: {
+        value: function (insertionMap) {
             var root = {
                 templateObject: this.ownerObject,
                 children: []
             };
             this.templateObjectsTree = root;
             insertionMap.set(this.ownerObject, root);
-
-            // filling the FIFO
-            for (var componentName in editingDocument.editingProxyMap) {
-                var component = editingDocument.editingProxyMap[componentName];
-                if (component !== this.ownerObject) {
-                    proxyFIFO.push(component);
+            return root;
+        }
+    },
+    _buildTreeFillFIFO: {
+        value: function (proxyFIFO) {
+            for (var componentName in proxyMap) {
+                if (proxyMap.hasOwnProperty(componentName)) {
+                    var component = proxyMap[componentName];
+                    if (component !== this.ownerObject) {
+                        proxyFIFO.push(component);
+                    }
                 }
             }
+        }
+    },
+    buildTemplateObjectTree: {
+        value: function () {
+            var editingDocument = this.editingDocument,
+                proxyMap = editingDocument.editingProxyMap,
+                proxyFIFO = [],
+                successivePushes = 0,
+                reelProxy;
+
+            // map of ReelProxy to tree node, for quick tree node access
+            var insertionMap = new WeakMap();
+            // add the root
+            var root = this._buildTreeAddRoot(insertionMap);
+
+
+            // filling the FIFO
+            
 
             while (reelProxy = proxyFIFO.shift()) {
                 //debugger
@@ -203,12 +217,12 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                     }
                 } else {
                     // has not DOM representation, added as root children
-                    var node = {
+                    var nodeTemplateLess = {
                         templateObject: reelProxy,
                         children: []
                     };
                     // let's add them in top to keep the tree "cleaner"
-                    root.children.unshift(node);
+                    root.children.unshift(nodeTemplateLess);
                 }
 
                 // to be safe, guard to prevent an infinite loop
@@ -217,7 +231,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                 }
             }
         }
-   },
+    },
 
     _willAcceptDrop: {
         value: false
