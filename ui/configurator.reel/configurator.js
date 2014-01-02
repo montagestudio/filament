@@ -28,6 +28,10 @@ exports.Configurator = Montage.create(Panel, {
         value: null
     },
 
+    assetsManager: {
+        value: null
+    },
+
     handlePathChange: {
         value: function (value, path) {
             if ("editingDocument.selectedObjects.0" === path) {

@@ -21,4 +21,5 @@ exports.FileDescriptor = Montage.specialize({
             return this;
         }
     }
+
 });

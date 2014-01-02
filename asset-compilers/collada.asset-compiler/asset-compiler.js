@@ -35,13 +35,13 @@ var AssetCompiler = exports.AssetCompiler = CoreAssetCompiler.specialize ({
     },
 
     convert: {
-        value: function(fileURL) {
+        value: function(fileURL, location) {
             // FIXME: Convert fs:// URLs to paths on the backend
             var preURL = "fs://localhost";
             var filePathURL = fileURL.substring(preURL.length);
             var deferred = Q.defer();
             this.backend.get("collada2gltf").invoke("convert",
-                filePathURL).then (function(outputPath) {
+                filePathURL, location).then (function(outputPath) {
                     console.log("outputPath:"+outputPath);
                     deferred.resolve(preURL+outputPath);
                 }, function(e)  {

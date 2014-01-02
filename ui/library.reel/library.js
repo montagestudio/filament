@@ -61,6 +61,10 @@ exports.Library = Montage.create(Panel, {
 
             return this._filterPath;
         }
+    },
+
+    assetsManager: {
+        value: null
     }
 
 });
