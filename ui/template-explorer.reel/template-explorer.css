@@ -144,6 +144,10 @@
     opacity: 0.5;
 }
 
+.TemplateObjectCell--excluded  .TemplateObjectCell-section {
+    display: none;
+}
+
 .TemplateObjectCell--notCollapsible {
     margin-left: 20px;
 }
