@@ -140,10 +140,6 @@
     width: 100%;
 }
 
-.TemplateObjectCell--owner-cell {
-    display: none;
-}
-
 .TemplateObjectCell--excluded {
     opacity: 0.5;
 }
