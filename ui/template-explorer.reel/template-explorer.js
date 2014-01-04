@@ -414,7 +414,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
 
             //TODO do something sane if multiple objects are selected
             var selectedObject = selectedObjects[0],
-                iterations = this.templateObjects.templateNodeList.iterations,
+                iterations = this.templateObjects.templateTreeController.iterations,
                 iterationCount,
                 iteration,
                 i,

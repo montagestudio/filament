@@ -37,6 +37,9 @@ exports.TemplateObjectCell = Component.specialize({
             // hover component in the stage
             this.element.addEventListener("mouseover", this, false);
             this.element.addEventListener("mouseout", this, false);
+
+            // selection
+            this.element.addEventListener("click", this, false);
         }
     },
 
@@ -197,6 +200,16 @@ exports.TemplateObjectCell = Component.specialize({
                 editingDocument = proxy._editingDocument;
 
             editingDocument.setOwnedObjectEditorMetadata(proxy, "isHidden", evt.target.checked);
+        }
+    },
+
+    handleClick: {
+        value: function (evt) {
+            var reelProxy  = this.templateObject,
+                editingDocument = reelProxy._editingDocument;
+            // FIXME: Add support for multiple selection
+            editingDocument.clearSelectedObjects();
+            editingDocument.selectObject(reelProxy);
         }
     }
 

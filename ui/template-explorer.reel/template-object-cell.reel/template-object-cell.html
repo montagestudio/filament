@@ -28,6 +28,10 @@
 
                     "classList.has('TemplateObjectCell--notCollapsible')": {
                         "<-": "!isCollapsible"
+                    },
+
+                    "classList.has('TemplateObjectCell--selected')": {
+                        "<-": "@owner.editingDocument.selectedObjects.has(@owner.templateObject)"
                     }
                 }
             },
