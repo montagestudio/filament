@@ -152,7 +152,7 @@
     margin-left: 20px;
 }
 
-.TemplateObjectCell--selected {
+.TemplateObjectCell--selected .TemplateObjectCell {
     border-color: hsl(210,100%,60%);
     background-color: hsl(0,0%,98%);
 }

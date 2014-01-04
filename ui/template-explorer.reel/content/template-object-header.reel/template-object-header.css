@@ -7,7 +7,7 @@
     background-color: hsl(43, 100%, 85%);
 }
 
-.TemplateObjectCell.selected .TemplateObjectHeader {
+.TemplateObjectCell--selected .TemplateObjectHeader {
     background-color: hsl(210,100%,92%);
 }
 
