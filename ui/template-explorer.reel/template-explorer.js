@@ -259,8 +259,8 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             application.addEventListener("editListenerForObject", this, false);
 
             this.addRangeAtPathChangeListener("editingDocument.selectedObjects", this, "handleSelectedObjectsChange");
-            // listen to change on editingProxies to refresh the tree
-            this.addRangeAtPathChangeListener("editingDocument.editingProxies", this, "handleEditingProxiesChange");
+            // listen to domModification to refresh the tree
+            this.editingDocument.addEventListener("domModified", this, false);
         }
     },
 
@@ -437,14 +437,9 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         }
     },
 
-    handleEditingProxiesChange: {
-        value: function (plus, minus, index) {
-            var self = this;
-            // nodeProxy's component property is set with a binding on editingProxy too
-            // Using a nextTick assure us to be called after that binding has been set
-            Promise.nextTick(function(){
-                self.buildTemplateObjectTree();
-            });
+    handleDomModified: {
+        value: function (evt) {
+            this.buildTemplateObjectTree();
         }
     },
 

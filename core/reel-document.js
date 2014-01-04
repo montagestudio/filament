@@ -843,6 +843,7 @@ exports.ReelDocument = EditingDocument.specialize({
             }).finally(function () {
                 self.undoManager.closeBatch();
                 self.editor.refresh();
+                self.dispatchEventNamed("domModified", true, false);
             });
         }
     },
@@ -1740,7 +1741,7 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             this.undoManager.closeBatch();
-
+            this.dispatchEventNamed("domModified", true, false);
             return nodeProxy;
         }
     },
@@ -1806,7 +1807,7 @@ exports.ReelDocument = EditingDocument.specialize({
             this.__addNodeProxy(nodeProxy);
 
             this.undoManager.register("Append Node", Promise.resolve([this.removeTemplateNode, this, nodeProxy]));
-
+            this.dispatchEventNamed("domModified", true, false);
             return nodeProxy;
         }
     },
@@ -1839,7 +1840,7 @@ exports.ReelDocument = EditingDocument.specialize({
             this.__addNodeProxy(nodeProxy);
 
             this.undoManager.register("Insert Node Before", Promise.resolve([this.removeTemplateNode, this, nodeProxy]));
-
+            this.dispatchEventNamed("domModified", true, false);
             return nodeProxy;
         }
     },
@@ -1872,6 +1873,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeChildNode, this, nodeProxy, nodeProxy.parentNode]));
             }
             this.editor.refresh();
+            this.dispatchEventNamed("domModified", true, false);
             return nodeProxy;
         }
     },
@@ -1896,6 +1898,7 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             this.editor.refresh();
+            this.dispatchEventNamed("domModified", true, false);
             return nodeProxy;
         }
     },
@@ -1920,6 +1923,7 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             this.editor.refresh();
+            this.dispatchEventNamed("domModified", true, false);
             return nodeProxy;
         }
     },
@@ -1943,7 +1947,7 @@ exports.ReelDocument = EditingDocument.specialize({
             this.__addNodeProxy(nodeProxy);
 
             this.undoManager.register("Insert Node After", Promise.resolve([this.removeTemplateNode, this, nodeProxy]));
-
+            this.dispatchEventNamed("domModified", true, false);
             return nodeProxy;
         }
     },
