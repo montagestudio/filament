@@ -207,6 +207,10 @@ exports.TemplateObjectCell = Component.specialize({
         value: function (evt) {
             var reelProxy  = this.templateObject,
                 editingDocument = reelProxy._editingDocument;
+            // ignore toggle click
+            if (this.templateObjects.toggleExpanded.element.parentOf(evt.target)){
+                return;
+            }
             // FIXME: Add support for multiple selection
             editingDocument.clearSelectedObjects();
             editingDocument.selectObject(reelProxy);
