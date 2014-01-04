@@ -392,8 +392,12 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         value: function (evt) {
             var target = evt.target;
 
-            if (target === this.element ||
-                target === this.templateObjects.templateNodeList.element) {
+            // clear selection on click outside from cards
+            if (
+                    target === this.element ||
+                    target === this.templateObjects.templateNodeList.element ||
+                    (target.component && target.component.identifier === "row")
+                ) {
                 this.editingDocument.clearSelectedObjects();
                 this.editingDocument.clearSelectedElements();
             }
