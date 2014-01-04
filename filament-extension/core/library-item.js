@@ -1,8 +1,30 @@
 var Montage = require("montage").Montage;
 
-//This is a straight transfer from the original components.js dictionary
-//TODO replace this with a component perhaps? it would make for a natural container for the default
-// template...when we are actually inserting a component
+/**
+ * A LibraryItem is the transport mechanism for a template
+ * intended to be merged into another template. A LibraryItem
+ * itself is not a component, nor should the template it
+ * represents be considered a standalone component.
+ *
+ * Filament presents these LibraryItems in a collection and
+ * offers to merge them into a template being edited; the
+ * end result being that the one or many templateObjects
+ * captured in the LibraryItem's template are injected into
+ * destination template. Other linked assets such as
+ * associated DOM nodes, linked CSS, and images are also
+ * included.
+ *
+ * LibraryItems can be identified by a valid URI. If the URI is
+ * a reachable URL the expectation is that the URL is
+ * itself a valid LibraryItem.
+ *
+ * A LibraryItem need not be backed by information at a reachable URL;
+ * it could be created on the fly with sufficient data to yield a valid
+ * and fully operational LibraryItem. This may be the case when a
+ * LibraryItem is constructed to represent templateObjects copied from
+ * an existing template.
+ * @type {LibraryItem}
+ */
 exports.LibraryItem = Montage.specialize( {
 
     constructor: {
@@ -11,45 +33,31 @@ exports.LibraryItem = Montage.specialize( {
         }
     },
 
-    serialization: {
+    /**
+     * The URI that represents this LibraryItem
+     */
+    uri: {
         value: null
     },
 
-    moduleId: {
-        get: function () {
-            return this.serialization ? this.serialization.prototype : null;
-        }
-    },
-
+    /**
+     * The name of this LibraryItem
+     */
     name: {
         value: null
     },
 
-    //The human readable label for this LibraryItem
-    label: {
+    /**
+     * The url of the icon used to represent this LibraryItem
+     */
+    iconUrl: {
         value: null
     },
 
-    // Properties to set on the object being added to the template
-    properties: {
-        value: null
-    },
-
-    // URL for the editor icon
-    // TODO offer a generic fallback?
-    icon: {
-        value: null
-    },
-
-    // Optional HTML to insert within template for this libraryItem
-    html: {
-        value: null
-    },
-
-    // Action to take after addedTo the template
-    //TODO rename didAddToTemplate?
-    postProcess: {
+    /**
+     * The template this LibraryItem represents
+     */
+    template: {
         value: null
     }
-
 });
