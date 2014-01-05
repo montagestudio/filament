@@ -1,9 +1,6 @@
-var CoreExtension = require("filament-extension/core/extension").Extension,
-    Promise = require("montage/core/promise").Promise,
-    libraryItems = require("library-items").libraryItems,
-    libraryAdditions = require("library-items").libraryAdditions;
+var CoreExtension = require("filament-extension/core/extension").Extension;
 
-exports.Extension = CoreExtension.specialize( {
+var Extension = exports.Extension = CoreExtension.specialize( {
 
     constructor: {
         value: function Extension() {
@@ -13,33 +10,16 @@ exports.Extension = CoreExtension.specialize( {
 
     activate: {
         value: function (application, projectController) {
-
-            Object.keys(libraryItems).forEach(function (moduleId) {
-                projectController.registerLibraryItemForModuleId(libraryItems[moduleId], moduleId);
-            });
-
-            libraryAdditions.forEach(function (libraryItem) {
-                projectController.registerLibraryItemForPackageName(libraryItem, "digit");
-            });
-
-            return Promise.resolve(this);
+            return this.installLibraryItems(projectController, "digit").thenResolve(this);
         }
     },
 
     deactivate: {
         value: function (application, projectController) {
-
-            Object.keys(libraryItems).forEach(function (moduleId) {
-                projectController.unregisterLibraryItemForModuleId(moduleId);
-            });
-
-
-            libraryAdditions.forEach(function (libraryItem) {
-                projectController.unregisterLibraryItemForPackageName(libraryItem, "digit");
-            });
-
-            return Promise.resolve(this);
+            return this.uninstallLibraryItems(projectController, "digit").thenResolve(this);
         }
     }
 
 });
+
+Extension.packageLocation = require.location;
