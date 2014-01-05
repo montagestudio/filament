@@ -175,6 +175,21 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             return parentReelProxy;
         }
     },
+    _buildTreeFindChildPosition: {
+        value: function (reelProxy, parentReelProxy) {
+            var node = reelProxy.properties.get("element"),
+                parentNode = parentReelProxy.properties.get("element");
+            // the parentReelProxy does not have to be the direct parentNode
+            while (node.parentNode && (node.parentNode !== parentNode)) {
+                node = node.parentNode;
+            }
+            var nodePosition = parentNode.children.indexOf(node);
+            if (nodePosition === -1) {
+                throw new Error("Can not find child position");
+            }
+            return nodePosition;
+        }
+    },
     /*
         Build the templateObjectsTree from the templatesNodes
         Steps:
@@ -211,7 +226,12 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                             children: []
                         };
                         var parentNode = insertionMap.get(parentReelProxy);
-                        parentNode.children.push(node);
+                        var nodePosition = this._buildTreeFindChildPosition(reelProxy, parentReelProxy);
+                        if (nodePosition >=  parentNode.children.length) {
+                            parentNode.children.push(node);
+                        } else {
+                            parentNode.children.splice(nodePosition, 0, node);
+                        }
                         insertionMap.set(reelProxy, node);
                         // reset the infinite loop guard
                         successivePushes = 0;
