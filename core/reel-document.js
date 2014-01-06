@@ -1038,6 +1038,7 @@ exports.ReelDocument = EditingDocument.specialize({
             this.undoManager.register("Add object", Promise.resolve([this.removeObject, this, proxy]));
 
             this.editor.refresh();
+            this.dispatchEventNamed("domModified", true, false);
             return proxy;
         }
     },
@@ -1107,6 +1108,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 self.dispatchEventNamed("objectRemoved", true, false, { proxy: proxy });
 
                 self.editor.refresh();
+                self.dispatchEventNamed("domModified", true, false);
                 return proxy;
             });
         }

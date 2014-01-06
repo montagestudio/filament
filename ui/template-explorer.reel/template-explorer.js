@@ -459,7 +459,10 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
 
     handleDomModified: {
         value: function (evt) {
-            this.buildTemplateObjectTree();
+            var self = this;
+            Promise.nextTick(function(){
+                self.buildTemplateObjectTree();
+            });
         }
     },
 
