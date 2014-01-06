@@ -1,12 +1,14 @@
 var Target = require("montage/core/target").Target,
     Promise = require("montage/core/promise").Promise,
-    MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver;
+    MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
+    Map = require("montage/collections/map");
 
 exports.Extension = Target.specialize( {
 
     constructor: {
         value: function Extension() {
             this.super();
+            this._packageNameLibraryItemMap = new Map();
         }
     },
 
@@ -49,19 +51,20 @@ exports.Extension = Target.specialize( {
         value: null
     },
 
-    _libraryItems: {
+    _packageNameLibraryItemMap: {
         value: null
     },
 
     //TODO paramaterize this and underlying services so it can be used by an extensions to find library items in different locations
     // Don't assume an extensions only affects a single package?
-    _loadLibraryItems: {
-        value: function (serviceProvider) {
+    _loadLibraryItemsForPackageName: {
+        value: function (serviceProvider, packageName) {
             var self = this,
                 extensionRequire = this.extensionRequire;
 
             //TODO what if the desired service isn't offered, is a different version; where are we resolving all of that?
-            return serviceProvider.listLibraryItemUrlsForExtensionUrl(this.constructor.packageLocation).then(function (urls) {
+            //TODO here, or in the service itself, we should find library items by package directory within the extension
+            return serviceProvider.listLibraryItemUrls(this.constructor.packageLocation, packageName).then(function (urls) {
                 return Promise.all(urls.map(function (url) {
                     var libraryItemModuleName = url.match(/([^\/]+)\.library-item\/$/m)[1],
                         libraryItemModuleInfo = MontageReviver.parseObjectLocationId(libraryItemModuleName),
@@ -72,7 +75,7 @@ exports.Extension = Target.specialize( {
                     });
                 }));
             }).then(function (libraryItems) {
-                self._libraryItems = libraryItems;
+                self._packageNameLibraryItemMap.set(packageName, libraryItems);
                 return libraryItems;
             });
         }
@@ -86,12 +89,13 @@ exports.Extension = Target.specialize( {
             // a subset of "safe" services in lieu of all these other bits and pieces of filament
             var serviceProvider = projectController.environmentBridge,
                 self = this,
+                libraryItems = this._packageNameLibraryItemMap.get(packageName),
                 promisedLibraryItems;
 
-            if (this._libraryItems) {
-                promisedLibraryItems = Promise.resolve(this._libraryItems);
+            if (libraryItems) {
+                promisedLibraryItems = Promise.resolve(libraryItems);
             } else {
-                promisedLibraryItems = this._loadLibraryItems(serviceProvider);
+                promisedLibraryItems = this._loadLibraryItemsForPackageName(serviceProvider, packageName);
             }
 
             return promisedLibraryItems.then(function (libraryItems) {
@@ -105,8 +109,8 @@ exports.Extension = Target.specialize( {
     uninstallLibraryItems: {
         value: function (projectController, packageName) {
 
-            if (this._libraryItems) {
-                this._libraryItems.forEach(function (libraryItem) {
+            if (this._packageNameLibraryItemMap) {
+                this._packageNameLibraryItemMap.forEach(function (libraryItem) {
                     projectController.removeLibraryItemFromPackage(libraryItem, packageName);
                 });
             }
