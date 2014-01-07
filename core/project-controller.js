@@ -936,7 +936,11 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             var self = this;
             return this._create("component", "ui",
                 this.environmentBridge.createComponent.bind(this.environmentBridge)).then(function (componentUrl) {
-                    return self.openUrlForEditing(componentUrl).thenResolve(componentUrl);
+                    if (componentUrl) {
+                        return self.openUrlForEditing(componentUrl).thenResolve(componentUrl);
+                    } else {
+                        return Promise.resolve(null);
+                    }
                 });
         }
     },
