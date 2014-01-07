@@ -239,7 +239,7 @@ exports.ComponentEditor = Editor.specialize({
     },
 
     /*
-        Tree-way "assymetrical" highlighting
+        Tree-way "asymmetrical" highlighting
 
         - domExplorer: has elements and components,
         but not all sub elements/components.
