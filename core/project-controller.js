@@ -5,6 +5,7 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     RangeController = require("montage/core/range-controller").RangeController,
     WeakMap = require("montage/collections/weak-map"),
     Map = require("montage/collections/map"),
+    SortedSet = require("montage/collections/sorted-set"),
     Confirm = require("matte/ui/popup/confirm.reel").Confirm,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     ProjectController,
@@ -125,7 +126,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._editorController = editorController;
             this._extensionController = extensionController;
 
-            this.moduleLibraryItemMap = new Map();
+            this._moduleIdIconUrlMap = new Map();
             this._packageNameLibraryItemsMap = new Map();
 
             this._documentTypeUrlMatchers = [];
@@ -722,22 +723,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: null
     },
 
-    //TODO handle multiple extensions possibly registering for the same moduleId, latest one wins?
-    registerLibraryItemForModuleId: {
-        value: function (libraryItem, moduleId) {
-        }
-    },
-
-    //TODO allow for multiple extensions to unregister for same moduleId, don't disrupt current order
-    unregisterLibraryItemForModuleId: {
-        value: function (moduleId) {
-        }
-    },
-
     libraryItemForModuleId: {
         value: function (moduleId, objectName) {
-
-            console.log("create libraryItem for", moduleId, objectName)
 
             //TODO do away with this cache?
             var libraryItem = this.moduleLibraryItemMap.get(moduleId);
@@ -774,7 +761,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     addLibraryItemToPackage: {
         value: function (libraryItem, packageName) {
-            console.log("addLibraryItemToPackage", libraryItem, packageName);
 
             var libraryItems = this._packageNameLibraryItemsMap.get(packageName);
 
@@ -783,40 +769,60 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 this._packageNameLibraryItemsMap.set(packageName, libraryItems);
             }
 
-//            this.registerLibraryItemForModuleId(libraryItem, moduleId);
             libraryItems.push(libraryItem);
         }
     },
 
-    addLibraryItemWithModuleIdForPackage: {
-        value: function (libraryItem, moduleId, packageName) {
-            if (!libraryItem) {
-                return;
-            }
-            var addedLibraryItems = this._packageNameLibraryItemsMap.get(packageName);
+    // A map of moduleId to iconUrls
+    // Each entry is a collection of iconUrls that have been offered for the moduleId
+    _moduleIdIconUrlMap: {
+        value: null
+    },
 
-            if (!addedLibraryItems) {
-                addedLibraryItems = [];
-                this._packageNameLibraryItemsMap.set(packageName, addedLibraryItems);
+    /**
+     * Add the specified iconUrl as a valid icon to represent the
+     * specified moduleId
+     */
+    addIconUrlForModuleId: {
+        value: function (iconUrl, moduleId) {
+            var registeredIconUrls = this._moduleIdIconUrlMap.get(moduleId);
+
+            if (!registeredIconUrls) {
+                registeredIconUrls = new SortedSet();
+                this._moduleIdIconUrlMap.set(moduleId, registeredIconUrls);
             }
 
-            this.registerLibraryItemForModuleId(libraryItem, moduleId);
-            addedLibraryItems.push(libraryItem);
+            registeredIconUrls.add(iconUrl);
         }
     },
 
-    removeLibraryItemWithModuleIdForPackage: {
-        value: function (libraryItem, moduleId, packageName) {
-            var addedLibraryItems = this._packageNameLibraryItemsMap.get(packageName),
-                index;
+    /**
+     * Remove the specified iconUrl as a valid icon to represent the
+     * specified moduleId
+     */
+    removeIconUrlForModuleId: {
+        value: function (iconUrl, moduleId) {
+            var registeredIconUrls = this._moduleIdIconUrlMap.get(moduleId);
 
-            if (addedLibraryItems) {
-                index = addedLibraryItems.indexOf(libraryItem);
-                if (index >= 0) {
-                    addedLibraryItems.splice(index, 1);
-                    this.unregisterLibraryItemForModuleId(moduleId);
-                }
+            if (registeredIconUrls) {
+                registeredIconUrls.delete(iconUrl);
             }
+        }
+    },
+
+
+    iconUrlForModuleId: {
+        value: function (moduleId) {
+            var iconUrls = this._moduleIdIconUrlMap.get(moduleId),
+                iconUrl;
+
+            if (iconUrls && iconUrls.length > 0) {
+                iconUrl = iconUrls.one();
+            } else {
+                iconUrl = "/assets/img/library-icon.png";
+            }
+
+            return iconUrl;
         }
     },
 

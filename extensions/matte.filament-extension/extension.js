@@ -1,4 +1,5 @@
-var CoreExtension = require("filament-extension/core/extension").Extension;
+var CoreExtension = require("filament-extension/core/extension").Extension,
+    Promise = require("montage/core/promise").Promise;
 
 var Extension = exports.Extension = CoreExtension.specialize( {
 
@@ -10,13 +11,19 @@ var Extension = exports.Extension = CoreExtension.specialize( {
 
     activate: {
         value: function (application, projectController) {
-            return this.installLibraryItems(projectController, "matte").thenResolve(this);
+            return Promise.all([
+                this.installLibraryItems(projectController, "matte"),
+                this.installModuleIcons(projectController, "matte")
+            ]).thenResolve(this);
         }
     },
 
     deactivate: {
         value: function (application, projectController) {
-            return this.uninstallLibraryItems(projectController, "matte").thenResolve(this);
+            return Promise.all([
+                this.uninstallLibraryItems(projectController, "matte"),
+                this.uninstallModuleIcons(projectController, "matte")
+            ]).thenResolve(this);
         }
     }
 

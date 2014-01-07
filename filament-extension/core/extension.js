@@ -9,6 +9,7 @@ exports.Extension = Target.specialize( {
         value: function Extension() {
             this.super();
             this._packageNameLibraryItemMap = new Map();
+            this._packageNameIconUrlsMap = new Map();
         }
     },
 
@@ -55,8 +56,6 @@ exports.Extension = Target.specialize( {
         value: null
     },
 
-    //TODO paramaterize this and underlying services so it can be used by an extensions to find library items in different locations
-    // Don't assume an extensions only affects a single package?
     _loadLibraryItemsForPackageName: {
         value: function (serviceProvider, packageName) {
             var self = this,
@@ -88,7 +87,6 @@ exports.Extension = Target.specialize( {
             // probably pass along a bridge (or other service provider/extension interface) with
             // a subset of "safe" services in lieu of all these other bits and pieces of filament
             var serviceProvider = projectController.environmentBridge,
-                self = this,
                 libraryItems = this._packageNameLibraryItemMap.get(packageName),
                 promisedLibraryItems;
 
@@ -114,6 +112,80 @@ exports.Extension = Target.specialize( {
                     projectController.removeLibraryItemFromPackage(libraryItem, packageName);
                 });
             }
+            return Promise.resolve(this);
+        }
+    },
+
+    _packageNameIconUrlsMap: {
+        value: null
+    },
+
+    _loadIconUrlsForPackageName: {
+        value: function (serviceProvider, packageName) {
+            var extensionRequire = this.extensionRequire;
+
+            return serviceProvider.listModuleIconUrls(extensionRequire.location, packageName).then(function (urls) {
+
+                return urls.reduce(function (iconMap, url) {
+                    // NOTE the url for the icon captures the moduleId within the directory hierarchy;
+                    // strip away everything but that hierarchy before parsing it with the MontageReviver's
+                    // utility function
+                    //e.g. "extension/icons/foo/bar/baz.png" is the icon representing the module "foo/bar/baz"
+                    var moduleLocationFragment = url.replace(extensionRequire.location + "icons/", "").replace(/\.[^\.]+$/m, ""),
+                        iconModuleInfo = MontageReviver.parseObjectLocationId(moduleLocationFragment);
+
+                    iconMap.set(iconModuleInfo.moduleId, url);
+                    return iconMap;
+                }, new Map());
+            });
+        }
+    },
+
+    installModuleIcons: {
+        value: function (projectController, packageName) {
+
+            // TODO similar concern echoing that of installLibraryItems
+            var serviceProvider = projectController.environmentBridge,
+                moduleIdIconUrlMap = this._packageNameIconUrlsMap.get(packageName),
+                promisedIconUrlMap;
+
+            if (moduleIdIconUrlMap) {
+                promisedIconUrlMap = Promise.resolve(moduleIdIconUrlMap);
+            } else {
+                promisedIconUrlMap = this._loadIconUrlsForPackageName(serviceProvider, packageName);
+            }
+
+            return promisedIconUrlMap.then(function (iconUrlMap) {
+                var iconEntries = iconUrlMap.entries(),
+                    moduleId,
+                    iconUrl;
+                iconEntries.forEach(function (iconEntry) {
+                    moduleId = iconEntry[0];
+                    iconUrl = iconEntry[1];
+                    projectController.addIconUrlForModuleId(iconUrl, moduleId);
+                });
+            }).thenResolve(this);
+        }
+    },
+
+    uninstallModuleIcons: {
+        value: function (projectController, packageName) {
+
+            var moduleIdIconUrlMap = this._packageNameIconUrlsMap.get(packageName),
+                iconEntries,
+                moduleId,
+                iconUrl;
+
+            if (moduleIdIconUrlMap) {
+                iconEntries = moduleIdIconUrlMap.entries();
+
+                iconEntries.forEach(function (iconEntry) {
+                    moduleId = iconEntry[0];
+                    iconUrl = iconEntry[1];
+                    projectController.removeIconUrlForModuleId(iconUrl, moduleId);
+                });
+            }
+
             return Promise.resolve(this);
         }
     }
