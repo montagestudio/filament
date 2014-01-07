@@ -292,8 +292,21 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         value: null
     },
 
-    editingDocument: {
+    _editingDocument: {
         value: null
+    },
+
+    editingDocument: {
+        get: function () {
+            return this._editingDocument;
+        },
+        set: function (value) {
+            if (value === this._editingDocument) {
+                return;
+            }
+            this._editingDocument = value;
+            this.buildTemplateObjectTree();
+        }
     },
 
     showListeners: {
