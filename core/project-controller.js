@@ -127,6 +127,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._extensionController = extensionController;
 
             this._moduleIdIconUrlMap = new Map();
+            this._moduleIdLibraryItemMap = new Map();
             this._packageNameLibraryItemsMap = new Map();
 
             this._documentTypeUrlMatchers = [];
@@ -718,7 +719,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
-    moduleLibraryItemMap: {
+    _moduleIdLibraryItemMap: {
         enumerable: false,
         value: null
     },
@@ -726,8 +727,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     libraryItemForModuleId: {
         value: function (moduleId, objectName) {
 
-            //TODO do away with this cache?
-            var libraryItem = this.moduleLibraryItemMap.get(moduleId);
+            var libraryItem = this._moduleIdLibraryItemMap.get(moduleId);
 
             if (!libraryItem && (/^ui\//).test(moduleId)) {
                 // Only create default entries for component within the current package
