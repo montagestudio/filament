@@ -55,9 +55,29 @@ exports.LibraryItem = Montage.specialize( {
     },
 
     /**
-     * The template this LibraryItem represents
+     * The require object to use when loading the template and other resources
+     * relative to this libraryItem, though really the require is relative to
+     * the extensions that provides this LibraryItem, and others.
+     *
+     * Typically, it is not uniquely rooted to this libraryItem alone;
+     * a libraryItem is not typically a package itself.
      */
-    template: {
+    require: {
+        value: null
+    },
+
+    /**
+     * The moduleId of the template backing this libraryItem relative to this
+     * libraryItem's require
+     */
+    templateModuleId: {
+        value: null
+    },
+
+    /**
+     * The string content of a valid template this LibraryItem represents
+     */
+    templateContent: {
         value: null
     }
 });

@@ -159,7 +159,8 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             var availableTypes = event.dataTransfer.types;
 
             //Accept dropping prototypes from library
-            if (availableTypes && availableTypes.has(MimeTypes.PROTOTYPE_OBJECT)) {
+            if (availableTypes &&
+                (availableTypes.has(MimeTypes.TEMPLATE) || availableTypes.has(MimeTypes.TEXT_PLAIN))) {
                 // allows us to drop
                 event.preventDefault();
                 event.dataTransfer.dropEffect = "copy";
@@ -179,12 +180,20 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
 
     handleDrop: {
         value: function (evt) {
-            var availableTypes = event.dataTransfer.types;
-            if (availableTypes && availableTypes.has(MimeTypes.PROTOTYPE_OBJECT)) {
-                var data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
-                    transferObject = JSON.parse(data);
+            var availableTypes = event.dataTransfer.types,
+                data;
 
-                this.editingDocument.addLibraryItemFragments(transferObject.serializationFragment).done();
+            if (availableTypes) {
+
+                if (availableTypes.has(MimeTypes.TEMPLATE)) {
+                    data = event.dataTransfer.getData(MimeTypes.TEMPLATE);
+                } else if (availableTypes.has(MimeTypes.TEXT_PLAIN)) {
+                    data = event.dataTransfer.getData(MimeTypes.TEXT_PLAIN);
+                }
+
+                if (data) {
+                    this.editingDocument.insertTemplateContent(data).done();
+                }
             }
             this._willAcceptDrop = false;
         }

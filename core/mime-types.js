@@ -1,6 +1,9 @@
-// Represents a new object to create with a serialization and html.
-// Value is an object with serializationFragment and htmlFragment properties
-exports.PROTOTYPE_OBJECT = "x-filament/x-prototype-object";
+// Represents plain text
+exports.TEXT_PLAIN = "text/plain";
+
+// Represents a the full string content of a montage template
+// Value is the content of a template, suitable for creating an HTML5 document
+exports.TEMPLATE = "x-filament/x-montage-template";
 
 // Represents a new HTML element
 // Value is an HTML element in string format

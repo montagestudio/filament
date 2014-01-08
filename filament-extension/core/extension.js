@@ -67,10 +67,19 @@ exports.Extension = Target.specialize( {
                 return Promise.all(urls.map(function (url) {
                     var libraryItemModuleName = url.match(/([^\/]+)\.library-item\/$/m)[1],
                         libraryItemModuleInfo = MontageReviver.parseObjectLocationId(libraryItemModuleName),
-                        libraryItemModuleUrl = url.replace(extensionRequire.location, '') + libraryItemModuleName + ".js";
+                        rootModuleId = url.replace(extensionRequire.location, ''),
+                        moduleId = rootModuleId + libraryItemModuleName + ".js",
+                        templateModuleId = rootModuleId + libraryItemModuleName + ".html";
 
-                    return extensionRequire.async(libraryItemModuleUrl).then(function (exports) {
-                        return new exports[libraryItemModuleInfo.objectName]();
+                    return extensionRequire.async(moduleId).then(function (exports) {
+                        var libraryItem;
+                        libraryItem = new exports[libraryItemModuleInfo.objectName]();
+                        libraryItem.uri = url;
+
+                        libraryItem.require = extensionRequire;
+                        libraryItem.templateModuleId = templateModuleId;
+
+                        return libraryItem;
                     });
                 }));
             }).then(function (libraryItems) {

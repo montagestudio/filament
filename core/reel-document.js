@@ -797,17 +797,31 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    //TODO improve parameters, it's a bit of a mess without explanation
     /**
-     * The method is a temporary anomaly that accepts what our library items currently are
-     * and builds a template for merging
+     * Insert the objects and their associated markup, as provided in the
+     * specified templateContent, into the existing template.
      *
-     * This will be replaced with an addTemplate or insertTemplate or mergeTemplate
+     * Optionally, if there is markup worth importing from said
+     * templateContent, the content can either be inserted as a child of
+     * the specified `parentElement` or as a predeccessor to the
+     * specified `nextSiblingElement`.
+     *
+     * If neither is specified, the markup is simply appended as the
+     * last child of the owner component's element.
+     *
+     * @param {String} templateContent The content to insert into this template
+     * @param {NodeProxy} parentElement The optional element into which to insert markup
+     * @param {NodeProxy} nextSiblingElement The optional element before which to insert markup
+     * @param {Object} stageElement I am pretty certain this is not actually used anymore...
+     *
+     * @return {Array} A collection of the templateObjects added, presented as NodeProxies
      */
-    addLibraryItemFragments: {
-        value: function (serializationFragment, htmlFragment, parentElement, nextSiblingElement, stageElement, montageId) {
+    insertTemplateContent: {
+        value: function (templateContent, parentElement, nextSiblingElement, stageElement) {
             var self = this;
 
-            return this._buildTemplate(montageId, serializationFragment, htmlFragment).then(function (template) {
+            return Template.create().initWithHtml(templateContent, this._packageRequire).then(function (template) {
                 return self.addObjectsFromTemplate(template, parentElement, nextSiblingElement, stageElement);
             }).then(function (objects) {
                 // only if there's only one object?
@@ -972,7 +986,8 @@ exports.ReelDocument = EditingDocument.specialize({
             sourceContentFragment = sourceContentRange.cloneContents();
 
             newChildNodes = [];
-            for (i = 0; (iChild = sourceContentFragment.childNodes[i]); i++) {
+            //TODO do we want children or childNodes (textnodes included)?
+            for (i = 0; (iChild = sourceContentFragment.children[i]); i++) {
                 newChildNodes.push(iChild);
             }
 
