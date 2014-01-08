@@ -39,7 +39,7 @@
                 "identifier": "prototypeButton"
             },
             "bindings": {
-                "draggable": {"<-": "@owner.editingComponentPrototype != @owner.prototypeObject.serialization.prototype"}
+                "draggable": {"<-": "!@owner.prototypeObject.moduleIds.has(@owner.editingComponentPrototype)"}
             },
             "listeners": [
                 {

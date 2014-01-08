@@ -30,6 +30,8 @@ exports.LibraryItem = Montage.specialize( {
     constructor: {
         value: function LibraryItem() {
             this.super();
+            this.addBeforePathChangeListener("templateContent", this, "captureTemplateContentChange");
+            this.addPathChangeListener("templateContent", this, "handleTemplateContentChange");
         }
     },
 
@@ -45,6 +47,45 @@ exports.LibraryItem = Montage.specialize( {
      */
     name: {
         value: null
+    },
+
+    _moduleIds: {
+        value: null
+    },
+
+    /**
+     * The collection of moduleIds the backing template includes
+     */
+    moduleIds: {
+        get: function () {
+
+            if (!this._moduleIds && this.templateContent) {
+                var doc = document.implementation.createHTMLDocument(""),
+                    serializationElement,
+                    serialization,
+                    labels,
+                    moduleId;
+
+                doc.documentElement.innerHTML = this.templateContent;
+
+                serializationElement = doc.querySelector("script[type='text/montage-serialization']");
+                if (serializationElement) {
+                    serialization = JSON.parse(serializationElement.textContent);
+                    labels = Object.keys(serialization);
+
+                    this._moduleIds = labels.map(function (label) {
+                        return (moduleId = serialization[label].prototype) ? moduleId : null;
+                    }).filter(function (moduleId) {
+                        return moduleId;
+                    });
+
+                } else {
+                    this._moduleIds = [];
+                }
+            }
+
+            return this._moduleIds;
+        }
     },
 
     /**
@@ -79,5 +120,17 @@ exports.LibraryItem = Montage.specialize( {
      */
     templateContent: {
         value: null
+    },
+
+    captureTemplateContentChange: {
+        value: function () {
+            this.dispatchBeforeOwnPropertyChange("moduleIds", this.moduleIds);
+        }
+    },
+
+    handleTemplateContentChange: {
+        value: function () {
+            this.dispatchOwnPropertyChange("moduleIds", this.moduleIds);
+        }
     }
 });

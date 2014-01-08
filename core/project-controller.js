@@ -78,6 +78,13 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     },
 
     /**
+     * The require used by the package being edited
+     */
+    _packageRequire: {
+        value: null
+    },
+
+    /**
      * The controller managing the collection of openDocuments
      */
     openDocumentsController: {
@@ -192,6 +199,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 var packageDescription = packageRequire.packageDescription;
                 self.loadProjectIcon(self.packageUrl);
                 self.packageDescription = packageDescription;
+                self._packageRequire = packageRequire;
 
                 // Add a dependency entry for this package so that the
                 // we pick up its extensions and components later
@@ -685,14 +693,28 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+    /**
+     * Intended for use only when libraryItems were not found for the specified package,
+     * this will explore the package and build libraryItems on the fly for each component
+     * found in the UI directory.
+     *
+     * Eventually we should improve the heuristic on what we're willing to build libraryItems
+     * for, and additionally, provide some way to vary how they're built.
+     *
+     * Typically, this is used to expose the components inside the package being edited
+     * as no extensions is providing the libraryItems. In the future though, we might do
+     * this exploration and construction elsewhere, ahead of time, in keeping more with
+     * how we find libraryItems provided by extensions earlier; I'm not crazy about the
+     * projectController doing all this. We'll likely need a libraryController eventually.
+     */
     _findLibraryItemsForPackageUrl: {
         value: function (packageUrl, packageName) {
             var self = this,
-                libraryItems;
+                promisedLibraryItems;
 
             return this.environmentBridge.componentsInPackage(packageUrl).then(function (componentUrls) {
                 if (componentUrls) {
-                    libraryItems = componentUrls.map(function (componentUrl) {
+                    promisedLibraryItems = Promise.all(componentUrls.map(function (componentUrl) {
 
                         var moduleId,
                             objectName;
@@ -706,15 +728,18 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                             moduleId = URL.toModuleId(componentUrl, packageUrl);
                         }
                         objectName = MontageReviver.parseObjectLocationId(moduleId).objectName;
-                        return self.libraryItemForModuleId(moduleId, objectName);
-                    }).filter(function (libraryItem) {
-                        return libraryItem;
+                        return self._libraryItemForModuleId(moduleId, objectName);
+                    })).then(function (libraryItems) {
+                        // Remove falsey libraryItems
+                        return libraryItems.filter(function (libraryItem) {
+                            return libraryItem;
+                        });
                     });
                 } else {
-                    libraryItems = [];
+                    promisedLibraryItems = Promise.resolve([]);
                 }
 
-                return libraryItems;
+                return promisedLibraryItems;
             });
         }
     },
@@ -724,34 +749,81 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: null
     },
 
-    libraryItemForModuleId: {
+    /**
+     * This currently finds libraryItems if they've been created to represent the
+     * specified moduleId, or creates one if we don't have one already.
+     *
+     * This is usually only invoked for modules inside packages that we have no
+     * libraryItems for already.
+     * @see _findLibraryItemsForPackageUrl
+     */
+    _libraryItemForModuleId: {
         value: function (moduleId, objectName) {
 
-            var libraryItem = this._moduleIdLibraryItemMap.get(moduleId);
+            var libraryItem = this._moduleIdLibraryItemMap.get(moduleId),
+                promisedLibraryItem,
+                montageId,
+                serializationFragment,
+                htmlFragment;
 
             if (!libraryItem && (/^ui\//).test(moduleId)) {
-                // Only create default entries for component within the current package
                 // TODO this regex is not exactly how we'll want this done in the future but it keeps things from getting too cluttered
 
-                var montageId = objectName.replace(/(^.)/, function (_, firstChar) {
+                montageId = objectName.replace(/(^.)/, function (_, firstChar) {
                     return firstChar.toLowerCase();
                 });
 
-                //TODO this will need to conform a bit better to the new template backed LibraryItem
-                libraryItem = new LibraryItem();
-                libraryItem.serialization = {
+                //TODO move fragment generation elsewhere so it can be varied
+                serializationFragment = {
                     prototype: moduleId,
                     properties: {
                         element: {"#": montageId}
                     }
                 };
-                libraryItem.name = objectName;
-                libraryItem.html = '<div data-montage-id="' + montageId + '"></div>';
-                //TODO well this can't be hardcoded
-                libraryItem.iconUrl = "/assets/img/library-icon.png";
+
+                htmlFragment = '<div data-montage-id="' + montageId + '"></div>';
+
+                return this._buildLibraryItemTemplate(montageId, serializationFragment, htmlFragment).then(function (template) {
+                    libraryItem = new LibraryItem();
+                    libraryItem.templateContent = template.html;
+                    libraryItem.name = objectName;
+                    //TODO well this can't be hardcoded
+                    libraryItem.iconUrl = "/assets/img/library-icon.png";
+                    return libraryItem;
+                });
+            } else {
+                promisedLibraryItem = Promise.resolve(libraryItem);
             }
 
-            return libraryItem;
+            return promisedLibraryItem;
+        }
+    },
+
+    //TODO the division of labor between this and _libraryItemForModuleId needs to be sorted out
+    _buildLibraryItemTemplate: {
+        value: function (label, serializationFragment, htmlFragment) {
+
+            var templateBasePromise = require.async("core/base-template.html"),
+                templateSerialization = {},
+                serializationElement,
+                self = this;
+
+            templateSerialization[label] = serializationFragment;
+
+            return templateBasePromise.then(function (result) {
+
+                var doc = document.implementation.createHTMLDocument("");
+                doc.documentElement.innerHTML = result.content;
+
+                serializationElement = doc.querySelector("script[type='text/montage-serialization']");
+                serializationElement.appendChild(document.createTextNode(JSON.stringify(templateSerialization)));
+
+                if (htmlFragment) {
+                    doc.body.innerHTML = htmlFragment;
+                }
+
+                return Template.create().initWithDocument(doc, self._packageRequire);
+            });
         }
     },
 
