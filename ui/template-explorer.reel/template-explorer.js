@@ -472,7 +472,6 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             if (newValue) {
                 this.buildTemplateObjectTree();
             }
-            //this.templateObjectsTree = null;
         }
     },
 
