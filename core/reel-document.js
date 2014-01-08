@@ -835,20 +835,28 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    addAndAssignLibraryItemFragment: {
-        value: function (serializationFragment, nodeProxy) {
+    /**
+     * TODO This appears to be for the case where we take a libraryItem and give it an existing destination node
+     * I'm not sure when we should decide what to do with the html portion of the template
+     * do we consult it? discard it? when do we do these things? now? earlier?
+     *
+     * FIXME right now this doesn't work correctly: the html markup from the template we're merging is appended as usual
+     * in addition to us
+     */
+    addAndAssignTemplateContent: {
+        value: function (templateContent, nodeProxy) {
             var self = this,
                 montageId = nodeProxy.montageId;
 
             this.undoManager.openBatch("Add component to element");
 
-            return this.addLibraryItemFragments(serializationFragment, void 0, void 0, void 0, void 0, montageId).then(function (objects) {
+            return this.insertTemplateContent(templateContent, void 0, void 0, void 0, void 0, montageId).then(function (objects) {
                 var label;
 
                 if (objects.length === 1) {
                     label = objects[0].label;
                     if (!montageId) {
-                        montageId = self.createMontageIdForProxy(label, serializationFragment.prototype, nodeProxy);
+                        montageId = self.createMontageIdForProxy(label, objects[0]._exportId, nodeProxy);
                     }
                     self.setOwnedObjectElement(objects[0], montageId);
                 }

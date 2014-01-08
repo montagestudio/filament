@@ -114,7 +114,8 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function (event) {
             return 0 !== this.nodeInfo.depth &&
                 event.dataTransfer.types &&
-                event.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 &&
+                (event.dataTransfer.types.has(MimeTypes.TEMPLATE) ||
+                event.dataTransfer.types.has(MimeTypes.TEXT_PLAIN)) &&
                 !this.nodeInfo.component;
         }
     },
@@ -123,8 +124,9 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function (evt) {
             return evt.dataTransfer.types &&
                 (
-                    evt.dataTransfer.types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 ||
-                    evt.dataTransfer.types.indexOf(MimeTypes.JSON_NODE) !== -1
+                    evt.dataTransfer.types.has(MimeTypes.TEMPLATE) ||
+                    evt.dataTransfer.types.has(MimeTypes.TEXT_PLAIN) ||
+                    evt.dataTransfer.types.has(MimeTypes.JSON_NODE)
                 );
         }
     },
@@ -228,14 +230,20 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         enumerable: false,
         value: function (event) {
             event.stop();
-            // TODO: security issues?
-            var data = event.dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
-                transferObject = JSON.parse(data),
+
+            var dataTransfer = event.dataTransfer,
                 nodeInfo = this.nodeInfo,
                 editingDocument = nodeInfo._editingDocument,
-                self = this;
+                self = this,
+                data;
 
-            editingDocument.addAndAssignLibraryItemFragment(transferObject.serializationFragment, nodeInfo)
+            if (dataTransfer.types.has(MimeTypes.TEMPLATE)) {
+                data = dataTransfer.getData(MimeTypes.TEMPLATE);
+            } else if (dataTransfer.types.has(MimeTypes.TEXT_PLAIN)) {
+                data = dataTransfer.getData(MimeTypes.TEXT_PLAIN);
+            }
+
+            editingDocument.addAndAssignTemplateContent(data, nodeInfo)
             .finally(function () {
                 self.isDropTarget = false;
             })
@@ -253,7 +261,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function (evt) {
             this.dispatchEventNamed("insertAfterNode", true, true, {
                 previousSibling: this.nodeInfo,
-                transferObject: evt.detail.transferObject
+                template: evt.detail.template
             });
         }
     },
@@ -262,7 +270,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function (evt) {
             this.dispatchEventNamed("insertBeforeNode", true, true, {
                 nextSibling: this.nodeInfo,
-                transferObject: evt.detail.transferObject
+                template: evt.detail.template
             });
         }
     },
@@ -271,7 +279,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function (evt) {
             this.dispatchEventNamed("appendNode", true, true, {
                 parentNode: this.nodeInfo,
-                transferObject: evt.detail.transferObject
+                template: evt.detail.template
             });
         }
     },

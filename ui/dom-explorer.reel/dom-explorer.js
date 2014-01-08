@@ -157,15 +157,13 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         value: function (evt) {
 
             var detail = evt.detail,
-                transferObject,
+                templateContent,
                 jsonNode;
             // from library template
-            if (transferObject = detail.transferObject) {
-                var serializationFragment = transferObject.serializationFragment;
-                var htmlFragment = transferObject.htmlFragment;
+            if (templateContent = detail.template) {
                 var parentNode = detail.parentNode;
 
-                this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, null, null).done();
+                this.editingDocument.insertTemplateContent(templateContent, parentNode, null, null).done();
             // from user input
             } else if (jsonNode = detail.jsonNode) {
                 var newNode = this.editingDocument.createTemplateNodeFromJSONNode(jsonNode);
@@ -178,16 +176,14 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
     handleInsertBeforeNode: {
         value: function (evt) {
             var detail = evt.detail,
-                transferObject,
+                templateContent,
                 jsonNode;
 
-            if (transferObject = detail.transferObject) {
-                var serializationFragment = transferObject.serializationFragment;
-                var htmlFragment = transferObject.htmlFragment;
+            if (templateContent = detail.template) {
                 var nextSibling = detail.nextSibling;
                 var parentNode = nextSibling.parentNode;
 
-                this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, nextSibling, null).done();
+                this.editingDocument.insertTemplateContent(templateContent, parentNode, nextSibling, null).done();
 
             } else if (jsonNode = detail.jsonNode) {
                 var newNode = this.editingDocument.createTemplateNodeFromJSONNode(jsonNode);
@@ -200,16 +196,14 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
     handleInsertAfterNode: {
         value: function (evt) {
             var detail = evt.detail,
-                transferObject,
+                templateContent,
                 jsonNode;
 
-            if (transferObject = detail.transferObject) {
-                var serializationFragment = transferObject.serializationFragment;
-                var htmlFragment = transferObject.htmlFragment;
+            if (templateContent = detail.template) {
                 var nextSibling = detail.previousSibling.nextSibling;
                 var parentNode = detail.previousSibling.parentNode;
 
-                this.editingDocument.addLibraryItemFragments(serializationFragment, htmlFragment, parentNode, nextSibling, null).done();
+                this.editingDocument.insertTemplateContent(templateContent, parentNode, nextSibling, null).done();
 
             } else if (jsonNode = detail.jsonNode) {
                 var newNode = this.editingDocument.createTemplateNodeFromJSONNode(jsonNode);
