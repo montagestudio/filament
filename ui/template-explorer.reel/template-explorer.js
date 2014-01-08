@@ -281,6 +281,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             this.addRangeAtPathChangeListener("editingDocument.selectedObjects", this, "handleSelectedObjectsChange");
             // listen to domModification to refresh the tree
             this.editingDocument.addEventListener("domModified", this, false);
+            this.addPathChangeListener("editingDocument", this, "handleEditingDocumentChange");
         }
     },
 
@@ -292,21 +293,8 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         value: null
     },
 
-    _editingDocument: {
-        value: null
-    },
-
     editingDocument: {
-        get: function () {
-            return this._editingDocument;
-        },
-        set: function (value) {
-            if (value === this._editingDocument) {
-                return;
-            }
-            this._editingDocument = value;
-            this.buildTemplateObjectTree();
-        }
+        value: null
     },
 
     showListeners: {
@@ -476,6 +464,15 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             Promise.nextTick(function(){
                 self.buildTemplateObjectTree();
             });
+        }
+    },
+
+    handleEditingDocumentChange: {
+        value: function (newValue, path, object) {
+            if (newValue) {
+                this.buildTemplateObjectTree();
+            }
+            //this.templateObjectsTree = null;
         }
     },
 
