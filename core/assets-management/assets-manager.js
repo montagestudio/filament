@@ -436,7 +436,7 @@ exports.AssetsManager = Montage.specialize({
      * @private
      * @param {String} rootPath - an 'root' path.
      * @param {String} appendPath - an path to append.
-     * @return {String} a path concatenated‎.
+     * @return {String} a path concatenated.
      */
     _resolvePaths: {
         value: function (rootPath, appendPath) {
