@@ -2,11 +2,47 @@
     -webkit-user-select: none;
 }
 
-.Library-search {
-    display: block;
-    width: 100%;
+.Library .Bar {
+    display: flex;
 }
 
+.Library-search {
+    flex: 1;
+}
+
+/* Header Button ------------------------- */
+
+.Library-viewModeButton.matte-Button {
+    position: relative;
+    min-width: initial;
+    width: 30px;
+    height: 30px;
+    margin: 0 0 0 4px;
+    padding: 0;
+    font-size: 40px;
+    line-height: 30px;
+    color: hsl(0, 0%, 50%);
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.Library-viewModeButton.matte-Button:hover {
+    color: hsl(0,0%,20%);
+    background: transparent;
+}
+
+.Library-viewModeButton.matte-Button.active {
+    background: hsla(0, 0%, 0%, .1);
+}
+
+.Library .Library-viewModeButton:before { content: "⚏"; }
+.Library.isList .Library-viewModeButton:before { content: ""; }
+
+
+
+/* List -------------------------------- */
 
 .Library-list {
     -webkit-flex: 1;

@@ -12,6 +12,11 @@
                 "properties": {
                     "element": {"#": "library"},
                     "groupsController": {"@": "groupsController"}
+                },
+                "bindings": {
+                    "classList.has('isList')": {
+                        "<-": "@viewModeButton.pressed"
+                    }
                 }
             },
 
@@ -54,6 +59,13 @@
                     "value": {"<->": "@owner.filterTerm"}
                 }
             },
+            
+            "viewModeButton": {
+                "prototype": "matte/ui/toggle-button.reel",
+                "properties": {
+                    "element": {"#": "viewModeButton"}
+                }
+            },
 
             "assetsLibrary": {
                 "prototype": "ui/assets-library.reel",
@@ -73,6 +85,7 @@
     <aside data-montage-id="library" class="Panel Library">
         <header class="Bar">
             <input data-montage-id="filterInput" class="Search Library-search" type="search" placeholder="Search">
+            <button data-montage-id="viewModeButton" class="Library-viewModeButton" data-icon></button>
         </header>
 		<div data-montage-id="groupList" class="Library-list">
 		    <details data-montage-id="group"></details>

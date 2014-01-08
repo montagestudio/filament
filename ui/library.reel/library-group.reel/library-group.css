@@ -35,45 +35,6 @@
 }
 
 
-
-/* Header Button ------------------------- */
-
-.LibraryGroup[open] .LibraryGroup-header-button {
-    visibility: visible;
-}
-.LibraryGroup-header-button.matte-Button {
-    visibility: hidden;
-    position: absolute;
-    top: 0;
-    right: 0;
-    min-width: initial;
-    width: 25px;
-    height: 25px;
-    margin: 0;
-    padding: 0;
-    font-size: 29px;
-    line-height: 0.9;
-    color: inherit;
-    border: none;
-    border-radius: 0;
-    border-top-right-radius: inherit;
-    background: transparent;
-    cursor: pointer;
-}
-
-.LibraryGroup-header-button.matte-Button:hover {
-    color: hsl(0,0%,20%);
-    background: hsla(0, 0%, 0%, .05);
-}
-
-.LibraryGroup-header-button.matte-Button.active {
-    background: hsla(0, 0%, 0%, .1);
-}
-
-.LibraryGroup .LibraryGroup-header-button:before { content: "⚏"; }
-.LibraryGroup.isList .LibraryGroup-header-button:before { content: ""; }
-
-
 /* Description ------------------------- */
 
 .LibraryGroup-description {

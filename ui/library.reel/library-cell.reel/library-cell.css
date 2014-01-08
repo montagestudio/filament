@@ -110,29 +110,29 @@
 
 /* List --------------------------------- */
 
-.LibraryGroup.isList .LibraryGroup-list {
+.Library.isList .LibraryGroup-list {
     display: initial;
 } 
 
-.LibraryGroup.isList .LibraryCell {
+.Library.isList .LibraryCell {
     max-width: initial;
 }
 
-.LibraryGroup.isList .LibraryCell-button.matte-Button {
+.Library.isList .LibraryCell-button.matte-Button {
     display: flex;
     padding: 4px 4px 4px 12px;
     border-radius: 0;
 }
 
-.LibraryGroup.isList .LibraryCell:last-child .LibraryCell-button.matte-Button {
+.Library.isList .LibraryCell:last-child .LibraryCell-button.matte-Button {
     border-radius: 0 0 4px 4px;
 }
 
-.LibraryGroup.isList .LibraryCell-button-icon {
+.Library.isList .LibraryCell-button-icon {
     width: 28px;
 }
 
-.LibraryGroup.isList .LibraryCell-button-label {
+.Library.isList .LibraryCell-button-label {
     flex: 1;
     font-size: 12px;
     text-align: left;
@@ -141,7 +141,7 @@
     color: hsl(0, 0%, 50%);
 }
 
-.LibraryGroup.isList .LibraryCell-button:hover .LibraryCell-button-label {
+.Library.isList .LibraryCell-button:hover .LibraryCell-button-label {
     color: hsl(0, 0%, 30%);
 }
 

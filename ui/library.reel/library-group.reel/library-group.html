@@ -8,11 +8,6 @@
         "owner": {
             "properties": {
                 "element": {"#": "library-group"}
-            },
-            "bindings": {
-                "classList.has('isList')": {
-                    "<-": "@viewModeButton.pressed"
-                }
             }
         },
 
@@ -23,13 +18,6 @@
             },
             "bindings": {
                 "value": {"<-": "@owner.details.dependency"}
-            }
-        },
-        
-        "viewModeButton": {
-            "prototype": "matte/ui/toggle-button.reel",
-            "properties": {
-                "element": {"#": "viewModeButton"}
             }
         },
 
@@ -81,7 +69,6 @@
     <details data-montage-id="library-group" class="LibraryGroup">
         <summary class="LibraryGroup-header">
             <span data-montage-id="groupName"></span>
-            <button data-montage-id="viewModeButton" class="LibraryGroup-header-button" data-icon></button>
         </summary>
         <p data-montage-id="groupDescription" class="LibraryGroup-description">Package description</p>
         <ul data-montage-id="libraryItemList" class="LibraryGroup-list" >
