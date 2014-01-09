@@ -493,8 +493,6 @@ exports.ReelDocument = EditingDocument.specialize({
 
             //TODO this is a hack to refresh the dpeth of everythign on a change
             this.templateNodes = this._children(this._templateBodyNode);
-
-            this.dispatchEventNamed("domModified", true, false);
         }
     },
 
@@ -514,8 +512,6 @@ exports.ReelDocument = EditingDocument.specialize({
             proxy.children.forEach(function (child) {
                 this.__removeNodeProxy(child);
             }, this);
-
-            this.dispatchEventNamed("domModified", true, false);
         }
     },
 
@@ -1038,7 +1034,6 @@ exports.ReelDocument = EditingDocument.specialize({
             this.undoManager.register("Add object", Promise.resolve([this.removeObject, this, proxy]));
 
             this.editor.refresh();
-            this.dispatchEventNamed("domModified", true, false);
             return proxy;
         }
     },
