@@ -18,6 +18,20 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
         }
     },
 
+    /**
+     * HACK: This property supports the hackish way we learn about someone
+     * clicking on an item of the repetition.
+     * When a repetition item is clicked on it is also selected, we listen for
+     * this selection change and open the file.
+     * However, we also set the selection when navigating the list with the key
+     * and do not wish to open the file on that case. This property is a flag
+     * that indicates to the selection change listener if the selection was
+     * initiated by us or by the internal repetition mechanism.
+     */
+    _updatingSelection: {
+        value: false
+    },
+
     searchText: {
         value: ""
     },
@@ -46,6 +60,14 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
 
     matchFilesMax: {
         value: 15
+    },
+
+    templateDidLoad: {
+        value: function() {
+            this._updatingSelection = true;
+            this.templateObjects.matchList.addRangeAtPathChangeListener("contentController.selection", this, "handleSelectionChange");
+            this._updatingSelection = false;
+        }
     },
 
     show: {
@@ -83,9 +105,20 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
             }
 
             //console.log(window.performance.now() - startTime, content.length);
+            this._updatingSelection = true;
             this.templateObjects.matchList.content = content;
             this.templateObjects.matchList.selection = [content[0]];
+            this._updatingSelection = false;
             this._selectedFileIndex = 0;
+        }
+    },
+
+    _openSelectedFile: {
+        value: function() {
+            var file = this.templateObjects.matchList.contentController.selection[0];
+
+            this.dispatchEventNamed("openUrl", true, true, file.fileUrl);
+            this.templateObjects.overlay.hide();
         }
     },
 
@@ -134,7 +167,9 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
             } else {
                 this._selectedFileIndex--;
             }
+            this._updatingSelection = true;
             matchList.selection = [matchList.content[this._selectedFileIndex]];
+            this._updatingSelection = false;
         }
     },
 
@@ -143,16 +178,23 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
             var matchList = this.templateObjects.matchList;
 
             this._selectedFileIndex = (this._selectedFileIndex+1) % matchList.content.length;
+            this._updatingSelection = true;
             matchList.selection = [matchList.content[this._selectedFileIndex]];
+            this._updatingSelection = false;
         }
     },
 
     handleSearchFieldAction: {
         value: function() {
-            var file = this.templateObjects.matchList.selection[0];
+            this._openSelectedFile();
+        }
+    },
 
-            this.dispatchEventNamed("openUrl", true, true, file.fileUrl);
-            this.templateObjects.overlay.hide();
+    handleSelectionChange: {
+        value: function() {
+            if (!this._updatingSelection) {
+                this._openSelectedFile();
+            }
         }
     },
 
