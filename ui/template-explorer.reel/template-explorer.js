@@ -128,6 +128,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         value: function TemplateExplorer() {
             this.super();
             this.defineBinding("templateObjectsController.filterPath", {"<-": "templateObjectFilterPath"});
+            this.toggleStates = new WeakMap();
         }
     },
 
@@ -138,6 +139,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         value: function (insertionMap) {
             var root = {
                 templateObject: this.ownerObject,
+                expanded: true,
                 children: []
             };
             this.templateObjectsTree = root;
@@ -220,9 +222,12 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                     }
 
                     if (insertionMap.has(parentReelProxy)) {
+                        // restore expand status
+                        var expanded = (this.toggleStates.get(reelProxy) !== undefined) ? this.toggleStates.get(reelProxy) : true;
                         // add the node to the tree
                         var node = {
                             templateObject: reelProxy,
+                            expanded: expanded,
                             children: []
                         };
                         var parentNode = insertionMap.get(parentReelProxy);
@@ -254,6 +259,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                     throw new Error("Can not build templateObjectsTree: looping on the same components");
                 }
             }
+            this.toggleStates.clear();
         }
     },
 
@@ -282,6 +288,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             // listen to domModification to refresh the tree
             this.editingDocument.addEventListener("domModified", this, false);
             this.addPathChangeListener("editingDocument", this, "handleEditingDocumentChange");
+            this.addEventListener("toggle", this);
         }
     },
 
@@ -472,6 +479,18 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             if (newValue) {
                 this.buildTemplateObjectTree();
             }
+        }
+    },
+
+    toggleStates: {
+        value: null
+    },
+
+    handleToggle: {
+        value: function (evt) {
+            var reelProxy = evt.target.parentComponent.parentComponent.templateObject,
+                toggled = evt.detail.toggled;
+            this.toggleStates.set(reelProxy, toggled);
         }
     },
 

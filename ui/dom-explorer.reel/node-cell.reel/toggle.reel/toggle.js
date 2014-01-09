@@ -41,6 +41,7 @@ exports.Toggle = Component.specialize(/** @lends Toggle# */ {
         value: function (evt){
             evt.preventDefault();
             this.isOpen = !this.isOpen;
+            this.dispatchEventNamed("toggle", true, true, {toggled: this.isOpen});
             this.needsDraw = true;
         }
     },

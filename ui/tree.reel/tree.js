@@ -7,6 +7,10 @@ exports.Tree = Montage.create(Component, {
         value: false
     },
 
+    expandedPath: {
+        value: null
+    },
+
     treeController: {
         value: null
     }
