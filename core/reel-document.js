@@ -797,7 +797,7 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    //TODO improve parameters, it's a bit of a mess without explanation
+    //TODO improve parameters, it's a bit of a mess
     /**
      * Insert the objects and their associated markup, as provided in the
      * specified templateContent, into the existing template.
@@ -836,29 +836,74 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     /**
-     * TODO This appears to be for the case where we take a libraryItem and give it an existing destination node
-     * I'm not sure when we should decide what to do with the html portion of the template
-     * do we consult it? discard it? when do we do these things? now? earlier?
+     * Associate the object that is declared in the specified serializationFragment with
+     * the specified node.
      *
-     * FIXME right now this doesn't work correctly: the html markup from the template we're merging is appended as usual
-     * in addition to us
+     * While this can be used to insert a non-component object into the template, specifying
+     * an associated nodeProxy is not supported and will be rejected.
+     *
+     * @param {String} serializationText A serialization block with a single labelled object
+     * @param {NodeProxy} nodeProxy An optional proxy for the element with which to associate the declared object
+     * @return {Array} A collection of the templateObjects added, presented as as ReelProxies
      */
-    addAndAssignTemplateContent: {
-        value: function (templateContent, nodeProxy) {
+    insertTemplateObjectFromSerialization: {
+        value: function (serializationText, nodeProxy) {
             var self = this,
-                montageId = nodeProxy.montageId;
+                montageId = nodeProxy ? nodeProxy.montageId : null,
+                serializationObject = typeof serializationText === "string" ? JSON.parse(serializationText) : serializationText,
+                label = Object.keys(serializationObject)[0],
+                properties = serializationObject[label].properties,
+                looksLikeComponent = properties && properties.element,
+                template,
+                uniqueLabel;
 
-            this.undoManager.openBatch("Add component to element");
+            if (nodeProxy && !looksLikeComponent) {
+                //TODO should this have been stopped earlier? what do we want to do now?
+                return Promise.reject(new Error("Attempted to associate non-component serialization with an element"));
+            }
 
-            return this.insertTemplateContent(templateContent, void 0, void 0, void 0, void 0, montageId).then(function (objects) {
+            this.undoManager.openBatch("Add Template Object");
+
+            if (!montageId && looksLikeComponent) {
+                // No montageId was found on the nodeProxy, or there was no nodeProxy specified
+                // We can generate a montageId, but check to see if we need to first;
+
+                if (nodeProxy) {
+                    // Apparently the nodeProxy specified had no montageId previously
+                    montageId = this._generateMontageId(serializationObject[label].prototype);
+
+                    properties.element["#"] = montageId;
+                    this.setNodeProxyAttribute(nodeProxy, "data-montage-id", montageId);
+                } else {
+                    // No node proxy was specified, attach no element
+                    // leave it "broken" and expect it to be set later
+                    delete serializationObject[label].properties.element;
+                }
+            } else if (looksLikeComponent) {
+                // Try to adopt the montageId of the element as the label for the component
+
+                if (montageId in this.editingProxyMap) {
+                    uniqueLabel = this._generateLabel(serializationText[label]);
+                } else {
+                    uniqueLabel = montageId;
+                }
+
+                serializationObject[uniqueLabel] = serializationObject[label];
+                delete serializationObject[label];
+            }
+
+            template = new Template().initWithRequire(this._packageRequire);
+            template.objectsString = JSON.stringify(serializationObject);
+
+            return this.addObjectsFromTemplate(template).then(function (objects) {
                 var label;
 
                 if (objects.length === 1) {
                     label = objects[0].label;
-                    if (!montageId) {
-                        montageId = self.createMontageIdForProxy(label, objects[0]._exportId, nodeProxy);
+                    //TODO why is the node association done so late?
+                    if (nodeProxy) {
+                        self.setOwnedObjectElement(objects[0], montageId);
                     }
-                    self.setOwnedObjectElement(objects[0], montageId);
                 }
 
                 return objects;

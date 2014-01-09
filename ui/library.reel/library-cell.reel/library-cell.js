@@ -52,7 +52,20 @@ exports.LibraryCell = Montage.create(Component, /** @lends module:"ui/library-ce
 
             event.dataTransfer.effectAllowed = "copyMove";
 
-            var templateContent = this.prototypeObject.templateContent;
+            var templateContent = this.prototypeObject.templateContent,
+                doc,
+                serializationElement,
+                serializationFragment;
+
+            if (1 === this.prototypeObject.moduleIds.length) {
+                doc = document.implementation.createHTMLDocument("");
+                doc.documentElement.innerHTML = templateContent;
+
+                serializationElement = doc.querySelector("script[type='text/montage-serialization']");
+                if (serializationElement && (serializationFragment = serializationElement.textContent)) {
+                    event.dataTransfer.setData(MimeTypes.SERIALIZATION_FRAGMENT, serializationFragment);
+                }
+            }
 
             event.dataTransfer.setData(MimeTypes.TEMPLATE, templateContent);
             event.dataTransfer.setData(MimeTypes.TEXT_PLAIN, templateContent);

@@ -606,10 +606,12 @@ describe("core/reel-document-template-editing-spec", function () {
                 expect(nodeProxy.isInTemplate).toBeTruthy();
 
                 // test
-                return reelDocument.addLibraryItemFragments({
-                    "prototype": "ui/foo.reel",
-                    "properties": {
-                        "element": {"#": "test"}
+                return reelDocument.insertTemplateObjectFromSerialization({
+                    "foo": {
+                        "prototype": "ui/foo.reel",
+                        "properties": {
+                            "element": {"#": "test"}
+                        }
                     }
                 }).then(function (objects) {
                     expect(objects[0].properties.get("element")).not.toBe(nodeProxy);
@@ -626,10 +628,12 @@ describe("core/reel-document-template-editing-spec", function () {
                 expect(nodeProxy.isInTemplate).toBeTruthy();
 
                 // test
-                return reelDocument.addAndAssignLibraryItemFragment({
-                    "prototype": "ui/foo.reel",
-                    "properties": {
-                        "element": {"#": "unexistingId"}
+                return reelDocument.insertTemplateObjectFromSerialization({
+                    "foo": {
+                        "prototype": "ui/foo.reel",
+                        "properties": {
+                            "element": {"#": "unexistingId"}
+                        }
                     }
                 }, nodeProxy).then(function (objects) {
                     expect(objects[0].properties.get("element")).toBe(nodeProxy);
@@ -646,10 +650,12 @@ describe("core/reel-document-template-editing-spec", function () {
                 expect(nodeProxy.isInTemplate).toBeTruthy();
 
                 // test
-                return reelDocument.addAndAssignLibraryItemFragment({
-                    "prototype": "ui/foo.reel",
-                    "properties": {
-                        "element": {"#": "unexistingId"}
+                return reelDocument.insertTemplateObjectFromSerialization({
+                    "foo": {
+                        "prototype": "ui/foo.reel",
+                        "properties": {
+                            "element": {"#": "unexistingId"}
+                        }
                     }
                 }, nodeProxy).then(function (objects) {
                     expect(objects[0].properties.get("element")).toBe(nodeProxy);
@@ -666,10 +672,12 @@ describe("core/reel-document-template-editing-spec", function () {
                 expect(nodeProxy.isInTemplate).toBeTruthy();
 
                 // test
-                return reelDocument.addAndAssignLibraryItemFragment({
-                    "prototype": "ui/foo.reel",
-                    "properties": {
-                        "element": {"#": "unexistingId"}
+                return reelDocument.insertTemplateObjectFromSerialization({
+                    "foo": {
+                        "prototype": "ui/foo.reel",
+                        "properties": {
+                            "element": {"#": "unexistingId"}
+                        }
                     }
                 }, nodeProxy).then(function (objects) {
                     expect(objects[0].label).toBe("pass");
@@ -686,10 +694,12 @@ describe("core/reel-document-template-editing-spec", function () {
                 expect(nodeProxy.isInTemplate).toBeTruthy();
 
                 // test
-                return reelDocument.addAndAssignLibraryItemFragment({
-                    "prototype": "ui/pass.reel",
-                    "properties": {
-                        "element": {"#": "unexistingId"}
+                return reelDocument.insertTemplateObjectFromSerialization({
+                    "passLabel": {
+                        "prototype": "ui/pass.reel",
+                        "properties": {
+                            "element": {"#": "unexistingId"}
+                        }
                     }
                 }, nodeProxy).then(function (objects) {
                     expect(objects[0].label).toBe("pass1");

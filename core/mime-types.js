@@ -5,6 +5,12 @@ exports.TEXT_PLAIN = "text/plain";
 // Value is the content of a template, suitable for creating an HTML5 document
 exports.TEMPLATE = "x-filament/x-montage-template";
 
+// Represents the serialization fragment for a single templateObject
+// devoid of the associated markup, even if the serialization itself is for
+// a component that should have an element; it's up for the recipient
+// of this data to figure out that part
+exports.SERIALIZATION_FRAGMENT = "x-filament/x-montage-serialization-fragment";
+
 // Represents a new HTML element
 // Value is an HTML element in string format
 exports.HTML_ELEMENT = "x-filament/x-html-element";

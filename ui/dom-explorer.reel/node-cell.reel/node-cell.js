@@ -114,8 +114,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function (event) {
             return 0 !== this.nodeInfo.depth &&
                 event.dataTransfer.types &&
-                (event.dataTransfer.types.has(MimeTypes.TEMPLATE) ||
-                event.dataTransfer.types.has(MimeTypes.TEXT_PLAIN)) &&
+                event.dataTransfer.types.has(MimeTypes.SERIALIZATION_FRAGMENT) &&
                 !this.nodeInfo.component;
         }
     },
@@ -237,17 +236,13 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                 self = this,
                 data;
 
-            if (dataTransfer.types.has(MimeTypes.TEMPLATE)) {
-                data = dataTransfer.getData(MimeTypes.TEMPLATE);
-            } else if (dataTransfer.types.has(MimeTypes.TEXT_PLAIN)) {
-                data = dataTransfer.getData(MimeTypes.TEXT_PLAIN);
-            }
+            if (dataTransfer.types.has(MimeTypes.SERIALIZATION_FRAGMENT)) {
+                data = dataTransfer.getData(MimeTypes.SERIALIZATION_FRAGMENT);
 
-            editingDocument.addAndAssignTemplateContent(data, nodeInfo)
-            .finally(function () {
-                self.isDropTarget = false;
-            })
-            .done();
+                editingDocument.insertTemplateObjectFromSerialization(data, nodeInfo).finally(function () {
+                    self.isDropTarget = false;
+                }).done();
+            }
         }
     },
 
