@@ -203,12 +203,24 @@ exports.TemplateObjectCell = Component.specialize({
         }
     },
 
+    canSelect: {
+        value: function (evt) {
+            // ignore toggle click, hide checkbox
+            return !(
+                this.templateObjects.toggleExpanded.element.parentOf(evt.target) ||
+                (
+                    evt.target.component &&
+                    (evt.target.component.identifier === "hiddenCheckbox")
+                )
+            );
+        }
+    },
+
     handleClick: {
         value: function (evt) {
             var reelProxy  = this.templateObject,
                 editingDocument = reelProxy._editingDocument;
-            // ignore toggle click
-            if (this.templateObjects.toggleExpanded.element.parentOf(evt.target)){
+            if (!this.canSelect(evt)) {
                 return;
             }
             // FIXME: Add support for multiple selection
