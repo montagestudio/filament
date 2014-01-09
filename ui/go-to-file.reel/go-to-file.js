@@ -70,14 +70,30 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
         }
     },
 
+    didDraw: {
+        value: function() {
+            var searchFieldElement = this.templateObjects.searchField.element;
+
+            if (searchFieldElement) {
+                searchFieldElement.focus();
+                searchFieldElement.select();
+                if (document.activeElement !== searchFieldElement) {
+                    this.needsDraw = true;
+                }
+            }
+        }
+    },
+
     show: {
         value: function() {
             var templateObjects = this.templateObjects;
 
             templateObjects.overlay.show();
-            setTimeout(function() {
-                templateObjects.searchField.element.focus();
-            }, 150);
+            // Make sure the Overlay was shown before trying to focus the
+            // search field.
+            if (templateObjects.overlay._isShown) {
+                this.needsDraw = true;
+            }
         }
     },
 
