@@ -106,22 +106,8 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         }
     },
 
-    _templateObjectsTree: {
-        value: null
-    },
-
     templateObjectsTree: {
-        get : function () {
-            if (!this._templateObjectsTree) {
-                this.buildTemplateObjectTree();
-            }
-            return this._templateObjectsTree;
-        },
-        set: function (value) {
-            if (value !== this._templateObjectsTree) {
-                this._templateObjectsTree = value;
-            }
-        }
+        value: null
     },
 
     constructor: {
