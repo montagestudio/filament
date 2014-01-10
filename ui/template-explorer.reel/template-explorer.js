@@ -211,7 +211,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
 
                     if (insertionMap.has(parentReelProxy)) {
                         // restore expand status
-                        var expanded = (this.toggleStates.get(reelProxy) !== undefined) ? this.toggleStates.get(reelProxy) : true;
+                        var expanded = (this.toggleStates.get(reelProxy) !== undefined) ? this.toggleStates.get(reelProxy) : true,
                             // add the node to the tree
                             node = {
                                 templateObject: reelProxy,
