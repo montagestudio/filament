@@ -217,7 +217,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     // don't need to wait for this to complete
                     self.watchForFileChanges();
                     // need these before getting the library items
-                    return self.loadExtensions();
+                    return self.loadExtensionsFromDependencies();
                 }).then(function () {
                     // want to wait for the library though
                     return self.populateLibrary();
@@ -1276,7 +1276,11 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
-    loadExtensions: {
+    /**
+     * Load extensions provided by dependencies
+     * @returns {Promise} A promise for the extensions to have been activated
+     */
+    loadExtensionsFromDependencies: {
         value: function () {
             var self = this;
             return Promise.all(this.dependencies.map(function (dependency) {
@@ -1287,7 +1291,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     // TODO only load if name is the same as dependency?
                     return self._extensionController.loadExtension(extensionDetails.url)
                     .then(function (extension) {
-                        self._extensionController.activateExtension(extension);
+                        return self._extensionController.activateExtension(extension);
                     })
                     .catch(function (error) {
                         console.error("Could not load extension at", extensionDetails.url, "because", error.message);
