@@ -135,8 +135,8 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     },
     _buildTreeFillFIFO: {
         value: function () {
-            var proxyFIFO = [];
-            var editingDocument = this.editingDocument,
+            var proxyFIFO = [],
+                editingDocument = this.editingDocument,
                 proxyMap = editingDocument.editingProxyMap;
             for (var componentName in proxyMap) {
                 if (proxyMap.hasOwnProperty(componentName)) {
@@ -166,12 +166,13 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     _buildTreeFindChildPosition: {
         value: function (reelProxy, parentReelProxy) {
             var node = reelProxy.properties.get("element"),
-                parentNode = parentReelProxy.properties.get("element");
+                parentNode = parentReelProxy.properties.get("element"),
+                nodePosition;
             // the parentReelProxy does not have to be the direct parentNode
             while (node.parentNode && (node.parentNode !== parentNode)) {
                 node = node.parentNode;
             }
-            var nodePosition = parentNode.children.indexOf(node);
+            nodePosition = parentNode.children.indexOf(node);
             if (nodePosition === -1) {
                 throw new Error("Can not find child position");
             }
@@ -191,18 +192,19 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     */
     buildTemplateObjectTree: {
         value: function () {
-            var successivePushes = 0;
-            // map of ReelProxy to tree node, for quick tree node access
-            var insertionMap = new WeakMap();
-            // add the root
-            var root = this._buildTreeAddRoot(insertionMap);
-            // filling the FIFO
-            var proxyFIFO = this._buildTreeFillFIFO(proxyFIFO);
-            var reelProxy;
+            var successivePushes = 0,
+                // map of ReelProxy to tree node, for quick tree node access
+                insertionMap = new WeakMap(),
+                // add the root
+                root = this._buildTreeAddRoot(insertionMap),
+                // filling the FIFO
+                proxyFIFO = this._buildTreeFillFIFO(proxyFIFO),
+                reelProxy,
+                parentReelProxy;
             while (reelProxy = proxyFIFO.shift()) {
                 if (reelProxy.properties && reelProxy.properties.get('element')) {
                     // find the parent component
-                    var parentReelProxy = this._buildTreeFindParentComponent(reelProxy);
+                    parentReelProxy = this._buildTreeFindParentComponent(reelProxy);
                     if (!parentReelProxy) {
                         throw new Error("Can not build templateObjectsTree: can't find parent component");
                     }
@@ -210,14 +212,14 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                     if (insertionMap.has(parentReelProxy)) {
                         // restore expand status
                         var expanded = (this.toggleStates.get(reelProxy) !== undefined) ? this.toggleStates.get(reelProxy) : true;
-                        // add the node to the tree
-                        var node = {
-                            templateObject: reelProxy,
-                            expanded: expanded,
-                            children: []
-                        };
-                        var parentNode = insertionMap.get(parentReelProxy);
-                        var nodePosition = this._buildTreeFindChildPosition(reelProxy, parentReelProxy);
+                            // add the node to the tree
+                            node = {
+                                templateObject: reelProxy,
+                                expanded: expanded,
+                                children: []
+                            },
+                            parentNode = insertionMap.get(parentReelProxy),
+                            nodePosition = this._buildTreeFindChildPosition(reelProxy, parentReelProxy);
                         if (nodePosition >=  parentNode.children.length) {
                             parentNode.children.push(node);
                         } else {
