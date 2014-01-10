@@ -1,5 +1,4 @@
 var Montage = require("montage/core/core").Montage;
-var Map = require("montage/collections/map");
 var WeakMap = require("montage/collections/weak-map");
 
 /*
@@ -17,7 +16,7 @@ var WeakMap = require("montage/collections/weak-map");
  * Bind a root node from the data model to a tree controller and bind the tree
  * controller's iterations to a content controller for a repetition.
  */
-var Node = exports.TreeControllerNode = Montage.specialize( /** @lends TreeControllerNode# */ {
+var TreeControllerNode = exports.TreeControllerNode = Montage.specialize( /** @lends TreeControllerNode# */ {
 
     /**
      * The only meaningful user-defined state for this tree view, whether the
@@ -407,7 +406,7 @@ exports.TreeController = Montage.specialize( /** @lends TreeController# */ {
      * @type TreeControllerNode
      */
     Node: {
-        value: Node
+        value: TreeControllerNode
     }
 
 }, {
