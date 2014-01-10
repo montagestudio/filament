@@ -91,10 +91,11 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
 
     didLoadProject: {
         value: function () {
-            var superPromise = this.super();
+            var superPromise = this.super(),
+                self = this;
 
             superPromise.then(function () {
-                return this._bridgePromise;
+                return self._bridgePromise;
             }).then(function (bridge) {
                 var project = {
                     owner: bridge.repositoryController.owner,
