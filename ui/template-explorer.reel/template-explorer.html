@@ -12,7 +12,8 @@
             },
             "bindings": {
                 "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"},
-                "templateObjectFilterTerm": {"<->": "editingDocument.sideData.templateObjectFilterTerm"}
+                "templateObjectFilterTerm": {"<->": "editingDocument.sideData.templateObjectFilterTerm"},
+                "hiddenCardsCount": {"<-": "@owner.templateObjectsController.content.filter{!!editorMetadata.get('isHidden')}.length"}
             },
             "listeners": [
                 {
@@ -28,7 +29,7 @@
                 "value": "Text"
             },
             "bindings": {
-                "value": {"<-": "@owner.templateObjectsController.content.filter{!!editorMetadata.get('isHidden')}.length"}
+                "value": {"<-": "@owner.hiddenCardsCount"}
             }
         },
         "objectList": {
