@@ -320,7 +320,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                 }
             }
             var label = this.element.querySelector(".TemplateExplorer-hiddenControl");
-            label.classList.toggle("is-hidden", this.hiddenCardsCount === 0);
+            label.classList.toggle("is-disabled", this.hiddenCardsCount === 0);
         }
     }
 
