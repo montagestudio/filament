@@ -473,8 +473,8 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     handleToggle: {
         value: function (evt) {
             var reelProxy = evt.target.parentComponent.parentComponent.templateObject,
-                toggled = evt.detail.toggled;
-            this.toggleStates.set(reelProxy, toggled);
+                expanded = evt.detail.isOpen;
+            this.toggleStates.set(reelProxy, expanded);
         }
     },
 
