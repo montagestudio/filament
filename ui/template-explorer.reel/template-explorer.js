@@ -284,10 +284,6 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         value: null
     },
 
-    Controller: {
-        value: null
-    },
-
     editingDocument: {
         value: null
     },
