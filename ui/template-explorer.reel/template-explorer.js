@@ -19,6 +19,23 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         value: false
     },
 
+    _hiddenCardsCount: {
+        value: 0
+    },
+
+    hiddenCardsCount: {
+        get: function () {
+            return this._hiddenCardsCount;
+        },
+        set: function (value) {
+            if (value === this._hiddenCardsCount) {
+                return;
+            }
+            this._hiddenCardsCount = value;
+            this.needsDraw = true;
+        }
+    },
+
     showHidden: {
         get: function () {
             return this._hidden;
@@ -302,6 +319,8 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                     this.needsDraw = true;
                 }
             }
+            var label = this.element.querySelector(".TemplateExplorer-hiddenControl");
+            label.classList.toggle("is-hidden", this.hiddenCardsCount === 0);
         }
     }
 

@@ -12,7 +12,8 @@
             },
             "bindings": {
                 "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"},
-                "templateObjectFilterTerm": {"<->": "editingDocument.sideData.templateObjectFilterTerm"}
+                "templateObjectFilterTerm": {"<->": "editingDocument.sideData.templateObjectFilterTerm"},
+                "hiddenCardsCount": {"<-": "@owner.templateObjectsController.content.filter{!!editorMetadata.get('isHidden')}.length"}
             },
             "listeners": [
                 {
@@ -28,8 +29,7 @@
                 "value": "Text"
             },
             "bindings": {
-                "value": {"<-": "@owner.templateObjectsController.content.filter{!!editorMetadata.get('isHidden')}.length"},
-                "classList.has('disabled')": {"<-": "@owner.templateObjectsController.content.filter{!!editorMetadata.get('isHidden')}.length == 0"}
+                "value": {"<-": "@owner.hiddenCardsCount"}
             }
         },
         "objectList": {
@@ -69,8 +69,7 @@
                 "element": {"#": "showHidden"}
             },
             "bindings": {
-                "checked": {"<->": "@owner.showHidden"},
-                "classList.has('disabled')": {"<-": "@owner.templateObjectsController.content.filter{!!editorMetadata.get('isHidden')}.length == 0"}
+                "checked": {"<->": "@owner.showHidden"}
             }
         },
         "showListeners": {
