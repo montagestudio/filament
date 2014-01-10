@@ -65,7 +65,7 @@ exports.TemplateObjectCell = Component.specialize({
 
                 // If we already have the exports then use them synchronously
                 // This avoids a visual glitch where the element field appears
-                // breifly.
+                // briefly.
                 try {
                     var exports = value.editingDocument.packageRequire(value.moduleId);
                     var object = exports[value.exportName];
@@ -79,7 +79,8 @@ exports.TemplateObjectCell = Component.specialize({
                     .get(value.exportName)
                     .then(function (object) {
                         self.isTemplateObjectComponent = object.prototype instanceof Component;
-                    }).fail(Function.noop);
+                    }).fail(Function.noop)
+                    .done();
                 }
 
             }
