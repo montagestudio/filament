@@ -28,7 +28,8 @@
                 "value": "Text"
             },
             "bindings": {
-                "value": {"<-": "@owner.templateObjectsController.content.filter{!!editorMetadata.get('isHidden')}.length"}
+                "value": {"<-": "@owner.templateObjectsController.content.filter{!!editorMetadata.get('isHidden')}.length"},
+                "classList.has('disabled')": {"<-": "@owner.templateObjectsController.content.filter{!!editorMetadata.get('isHidden')}.length == 0"}
             }
         },
         "objectList": {
@@ -68,7 +69,8 @@
                 "element": {"#": "showHidden"}
             },
             "bindings": {
-                "checked": {"<->": "@owner.showHidden"}
+                "checked": {"<->": "@owner.showHidden"},
+                "classList.has('disabled')": {"<-": "@owner.templateObjectsController.content.filter{!!editorMetadata.get('isHidden')}.length == 0"}
             }
         },
         "showListeners": {

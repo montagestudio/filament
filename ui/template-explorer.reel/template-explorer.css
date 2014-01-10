@@ -80,6 +80,10 @@
     background: url(/assets/icons/eye.png) no-repeat center;
     background-size: auto 14px;
 }
+.TemplateExplorer-filterToggle--eye.matte-InputCheckbox.disabled,
+.TemplateExplorer-header-counter.disabled {
+    display: none;
+}
 
 .TemplateExplorer-filterToggle.matte-InputCheckbox:hover {
     background-color: hsl(0,0%,100%);
