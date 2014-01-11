@@ -1,15 +1,9 @@
 .AssetsCategoriesBar {
-    background: white;
-    height: 26px;
-    border-bottom: 1px solid hsla(0, 0%, 0%, 0.2);
 }
 
 .AssetsCategoriesBar-List {
     margin: 0;
     padding: 0;
     list-style: none;
-    justify-content: space-around;
-    align-items: center;
     display: -webkit-flex;
-    height: 26px;
 }

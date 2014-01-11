@@ -1,20 +1,25 @@
 .AssetsCategoriesBarItem {
-    width: auto;
-    height: 18px;
-    font-size: 8px;
+    flex: 1;
     margin: 0;
-    border: none;
-    padding: 4px;
-    line-height: inherit;
-    background: transparent;
+    line-height: 26px;
+    font-size: 9px;
+    text-align: center;
+    text-shadow: 0 1px 0 hsla(0, 100%, 100%, 0.3);
+    color: hsl(0, 0%, 50%);
+    background-color: hsl(0, 0%, 90%);
+    cursor: pointer;
 }
 
 .AssetsCategoriesBarItem:hover {
-    background-color: #E9E9E9;
-    border-radius: 3px;
+    color: hsl(0, 0%, 20%);
+}
+
+.AssetsCategoriesBarItem.active {
+    background-color: hsl(0, 0%, 96%);
 }
 
 .AssetsCategoriesBarItem.selected {
-    background-color: #E9E9E9;
-    border-radius: 3px;
+    color: hsl(0, 0%, 20%);
+    cursor: default;
+    background-color: hsl(0, 0%, 96%);
 }
