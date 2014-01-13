@@ -135,18 +135,18 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     },
     _buildTreeFillFIFO: {
         value: function () {
-            var proxyFIFO = [],
-                editingDocument = this.editingDocument,
-                proxyMap = editingDocument.editingProxyMap;
-            for (var componentName in proxyMap) {
-                if (proxyMap.hasOwnProperty(componentName)) {
-                    var component = proxyMap[componentName];
-                    if (component !== this.ownerObject) {
-                        proxyFIFO.push(component);
-                    }
+            var editingDocument = this.editingDocument,
+                proxyMap = editingDocument.editingProxyMap,
+                ownerObject = this.ownerObject;
+
+            return Object.keys(proxyMap).reduce(function (fifo, componentName) {
+                var component = proxyMap[componentName];
+                // we remove the owner as it is added as the root
+                if (component !== ownerObject) {
+                    fifo.push(component);
                 }
-            }
-            return proxyFIFO;
+                return fifo;
+            }, []);
         }
     },
     _buildTreeFindParentComponent: {
