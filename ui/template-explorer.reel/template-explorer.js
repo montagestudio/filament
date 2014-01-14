@@ -7,8 +7,7 @@ var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     application = require("montage/core/application").application,
     WeakMap = require("montage/collections/weak-map"),
-    MimeTypes = require("core/mime-types"),
-    Promise = require("montage/core/promise").Promise;
+    MimeTypes = require("core/mime-types");
 
 /**
     Description TODO
@@ -273,9 +272,6 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             application.addEventListener("editListenerForObject", this, false);
 
             this.addRangeAtPathChangeListener("editingDocument.selectedObjects", this, "handleSelectedObjectsChange");
-            // listen to domModification to refresh the tree
-            this.editingDocument.addEventListener("domModified", this, false);
-            this.editingDocument.addEventListener("objectAdded", this, false);
             this.addPathChangeListener("editingDocument", this, "handleEditingDocumentChange");
             this.addEventListener("toggle", this);
         }
@@ -285,8 +281,27 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         value: null
     },
 
-    editingDocument: {
+    _editingDocument: {
         value: null
+    },
+
+    editingDocument: {
+        get: function () {
+            return this._editingDocument;
+        },
+        set: function (value) {
+            if (value === this._editingDocument) {
+                return;
+            }
+            this._editingDocument = value;
+            if (!this._editingDocument) {
+                return;
+            }
+            this.editingDocument.removeEventListener("domModified", this);
+            this.editingDocument.removeEventListener("objectAdded", this);
+            this.editingDocument.addEventListener("domModified", this, false);
+            this.editingDocument.addEventListener("objectAdded", this, false);
+        }
     },
 
     showListeners: {
