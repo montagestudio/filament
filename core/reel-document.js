@@ -797,17 +797,31 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    //TODO improve parameters, it's a bit of a mess
     /**
-     * The method is a temporary anomaly that accepts what our library items currently are
-     * and builds a template for merging
+     * Insert the objects and their associated markup, as provided in the
+     * specified templateContent, into the existing template.
      *
-     * This will be replaced with an addTemplate or insertTemplate or mergeTemplate
+     * Optionally, if there is markup worth importing from said
+     * templateContent, the content can either be inserted as a child of
+     * the specified `parentElement` or as a predeccessor to the
+     * specified `nextSiblingElement`.
+     *
+     * If neither is specified, the markup is simply appended as the
+     * last child of the owner component's element.
+     *
+     * @param {String} templateContent The content to insert into this template
+     * @param {NodeProxy} parentElement The optional element into which to insert markup
+     * @param {NodeProxy} nextSiblingElement The optional element before which to insert markup
+     * @param {Object} stageElement I am pretty certain this is not actually used anymore...
+     *
+     * @return {Array} A collection of the templateObjects added, presented as NodeProxies
      */
-    addLibraryItemFragments: {
-        value: function (serializationFragment, htmlFragment, parentElement, nextSiblingElement, stageElement, montageId) {
+    insertTemplateContent: {
+        value: function (templateContent, parentElement, nextSiblingElement, stageElement) {
             var self = this;
 
-            return this._buildTemplate(montageId, serializationFragment, htmlFragment).then(function (template) {
+            return Template.create().initWithHtml(templateContent, this._packageRequire).then(function (template) {
                 return self.addObjectsFromTemplate(template, parentElement, nextSiblingElement, stageElement);
             }).then(function (objects) {
                 // only if there's only one object?
@@ -821,22 +835,75 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    addAndAssignLibraryItemFragment: {
-        value: function (serializationFragment, nodeProxy) {
+    /**
+     * Associate the object that is declared in the specified serializationFragment with
+     * the specified node.
+     *
+     * While this can be used to insert a non-component object into the template, specifying
+     * an associated nodeProxy is not supported and will be rejected.
+     *
+     * @param {String} serializationText A serialization block with a single labelled object
+     * @param {NodeProxy} nodeProxy An optional proxy for the element with which to associate the declared object
+     * @return {Array} A collection of the templateObjects added, presented as as ReelProxies
+     */
+    insertTemplateObjectFromSerialization: {
+        value: function (serializationText, nodeProxy) {
             var self = this,
-                montageId = nodeProxy.montageId;
+                montageId = nodeProxy ? nodeProxy.montageId : null,
+                serializationObject = typeof serializationText === "string" ? JSON.parse(serializationText) : serializationText,
+                label = Object.keys(serializationObject)[0],
+                properties = serializationObject[label].properties,
+                looksLikeComponent = properties && properties.element,
+                template,
+                uniqueLabel;
 
-            this.undoManager.openBatch("Add component to element");
+            if (nodeProxy && !looksLikeComponent) {
+                //TODO should this have been stopped earlier? what do we want to do now?
+                return Promise.reject(new Error("Attempted to associate non-component serialization with an element"));
+            }
 
-            return this.addLibraryItemFragments(serializationFragment, void 0, void 0, void 0, void 0, montageId).then(function (objects) {
+            this.undoManager.openBatch("Add Template Object");
+
+            if (!montageId && looksLikeComponent) {
+                // No montageId was found on the nodeProxy, or there was no nodeProxy specified
+                // We can generate a montageId, but check to see if we need to first;
+
+                if (nodeProxy) {
+                    // Apparently the nodeProxy specified had no montageId previously
+                    montageId = this._generateMontageId(serializationObject[label].prototype);
+
+                    properties.element["#"] = montageId;
+                    this.setNodeProxyAttribute(nodeProxy, "data-montage-id", montageId);
+                } else {
+                    // No node proxy was specified, attach no element
+                    // leave it "broken" and expect it to be set later
+                    delete serializationObject[label].properties.element;
+                }
+            } else if (looksLikeComponent) {
+                // Try to adopt the montageId of the element as the label for the component
+
+                if (montageId in this.editingProxyMap) {
+                    uniqueLabel = this._generateLabel(serializationText[label]);
+                } else {
+                    uniqueLabel = montageId;
+                }
+
+                serializationObject[uniqueLabel] = serializationObject[label];
+                delete serializationObject[label];
+            }
+
+            template = new Template().initWithRequire(this._packageRequire);
+            template.objectsString = JSON.stringify(serializationObject);
+
+            return this.addObjectsFromTemplate(template).then(function (objects) {
                 var label;
 
                 if (objects.length === 1) {
                     label = objects[0].label;
-                    if (!montageId) {
-                        montageId = self.createMontageIdForProxy(label, serializationFragment.prototype, nodeProxy);
+                    //TODO why is the node association done so late?
+                    if (nodeProxy) {
+                        self.setOwnedObjectElement(objects[0], montageId);
                     }
-                    self.setOwnedObjectElement(objects[0], montageId);
                 }
 
                 return objects;
@@ -972,7 +1039,8 @@ exports.ReelDocument = EditingDocument.specialize({
             sourceContentFragment = sourceContentRange.cloneContents();
 
             newChildNodes = [];
-            for (i = 0; (iChild = sourceContentFragment.childNodes[i]); i++) {
+            //TODO do we want children or childNodes (textnodes included)?
+            for (i = 0; (iChild = sourceContentFragment.children[i]); i++) {
                 newChildNodes.push(iChild);
             }
 
@@ -1678,7 +1746,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             // HACK to give the flow height so that it can been seen and edited
             if (element && proxy.moduleId === "montage/ui/flow.reel") {
-                var template = this.editor.projectController.libraryItemForModuleId(proxy.moduleId, proxy.exportName).html;
+                var template = this.editor.projectController._libraryItemForModuleId(proxy.moduleId, proxy.exportName).html;
                 var container = document.createElement("div");
                 container.innerHTML = template;
                 element._templateNode.setAttribute("style", container.firstChild.getAttribute("style"));

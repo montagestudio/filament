@@ -18,7 +18,7 @@
                 "element": {"#": "prototype-icon"}
             },
             "bindings": {
-                "src": {"<-": "@owner.prototypeObject.icon"}
+                "src": {"<-": "@owner.prototypeObject.iconUrl"}
             }
         },
 
@@ -39,7 +39,7 @@
                 "identifier": "prototypeButton"
             },
             "bindings": {
-                "draggable": {"<-": "@owner.editingComponentPrototype != @owner.prototypeObject.serialization.prototype"}
+                "draggable": {"<-": "!@owner.prototypeObject.moduleIds.has(@owner.editingComponentPrototype)"}
             },
             "listeners": [
                 {

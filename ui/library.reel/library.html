@@ -22,6 +22,9 @@
 
             "groupsController": {
                 "prototype": "montage/core/range-controller",
+                "properties": {
+                    "filterPath": "libraryItems && libraryItems.length"
+                },
                 "bindings": {
                     "content": {"<-": "@owner.groups"}
                 }

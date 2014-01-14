@@ -46,8 +46,9 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
             var types = evt.dataTransfer.types;
             return types &&
                 (
-                    types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1 ||
-                    types.indexOf(MimeTypes.JSON_NODE) !== -1
+                    types.has(MimeTypes.TEMPLATE) ||
+                    types.has(MimeTypes.TEXT_PLAIN) ||
+                    types.has(MimeTypes.JSON_NODE)
                 );
         }
     },
@@ -109,14 +110,20 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
                 this.dispatchEventNamed("insertElementAction", true, true, {
                     jsonNode: node
                 });
-            } else if (types.indexOf(MimeTypes.PROTOTYPE_OBJECT) !== -1) {
+            } else if (types.has(MimeTypes.TEMPLATE)) {
                 // insert new element from prototype
-                // TODO: security issues?
-                var data = dataTransfer.getData(MimeTypes.PROTOTYPE_OBJECT),
-                    transferObject = JSON.parse(data);
+                var data = dataTransfer.getData(MimeTypes.TEMPLATE);
 
                 this.dispatchEventNamed("insertTemplateAction", true, true, {
-                    transferObject: transferObject
+                    template: data
+                });
+            } else if (types.has(MimeTypes.TEXT_PLAIN)) {
+                // insert new element from prototype (possibly html fragment)
+                var textData = dataTransfer.getData(MimeTypes.TEXT_PLAIN);
+
+                //TODO for now we're treating this the same as template, need to consider when/where we inspect the text data
+                this.dispatchEventNamed("insertTemplateAction", true, true, {
+                    template: textData
                 });
             } else if (types.indexOf(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) !== -1) {
                 // move a component

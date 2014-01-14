@@ -5,6 +5,7 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     RangeController = require("montage/core/range-controller").RangeController,
     WeakMap = require("montage/collections/weak-map"),
     Map = require("montage/collections/map"),
+    SortedSet = require("montage/collections/sorted-set"),
     Confirm = require("matte/ui/popup/confirm.reel").Confirm,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     ProjectController,
@@ -77,6 +78,13 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     },
 
     /**
+     * The require used by the package being edited
+     */
+    _packageRequire: {
+        value: null
+    },
+
+    /**
      * The controller managing the collection of openDocuments
      */
     openDocumentsController: {
@@ -125,7 +133,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._editorController = editorController;
             this._extensionController = extensionController;
 
-            this.moduleLibraryItemMap = new Map();
+            this._moduleIdIconUrlMap = new Map();
+            this._moduleIdLibraryItemMap = new Map();
             this._packageNameLibraryItemsMap = new Map();
 
             this._documentTypeUrlMatchers = [];
@@ -190,6 +199,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 var packageDescription = packageRequire.packageDescription;
                 self.loadProjectIcon(self.packageUrl);
                 self.packageDescription = packageDescription;
+                self._packageRequire = packageRequire;
 
                 // Add a dependency entry for this package so that the
                 // we pick up its extensions and components later
@@ -207,7 +217,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     // don't need to wait for this to complete
                     self.watchForFileChanges();
                     // need these before getting the library items
-                    return self.loadExtensions();
+                    return self.loadExtensionsFromDependencies();
                 }).then(function () {
                     // want to wait for the library though
                     return self.populateLibrary();
@@ -640,115 +650,180 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         enumerable: false,
         value: function (dependencies) {
             var self = this,
-                dependencyLibraryPromises,
-                dependencyLibraryEntry,
-                offeredLibraryItems;
+                packageUrl,
+                packageName,
+                isProjectPackage,
+                packageLibraryItems,
+                promisedLibraryItems;
 
-            dependencyLibraryPromises = dependencies.map(function (dependency) {
+            // library is either being created for the first time or updated due to changes.
+            // for each dependency we need to collect library items by way of:
+            // a) make a best guess at creating library items on the fly
+            // b) using the library items provided by an extension
+            // c) some mix of both
 
-                return self.environmentBridge.componentsInPackage(dependency.url)
-                    .then(function (componentUrls) {
+            // Right now we're using both A and B, not C
 
-                        dependencyLibraryEntry = {
-                            dependency: dependency.dependency
-                        };
+            // TODO improve this to react better to filesystem changes, extension activation/deactivation etc.
+            // TODO rename most of this to simply refer to "package" not necessarily dependencies
 
-                        if (componentUrls) {
-                            dependencyLibraryEntry.libraryItems = componentUrls.map(function (componentUrl) {
-                                var moduleId,
-                                    objectName;
-                                if (/\/node_modules\//.test(componentUrl)) {
-                                    // It's a module inside a node_modules dependency
-                                    //TODO be able to handle dependencies from mappings?
-                                    moduleId = dependency.dependency + "/" + URL.toModuleId(componentUrl, dependency.url);
-                                } else {
-                                    // It's a module that's part of the current package being edited
-                                    moduleId = URL.toModuleId(componentUrl, dependency.url);
-                                }
-                                objectName = MontageReviver.parseObjectLocationId(moduleId).objectName;
-                                return self.libraryItemForModuleId(moduleId, objectName);
-                            }).filter(function (libraryItem) {
-                                    return libraryItem;
-                                });
-                        } else {
-                            dependencyLibraryEntry.libraryItems = [];
-                        }
+            return Promise.all(dependencies.map(function (dependencyInfo) {
+                packageUrl = dependencyInfo.url;
+                packageName = dependencyInfo.dependency;
 
-                        // add libraryItems any extensions offered for this package
-                        offeredLibraryItems = self._packageNameLibraryItemsMap.get(dependency.dependency);
-                        if (offeredLibraryItems) {
+                isProjectPackage = !/\/node_modules\//.test(packageUrl);
+                packageLibraryItems = self._packageNameLibraryItemsMap.get(packageName);
 
-                            offeredLibraryItems.forEach(function (item) {
-                                dependencyLibraryEntry.libraryItems.push(new item());
-                            });
-                        }
+                var dependencyLibraryEntry = {
+                    dependency: packageName
+                };
 
-                        return dependencyLibraryEntry;
-                    });
-            });
+                if (isProjectPackage || !packageLibraryItems) {
+                    promisedLibraryItems = self._findLibraryItemsForPackageUrl(packageUrl, packageName);
+                } else {
+                    //TODO is there a reason we didn't share the same array before?
+                    promisedLibraryItems = Promise.resolve(packageLibraryItems);
+                }
 
-            return Promise.all(dependencyLibraryPromises);
+                return promisedLibraryItems.then(function (libraryItems) {
+                    dependencyLibraryEntry.libraryItems = libraryItems;
+                    return dependencyLibraryEntry;
+                });
+            }));
         }
     },
 
-    moduleLibraryItemMap: {
+    /**
+     * Intended for use only when libraryItems were not found for the specified package,
+     * this will explore the package and build libraryItems on the fly for each component
+     * found in the UI directory.
+     *
+     * Eventually we should improve the heuristic on what we're willing to build libraryItems
+     * for, and additionally, provide some way to vary how they're built.
+     *
+     * Typically, this is used to expose the components inside the package being edited
+     * as no extensions is providing the libraryItems. In the future though, we might do
+     * this exploration and construction elsewhere, ahead of time, in keeping more with
+     * how we find libraryItems provided by extensions earlier; I'm not crazy about the
+     * projectController doing all this. We'll likely need a libraryController eventually.
+     */
+    _findLibraryItemsForPackageUrl: {
+        value: function (packageUrl, packageName) {
+            var self = this,
+                promisedLibraryItems;
+
+            return this.environmentBridge.componentsInPackage(packageUrl).then(function (componentUrls) {
+                if (componentUrls) {
+                    promisedLibraryItems = Promise.all(componentUrls.map(function (componentUrl) {
+
+                        var moduleId,
+                            objectName;
+
+                        if (/\/node_modules\//.test(componentUrl)) {
+                            // It's a module inside a node_modules dependency
+                            //TODO be able to handle dependencies from mappings?
+                            moduleId = packageName + "/" + URL.toModuleId(componentUrl, packageUrl);
+                        } else {
+                            // It's a module that's part of the current package being edited
+                            moduleId = URL.toModuleId(componentUrl, packageUrl);
+                        }
+                        objectName = MontageReviver.parseObjectLocationId(moduleId).objectName;
+                        return self._libraryItemForModuleId(moduleId, objectName);
+                    })).then(function (libraryItems) {
+                        // Remove falsey libraryItems
+                        return libraryItems.filter(function (libraryItem) {
+                            return libraryItem;
+                        });
+                    });
+                } else {
+                    promisedLibraryItems = Promise.resolve([]);
+                }
+
+                return promisedLibraryItems;
+            });
+        }
+    },
+
+    _moduleIdLibraryItemMap: {
         enumerable: false,
         value: null
     },
 
-    //TODO handle multiple extensions possibly registering for the same moduleId, latest one wins?
-    registerLibraryItemForModuleId: {
-        value: function (libraryItem, moduleId) {
-            this.moduleLibraryItemMap.set(moduleId, libraryItem);
-
-            //TODO don't refresh the library each time
-            if (this.dependencies) {
-                this.populateLibrary().done();
-            }
-        }
-    },
-
-    //TODO allow for multiple extensions to unregister for same moduleId, don't disrupt current order
-    unregisterLibraryItemForModuleId: {
-        value: function (moduleId) {
-            this.moduleLibraryItemMap.delete(moduleId);
-
-            //TODO don't refresh the library each time
-            if (this.dependencies) {
-                this.populateLibrary().done();
-            }
-        }
-    },
-
-    libraryItemForModuleId: {
+    /**
+     * This currently finds libraryItems if they've been created to represent the
+     * specified moduleId, or creates one if we don't have one already.
+     *
+     * This is usually only invoked for modules inside packages that we have no
+     * libraryItems for already.
+     * @see _findLibraryItemsForPackageUrl
+     */
+    _libraryItemForModuleId: {
         value: function (moduleId, objectName) {
-            var libraryEntry = this.moduleLibraryItemMap.get(moduleId),
-                item;
 
-            if (libraryEntry) {
-                item = new libraryEntry();
-            } else if (typeof libraryEntry === "undefined" && (/^ui\//).test(moduleId)) {
-                // Only create default entries for component within the current package
+            var libraryItem = this._moduleIdLibraryItemMap.get(moduleId),
+                promisedLibraryItem,
+                montageId,
+                serializationFragment,
+                htmlFragment;
+
+            if (!libraryItem && (/^ui\//).test(moduleId)) {
                 // TODO this regex is not exactly how we'll want this done in the future but it keeps things from getting too cluttered
 
-                var montageId = objectName.replace(/(^.)/, function (_, firstChar) {
+                montageId = objectName.replace(/(^.)/, function (_, firstChar) {
                     return firstChar.toLowerCase();
                 });
 
-                item = new LibraryItem();
-                item.serialization = {
+                //TODO move fragment generation elsewhere so it can be varied
+                serializationFragment = {
                     prototype: moduleId,
                     properties: {
                         element: {"#": montageId}
                     }
                 };
-                item.name = objectName;
-                item.html = '<div data-montage-id="' + montageId + '"></div>';
-                //TODO well this can't be hardcoded
-                item.icon = "/assets/img/library-icon.png";
+
+                htmlFragment = '<div data-montage-id="' + montageId + '"></div>';
+
+                return this._buildLibraryItemTemplate(montageId, serializationFragment, htmlFragment).then(function (template) {
+                    libraryItem = new LibraryItem();
+                    libraryItem.templateContent = template.html;
+                    libraryItem.name = objectName;
+                    //TODO well this can't be hardcoded
+                    libraryItem.iconUrl = "/assets/img/library-icon.png";
+                    return libraryItem;
+                });
+            } else {
+                promisedLibraryItem = Promise.resolve(libraryItem);
             }
 
-            return item;
+            return promisedLibraryItem;
+        }
+    },
+
+    //TODO the division of labor between this and _libraryItemForModuleId needs to be sorted out
+    _buildLibraryItemTemplate: {
+        value: function (label, serializationFragment, htmlFragment) {
+
+            var templateBasePromise = require.async("core/base-template.html"),
+                templateSerialization = {},
+                serializationElement,
+                self = this;
+
+            templateSerialization[label] = serializationFragment;
+
+            return templateBasePromise.then(function (result) {
+
+                var doc = document.implementation.createHTMLDocument("");
+                doc.documentElement.innerHTML = result.content;
+
+                serializationElement = doc.querySelector("script[type='text/montage-serialization']");
+                serializationElement.appendChild(document.createTextNode(JSON.stringify(templateSerialization)));
+
+                if (htmlFragment) {
+                    doc.body.innerHTML = htmlFragment;
+                }
+
+                return Template.create().initWithDocument(doc, self._packageRequire);
+            });
         }
     },
 
@@ -756,35 +831,70 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: null
     },
 
-    addLibraryItemWithModuleIdForPackage: {
-        value: function (libraryItem, moduleId, packageName) {
-            if (!libraryItem) {
-                return;
-            }
-            var addedLibraryItems = this._packageNameLibraryItemsMap.get(packageName);
+    addLibraryItemToPackage: {
+        value: function (libraryItem, packageName) {
 
-            if (!addedLibraryItems) {
-                addedLibraryItems = [];
-                this._packageNameLibraryItemsMap.set(packageName, addedLibraryItems);
+            var libraryItems = this._packageNameLibraryItemsMap.get(packageName);
+
+            if (!libraryItems) {
+                libraryItems = [];
+                this._packageNameLibraryItemsMap.set(packageName, libraryItems);
             }
 
-            this.registerLibraryItemForModuleId(libraryItem, moduleId);
-            addedLibraryItems.push(libraryItem);
+            libraryItems.push(libraryItem);
         }
     },
 
-    removeLibraryItemWithModuleIdForPackage: {
-        value: function (libraryItem, moduleId, packageName) {
-            var addedLibraryItems = this._packageNameLibraryItemsMap.get(packageName),
-                index;
+    // A map of moduleId to iconUrls
+    // Each entry is a collection of iconUrls that have been offered for the moduleId
+    _moduleIdIconUrlMap: {
+        value: null
+    },
 
-            if (addedLibraryItems) {
-                index = addedLibraryItems.indexOf(libraryItem);
-                if (index >= 0) {
-                    addedLibraryItems.splice(index, 1);
-                    this.unregisterLibraryItemForModuleId(moduleId);
-                }
+    /**
+     * Add the specified iconUrl as a valid icon to represent the
+     * specified moduleId
+     */
+    addIconUrlForModuleId: {
+        value: function (iconUrl, moduleId) {
+            var registeredIconUrls = this._moduleIdIconUrlMap.get(moduleId);
+
+            if (!registeredIconUrls) {
+                registeredIconUrls = new SortedSet();
+                this._moduleIdIconUrlMap.set(moduleId, registeredIconUrls);
             }
+
+            registeredIconUrls.add(iconUrl);
+        }
+    },
+
+    /**
+     * Remove the specified iconUrl as a valid icon to represent the
+     * specified moduleId
+     */
+    removeIconUrlForModuleId: {
+        value: function (iconUrl, moduleId) {
+            var registeredIconUrls = this._moduleIdIconUrlMap.get(moduleId);
+
+            if (registeredIconUrls) {
+                registeredIconUrls.delete(iconUrl);
+            }
+        }
+    },
+
+
+    iconUrlForModuleId: {
+        value: function (moduleId) {
+            var iconUrls = this._moduleIdIconUrlMap.get(moduleId),
+                iconUrl;
+
+            if (iconUrls && iconUrls.length > 0) {
+                iconUrl = iconUrls.one();
+            } else {
+                iconUrl = "/assets/img/library-icon.png";
+            }
+
+            return iconUrl;
         }
     },
 
@@ -1166,7 +1276,11 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
-    loadExtensions: {
+    /**
+     * Load extensions provided by dependencies
+     * @returns {Promise} A promise for the extensions to have been activated
+     */
+    loadExtensionsFromDependencies: {
         value: function () {
             var self = this;
             return Promise.all(this.dependencies.map(function (dependency) {
@@ -1177,7 +1291,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     // TODO only load if name is the same as dependency?
                     return self._extensionController.loadExtension(extensionDetails.url)
                     .then(function (extension) {
-                        self._extensionController.activateExtension(extension);
+                        return self._extensionController.activateExtension(extension);
                     })
                     .catch(function (error) {
                         console.error("Could not load extension at", extensionDetails.url, "because", error.message);
@@ -1191,6 +1305,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         enumerable: false,
         value: function () {
             var self = this;
+            //TODO I' not quite sure why this method exists, though it does divide finding from populating...
             return this.findLibraryItems(this.dependencies).then(function (dependencyLibraryEntries) {
                 self.libraryGroups = dependencyLibraryEntries;
             });

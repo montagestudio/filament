@@ -19,6 +19,7 @@ exports.LibraryCell = Montage.create(Component, /** @lends module:"ui/library-ce
             if (firstTime) {
                 this._element.addEventListener("dragstart", this, true);
                 this._element.addEventListener("dragend", this, false);
+                this._element.addEventListener("mouseover", this, true);
             }
         }
     },
@@ -31,22 +32,43 @@ exports.LibraryCell = Montage.create(Component, /** @lends module:"ui/library-ce
         value: null
     },
 
+    captureMouseover: {
+        value: function () {
+            var libraryItem = this.prototypeObject;
+
+            if (!libraryItem.templateContent && libraryItem.require) {
+                libraryItem.require.async(libraryItem.templateModuleId).then(function (result) {
+                    libraryItem.templateContent = result.content;
+                }).done();
+            }
+        }
+    },
+
     captureDragstart: {
         value: function (event) {
+            if (!this.prototypeObject.templateContent) {
+                return;
+            }
+
             event.dataTransfer.effectAllowed = "copyMove";
 
-            // Although we could use "application/json" here, the stage is
-            // expecting a specific object type. We also might specially handle
-            // "application/json" later.
+            var templateContent = this.prototypeObject.templateContent,
+                doc,
+                serializationElement,
+                serializationFragment;
 
-            var transferObject = {
-                serializationFragment: this.prototypeObject.serialization,
-                htmlFragment: this.prototypeObject.html
-            };
+            if (1 === this.prototypeObject.moduleIds.length) {
+                doc = document.implementation.createHTMLDocument("");
+                doc.documentElement.innerHTML = templateContent;
 
-            event.dataTransfer.setData(MimeTypes.PROTOTYPE_OBJECT, JSON.stringify(transferObject));
-            // A nice fallback if the user drags the component into an editor
-            event.dataTransfer.setData("text/plain", this.prototypeObject.moduleId);
+                serializationElement = doc.querySelector("script[type='text/montage-serialization']");
+                if (serializationElement && (serializationFragment = serializationElement.textContent)) {
+                    event.dataTransfer.setData(MimeTypes.SERIALIZATION_FRAGMENT, serializationFragment);
+                }
+            }
+
+            event.dataTransfer.setData(MimeTypes.TEMPLATE, templateContent);
+            event.dataTransfer.setData(MimeTypes.TEXT_PLAIN, templateContent);
 
             var iconElement = this.icon.element;
             event.dataTransfer.setDragImage(
