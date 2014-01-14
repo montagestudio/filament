@@ -32,10 +32,13 @@
     line-height: 16px;
     text-shadow: none;
     background-color: hsl(44, 87%, 96%);
+    box-shadow: none;
 }
 
 .CodeEditor .cm-s-solarized.cm-s-light .CodeMirror-gutters {
     border-color: hsl(46, 32%, 86%);
+    border-top-width: 1px;
+    border-top-style: solid;
     background-color: hsl(46, 32%, 92%);
     box-shadow: none;
 }
