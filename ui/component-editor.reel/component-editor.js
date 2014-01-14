@@ -92,6 +92,8 @@ exports.ComponentEditor = Editor.specialize({
                 this.addEventListener("highlightComponent", this, false);
                 // deHighlight everywhere
                 this.addEventListener("deHighlight", this, false);
+                // Library item dragend
+                this.addEventListener("templateObjectDragend", this, false);
             }
         }
     },
@@ -385,6 +387,13 @@ exports.ComponentEditor = Editor.specialize({
             if (stageElement) {
                 documentEditor.highlightElement(stageElement);
             }
+        }
+    },
+
+    handleTemplateObjectDragend: {
+        value: function (evt) {
+            var domExplorer = this.templateObjects.domExplorer;
+            domExplorer.addElementNodeHover = null;
         }
     }
 
