@@ -1,8 +1,8 @@
 .AssetsLibraryItem .AssetsLibraryItem-button {
     -webkit-appearance: none;
-    display: block;
+    display: flex;
     width: 100%;
-    padding: 6px 2px;
+    padding: 4px 8px;
     min-width: 0;
     margin: 0;
     line-height: 1;
@@ -27,17 +27,16 @@
 }
 
 .AssetsLibraryItem-button-icon {
-    width: 42px;
-    height: 28px;
-    display: block;
-    margin: 0 auto;
+    width: 21px;
+    height: 14px;
+    margin: auto 0;
 }
 
 .AssetsLibraryItem-button-label {
-    display: block;
-    text-align: center;
-    font-size: 9px;
-    line-height: 20px;
+    flex: 1;
+    font-size: 11px;
+    line-height: 14px;
+    margin-left: 4px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
