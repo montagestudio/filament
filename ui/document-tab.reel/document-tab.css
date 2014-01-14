@@ -128,3 +128,8 @@
 .DocumentTab.document-dirty .DocumentTab-close:hover:before {
     content: "×";
 }
+
+
+.DocumentTab.selected.document-solarized-light {
+	background-color: hsl(44, 87%, 96%);
+}

@@ -11,7 +11,8 @@
             },
             "bindings": {
                 "classList.has('document-dirty')" : { "<-" : "@owner.document.isDirty"},
-                "classList.has('document-error')": {"<-": "!!@owner.document.errors.length"}
+                "classList.has('document-error')": {"<-": "!!@owner.document.errors.length"},
+                "classList.has('document-solarized-light')": {"<-": "@owner.document.editor.theme=='solarized light'"}
             }
         },
 
