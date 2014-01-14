@@ -18,6 +18,7 @@ exports.LibraryCell = Montage.create(Component, /** @lends module:"ui/library-ce
         value: function (firstTime) {
             if (firstTime) {
                 this._element.addEventListener("dragstart", this, true);
+                this._element.addEventListener("dragend", this, false);
             }
         }
     },
@@ -53,6 +54,12 @@ exports.LibraryCell = Montage.create(Component, /** @lends module:"ui/library-ce
                 iconElement.width / 2,
                 iconElement.height / 2
             );
+        }
+    },
+
+    handleDragend: {
+        value: function (evt) {
+            this.dispatchEventNamed("templateObjectDragend", true);
         }
     },
 
