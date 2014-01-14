@@ -4,6 +4,9 @@
     height: 164px;
 }
 
+.AssetsLibraryItems-list {
+    border-top: 1px solid hsla(0, 0%, 0%, 0.05);
+}
 
 .AssetsLibraryItems-list, .AssetsLibraryItems-noItems {
     -webkit-flex: 1;
