@@ -1030,7 +1030,7 @@ exports.ReelDocument = EditingDocument.specialize({
     addObject: {
         value: function (proxy) {
             this._addProxies(proxy);
-
+            this.dispatchEventNamed("objectAdded", true);
             this.undoManager.register("Add object", Promise.resolve([this.removeObject, this, proxy]));
 
             this.editor.refresh();

@@ -275,6 +275,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             this.addRangeAtPathChangeListener("editingDocument.selectedObjects", this, "handleSelectedObjectsChange");
             // listen to domModification to refresh the tree
             this.editingDocument.addEventListener("domModified", this, false);
+            this.editingDocument.addEventListener("objectAdded", this, false);
             this.addPathChangeListener("editingDocument", this, "handleEditingDocumentChange");
             this.addEventListener("toggle", this);
         }
@@ -451,10 +452,13 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
 
     handleDomModified: {
         value: function (evt) {
-            var self = this;
-            Promise.nextTick(function(){
-                self.buildTemplateObjectTree();
-            });
+            this.buildTemplateObjectTree();
+        }
+    },
+
+    handleObjectAdded: {
+        value: function (evt) {
+            this.buildTemplateObjectTree();
         }
     },
 
