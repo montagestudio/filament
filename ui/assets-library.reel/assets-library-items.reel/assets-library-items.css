@@ -30,7 +30,3 @@
     background: transparent;
     border-right: 1px solid hsla(0, 0%, 0%, 0.05);
 }
-
-.AssetsLibraryItems-list .AssetsLibraryItem:nth-child(3n) .AssetsLibraryItem-button {
-    border-right: none;
-}

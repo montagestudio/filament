@@ -13,7 +13,7 @@ var AssetsConfig = {
 
         MODEL: {
             categoryName: "MODEL",
-            defaultIconUrl: "assets/icons/default-model-icon.png",
+            defaultIconUrl: "assets/icons/default-model-icon.svg",
             mimeTypes: [
                 "model/vnd.collada+xml",
                 "model/montage-serialization"
@@ -28,7 +28,7 @@ var AssetsConfig = {
 
         IMAGE: {
             categoryName: "IMAGE",
-            defaultIconUrl: "assets/icons/default-image-icon.png",
+            defaultIconUrl: "assets/icons/default-image-icon.svg",
             mimeTypes: [
                 "image/jpeg",
                 "image/jp2",
@@ -40,7 +40,7 @@ var AssetsConfig = {
 
         AUDIO: {
             categoryName: "AUDIO",
-            defaultIconUrl: "assets/icons/default-audio-icon.png",
+            defaultIconUrl: "assets/icons/default-audio-icon.svg",
             mimeTypes: [
                 "audio/aac",
                 "audio/mp4",
@@ -54,7 +54,7 @@ var AssetsConfig = {
 
         VIDEO: {
             categoryName: "VIDEO",
-            defaultIconUrl: "assets/icons/default-video-icon.png",
+            defaultIconUrl: "assets/icons/default-video-icon.svg",
             mimeTypes: [
                 "video/mp4",
                 "video/3gpp",

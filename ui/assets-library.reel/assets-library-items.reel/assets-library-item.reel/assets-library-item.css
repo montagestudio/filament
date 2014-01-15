@@ -27,7 +27,7 @@
 }
 
 .AssetsLibraryItem-button-icon {
-    width: 21px;
+    width: 14px;
     height: 14px;
     margin: auto 0;
 }
@@ -36,7 +36,7 @@
     flex: 1;
     font-size: 11px;
     line-height: 14px;
-    margin-left: 4px;
+    margin-left: 6px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;

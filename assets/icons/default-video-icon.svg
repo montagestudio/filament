@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <title>default-video-icon</title>
+    <description>Created with Sketch (http://www.bohemiancoding.com/sketch)</description>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="default-video-icon" sketch:type="MSArtboardGroup" fill="#7F7F7F">
+            <path d="M0,0 L0,14 L4,14 L4,0 L0,0 Z M10,0 L10,14 L14,14 L14,0 L10,0 Z M4,12 L4,14 L10,14 L10,12 L4,12 Z M4,6 L4,8 L10,8 L10,6 L4,6 Z M4,0 L4,2 L10,2 L10,0 L4,0 Z M1,2 L1,4 L3,4 L3,2 L1,2 Z M1,10 L1,12 L3,12 L3,10 L1,10 Z M11,10 L11,12 L13,12 L13,10 L11,10 Z M11,6 L11,8 L13,8 L13,6 L11,6 Z M11,2 L11,4 L13,4 L13,2 L11,2 Z M1,6 L1,8 L3,8 L3,6 L1,6 Z" id="Rectangle-1" sketch:type="MSShapeGroup"></path>
+        </g>
+    </g>
+</svg>
