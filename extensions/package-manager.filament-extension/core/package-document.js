@@ -362,7 +362,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     listDependencies: {
         value: function () {
-            return this.environmentBridge.listDependencies();
+            return this.environmentBridge.listDependenciesAtUrl(this.url);
         }
     },
 
