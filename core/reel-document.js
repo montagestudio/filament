@@ -518,6 +518,13 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    setOwnedObjectProperty: {
+        value: function (proxy, property, value){
+            this.super(proxy, property, value);
+            this.buildTemplateObjectTree();
+        }
+    },
+
     associateWithLiveRepresentations: {
         value: function (documentPart, template, frame) {
             var labels = Object.keys(documentPart.objects),
