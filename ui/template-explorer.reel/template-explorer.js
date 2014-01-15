@@ -6,7 +6,6 @@
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     application = require("montage/core/application").application,
-    WeakMap = require("montage/collections/weak-map"),
     MimeTypes = require("core/mime-types");
 
 /**
@@ -113,140 +112,6 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         value: function TemplateExplorer() {
             this.super();
             this.defineBinding("templateObjectsController.filterPath", {"<-": "templateObjectFilterPath"});
-            this.toggleStates = new WeakMap();
-        }
-    },
-
-    /*
-        Subroutines for buildTemplateObjectTree
-     */
-    _buildTreeAddRoot: {
-        value: function (insertionMap) {
-            var root = {
-                templateObject: this.ownerObject,
-                expanded: true,
-                children: []
-            };
-            this.templateObjectsTree = root;
-            insertionMap.set(this.ownerObject, root);
-            return root;
-        }
-    },
-    _buildTreeFillFIFO: {
-        value: function () {
-            var editingDocument = this.editingDocument,
-                proxyMap = editingDocument.editingProxyMap,
-                ownerObject = this.ownerObject;
-
-            return Object.keys(proxyMap).reduce(function (fifo, componentName) {
-                var component = proxyMap[componentName];
-                // we remove the owner as it is added as the root
-                if (component !== ownerObject) {
-                    fifo.push(component);
-                }
-                return fifo;
-            }, []);
-        }
-    },
-    _buildTreeFindParentComponent: {
-        value: function (reelProxy) {
-            var nodeProxy = reelProxy.properties.get('element'),
-                parentNodeProxy = nodeProxy,
-                parentReelProxy;
-            while (parentNodeProxy = parentNodeProxy.parentNode) {
-                if (parentNodeProxy.component) {
-                    parentReelProxy = parentNodeProxy.component;
-                    break;
-                }
-            }
-            return parentReelProxy;
-        }
-    },
-    _buildTreeFindChildPosition: {
-        value: function (reelProxy, parentReelProxy) {
-            var node = reelProxy.properties.get("element"),
-                parentNode = parentReelProxy.properties.get("element"),
-                nodePosition;
-            // the parentReelProxy does not have to be the direct parentNode
-            while (node.parentNode && (node.parentNode !== parentNode)) {
-                node = node.parentNode;
-            }
-            nodePosition = parentNode.children.indexOf(node);
-            if (nodePosition === -1) {
-                throw new Error("Can not find child position");
-            }
-            return nodePosition;
-        }
-    },
-    /*
-        Build the templateObjectsTree from the templatesNodes
-        Steps:
-            - add the root element
-            - create a list of components to be arranged in the tree, "proxyFIFO"
-            - pick the head element, "nodeProxy" of the list and try to add it to the tree. 
-              While adding to the tree we keep a map of elements to tree node updated.
-            - if the element has no DOM representation it is added to the root of the tree as first child
-            - otherwise we seek the element's parentComponent to then add it
-            - if the parentComponent has not yet been added we postpone adding this node for later by pushing back into the FIFO
-    */
-    buildTemplateObjectTree: {
-        value: function () {
-            var successivePushes = 0,
-                // map of ReelProxy to tree node, for quick tree node access
-                insertionMap = new WeakMap(),
-                // add the root
-                root = this._buildTreeAddRoot(insertionMap),
-                // filling the FIFO
-                proxyFIFO = this._buildTreeFillFIFO(proxyFIFO),
-                reelProxy,
-                parentReelProxy;
-            while (reelProxy = proxyFIFO.shift()) {
-                if (reelProxy.properties && reelProxy.properties.get('element')) {
-                    // find the parent component
-                    parentReelProxy = this._buildTreeFindParentComponent(reelProxy);
-                    if (!parentReelProxy) {
-                        throw new Error("Can not build templateObjectsTree: can't find parent component");
-                    }
-
-                    if (insertionMap.has(parentReelProxy)) {
-                        // restore expand status
-                        var expanded = (this.toggleStates.get(reelProxy) !== undefined) ? this.toggleStates.get(reelProxy) : true,
-                            // add the node to the tree
-                            node = {
-                                templateObject: reelProxy,
-                                expanded: expanded,
-                                children: []
-                            },
-                            parentNode = insertionMap.get(parentReelProxy),
-                            nodePosition = this._buildTreeFindChildPosition(reelProxy, parentReelProxy);
-                        if (nodePosition >=  parentNode.children.length) {
-                            parentNode.children.push(node);
-                        } else {
-                            parentNode.children.splice(nodePosition, 0, node);
-                        }
-                        insertionMap.set(reelProxy, node);
-                        // reset the infinite loop guard
-                        successivePushes = 0;
-                    } else {
-                        // parentReelProxy not found -> has not been added to the tree yet
-                        proxyFIFO.push(reelProxy);
-                        successivePushes++;
-                    }
-                } else {
-                    // has not DOM representation, added as root children
-                    var nodeTemplateLess = {
-                        templateObject: reelProxy,
-                        children: []
-                    };
-                    // let's add them in top to keep the tree "cleaner"
-                    root.children.unshift(nodeTemplateLess);
-                }
-                // to be safe, guard to prevent an infinite loop
-                if (successivePushes > proxyFIFO.length) {
-                    throw new Error("Can not build templateObjectsTree: looping on the same components");
-                }
-            }
-            this.toggleStates.clear();
         }
     },
 
@@ -272,7 +137,6 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             application.addEventListener("editListenerForObject", this, false);
 
             this.addRangeAtPathChangeListener("editingDocument.selectedObjects", this, "handleSelectedObjectsChange");
-            this.addPathChangeListener("editingDocument", this, "handleEditingDocumentChange");
             this.addEventListener("toggle", this);
         }
     },
@@ -281,27 +145,8 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         value: null
     },
 
-    _editingDocument: {
-        value: null
-    },
-
     editingDocument: {
-        get: function () {
-            return this._editingDocument;
-        },
-        set: function (value) {
-            if (value === this._editingDocument) {
-                return;
-            }
-            this._editingDocument = value;
-            if (!this._editingDocument) {
-                return;
-            }
-            this.editingDocument.removeEventListener("domModified", this);
-            this.editingDocument.removeEventListener("objectAdded", this);
-            this.editingDocument.addEventListener("domModified", this, false);
-            this.editingDocument.addEventListener("objectAdded", this, false);
-        }
+        value: null
     },
 
     showListeners: {
@@ -465,35 +310,13 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         }
     },
 
-    handleDomModified: {
-        value: function (evt) {
-            this.buildTemplateObjectTree();
-        }
-    },
-
-    handleObjectAdded: {
-        value: function (evt) {
-            this.buildTemplateObjectTree();
-        }
-    },
-
-    handleEditingDocumentChange: {
-        value: function (newValue, path, object) {
-            if (newValue) {
-                this.buildTemplateObjectTree();
-            }
-        }
-    },
-
-    toggleStates: {
-        value: null
-    },
-
     handleToggle: {
         value: function (evt) {
             var reelProxy = evt.target.parentComponent.parentComponent.templateObject,
+                editingDocument = this.editingDocument,
                 expanded = evt.detail.isOpen;
-            this.toggleStates.set(reelProxy, expanded);
+
+            editingDocument.templateObjectsTreeToggleStates.set(reelProxy, expanded);
         }
     },
 
