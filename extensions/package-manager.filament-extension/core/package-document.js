@@ -41,37 +41,36 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     init: {
         value: function (fileUrl, packageRequire, projectController) {
-            var self = this.super.call(this, fileUrl, packageRequire);
+            var self = this.super(fileUrl, packageRequire);
 
             PackageQueueManager.load(this, '_handleDependenciesListChange');
             this._livePackage = packageRequire.packageDescription;
             this.sharedProjectController = projectController;
             this.editor = projectController.currentEditor;
+            this.environmentBridge = projectController.environmentBridge;
 
-            return this.getApplicationSupportUrl().then(function (url) {
-                self.applicationSupportUrl = url;
+//            return this.getApplicationSupportUrl().then(function (url) {
+//              self.applicationSupportUrl = url;
+//                return this.environmentBridge.loadPackageManager().then(function (loaded) {
+//
+//                });
+//            });
 
-                return self.packageManagerPlugin.invoke("loadPackageManager", self.projectUrl, url).then(function (loaded) {
-                    if (!loaded) {
-                        throw new Error("An error has occurred while PackageManager was loading");
-                    }
+            return self.listDependencies().then(function(dependencyTree) { // invoke the custom list command, which check every dependencies installed.
+                self._package = dependencyTree.fileJsonRaw || {};
+                self._classifyDependencies(dependencyTree.children); // classify dependencies
 
-                    return self.listDependencies().then(function(app) { // invoke the custom list command, which check every dependencies installed.
-                        self._package = app.file || {};
-                        self._classifyDependencies(app.dependencies, false); // classify dependencies
+                var author = PackageTools.getValidPerson(self._package.author);
 
-                        var author = PackageTools.getValidPerson(self._package.author);
+                self._package.author = author ? author : {
+                    name: "",
+                    email: "",
+                    url: ""
+                };
 
-                        self._package.author = author ? author : {
-                            name: "",
-                            email: "",
-                            url: ""
-                        };
+                //self._getOutDatedDependencies();
 
-                        self._getOutDatedDependencies();
-                        return self;
-                    });
-                });
+                return self;
             });
         }
     },
@@ -363,7 +362,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     listDependencies: {
         value: function () {
-            return this.packageManagerPlugin.invoke("listDependencies", this.projectUrl);
+            return this.environmentBridge.listDependencies();
         }
     },
 
@@ -372,10 +371,10 @@ exports.PackageDocument = EditingDocument.specialize( {
             var self = this;
             this.isReloadingList = true;
 
-            return self.listDependencies().then(function (app) { // invoke list in order to find eventual errors after this removing.
-                self._classifyDependencies(app.dependencies, false); // classify dependencies
+            return self.listDependencies().then(function (dependencyTree) { // invoke list in order to find eventual errors after this removing.
+                self._classifyDependencies(dependencyTree.children, false); // classify dependencies
                 self._notifyOutDatedDependencies();
-                self._package = app.file || self._package;
+                self._package = dependencyTree.fileJsonRaw || self._package;
                 self.dispatchPackagePropertiesChange();
                 self.isReloadingList = false;
                 self.editor.updateSelectionDependencyList();
@@ -671,25 +670,13 @@ exports.PackageDocument = EditingDocument.specialize( {
     },
 
     _classifyDependencies: {
-        value: function (dependencies) {
-            if (dependencies) {
+        value: function (childrenCategories) {
+            if (childrenCategories && typeof childrenCategories === "object") {
                 this._resetDependencies();
-                var type = null,
-                    dependencyCollection = this._dependencyCollection;
 
-                for (var i = 0, length = dependencies.length; i < length; i++) {
-                    var dependency = dependencies[i];
-
-                    if (dependency.hasOwnProperty('type')) {
-                        type = DependencyNames[dependency.type];
-
-                        if (type) {
-                            dependencyCollection[type].push(dependency);
-                        } else {
-                            throw new Error('Encountered dependency with unexpected type "' + dependency.type + '"');
-                        }
-                    }
-                }
+                this._dependencyCollection.dependencies = childrenCategories.regular || [];
+                this._dependencyCollection.devDependencies = childrenCategories.dev || [];
+                this._dependencyCollection.optionalDependencies = childrenCategories.optional || [];
             }
         }
     },
@@ -702,7 +689,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                     var search = (dependency.versionInstalled) ? dependency.name + "@" + dependency.versionInstalled : dependency.name,
                         self = this;
 
-                    return this._packageManagerPlugin.invoke("viewDependency", search).then(function (module) {
+                    return this.environmentBridge.gatherPackageInformation(search).then(function (module) {
                         dependency.information = module || {}; // Can be null if the version doesn't exists.
                         return dependency;
                     }).fin(function () {

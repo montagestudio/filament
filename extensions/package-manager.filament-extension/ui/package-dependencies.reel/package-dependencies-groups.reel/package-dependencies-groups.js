@@ -74,11 +74,11 @@ exports.PackageDependenciesGroups = Component.specialize(/** @lends PackageDepen
             if (this.selectedCell) {
                 var oldType = this.selectedCell.type;
 
-                if (oldType === DependencyNames.dependencies) {
+                if (oldType === DependencyNames.regular) {
                     this.templateObjects.dependenciesGroup.contentController.clearSelection();
-                } else if (oldType === DependencyNames.optionalDependencies) {
+                } else if (oldType === DependencyNames.optional) {
                     this.templateObjects.optionalDependenciesGroup.contentController.clearSelection();
-                } else if (oldType === DependencyNames.devDependencies) {
+                } else if (oldType === DependencyNames.dev) {
                     this.templateObjects.devDependenciesGroup.contentController.clearSelection();
                 }
             }
@@ -120,11 +120,11 @@ exports.PackageDependenciesGroups = Component.specialize(/** @lends PackageDepen
             if (dependency && dependency.hasOwnProperty("type")) {
                 var type = dependency.type;
 
-                if (type === DependencyNames.dependencies) {
+                if (type === DependencyNames.regular) {
                     this.templateObjects.dependenciesGroup.contentController.select(dependency);
-                } else if (type === DependencyNames.optionalDependencies) {
+                } else if (type === DependencyNames.optional) {
                     this.templateObjects.optionalDependenciesGroup.contentController.select(dependency);
-                } else if (type === DependencyNames.devDependencies) {
+                } else if (type === DependencyNames.dev) {
                     this.templateObjects.devDependenciesGroup.contentController.select(dependency);
                 }
             }
@@ -144,11 +144,11 @@ exports.PackageDependenciesGroups = Component.specialize(/** @lends PackageDepen
         value: function (type, accept) {
             var response = null;
 
-            if (type === DependencyNames.dependencies) {
+            if (type === DependencyNames.regular) {
                 response = this.templateObjects.dependenciesGroup.canAcceptDrop = !!accept;
-            } else if (type === DependencyNames.optionalDependencies) {
+            } else if (type === DependencyNames.optional) {
                 response = this.templateObjects.optionalDependenciesGroup.canAcceptDrop = !!accept;
-            } else if (type === DependencyNames.devDependencies) {
+            } else if (type === DependencyNames.dev) {
                 response = this.templateObjects.devDependenciesGroup.canAcceptDrop = !!accept;
             }
 
