@@ -4,7 +4,8 @@ var Montage = require("montage/core/core").Montage,
     ViewController = require("core/view-controller").ViewController,
     PreviewController = require("core/preview-controller").PreviewController,
     ProjectController = require("core/project-controller").ProjectController,
-    ReelDocument = require("core/reel-document").ReelDocument;
+    ReelDocument = require("core/reel-document").ReelDocument,
+    FilamentService = require("core/filament-service").FilamentService;
 
 var InnerTemplateInspector = require("contextual-inspectors/inner-template/ui/inner-template-inspector.reel").InnerTemplateInspector;
 
@@ -20,7 +21,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
             if (!bridgePromise) {
                 bridgePromise = require.async("adaptor/client/core/environment-bridge").then(function (exported) {
-                    return new exported.EnvironmentBridge().init("filament-backend");
+                    return new exported.EnvironmentBridge().init(new FilamentService());
                 });
                 this._bridgePromise = bridgePromise;
             }
