@@ -501,9 +501,6 @@ exports.PackageDocument = EditingDocument.specialize( {
                 } else if (action === Dependency.UPDATE_DEPENDENCY_ACTION) {
                     promise = this.updateDependency(dependency);
                     title = "Updating";
-                } else if (action === Dependency.FIX_ERROR_DEPENDENCY_ACTION) {
-                    promise = this.fixDependencyErrors(dependency);
-                    title = "Fixing";
                 } else {
                     promise = Promise.reject(new Error("Action not recognized"));
                     title = "Error";
