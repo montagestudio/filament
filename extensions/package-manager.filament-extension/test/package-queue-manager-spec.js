@@ -9,8 +9,7 @@ describe("package queue manager", function () {
 
     beforeEach(function() {
         packageDocument = {
-            projectUrl: '/',
-            packageManagerPlugin: {}
+            projectUrl: '/'
         };
         installed = null;
         packageDocument.done = function (elements) {

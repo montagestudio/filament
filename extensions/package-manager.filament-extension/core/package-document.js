@@ -6,12 +6,8 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     Dependency = require('./dependency').Dependency,
     semver = require('semver'),
     PackageTools = Tools.ToolsBox,
-    ErrorsCommands = Tools.Errors.commands,
     DependencyNames = Tools.DependencyNames,
     defaultLocalizer = require("montage/core/localizer").defaultLocalizer,
-
-    DEPENDENCY_ERRORS_MAX = 3,
-    ERROR_APP_NICKNAME = 'app',
 
     DEFAULT_TIME_AUTO_SAVE = 400,
     DEPENDENCY_TIME_AUTO_SAVE = 100,
@@ -43,22 +39,16 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function (fileUrl, packageRequire, projectController) {
             var self = this.super(fileUrl, packageRequire);
 
-            PackageQueueManager.load(this, '_handleDependenciesListChange');
             this._livePackage = packageRequire.packageDescription;
             this.sharedProjectController = projectController;
             this.editor = projectController.currentEditor;
             this.environmentBridge = projectController.environmentBridge;
 
-//            return this.getApplicationSupportUrl().then(function (url) {
-//              self.applicationSupportUrl = url;
-//                return this.environmentBridge.loadPackageManager().then(function (loaded) {
-//
-//                });
-//            });
+            PackageQueueManager.load(this, '_handleDependenciesListChange');
 
             return self.listDependencies().then(function(dependencyTree) { // invoke the custom list command, which check every dependencies installed.
                 self._package = dependencyTree.fileJsonRaw || {};
-                self._classifyDependencies(dependencyTree.children); // classify dependencies
+                self.dependencyCollection = dependencyTree;
 
                 var author = PackageTools.getValidPerson(self._package.author);
 
@@ -68,7 +58,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                     url: ""
                 };
 
-                //self._getOutDatedDependencies();
+                self._getOutDatedDependencies();
 
                 return self;
             });
@@ -83,47 +73,6 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     sharedProjectController: {
         value: null
-    },
-
-    _packageManagerPlugin: {
-        value: null
-    },
-
-    packageManagerPlugin: {
-        get: function () {
-            if (!this._packageManagerPlugin && this.sharedProjectController) {
-                this._packageManagerPlugin = this.sharedProjectController.environmentBridge.backend.get("package-manager");
-            }
-            return this._packageManagerPlugin;
-        }
-    },
-
-    _projectUrl: {
-        value: null
-    },
-
-    projectUrl: {
-        get: function () {
-            if (!this._projectUrl && this.sharedProjectController) {
-                this._projectUrl = this.sharedProjectController.environmentBridge.convertBackendUrlToPath(this.sharedProjectController.projectUrl);
-            }
-            return this._projectUrl;
-        }
-    },
-
-    applicationSupportUrl: {
-        value: null
-    },
-
-    getApplicationSupportUrl: {
-        value: function () {
-            var self = this;
-
-            return this.sharedProjectController.environmentBridge.backend.get("application")
-                .invoke("specialFolderURL", "application-support").then(function(folder) {
-                    return self.sharedProjectController.environmentBridge.convertBackendUrlToPath(folder.url.replace("%20", " "));
-                });
-        }
     },
 
     _livePackage: {
@@ -215,6 +164,7 @@ exports.PackageDocument = EditingDocument.specialize( {
     author: {
         set: function (author) {
             author = PackageTools.getValidPerson(author);
+
             if (author){
                 this._package.author = author;
                 this._modificationsAccepted();
@@ -259,59 +209,50 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    addMaintainer: {
-        value: function (maintainer) {
-            maintainer = PackageTools.getValidPerson(maintainer);
-
-            if (maintainer) {
-                if (this._findMaintainerIndex(maintainer) >= 0) { // Already exists. Must be unique.
-                    return true;
-                }
-
-                if (this._addMaintainer(maintainer)) {
-                    this.saveModification();
-                    return true;
-                }
+    maintainers: {
+        get: function () {
+            if (!this._package.maintainers) {
+                this._package.maintainers = [];
             }
-            return false;
-        }
-    },
 
-    _addMaintainer: {
-        value: function (maintainer) {
-            var maintainers = this.maintainers,
-                length = maintainers.length;
-
-            maintainers.push(maintainer);
-            return maintainers.length > length;
+            return this._package.maintainers;
         }
     },
 
     _findMaintainerIndex: {
         value: function (person) {
-            var maintainers = this.maintainers;
+            var maintainers = this.maintainers,
+                indexFound = -1;
 
             if (maintainers && person && typeof person === 'object') {
-                for (var i = 0, length = maintainers.length; i < length; i++) {
-                    var maintainer = maintainers[i];
+                maintainers.some(function (maintainer, index) {
+                    if (maintainer.name === person.name && maintainer.url === person.url &&
+                        maintainer.email === person.email) {
 
-                    if (maintainer.name === person.name &&
-                        maintainer.url === person.url && maintainer.email === person.email) {
-
-                        return i;
+                        indexFound = index;
                     }
-                }
+
+                    return indexFound >= 0;
+                });
             }
-            return -1;
+
+            return indexFound;
         }
     },
 
-    replaceMaintainer: {
-        value: function (old, person) {
-            var index = this._findMaintainerIndex(old);
+    addMaintainer: {
+        value: function (maintainer, saveModification) {
+            maintainer = PackageTools.getValidPerson(maintainer);
 
-            if (index >= 0 && this._removeMaintainer(index) && this._addMaintainer(person)) {
-                this.saveModification();
+            if (maintainer) {
+                if (!this._findMaintainerIndex(maintainer) >= 0) { // Already exists. Must be unique.
+                    this.maintainers.push(maintainer);
+                }
+
+                if (saveModification) {
+                    this.saveModification().done();
+                }
+
                 return true;
             }
             return false;
@@ -319,29 +260,36 @@ exports.PackageDocument = EditingDocument.specialize( {
     },
 
     removeMaintainer: {
-        value: function (maintainer) {
+        value: function (maintainer, saveModification) {
             if (maintainer && typeof maintainer === 'object') {
-                if (this._removeMaintainer(this._findMaintainerIndex(maintainer))) {
-                    this.saveModification();
+                var maintainerIndex = this._findMaintainerIndex(maintainer);
+
+                if (maintainerIndex >= 0) {
+                    this.maintainers.splice(maintainerIndex, 1);
+
+                    if (saveModification) {
+                        this.saveModification().done();
+                    }
+
                     return true;
                 }
             }
+
             return false;
         }
     },
 
-    _removeMaintainer: {
-        value: function (index) {
-            return index >= 0 && this.maintainers.splice(index, 1).length > 0;
-        }
-    },
+    replaceMaintainer: {
+        value: function (oldMaintainer, oldMaintainer) {
+            var maintainerIndex = this._findMaintainerIndex(oldMaintainer);
 
-    maintainers: {
-        get: function () {
-            if (!this._package.maintainers) {
-                this._package.maintainers = [];
+            if (maintainerIndex >= 0 && this.removeMaintainer(maintainerIndex, false) && this.addMaintainer(oldMaintainer, false)) {
+                this.saveModification().done();
+
+                return true;
             }
-            return this._package.maintainers;
+
+            return false;
         }
     },
 
@@ -355,6 +303,19 @@ exports.PackageDocument = EditingDocument.specialize( {
     },
 
     dependencyCollection: {
+        set: function (dependencyTree) {
+            var dependenciesCategories = dependencyTree.children;
+
+            if (!this._dependencyCollection) {
+                this._dependencyCollection = {};
+            }
+
+            if (dependenciesCategories && typeof dependenciesCategories === "object") {
+                this._dependencyCollection.dependencies = dependenciesCategories.regular || [];
+                this._dependencyCollection.devDependencies = dependenciesCategories.dev || [];
+                this._dependencyCollection.optionalDependencies = dependenciesCategories.optional || [];
+            }
+        },
         get : function () {
             return this._dependencyCollection;
         }
@@ -366,13 +327,48 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
+    getDependencyInformation: {
+        value: function (dependency) {
+            if (PackageTools.isDependency(dependency)) {
+                if (!dependency.private && !dependency.information) {
+                    this.editor.loadingDependency(true); // Display the spinner
+
+                    var self = this,
+                        searchRequest = dependency.versionInstalled ?
+                            dependency.name + "@" + dependency.versionInstalled : dependency.name;
+
+                    return this.environmentBridge.gatherPackageInformation(searchRequest).then(function (module) {
+                        dependency.information = module || {}; // Can be undefined if the version doesn't exists.
+                        return dependency;
+
+                    }).fin(function () {
+                        self.editor.loadingDependency(false); // Stop the spinner
+                    });
+                }
+
+                return Promise.resolve(dependency); // The dependency node has already got its information.
+            }
+
+            return Promise.reject(new Error("Encountered an error while getting dependency information"));
+        }
+    },
+
+    dispatchAsyncActivity: {
+        value: function (promise, title) {
+            this.dispatchEventNamed("asyncActivity", true, false, {
+                promise: promise,
+                title: title
+            });
+        }
+    },
+
     _updateDependenciesList: {
         value: function () {
             var self = this;
             this.isReloadingList = true;
 
             return self.listDependencies().then(function (dependencyTree) { // invoke list in order to find eventual errors after this removing.
-                self._classifyDependencies(dependencyTree.children, false); // classify dependencies
+                self.dependencyCollection = dependencyTree;
                 self._notifyOutDatedDependencies();
                 self._package = dependencyTree.fileJsonRaw || self._package;
                 self.dispatchPackagePropertiesChange();
@@ -390,18 +386,6 @@ exports.PackageDocument = EditingDocument.specialize( {
             keys.forEach(function (key) {
                 self.dispatchOwnPropertyChange(key, self._package[key]);
             });
-        }
-    },
-
-    _resetDependencies: {
-        value: function () {
-            if (!this._dependencyCollection) {
-                this._dependencyCollection = {};
-            }
-
-            this._dependencyCollection.dependencies = [];
-            this._dependencyCollection.devDependencies = [];
-            this._dependencyCollection.optionalDependencies = [];
         }
     },
 
@@ -450,255 +434,10 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function () {
             var self = this;
 
-            return this.sharedProjectController.environmentBridge.projectInfo(this.projectUrl).then(function (projectInfo) {
+            return this.environmentBridge.projectInfo(this.environmentBridge.projectUrl).then(function (projectInfo) {
                 self.sharedProjectController.dependencies = projectInfo.dependencies;
                 return self.sharedProjectController.populateLibrary();
             });
-        }
-    },
-
-    _shouldReInstallDependency: {
-        value: function (dependency) {
-            var problems = dependency.problems,
-                errorCodes = ErrorsCommands.list.codes,
-                length = problems.length;
-
-            if (length > DEPENDENCY_ERRORS_MAX) { // too many errors => reinstall the dependency.
-                return true;
-            }
-
-            /* Whether a dependency is located at the "top" level and has one of these following problems:
-             *
-             * - Version invalid.
-             * - Missing or invalid Package.json file.
-             *
-             * We should reinstall it.
-             */
-            return problems.reduce(function (needInstall, problem) {
-                return needInstall || (problem.parent === ERROR_APP_NICKNAME && (problem.type === errorCodes.missing ||
-                    problem.type === errorCodes.fileErrors || problem.type === errorCodes.versionInvalid));
-            }, false);
-        }
-    },
-
-    fixDependencyErrors: {
-        value: function (dependency) {
-            var problems = dependency.problems;
-
-            if (problems) {
-                var self = this;
-
-                if (!!dependency.extraneous) { // When a dependency is extraneous, it doesn't show any deeper errors.
-
-                    return Promise.fcall(function () {
-                        self._package.dependencies[dependency.name] = dependency.versionInstalled;
-                        return self.saveModification(true).then(function () {
-                            return "The dependency " + dependency.name + " has been saved into the package.json file.";
-                        }); // Save dependency into the package.json file.
-                    });
-
-                // When a dependency shows too many errors, or has a version error, or the package.json file is invalid or missing.
-                } else if (this._shouldReInstallDependency(dependency)) {
-
-                    // When the dependency version is not a gitUrl, then it will be set to null,
-                    // because it could be invalid, but npm will install the correct version.
-                    var version = PackageTools.isGitUrl(dependency.version) ? dependency.version : null;
-                    return this.installDependency(new Dependency (dependency.name, version, dependency.type), true);
-
-                } else { // Fix deeper errors of a dependency.
-
-                    // Get an array of dependencies, which have one or several errors.
-                    var dependenciesToFix = this._getDeepErrorsSortedByDependency(problems);
-
-                    return Promise.all(dependenciesToFix.map(function (dependencyToFix) {
-                            return self._fixDependencyDeepErrors(dependencyToFix);
-                        })).then(function () {
-                            return self._updateDependenciesAfterSaving().then(function () {
-                                return "The dependency " + dependency.name + " has been fixed.";
-                            });
-                        });
-                }
-            }
-
-            return Promise.reject(new Error("No problems to fix"));
-        }
-    },
-
-    _getDeepErrorsSortedByDependency: {
-        value: function (problems) {
-            var errorsContainer = [];
-            this._getErrorsFromTree(this._getTreeErrors(problems), errorsContainer);
-            return errorsContainer;
-        }
-    },
-
-    _getErrorsFromTree: {
-        value: function (tree, container) {
-            if (Object.prototype.toString.call(tree) === '[object Object]') {
-                var keys = Object.keys(tree);
-
-                for (var i = 0, length = keys.length; i < length; i++) {
-                    var currentNode = tree[keys[i]];
-
-                    if (currentNode.hasOwnProperty("problems")) {
-                        container.push({
-                            name: currentNode.name,
-                            path: currentNode.path,
-                            problems: currentNode.problems
-                        });
-                    }
-
-                    this._getErrorsFromTree(currentNode, container);
-                }
-            }
-        }
-    },
-
-    _getTreeErrors: {
-        value: function (problems) {
-            var tree = {}; // Build a "tree errors" with all errors from a dependency.
-
-            for (var i = 0, length = problems.length; i < length; i++) {
-                this._insertIntoTree(tree, problems[i]); // Insert an error within the tree, where it is located.
-            }
-            return tree;
-        }
-    },
-
-    _insertIntoTree: {
-        value: function (tree, problem) {
-            // Get a small tree with one error, and merge it with the complete tree.
-            this._mergeErrorTrees(tree, this._getPartTreeFormError(problem));
-        }
-    },
-
-    _mergeErrorTrees : {
-        value: function (originalTree, partTree) {
-            var keys = Object.keys(partTree);
-
-            if (keys.length > 0) {
-                var key = keys[0];
-
-                if (originalTree.hasOwnProperty(key)) { // if branch exists
-                    var currentPartTreeBranch = partTree[key];
-
-                    // When the currentPartTreeBranch has a problems property, then merge it with the original tree.
-                    if (!currentPartTreeBranch.hasOwnProperty("problems")) {
-                        this._mergeErrorTrees(originalTree[key], currentPartTreeBranch);
-                    } else {
-                        var currentTreeBranch = originalTree[key];
-
-                        // The current branch has already a problems property.
-                        if (Array.isArray(currentTreeBranch.problems)) {
-                            currentTreeBranch.problems.push(currentPartTreeBranch.problems[0]);
-                        } else {
-                            currentTreeBranch.problems = currentPartTreeBranch.problems;
-                            currentTreeBranch.name = currentPartTreeBranch.name;
-                            currentTreeBranch.path = currentPartTreeBranch.path;
-                        }
-                    }
-                } else {
-                    originalTree[key] = partTree[key];
-                }
-            }
-        }
-    },
-
-    _getPartTreeFormError: {
-        value: function (problem) {
-
-            // Transforms the dependency path into a tree.
-            var path = problem.path;
-
-            if (typeof path === "string") {
-                path = (path.charAt(path.length - 1) === '/') ? path.slice(0, -1) : path;
-
-                var dependencyNames = path.split(/\/?node_modules\//),
-                    tree = {},
-                    cursor = null;
-
-                for (var i = 1, length = dependencyNames.length; i < length; i++) {
-                    if (!cursor) {
-                        cursor = tree[dependencyNames[i]] = {};
-                    } else {
-                        cursor = cursor[dependencyNames[i]] = {};
-                    }
-                }
-
-                cursor.name = dependencyNames[dependencyNames.length - 1];
-                cursor.problems = [problem];
-                cursor.path = path;
-                return tree;
-            }
-        }
-    },
-
-    _fixDependencyDeepErrors: {
-        value: function (dependency) {
-            var errorCodes = ErrorsCommands.list.codes,
-                self = this,
-                problems = dependency.problems,
-                listDependencyExtraneous = [],
-                listDependencyToInstall = [];
-
-            for (var j = 0, length = problems.length; j < length; j++) {
-                var problem = problems[j];
-
-                if (problem.type === errorCodes.extraneous) { // missing within the package.json.
-                    listDependencyExtraneous.push({
-                        name: problem.name,
-                        version: problem.version
-                    });
-                } else if (problem.type === errorCodes.versionInvalid) {
-                    listDependencyToInstall.push(problem.name); // Don't specify the version.
-                } else {
-                    listDependencyToInstall.push(
-                        PackageTools.getValidRequestFromModule(new Dependency(problem.name, problem.version))
-                    );
-                }
-            }
-
-            // Perform fixing.
-            return Promise.all(listDependencyToInstall.map(function (dependencyToInstall) {
-                return self._packageManagerPlugin.invoke("installDependency", dependencyToInstall, dependency.path);
-            })).then(function () {
-                if (listDependencyExtraneous.length > 0) {
-                    return self._packageManagerPlugin.invoke("saveModuleIntoFile", listDependencyExtraneous, dependency.path);
-                }
-            });
-        }
-    },
-
-    _classifyDependencies: {
-        value: function (childrenCategories) {
-            if (childrenCategories && typeof childrenCategories === "object") {
-                this._resetDependencies();
-
-                this._dependencyCollection.dependencies = childrenCategories.regular || [];
-                this._dependencyCollection.devDependencies = childrenCategories.dev || [];
-                this._dependencyCollection.optionalDependencies = childrenCategories.optional || [];
-            }
-        }
-    },
-
-    getInformationDependency: {
-        value: function (dependency) {
-            if (PackageTools.isDependency(dependency)) {
-                if (!dependency.private && !dependency.information) {
-                    this.editor.loadingDependency(true);
-                    var search = (dependency.versionInstalled) ? dependency.name + "@" + dependency.versionInstalled : dependency.name,
-                        self = this;
-
-                    return this.environmentBridge.gatherPackageInformation(search).then(function (module) {
-                        dependency.information = module || {}; // Can be null if the version doesn't exists.
-                        return dependency;
-                    }).fin(function () {
-                        self.editor.loadingDependency(false);
-                    });
-                }
-                return Promise.resolve(dependency);
-            }
-            return Promise.reject(new Error("Encountered an error while getting dependency information"));
         }
     },
 
@@ -771,10 +510,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                 }
             }
 
-            this.dispatchEventNamed("asyncActivity", true, false, {
-                promise: promise,
-                title: title
-            });
+            this.dispatchAsyncActivity(promise, title);
 
             return promise;
         }
@@ -839,7 +575,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                         self._dependencyCollection[dependency.type].splice(index, 1);
                     }
 
-                    module.type = module.type || DependencyNames.dependencies;
+                    module.type = module.type || DependencyNames.regular;
                     self._dependencyCollection[module.type].push(module);
 
                     if (!!save) {
@@ -857,12 +593,11 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     _addDependencyToFile: {
         value: function (dependency, strict, type) {
-            if (PackageTools.isDependency(dependency) && dependency.hasOwnProperty('type')) {
-                type = DependencyNames[type];
+            if (PackageTools.isDependency(dependency) && dependency.hasOwnProperty('type') && type) {
+                var dependencyGroup = this._package[dependency.type];
 
-                if (type) {
-                    var group = this._package[dependency.type],
-                        range = group[dependency.name];
+                if (dependencyGroup) {
+                    var range = dependencyGroup[dependency.name];
 
                     if (range && !strict) { // if range already specified
                         // clean returns null if the range it's not a version specified.
@@ -871,8 +606,8 @@ exports.PackageDocument = EditingDocument.specialize( {
                         range = PackageTools.isGitUrl(dependency.version) ? dependency.version : dependency.versionInstalled;
                     }
 
-                    if (group) {
-                        delete group[dependency.name];
+                    if (dependencyGroup) {
+                        delete dependencyGroup[dependency.name];
                     }
 
                     dependency.type = type;
@@ -895,10 +630,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                     var promise = Promise.reject(new Error ('Can not change a dependency type either the dependency is ' +
                         'extraneous or an action is performing'));
 
-                    this.dispatchEventNamed("asyncActivity", true, false, {
-                        promise: promise,
-                        title: "Package Manager"
-                    });
+                    this.dispatchAsyncActivity(promise, "Package Manager");
                 }
 
                 if (this._addDependencyToFile(dependency, false, type)) {
@@ -940,7 +672,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             }
 
             if (PackageTools.isDependency(dependency) && dependency.hasOwnProperty('type') && !dependency.extraneous) {
-                var type = DependencyNames[dependency.type];
+                var type = this.dependencyCollection[dependency.type] ? dependency.type : null;
 
                 if (type) {
                     if (!!save) {
@@ -985,7 +717,7 @@ exports.PackageDocument = EditingDocument.specialize( {
     _getOutDatedDependencies: {
         value: function () {
             var self = this,
-                promise = this.packageManagerPlugin.invoke("getOutdatedDependencies").then(function (updates) {
+                promise = this.environmentBridge.findOutdatedDependency().then(function (updates) {
                     var keys = Object.keys(updates);
 
                     for (var i = 0, length = keys.length; i < length; i++) { // temporary fix because npm outdated is buggy.
@@ -1003,10 +735,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                     });
                 });
 
-            this.dispatchEventNamed("asyncActivity", true, false, {
-                promise: promise,
-                title: "Searching for updates"
-            });
+            this.dispatchAsyncActivity(promise, "Searching for updates");
         }
     },
 
@@ -1092,7 +821,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function (updateDependencies) {
             var self = this;
 
-            return this.sharedProjectController.environmentBridge.save(this, this.url).then(function () {
+            return this.environmentBridge.save(this, this.url).then(function () {
                 if (!!updateDependencies) {
                     return self._updateDependenciesAfterSaving();
                 }

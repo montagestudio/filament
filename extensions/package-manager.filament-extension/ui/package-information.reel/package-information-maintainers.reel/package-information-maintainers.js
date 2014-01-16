@@ -55,7 +55,7 @@ exports.PackageInformationMaintainers = Component.specialize(/** @lends PackageI
             var maintainer = (event.detail && event.detail.maintainer) ? event.detail.maintainer : null;
 
             if (maintainer && this.editingDocument &&
-                this.editingDocument.addMaintainer(maintainer) && this.createPersonOverlay.isShown) {
+                this.editingDocument.addMaintainer(maintainer, true) && this.createPersonOverlay.isShown) {
 
                 this.createPersonOverlay.hide();
             }
@@ -72,7 +72,7 @@ exports.PackageInformationMaintainers = Component.specialize(/** @lends PackageI
             var maintainer = event.detail.get('maintainer');
 
             if (maintainer && this.editingDocument) {
-                this.editingDocument.removeMaintainer(maintainer);
+                this.editingDocument.removeMaintainer(maintainer, true);
             }
         }
     },

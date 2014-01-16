@@ -17,8 +17,9 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
      */
     load: {
         value: function (packageDocument, whenDone) {
-            if (typeof packageDocument === 'object') {
+            if (packageDocument && typeof packageDocument === 'object') {
                 this._packageDocument = packageDocument;
+                this._projectUrl = packageDocument.environmentBridge.projectUrl;
                 this._whenDone = (typeof whenDone === 'string' && whenDone.length > 0) ? whenDone : null;
                 this._queueManagerLoaded = true;
             }
@@ -59,42 +60,9 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
         writable: true
     },
 
-    _packageManagerPlugin: {
-        value: null,
-        writable: true
-    },
-
-    /**
-     * Reference to the packageManagerPlugin propriety within the packageDocument.
-     * @type {Object}
-     * @default null
-     */
-    packageManagerPlugin: {
-        get: function () {
-            if (!this._packageManagerPlugin) {
-                this._packageManagerPlugin = (this._packageDocument) ? this._packageDocument.packageManagerPlugin : null;
-            }
-            return this._packageManagerPlugin;
-        }
-    },
-
     _projectUrl: {
         value: null,
         writable: true
-    },
-
-    /**
-     * Reference to the projectUrl propriety within the packageDocument.
-     * @type {Object}
-     * @default null
-     */
-    projectUrl: {
-        get: function () {
-            if (!this._projectUrl) {
-                this._projectUrl = (this._packageDocument) ? this._packageDocument.projectUrl : null;
-            }
-            return this._projectUrl;
-        }
     },
 
     /**
@@ -105,7 +73,7 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
      */
     _run: {
         value: function () {
-            if (!this._isRunning && !this.isQueueEmpty() && this.packageManagerPlugin && this.projectUrl) {
+            if (!this._isRunning && !this.isQueueEmpty() && this._projectUrl) {
                 this._modulesModified = [];
                 this._isRunning = true;
                 this._next();
@@ -140,20 +108,22 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
      */
     _prepareForNext: {
         value: function (module, action, error) {
-            this._modulesModified.push({
-                name: module.name,
-                version: module.version || module.versionInstalled || '',
-                type: module.type,
-                action: action,
-                error: !!error
-            });
+            if (module) {
+                this._modulesModified.push({
+                    name: module.name,
+                    version: module.version || module.versionInstalled || '',
+                    type: module.type,
+                    action: action,
+                    error: !!error
+                });
 
-            this._queue.shift();
-            var self = this;
+                this._queue.shift();
+                var self = this;
 
-            setTimeout(function () {
-                self._next();
-            }, TIME_WAITING_BEFORE_NEXT);
+                setTimeout(function () {
+                    self._next();
+                }, TIME_WAITING_BEFORE_NEXT);
+            }
         }
     },
 
@@ -181,7 +151,7 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
                 var self = this;
 
                 if (module.strict) {
-                    this._packageManagerPlugin.invoke("installDependency", module.request).then(function (installed) {
+                    this._packageDocument.environmentBridge.installPackage(module.request).then(function (installed) {
                         if (installed && typeof installed === 'object' && installed.hasOwnProperty('name')) { // If the package has been installed.
                             installed = {
                                 name: installed.name,
@@ -238,7 +208,7 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
                 var self = this;
 
                 if (module.strict) {
-                    this._packageManagerPlugin.invoke("removeDependency", module.name, this._projectUrl).then(function (removed) {
+                    this._packageDocument.environmentBridge.removePackage(module.name).then(function (removed) {
                         if (removed) { // If the package has been removed.
                             module.deferred.resolve(removed);
 
@@ -269,7 +239,7 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
 
             this._queue.push({
                 name: module.name,
-                type: (typeof module.type === 'string' && module.type.length > 0) ? module.type : DependencyNames.dependencies,
+                type: (typeof module.type === 'string' && module.type.length > 0) ? module.type : DependencyNames.regular,
                 version: version,
                 deferred: deferred,
                 request: request,
