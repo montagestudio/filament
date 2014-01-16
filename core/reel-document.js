@@ -2078,7 +2078,7 @@ exports.ReelDocument = EditingDocument.specialize({
                     templateObject: ownerObject,
                     expanded: true,
                     children: []
-            };
+                };
             this.templateObjectsTree = root;
             insertionMap.set(ownerObject, root);
             return root;
