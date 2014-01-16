@@ -45,7 +45,8 @@
         "rootCondition": {
             "prototype": "montage/ui/condition.reel",
             "properties": {
-                "element": {"#": "rootCondition"}
+                "element": {"#": "rootCondition"},
+                "removalStrategy": "hide"
             },
             "bindings": {
                 "condition": {"<-": "!(@owner.ignoreRoot && !@row.iteration.parent)"}
