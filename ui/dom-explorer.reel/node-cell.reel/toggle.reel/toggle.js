@@ -41,6 +41,7 @@ exports.Toggle = Component.specialize(/** @lends Toggle# */ {
         value: function (evt){
             evt.preventDefault();
             this.isOpen = !this.isOpen;
+            this.dispatchEventNamed("toggle", true, true, {isOpen: this.isOpen});
             this.needsDraw = true;
         }
     },
@@ -48,7 +49,7 @@ exports.Toggle = Component.specialize(/** @lends Toggle# */ {
     draw: {
         value: function() {
             if (this.isOpen) {
-                this.element.setAttribute("open");
+                this.element.setAttribute("open", "true");
             } else {
                 this.element.removeAttribute("open");
             }

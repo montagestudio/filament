@@ -37,17 +37,31 @@
             "bindings": {
                 "iteration": {"<-": "@list.objectAtCurrentIteration"},
                 "depth": {"<-": "@list.objectAtCurrentIteration.depth"},
-                "object": {"<-": "@list.objectAtCurrentIteration.content"}
+                "object": {"<-": "@list.objectAtCurrentIteration.content"},
+                "ignoreRoot": {"<-": "@owner.ignoreRoot"}
             }
-        }
+        },
+
+        "rootCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "rootCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "!(@owner.ignoreRoot && !@row.iteration.parent)"}
+            }
+        }   
     }
 </script>
 <body>
 
 <div data-montage-id="tree">
     <div data-montage-id="list" class="Tree-list">
-        <div data-montage-id="row" class="Tree-list-row">
-            <div data-param="treeNode"></div>
+        <div data-montage-id="rootCondition">
+            <div data-montage-id="row" class="Tree-list-row">
+                <div data-param="treeNode"></div>
+            </div>
         </div>
     </div>
 </div>

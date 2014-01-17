@@ -45,9 +45,14 @@ exports.Indent = Montage.create(Component, {
         value: "px"
     },
 
+    ignoreRoot: {
+        value: false
+    },
+
     draw: {
         value: function () {
-            this.element.style.paddingLeft = (this.indentValue * this.depth) + this.indentUnit;
+            var depth = (this.ignoreRoot)? this.depth - 1 : this.depth;
+            this.element.style.paddingLeft = (this.indentValue * depth) + this.indentUnit;
         }
     }
 

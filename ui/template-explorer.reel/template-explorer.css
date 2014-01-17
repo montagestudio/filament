@@ -118,24 +118,46 @@
 
 /* TemplateObject Cell ---------------------------- */
 
+.TemplateObjectCell-Wrapper {
+    display: -webkit-flex;
+    align-items: center;
+    justify-content:center;
+}
+
+.TemplateObjectCell-Wrapper .toggle {
+    -wekit-flex-direction: column;
+    width: 22px;
+    height: 100%;
+}
+
 .TemplateExplorer-list-item.TemplateObjectCell--isInProjectPackage {
     border-radius: 0;
 }
 
 .TemplateObjectCell {
     background-color: hsl(0,0%,96%);
+    -webkit-flex-direction: column;
+    width: 100%;
 }
 
-.TemplateObjectCell--hidden {
-    border-style: dashed;
+.TemplateObjectCell--excluded {
+    opacity: 0.5;
 }
 
-.TemplateObjectCell.selected {
+.TemplateObjectCell--excluded  .TemplateObjectCell-section {
+    display: none;
+}
+
+.TemplateObjectCell--notCollapsible {
+    margin-left: 20px;
+}
+
+.TemplateObjectCell--selected .TemplateObjectCell {
     border-color: hsl(210,100%,60%);
-    background-color: hsl(0,0%,98%)
+    background-color: hsl(0,0%,98%);
 }
 
-.TemplateObjectCell--highlighted {
+.TemplateObjectCell--highlighted .TemplateObjectCell {
     border-color: hsl(210,100%,60%);
 }
 

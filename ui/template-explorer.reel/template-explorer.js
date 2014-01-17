@@ -38,7 +38,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
 
     showHidden: {
         get: function () {
-            return this._hidden;
+            return this._showHidden;
         },
         set: function (value) {
             if (value === this._showHidden) {
@@ -104,10 +104,13 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         }
     },
 
+    templateObjectsTree: {
+        value: null
+    },
+
     constructor: {
         value: function TemplateExplorer() {
             this.super();
-
             this.defineBinding("templateObjectsController.filterPath", {"<-": "templateObjectFilterPath"});
         }
     },
@@ -134,6 +137,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             application.addEventListener("editListenerForObject", this, false);
 
             this.addRangeAtPathChangeListener("editingDocument.selectedObjects", this, "handleSelectedObjectsChange");
+            this.addEventListener("toggle", this);
         }
     },
 
@@ -270,8 +274,12 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         value: function (evt) {
             var target = evt.target;
 
-            if (target === this.element ||
-                target === this.templateObjects.objectList.element) {
+            // clear selection on click outside from cards
+            if (
+                    target === this.element ||
+                    target === this.templateObjects.templateNodeList.element ||
+                    (target.component && target.component.identifier === "row")
+                ) {
                 this.editingDocument.clearSelectedObjects();
                 this.editingDocument.clearSelectedElements();
             }
@@ -292,7 +300,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
 
             //TODO do something sane if multiple objects are selected
             var selectedObject = selectedObjects[0],
-                iterations = this.templateObjects.objectList.iterations,
+                iterations = this.templateObjects.templateTreeController.iterations,
                 iterationCount,
                 iteration,
                 i,
@@ -308,6 +316,16 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                 this._scrollToElement = selectedIteration.firstElement;
                 this.needsDraw = true;
             }
+        }
+    },
+
+    handleToggle: {
+        value: function (evt) {
+            var reelProxy = evt.target.parentComponent.parentComponent.templateObject,
+                editingDocument = this.editingDocument,
+                expanded = evt.detail.isOpen;
+
+            editingDocument.templateObjectsTreeToggleStates.set(reelProxy, expanded);
         }
     },
 

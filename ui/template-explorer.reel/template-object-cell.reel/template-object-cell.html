@@ -10,13 +10,29 @@
                     "element": {"#": "template-object-cell"}
                 },
                 "bindings": {
-                    "classList.has('TemplateObjectCell--owner')": {
+                    "classList.has('TemplateObjectCell--owner-cell')": {
                         "<-": "@owner.templateObject.label == 'owner'"
                     },
-                    "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"},
-                    "classList.has('TemplateObjectCell--isInProjectPackage')": {"<-": "@owner.isInProjectPackage"},
-                    "classList.has('TemplateObjectCell--highlighted')": {"<-": "@owner.templateExplorer.highlightedComponent == @owner.templateObject"},
-                    "classList.has('TemplateObjectCell--hidden')": {"<-": "@owner.templateObject.editorMetadata.get('isHidden')"}
+                    "classList.has('Filament--willAcceptDrop')": {
+                        "<-": "@owner._willAcceptDrop"},
+
+                    "classList.has('TemplateObjectCell--isInProjectPackage')": {
+                        "<-": "@owner.isInProjectPackage"},
+
+                    "classList.has('TemplateObjectCell--highlighted')": {
+                        "<-": "@owner.templateExplorer.highlightedComponent == @owner.templateObject"},
+
+                    "classList.has('TemplateObjectCell--excluded')": {
+                        "<-": "!@owner.templateExplorer.templateObjectsController.organizedContent.has(@owner.templateObject)"
+                    },
+
+                    "classList.has('TemplateObjectCell--notCollapsible')": {
+                        "<-": "!isCollapsible"
+                    },
+
+                    "classList.has('TemplateObjectCell--selected')": {
+                        "<-": "@owner.editingDocument.selectedObjects.has(@owner.templateObject)"
+                    }
                 }
             },
 
@@ -127,16 +143,40 @@
                 "bindings": {
                     "templateObject": {"<-": "@owner.templateObject"}
                 }
-            }
+            },
 
+            "hasChildrenCondition": {
+                "prototype": "montage/ui/condition.reel",
+                "properties": {
+                    "element": {"#": "hasChildrenCondition"},
+                    "removalStrategy": "hide"
+                },
+                "bindings": {
+                    "condition": {"<-": "@owner.isCollapsible"}
+                } 
+            },
+
+            "toggleExpanded": {
+                "prototype": "ui/dom-explorer.reel/node-cell.reel/toggle.reel",
+                "properties": {
+                    "element": {"#": "toggleExpanded"}
+                },
+                "bindings": {
+                    "isOpen": {"<->": "@owner.isExpanded"}
+                }
+            }
         }
     </script>
 </head>
 <body>
 <ul>
 
-<li data-montage-id="template-object-cell" class="TemplateObjectCell">
+<div data-montage-id="template-object-cell" class="TemplateObjectCell-Wrapper">
+    <div data-montage-id="hasChildrenCondition" class="toggle">
+        <div data-montage-id="toggleExpanded"></div>
+    </div>
 
+    <li class="TemplateObjectCell TemplateExplorer-list-item">
     <header data-montage-id="header">
         <div data-arg="title" data-montage-id="objectLabel"></div>
         <div data-arg="toolbar">
@@ -156,6 +196,7 @@
         <div data-montage-id="listenerExplorer"></div>
     </section>
 </li>
+</div>
 
 </ul>
 </body>
