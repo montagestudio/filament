@@ -12,7 +12,7 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     AssetsManager = require("./assets-management/assets-manager").AssetsManager,
     FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
     Template = require("montage/core/template").Template,
-    URL = require("core/url");
+    Url = require("core/url");
 
 exports.ProjectController = ProjectController = DocumentController.specialize({
 
@@ -372,7 +372,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     handleOpenModuleId: {
         value: function (evt) {
             var moduleId = evt.detail.moduleId;
-            var fileUrl = URL.resolve(this.projectUrl + "/", moduleId + (/\.reel$/.test(moduleId) ? "/" : ""));
+            var fileUrl = Url.resolve(this.projectUrl + "/", moduleId + (/\.reel$/.test(moduleId) ? "/" : ""));
             this.openUrlForEditing(fileUrl).done();
         }
     },
@@ -722,10 +722,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         if (/\/node_modules\//.test(componentUrl)) {
                             // It's a module inside a node_modules dependency
                             //TODO be able to handle dependencies from mappings?
-                            moduleId = packageName + "/" + URL.toModuleId(componentUrl, packageUrl);
+                            moduleId = packageName + "/" + Url.toModuleId(componentUrl, packageUrl);
                         } else {
                             // It's a module that's part of the current package being edited
-                            moduleId = URL.toModuleId(componentUrl, packageUrl);
+                            moduleId = Url.toModuleId(componentUrl, packageUrl);
                         }
                         objectName = MontageReviver.parseObjectLocationId(moduleId).objectName;
                         return self._libraryItemForModuleId(moduleId, objectName);
@@ -997,7 +997,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             }
 
             var options = {
-                    defaultDirectory: URL.resolve(this.packageUrl, subdirectory),
+                    defaultDirectory: Url.resolve(this.packageUrl, subdirectory),
                     defaultName: "my-" + thing, // TODO localize
                     prompt: "Create " + thing, //TODO localize
                     submitLabel: "Create"

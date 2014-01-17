@@ -1,5 +1,5 @@
 var PATH = require("path"),
-    URL = require('url'),
+    Url = require('url'),
     FS = require('fs');
 
 /*
@@ -25,7 +25,7 @@ exports.allowedFileTypes = function(object) {
     returns result=true or result=false and an error
 */
 exports.validateFileURL = function(object) {
-    var filePath = PATH.normalize(decodeURI(URL.parse(object.url).path));
+    var filePath = PATH.normalize(decodeURI(Url.parse(object.url).path));
 
     var response = {
         result: false,
@@ -59,7 +59,7 @@ exports.validateFileURL = function(object) {
     called to retrieve the root URL of a File URL or null if it's not a valid document
 */
 exports.rootURLForFileURL = function(object) {
-    var filePath = PATH.normalize(URL.parse(object.url).path),
+    var filePath = PATH.normalize(Url.parse(object.url).path),
         packagePath = findPackage(filePath);
 
     if (packagePath) {

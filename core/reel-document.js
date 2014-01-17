@@ -11,7 +11,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     ReelContext = require("core/serialization/reel-context").ReelContext,
     NodeProxy = require("core/node-proxy").NodeProxy,
     visit = require("montage/mousse/serialization/malker").visit,
-    URL = require("core/node/url"),
+    Url = require("core/node/url"),
     PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint,
     EventBlueprint = require("montage/core/meta/event-blueprint").EventBlueprint,
     WeakMap = require("montage/collections/weak-map"),
@@ -453,7 +453,7 @@ exports.ReelDocument = EditingDocument.specialize({
                     location += "/";
                 }
                 promise = Promise.all(Object.map(registeredFiles, function (info, extension) {
-                    var fileLocation = URL.resolve(location, filenameMatch[1] + "." + extension);
+                    var fileLocation = Url.resolve(location, filenameMatch[1] + "." + extension);
                     return info.callback.call(info.thisArg, fileLocation, dataWriter);
                 }));
             }
@@ -2276,7 +2276,7 @@ exports.ReelDocument = EditingDocument.specialize({
             var self = this;
 
             // require.async() expect moduleId not URLs
-            var componentModuleId = URL.toModuleId(fileUrl, packageUrl);
+            var componentModuleId = Url.toModuleId(fileUrl, packageUrl);
 
             var objectName = MontageReviver.parseObjectLocationId(componentModuleId).objectName;
 
