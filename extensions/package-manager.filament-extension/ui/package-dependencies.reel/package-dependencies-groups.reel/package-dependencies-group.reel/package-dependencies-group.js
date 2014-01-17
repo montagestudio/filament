@@ -1,3 +1,5 @@
+/* jshint noempty: false */
+
 /**
  * @module ui/package-dependencies-group.reel
  * @requires montage/ui/component

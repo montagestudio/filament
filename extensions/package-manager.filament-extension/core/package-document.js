@@ -245,7 +245,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             maintainer = PackageTools.getValidPerson(maintainer);
 
             if (maintainer) {
-                if (!this._findMaintainerIndex(maintainer) >= 0) { // Already exists. Must be unique.
+                if (this._findMaintainerIndex(maintainer) < 0) { // Already exists. Must be unique.
                     this.maintainers.push(maintainer);
                 }
 
@@ -280,10 +280,10 @@ exports.PackageDocument = EditingDocument.specialize( {
     },
 
     replaceMaintainer: {
-        value: function (oldMaintainer, oldMaintainer) {
+        value: function (oldMaintainer, newMaintainer) {
             var maintainerIndex = this._findMaintainerIndex(oldMaintainer);
 
-            if (maintainerIndex >= 0 && this.removeMaintainer(maintainerIndex, false) && this.addMaintainer(oldMaintainer, false)) {
+            if (maintainerIndex >= 0 && this.removeMaintainer(maintainerIndex, false) && this.addMaintainer(newMaintainer, false)) {
                 this.saveModification().done();
 
                 return true;
