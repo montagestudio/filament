@@ -1,6 +1,18 @@
 var Component = require("montage/ui/component").Component;
 
-var MenuItem = require("adaptor/client/core/menu-item").MenuItem;
+var menuItemExports,
+    MenuItem;
+
+try {
+    menuItemExports = require("adaptor/client/core/menu-item");
+} catch (e) {
+    console.log("Environment did not provide a MenuItem");
+}
+
+if (menuItemExports) {
+    MenuItem = menuItemExports.MenuItem;
+}
+
 var application = require("montage/core/application").application;
 
 // TODO: localize
@@ -29,6 +41,11 @@ exports.PackageExplorer = Component.specialize({
 
     _initMenuItem: {
         value: function () {
+
+            if (!MenuItem) {
+                return;
+            }
+
             var mainMenu = application.mainMenu,
                 self = this,
                 viewMenu;
