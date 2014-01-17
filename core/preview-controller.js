@@ -121,6 +121,12 @@ exports.PreviewController = Target.specialize({
         }
     },
 
+    setPreviewObjectProperties: {
+        value: function(label, ownerModuleId, properties) {
+            return this.environmentBridge.setPreviewObjectProperties(this._previewId, label, ownerModuleId, properties);
+        }
+    },
+
     /**
      * Unregister the preview server for this project
      *
