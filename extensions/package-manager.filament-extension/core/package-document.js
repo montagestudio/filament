@@ -362,7 +362,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             this.isReloadingList = true;
 
             // invoke list in order to find eventual errors after this removing.
-            return self.listDependenciesAtUrl(this.url).then(function (dependencyTree) {
+            return self.environmentBridge.listDependenciesAtUrl(this.url).then(function (dependencyTree) {
                 self.dependencyCollection = dependencyTree;
                 self._notifyOutDatedDependencies();
                 self._package = dependencyTree.fileJsonRaw || self._package;
