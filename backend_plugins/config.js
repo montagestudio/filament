@@ -118,6 +118,14 @@ exports.menusAddOns = function() {
             keyEquivalent: "command+option+?",
             location: {insertBefore: "6.1"},
             action: {openWindow: {url:"http://client/docs/index.html", width:650, height:800, canResize:true, showToolbar:true, canOpenMultiple: false}}
+        },
+
+        {
+            title: "Launch Preview",
+            identifier: "launchPreview",
+            enabled: true,
+            keyEquivalent: "command+R",
+            location: {insertBefore: "4.1"}
         }
     ];
 };

@@ -47,6 +47,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: null
     },
 
+    previewController: {
+        value: null
+    },
+
     _projectUrl: {
         value: null
     },
@@ -122,16 +126,18 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      * @param {EnvironmentBridge} bridge An environment bridge that normalizes different environment features
      * @param {Object} viewController A controller that manages registration of views that can appear through filament
      * @param {Object} editorController A controller that manages the visible editor stack
+     * @param {Object} previewController A controller that manages the preview
      * @return {ProjectController} An initialized instance of a ProjectController
      */
     init: {
-        value: function (bridge, viewController, editorController, extensionController) {
+        value: function (bridge, viewController, editorController, extensionController, previewController) {
             bridge.setDocumentDirtyState(false);
 
             this._environmentBridge = bridge;
             this._viewController = viewController;
             this._editorController = editorController;
             this._extensionController = extensionController;
+            this.previewController = previewController;
 
             this._moduleIdIconUrlMap = new Map();
             this._moduleIdLibraryItemMap = new Map();
@@ -599,6 +605,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+    canLaunchPreview: {
+        value: true
+    },
+
     handleMenuValidate: {
         value: function (evt) {
             var menuItem = evt.detail;
@@ -616,8 +626,13 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                 menuItem.enabled = this.canCreateModule;
                 break;
-            }
+            case "launchPreview":
+                evt.preventDefault();
+                evt.stopPropagation();
 
+                menuItem.enabled = this.canLaunchPreview;
+                break;
+            }
         }
     },
 
@@ -641,7 +656,20 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     this.createModule().done();
                 }
                 break;
+            case "launchPreview":
+                evt.preventDefault();
+                evt.stopPropagation();
+
+                if (this.canLaunchPreview) {
+                    this.openPreview();
+                }
             }
+        }
+    },
+
+    openPreview: {
+        value: function () {
+            this.environmentBridge.openHttpUrl(this.previewController.previewUrl).done();
         }
     },
 
