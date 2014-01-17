@@ -27,41 +27,41 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     load: {
         value: function (fileUrl, packageUrl) {
-            var self = this;
+            var self = this,
+                projectController = this.sharedProjectController;
 
             return require.loadPackage(packageUrl).then(function (packageRequire) {
-                return self.create().init(fileUrl, packageRequire, self.sharedProjectController);
+                return projectController.environmentBridge.listDependenciesAtUrl(fileUrl).then(function(dependencyTree) {
+                    return self.create().init(fileUrl, packageRequire, projectController, dependencyTree);
+                });
             });
         }
     },
 
     init: {
-        value: function (fileUrl, packageRequire, projectController) {
+        value: function (fileUrl, packageRequire, projectController, dependencyTree) {
             var self = this.super(fileUrl, packageRequire);
 
             this._livePackage = packageRequire.packageDescription;
             this.sharedProjectController = projectController;
             this.editor = projectController.currentEditor;
             this.environmentBridge = projectController.environmentBridge;
+            this._package = dependencyTree.fileJsonRaw || {};
+            this.dependencyCollection = dependencyTree;
+
+            var author = PackageTools.getValidPerson(this._package.author);
+
+            this._package.author = author ? author : {
+                name: "",
+                email: "",
+                url: ""
+            };
 
             PackageQueueManager.load(this, '_handleDependenciesListChange');
 
-            return self.listDependencies().then(function(dependencyTree) { // invoke the custom list command, which check every dependencies installed.
-                self._package = dependencyTree.fileJsonRaw || {};
-                self.dependencyCollection = dependencyTree;
+            this._getOutDatedDependencies();
 
-                var author = PackageTools.getValidPerson(self._package.author);
-
-                self._package.author = author ? author : {
-                    name: "",
-                    email: "",
-                    url: ""
-                };
-
-                self._getOutDatedDependencies();
-
-                return self;
-            });
+            return self;
         }
     },
 
@@ -321,12 +321,6 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    listDependencies: {
-        value: function () {
-            return this.environmentBridge.listDependenciesAtUrl(this.url);
-        }
-    },
-
     getDependencyInformation: {
         value: function (dependency) {
             if (PackageTools.isDependency(dependency)) {
@@ -367,7 +361,8 @@ exports.PackageDocument = EditingDocument.specialize( {
             var self = this;
             this.isReloadingList = true;
 
-            return self.listDependencies().then(function (dependencyTree) { // invoke list in order to find eventual errors after this removing.
+            // invoke list in order to find eventual errors after this removing.
+            return self.listDependenciesAtUrl(this.url).then(function (dependencyTree) {
                 self.dependencyCollection = dependencyTree;
                 self._notifyOutDatedDependencies();
                 self._package = dependencyTree.fileJsonRaw || self._package;
