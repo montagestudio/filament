@@ -134,6 +134,42 @@ describe("core/reel-document-saving-spec", function () {
         });
     });
 
+    describe("unknown serialization units", function () {
+
+        var promisedDocument;
+
+        beforeEach(function () {
+            promisedDocument = mockReelDocument("foo/bar/mock.reel", {
+                "owner": {
+                    "properties": {}
+                },
+                "foo": {
+                    "prototype": "fooExportId",
+                    "someProperty": "someValue",
+                    "moreProperties": {
+                        "stringProperty": "stringValue",
+                        "arrayProperty": ["a", "b", "c"]
+                    }
+                }
+            });
+        });
+
+        it("should serialize a simple unknown string property", function () {
+            return promisedDocument.then(function (reelDocument) {
+                var serialization = reelDocument._buildSerializationObjects();
+                expect(serialization.foo.someProperty).toBe("someValue");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should preserve more complex properties", function () {
+            return promisedDocument.then(function (reelDocument) {
+                var serialization = reelDocument._buildSerializationObjects();
+                expect(serialization.foo.moreProperties.stringProperty).toBe("stringValue");
+                expect(JSON.stringify(serialization.foo.moreProperties.arrayProperty)).toBe(JSON.stringify(["a", "b", "c"]));
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+    });
+
     describe("save", function () {
 
         var promisedDocument;
