@@ -35,9 +35,9 @@
                 "element": {"#": "row"}
             },
             "bindings": {
-                "iteration": {"<-": "@list.objectAtCurrentIteration"},
-                "depth": {"<-": "@list.objectAtCurrentIteration.depth"},
-                "object": {"<-": "@list.objectAtCurrentIteration.content"},
+                "iteration": {"<-": "@list:iteration.object"},
+                "depth": {"<-": "@list:iteration.object.depth"},
+                "object": {"<-": "@list:iteration.object.content"},
                 "ignoreRoot": {"<-": "@owner.ignoreRoot"}
             }
         },

@@ -5,6 +5,10 @@
     <link rel="stylesheet" type="text/css" href="edit-properties-list.css">
     <script type="text/montage-serialization">
     {
+        ":iteration": {
+            "alias": "@repetition:iteration"
+        },
+
         "owner": {
             "properties": {
                 "element": {"#": "editPropertiesList"},
@@ -52,7 +56,7 @@
                 "element": {"#": "remove"}
             },
             "bindings": {
-                "detail.get('object')": {"<-": "@repetition.objectAtCurrentIteration"}
+                "detail.get('object')": {"<-": "@repetition:iteration.object"}
             },
             "listeners": [
                 {"type": "action", "listener": {"@": "owner"}}

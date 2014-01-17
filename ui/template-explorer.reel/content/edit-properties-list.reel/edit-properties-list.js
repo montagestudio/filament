@@ -3,7 +3,6 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component;
-var observeProperty = require("montage/frb/observers").observeProperty;
 
 /**
  * @class EditPropertiesList
@@ -13,22 +12,6 @@ exports.EditPropertiesList = Component.specialize(/** @lends EditPropertiesList#
     constructor: {
         value: function EditPropertiesList() {
             this.super();
-        }
-    },
-
-    observeProperty: {
-        value: function (key, emit, scope) {
-            if (
-                key === "currentIteration" ||
-                key === "objectAtCurrentIteration" ||
-                key === "contentAtCurrentIteration"
-            ) {
-                if (this._repetition) {
-                    return this._repetition.observeProperty(key, emit, scope);
-                }
-            } else {
-                return observeProperty(this, key, emit, scope);
-            }
         }
     },
 

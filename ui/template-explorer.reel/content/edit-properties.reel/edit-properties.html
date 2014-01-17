@@ -37,7 +37,7 @@
                 "element": {"#": "name"}
             },
             "bindings": {
-                "value": {"<-": "@properties.objectAtCurrentIteration.name"}
+                "value": {"<-": "@properties:iteration.object.name"}
             }
         },
 
@@ -56,8 +56,8 @@
                 ]
             },
             "bindings": {
-                "propertyBlueprint": {"<-": "@properties.objectAtCurrentIteration"},
-                "value": {"<-": "@properties.objectAtCurrentIteration.valueType"}
+                "propertyBlueprint": {"<-": "@properties:iteration.object"},
+                "value": {"<-": "@properties:iteration.object.valueType"}
             },
             "listeners": [
                 {"type": "action", "listener": {"@": "owner"}}
@@ -70,9 +70,9 @@
                 "element": {"#": "multiple"}
             },
             "bindings": {
-                "propertyBlueprint": {"<-": "@properties.objectAtCurrentIteration"},
+                "propertyBlueprint": {"<-": "@properties:iteration.object"},
                 "checked": {
-                    "<-": "@properties.objectAtCurrentIteration.cardinality",
+                    "<-": "@properties:iteration.object.cardinality",
                     "converter": {"@": "cardinalityConverter"}
                 }
             },
@@ -102,8 +102,8 @@
                 ]
             },
             "bindings": {
-                "propertyBlueprint": {"<-": "@properties.objectAtCurrentIteration"},
-                "value": {"<-": "@properties.objectAtCurrentIteration.collectionValueType"}
+                "propertyBlueprint": {"<-": "@properties:iteration.object"},
+                "value": {"<-": "@properties:iteration.object.collectionValueType"}
             },
             "listeners": [
                 {"type": "action", "listener": {"@": "owner"}}
@@ -132,7 +132,7 @@
                 "element": {"#": "eventName"}
             },
             "bindings": {
-                "value": {"<-": "@events.objectAtCurrentIteration.name"}
+                "value": {"<-": "@events:iteration.object.name"}
             }
         }
 
