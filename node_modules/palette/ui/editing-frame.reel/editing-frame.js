@@ -37,7 +37,8 @@ var Montage = require("montage").Montage,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     Component = require("montage/ui/component").Component,
     getElementXPath = require("core/xpath").getElementXPath,
-    Promise = require("montage/core/promise").Promise;
+    Promise = require("montage/core/promise").Promise,
+    sandboxMontageApp = require("core/sandbox-montage-app");
 
 //TODO do we care about having various modes available?
 var DESIGN_MODE = 0;
@@ -196,7 +197,7 @@ exports.EditingFrame = Montage.create(Component, /** @lends module:"montage/ui/e
                 iframe.dataset.packageFrame = _require.location;
                 iframe.contentWindow.name = "packageFrame=" + _require.location;
 
-                PACKAGE_WINDOWS[location] = this._bootMontage(iframe.contentWindow, _require.location)
+                PACKAGE_WINDOWS[location] = sandboxMontageApp(_require.location, iframe.contentWindow)
                 .spread(function (applicationRequire, montageRequire) {
                     var defaultEventManager = montageRequire("core/event/event-manager").defaultEventManager;
                     self._hookEventManager(defaultEventManager, iframe.contentDocument, _require.location);
@@ -206,48 +207,6 @@ exports.EditingFrame = Montage.create(Component, /** @lends module:"montage/ui/e
             }
 
             return PACKAGE_WINDOWS[location];
-        }
-    },
-
-    _bootMontage: {
-        value: function (frameWindow, applicationLocation) {
-            var booted = Promise.defer();
-
-            var frameDocument = frameWindow.document;
-
-            frameWindow.addEventListener("message", function (event) {
-                if (event.data.type === "montageReady") {
-                    frameWindow.postMessage({
-                        type: "montageInit",
-                        location: applicationLocation
-                    }, "*");
-                }
-            }, true);
-
-            frameWindow.montageDidLoad = function () {
-                booted.resolve([frameWindow.require, frameWindow.montageRequire]);
-            };
-
-            // Need all XHRs to have withCredentials.
-            var XHR = frameWindow.XMLHttpRequest;
-            frameWindow.XMLHttpRequest = function () {
-                var xhr = new XHR();
-                xhr.withCredentials = true;
-                return xhr;
-            };
-
-            // Can't use the mappings Montage location as this package
-            // has been loaded through filament's require, and so maps
-            // Montage to filament's Montage
-            var montageLocation = applicationLocation + "node_modules/montage/montage.js";
-            var script = document.createElement("script");
-            script.src = montageLocation;
-            script.dataset.remoteTrigger = window.location.origin;
-            // Bootstrapper removes the script tag when done, so no need
-            // to do it here on load
-            frameDocument.head.appendChild(script);
-
-            return booted.promise.timeout(10000, "Montage from " + applicationLocation + " timed out while booting");
         }
     },
 
@@ -346,7 +305,7 @@ exports.EditingFrame = Montage.create(Component, /** @lends module:"montage/ui/e
                 // Montage needs get installed
                 if (self.iframe.src !== "" || !frameWindow.montageRequire) {
                     // self.iframe.src = "";
-                    return self._bootMontage(frameWindow, packageRequire.location)
+                    return sandboxMontageApp(packageRequire.location, frameWindow)
                     .spread(function (_, frameMontageRequire) {
                         self._addStageStyle(frame.contentDocument);
 
