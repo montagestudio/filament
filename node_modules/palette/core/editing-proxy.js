@@ -1,16 +1,23 @@
-var Montage = require("montage").Montage,
+var Target = require("montage/core/target").Target,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
-    Map = require("montage/collections/map");
+    Map = require("montage/collections/map"),
+    application = require("montage/core/application").application;
 
 /**
  @class module:palette/coreediting-proxy.EditingProxy
  This the abstract class far all editor proxies.
  */
-exports.EditingProxy = Montage.specialize( /** @lends module:palette/coreediting-proxy.EditingProxy# */  {
+exports.EditingProxy = Target.specialize( /** @lends module:palette/coreediting-proxy.EditingProxy# */  {
 
     constructor: {
         value: function EditingProxy() {
             this.super();
+        }
+    },
+
+    nextTarget: {
+        get: function() {
+            return this.editingDocument;
         }
     },
 
@@ -143,8 +150,19 @@ exports.EditingProxy = Montage.specialize( /** @lends module:palette/coreediting
         }
     },
 
+    _dispatchDidChangeObjectProperties: {
+        value: function(properties) {
+            this.dispatchEventNamed("didChangeObjectProperties", true, false, {
+                properties: properties
+            });
+        }
+    },
+
     setObjectProperty: {
         value: function (property, value) {
+            var properties = {};
+            properties[property] = value;
+            this._dispatchDidChangeObjectProperties(properties);
             this.properties.set(property, value);
         }
     },
@@ -163,6 +181,7 @@ exports.EditingProxy = Montage.specialize( /** @lends module:palette/coreediting
 
     setObjectProperties: {
         value: function (values) {
+            this._dispatchDidChangeObjectProperties(values);
             for (var name in values) {
                 if (values.hasOwnProperty(name)) {
                     this.setObjectProperty(name, values[name]);

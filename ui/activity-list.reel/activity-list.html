@@ -28,7 +28,7 @@
                 "element": {"#": "runningTitle"}
             },
             "bindings": {
-                "value": {"<-": "@runningActivities.objectAtCurrentIteration.title"}
+                "value": {"<-": "@runningActivities:iteration.object.title"}
             }
         },
 
@@ -38,7 +38,7 @@
                 "element": {"#": "runningStatus"}
             },
             "bindings": {
-                "value": {"<-": "@runningActivities.objectAtCurrentIteration.status"}
+                "value": {"<-": "@runningActivities:iteration.object.status"}
             }
         },
 
@@ -58,7 +58,7 @@
                 "element": {"#": "failedTitle"}
             },
             "bindings": {
-                "value": {"<-": "@failedActivities.objectAtCurrentIteration.title"}
+                "value": {"<-": "@failedActivities:iteration.object.title"}
             }
         },
 
@@ -68,7 +68,7 @@
                 "element": {"#": "failedStatus"}
             },
             "bindings": {
-                "value": {"<-": "@failedActivities.objectAtCurrentIteration.status"}
+                "value": {"<-": "@failedActivities:iteration.object.status"}
             }
         }
     }
