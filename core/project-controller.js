@@ -677,12 +677,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     findLibraryItems: {
         enumerable: false,
         value: function (dependencies) {
-            var self = this,
-                packageUrl,
-                packageName,
-                isProjectPackage,
-                packageLibraryItems,
-                promisedLibraryItems;
+            var self = this;
 
             // library is either being created for the first time or updated due to changes.
             // for each dependency we need to collect library items by way of:
@@ -696,18 +691,27 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             // TODO rename most of this to simply refer to "package" not necessarily dependencies
 
             return Promise.all(dependencies.map(function (dependencyInfo) {
-                packageUrl = dependencyInfo.url;
-                packageName = dependencyInfo.dependency;
-
-                isProjectPackage = !/\/node_modules\//.test(packageUrl);
-                packageLibraryItems = self._packageNameLibraryItemsMap.get(packageName);
+                var packageUrl = dependencyInfo.url,
+                    packageName = dependencyInfo.dependency,
+                    isProjectPackage = !/\/node_modules\//.test(packageUrl),
+                    packageLibraryItems = self._packageNameLibraryItemsMap.get(packageName),
+                    promisedLibraryItems;
 
                 var dependencyLibraryEntry = {
                     dependency: packageName
                 };
 
                 if (isProjectPackage || !packageLibraryItems) {
-                    promisedLibraryItems = self._findLibraryItemsForPackageUrl(packageUrl, packageName);
+                    promisedLibraryItems = self._findLibraryItemsForPackageUrl(packageUrl, packageName)
+                        .then(function (libraryItems) {
+
+                            // Add entry for ths package we previously had no entries for, if we find any
+                            libraryItems.forEach(function (item) {
+                                self.addLibraryItemToPackage(item, packageName);
+                            });
+
+                            return libraryItems;
+                        });
                 } else {
                     //TODO is there a reason we didn't share the same array before?
                     promisedLibraryItems = Promise.resolve(packageLibraryItems);
