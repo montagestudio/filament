@@ -240,6 +240,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             }, true);
 
             app.addEventListener("didSave", this);
+            app.addEventListener("didChangeObjectProperties", this);
 
             this._deferredApplication.resolve(app);
         }
@@ -255,6 +256,16 @@ exports.ApplicationDelegate = Montage.create(Montage, {
     handleDidSave: {
         value: function () {
             this.previewController.refreshPreview().done();
+        }
+    },
+
+    handleDidChangeObjectProperties: {
+        value: function (event) {
+            var proxy = event.target;
+            var ownerProxy = proxy.editingDocument.editingProxyMap.owner;
+            var ownerModuleId = ownerProxy ? ownerProxy.exportId : null;
+
+            this.previewController.setPreviewObjectProperties(proxy.label, ownerModuleId, event.detail.properties).done();
         }
     }
 });

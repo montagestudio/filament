@@ -1,4 +1,5 @@
-var Target = require("montage/core/target").Target;
+var Target = require("montage/core/target").Target,
+    Promise = require("montage/core/promise").Promise;
 
 exports.PreviewController = Target.specialize({
 
@@ -118,6 +119,16 @@ exports.PreviewController = Target.specialize({
                 //TODO pass along url for preview in event
                 self.dispatchEventNamed("didRefreshPreview", true, false);
             });
+        }
+    },
+
+    setPreviewObjectProperties: {
+        value: function(label, ownerModuleId, properties) {
+            if (typeof this.environmentBridge.setPreviewObjectProperties === "function") {
+                return this.environmentBridge.setPreviewObjectProperties(this._previewId, label, ownerModuleId, properties);
+            } else {
+                return Promise.resolve(null);
+            }
         }
     },
 
