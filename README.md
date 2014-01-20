@@ -24,13 +24,22 @@ Installation
 1. Clone Filament
 2. Build a Development build of Lumieres (See Lumieres Repository)
 
+Developing
+==========
+
+Debugging with Beacon
+---------------------
+ * Open `http://localhost:9222` with your favourite browser
+ *  Click on the desired Beacon/Lumiere window.
+
 Testing
-=======
-`npm test` Tests server side portions of Filament
-`FILAMENT_URL/run-tests.html` Tests the client-side portions of Filament
+-------
+* `npm test` Tests server side portions of Filament
+* `FILAMENT_URL/run-tests.html` Tests the client-side portions of Filament
+
 
 Functional Tests
-=================
+----------------
 1. Install sikuli http://www.sikuli.org/index.html (You'll want Pack 1 and Pack 2) installed seperately)
 3. Set an environment variable $SIKULI to point to the `runScript` built by the Sikuli installer
 4. Set an environment variable $LUMIERES to point to the `Lumieres` binary inside the `Lumieres.app` bundle
@@ -54,7 +63,7 @@ to minimize differences when building at different times.
 i.e. treat package.json as a shrinkwrapped dependency specifier
 
 Updating dependencies
-=====================
+---------------------
 
 To update a single dependency follow these steps:
 
@@ -67,7 +76,3 @@ There are also two other commands:
 
 * `npm run package-deps-clean`, to remove `node_modules` and install all dependencies again.
 * `npm run package-deps-update`, to run `npm update`.
-
-Debugging with Beacon
-=====================
-Open `http://localhost:9222` with your favourite browser, you should find a list of all open Beacon/Lumiere windows.
