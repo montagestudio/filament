@@ -194,6 +194,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: function (packageUrl, dependencies) {
             var self = this;
 
+            if (packageUrl[packageUrl.length - 1] !== '/') {
+                packageUrl += '/';
+            }
+
             this.dispatchEventNamed("willOpenPackage", true, false, {
                 packageUrl: packageUrl
             });
