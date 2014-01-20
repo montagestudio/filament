@@ -948,9 +948,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                 //TODO use either the url specified (save as), or the currentDoc's fileUrl
                 //TODO improve this, we're reaching deeper than I'd like to find the fileUrl
+                this.dispatchEventNamed("didSave", true, false);
                 savePromise = this.environmentBridge.save(this.currentDocument, this.currentDocument.url).then(function () {
                     self.environmentBridge.setDocumentDirtyState(false);
-                    self.dispatchEventNamed("didSave", true, false);
                     return self.currentDocument.url;
                 });
             }

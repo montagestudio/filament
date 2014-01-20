@@ -76,7 +76,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             // The value being set here should always be something of worth to the
             // editingModel, in contrast to what we do later if we have live
             // representations to update as well
-            this.properties.set(property, value);
+            this.super(property, value);
 
             if (value instanceof NodeProxy) {
                 this.editingDocument.references.add(value, this, property);
