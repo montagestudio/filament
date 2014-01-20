@@ -54,7 +54,7 @@ to minimize differences when building at different times.
 i.e. treat package.json as a shrinkwrapped dependency specifier
 
 Updating dependencies
----------------------
+=====================
 
 To update a single dependency follow these steps:
 
@@ -67,3 +67,7 @@ There are also two other commands:
 
 * `npm run package-deps-clean`, to remove `node_modules` and install all dependencies again.
 * `npm run package-deps-update`, to run `npm update`.
+
+Debugging with Beacon
+=====================
+Open `http://localhost:9222` with your favourite browser, you should find a list of all open Beacon/Lumiere windows.
