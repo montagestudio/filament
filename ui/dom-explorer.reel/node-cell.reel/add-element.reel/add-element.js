@@ -117,14 +117,6 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
                 this.dispatchEventNamed("insertTemplateAction", true, true, {
                     template: data
                 });
-            } else if (types.has(MimeTypes.TEXT_PLAIN)) {
-                // insert new element from prototype (possibly html fragment)
-                var textData = dataTransfer.getData(MimeTypes.TEXT_PLAIN);
-
-                //TODO for now we're treating this the same as template, need to consider when/where we inspect the text data
-                this.dispatchEventNamed("insertTemplateAction", true, true, {
-                    template: textData
-                });
             } else if (types.indexOf(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) !== -1) {
                 // move a component
                 var montageId = dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_ELEMENT);
@@ -136,6 +128,14 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
                 var xpath = dataTransfer.getData(MimeTypes.MONTAGE_TEMPLATE_XPATH);
                 this.dispatchEventNamed("moveTemplate", true, true, {
                     xpath: xpath
+                });
+            } else if (types.has(MimeTypes.TEXT_PLAIN)) {
+                // insert new element from prototype (possibly html fragment)
+                var textData = dataTransfer.getData(MimeTypes.TEXT_PLAIN);
+
+                //TODO for now we're treating this the same as template, need to consider when/where we inspect the text data
+                this.dispatchEventNamed("insertTemplateAction", true, true, {
+                    template: textData
                 });
             }
             this.isDropTarget = false;
