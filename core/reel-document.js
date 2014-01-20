@@ -523,7 +523,9 @@ exports.ReelDocument = EditingDocument.specialize({
     setOwnedObjectProperty: {
         value: function (proxy, property, value){
             this.super(proxy, property, value);
-            this.buildTemplateObjectTree();
+            if (property === "element") {
+                this.buildTemplateObjectTree();
+            }
         }
     },
 
