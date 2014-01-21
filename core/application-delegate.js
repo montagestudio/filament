@@ -21,7 +21,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
             if (!bridgePromise) {
                 bridgePromise = require.async("adaptor/client/core/environment-bridge").then(function (exported) {
-                    return new exported.EnvironmentBridge().init(new FilamentService());
+                    return new exported.EnvironmentBridge().init("filament-backend", new FilamentService());
                 });
                 this._bridgePromise = bridgePromise;
             }
