@@ -133,7 +133,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
                 var self = this;
                 this.isSearching = true;
 
-                this.editingDocument.packageManagerPlugin.invoke("searchModules", this.request).then(function (results) {
+                this.editingDocument.environmentBridge.searchPackages(this.request).then(function (results) {
                     for (var i = 0, length = results.length; i < length; i++) { // search for each result if it has already been installed
                         var result = results[i],
                             dependency = self.editingDocument.findDependency(result.name);

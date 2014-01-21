@@ -160,12 +160,6 @@ describe("package document", function () {
         });
     });
 
-    it('Should be able to reset any dependency types.', function () {
-
-        packageDocument._resetDependencies();
-        expect(packageDocument.dependencyCollection.dependencies.length).toEqual(0);
-    });
-
     it('Should be able to add a dependency according to its type.', function () {
         var oldLength = packageDocument.dependencyCollection.dependencies.length;
         packageDocument._insertDependency({
@@ -222,29 +216,6 @@ describe("package document", function () {
 
         expect(Object.keys(packageDocument._package.dependencies).length).toBeLessThan(oldLength);
         expect(packageDocument._modificationsAccepted.calls.length).toEqual(2);
-    });
-
-    it('Should sort correctly dependencies according to their type.', function () {
-        packageDocument._classifyDependencies([ // reset dependencies
-            {
-                name: 'matte',
-                version: '1.2.3',
-                type: DependencyNames.dependencies
-            },
-            {
-                name: 'montage',
-                version: '1.2.3',
-                type: DependencyNames.dependencies
-            },
-            {
-                ame: 'joey',
-                version: '1.2.3',
-                type: DependencyNames.devDependencies
-            }
-        ]);
-
-        expect(packageDocument.dependencyCollection.dependencies.length).toEqual(2);
-        expect(packageDocument.dependencyCollection.devDependencies.length).toEqual(1);
     });
 
 });

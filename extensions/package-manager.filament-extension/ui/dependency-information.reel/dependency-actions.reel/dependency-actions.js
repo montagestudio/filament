@@ -1,3 +1,5 @@
+/* jshint noempty: false */
+
 /**
  * @module ui/dependency-actions.reel
  * @requires montage/ui/component
@@ -85,10 +87,10 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
             if (type && !this.loadingDependency && this.editingDocument && DependencyNames[type] &&
                 this.currentDependency && this.currentDependency.type !== type) {
 
-                var self = this;
-                this.editingDocument.switchDependencyType(this.currentDependency, type).then(function () {
-                    self.currentDependency.type = type;
-                }).done();
+//                var self = this;
+//                this.editingDocument.switchDependencyType(this.currentDependency, type).then(function () {
+//                    self.currentDependency.type = type;
+//                }).done();
             }
         }
     },

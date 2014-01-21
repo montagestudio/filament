@@ -73,7 +73,7 @@ exports.DependencyInformation = Component.specialize(/** @lends DependencyInform
             var ErrorPanel = this.templateObjects.dependencyErrors;
             ErrorPanel.isFixing = true;
 
-            this.editingDocument.performActionDependency(Dependency.FIX_ERROR_DEPENDENCY_ACTION, this.currentDependency).then(function () {
+            this.editingDocument.performActionDependency(Dependency.INSTALL_DEPENDENCY_ACTION, this.currentDependency).then(function () {
                 ErrorPanel.isFixing = false;
             });
         }

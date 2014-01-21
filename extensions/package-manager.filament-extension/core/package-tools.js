@@ -214,7 +214,7 @@ exports.Errors = {
 };
 
 exports.DependencyNames = {
-    dependencies: 'dependencies',
-    optionalDependencies: 'optionalDependencies',
-    devDependencies: 'devDependencies'
+    regular: 'dependencies',
+    optional: 'optionalDependencies',
+    dev: 'devDependencies'
 };

@@ -71,7 +71,7 @@ exports.PackageEditor = Montage.create(Editor, {
                 if (dependency && typeof dependency === 'object') {
                     var self = this;
 
-                    this.currentDocument.getInformationDependency(dependency).then(function (module) {
+                    this.currentDocument.getDependencyInformation(dependency).then(function (module) {
                         if(self.selectedDependency && module && typeof module === 'object' && module.name === self.selectedDependency.name) {
                             self.dependencyDisplayed = module;
                         }
