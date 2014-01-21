@@ -77,73 +77,23 @@ exports.TemplateObjectCell = Component.specialize({
             var self = this,
                 templateObject = this.templateObject,
                 packageRequire = templateObject.editingDocument.packageRequire,
-                componentModuleId = "montage/ui/component",
-                componentExports,
-                componentModule,
-                componentConstructor,
                 componentConstructorPromise,
-                templateObjectExports,
-                templateObjectConstructor,
                 templateObjectConstructorPromise;
 
+            this.canDrawGate.setField("needsObjectDescription", false);
 
-            // If we already have the exports then use them synchronously
-            // This avoids a visual glitch where the element field appears
-            // briefly.
-            try {
-                templateObjectExports = packageRequire(templateObject.moduleId);
-            } catch(e) {
-                // Montage projects reliant on mr prior to https://github.com/montagejs/mr/pull/66
-                // will incorrectly receive an exports when the same module is required;
-                // don't assume the module is in the exports if we have an exports
-                delete packageRequire.getModuleDescriptor(templateObject.moduleId).exports;
-                if (e.message.search(/^Can't require module/) === -1) {
-                    throw e;
-                }
-            }
+            templateObjectConstructorPromise = packageRequire.async(templateObject.moduleId).get(templateObject.exportName);
+            componentConstructorPromise = packageRequire.async("montage/ui/component").get("Component");
 
-            if (templateObjectExports) {
-                templateObjectConstructor = templateObjectExports[templateObject.exportName];
-            }
-
-            try {
-                componentExports = packageRequire(componentModuleId);
-            } catch(e) {
-                delete packageRequire.getModuleDescriptor("Component").exports;
-                if (e.message.search(/^Can't require module/) === -1) {
-                    throw e;
-                }
-            }
-
-            if (componentExports) {
-                componentModule = componentExports.Component;
-            }
-
-            if (templateObjectConstructor && componentConstructor) {
-                this.isTemplateObjectComponent = templateObjectConstructor.prototype instanceof componentConstructor;
-            } else {
-
-                // Otherwise, we don't have what we need, get them asynchronously
-                if (templateObjectConstructor) {
-                    templateObjectConstructorPromise = templateObjectConstructor;
-                } else {
-                    templateObjectConstructorPromise = packageRequire.async(templateObject.moduleId).get(templateObject.exportName);
-                }
-
-                if (componentConstructor) {
-                    componentConstructorPromise = componentConstructor;
-                } else {
-                    componentConstructorPromise = packageRequire.async(componentModuleId).get("Component");
-                }
-
-                Promise.all([
-                    templateObjectConstructorPromise,
-                    componentConstructorPromise
-                ]).spread(function (templateObjectConstructor, componentConstructor) {
+            Promise.all([templateObjectConstructorPromise, componentConstructorPromise])
+                .spread(function (templateObjectConstructor, componentConstructor) {
                     self.isTemplateObjectComponent = templateObjectConstructor.prototype instanceof componentConstructor;
-                }).fail(Function.noop)
+                })
+                .fail(Function.noop)
+                .finally(function () {
+                    self.canDrawGate.setField("needsObjectDescription", true);
+                })
                 .done();
-            }
         }
     },
 
