@@ -34,6 +34,15 @@ describe("core/project-controller-filesystem-spec", function () {
                 return Promise.resolve(files);
             },
 
+            listTreeAtUrl: function(url) {
+                return this.list(url)
+                .then(function(files) {
+                    files.push(new FileDescriptor().initWithUrlAndStat("projectUrl/ui/component.reel/", {mode: 16384}));
+                    files.push(new FileDescriptor().initWithUrlAndStat("projectUrl/ui/component.reel/component.js", {mode: 0}));
+                    return files;
+                });
+            },
+
             watch: function (path, ignoreSubPaths, changeHandler, errorHandler) {
                 watcher.simulateChange = function () {
                     changeHandler.apply(this, arguments);
@@ -86,6 +95,22 @@ describe("core/project-controller-filesystem-spec", function () {
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
+            it("should add to the files map", function() {
+                return projectControllerLoadedPromise.then(function () {
+                    watcher.simulateChange("create", fullPath, currentStat, previousStat);
+
+                    expect(projectController._filesMap.has(fullPath)).toBe(true);
+                }).timeout(WAITSFOR_TIMEOUT);
+            });
+
+            it("should have a filename property", function() {
+                return projectControllerLoadedPromise.then(function () {
+                    watcher.simulateChange("create", fullPath, currentStat, previousStat);
+                    var file = projectController.fileInTreeAtUrl(fullPath);
+
+                    expect(file.filename).toBe("/foo");
+                }).timeout(WAITSFOR_TIMEOUT);
+            });
         });
 
         describe("when the creation was inside of unexplored subdirectory", function () {
@@ -115,6 +140,13 @@ describe("core/project-controller-filesystem-spec", function () {
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
+            it("should not add to the files map", function() {
+                return projectControllerLoadedPromise.then(function () {
+                    watcher.simulateChange("create", fullPath, currentStat, previousStat);
+
+                    expect(projectController._filesMap.has(fullPath)).toBe(false);
+                }).timeout(WAITSFOR_TIMEOUT);
+            });
         });
 
         describe("when the creation was inside of explored subdirectory", function () {
@@ -143,6 +175,15 @@ describe("core/project-controller-filesystem-spec", function () {
                     expect(parent.children.length).toBe(1);
                     var file = projectController.fileInTreeAtUrl(fullPath);
                     expect(parent.children.indexOf(file)).not.toBe(-1);
+                }).timeout(WAITSFOR_TIMEOUT);
+            });
+
+            it("should add to the files map", function() {
+                return projectControllerLoadedPromise.then(function () {
+                    exploreParent();
+                    watcher.simulateChange("create", fullPath, currentStat, previousStat);
+
+                    expect(projectController._filesMap.has(fullPath)).toBe(true);
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
@@ -176,6 +217,14 @@ describe("core/project-controller-filesystem-spec", function () {
                     // check that the others have been left alone
                     expect(parent.children[0].name).toBe("package.json");
                     expect(parent.children[1].name).toBe("ui");
+                }).timeout(WAITSFOR_TIMEOUT);
+            });
+
+            it("should remove from the files map", function() {
+                return projectControllerLoadedPromise.then(function () {
+                    watcher.simulateChange(changeType, fullPath, currentStat, previousStat);
+
+                    expect(projectController._filesMap.has(fullPath)).toBe(false);
                 }).timeout(WAITSFOR_TIMEOUT);
             });
 
@@ -372,6 +421,46 @@ describe("core/project-controller-filesystem-spec", function () {
             });
         });
 
+    });
+
+    describe("files map", function() {
+        it("should get the map of all files", function() {
+            return projectController.getFilesMap().then(function(files) {
+                expect(files.length).toBe(5);
+            });
+        });
+
+        it("should wire the file tree", function() {
+            return projectController.getFilesMap().then(function(files) {
+                var ui = files.get("projectUrl/ui/");
+                var component = files.get("projectUrl/ui/component.reel/");
+
+                expect(ui.expanded).toBe(true);
+                expect(ui.children.length).toBe(1);
+
+                expect(component.expanded).toBe(true);
+                expect(component.children.length).toBe(1);
+            });
+        });
+
+        it("should not create a new file descriptor for a loaded file", function() {
+            return projectControllerLoadedPromise.then(function () {
+                var url = "projectUrl/package.json";
+                var fileDescriptor = projectController.fileInTreeAtUrl(url);
+
+                return projectController.getFilesMap().then(function(files) {
+                    expect(files.get(url)).toBe(fileDescriptor);
+                });
+            });
+        });
+
+        it("should have a filename property", function() {
+            return projectController.getFilesMap().then(function(files) {
+                var file = files.get("projectUrl/package.json");
+
+                expect(file.filename).toBe("/package.json");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
     });
 
 });

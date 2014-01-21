@@ -272,6 +272,28 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    handleGoToFileKeyPress: {
+        value: function (event) {
+            if (event.eventPhase !== event.AT_TARGET) {
+                // This component is also listening directly to the application
+                // for keyPress, this function is called twice because of it.
+                // On target (the desired by this function) and on bubble when
+                // it reaches the component.
+                return;
+            }
+
+            var self = this;
+
+            this.templateObjects.goToFile.show();
+            if (!this.templateObjects.goToFile.filesMap) {
+                this.projectController.getFilesMap()
+                .then(function(filesMap) {
+                    self.templateObjects.goToFile.filesMap = filesMap;
+                }).done();
+            }
+        }
+    },
+
     _isUsingModalEditor: {
         value: false
     },

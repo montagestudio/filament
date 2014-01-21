@@ -1,0 +1,30 @@
+{
+  "blueprint_component_reference": {
+    "prototype": "montage/core/meta/blueprint-reference",
+    "properties": {
+      "valueReference": {
+        "blueprintName": "Component",
+        "blueprintModule": {
+          "%": "montage/ui/component.meta"
+        }
+      }
+    }
+  },
+  "root": {
+    "prototype": "montage/core/meta/module-blueprint",
+    "properties": {
+      "name": null,
+      "blueprintModule": {
+        "%": "ui/go-to-file.reel/go-to-file.meta"
+      },
+      "parent": {"@": "blueprint_component_reference"},
+      "propertyBlueprintGroups": {
+        "GoToFile": []
+      },
+      "module": {
+        "%": "ui/go-to-file.reel"
+      },
+      "exportName": "GoToFile"
+    }
+  }
+}

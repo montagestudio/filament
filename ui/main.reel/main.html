@@ -76,6 +76,21 @@
                 ]
             },
 
+            "goToFileKey": {
+                "prototype": "montage/composer/key-composer",
+                "properties": {
+                    "keys": "command+e",
+                    "identifier": "goToFile",
+                    "component": {"@": "application"}
+                },
+                "listeners": [
+                    {
+                        "type": "keyPress",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
             "extensionsPanelCondition": {
                 "prototype": "montage/ui/condition.reel",
                 "properties": {
@@ -179,6 +194,12 @@
                     "containerElement": {"#": "containerElement"},
                     "controlledComponent": {"@": "packageExplorer"}
                 }
+            },
+            "goToFile": {
+                "prototype": "ui/go-to-file.reel",
+                "properties": {
+                    "element": {"#": "goToFile"}
+                }
             }
         }
     </script>
@@ -204,6 +225,8 @@
             </section>
 
             <aside data-montage-id="modalEditorSlot" class="modalEditorSlot"></aside>
+
+            <div data-montage-id="goToFile"></div>
         </div>
     </div>
 
