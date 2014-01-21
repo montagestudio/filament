@@ -106,7 +106,7 @@ exports.CreateNodeCell = Component.specialize(/** @lends CreateNodeCell# */ {
                 });
             }
             if (this.montageId) {
-                json.attributes["data-montage-id"] = this.montageId;
+                json.attributes.push({name: "data-montage-id", value: this.montageId});
             }
 
             evt.dataTransfer.effectAllowed = "copyMove";
