@@ -98,7 +98,7 @@ exports.ReelDocument = EditingDocument.specialize({
                             id: "serializationError",
                             reason: e.message,
                             stack: e.stack
-                        },
+                        }
                     };
                     self.errors.push(error);
                 }
