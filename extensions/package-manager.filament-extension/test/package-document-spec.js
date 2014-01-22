@@ -146,15 +146,15 @@ describe("package document", function () {
 
     it('should be able to find a dependency.', function () {
         var digit = packageDocument.findDependency('digit'),
-            montage = packageDocument.findDependency('montage', DependencyNames.devDependencies),
-            montageTestingIndex = packageDocument.findDependency('montage-testing', DependencyNames.devDependencies, true);
+            montage = packageDocument.findDependency('montage', DependencyNames.dev),
+            montageTestingIndex = packageDocument.findDependency('montage-testing', DependencyNames.dev, true);
 
         expect(digit.name).toEqual('digit');
         expect(montage).toEqual(null);
         expect(montage).toEqual(null);
         expect(packageDocument.dependencyCollection.devDependencies[montageTestingIndex].name).toEqual('montage-testing');
 
-        packageDocument.findDependency('montage', DependencyNames.dependencies, function (index, element) {
+        packageDocument.findDependency('montage', DependencyNames.regular, function (index, element) {
             expect(index).toBeGreaterThan(-1);
             expect(element.name).toEqual('montage');
         });
@@ -169,7 +169,7 @@ describe("package document", function () {
 
         expect(packageDocument.dependencyCollection.dependencies.length).toBeGreaterThan(oldLength);
         expect(packageDocument.dependencyCollection.dependencies[
-            packageDocument.findDependency('joey', DependencyNames.dependencies, true)
+            packageDocument.findDependency('joey', DependencyNames.regular, true)
             ].name).toEqual('joey');
 
         oldLength = packageDocument.dependencyCollection.devDependencies.length;
@@ -177,7 +177,7 @@ describe("package document", function () {
         packageDocument._insertDependency({
             name: 'matte',
             version: '1.2.3',
-            type: DependencyNames.devDependencies
+            type: DependencyNames.dev
         });
 
         expect(packageDocument.dependencyCollection.devDependencies.length).toBeGreaterThan(oldLength);
@@ -185,12 +185,12 @@ describe("package document", function () {
         packageDocument._insertDependency({ // should remove the previous dependency from the 'devDependencies' container and add it to the 'dependencies' one.
             name: 'matte',
             version: '1.2.3',
-            type: DependencyNames.dependencies
+            type: DependencyNames.regular
         });
 
         expect(packageDocument.dependencyCollection.devDependencies.length).toEqual(oldLength);
-        expect(packageDocument.findDependency('matte', DependencyNames.dependencies)).toBeDefined();
-        expect(packageDocument.findDependency('matte', DependencyNames.devDependencies)).toEqual(null);
+        expect(packageDocument.findDependency('matte', DependencyNames.regular)).toBeDefined();
+        expect(packageDocument.findDependency('matte', DependencyNames.dev)).toEqual(null);
     });
 
     it('Should be able to add a dependency according to its type and save it.', function () {
@@ -208,7 +208,7 @@ describe("package document", function () {
         packageDocument._insertDependency({
             name: 'joey',
             version: '1.2.3',
-            type: DependencyNames.dependencies
+            type: DependencyNames.regular
         }, true);
 
         var oldLength = Object.keys(packageDocument._package.dependencies).length;

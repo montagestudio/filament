@@ -8,10 +8,14 @@ describe("package queue manager", function () {
     var packageDocument, installed;
 
     beforeEach(function() {
-        packageDocument = {
+        packageDocument = {};
+
+        packageDocument.environmentBridge = {
             projectUrl: '/'
         };
+
         installed = null;
+
         packageDocument.done = function (elements) {
             installed = elements;
         };
