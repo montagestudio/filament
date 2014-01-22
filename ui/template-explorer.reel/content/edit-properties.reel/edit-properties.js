@@ -168,6 +168,6 @@ exports.EditProperties = Component.specialize({
         value: function (event) {
             this._ownerObject.editingDocument.removeOwnerBlueprintEvent(event.detail.name).done();
         }
-    },
+    }
 
 });
