@@ -2263,7 +2263,14 @@ exports.ReelDocument = EditingDocument.specialize({
                     // find the parent component
                     parentReelProxy = this._buildTreeFindParentComponent(reelProxy);
                     if (!parentReelProxy) {
-                        throw new Error("Can not build templateObjectsTree: can't find parent component");
+                        // orphan child
+                        var orphanNode = {
+                            templateObject: reelProxy,
+                            children: []
+                        };
+                        // let's add it to the root with the template-less nodes
+                        root.children.unshift(orphanNode);
+                        continue;
                     }
 
                     if (insertionMap.has(parentReelProxy)) {
