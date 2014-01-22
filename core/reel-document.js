@@ -13,8 +13,6 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     NodeProxy = require("core/node-proxy").NodeProxy,
     visit = require("montage/mousse/serialization/malker").visit,
     Url = require("core/node/url"),
-    PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint,
-    EventBlueprint = require("montage/core/meta/event-blueprint").EventBlueprint,
     WeakMap = require("montage/collections/weak-map"),
     ObjectReferences = require("core/object-references").ObjectReferences,
     sandboxMontageApp = require("palette/core/sandbox-montage-app");
@@ -100,7 +98,7 @@ exports.ReelDocument = EditingDocument.specialize({
                             id: "serializationError",
                             reason: e.message,
                             stack: e.stack
-                        },
+                        }
                     };
                     self.errors.push(error);
                 }
@@ -389,11 +387,24 @@ exports.ReelDocument = EditingDocument.specialize({
     },
     _ownerBlueprint: {
         get: function () {
-            return this.__ownerBlueprint || (
-                this.__ownerBlueprint = this._packageRequire.async(this._moduleId)
-                .get(this._exportName)
-                .get("blueprint")
-            );
+            if (!this.__ownerBlueprint) {
+                var packageRequire = this._packageRequire,
+                    self = this;
+
+                // Before we can actually edit the ownerBlueprint, we need other types of blueprint
+                // from the same package
+                this.__ownerBlueprint = Promise.all([
+                    packageRequire.async("montage/core/meta/property-blueprint").get("PropertyBlueprint"),
+                    packageRequire.async("montage/core/meta/event-blueprint").get("EventBlueprint"),
+                    packageRequire.async(this._moduleId).get(this._exportName).get("blueprint")
+                ]).spread(function (propertyBlueprint, eventBlueprint, ownerBlueprint) {
+                    self._propertyBlueprintConstructor = propertyBlueprint;
+                    self._eventBlueprintConstructor = eventBlueprint;
+                    return ownerBlueprint;
+                });
+            }
+
+            return this.__ownerBlueprint;
         }
     },
 
@@ -2074,6 +2085,16 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    // The PropertyBlueprint from the package being edited
+    _propertyBlueprintConstructor: {
+        value: null
+    },
+
+    // The EventBlueprint from the package being edited
+    _eventBlueprintConstructor: {
+        value: null
+    },
+
     // Owner blueprint
 
     addOwnerBlueprintProperty: {
@@ -2082,7 +2103,7 @@ exports.ReelDocument = EditingDocument.specialize({
             return this.undoManager.register(
                 "Add owner property",
                 this._ownerBlueprint.then(function (blueprint) {
-                    var propertyBlueprint = new PropertyBlueprint().initWithNameBlueprintAndCardinality(
+                    var propertyBlueprint = new self._propertyBlueprintConstructor().initWithNameBlueprintAndCardinality(
                         name,
                         blueprint,
                         cardinality || 1
@@ -2143,7 +2164,7 @@ exports.ReelDocument = EditingDocument.specialize({
             return this.undoManager.register(
                 "Add owner event",
                 this._ownerBlueprint.then(function (blueprint) {
-                    var eventBlueprint = new EventBlueprint().initWithNameAndBlueprint(
+                    var eventBlueprint = new self._eventBlueprintConstructor().initWithNameAndBlueprint(
                         name,
                         blueprint
                     );
