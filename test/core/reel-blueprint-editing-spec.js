@@ -28,6 +28,8 @@ describe("core/reel-blueprint-editing-spec", function () {
         '<div id="ownerElement" data-montage-id="ownerElement"></div>')
         .then(function (reelDocument) {
             reelDocument.__ownerBlueprint = Promise(blueprint);
+            reelDocument._propertyBlueprintConstructor = PropertyBlueprint;
+            reelDocument._eventBlueprintConstructor = EventBlueprint;
             return reelDocument;
         });
     });
