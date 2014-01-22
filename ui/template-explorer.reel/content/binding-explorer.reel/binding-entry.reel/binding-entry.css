@@ -75,3 +75,12 @@
 .BindingEntry-direction--bidirectional {
     background-image: url(/assets/icons/binding-bi.svg);
 }
+
+
+.BindingEntry-removeButton {
+    opacity: 0;
+}
+
+.BindingEntry:hover .BindingEntry-removeButton {
+    opacity: 1;
+}

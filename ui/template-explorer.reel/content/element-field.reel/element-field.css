@@ -1,19 +1,17 @@
 .ElementField {
     display: -webkit-flex;
-    -webkit-justify-content: space-between;
     -webkit-align-items: center;
-    padding: 8px;
 }
 
 .ElementField-icon {
     width: 14px;
     height: 14px;
-    margin: auto 0;
+    margin: auto 9px;
 }
 
 .ElementField-label {
-    margin-left: 8px;
     font-size: 12px;
+    flex: 1;
 }
 
 .ElementField-tagName {

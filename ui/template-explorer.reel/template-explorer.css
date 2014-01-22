@@ -173,13 +173,11 @@
 
 .TemplateObjectCell-header {
     display: -webkit-flex;
-    padding: 8px;
 }
 
 .TemplateObjectCell-icon {
-    margin: auto 0;
-    width: 14px;
-    height: 14px;
+    width: 32px;
+    height: 32px;
     background-repeat: no-repeat;
     background-position: center;
     background-size: auto 14px;
@@ -195,19 +193,54 @@
 
 .TemplateObjectCell-title {
     -webkit-flex: 1;
-    margin: 0 8px;
+    margin: 0;
     font-size: 12px;
     font-weight: normal;
-    line-height: 22px;
+    line-height: 32px;
     color: hsl(0, 0%, 60%);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
+
+/* TemplateObjectCell Buttons ---------------------------- */
+
+.TemplateObjectCell-button.matte-Button {
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+    width: 32px;
+    height: 32px;
+    font-size: 18px; 
+    font-weight: bold;
+    line-height: 0;
+    color: hsl(0, 0%, 60%); 
+    border-radius: 0;
+    border: none;
+    background-color: transparent;
+    -webkit-font-smoothing: none;
+}
+
+.TemplateObjectCell-button.matte-Button:hover {
+    background-color: hsl(0,0%,92%);
+}
+
+.TemplateObjectCell-button.matte-Button:active {
+    background-color: hsla(0, 0%, 82%, 1);
+}
+
+.TemplateObjectCell-button--pill.matte-Button {
+    height: 22px;
+}
+
+
+
+/* List ---------------------------- */
+
 .TemplateObjectCell-list {
     margin: 0;
-    padding: 0 8px 4px 32px;
+    padding: 0 0 4px 32px;
 }
 
 .TemplateObjectCell-list:empty {
