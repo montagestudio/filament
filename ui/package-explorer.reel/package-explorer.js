@@ -34,7 +34,15 @@ exports.PackageExplorer = Component.specialize({
             // there is no action event built into the montage anchor.reel
             this.templateObjects.previewLink.element.identifier = "previewLink";
             this.templateObjects.previewLink.element.addEventListener("click", this, false);
+            application.addPathChangeListener("mainMenu", this, "handleMenuAvailable");
+        }
+    },
 
+    handleMenuAvailable: {
+        value: function (value, path, object) {
+            if (!value) {
+                return;
+            }
             this._initMenuItem();
         }
     },
