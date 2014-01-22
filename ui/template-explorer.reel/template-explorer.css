@@ -205,6 +205,27 @@
 }
 
 
+/* Hidden Checkbox ---------------------------- */
+
+.TemplateObjectCell-hiddenCheckbox.matte-InputCheckbox {
+    width: 2.5em;
+    height: 2.5em;
+    margin: 0;
+    border: none;
+    background: url(/assets/icons/eye.png) no-repeat center;
+    background-size: 14px;
+}
+
+.TemplateObjectCell-hiddenCheckbox.matte-InputCheckbox:hover {
+    background-color: hsla(0,0%,100%, 0.6);
+}
+
+.TemplateObjectCell-hiddenCheckbox.matte-InputCheckbox:checked {
+    background: url(/assets/icons/eye-off.png) no-repeat center;
+    background-size: 14px;
+}
+
+
 /* TemplateObjectCell Buttons ---------------------------- */
 
 .TemplateObjectCell-button.matte-Button {
