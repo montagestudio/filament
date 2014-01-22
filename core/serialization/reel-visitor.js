@@ -16,6 +16,23 @@ exports.ReelVisitor = ProxyVisitor.specialize({
         }
     },
 
+    setObjectCustomUnits: {
+        value: function(malker, object) {
+            this.super(malker, object);
+
+            var self = this,
+                unrecognizedKeys;
+
+            unrecognizedKeys = object.originalSerializationMap.keys().filter(function (key) {
+                return !("object" === key || "prototype" === key || "properties" === key || self._units[key]);
+            });
+
+            unrecognizedKeys.forEach(function (unitName) {
+                self.setObjectCustomUnit(malker, object, unitName);
+            });
+        }
+    },
+
     setObjectCustomUnit: {
         value: function (malker, object, unitName) {
             var value;
@@ -25,6 +42,10 @@ exports.ReelVisitor = ProxyVisitor.specialize({
 
             } else if ("listeners" === unitName) {
                 value = this.serializeListenerProxies(object.listeners);
+            } else {
+                // Preserve whatever "units" were found in the serialization
+                // even if we don't have any understanding of them
+                value = object.originalSerializationMap.get(unitName);
             }
 
             if (value != null) {

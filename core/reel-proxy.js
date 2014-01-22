@@ -162,7 +162,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
 
     _populateWithSerialization: {
         value: function (serialization) {
-            this._properties = new Map(serialization.properties);
+            this.super(serialization);
 
             var bindings = [];
             for (var key in serialization.bindings) {

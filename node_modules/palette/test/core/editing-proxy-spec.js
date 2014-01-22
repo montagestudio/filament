@@ -28,4 +28,32 @@ describe("core/editing-proxy-spec", function () {
 
     });
 
+    describe("preserving the original serialization as a map", function () {
+
+        beforeEach(function () {
+            serialization = {
+                prototype: exportId,
+                properties: {},
+                foo: "something",
+                bar: {
+                    baz: "more",
+                    qux: ["a", "b", "c"]
+                }
+            };
+
+            proxy = EditingProxy.create().init(label, serialization, exportId, editingDocument);
+        });
+
+        it("must preserve top level properties", function () {
+            expect(proxy.originalSerializationMap.get('foo')).toBe("something");
+        });
+
+        it("must preserve the entire tree of properties", function () {
+            var barUnit = proxy.originalSerializationMap.get('bar');
+
+            expect(barUnit.baz).toBe("more");
+            expect(JSON.stringify(barUnit.qux)).toBe(JSON.stringify(["a", "b", "c"]));
+        });
+    });
+
 });
