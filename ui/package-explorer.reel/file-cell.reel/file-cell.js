@@ -43,7 +43,7 @@ exports.FileCell = Montage.create(Component, {
 
     handleExpandedChange: {
         value: function(newValue) {
-            if (newValue && !this.fileInfo.expanded) {
+            if (newValue && this.fileInfo && !this.fileInfo.expanded) {
                 var self = this;
                 this.projectController.filesAtUrl(this.fileInfo.fileUrl).then(function (fileDescriptors) {
                     self.fileInfo.expanded = true;
