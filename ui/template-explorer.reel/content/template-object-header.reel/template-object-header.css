@@ -80,21 +80,25 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: 14px;
+    opacity: .3;
 }
 
 .TemplateObjectHeader-button.matte-Button:hover {
-    background-color: transparent;
-    border-color: hsla(0,0%,0%,.1);
+    background-color: hsla(0,0%,100%,0);
+    opacity: .5;
 }
 
 .TemplateObjectHeader-button.matte-Button.active,
 .TemplateObjectHeader-button.matte-Button.active:hover {
-    background-color: hsla(0,0%,0%,.1);
+    border-color: hsla(0,0%,0%,.12);
+    background-color: hsla(0,0%,0%,.12);
+    opacity: .3;
 }
 
 .TemplateObjectHeader-button.matte-Button.pressed {
-    border-color: hsla(0,0%,0%,.1);
-    background-color: hsla(0,0%,100%,.3);
+    border-color: hsla(0,0%,0%,.12);
+    background-color: hsla(0,0%,0%,.12);
+    opacity: .5;
 }
 
 .TemplateObjectHeader-button--edit {
