@@ -9,8 +9,13 @@
     border-radius: 0;
     background: url(/assets/icons/toggle.svg) no-repeat left center;
     background-size: 14px;
+    outline: none;
     -webkit-transform-origin: 6px center;
     -webkit-transition: -webkit-transform .1s ease-in-out;
+}
+
+.Toggle.matte-InputCheckbox:focus {
+    outline-offset: 0px;
 }
 
 .Toggle.matte-InputCheckbox:checked {
