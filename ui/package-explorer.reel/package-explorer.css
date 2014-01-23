@@ -21,8 +21,8 @@
 
 .PackageExplorer-icon {
     margin: 0;
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     border-radius: 5px;
 }
 
@@ -30,7 +30,7 @@
     -webkit-flex: 1;
     min-width: 0;
     line-height: 18px;
-    margin-left: 8px;
+    margin-left: 6px;
 }
 
 .PackageExplorer-name {
@@ -38,8 +38,8 @@
     padding: 0;
     color: hsl(0,0%,30%);
     font-family: Titillium Web, Open Sans, sans-serif;
-    font-size: 22px;
-    line-height: 25px;
+    font-size: 19px;
+    line-height: 22px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -47,7 +47,7 @@
 
 .PackageExplorer-version {
    display: block;
-   color: hsl(0,0%,70%);
+   color: hsl(0, 0%, 60%);
    font-size: 11px;
    line-height: 14px;
 }
