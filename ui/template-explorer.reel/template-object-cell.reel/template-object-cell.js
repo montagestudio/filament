@@ -60,12 +60,25 @@ exports.TemplateObjectCell = Component.specialize({
                 return;
             }
             this._templateObject = value;
-            if (value) {
-                //TODO this should not be as hardcoded as this...but we can only open components right now
-                // and this is super limited done in time for a demo
-                this.isInProjectPackage = /^ui\//.test(value.moduleId);
 
-                this._describeTemplateObject();
+            if (value) {
+                var self = this;
+
+                this.canDrawGate.setField("needsObjectDescription", false);
+
+                this._describeTemplateObject()
+                    .spread(function (templateObject, description) {
+                        // Only accept values if the templateObject hasn't changed
+                        // since we went off to describe it
+                        if (templateObject === self._templateObject) {
+                            var keys = Object.keys(description);
+                            keys.forEach(function (key) {
+                                self[key] = description[key];
+                            });
+                            self.canDrawGate.setField("needsObjectDescription", true);
+                        }
+                    })
+                    .done();
             }
 
         }
@@ -73,36 +86,34 @@ exports.TemplateObjectCell = Component.specialize({
 
     _describeTemplateObject: {
         value: function () {
-
-            var self = this,
-                templateObject = this.templateObject,
+            var templateObject = this.templateObject,
                 packageRequire = templateObject.editingDocument.packageRequire,
-                componentConstructorPromise,
-                templateObjectConstructorPromise;
+                description = {};
 
-            this.canDrawGate.setField("needsObjectDescription", false);
+            // Determine if this object is provided by the project's own package
+            // TODO not restrict this to components within the ui directory
+            description.isInProjectPackage = /^ui\//.test(templateObject.moduleId);
 
-            templateObjectConstructorPromise = packageRequire.async(templateObject.moduleId).get(templateObject.exportName);
-            componentConstructorPromise = packageRequire.async("montage/ui/component").get("Component");
-
-            Promise.all([templateObjectConstructorPromise, componentConstructorPromise])
-                .spread(function (templateObjectConstructor, componentConstructor) {
-                    self.isTemplateObjectComponent = templateObjectConstructor.prototype instanceof componentConstructor;
+            return Promise.all([
+                    packageRequire.async(templateObject.moduleId).get(templateObject.exportName),
+                    packageRequire.async("montage/ui/component").get("Component")
+                ])
+                .spread(function (objectConstructor, componentConstructor) {
+                    description.isTemplateObjectComponent = objectConstructor.prototype instanceof componentConstructor;
                 })
-                .fail(Function.noop)
-                .finally(function () {
-                    self.canDrawGate.setField("needsObjectDescription", true);
+                .fail(function () {
+                    description.isTemplateObjectComponent = null;
                 })
-                .done();
+                .thenResolve([templateObject, description]);
         }
     },
 
     isInProjectPackage: {
-        value: false
+        value: null
     },
 
     isTemplateObjectComponent: {
-        value: false
+        value: null
     },
 
     handleDragover: {
