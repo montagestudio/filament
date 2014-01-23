@@ -295,3 +295,8 @@
 .TemplateObjectCell-list:empty {
     padding-bottom: 0;
 }
+
+/* Toggle ---------------------------- */
+.TemplateObjectCell-Wrapper .Toggle.matte-InputCheckbox {
+    margin-left: 4px;
+}
