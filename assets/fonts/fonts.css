@@ -1,3 +1,30 @@
+
+@font-face {
+  font-family: 'Clear Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Clear Sans'), local('ClearSans'), url(ClearSans-Regular.woff) format('woff');
+}
+@font-face {
+  font-family: 'Clear Sans';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Clear Sans Italic'), local('ClearSans-Italic'), url(ClearSans-Italic.woff) format('woff');
+}
+@font-face {
+  font-family: 'Clear Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Clear Sans Bold'), local('ClearSans-Bold'), url(ClearSans-Bold.woff) format('woff');
+}
+@font-face {
+  font-family: 'Clear Sans';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Clear Sans Bold Italic'), local('ClearSans-BoldItalic'), url(ClearSans-BoldItalic.woff) format('woff');
+}
+
+
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
