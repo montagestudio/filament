@@ -202,12 +202,12 @@
         },
 
         "toggleExpanded": {
-            "prototype": "./toggle.reel",
+            "prototype": "ui/toggle.reel",
             "properties": {
                 "element": {"#": "toggleExpanded"}
             },
             "bindings": {
-                "isOpen": {"<->": "@owner.isExpanded"}
+                "checked": {"<->": "@owner.isExpanded"}
             }
         },
 
@@ -309,7 +309,7 @@
 
         <div class="NodeCell">
             <span data-montage-id="hasChildrenCondition" class="NodeCell-toggle">
-                <div data-montage-id="toggleExpanded"></div>
+                <input data-montage-id="toggleExpanded" type="checkbox">
             </span>
 
             <span data-montage-id="nodeSegment" class="NodeCell-segment"  draggable="true">

@@ -7,7 +7,8 @@
         {
             "owner": {
                 "properties": {
-                    "element": {"#": "template-object-cell"}
+                    "element": {"#": "template-object-cell"},
+                    "toggle": {"@": "toggleExpanded"}
                 },
                 "bindings": {
                     "classList.has('TemplateObjectCell--owner-cell')": {
@@ -157,12 +158,12 @@
             },
 
             "toggleExpanded": {
-                "prototype": "ui/dom-explorer.reel/node-cell.reel/toggle.reel",
+                "prototype": "ui/toggle.reel",
                 "properties": {
                     "element": {"#": "toggleExpanded"}
                 },
                 "bindings": {
-                    "isOpen": {"<->": "@owner.isExpanded"}
+                    "checked": {"<->": "@owner.isExpanded"}
                 }
             }
         }
@@ -173,7 +174,7 @@
 
 <div data-montage-id="template-object-cell" class="TemplateObjectCell-Wrapper">
     <div data-montage-id="hasChildrenCondition" class="toggle">
-        <div data-montage-id="toggleExpanded"></div>
+        <input data-montage-id="toggleExpanded" type="checkbox">
     </div>
 
     <li class="TemplateObjectCell TemplateExplorer-list-item">
