@@ -14,9 +14,9 @@
     margin: 0;
     padding: 8px;
     height: 75px;
-    border-top: 1px solid hsla(0,0%,100%,1);
-    border-bottom: 1px solid hsl(0,0%,75%);
-    background: -webkit-linear-gradient( hsl(0,0%,96%), hsl(0,0%,96%) 28px, hsl(0,0%,92%) );
+    border-top: 1px solid hsl(0,0%, 48%);
+    border-bottom: 1px solid hsl(0, 0%, 22%);
+    background: -webkit-linear-gradient( hsl(0, 0%, 42%), hsl(0, 0%, 32%) );
 }
 
 .PackageExplorer-icon {
@@ -36,8 +36,9 @@
 .PackageExplorer-name {
     margin: 0;
     padding: 0;
-    color: hsl(0,0%,30%);
-    font-size: 19px;
+    color: hsl(0, 0%, 86%);
+    text-shadow: 0 -1px 0 hsl(0, 0%, 23%);
+    font-size: 18px;
     line-height: 22px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -59,15 +60,16 @@
     margin: 0;
     width: 40px;
     height: 40px;
-    border-width: 1px;
-    border-style: solid;
+    border: 1px solid hsla(0, 0%, 0%, 0.33);
     border-radius: 20px;
+    background: linear-gradient(hsl(0, 0%, 40%), hsl(0, 0%, 32%));
+    box-shadow: inset 0 1px 1px hsla(0, 100%, 100%, 0.13),0 1px 0 hsla(0, 100%, 100%, 0.06);
     cursor: pointer;
 }
 
 .PackageExplorer .PackageExplorer-previewButton:active {
-    background-image: -webkit-linear-gradient(top, hsl(0,0%,90%), hsl(0,0%,90%) );
-    box-shadow: inset 0 -1px 1px hsla(0,0%,0%,.04), 0 1px 0 hsla(0,0%,100%,.6);
+    background: linear-gradient(hsl(0, 0%, 28%), hsl(0, 0%, 26%));
+    box-shadow: inset 0 1px 1px hsla(0, 0%, 0%, 0.13),0 1px 0 hsla(0, 100%, 100%, 0.06);
 }
 
 .PackageExplorer-previewButton:before {
