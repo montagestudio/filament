@@ -25,7 +25,7 @@
 }
 
 .DocumentTab:hover {
-    background-color: hsla(0,0%,100%,.15);
+    background-color: hsl(0, 0%, 38%);
 }
 
 .DocumentTab:active,
