@@ -297,6 +297,10 @@
 }
 
 /* Toggle ---------------------------- */
+
 .TemplateObjectCell-Wrapper .Toggle.matte-InputCheckbox {
-    margin-left: 4px;
+    margin: 0 0 0 4px;
+}
+.TemplateObjectCell-Wrapper .Toggle.matte-InputCheckbox:checked {
+    margin: 0 0 0 4px; /* needed */
 }
