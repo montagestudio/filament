@@ -79,6 +79,10 @@
     background-size: 14px;
 }
 
+.PackageExplorer-list {
+    background-color: #424242;
+}
+
 
 /* PackageExplorer footer ------------------- */
 
