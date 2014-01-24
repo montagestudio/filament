@@ -29,7 +29,6 @@
     min-height: 0;
     display: -webkit-flex;
     -webkit-flex-direction: column;
-    border-left: 1px solid hsl(0, 0%, 75%);
     background-color: hsl(0, 0%, 86%);
 }
 
