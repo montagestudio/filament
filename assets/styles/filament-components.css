@@ -13,6 +13,7 @@
 .Search.matte-InputText {
     -webkit-appearance: none;
     padding-right: 0; /* space for cancel button */
+    font-family: inherit;
     color: hsl(0,0%,30%);
     border-color: hsl(0,0%,77%);
     border-radius: 20px;

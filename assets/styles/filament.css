@@ -13,7 +13,7 @@ html {
 body {
     margin: 0;
     height: 100%;
-    font-family: Open Sans, sans-serif;
+    font-family: Clear Sans, sans-serif;
     overflow: hidden; /* Removes bounce when scrolling on body */
     -webkit-user-select: none; /* Disable text selection */
     cursor: default; /* Disable text cursor on text */

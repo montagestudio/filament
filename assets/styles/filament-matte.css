@@ -10,6 +10,7 @@
 .matte-Button.Button,
 .matte-Popup-footer .matte-Button {    
     white-space: nowrap;
+    font-family: inherit;
     color: hsla(0,0%,0%,.7);
     text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
     border-color: hsl(0,0%,80%);
