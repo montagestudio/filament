@@ -16,7 +16,6 @@
 	line-height: 1;
 	color: hsl(0,0%,30%);
 	text-align: left;
-	text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
 	border: none;
 	background: transparent;
 	cursor: move;
@@ -68,7 +67,7 @@
 
 .LibraryGroup {
     font-size: 0;
-    background: hsl(0,0%,96%);
+    background: hsl(0, 0%, 32%);
     border-radius: 4px;
 }
 
