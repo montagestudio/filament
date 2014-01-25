@@ -2,24 +2,23 @@
     flex: 1;
     margin: 0;
     line-height: 26px;
-    font-size: 9px;
+    font-size: 10px;
     text-align: center;
-    text-shadow: 0 1px 0 hsla(0, 100%, 100%, 0.3);
-    color: hsl(0, 0%, 50%);
-    background-color: hsl(0, 0%, 90%);
+    color: hsl(0, 0%, 40%);
+    background-color: hsl(0, 0%, 22%);
     cursor: pointer;
 }
 
 .AssetsCategoriesBarItem:hover {
-    color: hsl(0, 0%, 20%);
+    color: hsl(0, 0%, 50%);
 }
 
-.AssetsCategoriesBarItem.active {
-    background-color: hsl(0, 0%, 96%);
+.AssetsCategoriesBarItem:active {
+    background-color: hsl(0, 0%, 16%);
 }
 
 .AssetsCategoriesBarItem.selected {
-    color: hsl(0, 0%, 20%);
+    color: inherit;
     cursor: default;
-    background-color: hsl(0, 0%, 96%);
+    background-color: hsl(0, 0%, 26%);
 }
