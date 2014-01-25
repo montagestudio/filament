@@ -203,3 +203,22 @@
     border-color: transparent;
 	background: hsl(0,0%,85%);
 }
+
+/* Shadow --------------------------------- */
+
+.Shadow {
+    position: absolute;
+    pointer-events: none;
+    height: 4px;
+    left: 0;
+    right: 0;
+    z-index: 1;
+}
+
+.Shadow--top {
+    background-image: -webkit-radial-gradient(center 0%, ellipse farthest-side, hsla(0, 0%, 0%, 0.2), hsla(0, 0%, 0%, 0.02) );
+}
+.Shadow--bottom {
+    margin-top: -4px;
+    background-image: -webkit-radial-gradient(center 100%, ellipse farthest-side, hsla(0, 0%, 0%, 0.1), hsla(0, 0%, 0%, 0.02) );
+}
