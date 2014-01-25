@@ -67,8 +67,6 @@
 
 .LibraryGroup {
     font-size: 0;
-    background: hsl(0, 0%, 32%);
-    border-radius: 4px;
 }
 
 .LibraryGroup-list {
@@ -77,34 +75,32 @@
 }
 
 .LibraryCell {
-    -webkit-flex: 1 0 61px;
-    max-width: 61px;
+    -webkit-flex: 1 0 33%;
+    max-width: 33%;
 }
 
 .LibraryCell-button.matte-Button {
     padding: 8px 3px;
     text-align: center;
-    border-radius: 4px;
+    border-radius: 0;
+	
 }
 
 .LibraryCell-button.matte-Button:hover {
-    background: hsl(0,0%,100%);
+    background-color: hsl(0,0%,30%);
 }
 
 .LibraryCell-button-icon {
     margin: 0;
+    opacity: 0.3;
 }
 
 .LibraryCell-button-label {
     display: block;
     font-size: 9px;
-    color: hsl(0, 0%, 60%);
+    color: hsl(0, 0%, 56%);
     text-align: center;
     line-height: 16px;
-}
-
-.LibraryCell-button:hover .LibraryCell-button-label {
-    color: hsl(0, 0%, 30%);
 }
 
 
@@ -125,7 +121,6 @@
 }
 
 .Library.isList .LibraryCell:last-child .LibraryCell-button.matte-Button {
-    border-radius: 0 0 4px 4px;
 }
 
 .Library.isList .LibraryCell-button-icon {
@@ -138,10 +133,4 @@
     text-align: left;
     margin-left: 12px;
     line-height: 19px;
-    color: hsl(0, 0%, 50%);
 }
-
-.Library.isList .LibraryCell-button:hover .LibraryCell-button-label {
-    color: hsl(0, 0%, 30%);
-}
-
