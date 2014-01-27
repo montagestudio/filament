@@ -131,7 +131,7 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
             if (!this._templateNode) {
                 return null;
             }
-            return this._templateNode.nodeType !== Node.TEXT_NODE ? this._templateNode.tagName : "text";
+            return this._templateNode.nodeType !== Node.TEXT_NODE ? this._templateNode.tagName : "#text";
         },
         set: function (value) {
             var currentNode = this._templateNode;
