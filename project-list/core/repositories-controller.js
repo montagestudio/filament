@@ -1,8 +1,11 @@
 /* global localStorage */
 var Montage = require("montage/core/core").Montage;
+var Promise = require("montage/core/promise").Promise;
 var github = require("adaptor/client/core/github");
 var RangeController = require("montage/core/range-controller").RangeController;
 var RepositoryController = require("adaptor/client/core/repository-controller").RepositoryController;
+
+var MAX_RECENT_ITEMS = 10;
 
 var Group = Montage.specialize( {
 
@@ -22,6 +25,8 @@ var RepositoriesController = Montage.specialize({
 
     constructor: {
         value: function RepositoriesController() {
+            var self = this;
+
             this.groups = [this.recent, this.owned];
             this.addPathChangeListener("selectedGroup", this, "_getListOfRepositories");
             this._initRecentRepositories();
@@ -29,7 +34,9 @@ var RepositoriesController = Montage.specialize({
             this._githubApi = github.githubApi();
             this.ownedRepositoriesContent = new RangeController().initWithContent([]);
             this.ownedRepositoriesContent.sortPath = "-pushed_at";
-            this._updateUserRepositories();
+            this._updateUserRepositories().then(function() {
+                self._validateRecentRepositories();
+            }).done();
 
             //initialize default value
             this.selectedGroup = this.owned;
@@ -72,7 +79,9 @@ var RepositoriesController = Montage.specialize({
 
     _updateUserRepositories: {
         value: function() {
-            var self = this;
+            var self = this,
+                deferred = Promise.defer();
+
             if (self.ownedRepositoriesContent.content.length === 0) {
 
                 self.ownedRepositoriesContent.content.clear();
@@ -81,6 +90,8 @@ var RepositoriesController = Montage.specialize({
                     return githubApi.listRepositories({type: "public"});
                 })
                 .then(function (repos) {
+                    var pendingCommands = repos.length;
+
                     self.totalDocuments = repos.length;
                     self.processedDocuments = 0;
 
@@ -99,10 +110,18 @@ var RepositoriesController = Montage.specialize({
                                 self.ownedRepositoriesContent.content.push(repo);
                             }
                             self.processedDocuments++;
+                            if (-- pendingCommands === 0) {
+                                deferred.resolve();
+                            }
                         }).done();
                     });
+
                 }).done();
+            } else {
+                deferred.resolve();
             }
+
+            return deferred.promise;
         }
     },
 
@@ -131,18 +150,27 @@ var RepositoriesController = Montage.specialize({
         value: function(repository) {
             var recentRepositories = this._recentRepositoriesCache;
 
-            if (recentRepositories.filter(function (item) {
-                return item.name === repository.name;
-            }).length === 0 ) {
-                var toRemove = recentRepositories.length - 9;
-                if (toRemove > 0) {
-                    recentRepositories.splice(0,toRemove);
+            var pos = -1;
+            recentRepositories.some(function(item, index) {
+                if (item.name === repository.repo) {
+                    pos = index;
+                    return true;
                 }
-                recentRepositories.unshift(
-                   this._createRepositoryArchive(repository)
-                );
-                this._setRecentRepositories(recentRepositories);
+                return false;
+            });
+            if (pos === -1) {   // New item
+                var toRemove = recentRepositories.length - (MAX_RECENT_ITEMS - 1);
+                if (toRemove > 0) {
+                    recentRepositories.splice(MAX_RECENT_ITEMS, toRemove);
+                }
+            } else {            //Existing item
+                recentRepositories.splice(pos, 1);
             }
+
+            recentRepositories.unshift(
+               this._createRepositoryArchive(repository)
+            );
+            this._setRecentRepositories(recentRepositories);
         }
     },
 
@@ -167,7 +195,31 @@ var RepositoriesController = Montage.specialize({
                 this._recentRepositoriesCache = [];
                 this._setRecentRepositories(this._recentRepositoriesCache);
             } else {
-                this._recentRepositoriesCache = JSON.parse(recentRepositories);
+                var recentRepositories = JSON.parse(recentRepositories);
+
+                if (recentRepositories.length > MAX_RECENT_ITEMS) {
+                    recentRepositories.splice(MAX_RECENT_ITEMS, recentRepositories.length - MAX_RECENT_ITEMS);
+                }
+                this._recentRepositoriesCache = recentRepositories;
+            }
+        }
+    },
+
+    _validateRecentRepositories: {
+        value: function() {
+            var repoNames = [],
+                recentRepos = this._recentRepositoriesCache,
+                nbrRecentRepos = recentRepos.length,
+                i;
+
+            this.ownedRepositoriesContent.organizedContent.forEach(function(item) {
+                repoNames.push(item.name);
+            })
+
+            for (i = nbrRecentRepos - 1; i >= 0; i --) {
+                if (repoNames.indexOf(recentRepos[i].name.toLowerCase()) === -1) {
+                    recentRepos.splice(i, 1);
+                }
             }
         }
     },
