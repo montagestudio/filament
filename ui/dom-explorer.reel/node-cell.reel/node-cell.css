@@ -210,3 +210,18 @@
 .addElement .add-element.child {
     padding-left: 44px;
 }
+
+/* NodeText -------------- */
+.NodeCell .NodeCellTypeSubstitution {
+    width: 100%;
+}
+.NodeCell-segment-textNode  {
+    display: flex;
+    flex-flow: column;
+}
+.NodeCell-segment-textNode .TextareaEditor .matte-Textarea {
+    background-color: hsl(0,0%,96%);
+    width: 100%;
+    height: 66px;
+    font-size: inherit;
+}
