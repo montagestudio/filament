@@ -195,7 +195,7 @@ var RepositoriesController = Montage.specialize({
                 this._recentRepositoriesCache = [];
                 this._setRecentRepositories(this._recentRepositoriesCache);
             } else {
-                var recentRepositories = JSON.parse(recentRepositories);
+                recentRepositories = JSON.parse(recentRepositories);
 
                 if (recentRepositories.length > MAX_RECENT_ITEMS) {
                     recentRepositories.splice(MAX_RECENT_ITEMS, recentRepositories.length - MAX_RECENT_ITEMS);
@@ -214,7 +214,7 @@ var RepositoriesController = Montage.specialize({
 
             this.ownedRepositoriesContent.organizedContent.forEach(function(item) {
                 repoNames.push(item.name);
-            })
+            });
 
             for (i = nbrRecentRepos - 1; i >= 0; i --) {
                 if (repoNames.indexOf(recentRepos[i].name.toLowerCase()) === -1) {
