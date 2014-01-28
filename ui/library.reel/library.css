@@ -77,7 +77,7 @@
     position: relative;
     min-height: 0;
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: scroll;
     background-color: hsl(0, 0%, 26%);
 }
 
@@ -94,5 +94,5 @@
 
 .Library ::-webkit-scrollbar-thumb {
     border: none;
-    background-color: hsl(0, 0%, 36%);
+    background-color: hsl(0, 0%, 32%);
 }
