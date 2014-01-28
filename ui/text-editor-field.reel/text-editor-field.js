@@ -109,6 +109,12 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
         }
     },
 
+    cancel: {
+        value: function () {
+            this.isEditing = false;
+        }
+    },
+
     handleDblclick: {
         value: function (evt) {
             this.toggle();
@@ -180,7 +186,7 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
         value: function () {
             if (this.shouldBeFocus) {
                 // this needs to be fixed
-                //this.templateObjects.inputText.element.focus();
+                // this.templateObjects.inputText.element.focus();
                 var self = this;
                 setTimeout(function() {
                     self.templateObjects.inputText.element.select();

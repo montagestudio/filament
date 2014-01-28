@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="textarea-editor.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "textareaEditor"},
+                "abbr": {"#": "text"}
+            }
+        },
+        "substitution": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "substitution"},
+                "delegate": {"@": "owner"}
+            },
+            "bindings": {
+                "switchValue": {"<-": "@owner.isEditing ? 'editor' : 'text'"}
+            }
+        },
+        "textarea": {
+            "prototype": "matte/ui/textarea.reel",
+            "properties": {
+                "element": {"#": "textarea"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner._inputValue"},
+                "placeholder": {"<-": "@owner.placeholder"}
+            }
+        },
+
+        "text": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "text"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.value"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="textareaEditor" class="TextareaEditor">
+        <div data-montage-id="substitution">
+            <textarea data-arg="editor" data-montage-id="textarea" autofocus></textarea>
+            <abbr data-arg="text" data-montage-id="text"></abbr>
+        </div>
+    </div>
+</body>
+</html>

@@ -308,9 +308,10 @@
         },
 
         "textNode": {
-            "prototype": "ui/text-editor-field.reel",
+            "prototype": "ui/textarea-editor.reel",
             "properties": {
-                "element": {"#": "textNode"}
+                "element": {"#": "textNode"},
+                "abbreviation" : "#text"
             },
             "bindings": {
                 "value": {"<-": "@owner.nodeInfo.nodeValue"}
