@@ -33,9 +33,13 @@
 }
 
 .LibraryCell-button[draggable=false].matte-Button {
-    background-color: hsl(43, 100%, 85%);
+    background-color: hsla(43, 100%, 85%, 0.04);
     pointer-events: none;
     cursor: default;
+    border: 1px solid hsl(43, 20%, 20%);
+    border-bottom: 4px solid hsl(43, 100%, 85%);
+    padding: 7px 2px 4px 2px;
+    border-radius: 4px;
 }
 
 /* Icon --------------------------------- */
@@ -80,9 +84,9 @@
 }
 
 .LibraryCell-button.matte-Button {
-    padding: 8px 2px;
+    padding: 8px 4px;
     text-align: center;
-    border-radius: 0;
+    border-radius: 4px;
 	
 }
 
@@ -118,6 +122,12 @@
     display: flex;
     padding: 4px 4px 4px 12px;
     border-radius: 0;
+}
+
+.Library.isList .LibraryCell-button[draggable=false].matte-Button {
+    padding: 4px 4px 4px 8px;
+    border: none;
+    border-left: 4px solid hsl(43, 100%, 85%);
 }
 
 .Library.isList .LibraryCell:last-child .LibraryCell-button.matte-Button {
