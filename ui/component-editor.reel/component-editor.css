@@ -13,11 +13,11 @@
 }
 
 .ComponentEditor-column-row {
-    min-height: 80px;
+    min-height: 48px; /* Keep top and bottom bars still visible */
 }
 
 .ComponentEditor-column-row--fill {
-    -webkit-flex: 1 1 auto;
+    -webkit-flex: 1 1 0;
     overflow: hidden;
     border-bottom: 1px solid hsl(0, 0%, 75%);
     background: hsl(0, 0%, 86%);
