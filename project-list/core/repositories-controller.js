@@ -207,13 +207,13 @@ var RepositoriesController = Montage.specialize({
 
     _validateRecentRepositories: {
         value: function() {
-            var repoNames = [],
-                recentRepos = this._recentRepositoriesCache,
+            var recentRepos = this._recentRepositoriesCache,
                 nbrRecentRepos = recentRepos.length,
+                repoNames,
                 i;
 
-            this.ownedRepositoriesContent.organizedContent.forEach(function(item) {
-                repoNames.push(item.name);
+            repoNames = this.ownedRepositoriesContent.organizedContent.map(function(item) {
+                return item.name;
             });
 
             for (i = nbrRecentRepos - 1; i >= 0; i --) {
