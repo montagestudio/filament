@@ -20,7 +20,6 @@
     display: -webkit-flex;
     -webkit-flex-direction: column;
     position: relative;
-    background: hsl(0, 0%, 40%);
 }
 
 
@@ -29,7 +28,7 @@
     min-height: 0;
     display: -webkit-flex;
     -webkit-flex-direction: column;
-    background-color: hsl(0, 0%, 86%);
+    background-color: hsl(0, 0%, 26%);
 }
 
 .standby {
