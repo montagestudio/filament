@@ -1,5 +1,6 @@
-.Library.Panel {
+.Library {
     -webkit-user-select: none;
+    border-left: 1px solid hsl(0, 0%, 22%);
 }
 
 .Library-bar {
