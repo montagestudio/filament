@@ -49,7 +49,7 @@ exports.TextareaEditor = Component.specialize(/** @lends TextareaEditor# */ {
             if (evt.keyCode === escape){
                 evt.stop();
                 this.cancel();
-            } else if (evt.keyCode == enter && !evt.shiftKey) {
+            } else if (evt.keyCode === enter && !evt.shiftKey) {
                 evt.stop();
                 this.save();
             }
