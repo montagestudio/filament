@@ -33,12 +33,13 @@
         },
 
         "text": {
-            "prototype": "montage/ui/text.reel",
+            "prototype": "ui/abbr.reel",
             "properties": {
                 "element": {"#": "text"}
             },
             "bindings": {
-                "value": {"<-": "@owner.value"}
+                "title": {"<-": "@owner.value"},
+                "value": {"<-": "@owner.abbreviation ? @owner.abbreviation : @owner.value"}
             }
         }
     }
