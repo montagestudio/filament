@@ -7,7 +7,7 @@
 
 html {
     height: 100%;
-    background-color: hsl(0, 0%, 26%);
+    background-color: hsl(0,0%,90%);
 }
 
 body {
@@ -21,6 +21,10 @@ body {
 
 .montage-invisible {
     display: none;
+}
+
+.Filament {
+    background-color: hsl(0, 0%, 26%);
 }
 
 /* Scrollbar -------------------------------- */
