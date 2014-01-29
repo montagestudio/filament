@@ -124,7 +124,7 @@ exports.PackageDependenciesGroup = Component.specialize(/** @lends PackageDepend
                     var module = JSON.parse(dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_INSTALLATION_DEPENDENCY));
 
                     if (module) {
-                        this.editingDocument.installDependency(module.name, module.version, this.type).done();
+                        this.editingDocument.installDependency(module.name, module.version, this.type);
                     }
                 }
             }

@@ -468,7 +468,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                 dependency = new Dependency(name, version, type);
 
             this._addDependencyToCollection(dependency, true);
-            self.editor.notifyDependenciesListChange(module.name, Dependency.INSTALLING_DEPENDENCY_ACTION);
+            this.editor.notifyDependenciesListChange(dependency.name, Dependency.INSTALLING_DEPENDENCY_ACTION);
 
             var promise = this._dependencyManager.installDependency(dependency.name, dependency.version).then(function (dependencyInstalled) {
 
@@ -487,12 +487,13 @@ exports.PackageDocument = EditingDocument.specialize( {
                         self._addDependencyToCollection(dependency);
                     }
 
-                    self.editor.notifyDependenciesListChange(module.name, Dependency.INSTALL_DEPENDENCY_ACTION);
+                    dependency.missing = false;
+                    self.editor.notifyDependenciesListChange(dependency.name, Dependency.INSTALL_DEPENDENCY_ACTION);
 
                     return 'The dependency ' + dependencyInstalled.name + ' has been installed';
                 }
 
-                self.editor.notifyDependenciesListChange(module.name, Dependency.ERROR_INSTALL_DEPENDENCY_ACTION);
+                self.editor.notifyDependenciesListChange(dependency.name, Dependency.ERROR_INSTALL_DEPENDENCY_ACTION);
 
                 throw new Error('An error has occurred while installing the dependency ' + dependency.name);
 
@@ -564,7 +565,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
                     dependency.type = type;
 
-                    this._addDependencyToCollection(dependency, true);
+                    this._addDependencyToCollection(dependency);
                     this._handleDependencyActionDone();
 
                     return Promise.resolve(true);

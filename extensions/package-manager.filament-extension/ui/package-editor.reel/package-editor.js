@@ -132,7 +132,7 @@ exports.PackageEditor = Montage.create(Editor, {
                     dependencyName = source.dependency.name;
 
                 if (source && typeof source === 'object' && !source.canInstall) { // remove request
-                    this.currentDocument.uninstallDependency(dependencyName).done();
+                    this.currentDocument.uninstallDependency(dependencyName);
                 } else { // install request
                     var dependencyVersion = source.dependency.name,
                         dependencyType = source.dependency.type;
