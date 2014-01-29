@@ -9,30 +9,6 @@
     visibility: hidden;
 }
 
-
-/* Toggle --------------------------------- */
-
-.FileCell .FileCell-toggle {
-	-webkit-appearance: none;
-    position: relative;
-	margin: 0;
-	width: 14px;
-	height: 14px;
-	color: hsl(0,0%,50%);
-	border: none;
-	border-radius: 0;
-	background: url(/assets/icons/toggle.svg) no-repeat left center;
-	background-size: 14px;
-	-webkit-transform-origin: 6px center;
-	-webkit-transition: -webkit-transform .1s ease-in-out;
-}
-
-.FileCell .FileCell-toggle:checked {
-	-webkit-transform: rotate(90deg);
-}
-
-
-
 /* Button --------------------------------- */
 
 .FileCell .FileCell-button {

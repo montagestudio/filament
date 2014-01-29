@@ -203,6 +203,7 @@
 
 .NodeCell .Toggle {
     opacity: 0.25;
+    margin-left: 4px;
 }
 
 /* Add tree elements -------------- */

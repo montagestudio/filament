@@ -41,6 +41,9 @@ exports.TemplateObjectCell = Component.specialize({
 
             // selection
             this.element.addEventListener("click", this, false);
+
+            // save toggle state
+            this.toggle.addEventListener("action", this, false);
         }
     },
 
@@ -220,11 +223,21 @@ exports.TemplateObjectCell = Component.specialize({
         }
     },
 
+    handleToggle: {
+        value: function (evt) {
+            var reelProxy = this.templateObject,
+                editingDocument = reelProxy._editingDocument,
+                expanded = this.expanded.checked;
+
+            editingDocument.templateObjectsTreeToggleStates.set(reelProxy, expanded);
+        }
+    },
+
     canSelect: {
         value: function (evt) {
             // ignore toggle click, hide checkbox
             return !(
-                this.templateObjects.toggleExpanded.element.parentOf(evt.target) ||
+                this.toggle.element === evt.target ||
                 (
                     evt.target.component &&
                     (evt.target.component.identifier === "hiddenCheckbox")

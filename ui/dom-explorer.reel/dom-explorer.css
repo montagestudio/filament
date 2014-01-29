@@ -12,11 +12,11 @@
 }
 
 .NodeList .Tree-list {
-    padding: 8px;
+    padding: 12px;
     padding-bottom: 30px;
     font-size: 11px;
     background: linear-gradient( to right, hsl(0,0%,86%) 0px, hsl(0,0%,86%) 1px, hsla(0,0%,86%,0) 1px );
-    background-size: 20px;
+    background-size: 18px;
     background-clip: content-box;
 }
 
