@@ -23,6 +23,16 @@
     box-shadow: inset 0 1px 2px hsla(0, 0%, 0%, 0.08), 0 1px 0 hsla(0, 100%, 100%, 0.1);
 }
 
+.Library-search.matte-InputText:hover {
+    border-color: hsl(0, 0%, 24%);
+}
+ 
+.Library-search.matte-InputText:focus {
+    border-color: hsl(0, 0%, 24%);
+    background-color: hsl(0, 0%, 30%);
+}
+
+
 /* Search Close Button */
 .Library-search.matte-InputText::-webkit-search-cancel-button {
   margin: 2px 8px 0 4px;
