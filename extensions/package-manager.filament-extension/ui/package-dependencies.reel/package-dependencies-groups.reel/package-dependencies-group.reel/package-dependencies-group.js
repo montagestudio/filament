@@ -117,15 +117,14 @@ exports.PackageDependenciesGroup = Component.specialize(/** @lends PackageDepend
                     var dependency = JSON.parse(dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY));
 
                     if (dependency.type !== this.type) {
-                        //this.editingDocument.switchDependencyType(dependency, this.type).done();
+                        this.editingDocument.switchDependencyType(dependency, this.type).done();
                     }
 
                 } else if (availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_INSTALLATION_DEPENDENCY)) {
                     var module = JSON.parse(dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_INSTALLATION_DEPENDENCY));
 
                     if (module) {
-                        this.editingDocument.performActionDependency(Dependency.INSTALL_DEPENDENCY_ACTION,
-                                new Dependency(module.name, module.version, this.type)).done();
+                        this.editingDocument.installDependency(module.name, module.version, this.type).done();
                     }
                 }
             }

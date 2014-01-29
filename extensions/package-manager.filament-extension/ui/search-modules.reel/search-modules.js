@@ -175,8 +175,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
             var module = event.detail.get('module');
 
             if (this.editingDocument && module && typeof module === 'object' && module.hasOwnProperty('name')) {
-                this.editingDocument.performActionDependency(Dependency.INSTALL_DEPENDENCY_ACTION,
-                    new Dependency(module.name, module.version)).done();
+                this.editingDocument.installDependency(module.name, module.version);
             }
         }
     },

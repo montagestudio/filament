@@ -128,12 +128,17 @@ exports.PackageEditor = Montage.create(Editor, {
     handleDependencyButtonAction: {
         value: function (event) {
             if (this.currentDocument) {
-                var source = event.detail.get('source');
+                var source = event.detail.get('source'),
+                    dependencyName = source.dependency.name;
 
                 if (source && typeof source === 'object' && !source.canInstall) { // remove request
-                    this.currentDocument.performActionDependency(Dependency.REMOVE_DEPENDENCY_ACTION, source.dependency).done();
+                    this.currentDocument.uninstallDependency(dependencyName).done();
                 } else { // install request
-                    this.currentDocument.performActionDependency(Dependency.INSTALL_DEPENDENCY_ACTION, source.dependency).done();
+                    var dependencyVersion = source.dependency.name,
+                        dependencyType = source.dependency.type;
+
+                    this.currentDocument.installDependency(dependencyName, dependencyVersion, dependencyType);
+
                 }
             }
         }

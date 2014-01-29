@@ -7,6 +7,7 @@
         "filament-extension": "*",
         "palette": "*",
         "matte": "*",
+        "q": "*",
         "semver": "*"
     }
 }
