@@ -249,6 +249,28 @@ describe("core/project-controller-file-spec", function () {
                 });
             });
 
+            describe("that is in the process of being closed", function () {
+
+                it("must return a promise for document being closed", function () {
+                    var firstClosePromise =  projectController.closeDocument(openedDocument);
+                    var secondClosePromise = projectController.closeDocument(openedDocument);
+                    expect(secondClosePromise).toBe(firstClosePromise);
+                    firstClosePromise.done();
+                    secondClosePromise.done();
+                });
+
+                it("must return a promise for document being closed", function () {
+                    return Promise.all([
+                        projectController.closeDocument(openedDocument),
+                        projectController.closeDocument(openedDocument)
+                    ]).spread(function (firstDocument, secondDocument) {
+                        expect(secondDocument).toBe(openedDocument);
+                        expect(secondDocument).toBe(firstDocument);
+                    });
+                });
+
+            });
+
         });
 
     });
