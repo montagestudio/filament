@@ -1,6 +1,7 @@
 var EditingDocument = require("palette/core/editing-document").EditingDocument,
     PackageEditor = require("../ui/package-editor.reel").PackageEditor,
     DependencyManager = require('./dependency-manager').DependencyManager,
+    PackageSavingManager = require('./package-saving-manager').PackageSavingManager,
     Promise = require("montage/core/promise").Promise,
     Dependency = require('./dependency').Dependency,
     Tools = require('./package-tools'),
@@ -58,6 +59,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             };
 
             this._dependencyManager = DependencyManager.create().initWithEnvironmentBridge(this.environmentBridge);
+            this._packageSavingManager = PackageSavingManager.create().initWithPackageDocument(this);
 
             this._getOutDatedDependencies();
 
@@ -84,6 +86,10 @@ exports.PackageDocument = EditingDocument.specialize( {
     },
 
     _dependencyManager: {
+        value: null
+    },
+
+    _packageSavingManager: {
         value: null
     },
 
@@ -133,7 +139,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         set: function (name) {
             if (PackageTools.isNameValid(name)) {
                 this._livePackage.name = this._package.name = name;
-                this._modificationsAccepted();
+                this._packageSavingManager.scheduleSaving();
             }
         },
         get: function () {
@@ -145,7 +151,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         set: function (version) {
             if (PackageTools.isVersionValid(version)) {
                 this._livePackage.version = this._package.version = version;
-                this._modificationsAccepted();
+                this._packageSavingManager.scheduleSaving();
             }
         },
         get: function () {
@@ -157,7 +163,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         set: function (description) {
             if (typeof description === 'string') {
                 this._package.description = description;
-                this._modificationsAccepted();
+                this._packageSavingManager.scheduleSaving();
             }
         },
         get: function () {
@@ -171,7 +177,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
             if (author){
                 this._package.author = author;
-                this._modificationsAccepted();
+                this._packageSavingManager.scheduleSaving();
             }
         },
         get: function () {
@@ -183,7 +189,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         set: function (license) {
             if (typeof license === 'string') {
                 this._package.license = license;
-                this._modificationsAccepted();
+                this._packageSavingManager.scheduleSaving();
             }
         },
         get: function () {
@@ -195,7 +201,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         set: function (privacy) {
             if (typeof privacy === "boolean") {
                 this._package.private = privacy;
-                this._modificationsAccepted();
+                this._packageSavingManager.scheduleSaving();
             }
         },
         get: function () {
@@ -206,7 +212,7 @@ exports.PackageDocument = EditingDocument.specialize( {
     homepage: {
         set: function (homepage) {
             this._package.homepage = PackageTools.isUrlValid(homepage) ? homepage : '';
-            this._modificationsAccepted();
+            this._packageSavingManager.scheduleSaving();
         },
         get: function () {
             return this._package.homepage;
@@ -254,7 +260,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                 }
 
                 if (saveModification) {
-                    this.saveModification().done();
+                    this._packageSavingManager.scheduleSaving();
                 }
 
                 return true;
@@ -272,7 +278,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                     this.maintainers.splice(maintainerIndex, 1);
 
                     if (saveModification) {
-                        this.saveModification().done();
+                        this._packageSavingManager.scheduleSaving();
                     }
 
                     return true;
@@ -288,7 +294,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             var maintainerIndex = this._findMaintainerIndex(oldMaintainer);
 
             if (maintainerIndex >= 0 && this.removeMaintainer(maintainerIndex, false) && this.addMaintainer(newMaintainer, false)) {
-                this.saveModification().done();
+                this._packageSavingManager.scheduleSaving();
 
                 return true;
             }
@@ -471,7 +477,6 @@ exports.PackageDocument = EditingDocument.specialize( {
             this.editor.notifyDependenciesListChange(dependency.name, Dependency.INSTALLING_DEPENDENCY_ACTION);
 
             var promise = this._dependencyManager.installDependency(dependency.name, dependency.version).then(function (dependencyInstalled) {
-
                 if (PackageTools.isDependency(dependencyInstalled)) {
 
                     // If names are different or version missing
@@ -611,7 +616,7 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function () {
             if (!this._dependencyManager.isBusy) {
                 this._saveDependencyCollectionToPackageJson();
-                this._modificationsAccepted(DEPENDENCY_TIME_AUTO_SAVE, true);
+                this._packageSavingManager.scheduleSaving(DEPENDENCY_TIME_AUTO_SAVE, true);
             }
         }
     },
@@ -718,7 +723,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
                 if (dependencyCategory && dependencyCategory[dependency.name]) {
                     dependencyCategory[dependency.name] = range.trim();
-                    this._modificationsAccepted(DEFAULT_TIME_AUTO_SAVE, true);
+                    this._packageSavingManager.scheduleSaving(DEFAULT_TIME_AUTO_SAVE, true);
 
                     return true;
                 }
@@ -754,59 +759,30 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    _saveTimer: {
-        value: null
-    },
+    toJSON: {
+        value: function () {
+            return JSON.stringify(this._package, function (key, value) {
 
-    _modificationsAccepted: {
-        value: function (time, updateDependencies) {
-            var self = this;
-            time = (typeof time === "number") ? time : DEFAULT_TIME_AUTO_SAVE;
+                if ((!value && PACKAGE_PROPERTIES_ALLOWED_MODIFY[key]) ||
+                    (Array.isArray(value) && value.length === 0) ||
+                    (value && typeof value === "object" && (Object.keys(value).length === 0 ||
+                        (key === PACKAGE_PROPERTIES_ALLOWED_MODIFY.author && PackageTools.isPersonObjectEmpty(value))))) {
 
-            if (this._saveTimer) {
-                clearTimeout(this._saveTimer);
-            }
-
-            this._saveTimer = setTimeout(function () {
-                self.saveModification(updateDependencies).then(function () {
-                    self._saveTimer = null;
-                }).done();
-            }, time);
-        }
-    },
-
-    saveModification: {
-        value: function (updateDependencies) {
-            var self = this;
-
-            return this.environmentBridge.save(this, this.url).then(function () {
-                if (!!updateDependencies) {
-                    return self._updateDependenciesAfterSaving();
+                    return void 0;
                 }
-            });
-        }
-    },
 
-    _censorPackageJsonField: {
-        value: function (key, value) {
-            if ((!value && PACKAGE_PROPERTIES_ALLOWED_MODIFY[key]) ||
-                (Array.isArray(value) && value.length === 0) ||
-                (typeof value === "object" && (Object.keys(value).length === 0 ||
-                    (key === PACKAGE_PROPERTIES_ALLOWED_MODIFY.author && PackageTools.isPersonObjectEmpty(value))))) {
+                return value;
 
-                return void 0;
-            }
-
-            return value;
+            }, 4);
         }
     },
 
     save: {
         value: function (url, dataWriter) {
             var self = this,
-                jsonPackage = JSON.stringify(this._package, this._censorPackageJsonField, 4);
+                packageJson = this._packageSavingManager.getPackageJson();
 
-            return Promise.when(dataWriter(jsonPackage, url)).then(function (value) {
+            return Promise.when(dataWriter(packageJson, url)).then(function (value) {
                 self._changeCount = 0;
                 self._packageFileChangeByAppCount++;
 
