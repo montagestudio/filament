@@ -151,23 +151,25 @@ exports.PackageQueueManager = Object.create(Object.prototype, {
                 var self = this;
 
                 if (module.strict) {
-                    this._packageDocument.environmentBridge.installPackage(module.request).then(function (installed) {
-                        if (installed && typeof installed === 'object' && installed.hasOwnProperty('name')) { // If the package has been installed.
-                            installed = {
-                                name: installed.name,
-                                versionInstalled: installed.version,
+                    this._packageDocument.environmentBridge.installPackages(module.request).then(function (packageInstalled) {
+                        if (Array.isArray(packageInstalled) && packageInstalled.length > 0) { // If the package has been installed.
+                            var information = packageInstalled[0];
+
+                            packageInstalled = {
+                                name: information.name,
+                                versionInstalled: information.version,
                                 type: module.type,
                                 missing: false,
                                 installed: true
                             };
 
-                            module.deferred.resolve(installed);
+                            module.deferred.resolve(packageInstalled);
 
                         } else {
-                            module.deferred.reject(installed);
+                            module.deferred.reject(packageInstalled);
                         }
 
-                        self._prepareForNext(installed, module.action); // Indicates to the package queue manager, it can perform the next action.
+                        self._prepareForNext(packageInstalled, module.action); // Indicates to the package queue manager, it can perform the next action.
                     }, function (error) {
                         module.deferred.reject(error);
                         self._prepareForNext(module, module.action, true);
