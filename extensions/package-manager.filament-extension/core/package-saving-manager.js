@@ -6,7 +6,7 @@ exports.PackageSavingManager = Montage.specialize({
     initWithPackageDocument: {
         value: function (packageDocument) {
             if (!packageDocument || typeof packageDocument !== "object" || !packageDocument.environmentBridge) {
-                throw new Error("Cannot init DependencyManager with " + packageDocument);
+                throw new Error("Cannot init PackageSavingManager with " + packageDocument);
             }
 
             this._packageDocument = packageDocument;
