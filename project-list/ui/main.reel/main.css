@@ -265,6 +265,13 @@
     background-color: hsl(0,0%,96%);
 }
 
+.History-empty {
+    margin-top: 1em;
+    color: hsl(0, 0%, 70%);
+    text-align: center;
+    font-size: 14px;
+}
+
 .History-list {
     position: relative;
     margin: 0;

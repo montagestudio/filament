@@ -9,8 +9,8 @@ exports.Main = Montage.create(Component, {
         value: "X"
     },
 
-    recentDocuments: {
-        value: null
+    projects: {
+        value: {}
     },
 
     isFirstRun: {

@@ -17,6 +17,10 @@
                 "properties": {
                     "element": {"#": "main"}
                 },
+                "bindings": {
+                    "projects.Recent": {"<-": "@repositoriesController.recentRepositoriesContent.organizedContent"},
+                    "projects.Owned": {"<-": "@repositoriesController.ownedRepositoriesContent.organizedContent"}
+                },
                 "listeners": [
                     {
                         "type": "openDocument",
@@ -169,7 +173,17 @@
                     "removalStrategy": "hide"
                 },
                 "bindings": {
-                    "condition": {"<-": "@historyProgress.max == @historyProgress.value && @owner.recentDocuments.length == 0"}
+                    "condition": {"<-": "@historyProgress.max == @historyProgress.value && @owner.projects.Owned.length == 0"}
+                }
+            },
+
+            "historyEmptyTitle": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "historyEmptyTitle"}
+                },
+                "localizations": {
+                    "value": {"key": "empty_projects"}
                 }
             },
 
@@ -222,6 +236,9 @@
                 "bindings": {
                     "value": {
                         "<-": "@repositoryGroupList:iteration.object"
+                    },
+                    "enabled": {
+                        "<-": "@owner.projects[@repositoryGroupList:iteration.object.name].length != 0"
                     }
                 }
              },
@@ -309,7 +326,9 @@
                     </li>
                 </ul>
                 <div data-montage-id="historyProgress" class="History-progress"></div>
-                <div data-montage-id="historyEmpty">No Montage repositories where found :(</div>
+                <div data-montage-id="historyEmpty" class="History-empty">
+                    <span data-montage-id="historyEmptyTitle"></span>
+                </div>
                 <ul class="History-list" data-montage-id="historyList">
                     <li class="History-list-item" data-montage-id="historyListItem"></li>
                 </ul>

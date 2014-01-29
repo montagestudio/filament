@@ -136,8 +136,15 @@
         ]
     },
     "recent_projects": {
-        "message": "Recent Projects",
+        "message": "Projects",
         "description": "Title for the projects the user has most recently worked on",
+        "locations": [
+            "welcome/ui/main.reel/main.html"
+        ]
+    },
+    "empty_projects": {
+        "message": "No Montage projects found",
+        "description": "Text to show to the user when there is no Montage project available",
         "locations": [
             "welcome/ui/main.reel/main.html"
         ]
