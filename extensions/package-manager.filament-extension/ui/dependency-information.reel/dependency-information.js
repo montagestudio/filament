@@ -79,7 +79,7 @@ exports.DependencyInformation = Component.specialize(/** @lends DependencyInform
 
             this.editingDocument.installDependency(dependencyName, dependencyVersion, dependencyType).then(function () {
                 ErrorPanel.isFixing = false;
-            }).done();
+            });
         }
     }
 
