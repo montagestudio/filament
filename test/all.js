@@ -3,7 +3,6 @@ require.inject("adaptor/client/core/file-descriptor", require("./mocks/file-desc
 require("montage-testing").run(require, [
     // Please keep in alphabetical order
     "extensions/package-manager.filament-extension/test/package-document-spec.js",
-    "extensions/package-manager.filament-extension/test/package-queue-manager-spec.js",
     "extensions/package-manager.filament-extension/test/package-tools-spec.js",
     "test/core/asset-manager-spec",
     "test/core/node-proxy-spec",
