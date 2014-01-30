@@ -130,10 +130,14 @@
 
 .TemplateExplorer-list-item {
     border: 1px solid hsl(0,0%,70%);
-    border-radius: 5px;
-    overflow:hidden;
+    border-radius: 6px;
+    overflow: hidden;
     margin: 4px 0;
     background-color: hsl(0,0%,96%)
+}
+
+.TemplateObjectCell--isInProjectPackage .TemplateExplorer-list-item {
+    border-radius: 0;
 }
 
 
@@ -150,10 +154,6 @@
     -wekit-flex-direction: column;
     width: 22px;
     height: 100%;
-}
-
-.TemplateExplorer-list-item.TemplateObjectCell--isInProjectPackage {
-    border-radius: 0;
 }
 
 .TemplateObjectCell {
