@@ -1,57 +1,33 @@
-.LoaderWrapper {
+.Loader {
+    display: none;
     position: absolute;
     top: 34px;
     right: 0;
     bottom: 0;
     left: 0;
-    display: -webkit-box;
-    -webkit-box-align: center;
-    -webkit-box-pack: center;
 }
 
-.Loader {
-    position: relative;
-    font-size: 0;
+.montage-app-bootstrapping .Loader,
+.montage-app-loading .Loader {
+    display: flex;
 }
 
-.montage-app-bootstrapping .Loader-cube,
-.montage-app-loading .Loader-cube {
-    display: block;
+.Loader-icon {
+    margin: auto;
 }
 
-.Loader-cube {
-    display: none;
-    position: absolute;
-    margin: -20px;
-    width: 40px;
-    height: 40px;
-    opacity: .5;
-    -webkit-mask: url(../img/icon.svg) no-repeat center center;
-    -webkit-mask-size: 100%;
+.Loader-icon-path {
+    opacity: .7;
     -webkit-animation: blink 1.2s 0s steps(1) infinite;
 }
 
 @-webkit-keyframes blink { 50% { opacity: 1; } }
 
-.Loader-cube:nth-child(1) {
-    top: -24px;
-    left: 0px;
-    background-color: #B8CE36;
-    -webkit-transform: rotate(70deg);
-}
-
-.Loader-cube:nth-child(2) {
-    top: 24px;
-    left: -24px;
-    background-color: #F47E18;
+.Loader-icon-path--2 {
     -webkit-animation-delay: .4s;
 }
 
-.Loader-cube:nth-child(3) {
-    top: 24px;
-    left: 24px;
-    background-color: #56AAF6; 
-    -webkit-transform: rotate(-145deg);
+.Loader-icon-path--3 {
     -webkit-animation-delay: .8s;
 }
 
