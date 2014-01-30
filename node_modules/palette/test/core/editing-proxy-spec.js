@@ -94,7 +94,7 @@ describe("core/editing-proxy-spec", function () {
             });
 
             expect(listener.handleEvent.callCount).toBe(1);
-        })
+        });
     });
 
     describe("propertiesChangeDispatchingEnabled", function() {

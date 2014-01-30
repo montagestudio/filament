@@ -8,8 +8,8 @@
     },
     "dependencies": {
         "montage": "git+ssh://git@github.com:montagejs/montage.git#1289311fde56c00d918496b687fa25833c167d02",
-        "matte": "git+ssh://git@github.com:montagejs/matte.git#ed593caeed63dc337e3ceff7d70f144f79dc1697",
-        "palette": "git+ssh://git@github.com:declarativ/palette.git#2b671d35ce5dcb4fd6a92e7528bcd843defaa383",
+        "matte": "git+ssh://git@github.com:montagejs/matte.git#30ab3c59fa496186a758a2fe7b287b7d5e73a4f2",
+        "palette": "git+ssh://git@github.com:declarativ/palette.git#be46276eeb655bb28368ab993b264667ecbc3b5f",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#v0.14.0",
         "minit": "git+ssh://git@github.com:montagejs/minit.git#44d9db21972f93e036d1bfd6ef6eb17bea2d4922",
         "mousse": "0.3.0",

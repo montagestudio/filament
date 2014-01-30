@@ -1,7 +1,6 @@
 var Target = require("montage/core/target").Target,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
-    Map = require("montage/collections/map"),
-    application = require("montage/core/application").application;
+    Map = require("montage/collections/map");
 
 /**
  @class module:palette/coreediting-proxy.EditingProxy
