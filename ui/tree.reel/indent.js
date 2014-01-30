@@ -9,7 +9,6 @@ exports.Indent = Montage.create(Component, {
         value: function Indent() {
             this.super();
             this.depth = null;
-            this.addOwnPropertyChangeListener("depth", this);
         }
     },
 
@@ -25,8 +24,21 @@ exports.Indent = Montage.create(Component, {
         }
     },
 
-    iteration: {
+    _iteration: {
         value: null
+    },
+
+    iteration: {
+        get: function() {
+            return this._iteration;
+        },
+        set: function(value) {
+            if (this._iteration !== value) {
+                this._iteration = value;
+                this.depth = value && value.depth;
+                this.needsDraw = true;
+            }
+        }
     },
 
     depth: {

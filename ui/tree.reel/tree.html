@@ -30,14 +30,12 @@
         },
 
         "row": {
-            "prototype": "ui/tree.reel/indent",
+            "prototype": "./indent",
             "properties": {
                 "element": {"#": "row"}
             },
             "bindings": {
                 "iteration": {"<-": "@list:iteration.object"},
-                "depth": {"<-": "@list:iteration.object.depth"},
-                "object": {"<-": "@list:iteration.object.content"},
                 "ignoreRoot": {"<-": "@owner.ignoreRoot"}
             }
         },
