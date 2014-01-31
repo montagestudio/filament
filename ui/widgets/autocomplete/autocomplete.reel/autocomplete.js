@@ -566,8 +566,6 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
                     this.resultsController.selection = [this.suggestions[this.activeItemIndex]];
                     e.preventDefault();
                     // select the currently active item in the results list
-                } else {
-                    this.suggestedValue = this.tokens[this.tokens.length-1];
                 }
 
                 break;
@@ -576,10 +574,14 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
                 if (popup.displayed) {
                     var suggestion = this.suggestions[this.activeItemIndex],
                         newSuggestion = suggestion + ".";
+
                     // Hack to simulate user input
+                    this.activeTokenIndex = this.tokens.length - 1;
                     this.suggestions.push(newSuggestion);
-                    this.activeTokenIndex--;
+                    this.tokens.pop();
+                    this.tokens.push(newSuggestion);
                     // End Of Hack
+
                     this.resultsController.selection = [newSuggestion];
                     this.performSearch(newSuggestion);
                 }
