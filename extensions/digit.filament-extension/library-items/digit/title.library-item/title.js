@@ -15,6 +15,10 @@ exports.Title = LibraryItem.specialize({
         value: "Title"
     },
 
+    description: {
+        value: "Provides functionality for adding a block element with a bold weight."
+    },
+
     iconUrl: {
         value: moduleLocation + "title.png"
     }

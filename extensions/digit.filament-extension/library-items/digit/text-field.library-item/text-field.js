@@ -15,6 +15,10 @@ exports.TextField = LibraryItem.specialize({
         value: "Text Field"
     },
 
+    description: {
+        value: "Displays single-line text that the user can edit and select."
+    },
+
     iconUrl: {
         value: moduleLocation + "text-field.png"
     }

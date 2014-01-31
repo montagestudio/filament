@@ -15,6 +15,10 @@ exports.Slider = LibraryItem.specialize({
         value: "Slider"
     },
 
+    description: {
+        value: "Displays a range of values for a feature in the application."
+    },
+
     iconUrl: {
         value: moduleLocation + "slider.png"
     }

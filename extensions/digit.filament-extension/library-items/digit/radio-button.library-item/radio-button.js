@@ -15,6 +15,10 @@ exports.RadioButton = LibraryItem.specialize({
         value: "Radio Button"
     },
 
+    description: {
+        value: "Provides radio button (single option) functionality."
+    },
+
     iconUrl: {
         value: moduleLocation + "radio-button.png"
     }

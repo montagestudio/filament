@@ -15,6 +15,10 @@ exports.TextArea = LibraryItem.specialize({
         value: "Text Area"
     },
 
+    description: {
+        value: "Displays multiline text that the user can edit and select."
+    },
+
     iconUrl: {
         value: moduleLocation + "text-area.png"
     }

@@ -15,6 +15,10 @@ exports.Image = LibraryItem.specialize({
         value: "Image"
     },
 
+    description: {
+        value: "Displays a single image."
+    },
+
     iconUrl: {
         value: moduleLocation + "image.png"
     }

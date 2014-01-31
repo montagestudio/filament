@@ -15,6 +15,10 @@ exports.Button = LibraryItem.specialize({
         value: "Button"
     },
 
+    description: {
+        value: "Reacts to click or tap events and sends an action message to a target object."
+    },
+
     iconUrl: {
         value: moduleLocation + "button.png"
     }

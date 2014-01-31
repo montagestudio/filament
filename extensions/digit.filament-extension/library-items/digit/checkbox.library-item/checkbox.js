@@ -15,6 +15,10 @@ exports.Checkbox = LibraryItem.specialize({
         value: "Checkbox"
     },
 
+    description: {
+        value: "Provides check box (multichoice) functionality."
+    },
+
     iconUrl: {
         value: moduleLocation + "checkbox.png"
     }

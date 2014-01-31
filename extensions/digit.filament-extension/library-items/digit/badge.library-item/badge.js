@@ -15,6 +15,10 @@ exports.Badge = LibraryItem.specialize({
         value: "Badge"
     },
 
+    description: {
+        value: "Displays whole numbers and can be used as a notification counter."
+    },
+
     iconUrl: {
         value: moduleLocation + "badge.png"
     }

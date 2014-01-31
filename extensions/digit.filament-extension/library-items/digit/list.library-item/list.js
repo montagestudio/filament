@@ -15,6 +15,10 @@ exports.List = LibraryItem.specialize({
         value: "List"
     },
 
+    description: {
+        value: "Configured for adding multi-item lists."
+    },
+
     iconUrl: {
         value: moduleLocation + "list.png"
     }

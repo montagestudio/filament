@@ -15,6 +15,10 @@ exports.NumberField = LibraryItem.specialize({
         value: "Number Field"
     },
 
+    description: {
+        value: "Displays numbers that the user can select, edit, or increase or decrease using the spinner controls."
+    },
+
     iconUrl: {
         value: moduleLocation + "number-field.png"
     }

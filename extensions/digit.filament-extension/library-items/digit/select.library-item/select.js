@@ -15,6 +15,10 @@ exports.Select = LibraryItem.specialize({
         value: "Select"
     },
 
+    description: {
+        value: "Provides pop-up list functionality."
+    },
+
     iconUrl: {
         value: moduleLocation + "select.png"
     }
