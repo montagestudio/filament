@@ -13,7 +13,8 @@ var TextInput = require("matte/ui/text-input").TextInput,
 
 var KEY_UP = 38,
     KEY_DOWN = 40,
-    KEY_ENTER = 13;
+    KEY_ENTER = 13,
+    KEY_DOT = 190;
 
 var getElementPosition = function(obj) {
     var curleft = 0, curtop = 0, curHt = 0, curWd = 0;
@@ -178,7 +179,6 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
                 }
 
             } else {
-                this.showPopup = false;
                 this._valueSyncedWithInputField = false;
                 this.needsDraw = true;
             }
@@ -495,7 +495,8 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
 
     handleKeydown: {
         value: function (evt) {
-            var code = evt.keyCode;
+            var code = evt.keyCode,
+                popup = this._getPopup();
             switch(code) {
             case KEY_DOWN:
                 evt.preventDefault();
@@ -503,6 +504,12 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
 
             case KEY_UP:
                 evt.preventDefault();
+                break;
+
+            case KEY_DOT:
+                if (popup.displayed) {
+                    evt.preventDefault();
+                }
                 break;
             }
         }
@@ -565,11 +572,25 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
 
                 break;
 
+            case KEY_DOT:
+                if (popup.displayed) {
+                    var suggestion = this.suggestions[this.activeItemIndex],
+                        newSuggestion = suggestion + ".";
+                    // Hack to simulate user input
+                    this.suggestions.push(newSuggestion);
+                    this.activeTokenIndex--;
+                    // End Of Hack
+                    this.resultsController.selection = [newSuggestion];
+                    this.performSearch(newSuggestion);
+                }
+
+                break;
+
             }
             this.element.focus();
         }
     },
-    
+
     _highlightPrevious: {
         value: function () {
             if (this.activeItemIndex > 0) {
@@ -579,7 +600,7 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
             }
         }
     },
-    
+
     _highlightNext: {
         value: function () {
             var list = this.suggestions || [];
