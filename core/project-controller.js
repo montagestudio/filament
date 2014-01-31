@@ -314,6 +314,14 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+
+    writeFile: {
+        value: function(name, data) {
+            this.environmentBridge.writeFile(name, data);
+        }
+    },
+
+
     // DOCUMENT HANDLING
 
     // The controller that facilittates bringing editors components
