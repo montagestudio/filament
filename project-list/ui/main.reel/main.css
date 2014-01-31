@@ -23,6 +23,7 @@
     -webkit-align-items: center;
     -webkit-justify-content: center;
     padding: 20px;
+    color: hsl(0,0%,36%);
     -webkit-animation: Intro-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
 }
 
@@ -52,6 +53,10 @@
     background-size: auto 100%;
 }
 
+.Intro-title {
+    color: hsl(0,0%,10%);
+}
+
 .Intro-version {
     font-size: 11px;
     color: hsl(0, 0%, 70%);
@@ -71,6 +76,10 @@
     font-size: 11px;
     color: hsl(0, 0%, 70%);
     text-align: center;
+}
+
+.Intro-links {
+    margin: 0;
 }
 
 
