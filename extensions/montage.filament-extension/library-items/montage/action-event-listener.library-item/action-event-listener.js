@@ -15,6 +15,10 @@ exports.ActionEventListener = LibraryItem.specialize({
         value: "ActionEventListener"
     },
 
+    description: {
+        value: "Defines what should be done in reaction to an event."
+    },
+
     iconUrl: {
         value: moduleLocation + "action-event-listener.png"
     }

@@ -15,6 +15,10 @@ exports.Flow = LibraryItem.specialize({
         value: "Flow"
     },
 
+    description: {
+        value: "Produces a repeating group of elements that can be presented along a Bézier path."
+    },
+
     iconUrl: {
         value: moduleLocation + "flow.png"
     }

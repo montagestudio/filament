@@ -15,6 +15,10 @@ exports.Text = LibraryItem.specialize({
         value: "Text"
     },
 
+    description: {
+        value: "Provides functionality for adding plain text."
+    },
+
     iconUrl: {
         value: moduleLocation + "text.png"
     }

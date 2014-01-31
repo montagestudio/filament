@@ -15,6 +15,10 @@ exports.Slot = LibraryItem.specialize({
         value: "Slot"
     },
 
+    description: {
+        value: "Use as a placeholder for a planned component."
+    },
+
     iconUrl: {
         value: moduleLocation + "slot.png"
     }

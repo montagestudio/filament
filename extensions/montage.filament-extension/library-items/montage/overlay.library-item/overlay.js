@@ -15,6 +15,10 @@ exports.Overlay = LibraryItem.specialize({
         value: "Overlay"
     },
 
+    description: {
+        value: "Positions content over a page; can used in combination with any component."
+    },
+
     iconUrl: {
         value: moduleLocation + "overlay.png"
     }

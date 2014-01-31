@@ -15,6 +15,10 @@ exports.Condition = LibraryItem.specialize({
         value: "Condition"
     },
 
+    description: {
+        value: "Displays content if a certain condition is true."
+    },
+
     iconUrl: {
         value: moduleLocation + "condition.png"
     }
