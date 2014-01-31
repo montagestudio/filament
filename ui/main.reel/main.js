@@ -39,7 +39,63 @@ exports.Main = Montage.create(Component, {
                 } else {
                     document.addEventListener("save", this, false);
                 }
+
+                document.body.addEventListener("dragenter", this.showDropzone.bind(this), true);
+                document.body.addEventListener("dragover", function(e) {
+                    console.log("over");
+                    // Drag-n-drop API makes no sense.
+                    e.stopPropagation();
+                    e.preventDefault();
+                }, false);
             }
+        }
+    },
+
+    showDropzone: {
+        value: function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            if (this._dropZone) {
+                return;
+            }
+
+            document.body.classList.add("file-dropping");
+
+            var dropZone = document.createElement("div");
+            dropZone.className = "dropZone";
+            document.body.appendChild(dropZone);
+            dropZone.addEventListener("dragleave", this.handleDragLeave.bind(this), true);
+            dropZone.addEventListener("drop", this.handleDrop.bind(this), false);
+
+            this._dropZone = dropZone;
+        }
+    },
+
+    handleDrop: {
+        value: function(e) {
+            this.handleDragLeave(e);
+            var firstFile = e.dataTransfer.files[0]; // TODO: read all files.
+            var reader = new FileReader();
+            reader.readAsBinaryString(firstFile);
+
+            reader.onload = function(e) {
+                var base64 = btoa(e.target.result);
+                this.projectController.writeFile(firstFile.name || "file_name.txt", base64);
+            }.bind(this);
+
+            reader.onerror = function(e) {
+                console.warn('Error reading', firstFile.name, e);
+            };
+        }
+    },
+
+    handleDragLeave: {
+        value: function(e) {
+            this.handleDragleave(e);
+            document.body.classList.remove("file-dropping");
+            this._dropZone.remove();
+            this._dropZone = null;
         }
     },
 
