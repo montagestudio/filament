@@ -76,3 +76,9 @@ There are also two other commands:
 
 * `npm run package-deps-clean`, to remove `node_modules` and install all dependencies again.
 * `npm run package-deps-update`, to run `npm update`.
+
+NOTE if you are updating the montage dependency
+You'll need to `git cherry-pick a726100b247ae1d9239793003fd2522956a61053`
+to preserve the MR `withCredentials` hack that lets the stage work
+in environments that require authorization tokens.
+This is a temporary problem until Mr adopts a strategy for this behavior.
