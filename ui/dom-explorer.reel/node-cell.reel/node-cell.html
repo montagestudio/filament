@@ -310,11 +310,11 @@
         "textNode": {
             "prototype": "ui/textarea-editor.reel",
             "properties": {
-                "element": {"#": "textNode"},
-                "abbreviation" : "#text"
+                "element": {"#": "textNode"}
             },
             "bindings": {
-                "value": {"<->": "@owner.nodeInfo.nodeValue"}
+                "value": {"<->": "@owner.nodeInfo.nodeValue"},
+                "abbreviation" : {"<-": "@owner.nodeInfo.nodeValue.trim()"}
             },
             "listeners": [
                 {

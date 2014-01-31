@@ -225,3 +225,10 @@
     height: 66px;
     font-size: inherit;
 }
+
+.NodeCell-segment-textNode .TextareaEditor .TextareaEditorAbbreviation {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
