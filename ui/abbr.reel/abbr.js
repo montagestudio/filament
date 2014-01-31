@@ -1,4 +1,5 @@
 /**
+ * Expose to Montage an ABBR (abbreviation) tag
  * @module ui/abbr.reel
  * @requires montage/ui/component
  */
