@@ -262,7 +262,7 @@
     transition: opacity .25s ease-in-out;
 }
 
-.NodeCell--collapse .NodeCell {
+.NodeCell--collapseDom .NodeCell {
     height: 1px;
     /* We set these margins so that consecutive dom nodes don't end up,
     /* visually, in the same line. */
@@ -270,11 +270,11 @@
     margin-bottom: 1px;
 }
 
-.NodeCell--collapse .NodeCell-removeButtonCondition,
-.NodeCell--collapse .NodeCell-toggle {
+.NodeCell--collapseDom .NodeCell-removeButtonCondition,
+.NodeCell--collapseDom .NodeCell-toggle {
     opacity: 0;
 }
 
-.NodeCell--collapse .NodeCell-segment {
+.NodeCell--collapseDom .NodeCell-segment {
     height: 0;
 }
