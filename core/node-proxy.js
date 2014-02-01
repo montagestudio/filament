@@ -1,11 +1,11 @@
-var Montage = require("montage").Montage,
+var Target = require("montage/core/target").Target,
     NodeProxy;
 
 var MONTAGE_ID_ATTRIBUTE = "data-montage-id",
     MONTAGE_ARG_ATTRIBUTE = "data-arg",
     MONTAGE_PARAM_ATTRIBUTE = "data-param";
 
-exports.NodeProxy = NodeProxy = Montage.specialize({
+exports.NodeProxy = NodeProxy = Target.specialize({
 
     constructor: {
         value: function NodeProxy() {
@@ -27,6 +27,8 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
             attributeMap[MONTAGE_ARG_ATTRIBUTE] = "montageArg";
             attributeMap[MONTAGE_PARAM_ATTRIBUTE] = "montageParam";
 
+            this.addPathChangeListener("component.label", this, "_dispatchPropertiesChange");
+            this.addPathChangeListener("children.length", this, "_dispatchPropertiesChange");
         }
     },
 
@@ -130,6 +132,7 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
 
             parent.replaceChild(newNode, currentNode);
             this._templateNode = newNode;
+            this._dispatchPropertiesChange();
         }
     },
 
@@ -139,6 +142,7 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
         },
         set: function (value) {
             this.setAttribute(MONTAGE_ID_ATTRIBUTE, value);
+            this._dispatchPropertiesChange();
         }
     },
 
@@ -148,6 +152,7 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
         },
         set: function (value) {
             this.setAttribute(MONTAGE_ARG_ATTRIBUTE, value);
+            this._dispatchPropertiesChange();
         }
     },
 
@@ -157,6 +162,7 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
         },
         set: function (value) {
             this.setAttribute(MONTAGE_PARAM_ATTRIBUTE, value);
+            this._dispatchPropertiesChange();
         }
     },
 
@@ -235,8 +241,20 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
         }
     },
 
-    component: {
+    _component: {
         value: null
+    },
+
+    component: {
+        get: function() {
+            return this._component;
+        },
+        set: function(value) {
+            if (value !== this._component) {
+                this._component = value;
+                this._dispatchPropertiesChange();
+            }
+        }
     },
 
     isInTemplate: {
@@ -290,6 +308,13 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
             }
 
             return nodeProxy;
+        }
+    },
+
+    // PROPERTIES DISPATCHING, USED FOR MANUAL BINDINGS
+    _dispatchPropertiesChange: {
+        value: function() {
+            this.dispatchEventNamed("propertiesChange", true, false);
         }
     }
 });
