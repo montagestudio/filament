@@ -111,6 +111,31 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
+
+        "treeTypeController": {
+            "prototype": "montage/core/radio-button-controller",
+            "bindings": {
+                "value": {"<->": "@owner.collapseNonComponents"}
+            }
+        },
+
+        "domTree": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#":"domTree"},
+                "radioButtonController": {"@": "treeTypeController"},
+                "value": false
+            }
+        },
+
+        "componentTree": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#":"componentTree"},
+                "radioButtonController": {"@": "treeTypeController"},
+                "value": true
+            }
         }
 
     }
@@ -118,6 +143,12 @@
 </head>
 <body>
     <div data-montage-id="dom-explorer" class="DomExplorer preshift">
+        <div class="DomExplorer-toggleTreeWrapper">
+            <div class="DomExplorer-toggleTree">
+                <input data-montage-id="domTree" class="DomExplorer-radio DomExplorer-radio--domTree" type="radio" name="direction">
+                <input data-montage-id="componentTree" class="DomExplorer-radio DomExplorer-radio--componentTree" type="radio" name="direction">
+            </div>
+        </div>
         <div data-montage-id="nodeList" class="NodeList">
             <div data-montage-id="nodeCell" data-arg="treeNode"></div>
         </div>

@@ -640,9 +640,9 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             // @owner: classList.has('NodeCell--selected') <- @owner.domExplorer.editingDocument.selectedElements.has(@owner.nodeInfo)
             this.changeClassListItem(this.classList, 'NodeCell--selected', selectedElements && selectedElements.indexOf(nodeInfo) >= 0);
 
-            this.changeClassListItem(this.classList, 'NodeCell--collapse', nodeInfo && !nodeInfo.component && domExplorer && domExplorer.collapseNonComponents);
-
             // Need to correct the indentation if we're only showing components
+            // new
+            this.changeClassListItem(this.classList, 'NodeCell--collapseDom', nodeInfo && !nodeInfo.component && domExplorer && domExplorer.collapseNonComponents);
             var isComponentTreeNode = nodeInfo && nodeInfo.component && domExplorer && domExplorer.collapseNonComponents;
             if (this._isComponentTreeNode !== isComponentTreeNode) {
                 this._isComponentTreeNode = isComponentTreeNode;

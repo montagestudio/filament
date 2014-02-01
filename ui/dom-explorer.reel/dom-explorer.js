@@ -130,6 +130,22 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
+    _collapseNonComponents: {
+        value: false
+    },
+
+    collapseNonComponents: {
+        get: function() {
+            return this._collapseNonComponents;
+        },
+        set: function(value) {
+            if (this._collapseNonComponents !== value) {
+                this._collapseNonComponents = value;
+                this._dispatchPropertiesChange();
+            }
+        }
+    },
+
     handleClick: {
         value: function (evt) {
             var target = evt.target;
