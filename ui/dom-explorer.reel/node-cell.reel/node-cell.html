@@ -11,20 +11,8 @@
                 "_nodeSegment": {"#": "nodeSegment"}
             },
             "bindings": {
-                "classList.has('NodeCell--owner')": {
-                    "<-": "nodeInfo.component.label == 'owner'"
-                },
                 "classList.has('NodeCell--dropTarget')": {
                     "<-": "isDropTarget"
-                },
-                "classList.has('NodeCell--noChildren')": {
-                    "<-": "!@owner.nodeInfo.children.length"
-				},
-                "classList.has('NodeCell--highlighted')": {
-                    "<-": "@owner.domExplorer.highlightedElement == @owner.nodeInfo"
-                },
-                "classList.has('NodeCell--selected')": { 
-                    "<-": "@owner.domExplorer.editingDocument.selectedElements.has(@owner.nodeInfo)"
                 }
             }
         },
@@ -33,9 +21,6 @@
             "prototype": "ui/text-editor-field.reel",
             "properties": {
                 "element": {"#": "tagName"}
-            },
-            "bindings": {
-                "value": {"<-": "@owner.nodeInfo.tagName"}
             },
             "listeners": [
                 {
@@ -50,9 +35,6 @@
             "properties": {
                 "element": {"#": "montageId"}
             },
-            "bindings": {
-                "value": {"<-": "@owner.nodeInfo.montageId"}
-            },
             "listeners": [
                 {
                     "type": "action",
@@ -65,9 +47,6 @@
             "prototype": "ui/text-editor-field.reel",
             "properties": {
                 "element": {"#": "montageArg"}
-            },
-            "bindings": {
-                "value": {"<-": "@owner.nodeInfo.montageArg"}
             },
             "listeners": [
                 {
@@ -82,9 +61,6 @@
             "properties": {
                 "element": {"#": "montageParam"}
             },
-            "bindings": {
-                "value": {"<-": "@owner.nodeInfo.montageParam"}
-            },
             "listeners": [
                 {
                     "type": "action",
@@ -98,9 +74,6 @@
             "properties": {
                 "element": {"#": "componentCondition"},
                 "removalStrategy": "hide"
-            },
-            "bindings": {
-                "condition": {"<-": "@owner.nodeInfo.component"}
             }
         },
 
@@ -108,9 +81,6 @@
             "prototype": "montage/ui/text.reel",
             "properties": {
                 "element": {"#": "componentLabel"}
-            },
-            "bindings": {
-                "value": {"<-": "@owner.nodeInfo.component.label"}
             }
         },
 
@@ -149,9 +119,6 @@
             "properties": {
                 "element": {"#": "canRemoveNodeCondition"},
                 "removalStrategy": "hide"
-            },
-            "bindings": {
-                "condition": {"<-": "@owner.nodeInfo.canRemoveNode"}
             }
         },
 
@@ -173,9 +140,6 @@
             "properties": {
                 "element": {"#": "canAppendNodeCondition"},
                 "removalStrategy": "hide"
-            },
-            "bindings": {
-                "condition": {"<-": "0 == @owner.nodeInfo.children.length && @owner.nodeInfo.canAppendToNode && !@montageId.isEditing"}
             }
         },
 
@@ -184,9 +148,6 @@
             "properties": {
                 "element": {"#": "canInsertBeforeNodeCondition"},
                 "removalStrategy": "hide"
-            },
-            "bindings": {
-                "condition": {"<-": "@owner.nodeInfo.canInsertBeforeNode && && !@montageId.isEditing"}
             }
         },
 
@@ -195,9 +156,6 @@
             "properties": {
                 "element": {"#": "canInsertAfterNodeCondition"},
                 "removalStrategy": "hide"
-            },
-            "bindings": {
-                "condition": {"<-": "!@owner.nodeInfo.nextSibling &&  @owner.nodeInfo.canInsertAfterNode && !@montageId.isEditing"}
             }
         },
 
@@ -216,10 +174,7 @@
             "properties": {
                 "element": {"#": "hasChildrenCondition"},
                 "removalStrategy": "hide"
-            },
-            "bindings": {
-                "condition": {"<-": "@owner.nodeInfo.children.length"}
-            } 
+            }
         },
 
         "addChildElement": {
@@ -227,9 +182,6 @@
             "properties": {
                 "element": {"#": "addChildElement"},
                 "type": "child"
-            },
-            "bindings": {
-                "classList.has('dropover')": {"<-": "@owner.domExplorer.addElementNodeHover == @owner"}
             },
             "listeners": [
                 {
@@ -253,9 +205,6 @@
                 "element": {"#": "addElementAfter"},
                 "type": "after"
             },
-            "bindings": {
-                "classList.has('dropover')": {"<-": "@owner.domExplorer.addElementNodeHover == @owner"}
-            },
             "listeners": [
                 {
                     "type": "insertTemplateAction",
@@ -277,9 +226,6 @@
             "properties": {
                 "element": {"#": "addElementBefore"},
                 "type": "before"
-            },
-            "bindings": {
-                "classList.has('dropover')": {"<-": "@owner.domExplorer.addElementNodeHover == @owner"}
             },
             "listeners": [
                 {
