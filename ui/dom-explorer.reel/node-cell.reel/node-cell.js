@@ -488,6 +488,19 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
+    draw: {
+        value: function() {
+            if (this._isComponentTreeNode) {
+                var depth = this.treeControllerNode.depth - this._componentDepth;
+                var indentValue = this._indentValue;
+                var indentUnit = this._indentUnit;
+                this.element.style.marginLeft = -(indentValue * depth) + indentUnit;
+            } else {
+                this.element.style.marginLeft = "0";
+            }
+        }
+    },
+
     /// MANUAL BINDINGS
     _data: {
         value: null
@@ -504,6 +517,8 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                     this.treeControllerNode = value;
                     this.nodeInfo = value.content;
                     this.isExpanded = value.expanded;
+                    this._indentValue = this.parentComponent.indentValue;
+                    this._indentUnit = this.parentComponent.indentUnit;
                 }
             }
         }
@@ -621,6 +636,25 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             this.changeClassListItem(this.classList, 'NodeCell--highlighted', highlightedElement === nodeInfo);
             // @owner: classList.has('NodeCell--selected') <- @owner.domExplorer.editingDocument.selectedElements.has(@owner.nodeInfo)
             this.changeClassListItem(this.classList, 'NodeCell--selected', selectedElements && selectedElements.indexOf(nodeInfo) >= 0);
+
+            this.changeClassListItem(this.classList, 'NodeCell--collapse', nodeInfo && !nodeInfo.component && domExplorer && domExplorer.collapseNonComponents);
+
+            // Need to correct the indentation if we're only showing components
+            var isComponentTreeNode = nodeInfo && nodeInfo.component && domExplorer && domExplorer.collapseNonComponents;
+            if (this._isComponentTreeNode !== isComponentTreeNode) {
+                this._isComponentTreeNode = isComponentTreeNode;
+                if (isComponentTreeNode) {
+                    var node = nodeInfo;
+                    var depth = 0;
+                    while (node = /*assignment*/ node.parentNode) {
+                        if (node.component) {
+                            depth++;
+                        }
+                    }
+                    this._componentDepth = depth;
+                }
+                this.needsDraw = true;
+            }
         }
     },
 
