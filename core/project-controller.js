@@ -237,6 +237,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             // preventing the file list from appearing in a timely manner.
             return Promise.all([this.populateFiles(), packagePromise])
                 .then(function () {
+
+                    // Expand the ui directory by default, it;'s usually the first thing we open
+                    application.dispatchEventNamed("expandTree", true, true, "ui/");
+
                     // don't need to wait for this to complete
                     self.watchForFileChanges();
                     // need these before getting the library items
