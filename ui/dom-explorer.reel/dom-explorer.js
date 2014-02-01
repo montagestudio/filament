@@ -51,24 +51,20 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
                 if (value) {
                     this._editDocumentRangeListenerCancel = value.addRangeAtPathChangeListener("selectedElements", this, "handleSelectedElementsChange");
                 }
-            }
-        }
-    },
 
-    editingDocument: {
-        get: function() {
-            return this._editingDocument;
-        },
-        set: function(value) {
-            this._editingDocument = value;
-            if (value && this.templateObjects) {
-                if (!value.templateBodyNode) {
-                    return;
+                if (value && this.templateObjects) {
+                    if (!value.templateBodyNode) {
+                        return;
+                    }
+                    window.X = true;
+                    console.timeStamp("START");
+                    var startTime = window.performance.now();
+                    this.templateObjects.nodeTreeController.content = value.templateBodyNode.children[0];
+                    var endTime = window.performance.now();
+                    console.timeStamp("END");
+                    window.X = false;
+                    console.log("dom-explorer: ", endTime - startTime);
                 }
-                var startTime = window.performance.now();
-                this.templateObjects.nodeTreeController.content = value.templateBodyNode.children[0];
-                var endTime = window.performance.now();
-                console.log("dom-explorer: ", endTime - startTime);
             }
         }
     },
