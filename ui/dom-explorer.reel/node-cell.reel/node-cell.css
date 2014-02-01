@@ -13,6 +13,12 @@
     align-items: center;
     position: relative;
     background: hsl(0,0%,92%);
+
+    height: 30px;
+    overflow: hidden;
+    -webkit-transition: height .4s ease-in-out, margin-top .4s ease-in-out, margin-bottom .4s ease-in-out;
+    -moz-transition: height .4s ease-in-out, margin-top .4s ease-in-out, margin-bottom .4s ease-in-out;
+    transition: height .4s ease-in-out, margin-top .4s ease-in-out, margin-bottom .4s ease-in-out;
 }
 
 
@@ -27,6 +33,11 @@
     border-radius: 22px;
     background: hsl(0,0%,96%);
     border: 1px solid hsl(0, 0%, 80%);
+
+    height: 22px;
+    -webkit-transition: height .4s ease-in-out;
+    -moz-transition: height .4s ease-in-out;
+    transition: height .4s ease-in-out;
 }
 
 .NodeCell--highlighted .NodeCell-segment {
@@ -229,4 +240,39 @@
 }
 .NodeCell-before .AddElement-segment {
     margin-top: 3px;
+}
+
+.NodeCellWrapper {
+    -webkit-transition: margin-left .4s ease-in-out;
+    -moz-transition: margin-left .4s ease-in-out;
+    transition: margin-left .4s ease-in-out;
+}
+
+.NodeCell-toggle {
+    -webkit-transition: opacity .25s ease-in-out;
+    -moz-transition: opacity .25s ease-in-out;
+    transition: opacity .25s ease-in-out;
+}
+
+.NodeCell-removeButtonCondition {
+    -webkit-transition: opacity .25s ease-in-out;
+    -moz-transition: opacity .25s ease-in-out;
+    transition: opacity .25s ease-in-out;
+}
+
+.NodeCell--collapse .NodeCell {
+    height: 1px;
+    /* We set these margins so that consecutive dom nodes don't end up,
+    /* visually, in the same line. */
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.NodeCell--collapse .NodeCell-removeButtonCondition,
+.NodeCell--collapse .NodeCell-toggle {
+    opacity: 0;
+}
+
+.NodeCell--collapse .NodeCell-segment {
+    height: 0;
 }
