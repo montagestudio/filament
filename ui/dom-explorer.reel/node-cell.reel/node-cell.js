@@ -559,14 +559,13 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     updateDomExplorerDependencies: {
         value: function() {
             var templateObjects = this.templateObjects;
-            var addElementNodeHover;
 
             if (!templateObjects) {
                 return;
             }
 
             if (this.domExplorer) {
-                addElementNodeHover = this.domExplorer.addElementNodeHover;
+                var addElementNodeHover = this.domExplorer.addElementNodeHover;
             }
 
             // @addElementBefore: classList.has('dropover') <- @owner.domExplorer.addElementNodeHover == @owner
@@ -583,7 +582,6 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     updateNodeInfoAndMontageIdDependencies: {
         value: function() {
             var templateObjects = this.templateObjects;
-            var childrenLength;
 
             if (!templateObjects) {
                 return;
@@ -592,7 +590,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             var isEditing = this.templateObjects.montageId && this.templateObjects.montageId.isEditing;
             var nodeInfo = this.nodeInfo;
             if (nodeInfo) {
-                childrenLength = nodeInfo.children && nodeInfo.children.length;
+                var childrenLength = nodeInfo.children && nodeInfo.children.length;
             }
 
             // @canInsertBeforeNodeCondition: condition <- @owner.nodeInfo.canInsertBeforeNode && && !@montageId.isEditing
@@ -601,8 +599,6 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             templateObjects.canAppendNodeCondition.condition = childrenLength === 0 && nodeInfo && nodeInfo.canAppendToNode && !isEditing;
             // @canInsertAfterNodeCondition: condition <- !@owner.nodeInfo.nextSibling &&  @owner.nodeInfo.canInsertAfterNode && !@montageId.isEditing
             templateObjects.canInsertAfterNodeCondition.condition = nodeInfo && (!nodeInfo.nextSibling && nodeInfo.canInsertAfterNode) && !isEditing;
-            // @montageId: classList.has('montage-invisible') <- !@owner.nodeInfo.component || @owner.nodeInfo.component.label != @owner.nodeInfo.montageId
-            this.changeClassListItem(templateObjects.montageId.classList, 'montage-invisible', !(nodeInfo && (!nodeInfo.component || nodeInfo.component.label !== nodeInfo.montageId)));
 
         }
     },
@@ -610,18 +606,15 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     updateNodeInfoAndDomExplorerDependencies: {
         value: function() {
             var templateObjects = this.templateObjects;
-            var highlightedElement;
-            var selectedElements;
 
             if (!templateObjects) {
                 return;
             }
 
             var nodeInfo = this.nodeInfo;
-            var domExplorer = this.domExplorer;
-            if (domExplorer) {
-                highlightedElement = domExplorer.highlightedElement;
-                selectedElements = domExplorer.editingDocument && domExplorer.editingDocument.selectedElements;
+            if (this.domExplorer) {
+                var highlightedElement = this.domExplorer.highlightedElement;
+                var selectedElements = this.domExplorer.editingDocument && this.domExplorer.editingDocument.selectedElements;
             }
 
             // @owner: classList.has('NodeCell--highlighted') <- @owner.domExplorer.highlightedElement == @owner.nodeInfo
@@ -635,9 +628,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function(classList, name, value) {
             var hasClass = classList.has(name);
 
-            //jshint -W116
             if (value != hasClass) {
-            //jshint +W116
                 if (value) {
                     classList.add(name);
                 } else {
@@ -657,7 +648,8 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function(event) {
             if (event.target === this.nodeInfo) {
                 this.updateNodeInfoDependencies();
-            } else if (event.target === this.domExplorer) {
+            }
+            if (event.target === this.domExplorer) {
                 this.updateDomExplorerDependencies();
             }
         }
