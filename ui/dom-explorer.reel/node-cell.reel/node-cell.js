@@ -612,9 +612,10 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             }
 
             var nodeInfo = this.nodeInfo;
-            if (this.domExplorer) {
-                var highlightedElement = this.domExplorer.highlightedElement;
-                var selectedElements = this.domExplorer.editingDocument && this.domExplorer.editingDocument.selectedElements;
+            var domExplorer = this.domExplorer;
+            if (domExplorer) {
+                var highlightedElement = domExplorer.highlightedElement;
+                var selectedElements = domExplorer.editingDocument && domExplorer.editingDocument.selectedElements;
             }
 
             // @owner: classList.has('NodeCell--highlighted') <- @owner.domExplorer.highlightedElement == @owner.nodeInfo
