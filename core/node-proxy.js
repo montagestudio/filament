@@ -14,7 +14,7 @@ exports.NodeProxy = NodeProxy = Target.specialize({
             this.defineBindings({
                 // The node proxy's component is the editing proxy that has this
                 // node as an element.
-                // FIXME: this lead to issue when you a relying on a nodeProxy change 
+                // FIXME: this lead to issue when you a relying on a nodeProxy change
                 "component": {"<-": "_editingDocument.editingProxies.filter{properties.get('element') == $self}[0]"}
             }, {
                 parameters: {
@@ -252,7 +252,15 @@ exports.NodeProxy = NodeProxy = Target.specialize({
         },
         set: function(value) {
             if (value !== this._component) {
+                if (this._component) {
+                    this._component.removePathChangeListener("label", this, "_dispatchPropertiesChange");
+                    this._component.removePathChangeListener("components.length", this, "_dispatchPropertiesChange");
+                }
                 this._component = value;
+                if (value) {
+                    value.addPathChangeListener("label", this, "_dispatchPropertiesChange");
+                    value.addPathChangeListener("components.length", this, "_dispatchPropertiesChange");
+                }
                 this._dispatchPropertiesChange();
             }
         }
