@@ -208,6 +208,8 @@ exports.TemplateObjectCell = Component.specialize({
             var proxy = this.templateObject,
                 editingDocument = proxy._editingDocument;
 
+            event.stopPropagation();
+
             if (!editingDocument.setOwnedObjectLabel(proxy, event.target.value)) {
                 event.preventDefault();
             }
