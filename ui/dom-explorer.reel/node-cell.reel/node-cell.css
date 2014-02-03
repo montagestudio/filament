@@ -61,6 +61,10 @@
     line-height: 22px;
     color: hsl(0, 0%, 30%);
     overflow: hidden;
+
+    -webkit-transition: padding-left .4s ease-in-out, padding-right .4s ease-in-out, font-size .4s ease-in-out, border-left-width .4s ease-in-out;
+    -moz-transition: padding-left .4s ease-in-out, padding-right .4s ease-in-out, font-size .4s ease-in-out, border-left-width .4s ease-in-out;
+    transition: padding-left .4s ease-in-out, padding-right .4s ease-in-out, font-size .4s ease-in-out, border-left-width .4s ease-in-out;
 }
 
 .NodeCell-segment-item--tag {
@@ -93,15 +97,16 @@
     background-color: hsla(210,100%,60%,0.1);
 }
 
-.NodeCell-segment-item--component {
+.NodeCell-segment .NodeCell-segment-item.NodeCell-segment-item--component {
     padding-left: 10px;
     border-radius: 0 11px 11px 0;
     font-weight: bold;
     border-left: 1px solid hsl(210, 100%, 84%);
     background: hsl(210, 100%, 90%);
+    padding-right: 12px;
 }
 
-.NodeCell--owner .NodeCell-segment-item--component {
+.NodeCell--owner .NodeCell-segment-item.NodeCell-segment-item--component {
     background: hsl(43, 100%, 85%);
     border-left-color: hsl(43, 100%, 65%);
 }
@@ -260,6 +265,7 @@
     transition: opacity .25s ease-in-out;
 }
 
+/* Collapsed Dom Tree -------------- */
 .NodeCell--collapseDom .NodeCell {
     height: 1px;
     /* We set these margins so that consecutive dom nodes don't end up,
@@ -275,4 +281,22 @@
 
 .NodeCell--collapseDom .NodeCell-segment {
     height: 0;
+}
+
+/* Component Tree -------------- */
+.NodeCell--component .NodeCell-segment-item {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.NodeCell--component .NodeCell-segment-item.NodeCell-segment-item--tag {
+    padding-left: 8px;
+}
+
+.NodeCell--component .NodeCell-segment-item--tag,
+.NodeCell--component .NodeCell-segment-item--montageArg,
+.NodeCell--component .NodeCell-segment-item--montageParam,
+.NodeCell--component .NodeCell-segment-item--montageId {
+    font-size: 0;
+    border-left-width: 0;
 }

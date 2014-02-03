@@ -599,7 +599,8 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
 
     updateNodeInfoAndMontageIdDependencies: {
         value: function() {
-            var templateObjects = this.templateObjects;
+            var templateObjects = this.templateObjects,
+                childrenLength;
 
             if (!templateObjects) {
                 return;
@@ -608,7 +609,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             var isEditing = this.templateObjects.montageId && this.templateObjects.montageId.isEditing;
             var nodeInfo = this.nodeInfo;
             if (nodeInfo) {
-                var childrenLength = nodeInfo.children && nodeInfo.children.length;
+                childrenLength = nodeInfo.children && nodeInfo.children.length;
             }
 
             // @canInsertBeforeNodeCondition: condition <- @owner.nodeInfo.canInsertBeforeNode && && !@montageId.isEditing
@@ -623,16 +624,19 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
 
     updateNodeInfoAndDomExplorerDependencies: {
         value: function() {
-            var templateObjects = this.templateObjects;
+            var templateObjects = this.templateObjects,
+                domExplorer = this.domExplorer,
+                highlightedElement,
+                selectedElements;
 
             if (!templateObjects) {
                 return;
             }
 
             var nodeInfo = this.nodeInfo;
-            if (this.domExplorer) {
-                var highlightedElement = this.domExplorer.highlightedElement;
-                var selectedElements = this.domExplorer.editingDocument && this.domExplorer.editingDocument.selectedElements;
+            if (domExplorer) {
+                highlightedElement = this.domExplorer.highlightedElement;
+                selectedElements = this.domExplorer.editingDocument && this.domExplorer.editingDocument.selectedElements;
             }
 
             // @owner: classList.has('NodeCell--highlighted') <- @owner.domExplorer.highlightedElement == @owner.nodeInfo
@@ -640,10 +644,11 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             // @owner: classList.has('NodeCell--selected') <- @owner.domExplorer.editingDocument.selectedElements.has(@owner.nodeInfo)
             this.changeClassListItem(this.classList, 'NodeCell--selected', selectedElements && selectedElements.indexOf(nodeInfo) >= 0);
 
-            // Need to correct the indentation if we're only showing components
             // new
             this.changeClassListItem(this.classList, 'NodeCell--collapseDom', nodeInfo && !nodeInfo.component && domExplorer && domExplorer.collapseNonComponents);
             var isComponentTreeNode = nodeInfo && nodeInfo.component && domExplorer && domExplorer.collapseNonComponents;
+            this.changeClassListItem(this.classList, 'NodeCell--component', isComponentTreeNode);
+            // Need to correct the indentation if we're only showing components
             if (this._isComponentTreeNode !== isComponentTreeNode) {
                 this._isComponentTreeNode = isComponentTreeNode;
                 if (isComponentTreeNode) {
