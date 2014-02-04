@@ -86,15 +86,21 @@
 </head>
 <body>
     <aside data-montage-id="library" class="Panel Library">
-        <header class="Library-bar">
-            <input data-montage-id="filterInput" class="Library-search" type="search" placeholder="Search Library">
-            <button data-montage-id="viewModeButton" class="Library-viewModeButton" data-icon></button>
-        </header>
-        <div class="Shadow Shadow--top"></div>
-		<div data-montage-id="groupList" class="Library-list">
-		    <details data-montage-id="group"></details>
-		</div>
-        <div data-montage-id="assetsLibrary"></div>
+        <ul class="Library-bar Library-tabs">
+            <li class="Library-tab is-selected">Library</li>
+            <li class="Library-tab">Assets</li>
+        </ul>
+        <div class="Library-content Library-packages">
+            <header class="Library-header">
+                <input data-montage-id="filterInput" class="Library-search" type="search" placeholder="Search Library">
+                <button data-montage-id="viewModeButton" class="Library-viewModeButton" data-icon></button>
+            </header>
+            <div class="Shadow Shadow--top"></div>
+            <div data-montage-id="groupList" class="Library-list">
+                <details data-montage-id="group"></details>
+            </div>
+        </div>
+        <div data-montage-id="assetsLibrary" class="Library-content is-hidden"></div>
     </aside>
 
 </body>

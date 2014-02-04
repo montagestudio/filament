@@ -3,14 +3,77 @@
     border-left: 1px solid hsl(0, 0%, 22%);
 }
 
-.Library-bar {
+
+.Library-tabs {
+    position: relative;
+    display: flex;
+    z-index: 1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 47px;
+}
+
+.Library-tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    line-height: 28px;
+    color: hsl(0, 0%, 86%);
+    border-radius: 6px 6px 0 0;
+    border: 1px solid hsl(0, 0%, 22%);
+    border-left: none;
+    background: -webkit-linear-gradient( hsl(0, 0%, 42%), hsl(0, 0%, 32%) );
+    cursor: pointer;
+}
+
+.Library-tab:first-child {
+    border-top-left-radius: 0;
+}
+
+.Library-tab:last-child {
+    border-right: none;
+    border-top-right-radius: 0;
+}
+
+.Library-tab:hover {
+    background: -webkit-linear-gradient( hsl(0, 0%, 44%), hsl(0, 0%, 34%) );
+}
+
+.Library-tab:active {
+    background: hsl(0, 0%, 28%);
+}
+
+.Library-tab.is-selected,
+.Library-tab.is-selected:hover,
+.Library-tab.is-selected:active {
+    background: -webkit-linear-gradient( hsl(0, 0%, 30%), hsl(0, 0%, 28%) );
+    cursor: default;
+}
+
+
+/* Content ------------------------- */
+
+.Library-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.Library-content.is-hidden {
+    display: none;
+}
+
+
+/* Packages Library ------------------------- */
+
+.Library-header {
     position: relative;
     display: flex;
     padding: 8px;
     height: 47px;
-    border-top: 1px solid hsl(0, 0%, 46%);
     border-bottom: 1px solid hsl(0, 0%, 22%);
-    background: -webkit-linear-gradient( hsl(0, 0%, 42%), hsl(0, 0%, 32%) );
+    background-color: hsl(0, 0%, 28%);
     z-index: 1;
 }
 
@@ -31,7 +94,6 @@
     border-color: hsl(0, 0%, 24%);
     background-color: hsl(0, 0%, 30%);
 }
-
 
 /* Search Close Button */
 .Library-search.matte-InputText::-webkit-search-cancel-button {
