@@ -26,7 +26,8 @@
     border-radius: 0;
     border: 1px solid hsl(0, 0%, 20%);
     border-right: none;
-    background: -webkit-linear-gradient( hsl(0, 0%, 42%), hsl(0, 0%, 32%) );
+    border-bottom: 1px solid hsl(0, 0%, 20%);
+    background-color: hsl(0, 0%, 26%);
     cursor: pointer;
 }
 
@@ -40,17 +41,18 @@
 
 .Library-tab.matte-Button:hover {
     color: hsl(0, 0%, 86%);
-    background: -webkit-linear-gradient( hsl(0, 0%, 44%), hsl(0, 0%, 34%) );
+    background-color: hsl(0, 0%, 28%);
 }
 
 .Library-tab.matte-Button:active {
-    background: hsl(0, 0%, 28%);
+    background-color: hsl(0, 0%, 20%);
 }
 
 /* TODO: Implement properly */
 .is-package .Library-tab:nth-child(1),
 .is-assets .Library-tab:nth-child(2) {
-    background: hsl(0, 0%, 26% );
+    border-top-color: hsl(0, 0%, 42%);
+    background: -webkit-linear-gradient( hsl(0, 0%, 38%), hsl(0, 0%, 30%) );
     cursor: default;
 }
 
@@ -78,7 +80,7 @@
     padding: 8px;
     height: 47px;
     border-bottom: 1px solid hsl(0, 0%, 20%);
-    background-color: hsl(0, 0%, 26%);
+    background: hsl(0, 0%, 30%);
     z-index: 1;
 }
 
