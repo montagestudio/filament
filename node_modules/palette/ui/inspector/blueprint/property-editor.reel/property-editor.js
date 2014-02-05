@@ -17,8 +17,25 @@ exports.PropertyEditor = Component.specialize(/** @lends module:"./property-edit
         value: function PropertyEditor () {
             this.super();
 
+            this.defineBinding("_propertyIsBound", {
+                "<-": "object.bindings.some{targetPath == this.propertyBlueprint.name}"
+            });
+
             this.addPathChangeListener("object.properties.get(propertyBlueprint.name)", this, "_valueChanged");
+            this.addPathChangeListener("_propertyIsBound", this, "handlePropertyTypeDependencyChange");
+            this.addPathChangeListener("propertyBlueprint.isAssociationBlueprint", this, "handlePropertyTypeDependencyChange");
+            this.addPathChangeListener("propertyBlueprint.isToMany", this, "handlePropertyTypeDependencyChange");
+            this.addPathChangeListener("propertyBlueprint.collectionValueType", this, "handlePropertyTypeDependencyChange");
+            this.addPathChangeListener("propertyBlueprint.valueType", this, "handlePropertyTypeDependencyChange");
         }
+    },
+
+    _propertyIsBound: {
+        value: null
+    },
+
+    _propertyType: {
+        value: null
     },
 
     editingDocument: {
@@ -146,6 +163,58 @@ exports.PropertyEditor = Component.specialize(/** @lends module:"./property-edit
                 this.dispatchOwnPropertyChange("objectValue", null);
             } else if (Component.gateDidBecomeFalse) {
                 Component.gateDidBecomeFalse.call(this, gate);
+            }
+        }
+    },
+
+    handlePropertyTypeDependencyChange: {
+        value: function() {
+            var blueprint = this.propertyBlueprint;
+
+            if (!blueprint) {
+                return;
+            }
+
+            if (this._propertyIsBound) {
+                this._propertyType = "binding";
+            } else if (blueprint.isAssociationBlueprint) {
+                if (blueprint.isToMany) {
+                    if (blueprint.collectionValueType === "list") {
+                        this._propertyType = "list-association";
+                    } else if (blueprint.collectionValueType === "set") {
+                        this._propertyType = "set-association";
+                    } else if (blueprint.collectionValueType === "map") {
+                        this._propertyType = "map-association";
+                    }
+                } else {
+                    this._propertyType = "object-association";
+                }
+            } else {
+                if (blueprint.isToMany) {
+                    if (blueprint.collectionValueType === "list") {
+                        this._propertyType = "list-property";
+                    } else if (blueprint.collectionValueType === "set") {
+                        this._propertyType = "set-property";
+                    } else if (blueprint.collectionValueType === "map") {
+                        this._propertyType = "map-property";
+                    }
+                } else {
+                    if (blueprint.valueType === "boolean") {
+                        this._propertyType = "boolean-property";
+                    } else if (blueprint.valueType === "date") {
+                        this._propertyType = "date-property";
+                    } else if (blueprint.valueType === "enum") {
+                        this._propertyType = "enum-property";
+                    } else if (blueprint.valueType === "number") {
+                        this._propertyType = "number-property";
+                    } else if (blueprint.valueType === "object") {
+                        this._propertyType = "object-property";
+                    } else if (blueprint.valueType === "string") {
+                        this._propertyType = "string-property";
+                    } else if (blueprint.valueType === "url") {
+                        this._propertyType = "url-property";
+                    }
+                }
             }
         }
     }

@@ -6,502 +6,235 @@
     <script type="text/montage-serialization">
     {
         "owner": {
+            "prototype": "ui/inspector/blueprint/property-editor.reel",
             "properties": {
-                "element": {
-                    "#": "property-editor"
-                }
+                "element": {"#": "property-editor"}
             }
         },
-
-        "propertyBoundSubstitution": {
-            "prototype": "montage/ui/substitution.reel",
-            "properties": {
-                "element": {
-                    "#": "propertyBoundSubstitution"
-                }
-            },
-            "bindings": {
-                "switchValue": {
-                    "<-": "@owner.object.bindings.map{targetPath}.has(@owner.propertyBlueprint.name) ? 'bound' : 'unbound'"
-                }
-            }
-        },
-
-        "boundPropertyInspector": {
-            "prototype": "../bound-property-editor.reel",
-            "properties": {
-                "element": {
-                    "#": "boundPropertyInspector"
-                }
-            },
-            "bindings": {
-                "object": {
-                    "<->": "@owner.object"
-                },
-                "binding": {
-                    "<-": "@owner.object.bindings.filter{targetPath == @owner.propertyBlueprint.name}.get(0)"
-                },
-                "label": {
-                    "<-": "@owner.propertyBlueprint.name"
-                }
-            }
-        },
-
-        "propertyTypeSubstitution": {
-            "prototype": "montage/ui/substitution.reel",
-            "properties": {
-                "element": {
-                    "#": "propertyTypeSubstitution"
-                }
-            },
-            "bindings": {
-                "switchValue": {
-                    "<-": "@owner.propertyBlueprint.isAssociationBlueprint ? 'association' : 'property'"
-                }
-            }
-        },
-
-        "associationToOneSubstitution": {
-            "prototype": "montage/ui/substitution.reel",
-            "properties": {
-                "element": {
-                    "#": "associationToOneSubstitution"
-                }
-            },
-            "bindings": {
-                "switchValue": {
-                    "<-": "@owner.propertyBlueprint.isToMany ? 'toMany' : 'toOne'"
-                }
-            }
-        },
-
-        "propertyToOneSubstitution": {
-            "prototype": "montage/ui/substitution.reel",
-            "properties": {
-                "element": {
-                    "#": "propertyToOneSubstitution"
-                }
-            },
-            "bindings": {
-                "switchValue": {
-                    "<-": "@owner.propertyBlueprint.isToMany ? 'toMany' : 'toOne'"
-                }
-            }
-        },
-
-        "objectAssociationInspector": {
-            "prototype": "../association-value-type/object-association-inspector.reel",
-            "properties": {
-                "element": {
-                    "#": "objectAssociationInspector"
-                },
-                "readOnlyLabel": true
-            },
-            "bindings": {
-                "editingDocument": {
-                    "<-": "@owner.editingDocument"
-                },
-                "objectValue": {
-                    "<->": "@owner.objectValue"
-                },
-                "propertyBlueprint": {
-                    "<-": "@owner.propertyBlueprint"
-                },
-                "label": {
-                    "<-": "@owner.propertyBlueprint.name"
-                }
-            }
-        },
-
-        "toManyAssociationInspectorSubstitution": {
-            "prototype": "montage/ui/substitution.reel",
-            "properties": {
-                "element": {
-                    "#": "toManyAssociationInspectorSubstitution"
-                }
-            },
-            "bindings": {
-                "switchValue": {
-                    "<-": "@owner.propertyBlueprint.collectionValueType"
-                }
-            }
-        },
-
-        "listAssociationInspector": {
-            "prototype": "../association-value-type/list-association-inspector.reel",
-            "properties": {
-                "element": {
-                    "#": "listAssociationInspector"
-                },
-                "readOnlyLabel": true
-            },
-            "bindings": {
-                "editingDocument": {
-                    "<-": "@owner.editingDocument"
-                },
-                "objectValue": {
-                    "<->": "@owner.objectValue"
-                },
-                "propertyBlueprint": {
-                    "<-": "@owner.propertyBlueprint"
-                },
-                "label": {
-                    "<-": "@owner.propertyBlueprint.name"
-                }
-            }
-        },
-
-        "mapAssociationInspector": {
-            "prototype": "../association-value-type/map-association-inspector.reel",
-            "properties": {
-                "element": {
-                    "#": "mapAssociationInspector"
-                },
-                "readOnlyLabel": true
-            },
-            "bindings": {
-                "editingDocument": {
-                    "<-": "@owner.editingDocument"
-                },
-                "objectValue": {
-                    "<->": "@owner.objectValue"
-                },
-                "propertyBlueprint": {
-                    "<-": "@owner.propertyBlueprint"
-                },
-                "label": {
-                    "<-": "@owner.propertyBlueprint.name"
-                }
-            }
-        },
-
-
-        "setAssociationInspector": {
-            "prototype": "../association-value-type/set-association-inspector.reel",
-            "properties": {
-                "element": {
-                    "#": "setAssociationInspector"
-                },
-                "readOnlyLabel": true
-            },
-            "bindings": {
-                "editingDocument": {
-                    "<-": "@owner.editingDocument"
-                },
-                "objectValue": {
-                    "<->": "@owner.objectValue"
-                },
-                "propertyBlueprint": {
-                    "<-": "@owner.propertyBlueprint"
-                },
-                "label": {
-                    "<-": "@owner.propertyBlueprint.name"
-                }
-            }
-        },
-
-        "toOnePropertyInspectorSubstitution": {
-            "prototype": "montage/ui/substitution.reel",
-            "properties": {
-                "element": {
-                    "#": "toOnePropertyInspectorSubstitution"
-                }
-            },
-            "bindings": {
-                "switchValue": {
-                    "<-": "@owner.propertyBlueprint.valueType"
-                }
-            }
-        },
-
-        "toManyPropertyInspectorSubstitution": {
-            "prototype": "montage/ui/substitution.reel",
-            "properties": {
-                "element": {
-                    "#": "toManyPropertyInspectorSubstitution"
-                }
-            },
-            "bindings": {
-                "switchValue": {
-                    "<-": "@owner.propertyBlueprint.collectionValueType"
-                }
-            }
-        },
-
         "booleanPropertyInspector": {
             "prototype": "../property-value-type/boolean-property-inspector.reel",
             "properties": {
-                "element": {
-                    "#": "booleanPropertyInspector"
-                },
+                "element": {"#": "booleanPropertyInspector"},
                 "readOnlyLabel": true
             },
             "bindings": {
-                "editingDocument": {
-                    "<-": "@owner.editingDocument"
-                },
-                "objectValue": {
-                    "<->": "@owner.objectValue"
-                },
-                "propertyBlueprint": {
-                    "<-": "@owner.propertyBlueprint"
-                },
-                "label": {
-                    "<-": "@owner.propertyBlueprint.name"
-                }
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.propertyBlueprint.name"},
+                "objectValue": {"<->": "@owner.objectValue"},
+                "propertyBlueprint": {"<-": "@owner.propertyBlueprint"}
             }
         },
-
+        "boundPropertyInspector": {
+            "prototype": "../bound-property-editor.reel",
+            "properties": {
+                "element": {"#": "boundPropertyInspector"}
+            },
+            "bindings": {
+                "binding": {"<-": "@owner.object.bindings.filter{targetPath == @owner.propertyBlueprint.name}.get(0)"},
+                "label": {"<-": "@owner.propertyBlueprint.name"},
+                "object": {"<->": "@owner.object"}
+            }
+        },
         "datePropertyInspector": {
             "prototype": "../property-value-type/date-property-inspector.reel",
             "properties": {
-                "element": {
-                    "#": "datePropertyInspector"
-                },
+                "element": {"#": "datePropertyInspector"},
                 "readOnlyLabel": true
             },
             "bindings": {
-                "editingDocument": {
-                    "<-": "@owner.editingDocument"
-                },
-                "objectValue": {
-                    "<->": "@owner.objectValue"
-                },
-                "propertyBlueprint": {
-                    "<-": "@owner.propertyBlueprint"
-                },
-                "label": {
-                    "<-": "@owner.propertyBlueprint.name"
-                }
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.propertyBlueprint.name"},
+                "objectValue": {"<->": "@owner.objectValue"},
+                "propertyBlueprint": {"<-": "@owner.propertyBlueprint"}
             }
         },
-
         "enumPropertyInspector": {
             "prototype": "../property-value-type/enum-property-inspector.reel",
             "properties": {
-                "element": {
-                    "#": "enumPropertyInspector"
-                },
+                "element": {"#": "enumPropertyInspector"},
                 "readOnlyLabel": true
             },
             "bindings": {
-                "editingDocument": {
-                    "<-": "@owner.editingDocument"
-                },
-                "objectValue": {
-                    "<->": "@owner.objectValue"
-                },
-                "propertyBlueprint": {
-                    "<-": "@owner.propertyBlueprint"
-                },
-                "label": {
-                    "<-": "@owner.propertyBlueprint.name"
-                }
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.propertyBlueprint.name"},
+                "objectValue": {"<->": "@owner.objectValue"},
+                "propertyBlueprint": {"<-": "@owner.propertyBlueprint"}
             }
         },
-
+        "inspectorSubstitution": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "inspectorSubstitution"}
+            },
+            "bindings": {
+                "switchValue": {"<-": "@owner._propertyType"}
+            }
+        },
+        "listAssociationInspector": {
+            "prototype": "../association-value-type/list-association-inspector.reel",
+            "properties": {
+                "element": {"#": "listAssociationInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.propertyBlueprint.name"},
+                "objectValue": {"<->": "@owner.objectValue"},
+                "propertyBlueprint": {"<-": "@owner.propertyBlueprint"}
+            }
+        },
         "listPropertyInspector": {
             "prototype": "../property-value-type/list-property-inspector.reel",
             "properties": {
-                "element": {
-                    "#": "listPropertyInspector"
-                },
+                "element": {"#": "listPropertyInspector"},
                 "readOnlyLabel": true
             },
             "bindings": {
-                "editingDocument": {
-                    "<-": "@owner.editingDocument"
-                },
-                "objectValue": {
-                    "<->": "@owner.objectValue"
-                },
-                "propertyBlueprint": {
-                    "<-": "@owner.propertyBlueprint"
-                },
-                "label": {
-                    "<-": "@owner.propertyBlueprint.name"
-                }
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.propertyBlueprint.name"},
+                "objectValue": {"<->": "@owner.objectValue"},
+                "propertyBlueprint": {"<-": "@owner.propertyBlueprint"}
             }
         },
-
+        "mapAssociationInspector": {
+            "prototype": "../association-value-type/map-association-inspector.reel",
+            "properties": {
+                "element": {"#": "mapAssociationInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.propertyBlueprint.name"},
+                "objectValue": {"<->": "@owner.objectValue"},
+                "propertyBlueprint": {"<-": "@owner.propertyBlueprint"}
+            }
+        },
         "mapPropertyInspector": {
             "prototype": "../property-value-type/map-property-inspector.reel",
             "properties": {
-                "element": {
-                    "#": "mapPropertyInspector"
-                },
+                "element": {"#": "mapPropertyInspector"},
                 "readOnlyLabel": true
             },
             "bindings": {
-                "editingDocument": {
-                    "<-": "@owner.editingDocument"
-                },
-                "objectValue": {
-                    "<->": "@owner.objectValue"
-                },
-                "propertyBlueprint": {
-                    "<-": "@owner.propertyBlueprint"
-                },
-                "label": {
-                    "<-": "@owner.propertyBlueprint.name"
-                }
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.propertyBlueprint.name"},
+                "objectValue": {"<->": "@owner.objectValue"},
+                "propertyBlueprint": {"<-": "@owner.propertyBlueprint"}
             }
         },
-
         "numberPropertyInspector": {
             "prototype": "../property-value-type/number-property-inspector.reel",
             "properties": {
-                "element": {
-                    "#": "numberPropertyInspector"
-                },
+                "element": {"#": "numberPropertyInspector"},
                 "readOnlyLabel": true
             },
             "bindings": {
-                "editingDocument": {
-                    "<-": "@owner.editingDocument"
-                },
-                "objectValue": {
-                    "<->": "@owner.objectValue"
-                },
-                "propertyBlueprint": {
-                    "<-": "@owner.propertyBlueprint"
-                },
-                "label": {
-                    "<-": "@owner.propertyBlueprint.name"
-                }
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.propertyBlueprint.name"},
+                "objectValue": {"<->": "@owner.objectValue"},
+                "propertyBlueprint": {"<-": "@owner.propertyBlueprint"}
             }
         },
-
+        "objectAssociationInspector": {
+            "prototype": "../association-value-type/object-association-inspector.reel",
+            "properties": {
+                "element": {"#": "objectAssociationInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.propertyBlueprint.name"},
+                "objectValue": {"<->": "@owner.objectValue"},
+                "propertyBlueprint": {"<-": "@owner.propertyBlueprint"}
+            }
+        },
         "objectPropertyInspector": {
             "prototype": "../property-value-type/object-property-inspector.reel",
             "properties": {
-                "element": {
-                    "#": "objectPropertyInspector"
-                },
+                "element": {"#": "objectPropertyInspector"},
                 "readOnlyLabel": true
             },
             "bindings": {
-                "editingDocument": {
-                    "<-": "@owner.editingDocument"
-                },
-                "objectValue": {
-                    "<->": "@owner.objectValue"
-                },
-                "propertyBlueprint": {
-                    "<-": "@owner.propertyBlueprint"
-                },
-                "label": {
-                    "<-": "@owner.propertyBlueprint.name"
-                }
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.propertyBlueprint.name"},
+                "objectValue": {"<->": "@owner.objectValue"},
+                "propertyBlueprint": {"<-": "@owner.propertyBlueprint"}
             }
         },
-
+        "setAssociationInspector": {
+            "prototype": "../association-value-type/set-association-inspector.reel",
+            "properties": {
+                "element": {"#": "setAssociationInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.propertyBlueprint.name"},
+                "objectValue": {"<->": "@owner.objectValue"},
+                "propertyBlueprint": {"<-": "@owner.propertyBlueprint"}
+            }
+        },
         "setPropertyInspector": {
             "prototype": "../property-value-type/set-property-inspector.reel",
             "properties": {
-                "element": {
-                    "#": "setPropertyInspector"
-                },
+                "element": {"#": "setPropertyInspector"},
                 "readOnlyLabel": true
             },
             "bindings": {
-                "editingDocument": {
-                    "<-": "@owner.editingDocument"
-                },
-                "objectValue": {
-                    "<->": "@owner.objectValue"
-                },
-                "propertyBlueprint": {
-                    "<-": "@owner.propertyBlueprint"
-                },
-                "label": {
-                    "<-": "@owner.propertyBlueprint.name"
-                }
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.propertyBlueprint.name"},
+                "objectValue": {"<->": "@owner.objectValue"},
+                "propertyBlueprint": {"<-": "@owner.propertyBlueprint"}
             }
         },
-
         "stringPropertyInspector": {
             "prototype": "../property-value-type/string-property-inspector.reel",
             "properties": {
-                "element": {
-                    "#": "stringPropertyInspector"
-                },
+                "element": {"#": "stringPropertyInspector"},
                 "readOnlyLabel": true
             },
             "bindings": {
-                "editingDocument": {
-                    "<-": "@owner.editingDocument"
-                },
-                "objectValue": {
-                    "<->": "@owner.objectValue"
-                },
-                "propertyBlueprint": {
-                    "<-": "@owner.propertyBlueprint"
-                },
-                "label": {
-                    "<-": "@owner.propertyBlueprint.name"
-                }
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.propertyBlueprint.name"},
+                "objectValue": {"<->": "@owner.objectValue"},
+                "propertyBlueprint": {"<-": "@owner.propertyBlueprint"}
             }
         },
-
         "urlPropertyInspector": {
             "prototype": "../property-value-type/url-property-inspector.reel",
             "properties": {
-                "element": {
-                    "#": "urlPropertyInspector"
-                },
+                "element": {"#": "urlPropertyInspector"},
                 "readOnlyLabel": true
             },
             "bindings": {
-                "editingDocument": {
-                    "<-": "@owner.editingDocument"
-                },
-                "objectValue": {
-                    "<->": "@owner.objectValue"
-                },
-                "propertyBlueprint": {
-                    "<-": "@owner.propertyBlueprint"
-                },
-                "label": {
-                    "<-": "@owner.propertyBlueprint.name"
-                }
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.propertyBlueprint.name"},
+                "objectValue": {"<->": "@owner.objectValue"},
+                "propertyBlueprint": {"<-": "@owner.propertyBlueprint"}
             }
         }
-
     }
     </script>
 </head>
 <body>
-	<label data-montage-id="property-editor" class="PropertyEditor" title="">
-		<div data-montage-id="propertyBoundSubstitution">
+    <label data-montage-id="property-editor" class="PropertyEditor" title="">
+        <div data-montage-id="inspectorSubstitution">
             <div data-arg="bound" data-montage-id="boundPropertyInspector"></div>
-			<div data-arg="unbound" data-montage-id="propertyTypeSubstitution">
-				<div data-arg="association" data-montage-id="associationToOneSubstitution">
-					<div data-arg="toOne" data-montage-id="objectAssociationInspector"></div>
-					<div data-arg="toMany" data-montage-id="toManyAssociationInspectorSubstitution">
-						<div data-arg="list" data-montage-id="listAssociationInspector"></div>
-						<div data-arg="set" data-montage-id="setAssociationInspector"></div>
-						<div data-arg="map" data-montage-id="mapAssociationInspector"></div>
-					</div>
-				</div>
-				<div data-arg="property" data-montage-id="propertyToOneSubstitution">
-					<div data-arg="toOne" data-montage-id="toOnePropertyInspectorSubstitution">
-						<div data-arg="boolean" data-montage-id="booleanPropertyInspector"></div>
-						<div data-arg="date" data-montage-id="datePropertyInspector"></div>
-						<div data-arg="enum" data-montage-id="enumPropertyInspector"></div>
-						<div data-arg="number" data-montage-id="numberPropertyInspector"></div>
-						<div data-arg="object" data-montage-id="objectPropertyInspector"></div>
-						<div data-arg="string" data-montage-id="stringPropertyInspector"></div>
-						<div data-arg="url" data-montage-id="urlPropertyInspector"></div>
-					</div>
-					<div data-arg="toMany" data-montage-id="toManyPropertyInspectorSubstitution">
-						<div data-arg="list" data-montage-id="listPropertyInspector"></div>
-						<div data-arg="set" data-montage-id="setPropertyInspector"></div>
-						<div data-arg="map" data-montage-id="mapPropertyInspector"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</label>
+            <div data-arg="object-association" data-montage-id="objectAssociationInspector"></div>
+            <div data-arg="list-association" data-montage-id="listAssociationInspector"></div>
+            <div data-arg="set-association" data-montage-id="setAssociationInspector"></div>
+            <div data-arg="map-association" data-montage-id="mapAssociationInspector"></div>
+            <div data-arg="boolean-property" data-montage-id="booleanPropertyInspector"></div>
+            <div data-arg="date-property" data-montage-id="datePropertyInspector"></div>
+            <div data-arg="enum-property" data-montage-id="enumPropertyInspector"></div>
+            <div data-arg="number-property" data-montage-id="numberPropertyInspector"></div>
+            <div data-arg="object-property" data-montage-id="objectPropertyInspector"></div>
+            <div data-arg="string-property" data-montage-id="stringPropertyInspector"></div>
+            <div data-arg="url-property" data-montage-id="urlPropertyInspector"></div>
+            <div data-arg="list-property" data-montage-id="listPropertyInspector"></div>
+            <div data-arg="set-property" data-montage-id="setPropertyInspector"></div>
+            <div data-arg="map-property" data-montage-id="mapPropertyInspector"></div>
+        </div>
+    </label>
 </body>
 </html>
