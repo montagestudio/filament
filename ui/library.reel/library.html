@@ -69,6 +69,28 @@
                     "element": {"#": "viewModeButton"}
                 }
             },
+            
+            "libraryTab": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "libraryTab"}
+                },
+                "listeners": [{
+                    "type": "action",
+                    "listener": { "@": "owner" }
+                }]
+            },
+            
+            "assetsLibraryTab": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "assetsLibraryTab"}
+                },
+                "listeners": [{
+                    "type": "action",
+                    "listener": { "@": "owner" }
+                }]
+            },
 
             "assetsLibrary": {
                 "prototype": "ui/assets-library.reel",
@@ -85,11 +107,11 @@
 
 </head>
 <body>
-    <aside data-montage-id="library" class="Panel Library">
-        <ul class="Library-bar Library-tabs">
-            <li class="Library-tab is-selected">Library</li>
-            <li class="Library-tab">Assets</li>
-        </ul>
+    <aside data-montage-id="library" class="Panel Library is-package">
+        <nav class="Library-bar Library-tabs">
+            <button data-montage-id="libraryTab" class="Library-tab">Library</button>
+            <button data-montage-id="assetsLibraryTab" class="Library-tab">Assets</button>
+        </nav>
         <div class="Library-content Library-packages">
             <header class="Library-header">
                 <input data-montage-id="filterInput" class="Library-search" type="search" placeholder="Search Library">
@@ -100,7 +122,7 @@
                 <details data-montage-id="group"></details>
             </div>
         </div>
-        <div data-montage-id="assetsLibrary" class="Library-content is-hidden"></div>
+        <div data-montage-id="assetsLibrary" class="Library-content"></div>
     </aside>
 
 </body>

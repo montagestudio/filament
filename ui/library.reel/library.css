@@ -14,10 +14,13 @@
     height: 47px;
 }
 
-.Library-tab {
+.Library-tab.matte-Button {
     flex: 1;
-    text-align: center;
+    height: auto;
+    margin: 0;
     padding: 8px;
+    text-align: center;
+    font-family: inherit;
     line-height: 28px;
     color: hsl(0, 0%, 86%);
     border-radius: 6px 6px 0 0;
@@ -27,26 +30,31 @@
     cursor: pointer;
 }
 
-.Library-tab:first-child {
+.Library-tab.matte-Button:first-child {
     border-top-left-radius: 0;
 }
 
-.Library-tab:last-child {
+.Library-tab.matte-Button:last-child {
     border-right: none;
     border-top-right-radius: 0;
 }
 
-.Library-tab:hover {
+.Library-tab.matte-Button:focus {
+    border-color: hsl(0, 0%, 22%);
+}
+
+.Library-tab.matte-Button:hover {
+    color: hsl(0, 0%, 86%);
     background: -webkit-linear-gradient( hsl(0, 0%, 44%), hsl(0, 0%, 34%) );
 }
 
-.Library-tab:active {
+.Library-tab.matte-Button:active {
     background: hsl(0, 0%, 28%);
 }
 
-.Library-tab.is-selected,
-.Library-tab.is-selected:hover,
-.Library-tab.is-selected:active {
+/* TODO: Implement properly */
+.is-package .Library-tab:nth-child(1),
+.is-assets .Library-tab:nth-child(2) {
     background: -webkit-linear-gradient( hsl(0, 0%, 30%), hsl(0, 0%, 28%) );
     cursor: default;
 }
@@ -60,7 +68,9 @@
     flex-direction: column;
 }
 
-.Library-content.is-hidden {
+/* TODO: Implement properly */
+.is-package .AssetsLibrary,
+.is-assets .Library-packages {
     display: none;
 }
 

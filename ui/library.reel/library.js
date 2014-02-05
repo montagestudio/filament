@@ -65,6 +65,23 @@ exports.Library = Montage.create(Panel, {
 
     assetsManager: {
         value: null
+    },
+    
+    
+    //TODO: Implement bellow in the "proper way"
+    
+    handleLibraryTabAction: {
+        value: function(evt) {
+            this.classList.remove("is-assets");
+            this.classList.add("is-package");
+        }
+    },
+    
+    handleAssetsLibraryTabAction: {
+        value: function(evt) {
+            this.classList.remove("is-package");
+            this.classList.add("is-assets");
+        }
     }
 
 });
