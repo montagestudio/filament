@@ -198,6 +198,7 @@ exports.NodeProxy = NodeProxy = Target.specialize({
 
             if (affectedProperty) {
                 this.dispatchOwnPropertyChange(affectedProperty, value || null);
+                this._dispatchPropertiesChange();
             }
         }
     },
