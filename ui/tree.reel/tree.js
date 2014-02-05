@@ -1,7 +1,6 @@
-var Montage = require("montage").Montage;
 var Component = require("montage/ui/component").Component;
 
-exports.Tree = Montage.create(Component, {
+exports.Tree = Component.specialize({
 
     ignoreRoot: {
         value: false

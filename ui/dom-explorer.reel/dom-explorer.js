@@ -30,8 +30,28 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         value: null
     },
 
-    editingDocument: {
+    _editingDocument: {
         value: null
+    },
+
+    _editDocumentRangeListenerCancel: {
+        value: null
+    },
+    editingDocument: {
+        get: function() {
+            return this._editingDocument;
+        },
+        set: function(value) {
+            if (this._editingDocument !== value) {
+                if (this._editingDocument) {
+                    this._editDocumentRangeListenerCancel();
+                }
+                this._editingDocument = value;
+                if (value) {
+                    this._editDocumentRangeListenerCancel = value.addRangeAtPathChangeListener("selectedElements", this, "handleSelectedElementsChange");
+                }
+            }
+        }
     },
 
     nodeTreeController: {
@@ -52,8 +72,20 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
-    highlightedElement : {
+    _highlightedElement : {
         value: null
+    },
+
+    highlightedElement : {
+        get: function() {
+            return this._highlightedElement;
+        },
+        set: function(value) {
+            if (this._highlightedElement !== value) {
+                this._highlightedElement = value;
+                this._dispatchPropertiesChange();
+            }
+        }
     },
 
     _addElementNodeHover : {
@@ -79,6 +111,7 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
                 this.classList.remove('shiftUp');
             }
             this._addElementNodeHover = value;
+            this._dispatchPropertiesChange();
         }
     },
 
@@ -255,6 +288,20 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
             } else {
                 this.templateObjects.createNodeCell.reset();
             }
+        }
+    },
+
+    // MANUAL BINDINGS
+    handleSelectedElementsChange: {
+        value: function() {
+            this._dispatchPropertiesChange();
+        }
+    },
+
+    // PROPERTIES DISPATCHING, USED FOR MANUAL BINDINGS
+    _dispatchPropertiesChange: {
+        value: function() {
+            this.dispatchEventNamed("propertiesChange", true, false);
         }
     }
 });
