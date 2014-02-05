@@ -221,8 +221,10 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
                 return "application/json";
             } else if (CodeEditorDocument.editorFileMatchGLSL(fileUrl)) {
                 return "x-shader/x-fragment";
+            } else if (CodeEditorDocument.editorFileMatchMarkdown(fileUrl)) {
+                return "text/plain";
             }
-            return "text/plain";
+            return null;
         }
     },
 
@@ -258,6 +260,13 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
         enumerable:false,
         value:function (fileUrl) {
             return (/\.glsl\/?$/).test(fileUrl);
+        }
+    },
+
+    editorFileMatchMarkdown:{
+        enumerable:false,
+        value:function (fileUrl) {
+            return (/\.md\/?$/).test(fileUrl);
         }
     },
 
