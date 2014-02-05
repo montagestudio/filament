@@ -158,7 +158,10 @@
     min-height: 0;
     overflow-x: hidden;
     overflow-y: scroll;
-    background-color: hsl(0, 0%, 26%);
+    
+    /* background-color: transparent;
+     * Warning: Don't use a background-color here, it will be flattened with the drag-able icons.
+     */
 }
 
 
