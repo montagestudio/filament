@@ -600,7 +600,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             // @canAppendNodeCondition: condition <- 0 == @owner.nodeInfo.children.length && @owner.nodeInfo.canAppendToNode && !@montageId.isEditing
             templateObjects.canAppendNodeCondition.condition = childrenLength === 0 && nodeInfo && nodeInfo.canAppendToNode && !isEditing;
             // @canInsertAfterNodeCondition: condition <- !@owner.nodeInfo.nextSibling &&  @owner.nodeInfo.canInsertAfterNode && !@montageId.isEditing
-            templateObjects.canInsertAfterNodeCondition.condition = nodeInfo && (!nodeInfo.nextSibling && nodeInfo.canInsertAfterNode) && !isEditing;
+            templateObjects.canInsertAfterNodeCondition.condition = nodeInfo && (childrenLength === 0 && nodeInfo.canInsertAfterNode) && !isEditing;
 
         }
     },
