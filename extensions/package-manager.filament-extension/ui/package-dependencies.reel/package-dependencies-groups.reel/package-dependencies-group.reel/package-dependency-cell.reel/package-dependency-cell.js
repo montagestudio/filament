@@ -5,7 +5,7 @@
 var Component = require("montage/ui/component").Component,
     DEPENDENCY_TYPE_REGULAR = 'dependencies',
     DETAILS_ERROR_LABEL = 'errors',
-    CAN_INSTALL_LABEL = 'Install',
+    CAN_INSTALL_LABEL = 'Add',
     MIME_TYPES = require("../../../../../core/mime-types"),
     DEFAULT_LABEL = '-';
 
@@ -45,7 +45,7 @@ exports.PackageDependencyCell = Component.specialize(/** @lends PackageDependenc
                 this.hasError = (this._dependency && Array.isArray(this._dependency.problems) && this._dependency.problems.length > 0);
 
                 // Regular dependency cannot be missing (error).
-                this.canInstall = (this._dependency.type !== DEPENDENCY_TYPE_REGULAR && this._dependency.missing);
+                this.canInstall = module.type !== DEPENDENCY_TYPE_REGULAR && module.missing && !module.willInstall;
             }
         },
         get: function () {

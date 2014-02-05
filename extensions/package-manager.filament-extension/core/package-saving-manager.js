@@ -1,16 +1,18 @@
-var PackageTools = require("./package-tools").ToolsBox,
+var Promise = require("montage/core/promise").Promise,
+    DependencyManager = require('./dependency-manager').DependencyManager,
     Montage = require("montage").Montage;
 
 exports.PackageSavingManager = Montage.specialize({
 
     initWithPackageDocument: {
         value: function (packageDocument) {
-            if (!packageDocument || typeof packageDocument !== "object" || !packageDocument.environmentBridge) {
+            if (!packageDocument || typeof packageDocument !== "object" || !packageDocument._dependencyManager) {
                 throw new Error("Cannot init PackageSavingManager with " + packageDocument);
             }
 
             this._packageDocument = packageDocument;
-            this._environmentBridge = packageDocument.environmentBridge;
+            this._dependencyManager = packageDocument._dependencyManager;
+            this.reset();
 
             return this;
         }
@@ -20,19 +22,11 @@ exports.PackageSavingManager = Montage.specialize({
         value: null
     },
 
-    _environmentBridge: {
-        value: null
-    },
-
-    _packageJsonToSaved: {
+    _dependencyManager: {
         value: null
     },
 
     _packageJsonPending: {
-        value: null
-    },
-
-    _savingTimer: {
         value: null
     },
 
@@ -44,61 +38,98 @@ exports.PackageSavingManager = Montage.specialize({
         value: null
     },
 
+    _reportLastSaving: {
+        value: null
+    },
+
     scheduleSaving: {
-        value: function (time, needUpdateDependencyCollection) {
+        value: function (url, dataWriter) {
             var self = this,
                 packageJson = this._packageDocument.toJSON();
 
             if (this._savingInProgressPromise && this._savingInProgressPromise.isPending()) {
                 if (!this._needUpdateDependencyCollection) {
-                    this._needUpdateDependencyCollection = !!needUpdateDependencyCollection;
+                    this._needUpdateDependencyCollection = this._dependencyManager.hasPendingOperations();
                 }
 
                 this._packageJsonPending = packageJson;
-            } else {
-                if (this._savingTimer) {
-                    clearTimeout(this._savingTimer);
-                }
 
-                this._packageJsonToSaved = packageJson;
-                this._needUpdateDependencyCollection = !!needUpdateDependencyCollection;
-
-                this._savingTimer = setTimeout(function () {
-
-                    self._savingInProgressPromise = self._saveModification().then(function () {
-
-                        self._packageJsonToSaved = null;
-                        self._saveTimer = null;
-                    });
-
-                    self._packageDocument.dispatchAsyncActivity(self._savingInProgressPromise, "Saving modification");
-
-                }, typeof time === "number" ? time : 400); //TODO fix this number
+                return Promise(true);
             }
+
+            this._needUpdateDependencyCollection = this._dependencyManager.hasPendingOperations();
+            this._savingInProgressPromise = this._performSaving(packageJson, url, dataWriter);
+
+            //todo localize
+            this._packageDocument.dispatchAsyncActivity(this._savingInProgressPromise, "Saving modification");
+
+            return this._savingInProgressPromise.finally(function () {
+                // todo display the saving report
+                self.reset();
+            });
         }
     },
 
-    getPackageJson: {
+    reset: {
         value: function () {
-            return this._packageJsonToSaved;
+            this._reportLastSaving = [];
+            this._needUpdateDependencyCollection = false;
+        }
+    },
+
+    _performSaving: {
+        value: function (packageJson, url, dataWriter) {
+            var self = this;
+
+            if (this._dependencyManager.hasPendingOperations()) {
+                return this._dependencyManager.executePendingOperation().then(function () {
+                    return self._saveModification(packageJson, url, dataWriter);
+
+                }, null, this._handlePackageModified.bind(this));
+            }
+
+            return this._saveModification(packageJson, url, dataWriter);
+        }
+    },
+
+    _handlePackageModified: {
+        value: function (packageModified) {
+            if (packageModified && packageModified.operation === DependencyManager.ACTIONS.INSTALL && !packageModified.error) {
+                this._packageDocument._dependencyHasBeenInstalled(packageModified);
+            }
+
+            this._writeReport(packageModified.name, packageModified.operation, packageModified.error);
+        }
+    },
+
+    _writeReport: {
+        value: function (packageName, operation, error) {
+            var message = "[" + packageName + "]: ";
+
+            if (error) {
+                message += error.message;
+            } else {
+                // todo localize
+                message += "has been " + (operation === DependencyManager.ACTIONS.INSTALL ? "installed" : "removed");
+            }
+
+            this._reportLastSaving.push(message);
         }
     },
 
     _saveModification: {
-        value: function () {
-            var self = this,
-                packageDocument = this._packageDocument;
+        value: function (packageJson, url, dataWriter) {
+            var self = this;
 
-            return this._environmentBridge.save(packageDocument, packageDocument.url).then(function () {
+            return this._packageDocument._writePackageJson(packageJson, url, dataWriter).then(function () {
                 if (self._packageJsonPending) {
-                    self._packageJsonToSaved = self._packageJsonPending;
+                    packageJson = self._packageJsonPending;
                     self._packageJsonPending = null;
 
-                    return self._saveModification();
+                    return self._performSaving(packageJson, url, dataWriter);
 
                 } else if (self._needUpdateDependencyCollection) {
-
-                    return packageDocument._updateDependenciesAfterSaving();
+                    return self._packageDocument._updateDependenciesAfterSaving();
                 }
             });
         }

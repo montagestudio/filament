@@ -2,8 +2,7 @@
  * @module ui/dependency-information.reel
  * @requires montage/ui/component
  */
-var Component = require("montage/ui/component").Component,
-    Dependency = require('../../core/dependency').Dependency;
+var Component = require("montage/ui/component").Component;
 
 /**
  * @class DependencyInformation
@@ -77,9 +76,8 @@ exports.DependencyInformation = Component.specialize(/** @lends DependencyInform
 
             ErrorPanel.isFixing = true;
 
-            this.editingDocument.installDependency(dependencyName, dependencyVersion, dependencyType).then(function () {
-                ErrorPanel.isFixing = false;
-            });
+            // Fixme Temporary fix
+            this.editingDocument.updateDependency(dependencyName, dependencyVersion, dependencyType);
         }
     }
 

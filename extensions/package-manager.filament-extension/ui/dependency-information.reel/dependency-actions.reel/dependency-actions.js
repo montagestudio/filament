@@ -1,12 +1,8 @@
-/* jshint noempty: false */
-
 /**
  * @module ui/dependency-actions.reel
  * @requires montage/ui/component
  */
-var Component = require("montage/ui/component").Component,
-    Dependency = require("../../../core/dependency").Dependency,
-    DependencyNames = require('../../../core/package-tools').DependencyNames;
+var Component = require("montage/ui/component").Component;
 
 /**
  * @class DependencyActions
@@ -65,7 +61,7 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
 
     handleRangeChange: {
         value: function (range) {
-            if (this.editingDocument && typeof range === "string" && range.length > 0) {
+            if (this.editingDocument && typeof range === "string") {
                 range = range.trim();
 
                 if (this.currentDependency.version !== range) {

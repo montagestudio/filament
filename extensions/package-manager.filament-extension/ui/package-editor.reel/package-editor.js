@@ -2,8 +2,7 @@ var Montage = require("montage").Montage,
     Editor = require("palette/ui/editor.reel").Editor,
     Promise = require("montage/core/promise").Promise,
     ErrorsCommands = require('../../core/package-tools').Errors.commands,
-    application = require("montage/core/application").application,
-    Dependency = require("../../core/dependency").Dependency;
+    application = require("montage/core/application").application;
 
 exports.PackageEditor = Montage.create(Editor, {
 
@@ -134,7 +133,7 @@ exports.PackageEditor = Montage.create(Editor, {
                 if (source && typeof source === 'object' && !source.canInstall) { // remove request
                     this.currentDocument.uninstallDependency(dependencyName);
                 } else { // install request
-                    var dependencyVersion = source.dependency.name,
+                    var dependencyVersion = source.dependency.versionInstalled || '',
                         dependencyType = source.dependency.type;
 
                     this.currentDocument.installDependency(dependencyName, dependencyVersion, dependencyType);
