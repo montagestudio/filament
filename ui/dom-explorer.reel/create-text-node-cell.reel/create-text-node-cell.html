@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="create-text-node-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "CreateTextNodeCell"},
+                "nodeSegment": {"#": "nodeSegment"}
+            },
+            "bindings": {
+                "classList.has('CreateTextNodeCell--draggable')": {"<-": "@owner.value"}
+            }
+        },
+
+        "text": {
+            "prototype": "ui/text-editor-field.reel",
+            "properties": {
+                "element": {"#": "text"},
+                "placeholder": "text node",
+                "shouldSaveOnBlur": true
+            },
+            "bindings": {
+                "value": {"<->": "@owner.value"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="CreateTextNodeCell" class="CreateTextNodeCell">
+        <div data-montage-id="nodeSegment" class="CreateTextNodeCell-segment"  draggable="true">
+            <span data-montage-id="text" class="CreateTextNodeCell-segment-item CreateTextNodeCell-segment-item--tag"></span>
+        </div>
+    </div>
+</body>
+</html>

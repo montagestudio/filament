@@ -15,6 +15,10 @@ exports.SERIALIZATION_FRAGMENT = "x-filament/x-montage-serialization-fragment";
 // Value is an HTML element in string format
 exports.HTML_ELEMENT = "x-filament/x-html-element";
 
+// Represents a new HTML textNode
+// Value is an HTML element in string format
+exports.HTML_TEXT_NODE = "x-filament/x-html-text-node";
+
 // Represents an element in the template with a data-montage-id
 // Value is a string of the data-montage-id
 exports.MONTAGE_TEMPLATE_ELEMENT = "x-filament/x-montage-template-element";
