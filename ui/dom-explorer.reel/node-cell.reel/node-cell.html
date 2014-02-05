@@ -19,7 +19,7 @@
                 },
                 "classList.has('NodeCell--noChildren')": {
                     "<-": "!@owner.nodeInfo.children.length"
-				},
+                },
                 "classList.has('NodeCell--highlighted')": {
                     "<-": "@owner.domExplorer.highlightedElement == @owner.nodeInfo"
                 },
@@ -243,6 +243,10 @@
                 {
                     "type": "moveTemplate",
                     "listener": {"@": "owner"}
+                },
+                {
+                    "type": "insertTextNodeAction",
+                    "listener": {"@": "owner"}
                 }
             ]
         },
@@ -267,6 +271,10 @@
                 },
                 {
                     "type": "moveTemplate",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "insertTextNodeAction",
                     "listener": {"@": "owner"}
                 }
             ]
@@ -293,6 +301,37 @@
                 {
                     "type": "moveTemplate",
                     "listener": {"@": "owner"}
+                },
+                {
+                    "type": "insertTextNodeAction",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "nodeTypeSubstitution": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "nodeTypeSubstitution"}
+            },
+            "bindings": {
+                "switchValue": {"<-": "@owner.nodeInfo.isTextNode ? 'textNode' : 'elementNode'"}
+            }
+        },
+
+        "textNode": {
+            "prototype": "ui/textarea-editor.reel",
+            "properties": {
+                "element": {"#": "textNode"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.nodeInfo.nodeValue"},
+                "abbreviation" : {"<-": "@owner.nodeInfo.nodeValue.trim()"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
                 }
             ]
         }
@@ -312,17 +351,23 @@
                 <input data-montage-id="toggleExpanded" type="checkbox">
             </span>
 
-            <span data-montage-id="nodeSegment" class="NodeCell-segment"  draggable="true">
-                <span data-montage-id="tagName" class="NodeCell-segment-item NodeCell-segment-item--tag"></span>
+            <div data-montage-id="nodeTypeSubstitution" class="NodeCellTypeSubstitution">
+                <span data-montage-id="nodeSegment" data-arg="elementNode" class="NodeCell-segment"  draggable="true">
+                    <span data-montage-id="tagName" class="NodeCell-segment-item NodeCell-segment-item--tag"></span>
 
-                <span data-montage-id="montageArg" class="NodeCell-segment-item NodeCell-segment-item--montageArg"></span>
-                <span data-montage-id="montageParam" class="NodeCell-segment-item NodeCell-segment-item--montageParam"></span>
-                <span data-montage-id="montageId" class="NodeCell-segment-item NodeCell-segment-item--montageId"></span>
+                    <span data-montage-id="montageArg" class="NodeCell-segment-item NodeCell-segment-item--montageArg"></span>
+                    <span data-montage-id="montageParam" class="NodeCell-segment-item NodeCell-segment-item--montageParam"></span>
+                    <span data-montage-id="montageId" class="NodeCell-segment-item NodeCell-segment-item--montageId"></span>
 
-                <span data-montage-id="componentCondition" class="NodeCell-segment-item NodeCell-segment-item--component">
-                    <strong data-montage-id="componentLabel" class="NodeCell-label"></strong>
+                    <span data-montage-id="componentCondition" class="NodeCell-segment-item NodeCell-segment-item--component">
+                        <strong data-montage-id="componentLabel" class="NodeCell-label"></strong>
+                    </span>
                 </span>
-            </span>
+
+                <div data-montage-id="nodeTextSegment" data-arg="textNode" class="NodeCell-segment-textNode">
+                    <span data-montage-id="textNode" class="NodeCell-segment-item NodeCell-segment-item--tag"></span>
+                </div>
+            </div>
 
             <span data-montage-id="canRemoveNodeCondition">
                 <button data-montage-id="removeNodeButton" class="NodeCell-removeButton Button Button--circle" title="Remove node">-</button>

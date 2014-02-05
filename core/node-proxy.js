@@ -49,13 +49,19 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
             this._templateNode = node;
             this._editingDocument = editingDocument;
 
-            var children = this._templateNode.children,
-                    childrenProxies = [],
-                    iChildNode,
+            var children = this._templateNode.childNodes,
+                childrenProxies = [],
+                iChildNode,
                 i,
                 childProxy;
 
-            for (i = 0; (iChildNode = children.item(i)); i++) {
+            for (i = 0; (iChildNode = children[i]); i++) {
+                if (
+                    (iChildNode.nodeType !== Node.ELEMENT_NODE && iChildNode.nodeType !== Node.TEXT_NODE) ||
+                    (iChildNode.nodeType === Node.TEXT_NODE && iChildNode.nodeValue && iChildNode.nodeValue.trim().length === 0)
+                ){
+                    continue;
+                }
                 childProxy = NodeProxy.create().init(iChildNode, this._editingDocument);
                 childrenProxies.push(childProxy);
                 childProxy.parentNode = this;
@@ -75,6 +81,24 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
 
     children: {
         value: null
+    },
+
+    isTextNode: {
+        get: function () {
+            return this._templateNode.nodeType === Node.TEXT_NODE;
+        }
+    },
+
+    nodeValue: {
+        get: function () {
+            return this._templateNode.nodeValue ? this._templateNode.nodeValue : null;
+        },
+        set: function (value) {
+            if (this._templateNode.nodeValue === value) {
+                return;
+            }
+            this._templateNode.nodeValue = value;
+        }
     },
 
     nextSibling: {
@@ -104,7 +128,10 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
 
     tagName: {
         get: function () {
-            return this._templateNode ? this._templateNode.tagName : null;
+            if (!this._templateNode) {
+                return null;
+            }
+            return this._templateNode.nodeType !== Node.TEXT_NODE ? this._templateNode.tagName : "#text";
         },
         set: function (value) {
             var currentNode = this._templateNode;
@@ -162,7 +189,7 @@ exports.NodeProxy = NodeProxy = Montage.specialize({
 
     getAttribute: {
         value: function (attributeName) {
-            return this._templateNode ? this._templateNode.getAttribute(attributeName) : null;
+            return this._templateNode && this._templateNode.nodeType !== Node.TEXT_NODE ? this._templateNode.getAttribute(attributeName) : null;
         }
     },
 

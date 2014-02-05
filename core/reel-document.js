@@ -1906,6 +1906,13 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    createTemplateTextNode: {
+        value: function (text) {
+            var element = document.createTextNode(text);
+            return NodeProxy.create().init(element, this);
+        }
+    },
+
     canAppendToTemplateNode: {
         value: function (nodeProxy) {
             var isBody = "body" === nodeProxy.tagName.toLowerCase();

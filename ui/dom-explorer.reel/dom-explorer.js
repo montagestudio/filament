@@ -155,7 +155,6 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
     handleAppendNode: {
         value: function (evt) {
-
             var detail = evt.detail,
                 templateContent,
                 jsonNode;
@@ -169,6 +168,10 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
                 var newNode = this.editingDocument.createTemplateNodeFromJSONNode(jsonNode);
                 this.editingDocument.appendChildToTemplateNode(newNode, evt.detail.parentNode);
                 this.templateObjects.createNodeCell.reset();
+            } else if (textNodeValue = detail.textNodeValue) {
+                var newTextNode = this.editingDocument.createTemplateTextNode(textNodeValue);
+                this.editingDocument.appendChildToTemplateNode(newTextNode, evt.detail.parentNode);
+                this.templateObjects.createTextNodeCell.reset();
             }
         }
     },
@@ -180,15 +183,18 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
                 jsonNode;
 
             if (templateContent = detail.template) {
-                var nextSibling = detail.nextSibling;
-                var parentNode = nextSibling.parentNode;
+                var nextSibling = detail.nextSibling,
+                    parentNode = nextSibling.parentNode;
 
                 this.editingDocument.insertTemplateContent(templateContent, parentNode, nextSibling, null).done();
-
             } else if (jsonNode = detail.jsonNode) {
                 var newNode = this.editingDocument.createTemplateNodeFromJSONNode(jsonNode);
                 this.editingDocument.insertNodeBeforeTemplateNode(newNode, evt.detail.nextSibling);
                 this.templateObjects.createNodeCell.reset();
+            } else if (textNodeValue = detail.textNodeValue) {
+                var newTextNode = this.editingDocument.createTemplateTextNode(textNodeValue);
+                this.editingDocument.insertNodeBeforeTemplateNode(newTextNode, evt.detail.nextSibling);
+                this.templateObjects.createTextNodeCell.reset();
             }
         }
     },
@@ -200,15 +206,18 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
                 jsonNode;
 
             if (templateContent = detail.template) {
-                var nextSibling = detail.previousSibling.nextSibling;
-                var parentNode = detail.previousSibling.parentNode;
+                var nextSibling = detail.previousSibling.nextSibling,
+                    parentNode = detail.previousSibling.parentNode;
 
                 this.editingDocument.insertTemplateContent(templateContent, parentNode, nextSibling, null).done();
-
             } else if (jsonNode = detail.jsonNode) {
                 var newNode = this.editingDocument.createTemplateNodeFromJSONNode(jsonNode);
                 this.editingDocument.insertNodeAfterTemplateNode(newNode, evt.detail.previousSibling);
                 this.templateObjects.createNodeCell.reset();
+            } else if (textNodeValue = detail.textNodeValue) {
+                var newTextNode = this.editingDocument.createTemplateTextNode(textNodeValue);
+                this.editingDocument.insertNodeAfterTemplateNode(newTextNode, evt.detail.previousSibling);
+                this.templateObjects.createTextNodeCell.reset();
             }
         }
     },

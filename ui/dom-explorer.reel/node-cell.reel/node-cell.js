@@ -123,9 +123,10 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function (evt) {
             return evt.dataTransfer.types &&
                 (
-                    evt.dataTransfer.types.has(MimeTypes.TEMPLATE) ||
-                    evt.dataTransfer.types.has(MimeTypes.TEXT_PLAIN) ||
-                    evt.dataTransfer.types.has(MimeTypes.JSON_NODE)
+                    evt.dataTransfer.types.indexOf(MimeTypes.TEMPLATE) != -1 ||
+                    evt.dataTransfer.types.indexOf(MimeTypes.HTML_TEXT_NODE) != -1 ||
+                    evt.dataTransfer.types.indexOf(MimeTypes.TEXT_PLAIN) != -1 ||
+                    evt.dataTransfer.types.indexOf(MimeTypes.JSON_NODE) != -1
                 );
         }
     },
@@ -302,6 +303,33 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             this.dispatchEventNamed("appendNode", true, true, {
                 parentNode: this.nodeInfo,
                 jsonNode: evt.detail.jsonNode
+            });
+        }
+    },
+
+    handleAddElementAfterInsertTextNodeAction: {
+        value: function (evt) {
+            this.dispatchEventNamed("insertAfterNode", true, true, {
+                previousSibling: this.nodeInfo,
+                textNodeValue: evt.detail.textNodeValue
+            });
+        }
+    },
+
+    handleAddElementBeforeInsertTextNodeAction: {
+        value: function (evt) {
+            this.dispatchEventNamed("insertBeforeNode", true, true, {
+                nextSibling: this.nodeInfo,
+                textNodeValue: evt.detail.textNodeValue
+            });
+        }
+    },
+
+    handleAddChildElementInsertTextNodeAction: {
+        value: function (evt) {
+            this.dispatchEventNamed("appendNode", true, true, {
+                parentNode: this.nodeInfo,
+                textNodeValue: evt.detail.textNodeValue
             });
         }
     },

@@ -94,6 +94,14 @@
             }
         },
 
+        "createTextNodeCell": {
+            "prototype": "./create-text-node-cell.reel",
+            "properties": {
+                "element": {"#": "createTextNodeCell"},
+                "domExplorer": {"@": "owner"}
+            }
+        },
+
         "drawer": {
             "prototype": "./drawer.reel",
             "properties": {
@@ -125,6 +133,7 @@
         </div>
         <footer data-montage-id="drawer">
             <div data-montage-id="createNodeCell" data-arg="createElement"></div>
+            <div data-montage-id="createTextNodeCell" data-arg="createTextNode"></div>
         </footer>
         <button data-montage-id="toggleDrawer" class="DomExplorer-drawerButton">+</button>
     </div>

@@ -10,6 +10,10 @@
     -webkit-transform: translate3d(0, 100%, 0);
     /* There is also a .06s transion on the create-node-cell. */
     -webkit-transition: -webkit-transform .12s cubic-bezier(.68, .08, 1, 1), visibility 0 .12s;
+    display: -webkit-flex;
+    -webkit-flex-flow: row nowrap;
+    -webkit-align-items: center;
+    -webkit-justify-content: center;
 }
 
 .Drawer.is-open {

@@ -47,6 +47,7 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
             return types &&
                 (
                     types.has(MimeTypes.TEMPLATE) ||
+                    types.has(MimeTypes.HTML_TEXT_NODE) ||
                     types.has(MimeTypes.TEXT_PLAIN) ||
                     types.has(MimeTypes.JSON_NODE)
                 );
@@ -109,6 +110,13 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
 
                 this.dispatchEventNamed("insertElementAction", true, true, {
                     jsonNode: node
+                });
+            } else if (types.indexOf(MimeTypes.HTML_TEXT_NODE) !== -1) {
+                // insert new text node
+                var data = dataTransfer.getData(MimeTypes.HTML_TEXT_NODE);
+                this.dispatchEventNamed("test", true, true)
+                this.dispatchEventNamed("insertTextNodeAction", true, true, {
+                    textNodeValue: data
                 });
             } else if (types.has(MimeTypes.TEMPLATE)) {
                 // insert new element from prototype
