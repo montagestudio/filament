@@ -1069,7 +1069,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     self.removeEventListener("didOpenPackage", openMainReel, false);
                     application.addEventListener("treeExpanded", treeExpanded, false);
                     application.dispatchEventNamed("expandTree", true, true, "ui/");
-                    self.dispatchEventNamed("openUrl", true, true, applicationUrl + "/ui/main.reel/");
+                    self.dispatchEventNamed("openUrl", true, true, self.packageUrl + "ui/main.reel/");
                 };
 
                 self.addEventListener("didOpenPackage", openMainReel, false);
