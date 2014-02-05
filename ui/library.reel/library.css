@@ -3,14 +3,82 @@
     border-left: 1px solid hsl(0, 0%, 22%);
 }
 
-.Library-bar {
+
+.Library-tabs {
+    position: relative;
+    display: flex;
+    z-index: 1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.Library-tab.matte-Button {
+    flex: 1;
+    height: auto;
+    margin: 0;
+    padding: 8px;
+    text-align: center;
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1;
+    color: hsl(0, 0%, 86%);
+    border-radius: 0;
+    border: 1px solid hsl(0, 0%, 20%);
+    border-right: none;
+    background: -webkit-linear-gradient( hsl(0, 0%, 42%), hsl(0, 0%, 32%) );
+    cursor: pointer;
+}
+
+.Library-tab.matte-Button:first-child {
+    border-left: none;
+}
+
+.Library-tab.matte-Button:focus {
+    border-color: hsl(0, 0%, 22%);
+}
+
+.Library-tab.matte-Button:hover {
+    color: hsl(0, 0%, 86%);
+    background: -webkit-linear-gradient( hsl(0, 0%, 44%), hsl(0, 0%, 34%) );
+}
+
+.Library-tab.matte-Button:active {
+    background: hsl(0, 0%, 28%);
+}
+
+/* TODO: Implement properly */
+.is-package .Library-tab:nth-child(1),
+.is-assets .Library-tab:nth-child(2) {
+    background: hsl(0, 0%, 26% );
+    cursor: default;
+}
+
+
+/* Content ------------------------- */
+
+.Library-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* TODO: Implement properly */
+.is-package .AssetsLibrary,
+.is-assets .Library-packages {
+    display: none;
+}
+
+
+/* Packages Library ------------------------- */
+
+.Library-header {
     position: relative;
     display: flex;
     padding: 8px;
     height: 47px;
-    border-top: 1px solid hsl(0, 0%, 46%);
-    border-bottom: 1px solid hsl(0, 0%, 22%);
-    background: -webkit-linear-gradient( hsl(0, 0%, 42%), hsl(0, 0%, 32%) );
+    border-bottom: 1px solid hsl(0, 0%, 20%);
+    background-color: hsl(0, 0%, 26%);
     z-index: 1;
 }
 
@@ -18,9 +86,10 @@
     flex: 1;
     -webkit-appearance: none; padding-right: 0; font-family: inherit; 
     color: hsl(0, 0%, 60%); 
-    border-color: hsl(0, 0%, 27%); border-radius: 20px; 
+    border-color: hsl(0, 0%, 20%);
+    border-radius: 20px; 
     background-color: hsla(0, 0%, 0%, 0.08); 
-    box-shadow: inset 0 1px 2px hsla(0, 0%, 0%, 0.08), 0 1px 0 hsla(0, 100%, 100%, 0.1);
+    box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, 0.1), 0 1px 0 hsla(0, 100%, 100%, 0.06);
 }
 
 .Library-search.matte-InputText:hover {
@@ -28,10 +97,9 @@
 }
  
 .Library-search.matte-InputText:focus {
-    border-color: hsl(0, 0%, 24%);
-    background-color: hsl(0, 0%, 30%);
+    border-color: hsl(0, 0%, 18%);
+    background-color: hsla(0, 0%, 0%, 0.12); 
 }
-
 
 /* Search Close Button */
 .Library-search.matte-InputText::-webkit-search-cancel-button {
