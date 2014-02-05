@@ -601,6 +601,8 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             templateObjects.canAppendNodeCondition.condition = childrenLength === 0 && nodeInfo && nodeInfo.canAppendToNode && !isEditing;
             // @canInsertAfterNodeCondition: condition <- !@owner.nodeInfo.nextSibling &&  @owner.nodeInfo.canInsertAfterNode && !@montageId.isEditing
             templateObjects.canInsertAfterNodeCondition.condition = nodeInfo && (!nodeInfo.nextSibling && nodeInfo.canInsertAfterNode) && !isEditing;
+            // @montageId: classList.has('montage-invisible') <- !@owner.nodeInfo.component || @owner.nodeInfo.component.label != @owner.nodeInfo.montageId
+            this.changeClassListItem(templateObjects.montageId.classList, 'montage-invisible', !(nodeInfo && (!nodeInfo.component || nodeInfo.component.label !== nodeInfo.montageId)));
 
         }
     },
