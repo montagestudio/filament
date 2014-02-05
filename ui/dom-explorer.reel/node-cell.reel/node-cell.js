@@ -559,13 +559,14 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     updateDomExplorerDependencies: {
         value: function() {
             var templateObjects = this.templateObjects;
+            var addElementNodeHover;
 
             if (!templateObjects) {
                 return;
             }
 
             if (this.domExplorer) {
-                var addElementNodeHover = this.domExplorer.addElementNodeHover;
+                addElementNodeHover = this.domExplorer.addElementNodeHover;
             }
 
             // @addElementBefore: classList.has('dropover') <- @owner.domExplorer.addElementNodeHover == @owner
@@ -582,6 +583,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     updateNodeInfoAndMontageIdDependencies: {
         value: function() {
             var templateObjects = this.templateObjects;
+            var childrenLength;
 
             if (!templateObjects) {
                 return;
@@ -590,7 +592,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             var isEditing = this.templateObjects.montageId && this.templateObjects.montageId.isEditing;
             var nodeInfo = this.nodeInfo;
             if (nodeInfo) {
-                var childrenLength = nodeInfo.children && nodeInfo.children.length;
+                childrenLength = nodeInfo.children && nodeInfo.children.length;
             }
 
             // @canInsertBeforeNodeCondition: condition <- @owner.nodeInfo.canInsertBeforeNode && && !@montageId.isEditing
@@ -606,6 +608,8 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     updateNodeInfoAndDomExplorerDependencies: {
         value: function() {
             var templateObjects = this.templateObjects;
+            var highlightedElement;
+            var selectedElements;
 
             if (!templateObjects) {
                 return;
@@ -614,8 +618,8 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             var nodeInfo = this.nodeInfo;
             var domExplorer = this.domExplorer;
             if (domExplorer) {
-                var highlightedElement = domExplorer.highlightedElement;
-                var selectedElements = domExplorer.editingDocument && domExplorer.editingDocument.selectedElements;
+                highlightedElement = domExplorer.highlightedElement;
+                selectedElements = domExplorer.editingDocument && domExplorer.editingDocument.selectedElements;
             }
 
             // @owner: classList.has('NodeCell--highlighted') <- @owner.domExplorer.highlightedElement == @owner.nodeInfo
@@ -629,7 +633,9 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function(classList, name, value) {
             var hasClass = classList.has(name);
 
+            //jshint -W116
             if (value != hasClass) {
+            //jshint +W116
                 if (value) {
                     classList.add(name);
                 } else {
