@@ -1,5 +1,4 @@
 .TemplateObjectCell--isInProjectPackage .TemplateObjectHeader {
-    background-color: hsl(28,0%,100%);
 }
 
 .TemplateObjectCell--owner .TemplateObjectHeader,
@@ -8,20 +7,21 @@
 }
 
 .TemplateObjectCell--selected .TemplateObjectHeader {
-    background-color: hsl(210,100%,92%);
+    background-color: hsl(210, 100%, 96%);
 }
 
 .TemplateObjectHeader {
-    background-color: hsl(0, 0%, 92%);
+    background-color: hsl(0, 0%, 100%);
 }
 
 .TemplateObjectHeader-bar {
-    display: -webkit-flex;
-    -webkit-justify-content: space-between;
-    -webkit-align-items: center;
+    display: flex;
+    /* -webkit-justify-content: space-between; */
+    align-items: center;
 }
 
 .TemplateObjectHeader-referenceProxy {
+    flex: 1;
     display: -webkit-flex;
     padding: 8px;
 }
@@ -121,7 +121,6 @@
     border-radius: 0;
     border: none;
     border-top: 1px solid hsla(0,0%,0%,.1);
-    border-bottom: 1px solid hsla(0,0%,0%,.1);
     font-size: 11px;
     text-shadow: 0 1px 0 hsla(0, 0%, 100%, .3);
     color: hsl(0, 0%, 30%);

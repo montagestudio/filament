@@ -129,7 +129,7 @@
 }
 
 .TemplateExplorer-list-item {
-    border: 1px solid hsl(0,0%,70%);
+    border: 1px solid hsl(0, 0%, 80%);
     border-radius: 6px;
     overflow: hidden;
     margin: 4px 0;
@@ -186,7 +186,7 @@
 /* TemplateObjectCell Sections */
 
 .TemplateObjectCell-section {
-    border-top: 1px solid hsla(0,0%,0%,.1);
+    border-top: 1px solid hsla(0, 0%, 90%, 1);
 }
 
 
