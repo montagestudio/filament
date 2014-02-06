@@ -577,9 +577,8 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
 
                     // Hack to simulate user input
                     this.activeTokenIndex = this.tokens.length - 1;
-                    this.suggestions.push(newSuggestion);
                     this.tokens.pop();
-                    this.tokens.push(newSuggestion);
+                    this.suggestedValue = "";
                     // End Of Hack
 
                     this.resultsController.selection = [newSuggestion];
