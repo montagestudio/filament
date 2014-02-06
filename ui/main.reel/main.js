@@ -42,7 +42,6 @@ exports.Main = Montage.create(Component, {
 
                 document.body.addEventListener("dragenter", this.showDropzone.bind(this), true);
                 document.body.addEventListener("dragover", function(e) {
-                    console.log("over");
                     // Drag-n-drop API makes no sense.
                     e.stopPropagation();
                     e.preventDefault();
@@ -81,7 +80,7 @@ exports.Main = Montage.create(Component, {
 
             reader.onload = function(e) {
                 var base64 = btoa(e.target.result);
-                this.projectController.writeFile(firstFile.name || "file_name.txt", base64);
+                this.projectController.writeFile(firstFile.name, base64);
             }.bind(this);
 
             reader.onerror = function(e) {
@@ -92,10 +91,13 @@ exports.Main = Montage.create(Component, {
 
     handleDragLeave: {
         value: function(e) {
-            this.handleDragleave(e);
+            e.stopPropagation();
+            e.preventDefault();
             document.body.classList.remove("file-dropping");
-            this._dropZone.remove();
-            this._dropZone = null;
+            if (this._dropZone) {
+                this._dropZone.remove();
+                this._dropZone = null;
+            }
         }
     },
 
