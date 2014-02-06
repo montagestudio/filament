@@ -224,21 +224,14 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
     _findActiveTokenIndex: {
         enumerable: false,
         value: function(before, after) {
-            if(before == null || after == null || !before.length) {
+            if(!before || !after) {
                 return 0;
             }
-            var i=0, len = after.length;
-            for(i=0; i< len; i++) {
-                if(i < before.length) {
-                    if(before[i] === after[i]) {
-                        continue;
-                    } else {
-                        break;
-                    }
-                }
+            var i = 0;
+            while ((i < before.length) && (i < after.length) && (before[i] === after[i])) {
+                ++i;
             }
             return i;
-
         }
     },
 
