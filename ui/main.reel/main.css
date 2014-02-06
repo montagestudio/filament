@@ -77,16 +77,20 @@
 
 
 /* Drop zone */
-.dropZone {
-    background: rgba(0, 0, 0, .5);
-    position: absolute;
+.Main-drop-zone {
+    pointer-events: none;
+    background-color: transparent;
     z-index: 999;
+    position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
+    transition: background-color .1s linear;
+    -webkit-transition: background-color .1s linear;
 }
 
-.file-dropping {
-    -webkit-filter: blur(2px);
+.Main-drop-zone--hover {
+    pointer-events: all;
+    background-color: hsla(0, 0%, 25%, .7);
 }
