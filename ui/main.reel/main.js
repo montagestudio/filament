@@ -74,6 +74,10 @@ exports.Main = Montage.create(Component, {
     handleDrop: {
         value: function(e) {
             this.handleDragLeave(e);
+            if (!e.dataTransfer.files.length) {
+                return;
+            }
+
             var firstFile = e.dataTransfer.files[0]; // TODO: read all files.
             var reader = new FileReader();
             reader.readAsBinaryString(firstFile);
