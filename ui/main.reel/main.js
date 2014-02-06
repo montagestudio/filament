@@ -40,43 +40,44 @@ exports.Main = Montage.create(Component, {
                     document.addEventListener("save", this, false);
                 }
 
-                document.body.addEventListener("dragenter", this.showDropzone.bind(this), true);
-                document.body.addEventListener("dragover", function(e) {
+                this.element.addEventListener("dragenter", this, true);
+                this.element.addEventListener("dragover", function(e) {
                     // Drag-n-drop API makes no sense.
                     e.stopPropagation();
                     e.preventDefault();
                 }, false);
+
+                this._dropZone = this.element.querySelector(".Main-drop-zone");
+                this._dropZone.addEventListener("dragleave", this, true);
+                this._dropZone.addEventListener("drop", this, false);
+
             }
         }
     },
 
-    showDropzone: {
-        value: function(e) {
-            e.stopPropagation();
-            e.preventDefault();
+    isAcceptingDrop: {
+        value: false
+    },
 
-            if (this._dropZone) {
+    _dropZone: {
+        value: null
+    },
+
+    captureDragenter: {
+        value: function(e) {
+            if (e.dataTransfer.types.indexOf("Files") === -1) {
                 return;
             }
-
-            document.body.classList.add("file-dropping");
-
-            var dropZone = document.createElement("div");
-            dropZone.className = "dropZone";
-            document.body.appendChild(dropZone);
-            dropZone.addEventListener("dragleave", this.handleDragLeave.bind(this), true);
-            dropZone.addEventListener("drop", this.handleDrop.bind(this), false);
-
-            this._dropZone = dropZone;
+            e.stopPropagation();
+            e.preventDefault();
+            this.isAcceptingDrop = true;
+            this.needsDraw = true;
         }
     },
 
     handleDrop: {
         value: function(e) {
-            this.handleDragLeave(e);
-            if (!e.dataTransfer.files.length) {
-                return;
-            }
+            this.captureDragleave(e);
 
             var firstFile = e.dataTransfer.files[0]; // TODO: read all files.
             var reader = new FileReader();
@@ -87,21 +88,18 @@ exports.Main = Montage.create(Component, {
                 this.projectController.writeFile(firstFile.name, base64);
             }.bind(this);
 
-            reader.onerror = function(e) {
-                console.warn('Error reading', firstFile.name, e);
+            reader.onerror = function() {
+                console.warn('handleDrop: Error reading: ', firstFile.name);
             };
         }
     },
 
-    handleDragLeave: {
+    captureDragleave: {
         value: function(e) {
             e.stopPropagation();
             e.preventDefault();
-            document.body.classList.remove("file-dropping");
-            if (this._dropZone) {
-                this._dropZone.remove();
-                this._dropZone = null;
-            }
+            this.isAcceptingDrop = false;
+            this.needsDraw = true;
         }
     },
 
@@ -420,6 +418,12 @@ exports.Main = Montage.create(Component, {
                     editorElement.classList.add("standby");
                 }
             });
+
+            if (this.isAcceptingDrop) {
+                this._dropZone.classList.add("Main-drop-zone--hover");
+            } else {
+                this._dropZone.classList.remove("Main-drop-zone--hover");
+            }
         }
     }
 });
