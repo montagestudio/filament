@@ -1,9 +1,21 @@
 
 /* Phase ---------------------- */
 
+.ListenerJig {
+    min-width: 400px;
+}
+
+.ListenerJig-phases {
+}
+
 .ListenerJig-phase {
-    position: relative;
-    margin: 0 10px 10px 0;
+    display: block;
+    line-height: 20px;
+}
+
+.ListenerJig-radio {
+    margin: 8px 4px 0 0;
+    vertical-align: bottom;
 }
 
 .ListenerJig--copyable {

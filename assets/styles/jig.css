@@ -7,7 +7,7 @@
 .Jig {
     padding: 8px;
     border-radius: 4px;
-    font-size: 12px;
+    font-size: 13px;
     border: 1px solid hsl(0, 0%, 70%);
     box-shadow: 0 8px 24px hsla(0, 0%, 0%, 0.3);
     background: white;
@@ -16,22 +16,27 @@
 .Jig-row {
     display: -webkit-flex;
     -webkit-justify-content: flex-end;
-    padding: 0 5px;
+    padding: 0;
 }
 
 .Jig-section {
-    margin: 0 5px 10px;
+    flex: 1;
+    margin: 8px;
+}
+
+.Jig-section:last-of-type {
 }
 
 .Jig-targetObjectLabel {
     -webkit-flex: .25;
     min-width: 100px;
-    margin: 0 0 0 6px;
+    margin: 8px;
     font-weight: bold;
     vertical-align: top;
     text-align: right;
+    font-size: 18px;
     line-height: 38px;
-    color: hsl(0,0%,40%);
+    color: hsl(0, 0%, 30%);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -51,20 +56,18 @@
 }
 
 .Jig-footer {
-    padding: 0px 9px 10px 10px;
     text-align: right;
 }
 
 .Jig-footer .matte-Button {
-    margin: 0 0 0 10px;
+    margin: 8px;
 }
-
-
 
 
 /* InputText */
 
 .Jig .matte-InputText {
+    width: 100%;
     border-color: hsl(0,0%,77%);
     background-color: hsla(0,0%,0%,.04);
     box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.08), 0 1px 0 hsla(0,0%,100%,.6);
