@@ -157,27 +157,31 @@
 
     <div data-montage-id="binding-jig" class="Jig BindingJig">
 
-        <span data-montage-id="targetObjectLabel" class="Jig-targetObjectLabel"></span>
+        <h2 data-montage-id="targetObjectLabel" class="Jig-targetObjectLabel"></h2>
             
-        <section class="Jig-section BindingJig-section--target">
-            <label class="Jig-label">Target Path</label>
-            <input data-montage-id="targetPathAutocomplete" class="Jig-input" type="text"></input>
+        <section class="Jig-row Jig-row--has-col">
+            
+            <div class="Jig-col">
+                <label class="Jig-label">Target Path</label>
+                <input data-montage-id="targetPathAutocomplete" class="Jig-input" type="text"></input>
+            </div>
+            
+            <div class="Jig-col">
+                <label class="Jig-label">Direction</label>
+                <span class="BindingJig-direction">
+                    <input data-montage-id="unidirectional" class="BindingJig-radio BindingJig-radio--unidirectional" type="radio" name="direction">
+                    <input data-montage-id="bidirectional" class="BindingJig-radio BindingJig-radio--bidirectional" type="radio" name="direction">
+                </span>
+            </div>
+            
         </section>
 
-        <section class="Jig-section BindingJig-section--direction">
-            <label class="Jig-label">Direction</label>
-            <span class="BindingJig-direction">
-                <input data-montage-id="unidirectional" class="BindingJig-radio BindingJig-radio--unidirectional" type="radio" name="direction">
-                <input data-montage-id="bidirectional" class="BindingJig-radio BindingJig-radio--bidirectional" type="radio" name="direction">
-            </span>
-        </section>
-
-        <section class="Jig-section BindingJig-section--source">
+        <section class="Jig-row">
             <label class="Jig-label">Source Path</label>
             <input data-montage-id="sourcePathAutocomplete" class="Jig-input" type="text"></input>
         </section>
 
-        <section class="Jig-section BindingJig-section--source">
+        <section class="Jig-row">
             <label class="Jig-label">Converter (Optional)</label>
             <input data-montage-id="converter" class="Jig-input" type="text">
         </section>

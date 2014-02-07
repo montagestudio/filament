@@ -1,5 +1,5 @@
-.BindingJig .Jig-input {
-    width: 36em;
+.BindingJig.Jig {
+    min-width: 560px;
 }
 
 /* BindingJig sections ---------------------- */

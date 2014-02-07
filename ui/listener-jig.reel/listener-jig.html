@@ -52,7 +52,8 @@
         "listenerField": {
             "prototype": "matte/ui/input-text.reel",
             "properties": {
-                "element": {"#": "listenerField"}
+                "element": {"#": "listenerField"},
+                "placeholderValue": "@owner or @myObject"
             },
             "bindings": {
                 "value": {"<->": "@owner.listenerModel.listener", "converter": {"@": "objectLabelConverter"}}
@@ -61,7 +62,8 @@
         "methodNameField": {
             "prototype": "matte/ui/input-text.reel",
             "properties": {
-                "element": {"#": "methodNameField"}
+                "element": {"#": "methodNameField"},
+                "placeholderValue": "myFunction"
             },
             "bindings": {
                 "value": {"<->": "@owner.listenerModel.methodName"}
@@ -85,7 +87,8 @@
         "typeField": {
             "prototype": "matte/ui/input-text.reel",
             "properties": {
-                "element": {"#": "typeField"}
+                "element": {"#": "typeField"},
+                "placeholderValue": "action"
             },
             "bindings": {
                 "value": {"<->": "@owner.listenerModel.type"}
@@ -131,39 +134,35 @@
 </head>
 <body>
     <div data-montage-id="listener-jig" class="Jig ListenerJig">
-        <span data-montage-id="targetObjectLabel" class="Jig-targetObjectLabel"></span>
-        <div class="Jig-row ListenerJig-eventRow">
-            <section class="Jig-section">
-                <label class="Jig-label">
-                    Event Type
-                </label>
+        
+        <h2 data-montage-id="targetObjectLabel" class="Jig-targetObjectLabel"></h2>
+        
+        <section class="Jig-row Jig-row--has-col">
+            <div class="Jig-col">
+                <label class="Jig-label">Event Type</label>
                 <input data-montage-id="typeField" class="Jig-input" type="text">
-            </section>
-            <section class="Jig-section ListenerJig-phases">
+            </div>
+            <div class="Jig-col">
                 <label class="ListenerJig-phase">
-                    <input data-montage-id="useCapture" class="ListenerJig-radio" type="radio" name="phase">
-                    Capture
+                    <input data-montage-id="useCapture" class="ListenerJig-radio" type="radio" name="phase"> Capture
                 </label>
                 <label class="ListenerJig-phase">
-                    <input data-montage-id="useBubble" class="ListenerJig-radio" type="radio" name="phase">
-                    Bubble
+                    <input data-montage-id="useBubble" class="ListenerJig-radio" type="radio" name="phase"> Bubble
                 </label>
-            </section>
-        </div>
-        <div class="Jig-row ListenerJig-listenerRow">
-            <section class="Jig-section">
-                <label class="Jig-label">
-                    Listener
-                </label>
+            </div>
+        </section>
+        
+        <section class="Jig-row Jig-row--has-col">
+            <div class="Jig-col">
+                <label class="Jig-label">Listener</label>
                 <input data-montage-id="listenerField" class="Jig-input" type="text">
-            </section>
-            <section class="Jig-section">
-                <label class="Jig-label">
-                    Method Name (Optional)
-                </label>
+            </div>
+            <div class="Jig-col">
+                <label class="Jig-label">Method Name (Optional)</label>
                 <input data-montage-id="methodNameField" type="text">
-            </section>
-        </div>
+            </div>
+        </section>
+        
         <footer class="Jig-footer">
             <button data-montage-id="cancelButton" class="Button"></button>
             <button data-montage-id="updateEventListenerButton" class="Button--action"></button>
