@@ -56,7 +56,13 @@ exports.ReelVisitor = ProxyVisitor.specialize({
 
     serializeProxyObject: {
         value: function (malker, proxyObject, builderObject) {
+
             this.super(malker, proxyObject, builderObject);
+
+            if (proxyObject.isUserObject) {
+                builderObject.clearProperty("prototype");
+                builderObject.clearProperty("object");
+            }
 
             var metadataProperties = proxyObject.editorMetadata;
 

@@ -10,6 +10,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     ReelSerializer = require("core/serialization/reel-serializer").ReelSerializer,
     ReelReviver = require("core/serialization/reel-reviver").ReelReviver,
     ReelContext = require("core/serialization/reel-context").ReelContext,
+    ReelProxy = require("core/reel-proxy").ReelProxy,
     NodeProxy = require("core/node-proxy").NodeProxy,
     visit = require("montage/mousse/serialization/malker").visit,
     Url = require("core/node/url"),
@@ -992,11 +993,18 @@ exports.ReelDocument = EditingDocument.specialize({
             var destinationTemplate = this._template,
                 context,
                 self = this,
-                revisedTemplate;
+                revisedTemplate,
+                applicationProxy;
 
             this.undoManager.openBatch("Add Objects");
 
             revisedTemplate = this._merge(destinationTemplate, sourceTemplate, parentElement, nextSiblingElement);
+
+            // Ensure that we specially craft the application object the sourceTemplate introduced it
+            if (revisedTemplate.getSerialization().getSerializationLabels().indexOf("application") > -1 && !this._editingProxyMap.application) {
+                applicationProxy = new ReelProxy().init("application", revisedTemplate.getSerialization().getSerializationObject().application, "montage/core/application", self, true);
+                this.addObject(applicationProxy);
+            }
 
             // Prepare a context that knows about the existing editing proxies prior to
             // creating new editing proxies
@@ -1004,7 +1012,13 @@ exports.ReelDocument = EditingDocument.specialize({
 
             return Promise.all(revisedTemplate.getSerialization().getSerializationLabels().map(function (label) {
                     return Promise(context.getObject(label)).then(function (proxy) {
-                        return self.addObject(proxy);
+                        // The application was already formally added to the reelDocument to get it into the editingProxyMap
+                        // in constructing the context, there's no need to add it again here
+                        if ("application" === label) {
+                            return proxy;
+                        } else {
+                            return self.addObject(proxy);
+                        }
                     });
                 }))
                 .then(function (addedProxies) {
