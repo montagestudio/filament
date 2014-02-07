@@ -13,7 +13,9 @@ var AssetTools = {
      * @return {Object}
      */
     defineFileDataWithUrl: function (fileUrl) {
-        if (this.isAFile(fileUrl)) {
+        if (this.isAFile(fileUrl) || this.isGlTFBundle(fileUrl)) {
+            fileUrl = fileUrl.replace(/\/$/, ""); // remove the hypothetical last trailing '/' character.
+
             var fileData = /([^\/]+)\.([^\.]+)$|(?:[^\/]+)$/.exec(fileUrl);
 
             if (fileData && Array.isArray(fileData) && fileData.length === 3) {
@@ -29,7 +31,7 @@ var AssetTools = {
     },
 
     /**
-     * Checks if a string is an url valid.
+     * Checks if a string is an file url.
      * @function
      * @public
      * @param {String} fileUrl - a file Url.
@@ -37,6 +39,17 @@ var AssetTools = {
      */
     isAFile: function (fileUrl) {
         return typeof fileUrl === 'string' && fileUrl.length > 0 && fileUrl.charAt(fileUrl.length-1) !== '/';
+    },
+
+    /**
+     * Checks if a string is an glTF bundle url.
+     * @function
+     * @public
+     * @param {String} bundleUrl - a bundleUrl Url.
+     * @return {Boolean}
+     */
+    isGlTFBundle: function (bundleUrl) {
+        return typeof bundleUrl === 'string' && bundleUrl.length > 0 && /\.glTF\/?$/.test(bundleUrl);
     },
 
     /**
@@ -82,7 +95,8 @@ var AssetTools = {
      * @return {Boolean}
      */
     isAssetValid: function (asset) {
-        return asset && typeof asset && this.isAFile(asset.fileUrl) && this.isMimeTypeSupported(asset.mimeType);
+        return asset && typeof asset && (this.isAFile(asset.fileUrl) || this.isGlTFBundle(asset.fileUrl)) &&
+            this.isMimeTypeSupported(asset.mimeType);
     },
 
     /**

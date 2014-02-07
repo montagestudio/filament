@@ -8,8 +8,9 @@ var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescript
     Asset = require("./asset").Asset,
 
     PACKAGE_LOCATION = require.location,
-    MONTAGE_MODEL_MIME_TYPE = "model/montage-serialization",
+    GLTF_BUNDLE_MIME_TYPE = "model/gltf-bundle",
     ASSET_COMPILER_URL = PACKAGE_LOCATION + "asset-compilers/collada.asset-compiler",
+    CONVERSION_GLTF_ENABLED = false,
 
     FILE_SYSTEM_CHANGES = {
         CREATE: "create",
@@ -255,7 +256,11 @@ exports.AssetsManager = Montage.specialize({
      */
     createAssetWithFileDescriptor: {
         value: function (fileDescriptor) {
-            if (AssetTools.isAFile(fileDescriptor.fileUrl) && AssetTools.isMimeTypeSupported(fileDescriptor.mimeType)) {
+            var fileUrl = fileDescriptor.fileUrl;
+
+            if ((AssetTools.isAFile(fileUrl) || AssetTools.isGlTFBundle(fileUrl)) &&
+                AssetTools.isMimeTypeSupported(fileDescriptor.mimeType)) {
+
                 var createdAsset = Asset.create().initWithFileDescriptor(fileDescriptor);
 
                 createdAsset.iconUrl = this.getIconWithAsset(createdAsset);
@@ -277,12 +282,16 @@ exports.AssetsManager = Montage.specialize({
      */
     createAndSaveAssetFromTemplate: {
         value: function (assetTemplate, location) {
+            if (!CONVERSION_GLTF_ENABLED) { // Temporary fix, feature not used at the moment.
+                return Promise.reject("GlTF conversion is disabled");
+            }
+
             if (AssetTools.isAssetValid(assetTemplate) && assetTemplate.isTemplate) {
                 var promise = null;
 
-                // If the asset template is a 3D model, we create a new "Montage 3D Model"
+                // If the asset template is a 3D model, we create a new "glTF bundle asset"
                 if (AssetsConfig.assetCategories.MODEL.templates.indexOf(assetTemplate.mimeType) >= 0) {
-                    promise = this._createAndSaveMontageModelAsset(assetTemplate, location);
+                    promise = this._createAndSaveGlTFModelAsset(assetTemplate, location);
                 }
 
                 if (promise) {
@@ -301,21 +310,21 @@ exports.AssetsManager = Montage.specialize({
     },
 
     /**
-     * Creates an Montage 3D Asset from a 3D asset and save it.
+     * Creates a glTF bundle Asset from a 3D asset and save it.
      * @function
      * @public
-     * @param {Object} asset - an Asset 3D Object which represents a "Template".
+     * @param {Object} asset - a 3D Asset which represents a "Template".
      * @param {String} location - the path where the new asset wants to be saved.
      * @return {Promise} for the created Asset Object.
      */
-    _createAndSaveMontageModelAsset: {
+    _createAndSaveGlTFModelAsset: {
         value: function (assetTemplate, location) {
             var self = this;
 
             return this._assetCompiler.convert(assetTemplate.fileUrl, location).then(function(outputURL) {
                 return self._getStatsAtUrl(outputURL).then(function (stat) {
                     var fileDescriptor = FileDescriptor.create().initWithUrlAndStat(outputURL, stat);
-                    fileDescriptor.mimeType = MONTAGE_MODEL_MIME_TYPE;
+                    fileDescriptor.mimeType = GLTF_BUNDLE_MIME_TYPE;
 
                     var assetFound = self._findAssetWithFileUrl(outputURL);
 
@@ -544,7 +553,7 @@ exports.AssetsManager = Montage.specialize({
      */
     removeAssetWithFileUrl: {
         value: function (fileUrl) {
-            if (AssetTools.isAFile(fileUrl)) {
+            if ((AssetTools.isAFile(fileUrl) || AssetTools.isGlTFBundle(fileUrl))) {
                 var assetFound = this._findAssetWithFileUrl(fileUrl);
                 return this.removeAsset(assetFound);
             }
@@ -626,7 +635,7 @@ exports.AssetsManager = Montage.specialize({
      */
     _findAssetWithFileUrl: {
         value: function (fileUrl, assetCategory) {
-            if (AssetTools.isAFile(fileUrl)) {
+            if ((AssetTools.isAFile(fileUrl) || AssetTools.isGlTFBundle(fileUrl))) {
                 return this._findAssetWithPropertyAndValue("fileUrl", fileUrl, assetCategory);
             }
 
@@ -771,7 +780,7 @@ exports.AssetsManager = Montage.specialize({
         value: function (event) {
             var fileChangeDetail = event.detail;
 
-            if (this._projectController && fileChangeDetail && typeof fileChangeDetail === "object" && AssetTools.isAFile('fileUrl')) {
+            if (this._projectController && fileChangeDetail && typeof fileChangeDetail === "object") {
                 var fileUrl = fileChangeDetail.fileUrl,
                     self = this;
 
