@@ -9,9 +9,14 @@
     visibility: hidden;
 }
 
+.FileCell-condition {
+    flex-shrink: 0;
+}
+
 /* Button --------------------------------- */
 
 .FileCell .FileCell-button {
+    flex-shrink: 0;
 	-webkit-appearance: none;
 	text-align: left;
 	height: auto;
