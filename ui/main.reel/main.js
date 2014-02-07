@@ -79,18 +79,25 @@ exports.Main = Montage.create(Component, {
         value: function(e) {
             this.captureDragleave(e);
 
-            var firstFile = e.dataTransfer.files[0]; // TODO: read all files.
-            var reader = new FileReader();
-            reader.readAsBinaryString(firstFile);
+            var files = e.dataTransfer.files;
+            if (files.length === 0) {
+                return;
+            }
 
-            reader.onload = function(e) {
-                var base64 = btoa(e.target.result);
-                this.projectController.writeFile(firstFile.name, base64);
-            }.bind(this);
+            var that = this;
+            [].forEach.call(files, function(file) {
+                var reader = new FileReader();
+                reader.readAsBinaryString(file);
 
-            reader.onerror = function() {
-                console.warn('handleDrop: Error reading: ', firstFile.name);
-            };
+                reader.onload = function(e) {
+                    var base64 = btoa(e.target.result);
+                    that.projectController.addFileToProjectAtUrl(base64, file.name);
+                };
+
+                reader.onerror = function() {
+                    throw new Error('handleDrop: Error reading: ' + file.name);
+                };
+            });
         }
     },
 

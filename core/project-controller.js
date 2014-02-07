@@ -314,10 +314,14 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
-
-    writeFile: {
-        value: function(name, data) {
-            this.environmentBridge.writeFile(name, data);
+    /**
+     *
+     * @param {string} data is base64 encoded
+     * @param {string} path such as dir_name/file_name.js
+     */
+    addFileToProjectAtUrl: {
+        value: function(data, path) {
+            this.environmentBridge.writeFile(path, data);
         }
     },
 
