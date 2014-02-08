@@ -13,7 +13,8 @@ var TextInput = require("matte/ui/text-input").TextInput,
 
 var KEY_UP = 38,
     KEY_DOWN = 40,
-    KEY_ENTER = 13;
+    KEY_ENTER = 13,
+    KEY_DOT = 190;
 
 var getElementPosition = function(obj) {
     var curleft = 0, curtop = 0, curHt = 0, curWd = 0;
@@ -178,7 +179,6 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
                 }
 
             } else {
-                this.showPopup = false;
                 this._valueSyncedWithInputField = false;
                 this.needsDraw = true;
             }
@@ -224,21 +224,14 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
     _findActiveTokenIndex: {
         enumerable: false,
         value: function(before, after) {
-            if(before == null || after == null || !before.length) {
+            if(!before || !after) {
                 return 0;
             }
-            var i=0, len = after.length;
-            for(i=0; i< len; i++) {
-                if(i < before.length) {
-                    if(before[i] === after[i]) {
-                        continue;
-                    } else {
-                        break;
-                    }
-                }
+            var i = 0;
+            while ((i < before.length) && (i < after.length) && (before[i] === after[i])) {
+                ++i;
             }
             return i;
-
         }
     },
 
@@ -495,7 +488,8 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
 
     handleKeydown: {
         value: function (evt) {
-            var code = evt.keyCode;
+            var code = evt.keyCode,
+                popup = this._getPopup();
             switch(code) {
             case KEY_DOWN:
                 evt.preventDefault();
@@ -503,6 +497,12 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
 
             case KEY_UP:
                 evt.preventDefault();
+                break;
+
+            case KEY_DOT:
+                if (popup.displayed) {
+                    evt.preventDefault();
+                }
                 break;
             }
         }
@@ -559,8 +559,23 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
                     this.resultsController.selection = [this.suggestions[this.activeItemIndex]];
                     e.preventDefault();
                     // select the currently active item in the results list
-                } else {
-                    this.suggestedValue = this.tokens[this.tokens.length-1];
+                }
+
+                break;
+
+            case KEY_DOT:
+                if (popup.displayed) {
+                    var suggestion = this.suggestions[this.activeItemIndex],
+                        newSuggestion = suggestion + ".";
+
+                    // Hack to simulate user input
+                    this.activeTokenIndex = this.tokens.length - 1;
+                    this.tokens.pop();
+                    this.suggestedValue = "";
+                    // End Of Hack
+
+                    this.resultsController.selection = [newSuggestion];
+                    this.performSearch(newSuggestion);
                 }
 
                 break;
@@ -569,7 +584,7 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
             this.element.focus();
         }
     },
-    
+
     _highlightPrevious: {
         value: function () {
             if (this.activeItemIndex > 0) {
@@ -579,7 +594,7 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
             }
         }
     },
-    
+
     _highlightNext: {
         value: function () {
             var list = this.suggestions || [];
