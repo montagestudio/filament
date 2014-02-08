@@ -46,7 +46,7 @@
     margin: 0;
     padding: 0;
     list-style: none;
-    background-color: hsl(0,0%,30%);
+    background: linear-gradient(hsl(0, 0%, 26%),hsl(0, 0%, 32%));
 }
 
 /* Editor Area ----------------------- */

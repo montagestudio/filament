@@ -14,22 +14,22 @@
     height: 28px;
     padding: 0 3px 0 8px;
     margin: 0 1px 0 0;
-    line-height: 26px;
-    font-size: 11px;
+    line-height: 24px;
+    font-size: 12px;
     font-weight: normal;
     color: hsl(0,0%,70%);
     border-radius: 4px 4px 0 0;
-    background-color: hsl(0, 0%, 36%);
+    border-bottom: 1px solid hsl(0, 0%, 48%);
+    background: linear-gradient(hsl(0, 0%, 48%),hsl(0, 0%, 28%));
     cursor: pointer;
 }
 
 .DocumentTab:hover {
-    background-color: hsl(0, 0%, 38%);
 }
 
 .DocumentTab:active,
 .DocumentTab:focus {
-    background-color: hsla(0,0%,100%,.06);
+    outline: none;
 }
 
 .DocumentTab.selected {
@@ -37,7 +37,7 @@
     color: hsl(0,0%,30%);
     text-shadow: 0 1px 0 hsla(0,0%,100%,.3);
     border-top: 1px solid hsla(0,0%,100%,1);
-    background-color: hsl(0, 0%, 98%);
+    background: linear-gradient(hsl(0, 0%, 98%),hsl(0, 0%, 72%));
     cursor: default;
 }
 

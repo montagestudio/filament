@@ -44,9 +44,8 @@
     -webkit-align-items: center;
     margin: 0;
     padding: 0 17px;
-    height: 75px;
+    height: 76px;
     border-top: 1px solid hsl(0, 0%, 58%);
-    border-bottom: 1px solid hsl(0, 0%, 22%);
     background: -webkit-linear-gradient( hsl(0, 0%, 44%), #323232 );
 }
 
