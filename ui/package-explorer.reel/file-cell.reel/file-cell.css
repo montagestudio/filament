@@ -32,7 +32,7 @@
     color: #a6a6a6;
     background: none;
     background-repeat: no-repeat;
-    padding-left: 31px; /* Same as indentValue of tree.reel/indent.js */
+    padding-left: 27px; /* Same as indentValue of tree.reel/indent.js */
     background-size: 23px;
     background-position: 0px center;
 }
@@ -60,12 +60,13 @@
 
 
 .FileCell-button-label {
-    padding: 0px 3px;
+    padding: 2px 7px;
 }
 
 .FileCell-button.open .FileCell-button-label {
-    color: hsl(0, 0%, 90%);
-    border-radius: 2px;
-    background-color: hsl(0, 0%, 36%);
+    color: #333333;
+    text-shadow: 0 1px 0 hsla(0, 100%, 100%, 0.25);
+    border-radius: 12px;
+    background: linear-gradient( #a6a6a6, hsl(0, 0%, 50%));
     box-shadow: 0 1px 1px hsla(0, 0%, 0%, 0.06);
 }
