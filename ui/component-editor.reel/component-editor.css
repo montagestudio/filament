@@ -19,7 +19,7 @@
 .ComponentEditor-column-row--fill {
     -webkit-flex: 1 1 0;
     overflow: hidden;
-    border-bottom: 1px solid hsl(0, 0%, 75%);
+    border-bottom: 1px solid hsl(0, 0%, 4%);
     background: hsl(0, 0%, 86%);
 }
 
@@ -32,5 +32,5 @@
     font-size: 12px;
     text-shadow: 0 1px 0 hsla(0,0%,100%,0.4);
     padding: 0;
-    background: hsl(0, 0%, 92%);
+    background: #959595;
 }

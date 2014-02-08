@@ -124,16 +124,18 @@
     padding: 4px 8px;
     padding-bottom: 150px;
     border-bottom: 1px solid hsl(0, 0%, 80%);
-    background-color: hsl(0, 0%, 86%);
+    background-color: hsl(0, 0%, 58%);
     list-style: none;
 }
 
 .TemplateExplorer-list-item {
-    border: 1px solid hsl(0, 0%, 80%);
+    border: 1px solid hsl(0, 0%, 36%);
     border-radius: 6px;
     overflow: hidden;
     margin: 4px 0;
     background-color: hsl(0,0%,96%)
+;
+    box-shadow: 0 1px 2px hsla(0, 0%, 0%, 0.3);
 }
 
 .TemplateObjectCell--isInProjectPackage .TemplateExplorer-list-item {
@@ -157,13 +159,13 @@
 }
 
 .TemplateObjectCell {
-    background-color: hsl(0,0%,96%);
+    background-color: hsl(0, 0%, 98%);
     -webkit-flex-direction: column;
     width: 100%;
 }
 
 .TemplateObjectCell--excluded {
-    opacity: 0.5;
+    opacity: 0.3;
 }
 
 .TemplateObjectCell--excluded  .TemplateObjectCell-section {
@@ -186,7 +188,7 @@
 /* TemplateObjectCell Sections */
 
 .TemplateObjectCell-section {
-    border-top: 1px solid hsla(0, 0%, 90%, 1);
+    border-top: 1px solid hsl(0, 0%, 80%);
 }
 
 

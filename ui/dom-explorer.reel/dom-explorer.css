@@ -15,7 +15,7 @@
     padding: 12px;
     padding-bottom: 30px;
     font-size: 11px;
-    background: linear-gradient( to right, hsl(0,0%,86%) 0px, hsl(0,0%,86%) 1px, hsla(0,0%,86%,0) 1px );
+    background: linear-gradient( to right, hsl(0, 0%, 79%) 0px, hsl(0, 0%, 79%) 1px, hsla(0, 0%, 79%, 0) 1px );
     background-size: 18px;
     background-clip: content-box;
 }
@@ -42,7 +42,7 @@
     bottom: 8px;
     right: 8px;
     font-size: 20px;
-    color: hsl(0, 0%, 50%);
+    color: hsl(0, 0%, 90%);
     -webkit-font-smoothing: none;
     -webkit-transition: -webkit-transform .12s;
     margin: 0;
@@ -51,7 +51,7 @@
     width: 32px;
     min-width: 0;
     border: none;
-    background-color: hsl(0, 0%, 92%);
+    background-color: #959595;
     font-weight: bold;
     border-radius: 16px;
     line-height: 0;

@@ -11,51 +11,52 @@
 
 
 .Search.matte-InputText {
-    -webkit-appearance: none;
+    /* -webkit-appearance: none; */
     padding-right: 0; /* space for cancel button */
     font-family: inherit;
-    color: hsl(0,0%,30%);
-    border-color: hsl(0,0%,77%);
+    color: hsl(0, 0%, 20%);
+    border-color: hsl(0, 0%, 62%);
     border-radius: 20px;
-    background-color: hsla(0,0%,0%,.04);
-    box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.08), 0 1px 0 hsla(0,0%,100%,.6);
+    background-color: hsla(0, 0%, 0%, 0.1);
+    box-shadow: inset 0 1px 4px hsla(0, 0%, 0%, 0.2), 0 1px 0 hsla(0, 100%, 100%, 0.6);
 }
 
 .Search.matte-InputText:hover {
-    background-color: hsla(0,0%,0%,.02);
 }
 
 .Search.matte-InputText:focus {
-    border-color: hsl(210,100%,70%);
-    background-color: hsla(210,100%,60%,0.1);
+    background-color: hsla(0, 0%, 0%, 0.12);
 }
 
 /* Search Close Button */
 .Search.matte-InputText::-webkit-search-cancel-button {
   margin: 2px 8px 0 4px;
-  opacity: .8;
+  /* opacity: .8; */
   cursor: pointer;
 }
 
-.Search.matte-InputText::-webkit-search-cancel-button:hover {
+.Search.matte-InputText::-webkit-input-placeholder {
+  color: hsl(0, 0%, 50%);
+}
+
+/*.Search.matte-InputText::-webkit-search-cancel-button:hover {
   opacity: 1;
 }
 
 .Search.matte-InputText::-webkit-search-cancel-button:active {
   opacity: .3;
-}
+}*/
 
 
 /* Column --------------------------------- */
 
 .Column {
     position: relative;
-    border-left: 1px solid hsl(0, 0%, 75%);
+    border-left: 3px solid hsl(0, 0%, 4%);
 }
 
 
 .Column:before {
-    content: "";
     position: absolute;
     z-index: 1;
     width: 1px;
@@ -75,8 +76,8 @@
 .Bar {
     padding: 8px;
     margin: 0;
-    border-bottom: 1px solid hsl(0,0%,75%);
-    background: -webkit-linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
+    border-bottom: 1px solid #7a7a7a;
+    background: -webkit-linear-gradient( #f9f9f9, hsl(0, 0%, 72%) );
 }
 
 .Bar > .Button {

@@ -7,11 +7,12 @@
 }
 
 .TemplateObjectCell--selected .TemplateObjectHeader {
-    background-color: hsl(210, 100%, 96%);
+    background-color: hsl(210, 100%, 88%);
 }
 
 .TemplateObjectHeader {
     background-color: hsl(0, 0%, 100%);
+    background: -webkit-linear-gradient( hsla(0, 100%, 100%, 0.5), hsla(0, 0%, 0%, 0.16) );
 }
 
 .TemplateObjectHeader-bar {
