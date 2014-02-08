@@ -31,13 +31,14 @@ body {
 
 ::-webkit-scrollbar {
     -webkit-appearance: none;
-    width: 8px;
+    width: 4px;
     height: 0px;
-    background-color: hsla(0,0%,0%,0);
+    background-color: hsl(0, 0%, 70%);
 }
 
 ::-webkit-scrollbar-thumb {
-    border-left: 6px solid hsla(0, 0%, 0%, 0);
-    background-clip: padding-box;
-    background-color: hsla(0, 0%, 0%, 0.15);
+    /* border-left: 1px solid hsla(0, 0%, 0%, 0); */
+    /* background-clip: padding-box; */
+    background-color: hsla(0, 100%, 100%, 1);
+    border-radius: 2px;
 }

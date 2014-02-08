@@ -121,7 +121,7 @@
     min-height: 0;
     overflow: scroll;
     margin: 0;
-    padding-top: 4px;
+    padding: 4px 8px;
     padding-bottom: 150px;
     border-bottom: 1px solid hsl(0, 0%, 80%);
     background-color: hsl(0, 0%, 86%);

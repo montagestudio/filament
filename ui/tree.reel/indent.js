@@ -50,7 +50,7 @@ exports.Indent = Montage.create(Component, {
     },
 
     indentValue: {
-        value: 18
+        value: 35
     },
 
     indentUnit: {
