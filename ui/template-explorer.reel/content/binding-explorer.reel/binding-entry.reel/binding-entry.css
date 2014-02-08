@@ -7,7 +7,7 @@
 .BindingEntry-pill {
     padding: 0 8px;
     font-size: 12px;
-    color: hsl(0, 0%, 30%);
+    color: #404040;
     line-height: 22px;
     border-radius: 11px;
     background: hsl(0, 0%, 92%);

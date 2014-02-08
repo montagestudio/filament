@@ -221,7 +221,7 @@
     font-size: 12px;
     font-weight: normal;
     line-height: 32px;
-    color: hsl(0, 0%, 60%);
+    color: #404040;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

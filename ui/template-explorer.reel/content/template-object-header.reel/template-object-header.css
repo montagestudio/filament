@@ -48,7 +48,7 @@
     margin: 0;
     font-size: 13px;
     line-height: 15px;
-    color: hsl(0, 0%, 30%);
+    color: hsl(0, 0%, 0%);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -59,7 +59,7 @@
     font-style: italic;
     font-size: 11px;
     line-height: 14px;
-    color: hsl(0, 0%, 60%);
+    color: hsl(0, 0%, 40%);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
