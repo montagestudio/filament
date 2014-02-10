@@ -37,7 +37,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
-    bindingSetDispatchingEnabled: {
+    bindingChangesDispatchingEnabled: {
         value: true
     },
 
@@ -450,7 +450,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
 
     _dispatchDidSetObjectBinding: {
         value: function(binding) {
-            if (this.bindingSetDispatchingEnabled) {
+            if (this.bindingChangesDispatchingEnabled) {
                 this.dispatchEventNamed("didSetObjectBinding", true, false, {
                     binding: binding
                 });
@@ -460,7 +460,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
 
     _dispatchDidCancelObjectBinding: {
         value: function(binding) {
-            if (this.bindingSetDispatchingEnabled) {
+            if (this.bindingChangesDispatchingEnabled) {
                 this.dispatchEventNamed("didCancelObjectBinding", true, false, {
                     binding: binding
                 });

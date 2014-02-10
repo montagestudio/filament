@@ -132,6 +132,26 @@ exports.PreviewController = Target.specialize({
         }
     },
 
+    setPreviewObjectBinding: {
+        value: function(ownerModuleId, label, binding) {
+            if (typeof this.environmentBridge.setPreviewObjectBinding === "function") {
+                return this.environmentBridge.setPreviewObjectBinding(this._previewId, ownerModuleId, label, binding);
+            } else {
+                return Promise.resolve(null);
+            }
+        }
+    },
+
+    deletePreviewObjectBinding: {
+        value: function(ownerModuleId, label, path) {
+            if (typeof this.environmentBridge.deletePreviewObjectBinding === "function") {
+                return this.environmentBridge.deletePreviewObjectBinding(this._previewId, ownerModuleId, label, path);
+            } else {
+                return Promise.resolve(null);
+            }
+        }
+    },
+
     /**
      * Unregister the preview server for this project
      *

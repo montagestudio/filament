@@ -245,6 +245,8 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
             app.addEventListener("didSave", this);
             app.addEventListener("didChangeObjectProperties", this);
+            app.addEventListener("didSetObjectBinding", this);
+            app.addEventListener("didCancelObjectBinding", this);
 
             this._deferredApplication.resolve(app);
         }
@@ -270,6 +272,43 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             var ownerModuleId = ownerProxy ? ownerProxy.exportId : null;
 
             this.previewController.setPreviewObjectProperties(proxy.label, ownerModuleId, event.detail.properties).done();
+        }
+    },
+
+    handleDidSetObjectBinding: {
+        value: function (event) {
+            var proxy = event.target;
+            var ownerProxy = proxy.editingDocument.editingProxyMap.owner;
+
+            if (!ownerProxy) {
+                return;
+            }
+
+            var binding = {
+                propertyName: event.detail.binding.targetPath,
+                propertyDescriptor: {}
+            };
+            var oneway = event.detail.binding.oneway ? "<-" : "<->";
+            binding.propertyDescriptor[oneway] = event.detail.binding.sourcePath;
+
+            this.previewController.setPreviewObjectBinding(
+                ownerProxy.exportId, proxy.label, binding)
+            .done();
+        }
+    },
+
+    handleDidCancelObjectBinding: {
+        value: function (event) {
+            var proxy = event.target;
+            var ownerProxy = proxy.editingDocument.editingProxyMap.owner;
+
+            if (!ownerProxy) {
+                return;
+            }
+
+            this.previewController.deletePreviewObjectBinding(
+                ownerProxy.exportId, proxy.label, event.detail.binding.targetPath)
+            .done();
         }
     }
 });
