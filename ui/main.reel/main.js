@@ -47,9 +47,8 @@ exports.Main = Montage.create(Component, {
                     e.preventDefault();
                 }, false);
 
-                this._dropZone = this.element.querySelector(".Main-drop-zone");
-                this._dropZone.addEventListener("dragleave", this, true);
-                this._dropZone.addEventListener("drop", this, false);
+                this.dropZone.addEventListener("dragleave", this, true);
+                this.dropZone.addEventListener("drop", this, false);
 
             }
         }
@@ -57,10 +56,6 @@ exports.Main = Montage.create(Component, {
 
     isAcceptingDrop: {
         value: false
-    },
-
-    _dropZone: {
-        value: null
     },
 
     captureDragenter: {
@@ -84,14 +79,14 @@ exports.Main = Montage.create(Component, {
                 return;
             }
 
-            var that = this;
-            [].forEach.call(files, function(file) {
+            var self = this;
+            Array.prototype.forEach.call(files, function(file) {
                 var reader = new FileReader();
                 reader.readAsBinaryString(file);
 
                 reader.onload = function(e) {
                     var base64 = btoa(e.target.result);
-                    that.projectController.addFileToProjectAtUrl(base64, file.name);
+                    self.projectController.addFileToProjectAtUrl(base64, file.name);
                 };
 
                 reader.onerror = function() {
@@ -427,9 +422,9 @@ exports.Main = Montage.create(Component, {
             });
 
             if (this.isAcceptingDrop) {
-                this._dropZone.classList.add("Main-drop-zone--hover");
+                this.dropZone.classList.add("Main-dropZone--hover");
             } else {
-                this._dropZone.classList.remove("Main-drop-zone--hover");
+                this.dropZone.classList.remove("Main-dropZone--hover");
             }
         }
     }
