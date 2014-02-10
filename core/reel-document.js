@@ -34,6 +34,10 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    addObjectsFromTemplateDispatchingEnabled: {
+        value: true
+    },
+
     _editor: {
         value: null
     },
@@ -1045,6 +1049,10 @@ exports.ReelDocument = EditingDocument.specialize({
                     } else {
                         return addedProxies;
                     }
+                })
+                .then(function(result) {
+                    self._dispatchDidAddObjectsFromTemplate(revisedTemplate, parentElement, nextSiblingElement);
+                    return result;
                 });
         }
     },
@@ -2347,6 +2355,18 @@ exports.ReelDocument = EditingDocument.specialize({
                 }
             }
             this.templateObjectsTreeToggleStates.clear();
+        }
+    },
+
+    _dispatchDidAddObjectsFromTemplate: {
+        value: function(template, parentNode, nextSiblingNode) {
+            if (this.addObjectsFromTemplateDispatchingEnabled) {
+                this.dispatchEventNamed("didAddObjectsFromTemplate", true, false, {
+                    template: template,
+                    parentNode: parentNode,
+                    nextSiblingNode: nextSiblingNode
+                });
+            }
         }
     }
 
