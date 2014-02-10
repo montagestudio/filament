@@ -37,6 +37,10 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
+    bindingSetDispatchingEnabled: {
+        value: true
+    },
+
     /**
      * The identifier of the representedObject
      */
@@ -266,6 +270,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             binding.converter = converter;
 
             this.bindings.push(binding);
+            this._dispatchDidSetObjectBinding(binding);
 
             return binding;
         }
@@ -286,7 +291,8 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
     updateObjectBinding: {
         value: function (binding, targetPath, oneway, sourcePath, converter) {
             var existingBinding,
-                bindingIndex = this.bindings.indexOf(binding);
+                bindingIndex = this.bindings.indexOf(binding),
+                newTargetPropertyBinding;
 
             if (bindingIndex > -1) {
                 existingBinding = binding;
@@ -294,10 +300,19 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
                 throw new Error("Cannot update a binding that's not associated with this proxy.");
             }
 
+            if (targetPath !== binding.targetPath) {
+                newTargetPropertyBinding = true;
+            }
+
             binding.targetPath = targetPath;
             binding.oneway = oneway;
             binding.sourcePath = sourcePath;
             binding.converter = converter;
+
+            if (newTargetPropertyBinding) {
+                this._dispatchDidCancelObjectBinding(binding);
+            }
+            this._dispatchDidSetObjectBinding(binding);
 
             return binding;
         }
@@ -317,6 +332,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
                 } else {
                     this.bindings.splice(insertionIndex, 0, binding);
                 }
+                this._dispatchDidSetObjectBinding(binding);
             } else {
                 //TODO guard against adding exact same binding to multiple proxies
                 throw new Error("Cannot add the same binding to a proxy more than once");
@@ -360,6 +376,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
 
             if (bindingIndex > -1) {
                 this.bindings.splice(bindingIndex, 1);
+                this._dispatchDidCancelObjectBinding(binding);
                 return {index: bindingIndex, removedBinding: binding};
             } else {
                 throw new Error("Cannot cancel a binding that's not associated with this proxy");
@@ -429,6 +446,25 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
                 throw new Error("Cannot remove a listener that's not associated with this proxy");
             }
         }
-    }
+    },
 
+    _dispatchDidSetObjectBinding: {
+        value: function(binding) {
+            if (this.bindingSetDispatchingEnabled) {
+                this.dispatchEventNamed("didSetObjectBinding", true, false, {
+                    binding: binding
+                });
+            }
+        }
+    },
+
+    _dispatchDidCancelObjectBinding: {
+        value: function(binding) {
+            if (this.bindingSetDispatchingEnabled) {
+                this.dispatchEventNamed("didCancelObjectBinding", true, false, {
+                    binding: binding
+                });
+            }
+        }
+    }
 });
