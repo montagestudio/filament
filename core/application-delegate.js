@@ -331,7 +331,9 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             var nextSiblingNode = event.detail.nextSiblingNode;
             var node = nextSiblingNode || event.detail.parentNode;
             var nodeCount = template.document.body.children.length;
+            var anchorNodeIsStarArgument;
             var componentNode;
+            var argumentNode;
             var anchorNode;
             var cssSelector = "";
             var how;
@@ -340,16 +342,38 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                 return;
             }
 
-            // Find the component where the template content was inserted
+            // Find the component where the template content was inserted.
+            // We also check to see if this change was done inside a named
+            // argument element.
             componentNode = event.detail.parentNode;
             do {
                 if (componentNode.component) {
-                    anchorNode = componentNode;
                     break;
+                } else if (componentNode.montageArg) {
+                    argumentNode = componentNode;
                 }
             } while (componentNode = /* assignment */ componentNode.parentNode);
 
+            // If this change was done inside a named parameter then the
+            // anchor node is the component itself, otherwise it's the argument
+            // node
+            anchorNode = argumentNode || componentNode;
+
             // Generate the css selector path.
+            // The css selector is similar in concept to an xpath, we create a
+            // path of direct children from the anchor to the node.
+            // :scope in this case means the container element.
+            // For star arguments (non-named arguments) we need to adopt a
+            // different strategy for selecting the first node in the path
+            // because there is no container element, just a range of them.
+            // :scope in this case means the first element of the range and we
+            // select the first node of the path using the + adjacent sibling
+            // selector.
+
+            if (!argumentNode && componentNode.component !== ownerProxy) {
+                anchorNodeIsStarArgument = true;
+            }
+
             do {
                 var ix = node.parentNode.children.indexOf(node);
                 // If this node is the nextSibling then we need to decrease the
@@ -358,7 +382,14 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                 if (node == nextSiblingNode) {
                     ix -= nodeCount;
                 }
-                cssSelector = "> *:nth-child(" + (ix+1) + ")" + cssSelector;
+
+                // We use a different strategy for the selector of the first
+                // node in the path for star arguments.
+                if (anchorNodeIsStarArgument && node.parentNode === anchorNode) {
+                    cssSelector = new Array(ix+1).join("+ * ") + cssSelector;
+                } else {
+                    cssSelector = "> *:nth-child(" + (ix+1) + ")" + cssSelector;
+                }
             } while ((node = node.parentNode) && node !== anchorNode);
             cssSelector = ":scope " + cssSelector;
 
@@ -373,9 +404,10 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                 html: template.document.body.innerHTML
             };
 
-            // TODO: always have label and by default it's "owner"?
             this.previewController.addTemplateFragment(
-                ownerProxy.exportId, "owner", null, cssSelector, how, templateFragment)
+                ownerProxy.exportId, componentNode.component.label,
+                argumentNode ? argumentNode.montageArg : null, cssSelector,
+                how, templateFragment)
             .done();
         }
     }
