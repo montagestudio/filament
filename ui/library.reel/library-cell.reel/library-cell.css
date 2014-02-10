@@ -1,6 +1,10 @@
 .LibraryCell {
 }
 
+.LibraryCell:nth-child(odd) {
+    background-color: #474747;
+}
+
 /* LibraryCell Button --------------------------------- */
 
 .LibraryCell-button.matte-Button {
@@ -33,11 +37,11 @@
 }
 
 .LibraryCell-button[draggable=false].matte-Button {
-    background-color: hsla(43, 100%, 85%, 0.04);
+    background-color: #ababab;
     pointer-events: none;
     cursor: default;
-    border: 1px solid hsl(43, 20%, 20%);
-    border-bottom: 4px solid hsl(43, 100%, 85%);
+    border: 0;
+    border-top: 1px solid hsl(0, 0%, 75%);
     padding: 7px 2px 4px 2px;
     border-radius: 4px;
 }
@@ -79,8 +83,8 @@
 }
 
 .LibraryCell {
-    -webkit-flex: 1 0 60px;
-    max-width: 60px;
+    -webkit-flex: 1 0 59px;
+    max-width: 59px;
 }
 
 .LibraryCell-button.matte-Button {
@@ -101,9 +105,13 @@
 .LibraryCell-button-label {
     display: block;
     font-size: 10px;
-    color: hsl(0, 0%, 56%);
+    color: #a6a6a6;
     text-align: center;
     line-height: 16px;
+}
+
+.LibraryCell-button[draggable=false] .LibraryCell-button-label {
+    color: #757575;
 }
 
 
@@ -124,22 +132,14 @@
     border-radius: 0;
 }
 
-.Library.isList .LibraryCell-button[draggable=false].matte-Button {
-    padding: 4px 4px 4px 8px;
-    border: none;
-    border-left: 4px solid hsl(43, 100%, 85%);
-}
-
-.Library.isList .LibraryCell:last-child .LibraryCell-button.matte-Button {
-}
-
 .Library.isList .LibraryCell-button-icon {
     width: 28px;
+    height: 19px;
 }
 
 .Library.isList .LibraryCell-button-label {
     flex: 1;
-    font-size: 12px;
+    font-size: 13px;
     text-align: left;
     margin-left: 12px;
     line-height: 19px;

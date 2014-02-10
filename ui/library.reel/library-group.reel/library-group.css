@@ -10,14 +10,16 @@
 
 .LibraryGroup-header {
     position: relative;
-	padding: 4px 8px;
+	
+    padding: 0 10px;
 	margin: 0;
-    font-size: 13px;
-    color: hsl(0, 0%, 86%);
-    border-top: 1px solid hsla(0, 100%, 100%, 0.12);
-    border-bottom: 1px solid hsl(0, 0%, 28%);
-    background: linear-gradient( hsl(0, 0%, 40%), hsl(0, 0%, 36%) );
-    cursor: pointer;
+    font-size: 15px;
+    line-height: 30px;
+    color: #fff;
+    text-shadow: 0 -1px 0 hsla(0, 0%, 0%, 0.75);
+    border-top: 1px solid #646464;
+    border-bottom: 1px solid #3b3b3b;
+    background: linear-gradient( hsl(0, 0%, 31%), #3f3f3f );
 }
 
 .LibraryGroup-header:active {

@@ -1,6 +1,18 @@
 .Library {
+    position: relative;
     -webkit-user-select: none;
-    border-left: 1px solid hsl(0, 0%, 22%);
+    border-left: 1px solid #424242;
+}
+
+.Library:before {
+    content: "";
+    z-index: 2;
+    position: absolute;
+    width: 8px;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background: linear-gradient(to left, hsla(0, 0%, 0%, 0), hsla(0, 0%, 0%, 0.75));
 }
 
 /* Scrollbar -------------------------------- */
@@ -31,12 +43,13 @@
     font-family: inherit;
     font-size: 15px;
     line-height: 1;
-    color: hsl(0, 0%, 86%);
+    color: #fff;
+    text-shadow: 0 -1px 0 hsla(0, 0%, 0%, 0.75);
     border-radius: 0;
     border: 1px solid hsl(0, 0%, 20%);
     border-right: none;
     border-bottom: 1px solid hsl(0, 0%, 20%);
-    background-color: hsl(0, 0%, 26%);
+    background: -webkit-linear-gradient( hsl(0, 0%, 24%), hsl(0, 0%, 20%) );
     cursor: pointer;
 }
 
@@ -60,9 +73,8 @@
 /* TODO: Implement properly */
 .is-package .Library-tab:nth-child(1),
 .is-assets .Library-tab:nth-child(2) {
-    border-top-color: hsl(0, 0%, 42%);
-    background: -webkit-linear-gradient( hsl(0, 0%, 38%), hsl(0, 0%, 30%) );
     cursor: default;
+    border-top: 1px solid hsl(0, 0%, 58%); background: -webkit-linear-gradient( hsl(0, 0%, 44%), hsl(0, 0%, 20%) );
 }
 
 
@@ -88,9 +100,8 @@
     display: flex;
     padding: 8px;
     height: 47px;
-    border-bottom: 1px solid hsl(0, 0%, 20%);
-    background: hsl(0, 0%, 30%);
     z-index: 1;
+    border-top: 1px solid hsl(0, 0%, 58%); background: -webkit-linear-gradient( hsl(0, 0%, 44%), hsl(0, 0%, 20%) );
 }
 
 .Library-search.matte-InputText {
@@ -99,8 +110,8 @@
     color: hsl(0, 0%, 60%); 
     border-color: hsl(0, 0%, 20%);
     border-radius: 20px; 
-    background-color: hsla(0, 0%, 0%, 0.08); 
-    box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, 0.1), 0 1px 0 hsla(0, 100%, 100%, 0.06);
+    background-color: hsla(0, 0%, 0%, 0.2); 
+    box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, 0.3), 0 1px 1px hsla(0, 100%, 100%, 0.2);
 }
 
 .Library-search.matte-InputText:hover {
