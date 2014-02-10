@@ -77,7 +77,7 @@
 
 
 /* Drop zone */
-.Main-drop-zone {
+.Main-dropZone {
     pointer-events: none;
     background-color: transparent;
     z-index: 999;
@@ -90,7 +90,7 @@
     -webkit-transition: background-color .1s linear;
 }
 
-.Main-drop-zone--hover {
+.Main-dropZone--hover {
     pointer-events: all;
     background-color: hsla(0, 0%, 25%, .7);
 }

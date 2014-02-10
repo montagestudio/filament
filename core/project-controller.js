@@ -317,11 +317,12 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     /**
      *
      * @param {string} data is base64 encoded
-     * @param {string} path such as dir_name/file_name.js
+     * @param {string} url such as file://localhost/path/to/project/assets/images/foo.png
      */
     addFileToProjectAtUrl: {
-        value: function(data, path) {
-            this.environmentBridge.writeFile(path, data);
+        value: function(data, url) {
+            console.log('URL', url);
+            this.environmentBridge.writeFile(url, data);
         }
     },
 
