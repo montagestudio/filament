@@ -124,14 +124,15 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
      * @param {string} label The label for the represented object within a template
      * @param {object} serialization The revived serialization of the represented object
      * @param {string} exportId The string used as the exportId of the represented object if none is found in the serialization
+     * @param {boolean} isUserObject Whether this object is provided by by the user of the template
      */
     init: {
         //TODO not pass along a reference to the editingDocument as part of the proxy itself
         // it's being done out of convenience to help out the inspector but I'm not sure I like
         // that
-        value: function (label, serialization, exportId, editingDocument) {
+        value: function (label, serialization, exportId, editingDocument, isUserObject) {
 
-            if (label !== "owner" && !exportId && !serialization.prototype && !serialization.object) {
+            if (!isUserObject && !exportId && !serialization.prototype && !serialization.object) {
                 throw new Error("No exportId provided or found for template object with label '" + label + "'");
             }
 
@@ -147,6 +148,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
 
             var self = EditingProxy.init.call(this, label, serialization, exportId, editingDocument);
             self._exportId = exportId || serialization.prototype || serialization.object;
+            self._isUserObject = isUserObject;
 
             this.defineBinding("isInTemplate", {"<-": "_editingDocument.editingProxies.has($)", parameters: this});
 
@@ -200,6 +202,21 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             this._listeners = listeners;
 
             this.editorMetadata = new Map(serialization[BUILDER_UNIT_LABEL]);
+        }
+    },
+
+    _isUserObject: {
+        value: false
+    },
+
+    /**
+     * Whether or not this proxy represents an object that was provided by
+     * the user of the template. This indicates that the object will not
+     * have a `prototype` or `object` entry when serialized.
+     */
+    isUserObject: {
+        get: function () {
+            return this._isUserObject;
         }
     },
 

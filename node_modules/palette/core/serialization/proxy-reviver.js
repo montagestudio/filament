@@ -64,8 +64,8 @@ exports.ProxyReviver = MontageReviver.specialize({
                 return context.getUserObject(label);
             }
 
-            var exportId,
-                proxyObject = new this.proxyConstructor(),
+            var proxyObject = new this.proxyConstructor(),
+                self = this,
                 revivedSerialization;
 
             context.setObjectLabel(proxyObject, label);
@@ -73,23 +73,26 @@ exports.ProxyReviver = MontageReviver.specialize({
 
             if (Promise.isPromise(revivedSerialization)) {
                 return revivedSerialization.then(function (revivedSerialization) {
-                    if (this.rootObjectLabel === label) {
-                        exportId = context.ownerExportId;
-                    } else {
-                        exportId = revivedSerialization.prototype || revivedSerialization.object;
-                    }
-
-                    return proxyObject.init(label, revivedSerialization, exportId, context.editingDocument);
+                    return self._initProxy(proxyObject, label, context, revivedSerialization);
                 });
             } else {
-                if (this.rootObjectLabel === label) {
-                    exportId = context.ownerExportId;
-                } else {
-                    exportId = revivedSerialization.prototype || revivedSerialization.object;
-                }
-
-                return proxyObject.init(label, revivedSerialization, exportId, context.editingDocument);
+                return self._initProxy(proxyObject, label, context, revivedSerialization);
             }
+        }
+    },
+
+    _initProxy: {
+        value: function (proxyObject, label, context, serialization) {
+
+            var exportId;
+
+            if (this.rootObjectLabel === label) {
+                exportId = context.ownerExportId;
+            } else {
+                exportId = serialization.prototype || serialization.object;
+            }
+
+            return proxyObject.init(label, serialization, exportId, context.editingDocument);
         }
     },
 

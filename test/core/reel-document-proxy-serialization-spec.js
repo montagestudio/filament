@@ -19,6 +19,7 @@ describe("core/reel-document-proxy-serialization-spec", function () {
                     "comment" : "This comment should be deserializable."
                 }
             },
+            "application": {},
             "foo": {
                 "prototype": "ui/foo.reel",
                 "properties": {
@@ -76,6 +77,67 @@ describe("core/reel-document-proxy-serialization-spec", function () {
                 reelDocument.setOwnedObjectEditorMetadata(proxy, "comment", "");
                 var serialization = reelDocument.serializationForProxy(proxy);
                 expect(serialization._dev).toBeUndefined();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+    });
+
+    describe("serialization of the owner", function () {
+
+        it("should not have a serialized prototype", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var proxy = reelDocument.editingProxyMap.owner;
+                var serialization = reelDocument.serializationForProxy(proxy);
+                expect(serialization.prototype).toBeUndefined();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+    });
+
+    describe("serialization of external objects", function () {
+
+        it("should not have a serialized prototype", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var proxy = reelDocument.editingProxyMap.application;
+                var serialization = reelDocument.serializationForProxy(proxy);
+                expect(serialization.prototype).toBeUndefined();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+    });
+
+    describe("when user a object has a property", function () {
+
+        beforeEach(function () {
+            Template._templateCache = {
+                moduleId: Object.create(null)
+            };
+            reelDocumentPromise = mockReelDocument("foo/bar/mock.reel", {
+                "owner": {
+                    "properties": {
+                        "element": {"#": "ownerElement"}
+                    }
+                },
+                "application": {
+                    "properties": {
+                        "delegate": {"@": "owner"}
+                    }
+                }
+
+            }, '<div data-montage-id="ownerElement"></div></div>');
+        });
+
+        it("should preserve the properties of the user object", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var proxy = reelDocument.editingProxyMap.application;
+                var serialization = reelDocument.serializationForProxy(proxy);
+                expect(serialization.properties.delegate["@"]).toBe("owner");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should not introduce a prototype to the user object", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var proxy = reelDocument.editingProxyMap.application;
+                var serialization = reelDocument.serializationForProxy(proxy);
+                expect(serialization.prototype).toBeUndefined();
             }).timeout(WAITSFOR_TIMEOUT);
         });
 

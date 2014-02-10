@@ -366,6 +366,122 @@ describe("core/reel-document-headless-editing-spec", function () {
 
     });
 
+    describe("adding a user object", function () {
+        var readyPromise;
+
+        beforeEach(function () {
+            var serialization = {
+                "application": {
+                    "properties": {
+                        "foo": true
+                    }
+                }
+            };
+
+            var markup = '';
+
+            readyPromise = Promise.all([reelDocumentPromise, templateWithSerializationAndBodyContent(serialization, markup)]);
+        });
+
+        it("should return a promise for a proxy of the added object", function () {
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                var addedObjects = reelDocument.addObjectsFromTemplate(insertionTemplate);
+                expect(Promise.isPromiseAlike(addedObjects)).toBeTruthy();
+                addedObjects.done();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should add the proxy to the editing document", function () {
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (addedObjects) {
+                    expect(addedObjects).toBeTruthy();
+                    expect(addedObjects.length).toBe(1);
+                    expect(reelDocument.editingProxyMap.application).toBe(addedObjects[0]);
+                    expect(reelDocument.editingProxies.indexOf(addedObjects[0]) >= 0).toBeTruthy();
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should have the specified properties", function () {
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (addedObjects) {
+                    var proxy = addedObjects[0];
+                    expect(proxy.properties.get("foo")).toBe(true);
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should add the object to the serialization of the editing document", function () {
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (addedObjects) {
+                    var templateSerialization = reelDocument._buildSerializationObjects();
+                    expect(templateSerialization.application).toBeTruthy();
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should not have a serialized prototype", function () {
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (addedObjects) {
+                    var templateSerialization = reelDocument._buildSerializationObjects();
+                    expect(templateSerialization.application.prototype).toBeUndefined();
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+    });
+
+    describe("adding an external object", function () {
+        var readyPromise;
+
+        beforeEach(function () {
+            var serialization = {
+                "application": {}
+            };
+
+            var markup = '';
+
+            readyPromise = Promise.all([reelDocumentPromise, templateWithSerializationAndBodyContent(serialization, markup)]);
+        });
+
+        it("should return a promise for a proxy of the added object", function () {
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                var addedObjects = reelDocument.addObjectsFromTemplate(insertionTemplate);
+                expect(Promise.isPromiseAlike(addedObjects)).toBeTruthy();
+                addedObjects.done();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should add the proxy to the editing document", function () {
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (addedObjects) {
+                    expect(addedObjects).toBeTruthy();
+                    expect(addedObjects.length).toBe(1);
+                    expect(reelDocument.editingProxyMap.application).toBe(addedObjects[0]);
+                    expect(reelDocument.editingProxies.indexOf(addedObjects[0]) >= 0).toBeTruthy();
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should add the object to the serialization of the editing document", function () {
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (addedObjects) {
+                    var templateSerialization = reelDocument._buildSerializationObjects();
+                    expect(templateSerialization.application).toBeTruthy();
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should not have a serialized prototype", function () {
+            return readyPromise.spread(function (reelDocument, insertionTemplate) {
+                return reelDocument.addObjectsFromTemplate(insertionTemplate).then(function (addedObjects) {
+                    var templateSerialization = reelDocument._buildSerializationObjects();
+                    expect(templateSerialization.application.prototype).toBeUndefined();
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+    });
+
     describe("setting a property on an object", function () {
 
         var labelInOwner = "bar";
