@@ -247,6 +247,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             app.addEventListener("didChangeObjectProperties", this);
             app.addEventListener("didSetObjectBinding", this);
             app.addEventListener("didCancelObjectBinding", this);
+            app.addEventListener("didAddObjectsFromTemplate", this);
 
             this._deferredApplication.resolve(app);
         }
@@ -308,6 +309,73 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
             this.previewController.deletePreviewObjectBinding(
                 ownerProxy.exportId, proxy.label, event.detail.binding.targetPath)
+            .done();
+        }
+    },
+
+    /**
+     * When adding a template content to the preview we need to provide three
+     * pieces of information:
+     * - The component where the content was added. (ownerModuleId + label)
+     * - The argument name if the content was added to an argument of the
+     *   component. (argumentName)
+     * - A CSS selector from the component or the argument node that points to
+     *   the exact node where the content was added. (cssSelector)
+     */
+    handleDidAddObjectsFromTemplate: {
+        value: function (event) {
+            var document = event.target;
+            var template = event.detail.template;
+            var templateFragment;
+            var ownerProxy = document.editingProxyMap.owner;
+            var nextSiblingNode = event.detail.nextSiblingNode;
+            var node = nextSiblingNode || event.detail.parentNode;
+            var nodeCount = template.document.body.children.length;
+            var componentNode;
+            var anchorNode;
+            var cssSelector = "";
+            var how;
+
+            if (!ownerProxy) {
+                return;
+            }
+
+            // Find the component where the template content was inserted
+            componentNode = event.detail.parentNode;
+            do {
+                if (componentNode.component) {
+                    anchorNode = componentNode;
+                    break;
+                }
+            } while (componentNode = /* assignment */ componentNode.parentNode);
+
+            // Generate the css selector path.
+            do {
+                var ix = node.parentNode.children.indexOf(node);
+                // If this node is the nextSibling then we need to decrease the
+                // index because the insertTemplateContent already happened so
+                // we need to take into account the additional nodes added by it.
+                if (node == nextSiblingNode) {
+                    ix -= nodeCount;
+                }
+                cssSelector = "> *:nth-child(" + (ix+1) + ")" + cssSelector;
+            } while ((node = node.parentNode) && node !== anchorNode);
+            cssSelector = ":scope " + cssSelector;
+
+            if (nextSiblingNode) {
+                how = "before";
+            } else {
+                how = "append";
+            }
+
+            templateFragment = {
+                serialization: template.objectsString,
+                html: template.document.body.innerHTML
+            };
+
+            // TODO: always have label and by default it's "owner"?
+            this.previewController.addTemplateFragment(
+                ownerProxy.exportId, "owner", null, cssSelector, how, templateFragment)
             .done();
         }
     }

@@ -152,6 +152,16 @@ exports.PreviewController = Target.specialize({
         }
     },
 
+    addTemplateFragment: {
+        value: function(moduleId, label, argumentName, cssSelector, how, templateFragment) {
+            if (typeof this.environmentBridge.addTemplateFragment === "function") {
+                return this.environmentBridge.addTemplateFragment(this._previewId, moduleId, label, argumentName, cssSelector, how, templateFragment);
+            } else {
+                return Promise.resolve(null);
+            }
+        }
+    },
+
     /**
      * Unregister the preview server for this project
      *
