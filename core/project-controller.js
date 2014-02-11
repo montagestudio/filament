@@ -317,7 +317,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     /**
      *
      * @param {string} data is base64 encoded
-     * @param {string} url such as file://localhost/path/to/project/assets/images/foo.png
+     * @param {string} url such as file://localhost/path/to/project/assets/images/why not zoidberg.png
      */
     addFileToProjectAtUrl: {
         value: function(data, url) {

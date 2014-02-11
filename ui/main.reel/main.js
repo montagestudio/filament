@@ -86,7 +86,8 @@ exports.Main = Montage.create(Component, {
 
                 reader.onload = function(e) {
                     var base64 = btoa(e.target.result);
-                    self.projectController.addFileToProjectAtUrl(base64, file.name);
+                    var filename = decodeURIComponent(file.name);
+                    self.projectController.addFileToProjectAtUrl(base64, filename);
                 };
 
                 reader.onerror = function() {
