@@ -313,6 +313,32 @@ exports.ApplicationDelegate = Montage.create(Montage, {
         }
     },
 
+    handleDidAddObjectsFromTemplate: {
+        value: function (event) {
+            var document = event.target;
+            var detail = event.detail;
+
+            if (detail.parentNode) {
+                this._addTemplateToPreview(detail.template, document, detail.parentNode, detail.nextSiblingNode).done();
+            } else {
+                this._addTemplateObjectsToPreview(detail.template, document)
+            }
+        }
+    },
+
+    _addTemplateObjectsToPreview: {
+        value: function(template, document) {
+            var ownerProxy = document.editingProxyMap.owner;
+            var templateFragment = {
+                serialization: template.objectsString
+            };
+
+            return this.previewController.addTemplateFragmentObjects(
+                    ownerProxy.exportId, templateFragment)
+                .done();
+        }
+    },
+
     /**
      * When adding a template content to the preview we need to provide three
      * pieces of information:
@@ -322,14 +348,11 @@ exports.ApplicationDelegate = Montage.create(Montage, {
      * - A CSS selector from the component or the argument node that points to
      *   the exact node where the content was added. (cssSelector)
      */
-    handleDidAddObjectsFromTemplate: {
-        value: function (event) {
-            var document = event.target;
-            var template = event.detail.template;
+    _addTemplateToPreview: {
+        value: function(template, document, parentNode, nextSiblingNode) {
             var templateFragment;
             var ownerProxy = document.editingProxyMap.owner;
-            var nextSiblingNode = event.detail.nextSiblingNode;
-            var node = nextSiblingNode || event.detail.parentNode;
+            var node = nextSiblingNode || parentNode;
             var nodeCount = template.document.body.children.length;
             var anchorNodeIsStarArgument;
             var componentNode;
@@ -339,13 +362,13 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             var how;
 
             if (!ownerProxy) {
-                return;
+                return Promise.resolve();
             }
 
             // Find the component where the template content was inserted.
             // We also check to see if this change was done inside a named
             // argument element.
-            componentNode = event.detail.parentNode;
+            componentNode = parentNode;
             do {
                 if (componentNode.component) {
                     break;
@@ -369,7 +392,6 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             // :scope in this case means the first element of the range and we
             // select the first node of the path using the + adjacent sibling
             // selector.
-
             if (!argumentNode && componentNode.component !== ownerProxy) {
                 anchorNodeIsStarArgument = true;
             }
@@ -404,11 +426,11 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                 html: template.document.body.innerHTML
             };
 
-            this.previewController.addTemplateFragment(
-                ownerProxy.exportId, componentNode.component.label,
-                argumentNode ? argumentNode.montageArg : null, cssSelector,
-                how, templateFragment)
-            .done();
+            return this.previewController.addTemplateFragment(
+                    ownerProxy.exportId, componentNode.component.label,
+                    argumentNode ? argumentNode.montageArg : null, cssSelector,
+                    how, templateFragment)
+                .done();
         }
     }
 });
