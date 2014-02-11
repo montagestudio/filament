@@ -67,7 +67,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
 
 
     setObjectProperty: {
-        value: function (property, value) {
+        value: function (property, value, dispatchPropertiesChange) {
             var previous = this.properties.get(property);
             if (previous instanceof NodeProxy) {
                 this.editingDocument.references.delete(previous, this, property);
@@ -76,7 +76,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             // The value being set here should always be something of worth to the
             // editingModel, in contrast to what we do later if we have live
             // representations to update as well
-            this.super(property, value);
+            this.super(property, value, dispatchPropertiesChange);
 
             if (value instanceof NodeProxy) {
                 this.editingDocument.references.add(value, this, property);
