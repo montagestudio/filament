@@ -57,7 +57,7 @@
     width: 24px;
     height: 24px;
     border-radius: 6px;
-    opacity: .3;
+    opacity: .3;  
 }
 
 .TemplateExplorer-hiddenControl.is-disabled .TemplateExplorer-filterToggle,
@@ -188,7 +188,7 @@
 /* TemplateObjectCell Sections */
 
 .TemplateObjectCell-section {
-    border-top: 1px solid hsl(0, 0%, 80%);
+    border-top: 1px solid hsl(0, 0%, 68%);
 }
 
 

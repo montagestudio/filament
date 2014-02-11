@@ -13,6 +13,7 @@
 .TemplateObjectHeader {
     background-color: hsl(0, 0%, 100%);
     background: -webkit-linear-gradient( hsla(0, 100%, 100%, 0.5), hsla(0, 0%, 0%, 0.16) );
+    /* border-bottom: 1px solid #7a7a7a; */
 }
 
 .TemplateObjectHeader-bar {
