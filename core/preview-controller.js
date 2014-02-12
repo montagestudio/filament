@@ -155,6 +155,7 @@ exports.PreviewController = Target.specialize({
     addTemplateFragment: {
         value: function(moduleId, label, argumentName, cssSelector, how, templateFragment) {
             if (typeof this.environmentBridge.addTemplateFragment === "function") {
+                console.log("addTemplateFragment: ", moduleId, label, argumentName, cssSelector, how);
                 return this.environmentBridge.addTemplateFragment(this._previewId, moduleId, label, argumentName, cssSelector, how, templateFragment);
             } else {
                 return Promise.resolve(null);
@@ -166,6 +167,17 @@ exports.PreviewController = Target.specialize({
         value: function(moduleId, templateFragment) {
             if (typeof this.environmentBridge.addTemplateFragmentObjects === "function") {
                 return this.environmentBridge.addTemplateFragmentObjects(this._previewId, moduleId, templateFragment);
+            } else {
+                return Promise.resolve(null);
+            }
+        }
+    },
+
+    setPreviewElementAttribute: {
+        value: function(moduleId, label, argumentName, cssSelector, attributeName, attributeValue) {
+            if (typeof this.environmentBridge.setPreviewElementAttribute === "function") {
+                console.log("setElementAttribute: ", moduleId, label, argumentName, cssSelector, attributeName, attributeValue);
+                return this.environmentBridge.setPreviewElementAttribute(this._previewId, moduleId, label, argumentName, cssSelector, attributeName, attributeValue);
             } else {
                 return Promise.resolve(null);
             }

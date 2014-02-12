@@ -248,6 +248,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             app.addEventListener("didSetObjectBinding", this);
             app.addEventListener("didCancelObjectBinding", this);
             app.addEventListener("didAddObjectsFromTemplate", this);
+            app.addEventListener("didSetAttribute", this);
 
             this._deferredApplication.resolve(app);
         }
@@ -323,6 +324,25 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             } else {
                 this._addTemplateObjectsToPreview(detail.template, document)
             }
+        }
+    },
+
+    handleDidSetAttribute: {
+        value: function(event) {
+            var node = event.target;
+            var detail = event.detail;
+            var owner = node._editingDocument.editingProxyMap.owner;
+
+            var location = this._getNodeLocation(node, false, owner);
+
+            this.previewController.setPreviewElementAttribute(
+                owner.moduleId,
+                location.component.label,
+                location.argumentName,
+                location.cssSelector,
+                detail.attribute,
+                detail.value)
+            .done();
         }
     },
 
