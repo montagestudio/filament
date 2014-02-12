@@ -340,6 +340,81 @@ exports.ApplicationDelegate = Montage.create(Montage, {
     },
 
     /**
+     * Creates the information necessary to find a node in the live app.
+     *
+     * @param node Node The node to get the location details for.
+     * @param isContainerNode boolean Indicates if node is a container node. If
+     *        it is then it means we need to locate the contents of the node and
+     *        not the node itself. Useful when the node doesn't have any content
+     *        we can point to or we want to append to it.
+     * @param owner ProxyNode The owner of the template where the node is defined.
+     * @returns {component, argumentName, cssSelector}
+     */
+    _getNodeLocation: {
+        value: function(node, isContainerNode, owner) {
+            var argumentNode,
+                anchorNode,
+                componentNode,
+                anchorNodeIsStarArgument,
+                cssSelector = "",
+                currentNode;
+
+            // Find the component where the node is located.
+            // We also check to see if the node resides inside a named
+            // argument element.
+            componentNode = isContainerNode ? node : node.parentNode;
+            do {
+                if (componentNode.component) {
+                    break;
+                } else if (componentNode.montageArg) {
+                    argumentNode = componentNode;
+                }
+            } while (componentNode = /* assignment */ componentNode.parentNode);
+
+            // If the node is inside a named parameter then the
+            // anchor node is the component itself, otherwise it's the argument
+            // node
+            anchorNode = argumentNode || componentNode;
+
+            if (!argumentNode && componentNode.component !== owner) {
+                anchorNodeIsStarArgument = true;
+            }
+
+            // Generate the css selector path.
+            // The css selector is similar in concept to an xpath, we create a
+            // path of direct children from the anchor to the node.
+            // :scope in this case means the container element.
+            // For star arguments (non-named arguments) we need to adopt a
+            // different strategy for selecting the first node in the path
+            // because there is no container element, just a range of them.
+            // :scope in this case means the first element of the range and we
+            // select the first node of the path using the + adjacent sibling
+            // selector.
+            currentNode = node;
+            while (currentNode && currentNode !== anchorNode) {
+                var ix = currentNode.parentNode.children.indexOf(currentNode);
+
+                // We use a different strategy for the selector of the first
+                // node in the path for star arguments.
+                if (anchorNodeIsStarArgument && currentNode.parentNode === anchorNode) {
+                    cssSelector = new Array(ix+1).join("+ * ") + cssSelector;
+                } else {
+                    cssSelector = "> *:nth-child(" + (ix+1) + ")" + cssSelector;
+                }
+
+                currentNode = currentNode.parentNode;
+            }
+            cssSelector = ":scope " + cssSelector;
+
+            return {
+                component: componentNode.component,
+                argumentName: argumentNode ? argumentNode.montageArg : null,
+                cssSelector: cssSelector
+            };
+        }
+    },
+
+    /**
      * When adding a template content to the preview we need to provide three
      * pieces of information:
      * - The component where the content was added. (ownerModuleId + label)
@@ -352,74 +427,59 @@ exports.ApplicationDelegate = Montage.create(Montage, {
         value: function(template, document, parentNode, nextSiblingNode) {
             var templateFragment;
             var ownerProxy = document.editingProxyMap.owner;
-            var node = nextSiblingNode || parentNode;
-            var nodeCount = template.document.body.children.length;
-            var anchorNodeIsStarArgument;
-            var componentNode;
-            var argumentNode;
-            var anchorNode;
-            var cssSelector = "";
+            var node;
+            var nodeCount;
             var how;
+            var parentsChildren;
+            var indexInParent;
+            var isContainerNode;
+            var location;
 
             if (!ownerProxy) {
                 return Promise.resolve();
             }
 
-            // Find the component where the template content was inserted.
-            // We also check to see if this change was done inside a named
-            // argument element.
-            componentNode = parentNode;
-            do {
-                if (componentNode.component) {
-                    break;
-                } else if (componentNode.montageArg) {
-                    argumentNode = componentNode;
-                }
-            } while (componentNode = /* assignment */ componentNode.parentNode);
-
-            // If this change was done inside a named parameter then the
-            // anchor node is the component itself, otherwise it's the argument
-            // node
-            anchorNode = argumentNode || componentNode;
-
-            // Generate the css selector path.
-            // The css selector is similar in concept to an xpath, we create a
-            // path of direct children from the anchor to the node.
-            // :scope in this case means the container element.
-            // For star arguments (non-named arguments) we need to adopt a
-            // different strategy for selecting the first node in the path
-            // because there is no container element, just a range of them.
-            // :scope in this case means the first element of the range and we
-            // select the first node of the path using the + adjacent sibling
-            // selector.
-            if (!argumentNode && componentNode.component !== ownerProxy) {
-                anchorNodeIsStarArgument = true;
-            }
-
-            do {
-                var ix = node.parentNode.children.indexOf(node);
-                // If this node is the nextSibling then we need to decrease the
-                // index because the insertTemplateContent already happened so
-                // we need to take into account the additional nodes added by it.
-                if (node == nextSiblingNode) {
-                    ix -= nodeCount;
-                }
-
-                // We use a different strategy for the selector of the first
-                // node in the path for star arguments.
-                if (anchorNodeIsStarArgument && node.parentNode === anchorNode) {
-                    cssSelector = new Array(ix+1).join("+ * ") + cssSelector;
-                } else {
-                    cssSelector = "> *:nth-child(" + (ix+1) + ")" + cssSelector;
-                }
-            } while ((node = node.parentNode) && node !== anchorNode);
-            cssSelector = ":scope " + cssSelector;
-
             if (nextSiblingNode) {
+                // If the template has elements then they were already added to
+                // the owner's template dom tree and we need to account for it.
+                // Instead of getting a reference to nextSiblingNode we get a
+                // reference to the first node of the added template because
+                // it is now in the same position that nextSiblingNode was
+                // before the template was added.
+                nodeCount = template.document.body.children.length;
+                if (nodeCount > 0) {
+                    parentsChildren = nextSiblingNode.parentNode.children;
+                    indexInParent = parentsChildren.indexOf(nextSiblingNode);
+                    node = parentsChildren[indexInParent - nodeCount];
+                } else {
+                    node = nextSiblingNode;
+                }
+
+                isContainerNode = false;
                 how = "before";
+            } else if (parentNode.component && !parentNode.component.montageArg) {
+                // If we need to append the template to a star argument range of
+                // nodes then we need to locate the last element of the range
+                // and insert "after" that node.
+                parentsChildren = parentNode.children;
+                if (parentsChildren.length === 0) {
+                    node = parentNode;
+                    isContainerNode = true;
+                } else {
+                    // Use the node that was in the position of the last
+                    // node before the contents of the template were added.
+                    nodeCount = template.document.body.children.length;
+                    node = parentsChildren[parentsChildren.length - 1 - nodeCount];
+                    isContainerNode = false;
+                }
+                how = "after";
             } else {
+                node = parentNode;
+                isContainerNode = true;
                 how = "append";
             }
+
+            location = this._getNodeLocation(node, isContainerNode, ownerProxy);
 
             templateFragment = {
                 serialization: template.objectsString,
@@ -427,10 +487,12 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             };
 
             return this.previewController.addTemplateFragment(
-                    ownerProxy.exportId, componentNode.component.label,
-                    argumentNode ? argumentNode.montageArg : null, cssSelector,
-                    how, templateFragment)
-                .done();
+                ownerProxy.exportId,
+                location.component.label,
+                location.argumentName,
+                location.cssSelector,
+                how,
+                templateFragment);
         }
     }
 });
