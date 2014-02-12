@@ -46,7 +46,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             this.editor = projectController.currentEditor;
             this.environmentBridge = projectController.environmentBridge;
             this._package = dependencyTree.fileJsonRaw || {};
-            this.dependencyCollection = dependencyTree;
+            this.dependencyCollection = dependencyTree; // setter will get correct information
             this._changeCount = 0;
 
             var author = PackageTools.getValidPerson(this._package.author);
@@ -89,6 +89,10 @@ exports.PackageDocument = EditingDocument.specialize( {
     },
 
     _packageSavingManager: {
+        value: null
+    },
+
+    _dependencyTree: {
         value: null
     },
 
@@ -293,16 +297,20 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     dependencyCollection: {
         set: function (dependencyTree) {
-            var dependenciesCategories = dependencyTree.children;
+            if (dependencyTree && typeof dependencyTree === "object") {
+                var dependenciesCategories = dependencyTree.children;
 
-            if (!this._dependencyCollection) {
-                this._dependencyCollection = {};
-            }
+                if (!this._dependencyCollection) {
+                    this._dependencyCollection = {};
+                }
 
-            if (dependenciesCategories && typeof dependenciesCategories === "object") {
-                this._dependencyCollection.dependencies = dependenciesCategories.regular || [];
-                this._dependencyCollection.devDependencies = dependenciesCategories.dev || [];
-                this._dependencyCollection.optionalDependencies = dependenciesCategories.optional || [];
+                if (dependenciesCategories && typeof dependenciesCategories === "object") {
+                    this._dependencyCollection.dependencies = dependenciesCategories.regular || [];
+                    this._dependencyCollection.devDependencies = dependenciesCategories.dev || [];
+                    this._dependencyCollection.optionalDependencies = dependenciesCategories.optional || [];
+                }
+
+                this._dependencyTree = dependencyTree;
             }
         },
         get : function () {
@@ -722,7 +730,8 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function () {
             this._saveDependencyCollectionToPackageJson();
 
-            var packageJson = null;
+            var packageJson = null,
+                endLine = this._dependencyTree.endLine ? "\n" : "";
 
             try {
                 packageJson = JSON.stringify(this._package, function (key, value) {
@@ -737,7 +746,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
                     return value;
 
-                }, 4) + "\n";
+                }, 4) + endLine;
 
             } catch (exception) {
 
