@@ -483,6 +483,12 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
+    _dependencyHasBeenRemoved: {
+        value: function (dependencyRemoved) {
+            this.editor.notifyDependenciesListChange(dependencyRemoved.name, Dependency.REMOVE_DEPENDENCY_ACTION);
+        }
+    },
+
     uninstallDependency: {
         value: function (dependency) {
             dependency = typeof dependency === 'string' ? this.findDependency(dependency) : dependency;

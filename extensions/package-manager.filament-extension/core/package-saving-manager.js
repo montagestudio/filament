@@ -94,8 +94,12 @@ exports.PackageSavingManager = Montage.specialize({
 
     _handlePackageModified: {
         value: function (packageModified) {
-            if (packageModified && packageModified.operation === DependencyManager.ACTIONS.INSTALL && !packageModified.error) {
-                this._packageDocument._dependencyHasBeenInstalled(packageModified);
+            if (packageModified) {
+                if (packageModified.operation === DependencyManager.ACTIONS.INSTALL && !packageModified.error) {
+                    this._packageDocument._dependencyHasBeenInstalled(packageModified);
+                } else if (packageModified.operation === DependencyManager.ACTIONS.UNINSTALL && !packageModified.error) {
+                    this._packageDocument._dependencyHasBeenRemoved(packageModified);
+                }
             }
 
             this._writeReport(packageModified.name, packageModified.operation, packageModified.error);
