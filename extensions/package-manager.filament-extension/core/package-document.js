@@ -676,6 +676,8 @@ exports.PackageDocument = EditingDocument.specialize( {
 
             if (typeof dependencyName === "string" && PackageTools.isNameValid(dependencyName)) {
                 dependency = this.findDependency(dependencyName); // try to find the dependency related to the name
+            } else if (dependencyName && typeof dependencyName === "object") {
+                dependency = dependencyName;
             }
 
             if (dependency && !dependency.extraneous && (this.isRangeValid(range) || PackageTools.isGitUrl(range))) {
