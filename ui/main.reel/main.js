@@ -40,6 +40,13 @@ exports.Main = Montage.create(Component, {
                     document.addEventListener("save", this, false);
                 }
             }
+
+            document.body.addEventListener("dragover", stop, false);
+            document.body.addEventListener("drop", stop, false);
+            function stop(e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
         }
     },
 
