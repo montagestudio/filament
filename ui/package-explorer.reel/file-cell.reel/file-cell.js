@@ -30,19 +30,16 @@ exports.FileCell = Montage.create(Component, {
             if (firstTime) {
                 application.addEventListener("didOpenDocument", this);
 
-                this.element.addEventListener("dragenter", this, true);
-                this.element.addEventListener("dragleave", this, true);
-                this.element.addEventListener("dragover", function(e) {
-                    // Drag-n-drop API makes no sense.
-                    e.stopPropagation();
-                    e.preventDefault();
-                }, false);
-                this.element.addEventListener("drop", this, false);
+                if (this.fileInfo.isDirectory) {
+                    this.element.addEventListener("drop", this, false);
+                    this.element.addEventListener("dragenter", this, true);
+                    this.element.addEventListener("dragleave", this, true);
+                }
             }
         }
     },
 
-    isAcceptingDrop: {
+    isUploading: {
         value: false
     },
 
@@ -58,19 +55,22 @@ exports.FileCell = Montage.create(Component, {
             } else {
                 this.element.classList.remove("FileCell-hover");
             }
+
+            if (this.isUploading) {
+                this.element.classList.add("FileCell-uploading");
+            } else {
+                this.element.classList.remove("FileCell-uploading");
+            }
         }
     },
 
     captureDragenter: {
         value: function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            if (!this.fileInfo.isDirectory) {
-                return;
-            }
             if (e.dataTransfer.types.indexOf("Files") === -1) {
                 return;
             }
+            e.stopPropagation();
+            e.preventDefault();
             this._hoverCounter++;
             this.needsDraw = true;
         }
@@ -95,9 +95,11 @@ exports.FileCell = Montage.create(Component, {
                     var dirname = self.fileInfo.filename;
                     var filename = decodeURIComponent(file.name);
 
-                    self.element.classList.add("FileCell-uploading");
+                    self.isUploading = true;
+                    self.needsDraw = true;
                     self.projectController.addFileToProjectAtUrl(base64, dirname + filename).done(function() {
-                        self.element.classList.remove("FileCell-uploading");
+                        self.isUploading = false;
+                        self.needsDraw = true;
                     });
                 };
 
@@ -112,9 +114,6 @@ exports.FileCell = Montage.create(Component, {
         value: function(e) {
             e.stopPropagation();
             e.preventDefault();
-            if (!this.fileInfo.isDirectory) {
-                return;
-            }
             this._hoverCounter--;
             this.needsDraw = true;
         }
