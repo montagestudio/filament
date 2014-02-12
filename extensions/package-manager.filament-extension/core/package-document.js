@@ -720,19 +720,29 @@ exports.PackageDocument = EditingDocument.specialize( {
         value: function () {
             this._saveDependencyCollectionToPackageJson();
 
-            return JSON.stringify(this._package, function (key, value) {
+            var packageJson = null;
 
-                if ((!value && PACKAGE_PROPERTIES_ALLOWED_MODIFY[key]) ||
-                    (Array.isArray(value) && value.length === 0) ||
-                    (value && typeof value === "object" && (Object.keys(value).length === 0 ||
-                        (key === PACKAGE_PROPERTIES_ALLOWED_MODIFY.author && PackageTools.isPersonObjectEmpty(value))))) {
+            try {
+                packageJson = JSON.stringify(this._package, function (key, value) {
 
-                    return void 0;
-                }
+                    if ((!value && PACKAGE_PROPERTIES_ALLOWED_MODIFY[key]) ||
+                        (Array.isArray(value) && value.length === 0) ||
+                        (value && typeof value === "object" && (Object.keys(value).length === 0 ||
+                            (key === PACKAGE_PROPERTIES_ALLOWED_MODIFY.author && PackageTools.isPersonObjectEmpty(value))))) {
 
-                return value;
+                        return void 0;
+                    }
 
-            }, 4);
+                    return value;
+
+                }, 4) + "\n";
+
+            } catch (exception) {
+
+                throw exception;
+            }
+
+            return packageJson;
         }
     },
 
