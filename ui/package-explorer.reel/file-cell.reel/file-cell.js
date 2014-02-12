@@ -29,7 +29,94 @@ exports.FileCell = Montage.create(Component, {
         value: function (firstTime) {
             if (firstTime) {
                 application.addEventListener("didOpenDocument", this);
+
+                this.element.addEventListener("dragenter", this, true);
+                this.element.addEventListener("dragleave", this, true);
+                this.element.addEventListener("dragover", function(e) {
+                    // Drag-n-drop API makes no sense.
+                    e.stopPropagation();
+                    e.preventDefault();
+                }, false);
+                this.element.addEventListener("drop", this, false);
             }
+        }
+    },
+
+    isAcceptingDrop: {
+        value: false
+    },
+
+    // FIXME: More robust solution.
+    _hoverCounter: {
+        value: 0
+    },
+
+    draw: {
+        value: function() {
+            if (this._hoverCounter > 0) {
+                this.element.classList.add("FileCell-hover");
+            } else {
+                this.element.classList.remove("FileCell-hover");
+            }
+        }
+    },
+
+    captureDragenter: {
+        value: function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            if (!this.fileInfo.isDirectory) {
+                return;
+            }
+            if (e.dataTransfer.types.indexOf("Files") === -1) {
+                return;
+            }
+            this._hoverCounter++;
+            this.needsDraw = true;
+        }
+    },
+
+    handleDrop: {
+        value: function(e) {
+            this.captureDragleave(e);
+
+            var files = e.dataTransfer.files;
+            if (files.length === 0) {
+                return;
+            }
+
+            var self = this;
+            Array.prototype.forEach.call(files, function(file) {
+                var reader = new FileReader();
+                reader.readAsBinaryString(file);
+
+                reader.onload = function(e) {
+                    var base64 = btoa(e.target.result);
+                    var dirname = self.fileInfo.filename;
+                    var filename = decodeURIComponent(file.name);
+
+                    self.element.classList.add("FileCell-uploading");
+                    self.projectController.addFileToProjectAtUrl(base64, dirname + filename).done(function() {
+                        self.element.classList.remove("FileCell-uploading");
+                    });
+                };
+
+                reader.onerror = function() {
+                    throw new Error('handleDrop: Error reading: ' + file.name);
+                };
+            });
+        }
+    },
+
+    captureDragleave: {
+        value: function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            if (!this.fileInfo.isDirectory) {
+                return;
+            }
+            this._hoverCounter--;
+            this.needsDraw = true;
         }
     },
 

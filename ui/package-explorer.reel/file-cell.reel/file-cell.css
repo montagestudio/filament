@@ -67,3 +67,21 @@
     background-color: hsl(0, 0%, 36%);
     box-shadow: 0 1px 1px hsla(0, 0%, 0%, 0.06);
 }
+
+
+.FileCell-hover {
+    background-color: rgba(97, 166, 255, 0.3);
+    outline: 1px solid rgb(97, 166, 255);
+    outline-offset: -1px;
+}
+
+.FileCell-hover .FileCell-button,
+.FileCell-uploading .FileCell-button {
+    color: #fff;
+}
+
+.FileCell-uploading {
+    background-color: rgba(255, 135, 0, 0.3);
+    outline: 1px solid rgb(255, 135, 0);
+    outline-offset: -1px;
+}

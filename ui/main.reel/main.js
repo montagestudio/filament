@@ -39,71 +39,12 @@ exports.Main = Montage.create(Component, {
                 } else {
                     document.addEventListener("save", this, false);
                 }
-
-                this.element.addEventListener("dragenter", this, true);
-                this.element.addEventListener("dragover", function(e) {
-                    // Drag-n-drop API makes no sense.
-                    e.stopPropagation();
-                    e.preventDefault();
-                }, false);
-
-                this.dropZone.addEventListener("dragleave", this, true);
-                this.dropZone.addEventListener("drop", this, false);
-
             }
         }
     },
 
     isAcceptingDrop: {
         value: false
-    },
-
-    captureDragenter: {
-        value: function(e) {
-            if (e.dataTransfer.types.indexOf("Files") === -1) {
-                return;
-            }
-            e.stopPropagation();
-            e.preventDefault();
-            this.isAcceptingDrop = true;
-            this.needsDraw = true;
-        }
-    },
-
-    handleDrop: {
-        value: function(e) {
-            this.captureDragleave(e);
-
-            var files = e.dataTransfer.files;
-            if (files.length === 0) {
-                return;
-            }
-
-            var self = this;
-            Array.prototype.forEach.call(files, function(file) {
-                var reader = new FileReader();
-                reader.readAsBinaryString(file);
-
-                reader.onload = function(e) {
-                    var base64 = btoa(e.target.result);
-                    var filename = decodeURIComponent(file.name);
-                    self.projectController.addFileToProjectAtUrl(base64, filename);
-                };
-
-                reader.onerror = function() {
-                    throw new Error('handleDrop: Error reading: ' + file.name);
-                };
-            });
-        }
-    },
-
-    captureDragleave: {
-        value: function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            this.isAcceptingDrop = false;
-            this.needsDraw = true;
-        }
     },
 
     handleAddComponent: {
