@@ -314,6 +314,23 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+    /**
+     *
+     * @param {string} data is base64 encoded
+     * @param {string} url such as file://localhost/path/to/project/assets/images/why not zoidberg.png
+     */
+    addFileToProjectAtUrl: {
+        value: function(data, url) {
+            var writeFilePromise = this.environmentBridge.writeFile(url, data);
+            this.dispatchEventNamed("asyncActivity", true, false, {
+                promise: writeFilePromise,
+                title: "Adding file " + url
+            });
+            return writeFilePromise;
+        }
+    },
+
+
     // DOCUMENT HANDLING
 
     // The controller that facilittates bringing editors components

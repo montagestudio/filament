@@ -29,7 +29,93 @@ exports.FileCell = Montage.create(Component, {
         value: function (firstTime) {
             if (firstTime) {
                 application.addEventListener("didOpenDocument", this);
+
+                if (this.fileInfo.isDirectory) {
+                    this.element.addEventListener("drop", this, false);
+                    this.element.addEventListener("dragenter", this, true);
+                    this.element.addEventListener("dragleave", this, true);
+                }
             }
+        }
+    },
+
+    isUploading: {
+        value: false
+    },
+
+    // FIXME: More robust solution.
+    _hoverCounter: {
+        value: 0
+    },
+
+    draw: {
+        value: function() {
+            if (this._hoverCounter > 0) {
+                this.element.classList.add("FileCell-hover");
+            } else {
+                this.element.classList.remove("FileCell-hover");
+            }
+
+            if (this.isUploading) {
+                this.element.classList.add("FileCell-uploading");
+            } else {
+                this.element.classList.remove("FileCell-uploading");
+            }
+        }
+    },
+
+    captureDragenter: {
+        value: function(e) {
+            if (e.dataTransfer.types.indexOf("Files") === -1) {
+                return;
+            }
+            e.stopPropagation();
+            e.preventDefault();
+            this._hoverCounter++;
+            this.needsDraw = true;
+        }
+    },
+
+    handleDrop: {
+        value: function(e) {
+            this.captureDragleave(e);
+
+            var files = e.dataTransfer.files;
+            if (files.length === 0) {
+                return;
+            }
+
+            var self = this;
+            Array.prototype.forEach.call(files, function(file) {
+                var reader = new FileReader();
+                reader.readAsBinaryString(file);
+
+                reader.onload = function(e) {
+                    var base64 = btoa(e.target.result);
+                    var dirname = self.fileInfo.filename;
+                    var filename = decodeURIComponent(file.name);
+
+                    self.isUploading = true;
+                    self.needsDraw = true;
+                    self.projectController.addFileToProjectAtUrl(base64, dirname + filename).done(function() {
+                        self.isUploading = false;
+                        self.needsDraw = true;
+                    });
+                };
+
+                reader.onerror = function() {
+                    throw new Error('handleDrop: Error reading: ' + file.name);
+                };
+            });
+        }
+    },
+
+    captureDragleave: {
+        value: function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            this._hoverCounter--;
+            this.needsDraw = true;
         }
     },
 
