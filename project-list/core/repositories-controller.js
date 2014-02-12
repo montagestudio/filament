@@ -30,6 +30,8 @@ var RepositoriesController = Montage.specialize({
             this._initRecentRepositories();
             this.recentRepositoriesContent = new RangeController().initWithContent(this._recentRepositoriesCache);
             this._githubApi = github.githubApi();
+            this._ownedRepositoriesContent = new RangeController().initWithContent([]);
+            this._ownedRepositoriesContent.sortPath = "-pushed_at";
 
             //initialize default value
             this.selectedGroup = this.owned;
@@ -54,7 +56,7 @@ var RepositoriesController = Montage.specialize({
                     // This is the format expected by the github API, ignoring for now
                     repo.pushed_at = +new Date(repo.pushed_at);
                     /* jshint +W106 */
-                    self.ownedRepositoriesContent.content.push(repo);
+                    self._ownedRepositoriesContent.content.push(repo);
                 });
             });
         }
@@ -65,7 +67,7 @@ var RepositoriesController = Montage.specialize({
             if (this.selectedGroup === this.recent) {
                 this.contentController = this.recentRepositoriesContent;
             } else if (this.selectedGroup === this.owned) {
-                this.contentController = this.ownedRepositoriesContent;
+                this.contentController = this._ownedRepositoriesContent;
             }
         }
     },
@@ -75,9 +77,9 @@ var RepositoriesController = Montage.specialize({
             var self = this,
                 deferred = Promise.defer();
 
-            if (self.ownedRepositoriesContent.content.length === 0) {
+            if (self._ownedRepositoriesContent.content.length === 0) {
 
-                self.ownedRepositoriesContent.content.clear();
+                self._ownedRepositoriesContent.content.clear();
                 // get repo list from github
                 self._githubApi.then(function (githubApi) {
                     return githubApi.listRepositories({type: "public"});
@@ -100,7 +102,7 @@ var RepositoriesController = Montage.specialize({
                                 //jshint -W106
                                 repo.pushed_at = +new Date(repo.pushed_at);
                                 //jshint +W106
-                                self.ownedRepositoriesContent.content.push(repo);
+                                self._ownedRepositoriesContent.content.push(repo);
                             }
                             self.processedDocuments++;
                             if (-- pendingCommands === 0) {
@@ -205,7 +207,7 @@ var RepositoriesController = Montage.specialize({
                 repoNames,
                 i;
 
-            repoNames = this.ownedRepositoriesContent.organizedContent.map(function(item) {
+            repoNames = this._ownedRepositoriesContent.organizedContent.map(function(item) {
                 return item.name;
             });
 
@@ -223,16 +225,19 @@ var RepositoriesController = Montage.specialize({
         }
     },
 
+    _gotOwnedRepositoriesContent: {
+        value: false
+    },
+
     _ownedRepositoriesContent: {
         value: null
     },
+
     ownedRepositoriesContent: {
         get: function () {
-            if (!this._ownedRepositoriesContent) {
+            if (!this._gotOwnedRepositoriesContent) {
+                this._gotOwnedRepositoriesContent = true;
                 var self = this;
-
-                this._ownedRepositoriesContent = new RangeController().initWithContent([]);
-                this._ownedRepositoriesContent.sortPath = "-pushed_at";
 
                 this._updateUserRepositories().then(function() {
                     self._validateRecentRepositories();
