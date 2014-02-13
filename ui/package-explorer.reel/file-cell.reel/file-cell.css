@@ -98,7 +98,11 @@
     -webkit-pointer-events: none;
     opacity: 0;
     color: hsl(0, 0%, 97%);
-    text-align: right;
+    display: -webkit-flex;
+}
+
+.FileCell-uploadStatus * {
+    -webkit-pointer-events: none;
 }
 
 .FileCell--uploading .FileCell-uploadStatus {
@@ -107,11 +111,14 @@
 
 .FileCell-uploadStatus-report {
     background-color: rgb(255, 135, 0);
+    -webkit-flex: initial;
 }
 
 .FileCell-uploadStatus-progress.matte-Progress {
-    background-color: hsla(0,0%,0%,0);
-    border-color: hsla(0,0%,0%,0);
+    background-color: transparent;
+    border: none;
+    flex: 1;
+    height: 100%;
 }
 
 .FileCell-uploadStatus-progress.matte-Progress > .matte-Progress-bar {
