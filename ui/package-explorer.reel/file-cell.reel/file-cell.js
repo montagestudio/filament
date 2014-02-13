@@ -143,17 +143,13 @@ exports.FileCell = Montage.create(Component, {
             var uploadOperation = this._uploadFiles(files)
                 .then(function (finishedUploads) {
                     activeUploads.splice(activeUploads.indexOf(uploadOperation), 1);
-
-                    var finished;
-                    if (0 === activeUploads.length) {
-                        finished = Promise.delay(1500).thenResolve(true);
-                    } else {
-                        finished = Promise.resolve(false);
-                    }
-                    return finished;
                 })
-                .then(function (finished) {
-                    if (finished) {
+                // Wait a bit before considering the upload batch closed
+                // This allows the 100% progress to show and not simply disappear/flash briefly
+                // This also gives us a chance to accommodate adding more uploads to the batch
+                .delay(1500)
+                .then(function () {
+                    if (0 === activeUploads.length) {
                         self.isUploading = false;
                     }
                 }).done();
