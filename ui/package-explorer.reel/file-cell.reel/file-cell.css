@@ -4,6 +4,7 @@
     white-space: nowrap;
 
     -webkit-transition: .1s linear background-color, outline-color;
+    position: relative;
 }
 
 .FileCell .montage-invisible {
@@ -86,4 +87,20 @@
     background-color: rgba(255, 135, 0, 0.3);
     outline: 1px solid rgb(255, 135, 0);
     outline-offset: -1px;
+}
+
+.FileCell-uploadStatus {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    -webkit-pointer-events: none;
+    opacity: 0;
+    color: hsl(0, 0%, 97%);
+    text-align: right;
+}
+
+.FileCell--uploading .FileCell-uploadStatus {
+    opacity: 1;
 }

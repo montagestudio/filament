@@ -66,12 +66,33 @@
             "bindings": {
                 "condition": {"<-": "@owner.fileInfo.isDirectory"}
             }
+        },
+
+        "uploadDoneCount": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "uploadDoneCount"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.uploadedFileCount"}
+            }
+        },
+
+        "uploadTotalCount": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "uploadTotalCount"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.expectedUploadedFileCount"}
+            }
         }
     }
     </script>
 </head>
 <body>
     <div data-montage-id="file-cell" class="FileCell">
+        <span class="FileCell-uploadStatus"><span data-montage-id="uploadDoneCount"></span>/<span data-montage-id="uploadTotalCount"></span></span>
         <span data-montage-id="isDirectoryCondition" class="FileCell-condition">
             <input data-montage-id="expanded" type="checkbox">
         </span>

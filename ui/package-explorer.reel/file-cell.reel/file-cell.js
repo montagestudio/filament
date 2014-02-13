@@ -24,6 +24,8 @@ exports.FileCell = Montage.create(Component, {
             this.addPathChangeListener("iteration", this);
             this.addPathChangeListener("fileInfo", this);
             this.addPathChangeListener("iteration.expanded", this, "handleExpandedChange");
+
+            this.activeUploads = [];
         }
     },
 
@@ -41,8 +43,31 @@ exports.FileCell = Montage.create(Component, {
         }
     },
 
-    isUploading: {
+    _isUploading: {
         value: false
+    },
+
+    //TODO derive this value form the presence of uploadCompletion promises
+    isUploading: {
+        get: function () {
+            return this._isUploading
+        },
+        set: function (value) {
+            if (value === this._isUploading) {
+                return;
+            }
+
+            this._isUploading = value;
+
+            if (!value) {
+                //the batch of uploads is done, safe to clear
+                this.expectedUploadedFileCount = 0;
+                this.uploadedFileCount = 0;
+                this.expectedUploadedBytes = 0;
+                this.uploadedBytes = 0;
+            }
+            this.needsDraw = true;
+        }
     },
 
     // FIXME: More robust solution.
@@ -78,50 +103,71 @@ exports.FileCell = Montage.create(Component, {
         }
     },
 
+    /**
+     * The active uploads affecting this fileCell
+     * TODO move most of this machinery elsewhere such that uploads that target the fileUrl
+     * represented by this fileCell don't need to necessarily start on this fileCell to be indicated here
+     */
+    activeUploads: {
+        value: null
+    },
+
+    expectedUploadedFileCount: {
+        value: 0
+    },
+
+    uploadedFileCount: {
+        value: 0
+    },
+
+    expectedUploadedBytes: {
+        value: 0
+    },
+
+    uploadedBytes: {
+        value: 0
+    },
+
     handleDrop: {
         value: function(e) {
             this.captureDragleave(e);
 
             var files = e.dataTransfer.files,
-                destination = this.fileInfo.fileUrl,
-                relativeDestination = destination.replace(this.projectController.packageUrl, ""),
                 self = this,
-                uploadPromises,
-                deferredCompletion = Promise.defer(),
-                initialActivityMessage;
+                activeUploads = this.activeUploads;
 
             if (files.length === 0) {
                 return;
             }
 
+            var uploadOperation = this._uploadFiles(files)
+                .then(function (finishedUploads) {
+                    activeUploads.splice(activeUploads.indexOf(uploadOperation), 1);
+
+                    if (0 === activeUploads.length) {
+                        self.isUploading = false;
+                    }
+                }).done();
+
+            activeUploads.push(uploadOperation);
+        }
+    },
+
+    _uploadFiles: {
+        value: function (files) {
+            var destination = this.fileInfo.fileUrl,
+                relativeDestination = destination.replace(this.projectController.packageUrl, ""),
+                deferredCompletion = Promise.defer(),
+                self = this,
+                initialActivityMessage,
+                uploadPromises;
+
+            // Do what we can immediately
             this.isUploading = true;
-            this.needsDraw = true;
-
-            uploadPromises = Array.prototype.map.call(files, function(file) {
-                var reader = new FileReader(),
-                    deferredUpload = Promise.defer();
-
-                reader.readAsBinaryString(file);
-
-                reader.onload = function(e) {
-                    var base64 = btoa(e.target.result),
-                        filename = decodeURIComponent(file.name);
-
-                    self.projectController.addFileToProjectAtUrl(base64, Url.resolve(destination, filename))
-                        .then(function (success) {
-                            deferredUpload.resolve(success);
-                            deferredCompletion.notify(filename);
-                        }, function (failure) {
-                            deferredUpload.reject(failure);
-                        }).done();
-                };
-
-                reader.onerror = function() {
-                    deferredUpload.reject(new Error('handleDrop: Error reading: ' + file.name));
-                };
-
-                return deferredUpload.promise;
-            });
+            this.expectedUploadedFileCount += files.length;
+            this.expectedUploadedBytes += Array.prototype.reduce.call(files, function (total, file) {
+                return total + file.size;
+            }, 0);
 
             if (files.length === 1) {
                 initialActivityMessage = "Adding " + files[0].name + " to " + relativeDestination;
@@ -134,15 +180,45 @@ exports.FileCell = Montage.create(Component, {
                 title: initialActivityMessage
             });
 
-            Promise.all(uploadPromises)
+            // Now start trying to upload files
+            uploadPromises = Array.prototype.map.call(files, function(file) {
+                var reader = new FileReader(),
+                    deferredUpload = Promise.defer();
+
+                reader.readAsBinaryString(file);
+
+                reader.onload = function(e) {
+                    var base64 = btoa(e.target.result),
+                        filename = decodeURIComponent(file.name),
+                        destinationUrl = Url.resolve(destination, filename);
+
+                    self.projectController.addFileToProjectAtUrl(base64, destinationUrl)
+                        .then(function (success) {
+                            deferredUpload.resolve(destinationUrl);
+                            deferredCompletion.notify(filename);
+                            self.uploadedBytes += file.size;
+                            self.uploadedFileCount++;
+                        }, function (failure) {
+                            deferredUpload.reject(failure);
+                        }).done();
+                };
+
+                reader.onerror = function() {
+                    deferredUpload.reject(new Error('handleDrop: Error reading: ' + file.name));
+                };
+
+                return deferredUpload.promise;
+            });
+
+            // Ultimately return a promise for all the files to be uploaded
+            return Promise.all(uploadPromises)
                 .then(function (uploads) {
                     deferredCompletion.resolve("Done");
+                    return uploads;
                 }, function (failure) {
                     deferredCompletion.resolve(failure);
-                }).finally(function() {
-                    self.isUploading = false;
-                    self.needsDraw = true;
-                }).done();
+                    return failure;
+                });
         }
     },
 
