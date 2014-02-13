@@ -1,7 +1,8 @@
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     application = require("montage/core/application").application,
-    Promise = require("montage/core/promise").Promise;
+    Promise = require("montage/core/promise").Promise,
+    Url = require("core/url");
 
 exports.FileCell = Montage.create(Component, {
 
@@ -100,10 +101,10 @@ exports.FileCell = Montage.create(Component, {
 
                 reader.onload = function(e) {
                     var base64 = btoa(e.target.result),
-                        destination = self.fileInfo.filename,
+                        destination = self.fileInfo.fileUrl,
                         filename = decodeURIComponent(file.name);
 
-                    self.projectController.addFileToProjectAtUrl(base64, dirname + filename)
+                    self.projectController.addFileToProjectAtUrl(base64, Url.resolve(destination, filename))
                         .then(function (success) {
                             deferredUpload.resolve(success);
                         }, function (failure) {
