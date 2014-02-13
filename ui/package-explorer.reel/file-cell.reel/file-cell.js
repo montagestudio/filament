@@ -1,6 +1,7 @@
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
-    application = require("montage/core/application").application;
+    application = require("montage/core/application").application,
+    Promise = require("montage/core/promise").Promise;
 
 exports.FileCell = Montage.create(Component, {
 
@@ -80,33 +81,47 @@ exports.FileCell = Montage.create(Component, {
         value: function(e) {
             this.captureDragleave(e);
 
-            var files = e.dataTransfer.files;
+            var files = e.dataTransfer.files,
+                self = this,
+                uploadPromises;
+
             if (files.length === 0) {
                 return;
             }
 
-            var self = this;
-            Array.prototype.forEach.call(files, function(file) {
-                var reader = new FileReader();
+            this.isUploading = true;
+            this.needsDraw = true;
+
+            uploadPromises = Array.prototype.map.call(files, function(file) {
+                var reader = new FileReader(),
+                    deferredUpload = Promise.defer();
+
                 reader.readAsBinaryString(file);
 
                 reader.onload = function(e) {
-                    var base64 = btoa(e.target.result);
-                    var dirname = self.fileInfo.filename;
-                    var filename = decodeURIComponent(file.name);
+                    var base64 = btoa(e.target.result),
+                        destination = self.fileInfo.filename,
+                        filename = decodeURIComponent(file.name);
 
-                    self.isUploading = true;
-                    self.needsDraw = true;
-                    self.projectController.addFileToProjectAtUrl(base64, dirname + filename).done(function() {
-                        self.isUploading = false;
-                        self.needsDraw = true;
-                    });
+                    self.projectController.addFileToProjectAtUrl(base64, dirname + filename)
+                        .then(function (success) {
+                            deferredUpload.resolve(success);
+                        }, function (failure) {
+                            deferredUpload.reject(failure);
+                        }).done();
                 };
 
                 reader.onerror = function() {
-                    throw new Error('handleDrop: Error reading: ' + file.name);
+                    deferredUpload.reject(new Error('handleDrop: Error reading: ' + file.name));
                 };
+
+                return deferredUpload.promise;
             });
+
+            Promise.all(uploadPromises).finally(function() {
+                self.isUploading = false;
+                self.needsDraw = true;
+            }).done();
         }
     },
 
