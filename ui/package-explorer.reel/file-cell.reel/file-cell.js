@@ -144,7 +144,16 @@ exports.FileCell = Montage.create(Component, {
                 .then(function (finishedUploads) {
                     activeUploads.splice(activeUploads.indexOf(uploadOperation), 1);
 
+                    var finished;
                     if (0 === activeUploads.length) {
+                        finished = Promise.delay(1500).thenResolve(true);
+                    } else {
+                        finished = Promise.resolve(false);
+                    }
+                    return finished;
+                })
+                .then(function (finished) {
+                    if (finished) {
                         self.isUploading = false;
                     }
                 }).done();

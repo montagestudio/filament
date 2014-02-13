@@ -104,3 +104,16 @@
 .FileCell--uploading .FileCell-uploadStatus {
     opacity: 1;
 }
+
+.FileCell-uploadStatus-report {
+    background-color: rgb(255, 135, 0);
+}
+
+.FileCell-uploadStatus-progress.matte-Progress {
+    background-color: hsla(0,0%,0%,0);
+    border-color: hsla(0,0%,0%,0);
+}
+
+.FileCell-uploadStatus-progress.matte-Progress > .matte-Progress-bar {
+    background-color: rgba(255, 135, 0, 0.3);
+}
