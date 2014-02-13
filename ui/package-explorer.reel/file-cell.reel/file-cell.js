@@ -83,8 +83,12 @@ exports.FileCell = Montage.create(Component, {
             this.captureDragleave(e);
 
             var files = e.dataTransfer.files,
+                destination = this.fileInfo.fileUrl,
+                relativeDestination = destination.replace(this.projectController.packageUrl, ""),
                 self = this,
-                uploadPromises;
+                uploadPromises,
+                deferredCompletion = Promise.defer(),
+                initialActivityMessage;
 
             if (files.length === 0) {
                 return;
@@ -101,12 +105,12 @@ exports.FileCell = Montage.create(Component, {
 
                 reader.onload = function(e) {
                     var base64 = btoa(e.target.result),
-                        destination = self.fileInfo.fileUrl,
                         filename = decodeURIComponent(file.name);
 
                     self.projectController.addFileToProjectAtUrl(base64, Url.resolve(destination, filename))
                         .then(function (success) {
                             deferredUpload.resolve(success);
+                            deferredCompletion.notify(filename);
                         }, function (failure) {
                             deferredUpload.reject(failure);
                         }).done();
@@ -119,10 +123,26 @@ exports.FileCell = Montage.create(Component, {
                 return deferredUpload.promise;
             });
 
-            Promise.all(uploadPromises).finally(function() {
-                self.isUploading = false;
-                self.needsDraw = true;
-            }).done();
+            if (files.length === 1) {
+                initialActivityMessage = "Adding " + files[0].name + " to " + relativeDestination;
+            } else {
+                initialActivityMessage = "Adding " + files.length + " files to " + relativeDestination;
+            }
+
+            this.dispatchEventNamed("asyncActivity", true, false, {
+                promise: deferredCompletion.promise,
+                title: initialActivityMessage
+            });
+
+            Promise.all(uploadPromises)
+                .then(function (uploads) {
+                    deferredCompletion.resolve("Done");
+                }, function (failure) {
+                    deferredCompletion.resolve(failure);
+                }).finally(function() {
+                    self.isUploading = false;
+                    self.needsDraw = true;
+                }).done();
         }
     },
 

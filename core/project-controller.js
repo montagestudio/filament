@@ -321,12 +321,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      */
     addFileToProjectAtUrl: {
         value: function(data, url) {
-            var writeFilePromise = this.environmentBridge.writeFile(url, data);
-            this.dispatchEventNamed("asyncActivity", true, false, {
-                promise: writeFilePromise,
-                title: "Adding file " + url
-            });
-            return writeFilePromise;
+            return this.environmentBridge.writeFile(url, data);
         }
     },
 
