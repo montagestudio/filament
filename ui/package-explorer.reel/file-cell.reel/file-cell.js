@@ -183,9 +183,19 @@ exports.FileCell = Montage.create(Component, {
             // Now start trying to upload files
             uploadPromises = Array.prototype.map.call(files, function(file) {
                 var reader = new FileReader(),
-                    deferredUpload = Promise.defer();
+                    deferredUpload = Promise.defer(),
+                    sizeToReportOnLoad = file.size,
+                    lastReportedLoadedBytes = 0;
 
                 reader.readAsBinaryString(file);
+
+                reader.onprogress = function (e) {
+                    var loadedDelta = e.loaded - lastReportedLoadedBytes;
+
+                    self.uploadedBytes += loadedDelta;
+                    sizeToReportOnLoad -= loadedDelta;
+                    lastReportedLoadedBytes = e.loaded;
+                };
 
                 reader.onload = function(e) {
                     var base64 = btoa(e.target.result),
@@ -196,8 +206,9 @@ exports.FileCell = Montage.create(Component, {
                         .then(function (success) {
                             deferredUpload.resolve(destinationUrl);
                             deferredCompletion.notify(filename);
-                            self.uploadedBytes += file.size;
+                            self.uploadedBytes += sizeToReportOnLoad;
                             self.uploadedFileCount++;
+                            self.needsDraw = true;
                         }, function (failure) {
                             deferredUpload.reject(failure);
                         }).done();
