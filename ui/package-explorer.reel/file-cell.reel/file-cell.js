@@ -53,15 +53,15 @@ exports.FileCell = Montage.create(Component, {
     draw: {
         value: function() {
             if (this._hoverCounter > 0) {
-                this.element.classList.add("FileCell-hover");
+                this.element.classList.add("FileCell--dragHover");
             } else {
-                this.element.classList.remove("FileCell-hover");
+                this.element.classList.remove("FileCell--dragHover");
             }
 
             if (this.isUploading) {
-                this.element.classList.add("FileCell-uploading");
+                this.element.classList.add("FileCell--uploading");
             } else {
-                this.element.classList.remove("FileCell-uploading");
+                this.element.classList.remove("FileCell--uploading");
             }
         }
     },
