@@ -95,14 +95,14 @@
     right: 0;
     bottom: 0;
     left: 0;
-    -webkit-pointer-events: none;
+    pointer-events: none;
     opacity: 0;
     color: hsl(0, 0%, 97%);
     display: -webkit-flex;
 }
 
 .FileCell-uploadStatus * {
-    -webkit-pointer-events: none;
+    pointer-events: none;
 }
 
 .FileCell--uploading .FileCell-uploadStatus {
