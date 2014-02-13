@@ -228,8 +228,12 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
                 return 0;
             }
             var i = 0;
-            while ((i < before.length) && (i < after.length) && (before[i] === after[i])) {
-                ++i;
+            while (before[i] === after[i]) {
+                if (i < after.length - 1) {
+                    i++;
+                } else {
+                    return i;
+                }
             }
             return i;
         }
@@ -568,12 +572,7 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
                     var suggestion = this.suggestions[this.activeItemIndex],
                         newSuggestion = suggestion + ".";
 
-                    // Hack to simulate user input
-                    this.activeTokenIndex = this.tokens.length - 1;
-                    this.tokens.pop();
-                    this.suggestedValue = "";
-                    // End Of Hack
-
+                    this.suggestedValue = newSuggestion;
                     this.resultsController.selection = [newSuggestion];
                     this.performSearch(newSuggestion);
                 }
