@@ -178,6 +178,7 @@ exports.FileCell = Montage.create(Component, {
                 return total + file.size;
             }, 0);
 
+            //TODO localize these messages
             if (files.length === 1) {
                 initialActivityMessage = "Adding " + files[0].name + " to " + relativeDestination;
             } else {
