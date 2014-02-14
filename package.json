@@ -7,7 +7,7 @@
         "url": "git+ssh://git@github.com:declarativ/filament.git"
     },
     "dependencies": {
-        "montage": "git+ssh://git@github.com:montagejs/montage.git#1289311fde56c00d918496b687fa25833c167d02",
+        "montage": "git+ssh://git@github.com:montagejs/montage.git#238061930665c84abe87ee883257fb67d88bc093",
         "matte": "git+ssh://git@github.com:montagejs/matte.git#30ab3c59fa496186a758a2fe7b287b7d5e73a4f2",
         "palette": "git+ssh://git@github.com:declarativ/palette.git#34f3f77f230be8f7c0a59a7c2a1b4ff506a0efd7",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#v0.14.0",
@@ -25,7 +25,7 @@
     "devDependencies": {
         "jasmine-node": "1.2.2",
         "sandboxed-module": "0.1.4",
-        "montage-testing": "0.2.0",
+        "montage-testing": "git+ssh://git@github.com:montagejs/montage-testing.git#86e0c6181e9694bca128bfa6b6da4333668619e1",
         "jshint": "2.1.9",
         "watchr": "2.3.3",
         "glTF-webgl-viewer": "git+ssh://git@github.com:fabrobinet/glTF-webgl-viewer.git#df9b068db6bea24e5518058578c23bcf90f474a4"
