@@ -50,7 +50,7 @@ exports.FileCell = Montage.create(Component, {
     //TODO derive this value form the presence of uploadCompletion promises
     isUploading: {
         get: function () {
-            return this._isUploading
+            return this._isUploading;
         },
         set: function (value) {
             if (value === this._isUploading) {
