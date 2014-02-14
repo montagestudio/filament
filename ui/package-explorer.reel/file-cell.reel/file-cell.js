@@ -70,6 +70,8 @@ exports.FileCell = Montage.create(Component, {
         }
     },
 
+    // NOTE this is tracking dragenter/dragleave events that bubble up from children
+    // to recognize when we actually leave the fileCell
     // FIXME: More robust solution.
     _hoverCounter: {
         value: 0
