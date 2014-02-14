@@ -25,7 +25,7 @@
     "devDependencies": {
         "jasmine-node": "1.2.2",
         "sandboxed-module": "0.1.4",
-        "montage-testing": "0.2.0",
+        "montage-testing": "git+ssh://git@github.com:montagejs/montage-testing.git#86e0c6181e9694bca128bfa6b6da4333668619e1",
         "jshint": "2.1.9",
         "watchr": "2.3.3",
         "glTF-webgl-viewer": "git+ssh://git@github.com:fabrobinet/glTF-webgl-viewer.git#df9b068db6bea24e5518058578c23bcf90f474a4"
