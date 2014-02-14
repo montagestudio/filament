@@ -15,7 +15,7 @@
                 },
                 "bindings": {
                     "classList.has('isList')": {
-                        "<-": "@viewModeButton.pressed"
+                        "<-": "@owner.isList"
                     }
                 }
             },
@@ -67,6 +67,9 @@
                 "prototype": "matte/ui/toggle-button.reel",
                 "properties": {
                     "element": {"#": "viewModeButton"}
+                },
+                "bindings": {
+                    "pressed": {"<->": "@owner.isList"}
                 }
             },
             

@@ -12,6 +12,10 @@ exports.Library = Montage.create(Panel, {
         value: null
     },
 
+    isList: {
+        value: true
+    },
+
     prepareForActivationEvents: {
         value: function () {
             this._element.addEventListener("dragstart", this, false);
