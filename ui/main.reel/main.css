@@ -74,3 +74,23 @@
     position: relative;
     width: 500px;
 }
+
+
+/* Drop zone */
+.Main-dropZone {
+    pointer-events: none;
+    background-color: transparent;
+    z-index: 999;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transition: background-color .1s linear;
+    -webkit-transition: background-color .1s linear;
+}
+
+.Main-dropZone--hover {
+    pointer-events: all;
+    background-color: hsla(0, 0%, 25%, .7);
+}

@@ -119,6 +119,10 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                     self.application = app;
                     self.environmentBridge = bridge;
 
+                    if (typeof bridge.setEnableFileDrop === "function") {
+                        bridge.setEnableFileDrop(true);
+                    }
+
                     extensionController = self.extensionController = ExtensionController.create().init(self);
 
                     //TODO move this elsewhere, maybe rename to specifically reflect the stage of bootstrapping

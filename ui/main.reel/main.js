@@ -40,7 +40,18 @@ exports.Main = Montage.create(Component, {
                     document.addEventListener("save", this, false);
                 }
             }
+
+            document.body.addEventListener("dragover", stop, false);
+            document.body.addEventListener("drop", stop, false);
+            function stop(e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
         }
+    },
+
+    isAcceptingDrop: {
+        value: false
     },
 
     handleAddComponent: {
@@ -358,6 +369,12 @@ exports.Main = Montage.create(Component, {
                     editorElement.classList.add("standby");
                 }
             });
+
+            if (this.isAcceptingDrop) {
+                this.dropZone.classList.add("Main-dropZone--hover");
+            } else {
+                this.dropZone.classList.remove("Main-dropZone--hover");
+            }
         }
     }
 });

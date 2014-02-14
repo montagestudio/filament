@@ -66,16 +66,53 @@
             "bindings": {
                 "condition": {"<-": "@owner.fileInfo.isDirectory"}
             }
+        },
+
+        "uploadDoneCount": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "uploadDoneCount"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.uploadedFileCount"}
+            }
+        },
+
+        "uploadTotalCount": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "uploadTotalCount"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.expectedUploadedFileCount"}
+            }
+        },
+
+        "uploadProgress": {
+            "prototype": "matte/ui/progress.reel",
+            "properties": {
+                "element": {"#": "uploadProgress"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.uploadedFileCount"},
+                "max": {"<-": "@owner.expectedUploadedFileCount"}
+            }
         }
     }
     </script>
 </head>
 <body>
     <div data-montage-id="file-cell" class="FileCell">
+        <span class="FileCell-uploadStatus">
+            <span data-montage-id="uploadProgress" class="FileCell-uploadStatus-progress"></span>
+            <span class="FileCell-uploadStatus-report">
+                <span data-montage-id="uploadDoneCount"></span>/<span data-montage-id="uploadTotalCount"></span>
+            </span>
+        </span>
         <span data-montage-id="isDirectoryCondition" class="FileCell-condition">
             <input data-montage-id="expanded" type="checkbox">
         </span>
-        <button data-montage-id="open-file-button" class="FileCell-button">
+        <button data-montage-id="open-file-button" class="FileCell-button" draggable="true">
             <span data-montage-id="file-title" class="FileCell-button-label"></span>
         </button>
     </div>

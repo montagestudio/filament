@@ -21,7 +21,8 @@
             "owner": {
                 "properties": {
                     "element": {"#": "main"},
-                    "editorSlot": {"#": "editorSlot"}
+                    "editorSlot": {"#": "editorSlot"},
+                    "dropZone": {"#": "mainDropZone"}
                 },
                 "bindings": {
                     "projectController": {"<-": "@application.delegate.projectController"},
@@ -229,6 +230,8 @@
 
             <div data-montage-id="goToFile"></div>
         </div>
+
+        <div class="Main-dropZone" data-montage-id="mainDropZone"></div>
     </div>
 
 </body>

@@ -314,6 +314,18 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+    /**
+     *
+     * @param {string} data is base64 encoded
+     * @param {string} url such as file://localhost/path/to/project/assets/images/why not zoidberg.png
+     */
+    addFileToProjectAtUrl: {
+        value: function(data, url) {
+            return this.environmentBridge.writeFile(url, data);
+        }
+    },
+
+
     // DOCUMENT HANDLING
 
     // The controller that facilittates bringing editors components
