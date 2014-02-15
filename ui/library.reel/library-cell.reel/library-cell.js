@@ -3,8 +3,7 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
+var Component = require("montage/ui/component").Component,
     MimeTypes = require("core/mime-types");
 
 /**
@@ -12,7 +11,16 @@ var Montage = require("montage").Montage,
     @class module:"ui/library-cell.reel".LibraryCell
     @extends module:montage/ui/component.Component
 */
-exports.LibraryCell = Montage.create(Component, /** @lends module:"ui/library-cell.reel".LibraryCell# */ {
+exports.LibraryCell = Component.specialize(/** @lends module:"ui/library-cell.reel".LibraryCell# */ {
+
+    constructor: {
+        value: function LibraryCell () {
+            this.super();
+
+            this.addPathChangeListener("prototypeObject.title", this, "handleChangeToDraw");
+            this.addPathChangeListener("prototypeObject.description", this, "handleChangeToDraw");
+        }
+    },
 
     enterDocument: {
         value: function (firstTime) {
@@ -30,6 +38,12 @@ exports.LibraryCell = Montage.create(Component, /** @lends module:"ui/library-ce
 
     prototypeObject: {
         value: null
+    },
+
+    handleChangeToDraw: {
+        value: function () {
+            this.needsDraw = true;
+        }
     },
 
     captureMouseover: {
@@ -90,6 +104,30 @@ exports.LibraryCell = Montage.create(Component, /** @lends module:"ui/library-ce
             this.dispatchEventNamed("addComponent", true, true, {
                 prototypeObject: this.prototypeObject
             });
+        }
+    },
+
+    draw: {
+        value: function () {
+            var object = this.prototypeObject,
+                content;
+
+            if (object && (object.name || object.description)) {
+
+                content = "";
+
+                if (object.name) {
+                    content = object.name;
+                }
+
+                if (object.description) {
+                    content += "\n" + object.description;
+                }
+
+                this.element.setAttribute("title", content);
+            } else {
+                this.element.removeAttribute("title");
+            }
         }
     }
 
