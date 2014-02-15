@@ -71,6 +71,10 @@
     box-shadow: 0 1px 1px hsla(0, 0%, 0%, 0.06);
 }
 
+.PackageExplorer.activeTarget .FileCell-button.open .FileCell-button-label {
+    background-color: hsl(0, 0%, 46%);
+}
+
 
 .FileCell--dragHover {
     background-color: rgba(97, 166, 255, 0.3);

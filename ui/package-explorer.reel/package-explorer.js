@@ -29,6 +29,23 @@ exports.PackageExplorer = Component.specialize({
         }
     },
 
+    didBecomeActiveTarget: {
+        value: function () {
+            this.classList.add("activeTarget");
+        }
+    },
+
+    surrendersActiveTarget: {
+        value: function () {
+            this.classList.remove("activeTarget");
+            return true;
+        }
+    },
+
+    acceptsActiveTarget: {
+        value: true
+    },
+
     enterDocument: {
         value: function () {
             // there is no action event built into the montage anchor.reel
