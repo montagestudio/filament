@@ -201,6 +201,9 @@
                 "prototype": "ui/go-to-file.reel",
                 "properties": {
                     "element": {"#": "goToFile"}
+                },
+                "bindings": {
+                    "recentUrls": {"<-": "@owner.projectController.recentDocumentUrls"}
                 }
             }
         }
