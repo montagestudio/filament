@@ -162,13 +162,13 @@ exports.EditingProxy = Target.specialize( /** @lends module:palette/coreediting-
     /**
      * Whether to dispatch a property change when a property is changed.
      */
-    propertiesChangeDispatchingEnabled: {
+    propertyChangeDispatchingEnabled: {
         value: true
     },
 
     _dispatchDidChangeObjectProperties: {
         value: function(properties) {
-            if (this.propertiesChangeDispatchingEnabled) {
+            if (this.propertyChangeDispatchingEnabled) {
                 this.dispatchEventNamed("didChangeObjectProperties", true, false, {
                     properties: properties
                 });
@@ -176,14 +176,23 @@ exports.EditingProxy = Target.specialize( /** @lends module:palette/coreediting-
         }
     },
 
+    _dispatchDidChangeObjectProperty: {
+        value: function(property, value) {
+            if (this.propertyChangeDispatchingEnabled) {
+                this.dispatchEventNamed("didChangeObjectProperty", true, false, {
+                    property: property,
+                    value: value
+                });
+            }
+        }
+    },
+
     setObjectProperty: {
-        value: function (property, value, dispatchPropertiesChange) {
-            var properties = {};
-            properties[property] = value;
+        value: function (property, value, dispatchPropertyChange) {
             this.properties.set(property, value);
-            if (typeof dispatchPropertiesChange === "undefined" ||
-                dispatchPropertiesChange) {
-                this._dispatchDidChangeObjectProperties(properties);
+            if (typeof dispatchPropertyChange === "undefined" ||
+                dispatchPropertyChange) {
+                this._dispatchDidChangeObjectProperty(property, value);
             }
         }
     },

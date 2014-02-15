@@ -69,19 +69,7 @@ describe("core/editing-proxy-spec", function () {
             proxy = new EditingProxy().init(label, serialization, exportId, editingDocument);
         });
 
-        it("should dispatch when a property is changed", function() {
-            var listener = {
-                handleEvent: function(){}
-            };
-            spyOn(listener, "handleEvent");
-
-            proxy.addEventListener("didChangeObjectProperties", listener);
-            proxy.setObjectProperty("foo", "another string");
-
-            expect(listener.handleEvent.callCount).toBe(1);
-        });
-
-        it("should dispatch a single time when multiple properties are changed", function() {
+        it("should dispatch when properties change", function() {
             var listener = {
                 handleEvent: function(){}
             };
@@ -95,9 +83,24 @@ describe("core/editing-proxy-spec", function () {
 
             expect(listener.handleEvent.callCount).toBe(1);
         });
+
+        it("should not dispatch didChangeObjectProperty", function() {
+            var listener = {
+                handleEvent: function(){}
+            };
+            spyOn(listener, "handleEvent");
+
+            proxy.addEventListener("didChangeObjectProperty", listener);
+            proxy.setObjectProperties({
+                foo: "another string",
+                bar: 1
+            });
+
+            expect(listener.handleEvent).not.toHaveBeenCalled();
+        });
     });
 
-    describe("propertiesChangeDispatchingEnabled", function() {
+    describe("propertyChangeDispatchingEnabled", function() {
         beforeEach(function () {
             serialization = {
                 prototype: exportId,
@@ -110,33 +113,33 @@ describe("core/editing-proxy-spec", function () {
             proxy = new EditingProxy().init(label, serialization, exportId, editingDocument);
         });
 
-        it("should not dispatch didChangeObjectProperties when propertiesChangeDispatchingEnabled is enabled on setObjectProperty", function() {
+        it("should not dispatch didChangeObjectProperty when propertyChangeDispatchingEnabled is enabled ", function() {
             var listener = {
                 handleEvent: function(){}
             };
             spyOn(listener, "handleEvent");
 
-            proxy.addEventListener("didChangeObjectProperties", listener);
-            proxy.propertiesChangeDispatchingEnabled = false;
+            proxy.addEventListener("didChangeObjectProperty", listener);
+            proxy.propertyChangeDispatchingEnabled = false;
             proxy.setObjectProperty("foo", "another string");
 
-            expect(listener.handleEvent.callCount).toBe(0);
+            expect(listener.handleEvent).not.toHaveBeenCalled();
         });
 
-        it("should not dispatch didChangeObjectProperties when propertiesChangeDispatchingEnabled is enabled on setObjectProperties", function() {
+        it("should not dispatch didChangeObjectProperties when propertyChangeDispatchingEnabled is enabled", function() {
             var listener = {
                 handleEvent: function(){}
             };
             spyOn(listener, "handleEvent");
 
             proxy.addEventListener("didChangeObjectProperties", listener);
-            proxy.propertiesChangeDispatchingEnabled = false;
+            proxy.propertyChangeDispatchingEnabled = false;
             proxy.setObjectProperties({
                 foo: "another string",
                 bar: 1
             });
 
-            expect(listener.handleEvent.callCount).toBe(0);
+            expect(listener.handleEvent).not.toHaveBeenCalled();
         });
     });
 });
