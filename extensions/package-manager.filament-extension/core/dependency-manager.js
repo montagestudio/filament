@@ -161,7 +161,7 @@ var DependencyManager = Montage.specialize({
             if (request) {
                 var operation = this._createOperation(request, DependencyManager.ACTIONS.INSTALL);
 
-                if (dependency && !dependency.missing && dependency.version === version) {
+                if (dependency && !dependency.missing && dependency.versionInstalled === version) {
                     if (this._pendingOperations[name]) {
                         delete this._pendingOperations[name];
                         this._packageDocument._changeCount--;
@@ -169,14 +169,19 @@ var DependencyManager = Montage.specialize({
                 } else {
                     this._pendingOperations[name] = operation;
                     this._packageDocument._changeCount++;
+
+                    return true;
                 }
             }
+
+            return false;
         }
     },
 
     removeDependency: {
         value: function (name) {
             var dependency = this._packageDocument.findDependency(name),
+                packageDocument =  this._packageDocument,
                 request = this._createRequest(name);
 
             if (request && dependency) {
@@ -184,14 +189,20 @@ var DependencyManager = Montage.specialize({
                     var operation = this._createOperation(request, DependencyManager.ACTIONS.UNINSTALL);
 
                     this._pendingOperations[name] = operation;
-                    this._packageDocument._changeCount++;
+                    packageDocument._changeCount++;
 
                 } else if (dependency.missing && this._pendingOperations[name]) {
+                    if (!dependency.state.canBeMissing ||
+                        (dependency.state.canBeMissing && !packageDocument._isPackageFileHasDependency(name))) {
+
+                        packageDocument._changeCount--;
+                    }
+
                     delete this._pendingOperations[name];
-                    this._packageDocument._changeCount--;
+                    packageDocument._removeDependencyFromCollection(dependency);
 
                 } else {
-                    this._packageDocument._changeCount--;
+                    packageDocument._changeCount--;
                 }
             }
         }

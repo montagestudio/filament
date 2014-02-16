@@ -3,12 +3,7 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    MIME_TYPES = require("../../../../../core/mime-types"),
-
-    BUTTON_LABEL = {
-        ADD: "+",
-        DEFAULT: "-"
-    };
+    MIME_TYPES = require("../../../../../core/mime-types");
 
 /**
  * @class PackageDependencyCell
@@ -43,16 +38,11 @@ exports.PackageDependencyCell = Component.specialize(/** @lends PackageDependenc
         set: function (module) {
             if (module && typeof module === "object" && module.hasOwnProperty('name')) {
                 this._dependency = module;
-                this.buttonLabel = module.state.acceptInstall ? BUTTON_LABEL.ADD : BUTTON_LABEL.DEFAULT;
             }
         },
         get: function () {
             return this._dependency;
         }
-    },
-
-    buttonLabel: {
-        value: null
     },
 
     captureDragstart: {

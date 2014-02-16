@@ -94,7 +94,10 @@ exports.AddDependencyOverlay = Overlay.specialize(/** @lends AddDependencyOverla
     handleInstallManuallyDependencyAction: {
         value: function () {
             if (this.editingDocument && this._name && this._name.length > 0 && this._checkValidity()) {
-                this.editingDocument.installDependency(this._name, this._url || this._version, this.type);
+                if (!this.editingDocument.findDependency(this._name)) { // Fixme, temporary fix, to avoid to override dependencies.
+                    this.editingDocument.installDependency(this._name, this._url || this._version, this.type);
+                }
+
                 this.hide();
             }
         }

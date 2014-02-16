@@ -68,7 +68,7 @@
             },
             "bindings": {
                 "detail.get('source')": {"<-": "@owner"},
-                "label": {"<-": "@owner.buttonLabel"}
+                "label": {"<-": "!!@owner.dependency.state.acceptInstall ? '+' : '-' " }
             }
         }
 

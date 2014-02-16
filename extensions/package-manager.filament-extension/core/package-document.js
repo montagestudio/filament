@@ -333,6 +333,31 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
+    _isPackageFileHasDependency: {
+        value: function (dependencyName, category) {
+            if (category) {
+                var dependencyList = this._package[category];
+
+                if (dependencyList) {
+                    var dependencyListKeys = Object.keys(dependencyList);
+
+                    return dependencyListKeys.some(function (dependencyKey) {
+                        return dependencyKey === dependencyName;
+                    });
+                }
+
+                return false;
+            }
+
+            var categoryKeys = Object.keys(DependencyNames),
+                self = this;
+
+            return categoryKeys.some(function (categoryKey) {
+                return self._isPackageFileHasDependency(dependencyName, DependencyNames[categoryKey]);
+            });
+        }
+    },
+
     getDependencyInformation: {
         value: function (dependency) {
             if (PackageTools.isDependency(dependency)) {
@@ -473,10 +498,11 @@ exports.PackageDocument = EditingDocument.specialize( {
     installDependency: {
         value: function (name, version, type) {
             var dependency = new Dependency(name, version, type);
-            dependency.state.pendingInstall = true;
 
             this._addDependencyToCollection(dependency);
-            this._dependencyManager.installDependency(dependency.name, dependency.version);
+
+            var state = this._dependencyManager.installDependency(dependency.name, dependency.version);
+            dependency.state.pendingInstall = state;
         }
     },
 
