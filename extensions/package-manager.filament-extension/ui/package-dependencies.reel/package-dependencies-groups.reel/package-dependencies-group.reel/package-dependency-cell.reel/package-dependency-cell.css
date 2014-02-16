@@ -25,17 +25,9 @@
     font-size: 22px;
 }
 
-.PackageDependencyCell-item--update {
-    visibility: hidden;
-}
-
-.PackageDependencyCell-item-visible {
-    visibility: visible;
-}
-
 .PackageDependencyCell:-webkit-drag .PackageDependencyCell-item--version,
-.PackageDependencyCell:-webkit-drag .PackageDependencyCell-item--sticky,
-.PackageDependencyCell:-webkit-drag .PackageDependencyCell-item--action {
+.PackageDependencyCell:-webkit-drag .PackageDependencyCell-item--state,
+.PackageDependencyCell:-webkit-drag .PackageDependencyCellButton {
     display: none;
 }
 
