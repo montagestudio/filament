@@ -4,6 +4,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     PackageSavingManager = require('./package-saving-manager').PackageSavingManager,
     Promise = require("montage/core/promise").Promise,
     Dependency = require('./dependency').Dependency,
+    DependencyState = require('./dependency').DependencyState,
     Tools = require('./package-tools'),
     semver = require('semver'),
     PackageTools = Tools.ToolsBox,
@@ -305,9 +306,9 @@ exports.PackageDocument = EditingDocument.specialize( {
                 }
 
                 if (dependenciesCategories && typeof dependenciesCategories === "object") {
-                    this._dependencyCollection.dependencies = dependenciesCategories.regular || [];
-                    this._dependencyCollection.devDependencies = dependenciesCategories.dev || [];
-                    this._dependencyCollection.optionalDependencies = dependenciesCategories.optional || [];
+                    this._dependencyCollection.dependencies = this._formatDependencyList(dependenciesCategories.regular);
+                    this._dependencyCollection.devDependencies = this._formatDependencyList(dependenciesCategories.dev);
+                    this._dependencyCollection.optionalDependencies = this._formatDependencyList(dependenciesCategories.optional);
                 }
 
                 this._dependencyTree = dependencyTree;
@@ -315,6 +316,20 @@ exports.PackageDocument = EditingDocument.specialize( {
         },
         get : function () {
             return this._dependencyCollection;
+        }
+    },
+
+    _formatDependencyList: {
+        value: function (dependencyList) {
+            if (Array.isArray(dependencyList)) {
+                dependencyList.forEach(function (dependency) {
+                    dependency.state = new DependencyState(dependency);
+                });
+
+                return dependencyList;
+            }
+
+            return [];
         }
     },
 
@@ -458,7 +473,7 @@ exports.PackageDocument = EditingDocument.specialize( {
     installDependency: {
         value: function (name, version, type) {
             var dependency = new Dependency(name, version, type);
-            dependency.willInstall = true;
+            dependency.state.pendingInstall = true;
 
             this._addDependencyToCollection(dependency);
             this._dependencyManager.installDependency(dependency.name, dependency.version);
@@ -485,6 +500,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
                 dependency.missing = false;
                 dependency.isBusy = false;
+                dependency.state.pendingInstall = false;
 
                 this.editor.notifyDependenciesListChange(dependency.name, Dependency.INSTALL_DEPENDENCY_ACTION);
             }
@@ -493,7 +509,12 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     _dependencyHasBeenRemoved: {
         value: function (dependencyRemoved) {
-            this.editor.notifyDependenciesListChange(dependencyRemoved.name, Dependency.REMOVE_DEPENDENCY_ACTION);
+            var dependency = this.findDependency(dependencyRemoved.name);
+
+            if (dependency) {
+                this._removeDependencyFromCollection(dependency);
+                this.editor.notifyDependenciesListChange(dependency.name, Dependency.REMOVE_DEPENDENCY_ACTION);
+            }
         }
     },
 
@@ -509,7 +530,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                 }
 
                 this._dependencyManager.removeDependency(name);
-                this._removeDependencyFromCollection(name);
+                dependency.state.pendingRemoval = true;
 
                 return true;
             }
@@ -608,7 +629,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                 dependencyCollection.forEach(function (dependency) {
                     var dependencyName = dependency.name;
 
-                    if (typeof dependencyName === "string") {
+                    if (typeof dependencyName === "string" && !dependency.state.pendingRemoval) {
                         ObjectContainer[dependencyName] = dependency.version || "";
                     }
                 });

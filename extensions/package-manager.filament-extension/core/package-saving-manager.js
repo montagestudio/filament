@@ -34,10 +34,6 @@ exports.PackageSavingManager = Montage.specialize({
         value: null
     },
 
-    _needUpdateDependencyCollection: {
-        value: null
-    },
-
     _reportLastSaving: {
         value: null
     },
@@ -48,16 +44,10 @@ exports.PackageSavingManager = Montage.specialize({
                 packageJson = this._packageDocument.toJSON();
 
             if (this._savingInProgressPromise && this._savingInProgressPromise.isPending()) {
-                if (!this._needUpdateDependencyCollection) {
-                    this._needUpdateDependencyCollection = this._dependencyManager.hasPendingOperations();
-                }
-
                 this._packageJsonPending = packageJson;
-
                 return Promise(true);
             }
 
-            this._needUpdateDependencyCollection = this._dependencyManager.hasPendingOperations();
             this._savingInProgressPromise = this._performSaving(packageJson, url, dataWriter);
 
             //todo localize
@@ -73,7 +63,6 @@ exports.PackageSavingManager = Montage.specialize({
     reset: {
         value: function () {
             this._reportLastSaving = [];
-            this._needUpdateDependencyCollection = false;
         }
     },
 
@@ -132,9 +121,9 @@ exports.PackageSavingManager = Montage.specialize({
 
                     return self._performSaving(packageJson, url, dataWriter);
 
-                } else if (self._needUpdateDependencyCollection) {
-                    return self._packageDocument._updateDependenciesAfterSaving();
                 }
+
+                return self._packageDocument._updateDependenciesAfterSaving();
             });
         }
     }

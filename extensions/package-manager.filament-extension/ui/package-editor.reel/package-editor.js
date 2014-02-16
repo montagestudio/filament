@@ -130,14 +130,13 @@ exports.PackageEditor = Montage.create(Editor, {
                 var source = event.detail.get('source'),
                     dependencyName = source.dependency.name;
 
-                if (source && typeof source === 'object' && !source.canInstall) { // remove request
+                if (source && typeof source === 'object' && !source.dependency.state.acceptInstall) { // remove request
                     this.currentDocument.uninstallDependency(dependencyName);
                 } else { // install request
                     var dependencyVersion = source.dependency.versionInstalled || '',
                         dependencyType = source.dependency.type;
 
                     this.currentDocument.installDependency(dependencyName, dependencyVersion, dependencyType);
-
                 }
             }
         }

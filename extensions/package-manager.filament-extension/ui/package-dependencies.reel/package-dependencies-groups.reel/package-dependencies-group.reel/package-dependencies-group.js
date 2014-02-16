@@ -113,7 +113,9 @@ exports.PackageDependenciesGroup = Component.specialize(/** @lends PackageDepend
 
             if (availableTypes) {
                 if (availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY)) {
-                    var dependency = JSON.parse(dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY));
+                    var dependencyName = dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY),
+                        dependencyType = dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_DEPENDENCY_TYPE),
+                        dependency = this.editingDocument.findDependency(dependencyName, dependencyType);
 
                     if (dependency.type !== this.type) {
                         this.editingDocument.switchDependencyType(dependency, this.type).done();

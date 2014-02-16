@@ -83,12 +83,12 @@ var DependencyManager = Montage.specialize({
 
             Promise.allSettled(pendingOperationKeys.map(function (operationKey) {
                 var operation = pendingOperation[operationKey],
+                    dependency = self._packageDocument.findDependency(operationKey),
                     promise = null;
 
-                if (operation.operationType === DependencyManagerQueue.ACTIONS.INSTALL) {
-                    var dependency = self._packageDocument.findDependency(operationKey);
                     dependency.isBusy = true;
 
+                if (operation.operationType === DependencyManagerQueue.ACTIONS.INSTALL) {
                     promise = self._dependencyManagerQueue.installModule(operation.request)
                         .then(function (listDependencyInstalled) {
 
