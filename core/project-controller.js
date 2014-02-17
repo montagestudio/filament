@@ -268,7 +268,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             // Use a default icon
             this.icon = this.icon || "/assets/img/app-icon.png";
 
-            require.read(projectUrl + "/index.html").then(function(indexHtml) {
+            require.read(projectUrl + "index.html").then(function(indexHtml) {
                 var sizes = [],
                     icons,
                     doc,
@@ -305,8 +305,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     self.icon = projectUrl + "/" + sizes[0].href;
                 } else {
                     /* if no touch icons are present, but a favicon is, use it */
-                    require.read(projectUrl + "/favicon.ico").then(function() {
-                        self.icon = projectUrl + "/favicon.ico";
+                    require.read(projectUrl + "favicon.ico").then(function() {
+                        self.icon = projectUrl + "favicon.ico";
                     });
                 }
 
