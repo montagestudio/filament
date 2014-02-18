@@ -56,7 +56,8 @@
                 "element": {"#": "dependencyCell"}
             },
             "bindings": {
-                "dependency": {"<-": "@dependenciesList:iteration.object"}
+                "dependency": {"<-": "@dependenciesList:iteration.object"},
+                "editingDocument": {"<-": "@owner.editingDocument"}
             }
         }
     }

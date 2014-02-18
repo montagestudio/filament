@@ -551,7 +551,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             if (PackageTools.isDependency(dependency)) {
                 var name = dependency.name;
 
-                if (DEPENDENCIES_REQUIRED.indexOf(name.toLowerCase()) >= 0) {
+                if (this.isDependencyRequired(name)) {
                     throw new Error('Can not uninstall the dependency ' + name + ', required by the App');
                 }
 
@@ -722,6 +722,22 @@ exports.PackageDocument = EditingDocument.specialize( {
     isRangeValid: {
         value: function (range) {
             return !!semver.validRange(range) || PackageTools.isGitUrl(range);
+        }
+    },
+
+    isDependencyRequired: {
+        value: function (dependency) {
+            var name = null;
+
+            if (dependency) {
+                if (typeof dependency === "string") {
+                    name = dependency;
+                } else if (typeof dependency.name === "string") {
+                    name = dependency.name;
+                }
+            }
+
+            return name ? DEPENDENCIES_REQUIRED.indexOf(name.toLowerCase()) >= 0 : false;
         }
     },
 

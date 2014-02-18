@@ -25,6 +25,10 @@ exports.PackageDependencyCell = Component.specialize(/** @lends PackageDependenc
         }
     },
 
+    editingDocument: {
+        value: null
+    },
+
     _dependency: {
         value: null
     },

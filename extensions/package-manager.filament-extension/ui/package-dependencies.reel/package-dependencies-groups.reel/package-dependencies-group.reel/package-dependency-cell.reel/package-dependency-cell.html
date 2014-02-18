@@ -61,6 +61,17 @@
             }
         },
 
+        "dependencyButtonCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "dependencyButtonCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "!@owner.editingDocument.isDependencyRequired(@owner.dependency.name)"}
+            }
+        },
+
         "dependencyButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {
@@ -89,7 +100,9 @@
                 <div data-montage-id="dependencyActionBusy"></div>
             </div>
             <div data-arg="default">
-                <button data-montage-id="dependencyAction" class="PackageDependencyCellButton"></button>
+                <div data-montage-id="dependencyButtonCondition">
+                    <button data-montage-id="dependencyAction" class="PackageDependencyCellButton"></button>
+                </div>
             </div>
         </div>
     </li>
