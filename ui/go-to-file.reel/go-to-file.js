@@ -79,10 +79,12 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
     },
 
     show: {
-        value: function() {
+        value: function(preserveSearchText) {
             var templateObjects = this.templateObjects;
 
-            this.searchText = "";
+            if (!preserveSearchText) {
+                this.searchText = "";
+            }
             this._updateMatchList();
 
             templateObjects.overlay.show();
