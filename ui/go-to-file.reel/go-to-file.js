@@ -171,9 +171,11 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
     _scoreFile: {
         value: function(file, searchText) {
             var j = 0,
-                name = file.name,
+                name = file.name.toLowerCase(),
                 skipped = 0,
                 i, ii;
+
+            searchText = searchText.toLowerCase();
 
             search:
             for (i = 0, ii = searchText.length; i < ii; i++, j++) {
