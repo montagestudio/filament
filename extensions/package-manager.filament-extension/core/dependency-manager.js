@@ -86,7 +86,7 @@ var DependencyManager = Montage.specialize({
                     dependency = self._packageDocument.findDependency(operationKey),
                     promise = null;
 
-                    dependency.isBusy = true;
+                dependency.isBusy = true;
 
                 if (operation.operationType === DependencyManagerQueue.ACTIONS.INSTALL) {
                     promise = self._dependencyManagerQueue.installModule(operation.request)
