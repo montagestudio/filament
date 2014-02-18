@@ -103,7 +103,8 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
                 filesMap = this.filesMap,
                 recentUrls = this.recentUrls,
                 content,
-                selectedMatchIndex;
+                selectedMatchIndex,
+                selectedContent;
 
             //var startTime = window.performance.now();
             if (searchText) {
@@ -123,7 +124,7 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
 
                 selectedMatchIndex = 0;
 
-            } else if (recentUrls) {
+            } else if (recentUrls && filesMap) {
                 // No search text show list of recently visited files
                 content = recentUrls.map(function (url) {
                     return filesMap.get(url);
@@ -140,9 +141,13 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
             if (content) {
                 this._updatingSelection = true;
                 this.templateObjects.matchList.content = content;
-                this.templateObjects.matchList.selection = [content[selectedMatchIndex]];
+                selectedContent = content[selectedMatchIndex];
+                if (selectedContent) {
+                    this.templateObjects.matchList.selection = [content[selectedMatchIndex]];
+                    this._selectedFileIndex = selectedMatchIndex;
+                }
                 this._updatingSelection = false;
-                this._selectedFileIndex = selectedMatchIndex;
+
             }
         }
     },
@@ -151,8 +156,10 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
         value: function() {
             var file = this.templateObjects.matchList.contentController.selection[0];
 
-            this.dispatchEventNamed("openUrl", true, true, file.fileUrl);
-            this.templateObjects.overlay.hide();
+            if (file) {
+                this.dispatchEventNamed("openUrl", true, true, file.fileUrl);
+                this.templateObjects.overlay.hide();
+            }
         }
     },
 
@@ -194,7 +201,8 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
 
     handleGoUpKeyPress: {
         value: function() {
-            var matchList = this.templateObjects.matchList;
+            var matchList = this.templateObjects.matchList,
+                selectedFile;
 
             if (this._selectedFileIndex === 0) {
                 this._selectedFileIndex = matchList.content.length - 1;
@@ -202,18 +210,25 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
                 this._selectedFileIndex--;
             }
             this._updatingSelection = true;
-            matchList.selection = [matchList.content[this._selectedFileIndex]];
+            selectedFile = matchList.content[this._selectedFileIndex];
+            if (selectedFile) {
+                matchList.selection = [selectedFile];
+            }
             this._updatingSelection = false;
         }
     },
 
     handleGoDownKeyPress: {
         value: function() {
-            var matchList = this.templateObjects.matchList;
+            var matchList = this.templateObjects.matchList,
+                selectedFile;
 
             this._selectedFileIndex = (this._selectedFileIndex+1) % matchList.content.length;
             this._updatingSelection = true;
-            matchList.selection = [matchList.content[this._selectedFileIndex]];
+            selectedFile = matchList.content[this._selectedFileIndex];
+            if (selectedFile) {
+                matchList.selection = [selectedFile];
+            }
             this._updatingSelection = false;
         }
     },
