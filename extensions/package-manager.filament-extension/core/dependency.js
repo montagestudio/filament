@@ -56,7 +56,7 @@ var DependencyState = Montage.specialize({
             }
 
             this._dependency = dependency;
-            this.acceptInstall = this.canBeMissing;
+            this._acceptInstall = this.canBeMissing;
 
             this.addPathChangeListener("_dependency.update", this, "_updateStateMessage");
         }
@@ -75,8 +75,6 @@ var DependencyState = Montage.specialize({
             this._pendingRemoval = !!flag;
             this._pendingInstall = false;
             this.acceptInstall = this._pendingRemoval;
-
-            this._updateStateMessage();
         },
         get: function () {
             return this._pendingRemoval;
@@ -92,8 +90,6 @@ var DependencyState = Montage.specialize({
             this._pendingInstall = !!flag;
             this._pendingRemoval = false;
             this.acceptInstall = false;
-
-            this._updateStateMessage();
         },
         get: function () {
             return this._pendingInstall;
@@ -113,14 +109,25 @@ var DependencyState = Montage.specialize({
         }
     },
 
-    acceptInstall: {
+    _acceptInstall: {
         value: null
+    },
+
+    acceptInstall: {
+        set: function (flag) {
+            this._acceptInstall = !!flag;
+
+            this._updateStateMessage();
+        },
+        get: function () {
+            return this._acceptInstall;
+        }
     },
 
     canBeMissing: { // within the package.json but not mandatory
         get: function () {
             var module = this._dependency;
-            return module && module.type !== "dependencies" && module.missing
+            return module && module.type !== "dependencies" && module.missing;
         }
     },
 

@@ -500,9 +500,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             var dependency = new Dependency(name, version, type);
 
             this._addDependencyToCollection(dependency);
-
-            var state = this._dependencyManager.installDependency(dependency.name, dependency.version);
-            dependency.state.pendingInstall = state;
+            this._dependencyManager.installDependency(dependency.name, dependency.version);
         }
     },
 
@@ -556,7 +554,6 @@ exports.PackageDocument = EditingDocument.specialize( {
                 }
 
                 this._dependencyManager.removeDependency(name);
-                dependency.state.pendingRemoval = true;
 
                 return true;
             }
@@ -611,9 +608,12 @@ exports.PackageDocument = EditingDocument.specialize( {
                     dependency.isBusy = !!isBusy;
 
                     if (index >= 0) { // already within the dependencies list.
-                        var oldDependency = self._dependencyCollection[dependencyFound.type].splice(index, 1);
+                        var oldDependency = self._dependencyCollection[dependencyFound.type].splice(index, 1),
+                            versionInstalled = dependency.versionInstalled;
 
-                        if (dependency.versionInstalled === oldDependency[0].versionInstalled) {
+                        if (!dependencyFound.missing && versionInstalled.length > 0 &&
+                            versionInstalled === oldDependency[0].versionInstalled) {
+
                             dependency.missing = false;
                         }
                     }

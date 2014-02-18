@@ -166,15 +166,14 @@ var DependencyManager = Montage.specialize({
                         delete this._pendingOperations[name];
                         this._packageDocument._changeCount--;
                     }
+
+                    dependency.state.pendingInstall = false;
                 } else {
                     this._pendingOperations[name] = operation;
                     this._packageDocument._changeCount++;
-
-                    return true;
+                    dependency.state.pendingInstall = true;
                 }
             }
-
-            return false;
         }
     },
 
@@ -182,6 +181,7 @@ var DependencyManager = Montage.specialize({
         value: function (name) {
             var dependency = this._packageDocument.findDependency(name),
                 packageDocument =  this._packageDocument,
+                dependencyState = dependency.state,
                 request = this._createRequest(name);
 
             if (request && dependency) {
@@ -189,17 +189,26 @@ var DependencyManager = Montage.specialize({
                     var operation = this._createOperation(request, DependencyManager.ACTIONS.UNINSTALL);
 
                     this._pendingOperations[name] = operation;
+                    dependencyState.pendingRemoval = true;
                     packageDocument._changeCount++;
 
                 } else if (dependency.missing && this._pendingOperations[name]) {
-                    if (!dependency.state.canBeMissing ||
-                        (dependency.state.canBeMissing && !packageDocument._isPackageFileHasDependency(name))) {
+                    var packageNotInstalled = packageDocument._isPackageFileHasDependency(name);
 
-                        packageDocument._changeCount--;
+                    if (!dependencyState.canBeMissing || (dependencyState.canBeMissing && !packageNotInstalled)) {
+
+                        packageDocument._removeDependencyFromCollection(dependency);
                     }
 
+                    if (dependencyState.canBeMissing && packageNotInstalled) {
+                        dependencyState.pendingRemoval = false;
+                        dependencyState.acceptInstall = true;
+                    } else {
+                        dependencyState.pendingRemoval = true;
+                    }
+
+                    packageDocument._changeCount--;
                     delete this._pendingOperations[name];
-                    packageDocument._removeDependencyFromCollection(dependency);
 
                 } else {
                     packageDocument._changeCount--;
