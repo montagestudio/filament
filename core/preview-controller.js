@@ -204,6 +204,26 @@ exports.PreviewController = Target.specialize({
         }
     },
 
+    addPreviewObjectEventListener: {
+        value: function(moduleId, label, type, listenerLabel, useCapture) {
+            if (typeof this.environmentBridge.addPreviewObjectEventListener === "function") {
+                return this.environmentBridge.addPreviewObjectEventListener(this._previewId, moduleId, label, type, listenerLabel, useCapture);
+            } else {
+                return Promise.resolve(null);
+            }
+        }
+    },
+
+    removePreviewObjectEventListener: {
+        value: function(moduleId, label, type, listenerLabel, useCapture) {
+            if (typeof this.environmentBridge.removePreviewObjectEventListener === "function") {
+                return this.environmentBridge.removePreviewObjectEventListener(this._previewId, moduleId, label, type, listenerLabel, useCapture);
+            } else {
+                return Promise.resolve(null);
+            }
+        }
+    },
+
     /**
      * Unregister the preview server for this project
      *

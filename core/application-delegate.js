@@ -249,6 +249,10 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             app.addEventListener("didChangeObjectProperty", this);
             app.addEventListener("didSetObjectBinding", this);
             app.addEventListener("didCancelObjectBinding", this);
+            app.addEventListener("didAddObjectEventListener", this);
+            app.addEventListener("didRemoveObjectEventListener", this);
+            app.addEventListener("willUpdateObjectEventListener", this);
+            app.addEventListener("didUpdateObjectEventListener", this);
             app.addEventListener("didAddObjectsFromTemplate", this);
             app.addEventListener("didSetAttribute", this);
             app.addEventListener("didChangeTemplate", this);
@@ -559,4 +563,48 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             .done();
         }
     },
+
+    handleDidAddObjectEventListener: {
+        value: function(event) {
+            var proxy = event.target;
+            var listenerModel = event.detail.listenerModel;
+            var ownerProxy = proxy.editingDocument.editingProxyMap.owner;
+
+            this.previewController.addPreviewObjectEventListener(
+                ownerProxy.moduleId,
+                proxy.label,
+                listenerModel.type,
+                listenerModel.listener.label,
+                listenerModel.useCapture)
+            .done();
+        }
+    },
+
+    handleDidRemoveObjectEventListener: {
+        value: function(event) {
+            var proxy = event.target;
+            var listenerModel = event.detail.listenerModel;
+            var ownerProxy = proxy.editingDocument.editingProxyMap.owner;
+
+            this.previewController.removePreviewObjectEventListener(
+                ownerProxy.moduleId,
+                proxy.label,
+                listenerModel.type,
+                listenerModel.listener.label,
+                listenerModel.useCapture)
+            .done();
+        }
+    },
+
+    handleWillUpdateObjectEventListener: {
+        value: function(event) {
+            this.handleDidRemoveObjectEventListener(event);
+        }
+    },
+
+    handleDidUpdateObjectEventListener: {
+        value: function(event) {
+            this.handleDidAddObjectEventListener(event);
+        }
+    }
 });
