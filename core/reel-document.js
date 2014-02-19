@@ -1842,7 +1842,7 @@ exports.ReelDocument = EditingDocument.specialize({
             var properties = proxy.properties;
             var oldElement = properties.get("element");
 
-            properties.set("element", element);
+            proxy.setObjectProperty("element", element);
             this.undoManager.register("Set element", Promise.resolve([
                 this.setOwnedObjectElement, this, proxy, (oldElement) ? oldElement.montageId : void 0
             ]));
