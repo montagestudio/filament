@@ -194,6 +194,16 @@ exports.PreviewController = Target.specialize({
         }
     },
 
+    setPreviewObjectTemplate: {
+        value: function(moduleId, templateFragment) {
+            if (typeof this.environmentBridge.setPreviewObjectTemplate === "function") {
+                return this.environmentBridge.setPreviewObjectTemplate(this._previewId, moduleId, templateFragment);
+            } else {
+                return Promise.resolve(null);
+            }
+        }
+    },
+
     /**
      * Unregister the preview server for this project
      *

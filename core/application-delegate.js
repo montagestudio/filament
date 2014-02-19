@@ -251,6 +251,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             app.addEventListener("didCancelObjectBinding", this);
             app.addEventListener("didAddObjectsFromTemplate", this);
             app.addEventListener("didSetAttribute", this);
+            app.addEventListener("didChangeTemplate", this);
 
             this._deferredApplication.resolve(app);
         }
@@ -539,5 +540,23 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                 how,
                 templateFragment);
         }
-    }
+    },
+
+    handleDidChangeTemplate: {
+        value: function(event) {
+            var document = event.target;
+            var template = event.detail.template;
+            var owner = document.editingProxyMap.owner;
+
+            var templateFragment = {
+                serialization: template.objectsString,
+                html: template.document.body.innerHTML
+            };
+
+            this.previewController.setPreviewObjectTemplate(
+                owner.moduleId,
+                templateFragment)
+            .done();
+        }
+    },
 });
