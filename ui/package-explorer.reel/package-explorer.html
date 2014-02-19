@@ -120,6 +120,27 @@
                         "listener": {"@": "owner"}
                     }
                 ]
+            },
+
+            "contextualMenuOverlay": {
+                "prototype": "montage/ui/overlay.reel",
+                "properties": {
+                    "element": {"#": "contextualMenuOverlay"},
+                    "delegate": {"@": "contextualMenu"}
+                }
+            },
+
+            "contextualMenu": {
+                "prototype": "ui/contextual-menu.reel",
+                "properties": {
+                    "element": {"#": "contextualMenu"}
+                },
+                "listeners": [
+                    {
+                        "type": "dismiss",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             }
         }
     </script>
@@ -136,6 +157,11 @@
             </div>
             <a data-montage-id="previewLink" class="PackageExplorer-previewButton" title="Preview"></a>
         </header>
+        <section>
+            <div data-montage-id="contextualMenuOverlay">
+                <div data-montage-id="contextualMenu"></div>
+            </div>
+        </section>
         <div class="Shadow Shadow--top"></div>
         <div data-montage-id="fileList" class="PackageExplorer-list">
             <span data-montage-id="file-cell" data-arg="treeNode"></span>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="contextual-menu.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "contextualMenu"}
+            }
+        },
+
+        "filename": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "filename"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.fileInfo.name"}
+            }
+        },
+
+        "deleteButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "deleteButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "createFolderButton":{
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "createFolderButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="contextualMenu" class="ContextualMenu">
+        <ul class="ContextualMenu-list">
+            <li>
+                <button data-montage-id="deleteButton">Delete <span data-montage-id="filename"></span></button>
+            </li>
+            <li>
+                <button data-montage-id="createFolderButton">Create folder</button>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -45,7 +45,21 @@ exports.FileCell = Montage.create(Component, {
                     //TODO eventually allow moving directories
                     this.element.addEventListener("dragstart", this);
                 }
+
+                this.element.addEventListener("contextmenu", this, false);
             }
+        }
+    },
+
+    handleContextmenu: {
+        value: function (evt) {
+            evt.stop();
+            evt.stopImmediatePropagation();
+
+            // FIXME: I do not like the API of those next lines
+            this.ownerComponent.templateObjects.contextualMenu.fileInfo = this.fileInfo;
+            this.ownerComponent.templateObjects.contextualMenu.position = {top: evt.clientY, left: evt.clientX};
+            this.ownerComponent.templateObjects.contextualMenuOverlay.show();
         }
     },
 

@@ -163,6 +163,12 @@ exports.PackageExplorer = Component.specialize({
         }
     },
 
+    handleMenuActionDismiss: {
+        value: function (evt) {
+            this.templateObjects.contextualMenuOverlay.hide();
+        }
+    },
+
     handleMenuAction: {
         value: function (event) {
             if (event.detail.identifier !== MENU_IDENTIFIER) {
