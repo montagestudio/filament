@@ -41,6 +41,10 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         value: true
     },
 
+    eventListenerChangesDispatchingEnabled: {
+        value: true
+    },
+
     /**
      * The identifier of the representedObject
      */
@@ -395,6 +399,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             listenerModel.useCapture = useCapture;
 
             this.listeners.push(listenerModel);
+            this._dispatchDidAddObjectEventListener(listenerModel);
 
             return listenerModel;
         }
@@ -422,9 +427,13 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
                 throw new Error("Cannot update a listener that's not associated with this proxy.");
             }
 
+            this._dispatchWillUpdateObjectEventListener(listener);
+
             listener.type = type;
             listener.listener = itsListener;
             listener.useCapture = useCapture;
+
+            this._dispatchDidUpdateObjectEventListener(listener);
 
             return listener;
         }
@@ -441,6 +450,7 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
 
             if (listenerIndex > -1) {
                 this.listeners.splice(listenerIndex, 1);
+                this._dispatchDidRemoveObjectEventListener(listener);
                 return {index: listenerIndex, removedListener: listener};
             } else {
                 throw new Error("Cannot remove a listener that's not associated with this proxy");
@@ -463,6 +473,46 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             if (this.bindingChangesDispatchingEnabled) {
                 this.dispatchEventNamed("didCancelObjectBinding", true, false, {
                     binding: binding
+                });
+            }
+        }
+    },
+
+    _dispatchDidAddObjectEventListener: {
+        value: function(listenerModel) {
+            if (this.eventListenerChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didAddObjectEventListener", true, false, {
+                    listenerModel: listenerModel
+                });
+            }
+        }
+    },
+
+    _dispatchDidRemoveObjectEventListener: {
+        value: function(listenerModel) {
+            if (this.eventListenerChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didRemoveObjectEventListener", true, false, {
+                    listenerModel: listenerModel
+                });
+            }
+        }
+    },
+
+    _dispatchWillUpdateObjectEventListener: {
+        value: function(listenerModel) {
+            if (this.eventListenerChangesDispatchingEnabled) {
+                this.dispatchEventNamed("willUpdateObjectEventListener", true, false, {
+                    listenerModel: listenerModel
+                });
+            }
+        }
+    },
+
+    _dispatchDidUpdateObjectEventListener: {
+        value: function(listenerModel) {
+            if (this.eventListenerChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didUpdateObjectEventListener", true, false, {
+                    listenerModel: listenerModel
                 });
             }
         }
