@@ -38,6 +38,10 @@ exports.ReelDocument = EditingDocument.specialize({
         value: true
     },
 
+    changeTemplateDispatchingEnabled: {
+        value: true
+    },
+
     _editor: {
         value: null
     },
@@ -1029,6 +1033,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
                     self.undoManager.closeBatch();
 
+                    self._dispatchDidChangeTemplate(destinationTemplate);
                     // Introduce the revised template into the stage
                     if (this._editingController) {
 
@@ -2365,6 +2370,16 @@ exports.ReelDocument = EditingDocument.specialize({
                     template: template,
                     parentNode: parentNode,
                     nextSiblingNode: nextSiblingNode
+                });
+            }
+        }
+    },
+
+    _dispatchDidChangeTemplate: {
+        value: function(template) {
+            if (this.changeTemplateDispatchingEnabled) {
+                this.dispatchEventNamed("didChangeTemplate", true, false, {
+                    template: template
                 });
             }
         }
