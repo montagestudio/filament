@@ -36,12 +36,14 @@ exports.FileCell = Montage.create(Component, {
             if (firstTime) {
                 application.addEventListener("didOpenDocument", this);
 
-                this.element.addEventListener("dragstart", this);
-
                 if (this.fileInfo.isDirectory) {
                     this.element.addEventListener("drop", this, false);
                     this.element.addEventListener("dragenter", this, true);
                     this.element.addEventListener("dragleave", this, true);
+                } else {
+                    //TODO eventually allow downloading directories
+                    //TODO eventually allow moving directories
+                    this.element.addEventListener("dragstart", this);
                 }
             }
         }
