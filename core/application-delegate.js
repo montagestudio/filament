@@ -5,7 +5,8 @@ var Montage = require("montage/core/core").Montage,
     PreviewController = require("core/preview-controller").PreviewController,
     ProjectController = require("core/project-controller").ProjectController,
     ReelDocument = require("core/reel-document").ReelDocument,
-    FilamentService = require("core/filament-service").FilamentService;
+    FilamentService = require("core/filament-service").FilamentService,
+    NodeProxy = require("core/node-proxy").NodeProxy;
 
 var InnerTemplateInspector = require("contextual-inspectors/inner-template/ui/inner-template-inspector.reel").InnerTemplateInspector;
 
@@ -245,6 +246,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
             app.addEventListener("didSave", this);
             app.addEventListener("didChangeObjectProperties", this);
+            app.addEventListener("didChangeObjectProperty", this);
             app.addEventListener("didSetObjectBinding", this);
             app.addEventListener("didCancelObjectBinding", this);
             app.addEventListener("didAddObjectsFromTemplate", this);
@@ -274,6 +276,29 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             var ownerModuleId = ownerProxy ? ownerProxy.exportId : null;
 
             this.previewController.setPreviewObjectProperties(proxy.label, ownerModuleId, event.detail.properties).done();
+        }
+    },
+
+    handleDidChangeObjectProperty: {
+        value: function (event) {
+            var proxy = event.target;
+            var ownerProxy = proxy.editingDocument.editingProxyMap.owner;
+            var ownerModuleId = ownerProxy ? ownerProxy.exportId : null;
+            var value = event.detail.value;
+            var location;
+            var type;
+
+            if (value instanceof NodeProxy) {
+                type = "element";
+                location = this._getNodeLocation(value, false, ownerProxy);
+                value = {
+                    label: location.component.label,
+                    argumentName: location.argumentName,
+                    cssSelector: location.cssSelector
+                };
+            }
+
+            this.previewController.setPreviewObjectProperty(ownerModuleId, proxy.label, event.detail.property, value, type).done();
         }
     },
 

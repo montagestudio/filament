@@ -132,6 +132,16 @@ exports.PreviewController = Target.specialize({
         }
     },
 
+    setPreviewObjectProperty: {
+        value: function(ownerModuleId, label, propertyName, propertyValue, propertyType) {
+            if (typeof this.environmentBridge.setPreviewObjectProperty === "function") {
+                return this.environmentBridge.setPreviewObjectProperty(this._previewId, ownerModuleId, label, propertyName, propertyValue, propertyType);
+            } else {
+                return Promise.resolve(null);
+            }
+        }
+    },
+
     setPreviewObjectBinding: {
         value: function(ownerModuleId, label, binding) {
             if (typeof this.environmentBridge.setPreviewObjectBinding === "function") {
