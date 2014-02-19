@@ -36,6 +36,10 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
         value: ""
     },
 
+    lastSearchText: {
+        value: ""
+    },
+
     filesMap: {
         value: null
     },
@@ -82,7 +86,9 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
         value: function(preserveSearchText) {
             var templateObjects = this.templateObjects;
 
-            if (!preserveSearchText) {
+            if (preserveSearchText) {
+                this.searchText = this.lastSearchText;
+            } else {
                 this.searchText = "";
             }
             this._updateMatchList();
@@ -154,6 +160,10 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
 
     _openSelectedFile: {
         value: function() {
+            if (this.searchText) {
+                this.lastSearchText = this.searchText;
+            }
+
             var file = this.templateObjects.matchList.contentController.selection[0];
 
             if (file) {

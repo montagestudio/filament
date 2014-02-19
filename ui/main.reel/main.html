@@ -92,6 +92,21 @@
                 ]
             },
 
+            "goToFilePreservedKey": {
+                "prototype": "montage/composer/key-composer",
+                "properties": {
+                    "keys": "command+shift+e",
+                    "identifier": "goToFilePreserved",
+                    "component": {"@": "application"}
+                },
+                "listeners": [
+                    {
+                        "type": "keyPress",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
             "extensionsPanelCondition": {
                 "prototype": "montage/ui/condition.reel",
                 "properties": {
