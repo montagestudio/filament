@@ -8,9 +8,6 @@
         "owner": {
             "properties": {
                 "element": {"#": "dependency-cell"}
-            },
-            "bindings": {
-                "performingAction": {"<-": "!!@owner.dependency.performingAction"}
             }
         },
 
@@ -24,34 +21,54 @@
             }
         },
 
-        "dependencyDetails": {
+        "dependencyVersion": {
             "prototype": "montage/ui/text.reel",
             "properties": {
-                "element": {"#": "dependencyDetails"}
+                "element": {"#": "dependencyVersion"}
             },
             "bindings": {
-                "value": {"<-": "@owner.details"}
+                "value": {"<-": "@owner.dependency.versionInstalled"}
             }
         },
 
-        "dependencyUpdate": {
+        "dependencyState": {
             "prototype": "montage/ui/text.reel",
             "properties": {
-                "element": {"#": "dependencyUpdate"},
-                "value": "Update"
+                "element": {"#": "dependencyState"}
             },
             "bindings": {
-                "classList.has('PackageDependencyCell-item-visible')" : { "<-" : "@owner.dependency.update"}
+                "value": {"<-": "@owner.dependency.state.message"}
             }
         },
 
-        "actionSpinner": {
+        "dependencyActionSubstitution": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "dependencyActionSubstitution"}
+            },
+            "bindings": {
+                "switchValue": {"<-": "!!@owner.dependency.isBusy ? 'busy' : 'default'"}
+            }
+        },
+
+        "dependencyActionBusy": {
             "prototype": "../../../../spinner.reel",
             "properties": {
-                "element": {"#": "actionSpinner"}
+                "element": {"#": "dependencyActionBusy"}
             },
             "bindings": {
-                "loading": {"<-": "@owner.performingAction"}
+                "loading": {"<-": "!!@owner.dependency.isBusy"}
+            }
+        },
+
+        "dependencyButtonCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "dependencyButtonCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "!@owner.editingDocument.isDependencyRequired(@owner.dependency.name)"}
             }
         },
 
@@ -62,22 +79,32 @@
             },
             "bindings": {
                 "detail.get('source')": {"<-": "@owner"},
-                "classList.has('hide-component')" : { "<-" : "@owner.performingAction"},
-                "label": {"<-": "@owner.buttonLabel"}
+                "label": {"<-": "!!@owner.dependency.state.acceptInstall ? '+' : '-' " }
             }
         }
+
     }
     </script>
 </head>
 <body>
     <li data-montage-id="dependency-cell" class="PackageDependencyCell" draggable="true">
-        <span data-montage-id="dependencyName" class="PackageDependencyCell-item PackageDependencyCell-item--name"></span>
-        <span data-montage-id="dependencyUpdate" class="PackageDependencyCell-item PackageDependencyCell-item--update"></span>
-        <span data-montage-id="dependencyDetails" class="PackageDependencyCell-item PackageDependencyCell-item--version"></span>
-        <div class="PackageDependencyCell-item ActionSpinner" class="PackageDependencyCell-item--action">
-            <div data-montage-id="actionSpinner"></div>
+        <div class="PackageDependencyCell-details">
+            <span data-montage-id="dependencyName" class="PackageDependencyCell-item PackageDependencyCell-item--name"></span>
+            <span data-montage-id="dependencyVersion" class="PackageDependencyCell-item PackageDependencyCell-item--version"></span>
         </div>
-        <button data-montage-id="dependencyAction" class="PackageDependencyCell-item--action"></button>
+        <div>
+            <span data-montage-id="dependencyState" class="PackageDependencyCell-item PackageDependencyCell-item--state"></span>
+        </div>
+        <div data-montage-id="dependencyActionSubstitution">
+            <div data-arg="busy" class="PackageDependencyCellAction ActionSpinner">
+                <div data-montage-id="dependencyActionBusy"></div>
+            </div>
+            <div data-arg="default">
+                <div data-montage-id="dependencyButtonCondition">
+                    <button data-montage-id="dependencyAction" class="PackageDependencyCellButton"></button>
+                </div>
+            </div>
+        </div>
     </li>
 </body>
 </html>

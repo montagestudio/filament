@@ -1,9 +1,18 @@
 .PackageDependencyCell {
-    padding: 8px 16px;
-    line-height: 28px;
-    border-top: 1px solid hsla(0, 0%, 100%, .5);
     border-bottom: 1px solid hsla(0, 0%, 0%, .06);
+    background-color: hsl(0,0%,96%);
+    justify-content: flex-start;
     display: -webkit-flex;
+    align-items: center;
+    height: 51px;
+}
+
+.PackageDependencyCell-details {
+    margin-left: 10px;
+}
+
+.PackageDependencyCell > div:nth-child(2){
+    margin-left: auto;
 }
 
 .PackageDependencyCell.selected {
@@ -16,30 +25,14 @@
     font-size: 22px;
 }
 
-.PackageDependencyCell-item--update {
-    visibility: hidden;
-}
-
-.PackageDependencyCell-item-visible {
-    visibility: visible;
-}
-
 .PackageDependencyCell:-webkit-drag .PackageDependencyCell-item--version,
-.PackageDependencyCell:-webkit-drag .PackageDependencyCell-item--update,
-.PackageDependencyCell:-webkit-drag .PackageDependencyCell-item--action {
+.PackageDependencyCell:-webkit-drag .PackageDependencyCell-item--state,
+.PackageDependencyCell:-webkit-drag .PackageDependencyCellButton {
     display: none;
 }
 
 .PackageDependencyCell:last-child {
     border-radius: 0 0 6px 6px;
-}
-
-.PackageDependencyCell:nth-child(odd) {
-    background: hsla(0,0%,100%,.8);
-}
-
-.PackageDependencyCell:nth-child(even) {
-    background: hsla(0,0%,100%,.6);
 }
 
 .PackageDependencyCell-item {
@@ -48,18 +41,62 @@
     overflow: hidden;
 }
 
-.PackageDependencyCell.invalid .PackageDependencyCell-item {
-    color: #E73525;
+.PackageDependencyCell-details {
+    display: -webkit-flex;
+    flex-direction: column;
+}
+
+.PackageDependencyCell-item--state {
+    margin-right: 20px;
 }
 
 .PackageDependencyCell-item--name {
     color: hsl(0,0%,30%);
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
-    -webkit-flex: 2;
+    text-transform: capitalize;
 }
 
-.PackageDependencyCell-item--version, .PackageDependencyCell-item--update {
-    text-indent: 8px;
-    -webkit-flex: 1;
+.PackageDependencyCell-item--version {
+    text-indent: 10px;
+    font-style: italic;
+    font-size: 12px;
+    height: 16px;
+    color: hsl(0, 0%, 60%);
+}
+
+.PackageDependencyCellButton.matte-Button {
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 0;
+    color: hsl(0, 0%, 60%);
+    border-radius: 0;
+    border: none;
+    background-color: transparent;
+    -webkit-font-smoothing: none;
+}
+
+.PackageDependencyCellButton.matte-Button:hover {
+    background-color: hsl(0,0%,92%);
+}
+
+.PackageDependencyCellButton.matte-Button:hover:last-child {
+    border-radius: 0 0 6px 0;
+}
+
+.PackageDependencyCellButton.matte-Button:active {
+    background-color: hsla(0, 0%, 82%, 1);
+}
+
+.PackageDependencyCellAction.ActionSpinner {
+    height: 50px;
+    width: 50px;
+    display: -webkit-flex;
+    align-items: center;
+    justify-content: center;
 }

@@ -5,7 +5,6 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
-    Dependency = require("../../../../core/dependency").Dependency,
     MIME_TYPES = require("../../../../core/mime-types");
 
 /**
@@ -114,18 +113,19 @@ exports.PackageDependenciesGroup = Component.specialize(/** @lends PackageDepend
 
             if (availableTypes) {
                 if (availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY)) {
-                    var dependency = JSON.parse(dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY));
+                    var dependencyName = dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_SERIALIZATION_DEPENDENCY),
+                        dependencyType = dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_DEPENDENCY_TYPE),
+                        dependency = this.editingDocument.findDependency(dependencyName, dependencyType);
 
                     if (dependency.type !== this.type) {
-                        //this.editingDocument.switchDependencyType(dependency, this.type).done();
+                        this.editingDocument.switchDependencyType(dependency, this.type).done();
                     }
 
                 } else if (availableTypes.has(MIME_TYPES.PACKAGE_MANAGER_INSTALLATION_DEPENDENCY)) {
                     var module = JSON.parse(dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_INSTALLATION_DEPENDENCY));
 
                     if (module) {
-                        this.editingDocument.performActionDependency(Dependency.INSTALL_DEPENDENCY_ACTION,
-                                new Dependency(module.name, module.version, this.type)).done();
+                        this.editingDocument.installDependency(module.name, module.version, this.type);
                     }
                 }
             }
