@@ -22,6 +22,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._fileChangesHead = { next: null };
             this._lastFileChangeForDocumentMap = new WeakMap();
             this._filesMap = new Map();
+            this._recentDocumentUrls = [];
         }
     },
 
@@ -416,6 +417,22 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+    _recentDocumentUrls: {
+        value: null
+    },
+
+    /**
+     * The list of urls we have opened in within the editor recently
+     * There may or may not be a document currently open or available
+     * for these urls
+     * TODO maintain a maximum length
+     */
+    recentDocumentUrls: {
+        get: function () {
+            return this._recentDocumentUrls;
+        }
+    },
+
     /**
      * Open a document representing the specified fileUrl.
      *
@@ -431,7 +448,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 alreadyOpenedDoc,
                 documentType,
                 editorType,
-                lastDocument = this.currentDocument;
+                lastDocument = this.currentDocument,
+                recentUrlIndex;
 
             if (lastDocument && fileUrl === lastDocument.url) {
                 return Promise.resolve(lastDocument);
@@ -469,6 +487,17 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     url: fileUrl,
                     alreadyOpened: !!alreadyOpenedDoc
                 });
+
+                // Track the urls we've tried to open for history browsing;
+                // we don't necessarily acknowledge opening documents as that can take a while
+                // and can be interrupted, so the list is of urls in the order we asked to open them
+                this.dispatchBeforeOwnPropertyChange("recentDocumentUrls", self.recentDocumentUrls);
+                recentUrlIndex = this._recentDocumentUrls.indexOf(fileUrl);
+                if (recentUrlIndex > -1) {
+                    this._recentDocumentUrls.splice(recentUrlIndex, 1);
+                }
+                this._recentDocumentUrls.unshift(fileUrl);
+                this.dispatchOwnPropertyChange("recentDocumentUrls", self.recentDocumentUrls);
 
                 return this.openUrl(fileUrl).then(function (doc) {
                     self.dispatchEventNamed("didOpenDocument", true, false, {
