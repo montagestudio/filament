@@ -294,29 +294,21 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
      */
     updateObjectBinding: {
         value: function (binding, targetPath, oneway, sourcePath, converter) {
-            var existingBinding,
-                bindingIndex = this.bindings.indexOf(binding),
-                newTargetPropertyBinding;
+            var bindingIndex = this.bindings.indexOf(binding);
 
-            if (bindingIndex > -1) {
-                existingBinding = binding;
-            } else {
+            if (bindingIndex === -1) {
                 throw new Error("Cannot update a binding that's not associated with this proxy.");
             }
 
-            if (targetPath !== binding.targetPath) {
-                newTargetPropertyBinding = true;
-            }
+
+            this._dispatchWillUpdateObjectBinding(binding);
 
             binding.targetPath = targetPath;
             binding.oneway = oneway;
             binding.sourcePath = sourcePath;
             binding.converter = converter;
 
-            if (newTargetPropertyBinding) {
-                this._dispatchDidCancelObjectBinding(binding);
-            }
-            this._dispatchDidSetObjectBinding(binding);
+            this._dispatchDidUpdateObjectBinding(binding);
 
             return binding;
         }
@@ -472,6 +464,26 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         value: function(binding) {
             if (this.bindingChangesDispatchingEnabled) {
                 this.dispatchEventNamed("didCancelObjectBinding", true, false, {
+                    binding: binding
+                });
+            }
+        }
+    },
+
+    _dispatchWillUpdateObjectBinding: {
+        value: function(binding) {
+            if (this.bindingChangesDispatchingEnabled) {
+                this.dispatchEventNamed("willUpdateObjectBinding", true, false, {
+                    binding: binding
+                });
+            }
+        }
+    },
+
+    _dispatchDidUpdateObjectBinding: {
+        value: function(binding) {
+            if (this.bindingChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didUpdateObjectBinding", true, false, {
                     binding: binding
                 });
             }

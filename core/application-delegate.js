@@ -249,6 +249,8 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             app.addEventListener("didChangeObjectProperty", this);
             app.addEventListener("didSetObjectBinding", this);
             app.addEventListener("didCancelObjectBinding", this);
+            app.addEventListener("willUpdateObjectBinding", this);
+            app.addEventListener("didUpdateObjectBinding", this);
             app.addEventListener("didAddObjectEventListener", this);
             app.addEventListener("didRemoveObjectEventListener", this);
             app.addEventListener("willUpdateObjectEventListener", this);
@@ -344,6 +346,18 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             this.previewController.deletePreviewObjectBinding(
                 ownerProxy.exportId, proxy.label, event.detail.binding.targetPath)
             .done();
+        }
+    },
+
+    handleWillUpdateObjectBinding: {
+        value: function (event) {
+            this.handleDidCancelObjectBinding(event);
+        }
+    },
+
+    handleDidUpdateObjectBinding: {
+        value: function (event) {
+            this.handleDidSetObjectBinding(event);
         }
     },
 
