@@ -1,6 +1,7 @@
 var Target = require("montage/core/target").Target,
     Promise = require("montage/core/promise").Promise,
-    NodeProxy = require("core/node-proxy").NodeProxy;
+    NodeProxy = require("core/node-proxy").NodeProxy,
+    ReelProxy = require("core/reel-proxy").ReelProxy;
 
 exports.PreviewController = Target.specialize({
 
@@ -295,6 +296,11 @@ exports.PreviewController = Target.specialize({
                     label: location.component.label,
                     argumentName: location.argumentName,
                     cssSelector: location.cssSelector
+                };
+            } else if (value instanceof ReelProxy) {
+                type = "object";
+                value = {
+                    label: value.label
                 };
             }
 
