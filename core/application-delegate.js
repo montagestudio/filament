@@ -254,6 +254,9 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             app.addEventListener("willUpdateObjectEventListener", this);
             app.addEventListener("didUpdateObjectEventListener", this);
             app.addEventListener("didAddObjectsFromTemplate", this);
+            app.addEventListener("didInsertBeforeNode", this);
+            app.addEventListener("didInsertAfterNode", this);
+            app.addEventListener("didAppendNode", this);
             app.addEventListener("didSetAttribute", this);
             app.addEventListener("didChangeTemplate", this);
 
@@ -477,17 +480,31 @@ exports.ApplicationDelegate = Montage.create(Montage, {
         value: function(template, document, parentNode, nextSiblingNode) {
             var templateFragment;
             var ownerProxy = document.editingProxyMap.owner;
-            var node;
             var nodeCount;
-            var how;
-            var parentsChildren;
-            var indexInParent;
-            var isContainerNode;
-            var location;
 
             if (!ownerProxy) {
                 return Promise.resolve();
             }
+
+            nodeCount = template.document.body.children.length;
+            templateFragment = {
+                serialization: template.objectsString,
+                html: template.document.body.innerHTML
+            };
+
+            return this._addTemplateFragmentToPreview(ownerProxy, parentNode,
+                nextSiblingNode, templateFragment, nodeCount);
+        }
+    },
+
+    _addTemplateFragmentToPreview: {
+        value: function(ownerProxy, parentNode, nextSiblingNode, templateFragment, nodeCount) {
+            var parentsChildren,
+                indexInParent,
+                node,
+                isContainerNode,
+                how,
+                location;
 
             if (nextSiblingNode) {
                 // If the template has elements then they were already added to
@@ -496,7 +513,6 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                 // reference to the first node of the added template because
                 // it is now in the same position that nextSiblingNode was
                 // before the template was added.
-                nodeCount = template.document.body.children.length;
                 if (nodeCount > 0) {
                     parentsChildren = nextSiblingNode.parentNode.children;
                     indexInParent = parentsChildren.indexOf(nextSiblingNode);
@@ -518,7 +534,6 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                 } else {
                     // Use the node that was in the position of the last
                     // node before the contents of the template were added.
-                    nodeCount = template.document.body.children.length;
                     node = parentsChildren[parentsChildren.length - 1 - nodeCount];
                     isContainerNode = false;
                 }
@@ -530,11 +545,6 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             }
 
             location = this._getNodeLocation(node, isContainerNode, ownerProxy);
-
-            templateFragment = {
-                serialization: template.objectsString,
-                html: template.document.body.innerHTML
-            };
 
             return this.previewController.addTemplateFragment(
                 ownerProxy.exportId,
@@ -605,6 +615,60 @@ exports.ApplicationDelegate = Montage.create(Montage, {
     handleDidUpdateObjectEventListener: {
         value: function(event) {
             this.handleDidAddObjectEventListener(event);
+        }
+    },
+
+    handleDidInsertBeforeNode: {
+        value: function(event) {
+            var document = event.target.editingDocument;
+            var detail = event.detail;
+            var ownerProxy = document.editingProxyMap.owner;
+            var nodeCount = 1;
+            var templateFragment;
+
+            templateFragment = {
+                html: detail.nodeProxy._templateNode.outerHTML
+            };
+
+            return this._addTemplateFragmentToPreview(ownerProxy,
+                detail.parentNodeProxy, detail.nextSiblingProxy, templateFragment,
+                nodeCount);
+        }
+    },
+
+    handleDidInsertAfterNode: {
+        value: function(event) {
+            var document = event.target.editingDocument;
+            var detail = event.detail;
+            var ownerProxy = document.editingProxyMap.owner;
+            var nodeCount = 1;
+            var templateFragment;
+
+            templateFragment = {
+                html: detail.nodeProxy._templateNode.outerHTML
+            };
+            return this._addTemplateFragmentToPreview(ownerProxy,
+                detail.previousSiblingProxy.parentNode, null, templateFragment,
+                nodeCount);
+        }
+    },
+
+
+    handleDidAppendNode: {
+        value: function(event) {
+            var document = event.target.editingDocument;
+            var detail = event.detail;
+            var ownerProxy = document.editingProxyMap.owner;
+            var nodeCount = 1;
+            var templateFragment;
+
+            templateFragment = {
+                html: detail.nodeProxy._templateNode.outerHTML
+            };
+
+            return this._addTemplateFragmentToPreview(ownerProxy,
+                detail.parentNodeProxy, detail.nextSiblingProxy, templateFragment,
+                nodeCount);
         }
     }
 });
