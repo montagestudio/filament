@@ -3,6 +3,7 @@ var Montage = require("montage").Montage,
     URL = require("core/mini-url");
 
 var DocumentResources = Montage.specialize({
+
     _SCRIPT_TIMEOUT: {value: 5000},
     _document: {value: null},
     _resources: {value: null},
@@ -21,7 +22,30 @@ var DocumentResources = Montage.specialize({
             this.clear();
             this._document = _document;
 
+            this._populateWithDocument(_document);
+
             return this;
+        }
+    },
+
+    _populateWithDocument: {
+        value: function(_document) {
+            var scripts = _document.querySelectorAll("script"),
+                forEach = Array.prototype.forEach;
+
+            forEach.call(scripts, function(script) {
+                if (script.src) {
+                    this._addResource(this.normalizeUrl(script.src));
+                }
+            }, this);
+
+            var links = _document.querySelectorAll("link");
+
+            forEach.call(links, function(link) {
+                if (link.rel === "stylesheet") {
+                    this._addResource(this.normalizeUrl(link.href));
+                }
+            }, this);
         }
     },
 
@@ -279,7 +303,9 @@ var DocumentResources = Montage.specialize({
             return this._expectedStyles.length === 0;
         }
     }
+
 }, {
+
     getInstanceForDocument: {
         value: function(_document) {
             var documentResources = _document.__montage_resources__;
@@ -291,6 +317,7 @@ var DocumentResources = Montage.specialize({
             return documentResources;
         }
     }
+
 });
 
 exports.DocumentResources = DocumentResources;
