@@ -1,4 +1,4 @@
-.ContextualMenu {
+.ContextualMenu-menu {
     border-radius: 6px;
     border-top: 1px solid hsla(0, 100%, 100%, 0.12);
     border-bottom: 1px solid hsl(0, 0%, 28%);
@@ -39,10 +39,6 @@
     font-size: inherit;
     color: hsl(0, 0%, 70%);
     background: none;
-    background-repeat: no-repeat;
-    padding-left: 18px; /* Same as indentValue of tree.reel/indent.js */
-    background-size: 14px;
-    background-position: 2px center;
 }
 
 .ContextualMenu-list button:hover {

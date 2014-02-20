@@ -9,6 +9,14 @@
             "properties": {
                 "element": {"#": "contextualMenu"}
             }
+        },  
+
+        "contextualMenuOverlay": {
+            "prototype": "montage/ui/overlay.reel",
+                "properties": {
+                    "element": {"#": "contextualMenuOverlay"},
+                    "delegate": {"@": "owner"}
+                }
         },
 
         "deleteButton": {
@@ -41,14 +49,18 @@
 </head>
 <body>
     <div data-montage-id="contextualMenu" class="ContextualMenu">
-        <ul class="ContextualMenu-list">
-            <li class="ContextualMenu-list-item">
-                <button data-montage-id="createFolderButton">New folder&hellip;</button>
-            </li>
-            <li class="ContextualMenu-list-item">
-                <button data-montage-id="deleteButton">Delete</button>
-            </li>
-        </ul>
+        <div data-montage-id="contextualMenuOverlay">
+            <div class="ContextualMenu-menu">
+                <ul class="ContextualMenu-list">
+                    <li class="ContextualMenu-list-item">
+                        <button data-montage-id="createFolderButton">New folder&hellip;</button>
+                    </li>
+                    <li class="ContextualMenu-list-item">
+                        <button data-montage-id="deleteButton">Delete</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 </body>
 </html>

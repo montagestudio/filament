@@ -27,25 +27,16 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
         value: null
     },
 
-    _fileCell: {
+    selectedFileCell: {
         value: null
     },
 
-    fileCell: {
-        get: function () {
-            return this._fileCell;
-        },
-        set: function (value) {
-            if (this._fileCell === value) { return; }
-
-            if (this._fileCell) {
-                this._fileCell.classList.remove("contextualMenu-selection"); // FIXME: THIS IS GROSS, MUCH GROSS
-            }
-            this._fileCell = value;
-            if (this._fileCell) {
-                this._fileCell.classList.add("contextualMenu-selection"); // FIXME: THIS IS GROSS, WOW SUCH GROSS
-            }
-         }
+    show: {
+        value: function (fileInfo, position) {
+            this.fileInfo = fileInfo;
+            this.position = position;
+            this.templateObjects.contextualMenuOverlay.show();
+        }
     },
 
     enterDocument: {
@@ -67,7 +58,7 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
 
     shouldDismissOverlay: {
         value: function (overlay, target, evt) {
-            this.fileCell = null;
+            this.fileInfo = null;
             return true;
         }
     },
@@ -88,16 +79,16 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
             if (value) {
                 this.projectController.environmentBridge.makeTree(path + value).done();
             }
-            this.fileCell = null;
-            this.dispatchEventNamed("dismiss", true, false);
+            this.fileInfo = null;
+            this.templateObjects.contextualMenuOverlay.hide();
         }
     },
 
     handleDeleteButtonAction: {
         value: function (evt) {
             this.projectController.environmentBridge.removeTree(this.fileInfo.fileUrl).done();
-            this.fileCell = null;
-            this.dispatchEventNamed("dismiss", true, false);
+            this.fileInfo = null;
+            this.templateObjects.contextualMenuOverlay.hide();
         }
     }
 

@@ -55,12 +55,7 @@ exports.FileCell = Montage.create(Component, {
         value: function (evt) {
             evt.stop();
             evt.stopImmediatePropagation();
-
-            // FIXME: I do not like the API that are those next 4 lines
-            this.ownerComponent.templateObjects.contextualMenu.fileCell = this;
-            this.ownerComponent.templateObjects.contextualMenu.fileInfo = this.fileInfo;
-            this.ownerComponent.templateObjects.contextualMenu.position = {top: evt.clientY, left: evt.clientX};
-            this.ownerComponent.templateObjects.contextualMenuOverlay.show();
+            this.ownerComponent.templateObjects.contextualMenu.show(this.fileInfo, {top: evt.clientY, left: evt.clientX});
         }
     },
 

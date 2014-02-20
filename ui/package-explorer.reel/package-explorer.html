@@ -86,7 +86,8 @@
                 "bindings": {
                     "fileInfo": {"<-": "@fileCell.parentComponent.iteration.content"},
                     "iteration": {"<-": "@fileCell.parentComponent.iteration"},
-                    "projectController": {"<-": "@owner.projectController"}
+                    "projectController": {"<-": "@owner.projectController"},
+                    "classList.has('contextualMenu-selection')": {"<-": "@owner.templateObjects.contextualMenu.fileInfo == fileInfo"}
                 }
             },
 
@@ -122,14 +123,6 @@
                 ]
             },
 
-            "contextualMenuOverlay": {
-                "prototype": "montage/ui/overlay.reel",
-                "properties": {
-                    "element": {"#": "contextualMenuOverlay"},
-                    "delegate": {"@": "contextualMenu"}
-                }
-            },
-
             "contextualMenu": {
                 "prototype": "./contextual-menu.reel",
                 "properties": {
@@ -161,9 +154,7 @@
             <a data-montage-id="previewLink" class="PackageExplorer-previewButton" title="Preview"></a>
         </header>
         <section>
-            <div data-montage-id="contextualMenuOverlay">
-                <div data-montage-id="contextualMenu"></div>
-            </div>
+            <div data-montage-id="contextualMenu"></div>
         </section>
         <div class="Shadow Shadow--top"></div>
         <div data-montage-id="fileList" class="PackageExplorer-list">
