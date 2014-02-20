@@ -11,16 +11,6 @@
             }
         },
 
-        "filename": {
-            "prototype": "montage/ui/text.reel",
-            "properties": {
-                "element": {"#": "filename"}
-            },
-            "bindings": {
-                "value": {"<-": "@owner.fileInfo.name"}
-            }
-        },
-
         "deleteButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {
@@ -53,10 +43,10 @@
     <div data-montage-id="contextualMenu" class="ContextualMenu">
         <ul class="ContextualMenu-list">
             <li class="ContextualMenu-list-item">
-                <button data-montage-id="deleteButton">Delete <span data-montage-id="filename"></span></button>
+                <button data-montage-id="createFolderButton">New folder&hellip;</button>
             </li>
             <li class="ContextualMenu-list-item">
-                <button data-montage-id="createFolderButton">Create a new folder here</button>
+                <button data-montage-id="deleteButton">Delete</button>
             </li>
         </ul>
     </div>
