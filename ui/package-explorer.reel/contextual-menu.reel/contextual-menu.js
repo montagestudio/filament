@@ -74,7 +74,7 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
             var file = this.fileInfo,
                 filename = file.name,
                 fullPath = file.fileUrl,
-                value = prompt("Folder name:"), // FIXME: replace prompt with overlay
+                value = window.prompt("Folder name:"), // FIXME: replace prompt with overlay
                 path = (file.isDirectory)? fullPath : this._getParentPath(fullPath, filename);
             if (value) {
                 this.projectController.environmentBridge.makeTree(path + value).done();
