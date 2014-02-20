@@ -131,9 +131,12 @@
             },
 
             "contextualMenu": {
-                "prototype": "ui/contextual-menu.reel",
+                "prototype": "./contextual-menu.reel",
                 "properties": {
                     "element": {"#": "contextualMenu"}
+                },
+                "bindings": {
+                    "projectController": {"<-": "@owner.projectController"}
                 },
                 "listeners": [
                     {

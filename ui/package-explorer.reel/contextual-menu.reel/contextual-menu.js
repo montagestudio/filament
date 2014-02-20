@@ -15,7 +15,15 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
         }
     },
 
+    fileInfo: {
+        value: null
+    },
+
     position: {
+        value: null
+    },
+
+    projectController: {
         value: null
     },
 
@@ -46,13 +54,15 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
 
     handleCreateFolderButtonAction: {
         value: function (evt) {
-            // FIXME: Do something
+            // FIXME: remove prompt
+            var val = prompt("Directory name (" + this.fileInfo.filename + "):");
+            this.projectController.environmentBridge.makeTree(this.fileInfo.fileUrl + val).done();
         }
     },
 
     handleDeleteButtonAction: {
         value: function (evt) {
-            // FIXME: Do something
+            this.projectController.environmentBridge.removeTree(this.fileInfo.fileUrl).done();
         }
     }
 
