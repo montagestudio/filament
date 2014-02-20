@@ -244,6 +244,17 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                     // don't need to wait for this to complete
                     self.watchForFileChanges();
+
+                    //likewise while it's nice to know the type, that can come in shortly,
+                    // we can rely on heuristics until the mimetype is known
+                    // TODO if it's fast enough in practice though we might want to wait for this
+                    var immediateChildren = self.files.children;
+                    immediateChildren.forEach(function (fd) {
+                        self.environmentBridge.detectMimeTypeAtUrl(fd.fileUrl).then(function (mimeType) {
+                            fd.mimeType = mimeType;
+                        }).done();
+                    });
+
                     // need these before getting the library items
                     return self.loadExtensionsFromDependencies();
                 }).then(function () {

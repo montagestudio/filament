@@ -23,6 +23,8 @@ exports.FileCell = Montage.create(Component, {
             this.super();
             this.addPathChangeListener("iteration", this);
             this.addPathChangeListener("fileInfo", this);
+            this.addPathChangeListener("fileInfo.mimeType", this, "handleFileInfoChange");
+            this.addPathChangeListener("fileInfo.fileUrl", this, "handleFileInfoChange");
             this.addPathChangeListener("iteration.expanded", this, "handleExpandedChange");
 
             this.activeUploads = [];
@@ -38,6 +40,10 @@ exports.FileCell = Montage.create(Component, {
                     this.element.addEventListener("drop", this, false);
                     this.element.addEventListener("dragenter", this, true);
                     this.element.addEventListener("dragleave", this, true);
+                } else {
+                    //TODO eventually allow downloading directories
+                    //TODO eventually allow moving directories
+                    this.element.addEventListener("dragstart", this);
                 }
             }
         }
@@ -79,17 +85,31 @@ exports.FileCell = Montage.create(Component, {
 
     draw: {
         value: function() {
-            if (this._hoverCounter > 0) {
-                this.element.classList.add("FileCell--dragHover");
+            this.super();
+
+            var fileInfo = this.fileInfo,
+                element = this.element;
+
+            if (fileInfo && fileInfo.mimeType && fileInfo.name && fileInfo.fileUrl) {
+                element.setAttribute("draggable", true);
+                element.dataset.downloadurl = this.fileInfo.mimeType + ":" + this.fileInfo.name + ":" + this.fileInfo.fileUrl;
             } else {
-                this.element.classList.remove("FileCell--dragHover");
+                element.removeAttribute("draggable");
+                delete this.element.dataset.downloadurl;
+            }
+
+            if (this._hoverCounter > 0) {
+                element.classList.add("FileCell--dragHover");
+            } else {
+                element.classList.remove("FileCell--dragHover");
             }
 
             if (this.isUploading) {
-                this.element.classList.add("FileCell--uploading");
+                element.classList.add("FileCell--uploading");
             } else {
-                this.element.classList.remove("FileCell--uploading");
+                element.classList.remove("FileCell--uploading");
             }
+
         }
     },
 
@@ -250,11 +270,24 @@ exports.FileCell = Montage.create(Component, {
         }
     },
 
+    handleDragstart: {
+        value: function (evt) {
+            var fileDetails = this.element.dataset.downloadurl;
+            evt.dataTransfer.setData("DownloadURL", fileDetails);
+        }
+    },
+
     handlePathChange: {
         value: function () {
             if (this.fileInfo && this.iteration && this.fileInfo.root) {
                 this.iteration.expanded = true;
             }
+        }
+    },
+
+    handleFileInfoChange: {
+        value: function () {
+            this.needsDraw = true;
         }
     },
 
@@ -265,6 +298,14 @@ exports.FileCell = Montage.create(Component, {
                 this.projectController.filesAtUrl(this.fileInfo.fileUrl).then(function (fileDescriptors) {
                     self.fileInfo.expanded = true;
                     self.fileInfo.children.addEach(fileDescriptors);
+
+                    //TODO not reach into the projectController to do this; formalize when we get the mimetypes
+                    fileDescriptors.forEach(function (fd) {
+                        self.projectController.environmentBridge.detectMimeTypeAtUrl(fd.fileUrl).then(function (mimeType) {
+                            fd.mimeType = mimeType;
+                        }).done();
+                    });
+
                     application.dispatchEventNamed("treeExpanded", true, true);
                 }).done();
             }
