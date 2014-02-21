@@ -185,11 +185,12 @@ var DependencyManager = Montage.specialize({
                 request = this._createRequest(name);
 
             if (request && dependency) {
+                dependencyState.pendingRemoval = true;
+
                 if (!dependency.missing) {
                     var operation = this._createOperation(request, DependencyManager.ACTIONS.UNINSTALL);
 
                     this._pendingOperations[name] = operation;
-                    dependencyState.pendingRemoval = true;
                     packageDocument._changeCount++;
 
                 } else if (dependency.missing && this._pendingOperations[name]) {
@@ -203,8 +204,6 @@ var DependencyManager = Montage.specialize({
                     if (dependencyState.canBeMissing && packageNotInstalled) {
                         dependencyState.pendingRemoval = false;
                         dependencyState.acceptInstall = true;
-                    } else {
-                        dependencyState.pendingRemoval = true;
                     }
 
                     packageDocument._changeCount--;
