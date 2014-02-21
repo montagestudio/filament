@@ -39,6 +39,13 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
         }
     },
 
+    hide: {
+        value: function () {
+            this.fileInfo = null;
+            this.templateObjects.contextualMenuOverlay.hide();
+        }
+    },
+
     enterDocument: {
         value: function (firstTime) {
         }
@@ -79,16 +86,14 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
             if (value) {
                 this.projectController.environmentBridge.makeTree(path + value).done();
             }
-            this.fileInfo = null;
-            this.templateObjects.contextualMenuOverlay.hide();
+            this.hide();
         }
     },
 
     handleDeleteButtonAction: {
         value: function (evt) {
             this.projectController.environmentBridge.removeTree(this.fileInfo.fileUrl).done();
-            this.fileInfo = null;
-            this.templateObjects.contextualMenuOverlay.hide();
+            this.hide();
         }
     }
 
