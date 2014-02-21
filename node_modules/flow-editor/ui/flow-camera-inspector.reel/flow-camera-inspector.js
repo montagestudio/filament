@@ -39,7 +39,9 @@ exports.FlowCameraInspector = Montage.create(Component, /** @lends module:"ui/fl
             return this._x;
         },
         set: function (value) {
-            if (!this.camera) return 0;
+            if (!this.camera) {
+                return 0;
+            }
 
             var dX = value - this.camera.children[0]._data.x;
 
@@ -59,7 +61,9 @@ exports.FlowCameraInspector = Montage.create(Component, /** @lends module:"ui/fl
             return this._y;
         },
         set: function (value) {
-            if (!this.camera) return 0;
+            if (!this.camera) {
+                return 0;
+            }
 
             var dY = value - this.camera.children[0]._data.y;
 
@@ -79,7 +83,9 @@ exports.FlowCameraInspector = Montage.create(Component, /** @lends module:"ui/fl
             return this._z;
         },
         set: function (value) {
-            if (!this.camera) return 0;
+            if (!this.camera) {
+                return 0;
+            }
 
             var dZ = value - this.camera.children[0]._data.z;
 

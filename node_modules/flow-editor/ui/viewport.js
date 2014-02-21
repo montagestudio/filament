@@ -13,7 +13,7 @@ exports.Viewport = Montage.create(Component, {
         },
         set: function (value) {
             var self = this,
-                updated = function (event) {self.handleSceneUpdated(event)};
+                updated = function (event) {self.handleSceneUpdated(event);};
 
             this._scene = value;
             if (this._scene) {

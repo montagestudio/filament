@@ -216,6 +216,8 @@ exports.FlowTree = Montage.create(Component, {
 
     draw: {
         value: function () {
+            var child;
+
             this.element.style.display = this._isVisible ? "block" : "none";
             if (this._windowPositionX > this._bodyWidth - this._width) {
                 this._windowPositionX = this._bodyWidth - this._width;

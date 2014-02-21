@@ -274,7 +274,7 @@ var CanvasShape = exports.CanvasShape = Montage.create(Target, {
                     zIndex: children[i].zIndex,
                     isSelected: children[i].isSelected,
                     index: i
-                }
+                };
             }
             result.sort(sortingMethod);
             return result;

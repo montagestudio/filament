@@ -10,7 +10,7 @@
         "montage": "git+ssh://git@github.com:montagejs/montage.git#0e9886204f484ee0f6360e6a873d55ac446f9f80",
         "matte": "git+ssh://git@github.com:montagejs/matte.git#30ab3c59fa496186a758a2fe7b287b7d5e73a4f2",
         "palette": "git+ssh://git@github.com:declarativ/palette.git#abca3fe88e2d4a59f1ee7dcc8beb04029a7fb7df",
-        "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#v0.14.0",
+        "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#241ae338db93fd62ac6839304bc803a7e1772a85",
         "minit": "git+ssh://git@github.com:montagejs/minit.git#44d9db21972f93e036d1bfd6ef6eb17bea2d4922",
         "mousse": "0.3.0",
         "q": "0.9.7",

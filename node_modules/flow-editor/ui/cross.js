@@ -99,8 +99,8 @@ exports.CanvasCross = Montage.create(CanvasShape, {
             this._context.beginPath();
             this._context.strokeStyle =
             this._context.fillStyle = this.xColor;
-            this._context.moveTo(26 + vector.x * .2, 26 + vector.y * .2);
-            this._context.lineTo(26 + vector.x * .8, 26 + vector.y * .8);
+            this._context.moveTo(26 + vector.x * 0.2, 26 + vector.y * 0.2);
+            this._context.lineTo(26 + vector.x * 0.8, 26 + vector.y * 0.8);
             this._context.stroke();
             this._context.fillText("X", 23 + vector.x, 29 + vector.y);
 
@@ -108,8 +108,8 @@ exports.CanvasCross = Montage.create(CanvasShape, {
             this._context.beginPath();
             this._context.strokeStyle =
             this._context.fillStyle = this.yColor;
-            this._context.moveTo(26 + vector.x * .2, 26 + vector.y * .2);
-            this._context.lineTo(26 + vector.x * .8, 26 + vector.y * .8);
+            this._context.moveTo(26 + vector.x * 0.2, 26 + vector.y * 0.2);
+            this._context.lineTo(26 + vector.x * 0.8, 26 + vector.y * 0.8);
             this._context.stroke();
             this._context.fillText("Y", 23 + vector.x, 29 + vector.y);
 
@@ -117,8 +117,8 @@ exports.CanvasCross = Montage.create(CanvasShape, {
             this._context.beginPath();
             this._context.strokeStyle =
             this._context.fillStyle = this.zColor;
-            this._context.moveTo(26 + vector.x * .2, 26 + vector.y * .2);
-            this._context.lineTo(26 + vector.x * .8, 26 + vector.y * .8);
+            this._context.moveTo(26 + vector.x * 0.2, 26 + vector.y * 0.2);
+            this._context.lineTo(26 + vector.x * 0.8, 26 + vector.y * 0.8);
             this._context.stroke();
             this._context.fillText("Z", 23 + vector.x, 29 + vector.y);
             this._context.restore();

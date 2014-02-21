@@ -39,7 +39,9 @@ exports.FlowSplineInspector = Montage.create(Component, /** @lends module:"ui/fl
             return this._x;
         },
         set: function (value) {
-            if (!this.spline) return 0;
+            if (!this.spline) {
+                return 0;
+            }
 
             var dX = value - this.spline.boundingBoxCorner.x;
 
@@ -59,7 +61,9 @@ exports.FlowSplineInspector = Montage.create(Component, /** @lends module:"ui/fl
             return this._y;
         },
         set: function (value) {
-            if (!this.spline) return 0;
+            if (!this.spline) {
+                return 0;
+            }
 
             var dY = value - this.spline.boundingBoxCorner.y;
 
@@ -79,7 +83,9 @@ exports.FlowSplineInspector = Montage.create(Component, /** @lends module:"ui/fl
             return this._z;
         },
         set: function (value) {
-            if (!this.spline) return 0;
+            if (!this.spline) {
+                return 0;
+            }
 
             var dZ = value - this.spline.boundingBoxCorner.z;
 

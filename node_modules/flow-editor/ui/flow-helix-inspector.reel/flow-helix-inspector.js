@@ -37,7 +37,9 @@ exports.FlowHelixInspector = Montage.create(Component, {
             return this._x;
         },
         set: function (value) {
-            if (!this._helix) return 0;
+            if (!this._helix) {
+                return 0;
+            }
 
             var dX = value - this._helix._data.x;
 
@@ -57,7 +59,9 @@ exports.FlowHelixInspector = Montage.create(Component, {
             return this._y;
         },
         set: function (value) {
-            if (!this._helix) return 0;
+            if (!this._helix) {
+                return 0;
+            }
 
             var dY = value - this._helix._data.y;
 
@@ -77,7 +81,9 @@ exports.FlowHelixInspector = Montage.create(Component, {
             return this._z;
         },
         set: function (value) {
-            if (!this._helix) return 0;
+            if (!this._helix) {
+                return 0;
+            }
 
             var dZ = value - this._helix._data.z;
 

@@ -113,7 +113,8 @@ exports.Editor = Montage.create(Component, {
                 self = this,
                 ids = {},
                 idHash = {},
-                splineExists;
+                splineExists,
+                updated;
 
             if (metadata) {
                 if (metadata.flowEditorVersion <= this.flowEditorVersion) {
@@ -136,9 +137,9 @@ exports.Editor = Montage.create(Component, {
                             }
                         }
                     }
-                } else {
-                    // Could not parse metadata from newer versions of Flow Editor
                 }
+                // else, Could not parse metadata from newer versions of Flow Editor
+
             }
             if (this.viewport.scene) {
                 canvasGrid = this.viewport.scene;
@@ -374,8 +375,8 @@ exports.Editor = Montage.create(Component, {
                 }
             }
             if (!this.viewport.scene) {
-                var self = this,
-                    updated = function (event) {self.handleSceneUpdated(event)};
+                self = this;
+                updated = function (event) {self.handleSceneUpdated(event);};
 
                 this.viewport.scene = canvasGrid;
                 this.viewport.scene._data.addEventListener("vectorChange", updated, false);

@@ -39,7 +39,9 @@ exports.FlowVector3Inspector = Montage.create(Component, /** @lends module:"ui/f
             return this._x;
         },
         set: function (value) {
-            if (!this.vector) return 0;
+            if (!this.vector) {
+                return 0;
+            }
 
             var dX = value - this.vector._data.x;
 
@@ -59,7 +61,9 @@ exports.FlowVector3Inspector = Montage.create(Component, /** @lends module:"ui/f
             return this._y;
         },
         set: function (value) {
-            if (!this.vector) return 0;
+            if (!this.vector) {
+                return 0;
+            }
 
             var dY = value - this.vector._data.y;
 
@@ -79,7 +83,9 @@ exports.FlowVector3Inspector = Montage.create(Component, /** @lends module:"ui/f
             return this._z;
         },
         set: function (value) {
-            if (!this.vector) return 0;
+            if (!this.vector) {
+                return 0;
+            }
 
             var dZ = value - this.vector._data.z;
 

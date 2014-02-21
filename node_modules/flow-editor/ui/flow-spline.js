@@ -4,7 +4,7 @@ var Montage = require("montage").Montage,
     BezierCurve = require("ui/pen-tool-math").CubicBezierCurve,
     BezierSpline = require("ui/pen-tool-math").BezierSpline,
     CanvasVector3 = require("ui/canvas-vector3").CanvasVector3,
-    FlowSplineHandlers = require("ui/flow-spline-handlers").FlowSplineHandlers
+    FlowSplineHandlers = require("ui/flow-spline-handlers").FlowSplineHandlers,
     CanvasFlowSplineHandlers = require("ui/flow-spline-handlers").CanvasFlowSplineHandlers;
 
 exports.FlowSpline = Montage.create(BezierSpline, {
@@ -206,7 +206,8 @@ exports.CanvasFlowSpline = Montage.create(CanvasShape, {
         value: function () {
             var curve,
                 controlPoint,
-                i, j;
+                i, j,
+                knot;
 
             this.children = [];
             this._data.reverse();

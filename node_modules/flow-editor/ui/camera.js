@@ -195,11 +195,11 @@ exports.CanvasCamera = Montage.create(CanvasShape, {
             if (this.cameraPosition) {
                 var tPos = Vector3.create().initWithCoordinates(this.cameraPosition).transformMatrix3d(transformMatrix),
                     tFocus = Vector3.create().initWithCoordinates(this.cameraTargetPoint).transformMatrix3d(transformMatrix),
-                    angle = ((this.cameraFov * .5) * Math.PI * 2) / 360,
+                    angle = ((this.cameraFov * 0.5) * Math.PI * 2) / 360,
                     x, y, z,
                     line = [],
                     tmp,
-                    scale = .2,
+                    scale = 0.2,
                     indices = [0, 1, 2, 4, 5, 6, 8, 9, 10],
                     i = 0;
 
@@ -220,33 +220,33 @@ exports.CanvasCamera = Montage.create(CanvasShape, {
                 this._context.strokeStyle = this.isSelected ? this.selectedColor : this.color;
                 this._context.fillStyle = this.isSelected ? this.selectedColor : this.color;
                 this._context.beginPath();
-                this._context.lineWidth = .5;
+                this._context.lineWidth = 0.5;
                 for (i = 0; i < 4; i++) {
                     line[i] = Vector3.create().initWithCoordinates(line[i]).transformMatrix3d(transformMatrix);
-                    this._context.moveTo(tPos.x + .5, tPos.y + .5);
-                    this._context.lineTo(line[i].x + .5, line[i].y + .5);
+                    this._context.moveTo(tPos.x + 0.5, tPos.y + 0.5);
+                    this._context.lineTo(line[i].x + 0.5, line[i].y + 0.5);
                     this._cameraSegments.push([tPos.x, tPos.y, line[i].x, line[i].y]);
                 }
                 this._context.stroke();
-                this._context.globalAlpha = .4;
+                this._context.globalAlpha = 0.4;
                 for (i = 4; i < 8; i++) {
                     line[i] = Vector3.create().initWithCoordinates(line[i]).transformMatrix3d(transformMatrix);
-                    this._context.moveTo(tPos.x + .5, tPos.y + .5);
-                    this._context.lineTo(line[i].x + .5, line[i].y + .5);
+                    this._context.moveTo(tPos.x + 0.5, tPos.y + 0.5);
+                    this._context.lineTo(line[i].x + 0.5, line[i].y + 0.5);
                 }
                 this._context.stroke();
                 this._context.globalAlpha = 1;
                 this._context.beginPath();
                 this._context.lineWidth = 1;
                 if (this.isSelected) {
-                    this._context.moveTo(tPos.x + .5, tPos.y + .5);
-                    this._context.lineTo(tFocus.x + .5, tFocus.y + .5);
+                    this._context.moveTo(tPos.x + 0.5, tPos.y + 0.5);
+                    this._context.lineTo(tFocus.x + 0.5, tFocus.y + 0.5);
                     this._cameraSegments.push([tPos.x, tPos.y, tFocus.x, tFocus.y]);
                 }
                 for (i = 0; i < 4; i++) {
-                    this._context.moveTo(tPos.x + .5, tPos.y + .5);
-                    this._context.lineTo(line[i].x + .5, line[i].y + .5);
-                    this._context.lineTo(line[(i + 1) % 4].x + .5, line[(i + 1) % 4].y + .5);
+                    this._context.moveTo(tPos.x + 0.5, tPos.y + 0.5);
+                    this._context.lineTo(line[i].x + 0.5, line[i].y + 0.5);
+                    this._context.lineTo(line[(i + 1) % 4].x + 0.5, line[(i + 1) % 4].y + 0.5);
                     this._cameraSegments.push([line[i].x, line[i].y, line[(i + 1) % 4].x, line[(i + 1) % 4].y]);
                 }
                 this._context.stroke();
@@ -260,11 +260,11 @@ exports.CanvasCamera = Montage.create(CanvasShape, {
             if (this.cameraPosition) {
                 var tPos = Vector3.create().initWithCoordinates(this.cameraPosition).transformMatrix3d(transformMatrix),
                     tFocus = Vector3.create().initWithCoordinates(this.cameraTargetPoint).transformMatrix3d(transformMatrix),
-                    angle = ((this.cameraFov * .5) * Math.PI * 2) / 360,
+                    angle = ((this.cameraFov * 0.5) * Math.PI * 2) / 360,
                     x, y, z,
                     line = [],
                     tmp,
-                    scale = .2,
+                    scale = 0.2,
                     indices = [0, 1, 2, 4, 5, 6, 8, 9, 10],
                     i = 0;
 

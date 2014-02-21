@@ -36,7 +36,7 @@ exports.ArrowTool = Montage.create(Montage, {
             if (selected) {
                 selected.isSelected = true;
             }
-            this._pointerX = event.pageX,
+            this._pointerX = event.pageX;
             this._pointerY = event.pageY;
         }
     },
@@ -474,7 +474,7 @@ exports.AddTool = Montage.create(Montage, {
                 dX = event.pageX - this._pointerX;
                 dY = event.pageY - this._pointerY;
                 if (this._insertMode === "appendToEnd") {
-                    vector = this._editingSpline._data[this._editingSpline.length - 1]._data[1],
+                    vector = this._editingSpline._data[this._editingSpline.length - 1]._data[1];
                     vector.translate(
                         Vector3.
                         create().
@@ -496,7 +496,7 @@ exports.AddTool = Montage.create(Montage, {
                         ];
                     }
                 } else {
-                    vector = this._editingSpline._data[0]._data[2],
+                    vector = this._editingSpline._data[0]._data[2];
                     vector.translate(
                         Vector3.
                         create().

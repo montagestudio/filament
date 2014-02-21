@@ -57,7 +57,9 @@ exports.FlowKnotInspector = Montage.create(Component, /** @lends module:"ui/flow
             return this._x;
         },
         set: function (value) {
-            if (!this.knot) return 0;
+            if (!this.knot) {
+                return 0;
+            }
 
             var dX = value - this.knot._data.x;
 
@@ -80,7 +82,9 @@ exports.FlowKnotInspector = Montage.create(Component, /** @lends module:"ui/flow
             return this._y;
         },
         set: function (value) {
-            if (!this.knot) return 0;
+            if (!this.knot) {
+                return 0;
+            }
 
             var dY = value - this.knot._data.y;
 
@@ -103,7 +107,9 @@ exports.FlowKnotInspector = Montage.create(Component, /** @lends module:"ui/flow
             return this._z;
         },
         set: function (value) {
-            if (!this.knot) return 0;
+            if (!this.knot) {
+                return 0;
+            }
 
             var dZ = value - this.knot._data.z;
 
