@@ -535,12 +535,16 @@ exports.PreviewController = Target.specialize({
 
                 isContainerNode = false;
                 how = "before";
+            } else if (parentNode.component === ownerProxy) {
+                node = parentNode;
+                isContainerNode = true;
+                how = "append";
             } else if (parentNode.component && !parentNode.component.montageArg) {
                 // If we need to append the template to a star argument range of
                 // nodes then we need to locate the last element of the range
                 // and insert "after" that node.
                 parentsChildren = parentNode.children;
-                if (parentsChildren.length === 0) {
+                if (parentsChildren.length - nodeCount === 0) {
                     node = parentNode;
                     isContainerNode = true;
                 } else {
