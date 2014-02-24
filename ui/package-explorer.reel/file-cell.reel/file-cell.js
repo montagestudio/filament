@@ -263,10 +263,14 @@ exports.FileCell = Montage.create(Component, {
 
     captureDragleave: {
         value: function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            this._hoverCounter--;
-            this.needsDraw = true;
+            // Only decrement the hover counter if we cared enough to increment it
+            // i.e. ignore leaves that didn't have a corresponding enter that we accepted
+            if (this._hoverCounter > 0) {
+                e.stopPropagation();
+                e.preventDefault();
+                this._hoverCounter--;
+                this.needsDraw = true;
+            }
         }
     },
 
