@@ -1510,6 +1510,36 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 self.libraryGroups = dependencyLibraryEntries;
             });
         }
+    },
+
+    /**
+     * Returns a promise for the blueprint of the specified moduleId within the
+     * project's own package.
+     *
+     * TODO while project specific, the projectController is doing a lot, this is a good candidate for moving
+     * into document representing the package itself, freeing up the projectController to focus more on getting
+     * the project up and editable in the filament application
+     */
+    getBlueprintWithModuleId: {
+        value: function (moduleId) {
+
+            var packageRequire = this._packageRequire,
+                blueprintModuleId;
+
+            //TODO replace meta module naming with a more robust method; this may not be comprehensive enough
+            if (/\.reel$/.test(moduleId)) {
+                blueprintModuleId = moduleId.replace(/([\w-]+)\.reel$/, "$1.reel/$1.meta");
+            } else {
+                blueprintModuleId = moduleId.replace(/\.js$/, "");
+                blueprintModuleId += ".meta";
+            }
+
+            return packageRequire.async("montage/core/meta/module-blueprint")
+                .get("ModuleBlueprint")
+                .then(function (ModuleBlueprint) {
+                    return ModuleBlueprint.getBlueprintWithModuleId(blueprintModuleId, packageRequire);
+                });
+        }
     }
 
 });
