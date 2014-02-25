@@ -52,6 +52,7 @@ exports.PackageExplorer = Component.specialize({
             this.templateObjects.previewLink.element.identifier = "previewLink";
             this.templateObjects.previewLink.element.addEventListener("click", this, false);
             application.addPathChangeListener("mainMenu", this, "handleMenuAvailable");
+            this.element.addEventListener("contextmenu", this, false);
         }
     },
 
@@ -171,6 +172,14 @@ exports.PackageExplorer = Component.specialize({
 
             this.isShown = !this.isShown;
             this._menuItem.title = this.isShown ? HIDE_MENU_TEXT : SHOW_MENU_TEXT;
+        }
+    },
+
+    handleContextmenu: {
+        value: function (evt) {
+            evt.stopImmediatePropagation();
+            evt.stop();
+            this.templateObjects.contextualMenu.show(null, {top: evt.clientY, left: evt.clientX});
         }
     }
 

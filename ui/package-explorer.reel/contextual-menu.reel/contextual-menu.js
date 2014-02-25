@@ -79,10 +79,17 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
     handleCreateFolderButtonAction: {
         value: function (evt) {
             var file = this.fileInfo,
-                filename = file.name,
-                fullPath = file.fileUrl,
                 value = window.prompt("Folder name:"), // FIXME: replace prompt with overlay
+                filename,
+                fullPath,
+                path = this.projectController.packageUrl;
+
+            if (file) {
+                filename = file.name;
+                fullPath = file.fileUrl;
                 path = (file.isDirectory)? fullPath : this._getParentPath(fullPath, filename);
+            }
+
             if (value) {
                 this.projectController.environmentBridge.makeTree(path + value).done();
             }
