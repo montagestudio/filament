@@ -1,5 +1,6 @@
 var Promise = require("montage/core/promise").Promise,
     DependencyManager = require('./dependency-manager').DependencyManager,
+    application = require("montage/core/application").application,
     Montage = require("montage").Montage;
 
 exports.PackageSavingManager = Montage.specialize({
@@ -85,9 +86,13 @@ exports.PackageSavingManager = Montage.specialize({
         value: function (packageModified) {
             if (packageModified) {
                 if (packageModified.operation === DependencyManager.ACTIONS.INSTALL && !packageModified.error) {
-                    this._packageDocument._dependencyHasBeenInstalled(packageModified);
+                    application.dispatchEventNamed("dependencyInstalled", true, true, {
+                        installed: packageModified
+                    });
                 } else if (packageModified.operation === DependencyManager.ACTIONS.UNINSTALL && !packageModified.error) {
-                    this._packageDocument._dependencyHasBeenRemoved(packageModified);
+                    application.dispatchEventNamed("dependencyRemoved", true, true, {
+                        removed: packageModified
+                    });
                 }
             }
 

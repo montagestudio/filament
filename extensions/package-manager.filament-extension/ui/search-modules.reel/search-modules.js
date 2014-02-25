@@ -6,7 +6,8 @@ var Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
     CELL_STATES = require("./search-modules-cell.reel").STATES,
     MIME_TYPES = require("../../core/mime-types"),
-    Dependency = require("../../core/dependency").Dependency;
+    Dependency = require("../../core/dependency").Dependency,
+    application = require("montage/core/application").application;
 
 /**
  * @class SearchModules
@@ -27,6 +28,9 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
                 var searchElement = this.templateObjects.searchResults._element;
                 searchElement.addEventListener("dragstart", this, false);
                 searchElement.addEventListener("dragend", this, false);
+
+                application.addEventListener("dependencyInstalled", this);
+                application.addEventListener("dependencyRemoved", this);
             }
         }
     },
@@ -180,28 +184,24 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
         }
     },
 
-    /**
-     * Searches if a dependency is in the results array,
-     * After deleting or removing a dependency.
-     * @function
-     * @param {Object} dependency
-     * @param {string} action
-     */
-    handleDependenciesListChange: {
-        value: function (name, action) {
-            if (name && this.results && this.results.length > 0) {
-                var result = this._findResult(name);
+    handleDependencyInstalled: {
+        value: function (event) {
+            var dependencyInstalled = event.detail.installed,
+                dependency = this._findResult(dependencyInstalled.requestedName);
 
-                if (result) {
-                    if (action === Dependency.ERROR_INSTALL_DEPENDENCY_ACTION) {
-                        result.state = CELL_STATES.ERROR;
-                    } else if (action === Dependency.INSTALLING_DEPENDENCY_ACTION) {
-                        result.state = CELL_STATES.INSTALLING;
-                    } else {
-                        result.state = action === Dependency.REMOVE_DEPENDENCY_ACTION ?
-                            CELL_STATES.DEFAULT : CELL_STATES.INSTALLED;
-                    }
-                }
+            if (dependency) {
+                dependency.state = CELL_STATES.INSTALLED;
+            }
+        }
+    },
+
+    handleDependencyRemoved: {
+        value: function (event) {
+            var dependencyRemoved = event.detail.removed,
+                dependency = this._findResult(dependencyRemoved.name);
+
+            if (dependency) {
+                dependency.state = CELL_STATES.DEFAULT;
             }
         }
     },

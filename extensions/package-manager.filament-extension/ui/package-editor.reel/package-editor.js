@@ -148,21 +148,6 @@ exports.PackageEditor = Montage.create(Editor, {
             this.previousSelectedDependency = null;
             this.selectedDependency = null;
         }
-    },
-
-    /**
-     * Notifies to the search part that the dependencies list has changed.
-     * @function
-     * @param {String} dependencyName, the dependency name which has been modified.
-     * @param {String} action, specifies which action has been applied.
-     * @private
-     */
-    notifyDependenciesListChange: {
-        value: function (dependencyName, action) {
-            if (dependencyName && action >= 0) {
-                this.templateObjects.searchModules.handleDependenciesListChange(dependencyName, action);
-            }
-        }
     }
 
 });
