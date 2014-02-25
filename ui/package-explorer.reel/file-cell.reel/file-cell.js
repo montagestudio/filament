@@ -241,7 +241,7 @@ exports.FileCell = Montage.create(Component, {
                         filename = decodeURIComponent(file.name),
                         destinationUrl = Url.resolve(destination, filename);
 
-                    self.projectController.addFileToProjectAtUrl(base64, destinationUrl)
+                    self.projectController.projectDocument.add(base64, destinationUrl)
                         .then(function (success) {
                             deferredUpload.resolve(destinationUrl);
                             deferredCompletion.notify(filename);
