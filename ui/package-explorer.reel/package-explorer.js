@@ -35,6 +35,53 @@ exports.PackageExplorer = Component.specialize({
             this.templateObjects.previewLink.element.identifier = "previewLink";
             this.templateObjects.previewLink.element.addEventListener("click", this, false);
             application.addPathChangeListener("mainMenu", this, "handleMenuAvailable");
+
+            var self = this;
+            this.addPathChangeListener("previewController.previewUrl", function () {
+                self.dispatchOwnPropertyChange("previewUrl", self.previewUrl);
+            });
+
+            window.addEventListener("keydown", this, true);
+            window.addEventListener("keyup", this, true);
+        }
+    },
+
+    optionPressed: {
+        value: false
+    },
+
+    captureKeydown: {
+        value: function(e) {
+            var code = e.which;
+            if (e.which === 18) {
+                console.log('alt pressed');
+                this.optionPressed = true;
+                this.dispatchOwnPropertyChange("previewUrl", self.previewUrl);
+                this.needsDraw = true;
+            }
+        }
+    },
+
+    captureKeyup: {
+        value: function(e) {
+            var code = e.which;
+            if (e.which === 18) {
+                console.log('alt un pressed');
+                this.optionPressed = false;
+                this.dispatchOwnPropertyChange("previewUrl", self.previewUrl);
+                this.needsDraw = true;
+            }
+        }
+    },
+
+    previewUrl: {
+        get: function() {
+            var url = this.previewController.previewUrl;
+            if (this.optionPressed) {
+                url = url.replace(/^https:/, "http:");
+            }
+            console.log("previewURL is %s", url);
+            return url;
         }
     },
 
@@ -123,6 +170,11 @@ exports.PackageExplorer = Component.specialize({
             } else {
                 this.element.style.display = "none";
             }
+            if (this.optionPressed) {
+                this.templateObjects.previewLink.element.classList.add("PackageExplorer-previewButton--optionPressed");
+            } else {
+                this.templateObjects.previewLink.element.classList.remove("PackageExplorer-previewButton--optionPressed");
+            }
         }
     },
 
@@ -130,7 +182,7 @@ exports.PackageExplorer = Component.specialize({
         value: function (event) {
             // stop the browser from following the link
             event.preventDefault();
-            this.projectController.environmentBridge.openHttpUrl(this.previewController.previewUrl).done();
+            this.projectController.environmentBridge.openHttpUrl(this.previewUrl).done();
         }
     },
 
