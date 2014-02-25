@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+    <title>Toolbar Lab</title>
+    <meta charset="utf-8">
+
+    <base href="/app/">
+
+    <link href="assets/styles/firefly.css" rel="stylesheet">
+    <link href="assets/styles/filament.css" rel="stylesheet">
+    <link href="assets/styles/bootstrapping.css" rel="stylesheet">
+
+    <script src="node_modules/montage/montage.js" data-package="/app"></script>
+    <script type="text/montage-serialization">
+        {
+
+            "owner": {
+                "prototype": "adaptor/client/ui/toolbar.reel",
+                "properties": {
+                    "element": {"#": "toolbar"}
+                },
+                "bindings": {
+                    "mainMenu": {"<-": "@harness.mainMenu"},
+                    "environmentBridge": {"<-": "@harness.environmentBridge"}
+                }
+            },
+
+            "harness": {
+                "prototype": "test/lab/toolbar/harness"
+            }
+        }
+    </script>
+
+</head>
+<body class="Filament">
+
+    <header style="color: hsl(180,0%,67%); padding: 0.5em;">
+        <h1>Toolbar Lab</h1>
+        <p>A lab for playing with the toolbar component with a test harness providing the interesting dependencies.</p>
+    </header>
+
+    <nav data-montage-id="toolbar"></nav>
+
+</body>
+</html>
