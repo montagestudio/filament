@@ -359,7 +359,7 @@ exports.FileCell = Montage.create(Component, {
     handleMouseup: {
         value: function (evt) {
             if (evt.button === 2) {
-                 evt.stopImmediatePropagation();
+                evt.stopImmediatePropagation();
                 evt.stop();
                 this.ownerComponent.templateObjects.contextualMenu.hide();
             }
