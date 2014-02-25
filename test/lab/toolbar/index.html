@@ -25,6 +25,26 @@
                 }
             },
 
+            "mainMenu": {
+                "prototype": "adaptor/client/ui/menu.reel",
+                "properties": {
+                    "element": {"#": "mainMenu"}
+                },
+                "bindings": {
+                    "menu": {"<-": "@harness.mainMenu"}
+                }
+            },
+
+            "workflow": {
+                "prototype": "adaptor/client/ui/workflow.reel",
+                "properties": {
+                    "element": {"#": "workflow"}
+                },
+                "bindings": {
+                    "environmentBridge": {"<-": "@harness.environmentBridge"}
+                }
+            },
+
             "harness": {
                 "prototype": "test/lab/toolbar/harness"
             }
@@ -39,7 +59,10 @@
         <p>A lab for playing with the toolbar component with a test harness providing the interesting dependencies.</p>
     </header>
 
-    <nav data-montage-id="toolbar"></nav>
+    <nav data-montage-id="toolbar">
+        <div data-montage-id="mainMenu"></div>
+        <div data-montage-id="workflow"></div>
+    </nav>
 
 </body>
 </html>
