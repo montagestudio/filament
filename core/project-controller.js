@@ -12,7 +12,8 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     AssetsManager = require("./assets-management/assets-manager").AssetsManager,
     FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
     Template = require("montage/core/template").Template,
-    Url = require("core/url");
+    Url = require("core/url"),
+    ProjectDocument = require("core/project-document").ProjectDocument;
 
 exports.ProjectController = ProjectController = DocumentController.specialize({
 
@@ -54,6 +55,20 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     },
 
     _projectUrl: {
+        value: null
+    },
+
+    /**
+     * The document representing this project and its file contents
+     * This is the place to push most of the knowledge about the project
+     * itself and any API that contents of the project.
+     *
+     * The projectController currently houses much of this responsibility
+     * but should really be focused primarily on bootstrapping an
+     * instance of filament with a package, and fetching filament specific
+     * content for editing the project.
+     */
+    projectDocument: {
         value: null
     },
 
@@ -103,6 +118,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     },
 
     // A map with all files loaded (fileUrl -> file)
+    //TODO move into the projectDocument
     _filesMap: {
         value: null
     },
@@ -224,6 +240,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 self.loadProjectIcon(self.packageUrl);
                 self.packageDescription = packageDescription;
                 self._packageRequire = packageRequire;
+                self.projectDocument = new ProjectDocument().init(packageRequire, self.environmentBridge);
 
                 // Add a dependency entry for this package so that the
                 // we pick up its extensions and components later
@@ -325,18 +342,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             });
         }
     },
-
-    /**
-     *
-     * @param {string} data is base64 encoded
-     * @param {string} url such as file://localhost/path/to/project/assets/images/why not zoidberg.png
-     */
-    addFileToProjectAtUrl: {
-        value: function(data, url) {
-            return this.environmentBridge.writeFile(url, data);
-        }
-    },
-
 
     // DOCUMENT HANDLING
 
@@ -1509,36 +1514,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             return this.findLibraryItems(this.dependencies).then(function (dependencyLibraryEntries) {
                 self.libraryGroups = dependencyLibraryEntries;
             });
-        }
-    },
-
-    /**
-     * Returns a promise for the blueprint of the specified moduleId within the
-     * project's own package.
-     *
-     * TODO while project specific, the projectController is doing a lot, this is a good candidate for moving
-     * into document representing the package itself, freeing up the projectController to focus more on getting
-     * the project up and editable in the filament application
-     */
-    getBlueprintWithModuleId: {
-        value: function (moduleId) {
-
-            var packageRequire = this._packageRequire,
-                blueprintModuleId;
-
-            //TODO replace meta module naming with a more robust method; this may not be comprehensive enough
-            if (/\.reel$/.test(moduleId)) {
-                blueprintModuleId = moduleId.replace(/([\w-]+)\.reel$/, "$1.reel/$1.meta");
-            } else {
-                blueprintModuleId = moduleId.replace(/\.js$/, "");
-                blueprintModuleId += ".meta";
-            }
-
-            return packageRequire.async("montage/core/meta/module-blueprint")
-                .get("ModuleBlueprint")
-                .then(function (ModuleBlueprint) {
-                    return ModuleBlueprint.getBlueprintWithModuleId(blueprintModuleId, packageRequire);
-                });
         }
     }
 
