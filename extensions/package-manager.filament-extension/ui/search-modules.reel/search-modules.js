@@ -6,7 +6,6 @@ var Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
     CELL_STATES = require("./search-modules-cell.reel").STATES,
     MIME_TYPES = require("../../core/mime-types"),
-    Dependency = require("../../core/dependency").Dependency,
     application = require("montage/core/application").application;
 
 /**
