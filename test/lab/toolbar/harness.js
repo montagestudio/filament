@@ -24,6 +24,28 @@ var environmentBridge = {
     mainMenu: Promise.resolve(mainMenu)
 };
 
+var ProjectDocument = Montage.specialize({
+
+    constructor: {
+        value: function ProjectDocument() {
+            this.super();
+        }
+    },
+
+    init: {
+        value: function (packageRequire, bridge) {
+            return this;
+        }
+    },
+
+    currentBranch: {
+        get: function () {
+            return {name: "master"};
+        }
+    }
+
+});
+
 exports.Harness = Montage.specialize({
 
     constructor: {
@@ -35,6 +57,20 @@ exports.Harness = Montage.specialize({
     environmentBridge: {
         get: function () {
             return environmentBridge;
+        }
+    },
+
+    _projectDocument: {
+        value: null
+    },
+
+    projectDocument: {
+        get: function () {
+            if (!this._projectDocument) {
+                this._projectDocument = new ProjectDocument().init(require, this.environmentBridge);
+            }
+
+            return this._projectDocument;
         }
     }
 

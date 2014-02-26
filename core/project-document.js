@@ -33,6 +33,9 @@ exports.ProjectDocument = Document.specialize({
     constructor: {
         value: function ProjectDocument() {
             this.super();
+            this._dirtyDocuments = [];
+            this.defineBinding("dirtyDocuments", {"<-": "_documentController.documents.filter{isDirty}"});
+            this.defineBinding("isProjectDirty", {"<-": "dirtyDocuments.length != 0"});
         }
     },
 
@@ -51,6 +54,13 @@ exports.ProjectDocument = Document.specialize({
     },
 
     /**
+     * The documentController that manages the documents in the project
+     */
+    _documentController: {
+        value: null
+    },
+
+    /**
      * Initializes a packageDocument object for editing the data about
      * a package and all that that represents.
      *
@@ -58,10 +68,23 @@ exports.ProjectDocument = Document.specialize({
      * @param {Object} environmentBridge The backend service provider used to manipulate the package
      */
     init: {
-        value: function (packageRequire, environmentBridge) {
+        value: function (packageRequire, documentController, environmentBridge) {
             var self = this.super();
             self._packageRequire = packageRequire;
+            self._documentController = documentController;
             self._environmentBridge = environmentBridge;
+
+            self.updateRefs()
+                .then(function (response) {
+                    // Make sure we're on the shadow of the current branch
+                    var currentBranchName = response.current;
+                    return self._environmentBridge.checkoutShadowBranch(currentBranchName);
+                })
+                .then(function () {
+                    return self.updateRefs();
+                })
+                .done();
+
             return self;
         }
     },
@@ -165,6 +188,166 @@ exports.ProjectDocument = Document.specialize({
             return this._environmentBridge.removeTree(path);
         }
     },
+
+    /**
+     * The collection of documents that have unsaved changes
+     */
+    dirtyDocuments: {
+        value: null
+    },
+
+    isProjectDirty: {
+        value: false
+    },
+
+    isBusy:{
+        value: false
+    },
+
+    updateRefs: {
+        value: function () {
+            var bridge = this._environmentBridge,
+                self = this,
+                updatePromise;
+
+            this.isBusy = true;
+
+            if (bridge.listRepositoryBranches && typeof bridge.listRepositoryBranches === "function") {
+                updatePromise = bridge.listRepositoryBranches()
+                    .then(function (response) {
+                        var branches = self.branches = response.branches;
+
+                        if (branches) {
+                            //jshint -W106
+                            self.currentBranch = branches.__local__[response.current];
+                            //jshint +W106
+                        }
+
+                        return self._updateShadowDelta().thenResolve(response);
+                    })
+                    .finally(function (result) {
+                        self.isBusy = false;
+                        return result;
+                    });
+            }
+
+            return Promise(updatePromise);
+        }
+    },
+
+    _updateShadowDelta: {
+        value: function () {
+            var self = this,
+                bridge = this._environmentBridge,
+                result;
+
+            if (bridge && bridge.shadowBranchStatus && typeof bridge.shadowBranchStatus === "function") {
+
+                result = this._environmentBridge.shadowBranchStatus(this.currentBranch.name)
+                    .then(function(shadowStatus) {
+                        self.aheadCount = shadowStatus.localParent.ahead;
+                        self.behindCount = shadowStatus.localParent.behind;
+                    });
+            }
+
+            return Promise(result);
+        }
+    },
+
+    branches: {
+        value: null
+    },
+
+    currentBranch: {
+        value: null
+    },
+
+    aheadCount: {
+        value: 0
+    },
+
+    behindCount: {
+        value: 0
+    },
+
+    _commit: {
+        value: function (urls, message, amend) {
+            return this._environmentBridge.commitFiles(urls, message, null);
+        }
+    },
+
+    /**
+     * Saves all unsaved documents.
+     *
+     * For environments that propagate edits to a backend, this will happen at this point as well
+     * TODO this strategy should be provided by the environment
+     * @returns {Promise} A promise for the completed save and remote push of the files with progress
+     */
+    accept: {
+        value: function (message, amend) {
+            var self = this,
+                savedPromises;
+
+            this.isBusy = true;
+
+            savedPromises = this.dirtyDocuments.map(function (doc) {
+                return self._environmentBridge.save(doc, doc.url);
+            });
+
+            return Promise.all(savedPromises)
+                .then(function (savedDocs) {
+                    //TODO not have to create an array for commit everything
+                    return self._commit(["."], message, amend);
+                })
+                .then(function(result) {
+                    return self._updateShadowDelta().thenResolve(result);
+                })
+                .finally(function (result) {
+                    self.isBusy = false;
+                    return result;
+                });
+        }
+    },
+
+    /**
+     * Discard all unsaved changes
+     * @returns {Promise} A promise for the completion
+     */
+    discard: {
+        value: function () {
+        }
+    },
+
+    /**
+     * Discard all unsaved changes and all draft commits
+     * by resetting the shadow branch to point to it's actual
+     * branch.
+     *
+     * @returns {Promise} A promise for the completion
+     */
+    reset: {
+        value: function () {
+        }
+    },
+
+    /**
+     * Merges the shadow branch changes into its actual branch.
+     *
+     * While typically not an operation that should be offered
+     * while there are unsaved changes, doing so should perform
+     * the merge as expected without committing those unsaved changes
+     * or discarding them. If desried, accepting or discarding unsaved changes
+     * should be done prior to calling merge.
+     *
+     *
+     * @returns {Promise} A promise for the completion
+     * @see accept
+     * @see discard
+     */
+    merge: {
+        value: function (message, squash) {
+        }
+    }
 
 },
 // Constructor Properties

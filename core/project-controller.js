@@ -240,7 +240,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 self.loadProjectIcon(self.packageUrl);
                 self.packageDescription = packageDescription;
                 self._packageRequire = packageRequire;
-                self.projectDocument = new ProjectDocument().init(packageRequire, self.environmentBridge);
+                self.projectDocument = new ProjectDocument().init(packageRequire, self, self.environmentBridge);
 
                 // Add a dependency entry for this package so that the
                 // we pick up its extensions and components later
@@ -709,9 +709,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     },
 
     handlePathChange: {
-        value: function (value, property, object) {
-            switch (property) {
-            case "undoCount":
+        value: function (value, path, object) {
+            switch (path) {
+            case "currentDocument.undoManager.undoCount":
                 this.environmentBridge.setDocumentDirtyState(null != value && value > 0);
                 break;
             }
