@@ -321,8 +321,8 @@ exports.PreviewController = Target.specialize({
                 propertyName: event.detail.binding.targetPath,
                 propertyDescriptor: {}
             };
-            var oneway = event.detail.binding.oneway ? "<-" : "<->";
-            binding.propertyDescriptor[oneway] = event.detail.binding.sourcePath;
+            var direction = event.detail.binding.oneway ? "<-" : "<->";
+            binding.propertyDescriptor[direction] = event.detail.binding.sourcePath;
 
             this.setPreviewObjectBinding(
                 ownerProxy.exportId, proxy.label, binding)
