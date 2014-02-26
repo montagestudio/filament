@@ -35,6 +35,10 @@ exports.PackageExplorer = Component.specialize({
             // there is no action event built into the montage anchor.reel
             this.templateObjects.previewLink.element.identifier = "previewLink";
             this.templateObjects.previewLink.element.addEventListener("click", this, false);
+
+            // Let't see if the native event works at all.
+            this.templateObjects.previewLink.element.nativeAddEventListener("click", this.handlePreviewLinkClick.bind(this), false);
+
             application.addPathChangeListener("mainMenu", this, "handleMenuAvailable");
 
             var self = this;
@@ -187,6 +191,7 @@ exports.PackageExplorer = Component.specialize({
     handlePreviewLinkClick: {
         value: function (event) {
             // stop the browser from following the link
+            console.log('clicked', event);
             event.preventDefault();
             this.projectController.environmentBridge.openHttpUrl(this.previewUrl).done();
         }
