@@ -314,7 +314,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         }
                         return (a.size - b.size);
                     });
-                    self.icon = projectUrl + "/" + sizes[0].href;
+                    self.icon = projectUrl + sizes[0].href;
                 } else {
                     /* if no touch icons are present, but a favicon is, use it */
                     require.read(projectUrl + "favicon.ico").then(function() {
