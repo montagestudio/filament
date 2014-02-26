@@ -36,12 +36,14 @@ exports.PackageExplorer = Component.specialize({
             this.templateObjects.previewLink.element.identifier = "previewLink";
             this.templateObjects.previewLink.element.addEventListener("click", this, false);
 
-            // Let't see if the native event works at all.
-            this.templateObjects.previewLink.element.nativeAddEventListener("click", this.handlePreviewLinkClick.bind(this), false);
-
             application.addPathChangeListener("mainMenu", this, "handleMenuAvailable");
 
             var self = this;
+
+            this.addBeforePathChangeListener("previewController.previewUrl", function () {
+                self.dispatchBeforeOwnPropertyChange("previewUrl", self.previewUrl);
+            });
+
             this.addPathChangeListener("previewController.previewUrl", function () {
                 self.dispatchOwnPropertyChange("previewUrl", self.previewUrl);
             });
@@ -49,7 +51,7 @@ exports.PackageExplorer = Component.specialize({
             var keyComposer = KeyComposer.createKey(this, "alt", "Option");
             keyComposer.addEventListener("keyPress", function(e) {
                 // Doesn't work
-                console.log(e);
+                console.log('pressed', e);
             });
             window.addEventListener("keydown", this, true);
             window.addEventListener("keyup", this, true);
@@ -63,10 +65,11 @@ exports.PackageExplorer = Component.specialize({
     captureKeydown: {
         value: function(e) {
             var code = e.which;
-            if (e.which === 18) {
+            if (code === 18) {
                 console.log('alt pressed');
+                this.dispatchBeforeOwnPropertyChange("previewUrl", this.previewUrl);
                 this.optionPressed = true;
-                this.dispatchOwnPropertyChange("previewUrl", self.previewUrl);
+                this.dispatchOwnPropertyChange("previewUrl", this.previewUrl);
                 this.needsDraw = true;
             }
         }
@@ -75,10 +78,11 @@ exports.PackageExplorer = Component.specialize({
     captureKeyup: {
         value: function(e) {
             var code = e.which;
-            if (e.which === 18) {
+            if (code === 18) {
                 console.log('alt un pressed');
+                this.dispatchBeforeOwnPropertyChange("previewUrl", this.previewUrl);
                 this.optionPressed = false;
-                this.dispatchOwnPropertyChange("previewUrl", self.previewUrl);
+                this.dispatchOwnPropertyChange("previewUrl", this.previewUrl);
                 this.needsDraw = true;
             }
         }
@@ -87,8 +91,9 @@ exports.PackageExplorer = Component.specialize({
     previewUrl: {
         get: function() {
             var url = this.previewController.previewUrl;
-            if (this.optionPressed) {
-                url = url.replace(/^https:/, "http:");
+            if (url && this.optionPressed) {
+                //TODO simply toggle whichever one we have http or https
+                url = url.replace(/^http:/, "https:");
             }
             console.log("previewURL is %s", url);
             return url;
@@ -191,7 +196,7 @@ exports.PackageExplorer = Component.specialize({
     handlePreviewLinkClick: {
         value: function (event) {
             // stop the browser from following the link
-            console.log('clicked', event);
+            console.log("preview link clicked", event);
             event.preventDefault();
             this.projectController.environmentBridge.openHttpUrl(this.previewUrl).done();
         }
