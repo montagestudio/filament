@@ -368,7 +368,7 @@ exports.PreviewController = Target.specialize({
                 .done();
             } else {
                 this._addTemplateObjectsToPreview(detail.template, document)
-                .done()
+                .done();
             }
         }
     },
