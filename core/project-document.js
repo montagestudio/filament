@@ -140,7 +140,31 @@ exports.ProjectDocument = Document.specialize({
                     });
                 });
         }
-    }
+    },
+
+    /**
+     * Create the specified tree from the project
+     *
+     * @param {string} url such as file://localhost/path/to/project/assets/images/why not zoidberg.png
+     * @return {Promise} A promise for success
+     */
+    makeTree:{
+        value: function (path) {
+            return this._environmentBridge.makeTree(path);
+        }
+    },
+
+    /**
+     * Remove the specified tree from the project
+     *
+     * @param {string} url such as file://localhost/path/to/project/assets/images/why not zoidberg.png
+     * @return {Promise} A promise for success
+     */
+    removeTree:{
+        value: function (path) {
+            return this._environmentBridge.removeTree(path);
+        }
+    },
 
 },
 // Constructor Properties

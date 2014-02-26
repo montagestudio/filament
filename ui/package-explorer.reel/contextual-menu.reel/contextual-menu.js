@@ -82,7 +82,8 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
                 value = window.prompt("Folder name:"), // FIXME: replace prompt with overlay
                 filename,
                 fullPath,
-                path = this.projectController.packageUrl;
+                path = this.projectController.packageUrl,
+                projectDocument = this.projectController.projectDocument;
 
             if (file) {
                 filename = file.name;
@@ -91,7 +92,7 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
             }
 
             if (value) {
-                this.projectController.environmentBridge.makeTree(path + value).done();
+                projectDocument.makeTree(path + value).done();
             }
             this.hide();
         }
@@ -99,7 +100,10 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
 
     handleDeleteButtonAction: {
         value: function (evt) {
-            this.projectController.environmentBridge.removeTree(this.fileInfo.fileUrl).done();
+            var projectController = this.projectController,
+                projectDocument = projectController.projectDocument;
+
+            projectDocument.removeTree(this.fileInfo.fileUrl).done();
             this.hide();
         }
     }
