@@ -4,7 +4,13 @@
  */
 var Component = require("montage/ui/component").Component,
     MIME_TYPES = require("../../../core/mime-types"),
-    DependencyNames = require('../../../core/package-tools').DependencyNames;
+    DependencyNames = require('../../../core/package-tools').DependencyNames,
+
+    DEPENDENCY_GROUPS = {
+        'regular': "dependenciesGroup",
+        'optional': "optionalDependenciesGroup",
+        'dev': "devDependenciesGroup"
+    };
 
 /**
  * @class PackageDependenciesGroups
@@ -23,6 +29,13 @@ exports.PackageDependenciesGroups = Component.specialize(/** @lends PackageDepen
                 this.element.addEventListener("dragstart", this, false);
                 this.element.addEventListener("dragend", this, false);
                 this.element.addEventListener("click", this, false);
+                this.dependencyGroups = {};
+
+                var self = this;
+
+                Object.keys(DEPENDENCY_GROUPS).forEach(function (key) {
+                    self.dependencyGroups[key] = self.templateObjects[DEPENDENCY_GROUPS[key]];
+                });
             }
         }
     },
@@ -40,6 +53,14 @@ exports.PackageDependenciesGroups = Component.specialize(/** @lends PackageDepen
                 this.selectedCell = null;
             }
         }
+    },
+
+    dependencyGroups: {
+        value: null
+    },
+
+    _hasGroupRestricted: {
+        value: false
     },
 
     /**
@@ -140,24 +161,39 @@ exports.PackageDependenciesGroups = Component.specialize(/** @lends PackageDepen
         }
     },
 
-    _groupAcceptDrop: {
-        value: function (type, accept) {
-            var response = null;
+    _restrictGroupAcceptDrop: {
+        value: function (groupType) {
+            var flag = null;
 
-            if (type === DependencyNames.regular) {
-                response = this.templateObjects.dependenciesGroup.canAcceptDrop = !!accept;
-            } else if (type === DependencyNames.optional) {
-                response = this.templateObjects.optionalDependenciesGroup.canAcceptDrop = !!accept;
-            } else if (type === DependencyNames.dev) {
-                response = this.templateObjects.devDependenciesGroup.canAcceptDrop = !!accept;
+            this._resetGroupsState();
+
+            if (groupType === DependencyNames.regular) {
+                flag = this.dependencyGroups.regular.canAcceptDrop = false;
+            } else if (groupType === DependencyNames.optional) {
+                flag = this.dependencyGroups.optional.canAcceptDrop = false;
+            } else if (groupType === DependencyNames.dev) {
+                flag = this.dependencyGroups.dev.canAcceptDrop = false;
             }
 
-            return (response !== null);
+            this._hasGroupRestricted = (flag !== null);
+
+            return this._hasGroupRestricted;
         }
     },
 
-    _currentGroupNotAcceptDrop: {
-        value: null
+    _resetGroupsState: {
+        value: function () {
+            var self = this;
+
+            if (this._hasGroupRestricted) {
+                Object.keys(this.dependencyGroups).forEach(function (groupKey) {
+                    self.dependencyGroups[groupKey].canAcceptDrop = true; // default value
+                });
+            }
+
+            this._hasGroupRestricted = false;
+            this.forceDisplayGroups(false);
+        }
     },
 
     handleDragstart: {
@@ -176,8 +212,7 @@ exports.PackageDependenciesGroups = Component.specialize(/** @lends PackageDepen
                     var groupType = dataTransfer.getData(MIME_TYPES.PACKAGE_MANAGER_DEPENDENCY_TYPE);
 
                     // The current dependency's type will not accept dropping.
-                    if (this._groupAcceptDrop(groupType, false)) {
-                        this._currentGroupNotAcceptDrop = groupType;
+                    if (this._restrictGroupAcceptDrop(groupType)) {
                         this.forceDisplayGroups(true);
                         event.stopPropagation();
                     }
@@ -191,9 +226,8 @@ exports.PackageDependenciesGroups = Component.specialize(/** @lends PackageDepen
 
     handleDragend: {
         value: function (event) {
-            if (this._currentGroupNotAcceptDrop && this._groupAcceptDrop(this._currentGroupNotAcceptDrop, true)) {
-                this._currentGroupNotAcceptDrop = null;
-                this.forceDisplayGroups(false);
+            if (this._hasGroupRestricted) {
+                this._resetGroupsState();
                 event.stopPropagation();
             }
         }
