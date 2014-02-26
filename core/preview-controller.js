@@ -406,6 +406,12 @@ exports.PreviewController = Target.specialize({
 
     /**
      * Creates the information necessary to find a node in the live app.
+     * To find a node we need three pieces of information:
+     * - The component where the content was added. (component)
+     * - The argument name if the content was added to an argument of the
+     *   component. (argumentName)
+     * - A CSS selector from the component or the argument node that points to
+     *   the exact node where the content was added. (cssSelector)
      *
      * @param {Node} node The node to get the location details for.
      * @param {boolean} isContainerNode Indicates if node is a container node. If
@@ -479,15 +485,6 @@ exports.PreviewController = Target.specialize({
         }
     },
 
-    /**
-     * When adding a template content to the preview we need to provide three
-     * pieces of information:
-     * - The component where the content was added. (ownerModuleId + label)
-     * - The argument name if the content was added to an argument of the
-     *   component. (argumentName)
-     * - A CSS selector from the component or the argument node that points to
-     *   the exact node where the content was added. (cssSelector)
-     */
     _addTemplateToPreview: {
         value: function(template, document, parentNode, nextSiblingNode) {
             var templateFragment;
