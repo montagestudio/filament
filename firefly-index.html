@@ -46,6 +46,16 @@
                 }
             },
 
+             "workflow": {
+                "prototype": "adaptor/client/ui/workflow.reel",
+                "properties": {
+                    "element": {"#": "workflow"}
+                },
+                "bindings": {
+                    "environmentBridge": {"<-": "@application.environmentBridge"}
+                }
+            },
+
             "applicationDelegate": {
                 "prototype": "core/firefly-application-delegate",
                 "properties": {
@@ -144,7 +154,9 @@
         </div>
     </section>
 
-    <nav data-montage-id="toolbar"></nav>
+    <nav data-montage-id="toolbar">
+        <div data-montage-id="workflow"></div>
+    </nav>
 
     <div data-montage-id="loader" class="Filament-loader--firefly">
         <div data-montage-id="loaderWidget"></div>
