@@ -1,4 +1,5 @@
 var Component = require("montage/ui/component").Component;
+var KeyComposer = require("montage/composer/key-composer").KeyComposer;
 
 var menuItemExports,
     MenuItem;
@@ -41,6 +42,11 @@ exports.PackageExplorer = Component.specialize({
                 self.dispatchOwnPropertyChange("previewUrl", self.previewUrl);
             });
 
+            var keyComposer = KeyComposer.createKey(this, "alt", "Option");
+            keyComposer.addEventListener("keyPress", function(e) {
+                // Doesn't work
+                console.log(e);
+            });
             window.addEventListener("keydown", this, true);
             window.addEventListener("keyup", this, true);
         }
