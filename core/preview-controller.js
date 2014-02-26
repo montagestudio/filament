@@ -407,13 +407,13 @@ exports.PreviewController = Target.specialize({
     /**
      * Creates the information necessary to find a node in the live app.
      *
-     * @param node Node The node to get the location details for.
-     * @param isContainerNode boolean Indicates if node is a container node. If
+     * @param {Node} node The node to get the location details for.
+     * @param {boolean} isContainerNode Indicates if node is a container node. If
      *        it is then it means we need to locate the contents of the node and
      *        not the node itself. Useful when the node doesn't have any content
      *        we can point to or we want to append to it.
-     * @param owner ProxyNode The owner of the template where the node is defined.
-     * @returns {component, argumentName, cssSelector}
+     * @param {NodeProxy} owner The owner of the template where the node is defined.
+     * @returns {{component: NodeProxy, argumentName: string, cssSelector: string}}
      */
     _getNodeLocation: {
         value: function(node, isContainerNode, owner) {
