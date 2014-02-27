@@ -1,5 +1,6 @@
 var Component = require("montage/ui/component").Component;
 var KeyComposer = require("montage/composer/key-composer").KeyComposer;
+var Url = require("core/url");
 
 var menuItemExports,
     MenuItem;
@@ -48,11 +49,6 @@ exports.PackageExplorer = Component.specialize({
                 self.dispatchOwnPropertyChange("previewUrl", self.previewUrl);
             });
 
-            var keyComposer = KeyComposer.createKey(this, "alt", "Option");
-            keyComposer.addEventListener("keyPress", function(e) {
-                // Doesn't work
-                console.log('pressed', e);
-            });
             window.addEventListener("keydown", this, true);
             window.addEventListener("keyup", this, true);
         }
@@ -66,7 +62,6 @@ exports.PackageExplorer = Component.specialize({
         value: function(e) {
             var code = e.which;
             if (code === 18) {
-                console.log('alt pressed');
                 this.dispatchBeforeOwnPropertyChange("previewUrl", this.previewUrl);
                 this.optionPressed = true;
                 this.dispatchOwnPropertyChange("previewUrl", this.previewUrl);
@@ -79,7 +74,6 @@ exports.PackageExplorer = Component.specialize({
         value: function(e) {
             var code = e.which;
             if (code === 18) {
-                console.log('alt un pressed');
                 this.dispatchBeforeOwnPropertyChange("previewUrl", this.previewUrl);
                 this.optionPressed = false;
                 this.dispatchOwnPropertyChange("previewUrl", this.previewUrl);
@@ -92,10 +86,14 @@ exports.PackageExplorer = Component.specialize({
         get: function() {
             var url = this.previewController.previewUrl;
             if (url && this.optionPressed) {
-                //TODO simply toggle whichever one we have http or https
-                url = url.replace(/^http:/, "https:");
+                var urlObject = Url.parse(url);
+                if (urlObject.protocol === "http:") {
+                    urlObject.protocol = "https:";
+                } else {
+                    urlObject.protocol = "http:";
+                }
+                url = Url.format(urlObject);
             }
-            console.log("previewURL is %s", url);
             return url;
         }
     },
@@ -186,9 +184,9 @@ exports.PackageExplorer = Component.specialize({
                 this.element.style.display = "none";
             }
             if (this.optionPressed) {
-                this.templateObjects.previewLink.element.classList.add("PackageExplorer-previewButton--optionPressed");
+                this.templateObjects.previewLink.element.classList.add("PackageExplorer-previewButton--altProtocol");
             } else {
-                this.templateObjects.previewLink.element.classList.remove("PackageExplorer-previewButton--optionPressed");
+                this.templateObjects.previewLink.element.classList.remove("PackageExplorer-previewButton--altProtocol");
             }
         }
     },
@@ -196,7 +194,6 @@ exports.PackageExplorer = Component.specialize({
     handlePreviewLinkClick: {
         value: function (event) {
             // stop the browser from following the link
-            console.log("preview link clicked", event);
             event.preventDefault();
 
             var url = this.previewUrl;

@@ -76,7 +76,7 @@
 }
 
 
-.PackageExplorer .PackageExplorer-previewButton--optionPressed {
+.PackageExplorer .PackageExplorer-previewButton--altProtocol {
     border: 1px solid hsla(0, 100%, 50%, 0.5);
 }
 
