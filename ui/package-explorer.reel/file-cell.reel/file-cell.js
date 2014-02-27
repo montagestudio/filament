@@ -56,7 +56,11 @@ exports.FileCell = Montage.create(Component, {
         value: function (evt) {
             evt.stopImmediatePropagation();
             evt.stop();
-            this.ownerComponent.templateObjects.contextualMenu.show(this.fileInfo, {top: evt.clientY, left: evt.clientX});
+
+            this.dispatchEventNamed("showContextualMenu", true, true, {
+                fileInfo: this.fileInfo,
+                position: {top: evt.clientY, left: evt.clientX}
+            });
         }
     },
 

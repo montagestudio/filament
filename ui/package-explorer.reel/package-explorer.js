@@ -52,6 +52,8 @@ exports.PackageExplorer = Component.specialize({
             this.templateObjects.previewLink.element.identifier = "previewLink";
             this.templateObjects.previewLink.element.addEventListener("click", this, false);
             application.addPathChangeListener("mainMenu", this, "handleMenuAvailable");
+            // Contextual menu handling
+            this.addEventListener("showContextualMenu", this, false);
             this.element.addEventListener("contextmenu", this, false);
         }
     },
@@ -179,7 +181,18 @@ exports.PackageExplorer = Component.specialize({
         value: function (evt) {
             evt.stopImmediatePropagation();
             evt.stop();
+
             this.templateObjects.contextualMenu.show(null, {top: evt.clientY, left: evt.clientX});
+        }
+    },
+
+    handleShowContextualMenu: {
+        value: function (evt) {
+            var detail = evt.detail,
+                position = detail.position,
+                fileInfo = detail.fileInfo;
+
+            this.templateObjects.contextualMenu.show(fileInfo, position);
         }
     }
 
