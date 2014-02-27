@@ -198,7 +198,12 @@ exports.PackageExplorer = Component.specialize({
             // stop the browser from following the link
             console.log("preview link clicked", event);
             event.preventDefault();
-            this.projectController.environmentBridge.openHttpUrl(this.previewUrl).done();
+
+            var url = this.previewUrl;
+            setTimeout(function() {
+                this.projectController.environmentBridge.openHttpUrl(url).done();
+            }.bind(this), 1);
+
         }
     },
 
