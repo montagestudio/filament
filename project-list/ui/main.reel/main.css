@@ -46,15 +46,18 @@
 }
 
 .Intro-logo {
-    width: 200px;
-    height: 200px;
+    width: 280px;
+    height: 188px;
     /* Using background image to fix Flexbox + Image resize issue. */
     background: url(../../../assets/img/logo.png) no-repeat center;
-    background-size: auto 100%;
+    background-size: 100% auto;
 }
 
 .Intro-title {
     color: hsl(0,0%,10%);
+    text-align: center;
+    font-size: 1.4em;
+    margin: 2em 0 0 0;
 }
 
 .Intro-version {

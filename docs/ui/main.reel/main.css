@@ -27,10 +27,10 @@ a:active {
 
 .Header-logo {
     margin: 30px auto 40px auto;
-    width: 200px;
-    height: 200px;
-    background: url(../../../assets/img/logo.png) no-repeat center;    
-    background-size: auto 100%;
+    width: 280px;
+    height: 188px;
+    background: url(../../../assets/img/logo.png) no-repeat center;
+    background-size: 100% auto;
 }
 
 .Header-title {

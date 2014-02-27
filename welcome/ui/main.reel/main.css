@@ -43,11 +43,11 @@
 }
 
 .Intro-logo {
-    width: 200px;
-    height: 200px;
+    width: 280px;
+    height: 188px;
     /* Using background image to fix Flexbox + Image resize issue. */
-    background: url(../../../assets/img/logo.png) no-repeat center;    
-    background-size: auto 100%;
+    background: url(../../../assets/img/logo.png) no-repeat center;
+    background-size: 100% auto;
 }
 
 .Intro-version {
@@ -150,7 +150,7 @@
 }
 
 
-/* New */ 
+/* New */
 
 .Action-button--new {
     border-color: hsl(210,100%,56%);
@@ -170,7 +170,7 @@
 }
 
 
-/* Open */ 
+/* Open */
 
 .Action-button--open {
     border-color: hsl(170,80%,40%);
@@ -219,7 +219,7 @@
     border-top: 1px solid hsla(0, 0%, 100%, .5);
     border-bottom: 1px solid hsla(0, 0%, 0%, .1);
     background-color: hsla(0,0%,100%,.6);
-    cursor: pointer;    
+    cursor: pointer;
     display: block;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -251,4 +251,3 @@
     background-color: hsla(0,0%,0%,.04);
     box-shadow: inset 0 1px 5px hsla(0,0%,0%,0.06), 0 1px 0 hsla(0,0%,100%,.6);
 }
-
