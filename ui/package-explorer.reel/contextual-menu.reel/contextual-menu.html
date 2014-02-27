@@ -7,7 +7,8 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "contextualMenu"}
+                "element": {"#": "contextualMenu"},
+                "menu": {"#": "menu"}
             }
         },  
 
@@ -61,7 +62,7 @@
 <body>
     <div data-montage-id="contextualMenu" class="ContextualMenu">
         <div data-montage-id="contextualMenuOverlay">
-            <div class="ContextualMenu-menu">
+            <div data-montage-id="menu" class="ContextualMenu-menu">
                 <ul class="ContextualMenu-list">
                     <li class="ContextualMenu-list-item">
                         <button data-montage-id="createFolderButton">New folder&hellip;</button>

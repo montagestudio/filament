@@ -48,6 +48,10 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
 
     enterDocument: {
         value: function (firstTime) {
+            if (!firstTime) {return;}
+
+            // TODO because of the way the overly works, we can not listen on element, context-menu should extend o
+            this.menu.addEventListener("contextmenu", this, false);
         }
     },
 
@@ -105,6 +109,12 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
 
             projectDocument.removeTree(this.fileInfo.fileUrl).done();
             this.hide();
+        }
+    },
+
+    handleContextmenu: {
+        value: function (evt) {
+            evt.stop();
         }
     }
 
