@@ -7,11 +7,11 @@
         "url": "git+ssh://git@github.com:declarativ/filament.git"
     },
     "dependencies": {
-        "montage": "git+ssh://git@github.com:montagejs/montage.git#c3811ace6eeed4c8a1c715f5ea4e9aa1166824b5",
+        "montage": "git+ssh://git@github.com:montagejs/montage.git#ad0f45331970f47d797e856af8b5cf2a404780e6",
         "matte": "git+ssh://git@github.com:montagejs/matte.git#fbf210815f4059a373f1301d658dba94b5730945",
         "palette": "git+ssh://git@github.com:declarativ/palette.git#abca3fe88e2d4a59f1ee7dcc8beb04029a7fb7df",
         "flow-editor": "git+ssh://git@github.com:declarativ/flow-editor.git#241ae338db93fd62ac6839304bc803a7e1772a85",
-        "minit": "git+ssh://git@github.com:montagejs/minit.git#561bb223931303b5fbcabf0b28fdc332daebe242",
+        "minit": "git+ssh://git@github.com:montagejs/minit.git#803d33033cc1294994f0bf4ff0fc931e147b42af",
         "mousse": "0.3.0",
         "q": "0.9.7",
         "q-connection": "0.5.5",
