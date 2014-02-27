@@ -28,6 +28,56 @@ describe("core/reel-document-spec", function () {
 
     });
 
+    describe("loading a template with image references", function () {
+        beforeEach(function () {
+            reelDocumentPromise = ReelDocument.load(require.location + "test/mocks/ui/images.reel", require.location);
+        });
+
+        it("should return a promise for the populated document", function () {
+            expect(Promise.isPromiseAlike(reelDocumentPromise)).toBeTruthy();
+            reelDocumentPromise.timeout(WAITSFOR_TIMEOUT).done();
+        });
+
+        it("should resolve as a populated document", function () {
+            return reelDocumentPromise.then(function (doc) {
+                expect(doc).toBeTruthy();
+                expect(doc.editingProxies).toBeTruthy();
+                expect(doc.editingProxies.length).toBe(1);
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should not add a src attribute to images that did not have one", function () {
+            return reelDocumentPromise.then(function (doc) {
+                var image = doc.htmlDocument.getElementById("noSrc");
+                expect(image.hasAttribute("src")).toBeFalsy();
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should not populate a src attribute on images that has an empt src attribute", function () {
+            return reelDocumentPromise.then(function (doc) {
+                var image = doc.htmlDocument.getElementById("emptySrc");
+                expect(image.hasAttribute("src")).toBeTruthy();
+                expect(image.getAttribute("src")).toBe("");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should not rebase a relative url in a src attribute on images", function () {
+            return reelDocumentPromise.then(function (doc) {
+                var image = doc.htmlDocument.getElementById("relativeSrc");
+                expect(image.hasAttribute("src")).toBeTruthy();
+                expect(image.getAttribute("src")).toBe("foo.png");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should not alter a src attribute on images with an absolute url", function () {
+            return reelDocumentPromise.then(function (doc) {
+                var image = doc.htmlDocument.getElementById("absoluteSrc");
+                expect(image.hasAttribute("src")).toBeTruthy();
+                expect(image.getAttribute("src")).toBe("http://example.com/bar.png");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+    });
+
     describe("once initialized", function () {
 
         var mockDocument, serialization;
