@@ -32,10 +32,6 @@ exports.NodeProxy = NodeProxy = Target.specialize({
         }
     },
 
-    setAttributeDispatchingEnabled: {
-        value: true
-    },
-
     proxyType: {
         get: function() {
             return "NodeProxy";
@@ -199,7 +195,6 @@ exports.NodeProxy = NodeProxy = Target.specialize({
             } else {
                 this._templateNode.removeAttribute(attribute);
             }
-            this._dispatchDidSetAttribute(attribute, value);
 
             if (affectedProperty) {
                 this.dispatchOwnPropertyChange(affectedProperty, value || null);
@@ -314,17 +309,6 @@ exports.NodeProxy = NodeProxy = Target.specialize({
             }
 
             return nodeProxy;
-        }
-    },
-
-    _dispatchDidSetAttribute: {
-        value: function(attribute, value) {
-            if (this.setAttributeDispatchingEnabled) {
-                this.dispatchEventNamed("didSetAttribute", true, false, {
-                    attribute: attribute,
-                    value: value
-                });
-            }
         }
     },
 

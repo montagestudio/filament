@@ -1745,6 +1745,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             nodeProxy.setAttribute(attribute, value);
             this.undoManager.register("Set Node Attribute", Promise.resolve([this.setNodeProxyAttribute, this, nodeProxy, attribute, previousValue]));
+            this._dispatchDidSetNodeAttribute(nodeProxy, attribute, value);
 
             return true;
         }
@@ -2475,6 +2476,18 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.dispatchEventNamed("didInsertNodeAfterTemplateNode", true, false, {
                     nodeProxy: nodeProxy,
                     previousSiblingProxy: previousSiblingProxy
+                });
+            }
+        }
+    },
+
+    _dispatchDidSetNodeAttribute: {
+        value: function(nodeProxy, attribute, value) {
+            if (this.domChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didSetNodeAttribute", true, false, {
+                    nodeProxy: nodeProxy,
+                    attribute: attribute,
+                    value: value
                 });
             }
         }

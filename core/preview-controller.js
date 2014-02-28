@@ -51,7 +51,7 @@ exports.PreviewController = Target.specialize({
             app.addEventListener("didAppendChildToTemplateNode", this);
             app.addEventListener("didInsertNodeBeforeTemplateNode", this);
             app.addEventListener("didInsertNodeAfterTemplateNode", this);
-            app.addEventListener("didSetAttribute", this);
+            app.addEventListener("didSetNodeAttribute", this);
             app.addEventListener("didChangeTemplate", this);
 
             return this;
@@ -373,11 +373,11 @@ exports.PreviewController = Target.specialize({
         }
     },
 
-    handleDidSetAttribute: {
+    handleDidSetNodeAttribute: {
         value: function(event) {
-            var node = event.target;
             var detail = event.detail;
-            var owner = node._editingDocument.editingProxyMap.owner;
+            var node = detail.nodeProxy;
+            var owner = event.target.editingProxyMap.owner;
 
             var location = this._getNodeLocation(node, false, owner);
 
