@@ -52,7 +52,7 @@
                 },
                 "bindings": {
                     "href": {"<-": "@owner.previewUrl"},
-                    "title": {"<-": "'Preview ' + @owner.previewUrl"}
+                    "title": {"<-": "'Run the current application: ' + @owner.previewUrl"}
                 }
             },
 
@@ -162,8 +162,8 @@
         </div>
         <div class="Shadow Shadow--bottom"></div>
         <footer class="PackageExplorer-footer">
-            <button data-montage-id="add-file-button" class="PackageExplorer-footer-button">Component</button>
-            <button data-montage-id="add-module-button" class="PackageExplorer-footer-button">Module</button>
+            <button data-montage-id="add-file-button" class="PackageExplorer-footer-button" title="Add a new component to the project's ui directory">Component</button>
+            <button data-montage-id="add-module-button" class="PackageExplorer-footer-button" title="Add a new module to the project's core directory">Module</button>
         </footer>
     </div>
 
