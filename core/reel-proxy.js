@@ -285,14 +285,12 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
      */
     updateObjectBinding: {
         value: function (binding, targetPath, oneway, sourcePath, converter) {
-            var existingBinding,
-                bindingIndex = this.bindings.indexOf(binding);
+            var bindingIndex = this.bindings.indexOf(binding);
 
-            if (bindingIndex > -1) {
-                existingBinding = binding;
-            } else {
+            if (bindingIndex === -1) {
                 throw new Error("Cannot update a binding that's not associated with this proxy.");
             }
+
 
             binding.targetPath = targetPath;
             binding.oneway = oneway;
@@ -430,5 +428,4 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             }
         }
     }
-
 });

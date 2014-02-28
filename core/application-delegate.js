@@ -243,9 +243,6 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                 self.willClose();
             }, true);
 
-            app.addEventListener("didSave", this);
-            app.addEventListener("didChangeObjectProperties", this);
-
             this._deferredApplication.resolve(app);
         }
     },
@@ -254,22 +251,6 @@ exports.ApplicationDelegate = Montage.create(Montage, {
         value: function () {
             //TODO only if we're registered
             this.previewController.unregisterPreview().done();
-        }
-    },
-
-    handleDidSave: {
-        value: function () {
-            this.previewController.refreshPreview().done();
-        }
-    },
-
-    handleDidChangeObjectProperties: {
-        value: function (event) {
-            var proxy = event.target;
-            var ownerProxy = proxy.editingDocument.editingProxyMap.owner;
-            var ownerModuleId = ownerProxy ? ownerProxy.exportId : null;
-
-            this.previewController.setPreviewObjectProperties(proxy.label, ownerModuleId, event.detail.properties).done();
         }
     }
 });

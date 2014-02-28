@@ -34,6 +34,26 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    addObjectsFromTemplateDispatchingEnabled: {
+        value: true
+    },
+
+    changeTemplateDispatchingEnabled: {
+        value: true
+    },
+
+    domChangesDispatchingEnabled: {
+        value: true
+    },
+
+    bindingChangesDispatchingEnabled: {
+        value: true
+    },
+
+    eventListenerChangesDispatchingEnabled: {
+        value: true
+    },
+
     _editor: {
         value: null
     },
@@ -1025,6 +1045,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
                     self.undoManager.closeBatch();
 
+                    self._dispatchDidChangeTemplate(destinationTemplate);
                     // Introduce the revised template into the stage
                     if (this._editingController) {
 
@@ -1045,6 +1066,10 @@ exports.ReelDocument = EditingDocument.specialize({
                     } else {
                         return addedProxies;
                     }
+                })
+                .then(function(result) {
+                    self._dispatchDidAddObjectsFromTemplate(revisedTemplate, parentElement, nextSiblingElement);
+                    return result;
                 });
         }
     },
@@ -1113,9 +1138,9 @@ exports.ReelDocument = EditingDocument.specialize({
                 var nodeProxy = NodeProxy.create().init(newChild, this);
 
                 if (nextSiblingElement) {
-                    this.insertNodeBeforeTemplateNode(nodeProxy, nextSiblingElement);
+                    this._insertNodeBeforeTemplateNode(nodeProxy, nextSiblingElement);
                 } else {
-                    this.appendChildToTemplateNode(nodeProxy, insertionParent);
+                    this._appendChildToTemplateNode(nodeProxy, insertionParent);
                 }
             }, this);
 
@@ -1311,6 +1336,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 // }
 
                 this.undoManager.register("Define Binding", Promise.resolve([this.cancelOwnedObjectBinding, this, proxy, binding]));
+                this._dispatchDidDefineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath, converter);
             }
 
             // Need to rebuild the serialization here so that the template
@@ -1356,6 +1382,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.undoManager.register("Cancel Binding", Promise.resolve([
                     this._addOwnedObjectBinding, this, proxy, removedBinding, removedIndex
                 ]));
+                this._dispatchDidCancelOwnedObjectBinding(proxy, binding);
             }
 
             // Need to rebuild the serialization here so that the template
@@ -1377,6 +1404,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 originalconverter = existingBinding.converter,
                 updatedBinding;
 
+            this._dispatchWillUpdateOwnedObjectBinding(proxy, existingBinding);
             updatedBinding = proxy.updateObjectBinding(existingBinding, targetPath, oneway, sourcePath, converter);
 
             if (updatedBinding) {
@@ -1388,6 +1416,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.undoManager.register("Edit Binding", Promise.resolve([
                     this.updateOwnedObjectBinding, this, proxy, updatedBinding, originalTargetPath, originalOneway, originalSourcePath, originalconverter
                 ]));
+                this._dispatchDidUpdateOwnedObjectBinding(proxy, targetPath, oneway, sourcePath, converter);
             }
 
             // Need to rebuild the serialization here so that the template
@@ -1475,6 +1504,7 @@ exports.ReelDocument = EditingDocument.specialize({
                     // TODO register the listener on the stage, make sure we can remove it later
 
                     deferredUndoOperation.resolve([self._removeOwnedObjectEventListener, self, proxy, listenerEntry]);
+                    self._dispatchDidAddOwnedObjectEventListener(proxy, type, actualListener, useCapture);
                 }
 
                 // TODO this doesn't really do anything to guard against other unrelated sync operations being
@@ -1527,6 +1557,8 @@ exports.ReelDocument = EditingDocument.specialize({
             this.undoManager.openBatch("Edit Listener");
             this.undoManager.register("Edit Listener", deferredUndoOperation.promise);
 
+            this._dispatchWillUpdateOwnedObjectEventListener(proxy, existingListenerEntry);
+
             if (isDirectedHandler && methodName) {
                 // Keep existing AEL, update as necessary
                 actualListenerPromise = this._updateActionEventListener(originalListener, originalHandler, explicitListener, methodName);
@@ -1547,6 +1579,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
                 var updatedListenerEntry = proxy.updateObjectEventListener(existingListenerEntry, type, actualListener, useCapture);
                 deferredUndoOperation.resolve([self.updateOwnedObjectEventListener, self, proxy, updatedListenerEntry, originalType, undoListenerValue, originalUseCapture, originalMethodName]);
+                self._dispatchDidUpdateOwnedObjectEventListener(proxy, type, actualListener, useCapture);
 
                 self.editor.refresh();
                 return updatedListenerEntry;
@@ -1638,7 +1671,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.undoManager.register("Remove Listener", Promise.resolve([
                     this._addOwnedObjectEventListener, this, proxy, removedListenerEntry, removedIndex
                 ]));
-
+                this._dispatchDidRemoveOwnedObjectEventListener(proxy, listener);
                 if (removedListenerEntry.listener.properties.get("handler") && removedListenerEntry.listener.properties.get("action")) {
                     relatedObjectRemovalPromise = this.removeObject(removedListenerEntry.listener);
                 }
@@ -1728,6 +1761,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             nodeProxy.setAttribute(attribute, value);
             this.undoManager.register("Set Node Attribute", Promise.resolve([this.setNodeProxyAttribute, this, nodeProxy, attribute, previousValue]));
+            this._dispatchDidSetNodeAttribute(nodeProxy, attribute, value);
 
             return true;
         }
@@ -1829,7 +1863,7 @@ exports.ReelDocument = EditingDocument.specialize({
             var properties = proxy.properties;
             var oldElement = properties.get("element");
 
-            properties.set("element", element);
+            proxy.setObjectProperty("element", element);
             this.undoManager.register("Set element", Promise.resolve([
                 this.setOwnedObjectElement, this, proxy, (oldElement) ? oldElement.montageId : void 0
             ]));
@@ -1875,9 +1909,9 @@ exports.ReelDocument = EditingDocument.specialize({
             this.__removeNodeProxy(nodeProxy);
 
             if (nextSibling) {
-                this.undoManager.register("Remove Node", Promise.resolve([this.insertNodeBeforeTemplateNode, this, nodeProxy, nextSibling]));
+                this.undoManager.register("Remove Node", Promise.resolve([this._insertNodeBeforeTemplateNode, this, nodeProxy, nextSibling]));
             } else {
-                this.undoManager.register("Remove Node", Promise.resolve([this.appendChildToTemplateNode, this, nodeProxy, parentNode]));
+                this.undoManager.register("Remove Node", Promise.resolve([this._appendChildToTemplateNode, this, nodeProxy, parentNode]));
             }
 
             this.undoManager.closeBatch();
@@ -1937,6 +1971,26 @@ exports.ReelDocument = EditingDocument.specialize({
      */
     appendChildToTemplateNode: {
         value: function (nodeProxy, parentNodeProxy) {
+            var result = this._appendChildToTemplateNode(nodeProxy, parentNodeProxy);
+
+            this._dispatchDidAppendChildToTemplateNode(nodeProxy, parentNodeProxy);
+
+            return result;
+        }
+    },
+
+    /**
+     * Append the specified nodeProxy to the template.
+     * This is the internal version of appendChildToTemplateNode that does not
+     * dispatch events.
+     *
+     * @param {NodeProxy} nodeProxy The nodeProxy to introduce to the template
+     * @param {NodeProxy} parentNodeProxy The optional parent proxy for the incoming nodeProxy
+     * If not specified, the nodeProxy associated with the owner component will be used.
+     * @return {NodeProxy} The node proxy that was inserted in the template
+     */
+    _appendChildToTemplateNode: {
+        value: function (nodeProxy, parentNodeProxy) {
 
             if (parentNodeProxy && !this.canAppendToTemplateNode(parentNodeProxy)) {
                 return;
@@ -1971,6 +2025,25 @@ exports.ReelDocument = EditingDocument.specialize({
      * @return {NodeProxy} The node proxy that was inserted in the template
      */
     insertNodeBeforeTemplateNode: {
+        value: function (nodeProxy, nextSiblingProxy) {
+            var result = this._insertNodeBeforeTemplateNode(nodeProxy, nextSiblingProxy);
+
+            this._dispatchDidInsertNodeBeforeTemplateNode(nodeProxy, nextSiblingProxy);
+
+            return result;
+        }
+    },
+
+    /**
+     * Insert the specified nodeProxy before the specified sibling proxy
+     * This is the internal version of insertNodeBeforeTemplateNode that does
+     * not dispatch events.
+     *
+     * @param {NodeProxy} nodeProxy The nodeProxy to insert
+     * @param {NodeProxy} nextSiblingProxy The nodeProxy to insert before
+     * @return {NodeProxy} The node proxy that was inserted in the template
+     */
+    _insertNodeBeforeTemplateNode: {
         value: function (nodeProxy, nextSiblingProxy) {
 
             if (!this.canInsertBeforeTemplateNode(nextSiblingProxy)) {
@@ -2082,6 +2155,25 @@ exports.ReelDocument = EditingDocument.specialize({
      * @return {NodeProxy} The node proxy that was inserted in the template
      */
     insertNodeAfterTemplateNode: {
+        value: function (nodeProxy, previousSiblingProxy) {
+            var result = this._insertNodeAfterTemplateNode(nodeProxy, previousSiblingProxy);
+
+            this._dispatchDidInsertNodeAfterTemplateNode(nodeProxy, previousSiblingProxy);
+
+            return result;
+        }
+    },
+
+    /**
+     * Insert the specified nodeProxy after the specified sibling proxy
+     * This is the internal version of insertNodeAfterTemplateNode that does not
+     * dispatch events.
+     *
+     * @param {NodeProxy} nodeProxy The nodeProxy to insert
+     * @param {NodeProxy} nextSiblingProxy The nodeProxy to insert after
+     * @return {NodeProxy} The node proxy that was inserted in the template
+     */
+    _insertNodeAfterTemplateNode: {
         value: function (nodeProxy, previousSiblingProxy) {
 
             if (!this.canInsertAfterTemplateNode(previousSiblingProxy)) {
@@ -2347,6 +2439,171 @@ exports.ReelDocument = EditingDocument.specialize({
                 }
             }
             this.templateObjectsTreeToggleStates.clear();
+        }
+    },
+
+    _dispatchDidAddObjectsFromTemplate: {
+        value: function(template, parentNode, nextSiblingNode) {
+            if (this.addObjectsFromTemplateDispatchingEnabled) {
+                this.dispatchEventNamed("didAddObjectsFromTemplate", true, false, {
+                    template: template,
+                    parentNode: parentNode,
+                    nextSiblingNode: nextSiblingNode
+                });
+            }
+        }
+    },
+
+    _dispatchDidChangeTemplate: {
+        value: function(template) {
+            if (this.changeTemplateDispatchingEnabled) {
+                this.dispatchEventNamed("didChangeTemplate", true, false, {
+                    template: template
+                });
+            }
+        }
+    },
+
+    _dispatchDidAppendChildToTemplateNode: {
+        value: function(nodeProxy, parentNodeProxy) {
+            if (this.domChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didAppendChildToTemplateNode", true, false, {
+                    nodeProxy: nodeProxy,
+                    parentNodeProxy: parentNodeProxy
+                });
+            }
+        }
+    },
+
+    _dispatchDidInsertNodeBeforeTemplateNode: {
+        value: function(nodeProxy, nextSiblingProxy) {
+            if (this.domChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didInsertNodeBeforeTemplateNode", true, false, {
+                    nodeProxy: nodeProxy,
+                    nextSiblingProxy: nextSiblingProxy
+                });
+            }
+        }
+    },
+
+    _dispatchDidInsertNodeAfterTemplateNode: {
+        value: function(nodeProxy, previousSiblingProxy) {
+            if (this.domChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didInsertNodeAfterTemplateNode", true, false, {
+                    nodeProxy: nodeProxy,
+                    previousSiblingProxy: previousSiblingProxy
+                });
+            }
+        }
+    },
+
+    _dispatchDidSetNodeAttribute: {
+        value: function(nodeProxy, attribute, value) {
+            if (this.domChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didSetNodeAttribute", true, false, {
+                    nodeProxy: nodeProxy,
+                    attribute: attribute,
+                    value: value
+                });
+            }
+        }
+    },
+
+    _dispatchDidDefineOwnedObjectBinding: {
+        value: function(proxy, targetPath, oneway, sourcePath, converter) {
+            if (this.bindingChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didDefineOwnedObjectBinding", true, false, {
+                    proxy: proxy,
+                    targetPath: targetPath,
+                    oneway: oneway,
+                    sourcePath: sourcePath,
+                    converter: converter
+                });
+            }
+        }
+    },
+
+    _dispatchDidCancelOwnedObjectBinding: {
+        value: function(proxy, binding) {
+            if (this.bindingChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didCancelOwnedObjectBinding", true, false, {
+                    proxy: proxy,
+                    binding: binding
+                });
+            }
+        }
+    },
+
+    _dispatchWillUpdateOwnedObjectBinding: {
+        value: function(proxy, binding) {
+            if (this.bindingChangesDispatchingEnabled) {
+                this.dispatchEventNamed("willUpdateOwnedObjectBinding", true, false, {
+                    proxy: proxy,
+                    binding: binding
+                });
+            }
+        }
+    },
+
+    _dispatchDidUpdateOwnedObjectBinding: {
+        value: function(proxy, targetPath, oneway, sourcePath, converter) {
+            if (this.bindingChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didUpdateOwnedObjectBinding", true, false, {
+                    proxy: proxy,
+                    targetPath: targetPath,
+                    oneway: oneway,
+                    sourcePath: sourcePath,
+                    converter: converter
+                });
+            }
+        }
+    },
+
+    _dispatchDidAddOwnedObjectEventListener: {
+        value: function(proxy, type, listener, useCapture) {
+            if (this.eventListenerChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didAddOwnedObjectEventListener", true, false, {
+                    proxy: proxy,
+                    type: type,
+                    listener: listener,
+                    useCapture: useCapture
+                });
+            }
+        }
+    },
+
+    _dispatchDidRemoveOwnedObjectEventListener: {
+        value: function(proxy, listener) {
+            if (this.eventListenerChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didRemoveOwnedObjectEventListener", true, false, {
+                    proxy: proxy,
+                    listener: listener
+                });
+            }
+        }
+    },
+
+    _dispatchWillUpdateOwnedObjectEventListener: {
+        value: function(proxy, listener) {
+            if (this.eventListenerChangesDispatchingEnabled) {
+                this.dispatchEventNamed("willUpdateOwnedObjectEventListener", true, false, {
+                    proxy: proxy,
+                    listener: listener
+                });
+            }
+        }
+    },
+
+    _dispatchDidUpdateOwnedObjectEventListener: {
+        value: function(proxy, type, listener, useCapture) {
+            if (this.eventListenerChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didUpdateOwnedObjectEventListener", true, false, {
+                    proxy: proxy,
+                    type: type,
+                    listener: listener,
+                    useCapture: useCapture
+                });
+            }
         }
     }
 
