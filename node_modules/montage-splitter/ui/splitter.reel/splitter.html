@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="splitter.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "splitter"},
+                "_sliderThumbTrackElement": {"#": "resizer"},
+                "_firstPane": {"#": "firstPane"},
+                "_secondPane": {"#": "secondPane"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="splitter" class="Splitter">
+        <div data-montage-id="firstPane" class="Splitter-contents Splitter-contents-first">
+            <div data-param="first"></div>
+        </div>
+        <div class="Splitter-resizer-space"><div data-montage-id="resizer" class="Splitter-resizer"></div></div>
+        <div data-montage-id="secondPane" class="Splitter-contents Splitter-contents-second">
+            <div data-param="second"></div>
+        </div>
+    </div>
+</body>
+</html>

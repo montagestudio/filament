@@ -1,0 +1,87 @@
+.Splitter {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    display: flex;
+}
+
+.Splitter.is-verticalSplit {
+    flex-direction: row;
+}
+
+.Splitter.is-horizontalSplit {
+    flex-direction: column;
+}
+
+.Splitter-contents {
+    position: relative;
+    overflow: auto;
+    cursor: default;
+}
+
+.Splitter > .Splitter-contents.is-fixed {
+    flex: 0 1 130px;
+}
+
+.Splitter > .Splitter-contents.is-fill {
+    flex: 1 1 0%;
+}
+
+.Splitter.is-verticalSplit > .Splitter-contents {
+    top: 0;
+    bottom: 0;
+}
+
+.Splitter.is-verticalSplit > .Splitter-contents-first {
+    left: 0;
+}
+
+.Splitter.is-verticalSplit > .Splitter-contents-second {
+    right: 0;
+}
+
+.Splitter.is-horizontalSplit > .Splitter-contents {
+    left: 0;
+    right: 0;
+}
+
+.Splitter.is-horizontalSplit > .Splitter-contents-first {
+    top: 0;
+}
+
+.Splitter.is-horizontalSplit > .Splitter-contents-second {
+    bottom: 0;
+}
+
+.Splitter > .Splitter-resizer-space {
+    -webkit-flex: 0 0 1px;
+    z-index: 100;
+    display: -webkit-flex;
+    position: relative;
+    background: black;
+    outline: none;
+}
+
+.Splitter > div > .Splitter-resizer {
+    position: absolute;
+    z-index: 1500;
+}
+
+.Splitter.is-verticalSplit > .Splitter-resizer-space > .Splitter-resizer {
+    top: 0px;
+    bottom: 0px;
+    left: -10px;
+    width: 20px;
+    cursor: col-resize;
+}
+
+.Splitter.is-horizontalSplit > .Splitter-resizer-space > .Splitter-resizer {
+    left: 0px;
+    right: 0px;
+    top: -10px;
+    height: 20px;
+    cursor: row-resize;
+}
