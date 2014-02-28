@@ -1,4 +1,5 @@
 var Component = require("montage/ui/component").Component;
+var Url = require("core/url");
 
 var menuItemExports,
     MenuItem;
@@ -48,13 +49,72 @@ exports.PackageExplorer = Component.specialize({
 
     enterDocument: {
         value: function () {
-            // there is no action event built into the montage anchor.reel
-            this.templateObjects.previewLink.element.identifier = "previewLink";
-            this.templateObjects.previewLink.element.addEventListener("click", this, false);
-            application.addPathChangeListener("mainMenu", this, "handleMenuAvailable");
+            var self = this;
+
             // Contextual menu handling
             this.addEventListener("showContextualMenu", this, false);
             this.element.addEventListener("contextmenu", this, false);
+
+            // there is no action event built into the montage anchor.reel
+            this.templateObjects.previewLink.element.identifier = "previewLink";
+            this.templateObjects.previewLink.element.addEventListener("click", this, false);
+
+            application.addPathChangeListener("mainMenu", this, "handleMenuAvailable");
+
+            this.addBeforePathChangeListener("previewController.previewUrl", function () {
+                self.dispatchBeforeOwnPropertyChange("previewUrl", self.previewUrl);
+            });
+
+            this.addPathChangeListener("previewController.previewUrl", function () {
+                self.dispatchOwnPropertyChange("previewUrl", self.previewUrl);
+            });
+
+            window.addEventListener("keydown", this, true);
+            window.addEventListener("keyup", this, true);
+        }
+    },
+
+    optionPressed: {
+        value: false
+    },
+
+    captureKeydown: {
+        value: function(e) {
+            var code = e.which;
+            if (code === 18) {
+                this.dispatchBeforeOwnPropertyChange("previewUrl", this.previewUrl);
+                this.optionPressed = true;
+                this.dispatchOwnPropertyChange("previewUrl", this.previewUrl);
+                this.needsDraw = true;
+            }
+        }
+    },
+
+    captureKeyup: {
+        value: function(e) {
+            var code = e.which;
+            if (code === 18) {
+                this.dispatchBeforeOwnPropertyChange("previewUrl", this.previewUrl);
+                this.optionPressed = false;
+                this.dispatchOwnPropertyChange("previewUrl", this.previewUrl);
+                this.needsDraw = true;
+            }
+        }
+    },
+
+    previewUrl: {
+        get: function() {
+            var url = this.previewController.previewUrl;
+            if (url && this.optionPressed) {
+                var urlObject = Url.parse(url);
+                if (urlObject.protocol === "http:") {
+                    urlObject.protocol = "https:";
+                } else {
+                    urlObject.protocol = "http:";
+                }
+                url = Url.format(urlObject);
+            }
+            return url;
         }
     },
 
@@ -143,6 +203,11 @@ exports.PackageExplorer = Component.specialize({
             } else {
                 this.element.style.display = "none";
             }
+            if (this.optionPressed) {
+                this.templateObjects.previewLink.element.classList.add("PackageExplorer-previewButton--altProtocol");
+            } else {
+                this.templateObjects.previewLink.element.classList.remove("PackageExplorer-previewButton--altProtocol");
+            }
         }
     },
 
@@ -150,7 +215,14 @@ exports.PackageExplorer = Component.specialize({
         value: function (event) {
             // stop the browser from following the link
             event.preventDefault();
-            this.projectController.environmentBridge.openHttpUrl(this.previewController.previewUrl).done();
+
+            var url = this.previewUrl;
+            setTimeout(function() {
+                this.projectController.environmentBridge.openHttpUrl(url).done();
+                this.optionPressed = false;
+                this.needsDraw = true;
+            }.bind(this), 1);
+
         }
     },
 
