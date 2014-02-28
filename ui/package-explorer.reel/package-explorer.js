@@ -199,6 +199,8 @@ exports.PackageExplorer = Component.specialize({
             var url = this.previewUrl;
             setTimeout(function() {
                 this.projectController.environmentBridge.openHttpUrl(url).done();
+                this.optionPressed = false;
+                this.needsDraw = true;
             }.bind(this), 1);
 
         }
