@@ -16,7 +16,7 @@ exports.RangeController = LibraryItem.specialize({
     },
 
     description: {
-        value: "Manages the selection and visible portion of given content, typically for a repeating group of elements."
+        value: "Manages a collection of objects"
     },
 
     iconUrl: {

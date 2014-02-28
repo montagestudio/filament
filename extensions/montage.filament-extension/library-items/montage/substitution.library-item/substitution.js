@@ -16,7 +16,7 @@ exports.Substitution = LibraryItem.specialize({
     },
 
     description: {
-        value: "Handles a group of elements, but shows only one element at a time. Use as a building block to reveal any number of user interface components one group at a time."
+        value: "Selectively shows a subset of its content based upon a switch value"
     },
 
     iconUrl: {

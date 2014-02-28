@@ -16,7 +16,7 @@ exports.Flow = LibraryItem.specialize({
     },
 
     description: {
-        value: "Produces a repeating group of elements that can be presented along a Bézier path."
+        value: "Repeats specified content along a Bézier path"
     },
 
     iconUrl: {

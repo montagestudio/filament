@@ -16,7 +16,7 @@ exports.Slot = LibraryItem.specialize({
     },
 
     description: {
-        value: "Use as a placeholder for a planned component."
+        value: "Serves as a placeholder for a planned component"
     },
 
     iconUrl: {

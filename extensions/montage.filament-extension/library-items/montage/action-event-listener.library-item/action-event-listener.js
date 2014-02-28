@@ -16,7 +16,7 @@ exports.ActionEventListener = LibraryItem.specialize({
     },
 
     description: {
-        value: "Defines what should be done in reaction to an event."
+        value: "Defines what should be done in reaction to an event"
     },
 
     iconUrl: {

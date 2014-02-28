@@ -16,7 +16,7 @@ exports.Application = LibraryItem.specialize({
     },
 
     description: {
-        value: "A reference to the default application object."
+        value: "A reference to the default application object"
     },
 
     iconUrl: {

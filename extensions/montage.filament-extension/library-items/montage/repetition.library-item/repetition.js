@@ -16,7 +16,7 @@ exports.Repetition = LibraryItem.specialize({
     },
 
     description: {
-        value: "Produces a repeating group of elements based on an array of values. Use as a building block to repeat any number of user interface components."
+        value: "Repeats content for each entry in a specified collection"
     },
 
     iconUrl: {

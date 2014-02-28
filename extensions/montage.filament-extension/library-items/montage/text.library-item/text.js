@@ -16,7 +16,7 @@ exports.Text = LibraryItem.specialize({
     },
 
     description: {
-        value: "Provides functionality for adding plain text."
+        value: "Provides functionality for adding plain text"
     },
 
     iconUrl: {

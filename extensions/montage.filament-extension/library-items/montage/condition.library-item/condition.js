@@ -16,7 +16,7 @@ exports.Condition = LibraryItem.specialize({
     },
 
     description: {
-        value: "Displays content if a certain condition is true."
+        value: "Displays content if a certain condition is true"
     },
 
     iconUrl: {
