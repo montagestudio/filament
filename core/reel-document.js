@@ -50,6 +50,10 @@ exports.ReelDocument = EditingDocument.specialize({
         value: true
     },
 
+    eventListenerChangesDispatchingEnabled: {
+        value: true
+    },
+
     _editor: {
         value: null
     },
@@ -1500,6 +1504,7 @@ exports.ReelDocument = EditingDocument.specialize({
                     // TODO register the listener on the stage, make sure we can remove it later
 
                     deferredUndoOperation.resolve([self._removeOwnedObjectEventListener, self, proxy, listenerEntry]);
+                    self._dispatchDidAddOwnedObjectEventListener(proxy, type, actualListener, useCapture);
                 }
 
                 // TODO this doesn't really do anything to guard against other unrelated sync operations being
@@ -1552,6 +1557,8 @@ exports.ReelDocument = EditingDocument.specialize({
             this.undoManager.openBatch("Edit Listener");
             this.undoManager.register("Edit Listener", deferredUndoOperation.promise);
 
+            this._dispatchWillUpdateOwnedObjectEventListener(proxy, existingListenerEntry);
+
             if (isDirectedHandler && methodName) {
                 // Keep existing AEL, update as necessary
                 actualListenerPromise = this._updateActionEventListener(originalListener, originalHandler, explicitListener, methodName);
@@ -1572,6 +1579,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
                 var updatedListenerEntry = proxy.updateObjectEventListener(existingListenerEntry, type, actualListener, useCapture);
                 deferredUndoOperation.resolve([self.updateOwnedObjectEventListener, self, proxy, updatedListenerEntry, originalType, undoListenerValue, originalUseCapture, originalMethodName]);
+                self._dispatchDidUpdateOwnedObjectEventListener(proxy, type, actualListener, useCapture);
 
                 self.editor.refresh();
                 return updatedListenerEntry;
@@ -1663,7 +1671,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.undoManager.register("Remove Listener", Promise.resolve([
                     this._addOwnedObjectEventListener, this, proxy, removedListenerEntry, removedIndex
                 ]));
-
+                this._dispatchDidRemoveOwnedObjectEventListener(proxy, listener);
                 if (removedListenerEntry.listener.properties.get("handler") && removedListenerEntry.listener.properties.get("action")) {
                     relatedObjectRemovalPromise = this.removeObject(removedListenerEntry.listener);
                 }
@@ -2546,6 +2554,54 @@ exports.ReelDocument = EditingDocument.specialize({
                     oneway: oneway,
                     sourcePath: sourcePath,
                     converter: converter
+                });
+            }
+        }
+    },
+
+    _dispatchDidAddOwnedObjectEventListener: {
+        value: function(proxy, type, listener, useCapture) {
+            if (this.eventListenerChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didAddOwnedObjectEventListener", true, false, {
+                    proxy: proxy,
+                    type: type,
+                    listener: listener,
+                    useCapture: useCapture
+                });
+            }
+        }
+    },
+
+    _dispatchDidRemoveOwnedObjectEventListener: {
+        value: function(proxy, listener) {
+            if (this.eventListenerChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didRemoveOwnedObjectEventListener", true, false, {
+                    proxy: proxy,
+                    listener: listener
+                });
+            }
+        }
+    },
+
+    _dispatchWillUpdateOwnedObjectEventListener: {
+        value: function(proxy, listener) {
+            if (this.eventListenerChangesDispatchingEnabled) {
+                this.dispatchEventNamed("willUpdateOwnedObjectEventListener", true, false, {
+                    proxy: proxy,
+                    listener: listener
+                });
+            }
+        }
+    },
+
+    _dispatchDidUpdateOwnedObjectEventListener: {
+        value: function(proxy, type, listener, useCapture) {
+            if (this.eventListenerChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didUpdateOwnedObjectEventListener", true, false, {
+                    proxy: proxy,
+                    type: type,
+                    listener: listener,
+                    useCapture: useCapture
                 });
             }
         }

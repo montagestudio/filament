@@ -43,10 +43,10 @@ exports.PreviewController = Target.specialize({
             app.addEventListener("didCancelOwnedObjectBinding", this);
             app.addEventListener("willUpdateOwnedObjectBinding", this);
             app.addEventListener("didUpdateOwnedObjectBinding", this);
-            app.addEventListener("didAddObjectEventListener", this);
-            app.addEventListener("didRemoveObjectEventListener", this);
-            app.addEventListener("willUpdateObjectEventListener", this);
-            app.addEventListener("didUpdateObjectEventListener", this);
+            app.addEventListener("didAddOwnedObjectEventListener", this);
+            app.addEventListener("didRemoveOwnedObjectEventListener", this);
+            app.addEventListener("willUpdateOwnedObjectEventListener", this);
+            app.addEventListener("didUpdateOwnedObjectEventListener", this);
             app.addEventListener("didAddObjectsFromTemplate", this);
             app.addEventListener("didAppendChildToTemplateNode", this);
             app.addEventListener("didInsertNodeBeforeTemplateNode", this);
@@ -589,47 +589,48 @@ exports.PreviewController = Target.specialize({
         }
     },
 
-    handleDidAddObjectEventListener: {
+    handleDidAddOwnedObjectEventListener: {
         value: function(event) {
-            var proxy = event.target;
-            var listenerModel = event.detail.listenerModel;
-            var ownerProxy = proxy.editingDocument.editingProxyMap.owner;
+            var detail = event.detail;
+            var proxy = detail.proxy;
+            var ownerProxy = event.target.editingProxyMap.owner;
 
             this.addPreviewObjectEventListener(
                 ownerProxy.moduleId,
                 proxy.label,
-                listenerModel.type,
-                listenerModel.listener.label,
-                listenerModel.useCapture)
+                detail.type,
+                detail.listener.label,
+                detail.useCapture)
             .done();
         }
     },
 
-    handleDidRemoveObjectEventListener: {
+    handleDidRemoveOwnedObjectEventListener: {
         value: function(event) {
-            var proxy = event.target;
-            var listenerModel = event.detail.listenerModel;
-            var ownerProxy = proxy.editingDocument.editingProxyMap.owner;
+            var detail = event.detail;
+            var proxy = detail.proxy;
+            var listener = detail.listener;
+            var ownerProxy = event.target.editingProxyMap.owner;
 
             this.removePreviewObjectEventListener(
                 ownerProxy.moduleId,
                 proxy.label,
-                listenerModel.type,
-                listenerModel.listener.label,
-                listenerModel.useCapture)
+                listener.type,
+                listener.listener.label,
+                listener.useCapture)
             .done();
         }
     },
 
-    handleWillUpdateObjectEventListener: {
+    handleWillUpdateOwnedObjectEventListener: {
         value: function(event) {
-            this.handleDidRemoveObjectEventListener(event);
+            this.handleDidRemoveOwnedObjectEventListener(event);
         }
     },
 
-    handleDidUpdateObjectEventListener: {
+    handleDidUpdateOwnedObjectEventListener: {
         value: function(event) {
-            this.handleDidAddObjectEventListener(event);
+            this.handleDidAddOwnedObjectEventListener(event);
         }
     },
 
