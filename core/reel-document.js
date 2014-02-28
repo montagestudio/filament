@@ -42,6 +42,10 @@ exports.ReelDocument = EditingDocument.specialize({
         value: true
     },
 
+    domChangesDispatchingEnabled: {
+        value: true
+    },
+
     _editor: {
         value: null
     },
@@ -1126,9 +1130,9 @@ exports.ReelDocument = EditingDocument.specialize({
                 var nodeProxy = NodeProxy.create().init(newChild, this);
 
                 if (nextSiblingElement) {
-                    this.insertNodeBeforeTemplateNode(nodeProxy, nextSiblingElement);
+                    this._insertNodeBeforeTemplateNode(nodeProxy, nextSiblingElement);
                 } else {
-                    this.appendChildToTemplateNode(nodeProxy, insertionParent);
+                    this._appendChildToTemplateNode(nodeProxy, insertionParent);
                 }
             }, this);
 
@@ -1888,9 +1892,9 @@ exports.ReelDocument = EditingDocument.specialize({
             this.__removeNodeProxy(nodeProxy);
 
             if (nextSibling) {
-                this.undoManager.register("Remove Node", Promise.resolve([this.insertNodeBeforeTemplateNode, this, nodeProxy, nextSibling]));
+                this.undoManager.register("Remove Node", Promise.resolve([this._insertNodeBeforeTemplateNode, this, nodeProxy, nextSibling]));
             } else {
-                this.undoManager.register("Remove Node", Promise.resolve([this.appendChildToTemplateNode, this, nodeProxy, parentNode]));
+                this.undoManager.register("Remove Node", Promise.resolve([this._appendChildToTemplateNode, this, nodeProxy, parentNode]));
             }
 
             this.undoManager.closeBatch();
@@ -1950,6 +1954,26 @@ exports.ReelDocument = EditingDocument.specialize({
      */
     appendChildToTemplateNode: {
         value: function (nodeProxy, parentNodeProxy) {
+            var result = this._appendChildToTemplateNode(nodeProxy, parentNodeProxy);
+
+            this._dispatchDidAppendChildToTemplateNode(nodeProxy, parentNodeProxy);
+
+            return result;
+        }
+    },
+
+    /**
+     * Append the specified nodeProxy to the template.
+     * This is the internal version of appendChildToTemplateNode that does not
+     * dispatch events.
+     *
+     * @param {NodeProxy} nodeProxy The nodeProxy to introduce to the template
+     * @param {NodeProxy} parentNodeProxy The optional parent proxy for the incoming nodeProxy
+     * If not specified, the nodeProxy associated with the owner component will be used.
+     * @return {NodeProxy} The node proxy that was inserted in the template
+     */
+    _appendChildToTemplateNode: {
+        value: function (nodeProxy, parentNodeProxy) {
 
             if (parentNodeProxy && !this.canAppendToTemplateNode(parentNodeProxy)) {
                 return;
@@ -1984,6 +2008,25 @@ exports.ReelDocument = EditingDocument.specialize({
      * @return {NodeProxy} The node proxy that was inserted in the template
      */
     insertNodeBeforeTemplateNode: {
+        value: function (nodeProxy, nextSiblingProxy) {
+            var result = this._insertNodeBeforeTemplateNode(nodeProxy, nextSiblingProxy);
+
+            this._dispatchDidInsertNodeBeforeTemplateNode(nodeProxy, nextSiblingProxy);
+
+            return result;
+        }
+    },
+
+    /**
+     * Insert the specified nodeProxy before the specified sibling proxy
+     * This is the internal version of insertNodeBeforeTemplateNode that does
+     * not dispatch events.
+     *
+     * @param {NodeProxy} nodeProxy The nodeProxy to insert
+     * @param {NodeProxy} nextSiblingProxy The nodeProxy to insert before
+     * @return {NodeProxy} The node proxy that was inserted in the template
+     */
+    _insertNodeBeforeTemplateNode: {
         value: function (nodeProxy, nextSiblingProxy) {
 
             if (!this.canInsertBeforeTemplateNode(nextSiblingProxy)) {
@@ -2095,6 +2138,25 @@ exports.ReelDocument = EditingDocument.specialize({
      * @return {NodeProxy} The node proxy that was inserted in the template
      */
     insertNodeAfterTemplateNode: {
+        value: function (nodeProxy, previousSiblingProxy) {
+            var result = this._insertNodeAfterTemplateNode(nodeProxy, previousSiblingProxy);
+
+            this._dispatchDidInsertNodeAfterTemplateNode(nodeProxy, previousSiblingProxy);
+
+            return result;
+        }
+    },
+
+    /**
+     * Insert the specified nodeProxy after the specified sibling proxy
+     * This is the internal version of insertNodeAfterTemplateNode that does not
+     * dispatch events.
+     *
+     * @param {NodeProxy} nodeProxy The nodeProxy to insert
+     * @param {NodeProxy} nextSiblingProxy The nodeProxy to insert after
+     * @return {NodeProxy} The node proxy that was inserted in the template
+     */
+    _insertNodeAfterTemplateNode: {
         value: function (nodeProxy, previousSiblingProxy) {
 
             if (!this.canInsertAfterTemplateNode(previousSiblingProxy)) {
@@ -2380,6 +2442,39 @@ exports.ReelDocument = EditingDocument.specialize({
             if (this.changeTemplateDispatchingEnabled) {
                 this.dispatchEventNamed("didChangeTemplate", true, false, {
                     template: template
+                });
+            }
+        }
+    },
+
+    _dispatchDidAppendChildToTemplateNode: {
+        value: function(nodeProxy, parentNodeProxy) {
+            if (this.domChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didAppendChildToTemplateNode", true, false, {
+                    nodeProxy: nodeProxy,
+                    parentNodeProxy: parentNodeProxy
+                });
+            }
+        }
+    },
+
+    _dispatchDidInsertNodeBeforeTemplateNode: {
+        value: function(nodeProxy, nextSiblingProxy) {
+            if (this.domChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didInsertNodeBeforeTemplateNode", true, false, {
+                    nodeProxy: nodeProxy,
+                    nextSiblingProxy: nextSiblingProxy
+                });
+            }
+        }
+    },
+
+    _dispatchDidInsertNodeAfterTemplateNode: {
+        value: function(nodeProxy, previousSiblingProxy) {
+            if (this.domChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didInsertNodeAfterTemplateNode", true, false, {
+                    nodeProxy: nodeProxy,
+                    previousSiblingProxy: previousSiblingProxy
                 });
             }
         }

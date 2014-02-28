@@ -26,10 +26,6 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
-    nodeManipulationDispatchingEnabled: {
-        value: true
-    },
-
     templateObjectsController: {
         value: null
     },
@@ -206,7 +202,6 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
                 var newNode = this.editingDocument.createTemplateNodeFromJSONNode(jsonNode);
                 this.editingDocument.appendChildToTemplateNode(newNode, evt.detail.parentNode);
                 this.templateObjects.createNodeCell.reset();
-                this._dispatchDidAppendNode(newNode, evt.detail.parentNode);
             }
         }
     },
@@ -227,7 +222,6 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
                 var newNode = this.editingDocument.createTemplateNodeFromJSONNode(jsonNode);
                 this.editingDocument.insertNodeBeforeTemplateNode(newNode, evt.detail.nextSibling);
                 this.templateObjects.createNodeCell.reset();
-                this._dispatchDidInsertBeforeNode(newNode, evt.detail.nextSibling);
             }
         }
     },
@@ -248,8 +242,6 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
                 var newNode = this.editingDocument.createTemplateNodeFromJSONNode(jsonNode);
                 this.editingDocument.insertNodeAfterTemplateNode(newNode, evt.detail.previousSibling);
                 this.templateObjects.createNodeCell.reset();
-                this._dispatchDidInsertAfterNode(newNode,
-                    evt.detail.previousSibling);
             }
         }
     },
@@ -295,39 +287,6 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
                 this.templateObjects.createNodeCell.focusTagName();
             } else {
                 this.templateObjects.createNodeCell.reset();
-            }
-        }
-    },
-
-    _dispatchDidAppendNode: {
-        value: function(nodeProxy, parentNodeProxy) {
-            if (this.nodeManipulationDispatchingEnabled) {
-                this.dispatchEventNamed("didAppendNode", true, false, {
-                    nodeProxy: nodeProxy,
-                    parentNodeProxy: parentNodeProxy
-                });
-            }
-        }
-    },
-
-    _dispatchDidInsertBeforeNode: {
-        value: function(nodeProxy, nextSiblingProxy) {
-            if (this.nodeManipulationDispatchingEnabled) {
-                this.dispatchEventNamed("didInsertBeforeNode", true, false, {
-                    nodeProxy: nodeProxy,
-                    nextSiblingProxy: nextSiblingProxy
-                });
-            }
-        }
-    },
-
-    _dispatchDidInsertAfterNode: {
-        value: function(nodeProxy, previousSiblingProxy) {
-            if (this.nodeManipulationDispatchingEnabled) {
-                this.dispatchEventNamed("didInsertAfterNode", true, false, {
-                    nodeProxy: nodeProxy,
-                    previousSiblingProxy: previousSiblingProxy
-                });
             }
         }
     },

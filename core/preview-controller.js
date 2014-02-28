@@ -48,9 +48,9 @@ exports.PreviewController = Target.specialize({
             app.addEventListener("willUpdateObjectEventListener", this);
             app.addEventListener("didUpdateObjectEventListener", this);
             app.addEventListener("didAddObjectsFromTemplate", this);
-            app.addEventListener("didInsertBeforeNode", this);
-            app.addEventListener("didInsertAfterNode", this);
-            app.addEventListener("didAppendNode", this);
+            app.addEventListener("didAppendChildToTemplateNode", this);
+            app.addEventListener("didInsertNodeBeforeTemplateNode", this);
+            app.addEventListener("didInsertNodeAfterTemplateNode", this);
             app.addEventListener("didSetAttribute", this);
             app.addEventListener("didChangeTemplate", this);
 
@@ -631,9 +631,9 @@ exports.PreviewController = Target.specialize({
         }
     },
 
-    handleDidInsertBeforeNode: {
+    handleDidInsertNodeBeforeTemplateNode: {
         value: function(event) {
-            var document = event.target.editingDocument;
+            var document = event.target;
             var detail = event.detail;
             var ownerProxy = document.editingProxyMap.owner;
             var nodeCount = 1;
@@ -650,9 +650,9 @@ exports.PreviewController = Target.specialize({
         }
     },
 
-    handleDidInsertAfterNode: {
+    handleDidInsertNodeAfterTemplateNode: {
         value: function(event) {
-            var document = event.target.editingDocument;
+            var document = event.target;
             var detail = event.detail;
             var ownerProxy = document.editingProxyMap.owner;
             var nodeCount = 1;
@@ -669,9 +669,9 @@ exports.PreviewController = Target.specialize({
     },
 
 
-    handleDidAppendNode: {
+    handleDidAppendChildToTemplateNode: {
         value: function(event) {
-            var document = event.target.editingDocument;
+            var document = event.target;
             var detail = event.detail;
             var ownerProxy = document.editingProxyMap.owner;
             var nodeCount = 1;
