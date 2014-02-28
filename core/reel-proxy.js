@@ -37,10 +37,6 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
-    bindingChangesDispatchingEnabled: {
-        value: true
-    },
-
     eventListenerChangesDispatchingEnabled: {
         value: true
     },
@@ -274,7 +270,6 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             binding.converter = converter;
 
             this.bindings.push(binding);
-            this._dispatchDidSetObjectBinding(binding);
 
             return binding;
         }
@@ -301,14 +296,10 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
             }
 
 
-            this._dispatchWillUpdateObjectBinding(binding);
-
             binding.targetPath = targetPath;
             binding.oneway = oneway;
             binding.sourcePath = sourcePath;
             binding.converter = converter;
-
-            this._dispatchDidUpdateObjectBinding(binding);
 
             return binding;
         }
@@ -328,7 +319,6 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
                 } else {
                     this.bindings.splice(insertionIndex, 0, binding);
                 }
-                this._dispatchDidSetObjectBinding(binding);
             } else {
                 //TODO guard against adding exact same binding to multiple proxies
                 throw new Error("Cannot add the same binding to a proxy more than once");
@@ -372,7 +362,6 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
 
             if (bindingIndex > -1) {
                 this.bindings.splice(bindingIndex, 1);
-                this._dispatchDidCancelObjectBinding(binding);
                 return {index: bindingIndex, removedBinding: binding};
             } else {
                 throw new Error("Cannot cancel a binding that's not associated with this proxy");
@@ -446,46 +435,6 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
                 return {index: listenerIndex, removedListener: listener};
             } else {
                 throw new Error("Cannot remove a listener that's not associated with this proxy");
-            }
-        }
-    },
-
-    _dispatchDidSetObjectBinding: {
-        value: function(binding) {
-            if (this.bindingChangesDispatchingEnabled) {
-                this.dispatchEventNamed("didSetObjectBinding", true, false, {
-                    binding: binding
-                });
-            }
-        }
-    },
-
-    _dispatchDidCancelObjectBinding: {
-        value: function(binding) {
-            if (this.bindingChangesDispatchingEnabled) {
-                this.dispatchEventNamed("didCancelObjectBinding", true, false, {
-                    binding: binding
-                });
-            }
-        }
-    },
-
-    _dispatchWillUpdateObjectBinding: {
-        value: function(binding) {
-            if (this.bindingChangesDispatchingEnabled) {
-                this.dispatchEventNamed("willUpdateObjectBinding", true, false, {
-                    binding: binding
-                });
-            }
-        }
-    },
-
-    _dispatchDidUpdateObjectBinding: {
-        value: function(binding) {
-            if (this.bindingChangesDispatchingEnabled) {
-                this.dispatchEventNamed("didUpdateObjectBinding", true, false, {
-                    binding: binding
-                });
             }
         }
     },

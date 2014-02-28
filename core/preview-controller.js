@@ -39,10 +39,10 @@ exports.PreviewController = Target.specialize({
             app.addEventListener("didSave", this);
             app.addEventListener("didChangeObjectProperties", this);
             app.addEventListener("didChangeObjectProperty", this);
-            app.addEventListener("didSetObjectBinding", this);
-            app.addEventListener("didCancelObjectBinding", this);
-            app.addEventListener("willUpdateObjectBinding", this);
-            app.addEventListener("didUpdateObjectBinding", this);
+            app.addEventListener("didDefineOwnedObjectBinding", this);
+            app.addEventListener("didCancelOwnedObjectBinding", this);
+            app.addEventListener("willUpdateOwnedObjectBinding", this);
+            app.addEventListener("didUpdateOwnedObjectBinding", this);
             app.addEventListener("didAddObjectEventListener", this);
             app.addEventListener("didRemoveObjectEventListener", this);
             app.addEventListener("willUpdateObjectEventListener", this);
@@ -308,21 +308,22 @@ exports.PreviewController = Target.specialize({
         }
     },
 
-    handleDidSetObjectBinding: {
+    handleDidDefineOwnedObjectBinding: {
         value: function (event) {
-            var proxy = event.target;
-            var ownerProxy = proxy.editingDocument.editingProxyMap.owner;
+            var detail = event.detail;
+            var proxy = detail.proxy;
+            var ownerProxy = event.target.editingProxyMap.owner;
 
             if (!ownerProxy) {
                 return;
             }
 
             var binding = {
-                propertyName: event.detail.binding.targetPath,
+                propertyName: detail.targetPath,
                 propertyDescriptor: {}
             };
-            var direction = event.detail.binding.oneway ? "<-" : "<->";
-            binding.propertyDescriptor[direction] = event.detail.binding.sourcePath;
+            var direction = detail.oneway ? "<-" : "<->";
+            binding.propertyDescriptor[direction] = detail.sourcePath;
 
             this.setPreviewObjectBinding(
                 ownerProxy.exportId, proxy.label, binding)
@@ -330,30 +331,31 @@ exports.PreviewController = Target.specialize({
         }
     },
 
-    handleDidCancelObjectBinding: {
+    handleDidCancelOwnedObjectBinding: {
         value: function (event) {
-            var proxy = event.target;
-            var ownerProxy = proxy.editingDocument.editingProxyMap.owner;
+            var detail = event.detail;
+            var proxy = detail.proxy;
+            var ownerProxy = event.target.editingProxyMap.owner;
 
             if (!ownerProxy) {
                 return;
             }
 
             this.deletePreviewObjectBinding(
-                ownerProxy.exportId, proxy.label, event.detail.binding.targetPath)
+                ownerProxy.exportId, proxy.label, detail.binding.targetPath)
             .done();
         }
     },
 
-    handleWillUpdateObjectBinding: {
+    handleWillUpdateOwnedObjectBinding: {
         value: function (event) {
-            this.handleDidCancelObjectBinding(event);
+            this.handleDidCancelOwnedObjectBinding(event);
         }
     },
 
-    handleDidUpdateObjectBinding: {
+    handleDidUpdateOwnedObjectBinding: {
         value: function (event) {
-            this.handleDidSetObjectBinding(event);
+            this.handleDidDefineOwnedObjectBinding(event);
         }
     },
 

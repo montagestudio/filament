@@ -46,6 +46,10 @@ exports.ReelDocument = EditingDocument.specialize({
         value: true
     },
 
+    bindingChangesDispatchingEnabled: {
+        value: true
+    },
+
     _editor: {
         value: null
     },
@@ -1328,6 +1332,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 // }
 
                 this.undoManager.register("Define Binding", Promise.resolve([this.cancelOwnedObjectBinding, this, proxy, binding]));
+                this._dispatchDidDefineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath, converter);
             }
 
             // Need to rebuild the serialization here so that the template
@@ -1373,6 +1378,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.undoManager.register("Cancel Binding", Promise.resolve([
                     this._addOwnedObjectBinding, this, proxy, removedBinding, removedIndex
                 ]));
+                this._dispatchDidCancelOwnedObjectBinding(proxy, binding);
             }
 
             // Need to rebuild the serialization here so that the template
@@ -1394,6 +1400,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 originalconverter = existingBinding.converter,
                 updatedBinding;
 
+            this._dispatchWillUpdateOwnedObjectBinding(proxy, existingBinding);
             updatedBinding = proxy.updateObjectBinding(existingBinding, targetPath, oneway, sourcePath, converter);
 
             if (updatedBinding) {
@@ -1405,6 +1412,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.undoManager.register("Edit Binding", Promise.resolve([
                     this.updateOwnedObjectBinding, this, proxy, updatedBinding, originalTargetPath, originalOneway, originalSourcePath, originalconverter
                 ]));
+                this._dispatchDidUpdateOwnedObjectBinding(proxy, targetPath, oneway, sourcePath, converter);
             }
 
             // Need to rebuild the serialization here so that the template
@@ -2488,6 +2496,56 @@ exports.ReelDocument = EditingDocument.specialize({
                     nodeProxy: nodeProxy,
                     attribute: attribute,
                     value: value
+                });
+            }
+        }
+    },
+
+    _dispatchDidDefineOwnedObjectBinding: {
+        value: function(proxy, targetPath, oneway, sourcePath, converter) {
+            if (this.bindingChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didDefineOwnedObjectBinding", true, false, {
+                    proxy: proxy,
+                    targetPath: targetPath,
+                    oneway: oneway,
+                    sourcePath: sourcePath,
+                    converter: converter
+                });
+            }
+        }
+    },
+
+    _dispatchDidCancelOwnedObjectBinding: {
+        value: function(proxy, binding) {
+            if (this.bindingChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didCancelOwnedObjectBinding", true, false, {
+                    proxy: proxy,
+                    binding: binding
+                });
+            }
+        }
+    },
+
+    _dispatchWillUpdateOwnedObjectBinding: {
+        value: function(proxy, binding) {
+            if (this.bindingChangesDispatchingEnabled) {
+                this.dispatchEventNamed("willUpdateOwnedObjectBinding", true, false, {
+                    proxy: proxy,
+                    binding: binding
+                });
+            }
+        }
+    },
+
+    _dispatchDidUpdateOwnedObjectBinding: {
+        value: function(proxy, targetPath, oneway, sourcePath, converter) {
+            if (this.bindingChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didUpdateOwnedObjectBinding", true, false, {
+                    proxy: proxy,
+                    targetPath: targetPath,
+                    oneway: oneway,
+                    sourcePath: sourcePath,
+                    converter: converter
                 });
             }
         }
