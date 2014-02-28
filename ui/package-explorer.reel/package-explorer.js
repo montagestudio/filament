@@ -29,12 +29,32 @@ exports.PackageExplorer = Component.specialize({
         }
     },
 
+    didBecomeActiveTarget: {
+        value: function () {
+            this.classList.add("activeTarget");
+        }
+    },
+
+    surrendersActiveTarget: {
+        value: function () {
+            this.classList.remove("activeTarget");
+            return true;
+        }
+    },
+
+    acceptsActiveTarget: {
+        value: true
+    },
+
     enterDocument: {
         value: function () {
             // there is no action event built into the montage anchor.reel
             this.templateObjects.previewLink.element.identifier = "previewLink";
             this.templateObjects.previewLink.element.addEventListener("click", this, false);
             application.addPathChangeListener("mainMenu", this, "handleMenuAvailable");
+            // Contextual menu handling
+            this.addEventListener("showContextualMenu", this, false);
+            this.element.addEventListener("contextmenu", this, false);
         }
     },
 
@@ -154,6 +174,25 @@ exports.PackageExplorer = Component.specialize({
 
             this.isShown = !this.isShown;
             this._menuItem.title = this.isShown ? HIDE_MENU_TEXT : SHOW_MENU_TEXT;
+        }
+    },
+
+    handleContextmenu: {
+        value: function (evt) {
+            evt.stopImmediatePropagation();
+            evt.stop();
+
+            this.templateObjects.contextualMenu.show(null, {top: evt.clientY, left: evt.clientX});
+        }
+    },
+
+    handleShowContextualMenu: {
+        value: function (evt) {
+            var detail = evt.detail,
+                position = detail.position,
+                fileInfo = detail.fileInfo;
+
+            this.templateObjects.contextualMenu.show(fileInfo, position);
         }
     }
 

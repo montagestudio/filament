@@ -86,7 +86,8 @@
                 "bindings": {
                     "fileInfo": {"<-": "@fileCell.parentComponent.iteration.content"},
                     "iteration": {"<-": "@fileCell.parentComponent.iteration"},
-                    "projectController": {"<-": "@owner.projectController"}
+                    "projectController": {"<-": "@owner.projectController"},
+                    "classList.has('contextualMenu-selection')": {"<-": "@owner.templateObjects.contextualMenu.fileInfo == fileInfo"}
                 }
             },
 
@@ -120,6 +121,22 @@
                         "listener": {"@": "owner"}
                     }
                 ]
+            },
+
+            "contextualMenu": {
+                "prototype": "./contextual-menu.reel",
+                "properties": {
+                    "element": {"#": "contextualMenu"}
+                },
+                "bindings": {
+                    "projectController": {"<-": "@owner.projectController"}
+                },
+                "listeners": [
+                    {
+                        "type": "dismiss",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             }
         }
     </script>
@@ -136,6 +153,9 @@
             </div>
             <a data-montage-id="previewLink" class="PackageExplorer-previewButton" title="Preview"></a>
         </header>
+        <section>
+            <div data-montage-id="contextualMenu"></div>
+        </section>
         <div class="Shadow Shadow--top"></div>
         <div data-montage-id="fileList" class="PackageExplorer-list">
             <span data-montage-id="file-cell" data-arg="treeNode"></span>

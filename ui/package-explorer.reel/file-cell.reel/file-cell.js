@@ -45,7 +45,22 @@ exports.FileCell = Montage.create(Component, {
                     //TODO eventually allow moving directories
                     this.element.addEventListener("dragstart", this);
                 }
+
+                this.element.addEventListener("mouseup", this, false);
+                this.element.addEventListener("contextmenu", this, false);
             }
+        }
+    },
+
+    handleContextmenu: {
+        value: function (evt) {
+            evt.stopImmediatePropagation();
+            evt.stop();
+
+            this.dispatchEventNamed("showContextualMenu", true, true, {
+                fileInfo: this.fileInfo,
+                position: {top: evt.clientY, left: evt.clientX}
+            });
         }
     },
 
@@ -230,7 +245,7 @@ exports.FileCell = Montage.create(Component, {
                         filename = decodeURIComponent(file.name),
                         destinationUrl = Url.resolve(destination, filename);
 
-                    self.projectController.addFileToProjectAtUrl(base64, destinationUrl)
+                    self.projectController.projectDocument.add(base64, destinationUrl)
                         .then(function (success) {
                             deferredUpload.resolve(destinationUrl);
                             deferredCompletion.notify(filename);
@@ -341,6 +356,17 @@ exports.FileCell = Montage.create(Component, {
     handleOpenFileButtonAction: {
         value: function (evt) {
             this.dispatchEventNamed("openUrl", true, true, this.fileInfo.fileUrl);
+        }
+    },
+
+    // Hack to go arround the fact that the press composer sometimes gets the mouse event before the contextMenu
+    handleMouseup: {
+        value: function (evt) {
+            if (evt.button === 2) {
+                evt.stopImmediatePropagation();
+                evt.stop();
+                this.ownerComponent.templateObjects.contextualMenu.hide();
+            }
         }
     }
 
