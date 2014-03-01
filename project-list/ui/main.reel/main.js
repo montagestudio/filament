@@ -22,10 +22,6 @@ exports.Main = Montage.create(Component, {
             this.super();
 
             var self = this;
-            require.async("adaptor/client/core/browser-bridge").then(function (exported) {
-                self.environmentBridge = exported.BrowserBridge.create();
-
-            });
             this.templateObjects = {
                 repositoriesController: repositoriesController
             };
