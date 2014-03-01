@@ -37,8 +37,8 @@ exports.PreviewController = Target.specialize({
             var app = require("montage/core/application").application;
 
             app.addEventListener("didSave", this);
-            app.addEventListener("didChangeObjectProperties", this);
-            app.addEventListener("didChangeObjectProperty", this);
+            app.addEventListener("didSetOwnedObjectProperties", this);
+            app.addEventListener("didSetOwnedObjectProperty", this);
             app.addEventListener("didDefineOwnedObjectBinding", this);
             app.addEventListener("didCancelOwnedObjectBinding", this);
             app.addEventListener("willUpdateOwnedObjectBinding", this);
@@ -270,23 +270,24 @@ exports.PreviewController = Target.specialize({
         }
     },
 
-    handleDidChangeObjectProperties: {
+    handleDidSetOwnedObjectProperties: {
         value: function (event) {
-            var proxy = event.target;
-            var ownerProxy = proxy.editingDocument.editingProxyMap.owner;
+            var detail = event.detail;
+            var proxy = detail.proxy;
+            var ownerProxy = event.target.editingProxyMap.owner;
             var ownerModuleId = ownerProxy ? ownerProxy.exportId : null;
 
-            this.setPreviewObjectProperties(proxy.label, ownerModuleId, event.detail.properties).done();
+            this.setPreviewObjectProperties(proxy.label, ownerModuleId, detail.values).done();
         }
     },
 
-    handleDidChangeObjectProperty: {
+    handleDidSetOwnedObjectProperty: {
         value: function (event) {
-            var proxy = event.target;
-            var ownerProxy = proxy.editingDocument.editingProxyMap.owner;
+            var detail = event.detail;
+            var proxy = detail.proxy;
+            var ownerProxy = event.target.editingProxyMap.owner;
             var ownerModuleId = ownerProxy ? ownerProxy.exportId : null;
-            var value = event.detail.value;
-            var location;
+            var value = detail.value;
             var type;
 
             if (value instanceof NodeProxy) {
@@ -299,7 +300,7 @@ exports.PreviewController = Target.specialize({
                 };
             }
 
-            this.setPreviewObjectProperty(ownerModuleId, proxy.label, event.detail.property, value, type).done();
+            this.setPreviewObjectProperty(ownerModuleId, proxy.label, detail.property, value, type).done();
         }
     },
 
