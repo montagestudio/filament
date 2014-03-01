@@ -16,7 +16,7 @@ exports.RadioButtonController = LibraryItem.specialize({
     },
 
     description: {
-        value: "Manages the state of radio buttons."
+        value: "Manages the state of radio buttons"
     },
 
     iconUrl: {
