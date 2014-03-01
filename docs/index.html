@@ -3,13 +3,13 @@
 <head>
     <title>Docs</title>
     <meta charset="utf-8">
-  
+
     <link rel="shortcut icon" href="../assets/img/favicon.ico">
-    
+
     <link href="../assets/fonts/fonts.css" rel="stylesheet" />
     <link href="../assets/styles/bootstrapping.css" rel="stylesheet" />
     <link href="../assets/styles/filament.css" rel="stylesheet" />
-    
+
     <script src="../node_modules/montage/montage.js" data-package=".."></script>
     <script type="text/montage-serialization">
         {
@@ -18,18 +18,19 @@
                 "properties": {
                     "mainModule": "docs/ui/main.reel"
                 }
+            },
+
+            "loader": {
+                "prototype": "ui/widgets/loader.reel",
+                "properties": {
+                    "element": {"#": "loader"}
+                }
             }
         }
     </script>
 
 </head>
 <body>
-    <div class="LoaderWrapper">
-        <div class="Loader">
-            <div class="Loader-cube"></div>
-            <div class="Loader-cube"></div>
-            <div class="Loader-cube"></div>
-        </div>
-    </div>
+    <div data-montage-id="loader"></div>
 </body>
 </html>

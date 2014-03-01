@@ -19,20 +19,19 @@
                 "properties": {
                     "mainModule": "project-list/ui/main.reel"
                 }
+            },
+
+            "loader": {
+                "prototype": "ui/widgets/loader.reel",
+                "properties": {
+                    "element": {"#": "loader"}
+                }
             }
         }
     </script>
 
 </head>
 <body>
-    <div class="Loader">
-        <svg class="Loader-icon" width="91px" height="128px" viewBox="0 0 91 128">
-            <g class="Loader-icon-group" fill-rule="evenodd">
-                <path class="Loader-icon-path Loader-icon-path--1" fill="#46D4BC" d="M91,128 L91,37 L0,128 L91,128 Z"></path>
-                <path class="Loader-icon-path Loader-icon-path--2" fill="#5D9FE3" d="M0,37 L0,128 L91,128 L0,37 Z"></path>
-                <path class="Loader-icon-path Loader-icon-path--3" fill="#EDCB6C" d="M91,2.17899772e-14 L0,0 L45.5,46 L91,2.17899772e-14 Z"></path>
-            </g>
-        </svg>
-    </div>
+    <div data-montage-id="loader"></div>
 </body>
 </html>

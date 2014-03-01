@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="200px" height="100px" viewBox="0 0 200 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <title>loader</title>
+    <description>Created with Sketch (http://www.bohemiancoding.com/sketch)</description>
+    <defs>
+        <linearGradient x1="0%" y1="50%" x2="100%" y2="50%" id="linearGradient-1">
+            <stop stop-color="#F6672F" offset="0%"></stop>
+            <stop stop-color="#FD9058" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="30.5256484%" y1="34.2880221%" x2="101.999998%" y2="100.999999%" id="linearGradient-2">
+            <stop stop-color="#E92F26" offset="0%"></stop>
+            <stop stop-color="#FC5C57" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="0%" y1="0%" x2="80.7132015%" y2="56.552528%" id="linearGradient-3">
+            <stop stop-color="#D93597" offset="0%"></stop>
+            <stop stop-color="#F972B4" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="22.924383%" y1="37.3642569%" x2="101.999998%" y2="100.999999%" id="linearGradient-4">
+            <stop stop-color="#A87CBA" offset="0%"></stop>
+            <stop stop-color="#642E94" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="0%" y1="0%" x2="70.7676531%" y2="63.6495881%" id="linearGradient-5">
+            <stop stop-color="#6A77BA" offset="0%"></stop>
+            <stop stop-color="#1F2562" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="34.6111992%" y1="33.6221358%" x2="101.999998%" y2="100.999999%" id="linearGradient-6" stop-color="#FEE7AB">
+            <stop offset="0%"></stop>
+            <stop offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="0%" y1="0%" x2="65.6670874%" y2="67.0262121%" id="linearGradient-7">
+            <stop stop-color="#1E87C8" offset="0%"></stop>
+            <stop stop-color="#62B9E2" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="32.1586102%" y1="32.4150236%" x2="101.999998%" y2="100.999999%" id="linearGradient-8">
+            <stop stop-color="#148C77" offset="0%"></stop>
+            <stop stop-color="#87D6C6" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="loader" sketch:type="MSLayerGroup">
+            <path d="M0,100 L0,33 L50,66.5006694 L0,100" id="p1" fill="url(#linearGradient-1)" sketch:type="MSShapeGroup"></path>
+            <path d="M50,67 L50,0 L0,33.5007531 L50,67" id="p2" fill="url(#linearGradient-2)" sketch:type="MSShapeGroup"></path>
+            <path d="M50,67 L50,0 L100,33.5007531 L50,67" id="p3" fill="url(#linearGradient-3)" sketch:type="MSShapeGroup"></path>
+            <path d="M99.9833535,33 L50,66.5006694 L100,100 L99.9833535,33" id="p4" fill="url(#linearGradient-4)" sketch:type="MSShapeGroup"></path>
+            <path d="M100,33 L150,66.5006694 L100,100 L100,33" id="p5" fill="url(#linearGradient-5)" sketch:type="MSShapeGroup"></path>
+            <path d="M150,0 L100,33.5007531 L150,67 L150,0" id="p6" fill="url(#linearGradient-6)" sketch:type="MSShapeGroup"></path>
+            <path d="M150,67 L150,0 L200,33.5007531 L150,67" id="p7" fill="url(#linearGradient-7)" sketch:type="MSShapeGroup"></path>
+            <path d="M200,100 L200,33 L150,66.5006694 L200,100" id="p8" fill="url(#linearGradient-8)" sketch:type="MSShapeGroup"></path>
+        </g>
+    </g>
+</svg>
