@@ -52,31 +52,6 @@
                 }
             },
 
-            "extensionPanel": {
-                "prototype": "ui/extension-panel.reel",
-                "properties": {
-                    "element": {"#": "extensionPanel"}
-                },
-                "bindings": {
-                    "extensions": {"<-": "@owner.extensionController.loadedExtensions"}
-                }
-            },
-
-            "toggleExtensionsPanel": {
-                "prototype": "montage/composer/key-composer",
-                "properties": {
-                    "keys": "shift+control+e",
-                    "identifier": "toggleExtensions",
-                    "component": {"@": "application"}
-                },
-                "listeners": [
-                    {
-                        "type": "keyPress",
-                        "listener": {"@": "owner"}
-                    }
-                ]
-            },
-
             "goToFileKey": {
                 "prototype": "montage/composer/key-composer",
                 "properties": {
@@ -107,17 +82,6 @@
                 ]
             },
 
-            "extensionsPanelCondition": {
-                "prototype": "montage/ui/condition.reel",
-                "properties": {
-                    "element": {"#": "extensionsPanelCondition"},
-                    "removalStrategy": "hide"
-                },
-                "bindings": {
-                    "condition": {"<-": "@owner._extensionsVisible"}
-                }
-            },
-
             "packageExplorer": {
                 "prototype": "ui/package-explorer.reel",
                 "properties": {
@@ -131,7 +95,6 @@
                     "previewController": {"<-": "@application.delegate.previewController"}
                 }
             },
-
 
             "togglePaletteKeyComposer": {
                 "prototype": "montage/composer/key-composer",
@@ -232,9 +195,6 @@
         <div data-montage-id="tasksInfobar"></div>
 
         <div data-montage-id="containerElement" class="Main">
-            <div data-montage-id="extensionsPanelCondition">
-                <aside data-montage-id="extensionPanel"></aside>
-            </div>
             <aside data-montage-id="packageExplorer" class="palette"></aside>
             <div data-montage-id="split"></div>
             <section class="editor">
