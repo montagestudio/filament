@@ -15,7 +15,6 @@
             "owner": {
                 "properties": {
                     "element": {"#": "componentEditor"},
-                    "_documentEditorSlot": {"#": "documentEditorSlot"},
                     "_modalEditorSlot": {"#": "modalEditorSlot"},
                     "templateObjectsController": {"@": "templateObjectsController"}
                 },
@@ -98,19 +97,6 @@
                 "bindings": {
                     "templateObjectsController": {"<-": "@owner.templateObjectsController"},
                     "editingDocument": {"<-": "@owner.currentDocument"}
-                }
-            },
-
-            "domSplit": {
-                "prototype": "ui/split-control.reel",
-                "properties": {
-                    "element": {"#": "domSplit"},
-                    "splitAxis": "horizontal",
-                    "containerElement": {"#": "documentEditorExplorerColumn"},
-                    "controlledComponent": {"@": "domExplorer"},
-                    "max": 100,
-                    "min": 0,
-                    "valuePercentage": 50
                 }
             },
 
@@ -208,8 +194,7 @@
         <section data-montage-id="templateExplorer" class="ComponentEditor-column palette"></section>
 
         <section data-montage-id="documentEditorExplorerColumn" class="ComponentEditor-column Column palette">
-            <div data-montage-id="documentEditorSlot" class="ComponentEditor-column-row ComponentEditor-column-row--fill ComponentEditor-column-row--documentEditor"></div>
-            <div data-montage-id="domSplit"></div>
+            <header class="Bar"></header>
             <footer data-montage-id="domExplorer" class="ComponentEditor-column-row ComponentEditor-column-row--fixed"></footer>
         </section>
         <aside data-montage-id="configurator" class="Column palette"></aside>

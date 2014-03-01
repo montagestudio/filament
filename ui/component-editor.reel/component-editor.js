@@ -1,5 +1,4 @@
-var DocumentEditor = require("./document-editor.reel").DocumentEditor,
-    WeakMap = require("montage/collections/weak-map"),
+var WeakMap = require("montage/collections/weak-map"),
     Editor = require("palette/ui/editor.reel").Editor,
     Promise = require("montage/core/promise").Promise,
     Template = require("montage/core/template").Template,
@@ -19,34 +18,8 @@ exports.ComponentEditor = Editor.specialize({
         value: null
     },
 
-    _editorsToInsert: {
-        value: null
-    },
-
-    _editorsToRemove: {
-        value: null
-    },
-
-    _documentEditorSlot: {
-        value: null
-    },
-
     _modalEditorSlot: {
         value: null
-    },
-
-    _openEditors: {
-        value: null
-    },
-
-    _frontEditor: {
-        value: null
-    },
-
-    nextTarget: {
-        get: function () {
-            return this._frontEditor;
-        }
     },
 
     constructor: {
@@ -82,38 +55,15 @@ exports.ComponentEditor = Editor.specialize({
 
     openDocument: {
         value: function (document) {
-            var editor;
 
             if (document) {
-                editor = this._documentEditorMap.get(document);
-
-                if (!editor) {
-                    editor = new DocumentEditor();
-                    editor.projectController = this.projectController;
-                    editor.viewController = this.viewController;
-                    editor.load(document).done();
-                    this._documentEditorMap.set(document, editor);
-                }
-
-                if (!editor.element) {
-                    this._editorsToInsert.push(editor);
-                    this._openEditors.push(editor);
-                }
 
                 //TODO why are these done here and not in the template? not sure they need to be here
                 this.addEventListener("addListenerForObject", this, false);
                 this.addEventListener("addBinding", this, false);
-                this._frontEditor = editor;
-                if (editor.acceptsActiveTarget) {
-                    defaultEventManager.activeTarget = editor;
-                }
 
                 this.needsDraw = true;
 
-                // Element highlight stage -> domExplorer & templateExplorer
-                this.addEventListener("elementHover", this, false);
-                // Element highlight DOM Explorer -> stage
-                this.addEventListener("highlightStageElement", this, false);
                 // Component highlight templateExplorer -> stage & domExplorer
                 this.addEventListener("highlightComponent", this, false);
                 // deHighlight everywhere
@@ -126,19 +76,7 @@ exports.ComponentEditor = Editor.specialize({
 
     closeDocument: {
         value: function (document) {
-            var editor,
-                editorIndex;
-
             if (document) {
-                editor = this._documentEditorMap.get(document);
-
-                if (editor) {
-                    this._editorsToRemove.push(editor);
-                    editorIndex = this._openEditors.indexOf(editor);
-                    if (-1 !== editorIndex) {
-                        this._openEditors.splice(editorIndex, 1);
-                    }
-                }
                 this.needsDraw = true;
             }
         }
@@ -146,44 +84,10 @@ exports.ComponentEditor = Editor.specialize({
 
     draw: {
         value: function () {
-            var editorArea,
-                editorElement,
-                frontEditor = this._frontEditor,
-                modalEditorArea = this._modalEditorSlot,
+            var modalEditorArea = this._modalEditorSlot,
                 modalEditorAreaHasContent = modalEditorArea.children.length > 0,
                 modalEditor = this.modalEditorComponent,
                 modalContentRange;
-
-            if (this._editorsToInsert.length) {
-                editorArea = this._documentEditorSlot;
-
-                this._editorsToInsert.forEach(function (editor) {
-                    editor.element = document.createElement("div");
-                    editorArea.appendChild(editor.element);
-                    editor.attachToParentComponent();
-                    editor.needsDraw = true;
-                });
-                this._editorsToInsert = [];
-            }
-
-            if (this._editorsToRemove.length) {
-                editorArea = this._documentEditorSlot;
-
-                this._editorsToRemove.forEach(function (editor) {
-                    editorArea.removeChild(editor.element);
-                });
-                this._editorsToRemove = [];
-            }
-
-            this._openEditors.forEach(function (editor) {
-                editorElement = editor.element;
-
-                if (editorElement && editor === frontEditor) {
-                    editorElement.classList.remove("standby");
-                } else if (editorElement) {
-                    editor.element.classList.add("standby");
-                }
-            });
 
             // Remove content from modalEditor area if we need to
             // becaseuthere's no reason to show any modal editor
@@ -323,96 +227,9 @@ exports.ComponentEditor = Editor.specialize({
         }
     },
 
-    // Highlighting from stage
-    handleElementHover: {
-        value: function (evt) {
-            var detail = evt.detail,
-                highlight = detail.highlight,
-                xpath = detail.xpath,
-                parentComponents = detail.parentComponents,
-                documentEditor = this.currentDocument,
-                domExplorer = this.templateObjects.domExplorer,
-                templateExplorer = this.templateObjects.templateExplorer,
-                parentComponentId,
-                element;
-
-            this.clearHighlighting();
-            if (!highlight) {return;}
-
-            // Ignore body
-            if (xpath === "/html/body") {
-                return;
-            }
-            var nodeProxy = documentEditor.nodeProxyForXPath(xpath);
-            // handle highlighting at the component level if the DOM element is not found
-            while (!nodeProxy && parentComponents.length > 0 && (parentComponentId = parentComponents.shift())) {
-                nodeProxy = documentEditor.nodeProxyForMontageId(parentComponentId);
-            }
-
-            // set domExplorer's highlighted element
-            domExplorer.highlightedElement = nodeProxy;
-
-            if (nodeProxy && nodeProxy.component) {
-                // set templateExplorer's highlighted component
-                templateExplorer.highlightedComponent = nodeProxy.component;
-                // highlight the stageElement to simulate a hover
-                if (nodeProxy.component.stageObject) {
-                    element = nodeProxy.component.stageObject.element;
-                    if (element) {
-                        documentEditor.highlightElement(element);
-                    }
-                }
-            }
-        }
-    },
-
     handleDeHighlight: {
         value: function (evt) {
             this.clearHighlighting();
-        }
-    },
-
-    // Highlighting from the domExplorer
-    handleHighlightStageElement: {
-        value: function (evt) {
-            var detail = evt.detail,
-                highlight = detail.highlight,
-                xpath = detail.xpath,
-                component = detail.component,
-                proxy = detail.proxy,
-                documentEditor = this.currentDocument,
-                editingController = documentEditor._editingController,
-                stageDocument = editingController ? editingController.frame.iframe.contentDocument : void 0,
-                domExplorer = this.templateObjects.domExplorer,
-                templateExplorer = this.templateObjects.templateExplorer;
-
-            this.clearHighlighting();
-            if (!highlight) {return;}
-
-            if (stageDocument) {
-                var stageElement = stageDocument.evaluate(
-                    xpath,
-                    stageDocument,
-                    null,
-                    XPathResult.FIRST_ORDERED_NODE_TYPE,
-                    null
-                ).singleNodeValue;
-
-                // handle highlighting at the component level if the DOM element is not found
-                if (!stageElement && component && component.stageObject) {
-                    stageElement = component.stageObject.element;
-                }
-
-                // highlight the stageElement
-                if (stageElement) {
-                    documentEditor.highlightElement(stageElement);
-                }
-            }
-
-            // set domExplorer's highlighted element (hover effect)
-            domExplorer.highlightedElement = proxy;
-            // set templateExplorer's highlighted component
-            templateExplorer.highlightedComponent = component || null;
         }
     },
 
