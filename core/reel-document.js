@@ -1016,8 +1016,11 @@ exports.ReelDocument = EditingDocument.specialize({
                 revisedTemplate,
                 applicationProxy;
 
-            this.undoManager.openBatch("Add Objects");
+            if (!parentElement) {
+                parentElement = this._ownerElement;
+            }
 
+            this.undoManager.openBatch("Add Objects");
             revisedTemplate = this._merge(destinationTemplate, sourceTemplate, parentElement, nextSiblingElement);
 
             // Ensure that we specially craft the application object the sourceTemplate introduced it
@@ -1099,7 +1102,6 @@ exports.ReelDocument = EditingDocument.specialize({
                 newChildNodes,
                 i,
                 iChild,
-                insertionParent = parentElement || this._ownerElement,
                 mergeDelegate;
 
             sourceContentRange = sourceDocument.createRange();
@@ -1126,7 +1128,7 @@ exports.ReelDocument = EditingDocument.specialize({
             if (nextSiblingElement) {
                 idsCollisionTable = destinationTemplate.insertNodeBefore(sourceContentFragment, nextSiblingElement._templateNode, labeler);
             } else {
-                idsCollisionTable = destinationTemplate.appendNode(sourceContentFragment, insertionParent._templateNode, labeler);
+                idsCollisionTable = destinationTemplate.appendNode(sourceContentFragment, parentElement._templateNode, labeler);
             }
 
             if (idsCollisionTable) {
@@ -1140,7 +1142,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 if (nextSiblingElement) {
                     this._insertNodeBeforeTemplateNode(nodeProxy, nextSiblingElement);
                 } else {
-                    this._appendChildToTemplateNode(nodeProxy, insertionParent);
+                    this._appendChildToTemplateNode(nodeProxy, parentElement);
                 }
             }, this);
 
