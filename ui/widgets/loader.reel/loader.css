@@ -17,12 +17,20 @@
 
 .Loader-icon {
     margin: auto;
-    fill: hsl(208, 100%, 60%);
-    -webkit-animation: Loader-icon-colors 3.2s linear infinite alternate;
+    fill: #007FC4;
+    -webkit-animation: Loader-icon-colors 12.8s linear infinite;
 }
 
 @-webkit-keyframes Loader-icon-colors {
-    100% { fill: hsl(336, 100%, 60%); }
+      0%   { fill: #007FC4; }
+     12.5% { fill: #008069; }
+     25%   { fill: #E39D15; }
+     37.5% { fill: #D4622A; }
+     50%   { fill: #D0232A; }
+     62.5% { fill: #CE118C; }
+     75%   { fill: #762A90; }
+     87.5% { fill: #5447B2; }
+    100%   { fill: #007FC4; }
 }
 
 .Loader-icon-path {
