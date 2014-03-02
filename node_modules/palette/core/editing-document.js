@@ -18,6 +18,9 @@ exports.EditingDocument = Document.specialize( {
         }
     },
 
+    propertyChangesDispatchingEnabled: {
+        value: true
+    },
 
     load: {
         value: function (fileUrl, packageUrl) {
@@ -129,6 +132,7 @@ exports.EditingDocument = Document.specialize( {
             proxy.setObjectProperty(property, value);
 
             undoManager.register("Set Property", Promise.resolve([this.setOwnedObjectProperty, this, proxy, property, undoneValue]));
+            this._dispatchDidSetOwnedObjectProperty(proxy, property, value);
         }
     },
 
@@ -157,6 +161,7 @@ exports.EditingDocument = Document.specialize( {
             proxy.setObjectProperties(values);
 
             undoManager.register("Set Properties", Promise.resolve([this.setOwnedObjectProperties, this, proxy, undoneValues]));
+            this._dispatchDidSetOwnedObjectProperties(proxy, values);
         }
     },
 
@@ -182,6 +187,7 @@ exports.EditingDocument = Document.specialize( {
                 proxy.label = newLabel;
 
                 this.undoManager.register("Set Label", Promise.resolve([this.setOwnedObjectLabel, this, proxy, oldLabel]));
+                this._dispatchDidSetOwnedObjectLabel(proxy, newLabel, oldLabel);
                 return true;
             }
             return false;
@@ -369,7 +375,38 @@ exports.EditingDocument = Document.specialize( {
         }
     },
 
+    _dispatchDidSetOwnedObjectProperty: {
+        value: function(proxy, property, value) {
+            if (this.propertyChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didSetOwnedObjectProperty", true, false, {
+                    proxy: proxy,
+                    property: property,
+                    value: value
+                });
+            }
+        }
+    },
 
+    _dispatchDidSetOwnedObjectProperties: {
+        value: function(proxy, values) {
+            if (this.propertyChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didSetOwnedObjectProperties", true, false, {
+                    proxy: proxy,
+                    values: values
+                });
+            }
+        }
+    },
 
-
+    _dispatchDidSetOwnedObjectLabel: {
+        value: function(proxy, newLabel, oldLabel) {
+            if (this.propertyChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didSetOwnedObjectLabel", true, false, {
+                    proxy: proxy,
+                    newLabel: newLabel,
+                    oldLabel: oldLabel
+                });
+            }
+        }
+    },
 });

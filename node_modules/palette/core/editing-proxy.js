@@ -159,41 +159,9 @@ exports.EditingProxy = Target.specialize( /** @lends module:palette/coreediting-
         }
     },
 
-    /**
-     * Whether to dispatch a property change when a property is changed.
-     */
-    propertyChangeDispatchingEnabled: {
-        value: true
-    },
-
-    _dispatchDidChangeObjectProperties: {
-        value: function(properties) {
-            if (this.propertyChangeDispatchingEnabled) {
-                this.dispatchEventNamed("didChangeObjectProperties", true, false, {
-                    properties: properties
-                });
-            }
-        }
-    },
-
-    _dispatchDidChangeObjectProperty: {
-        value: function(property, value) {
-            if (this.propertyChangeDispatchingEnabled) {
-                this.dispatchEventNamed("didChangeObjectProperty", true, false, {
-                    property: property,
-                    value: value
-                });
-            }
-        }
-    },
-
     setObjectProperty: {
-        value: function (property, value, dispatchPropertyChange) {
+        value: function (property, value) {
             this.properties.set(property, value);
-            if (typeof dispatchPropertyChange === "undefined" ||
-                dispatchPropertyChange) {
-                this._dispatchDidChangeObjectProperty(property, value);
-            }
         }
     },
 
@@ -213,10 +181,9 @@ exports.EditingProxy = Target.specialize( /** @lends module:palette/coreediting-
         value: function (values) {
             for (var name in values) {
                 if (values.hasOwnProperty(name)) {
-                    this.setObjectProperty(name, values[name], false);
+                    this.setObjectProperty(name, values[name]);
                 }
             }
-            this._dispatchDidChangeObjectProperties(values);
         }
     },
 
