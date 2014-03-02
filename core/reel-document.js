@@ -1489,8 +1489,8 @@ exports.ReelDocument = EditingDocument.specialize({
                     return self.addObjectsFromTemplate(template);
                 }).then(function (objects) {
                     var actionEventListener = objects[0];
-                    actionEventListener.setObjectProperty("handler", listener);
-                    actionEventListener.setObjectProperty("action", methodName);
+                    self.setOwnedObjectProperty(actionEventListener, "handler", listener);
+                    self.setOwnedObjectProperty(actionEventListener, "action", methodName);
                     return actionEventListener;
                 });
             } else {
