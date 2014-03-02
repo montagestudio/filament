@@ -25,9 +25,8 @@ exports.Main = Montage.create(Component, {
             this.templateObjects = {
                 repositoriesController: repositoriesController
             };
-            userController.then(function(userController) {
-                self.userController = userController;
-            });
+
+            self.userController = userController;
         }
     },
 
