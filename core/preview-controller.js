@@ -37,8 +37,8 @@ exports.PreviewController = Target.specialize({
             var app = require("montage/core/application").application;
 
             app.addEventListener("didSave", this);
-            app.addEventListener("didChangeObjectProperties", this);
-            app.addEventListener("didChangeObjectProperty", this);
+            app.addEventListener("didSetOwnedObjectProperties", this);
+            app.addEventListener("didSetOwnedObjectProperty", this);
             app.addEventListener("didDefineOwnedObjectBinding", this);
             app.addEventListener("didCancelOwnedObjectBinding", this);
             app.addEventListener("willUpdateOwnedObjectBinding", this);
@@ -185,9 +185,9 @@ exports.PreviewController = Target.specialize({
     },
 
     addTemplateFragment: {
-        value: function(moduleId, label, argumentName, cssSelector, how, templateFragment) {
+        value: function(moduleId, elementLocation, how, templateFragment) {
             if (typeof this.environmentBridge.addTemplateFragment === "function") {
-                return this.environmentBridge.addTemplateFragment(this._previewId, moduleId, label, argumentName, cssSelector, how, templateFragment);
+                return this.environmentBridge.addTemplateFragment(this._previewId, moduleId, elementLocation, how, templateFragment);
             } else {
                 return Promise.resolve(null);
             }
@@ -205,9 +205,9 @@ exports.PreviewController = Target.specialize({
     },
 
     setPreviewElementAttribute: {
-        value: function(moduleId, label, argumentName, cssSelector, attributeName, attributeValue) {
+        value: function(moduleId, elementLocation, attributeName, attributeValue) {
             if (typeof this.environmentBridge.setPreviewElementAttribute === "function") {
-                return this.environmentBridge.setPreviewElementAttribute(this._previewId, moduleId, label, argumentName, cssSelector, attributeName, attributeValue);
+                return this.environmentBridge.setPreviewElementAttribute(this._previewId, moduleId, elementLocation, attributeName, attributeValue);
             } else {
                 return Promise.resolve(null);
             }
@@ -270,33 +270,29 @@ exports.PreviewController = Target.specialize({
         }
     },
 
-    handleDidChangeObjectProperties: {
+    handleDidSetOwnedObjectProperties: {
         value: function (event) {
-            var proxy = event.target;
-            var ownerProxy = proxy.editingDocument.editingProxyMap.owner;
+            var detail = event.detail;
+            var proxy = detail.proxy;
+            var ownerProxy = event.target.editingProxyMap.owner;
             var ownerModuleId = ownerProxy ? ownerProxy.exportId : null;
 
-            this.setPreviewObjectProperties(proxy.label, ownerModuleId, event.detail.properties).done();
+            this.setPreviewObjectProperties(proxy.label, ownerModuleId, detail.values).done();
         }
     },
 
-    handleDidChangeObjectProperty: {
+    handleDidSetOwnedObjectProperty: {
         value: function (event) {
-            var proxy = event.target;
-            var ownerProxy = proxy.editingDocument.editingProxyMap.owner;
+            var detail = event.detail;
+            var proxy = detail.proxy;
+            var ownerProxy = event.target.editingProxyMap.owner;
             var ownerModuleId = ownerProxy ? ownerProxy.exportId : null;
-            var value = event.detail.value;
-            var location;
+            var value = detail.value;
             var type;
 
             if (value instanceof NodeProxy) {
                 type = "element";
-                location = this._getNodeLocation(value, false, ownerProxy);
-                value = {
-                    label: location.component.label,
-                    argumentName: location.argumentName,
-                    cssSelector: location.cssSelector
-                };
+                value = this._getElementLocation(value, false, ownerProxy);
             } else if (value instanceof ReelProxy) {
                 type = "object";
                 value = {
@@ -304,7 +300,7 @@ exports.PreviewController = Target.specialize({
                 };
             }
 
-            this.setPreviewObjectProperty(ownerModuleId, proxy.label, event.detail.property, value, type).done();
+            this.setPreviewObjectProperty(ownerModuleId, proxy.label, detail.property, value, type).done();
         }
     },
 
@@ -381,13 +377,11 @@ exports.PreviewController = Target.specialize({
             var node = detail.nodeProxy;
             var owner = event.target.editingProxyMap.owner;
 
-            var location = this._getNodeLocation(node, false, owner);
+            var location = this._getElementLocation(node, false, owner);
 
             this.setPreviewElementAttribute(
                 owner.moduleId,
-                location.component.label,
-                location.argumentName,
-                location.cssSelector,
+                location,
                 detail.attribute,
                 detail.value)
             .done();
@@ -406,10 +400,29 @@ exports.PreviewController = Target.specialize({
         }
     },
 
+    _getTemplateElementLocation: {
+        value: function(element) {
+            var cssSelector = "";
+            var index;
+
+            while (element && element.tagName.toLowerCase() !== "body") {
+                index = element.parentNode.children.indexOf(element);
+                cssSelector = cssSelector + " > *:nth-child(" + (index+1) + ")";
+                element = element.parentNode;
+            }
+
+            cssSelector = "body " + cssSelector;
+
+            return {
+                cssSelector: cssSelector
+            };
+        }
+    },
+
     /**
      * Creates the information necessary to find a node in the live app.
      * To find a node we need three pieces of information:
-     * - The component where the content was added. (component)
+     * - The component label where the content was added. (label)
      * - The argument name if the content was added to an argument of the
      *   component. (argumentName)
      * - A CSS selector from the component or the argument node that points to
@@ -421,9 +434,9 @@ exports.PreviewController = Target.specialize({
      *        not the node itself. Useful when the node doesn't have any content
      *        we can point to or we want to append to it.
      * @param {NodeProxy} owner The owner of the template where the node is defined.
-     * @returns {{component: NodeProxy, argumentName: string, cssSelector: string}}
+     * @returns {{label: string, argumentName: string, cssSelector: string}}
      */
-    _getNodeLocation: {
+    _getElementLocation: {
         value: function(node, isContainerNode, owner) {
             var argumentNode,
                 anchorNode,
@@ -480,7 +493,7 @@ exports.PreviewController = Target.specialize({
             cssSelector = ":scope " + cssSelector;
 
             return {
-                component: componentNode.component,
+                label: componentNode.component.label,
                 argumentName: argumentNode ? argumentNode.montageArg : null,
                 cssSelector: cssSelector
             };
@@ -559,13 +572,11 @@ exports.PreviewController = Target.specialize({
                 how = "append";
             }
 
-            location = this._getNodeLocation(node, isContainerNode, ownerProxy);
+            location = this._getElementLocation(node, isContainerNode, ownerProxy);
 
             return this.addTemplateFragment(
                 ownerProxy.exportId,
-                location.component.label,
-                location.argumentName,
-                location.cssSelector,
+                location,
                 how,
                 templateFragment);
         }
