@@ -82,7 +82,7 @@ var RepositoriesController = Montage.specialize({
                 self._ownedRepositoriesContent.content.clear();
                 // get repo list from github
                 self._githubApi.then(function (githubApi) {
-                    return githubApi.listRepositories({type: "public"});
+                    return githubApi.listRepositories();
                 })
                 .then(function (repos) {
                     var pendingCommands = repos.length;

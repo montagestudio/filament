@@ -35,6 +35,18 @@
                         "<-": "@owner.repository.name"
                     }
                 }
+            },
+
+            "typeIndicator": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "typeIndicator"}
+                },
+                "bindings": {
+                    "value": {"<-": "!!@owner.repository.private ? 'Private' : 'Public'",
+                    "classList.has('HistoryListItem--private')": {"<-": "!!@owner.repository.private"}
+                    }
+                }
             }
         }
     </script>
@@ -43,6 +55,7 @@
 <body>
 
 <li data-montage-id="historyListItem" class="HistoryListItem">
+    <span data-montage-id="typeIndicator"></span>
     <span data-montage-id="name"></span>
 </li>
 
