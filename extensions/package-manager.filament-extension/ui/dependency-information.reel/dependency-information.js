@@ -69,15 +69,7 @@ exports.DependencyInformation = Component.specialize(/** @lends DependencyInform
 
     handleFixDependencyErrorAction: {
         value: function () {
-            var ErrorPanel = this.templateObjects.dependencyErrors,
-                dependencyName = this.currentDependency.name,
-                dependencyVersion = this.currentDependency.version,
-                dependencyType = this.currentDependency.type;
-
-            ErrorPanel.isFixing = true;
-
-            // Fixme Temporary fix
-            this.editingDocument.updateDependency(dependencyName, dependencyVersion, dependencyType);
+            this.editingDocument.repairDependency(this.currentDependency.name);
         }
     }
 

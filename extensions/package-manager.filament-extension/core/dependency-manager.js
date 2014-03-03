@@ -17,7 +17,7 @@ var DependencyManager = Montage.specialize({
             var queueManager = new DependencyManagerQueue();
             this._dependencyManagerQueue = queueManager.initWithEnvironmentBridge(this._packageDocument.environmentBridge);
 
-            this.defineBinding("isBusy", {"<-": "_dependencyManagerQueue.isBusy", source: this});
+            this.defineBinding("isBusy", {"<-": "_dependencyManagerQueue.isBusy || _immediateOperationsCount > 0", source: this});
 
             return this;
         }
@@ -25,6 +25,10 @@ var DependencyManager = Montage.specialize({
 
     _dependencyManagerQueue: {
         value: null
+    },
+
+    _immediateOperationsCount: {
+        value: 0
     },
 
     isBusy: {
@@ -213,6 +217,63 @@ var DependencyManager = Montage.specialize({
                     packageDocument._changeCount--;
                 }
             }
+        }
+    },
+
+    _reinstallDependency: {
+        value: function (dependencyName, dependencyVersion) {
+            if (typeof dependencyName === "string" && dependencyName.length > 0) {
+                var dependency = this._packageDocument.findDependency(dependencyName);
+
+                if (dependency) {
+                    var environmentBride = this._packageDocument.environmentBridge,
+                        request = this._createRequest(dependencyName, dependencyVersion),
+                        self = this,
+                        promise = null;
+
+                    dependency.isBusy = true;
+                    this._immediateOperationsCount++;
+
+                    if (dependency.missing) {
+                        promise = environmentBride.installPackages(request);
+                    } else if (dependency.extraneous) {
+                        promise = this._packageDocument.save(request);
+                    } else {
+                        promise = environmentBride.removePackage(dependencyName).then(function () {
+                            return environmentBride.installPackages(request);
+                        });
+                    }
+
+                    return promise.then(function () {
+                        dependency.problems = dependency.update = null;
+                        dependency.extraneous = dependency.missing = false;
+
+                    }).fin(function () {
+                        dependency.isBusy = false;
+                        self._immediateOperationsCount--;
+
+                        return self._packageDocument._updateDependenciesList();
+                    });
+                }
+            }
+
+            return Promise.reject("Invalid dependency");
+        }
+    },
+
+    updateDependency: {
+        value: function (dependencyName, dependencyVersion) {
+            return this._reinstallDependency(dependencyName, dependencyVersion).then(function () {
+                return dependencyName + " has been updated";
+            });
+        }
+    },
+
+    repairDependency: {
+        value: function (dependencyName) {
+            return this._reinstallDependency(dependencyName).then(function () {
+                return dependencyName + " has been repaired";
+            });
         }
     }
 

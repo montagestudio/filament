@@ -97,7 +97,7 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
             var update = this.currentDependency.update ? this.currentDependency.update.available : null;
 
             if (this.currentDependency && !this.loadingDependency &&this.editingDocument && update) {
-                this.editingDocument.updateDependency(this.currentDependency.name, update, this.currentDependency.type);
+                this.editingDocument.updateDependency(this.currentDependency.name, update);
             }
         }
     }
