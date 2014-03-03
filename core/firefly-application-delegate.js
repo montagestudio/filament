@@ -1,5 +1,6 @@
 var ApplicationDelegate = require("./application-delegate").ApplicationDelegate,
     Promise = require("montage/core/promise").Promise,
+    Confirm = require("matte/ui/popup/confirm.reel").Confirm,
     //TODO I wouldn't expect the project list to house this functionality
     repositoriesController = require("project-list/core/repositories-controller").repositoriesController;
 
@@ -68,14 +69,27 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 } else {
                     //Repository exists, do we have a project workspace for it?
                     populatedRepositoryPromise = bridge.projectExists().then(function (exists) {
-                        if (!exists) {
+                        if (true || !exists) {
                             //TODO check if it's a montage project or not: cute message otherwise
                             // No workspace, make one
                             self.showModal = true;
                             self.currentPanelKey = "progress";
+
                             return bridge.initializeProject().then(function () {
                                 self.showModal = false;
                                 self.currentPanelKey = null;
+                            }).catch(function(err) {
+                                self.showModal = false;
+
+                                var confirmRetry = {
+                                    message: "Can't fetch the project.",
+                                    okLabel: "Retry",
+                                    cancelLabel: "Ignore"
+                                };
+
+                                Confirm.show(confirmRetry, function () {
+                                    self.willLoadProject();
+                                }, function () {});
                             });
                         } else {
                             // Workspace found, all systems go!
