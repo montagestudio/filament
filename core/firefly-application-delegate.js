@@ -69,7 +69,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 } else {
                     //Repository exists, do we have a project workspace for it?
                     populatedRepositoryPromise = bridge.projectExists().then(function (exists) {
-                        if (true || !exists) {
+                        if (!exists) {
                             //TODO check if it's a montage project or not: cute message otherwise
                             // No workspace, make one
                             self.showModal = true;
