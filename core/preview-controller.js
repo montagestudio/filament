@@ -39,6 +39,7 @@ exports.PreviewController = Target.specialize({
             app.addEventListener("didSave", this);
             app.addEventListener("didSetOwnedObjectProperties", this);
             app.addEventListener("didSetOwnedObjectProperty", this);
+            app.addEventListener("didSetOwnedObjectLabel", this);
             app.addEventListener("didDefineOwnedObjectBinding", this);
             app.addEventListener("didCancelOwnedObjectBinding", this);
             app.addEventListener("willUpdateOwnedObjectBinding", this);
@@ -158,6 +159,16 @@ exports.PreviewController = Target.specialize({
         value: function(ownerModuleId, label, propertyName, propertyValue, propertyType) {
             if (typeof this.environmentBridge.setPreviewObjectProperty === "function") {
                 return this.environmentBridge.setPreviewObjectProperty(this._previewId, ownerModuleId, label, propertyName, propertyValue, propertyType);
+            } else {
+                return Promise.resolve(null);
+            }
+        }
+    },
+
+    setPreviewObjectLabel: {
+        value: function(ownerModuleId, label, newLabel) {
+            if (typeof this.environmentBridge.setPreviewObjectLabel === "function") {
+                return this.environmentBridge.setPreviewObjectLabel(this._previewId, ownerModuleId, label, newLabel);
             } else {
                 return Promise.resolve(null);
             }
@@ -301,6 +312,16 @@ exports.PreviewController = Target.specialize({
             }
 
             this.setPreviewObjectProperty(ownerModuleId, proxy.label, detail.property, value, type).done();
+        }
+    },
+
+    handleDidSetOwnedObjectLabel: {
+        value: function (event) {
+            var detail = event.detail;
+            var ownerProxy = event.target.editingProxyMap.owner;
+            var ownerModuleId = ownerProxy ? ownerProxy.exportId : null;
+
+            this.setPreviewObjectLabel(ownerModuleId, detail.oldLabel, detail.newLabel).done();
         }
     },
 
