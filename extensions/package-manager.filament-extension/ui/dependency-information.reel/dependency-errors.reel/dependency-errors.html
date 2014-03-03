@@ -37,7 +37,7 @@
                 "element": {"#": "substitutionState"}
             },
             "bindings": {
-                "switchValue": {"<-": "@owner.isFixing ? 'spinner' : 'button'"}
+                "switchValue": {"<-": "!!@owner.currentDependency.isBusy ? 'spinner' : 'button'"}
             }
         },
 
@@ -55,7 +55,7 @@
                 "element": {"#": "fixDependencyErrorSpinner"}
             },
             "bindings": {
-                "loading": {"<-": "@owner.isFixing"}
+                "loading": {"<-": "!!@owner.currentDependency.isBusy"}
             }
         }
     }

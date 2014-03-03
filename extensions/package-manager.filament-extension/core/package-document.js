@@ -489,9 +489,20 @@ exports.PackageDocument = EditingDocument.specialize( {
     },
 
     updateDependency: {
-        value: function (name, version, type) {
-            this.installDependency(name, version, type);
-            return this.environmentBridge.save(this, this.url);
+        value: function (name, version) {
+            var promise = this._dependencyManager.updateDependency(name, version);
+            this.dispatchAsyncActivity(promise, "Updating Dependency");
+
+            return promise;
+        }
+    },
+
+    repairDependency: {
+        value: function (name) {
+            var promise = this._dependencyManager.repairDependency(name);
+            this.dispatchAsyncActivity(promise, "Repairing Dependency");
+
+            return promise;
         }
     },
 
