@@ -1,7 +1,7 @@
 var Montage = require("montage/core/core").Montage;
 var Component = require("montage/ui/component").Component;
 var repositoriesController = require("../../core/repositories-controller").repositoriesController;
-var userController = require("adaptor/client/core/user-controller").userController;
+var UserController = require("adaptor/client/core/user-controller").UserController;
 
 exports.Main = Montage.create(Component, {
 
@@ -21,12 +21,11 @@ exports.Main = Montage.create(Component, {
         value: function Main() {
             this.super();
 
-            var self = this;
             this.templateObjects = {
                 repositoriesController: repositoriesController
             };
 
-            self.userController = userController;
+            this.userController = new UserController().init();
         }
     },
 
