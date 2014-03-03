@@ -2,6 +2,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     PackageEditor = require("../ui/package-editor.reel").PackageEditor,
     DependencyManager = require('./dependency-manager').DependencyManager,
     PackageSavingManager = require('./package-saving-manager').PackageSavingManager,
+    application = require("montage/core/application").application,
     Promise = require("montage/core/promise").Promise,
     Dependency = require('./dependency').Dependency,
     DependencyState = require('./dependency').DependencyState,
@@ -60,6 +61,9 @@ exports.PackageDocument = EditingDocument.specialize( {
 
             this._dependencyManager = DependencyManager.create().initWithPackageDocument(this);
             this._packageSavingManager = PackageSavingManager.create().initWithPackageDocument(this);
+
+            application.addEventListener("dependencyInstalled", this);
+            application.addEventListener("dependencyRemoved", this);
 
             this._getOutDatedDependencies();
 
@@ -515,10 +519,11 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    _dependencyHasBeenInstalled: {
-        value: function (dependencyInstalled) {
+    handleDependencyInstalled: {
+        value: function (event) {
             //If names are different or version missing
-            var dependency = this.findDependency(dependencyInstalled.requestedName);
+            var dependencyInstalled = event.detail.installed,
+                dependency = this.findDependency(dependencyInstalled.requestedName);
 
             if (dependency) {
                 if (dependencyInstalled.name !== dependency.name || !dependency.version) {
@@ -536,19 +541,17 @@ exports.PackageDocument = EditingDocument.specialize( {
                 dependency.missing = false;
                 dependency.isBusy = false;
                 dependency.state.pendingInstall = false;
-
-                this.editor.notifyDependenciesListChange(dependency.name, Dependency.INSTALL_DEPENDENCY_ACTION);
             }
         }
     },
 
-    _dependencyHasBeenRemoved: {
-        value: function (dependencyRemoved) {
-            var dependency = this.findDependency(dependencyRemoved.name);
+    handleDependencyRemoved: {
+        value: function (event) {
+            var dependencyRemoved = event.detail.removed,
+                dependency = this.findDependency(dependencyRemoved.name);
 
             if (dependency) {
                 this._removeDependencyFromCollection(dependency);
-                this.editor.notifyDependenciesListChange(dependency.name, Dependency.REMOVE_DEPENDENCY_ACTION);
             }
         }
     },
