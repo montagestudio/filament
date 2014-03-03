@@ -1,3 +1,11 @@
+.Filament-loader--firefly {
+    position: absolute;
+    top: 34px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
 .Main-wrap {
     position: absolute;
     top: 0;
