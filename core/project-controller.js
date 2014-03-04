@@ -1046,29 +1046,26 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     save: {
         value: function () {
 
-            if (!this.environmentBridge) {
-                throw new Error("Cannot save without an environment bridge");
-            }
+            var self = this,
+                bridge = this.environmentBridge,
+                savePromise;
 
-            var savePromise,
-                self = this;
-
-            if (!this.currentDocument) {
-                savePromise = Promise.resolve(null);
-            } else {
-
+            if (this.currentDocument) {
                 this.dispatchEventNamed("willSave", true, false);
 
-                //TODO use either the url specified (save as), or the currentDoc's fileUrl
-                //TODO improve this, we're reaching deeper than I'd like to find the fileUrl
-                this.dispatchEventNamed("didSave", true, false);
-                savePromise = this.environmentBridge.save(this.currentDocument, this.currentDocument.url).then(function () {
-                    self.environmentBridge.setDocumentDirtyState(false);
-                    return self.currentDocument.url;
-                });
+                savePromise = this.projectDocument.saveAll()
+                    .then(function (result) {
+
+                        if (bridge && typeof bridge.setDocumentDirtyState === "function") {
+                            self.environmentBridge.setDocumentDirtyState(false);
+                        }
+
+                        self.dispatchEventNamed("didSave", true, false);
+                        return result;
+                    });
             }
 
-            return savePromise;
+            return Promise(savePromise);
         }
     },
 

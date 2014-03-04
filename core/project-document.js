@@ -277,13 +277,22 @@ exports.ProjectDocument = Document.specialize({
     },
 
     /**
+     * Override default implementation
+     */
+    save: {
+        value: function (url, dataWriter) {
+            return this.saveAll();
+        }
+    },
+
+    /**
      * Saves all unsaved documents.
      *
      * For environments that propagate edits to a backend, this will happen at this point as well
      * TODO this strategy should be provided by the environment
      * @returns {Promise} A promise for the completed save and remote push of the files with progress
      */
-    accept: {
+    saveAll: {
         value: function (message, amend) {
             var self = this,
                 savedPromises;
@@ -296,10 +305,9 @@ exports.ProjectDocument = Document.specialize({
 
             return Promise.all(savedPromises)
                 .then(function (savedDocs) {
-                    //TODO not have to create an array for commit everything
-                    return self._commit(["."], message, amend);
+                    return savedDocs && savedDocs.length > 0 ? self._commit(["."], message, amend) : null;
                 })
-                .then(function(result) {
+                .finally(function(result) {
                     return self._updateShadowDelta().thenResolve(result);
                 })
                 .finally(function (result) {
