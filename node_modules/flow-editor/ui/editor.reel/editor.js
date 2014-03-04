@@ -622,6 +622,7 @@ exports.Editor = Montage.create(Component, {
             this._objectProperties.cameraTargetPoint = this.camera.cameraTargetPoint.slice(0);
             this._objectProperties.cameraFov = this.camera.cameraFov;
             this.object.setObjectProperties(this._objectProperties);
+            this.object.editingDocument._dispatchDidSetOwnedObjectProperties(this.object, this._objectProperties);
         }
     },
 
