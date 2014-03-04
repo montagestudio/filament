@@ -54,19 +54,16 @@
     background-size: 100% auto;
 }
 
-.Intro-title {
-    color: hsl(0,0%,10%);
-    text-align: center;
-    font-size: 1.4em;
-    margin: 2em 0 0 0;
-}
-
 .Intro-version {
-    font-size: 11px;
-    color: hsl(0, 0%, 70%);
+    margin-top: 2em;
+    font-size: 14px;
+    color: hsl(0, 0%, 50%);
     text-align: center;
     -webkit-user-select: text;
     cursor: text;
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    border: 1px solid hsl(0, 0%, 75%);
 }
 
 .Intro-help {

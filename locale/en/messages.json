@@ -87,7 +87,7 @@
         ]
     },
     "version": {
-        "message": "Version {number}",
+        "message": "Alpha Release",
         "description": "Shows the version number of the application",
         "locations": [
             "welcome/ui/main.reel/main.html"
