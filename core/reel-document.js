@@ -1869,6 +1869,7 @@ exports.ReelDocument = EditingDocument.specialize({
             this.undoManager.register("Set element", Promise.resolve([
                 this.setOwnedObjectElement, this, proxy, (oldElement) ? oldElement.montageId : void 0
             ]));
+            this._dispatchDidSetOwnedObjectProperty(proxy, "element", element);
 
             if (existingComponent) {
                 this.undoManager.closeBatch();
