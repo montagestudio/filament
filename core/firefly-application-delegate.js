@@ -90,6 +90,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                                     if (pressedRetry) {
                                         self.willLoadProject();
                                     }
+                                    self.showModal = false;
                                 });
                             });
                         } else {
