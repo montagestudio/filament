@@ -24,6 +24,10 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         value: null
     },
 
+    confirmPanel: {
+        value: null
+    },
+
     showModal: {
         value: false
     },
@@ -48,6 +52,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
             var bridge = this.environmentBridge;
             bridge.progressPanel = this.progressPanel;
             bridge.promptPanel = this.promptPanel;
+            bridge.confirmPanel = this.confirmPanel;
             bridge.applicationDelegate = this;
             return Promise.resolve();
         }
@@ -69,7 +74,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 } else {
                     //Repository exists, do we have a project workspace for it?
                     populatedRepositoryPromise = bridge.projectExists().then(function (exists) {
-                        if (!exists) {
+                        if (true || !exists) {
                             //TODO check if it's a montage project or not: cute message otherwise
                             // No workspace, make one
                             self.showModal = true;
@@ -79,17 +84,13 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                                 self.showModal = false;
                                 self.currentPanelKey = null;
                             }).catch(function(err) {
-                                self.showModal = false;
-
-                                var confirmRetry = {
-                                    message: "Can't fetch the project.",
-                                    okLabel: "Retry",
-                                    cancelLabel: "Ignore"
-                                };
-
-                                Confirm.show(confirmRetry, function () {
-                                    self.willLoadProject();
-                                }, function () {});
+                                self.showModal = true;
+                                self.currentPanelKey = "confirm";
+                                self.confirmPanel.getResponse("Can't fetch the project.", true, "Retry", "Ignore").then(function(pressedRetry) {
+                                    if (pressedRetry) {
+                                        self.willLoadProject();
+                                    }
+                                });
                             });
                         } else {
                             // Workspace found, all systems go!
