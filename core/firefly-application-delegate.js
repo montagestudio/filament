@@ -78,21 +78,24 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                             return bridge.initializeProject().then(function () {
                                 self.showModal = false;
                                 self.currentPanelKey = null;
-                            }).catch(function(err) {
-                                self.currentPanelKey = "confirm";
-                                self.showModal = true;
-
-                                return self.confirmPanel.getResponse("Can't fetch the project.", true, "Retry", "Ignore").then(function (response) {
-                                    if (response === true) {
-                                        self.showModal = false;
-                                        return self.willLoadProject();
-                                    }
-                                });
                             });
                         } else {
                             // Workspace found, all systems go!
                             return Promise.resolve();
                         }
+                    }).catch(function(err) {
+                        self.currentPanelKey = "confirm";
+                        self.showModal = true;
+
+                        return self.confirmPanel.getResponse("Can't fetch the project.", true, "Retry", "Ignore").then(function (response) {
+                            self.showModal = false;
+                            if (response === true) {
+                                return self.willLoadProject();
+                            } else {
+                                //Retry anyway ;-)
+                                return self.willLoadProject();
+                            }
+                        });
                     });
                 }
 
