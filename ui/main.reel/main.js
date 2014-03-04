@@ -50,6 +50,13 @@ exports.Main = Montage.create(Component, {
                     evt.preventDefault();
                 }
             }
+
+            //prevent navigating backwards with backspace
+            window.addEventListener("keydown", function (event) {
+                if(event.keyCode === 8 && document.activeElement !== event.target || event.target === document.body) {
+                    event.preventDefault();
+                }
+            });
         }
     },
 
