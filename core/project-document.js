@@ -85,6 +85,8 @@ exports.ProjectDocument = Document.specialize({
                 })
                 .done();
 
+            window.pd = self;
+
             return self;
         }
     },
