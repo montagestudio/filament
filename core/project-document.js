@@ -327,6 +327,15 @@ exports.ProjectDocument = Document.specialize({
      */
     reset: {
         value: function () {
+            var self = this;
+
+            this.isBusy = true;
+
+            return this._environmentBridge.resetShadowBranch(this.currentBranch.name)
+                .finally(function (result) {
+                    self.isBusy = false;
+                    return result;
+                });
         }
     },
 
