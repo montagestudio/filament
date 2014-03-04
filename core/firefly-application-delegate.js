@@ -1,6 +1,5 @@
 var ApplicationDelegate = require("./application-delegate").ApplicationDelegate,
     Promise = require("montage/core/promise").Promise,
-    Confirm = require("matte/ui/popup/confirm.reel").Confirm,
     //TODO I wouldn't expect the project list to house this functionality
     repositoriesController = require("project-list/core/repositories-controller").repositoriesController;
 
@@ -48,6 +47,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
             var bridge = this.environmentBridge;
             bridge.progressPanel = this.progressPanel;
             bridge.promptPanel = this.promptPanel;
+            bridge.confirmPanel = this.confirmPanel;
             bridge.applicationDelegate = this;
             return Promise.resolve();
         }
@@ -79,17 +79,15 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                                 self.showModal = false;
                                 self.currentPanelKey = null;
                             }).catch(function(err) {
-                                self.showModal = false;
+                                self.currentPanelKey = "confirm";
+                                self.showModal = true;
 
-                                var confirmRetry = {
-                                    message: "Can't fetch the project.",
-                                    okLabel: "Retry",
-                                    cancelLabel: "Ignore"
-                                };
-
-                                Confirm.show(confirmRetry, function () {
-                                    self.willLoadProject();
-                                }, function () {});
+                                return self.confirmPanel.getResponse("Can't fetch the project.", true, "Retry", "Ignore").then(function (response) {
+                                    if (response === true) {
+                                        self.showModal = false;
+                                        return self.willLoadProject();
+                                    }
+                                });
                             });
                         } else {
                             // Workspace found, all systems go!
