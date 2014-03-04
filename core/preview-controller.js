@@ -380,13 +380,14 @@ exports.PreviewController = Target.specialize({
         value: function (event) {
             var document = event.target;
             var detail = event.detail;
+            var template = detail.template;
 
-            if (detail.parentNode) {
-                this._addTemplateToPreview(detail.template, document,
+            if (template.document.body.children.length > 0) {
+                this._addTemplateToPreview(template, document,
                     detail.parentNode, detail.nextSiblingNode)
                 .done();
             } else {
-                this._addTemplateObjectsToPreview(detail.template, document)
+                this._addTemplateObjectsToPreview(template, document)
                 .done();
             }
         }
