@@ -49,6 +49,7 @@
     width: 280px;
     height: 188px;
     /* Using background image to fix Flexbox + Image resize issue. */
+    min-height: 188px;
     background: url(../../../assets/img/logo.png) no-repeat center;
     background-size: 100% auto;
 }
@@ -106,6 +107,7 @@
 }
 
 .Launcher-section {
+    min-height: 72px;
     margin: 10px 0;
     padding: 15px;
     border-radius: 6px;
@@ -249,6 +251,7 @@
     -webkit-flex: 1;
     display: -webkit-flex;
     -webkit-flex-direction: column;
+    min-height: 166px;
 }
 
 .History-filter {
