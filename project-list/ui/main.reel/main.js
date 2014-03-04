@@ -155,7 +155,7 @@ exports.Main = Montage.create(Component, {
             return this.templateObjects.repositoriesController.createRepository(name, {
                 description: description
             }).then(function() {
-                window.location.pathname = self.userController.login + "/" + name;
+                window.location.pathname = self.userController.user.login + "/" + name;
                 self.showNewAppForm = false;
             }, function (error) {
                 self.templateObjects.newAppError.value = error.message;
