@@ -211,49 +211,6 @@
             "repositoriesController": {
                 "prototype": "../../core/repositories-controller"
             },
-            "radioButtonController": {
-                "prototype": "montage/core/radio-button-controller",
-                "bindings": {
-                    "content": { "<-": "@repositoriesController.groups" },
-                    "value": { "<->": "@repositoriesController.selectedGroup" }
-                }
-            },
-            "repositoryGroupList": {
-                "prototype": "montage/ui/repetition.reel",
-                "properties": {
-                    "element": {"#": "repositoryGroupList"}
-                },
-                "bindings": {
-                    "contentController": {"<-": "@radioButtonController.contentController"}
-                }
-            },
-            "radioButton": {
-                "prototype": "matte/ui/radio-button.reel",
-                "properties": {
-                    "element": {"#": "radioButton"},
-                    "radioButtonController": {"@": "radioButtonController"}
-                },
-                "bindings": {
-                    "value": {
-                        "<-": "@repositoryGroupList:iteration.object"
-                    },
-                    "enabled": {
-                        "<-": "@owner.projects[@repositoryGroupList:iteration.object.name].length != 0"
-                    }
-                }
-             },
-             "radioButtonLabel": {
-                 "prototype": "montage/ui/text.reel",
-                 "properties": {
-                     "element": {"#": "radioButtonLabel"}
-                 },
-                 "bindings": {
-                     "value": {
-                         "<-": "@repositoryGroupList:iteration.object.name"
-                     }
-                 }
-              },
-
               "username": {
                   "prototype": "montage/ui/text.reel",
                   "properties": {
@@ -329,11 +286,6 @@
 
             <section class="Launcher-section History">
                 <h2 data-montage-id="recentTitle" class="Launcher-title"></h2>
-                <ul data-montage-id="repositoryGroupList" class="History-filter">
-                    <li class="History-filter-item">
-                        <input type="radio" data-montage-id="radioButton" class="InputRadio"> <span data-montage-id="radioButtonLabel"></span>
-                    </li>
-                </ul>
                 <div data-montage-id="historyProgress" class="History-progress"></div>
                 <div data-montage-id="historyEmpty" class="History-empty">
                     <span data-montage-id="historyEmptyTitle"></span>
