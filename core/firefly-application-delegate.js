@@ -1,5 +1,6 @@
 var ApplicationDelegate = require("./application-delegate").ApplicationDelegate,
     Promise = require("montage/core/promise").Promise,
+    Confirm = require("matte/ui/popup/confirm.reel").Confirm,
     //TODO I wouldn't expect the project list to house this functionality
     repositoriesController = require("project-list/core/repositories-controller").repositoriesController;
 
@@ -20,6 +21,10 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
     },
 
     promptPanel: {
+        value: null
+    },
+
+    confirmPanel: {
         value: null
     },
 
@@ -47,6 +52,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
             var bridge = this.environmentBridge;
             bridge.progressPanel = this.progressPanel;
             bridge.promptPanel = this.promptPanel;
+            bridge.confirmPanel = this.confirmPanel;
             bridge.applicationDelegate = this;
             return Promise.resolve();
         }
@@ -68,14 +74,24 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 } else {
                     //Repository exists, do we have a project workspace for it?
                     populatedRepositoryPromise = bridge.projectExists().then(function (exists) {
-                        if (!exists) {
+                        if (true || !exists) {
                             //TODO check if it's a montage project or not: cute message otherwise
                             // No workspace, make one
                             self.showModal = true;
                             self.currentPanelKey = "progress";
+
                             return bridge.initializeProject().then(function () {
                                 self.showModal = false;
                                 self.currentPanelKey = null;
+                            }).catch(function(err) {
+                                self.showModal = true;
+                                self.currentPanelKey = "confirm";
+                                self.confirmPanel.getResponse("Can't fetch the project.", true, "Retry", "Ignore").then(function(pressedRetry) {
+                                    if (pressedRetry) {
+                                        self.willLoadProject();
+                                    }
+                                    self.showModal = false;
+                                });
                             });
                         } else {
                             // Workspace found, all systems go!
