@@ -89,6 +89,14 @@
                 }
             },
 
+            "newAppError": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "newAppError"},
+                    "value": ""
+                }
+            },
+
             "createNewAppButton": {
                 "prototype": "matte/ui/button.reel",
                 "properties": {
@@ -277,6 +285,7 @@
                     <label class="NewForm-field">
                         Description <textarea data-montage-id="newAppDescription" placeholder="(optional)"></textarea>
                     </label>
+                    <div data-montage-id="newAppError" class="NewForm-error"></div>
                     <footer class="NewForm-bar">
                         <button data-montage-id="cancelNewAppButton" class="Button"></button>
                         <button data-montage-id="createNewAppButton" class="Button Button--action"></button>

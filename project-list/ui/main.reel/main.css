@@ -243,7 +243,10 @@
     background-color: hsla(0,0%,100%,1);
 }
 
-
+.NewForm-error {
+    font-size: .9em;
+    color: hsl(10, 80%, 54%);;
+}
 
 /* List --------------------------------- */
 

@@ -157,6 +157,9 @@ exports.Main = Montage.create(Component, {
             }).then(function() {
                 window.location.pathname = self.userController.login + "/" + name;
                 self.showNewAppForm = false;
+            }, function (error) {
+                self.templateObjects.newAppError.value = error.message;
+                throw error;
             });
         }
     },
