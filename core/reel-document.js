@@ -1747,6 +1747,7 @@ exports.ReelDocument = EditingDocument.specialize({
     setNodeProxyAttribute: {
         value: function(nodeProxy, attribute, value) {
             var previousValue = nodeProxy.getAttribute(attribute);
+            var montageId;
             if (value === previousValue) {
                 return true;
             }
@@ -1761,9 +1762,14 @@ exports.ReelDocument = EditingDocument.specialize({
                 return false;
             }
 
+            montageId = nodeProxy.montageId;
             nodeProxy.setAttribute(attribute, value);
             this.undoManager.register("Set Node Attribute", Promise.resolve([this.setNodeProxyAttribute, this, nodeProxy, attribute, previousValue]));
             this._dispatchDidSetNodeAttribute(nodeProxy, attribute, value);
+
+            if (nodeProxy.component && montageId !== nodeProxy.montageId) {
+                this._dispatchDidSetOwnedObjectProperty(nodeProxy.component, "element", nodeProxy);
+            }
 
             return true;
         }

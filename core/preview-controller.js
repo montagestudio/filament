@@ -298,17 +298,21 @@ exports.PreviewController = Target.specialize({
             var proxy = detail.proxy;
             var ownerProxy = event.target.editingProxyMap.owner;
             var ownerModuleId = ownerProxy ? ownerProxy.exportId : null;
-            var value = detail.value;
+            var propertyValue = detail.value;
             var type;
+            var value;
 
-            if (value instanceof NodeProxy) {
+            if (propertyValue instanceof NodeProxy) {
                 type = "element";
-                value = this._getElementLocation(value, false, ownerProxy);
-            } else if (value instanceof ReelProxy) {
+                value = this._getElementLocation(propertyValue, false, ownerProxy);
+                value.elementId = propertyValue.montageId;
+            } else if (propertyValue instanceof ReelProxy) {
                 type = "object";
                 value = {
-                    label: value.label
+                    label: propertyValue.label
                 };
+            } else {
+                value = propertyValue;
             }
 
             this.setPreviewObjectProperty(ownerModuleId, proxy.label, detail.property, value, type).done();
