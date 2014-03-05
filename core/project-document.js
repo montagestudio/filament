@@ -69,20 +69,28 @@ exports.ProjectDocument = Document.specialize({
      */
     init: {
         value: function (packageRequire, documentController, environmentBridge) {
-            var self = this.super();
+            var self = this.super(),
+                bridge;
+
             self._packageRequire = packageRequire;
             self._documentController = documentController;
-            self._environmentBridge = environmentBridge;
+            bridge = self._environmentBridge = environmentBridge;
 
-            self.updateRefs()
+            bridge.listRepositoryBranches()
                 .then(function (response) {
-                    // Make sure we're on the shadow of the current branch
-                    var currentBranchName = response.current;
-                    return self._environmentBridge.checkoutShadowBranch(currentBranchName);
+                    var currentBranchName = response.current,
+                        branches = self.branches = response.branches;
+
+                    self.currentBranch = branches[currentBranchName];
+
+                    if (!response.currentIsShadow) {
+                        return bridge.checkoutShadowBranch(currentBranchName);
+                    }
                 })
                 .then(function () {
                     return self.updateRefs();
                 })
+                .catch(Function.noop)
                 .done();
 
             window.pd = self;
