@@ -259,6 +259,7 @@ exports.ProjectDocument = Document.specialize({
                     .then(function(shadowStatus) {
                         self.aheadCount = shadowStatus.localParent.ahead;
                         self.behindCount = shadowStatus.localParent.behind;
+                        return shadowStatus;
                     });
             }
 
@@ -280,33 +281,6 @@ exports.ProjectDocument = Document.specialize({
 
     behindCount: {
         value: 0
-    },
-
-    _commit: {
-        value: function (urls, message, amend) {
-
-            var branch = this.currentBranch,
-                bridge = this._environmentBridge,
-                self = this,
-                commitResult;
-
-            if (branch) {
-                if (bridge && typeof bridge.listRepositoryBranches === "function") {
-                    commitResult = this._environmentBridge.listRepositoryBranches()
-                        .then(function (response) {
-                            if (response.currentIsShadow) {
-                                return self._environmentBridge.commitFiles(urls, message, null);
-                            } else {
-                                throw new Error("Cannot commit to non-shadow branch");
-                            }
-                        });
-                }
-            } else {
-                throw new Error("Cannot commit without being on a non-detached head");
-            }
-
-            return Promise(commitResult);
-        }
     },
 
     /**
@@ -337,9 +311,6 @@ exports.ProjectDocument = Document.specialize({
             });
 
             return Promise.all(savedPromises)
-                .then(function (savedDocs) {
-                    return savedDocs && savedDocs.length > 0 ? self._commit(["."], message, amend) : null;
-                })
                 .finally(function(result) {
                     return self._updateShadowDelta().thenResolve(result);
                 })
