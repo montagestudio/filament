@@ -207,7 +207,7 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
         }
     }
 
-},{
+}, {
 
     editorMimeType:{
         value: function(fileUrl) {
@@ -271,31 +271,10 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
     },
 
     load: {
-        value: function (fileUrl, packageUrl) {
-            return require.loadPackage(packageUrl).then(function (packageRequire) {
-
-                var deferredDocument = Promise.defer();
-                var request = new XMLHttpRequest();
-                request.withCredentials = true;
-
-                request.open("GET", fileUrl);
-                request.addEventListener("load", function () {
-                    if (request.status === 200) {
-                        deferredDocument.resolve(new CodeEditorDocument().init(fileUrl, packageRequire, request.responseText));
-                    } else {
-                        deferredDocument.reject(
-                            new Error("Failed to load document at'" + fileUrl + "' with status: " + request.status)
-                        );
-                    }
-                }, false);
-                request.addEventListener("error", function (event) {
-                    deferredDocument.reject(
-                        new Error("Failed to load document at '" + fileUrl + "' with error: " + event.error + ".")
-                    );
-                }, false);
-                request.send();
-
-                return deferredDocument.promise;
+        value: function (fileUrl, packageUrl, dataReader) {
+            return dataReader(fileUrl)
+            .then(function (content) {
+                return new CodeEditorDocument().init(fileUrl, null, content);
             });
         }
     },

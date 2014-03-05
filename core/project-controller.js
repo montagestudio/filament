@@ -415,7 +415,12 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      */
     createDocumentWithTypeAndUrl: {
         value: function (documentType, url) {
-            return documentType.load(url, this.packageUrl);
+            var environmentBridge = this.environmentBridge;
+            function dataReader(url) {
+                return environmentBridge.read(url);
+            }
+
+            return documentType.load(url, this.packageUrl, dataReader);
         }
     },
 
