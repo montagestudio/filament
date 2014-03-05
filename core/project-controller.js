@@ -1190,14 +1190,16 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      */
     createComponent: {
         value: function () {
-            var self = this;
-            return this._create("component", "ui",
-                this.environmentBridge.createComponent.bind(this.environmentBridge)).then(function (componentUrl) {
-                    if (componentUrl) {
-                        return self.openUrlForEditing(componentUrl).thenResolve(componentUrl);
-                    } else {
-                        return Promise.resolve(null);
+            var self = this,
+                projectDocument = this.projectDocument;
+
+            return this._create("component", "ui", projectDocument.createComponent.bind(projectDocument))
+                .then(function (url) {
+                    var result;
+                    if (url) {
+                        result = self.openUrlForEditing(url).thenResolve(url);
                     }
+                    return Promise(result);
                 });
         }
     },
@@ -1210,8 +1212,17 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     createModule: {
         value: function () {
-            return this._create("module", "core",
-                this.environmentBridge.createModule.bind(this.environmentBridge));
+            var self = this,
+                projectDocument = this.projectDocument;
+
+            return this._create("module", "core", projectDocument.createModule.bind(projectDocument))
+                .then(function (url) {
+                    var result;
+                    if (url) {
+                        result = self.openUrlForEditing(url).thenResolve(url);
+                    }
+                    return Promise(result);
+                });
         }
     },
 

@@ -1,5 +1,6 @@
 var Document = require("palette/core/document").Document,
-    Promise = require("montage/core/promise").Promise;
+    Promise = require("montage/core/promise").Promise,
+    Url = require("core/url");
 
 /**
  * The ProjectDocument represents the editing interface for the project itself.
@@ -173,6 +174,34 @@ exports.ProjectDocument = Document.specialize({
                         deferredUndoOperation.resolve([self.add, self, btoa(data), url]);
                         return success;
                     });
+                });
+        }
+    },
+
+    /**
+     * Create a component
+     */
+    createComponent: {
+        value: function (name, packageHome, relativeDestination) {
+            var self = this;
+
+            return this._environmentBridge.createComponent(name, packageHome, relativeDestination)
+                .then(function (result) {
+                    return self._updateShadowDelta().thenResolve(result);
+                });
+        }
+    },
+
+    /**
+     * Create a module
+     */
+    createModule: {
+        value: function (name, packageHome, relativeDestination) {
+            var self = this;
+
+            return this._environmentBridge.createModule(name, packageHome, relativeDestination)
+                .then(function (result) {
+                    return self._updateShadowDelta().thenResolve(result);
                 });
         }
     },
