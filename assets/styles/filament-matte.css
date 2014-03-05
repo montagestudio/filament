@@ -179,16 +179,16 @@
 }
 
 .Filament .matte-Popup-header {
-    color: hsl(0,0%,30%);
-    font-family: Titillium Web, Open Sans, sans-serif;
-    font-size: 24px;
+    color: hsl(0, 0%, 50%);
+    font-size: 11px;
     line-height: 1;
-    padding: 15px;
+    padding: 10px 8px 10px 16px;
     border-radius: 6px 6px 0 0;
 }
 
 .Filament .matte-Popup-header > .title {
     margin: 0;
+    font-weight: normal;
 }
 
 .Filament .matte-Confirm-content {
