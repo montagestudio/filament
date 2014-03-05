@@ -133,7 +133,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         value: function (evt) {
             switch (evt.detail.identifier) {
             case "documentation":
-                window.open("http://montagestudio.com/explore/product/montage-studio/");
+                window.open("http://docs.montagestudio.com/montage-studio/");
                 break;
             case "forum":
                 window.open("http://forum.montagestudio.com/category/prerelease");
@@ -142,10 +142,10 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 window.location = "mailto:feedback@montagestudio.com";
                 break;
             case "api":
-                window.open("http://montagestudio.com/explore/montagejs/api/AbstractButton.html");
+                window.open("http://docs.montagestudio.com/montagejs/api/AbstractButton.html");
                 break;
             case "framework":
-                window.open("http://montagestudio.com/explore/montagejs/docs/");
+                window.open("http://docs.montagestudio.com/montagejs/docs/");
                 break;
             }
         }
