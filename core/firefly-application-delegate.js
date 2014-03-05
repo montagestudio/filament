@@ -59,6 +59,10 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 bridge = this.environmentBridge,
                 populatedRepositoryPromise;
 
+            self.showModal = true;
+            self.currentPanelKey = "progress";
+            self.progressPanel.message = "Checking repository...";
+
             return bridge.isProjectEmpty().then(function (isEmpty) {
                 if (isEmpty) {
                     // Bare repository, create a project and commit
@@ -74,6 +78,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                             // No workspace, make one
                             self.showModal = true;
                             self.currentPanelKey = "progress";
+                            self.progressPanel.message = "Cloning project and installing dependencies...";
 
                             return bridge.initializeProject().then(function () {
                                 self.showModal = false;
@@ -81,25 +86,27 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                             });
                         } else {
                             // Workspace found, all systems go!
+                            self.showModal = false;
                             return Promise.resolve();
                         }
-                    }).catch(function(err) {
-                        self.currentPanelKey = "confirm";
-                        self.showModal = true;
-
-                        return self.confirmPanel.getResponse("Can't fetch the project.", true, "Retry", "Ignore").then(function (response) {
-                            self.showModal = false;
-                            if (response === true) {
-                                return self.willLoadProject();
-                            } else {
-                                //Retry anyway ;-)
-                                return self.willLoadProject();
-                            }
-                        });
                     });
                 }
 
                 return populatedRepositoryPromise;
+            })
+            .catch(function(err) {
+                self.currentPanelKey = "confirm";
+                self.showModal = true;
+
+                return self.confirmPanel.getResponse("Error setting up the project.", true, "Retry", "Close").then(function (response) {
+                    self.showModal = false;
+                    if (response === true) {
+                        return self.willLoadProject();
+                    } else {
+                        window.location = "/";
+                        return Promise.defer();
+                    }
+                });
             });
         }
     },
@@ -132,11 +139,10 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 bridge.isProjectEmpty().then(function (isEmpty) {
                     if (isEmpty) {
                         self.currentPanelKey = "progress";
-                        return bridge.initializeProject().then(function () {
-                            self.showModal = false;
-                            self.currentPanelKey = null;
-                            self._deferredRepositoryInitialization.resolve();
-                        });
+                        self.progressPanel.message = "Initializing project and installing dependencies...";
+
+                        var promise = self._deferredRepositoryInitialization;
+                        bridge.initializeProject().then(promise.resolve, promise.reject);
                     }
                 }).done();
             }
