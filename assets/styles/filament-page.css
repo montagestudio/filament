@@ -1,0 +1,27 @@
+/* These styles are used on all the pages outside of the main app. */
+
+/* Global ------------------------------------- */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    background-color: hsl(0,0%,98%);
+}
+
+body {
+    margin: 0;
+    font-family: Clear Sans, sans-serif;
+}
+
+.montage-invisible {
+    display: none;
+}
+
+/* Bootstrapping ------------------------------------- */
+
+.montage-app-bootstrapping .main,
+.montage-app-loading .main {
+    display: none;
+}

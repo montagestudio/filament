@@ -1,11 +1,6 @@
 
 .Main {
-    display: -webkit-flex;
-    justify-content: center;
-    height: 100%;
-    padding: 40px;
     text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
-    background: hsl(0,0%,95%) -webkit-radial-gradient( hsl(0,0%,98%), hsl(0,0%,90%) );
     -webkit-user-select: none;
     cursor: default;
 }
@@ -14,13 +9,9 @@
 /* Intro --------------------------------- */
 
 .Intro {
-    -webkit-flex: 1;
-    max-width: 340px;
-    display: -webkit-flex;
-    -webkit-flex-direction: column;
-    -webkit-align-items: center;
-    -webkit-justify-content: center;
-    padding: 20px;
+    margin: 40px;
+    color: hsl(0,0%,36%);
+    text-align: center;
     -webkit-animation: Intro-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
 }
 
@@ -43,15 +34,13 @@
 }
 
 .Intro-logo {
-    width: 280px;
-    height: 188px;
-    /* Using background image to fix Flexbox + Image resize issue. */
-    min-height: 188px;
-    background: url(../../../assets/img/logo.png) no-repeat center;
-    background-size: 100% auto;
+    display: block;
+    width: 240px;
+    margin: auto;
 }
 
 .Intro-version {
+    display: inline-block;
     margin-top: 2em;
     font-size: 14px;
     color: hsl(0, 0%, 50%);
@@ -61,13 +50,6 @@
     padding: 0.2em 0.4em;
     border-radius: 4px;
     border: 1px solid hsl(0, 0%, 75%);
-}
-
-.Intro-help {
-    max-width: 400px;
-    margin: 20px 0 0 0;
-    font-size: 13px;
-    color: hsl(0, 0%, 40%);
 }
 
 .Intro-meta {
@@ -80,12 +62,7 @@
 /* Launcher --------------------------------- */
 
 .Launcher {
-    -webkit-flex: 1;
-    max-width: 340px;
-    display: -webkit-flex;
-    -webkit-flex-direction: column;
-    -webkit-justify-content: center;
-    padding: 0 20px;
+    margin: 40px;
     -webkit-animation: Launcher-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
 }
 
@@ -97,6 +74,7 @@
 }
 
 .Launcher-section {
+    -webkit-flex: 0 0 auto;
     margin: 10px 0;
     padding: 15px;
     border-radius: 6px;
@@ -175,4 +153,45 @@
 
 .Action-button--login:before {
     background-image: url(../../../assets/img/github.svg);
+}
+
+
+
+
+/* Respsonsive --------------------------------- */
+
+@media (min-width:640px) {
+
+    html,
+    body {
+        height: 100%;
+    }
+
+    .Main {
+        display: -webkit-flex;
+        justify-content: center;
+        height: 100%;
+    }
+
+    .Intro {
+        width: 320px;
+        align-self: center;
+    }
+
+    .Launcher {
+        width: 320px;
+        display: -webkit-flex;
+        -webkit-flex-direction: column;
+        -webkit-justify-content: center;
+    }
+}
+
+@media (min-width:640px) and (max-height:400px) {
+    .Main {
+        height: auto;
+    }
+
+    .Intro {
+        align-self: flex-start;
+    }
 }
