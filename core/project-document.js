@@ -76,22 +76,24 @@ exports.ProjectDocument = Document.specialize({
             self._documentController = documentController;
             bridge = self._environmentBridge = environmentBridge;
 
-            bridge.listRepositoryBranches()
-                .then(function (response) {
-                    var currentBranchName = response.current,
-                        branches = self.branches = response.branches;
+            if (bridge && typeof bridge.listRepositoryBranches === "function") {
+                bridge.listRepositoryBranches()
+                    .then(function (response) {
+                        var currentBranchName = response.current,
+                            branches = self.branches = response.branches;
 
-                    self.currentBranch = branches[currentBranchName];
+                        self.currentBranch = branches[currentBranchName];
 
-                    if (!response.currentIsShadow) {
-                        return bridge.checkoutShadowBranch(currentBranchName);
-                    }
-                })
-                .then(function () {
-                    return self.updateRefs();
-                })
-                .catch(Function.noop)
-                .done();
+                        if (!response.currentIsShadow) {
+                            return bridge.checkoutShadowBranch(currentBranchName);
+                        }
+                    })
+                    .then(function () {
+                        return self.updateRefs();
+                    })
+                    .catch(Function.noop)
+                    .done();
+            }
 
             window.pd = self;
 
@@ -222,7 +224,7 @@ exports.ProjectDocument = Document.specialize({
 
             this.isBusy = true;
 
-            if (bridge.listRepositoryBranches && typeof bridge.listRepositoryBranches === "function") {
+            if (bridge && typeof bridge.listRepositoryBranches === "function") {
                 updatePromise = bridge.listRepositoryBranches()
                     .then(function (response) {
                         var branches = self.branches = response.branches;
@@ -282,7 +284,28 @@ exports.ProjectDocument = Document.specialize({
 
     _commit: {
         value: function (urls, message, amend) {
-            return this._environmentBridge.commitFiles(urls, message, null);
+
+            var branch = this.currentBranch,
+                bridge = this._environmentBridge,
+                self = this,
+                commitResult;
+
+            if (branch) {
+                if (bridge && typeof bridge.listRepositoryBranches === "function") {
+                    commitResult = this._environmentBridge.listRepositoryBranches()
+                        .then(function (response) {
+                            if (response.currentIsShadow) {
+                                return self._environmentBridge.commitFiles(urls, message, null);
+                            } else {
+                                throw new Error("Cannot commit to non-shadow branch");
+                            }
+                        });
+                }
+            } else {
+                throw new Error("Cannot commit without being on a non-detached head");
+            }
+
+            return Promise(commitResult);
         }
     },
 
