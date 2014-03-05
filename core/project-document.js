@@ -1,6 +1,5 @@
 var Document = require("palette/core/document").Document,
-    Promise = require("montage/core/promise").Promise,
-    Url = require("core/url");
+    Promise = require("montage/core/promise").Promise;
 
 /**
  * The ProjectDocument represents the editing interface for the project itself.
