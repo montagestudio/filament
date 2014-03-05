@@ -1,3 +1,4 @@
+/*global Rollbar*/
 var ApplicationDelegate = require("./application-delegate").ApplicationDelegate,
     Promise = require("montage/core/promise").Promise,
     //TODO I wouldn't expect the project list to house this functionality
@@ -8,6 +9,13 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
     constructor: {
         value: function ApplicationDelegate () {
             this.super();
+            var originalOnerror = Promise.onerror;
+            Promise.onerror = function (error) {
+                if (Rollbar) {
+                    Rollbar.error(error);
+                }
+                return originalOnerror(error);
+            };
         }
     },
 
