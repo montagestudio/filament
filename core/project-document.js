@@ -144,6 +144,9 @@ exports.ProjectDocument = Document.specialize({
             this.undoManager.register("Add File", deferredUndoOperation.promise);
 
             return this._environmentBridge.writeFile(url, data)
+                .then(function (result) {
+                    return self._updateShadowDelta().thenResolve(result);
+                })
                 .then(function (success) {
                     deferredUndoOperation.resolve([self.remove, self, url]);
                     return success;
@@ -170,10 +173,13 @@ exports.ProjectDocument = Document.specialize({
                 .invoke("read", url)
                 .then(function (data) {
                     return self._environmentBridge.remove(url)
+                        .then(function (result) {
+                            return self._updateShadowDelta().thenResolve(result);
+                        })
                         .then(function (success) {
-                        deferredUndoOperation.resolve([self.add, self, btoa(data), url]);
-                        return success;
-                    });
+                            deferredUndoOperation.resolve([self.add, self, btoa(data), url]);
+                            return success;
+                        });
                 });
         }
     },
