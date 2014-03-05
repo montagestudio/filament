@@ -90,22 +90,7 @@ exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activi
 
     handleDetailsAction: {
         value: function (event) {
-            var self = this;
-            var win = document.application.openWindow("ui/activity-list.reel",
-                "ActivityList",
-                {width: 500, height: 300}
-            );
-            win.addEventListener("load", function (event) {
-                win.component.defineBinding("runningActivities", {
-                    "<-": "runningActivities",
-                    source: self
-                });
-
-                win.component.defineBinding("failedActivities", {
-                    "<-": "failedActivities",
-                    source: self
-                });
-            }, false);
+            this.templateObjects.overlay.show();
         }
     },
 

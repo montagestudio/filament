@@ -59,7 +59,7 @@ Classes to toggle counter
 .ActivityInfobar--running .ActivityInfobar-icon {
     background-color: hsla(0,0%,0%,.6);
     background-size: 8px;
-    background-image:   -webkit-repeating-linear-gradient( 0deg, 
+    background-image:   -webkit-repeating-linear-gradient( 0deg,
         hsla(0,0%,100%,0), hsla(0,0%,100%,0) 4px, hsla(0,0%,100%,.2) 4px, hsla(0,0%,100%,.2) 8px );
     -webkit-animation: progress 1s linear infinite;
 }
@@ -167,3 +167,6 @@ Classes to toggle counter
     border-radius: 12px;
 }
 
+.ActivityInfobar-overlay {
+    width: 100%;
+}

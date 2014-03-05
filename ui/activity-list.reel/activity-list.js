@@ -33,10 +33,6 @@ exports.ActivityList = Montage.create(Component, /** @lends module:"ui/activity-
             if (!value) {
                 return;
             }
-            // TODO remove when FRB arrives
-            if (!Array.isArray(value)) {
-                value = value.toArray();
-            }
             value = RangeController.create().initWithContent(value);
             this._runningActivities = value;
         }
@@ -50,10 +46,6 @@ exports.ActivityList = Montage.create(Component, /** @lends module:"ui/activity-
         set: function (value) {
             if (!value) {
                 return;
-            }
-            // TODO remove when FRB arrives
-            if (!Array.isArray(value)) {
-                value = value.toArray();
             }
             value = RangeController.create().initWithContent(value);
             this._failedActivities = value;

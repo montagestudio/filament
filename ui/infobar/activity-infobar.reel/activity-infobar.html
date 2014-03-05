@@ -38,6 +38,25 @@
             "listeners": [
                 {"type": "action", "listener": {"@": "owner"}}
             ]
+        },
+
+        "overlay": {
+            "prototype": "montage/ui/overlay.reel",
+            "properties": {
+                "element": {"#": "overlay"},
+                "position": {"left": 0, "top": 64}
+            }
+        },
+
+        "activityList": {
+            "prototype": "ui/activity-list.reel",
+            "properties": {
+                "element": {"#": "activityList"}
+            },
+            "bindings": {
+                "runningActivities": {"<-": "@owner.runningActivities"},
+                "failedActivities": {"<-": "@owner.failedActivities"}
+            }
         }
     }
     </script>
@@ -53,6 +72,10 @@
                 <li data-montage-id="completedNum" class="ActivityInfobar-counter-completed">0</li>
             </ul>
             <button type="button" data-montage-id="details" class="ActivityInfobar-detailsButton">Details</button>
+        </div>
+
+        <div data-montage-id="overlay" class="ActivityInfobar-overlay">
+            <div data-montage-id="activityList" class="ActivityInfobar-activityList"></div>
         </div>
     </div>
 </body>
