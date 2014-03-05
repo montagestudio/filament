@@ -151,7 +151,10 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                         self.progressPanel.message = "Initializing project and installing dependencies...";
 
                         var promise = self._deferredRepositoryInitialization;
-                        bridge.initializeProject().then(promise.resolve, promise.reject);
+                        bridge.initializeProject().then(function () {
+                            self.showModal = false;
+                            self.currentPanelKey = null;
+                        }).then(promise.resolve, promise.reject);
                     }
                 }).done();
             }
