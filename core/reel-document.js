@@ -1592,9 +1592,9 @@ exports.ReelDocument = EditingDocument.specialize({
     _updateActionEventListener: {
         value: function (originalListener, originalHandler, explicitListener, methodName) {
             if (explicitListener !== originalHandler) {
-                originalListener.setObjectProperty("handler", explicitListener);
+                this.setOwnedObjectProperty(originalListener, "handler", explicitListener);
             }
-            originalListener.setObjectProperty("action", methodName);
+            this.setOwnedObjectProperty(originalListener, "action", methodName);
             return Promise.resolve(originalListener);
         }
     },
