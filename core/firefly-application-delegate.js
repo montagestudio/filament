@@ -46,6 +46,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
             // TODO this is a temporary workaround to redirect keyEquivalents to the
             // toolbar as a last resort if they make it up here
             app.addEventListener("keyPress", this);
+            app.addEventListener("menuAction", this, false);
         }
     },
 
@@ -153,6 +154,28 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                         bridge.initializeProject().then(promise.resolve, promise.reject);
                     }
                 }).done();
+            }
+        }
+    },
+
+    handleMenuAction: {
+        value: function (evt) {
+            switch (evt.detail.identifier) {
+            case "documentation":
+                window.open("http://docs.montagestudio.com/montage-studio/");
+                break;
+            case "forum":
+                window.open("http://forum.montagestudio.com/category/prerelease");
+                break;
+            case "report":
+                window.location = "mailto:feedback@montagestudio.com";
+                break;
+            case "api":
+                window.open("http://docs.montagestudio.com/montagejs/api/AbstractButton.html");
+                break;
+            case "framework":
+                window.open("http://docs.montagestudio.com/montagejs/docs/");
+                break;
             }
         }
     },
