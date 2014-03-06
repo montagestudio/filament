@@ -214,7 +214,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
      */
     _findResult: {
         value: function (name, index) {
-            if (typeof name === 'string') {
+            if (this.results && typeof name === 'string') {
                 var keys = Object.keys(this.results);
 
                 for (var i = 0, length = keys.length; i < length; i++) {
