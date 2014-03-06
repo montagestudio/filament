@@ -175,7 +175,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 window.location = "mailto:feedback@montagestudio.com";
                 break;
             case "api":
-                window.open("http://docs.montagestudio.com/montagejs/api/AbstractButton.html");
+                window.open("http://docs.montagestudio.com/api/AbstractButton.html");
                 break;
             case "framework":
                 window.open("http://docs.montagestudio.com/montagejs/");
