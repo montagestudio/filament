@@ -106,6 +106,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
             .catch(function(err) {
                 self.currentPanelKey = "confirm";
                 self.showModal = true;
+                Rollbar.error(new Error("Error setting up the project."));
 
                 return self.confirmPanel.getResponse("Error setting up the project.", true, "Retry", "Close").then(function (response) {
                     self.showModal = false;
