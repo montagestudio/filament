@@ -128,7 +128,9 @@ exports.PackageSavingManager = Montage.specialize({
 
                 }
 
-                return self._packageDocument._updateDependenciesAfterSaving();
+                self._packageDocument.needRefresh = true;
+
+                return self._packageDocument._updateLibraryGroups();
             });
         }
     }

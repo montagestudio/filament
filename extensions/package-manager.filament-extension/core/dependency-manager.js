@@ -251,8 +251,7 @@ var DependencyManager = Montage.specialize({
                     }).fin(function () {
                         dependency.isBusy = false;
                         self._immediateOperationsCount--;
-
-                        return self._packageDocument._updateDependenciesList();
+                        self._packageDocument.needRefresh = true;
                     });
                 }
             }

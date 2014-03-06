@@ -12,7 +12,6 @@ describe("package document", function () {
             devDependencies:{}
         };
         packageDocument._livePackage = {};
-        packageDocument._updateDependenciesAfterSaving = function () {};
         packageDocument._dependencyCollection = {
             dependencies: [
                 {
