@@ -4,12 +4,11 @@
 
 .HistoryListItem-type.is-private {
     display: inline;
-    margin: 0 0 0 0;
-    padding: 0 0.2em;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    -ms-border-radius: 5px;
-    border-radius: 5px;
-    color: hsl(40, 100%, 43%);
+    padding: 0.2em 0.4em;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    border-radius: 4px;
+    color: hsl(46, 100%, 43%);
     border: 1px solid hsl(46, 100%, 43%);
 }
