@@ -94,6 +94,19 @@
     text-align: center;
 }
 
+.History-progress {
+    -webkit-transition: height .3s;
+    -moz-transition: height .3s;
+    -moz-transition: height .3s;
+    -transition: height .3s;
+    overflow: hidden;
+}
+
+.History-progress.is-done {
+    height: 0px;
+    border: none !important;
+}
+
 /* Action --------------------------------- */
 
 .Launcher-section .Action {
