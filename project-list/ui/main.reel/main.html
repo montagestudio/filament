@@ -163,6 +163,28 @@
                 }
             },
 
+            "removeWorkspaces": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "removeWorkspaces"}
+                },
+                "bindings": {
+                    "enabled": {"<-": "@owner.workspaces.length > 0"}
+                },
+                "localizations": {
+                    "label": {
+                        "key": "remove_workspaces",
+                        "default": "{number, plural, =0 {Delete workspaces} one {Delete 1 workspace} other {Delete # workspaces}}",
+                        "data": {
+                            "number": {"<-": "@owner.workspaces.length || 0"}
+                        }
+                    }
+                },
+                "listeners": [
+                    {"type": "action", "listener": {"@": "owner"}}
+                ]
+            },
+
             "historyProgress": {
                 "prototype": "matte/ui/progress.reel",
                 "properties": {
@@ -295,6 +317,8 @@
                     <li class="History-list-item" data-montage-id="historyListItem"></li>
                 </ul>
             </section>
+
+            <button data-montage-id="removeWorkspaces" class="Button"></button>
 
         </section>
 

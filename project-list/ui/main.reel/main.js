@@ -2,6 +2,7 @@ var Montage = require("montage/core/core").Montage;
 var Component = require("montage/ui/component").Component;
 var repositoriesController = require("../../core/repositories-controller").repositoriesController;
 var UserController = require("adaptor/client/core/user-controller").UserController;
+var requestOk = require("core/request").requestOk;
 
 exports.Main = Montage.create(Component, {
 
@@ -15,6 +16,10 @@ exports.Main = Montage.create(Component, {
 
     isFirstRun: {
         value: true
+    },
+
+    workspaces: {
+        value: []
     },
 
     constructor: {
@@ -40,6 +45,7 @@ exports.Main = Montage.create(Component, {
             }
 
             this._upkeepProgressBar();
+            this._getWorkspaces();
         }
     },
 
@@ -71,6 +77,17 @@ exports.Main = Montage.create(Component, {
 
                 window.setTimeout(upkeep, UPKEEP_INTERVAL += UPKEEP_INCREASE);
             }, UPKEEP_INTERVAL);
+        }
+    },
+
+    _getWorkspaces: {
+        value: function () {
+            var self = this;
+            requestOk("/api/workspaces")
+            .then(function (response) {
+                self.workspaces = JSON.parse(response.body);
+            })
+            .done();
         }
     },
 
@@ -143,6 +160,19 @@ exports.Main = Montage.create(Component, {
     handleNewAppNameAction: {
         value: function () {
             this._createNewApplication().done();
+        }
+    },
+
+    handleRemoveWorkspacesAction: {
+        value: function () {
+            var self = this;
+            requestOk({
+                method: "DELETE",
+                url: "/api/workspaces"
+            }).then(function (response) {
+                self._getWorkspaces();
+            })
+            .done();
         }
     },
 
