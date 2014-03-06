@@ -3,6 +3,7 @@
 <head>
     <title>HistoryListItem</title>
     <meta charset="utf-8">
+    <link href="history-list-item.css" rel="stylesheet" />
 
     <script type="text/montage-serialization">
         {
@@ -43,9 +44,8 @@
                     "element": {"#": "typeIndicator"}
                 },
                 "bindings": {
-                    "value": {"<-": "!!@owner.repository.private ? 'Private' : 'Public'",
-                    "classList.has('HistoryListItem--private')": {"<-": "!!@owner.repository.private"}
-                    }
+                    "value": {"<-": "!!@owner.repository.private ? 'private' : 'public'"},
+                    "classList.has('is-private')": {"<-": "!!@owner.repository.private"}
                 }
             }
         }
@@ -55,7 +55,7 @@
 <body>
 
 <li data-montage-id="historyListItem" class="HistoryListItem">
-    <span data-montage-id="typeIndicator"></span>
+    <span data-montage-id="typeIndicator" class="HistoryListItem-type"></span>
     <span data-montage-id="name"></span>
 </li>
 

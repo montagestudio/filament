@@ -98,7 +98,7 @@
     -webkit-transition: height .3s;
     -moz-transition: height .3s;
     -moz-transition: height .3s;
-    -transition: height .3s;
+    transition: height .3s;
     overflow: hidden;
 }
 
