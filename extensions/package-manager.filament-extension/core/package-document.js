@@ -12,6 +12,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     DependencyNames = Tools.DependencyNames,
     defaultLocalizer = require("montage/core/localizer").defaultLocalizer,
 
+    TIME_BEFORE_REFRESHING = 350,
     DEPENDENCIES_REQUIRED = ['montage'],
     PACKAGE_PROPERTIES_ALLOWED_MODIFY = {
         name: "name",
@@ -394,6 +395,50 @@ exports.PackageDocument = EditingDocument.specialize( {
                 promise: promise,
                 title: title
             });
+        }
+    },
+
+    _timeoutRefreshID: {
+        value: null
+    },
+
+    _needRefresh: {
+        value: null
+    },
+
+    needRefresh: {
+        set: function (bool) {
+            if (!!bool) {
+                if (this._timeoutRefreshID) {
+                    clearTimeout(this._timeoutRefreshID);
+                    this._timeoutRefreshID = null;
+                }
+
+                var self = this;
+                this._needRefresh = true;
+
+                this._timeoutRefreshID = setTimeout(function () {
+                    if (self._dependencyManager.isBusy) {
+                        self._timeoutRefreshID = null;
+                        self.needRefresh = true;
+
+                    } else if (self._needRefresh) {
+                        self._updateDependenciesList().then(function () {
+                            self._needRefresh = false;
+                        }).done();
+                    }
+                }, TIME_BEFORE_REFRESHING);
+            } else {
+                if (this._timeoutRefreshID) {
+                    clearTimeout(this._timeoutRefreshID);
+                    this._timeoutRefreshID = null;
+                }
+
+                this._needRefresh = false;
+            }
+        },
+        get: function () {
+            return this._needRefresh;
         }
     },
 
@@ -792,9 +837,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             files.forEach(function (file) {
                 if (self.url === file.fileUrl) { // Package.json file has been modified.
                     if (self._packageFileChangeByAppCount === 0) {
-                        if (!this._dependencyManager.isBusy || !self.isReloadingList) {
-                            self._updateDependenciesList().done();
-                        }
+                        self.needRefresh = true;
                     } else {
                         self._packageFileChangeByAppCount--;
                     }
