@@ -60,10 +60,6 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    isAcceptingDrop: {
-        value: false
-    },
-
     handleAddComponent: {
         value: function (evt) {
             var editor,
@@ -401,11 +397,6 @@ exports.Main = Montage.create(Component, {
                 }
             });
 
-            if (this.isAcceptingDrop) {
-                this.dropZone.classList.add("Main-dropZone--hover");
-            } else {
-                this.dropZone.classList.remove("Main-dropZone--hover");
-            }
         }
     }
 });
