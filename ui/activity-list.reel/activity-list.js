@@ -5,8 +5,7 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
-    RangeController = require("montage/core/range-controller").RangeController,
-    defaultLocalizer = require("montage/core/localizer").defaultLocalizer;
+    RangeController = require("montage/core/range-controller").RangeController;
 
 /**
     Description TODO
@@ -18,9 +17,6 @@ exports.ActivityList = Montage.create(Component, /** @lends module:"ui/activity-
     constructor: {
         value: function ActivityList() {
             this.super();
-            defaultLocalizer.localize("activity", "Activity").then(function (message) {
-                document.title = message;
-            }).done();
         }
     },
 
