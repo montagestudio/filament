@@ -35,6 +35,16 @@
     border-color: #7f7f7f;
 }
 
+body .matte-Button.Button.disabled,
+body .matte-Button.Button.disabled:hover,
+body .matte-Button.Button.disabled:focus {
+    border-color: hsl(0,0%,87%);
+    color: hsl(0,0%,70%);
+    background: hsl(0,0%,94%);
+    box-shadow: none;
+    cursor: default;
+}
+
 
 /* Button Action --------------------------------- */
 
