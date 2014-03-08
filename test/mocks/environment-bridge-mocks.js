@@ -47,7 +47,8 @@ exports.environmentBridgeMock = function (options) {
         registerPreviewPromise = Promise.resolve(),
         launchPreviewPromise = Promise.resolve(),
         promptForSavePromise = Promise.resolve(),
-        getExtensionsAtPromise = Promise([]);
+        getExtensionsAtPromise = Promise([]),
+        readPromise = Promise("{}");
 
     Object.keys(options).forEach(function (key) {
         bridge[key] = options[key];
@@ -58,6 +59,7 @@ exports.environmentBridgeMock = function (options) {
     bridge.availableExtensions = Promise.resolve(options.extensionUrls || []);
     bridge.getExtensionsAt = options.getExtensionsAt || promiseFunction(getExtensionsAtPromise);
 
+    bridge.read = options.read || promiseFunction(readPromise);
     bridge.listTreeAtUrl = options.listTreeAtUrl || promiseFunction(listTreePromise);
     bridge.listAssetAtUrl = options.listAssetAtUrl || promiseFunction(listAssetAtUrl);
     bridge.detectMimeTypeAtUrl = options.detectMimeTypeAtUrl || promiseFunction(detectMimeTypeAtUrl);
