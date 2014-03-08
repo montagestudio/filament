@@ -109,7 +109,7 @@ function parseResponseHeaders(headerString) {
         header = header.trim().toLowerCase();
         value = value.trim();
 
-        if (headers in headers) {
+        if (header in headers) {
             // Put multiple headers of the same name into an array
             if (typeof headers[header] === "string") {
                 headers[header] = [headers[header]];
