@@ -55,6 +55,8 @@ exports.PreviewController = Target.specialize({
             app.addEventListener("didSetNodeAttribute", this);
             app.addEventListener("didChangeTemplate", this);
 
+            app.addEventListener("objectRemoved", this);
+
             return this;
         }
     },
@@ -209,6 +211,16 @@ exports.PreviewController = Target.specialize({
         value: function(moduleId, templateFragment) {
             if (typeof this.environmentBridge.addTemplateFragmentObjects === "function") {
                 return this.environmentBridge.addTemplateFragmentObjects(this._previewId, moduleId, templateFragment);
+            } else {
+                return Promise.resolve(null);
+            }
+        }
+    },
+
+    deleteObject: {
+        value: function(ownerModuleId, label) {
+            if (typeof this.environmentBridge.deleteObject === "function") {
+                return this.environmentBridge.deleteObject(this._previewId, ownerModuleId, label);
             } else {
                 return Promise.resolve(null);
             }
@@ -726,6 +738,17 @@ exports.PreviewController = Target.specialize({
                 nodeCount)
             .done();
         }
-    }
+    },
+
+    handleObjectRemoved: {
+        value: function(event) {
+            var document = event.target;
+            var ownerProxy = document.editingProxyMap.owner;
+            var proxy = event.detail.proxy;
+
+            this.deleteObject(ownerProxy.moduleId, proxy.label)
+            .done();
+        }
+    },
 
 });
