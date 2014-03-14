@@ -1,0 +1,33 @@
+.EditorToolBar {
+    height: 40px;
+    border-top: 1px solid #1D1D1D;
+    border-bottom: 1px solid #1D1D1D;
+    background: -webkit-gradient(linear, left top, left bottom, from(#323232), to(#212121));
+}
+
+
+.CloseEditorButton {
+    float: right;
+    border-left: 1px solid #1D1D1D;
+}
+
+.CloseEditorButton.matte-Button,
+.CloseEditorButton.matte-Button:hover,
+.CloseEditorButton.matte-Button:active {
+    background-color: transparent !important;
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    padding: 0;
+    width: 40px;
+    height: 42px;
+}
+
+.CloseEditorButton-background {
+    width: 20px;
+    height: 20px;
+    margin: 0 0 0 10px;
+    padding: 0;
+    background: url(toolbar-icons.png) -220px 0 no-repeat;
+    display: block;
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="inspector-bar.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "inspectorBar"}
+            },
+            "bindings": {
+                "selectedTab": {"<-": "@inspectorBarListController.selection.0"},
+                "barController": {"<-": "@inspectorBarListController"}
+            }
+        },
+
+        "inspectorBarListController": {
+            "prototype": "montage/core/range-controller",
+            "properties": {
+                "sortPath": "index"
+            },
+            "bindings": {
+                "content": {"<-": "@owner.items"}
+            }
+        },
+
+        "inspectorBarList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "inspectorBarList"},
+                "isSelectionEnabled": true
+            },
+            "bindings": {
+                "contentController": {"<-": "@inspectorBarListController"}
+            }
+        },
+
+        "inspectorBarItem": {
+            "prototype": "./inspector-bar-item.reel",
+            "properties": {
+                "element": {"#": "inspectorBarItem"}
+            },
+            "bindings": {
+                "label": {"<-": "@inspectorBarList:iteration.object.label"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="inspectorBar" class="InspectorBar">
+        <ul data-montage-id="inspectorBarList"  class="InspectorBar-list">
+            <li data-montage-id="inspectorBarItem"></li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+.TemplateObjectCell-Wrapper {
+    display: flex;
+    align-items: center;
+    justify-content:center;
+}
+
+.TemplateObjectCell:hover {
+    border-color: hsl(210,100%,60%);
+}
+
+.TemplateObjectCell-Wrapper.selected .TemplateObjectCell {
+    border-color: hsl(210,100%,60%);
+    background-color: hsl(0,0%,98%);
+}
+
+.TemplateObjectCell {
+    background-color: hsl(0,0%,96%);
+    flex-direction: column;
+    width: 100%;
+}

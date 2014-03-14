@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="inspector-bar-item.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "inspectorBarItem"}
+            }
+        },
+
+        "menuLabel": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "inspectorBarItemLabel"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.label"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <li data-montage-id="inspectorBarItem" class="InspectorBarItem">
+        <span data-arg="menuLabel" data-montage-id="inspectorBarItemLabel" class="InspectorBarItemLabel"></span>
+    </li>
+</body>
+</html>

@@ -1,0 +1,10 @@
+.NodeTemplatesList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.NodeTemplatesList-Wrapper {
+    overflow-y: auto;
+    padding: 0 0px 0 8px;
+}

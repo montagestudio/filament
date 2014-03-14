@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="template-object-header.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "TemplateObjectHeader"},
+                "_referenceProxyElement": {"#": "referenceProxy"}
+            }
+        },
+
+        "icon": {
+            "prototype": "matte/ui/image.reel",
+            "properties": {
+                "element": {"#": "icon"}
+            },
+            "bindings": {
+                "src": {"<-": "@owner.templateObject.editingDocument.editor.projectController.iconUrlForModuleId(@owner.templateObject.moduleId, @owner.templateObject.exportName)"}
+            }
+        },
+
+        "templateObjectExportId": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "templateObjectExportId"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.exportId"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <header data-montage-id="TemplateObjectHeader" class="TemplateObjectHeader">
+        <section class="TemplateObjectHeader-bar">
+            <div data-montage-id="referenceProxy" class="TemplateObjectHeader-referenceProxy">
+                <img data-montage-id="icon" class="TemplateObjectHeader-icon" src="" draggable="false">
+                <div class="TemplateObjectHeader-flex">
+                    <h3 class="TemplateObjectHeader-title"><div data-param="title"></div></h3>
+                    <label data-montage-id="templateObjectExportId" class="TemplateObjectHeader-exportId"></label>
+                </div>
+            </div>
+        </section>
+    </header>
+</body>
+</html>

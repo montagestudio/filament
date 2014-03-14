@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="node-inspector.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "nodeInspector"}
+            }
+        },
+
+        "contentSubstitution": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "contentSubstitution"}
+            },
+            "bindings": {
+                "switchValue": {"<-": "@owner.inspector.selectedTab.label"}
+            }
+        },
+
+        "nodeDetails": {
+            "prototype": "../inspector-details.reel",
+            "properties": {
+                "element": {"#": "inspectorDetail"}
+            },
+            "bindings": {
+                "inspector": {"<-": "@owner.inspector"}
+            }
+        },
+
+        "nodeMaterials": {
+            "prototype": "./node-materials.reel",
+            "properties": {
+                "element": {"#": "nodeMaterials"}
+            },
+            "bindings": {
+                "inspector": {"<-": "@owner.inspector"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="nodeInspector" class="NodeInspector">
+        <div data-montage-id="contentSubstitution">
+            <div data-arg="node" data-montage-id="inspectorDetail"></div>
+            <div data-arg="material" data-montage-id="nodeMaterials"></div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="template-object-cell.css">
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "template-object-cell"}
+                }
+            },
+
+            "header": {
+                "prototype": "../template-object-header.reel",
+                "properties": {
+                    "element": {"#": "header"}
+                },
+                "bindings": {
+                    "templateObject": {"<-": "@owner.templateObject"}
+                }
+            },
+
+            "objectLabel": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "objectLabel"}
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.templateObject.label"}
+                }
+            }
+
+        }
+    </script>
+</head>
+<body>
+    <ul>
+        <div data-montage-id="template-object-cell" class="TemplateObjectCell-Wrapper">
+            <li class="TemplateObjectCell TemplateExplorer-list-item">
+                <header data-montage-id="header">
+                    <div data-arg="title" data-montage-id="objectLabel"></div>
+                </header>
+            </li>
+        </div>
+    </ul>
+</body>
+</html>

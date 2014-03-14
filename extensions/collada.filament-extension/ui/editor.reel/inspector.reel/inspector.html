@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="inspector.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "inspector"}
+            },
+            "bindings": {
+                "selectedTab": {"<-": "@inspectorBar.selectedTab"}
+            }
+        },
+
+        "headerLabel": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "headerLabel"},
+                "value": "Inspector"
+            }
+        },
+
+        "inspectorBar": {
+            "prototype": "./inspector-bar.reel",
+            "properties": {
+                "element": {"#": "inspectorBar"}
+            },
+            "bindings": {
+                "items": {"<-": "@owner.toolBarItems"}
+            }
+        },
+
+        "inspectorContent": {
+            "prototype": "./inspector-content.reel",
+            "properties": {
+                "element": {"#": "inspectorContent"}
+            },
+            "bindings": {
+                "inspector": {"<-": "@owner"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="inspector" class="Inspector">
+        <header class="SceneEditorBox-header">
+            <span data-montage-id="headerLabel" class="SceneEditorBoxHeader-label"></span>
+        </header>
+        <div data-montage-id="inspectorBar"></div>
+        <div data-montage-id="inspectorContent"></div>
+    </div>
+</body>
+</html>

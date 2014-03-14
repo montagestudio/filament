@@ -1,0 +1,61 @@
+.TemplateObjectCell-Wrapper.selected .TemplateObjectHeader {
+    background-color: hsl(210, 100%, 96%);
+}
+
+.TemplateObjectHeader {
+    background-color: hsl(0, 0%, 100%);
+}
+
+.TemplateObjectHeader-bar {
+    display: flex;
+    align-items: center;
+}
+
+.TemplateObjectHeader-referenceProxy {
+    flex: 1;
+    display: flex;
+    padding: 8px;
+}
+
+.TemplateObjectHeader-icon {
+    width: 42px;
+    height: 28px;
+    margin: 1px 0;
+}
+
+.TemplateObjectHeader-icon:hover {
+    opacity: 1 !important;
+    cursor: default !important;
+}
+
+.TemplateObjectHeader-flex {
+    flex: 1;
+    min-width: 0;
+    margin-left: 8px;
+}
+
+.TemplateObjectHeader-title {
+    margin: 0;
+    font-size: 13px;
+    line-height: 15px;
+    color: hsl(0, 0%, 30%);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.TemplateObjectHeader-exportId {
+    display: block;
+    font-style: italic;
+    font-size: 11px;
+    line-height: 14px;
+    color: hsl(0, 0%, 60%);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.TemplateObjectHeader-buttonGroup {
+    display: flex;
+    padding-right: 5px;
+}

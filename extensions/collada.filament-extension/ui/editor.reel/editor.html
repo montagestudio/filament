@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="editor.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "editor"}
+            }
+        },
+
+        "sceneGraph": {
+            "prototype": "./scene-graph.reel",
+            "properties": {
+                "element": {"#": "sceneGraph"}
+            },
+            "bindings": {
+                "scene": {"<-": "@owner.object.stageObject"},
+                "sceneLabel": {"<-": "@owner.object.label"}
+            }
+        },
+
+        "nodeExplorer": {
+            "prototype": "./node-explorer.reel",
+            "properties": {
+                "element": {"#": "nodeExplorer"}
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "sceneGraph": {"<-": "@sceneGraph"}
+            }
+        },
+
+        "inspector": {
+            "prototype": "./inspector.reel",
+            "properties": {
+                "element": {"#": "inspector"}
+            },
+            "bindings": {
+                "sceneLabel": {"<-": "@owner.object.label"},
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "selectedTemplate": {"<-": "@nodeExplorer.selectedTemplate"}
+            }
+        },
+
+        "editorBar": {
+            "prototype": "./editor-bar.reel",
+            "properties": {
+                "element": {"#": "editorBar"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="editor" class="SceneEditor">
+        <div data-montage-id="sceneGraph" class="SceneEditor-Box"></div>
+        <div data-montage-id="nodeExplorer" class="SceneEditor-Box"></div>
+        <div data-montage-id="inspector" class="SceneEditor-Box"></div>
+        <div data-montage-id="editorBar"></div>
+    </div>
+</body>
+</html>

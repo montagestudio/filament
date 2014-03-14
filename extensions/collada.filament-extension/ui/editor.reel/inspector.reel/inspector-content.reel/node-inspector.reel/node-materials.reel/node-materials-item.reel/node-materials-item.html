@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="node-materials-item.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            }
+        },
+
+        "materialName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "materialName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.material.name"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <li data-montage-id="owner" class="NodeMaterialsItem" draggable="true">
+        <span data-montage-id="materialName"></span>
+    </li>
+</body>
+</html>
