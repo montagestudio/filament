@@ -37,6 +37,8 @@ exports.Main = Montage.create(Component, {
                 } else {
                     document.addEventListener("save", this, false);
                 }
+
+                document.addEventListener("contextmenu", this, false);
             }
 
             document.body.addEventListener("dragover", stop, false);
@@ -55,6 +57,15 @@ exports.Main = Montage.create(Component, {
                     event.preventDefault();
                 }
             });
+        }
+    },
+
+    handleContextmenu: {
+        value: function (evt) {
+            evt.stopImmediatePropagation();
+            evt.stop();
+
+            this.templateObjects.contextualMenu.show({top: evt.clientY, left: evt.clientX});
         }
     },
 
