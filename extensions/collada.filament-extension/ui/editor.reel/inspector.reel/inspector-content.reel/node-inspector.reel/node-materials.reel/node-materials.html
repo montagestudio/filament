@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="node-materials.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            }
+        },
+
+        "nodeMaterialsListController": {
+            "prototype": "montage/core/range-controller",
+            "bindings": {
+                "content": {"<-": "@owner.inspector.glTFNode.materials"}
+            }
+        },
+
+        "nodeMaterialsList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "nodeMaterialsList"}
+            },
+            "bindings": {
+                "contentController": {"<-": "@nodeMaterialsListController"}
+            }
+        },
+
+        "nodeMaterialsItem": {
+            "prototype": "./node-materials-item.reel",
+            "properties": {
+                "element": {"#": "nodeMaterialsItem"}
+            },
+            "bindings": {
+                "material": {"<-": "@nodeMaterialsList:iteration.object"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="NodeMaterials">
+        <ul data-montage-id="nodeMaterialsList" class="NodeMaterialsList">
+            <li data-montage-id="nodeMaterialsItem"></li>
+        </ul>
+    </div>
+</body>
+</html>

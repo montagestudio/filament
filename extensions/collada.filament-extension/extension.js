@@ -1,4 +1,5 @@
 var CoreExtension = require("filament-extension/core/extension").Extension,
+    SceneEditorController = require("core/controller").SceneEditorController,
     Promise = require("montage/core/promise").Promise;
 
 var Extension = exports.Extension = CoreExtension.specialize( {
@@ -9,8 +10,17 @@ var Extension = exports.Extension = CoreExtension.specialize( {
         }
     },
 
+    editorObjectMatchFunction: {
+        enumerable: false,
+        value : function (object) {
+            return object && object.moduleId && (/mjs-volume\/runtime\/scene/).test(object.moduleId);
+        }
+    },
+
     activate: {
-        value: function (application, projectController) {
+        value: function (application, projectController, viewController) {
+            viewController.registerModalEditorTypeForObjectTypeMatcher(SceneEditorController, this.editorObjectMatchFunction);
+
             return Promise.all([
                 this.installLibraryItems(projectController, "glTF-webgl-viewer"),
                 this.installModuleIcons(projectController, "glTF-webgl-viewer"),
@@ -21,7 +31,9 @@ var Extension = exports.Extension = CoreExtension.specialize( {
     },
 
     deactivate: {
-        value: function (application, projectController) {
+        value: function (application, projectController, viewController) {
+            viewController.unregisterModalEditorTypeForObjectTypeMatcher(this.editorObjectMatchFunction);
+
             return Promise.all([
                 this.uninstallLibraryItems(projectController, "glTF-webgl-viewer"),
                 this.uninstallModuleIcons(projectController, "glTF-webgl-viewer"),

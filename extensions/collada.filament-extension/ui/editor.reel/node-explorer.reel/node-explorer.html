@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="node-explorer.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            },
+            "bindings": {
+                "selectedTemplate": {"<-": "@nodeTemplatesListController.selection.0"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "headerLabel": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "headerLabel"},
+                "value": "Template Explorer"
+            }
+        },
+
+        "nodeTemplatesListController": {
+            "prototype": "montage/core/range-controller",
+            "properties": {
+                "filterPath" : "exportId == 'mjs-volume/runtime/node' || exportId == 'mjs-volume/runtime/material'"
+            },
+            "bindings": {
+                "content": {"<-": "@owner.editingDocument.editingProxies"}
+            }
+        },
+
+        "nodeTemplatesList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "nodeTemplatesList"},
+                "isSelectionEnabled": true
+            },
+            "bindings": {
+                "contentController": {"<-": "@nodeTemplatesListController"}
+            }
+        },
+
+        "nodeTemplate": {
+            "prototype": "./template-object-cell.reel",
+            "properties": {
+                "element": {"#": "nodeTemplate"}
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "templateObject": {"<-": "@nodeTemplatesList:iteration.object"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="NodeExplorer">
+        <header class="SceneEditorBox-header">
+            <span data-montage-id="headerLabel" class="SceneEditorBoxHeader-label"></span>
+        </header>
+        <div class="NodeTemplatesList-Wrapper">
+            <ul data-montage-id="nodeTemplatesList" class="NodeTemplatesList">
+                <li data-montage-id="nodeTemplate"></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

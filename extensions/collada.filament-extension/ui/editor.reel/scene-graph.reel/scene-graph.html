@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="scene-graph.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "sceneGraph"}
+            },
+            "bindings": {
+                "sceneGraphTree": {"<-": "@sceneGraphTree"}
+            }
+        },
+
+        "headerLabel": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "headerLabel"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.fileName"}
+            }
+        },
+
+        "sceneGraphTree": {
+            "prototype": "mjs-volume/extras/scene-tree.reel",
+            "properties": {
+                "element": {"#": "sceneGraphTree"},
+                "isCellDraggable": true
+            },
+            "bindings": {
+                "scene": {"<-": "@owner.scene"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="sceneGraph" class="SceneGraph">
+        <header class="SceneEditorBox-header">
+            <span data-montage-id="headerLabel" class="SceneEditorBoxHeader-label"></span>
+        </header>
+        <div data-montage-id="sceneGraphTree"></div>
+    </div>
+</body>
+</html>

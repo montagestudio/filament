@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="inspector-details.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "inspectorDetails"}
+            }
+        },
+
+        "noElementCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "noElementCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "!!@owner.inspector.glTFNode"}
+            }
+        },
+
+        "inspector": {
+            "prototype": "palette/ui/inspector/inspector.reel",
+            "properties": {
+                "element": {"#": "inspector"}
+            },
+            "bindings": {
+                "object": {"<-": "@owner.inspector.selectedTemplate"},
+                "editingDocument": {"<-": "@owner.inspector.editingDocument"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="inspectorDetails" class="InspectorDetails">
+        <div data-montage-id="noElementCondition">
+            <div data-montage-id="inspector"></div>
+        </div>
+    </div>
+</body>
+</html>

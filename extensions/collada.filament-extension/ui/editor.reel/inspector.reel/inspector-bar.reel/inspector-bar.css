@@ -1,0 +1,12 @@
+.InspectorBar {
+    margin: 0;
+    padding: 0;
+}
+
+.InspectorBar-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex: 1;
+}

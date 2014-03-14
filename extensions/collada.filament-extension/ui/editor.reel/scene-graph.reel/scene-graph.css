@@ -1,0 +1,28 @@
+.SceneGraph {
+    background-color: #424242;
+    flex-direction: column;
+}
+
+.SceneGraph .SceneGraphTree {
+    overflow-y: auto;
+    padding: 5px 5px 5px 10px;
+}
+
+.SceneGraph .TreeCell {
+    margin-top: 6px;
+}
+
+.SceneGraph .TreeCell:-webkit-drag {
+    height: 19px;
+    width: 21px;
+}
+
+.SceneGraph .TreeCell-label {
+    color: #CACACA;
+    padding: 4px 10px;
+    font-size: 13px;
+}
+
+.SceneGraph .TreeCell .TreeCell-label--selected {
+    background-color: #1F1F1F;
+}

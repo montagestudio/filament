@@ -4,6 +4,9 @@
     "private": true,
     "dependencies": {
         "montage": "*",
-        "filament-extension": "*"
+        "filament-extension": "*",
+        "mjs-volume": "*",
+        "matte": "*",
+        "palette": "*"
     }
 }
