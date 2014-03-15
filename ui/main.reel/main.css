@@ -62,15 +62,3 @@
 .componentEditorArea .ComponentEditor.standby {
     display: none;
 }
-
-/* States ----------------------- */
-
-.palettes-hidden .palette {
-    display: none;
-}
-
-.palettes-hidden .modalEditorSlot {
-    display: block;
-    position: relative;
-    width: 500px;
-}

@@ -27,8 +27,6 @@ exports.Main = Montage.create(Component, {
         value: function (firstTime) {
             if (firstTime) {
                 application.addEventListener("asyncActivity", this, false);
-                application.addEventListener("enterModalEditor", this);
-                application.addEventListener("exitModalEditor", this);
                 application.addEventListener("addFile", this);
                 application.addEventListener("addModule", this);
                 application.addEventListener("expandTree", this);
@@ -220,24 +218,6 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    _palettesVisible: {
-        value: true
-    },
-
-    palettesVisible: {
-        get: function () {
-            return this._palettesVisible;
-        },
-        set: function (value) {
-            if (value === this._palettesVisible) {
-                return;
-            }
-
-            this._palettesVisible = value;
-            this.needsDraw = true;
-        }
-    },
-
     handleCloseDocumentKeyPress: {
         value: function (event) {
             var document = this.projectController.currentDocument;
@@ -247,45 +227,6 @@ exports.Main = Montage.create(Component, {
             } else {
                 window.close();
             }
-        }
-    },
-
-    handleTogglePaletteKeyPress: {
-        enumerable: false,
-        value: function () {
-            this.palettesVisible = !this.palettesVisible;
-        }
-    },
-
-    _extensionsVisible: {
-        value: false
-    },
-
-    handleToggleExtensionsKeyPress: {
-        value: function () {
-            this._extensionsVisible = !this._extensionsVisible;
-        }
-    },
-
-    handleExitModalEditorKeyPress: {
-        enumerable: false,
-        value: function () {
-            this.exitModalEditor();
-        }
-    },
-
-    handleExitModalEditor: {
-        enumerable: false,
-        value: function (event) {
-            this.exitModalEditor();
-        }
-    },
-
-    exitModalEditor: {
-        value: function () {
-            this.modalEditorComponent = null;
-            this.palettesVisible = true;
-            this._isUsingModalEditor = false;
         }
     },
 
@@ -332,42 +273,10 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    _isUsingModalEditor: {
-        value: false
-    },
-
-    isUsingModalEditor: {
-        get: function () {
-            return this._isUsingModalEditor;
-        }
-    },
-
-    /**
-     The component to show in the slot that will edit the selected component
-     */
-    modalEditorComponent: {
-        value: null
-    },
-
-    handleEnterModalEditor: {
-        enumerable: false,
-        value: function (event) {
-            this.modalEditorComponent = event.detail.modalEditor;
-            this.palettesVisible = false;
-            this._isUsingModalEditor = true;
-        }
-    },
-
     draw: {
         value: function () {
             if (this.windowTitle) {
                 document.title = this.windowTitle;
-            }
-
-            if (this.palettesVisible) {
-                this.element.classList.remove("palettes-hidden");
-            } else {
-                this.element.classList.add("palettes-hidden");
             }
 
             var editorArea,

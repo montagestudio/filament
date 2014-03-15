@@ -95,46 +95,6 @@
                 }
             },
 
-            "togglePaletteKeyComposer": {
-                "prototype": "montage/composer/key-composer",
-                "properties": {
-                    "keys": "shift+control+/",
-                    "identifier": "togglePalette",
-                    "component": {"@": "application"}
-                },
-                "listeners": [
-                    {
-                        "type": "keyPress",
-                        "listener": {"@": "owner"}
-                    }
-                ]
-            },
-
-            "exitEditorKeyComposer": {
-                "prototype": "montage/composer/key-composer",
-                "properties": {
-                    "keys": "escape",
-                    "identifier": "exitModalEditor",
-                    "component": {"@": "application"}
-                },
-                "listeners": [
-                    {
-                        "type": "keyPress",
-                        "listener": {"@": "owner"}
-                    }
-                ]
-            },
-
-            "modalEditorSlot": {
-                "prototype": "montage/ui/slot.reel",
-                "properties": {
-                    "element": {"#": "modalEditorSlot"}
-                },
-                "bindings": {
-                    "content": {"<-": "@owner.modalEditorComponent"}
-                }
-            },
-
             "application": {
                 "prototype": "montage/core/application",
                 "listeners": [
@@ -202,8 +162,6 @@
                 </ul>
                 <section data-montage-id="editorSlot" class="editorSlot"></section>
             </section>
-
-            <aside data-montage-id="modalEditorSlot" class="modalEditorSlot"></aside>
 
             <div data-montage-id="goToFile"></div>
         </div>

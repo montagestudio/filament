@@ -29,6 +29,10 @@ exports.ComponentEditor = Editor.specialize({
         value: null
     },
 
+    _modalEditorSlot: {
+        value: null
+    },
+
     _openEditors: {
         value: null
     },
@@ -40,7 +44,8 @@ exports.ComponentEditor = Editor.specialize({
     nextTarget: {
         get: function () {
             // Consider whichever documentEditor is upfront to be the nextTarget
-            return this._frontEditor;
+            // unless there's a modalEditor open, in which case, start there
+            return this.modalEditorComponent || this._frontEditor;
         }
     },
 
@@ -51,6 +56,27 @@ exports.ComponentEditor = Editor.specialize({
             this._editorsToRemove = [];
             this._openEditors = [];
             this._documentEditorMap = new WeakMap();
+            this._documentModalEditorMap = new WeakMap();
+        }
+    },
+
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                var app = this.templateObjects.application;
+                app.addEventListener("enterModalEditor", this);
+                app.addEventListener("exitModalEditor", this);
+            }
+        }
+    },
+
+    open: {
+        value: function (doc) {
+            this.dispatchBeforeOwnPropertyChange("modalEditorComponent", this.modalEditorComponent);
+            var result = this.super(doc);
+            this.dispatchOwnPropertyChange("modalEditorComponent", this.modalEditorComponent);
+            this.needsDraw = true;
+            return result;
         }
     },
 
@@ -121,17 +147,19 @@ exports.ComponentEditor = Editor.specialize({
     draw: {
         value: function () {
             var editorArea,
-                element,
                 editorElement,
-                frontEditor = this._frontEditor;
+                frontEditor = this._frontEditor,
+                modalEditorArea = this._modalEditorSlot,
+                modalEditorAreaHasContent = modalEditorArea.children.length > 0,
+                modalEditor = this.modalEditorComponent,
+                modalContentRange;
 
             if (this._editorsToInsert.length) {
                 editorArea = this._documentEditorSlot;
 
                 this._editorsToInsert.forEach(function (editor) {
-                    element = document.createElement("div");
-                    editor.element = element;
-                    editorArea.appendChild(element);
+                    editor.element = document.createElement("div");
+                    editorArea.appendChild(editor.element);
                     editor.attachToParentComponent();
                     editor.needsDraw = true;
                 });
@@ -157,6 +185,35 @@ exports.ComponentEditor = Editor.specialize({
                 }
             });
 
+            // Remove content from modalEditor area if we need to
+            // becaseuthere's no reason to show any modal editor
+            // or if we need to present the expected modal editor
+            if (modalEditorAreaHasContent && (
+                !modalEditor ||
+                (!modalEditor.element || !modalEditor.element.parentNode)))
+            {
+                modalContentRange = document.createRange();
+                modalContentRange.selectNodeContents(modalEditorArea);
+                modalContentRange.deleteContents();
+            }
+
+            if (this.modalEditorComponent) {
+                this.element.classList.add("palettes-hidden");
+
+                // The area has already been cleared; insert modal now
+                if (!modalEditor.element) {
+                    modalEditor.element = document.createElement("div");
+                }
+
+                if (!modalEditor.element.parentNode) {
+
+                    modalEditorArea.appendChild(modalEditor.element);
+                    modalEditor.attachToParentComponent();
+                    modalEditor.needsDraw = true;
+                }
+            } else {
+                this.element.classList.remove("palettes-hidden");
+            }
         }
     },
 
@@ -394,6 +451,93 @@ exports.ComponentEditor = Editor.specialize({
         value: function (evt) {
             var domExplorer = this.templateObjects.domExplorer;
             domExplorer.addElementNodeHover = null;
+        }
+    },
+
+    handleExitModalEditorKeyPress: {
+        enumerable: false,
+        value: function () {
+            this.exitModalEditor();
+        }
+    },
+
+    handleExitModalEditor: {
+        enumerable: false,
+        value: function (event) {
+            this.exitModalEditor();
+        }
+    },
+
+    handleEnterModalEditor: {
+        enumerable: false,
+        value: function (event) {
+            this.enterModalEditor(event.detail.modalEditor);
+        }
+    },
+
+    /**
+     * The map of documents to the modalEditor that is currently
+     * in place for that document; if there is a modal editor
+     * currently in place.
+     * @private
+     */
+    _documentModalEditorMap: {
+        value: null
+    },
+
+    /**
+     * Exit the current modal editor for the current document
+     * Currently, this simply removes the modal editor,
+     * effectively leaving it regardless of its state.
+     */
+    exitModalEditor: {
+        value: function () {
+            //TODO gracefully try to exit the editor
+
+            var modalEditor = this.modalEditorComponent,
+                doc = this.currentDocument;
+
+            if (doc && modalEditor) {
+                this.dispatchBeforeOwnPropertyChange("modalEditorComponent", this.modalEditorComponent);
+                this._documentModalEditorMap.delete(doc);
+                this.dispatchOwnPropertyChange("modalEditorComponent", this.modalEditorComponent);
+                this.needsDraw = true;
+            }
+        }
+    },
+
+    /**
+     * Present the specified modal editor.
+     * The editor object should already have been
+     * initialized with the a document ahead of reaching
+     * this point; this method simply presents the specified editor.
+     * It is presumed that the editor is related to the
+     * currentDocument.
+     */
+    enterModalEditor: {
+        value: function (modalEditor) {
+            var doc = this.currentDocument;
+            if (doc) {
+                this.dispatchBeforeOwnPropertyChange("modalEditorComponent", this.modalEditorComponent);
+                this._documentModalEditorMap.set(doc, modalEditor);
+                this.dispatchOwnPropertyChange("modalEditorComponent", this.modalEditorComponent);
+                this.needsDraw = true;
+            }
+        }
+    },
+
+    /**
+     * The current modalEditor that should be presented, if any,
+     * based upon the current document
+     *
+     * This accommodates a single ComponentEditor presenting multiple
+     * documents, some of which may be presenting a modal editor and some
+     * that which are not.
+     */
+    modalEditorComponent: {
+        get: function () {
+            var doc = this.currentDocument;
+            return doc ? this._documentModalEditorMap.get(doc) : null;
         }
     }
 

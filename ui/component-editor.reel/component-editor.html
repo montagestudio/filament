@@ -16,6 +16,7 @@
                 "properties": {
                     "element": {"#": "componentEditor"},
                     "_documentEditorSlot": {"#": "documentEditorSlot"},
+                    "_modalEditorSlot": {"#": "modalEditorSlot"},
                     "templateObjectsController": {"@": "templateObjectsController"}
                 },
                 "listeners": [
@@ -165,14 +166,31 @@
                         "listener": {"@": "owner"}
                     }
                 ]
-            }
+            },
+
+            "exitEditorKeyComposer": {
+                "prototype": "montage/composer/key-composer",
+                "properties": {
+                    "keys": "escape",
+                    "identifier": "exitModalEditor",
+                    "component": {"@": "application"}
+                },
+                "listeners": [
+                    {
+                        "type": "keyPress",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+             "application": {}
         }
     </script>
 
 </head>
 <body>
 
-    <section data-montage-id="componentEditor" class="ComponentEditor palette">
+    <section data-montage-id="componentEditor" class="ComponentEditor">
 
         <!-- TODO hide overlays by default; they are considered flow items-->
         <section>
@@ -185,15 +203,18 @@
             </div>
         </section>
 
-        <section data-montage-id="templateExplorer" class="ComponentEditor-column"></section>
+        <section data-montage-id="templateExplorer" class="ComponentEditor-column palette"></section>
 
-        <section data-montage-id="documentEditorExplorerColumn" class="ComponentEditor-column Column">
+        <section data-montage-id="documentEditorExplorerColumn" class="ComponentEditor-column Column palette">
             <div data-montage-id="documentEditorSlot" class="ComponentEditor-column-row ComponentEditor-column-row--fill ComponentEditor-column-row--documentEditor"></div>
             <div data-montage-id="domSplit"></div>
             <footer data-montage-id="domExplorer" class="ComponentEditor-column-row ComponentEditor-column-row--fixed"></footer>
         </section>
-        <aside data-montage-id="configurator" class="Column"></aside>
-        <aside data-montage-id="library"></aside>
+        <aside data-montage-id="configurator" class="Column palette"></aside>
+        <aside data-arg="modalEditor" data-montage-id="modalEditorSlot" class="modalEditorSlot"></aside>
+        <aside data-montage-id="library" class="palette"></aside>
+
+
     </section>
 
 </body>
