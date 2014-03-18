@@ -937,8 +937,10 @@ exports.ReelDocument = EditingDocument.specialize({
                     properties.element["#"] = montageId;
                 }
 
-                serializationObject[uniqueLabel] = serializationObject[label];
-                delete serializationObject[label];
+                if (uniqueLabel !== label) {
+                    serializationObject[uniqueLabel] = serializationObject[label];
+                    delete serializationObject[label];
+                }
             }
 
             template = new Template().initWithRequire(this._packageRequire);
