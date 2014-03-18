@@ -1,0 +1,33 @@
+.InspectorTemplate .Inspector-header.Bar {
+    border-bottom: none;
+    background: transparent;
+}
+
+.InspectorTemplate .BlueprintEditor {
+    overflow-y: hidden;
+}
+
+.InspectorTemplate .PropertyGroup-toggle {
+    text-shadow: none;
+    border-top: none;
+    border-bottom: none;
+    background: hsl(0, 0%, 22%);
+}
+
+.InspectorTemplate .PropertyGroup-toggle:active {
+    background-color: hsl(0, 0%, 16%);
+}
+
+.InspectorTemplate .PropertyEditor {
+    background: transparent;
+}
+
+.InspectorTemplate .PropertyEditor .matte-InputCheckbox,
+.InspectorTemplate .PropertyEditor .matte-InputCheckbox:hover,
+.InspectorTemplate .PropertyEditor .matte-InputCheckbox:focus,
+.InspectorTemplate .PropertyEditor .matte-InputText,
+.InspectorTemplate .PropertyEditor .matte-InputText:hover,
+.InspectorTemplate .PropertyEditor .matte-InputText:focus {
+    background-color: hsla(0, 7%, 87%, 1);
+    box-shadow: none;
+}

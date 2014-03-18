@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="material-details.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "materialDetails"}
+            }
+        },
+
+        "noElementCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "noElementCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "!!@owner.inspector.selectedTemplate"}
+            }
+        },
+
+        "materialLabelId": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "materialLabelId"},
+                "value": "Id:"
+            }
+        },
+
+        "materialId": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "materialId"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.inspector.selectedTemplate.properties.get('id')"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="materialDetails" class="MaterialDetails">
+        <div data-montage-id="noElementCondition">
+            <ul class="MaterialDetailsList">
+                <li class="MaterialDetailsItem">
+                    <span data-montage-id="materialLabelId" class="MaterialDetailsItem-label"></span>
+                    <span data-montage-id="materialId" class="MaterialDetailsItem"></span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

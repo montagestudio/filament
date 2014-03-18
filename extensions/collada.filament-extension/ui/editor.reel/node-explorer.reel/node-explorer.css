@@ -1,3 +1,7 @@
+.NodeExplorer {
+    background-color: #DBDBDB;
+}
+
 .NodeTemplatesList {
     margin: 0;
     padding: 0;
@@ -6,5 +10,5 @@
 
 .NodeTemplatesList-Wrapper {
     overflow-y: auto;
-    padding: 0 0px 0 8px;
+    padding: 0 8px 0 8px;
 }

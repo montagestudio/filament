@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="stage-3D.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": { "#": "stage3D" }
+            }
+        },
+
+        "sceneView": {
+            "prototype": "mjs-volume/ui/scene-view.reel",
+            "properties": {
+                "element": {"#": "sceneView"}
+            },
+            "bindings": {
+                "scene": {"<-": "@owner.scene" }
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div>
+        <div data-montage-id="stage3D" class="Stage3D">
+            <div data-montage-id="sceneView"></div>
+        </div>
+    </div>
+</body>
+</html>

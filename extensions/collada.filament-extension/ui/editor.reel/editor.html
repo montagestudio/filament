@@ -8,6 +8,16 @@
         "owner": {
             "properties": {
                 "element": {"#": "editor"}
+            },
+            "bindings": {
+                "scene": {"<-": "@scene"}
+            }
+        },
+
+        "scene": {
+            "prototype": "mjs-volume/runtime/scene",
+            "bindings": {
+                "path": {"<-": "@owner.object.stageObject.path"}
             }
         },
 
@@ -17,8 +27,17 @@
                 "element": {"#": "sceneGraph"}
             },
             "bindings": {
-                "scene": {"<-": "@owner.object.stageObject"},
-                "sceneLabel": {"<-": "@owner.object.label"}
+                "editor": {"<-": "@owner"}
+            }
+        },
+
+        "stage3d": {
+            "prototype": "./stage-3D.reel",
+            "properties": {
+                "element": {"#": "stage3d"}
+            },
+            "bindings": {
+                "scene": {"<-": "@owner.scene"}
             }
         },
 
@@ -39,7 +58,7 @@
                 "element": {"#": "inspector"}
             },
             "bindings": {
-                "sceneLabel": {"<-": "@owner.object.label"},
+                "sceneLabel": {"<-": "@owner.sceneLabel"},
                 "editingDocument": {"<-": "@owner.editingDocument"},
                 "selectedTemplate": {"<-": "@nodeExplorer.selectedTemplate"}
             }
@@ -56,10 +75,15 @@
 </head>
 <body>
     <div data-montage-id="editor" class="SceneEditor">
-        <div data-montage-id="sceneGraph" class="SceneEditor-Box"></div>
-        <div data-montage-id="nodeExplorer" class="SceneEditor-Box"></div>
-        <div data-montage-id="inspector" class="SceneEditor-Box"></div>
-        <div data-montage-id="editorBar"></div>
+        <div class="SceneEditor-column SceneEditor-column-left">
+            <div data-montage-id="stage3d" class="SceneEditor-Box"></div>
+            <div data-montage-id="nodeExplorer" class="SceneEditor-Box"></div>
+        </div>
+        <div class="SceneEditor-column">
+            <div data-montage-id="sceneGraph" class="SceneEditor-Box"></div>
+            <div data-montage-id="inspector" class="SceneEditor-Box"></div>
+            <div data-montage-id="editorBar"></div>
+        </div>
     </div>
 </body>
 </html>

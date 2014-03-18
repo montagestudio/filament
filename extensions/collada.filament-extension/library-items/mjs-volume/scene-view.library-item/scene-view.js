@@ -6,13 +6,13 @@ var moduleLocation = module.location.replace(/[^\/]+.js$/m, "");
 exports.SceneView = LibraryItem.specialize({
 
     constructor: {
-        value: function ColladaSceneViewLibraryItem () {
+        value: function SceneViewLibraryItem () {
             this.super();
         }
     },
 
     name: {
-        value: "Collada View"
+        value: "Scene View"
     },
 
     iconUrl: {

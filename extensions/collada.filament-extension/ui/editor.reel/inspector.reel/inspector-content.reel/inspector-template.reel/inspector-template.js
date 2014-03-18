@@ -1,17 +1,17 @@
 /**
- * @module ui/inspector-details.reel
+ * @module ui/inspector-template.reel
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component;
 
 /**
- * @class InspectorDetails
+ * @class InspectorTemplate
  * @extends Component
  */
-exports.InspectorDetails = Component.specialize(/** @lends InspectorDetails# */ {
+exports.InspectorTemplate = Component.specialize(/** @lends InspectorTemplate# */ {
 
     constructor: {
-        value: function InspectorDetails() {
+        value: function InspectorTemplate() {
             this.super();
         }
     },
