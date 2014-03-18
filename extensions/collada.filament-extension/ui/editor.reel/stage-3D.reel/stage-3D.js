@@ -21,10 +21,10 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
     },
 
     scene: {
-        get: function() {
+        get: function () {
             return this._scene;
         },
-        set: function(value) {
+        set: function (value) {
             this._scene = value;
 
             if (this._scene != null) {
@@ -34,24 +34,24 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
     },
 
     sceneDidDraw: {
-    	value: function() {
-    		if (this.sceneView.selectedNode) {
-    			if (this.sceneView.selectedNode.glTFElement) {
-					this.sceneView._displayBBOX(this.sceneView.selectedNode.glTFElement);
-    			}
-    		}
-    	}
+        value: function () {
+            if (this.sceneView.selectedNode) {
+                if (this.sceneView.selectedNode.glTFElement) {
+                    this.sceneView._displayBBOX(this.sceneView.selectedNode.glTFElement);
+                }
+            }
+        }
     },
 
     sceneView: {
-    	get: function() {
-    		return this.templateObjects.sceneView;
-    	}
+        get: function () {
+            return this.templateObjects.sceneView;
+        }
     },
 
     templateDidLoad: {
-        value: function() {
-        	this.sceneView.delegate = this;
+        value: function () {
+            this.sceneView.delegate = this;
         }
     }
 
