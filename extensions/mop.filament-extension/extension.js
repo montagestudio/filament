@@ -47,10 +47,12 @@ exports.Extension = CoreExtension.specialize( {
             if (existingMenu) {
                 this.parentMenu = Promise.resolve(existingMenu);
             } else {
-                var parentMenu = new MenuItem();
+                var parentMenu = new MenuItem(),
+                    menuIndex = mainMenu.items.length;
                 parentMenu.identifier = PARENT_MENU.toLowerCase();
                 parentMenu.title = PARENT_MENU; // This should be localized
-                this.parentMenu = mainMenu.insertItem(parentMenu, 5);
+                parentMenu.items = [];
+                this.parentMenu = mainMenu.insertItem(parentMenu, menuIndex);
             }
 
             this.mopMenu = this.parentMenu.then(function (parentMenu) {
