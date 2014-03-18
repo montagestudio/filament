@@ -15,6 +15,7 @@ exports.Editor = Component.specialize(/** @lends Editor# */ {
             this.super();
 
             this.defineBinding("sceneLabel", {"<-": "object.label"});
+            this.defineBinding("fileName", {"<-": "object.stageObject.path"});
         }
     },
 
@@ -26,8 +27,23 @@ exports.Editor = Component.specialize(/** @lends Editor# */ {
         value: null
     },
 
-    fileName: {
+    _fileName: {
         value: null
+    },
+
+    fileName: {
+        set: function (path) {
+            if (path) {
+                var pathData = /([^\/]+)\.[^\.]+$|(?:[^\/]+)$/.exec(path);
+
+                if (pathData && Array.isArray(pathData) && pathData.length === 2) {
+                    this._fileName = pathData[1];
+                }
+            }
+        },
+        get: function () {
+            return this._fileName;
+        }
     },
 
     sceneLabel: {
@@ -42,12 +58,6 @@ exports.Editor = Component.specialize(/** @lends Editor# */ {
         set: function (scene) {
             if (scene) {
                 if (!this._scene) {
-                    var pathData = /([^\/]+)\.[^\.]+$|(?:[^\/]+)$/.exec(scene.path);
-
-                    if (pathData && Array.isArray(pathData) && pathData.length === 2) {
-                        this.fileName = pathData[1];
-                    }
-
                     this._scene = scene;
                 }
             } else {

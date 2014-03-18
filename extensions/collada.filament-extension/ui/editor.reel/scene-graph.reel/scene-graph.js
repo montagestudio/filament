@@ -16,6 +16,23 @@ exports.SceneGraph = Component.specialize(/** @lends SceneGraph# */ {
     constructor: {
         value: function SceneTreeView() {
             this.super();
+
+            this.defineBinding("headerLabel", {"<-": "editor.fileName"});
+        }
+    },
+
+    _headerLabel: {
+        value: null
+    },
+
+    headerLabel: {
+        set: function (label) {
+            if (label) {
+                this._headerLabel = 'Scene: ' + label;
+            }
+        },
+        get: function () {
+            return this._headerLabel;
         }
     },
 
