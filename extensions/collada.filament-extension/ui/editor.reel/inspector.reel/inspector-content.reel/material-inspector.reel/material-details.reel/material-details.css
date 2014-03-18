@@ -1,0 +1,15 @@
+.MaterialDetailsList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.MaterialDetailsItem {
+    margin: 12px 0 0 12px;
+}
+
+.MaterialDetailsItem-label {
+    font-weight: 600;
+    width: 140px;
+    display: inline-block;
+}

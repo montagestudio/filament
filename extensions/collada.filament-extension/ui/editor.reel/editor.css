@@ -1,10 +1,20 @@
 .SceneEditor {
     display: flex;
     flex: 1;
-    flex-direction: column;
     position: absolute;
     width: 100%;
     height: 100%;
+}
+
+.SceneEditor-column {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.SceneEditor-column-left {
+    flex: 3;
+    border-right: 1px solid hsl(0, 0%, 22%);
 }
 
 .SceneEditor-Box {

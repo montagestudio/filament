@@ -22,9 +22,9 @@
         },
 
         "nodeDetails": {
-            "prototype": "../inspector-details.reel",
+            "prototype": "./node-details.reel",
             "properties": {
-                "element": {"#": "inspectorDetail"}
+                "element": {"#": "nodeDetails"}
             },
             "bindings": {
                 "inspector": {"<-": "@owner.inspector"}
@@ -39,6 +39,16 @@
             "bindings": {
                 "inspector": {"<-": "@owner.inspector"}
             }
+        },
+
+        "inspectorTemplate": {
+            "prototype": "../inspector-template.reel",
+            "properties": {
+                "element": {"#": "inspectorTemplate"}
+            },
+            "bindings": {
+                "inspector": {"<-": "@owner.inspector"}
+            }
         }
 
     }
@@ -47,8 +57,9 @@
 <body>
     <div data-montage-id="nodeInspector" class="NodeInspector">
         <div data-montage-id="contentSubstitution">
-            <div data-arg="node" data-montage-id="inspectorDetail"></div>
+            <div data-arg="node" data-montage-id="nodeDetails"></div>
             <div data-arg="material" data-montage-id="nodeMaterials"></div>
+            <div data-arg="template" data-montage-id="inspectorTemplate"></div>
         </div>
     </div>
 </body>

@@ -20,16 +20,20 @@ var Component = require("montage/ui/component").Component,
                     index: 0
                 },
                 {
-                    label: "material",
+                    label: "template",
                     index: 1
                 },
                 {
-                    label: "light",
+                    label: "material",
                     index: 2
                 },
                 {
-                    label: "camera",
+                    label: "light",
                     index: 3
+                },
+                {
+                    label: "camera",
+                    index: 4
                 }
             ],
 
@@ -37,6 +41,10 @@ var Component = require("montage/ui/component").Component,
                 {
                     label: "material",
                     index: 0
+                },
+                {
+                    label: "template",
+                    index: 1
                 }
             ]
         }
@@ -79,6 +87,7 @@ exports.Inspector = Component.specialize(/** @lends Inspector# */ {
             if (element !== this._glTFNode) {
                 this._glTFNode = {
                     name: element.name,
+                    id: element.id,
                     materials: SceneHelper.getMaterialsFromNode(element).toArray()
                 };
             }

@@ -3,6 +3,7 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
+    application = require("montage/core/application").application,
     MimeTypes = require("core/mime-types");
 
 /**
@@ -38,16 +39,46 @@ exports.NodeExplorer = Component.specialize(/** @lends NodeExplorer# */ {
                 this._element.addEventListener("dragover", this, false);
                 this._element.addEventListener("dragleave", this, false);
                 this._element.addEventListener("drop", this, false);
+                application.addEventListener("sceneNodeSelected", this, false);
 
                 this.addPathChangeListener("selectedTemplate", this, "handleSelectedTemplate");
             }
         }
     },
 
+    _findTemplateWithId: {
+        value: function (id) {
+            var template = null,
+                content = this.templateObjects.nodeTemplatesListController.content;
+
+            if (typeof id === "string" && content) {
+                content.some(function (reelProxy) {
+                    var exist = false;
+
+                    if (/mjs-volume\/runtime\/(node|material)/.test(reelProxy.exportId)) {
+                        exist = reelProxy.properties.get("id") === id;
+
+                        if (exist) {
+                            template = reelProxy;
+                        }
+                    }
+
+                    return exist;
+                });
+            }
+
+            return template;
+        }
+    },
+
     handleSelectedTemplate: {
         value: function (selectedTemplate) {
-            if (selectedTemplate && /mjs-volume\/runtime\/node/.test(selectedTemplate.exportId)) {
-                this.sceneGraph.selectNodeById(selectedTemplate.properties.get("id"));
+            if (selectedTemplate) {
+                if (/mjs-volume\/runtime\/node/.test(selectedTemplate.exportId)) {
+                    this.sceneGraph.selectNodeById(selectedTemplate.properties.get("id"));
+                } else if (/mjs-volume\/runtime\/material/.test(selectedTemplate.exportId)) {
+                    this.sceneGraph.clearSelection();
+                }
             }
         }
     },
@@ -79,20 +110,49 @@ exports.NodeExplorer = Component.specialize(/** @lends NodeExplorer# */ {
     handleDrop: {
         value: function (event) {
             var availableTypes = event.dataTransfer.types,
-                data;
+                data,
+                id;
 
             if (availableTypes) {
-
-                if (availableTypes.has(MimeTypes.TEMPLATE)) {
+                if (availableTypes.has(MimeTypes.TEMPLATE) && availableTypes.has(MimeTypes.TEXT_PLAIN)) {
                     data = event.dataTransfer.getData(MimeTypes.TEMPLATE);
+                    id = event.dataTransfer.getData(MimeTypes.TEXT_PLAIN);
                 }
 
-                if (data) {
-                    this.editingDocument.insertTemplateContent(data).done();
+                if (data && id) {
+                    var alreadyExist = this._findTemplateWithId(id);
+
+                    if (alreadyExist) {
+                        this.templateObjects.nodeTemplatesListController.select(alreadyExist);
+                    } else {
+                        var self = this;
+
+                        this.editingDocument.insertTemplateContent(data).then(function (objects) {
+                            if (objects && objects.length > 0) {
+                                self.templateObjects.nodeTemplatesListController.select(objects[0]);
+                            }
+                        }).done();
+                    }
                 }
             }
 
             this._willAcceptDrop = false;
+        }
+    },
+
+    handleSceneNodeSelected: {
+        value: function (event) {
+            var selectedNode = event.detail;
+
+            if (selectedNode) {
+                var template = this._findTemplateWithId(selectedNode.id);
+
+                if (template) {
+                    this.templateObjects.nodeTemplatesListController.select(template);
+                } else {
+                    this.templateObjects.nodeTemplatesListController.clearSelection();
+                }
+            }
         }
     }
 

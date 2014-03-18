@@ -1,0 +1,15 @@
+.NodeDetailsList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.NodeDetailsItem {
+    margin: 12px 0 0 12px;
+}
+
+.NodeDetailsItem-label {
+    font-weight: 600;
+    width: 140px;
+    display: inline-block;
+}

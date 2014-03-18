@@ -19,36 +19,7 @@ exports.SceneGraph = Component.specialize(/** @lends SceneGraph# */ {
         }
     },
 
-    sceneLabel: {
-        value: null
-    },
-
-    _scene: {
-        value: null
-    },
-
-    scene: {
-        set: function (scene) {
-            if (scene) {
-                if (!this._scene) {
-                    var pathData = /([^\/]+)\.[^\.]+$|(?:[^\/]+)$/.exec(scene.path);
-
-                    if (pathData && Array.isArray(pathData) && pathData.length === 2) {
-                        this.fileName = pathData[1];
-                    }
-
-                    this._scene = scene;
-                }
-            } else {
-                this._scene = null;
-            }
-        },
-        get: function () {
-            return this._scene;
-        }
-    },
-
-    fileName: {
+    editor: {
         value: null
     },
 
@@ -73,7 +44,7 @@ exports.SceneGraph = Component.specialize(/** @lends SceneGraph# */ {
             var htmlDocument = document.implementation.createHTMLDocument("");
             htmlDocument.documentElement.innerHTML = NodeTemplate;
 
-            if (nodeElementID && this._scene) {
+            if (nodeElementID && this.editor) {
                 var selector = "script[type='" + MIME_TYPES.SERIALIZATON_SCRIPT_TYPE + "']",
                     scriptSerialization = htmlDocument.querySelector(selector);
 
@@ -85,7 +56,7 @@ exports.SceneGraph = Component.specialize(/** @lends SceneGraph# */ {
 
                         node.properties = node.properties ? node.properties : {};
                         node.properties.id = nodeElementID;
-                        node.properties.scene = {"@": this.sceneLabel};
+                        node.properties.scene = {"@": this.editor.sceneLabel};
 
                         scriptSerialization.textContent = JSON.stringify(serialization);
                     }
@@ -93,6 +64,14 @@ exports.SceneGraph = Component.specialize(/** @lends SceneGraph# */ {
             }
 
             return htmlDocument.documentElement.outerHTML;
+        }
+    },
+
+    clearSelection: {
+        value: function () {
+            if (this.sceneGraphTree) {
+                this.sceneGraphTree.templateObjects.tree.rangeController.clearSelection();
+            }
         }
     },
 

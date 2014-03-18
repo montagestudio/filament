@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="node-details.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "nodeDetails"}
+            }
+        },
+
+        "noElementCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "noElementCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "!!@owner.inspector.glTFNode"}
+            }
+        },
+
+        "nodeLabelName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "nodeLabelName"},
+                "value": "Name:"
+            }
+        },
+
+        "nodeName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "nodeName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.inspector.glTFNode.name"}
+            }
+        },
+
+        "nodeLabelId": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "nodeLabelId"},
+                "value": "Id:"
+            }
+        },
+
+        "nodeId": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "nodeId"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.inspector.glTFNode.id"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="nodeDetails" class="NodeDetails">
+        <div data-montage-id="noElementCondition">
+            <ul class="NodeDetailsList">
+                <li class="NodeDetailsItem">
+                    <span data-montage-id="nodeLabelName" class="NodeDetailsItem-label"></span>
+                    <span data-montage-id="nodeName" class="NodeDetailsItem-text"></span>
+                </li>
+                <li class="NodeDetailsItem">
+                    <span data-montage-id="nodeLabelId" class="NodeDetailsItem-label"></span>
+                    <span data-montage-id="nodeId" class="NodeDetailsItem-text"></span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

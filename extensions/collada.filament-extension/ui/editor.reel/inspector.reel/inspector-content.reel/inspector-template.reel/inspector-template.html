@@ -2,12 +2,12 @@
 <html>
 <head>
     <title></title>
-    <link rel="stylesheet" type="text/css" href="inspector-details.css">
+    <link rel="stylesheet" type="text/css" href="inspector-template.css">
     <script type="text/montage-serialization">
     {
         "owner": {
             "properties": {
-                "element": {"#": "inspectorDetails"}
+                "element": {"#": "owner"}
             }
         },
 
@@ -18,14 +18,14 @@
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "!!@owner.inspector.glTFNode"}
+                "condition": {"<-": "!!@owner.inspector.selectedTemplate"}
             }
         },
 
-        "inspector": {
+        "inspectorPalette": {
             "prototype": "palette/ui/inspector/inspector.reel",
             "properties": {
-                "element": {"#": "inspector"}
+                "element": {"#": "inspectorPalette"}
             },
             "bindings": {
                 "object": {"<-": "@owner.inspector.selectedTemplate"},
@@ -37,9 +37,9 @@
     </script>
 </head>
 <body>
-    <div data-montage-id="inspectorDetails" class="InspectorDetails">
+    <div data-montage-id="owner" class="InspectorTemplate">
         <div data-montage-id="noElementCondition">
-            <div data-montage-id="inspector"></div>
+            <div data-montage-id="inspectorPalette"></div>
         </div>
     </div>
 </body>
