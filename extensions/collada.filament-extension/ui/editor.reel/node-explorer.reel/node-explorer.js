@@ -39,6 +39,8 @@ exports.NodeExplorer = Component.specialize(/** @lends NodeExplorer# */ {
                 this._element.addEventListener("dragover", this, false);
                 this._element.addEventListener("dragleave", this, false);
                 this._element.addEventListener("drop", this, false);
+                this._element.addEventListener("click", this);
+
                 application.addEventListener("sceneNodeSelected", this, false);
 
                 this.addPathChangeListener("selectedTemplate", this, "handleSelectedTemplate");
@@ -152,6 +154,17 @@ exports.NodeExplorer = Component.specialize(/** @lends NodeExplorer# */ {
                 } else {
                     this.templateObjects.nodeTemplatesListController.clearSelection();
                 }
+            }
+        }
+    },
+
+    handleClick: {
+        value: function (evt) {
+            var target = evt.target;
+
+            if (target === this.element) {
+                this.templateObjects.nodeTemplatesListController.clearSelection();
+                this.sceneGraph.clearSelection();
             }
         }
     }
