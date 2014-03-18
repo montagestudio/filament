@@ -732,6 +732,27 @@ describe("core/reel-document-template-editing-spec", function () {
 
             }).timeout(WAITSFOR_TIMEOUT);
         });
+
+        it("uses an existing element with a data-montage-id that matches the library item label", function() {
+            return reelDocumentPromise.then(function (reelDocument) {
+                // setup
+                var nodeProxy = reelDocument.createTemplateNode('<p data-montage-id="fooSameMontageIdFoo"></p>');
+                reelDocument.appendChildToTemplateNode(nodeProxy);
+                expect(nodeProxy.isInTemplate).toBeTruthy();
+
+                // test
+                return reelDocument.insertTemplateObjectFromSerialization({
+                    "fooSameMontageIdFoo": {
+                        "prototype": "ui/foo.reel",
+                        "properties": {
+                            "element": {"#": "fooSameMontageIdFoo"}
+                        }
+                    }
+                }, nodeProxy).then(function (objects) {
+                    expect(objects[0].properties.get("element")).toBe(nodeProxy);
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
     });
 
     describe("setting an object's label", function () {
