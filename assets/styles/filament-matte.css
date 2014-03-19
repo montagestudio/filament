@@ -45,6 +45,40 @@ body .matte-Button.Button.disabled:focus {
     cursor: default;
 }
 
+.matte-Button.Button--dark {
+    background-image: -webkit-linear-gradient(top, hsl(0, 0%, 35%), hsl(0, 0%, 26%) );
+    text-shadow: 0 1px 0 hsla(0, 0%, 0%, 0.2);
+    border-color: hsla(0, 0%, 0%, 0.6);
+    color: hsl(0, 0%, 90%);
+    box-shadow: inset 0 1px 0 hsla(0, 100%, 100%, 0.2), 0 1px 0 hsla(0, 100%, 100%, 0.15);
+}
+.matte-Button.Button--dark:hover {
+    background-image: -webkit-linear-gradient(top, hsl(0, 0%, 37%), hsl(0, 0%, 28%) );
+}
+.matte-Button.Button--dark:focus {
+    border-color: hsl(0, 0%, 0%);
+}
+.matte-Button.Button--dark.active {
+    background-image: -webkit-linear-gradient(top, hsl(0, 0%, 33%), hsl(0, 0%, 24%) );
+    box-shadow: inset 0 -1px 1px hsla(0, 0%, 0%, 0.04), 0 1px 0 hsla(0, 0%, 52%, 0.6);
+}
+
+.matte-Button.Button--action-dark,
+.matte-Button.Button--action-dark:hover,
+.matte-Button.Button--action-dark:focus {
+    border-color: hsl(210,100%,50%);
+    background-color: hsl(210,100%,56%);
+    background-image: -webkit-linear-gradient(top, hsl(210,100%,66%), hsl(210,100%,56%) );
+    text-shadow: 0 1px 0 hsla(0, 0%, 0%, 0.2);
+    border-color: hsla(0, 0%, 0%, 0.6);
+    color: hsl(0, 0%, 90%);
+    box-shadow: inset 0 1px 0 hsla(0, 100%, 100%, 0.2), 0 1px 0 hsla(0, 100%, 100%, 0.15);
+}
+
+.matte-Button.Button--action-dark.active {
+    background-image: -webkit-linear-gradient(top, hsl(210,100%,56%), hsl(210,100%,56%) );
+}
+
 
 /* Button Action --------------------------------- */
 
