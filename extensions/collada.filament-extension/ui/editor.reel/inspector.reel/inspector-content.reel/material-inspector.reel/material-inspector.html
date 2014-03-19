@@ -29,16 +29,6 @@
             "bindings": {
                 "inspector": {"<-": "@owner.inspector"}
             }
-        },
-
-        "inspectorTemplate": {
-            "prototype": "../inspector-template.reel",
-            "properties": {
-                "element": {"#": "inspectorTemplate"}
-            },
-            "bindings": {
-                "inspector": {"<-": "@owner.inspector"}
-            }
         }
 
     }
@@ -48,7 +38,6 @@
     <div data-montage-id="materialInspector" class="MaterialInspector">
         <div data-montage-id="contentSubstitution">
             <div data-arg="material" data-montage-id="materialDetail"></div>
-            <div data-arg="template" data-montage-id="inspectorTemplate"></div>
         </div>
     </div>
 </body>
