@@ -9,7 +9,6 @@
 }
 
 .SceneGraph .TreeCell {
-    margin-top: 6px;
 }
 
 .SceneGraph .TreeCell:-webkit-drag {
@@ -18,9 +17,10 @@
 }
 
 .SceneGraph .TreeCell-label {
-    color: #CACACA;
-    padding: 4px 10px;
+    color: hsl(0, 0%, 80%);
     font-size: 13px;
+    margin-left: 4px;
+    padding: 2px 4px; *;
 }
 
 .SceneGraph .TreeCell .TreeCell-label--selected {
