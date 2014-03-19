@@ -41,6 +41,9 @@
 }
 
 .SceneEditorBoxHeader-label {
+    display: block;
+    width: 100%;
+    height: 26px;
     margin: 0;
     padding: 0;
     color: hsl(0, 0%, 86%);
@@ -52,3 +55,9 @@
     white-space: nowrap;
     text-transform: capitalize;
 }
+
+.SceneEditorBoxContent {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
