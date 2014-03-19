@@ -55,3 +55,8 @@
     white-space: nowrap;
     text-transform: capitalize;
 }
+
+.SceneEditorBoxContent {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
