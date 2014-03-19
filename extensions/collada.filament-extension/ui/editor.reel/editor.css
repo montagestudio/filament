@@ -8,12 +8,12 @@
 
 .SceneEditor-column {
     display: flex;
-    flex: 1;
     flex-direction: column;
+    width: 250px;
 }
 
 .SceneEditor-column-left {
-    flex: 3;
+    flex: 1;
     border-right: 1px solid hsl(0, 0%, 22%);
 }
 
