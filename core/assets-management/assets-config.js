@@ -16,13 +16,14 @@ var AssetsConfig = {
             defaultIconUrl: "assets/icons/default-model-icon.svg",
             mimeTypes: [
                 "model/vnd.collada+xml",
-                "model/gltf-bundle"
+                "model/gltf-bundle",
+                "model/gltf"
             ],
             templates: [
                 "model/vnd.collada+xml"
             ],
             hidden: [
-                "model/gltf-bundle"
+                // no one are hidden for the demo
             ]
         },
 
