@@ -1925,6 +1925,12 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.undoManager.register("Remove Node", Promise.resolve([this._appendChildToTemplateNode, this, nodeProxy, parentNode]));
             }
 
+            this.dispatchEventNamed("nodeRemoved", true, false, {
+                nodeProxy: nodeProxy,
+                parentNode: parentNode,
+                nextSiblingNode: nextSibling
+            });
+
             this.undoManager.closeBatch();
             this.dispatchEventNamed("domModified", true, false);
             this.buildTemplateObjectTree();

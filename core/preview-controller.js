@@ -56,6 +56,7 @@ exports.PreviewController = Target.specialize({
             app.addEventListener("didChangeTemplate", this);
 
             app.addEventListener("objectRemoved", this);
+            app.addEventListener("nodeRemoved", this);
 
             return this;
         }
@@ -221,6 +222,16 @@ exports.PreviewController = Target.specialize({
         value: function(ownerModuleId, label) {
             if (typeof this.environmentBridge.deleteObject === "function") {
                 return this.environmentBridge.deleteObject(this._previewId, ownerModuleId, label);
+            } else {
+                return Promise.resolve(null);
+            }
+        }
+    },
+
+    deleteElement: {
+        value: function(ownerModuleId, elementLocation) {
+            if (typeof this.environmentBridge.deleteElement === "function") {
+                return this.environmentBridge.deleteElement(this._previewId, ownerModuleId, elementLocation);
             } else {
                 return Promise.resolve(null);
             }
@@ -750,5 +761,53 @@ exports.PreviewController = Target.specialize({
             .done();
         }
     },
+
+    handleNodeRemoved: {
+        value: function(event) {
+            var document = event.target;
+            var ownerProxy = document.editingProxyMap.owner;
+            var nodeProxy = event.detail.nodeProxy;
+            var parentNode = event.detail.parentNode;
+            var nextSibling = event.detail.nextSiblingNode;
+            var elementLocation;
+            var node;
+            var cssSelector = "";
+            var isContainer = false;
+            var isStarArgument;
+
+            // Since the nodeProxy is no longer in the DOM tree we need to
+            // use the node that it is now in its place. When this is not
+            // possible because there are no more siblings we find the path
+            // to the parent and append the css selector to the child.
+            if (nextSibling) {
+                node = nextSibling;
+            } else {
+                if (parentNode.component &&
+                    parentNode.component !== ownerProxy &&
+                    !nodeProxy.montageArg) {
+                    isStarArgument = true;
+                }
+                if (isStarArgument) {
+                    if (parentNode.lastChild) {
+                        node = parentNode.lastChild;
+                        cssSelector = " + *";
+                    } else {
+                        node = parentNode;
+                        isContainer = true;
+                    }
+                } else {
+                    node = parentNode;
+                    isContainer = true;
+                    cssSelector = " > *:nth-child(" + (node.children.length+1) + ")";
+                }
+            }
+
+            elementLocation = this._getElementLocation(node, isContainer, ownerProxy);
+            elementLocation.cssSelector += cssSelector;
+            console.log(elementLocation);
+            this.deleteElement(ownerProxy.moduleId, elementLocation)
+                .done();
+        }
+    }
 
 });
