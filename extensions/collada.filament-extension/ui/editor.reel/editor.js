@@ -16,6 +16,7 @@ exports.Editor = Component.specialize(/** @lends Editor# */ {
 
             this.defineBinding("sceneLabel", {"<-": "object.label"});
             this.defineBinding("fileName", {"<-": "object.stageObject.path"});
+            this.defineBinding("editingProxies", {"<-": "editingDocument.editingProxies"});
         }
     },
 
@@ -66,6 +67,23 @@ exports.Editor = Component.specialize(/** @lends Editor# */ {
         },
         get: function () {
             return this._scene;
+        }
+    },
+
+    _editingProxies: {
+        value: null
+    },
+
+    editingProxies: {
+        set: function (editingProxies) {
+            if (Array.isArray(editingProxies)) {
+                this._editingProxies = editingProxies.filter(function (proxy) {
+                    return /mjs-volume\/runtime\/(node|material)/.test(proxy.exportId);
+                });
+            }
+        },
+        get: function () {
+            return this._editingProxies;
         }
     },
 
