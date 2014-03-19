@@ -66,9 +66,7 @@ exports.Component3D = Target.specialize( {
     addEventListener: {
         value: function addEventListener(type, listener, useCapture) {
             if (this.scene) {
-                if (this.shouldPerformHitHest) {
-                    this.scene.shouldBeHitTested = true;
-                }
+                this.scene.shouldBeHitTested = true;
             }    
             this.shouldPerformHitHest = true;
 

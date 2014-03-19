@@ -16,7 +16,7 @@
         "q": "0.9.7",
         "q-connection": "0.5.5",
         "q-io": "1.10.0",
-        "mjs-volume": "git+ssh://git@github.com:fabrobinet/mjs-volume.git#a2d95295abfb45250cbcfbe8eb3d6382f905a153",
+        "mjs-volume": "git+ssh://git@github.com:fabrobinet/mjs-volume.git#8a6dca7addb6567b797766b60203a79a72fb6193",
         "mop": "0.13.2",
         "mr": "0.13.4",
         "npm": "1.3.10",
