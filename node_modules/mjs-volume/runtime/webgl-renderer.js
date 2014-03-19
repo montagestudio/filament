@@ -1016,6 +1016,8 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
 
     drawBBOX: {
         value: function(bbox, cameraMatrix, modelMatrix, projectionMatrix) {
+            if (bbox == null) return;
+
             var gl = this.webGLContext;
 
             this.bindedProgram = null;
