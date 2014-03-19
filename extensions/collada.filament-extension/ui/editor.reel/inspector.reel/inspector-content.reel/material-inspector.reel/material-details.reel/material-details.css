@@ -5,11 +5,15 @@
 }
 
 .MaterialDetailsItem {
-    margin: 12px 0 0 12px;
+    color: hsl(0, 0%, 90%);
+    margin: 8px 0 0 0;
 }
 
 .MaterialDetailsItem-label {
     font-weight: 600;
-    width: 140px;
+    width: 80px;
     display: inline-block;
+    padding-right: 4px;
+    text-align: right;
+    color: hsl(0, 0%, 70%);
 }

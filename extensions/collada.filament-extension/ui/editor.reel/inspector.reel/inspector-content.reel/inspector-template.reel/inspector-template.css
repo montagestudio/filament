@@ -12,6 +12,7 @@
     border-top: none;
     border-bottom: none;
     background: hsl(0, 0%, 22%);
+    color: hsl(0, 0%, 60%);
 }
 
 .InspectorTemplate .PropertyGroup-toggle:active {
@@ -30,4 +31,33 @@
 .InspectorTemplate .PropertyEditor .matte-InputText:focus {
     background-color: hsla(0, 7%, 87%, 1);
     box-shadow: none;
+}
+
+
+
+.InspectorTemplate .Property-label {
+    color: hsl(0, 0%, 56%);
+}
+
+
+/* InputText */
+
+.InspectorTemplate .Inspector-header-title.matte-InputText,
+.InspectorTemplate .PropertyEditor .matte-InputText {
+    border-color: hsla(0, 0%, 0%, 0.39);
+    background-color: hsla(0, 0%, 0%, 0.24);
+    color: hsl(0, 0%, 71%);
+}
+
+.InspectorTemplate .Inspector-header-title.matte-InputText:hover,
+.InspectorTemplate .PropertyEditor .matte-InputText:hover {
+    border-color: hsla(0, 0%, 0%, 0.39);
+    background-color: hsla(0, 0%, 0%, 0.15);
+}
+
+.InspectorTemplate .Inspector-header-title.matte-InputText:focus,
+.InspectorTemplate .PropertyEditor .matte-InputText:focus {
+    border-color: hsl(0, 0%, 9%);
+    background-color: hsla(0, 0%, 0%, 0.4);
+    color: #fff;
 }

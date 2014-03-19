@@ -5,11 +5,18 @@
 }
 
 .NodeDetailsItem {
-    margin: 12px 0 0 12px;
+    margin: 8px 0 0 0;
 }
 
 .NodeDetailsItem-label {
     font-weight: 600;
-    width: 140px;
+    width: 80px;
     display: inline-block;
+    text-align: right;
+    padding-right: 4px;
+    color: hsl(0, 0%, 60%);
+}
+
+.NodeDetailsItem-text {
+    color: hsl(0, 0%, 90%);
 }
