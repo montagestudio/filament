@@ -118,6 +118,12 @@ exports.Inspector = Component.specialize(/** @lends Inspector# */ {
 
             if (glTFNode) {
                 this.glTFNode = glTFNode;
+
+                if (this.templateType !== CONFIGURATION.TEMPLATE_TYPES.node) {
+                    this.templateType = CONFIGURATION.TEMPLATE_TYPES.node;
+
+                    this._populateToolBarItems();
+                }
             }
         }
     },
