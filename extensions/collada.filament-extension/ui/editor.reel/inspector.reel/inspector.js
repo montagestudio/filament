@@ -20,20 +20,16 @@ var Component = require("montage/ui/component").Component,
                     index: 0
                 },
                 {
-                    label: "template",
+                    label: "material",
                     index: 1
                 },
                 {
-                    label: "material",
+                    label: "light",
                     index: 2
                 },
                 {
-                    label: "light",
-                    index: 3
-                },
-                {
                     label: "camera",
-                    index: 4
+                    index: 3
                 }
             ],
 
@@ -41,10 +37,6 @@ var Component = require("montage/ui/component").Component,
                 {
                     label: "material",
                     index: 0
-                },
-                {
-                    label: "template",
-                    index: 1
                 }
             ]
         }
@@ -118,6 +110,12 @@ exports.Inspector = Component.specialize(/** @lends Inspector# */ {
 
             if (glTFNode) {
                 this.glTFNode = glTFNode;
+
+                if (this.templateType !== CONFIGURATION.TEMPLATE_TYPES.node) {
+                    this.templateType = CONFIGURATION.TEMPLATE_TYPES.node;
+
+                    this._populateToolBarItems();
+                }
             }
         }
     },

@@ -37,7 +37,8 @@
                 "element": {"#": "stage3d"}
             },
             "bindings": {
-                "scene": {"<-": "@owner.scene"}
+                "scene": {"<-": "@owner.scene"},
+                "editingProxies": {"<-": "@owner.editingProxies"}
             }
         },
 
@@ -64,6 +65,16 @@
             }
         },
 
+        "inspectorTemplate": {
+            "prototype": "./inspector-template.reel",
+            "properties": {
+                "element": {"#": "inspectorTemplate"}
+            },
+            "bindings": {
+                "inspector": {"<-": "@inspector"}
+            }
+        },
+
         "editorBar": {
             "prototype": "./editor-bar.reel",
             "properties": {
@@ -82,6 +93,7 @@
         <div class="SceneEditor-column">
             <div data-montage-id="sceneGraph" class="SceneEditor-Box"></div>
             <div data-montage-id="inspector" class="SceneEditor-Box"></div>
+            <div data-montage-id="inspectorTemplate" class="SceneEditor-Box"></div>
             <div data-montage-id="editorBar"></div>
         </div>
     </div>

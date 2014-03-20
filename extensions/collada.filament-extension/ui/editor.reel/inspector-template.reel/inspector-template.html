@@ -11,6 +11,14 @@
             }
         },
 
+        "headerLabel": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "headerLabel"},
+                "value": "Template Inspector"
+            }
+        },
+
         "noElementCondition": {
             "prototype": "montage/ui/condition.reel",
             "properties": {
@@ -37,10 +45,13 @@
     </script>
 </head>
 <body>
-    <div data-montage-id="owner" class="InspectorTemplate">
-        <div data-montage-id="noElementCondition">
-            <div data-montage-id="inspectorPalette"></div>
-        </div>
+<div data-montage-id="owner" class="InspectorTemplate">
+    <header class="SceneEditorBox-header">
+        <span data-montage-id="headerLabel" class="SceneEditorBoxHeader-label"></span>
+    </header>
+    <div data-montage-id="noElementCondition" class="SceneEditorBoxContent">
+        <div data-montage-id="inspectorPalette"></div>
     </div>
+</div>
 </body>
 </html>
