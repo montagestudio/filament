@@ -49,6 +49,7 @@ exports.NodeMaterials = Component.specialize(/** @lends NodeMaterials# */ {
                         material.properties.id = materialID;
                         material.properties.scene = {"@": this.inspector.sceneLabel};
 
+                        serialization[this.inspector.sceneLabel] = {};
                         scriptSerialization.textContent = JSON.stringify(serialization);
                     }
                 }

@@ -75,6 +75,7 @@ exports.SceneGraph = Component.specialize(/** @lends SceneGraph# */ {
                         node.properties.id = nodeElementID;
                         node.properties.scene = {"@": this.editor.sceneLabel};
 
+                        serialization[this.editor.sceneLabel] = {};
                         scriptSerialization.textContent = JSON.stringify(serialization);
                     }
                 }
