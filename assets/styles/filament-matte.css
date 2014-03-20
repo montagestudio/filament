@@ -54,6 +54,7 @@ body .matte-Button.Button.disabled:focus {
 }
 .matte-Button.Button--dark:hover {
     background-image: -webkit-linear-gradient(top, hsl(0, 0%, 37%), hsl(0, 0%, 28%) );
+    color: hsl(0, 0%, 95%);
 }
 .matte-Button.Button--dark:focus {
     border-color: hsl(0, 0%, 0%);
