@@ -60,6 +60,7 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    // Display a contextual menu on right click anywhere in the app if the active target has a contextual menu
     handleContextmenu: {
         value: function (evt) {
             evt.stopImmediatePropagation();

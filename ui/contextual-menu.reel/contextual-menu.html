@@ -8,7 +8,7 @@
         "owner": {
             "properties": {
                 "element": {"#": "contextualMenu"},
-                "menu": {"#": "menu"}
+                "menuElement": {"#": "menu"}
             }
         },
 
@@ -18,6 +18,33 @@
                     "element": {"#": "contextualMenuOverlay"},
                     "delegate": {"@": "owner"}
                 }
+        },
+
+        "menuRepetition": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "menuRepetition"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.menuModel.items"}
+            }
+        },
+
+        "contextualMenuItem": {
+            "prototype": "./menu-item.reel",
+            "properties": {
+                "element": {"#": "contextualMenuItem"},
+                "overlayPosition": "right",
+                "nextTarget": {"@": "owner"},
+                "actionEventName" : "contextualMenuAction",
+                "validateEventName" : "contextualMenuValidate"
+            },
+            "bindings": {
+                "menuItemModel": {"<-": "@menuRepetition:iteration.object"},
+                "menu": {"<-": "@owner"},
+                "parentMenuItem": {"<-": "@owner.menuModel"},
+                "dispatchTarget": {"<-": "@owner.dispatchTarget"}
+            }
         }
     }
     </script>
@@ -26,10 +53,8 @@
     <div data-montage-id="contextualMenu" class="ContextualMenu">
         <div data-montage-id="contextualMenuOverlay">
             <div data-montage-id="menu" class="ContextualMenu-menu">
-                <ul class="ContextualMenu-list">
-                    <li class="ContextualMenu-list-item">
-                        <button>More to be added&hellip;</button>
-                    </li>
+                <ul data-montage-id="menuRepetition" class="ContextualMenu-list">
+                    <li data-montage-id="contextualMenuItem" class="ContextualMenu-list-item"></li>
                 </ul>
             </div>
         </div>
