@@ -302,7 +302,6 @@ exports.TemplateObjectCell = Component.specialize({
 
     deleteTemplateObject: {
         value: function () {
-            debugger
             var reelProxy = this.templateObject,
                 editingDocument = reelProxy._editingDocument;
 
