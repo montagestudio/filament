@@ -283,13 +283,18 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
                 this.ignoreAction = false;
                 return;
             }
-            this._buttonAction();
+
+            if (this.isSubMenu() || this.isRootMenu()) {
+                this._openSubmenu();
+            }
         }
     },
 
     handleMouseup: {
         value: function (evt) {
-            this._triggerAction();
+            if (!this.isSubMenu()) {
+                this._triggerAction();
+            }
         }
     },
 
