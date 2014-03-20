@@ -1159,8 +1159,15 @@ exports.ReelDocument = EditingDocument.specialize({
                 labeler: labeler,
                 willMergeObjectWithLabel: function(label, collisionLabel) {
                     var id = serializationToMerge.getElementId(label);
+                    var isExternalObject;
+
                     if (collisionLabel) {
-                        if (id !== collisionLabel) {
+                        isExternalObject = serializationToMerge.isExternalObject(label);
+                        // Do not import external objects, assume they exist
+                        // in the template serialiation.
+                        if (isExternalObject) {
+                            return label;
+                        } else if (id !== collisionLabel) {
                             return id;
                         }
                     } else if (id !== label) {
