@@ -16,13 +16,15 @@ var AssetsConfig = {
             defaultIconUrl: "assets/icons/default-model-icon.svg",
             mimeTypes: [
                 "model/vnd.collada+xml",
-                "model/montage-serialization"
+                "model/gltf-bundle",
+                "model/gltf"
             ],
             templates: [
                 "model/vnd.collada+xml"
             ],
             hidden: [
-                "model/montage-serialization"
+                "model/vnd.collada+xml"
+                //fixme collada files are hidden for the demo
             ]
         },
 
