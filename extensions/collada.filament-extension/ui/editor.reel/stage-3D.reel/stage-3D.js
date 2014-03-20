@@ -4,6 +4,8 @@
  */
 var Component = require("montage/ui/component").Component,
     Application = require("montage/core/application").application,
+
+    /*jshint -W079 */
     Node = require("mjs-volume/runtime/node").Node,
     Material = require("mjs-volume/runtime/material").Material;
 

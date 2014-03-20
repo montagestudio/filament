@@ -77,8 +77,10 @@ exports.Editor = Component.specialize(/** @lends Editor# */ {
     editingProxies: {
         set: function (editingProxies) {
             if (Array.isArray(editingProxies)) {
+                var regex = new RegExp("mjs-volume/runtime/(node|material)");
+
                 this._editingProxies = editingProxies.filter(function (proxy) {
-                    return /mjs-volume\/runtime\/(node|material)/.test(proxy.exportId);
+                    return regex.test(proxy.exportId);
                 });
             }
         },
