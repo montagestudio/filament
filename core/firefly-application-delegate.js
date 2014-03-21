@@ -169,7 +169,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 window.open("http://docs.montagestudio.com/montage-studio/");
                 break;
             case "forum":
-                window.open("http://forum.montagestudio.com/category/prerelease/");
+                window.open("http://forum.montagestudio.com/");
                 break;
             case "report":
                 window.location = "mailto:feedback@montagestudio.com";
