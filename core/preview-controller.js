@@ -228,10 +228,10 @@ exports.PreviewController = Target.specialize({
         }
     },
 
-    deleteElement: {
+    deletePreviewElement: {
         value: function(ownerModuleId, elementLocation) {
-            if (typeof this.environmentBridge.deleteElement === "function") {
-                return this.environmentBridge.deleteElement(this._previewId, ownerModuleId, elementLocation);
+            if (typeof this.environmentBridge.deletePreviewElement === "function") {
+                return this.environmentBridge.deletePreviewElement(this._previewId, ownerModuleId, elementLocation);
             } else {
                 return Promise.resolve(null);
             }
@@ -805,7 +805,7 @@ exports.PreviewController = Target.specialize({
             elementLocation = this._getElementLocation(node, isContainer, ownerProxy);
             elementLocation.cssSelector += cssSelector;
             console.log(elementLocation);
-            this.deleteElement(ownerProxy.moduleId, elementLocation)
+            this.deletePreviewElement(ownerProxy.moduleId, elementLocation)
                 .done();
         }
     }
