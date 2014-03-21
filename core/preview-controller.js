@@ -218,10 +218,10 @@ exports.PreviewController = Target.specialize({
         }
     },
 
-    deleteObject: {
+    deletePreviewObject: {
         value: function(ownerModuleId, label) {
-            if (typeof this.environmentBridge.deleteObject === "function") {
-                return this.environmentBridge.deleteObject(this._previewId, ownerModuleId, label);
+            if (typeof this.environmentBridge.deletePreviewObject === "function") {
+                return this.environmentBridge.deletePreviewObject(this._previewId, ownerModuleId, label);
             } else {
                 return Promise.resolve(null);
             }
@@ -757,7 +757,7 @@ exports.PreviewController = Target.specialize({
             var ownerProxy = document.editingProxyMap.owner;
             var proxy = event.detail.proxy;
 
-            this.deleteObject(ownerProxy.moduleId, proxy.label)
+            this.deletePreviewObject(ownerProxy.moduleId, proxy.label)
             .done();
         }
     },
