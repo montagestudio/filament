@@ -2,8 +2,7 @@
  * @module ui/contextual-menu.reel
  * @requires montage/ui/component
  */
-var Component = require("montage/ui/component").Component,
-    defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
+var Component = require("montage/ui/component").Component;
 
 /**
  * @class ContextualMenu
@@ -42,15 +41,20 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
 
     show: {
         value: function (position) {
-            var target = defaultEventManager.activeTarget;
+            var target,
+                element = document.elementFromPoint(position.left, position.top);
 
-            this.position = position;
-
-            while (!target.contextualMenu && target.parentComponent) {
-                target = target.parentComponent;
+            while (element.parentElement && !(element.component && element.component.contextualMenu)) {
+                element = element.parentElement;
             }
 
+            if (!element.component) {
+                return;
+            }
+
+            target = element.component;
             if (target.contextualMenu) {
+                this.position = position;
                 this.dispatchTarget = target;
                 this.menuModel = target.contextualMenu;
                 target.contextualMenu.items.forEach(function (item) {
@@ -101,6 +105,14 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
         value: function (evt) {
             evt.stop();
         }
-    }
+    },
+
+    // Event fired from a sub-menu asking for it's closure
+    // Typical use is to dismiss a menu after firing a menu event
+    handleDismissContextualMenu: {
+        value: function (evt) {
+            this.hide();
+        }
+    },
 
 });

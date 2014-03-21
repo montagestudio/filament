@@ -44,7 +44,13 @@
                 "menu": {"<-": "@owner"},
                 "parentMenuItem": {"<-": "@owner.menuModel"},
                 "dispatchTarget": {"<-": "@owner.dispatchTarget"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "dismissContextualMenu",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>
