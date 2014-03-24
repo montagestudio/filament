@@ -134,9 +134,55 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                     repo: bridge.repositoryController.repo
                 };
                 repositoriesController.addRepositoryToRecent(project);
+
+                self.updateProjectRefs();       // performed asynchronously, don't wait for completion
             }).done();
 
             return superPromise;
+        }
+    },
+
+    updateProjectRefs: {
+        value: function(resolution) {
+            var self = this,
+                bridge = this.environmentBridge;
+
+            return bridge.updateProjectRefs(resolution)
+            .then(function(result) {
+                var notifications = result.notifications,
+                    nbrNotification = notifications ? notifications.length : 0,
+                    lastNotification = notifications[nbrNotification - 1],
+                    resolutionStrategy = result.resolutionStrategy;
+
+                if (result.success === false &&
+                        nbrNotification &&
+                        (lastNotification.type === "shadowsOutOfSync" || lastNotification.type === "shadowBehindParent") &&
+                        resolutionStrategy.indexOf("rebase") !== -1) {
+                    // Automatically sync the shadow branch with its remote counter part or parent
+                    return bridge.updateProjectRefs("rebase");
+                }
+                return result;
+            })
+            .then(function(result) {
+                var notifications = result.notifications,
+                   nbrNotification = notifications ? notifications.length : 0,
+                   lastNotification = notifications[nbrNotification - 1];
+
+                if (result.success !== true) {
+                    if (lastNotification.type === "shadowsOutOfSync") {
+                        // Local shadow has diverged from remote shadow (not a rebase case)
+                        // TODO: ask user what to do in case of conflict
+                        /* TODO: Possible options to propose to user
+                            1. Discard remote changes  --> updateRefs("revert")
+                            2. Discard Local changes   --> updateRefs("discard")
+                            3. Cancel
+                        */
+                    }
+                }
+            })
+            .catch(function(err) {
+                Rollbar.error(new Error("Error updating the project."));
+            });
         }
     },
 
