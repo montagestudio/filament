@@ -218,20 +218,20 @@ exports.PreviewController = Target.specialize({
         }
     },
 
-    deleteObject: {
+    deletePreviewObject: {
         value: function(ownerModuleId, label) {
-            if (typeof this.environmentBridge.deleteObject === "function") {
-                return this.environmentBridge.deleteObject(this._previewId, ownerModuleId, label);
+            if (typeof this.environmentBridge.deletePreviewObject === "function") {
+                return this.environmentBridge.deletePreviewObject(this._previewId, ownerModuleId, label);
             } else {
                 return Promise.resolve(null);
             }
         }
     },
 
-    deleteElement: {
+    deletePreviewElement: {
         value: function(ownerModuleId, elementLocation) {
-            if (typeof this.environmentBridge.deleteElement === "function") {
-                return this.environmentBridge.deleteElement(this._previewId, ownerModuleId, elementLocation);
+            if (typeof this.environmentBridge.deletePreviewElement === "function") {
+                return this.environmentBridge.deletePreviewElement(this._previewId, ownerModuleId, elementLocation);
             } else {
                 return Promise.resolve(null);
             }
@@ -757,7 +757,7 @@ exports.PreviewController = Target.specialize({
             var ownerProxy = document.editingProxyMap.owner;
             var proxy = event.detail.proxy;
 
-            this.deleteObject(ownerProxy.moduleId, proxy.label)
+            this.deletePreviewObject(ownerProxy.moduleId, proxy.label)
             .done();
         }
     },
@@ -805,7 +805,7 @@ exports.PreviewController = Target.specialize({
             elementLocation = this._getElementLocation(node, isContainer, ownerProxy);
             elementLocation.cssSelector += cssSelector;
             console.log(elementLocation);
-            this.deleteElement(ownerProxy.moduleId, elementLocation)
+            this.deletePreviewElement(ownerProxy.moduleId, elementLocation)
                 .done();
         }
     }
