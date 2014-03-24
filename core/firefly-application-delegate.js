@@ -144,8 +144,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
 
     updateProjectRefs: {
         value: function(resolution) {
-            var self = this,
-                bridge = this.environmentBridge;
+            var bridge = this.environmentBridge;
 
             return bridge.updateProjectRefs(resolution)
             .then(function(result) {
@@ -163,23 +162,23 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 }
                 return result;
             })
-            .then(function(result) {
-                var notifications = result.notifications,
-                   nbrNotification = notifications ? notifications.length : 0,
-                   lastNotification = notifications[nbrNotification - 1];
-
-                if (result.success !== true) {
-                    if (lastNotification.type === "shadowsOutOfSync") {
-                        // Local shadow has diverged from remote shadow (not a rebase case)
-                        // TODO: ask user what to do in case of conflict
-                        /* TODO: Possible options to propose to user
-                            1. Discard remote changes  --> updateRefs("revert")
-                            2. Discard Local changes   --> updateRefs("discard")
-                            3. Cancel
-                        */
-                    }
-                }
-            })
+//            .then(function(result) {
+//                var notifications = result.notifications,
+//                   nbrNotification = notifications ? notifications.length : 0,
+//                   lastNotification = notifications[nbrNotification - 1];
+//
+//                if (result.success !== true) {
+//                    if (lastNotification.type === "shadowsOutOfSync") {
+//                        // Local shadow has diverged from remote shadow (not a rebase case)
+//                        // TODO: ask user what to do in case of conflict
+//                        /* TODO: Possible options to propose to user
+//                            1. Discard remote changes  --> updateRefs("revert")
+//                            2. Discard Local changes   --> updateRefs("discard")
+//                            3. Cancel
+//                        */
+//                    }
+//                }
+//            })
             .catch(function(err) {
                 Rollbar.error(new Error("Error updating the project."));
             });
