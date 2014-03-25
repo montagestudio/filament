@@ -9,7 +9,6 @@ var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescript
 
     PACKAGE_LOCATION = require.location,
     GLTF_BUNDLE_MIME_TYPE = "model/gltf-bundle",
-    ASSET_COMPILER_URL = PACKAGE_LOCATION + "asset-compilers/collada.asset-compiler",
     CONVERSION_GLTF_ENABLED = false,
 
     FILE_SYSTEM_CHANGES = {
@@ -115,7 +114,7 @@ exports.AssetsManager = Montage.specialize({
      * @public
      * @return {Object}
      */
-    _projectController: {
+    projectController: {
         value: null
     },
 
@@ -124,7 +123,7 @@ exports.AssetsManager = Montage.specialize({
      * @public
      * @return {String}
      */
-    _projectUrl: {
+    projectUrl: {
         value: null
     },
 
@@ -135,38 +134,9 @@ exports.AssetsManager = Montage.specialize({
      */
     _currentDocument: {
         get: function () {
-            if (this._projectController) {
-                return this._projectController.currentDocument;
+            if (this.projectController) {
+                return this.projectController.currentDocument;
             }
-        }
-    },
-
-    /**
-     * Reference to the AssetCompiler.
-     * @public
-     * @return {Object}
-     */
-    _assetCompiler: {
-        value: null
-    },
-
-    /**
-     * Loads some content for the Asset Manager,
-     * such as the projectController, the projectUrl and the AssetCompiler.
-     * @public
-     * @return {Promise}
-     */
-    load: {
-        value: function (projectController, projectUrl) {
-            var self = this;
-
-            return require.loadPackage(ASSET_COMPILER_URL).then(function (packageRequire) {
-                return packageRequire.async("asset-compiler").then(function (exports) {
-                    self._projectController = projectController;
-                    self._projectUrl = projectUrl;
-                    self._assetCompiler = exports.AssetCompiler;
-                });
-            });
         }
     },
 
@@ -178,7 +148,7 @@ exports.AssetsManager = Montage.specialize({
      */
     handleDidOpenPackage: {
         value: function (event) {
-            if (this._projectController) {
+            if (this.projectController) {
                 this._populateAssets().done();
             }
         }
@@ -195,7 +165,7 @@ exports.AssetsManager = Montage.specialize({
         value: function () {
             var self = this;
 
-            return this._projectController.environmentBridge.listAssetAtUrl(this._projectController.projectUrl).then(function (fileDescriptors) {
+            return this.projectController.environmentBridge.listAssetAtUrl(this.projectController.projectUrl).then(function (fileDescriptors) {
                 self.addAssetsWithFileDescriptors(fileDescriptors);
             });
         }
@@ -352,7 +322,7 @@ exports.AssetsManager = Montage.specialize({
      */
     _getStatsAtUrl: {
         value: function (fileUrl) {
-            return this._projectController.environmentBridge.getStatsAtUrl(fileUrl);
+            return this.projectController.environmentBridge.getStatsAtUrl(fileUrl);
         }
     },
 
@@ -493,7 +463,7 @@ exports.AssetsManager = Montage.specialize({
      */
     getRelativePathWithAssetFromCurrentReelDocument: {
         value: function (asset) {
-            var projectUrl = this._projectUrl,
+            var projectUrl = this.projectUrl,
                 currentReelDocument = this._currentDocument;
 
             if (projectUrl && AssetTools.isAssetValid(asset) && currentReelDocument instanceof ReelDocument) {
@@ -764,7 +734,7 @@ exports.AssetsManager = Montage.specialize({
      */
     _detectMimeTypeWithFileUrl: {
         value: function (fileUrl) {
-            return this._projectController.environmentBridge.detectMimeTypeAtUrl(fileUrl);
+            return this.projectController.environmentBridge.detectMimeTypeAtUrl(fileUrl);
         }
     },
 
@@ -780,7 +750,7 @@ exports.AssetsManager = Montage.specialize({
         value: function (event) {
             var fileChangeDetail = event.detail;
 
-            if (this._projectController && fileChangeDetail && typeof fileChangeDetail === "object") {
+            if (this.projectController && fileChangeDetail && typeof fileChangeDetail === "object") {
                 var fileUrl = fileChangeDetail.fileUrl,
                     self = this;
 
