@@ -179,6 +179,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             this.openDocumentsController = RangeController.create().initWithContent(this.documents);
             this.assetsManager = AssetsManager.create();
+            this.assetsManager.projectController = this;
 
             //TODO get rid of this once we have property dependencies
             this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyWillChange", true);
@@ -211,11 +212,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             var self = this;
 
             this._projectUrl = url;
+            this.assetsManager.projectUrl = url;
 
-            return this.assetsManager.load(this, url).then(function () {
-                return self.environmentBridge.projectInfo(url).then(function (projectInfo) {
-                    return self._openProject(projectInfo.packageUrl, projectInfo.dependencies);
-                });
+            return self.environmentBridge.projectInfo(url).then(function (projectInfo) {
+                return self._openProject(projectInfo.packageUrl, projectInfo.dependencies);
             });
         }
     },

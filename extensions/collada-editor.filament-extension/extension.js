@@ -17,42 +17,6 @@ exports.Extension = CoreExtension.specialize( {
         }
     },
 
-    /**
-     * Asynchronously load the asset compiler from the specified
-     * extensionUrl, returning a reference to the exported Asset Compiler.
-     *
-     * When called as a method on an instance of a ProjectController
-     * the loadedAssetCompiler will be added to the instance's
-     * loadedAssetCompilers collection automatically.
-     *
-     * @param {string} assetCompilerURL The extension package Url to load
-     * @return {Promise} A promise for the exported Asset Compiler object
-     */
-    loadAssetCompiler: {
-        enumerable: false,
-        value: function (assetCompilerURL) {
-
-            var self = this;
-
-            // TODO npm install?
-            return require.loadPackage(assetCompilerURL).then(function (packageRequire) {
-                return packageRequire.async("asset-compiler");
-            }).then(function (exports) {
-                    var assetCompiler = exports.AssetCompiler;
-
-                    if (!assetCompiler) {
-                        throw new Error("Malformed asset compiler. Expected '" + assetCompilerURL + "' to export 'Asset Compiler'");
-                    }
-
-                    if (self.loadedAssetCompilers) {
-                        self.loadedAssetCompilers.push(assetCompiler);
-                    }
-                    return assetCompiler;
-                });
-        }
-    },
-
-
     assetCompiler:  {
         value: null
     },
@@ -67,12 +31,6 @@ exports.Extension = CoreExtension.specialize( {
 
     activate: {
         value: function (application, projectController, viewController) {
-            var self = this;
-            this.loadAssetCompiler("http://client/asset-compilers/collada.asset-compiler").then (
-                function(assetCompiler) {
-                    self.assetCompiler = assetCompiler;
-                });
-
             this.application = application;
             this.projectController = projectController;
 
