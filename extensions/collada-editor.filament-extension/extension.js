@@ -31,8 +31,6 @@ exports.Extension = CoreExtension.specialize( {
 
     activate: {
         value: function (application, projectController, viewController) {
-            var self = this;
-
             this.application = application;
             this.projectController = projectController;
 
