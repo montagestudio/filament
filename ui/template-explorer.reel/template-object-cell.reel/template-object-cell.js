@@ -6,7 +6,7 @@
 var Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
     MimeTypes = require("core/mime-types"),
-    MenuModule = require("adaptor/client/core/menu");
+    MenuModule = require("core/menu");
 
 /**
  Description TODO
