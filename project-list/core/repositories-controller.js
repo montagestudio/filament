@@ -39,26 +39,56 @@ var RepositoriesController = Montage.specialize({
     },
 
 
+    /**
+     * Open the specified repository by navigating to the expected URL
+     * @param {Object} repository The repository to open
+     */
     open: {
         value: function(repository) {
             window.location.pathname = "/" + repository.owner.login + "/" + repository.name;
         }
     },
 
+    /**
+     * Create a repository with the specified name and description
+     *
+     * @param {String} name The name of the repository to create
+     * @param {Object} options An object of key-value pair configuration options
+     * @return {Promise} A promise for the created repository
+     */
     createRepository: {
-        value: function(name, description) {
+        value: function(name, options) {
             var self = this;
 
             return this._githubApi.then(function(githubApi) {
-                return githubApi.createRepository(name, description)
+                return githubApi.createRepository(name, options)
                 .then(function(repo) {
                     /* jshint -W106 */
                     // This is the format expected by the github API, ignoring for now
                     repo.pushed_at = +new Date(repo.pushed_at);
                     /* jshint +W106 */
                     self._ownedRepositoriesContent.content.push(repo);
+                    return repo;
                 });
             });
+        }
+    },
+
+    /**
+     * Initialize the repository for the specified login with the specified repositoryName
+     *
+     * Note this does not validate that the repository specified exists or is receptive
+     * to being initialized with a montage project
+     *
+     * @param {String} ownerLogin The login name of the user
+     * @param {String} repositoryName The name of the repository to initialize
+     * @return {Promise} A promise for the initialized repository workspace
+     */
+    initializeRepository: {
+        value: function (ownerLogin, repositoryName) {
+            var repositoryController = new RepositoryController();
+            repositoryController.init(ownerLogin, repositoryName);
+            return repositoryController.initializeRepositoryWorkspace();
         }
     },
 

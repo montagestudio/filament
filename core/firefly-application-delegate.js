@@ -31,6 +31,14 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         value: null
     },
 
+    initializeRepositoryPanel: {
+        value: null
+    },
+
+    unknownRepositoryPanel: {
+        value: null
+    },
+
     showModal: {
         value: false
     },
@@ -65,59 +73,112 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
     willLoadProject: {
         value: function () {
             var self = this,
-                bridge = this.environmentBridge,
-                populatedRepositoryPromise;
+                bridge = this.environmentBridge;
 
             self.showModal = true;
             self.currentPanelKey = "progress";
-            self.progressPanel.message = "Checking repository...";
+            self.progressPanel.message = "Verifying project…";
 
-            return bridge.isProjectEmpty().then(function (isEmpty) {
-                if (isEmpty) {
-                    // Bare repository, create a project and commit
-                    self.showModal = true;
-                    self.currentPanelKey = "initialize";
-                    self._deferredRepositoryInitialization = Promise.defer();
-                    populatedRepositoryPromise = self._deferredRepositoryInitialization.promise;
-                } else {
-                    //Repository exists, do we have a project workspace for it?
-                    populatedRepositoryPromise = bridge.projectExists().then(function (exists) {
-                        if (!exists) {
-                            //TODO check if it's a montage project or not: cute message otherwise
-                            // No workspace, make one
-                            self.showModal = true;
-                            self.currentPanelKey = "progress";
-                            self.progressPanel.message = "Cloning project and installing dependencies...";
+            return bridge.repositoryExists()
+                .then(function (exists) {
+                    self.progressPanel.message = "Verifying repository…";
 
-                            return bridge.initializeProject().then(function () {
-                                self.showModal = false;
-                                self.currentPanelKey = null;
-                            });
+                    return Promise.all([
+                        Promise(exists),
+                        (exists ? bridge.isProjectEmpty().then(function (empty) { return !empty; }) : Promise(false)),
+                        bridge.workspaceExists()
+                    ]);
+                })
+                .spread(function (repositoryExists, repositoryPopulated, workspaceStatus) {
+                    var readyWorkspacePromise;
+
+                    if (!repositoryExists) {
+
+                        if (workspaceStatus === "initializing") {
+                            throw new Error("Initializing a project for a repository that no longer exists");
+                        } else if (workspaceStatus) {
+                            // Workspace exists, repository has gone missing
+                            // TODO offer to discard workspace or create repo from workspace
+                            throw new Error("Repository no longer exists for project.");
                         } else {
-                            // Workspace found, all systems go!
-                            self.showModal = false;
-                            return Promise.resolve();
+                            // No repo and no workspace
+                            self.currentPanelKey = "unknown";
+                            readyWorkspacePromise = self.unknownRepositoryPanel.getResponse()
+                                .then(function (response) {
+                                    if (response) {
+                                        return self._createRepository(response.name, response.description);
+                                    } else {
+                                        window.location = "/";
+                                    }
+                                });
                         }
-                    });
-                }
 
-                return populatedRepositoryPromise;
-            })
-            .catch(function(err) {
-                self.currentPanelKey = "confirm";
-                self.showModal = true;
-                Rollbar.error(new Error("Error setting up the project."));
-
-                return self.confirmPanel.getResponse("Error setting up the project.", true, "Retry", "Close").then(function (response) {
-                    self.showModal = false;
-                    if (response === true) {
-                        return self.willLoadProject();
                     } else {
-                        window.location = "/";
-                        return Promise.defer();
+
+                        // The repository exists…
+
+                        if (repositoryPopulated) {
+
+                            if (workspaceStatus === "initializing") {
+                                throw new Error("Initializing a project for a repository that is already populated");
+                            } else if (workspaceStatus) {
+                                // Workspace exists, great; all systems go
+                                self.showModal = false;
+                            } else {
+                                // Project is populated with content, no workspace exists
+                                //TODO check if we should bother creating a workspace for this repo
+                                // Create workspace for montage projects
+                                readyWorkspacePromise = self._initializeProject();
+                            }
+
+                        } else {
+
+                            // The repository exists but is empty…
+
+                            if (workspaceStatus === "initializing") {
+                                // Busy initializing
+                                readyWorkspacePromise = self._initializeProject();
+                            } else if (workspaceStatus) {
+                                // Must have just wrapped up workspace will be pushed soon
+                                readyWorkspacePromise = self._initializeProject();
+                            } else {
+                                // Repository exists, is empty, and we have no workspace
+                                self.currentPanelKey = "initialize";
+                                readyWorkspacePromise = self.initializeRepositoryPanel.getResponse()
+                                    .then(function (response) {
+                                        if (response) {
+                                            return self._initializeProject();
+                                        } else {
+                                            window.location = "/";
+                                        }
+                                    });
+                            }
+
+                        }
+
                     }
+
+                    return Promise(readyWorkspacePromise);
+
+                })
+                .catch(function(err) {
+
+                    var message = err.message || "Internal Server Error";
+
+                    self.currentPanelKey = "confirm";
+                    Rollbar.error(new Error("Error setting up the project:", message));
+
+                    return self.confirmPanel.getResponse("Error setting up the project: " + message, true, "Retry", "Close")
+                        .then(function (response) {
+                            self.showModal = false;
+                            if (response === true) {
+                                return self.willLoadProject();
+                            } else {
+                                window.location = "/";
+                                return Promise(false);
+                            }
+                        });
                 });
-            });
         }
     },
 
@@ -140,25 +201,53 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         }
     },
 
-    handleInitializeRepository: {
-        value: function () {
-            var bridge = this.environmentBridge,
-                self = this;
+    _createRepository: {
+        value: function (name, description) {
+            var self = this,
+                bridge = this.environmentBridge;
 
-            if (bridge) {
-                bridge.isProjectEmpty().then(function (isEmpty) {
-                    if (isEmpty) {
-                        self.currentPanelKey = "progress";
-                        self.progressPanel.message = "Initializing project and installing dependencies...";
+            this.currentPanelKey = "progress";
+            this.progressPanel.message = "Creating repository…";
 
-                        var promise = self._deferredRepositoryInitialization;
-                        bridge.initializeProject().then(function () {
+            return repositoriesController.createRepository(name, description)
+                .then(function () {
+
+                    // Delay reporting initialization to distribute progress more evenly
+                    Promise.delay(7000)
+                        .then(function (result) {
+                            self.currentPanelKey = "progress";
+                            self.progressPanel.message = "Initializing project and installing dependencies…";
+                        })
+                        .done();
+
+                    return bridge.initializeProject()
+                        .then(function () {
                             self.showModal = false;
                             self.currentPanelKey = null;
-                        }).then(promise.resolve, promise.reject);
-                    }
-                }).done();
+                        });
+                });
+        }
+    },
+
+    _initializeProject: {
+        value: function () {
+            var bridge = this.environmentBridge,
+                self = this,
+                initializationPromise;
+
+            if (bridge) {
+
+                self.currentPanelKey = "progress";
+                self.progressPanel.message = "Initializing project and installing dependencies…";
+
+                initializationPromise = bridge.initializeProject()
+                    .then(function () {
+                        self.showModal = false;
+                        self.currentPanelKey = null;
+                    });
             }
+
+            return Promise(initializationPromise);
         }
     },
 
