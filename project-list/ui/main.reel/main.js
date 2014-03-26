@@ -178,19 +178,30 @@ exports.Main = Montage.create(Component, {
 
     _createNewApplication: {
         value: function () {
-            var name = this.templateObjects.newAppName.value,
-                description = this.templateObjects.newAppDescription.value,
+            var templateObjects = this.templateObjects,
+                name = templateObjects.newAppName.value,
+                description = templateObjects.newAppDescription.value,
+                repositoriesController = templateObjects.repositoriesController,
                 self = this;
 
-            return this.templateObjects.repositoriesController.createRepository(name, {
-                description: description
-            }).then(function() {
-                window.location.pathname = self.userController.user.login + "/" + name;
-                self.showNewAppForm = false;
-            }, function (error) {
-                self.templateObjects.newAppError.value = error.message;
-                throw error;
-            });
+            return repositoriesController.createRepository(name, {
+                    description: description
+                })
+                .then(function (repo) {
+                    // Begin initialization, but don't hold up leaving this page
+                    // Distribute the load across multiple screens
+                    repositoriesController.initializeRepository(repo.owner.login, name).done();
+
+                    self.showNewAppForm = false;
+                    return repo;
+                })
+                .delay(600)
+                .then(function(repo) {
+                    repositoriesController.open(repo);
+                }, function (error) {
+                    self.templateObjects.newAppError.value = error.message;
+                    throw error;
+                });
         }
     },
 
