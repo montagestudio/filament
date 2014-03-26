@@ -120,7 +120,9 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                         if (repositoryPopulated) {
 
                             if (workspaceStatus === "initializing") {
-                                throw new Error("Initializing a project for a repository that is already populated");
+                                // Project exists and is currently building the container workspace
+                                // Hopefully it's not about to run minit to try and reinitialize the project
+                                readyWorkspacePromise = self._initializeProject();
                             } else if (workspaceStatus) {
                                 // Workspace exists, great; all systems go
                                 self.showModal = false;
