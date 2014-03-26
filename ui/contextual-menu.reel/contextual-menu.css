@@ -27,7 +27,7 @@
 .ContextualMenu-list button {
     -webkit-appearance: none;
     text-align: left;
-    height: auto;
+    height: 33px;
     min-height: 23px;
     line-height: 20px;
     min-width: 0;
@@ -37,8 +37,8 @@
     border: none;
     font-family: inherit;
     font-size: inherit;
-    color: hsl(0, 0%, 70%);
-    background: none;
+    color: hsl(0, 0%, 60%);
+    background: hsla(0,0%,0%,0);
 }
 
 .ContextualMenu-list button:hover {
