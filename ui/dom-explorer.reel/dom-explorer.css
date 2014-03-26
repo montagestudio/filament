@@ -24,14 +24,6 @@
     padding: 0;
 }
 
-.DomExplorer .NodeList{
-    padding-top: 30px;
-}
-
-.DomExplorer.shiftUp .NodeList{
-    padding-top: 0px;
-}
-
 .DomExplorer.is-drawerOpen {
     padding-bottom: 48px;
 }

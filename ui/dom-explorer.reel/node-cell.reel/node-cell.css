@@ -90,6 +90,8 @@
     border: 2px;
     border-style: dashed;
     border-color: hsl(216,100%,70%);
+    margin-top: 1px;
+    margin-bottom: 1px;
 }
 
 
@@ -123,7 +125,7 @@
 
 .NodeCell:hover .NodeCell-removeButton {
     visibility: visible;
-}   
+}
 
 .NodeCell .NodeCell-removeButton {
     visibility: hidden;
@@ -177,7 +179,7 @@
 .NodeCell-button-icon {
     position: absolute;
     top: 0;
-    left: 0;    
+    left: 0;
     width: 12px;
     height: 12px;
     box-sizing: border-box;
@@ -208,5 +210,10 @@
 
 /* Add tree elements -------------- */
 .addElement .add-element.child {
-    padding-left: 44px;
+    padding-left: 29px;
+    margin-top: 0px;
+    height: 10px;
+}
+.NodeCell-before .AddElement-segment {
+    margin-top: 3px;
 }

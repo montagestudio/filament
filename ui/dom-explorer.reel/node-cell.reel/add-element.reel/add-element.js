@@ -33,7 +33,7 @@ exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
             if (!firstTime) { return; }
             this.defineBinding("classList.has('AddElement--dropTarget')", {"<-": "isDropTarget"});
 
-            var element = this.element.querySelector("div.AddElement-segment");
+            var element = this.element;
             element.addEventListener("dragover", this, false);
             element.addEventListener("dragenter", this, false);
             element.addEventListener("dragleave", this, false);
