@@ -235,12 +235,11 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this.packageUrl = packageUrl;
             this.dependencies = dependencies;
 
-            var packagePromise = require.loadPackage(this.packageUrl).then(function (packageRequire) {
-                var packageDescription = packageRequire.packageDescription;
+            var packagePromise = this.environmentBridge.read(this.packageUrl + "package.json").then(function (content) {
+                var packageDescription = JSON.parse(content);
                 self.loadProjectIcon(self.packageUrl);
                 self.packageDescription = packageDescription;
-                self._packageRequire = packageRequire;
-                self.projectDocument = new ProjectDocument().init(packageRequire, self, self.environmentBridge);
+                self.projectDocument = new ProjectDocument().init(self, self.environmentBridge);
 
                 // Add a dependency entry for this package so that the
                 // we pick up its extensions and components later

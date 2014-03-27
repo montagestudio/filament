@@ -68,11 +68,10 @@ exports.ProjectDocument = Document.specialize({
      * @param {Object} environmentBridge The backend service provider used to manipulate the package
      */
     init: {
-        value: function (packageRequire, documentController, environmentBridge) {
+        value: function (documentController, environmentBridge) {
             var self = this.super(),
                 bridge;
 
-            self._packageRequire = packageRequire;
             self._documentController = documentController;
             bridge = self._environmentBridge = environmentBridge;
 
@@ -98,33 +97,6 @@ exports.ProjectDocument = Document.specialize({
             window.pd = self;
 
             return self;
-        }
-    },
-
-    /**
-     * Returns a promise for the blueprint of the specified moduleId within the
-     * project's own package.
-     */
-    getBlueprintWithModuleId: {
-        value: function (moduleId) {
-
-            var packageRequire = this._packageRequire,
-                blueprintModuleId;
-
-            // TODO replace meta module naming with a more robust method; this may not be comprehensive enough
-            // It would be nice if montage itself offered an API that accounted for this
-            if (/\.reel$/.test(moduleId)) {
-                blueprintModuleId = moduleId.replace(/([\w-]+)\.reel$/, "$1.reel/$1.meta");
-            } else {
-                blueprintModuleId = moduleId.replace(/\.js$/, "");
-                blueprintModuleId += ".meta";
-            }
-
-            return packageRequire.async("montage/core/meta/module-blueprint")
-                .get("ModuleBlueprint")
-                .then(function (ModuleBlueprint) {
-                    return ModuleBlueprint.getBlueprintWithModuleId(blueprintModuleId, packageRequire);
-                });
         }
     },
 
@@ -408,9 +380,9 @@ exports.ProjectDocument = Document.specialize({
 // Constructor Properties
 {
     load: {
-        value: function (packageRequire, environmentBridge) {
+        value: function (environmentBridge) {
             var self = this;
-            return Promise.resolve((new self()).init(packageRequire, environmentBridge));
+            return Promise.resolve((new self()).init(environmentBridge));
         }
     },
 
