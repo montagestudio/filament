@@ -319,10 +319,10 @@ exports.ProjectDocument = Document.specialize({
     _updateProjectRefs: {
         value: function(resolution) {
             var bridge = this._environmentBridge,
-                result;
+                retVal;
 
             if (bridge && bridge.updateProjectRefs && typeof bridge.updateProjectRefs === "function") {
-                result = bridge.updateProjectRefs(resolution)
+                retVal = bridge.updateProjectRefs(resolution)
                 .then(function(result) {
                     var notifications = result.notifications,
                         nbrNotification = notifications ? notifications.length : 0,
@@ -356,7 +356,7 @@ exports.ProjectDocument = Document.specialize({
                 });
             }
 
-            return Promise(result);
+            return Promise(retVal);
         }
     },
 
@@ -474,15 +474,15 @@ exports.ProjectDocument = Document.specialize({
                             return bridge.mergeShadowBranch(self.currentBranch.name, message, squash)
                                 .then(function(result) {
                                     if (result.success !== true) {
-                                        // cannot merge, check resolution and try again...
-                                        // TODO: ask user what to do or just cancel the merge
+                                        // cannot merge, try to update the project refs one more time
+                                        // TODO: call _updateProjectRefs and ask user what to do or just cancel the merge
                                     }
                                 })
                                 .then(function() {
                                     self._updateShadowDelta();
                                 });
                         } else {
-                            // repo not up-to-date, need sync
+                            // repo not up-to-date, need to update first
                             //TODO: ask user to update local branches first
                         }
                     })
