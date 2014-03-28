@@ -1,5 +1,7 @@
 var CoreExtension = require("filament-extension/core/extension").Extension;
 
+var GITHUB_PAGES_DOMAIN = "github.io";
+
 exports.Extension = CoreExtension.specialize( {
 
     constructor: {
@@ -11,7 +13,7 @@ exports.Extension = CoreExtension.specialize( {
     name: {
         get:function () {
             //TODO read the name from the package or something
-            return "Build Download";
+            return "Build Github Pages";
         }
     },
 
@@ -31,15 +33,12 @@ exports.Extension = CoreExtension.specialize( {
 
             projectController.addPathChangeListener("projectDocument", function(projectDocument) {
                 if (projectDocument) {
-                    projectDocument.build.addChain("download",
-                        "Download",
+                    projectDocument.build.addChain("gh-pages",
+                        "Publish to Github Pages",
                         null,
                         [{
                             thisp: self,
-                            performBuildStep: self.archive
-                        }, {
-                            thisp: self,
-                            performBuildStep: self.downloadArchive
+                            performBuildStep: self.publishToGithubPages
                         }]);
                 }
             });
@@ -56,24 +55,27 @@ exports.Extension = CoreExtension.specialize( {
         }
     },
 
-    archive: {
+    publishToGithubPages: {
         value: function(options) {
             // TODO: what is the right way to get the environment bridge?
             var bridge = this.application.delegate.environmentBridge;
 
-            options.updateStatusMessage("Archiving...");
-            return bridge.buildArchive();
+            options.updateStatusMessage("Publishing...");
+            return bridge.buildPublishToGithubPages()
+            .then(function(githubPagesUrl) {
+                return '<a href="' + githubPagesUrl + '" style="color: white" target="_blank">' + githubPagesUrl + '</a>';
+            });
         }
     },
 
-    downloadArchive: {
+    openGithubPages: {
         value: function() {
-            // TODO: what is the right way to get the environment bridge?
             var bridge = this.application.delegate.environmentBridge;
             var repositoryController = bridge.repositoryController;
-            var url = "/build/" + repositoryController.owner + "/" + repositoryController.repo + "/archive";
 
-            return bridge.downloadFile(url);
+            var url = "http://" + repositoryController.owner + "." + GITHUB_PAGES_DOMAIN + "/" + repositoryController.repo;
+
+            return bridge.openHttpUrl(url);
         }
     }
 });
