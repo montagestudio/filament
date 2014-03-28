@@ -1,5 +1,11 @@
 var Document = require("palette/core/document").Document,
-    Promise = require("montage/core/promise").Promise;
+    Promise = require("montage/core/promise").Promise,
+    application = require("montage/core/application").application,
+    MenuItem = require("adaptor/client/core/menu-item").MenuItem,
+    Build = require("core/build").Build;
+
+var PROJECT_MENU = "project";
+var MENU_IDENTIFIER_PREFIX = "build-";
 
 /**
  * The ProjectDocument represents the editing interface for the project itself.
@@ -94,9 +100,58 @@ exports.ProjectDocument = Document.specialize({
                     .done();
             }
 
+            this._initBuild();
             window.pd = self;
 
             return self;
+        }
+    },
+
+    _initBuild: {
+        value: function() {
+            var mainMenu = application.mainMenu;
+            var projectMenu = mainMenu.menuItemForIdentifier(PROJECT_MENU);
+            var buildMenu = new MenuItem();
+
+            buildMenu.title = "Build"; // This should be localized
+            buildMenu.identifier = "build";
+            projectMenu.insertItem(buildMenu, 2).done();
+            application.addEventListener("menuAction", this, false);
+            this._buildMenu = buildMenu;
+
+            this.build = new Build();
+            this.build.delegate = this;
+            this.build.init(this._environmentBridge);
+        }
+    },
+
+    didAddBuildChain: {
+        value: function(chain) {
+            var menuItem = new MenuItem();
+
+            menuItem.title = chain.name;
+            menuItem.identifier = MENU_IDENTIFIER_PREFIX + chain.identifier;
+            this._buildMenu.insertItem(menuItem).done();
+        }
+    },
+
+    didRemoveBuildChain: {
+        value: function(chain) {
+            var menuItem = this._buildMenu.menuItemForIdentifier(MENU_IDENTIFIER_PREFIX + chain.identifier);
+
+            this._buildMenu.removeItem(menuItem).done();
+        }
+    },
+
+    handleMenuAction: {
+        value: function(event) {
+            var identifier = event.detail.identifier;
+            var chainIdentifier;
+
+            if (identifier.indexOf(MENU_IDENTIFIER_PREFIX) === 0) {
+                chainIdentifier = identifier.slice(MENU_IDENTIFIER_PREFIX.length);
+                this.build.buildFor(chainIdentifier).done();
+            }
         }
     },
 
