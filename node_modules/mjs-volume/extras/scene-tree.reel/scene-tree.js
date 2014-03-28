@@ -244,18 +244,20 @@ exports.SceneTree = Component.specialize(/** @lends SceneGraphTree# */ {
 
     selectTreeControllerNodeById: {
         value: function (id) {
-            var sceneNodeTree = this._findSceneTreeNodeById(id);
+            if (this.treeController && this.treeController.root) {
+                var sceneNodeTree = this._findSceneTreeNodeById(id);
 
-            if (sceneNodeTree) {
-                var path = sceneNodeTree.toParentPath();
+                if (sceneNodeTree) {
+                    var path = sceneNodeTree.toParentPath();
 
-                if (path) {
-                    this._fulfillSceneTreeNodePath(path);
+                    if (path) {
+                        this._fulfillSceneTreeNodePath(path);
 
-                    var treeControllerNode = this._findTreeControllerNodeById(id);
+                        var treeControllerNode = this._findTreeControllerNodeById(id);
 
-                    this._expandTreeControllerNode(treeControllerNode.parent);
-                    this.rangeController.select(treeControllerNode);
+                        this._expandTreeControllerNode(treeControllerNode.parent);
+                        this.rangeController.select(treeControllerNode);
+                    }
                 }
             }
         }

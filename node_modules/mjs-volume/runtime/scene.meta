@@ -5,7 +5,7 @@
         "prototype": "montage/core/meta/property-blueprint",
         "properties": {
             "name": "path",
-            "valueType": "string",
+            "valueType": "resource",
             "blueprint": {
                 "@": "root"
             }

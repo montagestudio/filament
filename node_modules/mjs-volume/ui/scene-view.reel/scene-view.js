@@ -599,7 +599,9 @@ exports.SceneView = Component.specialize( {
                             eye[2] += (sceneBBox[1][0] - sceneBBox[0][0]) + (sceneBBox[1][2] - sceneBBox[0][2]);
 
                             this._defaultViewPoint = SceneHelper.createNodeIncludingCamera("camera01", m3dScene);
-                            this._defaultViewPoint.glTFElement.cameras[0].projection.zfar = eye[2] + sceneBBox[1][2] - sceneBBox[0][2];
+                            var glTFCamera = SceneHelper.getGLTFCamera(this._defaultViewPoint);
+
+                            glTFCamera.projection.zfar = eye[2] + sceneBBox[1][2] - sceneBBox[0][2];
                             this._defaultViewPoint.glTFElement.transform.translation = eye;
                             this.viewPoint = this._defaultViewPoint;
                         }
@@ -1043,9 +1045,12 @@ exports.SceneView = Component.specialize( {
                 return;
             if (this.scene.glTFElement) {
                 if (glTFNode.getBoundingBox != null) { //work-around issue with scene-tree
-                    var cameraMatrix = this.sceneRenderer.technique.rootPass.scenePassRenderer._viewPointMatrix;            
-                    var projectionMatrix = this.viewPoint.glTFElement.cameras[0].projection.matrix;
-                    this.getWebGLRenderer().drawBBOX(glTFNode.getBoundingBox(true), cameraMatrix, mat4.identity(), projectionMatrix);
+                    var cameraMatrix = this.sceneRenderer.technique.rootPass.scenePassRenderer._viewPointMatrix;    
+                    var glTFCamera = SceneHelper.getGLTFCamera(this.viewPoint);
+                    if (glTFCamera != null) {
+                        var projectionMatrix = glTFCamera.projection.matrix;
+                        this.getWebGLRenderer().drawBBOX(glTFNode.getBoundingBox(true), cameraMatrix, mat4.identity(), projectionMatrix);
+                    }
                 }
             }
         }
@@ -1186,10 +1191,14 @@ exports.SceneView = Component.specialize( {
                 }
 
                 if (viewPoint.glTFElement) {
-                    viewPoint.glTFElement.cameras[0].projection.aspectRatio =  width / height;
+                    var glTFCamera = SceneHelper.getGLTFCamera(viewPoint);
+                    glTFCamera.projection.aspectRatio =  width / height;
 
                     this._internalViewPoint.transform.matrix = viewPoint.glTFElement.worldMatrix;
-                    this._internalViewPoint.cameras[0] = viewPoint.glTFElement.cameras[0];
+                    if (this._internalViewPoint.cameras != null) {
+                        if (this._internalViewPoint.cameras.length > 0)
+                            this._internalViewPoint.cameras[0] = glTFCamera;
+                    }
                 }
                 animationManager.evaluateAtTime(time, this.getResourceManager());
                 if (animationManager.hasActiveAnimations()) {
