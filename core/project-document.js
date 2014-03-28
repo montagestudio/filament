@@ -462,36 +462,41 @@ exports.ProjectDocument = Document.specialize({
         value: function (message, squash) {
             var bridge = this._environmentBridge,
                 self = this,
+                retValue,
                 result;
 
-            // jshint noempty:false
             if (bridge && bridge.mergeShadowBranch && typeof bridge.mergeShadowBranch === "function") {
                 this.isBusy = true;
 
                 result = this._updateProjectRefs()
-                    .then(function(result) {
-                        if (result.success === true) {
+                    .then(function(updateResult) {
+                        if (updateResult.success === true) {
                             return bridge.mergeShadowBranch(self.currentBranch.name, message, squash)
-                                .then(function(result) {
-                                    if (result.success !== true) {
+                                .then(function(mergeResult) {
+                                    // jshint noempty:false
+                                    if (mergeResult !== true) {
                                         // cannot merge, try to update the project refs one more time
                                         // TODO: call _updateProjectRefs and ask user what to do or just cancel the merge
                                     }
+                                    retValue = {success: mergeResult};
+                                    // jshint noempty:true
                                 })
                                 .then(function() {
-                                    self._updateShadowDelta();
+                                    return self._updateShadowDelta().then(function() {
+                                        return retValue;
+                                    });
                                 });
                         } else {
                             // repo not up-to-date, need to update first
                             //TODO: ask user to update local branches first
+                            retValue = updateResult;
                         }
                     })
-                    .finally(function (result) {
+                    .finally(function () {
                         self.isBusy = false;
-                        return result;
+                        return retValue;
                     });
             }
-            // jshint noempty:true
 
             return Promise(result);
         }
