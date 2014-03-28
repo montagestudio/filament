@@ -584,12 +584,12 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      * @return {Promise} A promise for the closed document
      */
     closeDocument: {
-        value: function (document) {
-            if (!this._urlDocumentMap.get(document.url)) {
+        value: function (editingDocument) {
+            if (!this._urlDocumentMap.get(editingDocument.url)) {
                 return Promise.reject(new Error("Cannot close a document that is not open"));
             }
 
-            var closePromise = this._documentClosePromiseMap.get(document),
+            var closePromise = this._documentClosePromiseMap.get(editingDocument),
                 self = this,
                 deferredClosedDocument,
                 canCloseMessage,
@@ -602,9 +602,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 // and then start trying to close it
                 deferredClosedDocument = Promise.defer();
                 closePromise = deferredClosedDocument.promise;
-                this._documentClosePromiseMap.set(document, deferredClosedDocument.promise);
+                this._documentClosePromiseMap.set(editingDocument, deferredClosedDocument.promise);
 
-                canCloseMessage = this.canCloseDocument(document, document.url);
+                canCloseMessage = this.canCloseDocument(editingDocument, editingDocument.url);
                 deferredAcceptClose = Promise.defer();
 
                 if (canCloseMessage) {
@@ -626,29 +626,29 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 }
 
                 deferredAcceptClose.promise.then(function (closeAccepted) {
-                    var editorType = document.constructor.editorType,
+                    var editorType = editingDocument.constructor.editorType,
                         editor = self._editorTypeInstanceMap.get(editorType),
                         nextDocument = null,
                         readyToClosePromise,
-                        wasCurrentDocument = document === self.currentDocument;
+                        wasCurrentDocument = editingDocument === self.currentDocument;
 
                     if (!closeAccepted) {
                         readyToClosePromise = Promise.resolve(null);
                     } else {
 
                         if (wasCurrentDocument) {
-                            nextDocument = self._nextDocument(document);
+                            nextDocument = self._nextDocument(editingDocument);
                         }
 
                         self.dispatchEventNamed("willCloseDocument", true, false, {
-                            document: document,
+                            document: editingDocument,
                             isCurrentDocument: wasCurrentDocument
                         });
 
-                        readyToClosePromise = Promise.resolve([editor, document]);
+                        readyToClosePromise = Promise.resolve([editor, editingDocument]);
                         if (nextDocument) {
                             readyToClosePromise = self.openUrlForEditing(nextDocument.url)
-                                .thenResolve([editor, document]);
+                                .thenResolve([editor, editingDocument]);
 
                         } else if (self.documents.length === 1) {
                             // If this is the last remaining document then hide all
@@ -658,18 +658,18 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     }
                     return readyToClosePromise;
                 })
-                .spread(function (editor, document) {
-                    if (editor && document) {
-                        editor.close(document);
-                        self.removeDocument(document);
+                .spread(function (editor, doc) {
+                    if (editor && doc) {
+                        editor.close(doc);
+                        self.removeDocument(doc);
 
                         self.dispatchEventNamed("didCloseDocument", true, false, {
-                            document: document,
-                            wasCurrentDocument: document === self.currentDocument
+                            document: doc,
+                            wasCurrentDocument: doc === self.currentDocument
                         });
 
-                        deferredClosedDocument.resolve(document);
-                        self._documentClosePromiseMap.delete(document);
+                        deferredClosedDocument.resolve(doc);
+                        self._documentClosePromiseMap.delete(doc);
                     } else {
                         deferredClosedDocument.resolve(null);
                     }
