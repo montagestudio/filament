@@ -219,10 +219,10 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
                 return;
             }
 
-            if (this.menuItemModel.identifier) {
-                this._triggerAction();
-            } else {
+            if (this.menuItemModel.items && this.menuItemModel.items.length) {
                 this._openSubmenu();
+            } else {
+                this._triggerAction();
             }
         }
     },
