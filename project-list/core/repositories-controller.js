@@ -118,8 +118,9 @@ var RepositoriesController = Montage.specialize({
                 // get repo list from github
                 self._githubApi.then(function (githubApi) {
                     //jshint -W106
-                    return githubApi.listRepositories({page: page, per_page: perPage});
+                    var options = {page: page, per_page: perPage};
                     //jshint +W106
+                    return githubApi.listRepositories(options);
                 })
                 .then(function (repos) {
                     var pendingCommands = repos.length;
