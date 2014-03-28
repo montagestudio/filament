@@ -102,6 +102,14 @@ var RepositoriesController = Montage.specialize({
         }
     },
 
+    totalDocuments: {
+        value: 0
+    },
+
+    processedDocuments: {
+        value: 0
+    },
+
     _updateUserRepositories: {
         value: function(page) {
             var self = this,
@@ -109,8 +117,6 @@ var RepositoriesController = Montage.specialize({
                 deferred = Promise.defer();
 
             page = (page)? page : 1;
-            self.totalDocuments = 0;
-            self.processedDocuments = 0;
 
             if (self._ownedRepositoriesContent.content.length === 0) {
 
