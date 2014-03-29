@@ -126,6 +126,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                             } else if (workspaceStatus) {
                                 // Workspace exists, great; all systems go
                                 self.showModal = false;
+                                self.currentPanelKey = null;
                             } else {
                                 // Project is populated with content, no workspace exists
                                 //TODO check if we should bother creating a workspace for this repo
