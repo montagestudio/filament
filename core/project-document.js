@@ -228,9 +228,9 @@ exports.ProjectDocument = Document.specialize({
                 self = this,
                 updatePromise;
 
-            this.isBusy = true;
-
             if (bridge && typeof bridge.listRepositoryBranches === "function") {
+                this.isBusy = true;
+
                 updatePromise = bridge.listRepositoryBranches()
                     .then(function (response) {
                         var branches = self.branches = response.branches;
@@ -241,7 +241,22 @@ exports.ProjectDocument = Document.specialize({
                             //jshint +W106
                         }
 
-                        return self._updateShadowDelta().thenResolve(response);
+                        return self._updateShadowDelta()
+                        .then(function(shadowStatus) {
+                            var refs = [shadowStatus.localParent, shadowStatus.remoteParent, shadowStatus.remoteShadow],
+                                needSync = false;
+
+                            refs.some(function(status) {
+                                if (status.ahead > 0 || status.behind > 0) {
+                                    needSync = true;
+                                    return true;
+                                }
+                            });
+
+                            if (needSync) {
+                                return self._updateProjectRefs();
+                            }
+                        }).thenResolve(response);
                     })
                     .finally(function (result) {
                         self.isBusy = false;
@@ -270,6 +285,50 @@ exports.ProjectDocument = Document.specialize({
             }
 
             return Promise(result);
+        }
+    },
+
+    _updateProjectRefs: {
+        value: function(resolution) {
+            var bridge = this._environmentBridge,
+                retVal;
+
+            if (bridge && bridge.updateProjectRefs && typeof bridge.updateProjectRefs === "function") {
+                retVal = bridge.updateProjectRefs(resolution)
+                .then(function(result) {
+                    var notifications = result.notifications,
+                        nbrNotification = notifications ? notifications.length : 0,
+                        resolutionStrategy = result.resolutionStrategy;
+
+                    if (result.success === false && nbrNotification && resolutionStrategy.indexOf("rebase") !== -1) {
+                        // Automatically sync the shadow branch with its remote counter part or parent
+                        return bridge.updateProjectRefs("rebase");
+                    }
+                    return result;
+                })
+                .then(function(result) {
+                    var notifications = result.notifications,
+                       nbrNotification = notifications ? notifications.length : 0,
+                       lastNotification = notifications[nbrNotification - 1];
+
+                    // jshint noempty:false
+                    if (result.success !== true) {
+                        if (lastNotification.type === "shadowsOutOfSync") {
+                            // Local shadow has diverged from remote shadow (not a rebase case)
+                            // TODO: ask user what to do in case of conflict
+                            /* TODO: Possible options to propose to user
+                                1. Discard remote changes  --> updateRefs("revert")
+                                2. Discard Local changes   --> updateRefs("discard")
+                                3. Cancel
+                            */
+                        }
+                    }
+                    // jshint noempty:true
+                    return result;
+                });
+            }
+
+            return Promise(retVal);
         }
     },
 
@@ -363,7 +422,7 @@ exports.ProjectDocument = Document.specialize({
      * While typically not an operation that should be offered
      * while there are unsaved changes, doing so should perform
      * the merge as expected without committing those unsaved changes
-     * or discarding them. If desried, accepting or discarding unsaved changes
+     * or discarding them. If desired, accepting or discarding unsaved changes
      * should be done prior to calling merge.
      *
      *
@@ -373,9 +432,47 @@ exports.ProjectDocument = Document.specialize({
      */
     merge: {
         value: function (message, squash) {
+            var bridge = this._environmentBridge,
+                self = this,
+                retValue,
+                result;
+
+            if (bridge && bridge.mergeShadowBranch && typeof bridge.mergeShadowBranch === "function") {
+                this.isBusy = true;
+
+                result = this._updateProjectRefs()
+                    .then(function(updateResult) {
+                        if (updateResult.success === true) {
+                            return bridge.mergeShadowBranch(self.currentBranch.name, message, squash)
+                                .then(function(mergeResult) {
+                                    // jshint noempty:false
+                                    if (mergeResult !== true) {
+                                        // cannot merge, try to update the project refs one more time
+                                        // TODO: call _updateProjectRefs and ask user what to do or just cancel the merge
+                                    }
+                                    retValue = {success: mergeResult};
+                                    // jshint noempty:true
+                                })
+                                .then(function() {
+                                    return self._updateShadowDelta().then(function() {
+                                        return retValue;
+                                    });
+                                });
+                        } else {
+                            // repo not up-to-date, need to update first
+                            //TODO: ask user to update local branches first
+                            retValue = updateResult;
+                        }
+                    })
+                    .finally(function () {
+                        self.isBusy = false;
+                        return retValue;
+                    });
+            }
+
+            return Promise(result);
         }
     }
-
 },
 // Constructor Properties
 {
