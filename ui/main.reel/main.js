@@ -29,6 +29,7 @@ exports.Main = Montage.create(Component, {
                 application.addEventListener("asyncActivity", this, false);
                 application.addEventListener("addFile", this);
                 application.addEventListener("addModule", this);
+                application.addEventListener("addDirectory", this);
                 application.addEventListener("expandTree", this);
 
                 //TODO make this less environment specific
@@ -156,6 +157,14 @@ exports.Main = Montage.create(Component, {
             if (this.projectController.canCreateModule) {
                 this.projectController.createModule().done();
             }
+        }
+    },
+
+    handleAddDirectory: {
+        enumerable: false,
+        value: function () {
+            //TODO: implement
+            debugger
         }
     },
 
