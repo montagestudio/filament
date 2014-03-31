@@ -14,7 +14,8 @@ if (menuItemExports) {
     MenuItem = menuItemExports.MenuItem;
 }
 
-var application = require("montage/core/application").application;
+var application = require("montage/core/application").application,
+    MenuModule = require("core/menu");
 
 // TODO: localize
 var HIDE_MENU_TEXT = "Hide Package Explorer";
@@ -51,10 +52,6 @@ exports.PackageExplorer = Component.specialize({
         value: function () {
             var self = this;
 
-            // Contextual menu handling
-            this.addEventListener("showContextualMenu", this, false);
-            this.element.addEventListener("contextmenu", this, false);
-
             // there is no action event built into the montage anchor.reel
             this.templateObjects.previewLink.element.identifier = "previewLink";
             this.templateObjects.previewLink.element.addEventListener("click", this, false);
@@ -71,6 +68,72 @@ exports.PackageExplorer = Component.specialize({
 
             window.addEventListener("keydown", this, true);
             window.addEventListener("keyup", this, true);
+
+            // contextualMenu
+            this.addEventListener("contextualMenuValidate", this, false);
+            this.addEventListener("contextualMenuAction", this, false);
+        }
+    },
+
+    _contextualMenu: {
+        value: null
+    },
+
+    contextualMenu: {
+        get: function () {
+            if (this._contextualMenu) {
+                return this._contextualMenu;
+            }
+            var newFolderItem,
+                newComponentItem,
+                newModuleItem,
+                menu = new MenuModule.Menu();
+            newFolderItem = MenuModule.makeMenuItem("New Folder…", "newFolder", true, "");
+            newComponentItem = MenuModule.makeMenuItem("New Component…", "newComponent", true, "");
+            newModuleItem = MenuModule.makeMenuItem("New Module…", "newModule", true, "");
+
+            menu.insertItem(newFolderItem);
+            menu.insertItem(newComponentItem);
+            menu.insertItem(newModuleItem);
+            this._contextualMenu = menu;
+
+            return this._contextualMenu;
+        }
+    },
+
+    handleContextualMenuValidate: {
+        value: function (evt) {
+            var menuItem = evt.detail,
+                identifier = menuItem.identifier;
+
+            switch (identifier) {
+            case "delete":
+                evt.stop();
+                menuItem.enabled = true;
+                break;
+            }
+
+        }
+    },
+
+    handleContextualMenuAction: {
+        value: function (evt) {
+            var menuItem = evt.detail,
+                identifier = menuItem.identifier;
+
+            switch (identifier) {
+            case "newFolder":
+                this.dispatchEventNamed("addDirectory", true, true);
+                break;
+
+            case "newComponent":
+                this.dispatchEventNamed("addFile", true, true);
+                break;
+
+            case "newModule":
+                this.dispatchEventNamed("addModule", true, true);
+                break;
+            }
         }
     },
 
@@ -246,25 +309,6 @@ exports.PackageExplorer = Component.specialize({
 
             this.isShown = !this.isShown;
             this._menuItem.title = this.isShown ? HIDE_MENU_TEXT : SHOW_MENU_TEXT;
-        }
-    },
-
-    handleContextmenu: {
-        value: function (evt) {
-            evt.stopImmediatePropagation();
-            evt.stop();
-
-            this.templateObjects.contextualMenu.show(null, {top: evt.clientY, left: evt.clientX});
-        }
-    },
-
-    handleShowContextualMenu: {
-        value: function (evt) {
-            var detail = evt.detail,
-                position = detail.position,
-                fileInfo = detail.fileInfo;
-
-            this.templateObjects.contextualMenu.show(fileInfo, position);
         }
     }
 
