@@ -70,12 +70,22 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
 
     didDraw: {
         value: function() {
-            var searchFieldElement = this.templateObjects.searchField.element;
+            var templateObjects = this.templateObjects;
+            var searchFieldElement = templateObjects.searchField.element;
 
             if (searchFieldElement) {
                 searchFieldElement.focus();
                 searchFieldElement.select();
-                if (document.activeElement !== searchFieldElement) {
+                if (templateObjects.overlay._isShown
+                    && document.activeElement !== searchFieldElement) {
+                    // The overlay uses a more-than-1-draw scheme to draw itself.
+                    // It needs to adopt this strategy because we lack a draw
+                    // manager that can add elements to the document.
+                    // This is why .focus / .select might not work, because the
+                    // target element needs to be drawn on the screen. Since we
+                    // don't have the ability to know for sure when the overlay
+                    // is visible on the screen we draw again until we are
+                    // able to select the search field.
                     this.needsDraw = true;
                 }
             }
