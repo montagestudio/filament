@@ -14,3 +14,13 @@ Rollbar.configure({payload: {
 exports.error = function(error) {
     Rollbar.error(error);
 };
+
+exports.setUsername = function(username) {
+    username = username.toLowerCase();
+    Rollbar.configure({payload: {
+        person: {
+            id: username,
+            username: username
+        }
+    }});
+};

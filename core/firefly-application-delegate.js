@@ -64,6 +64,9 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
             bridge.promptPanel = this.promptPanel;
             bridge.confirmPanel = this.confirmPanel;
             bridge.applicationDelegate = this;
+            bridge.userController.getUser().then(function (user) {
+                track.setUsername(user.login);
+            });
             return Promise.resolve();
         }
     },
