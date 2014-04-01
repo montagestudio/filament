@@ -13,7 +13,8 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
     Template = require("montage/core/template").Template,
     Url = require("core/url"),
-    ProjectDocument = require("core/project-document").ProjectDocument;
+    ProjectDocument = require("core/project-document").ProjectDocument,
+    sandboxMontageApp = require("palette/core/sandbox-montage-app");
 
 exports.ProjectController = ProjectController = DocumentController.specialize({
 
@@ -184,6 +185,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             //TODO get rid of this once we have property dependencies
             this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyWillChange", true);
             this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyChange");
+            this.addPathChangeListener("packageUrl", this, "handlePackageUrlChange");
 
             this.addPathChangeListener("currentDocument.undoManager.undoLabel", this);
             this.addPathChangeListener("currentDocument.undoManager.redoLabel", this);
@@ -196,6 +198,31 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             application.addEventListener("menuAction", this);
 
             return this;
+        }
+    },
+
+    handlePackageUrlChange: {
+        value: function(value) {
+            if (value) {
+                // preload package require
+                this.getPackageRequire(value).done();
+            }
+        }
+    },
+
+    _packageRequires: {
+        value: {}
+    },
+    getPackageRequire: {
+        value: function(packageUrl) {
+            if (!this._packageRequires[packageUrl]) {
+                this._packageRequires[packageUrl] = sandboxMontageApp(packageUrl)
+                .spread(function (packageRequire) {
+                    return packageRequire;
+                });
+            }
+
+            return this._packageRequires[packageUrl];
         }
     },
 
@@ -414,12 +441,16 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      */
     createDocumentWithTypeAndUrl: {
         value: function (documentType, url) {
+            var self = this;
             var environmentBridge = this.environmentBridge;
             function dataReader(url) {
                 return environmentBridge.read(url);
             }
 
-            return documentType.load(url, this.packageUrl, dataReader);
+            return this.getPackageRequire(this.packageUrl)
+            .then(function(packageRequire) {
+                return documentType.load(url, self.packageUrl, packageRequire, dataReader);
+            });
         }
     },
 
