@@ -65,7 +65,7 @@ exports.Main = Montage.create(Component, {
             setTimeout(function upkeep() {
                 var newProcessedDocuments = repositoriesController.processedDocuments;
 
-                if (totalDocuments === newProcessedDocuments ||
+                if (totalDocuments > 0 && totalDocuments === newProcessedDocuments ||
                     // make sure we don't go to 100%
                     historyProgress.value >= (historyProgress.max - 1)) {
                     return;
