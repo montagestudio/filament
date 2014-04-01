@@ -76,8 +76,8 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
             if (searchFieldElement) {
                 searchFieldElement.focus();
                 searchFieldElement.select();
-                if (templateObjects.overlay._isShown
-                    && document.activeElement !== searchFieldElement) {
+                if (templateObjects.overlay._isShown &&
+                    document.activeElement !== searchFieldElement) {
                     // The overlay uses a more-than-1-draw scheme to draw itself.
                     // It needs to adopt this strategy because we lack a draw
                     // manager that can add elements to the document.
