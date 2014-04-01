@@ -5,7 +5,8 @@
  */
 var Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
-    MimeTypes = require("core/mime-types");
+    MimeTypes = require("core/mime-types"),
+    MenuModule = require("core/menu");
 
 /**
  Description TODO
@@ -22,6 +23,53 @@ exports.TemplateObjectCell = Component.specialize({
 
     templateExplorer: {
         value: null
+    },
+
+    _contextualMenu: {
+        value: null
+    },
+
+    contextualMenu: {
+        get: function () {
+            if (this._contextualMenu) {
+                return this._contextualMenu;
+            }
+            var deleteItem,
+                menu = new MenuModule.Menu();
+            deleteItem = MenuModule.makeMenuItem("Delete", "delete", "", false, "");
+            menu.insertItem(deleteItem);
+            this._contextualMenu = menu;
+
+            return this._contextualMenu;
+        }
+    },
+
+    handleContextualMenuValidate: {
+        value: function (evt) {
+            var menuItem = evt.detail,
+                identifier = menuItem.identifier;
+
+            switch (identifier) {
+            case "delete":
+                evt.stop();
+                menuItem.enabled = true;
+                break;
+            }
+
+        }
+    },
+
+    handleContextualMenuAction: {
+        value: function (evt) {
+            var menuItem = evt.detail,
+                identifier = menuItem.identifier;
+
+            switch (identifier) {
+            case "delete":
+                this.deleteTemplateObject();
+                break;
+            }
+        }
     },
 
     enterDocument: {
@@ -44,6 +92,10 @@ exports.TemplateObjectCell = Component.specialize({
 
             // save toggle state
             this.toggle.addEventListener("action", this, false);
+
+            // contextualMenu
+            this.addEventListener("contextualMenuValidate", this, false);
+            this.addEventListener("contextualMenuAction", this, false);
         }
     },
 
@@ -245,6 +297,15 @@ exports.TemplateObjectCell = Component.specialize({
                     (evt.target.component.identifier === "hiddenCheckbox")
                 )
             );
+        }
+    },
+
+    deleteTemplateObject: {
+        value: function () {
+            var reelProxy = this.templateObject,
+                editingDocument = reelProxy._editingDocument;
+
+            editingDocument.removeObject(reelProxy);
         }
     },
 

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="contextual-menu.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "contextualMenu"},
+                "menuElement": {"#": "menu"}
+            }
+        },
+
+        "contextualMenuOverlay": {
+            "prototype": "montage/ui/overlay.reel",
+                "properties": {
+                    "element": {"#": "contextualMenuOverlay"},
+                    "delegate": {"@": "owner"}
+                }
+        },
+
+        "menuRepetition": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "menuRepetition"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.menuModel.items"}
+            }
+        },
+
+        "contextualMenuItem": {
+            "prototype": "./menu-item.reel",
+            "properties": {
+                "element": {"#": "contextualMenuItem"},
+                "overlayPosition": "right",
+                "nextTarget": {"@": "owner"},
+                "actionEventName" : "contextualMenuAction",
+                "validateEventName" : "contextualMenuValidate"
+            },
+            "bindings": {
+                "menuItemModel": {"<-": "@menuRepetition:iteration.object"},
+                "menu": {"<-": "@owner"},
+                "parentMenuItem": {"<-": "@owner.menuModel"},
+                "dispatchTarget": {"<-": "@owner.dispatchTarget"}
+            },
+            "listeners": [
+                {
+                    "type": "dismissContextualMenu",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="contextualMenu" class="ContextualMenu">
+        <div data-montage-id="contextualMenuOverlay">
+            <div data-montage-id="menu" class="ContextualMenu-menu">
+                <ul data-montage-id="menuRepetition" class="ContextualMenu-list">
+                    <li data-montage-id="contextualMenuItem" class="ContextualMenu-list-item"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -37,6 +37,8 @@ exports.Main = Montage.create(Component, {
                 } else {
                     document.addEventListener("save", this, false);
                 }
+
+                document.addEventListener("contextmenu", this, false);
             }
 
             document.body.addEventListener("dragover", stop, false);
@@ -55,6 +57,16 @@ exports.Main = Montage.create(Component, {
                     event.preventDefault();
                 }
             });
+        }
+    },
+
+    // Display a contextual menu on right click anywhere in the app if the active target has a contextual menu
+    handleContextmenu: {
+        value: function (evt) {
+            evt.stopImmediatePropagation();
+            evt.stop();
+
+            this.templateObjects.contextualMenu.show({top: evt.clientY, left: evt.clientX});
         }
     },
 
