@@ -35,7 +35,7 @@ exports.AddDependencyOverlay = Overlay.specialize(/** @lends AddDependencyOverla
 
     name: {
         set: function (name) {
-            this._name = (typeof name === "string") ? name : null;
+            this._name = typeof name === "string" ? name : null;
         },
         get: function () {
             return this._name;
@@ -48,7 +48,7 @@ exports.AddDependencyOverlay = Overlay.specialize(/** @lends AddDependencyOverla
 
     version: {
         set: function (version) {
-            this._version = (typeof version === "string") ? version : null;
+            this._version = typeof version === "string" ? version : null;
             if (this._version && this._url) {
                 this.url = null;
             }
@@ -64,7 +64,7 @@ exports.AddDependencyOverlay = Overlay.specialize(/** @lends AddDependencyOverla
 
     url: {
         set: function (url) {
-            this._url = (typeof url === "string") ? url : null;
+            this._url = typeof url === "string" ? url : null;
 
             if (this._url) {
                 this.name = Tools.findModuleNameFormGitUrl(this._url);
@@ -91,15 +91,31 @@ exports.AddDependencyOverlay = Overlay.specialize(/** @lends AddDependencyOverla
         }
     },
 
-    handleInstallManuallyDependencyAction: {
+    handleAddDependencyButtonAction: {
         value: function () {
             if (this.editingDocument && this._name && this._name.length > 0 && this._checkValidity()) {
                 if (!this.editingDocument.findDependency(this._name)) { // Fixme, temporary fix, to avoid to override dependencies.
-                    this.editingDocument.installDependency(this._name, this._url || this._version, this.type);
+                    var version = null;
+
+                    if (this._url) {
+                        version = Tools.isNpmCompatibleGitUrl(this._url) ? this._url : Tools.transformGitUrlToNpmHttpGitUrl(this._url, true) ;
+                    } else {
+                        version = this._version;
+                    }
+
+                    this.editingDocument.installDependency(this._name, version, this.type);
                 }
 
                 this.hide();
             }
+        }
+    },
+
+    handleCancelButtonAction: {
+        value: function (evt) {
+            evt.stop();
+
+            this.hide();
         }
     }
 
