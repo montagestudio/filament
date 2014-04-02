@@ -44,10 +44,100 @@ exports.ToolsBox = Object.create(Object.prototype, {
         }
     },
 
-    isGitUrl: {
+    /**
+     * Checks if a string is a GitHub url.
+     * @function
+     * @param {String} gitUrl.
+     * @return {Boolean}
+     */
+    isGitUrl : {
+        value: function (gitUrl) {
+            var response = false;
+
+            if (typeof gitUrl === 'string') {
+                var result = /^(?:(git|https?|ssh)?:\/\/|[\w\-\.~]+@)/.exec(gitUrl);
+
+                if (Array.isArray(result) && result.length > 1) {
+                    var protocol = result[1];
+
+                    if (protocol === "https" || protocol === "http") { // http[s]:// case
+                        response = this.isHttpGitUrl(gitUrl);
+
+                    } else if (protocol === "ssh") { // ssh:// case
+                        response = this.isSecureShellGitUrl(gitUrl);
+
+                    } else { // git:// or git@github.com case
+                        response = /^(?:git:\/\/(?:[\w\-\.~]+@)?|[\w\-\.~]+@)github\.com(?:\/|:)[\/\w\.\-:~\?]*\/(?:[0-9a-zA-Z~][\w\-\.~]*)\.git(?:#[\w\-\.~]*)?$/.test(gitUrl);
+                    }
+                }
+            }
+
+            return response;
+        }
+    },
+
+    isSecureShellGitUrl: {
         value: function (url) {
-            return (typeof url === 'string') ?
-                (/^git(\+https?|\+ssh)?:\/\/([\w\-\.~]+@)?[\/\w\.\-:~\?]*\/([0-9a-zA-Z~][\w\-\.~]*)\.git(#[\w\-\.~]*)?$/).exec(url) : null;
+            return typeof url === 'string' ?
+                /^(?:ssh:\/\/)?[\w\-\.~]+@github\.com:[\/\w\.\-:~\?]*\/(?:[0-9a-zA-Z~][\w\-\.~]*)\.git(?:#[\w\-\.~]*)?$/.test(url) : false;
+        }
+    },
+
+    isHttpGitUrl: { value: function (url) {
+        return typeof url === 'string' ?
+            /^https?:\/\/(?:[\w\-\.~]+@)?github\.com\/[\/\w\.\-:~\?]*\/(?:[0-9a-zA-Z~][\w\-\.~]*)\.git(?:#[\w\-\.~]*)?$/.test(url) : false;
+        }
+    },
+
+    isNpmCompatibleGitUrl:{
+        value: function (gitUrl) {
+            var response = false;
+
+            if (typeof gitUrl === 'string' && /^git(?:\+https?|\+ssh)?:\/\//.test(gitUrl)) { // npm compatible git url
+                var url = gitUrl.replace(/^git\+/, "");
+                response = this.isGitUrl(url);
+            }
+
+            return response;
+        }
+    },
+
+    transformGitUrlToNpmHttpGitUrl: {
+        value: function (url, secure) {
+            var httpsUrl = this.transformGitUrlToHttpGitUrl(url, secure);
+
+            if (httpsUrl) {
+                return "git+" + httpsUrl;
+            }
+        }
+    },
+
+    transformGitUrlToHttpGitUrl: {
+        value: function (gitUrl, secure) {
+            var urlTransformed = null;
+
+            if (typeof gitUrl === 'string') {
+                var url = null;
+
+                if (this.isNpmCompatibleGitUrl(gitUrl)) {
+                    url = gitUrl.replace(/^git\+/, "");
+
+                } else if (this.isGitUrl(gitUrl)) {
+                    url = gitUrl;
+                }
+
+                if (url) {
+                    var patternProtocol = (secure || typeof secure === "undefined") ? 'https://' : 'http://';
+
+                    if (/github.com:/.test(url)) {
+                        url = url.replace(/github\.com:/, "github.com/");
+                    }
+
+                    urlTransformed = url.replace(/^(?:(?:https?|ssh|git):\/\/(?:.*@)?|[\w\-\.~]+@)/, patternProtocol);
+                }
+            }
+
+            return urlTransformed;
         }
     },
 
@@ -60,10 +150,10 @@ exports.ToolsBox = Object.create(Object.prototype, {
 
     findModuleNameFormGitUrl: {
         value: function  (url) {
-            var results = this.isGitUrl(url);
+            var resultRegExp = /([0-9a-zA-Z~][\w\-\.~]*)\.git/.exec(url);
 
-            if (Array.isArray(results) && results.length > 0) {
-                return results[3];
+            if (Array.isArray(resultRegExp) && resultRegExp.length > 1) {
+                return resultRegExp[1];
             }
         }
     },
@@ -151,7 +241,7 @@ exports.ToolsBox = Object.create(Object.prototype, {
         value: function (module) {
             if (this.isDependency(module)) {
                 var version = this.isVersionValid(module.version) ? module.version : null;
-                return this.isGitUrl(module.version) ? module.version : version ? module.name + '@' + version : module.name;
+                return this.isNpmCompatibleGitUrl(module.version) ? module.version : version ? module.name + '@' + version : module.name;
             }
             return null;
         }

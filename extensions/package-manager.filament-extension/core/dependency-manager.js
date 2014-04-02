@@ -37,7 +37,7 @@ var DependencyManager = Montage.specialize({
 
     _createRequest: {
         value: function (name, version) {
-            var request = PackageTools.isGitUrl(version) ? version : null;
+            var request = PackageTools.isNpmCompatibleGitUrl(version) ? version : null;
 
             if (!request && PackageTools.isNameValid(name)) {
                 request = name;
