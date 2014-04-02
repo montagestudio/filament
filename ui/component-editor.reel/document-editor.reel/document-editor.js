@@ -40,6 +40,10 @@ exports.DocumentEditor = Component.specialize({
         }
     },
 
+    shouldPreloadBlueprints: {
+        value: false
+    },
+
     load: {
         value: function (document) {
             var self = this,
@@ -48,13 +52,15 @@ exports.DocumentEditor = Component.specialize({
 
             // pre-load blueprints for everything already in the template
             // but don't complain if we can't find one
-            document.editingProxies.forEach(function (proxy) {
-                moduleId = proxy.moduleId;
-                exportName = proxy.exportName;
-                if (moduleId && exportName) {
-                    document.packageRequire.async(moduleId).get(exportName).get("blueprint").fail(Function.noop);
-                }
-            });
+            if (this.shouldPreloadBlueprints) {
+                document.editingProxies.forEach(function (proxy) {
+                    moduleId = proxy.moduleId;
+                    exportName = proxy.exportName;
+                    if (moduleId && exportName) {
+                        document.packageRequire.async(moduleId).get(exportName).get("blueprint").fail(Function.noop);
+                    }
+                });
+            }
 
             self.editingDocument = document;
             document.editor = self;
