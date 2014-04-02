@@ -1,6 +1,8 @@
 var DocumentEditor = require("./document-editor.reel").DocumentEditor,
     WeakMap = require("montage/collections/weak-map"),
     Editor = require("palette/ui/editor.reel").Editor,
+    Promise = require("montage/core/promise").Promise,
+    Template = require("montage/core/template").Template,
     defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
 exports.ComponentEditor = Editor.specialize({
@@ -539,6 +541,52 @@ exports.ComponentEditor = Editor.specialize({
             var doc = this.currentDocument;
             return doc ? this._documentModalEditorMap.get(doc) : null;
         }
+    },
+
+    preload: {
+        value: function() {
+            var self = this;
+            var ReelDocument = require("core/reel-document").ReelDocument,
+                reelDocument = new ReelDocument(),
+                fakePackageRequire;
+
+            this.projectController.addEventListener("willOpenDocument", this, false);
+
+            fakePackageRequire = {
+                location: "",
+                async: function() {
+                    return Promise.resolve({
+                        PropertyBlueprint: {},
+                        EventBlueprint: {},
+                        ModuleId: Promise.resolve({
+                            blueprint: {
+                                addPropertyBlueprintGroupNamed: function(){}
+                            }
+                        })
+                    });
+                }
+            };
+
+            return new Template().initWithModuleId("./preload-document.html", require)
+            .then(function(template) {
+                reelDocument.init("fileUrl", template, fakePackageRequire, "moduleId");
+                self._currentDocument = reelDocument;
+            });
+        }
+    },
+
+    handleWillOpenDocument: {
+        value: function(event) {
+            if (event.detail.editor === this) {
+                this._currentDocument = null;
+                this.dispatchOwnPropertyChange("currentDocument", null);
+                this.projectController.removeEventListener("willOpenDocument", this, false);
+            }
+        }
     }
 
+}, {
+    requestsPreload: {
+        value: true
+    }
 });
