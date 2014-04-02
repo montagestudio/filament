@@ -76,11 +76,25 @@
             }
         },
 
-        "installManuallyDependency": {
+        "addDependencyButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {
                 "label": "Add",
-                "element": {"#": "installManuallyDependencyAction"}
+                "element": {"#": "addDependencyAction"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "cancelButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "label":"Cancel",
+                "element": {"#":"cancelButton"}
             },
             "listeners": [
                 {
@@ -94,29 +108,41 @@
 </head>
 <body>
     <div data-montage-id="add-dependency-overlay" class="montage-Overlay AddDependencyOverlay">
-        <ul>
-            <li>
-                <label for="installDependencyName">Name:</label>
+        <h2 class="AddDependencyOverlayHeader">New Package</h2>
+        <ul class="AddDependencyOverlay-list">
+            <li class="AddDependencyOverlay-item">
+                <label for="installDependencyName" class="AddDependencyOverlay-label">Name:</label>
                 <input id="installDependencyName" data-montage-id="installDependencyName" type="text" pattern="^[0-9a-zA-Z~]([\w\-\.~])*$" />
             </li>
-            <li>
-                <label for="installDependencyVersion">Version:</label>
+            <li class="AddDependencyOverlay-item">
+                <label for="installDependencyVersion" class="AddDependencyOverlay-label">Version:</label>
                 <input id="installDependencyVersion" data-montage-id="installDependencyVersion" type="text" pattern="^(v?([0-9]+\.){2}[0-9]+(\-?[a-zA-Z0-9])*|latest)$" />
             </li>
-            <li class="AddDependencyOverlay-item--choice">
+            <li class="AddDependencyOverlay-item AddDependencyOverlay-item--choice">
                 <em>OR</em>
             </li>
-            <li>
-                <label for="installDependencyUrl">Git Url:</label>
-                <input id="installDependencyUrl" data-montage-id="installDependencyUrl" type="text" pattern="^git(\+https?|\+ssh)?:\/\/([\w\-\.~]+@)?[\/\w\.\-:~\?]*\/([0-9a-zA-Z~][\w\-\.~]*)\.git(#[\w\-\.~]*)?$" />
+            <li class="AddDependencyOverlay-item">
+                <label for="installDependencyUrl" class="AddDependencyOverlay-label">Git Url:</label>
+                <input id="installDependencyUrl" data-montage-id="installDependencyUrl" type="text" pattern="^(?:(?:(?:git|https?|ssh)|git\+(https?|ssh)):\/\/(?:[\w\-\.~]+@)?|[\w\-\.~]+@)github\.com(?:\/|:)[\/\w\.\-:~\?]*\/(?:[0-9a-zA-Z~][\w\-\.~]*)\.git(?:#[\w\-\.~]*)?$" />
             </li>
-            <li>
-                <input type="radio" data-montage-id="type-regular"> Regular
-                <input type="radio" data-montage-id="type-dev"> Dev
-                <input type="radio" data-montage-id="type-optional"> Optional
+            <li class="AddDependencyOverlay-item AddDependencyType">
+                <span class="AddDependencyType-label">Type: </span>
+
+                <input type="radio" data-montage-id="type-regular" />
+                <span>Regular</span>
+
+                <input type="radio" data-montage-id="type-dev" />
+                <span>Dev</span>
+
+                <input type="radio" data-montage-id="type-optional" />
+                <span>Optional</span>
             </li>
         </ul>
-        <button data-montage-id="installManuallyDependencyAction"></button>
+
+        <footer class="AddDependencyOverlay-footer">
+            <button data-montage-id="cancelButton" class="AddDependencyOverlayCancelAction"></button>
+            <button data-montage-id="addDependencyAction" class="AddDependencyOverlayAction"></button>
+        </footer>
     </div>
 </body>
 </html>

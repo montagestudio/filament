@@ -577,7 +577,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                     dependency.name = dependencyInstalled.name;
                     dependency.versionInstalled = dependencyInstalled.version;
 
-                    dependency.version = PackageTools.isGitUrl(dependency.version) ?
+                    dependency.version = PackageTools.isNpmCompatibleGitUrl(dependency.version) ?
                         dependency.version : dependency.versionInstalled;
 
                     this._addDependencyToCollection(dependency);
@@ -780,7 +780,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     isRangeValid: {
         value: function (range) {
-            return !!semver.validRange(range) || PackageTools.isGitUrl(range);
+            return !!semver.validRange(range) || PackageTools.isNpmCompatibleGitUrl(range);
         }
     },
 
@@ -810,7 +810,7 @@ exports.PackageDocument = EditingDocument.specialize( {
                 dependency = dependencyName;
             }
 
-            if (dependency && !dependency.extraneous && (this.isRangeValid(range) || PackageTools.isGitUrl(range))) {
+            if (dependency && !dependency.extraneous && (this.isRangeValid(range) || PackageTools.isNpmCompatibleGitUrl(range))) {
                 dependency.version = range.trim();
 
                 this._changeCount++;
