@@ -554,7 +554,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                 this.dispatchEventNamed("willOpenDocument", true, false, {
                     url: fileUrl,
-                    alreadyOpened: !!alreadyOpenedDoc
+                    alreadyOpened: !!alreadyOpenedDoc,
+                    editor: editor
                 });
 
                 // Track the urls we've tried to open for history browsing;
