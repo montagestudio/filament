@@ -115,7 +115,7 @@ describe("asset-manager-spec", function () {
             });
 
             assetsManager = AssetsManager.create();
-            assetsManager._projectController = projectController;
+            assetsManager.projectController = projectController;
             assetsManager.addAssetsWithFileDescriptors(fileDescriptors);
 
         });
@@ -335,22 +335,22 @@ describe("asset-manager-spec", function () {
                 assetRoot = assetsManager.getAssetByFileUrl("fs://a/b/c/winter.jpg");
 
             assetsManager.addAsset(asset);
-            assetsManager._projectUrl = 'fs://a/b/c/';
-            assetsManager._projectController.currentDocument._url = 'fs://a/b/c/d/';
+            assetsManager.projectUrl = 'fs://a/b/c/';
+            assetsManager.projectController.currentDocument._url = 'fs://a/b/c/d/';
 
             expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(assetRoot)).toEqual('../winter.jpg');
             expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(asset)).toEqual('e/f.png');
 
-            assetsManager._projectController.currentDocument._url = 'fs://a/b/c/w/x/y';
+            assetsManager.projectController.currentDocument._url = 'fs://a/b/c/w/x/y';
             expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(asset)).toEqual('../../../d/e/f.png');
 
-            assetsManager._projectController.currentDocument._url = 'fs://a/b/c/d/z/g/';
+            assetsManager.projectController.currentDocument._url = 'fs://a/b/c/d/z/g/';
             expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(asset)).toEqual('../../e/f.png');
 
         });
 
         it("should be able to find an asset with a relative path in terms of the current reel document", function () {
-            assetsManager._projectUrl = 'fs://a/b/c/';
+            assetsManager.projectUrl = 'fs://a/b/c/';
 
             var fileDescriptor = new FileDescriptor().initWithUrlAndStat("fs://a/b/c/d/e/f.png", {ino: 2065});
             fileDescriptor.mimeType = "image/png";
@@ -362,7 +362,7 @@ describe("asset-manager-spec", function () {
 
             assetsManager.addAsset(asset);
             assetsManager.addAsset(asset2);
-            assetsManager._projectController.currentDocument._url = 'fs://a/b/c/d/';
+            assetsManager.projectController.currentDocument._url = 'fs://a/b/c/d/';
 
             expect(assetsManager.getAssetByRelativePath("e/f.png").fileUrl).toEqual(asset.fileUrl);
             expect(assetsManager.getAssetByRelativePath("./e/f.png").fileUrl).toEqual(asset.fileUrl);
