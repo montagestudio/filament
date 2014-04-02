@@ -102,14 +102,15 @@ exports.ReelDocument = EditingDocument.specialize({
 
                 self._templateBodyNode = NodeProxy.create().init(this.htmlDocument.body, this);
                 self.templateNodes = this._children(self._templateBodyNode);
-
                 //TODO handle external serializations
                 try {
                     var serialization = JSON.parse(template.getInlineObjectsString(template.document));
-                    var context = this.deserializationContext(serialization);
-                    context.ownerExportId = moduleId;
-                    self._addProxies(context.getObjects());
-                    this.buildTemplateObjectTree();
+                    if (serialization) {
+                        var context = this.deserializationContext(serialization);
+                        context.ownerExportId = moduleId;
+                        self._addProxies(context.getObjects());
+                        this.buildTemplateObjectTree();
+                    }
                 } catch (e) {
 
                     error = {
