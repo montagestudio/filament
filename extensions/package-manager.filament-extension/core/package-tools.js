@@ -83,9 +83,10 @@ exports.ToolsBox = Object.create(Object.prototype, {
         }
     },
 
-    isHttpGitUrl: { value: function (url) {
-        return typeof url === 'string' ?
-            /^https?:\/\/(?:[\w\-\.~]+@)?github\.com\/[\/\w\.\-:~\?]*\/(?:[0-9a-zA-Z~][\w\-\.~]*)\.git(?:#[\w\-\.~]*)?$/.test(url) : false;
+    isHttpGitUrl: {
+        value: function (url) {
+            return typeof url === 'string' ?
+                /^https?:\/\/(?:[\w\-\.~]+@)?github\.com\/[\/\w\.\-:~\?]*\/(?:[0-9a-zA-Z~][\w\-\.~]*)\.git(?:#[\w\-\.~]*)?$/.test(url) : false;
         }
     },
 
