@@ -396,6 +396,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     registerUrlMatcherForDocumentType: {
         value: function (urlMatcher, documentType) {
+            var editorType,
+                editor;
+
             if (!(documentType && urlMatcher)) {
                 throw new Error("Both a document type and a url matcher are needed to register");
             }
@@ -407,6 +410,13 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             //TODO use one data structure for both of these
             this._documentTypeUrlMatchers.push(urlMatcher);
             this._urlMatcherDocumentTypeMap.set(urlMatcher, documentType);
+
+            editorType = documentType.editorType;
+            if (editorType.requestsPreload) {
+                editor = this._getEditor(editorType);
+                editor.preload().done();
+                this._editorController.preloadEditor(editor);
+            }
         }
     },
 
@@ -433,6 +443,23 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             }
 
             return documentType;
+        }
+    },
+
+    _getEditor: {
+        value: function(editorType) {
+            var editor = this._editorTypeInstanceMap.get(editorType);
+
+            if (!editor) {
+                editor = new editorType();
+                //TODO formalize exactly what we pass along to the editors
+                // Most of this right here is simply for the componentEditor
+                editor.projectController = this;
+                editor.viewController = this._viewController;
+                this._editorTypeInstanceMap.set(editorType, editor);
+            }
+
+            return editor;
         }
     },
 
@@ -520,16 +547,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             }
 
             if (editorType) {
-                editor = this._editorTypeInstanceMap.get(editorType);
-
-                if (!editor) {
-                    editor = editorType.create();
-                    //TODO formalize exactly what we pass along to the editors
-                    // Most of this right here is simply for the componentEditor
-                    editor.projectController = this;
-                    editor.viewController = this._viewController;
-                    this._editorTypeInstanceMap.set(editorType, editor);
-                }
+                editor = this._getEditor(editorType);
 
                 this._editorController.bringEditorToFront(editor);
                 this.currentEditor = editor;
