@@ -2632,7 +2632,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
 }, {
     load: {
-        value: function (fileUrl, packageUrl, packageRequire) {
+        value: function (fileUrl, packageUrl, packageRequire, dataReader) {
             var self = this;
 
             // require.async() expect moduleId not URLs
@@ -2645,15 +2645,14 @@ exports.ReelDocument = EditingDocument.specialize({
                     throw new Error("Cannot load component: Syntax error in " + componentModuleId + "[" + objectName + "] implementation");
                 }
 
-                return packageRequire.async(componentPrototype.templateModuleId);
+                return dataReader(packageUrl + componentPrototype.templateModuleId);
             },function (error) {
                 throw new Error("Cannot load component: " + error);
-            }).then(function (templateExports) {
-
+            }).then(function (templateContent) {
                 // Create the document for the template ourselves to avoid any massaging
                 // we might do for templates intended for use; namely, rebasing resources
                 var htmlDocument = document.implementation.createHTMLDocument("");
-                htmlDocument.documentElement.innerHTML = templateExports.content;
+                htmlDocument.documentElement.innerHTML = templateContent;
                 return new Template().initWithDocument(htmlDocument, packageRequire);
             }).then(function (template) {
                 return self.create().init(fileUrl, template, packageRequire, componentModuleId);
