@@ -20,9 +20,9 @@ describe("package-tools", function () {
         expect(PackageTools.findModuleNameFormGitUrl('git+ssh://git@github.com:declarativ/palet te.git')).toBeUndefined();
         expect(PackageTools.findModuleNameFormGitUrl('git+ssh://git@github.com:declarativ/.git')).toBeUndefined();
         expect(PackageTools.findModuleNameFormGitUrl('http://git@github.com:declarativ/palette.git')).toBeUndefined();
-        expect(PackageTools.findModuleNameFormGitUrl('git+http://git@github.com:declarativ/p.git')).toEqual('p');
-        expect(PackageTools.findModuleNameFormGitUrl('git+http://github.com:declarativ/.palette.git')).toBeUndefined();
-        expect(PackageTools.findModuleNameFormGitUrl('git+https://git@github.com:declarativ/palette.git#445')).toEqual('palette');
+        expect(PackageTools.findModuleNameFormGitUrl('git+http://git@github.com/declarativ/p.git')).toEqual('p');
+        expect(PackageTools.findModuleNameFormGitUrl('git+http://github.com/declarativ/.palette.git')).toBeUndefined();
+        expect(PackageTools.findModuleNameFormGitUrl('git+https://git@github.com/declarativ/palette.git#445')).toEqual('palette');
         expect(PackageTools.findModuleNameFormGitUrl('git://git@github.com:declarativ/palette.git#93930#')).toBeUndefined();
     });
 

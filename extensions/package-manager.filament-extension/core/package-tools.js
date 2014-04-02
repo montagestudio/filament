@@ -150,10 +150,12 @@ exports.ToolsBox = Object.create(Object.prototype, {
 
     findModuleNameFormGitUrl: {
         value: function  (url) {
-            var resultRegExp = /([0-9a-zA-Z~][\w\-\.~]*)\.git/.exec(url);
+            if (this.isNpmCompatibleGitUrl(url) || this.isGitUrl(url)) {
+                var resultRegExp = /([0-9a-zA-Z~][\w\-\.~]*)\.git/.exec(url);
 
-            if (Array.isArray(resultRegExp) && resultRegExp.length > 1) {
-                return resultRegExp[1];
+                if (Array.isArray(resultRegExp) && resultRegExp.length > 1) {
+                    return resultRegExp[1];
+                }
             }
         }
     },
