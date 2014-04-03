@@ -17,12 +17,14 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
     },
 
     enterDocument: {
-        value: function () {
-            this.addOwnPropertyChangeListener("name", this);
-            this.addOwnPropertyChangeListener("version", this);
-            this.addOwnPropertyChangeListener("license", this);
-            this.addOwnPropertyChangeListener("private", this);
-            this.addOwnPropertyChangeListener("homepage", this);
+        value: function (firstTime) {
+            if (firstTime) {
+                this.addPathChangeListener("name", this, "handlePropertyChange");
+                this.addPathChangeListener("version", this, "handlePropertyChange");
+                this.addPathChangeListener("license", this, "handlePropertyChange");
+                this.addPathChangeListener("private", this, "handlePropertyChange");
+                this.addPathChangeListener("homepage", this, "handlePropertyChange");
+            }
         }
     },
 
@@ -58,47 +60,14 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
         value: null
     },
 
-    homepageTextField: {
-        value: null
-    },
-
-    handleNameChange: {
-        value: function () {
+    handlePropertyChange: {
+        value: function (value, key) {
             if (this.editingDocument) {
-                this.editingDocument.setProperty('name', this.name);
+                this.editingDocument.setProperty(key, value);
+            }
+
+            if (key === 'name') {
                 this.needsDraw = true;
-            }
-        }
-    },
-
-    handleVersionChange: {
-        value: function (value) {
-            if (this.editingDocument) {
-                this.editingDocument.setProperty('version', value);
-            }
-        }
-    },
-
-    handleLicenseChange: {
-        value: function (value) {
-            if (this.editingDocument) {
-                this.editingDocument.setProperty('license', value);
-            }
-        }
-    },
-
-    handleHomepageChange: {
-        value: function (value) {
-            if (this.editingDocument && this.homepageTextField.element.validity.valid) {
-                this.editingDocument.setProperty('homepage', value);
-            }
-        }
-    },
-
-    handlePrivateChange: {
-        value: function (value) {
-            if (this.editingDocument) {
-                this.editingDocument.setProperty('private', value);
             }
         }
     },
