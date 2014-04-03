@@ -185,6 +185,11 @@ exports.ApplicationDelegate = Montage.create(Montage, {
         }
     },
 
+    updateStatusMessage: {
+        value: function() {
+        }
+    },
+
     /**
      * Template method available for subclasses to implement their own logic
      * as soon as an environment bridge is available

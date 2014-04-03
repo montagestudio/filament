@@ -50,6 +50,12 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         value: null
     },
 
+    updateStatusMessage: {
+        value: function(message) {
+            this.environmentBridge.progressPanel.message = message;
+        }
+    },
+
     willFinishLoading: {
         value: function (app) {
             this.super(app);
