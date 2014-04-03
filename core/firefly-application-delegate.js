@@ -1,6 +1,6 @@
-/*global Rollbar*/
 var ApplicationDelegate = require("./application-delegate").ApplicationDelegate,
     Promise = require("montage/core/promise").Promise,
+    track = require("track"),
     //TODO I wouldn't expect the project list to house this functionality
     repositoriesController = require("project-list/core/repositories-controller").repositoriesController;
 
@@ -11,9 +11,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
             this.super();
             var originalOnerror = Promise.onerror;
             Promise.onerror = function (error) {
-                if (Rollbar) {
-                    Rollbar.error(error);
-                }
+                track.error(error);
                 return originalOnerror(error);
             };
         }
@@ -66,6 +64,9 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
             bridge.promptPanel = this.promptPanel;
             bridge.confirmPanel = this.confirmPanel;
             bridge.applicationDelegate = this;
+            bridge.userController.getUser().then(function (user) {
+                track.setUsername(user.login);
+            });
             return Promise.resolve();
         }
     },
@@ -169,7 +170,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                     var message = err.message || "Internal Server Error";
 
                     self.currentPanelKey = "confirm";
-                    Rollbar.error(new Error("Error setting up the project:", message));
+                    track.error(new Error("Error setting up the project: " + message));
 
                     return self.confirmPanel.getResponse("Error setting up the project: " + message, true, "Retry", "Close")
                         .then(function (response) {
