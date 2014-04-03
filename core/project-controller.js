@@ -55,6 +55,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: null
     },
 
+    _applicationDelegate: {
+        value: null
+    },
+
     _projectUrl: {
         value: null
     },
@@ -160,7 +164,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      * @return {ProjectController} An initialized instance of a ProjectController
      */
     init: {
-        value: function (bridge, viewController, editorController, extensionController, previewController) {
+        value: function (bridge, viewController, editorController, extensionController, previewController, applicationDelegate) {
             bridge.setDocumentDirtyState(false);
 
             this._environmentBridge = bridge;
@@ -168,6 +172,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._editorController = editorController;
             this._extensionController = extensionController;
             this.previewController = previewController;
+            this._applicationDelegate = applicationDelegate;
 
             this._moduleIdIconUrlMap = new Map();
             this._moduleIdLibraryItemMap = new Map();
