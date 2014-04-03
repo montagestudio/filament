@@ -259,8 +259,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 return self._openProject(projectInfo.packageUrl, projectInfo.dependencies);
             })
             .then(function() {
+                self._applicationDelegate.updateStatusMessage("Loading package…");
                 return self._deferredPackageRequireLoading.promise;
-            })
+            });
         }
     },
 
@@ -431,6 +432,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             editorType = documentType.editorType;
             if (editorType.requestsPreload) {
                 editor = this._getEditor(editorType);
+                this._applicationDelegate.updateStatusMessage("Loading editor…");
                 editor.preload().done();
                 this._editorController.preloadEditor(editor);
             }
@@ -904,6 +906,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     promisedLibraryItems = Promise.resolve(packageLibraryItems);
                 }
 
+                self._applicationDelegate.updateStatusMessage("Loading library…");
                 return promisedLibraryItems.then(function (libraryItems) {
                     dependencyLibraryEntry.libraryItems = libraryItems;
                     return dependencyLibraryEntry;
