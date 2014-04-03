@@ -259,6 +259,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             if (maintainer) {
                 if (this._findMaintainerIndex(maintainer) < 0) { // Already exists. Must be unique.
                     this.maintainers.push(maintainer);
+                    this._changeCount++;
                 }
 
                 return true;
@@ -274,6 +275,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
                 if (maintainerIndex >= 0) {
                     this.maintainers.splice(maintainerIndex, 1);
+                    this._changeCount++;
 
                     return true;
                 }
@@ -285,10 +287,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     replaceMaintainer: {
         value: function (oldMaintainer, newMaintainer) {
-            var maintainerIndex = this._findMaintainerIndex(oldMaintainer);
-
-            return maintainerIndex >= 0 && this.removeMaintainer(maintainerIndex, false) &&
-                this.addMaintainer(newMaintainer, false);
+            return this.removeMaintainer(oldMaintainer) && this.addMaintainer(newMaintainer);
         }
     },
 

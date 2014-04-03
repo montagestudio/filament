@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="person-overlay.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "overlayTitle": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "overlayTitle"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.title"}
+            }
+        },
+
+        "personName":{
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "PersonOverlayName"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.person.name"}
+            }
+        },
+
+        "personEmail":{
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "personOverlayEmail"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.person.email"}
+            }
+        },
+
+        "personUrl":{
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "personOverlayUrl"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.person.url"}
+            }
+        },
+
+        "confirm": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "confirmButton"}
+            },
+            "bindings": {
+                "label": {"<-": "@owner.confirmLabel"}
+            }
+        },
+
+        "cancel": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "label": "Cancel",
+                "element": {"#": "cancelButton"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+<div data-montage-id="owner" class="montage-Overlay PersonOverlay">
+    <h2 data-montage-id="overlayTitle" class="PersonOverlay-header">New Maintainer</h2>
+
+    <section class="PersonOverlay-content">
+        <ul class="PersonOverlayField-list">
+            <li class="PersonOverlayField-item">
+                <label for="personOverlayName" class="PersonOverlayField-label">Name:</label>
+                <input id="personOverlayName" data-montage-id="PersonOverlayName" type="text" />
+            </li>
+            <li class="PersonOverlayField-item">
+                <label for="personOverlayEmail" class="PersonOverlayField-label">Email:</label>
+                <input id="personOverlayEmail" data-montage-id="personOverlayEmail" type="text" pattern="^([a-z0-9_\.\-\+!#$%&'/=?^_`{|}~]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$" />
+            </li>
+            <li class="PersonOverlayField-item">
+                <label for="PersonOverlayUrlElement" class="PersonOverlayField-label">Url:</label>
+                <input id="PersonOverlayUrlElement" data-montage-id="personOverlayUrl" type="text" pattern="^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w\.\-]*)*\/?$" />
+            </li>
+        </ul>
+    </section>
+
+    <footer class="PersonOverlay-footer">
+        <button data-montage-id="cancelButton" class="PersonOverlayCancelButton"></button>
+        <button data-montage-id="confirmButton" class="PersonOverlayConfirmButton"></button>
+    </footer>
+
+</div>
+</body>
+</html>

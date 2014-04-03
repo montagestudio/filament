@@ -7,40 +7,48 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "person-cell"},
-                "formEditPerson": {"@": "personInformationEditable"}
+                "element": {"#": "person-cell"}
             }
         },
 
-        "personCellSubstitution": {
-            "prototype": "montage/ui/substitution.reel",
+        "personName": {
+            "prototype": "montage/ui/text.reel",
             "properties": {
-                "element": {"#": "personCellSubstitution"}
+                "element": {"#": "personName"}
             },
             "bindings": {
-                "switchValue": {"<-": "@owner.isEditing ? 'person-editable' : 'person'"}
+                "value": {"<-": "@owner.person.name"}
             }
         },
 
-        "personInformation": {
-            "prototype": "./person-information.reel",
+        "personEmail": {
+            "prototype": "montage/ui/text.reel",
             "properties": {
-                "element": {"#": "personInformation"}
+                "element": {"#": "personEmail"}
             },
             "bindings": {
-                "person": {"<-": "@owner.person"},
-                "cell": {"<-": "@owner"}
+                "value": {"<-": "@owner.person.email"}
             }
         },
 
-        "personInformationEditable": {
-            "prototype": "./person-information-editable.reel",
+        "deletePerson": {
+            "prototype": "matte/ui/button.reel",
             "properties": {
-                "element": {"#": "personInformationEditable"}
+                "element": {"#": "deletePersonButton"},
+                "label": "-"
             },
             "bindings": {
-                "person": {"<-": "@owner.person"},
-                "cell": {"<-": "@owner"}
+                "detail.get('person')": {"<-": "@owner.person"}
+            }
+        },
+
+        "editPerson": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "editPersonButton"}
+            },
+            "bindings": {
+                "detail.get('person')": {"<-": "@owner.person"}
             }
         }
     }
@@ -48,9 +56,14 @@
 </head>
 <body>
     <li data-montage-id="person-cell" class="PersonCell">
-        <div data-montage-id="personCellSubstitution" class="PersonCellSubstitution">
-            <div data-arg="person" data-montage-id="personInformation"></div>
-            <div data-arg="person-editable" data-montage-id="personInformationEditable"></div>
+        <div class="PersonCellDetails">
+            <span data-montage-id="personName" class="PersonNameLabel"></span>
+            <span data-montage-id="personEmail" class="PersonEmailLabel"></span>
+        </div>
+
+        <div class="PersonCellButtons">
+            <button data-montage-id="editPersonButton" class="PersonCellEditButton"></button>
+            <button data-montage-id="deletePersonButton" class="PersonCellDeleteButton"></button>
         </div>
     </li>
 </body>

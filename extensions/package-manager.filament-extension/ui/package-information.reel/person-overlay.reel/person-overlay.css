@@ -1,0 +1,94 @@
+.PersonOverlay {
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    border: 1px solid hsl(0, 0%, 70%);
+    box-shadow: 0 8px 24px hsla(0, 0%, 0%, 0.3);
+    background: white;
+    min-width: 460px;
+}
+
+.PersonOverlay-header {
+    min-width: 100px;
+    margin: 8px 8px 8px 4px;
+    font-weight: bold;
+    vertical-align: top;
+    font-size: 20px;
+    line-height: 1;
+    color: hsl(0, 0%, 30%);
+}
+
+.PersonOverlayField-list {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.PersonOverlayField-item {
+    padding: 5px;
+}
+
+.PersonOverlayField-label {
+    display: block;
+    margin-bottom: 4px;
+    color: hsl(0,0%,50%);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.PersonOverlayField-list .matte-InputText {
+    width: 100%;
+    border-color: hsl(0,0%,77%);
+    background-color: hsla(0,0%,0%,.04);
+    box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.08), 0 1px 0 hsla(0,0%,100%,.6);
+}
+
+.PersonOverlayField-list .matte-InputText:focus {
+    border-color: hsl(210,100%,70%);
+    background-color: hsla(210,100%,60%,0.1);
+}
+
+.PersonOverlayField-list .matte-InputText:invalid {
+    border: 1px dashed #E73525 !important;
+}
+
+.PersonOverlay-footer {
+    text-align: right;
+    margin-top: 8px;
+}
+
+.PersonOverlayCancelButton {
+    white-space: nowrap;
+    font-family: inherit;
+    color: hsla(0,0%,0%,.7);
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
+    border-color: hsl(0,0%,80%);
+    background-image: -webkit-linear-gradient(top, hsl(0,0%,98%), hsl(0,0%,94%));
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,.8), inset 0 -1px 1px hsla(0,0%,0%,.04), 0 1px 0 hsla(0,0%,100%,.6);
+}
+
+.PersonOverlayCancelButton:hover {
+    background-image: -webkit-linear-gradient(top, hsl(0,0%,100%), hsl(0,0%,92%));
+}
+
+.PersonOverlayConfirmButton {
+    color: hsla(0,0%,100%,1);
+    text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
+    border-color: hsl(210,100%,50%) !important;
+    background-image: -webkit-linear-gradient(top, hsl(210,100%,66%), hsl(210,100%,56%));
+}
+
+.PersonOverlayConfirmButton:hover {
+    color: hsla(0,0%,100%,1) !important;
+    background-image: -webkit-linear-gradient(top, hsl(210,100%,70%), hsl(210,100%,60%));
+}
+
+.PersonOverlayConfirmButton.active {
+    background-image: -webkit-linear-gradient(top, hsl(210,100%,56%), hsl(210,100%,56%));
+    box-shadow: 0 1px 0 hsla(0,0%,100%,.6);
+}
+
+.PersonOverlayConfirmButton:focus {
+    border-color: hsl(210,100%,20%) !important;
+}

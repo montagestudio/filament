@@ -2,19 +2,26 @@
  * @module ui/package-information-maintainers.reel
  * @requires montage/ui/component
  */
-var Component = require("montage/ui/component").Component;
+var Component = require("montage/ui/component").Component,
+
+    OverlayConf = {
+        ADD: {
+            confirmLabel: "Add",
+            title: "New Maintainer",
+            editingState: false
+        },
+        EDIT: {
+            confirmLabel: "Edit",
+            title: "Edit Maintainer",
+            editingState: true
+        }
+    };
 
 /**
  * @class PackageInformationMaintainers
  * @extends Component
  */
 exports.PackageInformationMaintainers = Component.specialize(/** @lends PackageInformationMaintainers# */ {
-
-    constructor: {
-        value: function PackageInformationMaintainers() {
-            this.super();
-        }
-    },
 
     /**
      * Reference to the packageDocument.
@@ -34,14 +41,28 @@ exports.PackageInformationMaintainers = Component.specialize(/** @lends PackageI
         value: null
     },
 
+    personOverlay: {
+        value: null
+    },
+
+    overlayConf: {
+        value: null
+    },
+
+    _personWillBeEdited: {
+        value: null
+    },
+
     /**
      * Displays the create person overlay form.
      * @function
      */
     handleAddMaintainerAction: {
         value: function() {
-            this._cleanOverlay();
-            this.createPersonOverlay.show();
+            this._personWillBeEdited = null;
+            this.overlayConf = OverlayConf.ADD;
+
+            this.personOverlay.show();
         }
     },
 
@@ -50,14 +71,32 @@ exports.PackageInformationMaintainers = Component.specialize(/** @lends PackageI
      * @function
      * @params {Event} event
      */
-    handleCreateMaintainer: {
+    handleCreatePerson: {
         value: function (event) {
-            var maintainer = (event.detail && event.detail.maintainer) ? event.detail.maintainer : null;
+            if (event && event.detail) {
+                var maintainer = event.detail.person;
 
-            if (maintainer && this.editingDocument &&
-                this.editingDocument.addMaintainer(maintainer, true) && this.createPersonOverlay.isShown) {
+                if (maintainer && this.editingDocument) {
+                    if (this.editingDocument.addMaintainer(maintainer) && this.personOverlay.isShown) {
+                        this.personOverlay.hide();
+                    } // Todo: Display a error message when it's not possible to add a maintainer (name already used...)
+                }
+            }
+        }
+    },
 
-                this.createPersonOverlay.hide();
+    handleAlterPerson: {
+        value: function (event) {
+            if (event && event.detail) {
+                var maintainer = event.detail.person;
+
+                if (maintainer && this.editingDocument) {
+                    if (this.editingDocument.replaceMaintainer(this._personWillBeEdited, maintainer) && this.personOverlay.isShown) {
+                        this.personOverlay.hide();
+                    }
+
+                    this._personWillBeEdited = null;
+                }
             }
         }
     },
@@ -69,55 +108,30 @@ exports.PackageInformationMaintainers = Component.specialize(/** @lends PackageI
      */
     handleDeletePersonAction: {
         value: function (event) {
-            var maintainer = event.detail.get('maintainer');
+            if (event && event.detail) {
+                event.stop();
 
-            if (maintainer && this.editingDocument) {
-                this.editingDocument.removeMaintainer(maintainer, true);
+                var maintainer = event.detail.get('person');
+
+                if (maintainer && this.editingDocument) {
+                    this.editingDocument.removeMaintainer(maintainer);
+                }
             }
         }
     },
 
     handleEditPersonAction: {
         value: function (event) {
-            var source = event.detail.get('source');
+            if (event && event.detail) {
+                event.stop();
 
-            if (source && this.editingDocument) {
-                source.isEditing = true;
+                this._personWillBeEdited = event.detail.get('person');
+
+                this.personOverlay.person = this._personWillBeEdited;
+                this.overlayConf = OverlayConf.EDIT;
+
+                this.personOverlay.show();
             }
-        }
-    },
-
-    handleCancelEditPersonAction: {
-        value: function (event) {
-            var source = event.detail.get('source');
-
-            if (source && this.editingDocument) {
-                source.isEditing = false;
-            }
-        }
-    },
-
-    handleValidEditPersonAction: {
-        value: function (event) {
-            var source = event.detail.get('source'),
-                old = source.person,
-                maintainer = source.editedPerson;
-
-            if (this.editingDocument && source && maintainer) {
-                this.editingDocument.replaceMaintainer(old, maintainer);
-                source.validModification();
-            }
-        }
-    },
-
-    /**
-     * Cleans the create person overlay content.
-     * @function
-     * @private
-     */
-    _cleanOverlay: {
-        value: function () {
-            this.createPersonOverlay.content.clean();
         }
     }
 
