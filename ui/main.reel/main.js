@@ -296,7 +296,6 @@ exports.Main = Montage.create(Component, {
             }
 
             var editorArea,
-                element,
                 editorElement,
                 frontEditor = this._frontEditor;
 
