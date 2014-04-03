@@ -16,6 +16,16 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
         }
     },
 
+    enterDocument: {
+        value: function () {
+            this.addOwnPropertyChangeListener("name", this);
+            this.addOwnPropertyChangeListener("version", this);
+            this.addOwnPropertyChangeListener("license", this);
+            this.addOwnPropertyChangeListener("private", this);
+            this.addOwnPropertyChangeListener("homepage", this);
+        }
+    },
+
     editingDocument: {
         value: null
     },
@@ -44,27 +54,19 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
         value: null
     },
 
-    didDraw: {
-        value: function () {
-            this.addOwnPropertyChangeListener("name", this);
-            this.addOwnPropertyChangeListener("version", this);
-            this.addOwnPropertyChangeListener("license", this);
-            this.addOwnPropertyChangeListener("private", this);
-            this.addOwnPropertyChangeListener("homepage", this);
-            this._nameValidity(PackageTools.isNameValid(this.name)); // If the name has been modified manually within the package.json file
-        }
+    nameTextField: {
+        value: null
     },
 
-    _nameValidity: {
-        value: function (valid) {
-            this.nameTextField.element.setCustomValidity(valid ? '' : 'name not valid');
-        }
+    homepageTextField: {
+        value: null
     },
 
     handleNameChange: {
         value: function () {
             if (this.editingDocument) {
-                this._nameValidity(this.editingDocument.setProperty('name', this.name));
+                this.editingDocument.setProperty('name', this.name);
+                this.needsDraw = true;
             }
         }
     },
@@ -99,5 +101,12 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
                 this.editingDocument.setProperty('private', value);
             }
         }
+    },
+
+    draw: {
+        value: function () {
+            this.nameTextField.element.setCustomValidity(PackageTools.isNameValid(this.name) ? '' :'name not valid');
+        }
     }
+
 });
