@@ -197,6 +197,7 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
     didDraw: {
         value: function() {
             this._codeMirror.refresh();
+            this._codeMirror.focus();
         }
     },
 
