@@ -1,17 +1,68 @@
 .PersonCell {
-    padding: 8px 12px;
-    line-height: 30px;
-    height: 125px;
     border-bottom: 1px solid hsla(0, 0%, 0%, .06);
-    display: -webkit-flex;
-    -webkit-flex: 1;
-}
-
-.PersonCellSubstitution {
-    -webkit-flex: 1;
-    display: -webkit-flex;
+    background-color: hsla(0, 0%, 96%, 0.07);
+    justify-content: flex-start;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    padding: 8px 8px 8px 12px;
 }
 
 .PersonCell:last-child {
     border-bottom: none;
+}
+
+.PersonCell .PersonCellDetails {
+    display: flex;
+    flex-direction: column;
+}
+
+.PersonCell .PersonNameLabel {
+    color: hsl(0,0%,30%);
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.PersonCell .PersonEmailLabel {
+    text-indent: 10px;
+    font-style: italic;
+    font-size: 11px;
+    color: hsl(0, 0%, 60%);
+}
+
+.PersonCell .PersonCellButtons {
+    margin-left: auto;
+}
+
+.PersonCell .PersonCellEditButton.matte-Button, .PersonCellDeleteButton.matte-Button {
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 0;
+    color: hsl(0, 0%, 60%);
+    border-radius: 0;
+    border: none;
+    background-color: transparent;
+    -webkit-font-smoothing: none;
+}
+
+.PersonCell .PersonCellEditButton.matte-Button {
+    background-image: url(/assets/icons/edit.png);
+    border-color: transparent;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 13px;
+    margin-right: 4px;
+    opacity: .3;
+}
+
+.PersonCell .PersonCellEditButton.matte-Button:hover {
+    background-color: hsla(0,0%,100%,0);
+    opacity: .7;
 }

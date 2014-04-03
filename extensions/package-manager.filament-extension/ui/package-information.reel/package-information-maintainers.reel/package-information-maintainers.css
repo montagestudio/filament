@@ -1,29 +1,50 @@
 .PackageInformation--maintainers .PackageEditorPanel-content {
-    -webkit-flex-direction: column;
+    flex-direction: column;
     padding: 15px;
 }
 
-.PersonFromOverlay {
-    background: white;
-    border: 1px solid #b3b3b3;
-    padding: 15px;
-    border-radius: 4px;
-    box-shadow: 0 0 2px 1px #a3a3a3;
+.PackageInformationMaintainers-header {
+    border-radius: 4px 4px 0 0;
+    border-bottom: 1px solid hsla(0,0%,0%,.1);
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,1);
+    background: -webkit-linear-gradient( hsl(0,0%,99%), hsl(0,0%,96%) );
+}
+
+.PackageInformationMaintainers-header .PackageEditorPanel-title {
+    display: inline-block;
+    text-shadow: none;
+    border-bottom: none;
+}
+
+.AddMaintainerButton-header.matte-Button {
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+    float: right;
+    width: 25px;
+    height: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 0;
+    color: hsl(0, 0%, 60%);
+    border-radius: 0;
+    border: none;
+    background-color: transparent;
+    -webkit-font-smoothing: none;
+}
+
+.AddMaintainerButton-header.matte-Button:hover {
+    background-color: hsl(0,0%,92%);
+    border-radius: 0 4px 0 0;
 }
 
 .MaintainersList {
     background-color: #ffffff;
-    margin-top: 15px;
     width: 100%;
     padding: 0;
     max-height: 160px;
     overflow-y: auto;
     border-radius: 5px;
-}
-
-.MaintainersList ul {
-    padding: 0;
     margin: 0;
-    width: 100%;
     list-style: none;
 }
