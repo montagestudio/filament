@@ -16,6 +16,18 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
         }
     },
 
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this.addPathChangeListener("name", this, "handlePropertyChange");
+                this.addPathChangeListener("version", this, "handlePropertyChange");
+                this.addPathChangeListener("license", this, "handlePropertyChange");
+                this.addPathChangeListener("private", this, "handlePropertyChange");
+                this.addPathChangeListener("homepage", this, "handlePropertyChange");
+            }
+        }
+    },
+
     editingDocument: {
         value: null
     },
@@ -44,60 +56,26 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
         value: null
     },
 
-    didDraw: {
+    nameTextField: {
+        value: null
+    },
+
+    handlePropertyChange: {
+        value: function (value, key) {
+            if (this.editingDocument) {
+                this.editingDocument.setProperty(key, value);
+            }
+
+            if (key === 'name') {
+                this.needsDraw = true;
+            }
+        }
+    },
+
+    draw: {
         value: function () {
-            this.addOwnPropertyChangeListener("name", this);
-            this.addOwnPropertyChangeListener("version", this);
-            this.addOwnPropertyChangeListener("license", this);
-            this.addOwnPropertyChangeListener("private", this);
-            this.addOwnPropertyChangeListener("homepage", this);
-            this._nameValidity(PackageTools.isNameValid(this.name)); // If the name has been modified manually within the package.json file
-        }
-    },
-
-    _nameValidity: {
-        value: function (valid) {
-            this.nameTextField.element.setCustomValidity(valid ? '' : 'name not valid');
-        }
-    },
-
-    handleNameChange: {
-        value: function () {
-            if (this.editingDocument) {
-                this._nameValidity(this.editingDocument.setProperty('name', this.name));
-            }
-        }
-    },
-
-    handleVersionChange: {
-        value: function (value) {
-            if (this.editingDocument) {
-                this.editingDocument.setProperty('version', value);
-            }
-        }
-    },
-
-    handleLicenseChange: {
-        value: function (value) {
-            if (this.editingDocument) {
-                this.editingDocument.setProperty('license', value);
-            }
-        }
-    },
-
-    handleHomepageChange: {
-        value: function (value) {
-            if (this.editingDocument && this.homepageTextField.element.validity.valid) {
-                this.editingDocument.setProperty('homepage', value);
-            }
-        }
-    },
-
-    handlePrivateChange: {
-        value: function (value) {
-            if (this.editingDocument) {
-                this.editingDocument.setProperty('private', value);
-            }
+            this.nameTextField.element.setCustomValidity(PackageTools.isNameValid(this.name) ? '' :'name not valid');
         }
     }
+
 });
