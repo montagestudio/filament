@@ -287,10 +287,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
     replaceMaintainer: {
         value: function (oldMaintainer, newMaintainer) {
-            var maintainerIndex = this._findMaintainerIndex(oldMaintainer);
-
-            return maintainerIndex >= 0 && this.removeMaintainer(maintainerIndex, false) &&
-                this.addMaintainer(newMaintainer, false);
+            return this.removeMaintainer(oldMaintainer) && this.addMaintainer(newMaintainer);
         }
     },
 
