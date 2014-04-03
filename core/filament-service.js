@@ -22,5 +22,11 @@ exports.FilamentService = Montage.specialize({
                 title: message
             });
         }
+    },
+
+    dispatchAppEventNamed: {
+        value: function(type, canBubble, cancelable, detail) {
+            application.dispatchEventNamed(type, canBubble, cancelable, detail);
+        }
     }
 });
