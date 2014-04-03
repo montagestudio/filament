@@ -259,6 +259,7 @@ exports.PackageDocument = EditingDocument.specialize( {
             if (maintainer) {
                 if (this._findMaintainerIndex(maintainer) < 0) { // Already exists. Must be unique.
                     this.maintainers.push(maintainer);
+                    this._changeCount++;
                 }
 
                 return true;
@@ -274,6 +275,7 @@ exports.PackageDocument = EditingDocument.specialize( {
 
                 if (maintainerIndex >= 0) {
                     this.maintainers.splice(maintainerIndex, 1);
+                    this._changeCount++;
 
                     return true;
                 }
