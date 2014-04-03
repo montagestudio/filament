@@ -30,6 +30,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     // PROPERTIES
 
+    _deferredPackageRequireLoading: {
+        value: null
+    },
+
     _environmentBridge: {
         value: null
     },
@@ -196,6 +200,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this.addPathChangeListener("currentDocument.undoManager.redoLabel", this);
             this.addPathChangeListener("currentDocument.undoManager.undoCount", this);
 
+            this._deferredPackageRequireLoading = Promise.defer();
+
             application.addEventListener("openUrl", this);
             application.addEventListener("openModuleId", this);
             application.addEventListener("closeDocument", this);
@@ -220,9 +226,12 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     },
     getPackageRequire: {
         value: function(packageUrl) {
+            var self = this;
+
             if (!this._packageRequires[packageUrl]) {
                 this._packageRequires[packageUrl] = sandboxMontageApp(packageUrl)
                 .spread(function (packageRequire) {
+                    self._deferredPackageRequireLoading.resolve();
                     return packageRequire;
                 });
             }
@@ -248,7 +257,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             return self.environmentBridge.projectInfo(url).then(function (projectInfo) {
                 return self._openProject(projectInfo.packageUrl, projectInfo.dependencies);
-            });
+            })
+            .then(function() {
+                return self._deferredPackageRequireLoading.promise;
+            })
         }
     },
 
