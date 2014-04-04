@@ -1,0 +1,17 @@
+{
+    "name": "mop-filament-extension",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "montage": "*",
+        "filament": "*",
+        "filament-extension": "*",
+        "mop": "*"
+    },
+    "mappings": {
+        "filament": {
+            "name": "filament",
+            "location": "../.."
+        }
+    }
+}
