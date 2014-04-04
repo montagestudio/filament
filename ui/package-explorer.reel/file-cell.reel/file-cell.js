@@ -61,19 +61,19 @@ exports.FileCell = Montage.create(Component, {
     },
 
     contextualMenu: {
-            get: function () {
-                if (this._contextualMenu) {
-                    return this._contextualMenu;
-                }
-
-                // TODO: one menu instance for every file, RLY ?!!!
-                var menu = this.ownerComponent._createContextualMenu();
-                deleteItem = MenuModule.makeMenuItem("Delete", "delete", true, "");
-                menu.insertItem(deleteItem);
-                this._contextualMenu = menu;
-
+        get: function () {
+            if (this._contextualMenu) {
                 return this._contextualMenu;
             }
+
+            // TODO: one menu instance for every file, RLY ?!!!
+            var menu = this.ownerComponent._createContextualMenu(),
+                deleteItem = MenuModule.makeMenuItem("Delete", "delete", true, "");
+            menu.insertItem(deleteItem);
+            this._contextualMenu = menu;
+
+            return this._contextualMenu;
+        }
     },
 
     handleContextualMenuValidate: {
