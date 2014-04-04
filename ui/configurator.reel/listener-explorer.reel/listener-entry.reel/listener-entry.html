@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="listener-entry.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "listener-entry"}
+            }
+        },
+        "methodField": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "methodField"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.listenerInfo.listener.properties.get('action')"}
+            }
+        },
+        "eventType": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "eventType"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.listenerInfo.type"}
+            }
+        },
+        "handlerField": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "handlerField"}
+            },
+            "bindings": {
+                "value": {"<-": "'@' + @owner.listenerInfo.listener.properties.get('handler').label"}
+            }
+        },
+        "listener": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "listener"}
+            },
+            "bindings": {
+                "value": {"<-": "'@' + @owner.listenerInfo.listener.label"}
+            }
+        },
+        "listenerInfoSwitch": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "listenerInfoSwitch"},
+                "switchValue": ""
+            },
+            "bindings": {
+                "switchValue": {"<-": "@owner.listenerInfo.listener.exportId.contains('action-event-listener') ? 'directedHandler' : 'defaultHandler'"}
+            }
+        },
+        "phase": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "phase"}
+            },
+            "bindings": {
+                "value": {"<-": "!!@owner.listenerInfo.useCapture ? 'Capture' : 'Bubble'"}
+            }
+        },
+        "pressComposer": {
+            "prototype": "montage/composer/press-composer",
+            "properties": {
+                "component": {"@": "owner"}
+            },
+            "listeners": [
+                {
+                    "type": "press",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+        "removeListenerButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "removeButton"}
+            },
+            "bindings": {
+                "detail.get('listener')": {"<-": "@owner.listenerInfo"},
+                "detail.get('targetObject')": {"<-": "@owner.targetObject"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="listener-entry" class="ListenerEntry" draggable="true">
+        <div data-montage-id="eventType" class="ListenerEntry-pill ListenerEntry-pill--eventType"></div>
+        <div data-montage-id="listenerInfoSwitch" class="ListenerEntry-pill ListenerEntry-pill--listener">
+            <div data-arg="directedHandler">
+                <span data-montage-id="handlerField"></span>.<span data-montage-id="methodField"></span>(…)
+            </div>
+            <div data-montage-id="listener" data-arg="defaultHandler"></div>
+        </div>
+        <div data-montage-id="phase" class="ListenerEntry-phase"></div>
+        <button data-montage-id="removeButton" class="ListenerEntry-removeButton TemplateObjectCell-button TemplateObjectCell-button--pill">-</button>
+    </div>
+</body>
+</html>

@@ -1,9 +1,9 @@
 
 .PackageExplorer {
-    -webkit-flex: 0 0 200px;
-    -moz-flex: 0 0 200px;
-    -ms-flex: 0 0 200px;
-    flex: 0 0 200px;
+    -webkit-flex: 1 0 200px;
+    -moz-flex: 1 0 200px;
+    -ms-flex: 1 0 200px;
+    flex: 1 0 200px;
     min-width: 0;
     display: -webkit-flex;
     display: -moz-flex;
@@ -17,10 +17,10 @@
     border-right: 1px solid hsl(0,0%,22%);
 
     /* Fixes flickering when hovering the name or toggle the tree menu */
-    -webkit-backface-visibility: hidden; 
-    -moz-backface-visibility: hidden; 
-    -ms-backface-visibility: hidden; 
-    backface-visibility: hidden; 
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 .PackageExplorer .Panel-shadow {

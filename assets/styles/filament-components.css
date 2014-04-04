@@ -156,7 +156,11 @@
     -moz-flex-flow: column;
     -ms-flex-flow: column;
     flex-flow: column;
-    position: relative;
+    /*position: relative;*/
+    /* height: 100%; */
+    bottom: 0;
+    /* -webkit-align-items: flex-end; */
+    -webkit-box-shadow: relative;
     -webkit-transition: -webkit-flex .3s cubic-bezier(.26, .06, .08, 1);
     -moz-transition: -moz-flex .3s cubic-bezier(.26, .06, .08, 1);
     -ms-transition: -ms-flex .3s cubic-bezier(.26, .06, .08, 1);
@@ -266,7 +270,7 @@
 /* Shadow --------------------------------- */
 
 .Shadow {
-    position: absolute;
+    /* position: absolute; */
     pointer-events: none;
     height: 4px;
     left: 0;

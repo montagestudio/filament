@@ -7,6 +7,11 @@
     -moz-flex-direction: column;
     -ms-flex-direction: column;
     flex-direction: column;
+    -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+
 }
 
 .TemplateExplorer.ComponentEditor-column {
@@ -291,10 +296,10 @@
     min-width: 0;
     width: 32px;
     height: 32px;
-    font-size: 18px; 
+    font-size: 18px;
     font-weight: bold;
     line-height: 0;
-    color: hsl(0, 0%, 60%); 
+    color: hsl(0, 0%, 60%);
     border-radius: 0;
     border: none;
     background-color: transparent;

@@ -17,17 +17,6 @@
                 }
             },
 
-            "inspectorCondition": {
-                "prototype": "montage/ui/condition.reel",
-                "properties": {
-                    "element": {"#": "inspector-condition"},
-                    "removalStrategy": "hide"
-                },
-                "bindings": {
-                    "condition": {"<-": "@owner.editingDocument.selectedObjects.0"}
-                }
-            },
-
             "inspector": {
                 "prototype": "palette/ui/inspector/inspector.reel",
                 "properties": {
@@ -39,15 +28,48 @@
                     "assetsManager": {"<-": "@owner.assetsManager"},
                     "editingDocument": {"<-": "@owner.editingDocument"}
                 }
+            },
+
+            "bindingExplorer": {
+                "prototype": "./binding-explorer.reel",
+                "properties": {
+                    "element": {"#": "bindingExplorer"}
+                },
+                "bindings": {
+                    "templateObject": {"<-": "@owner.templateObject"}
+                }
+            },
+
+            "listenerExplorer": {
+                "prototype": "./listener-explorer.reel",
+                "properties": {
+                    "element": {"#": "listenerExplorer"}
+                },
+                "bindings": {
+                    "templateObject": {"<-": "@owner.templateObject"}
+                }
             }
+
         }
     </script>
 
 </head>
 <body>
-    <aside id="configurator" data-montage-id="configurator" class="Panel Configurator">
-        <div data-montage-id="inspector-condition" class="Configurator-inspectorCondition">
-            <div data-montage-id="inspector"></div>
+    <aside id="configurator" data-montage-id="configurator" class="Configurator">
+        <div class="Configurator-title">Inspector</div>
+        <div class="Configurator-fiftyFifty">
+            <div class="Configurator-firstHalf" data-montage-id="inspector"></div>
+            <div class="Configurator-secondHalf">
+
+                <section class="TemplateObjectCell-section">
+                    <div data-montage-id="bindingExplorer"></div>
+                </section>
+
+                <section class="TemplateObjectCell-section" >
+                    <div data-montage-id="listenerExplorer"></div>
+                </section>
+
+            </div>
         </div>
     </aside>
 </body>

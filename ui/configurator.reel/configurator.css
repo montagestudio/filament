@@ -1,6 +1,10 @@
 
 .Configurator {
-    background: hsl(0, 0%, 92%);
+    /* background: hsl(0, 0%, 92%); */
+    -webkit-flex: 1 0 200px;
+    display: -webkit-flex;
+    -webkit-align-content: stretch;
+    -webkit-flex-direction: column;
 }
 
 .Configurator-inspectorCondition {
@@ -138,24 +142,24 @@
     position: relative;
 	padding: 4px 8px;
 	margin: 0;
-	
+
     font-size: 13px;
 	font-weight: bold;
 	color: hsl(0,0%,50%);
-	
+
     text-shadow: 0 1px 0 hsla(0,0%,100%,.8);
-	
+
     border-top: 1px solid hsl(0,0%,100%);
-	
+
     border-bottom: 1px solid hsla(0, 0%, 86%, 1);
-	
+
     background: linear-gradient( hsl(0, 0%, 98%), hsl(0, 0%, 94%) );
 	cursor: pointer;
 }
 
 .PropertyGroup-toggle:active {
     border-top-color: transparent;
-	
+
     background: hsl(0, 0%, 92%);
 }
 
@@ -172,4 +176,22 @@
 }
 
 .Configurator .PropertyEditor:last-child {
+}
+
+.Configurator .Configurator-fiftyFifty {
+    display: -webkit-flex;
+    flex-flow: row;
+    -webkit-flex: 1;
+}
+.Configurator .Configurator-title {
+
+}
+
+.Configurator .Configurator-firstHalf {
+    -webkit-flex: 0 0 50%;
+    background: hsl(0, 0%, 92%);
+}
+
+.Configurator .Configurator-secondHalf {
+    -webkit-flex: 0 0 50%;
 }

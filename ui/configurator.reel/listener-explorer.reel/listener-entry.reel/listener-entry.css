@@ -1,0 +1,56 @@
+.ListenerEntry {
+    display: -webkit-flex;
+    cursor: pointer;
+    margin-bottom: 4px;
+}
+
+.ListenerEntry-pill {
+    padding: 0 8px;
+    font-size: 12px;
+    color: hsl(0,0%,30%);
+    line-height: 22px;
+    background: hsl(0, 0%, 92%);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.ListenerEntry:hover .ListenerEntry-pill {
+    background: hsl(0, 0%, 90%);
+}
+
+.ListenerEntry:active .ListenerEntry-pill {
+    background: hsl(0,0%,84%);
+}
+
+.ListenerEntry-pill--eventType {
+    -webkit-flex: 1;
+    min-width: 0;
+    text-align: right;
+    border-radius: 11px 3px 3px 11px;
+    font-style: italic;
+}
+
+.ListenerEntry-pill--listener {
+    -webkit-flex: 1;
+    min-width: 0;
+    margin-left: 4px;
+    border-radius: 3px 11px 11px 3px;
+}
+
+
+.ListenerEntry-phase {
+    margin: 0 4px;
+    font-size: 10px;
+    line-height: 22px;
+    color: hsl(0,0%,50%);
+}
+
+
+.ListenerEntry-removeButton {
+    opacity: 0;
+}
+
+.ListenerEntry:hover .ListenerEntry-removeButton {
+    opacity: 1;
+}

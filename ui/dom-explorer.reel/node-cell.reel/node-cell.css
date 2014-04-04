@@ -12,9 +12,9 @@
     -ms-align-items: center;
     align-items: center;
     position: relative;
-    background: hsl(0,0%,92%);
+    /* background: hsl(0,0%,92%); */
 
-    height: 30px;
+    height: 24px;
     overflow: hidden;
     -webkit-transition: height .4s ease-in-out, margin-top .4s ease-in-out, margin-bottom .4s ease-in-out;
     -moz-transition: height .4s ease-in-out, margin-top .4s ease-in-out, margin-bottom .4s ease-in-out;
@@ -35,9 +35,9 @@
     border: 1px solid hsl(0, 0%, 80%);
 
     height: 22px;
-    -webkit-transition: height .4s ease-in-out;
-    -moz-transition: height .4s ease-in-out;
-    transition: height .4s ease-in-out;
+    -webkit-transition: opacity .4s ease-in-out, height .4s ease-in-out;
+    -moz-transition: opacity .4s ease-in-out, height .4s ease-in-out;
+    transition: opacity .4s ease-in-out, height .4s ease-in-out;
 }
 
 .NodeCell--highlighted .NodeCell-segment {
@@ -58,7 +58,7 @@
 .NodeCell-segment-item {
     display: block;
     padding: 0 12px;
-    line-height: 22px;
+    line-height: 1.5em;
     color: hsl(0, 0%, 30%);
     overflow: hidden;
 
@@ -285,6 +285,10 @@
     height: 0;
 }
 
+.NodeCell--collapseDom .NodeCell-segment .montage-Text {
+    opacity: 0;
+}
+
 /* Component Tree -------------- */
 .NodeCell--component .NodeCell-segment-item {
     padding-left: 0;
@@ -301,4 +305,5 @@
 .NodeCell--component .NodeCell-segment-item--montageId {
     font-size: 0;
     border-left-width: 0;
+    opacity: 0;
 }

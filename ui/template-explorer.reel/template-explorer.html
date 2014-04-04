@@ -8,8 +8,7 @@
         "owner": {
             "prototype": "ui/template-explorer.reel",
             "properties": {
-                "element": {"#": "template-explorer"},
-                "templateTreeController": {"@": "templateTreeController"}
+                "element": {"#": "template-explorer"}
             },
             "bindings": {
                 "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"},
@@ -72,22 +71,6 @@
                 "checked": {"<->": "@owner.showListeners"}
             }
         },
-        "templateObjectCell": {
-            "prototype": "./template-object-cell.reel",
-            "properties": {
-                "element": {"#": "templateObjectCell"},
-                "_blocksOwnerComponentDraw": true
-            },
-            "bindings": {
-                "showBindings": {"<-": "@owner.showBindings"},
-                "showListeners": {"<-": "@owner.showListeners"},
-                "editingDocument": {"<-": "@owner.editingDocument"},
-                "templateExplorer": {"<-": "@owner"},
-                "templateObject": {"<-": "@templateObjectCell.parentComponent.iteration.content.templateObject"},
-                "isExpanded": {"<->": "@templateObjectCell.parentComponent.iteration.expanded"},
-                "isCollapsible": {"<->": "@templateObjectCell.parentComponent.iteration.children.length"}
-            }
-        },
         "templateObjectFilter": {
             "prototype": "ui/input-search.reel",
             "properties": {
@@ -95,28 +78,6 @@
             },
             "bindings": {
                 "value": {"<->": "@owner.templateObjectFilterTerm"}
-            }
-        },
-        "templateTreeController": {
-            "prototype": "core/tree-controller",
-            "properties": {
-                "childrenPath": "children",
-                "expandedPath": "expanded",
-                "initiallyExpanded": true
-            },
-            "bindings2": {
-                "content": {"<-": "@owner.editingDocument.templateObjectsTree"}
-            }
-        },
-        "templateNodeList": {
-            "prototype": "ui/tree.reel",
-            "properties": {
-                "element": {"#": "templateNodeList"},
-                "isSelectionEnabled": true,
-                "ignoreRoot": true
-            },
-            "bindings": {
-                "treeController": {"<-": "@owner.templateTreeController"}
             }
         }
     }
@@ -136,9 +97,6 @@
             </label>
         </header>
         <section data-montage-id="ownerObjectCell"></section>
-        <ul data-montage-id="templateNodeList" class="TemplateExplorer-list">
-            <li data-montage-id="templateObjectCell" data-arg="treeNode"></li>
-        </ul>
     </div>
 </body>
 </html>

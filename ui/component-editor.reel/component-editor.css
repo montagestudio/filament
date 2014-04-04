@@ -21,18 +21,21 @@
     -ms-flex: 1;
     flex: 1;
     min-width: 0;
-    display: -webkit-flex;
-    display: -moz-flex;
-    display: -ms-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    -moz-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
+    /*display: -webkit-flex;*/
+    /*-webkit-flex-direction: column;*/
+}
+
+.ComponentEditor .ComponentEditor-splitter {
+    /*position: relative;*/
+}
+
+.ComponentEditor .ComponentEditor-ownerSplitter {
+    position: relative;
+    background: hsl(0, 0%, 86%);
 }
 
 .ComponentEditor-column-row {
-    min-height: 48px; /* Keep top and bottom bars still visible */
+    /*min-height: 48px; *//* Keep top and bottom bars still visible */
 }
 
 .ComponentEditor-column-row--fill {
@@ -40,7 +43,7 @@
     -moz-flex: 1 1 0;
     -ms-flex: 1 1 0;
     flex: 1 1 0;
-    overflow: hidden;
+    /*overflow: hidden;*/
     border-bottom: 1px solid hsl(0, 0%, 75%);
     background: hsl(0, 0%, 86%);
 }
@@ -53,10 +56,10 @@
 }
 
 .ComponentEditor-column-row--fixed {
-    -webkit-flex: 1 1 200px;
-    -moz-flex: 1 1 200px;
-    -ms-flex: 1 1 200px;
-    flex: 1 1 200px;
+    /*-webkit-flex: 1 1 200px;*/
+    /*-moz-flex: 1 1 200px;*/
+    /*-ms-flex: 1 1 200px;*/
+    /*flex: 1 1 200px;*/
     font-size: 12px;
     text-shadow: 0 1px 0 hsla(0,0%,100%,0.4);
     padding: 0;
@@ -71,7 +74,7 @@
 /* States ----------------------- */
 
 .palettes-hidden .palette {
-    display: none;
+    /*display: none;*/
 }
 
 .palettes-hidden .modalEditorSlot {
