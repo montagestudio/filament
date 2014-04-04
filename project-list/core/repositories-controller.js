@@ -136,7 +136,7 @@ var RepositoriesController = Montage.specialize({
         value: 0
     },
 
-    _updateUserRepositories: {
+    updateUserRepositories: {
         value: function(page) {
             var self = this,
                 perPage = 30,
@@ -181,7 +181,7 @@ var RepositoriesController = Montage.specialize({
                 if (repos.length >= perPage) {
                     // If there's another page then we resolve when that's
                     // resolved
-                    deferred.resolve(self._updateUserRepositories(page + 1));
+                    deferred.resolve(self.updateUserRepositories(page + 1));
                 }
             }).done();
 
@@ -320,7 +320,7 @@ var RepositoriesController = Montage.specialize({
 
                 // second if to fetch repositories if the JSON.parse failed
                 if (!this._ownedRepositoriesContent.content.length) {
-                    this._updateUserRepositories().then(function() {
+                    this.updateUserRepositories().then(function() {
                         // save
                         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(self._ownedRepositoriesContent.content));
 
