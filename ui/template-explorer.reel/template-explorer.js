@@ -157,7 +157,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             this._editingDocument = value;
             if (value && this.templateObjects) {
                 var startTime = window.performance.now();
-                this.templateObjects.templateTreeController.content = value.templateObjectsTree;
+//                this.templateObjects.templateTreeController.content = value.templateObjectsTree;
                 var endTime = window.performance.now();
                 console.log("template-explorer: ", endTime - startTime);
             }
@@ -295,7 +295,6 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             // clear selection on click outside from cards
             if (
                     target === this.element ||
-                    target === this.templateObjects.templateNodeList.element ||
                     (target.component && target.component.identifier === "row")
                 ) {
                 this.editingDocument.clearSelectedObjects();
@@ -316,24 +315,24 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                 return;
             }
 
-            //TODO do something sane if multiple objects are selected
-            var selectedObject = selectedObjects[0],
-                iterations = this.templateObjects.templateTreeController.iterations,
-                iterationCount,
-                iteration,
-                i,
-                selectedIteration;
-
-            for (i = 0, iterationCount = iterations.length; (!selectedIteration && (iteration = iterations[i])); i++) {
-                if (selectedObject === iteration.object) {
-                    selectedIteration = iteration;
-                }
-            }
-
-            if (selectedIteration) {
-                this._scrollToElement = selectedIteration.firstElement;
-                this.needsDraw = true;
-            }
+//            //TODO do something sane if multiple objects are selected
+//            var selectedObject = selectedObjects[0],
+//                iterations = this.templateObjects.templateTreeController.iterations,
+//                iterationCount,
+//                iteration,
+//                i,
+//                selectedIteration;
+//
+//            for (i = 0, iterationCount = iterations.length; (!selectedIteration && (iteration = iterations[i])); i++) {
+//                if (selectedObject === iteration.object) {
+//                    selectedIteration = iteration;
+//                }
+//            }
+//
+//            if (selectedIteration) {
+//                this._scrollToElement = selectedIteration.firstElement;
+//                this.needsDraw = true;
+//            }
         }
     },
 

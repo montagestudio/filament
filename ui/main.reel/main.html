@@ -97,12 +97,10 @@
             },
 
             "split": {
-                "prototype": "ui/split-control.reel",
+                "prototype": "montage-splitter/ui/splitter.reel",
                 "properties": {
                     "element": {"#": "split"},
-                    "splitAxis": "vertical",
-                    "containerElement": {"#": "containerElement"},
-                    "controlledComponent": {"@": "packageExplorer"}
+                    "splitAxis": "vertical"
                 }
             },
             "goToFile": {
@@ -135,22 +133,17 @@
     <div data-montage-id="main" class="Main-wrap">
 
         <div data-montage-id="tasksInfobar"></div>
-
-        <div data-montage-id="containerElement" class="Main">
-
-            <div data-montage-id="previewControlPanel"></div>
-
-            <aside data-montage-id="packageExplorer"></aside>
+        <div data-montage-id="previewControlPanel"></div>
+        <div data-montage-id="split" class="Main Main-splitter">
+            <aside data-arg="first" data-montage-id="packageExplorer"></aside>
             <div data-montage-id="split"></div>
-            <section class="editor">
+            <section data-arg="second" class="editor">
                 <div data-montage-id="documentTabList"></div>
                 <section data-montage-id="editorSlot" class="editorSlot"></section>
             </section>
-
-            <div data-montage-id="goToFile"></div>
-            <div data-montage-id="contextualMenu"></div>
         </div>
-
+        <div data-montage-id="goToFile"></div>
+        <div data-montage-id="contextualMenu"></div>
         <div data-montage-id="preloadEditorSlot" style="display: none"></div>
     </div>
 

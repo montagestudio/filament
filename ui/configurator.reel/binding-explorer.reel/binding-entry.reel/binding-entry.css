@@ -1,0 +1,85 @@
+.BindingEntry {
+    margin-bottom: 4px;
+    display: -webkit-flex;
+    cursor: pointer;
+}
+
+.BindingEntry-pill {
+    padding: 0 8px;
+    font-size: 12px;
+    color: hsl(0, 0%, 30%);
+    line-height: 22px;
+    border-radius: 11px;
+    background: hsl(0, 0%, 92%);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.BindingEntry:hover .BindingEntry-pill {
+    background: hsl(0, 0%, 90%);
+}
+
+.BindingEntry:active .BindingEntry-pill {
+    background: hsl(0,0%,84%);
+}
+
+.BindingEntry-pill:first-of-type {
+    -webkit-flex: .6;
+    min-width: 0;
+    text-align: right;
+}
+
+.BindingEntry-pill:last-of-type {
+    -webkit-flex: 1;
+    min-width: 0;
+    margin-right: 4px;
+}
+
+.BindingEntry-direction {
+    position: relative;
+    margin: 0 4px;
+    width: 22px;
+    height: 22px;
+    border-radius: 22px;
+    background: hsl(0, 0%, 92%);
+    background-position: center;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+}
+
+.BindingEntry-direction:before,
+.BindingEntry-direction:after {
+    content: "";
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    top: 9px;
+    background-color: inherit;
+}
+
+.BindingEntry-direction:before {
+    left: -4px;
+}
+
+.BindingEntry-direction:after {
+    right: -4px;
+}
+
+
+.BindingEntry-direction--unidirectional {
+    background-image: url(/assets/icons/binding-un.svg);
+}
+
+.BindingEntry-direction--bidirectional {
+    background-image: url(/assets/icons/binding-bi.svg);
+}
+
+
+.BindingEntry-removeButton {
+    opacity: 0;
+}
+
+.BindingEntry:hover .BindingEntry-removeButton {
+    opacity: 1;
+}

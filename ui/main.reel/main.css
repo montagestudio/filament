@@ -8,7 +8,7 @@
     -ms-flex-direction: column;
     flex-direction: column;
     height: 100%;
-    
+
     /* Min height and width so the UI doesn't get squeezed too much. */
     min-height: 450px;
     min-width: 900px;
@@ -43,9 +43,17 @@
     -moz-flex-direction: column;
     -ms-flex-direction: column;
     flex-direction: column;
-    position: relative;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    position: absolute;
 }
 
+.Main-wrap .Main-splitter {
+    overflow: hidden;
+    position: relative;
+}
 
 .editorSlot {
     -webkit-flex: 1;

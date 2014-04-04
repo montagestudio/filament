@@ -55,7 +55,7 @@ body {
     appearance: none;
     width: 8px;
     height: 0px;
-    background-color: hsla(0,0%,0%,0);
+    background-color: hsla(100,0%,100%,0);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -76,5 +76,5 @@ body {
 ::scrollbar-thumb {
     border-left: 6px solid hsla(0, 0%, 0%, 0);
     background-clip: padding-box;
-    background-color: hsla(0, 0%, 0%, 0.15);
+    background-color: hsl(302, 100%, 50%);
 }

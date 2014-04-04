@@ -50,6 +50,9 @@
 
             "templateObjectsController": {
                 "prototype": "montage/core/range-controller",
+                "properties": {
+                    "avoidsEmptySelection": true
+                },
                 "bindings": {
                     "content": {"<-": "@owner.currentDocument.editingProxies"},
                     "selection": {"<->": "@owner.currentDocument.selectedObjects"}
@@ -97,6 +100,22 @@
                 "bindings": {
                     "templateObjectsController": {"<-": "@owner.templateObjectsController"},
                     "editingDocument": {"<-": "@owner.currentDocument"}
+                }
+            },
+
+            "ownerSplit": {
+                "prototype": "montage-splitter/ui/splitter.reel",
+                "properties": {
+                    "element": {"#": "ownerSplit"},
+                    "splitAxis": "vertical"
+                }
+            },
+
+            "propertiesSplit": {
+                "prototype": "montage-splitter/ui/splitter.reel",
+                "properties": {
+                    "element": {"#": "propertiesSplit"},
+                    "splitAxis": "horizontal"
                 }
             },
 
@@ -205,16 +224,16 @@
                 <div data-montage-id="bindingCreator"></div>
             </div>
         </section>
+        <div data-montage-id="ownerSplit" class="ComponentEditor-column ComponentEditor-ownerSplitter">
+            <section data-arg="first" data-montage-id="templateExplorer" class=""></section>
+            <section data-arg="second" data-montage-id="propertiesSplit" class="ComponentEditor-splitter">
+                <div data-arg="first" data-montage-id="domExplorer" class="ComponentEditor-column-row--fill"></div>
+                <footer data-arg="second" data-montage-id="configurator" class="palette"></footer>
+            </section>
+        </div>
 
-        <section data-montage-id="templateExplorer" class="ComponentEditor-column palette" data-skin="light"></section>
-
-        <section data-montage-id="documentEditorExplorerColumn" class="ComponentEditor-column Column palette" data-skin="light">
-            <header class="Bar"></header>
-            <footer data-montage-id="domExplorer" class="ComponentEditor-column-row ComponentEditor-column-row--fixed"></footer>
-        </section>
-        <aside data-montage-id="configurator" class="Column palette" data-skin="light"></aside>
         <aside data-arg="modalEditor" data-montage-id="modalEditorSlot" class="modalEditorSlot"></aside>
-        <aside data-montage-id="library" class="palette" data-skin="dark"></aside>
+        <aside data-arg="second" data-montage-id="library" class="ComponentEditor-column palette"></aside>
         <div data-montage-id="overlayPanel">
             <span data-arg="panel" data-montage-id="overlayPanelMessage"></span>
         </div>
