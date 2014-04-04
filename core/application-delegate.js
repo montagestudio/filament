@@ -141,7 +141,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                             loadedExtensions = extensions;
                         });
                     }).then(function () {
-                        projectController = self.projectController = ProjectController.create().init(self.environmentBridge, self.viewController, mainComponent, extensionController, self.previewController);
+                        projectController = self.projectController = ProjectController.create().init(self.environmentBridge, self.viewController, mainComponent, extensionController, self.previewController, self);
 
                         projectController.registerUrlMatcherForDocumentType(function (fileUrl) {
                             return (/\.reel\/?$/).test(fileUrl);
@@ -182,6 +182,11 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                     console.error("Failed loading application");
                     return error;
                 }).done();
+        }
+    },
+
+    updateStatusMessage: {
+        value: function() {
         }
     },
 

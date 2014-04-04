@@ -3,6 +3,7 @@ var Montage = require("montage").Montage,
     menuMock = require("test/mocks/menu-mocks").menuMock,
     editorMock = require("test/mocks/editor-mocks").editorMock,
     editorControllerMock = require("test/mocks/editor-controller-mocks").editorControllerMock,
+    applicationDelegateMock = require("test/mocks/application-delegate-mocks").applicationDelegateMock,
     ViewController = require("core/view-controller").ViewController,
     ProjectController = require("core/project-controller").ProjectController,
     Promise = require("montage/core/promise").Promise,
@@ -12,7 +13,7 @@ var Montage = require("montage").Montage,
 describe("core/project-controller-filesystem-spec", function () {
 
     var bridge, viewController, editorController, projectController, mockMenu,
-        projectControllerLoadedPromise, watcher;
+        projectControllerLoadedPromise, watcher, applicationDelegate;
 
     beforeEach(function () {
         mockMenu = menuMock({
@@ -58,12 +59,15 @@ describe("core/project-controller-filesystem-spec", function () {
 
         editorController = editorControllerMock();
 
+        applicationDelegate = applicationDelegateMock();
+
         require.injectPackageDescription(require.location + "projectUrl/" , {
             name: "test"
         });
 
         viewController = ViewController.create();
-        projectController = new ProjectController().init(bridge, viewController, editorController);
+        projectController = new ProjectController().init(bridge, viewController, editorController, null, null, applicationDelegate);
+        projectController._deferredPackageRequireLoading.resolve();
         projectControllerLoadedPromise = projectController.loadProject("projectUrl");
 
         watcher = {};

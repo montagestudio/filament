@@ -12,6 +12,10 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
+    preloadSlot: {
+        value: null
+    },
+
     constructor: {
         value: function Main() {
             this.super();
@@ -112,7 +116,7 @@ exports.Main = Montage.create(Component, {
 
     bringEditorToFront: {
         value: function (editor) {
-            if (!editor.element) {
+            if (!editor.element || editor.element.parentElement !== this.editorSlot) {
                 this._editorsToInsert.push(editor);
                 this._openEditors.push(editor);
             }
@@ -292,7 +296,6 @@ exports.Main = Montage.create(Component, {
             }
 
             var editorArea,
-                element,
                 editorElement,
                 frontEditor = this._frontEditor;
 
@@ -300,9 +303,10 @@ exports.Main = Montage.create(Component, {
                 editorArea = this.editorSlot;
 
                 this._editorsToInsert.forEach(function (editor) {
-                    element = document.createElement("div");
-                    editor.element = element;
-                    editorArea.appendChild(element);
+                    if (!editor.element) {
+                        editor.element = document.createElement("div");
+                    }
+                    editorArea.appendChild(editor.element);
                     editor.attachToParentComponent();
                     editor.needsDraw = true;
                 });
@@ -318,6 +322,12 @@ exports.Main = Montage.create(Component, {
                 }
             });
 
+        }
+    },
+
+    preloadEditor: {
+        value: function(editor) {
+            this.templateObjects.preloadEditorSlot.content = editor;
         }
     }
 });

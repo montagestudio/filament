@@ -13,7 +13,8 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
     Template = require("montage/core/template").Template,
     Url = require("core/url"),
-    ProjectDocument = require("core/project-document").ProjectDocument;
+    ProjectDocument = require("core/project-document").ProjectDocument,
+    sandboxMontageApp = require("palette/core/sandbox-montage-app");
 
 exports.ProjectController = ProjectController = DocumentController.specialize({
 
@@ -28,6 +29,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     },
 
     // PROPERTIES
+
+    _deferredPackageRequireLoading: {
+        value: null
+    },
 
     _environmentBridge: {
         value: null
@@ -51,6 +56,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     },
 
     previewController: {
+        value: null
+    },
+
+    _applicationDelegate: {
         value: null
     },
 
@@ -159,7 +168,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      * @return {ProjectController} An initialized instance of a ProjectController
      */
     init: {
-        value: function (bridge, viewController, editorController, extensionController, previewController) {
+        value: function (bridge, viewController, editorController, extensionController, previewController, applicationDelegate) {
             bridge.setDocumentDirtyState(false);
 
             this._environmentBridge = bridge;
@@ -167,6 +176,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._editorController = editorController;
             this._extensionController = extensionController;
             this.previewController = previewController;
+            this._applicationDelegate = applicationDelegate;
 
             this._moduleIdIconUrlMap = new Map();
             this._moduleIdLibraryItemMap = new Map();
@@ -184,10 +194,13 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             //TODO get rid of this once we have property dependencies
             this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyWillChange", true);
             this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyChange");
+            this.addPathChangeListener("packageUrl", this, "handlePackageUrlChange");
 
             this.addPathChangeListener("currentDocument.undoManager.undoLabel", this);
             this.addPathChangeListener("currentDocument.undoManager.redoLabel", this);
             this.addPathChangeListener("currentDocument.undoManager.undoCount", this);
+
+            this._deferredPackageRequireLoading = Promise.defer();
 
             application.addEventListener("openUrl", this);
             application.addEventListener("openModuleId", this);
@@ -196,6 +209,34 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             application.addEventListener("menuAction", this);
 
             return this;
+        }
+    },
+
+    handlePackageUrlChange: {
+        value: function(value) {
+            if (value) {
+                // preload package require
+                this.getPackageRequire(value).done();
+            }
+        }
+    },
+
+    _packageRequires: {
+        value: {}
+    },
+    getPackageRequire: {
+        value: function(packageUrl) {
+            var self = this;
+
+            if (!this._packageRequires[packageUrl]) {
+                this._packageRequires[packageUrl] = sandboxMontageApp(packageUrl)
+                .spread(function (packageRequire) {
+                    self._deferredPackageRequireLoading.resolve();
+                    return packageRequire;
+                });
+            }
+
+            return this._packageRequires[packageUrl];
         }
     },
 
@@ -216,6 +257,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             return self.environmentBridge.projectInfo(url).then(function (projectInfo) {
                 return self._openProject(projectInfo.packageUrl, projectInfo.dependencies);
+            })
+            .then(function() {
+                self._applicationDelegate.updateStatusMessage("Loading package…");
+                return self._deferredPackageRequireLoading.promise;
             });
         }
     },
@@ -369,6 +414,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     registerUrlMatcherForDocumentType: {
         value: function (urlMatcher, documentType) {
+            var editorType,
+                editor;
+
             if (!(documentType && urlMatcher)) {
                 throw new Error("Both a document type and a url matcher are needed to register");
             }
@@ -380,6 +428,14 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             //TODO use one data structure for both of these
             this._documentTypeUrlMatchers.push(urlMatcher);
             this._urlMatcherDocumentTypeMap.set(urlMatcher, documentType);
+
+            editorType = documentType.editorType;
+            if (editorType.requestsPreload) {
+                editor = this._getEditor(editorType);
+                this._applicationDelegate.updateStatusMessage("Loading editor…");
+                editor.preload().done();
+                this._editorController.preloadEditor(editor);
+            }
         }
     },
 
@@ -409,17 +465,38 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+    _getEditor: {
+        value: function(editorType) {
+            var editor = this._editorTypeInstanceMap.get(editorType);
+
+            if (!editor) {
+                editor = new editorType();
+                //TODO formalize exactly what we pass along to the editors
+                // Most of this right here is simply for the componentEditor
+                editor.projectController = this;
+                editor.viewController = this._viewController;
+                this._editorTypeInstanceMap.set(editorType, editor);
+            }
+
+            return editor;
+        }
+    },
+
     /**
      * @override
      */
     createDocumentWithTypeAndUrl: {
         value: function (documentType, url) {
+            var self = this;
             var environmentBridge = this.environmentBridge;
             function dataReader(url) {
                 return environmentBridge.read(url);
             }
 
-            return documentType.load(url, this.packageUrl, dataReader);
+            return this.getPackageRequire(this.packageUrl)
+            .then(function(packageRequire) {
+                return documentType.load(url, self.packageUrl, packageRequire, dataReader);
+            });
         }
     },
 
@@ -489,23 +566,15 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             }
 
             if (editorType) {
-                editor = this._editorTypeInstanceMap.get(editorType);
-
-                if (!editor) {
-                    editor = editorType.create();
-                    //TODO formalize exactly what we pass along to the editors
-                    // Most of this right here is simply for the componentEditor
-                    editor.projectController = this;
-                    editor.viewController = this._viewController;
-                    this._editorTypeInstanceMap.set(editorType, editor);
-                }
+                editor = this._getEditor(editorType);
 
                 this._editorController.bringEditorToFront(editor);
                 this.currentEditor = editor;
 
                 this.dispatchEventNamed("willOpenDocument", true, false, {
                     url: fileUrl,
-                    alreadyOpened: !!alreadyOpenedDoc
+                    alreadyOpened: !!alreadyOpenedDoc,
+                    editor: editor
                 });
 
                 // Track the urls we've tried to open for history browsing;
@@ -837,6 +906,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     promisedLibraryItems = Promise.resolve(packageLibraryItems);
                 }
 
+                self._applicationDelegate.updateStatusMessage("Loading library…");
                 return promisedLibraryItems.then(function (libraryItems) {
                     dependencyLibraryEntry.libraryItems = libraryItems;
                     return dependencyLibraryEntry;

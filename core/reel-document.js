@@ -15,8 +15,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     visit = require("montage/mousse/serialization/malker").visit,
     Url = require("core/node/url"),
     WeakMap = require("montage/collections/weak-map"),
-    ObjectReferences = require("core/object-references").ObjectReferences,
-    sandboxMontageApp = require("palette/core/sandbox-montage-app");
+    ObjectReferences = require("core/object-references").ObjectReferences;
 
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = EditingDocument.specialize({
@@ -103,14 +102,15 @@ exports.ReelDocument = EditingDocument.specialize({
 
                 self._templateBodyNode = NodeProxy.create().init(this.htmlDocument.body, this);
                 self.templateNodes = this._children(self._templateBodyNode);
-
                 //TODO handle external serializations
                 try {
                     var serialization = JSON.parse(template.getInlineObjectsString(template.document));
-                    var context = this.deserializationContext(serialization);
-                    context.ownerExportId = moduleId;
-                    self._addProxies(context.getObjects());
-                    this.buildTemplateObjectTree();
+                    if (serialization) {
+                        var context = this.deserializationContext(serialization);
+                        context.ownerExportId = moduleId;
+                        self._addProxies(context.getObjects());
+                        this.buildTemplateObjectTree();
+                    }
                 } catch (e) {
 
                     error = {
@@ -2633,7 +2633,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
 }, {
     load: {
-        value: function (fileUrl, packageUrl) {
+        value: function (fileUrl, packageUrl, packageRequire, dataReader) {
             var self = this;
 
             // require.async() expect moduleId not URLs
@@ -2641,34 +2641,26 @@ exports.ReelDocument = EditingDocument.specialize({
 
             var objectName = MontageReviver.parseObjectLocationId(componentModuleId).objectName;
 
-            return sandboxMontageApp(packageUrl)
-            .spread(function (packageRequire, montageRequire) {
-                return packageRequire;
-            })
-            .then(function (packageRequire) {
-                return packageRequire.async(componentModuleId).get(objectName).then(function (componentPrototype) {
-                    if (!componentPrototype) {
-                        throw new Error("Cannot load component: Syntax error in " + componentModuleId + "[" + objectName + "] implementation");
-                    }
+            return packageRequire.async(componentModuleId).get(objectName).then(function (componentPrototype) {
+                if (!componentPrototype) {
+                    throw new Error("Cannot load component: Syntax error in " + componentModuleId + "[" + objectName + "] implementation");
+                }
 
-                    return packageRequire.async(componentPrototype.templateModuleId);
-                },function (error) {
-                    throw new Error("Cannot load component: " + error);
-                }).then(function (templateExports) {
-
-                    // Create the document for the template ourselves to avoid any massaging
-                    // we might do for templates intended for use; namely, rebasing resources
-                    var htmlDocument = document.implementation.createHTMLDocument("");
-                    htmlDocument.documentElement.innerHTML = templateExports.content;
-
-                    return new Template().initWithDocument(htmlDocument, packageRequire);
-                }).then(function (template) {
-                    return self.create().init(fileUrl, template, packageRequire, componentModuleId);
-                }, function (error) {
-                    // There is no template. This could still be a valid component…
-                    console.log("Cannot load component template.", error);
-                    return self.create().init(fileUrl, null, packageRequire, componentModuleId);
-                });
+                return dataReader(packageUrl + componentPrototype.templateModuleId);
+            },function (error) {
+                throw new Error("Cannot load component: " + error);
+            }).then(function (templateContent) {
+                // Create the document for the template ourselves to avoid any massaging
+                // we might do for templates intended for use; namely, rebasing resources
+                var htmlDocument = document.implementation.createHTMLDocument("");
+                htmlDocument.documentElement.innerHTML = templateContent;
+                return new Template().initWithDocument(htmlDocument, packageRequire);
+            }).then(function (template) {
+                return self.create().init(fileUrl, template, packageRequire, componentModuleId);
+            }, function (error) {
+                // There is no template. This could still be a valid component…
+                console.log("Cannot load component template.", error);
+                return self.create().init(fileUrl, null, packageRequire, componentModuleId);
             });
         }
     },

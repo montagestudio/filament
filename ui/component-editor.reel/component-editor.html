@@ -39,7 +39,7 @@
                 "bindings": {
                     "groups": {"<->": "@owner.projectController.libraryGroups"},
                     "assetsManager": {"<-": "@owner.projectController.assetsManager"},
-                    "editingComponentPrototype": {"<-": "@owner.projectController.currentDocument._moduleId"}
+                    "editingComponentPrototype": {"<-": "@owner.currentDocument._moduleId"}
                 },
                 "listeners": [
                     {
@@ -71,7 +71,7 @@
                     "element": {"#": "configurator"}
                 },
                 "bindings": {
-                    "editingDocument": {"<-": "@owner.projectController.currentDocument"},
+                    "editingDocument": {"<-": "@owner.currentDocument"},
                     "assetsManager": {"<-": "@owner.projectController.assetsManager"},
                     "viewController": {"<-": "@owner.viewController"},
                     "state": {"<-": "@owner.currentDocument.selectedObjects.length > 0 ? @LOCKED_STATE : @HIDDEN_STATE"}
@@ -86,7 +86,7 @@
                 "bindings": {
                     "ownerObject": {"<-": "@owner.currentDocument.editingProxyMap.owner"},
                     "templateObjectsController": {"<-": "@owner.templateObjectsController"},
-                    "editingDocument": {"<-": "@owner.projectController.currentDocument"}
+                    "editingDocument": {"<-": "@owner.currentDocument"}
                 }
             },
 
@@ -97,7 +97,7 @@
                 },
                 "bindings": {
                     "templateObjectsController": {"<-": "@owner.templateObjectsController"},
-                    "editingDocument": {"<-": "@owner.projectController.currentDocument"}
+                    "editingDocument": {"<-": "@owner.currentDocument"}
                 }
             },
 
@@ -108,6 +108,8 @@
                     "splitAxis": "horizontal",
                     "containerElement": {"#": "documentEditorExplorerColumn"},
                     "controlledComponent": {"@": "domExplorer"},
+                    "max": 100,
+                    "min": 0,
                     "valuePercentage": 50
                 }
             },

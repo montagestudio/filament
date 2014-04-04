@@ -10,11 +10,16 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         value: function ApplicationDelegate () {
             this.super();
             var originalOnerror = Promise.onerror;
+            this._deferredProjectLoaded = Promise.defer();
             Promise.onerror = function (error) {
                 track.error(error);
                 return originalOnerror(error);
             };
         }
+    },
+
+    _deferredProjectLoaded: {
+        value: null
     },
 
     _deferredRepositoryInitialization: {
@@ -43,6 +48,12 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
 
     currentPanelKey: {
         value: null
+    },
+
+    updateStatusMessage: {
+        value: function(message) {
+            this.environmentBridge.progressPanel.message = message;
+        }
     },
 
     willFinishLoading: {
@@ -119,19 +130,12 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                         // The repository exists…
 
                         if (repositoryPopulated) {
-
-                            if (workspaceStatus === "initializing") {
+                            if (workspaceStatus === "initializing" || !workspaceStatus) {
                                 // Project exists and is currently building the container workspace
-                                // Hopefully it's not about to run minit to try and reinitialize the project
-                                readyWorkspacePromise = self._initializeProject();
-                            } else if (workspaceStatus) {
-                                // Workspace exists, great; all systems go
-                                self.showModal = false;
-                                self.currentPanelKey = null;
-                            } else {
+                                // or
                                 // Project is populated with content, no workspace exists
-                                //TODO check if we should bother creating a workspace for this repo
-                                // Create workspace for montage projects
+                                // TODO check if we should bother creating a workspace for this repo
+                                // Hopefully it's not about to run minit to try and reinitialize the project
                                 readyWorkspacePromise = self._initializeProject();
                             }
 
@@ -165,6 +169,14 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                     return Promise(readyWorkspacePromise);
 
                 })
+                .then(function(readyWorkspacePromise) {
+                    self.progressPanel.message = "Loading project…";
+                    self._deferredProjectLoaded.promise.then(function() {
+                        self.showModal = false;
+                        self.currentPanelKey = null;
+                    }).done();
+                    return readyWorkspacePromise;
+                })
                 .catch(function(err) {
 
                     var message = err.message || "Internal Server Error";
@@ -191,6 +203,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
             var superPromise = this.super(),
                 self = this;
 
+            this._deferredProjectLoaded.resolve();
             superPromise.then(function () {
                 return self._bridgePromise;
             }).then(function (bridge) {
@@ -224,11 +237,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                         })
                         .done();
 
-                    return bridge.initializeProject()
-                        .then(function () {
-                            self.showModal = false;
-                            self.currentPanelKey = null;
-                        });
+                    return bridge.initializeProject();
                 });
         }
     },
@@ -244,11 +253,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 self.currentPanelKey = "progress";
                 self.progressPanel.message = "Initializing project and installing dependencies…";
 
-                initializationPromise = bridge.initializeProject()
-                    .then(function () {
-                        self.showModal = false;
-                        self.currentPanelKey = null;
-                    });
+                initializationPromise = bridge.initializeProject();
             }
 
             return Promise(initializationPromise);

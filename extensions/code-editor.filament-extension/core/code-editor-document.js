@@ -271,7 +271,7 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
     },
 
     load: {
-        value: function (fileUrl, packageUrl, dataReader) {
+        value: function (fileUrl, packageUrl, packageRequire, dataReader) {
             return dataReader(fileUrl)
             .then(function (content) {
                 return new CodeEditorDocument().init(fileUrl, null, content);

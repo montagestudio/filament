@@ -2,13 +2,15 @@ var Montage = require("montage").Montage,
     environmentBridgeMock = require("test/mocks/environment-bridge-mocks").environmentBridgeMock,
     menuMock = require("test/mocks/menu-mocks").menuMock,
     editorControllerMock = require("test/mocks/editor-controller-mocks").editorControllerMock,
+    applicationDelegateMock = require("test/mocks/application-delegate-mocks").applicationDelegateMock,
     ViewController = require("core/view-controller").ViewController,
     ProjectController = require("core/project-controller").ProjectController,
     Promise = require("montage/core/promise").Promise;
 
 describe("core/project-controller-spec", function () {
 
-    var bridge, viewController, editorController, projectController, mockMenu;
+    var bridge, viewController, editorController, projectController, mockMenu,
+        applicationDelegate;
 
     beforeEach(function () {
         mockMenu = menuMock({
@@ -27,8 +29,11 @@ describe("core/project-controller-spec", function () {
 
         editorController = editorControllerMock();
 
+        applicationDelegate = applicationDelegateMock();
+
         viewController = ViewController.create();
-        projectController = ProjectController.create().init(bridge, viewController, editorController);
+        projectController = ProjectController.create().init(bridge, viewController, editorController, null, null, applicationDelegate);
+        projectController._deferredPackageRequireLoading.resolve();
     });
 
     describe("canEdit status", function () {

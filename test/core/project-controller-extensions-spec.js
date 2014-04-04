@@ -1,13 +1,14 @@
 var environmentBridgeMock = require("test/mocks/environment-bridge-mocks").environmentBridgeMock,
     editorControllerMock = require("test/mocks/editor-controller-mocks").editorControllerMock,
     extensionControllerMock = require("test/mocks/extension-controller-mocks").extensionControllerMock,
+    applicationDelegateMock = require("test/mocks/application-delegate-mocks").applicationDelegateMock,
     ViewController = require("core/view-controller").ViewController,
     ProjectController = require("core/project-controller").ProjectController,
     Promise = require("montage/core/promise").Promise;
 
 describe("core/project-controller-extensions-spec", function () {
 
-    var bridge, viewController, editorController, projectController, extensionController;
+    var bridge, viewController, editorController, projectController, extensionController, applicationDelegate;
 
     beforeEach(function () {
         bridge = environmentBridgeMock({
@@ -26,8 +27,11 @@ describe("core/project-controller-extensions-spec", function () {
 
         extensionController = extensionControllerMock();
 
+        applicationDelegate = applicationDelegateMock();
+
         viewController = ViewController.create();
-        projectController = ProjectController.create().init(bridge, viewController, editorController, extensionController);
+        projectController = ProjectController.create().init(bridge, viewController, editorController, extensionController, null, applicationDelegate);
+        projectController._deferredPackageRequireLoading.resolve();
 
         require.injectPackageDescription(require.location + "projectUrl/" , {
             name: "test"

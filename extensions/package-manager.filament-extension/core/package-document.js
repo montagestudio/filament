@@ -72,12 +72,6 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     },
 
-    editorType: {
-        get: function () {
-            return PackageEditor;
-        }
-    },
-
     sharedProjectController: {
         value: null
     },
@@ -895,4 +889,10 @@ exports.PackageDocument = EditingDocument.specialize( {
         }
     }
 
+}, {
+    editorType: {
+        get: function () {
+            return PackageEditor;
+        }
+    }
 });

@@ -5,12 +5,18 @@ var Promise = require("montage/core/promise").Promise,
 
 describe("core/reel-document-spec", function () {
 
-    var reelDocumentPromise;
+    var reelDocumentPromise,
+        dataReader = function(url) {
+            return require.async(url.slice(require.location.length))
+            .then(function(exports) {
+                return exports.content;
+            });
+        };
 
     describe("loading a data model given a locationId", function () {
 
         beforeEach(function () {
-            reelDocumentPromise = ReelDocument.load(require.location + "test/mocks/ui/simple.reel", require.location);
+            reelDocumentPromise = ReelDocument.load(require.location + "test/mocks/ui/simple.reel", require.location, require, dataReader);
         });
 
         it("should return a promise for the populated document", function () {
@@ -30,7 +36,7 @@ describe("core/reel-document-spec", function () {
 
     describe("loading a template with image references", function () {
         beforeEach(function () {
-            reelDocumentPromise = ReelDocument.load(require.location + "test/mocks/ui/images.reel", require.location);
+            reelDocumentPromise = ReelDocument.load(require.location + "test/mocks/ui/images.reel", require.location, require, dataReader);
         });
 
         it("should return a promise for the populated document", function () {
