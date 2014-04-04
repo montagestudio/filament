@@ -6,6 +6,7 @@ var RangeController = require("montage/core/range-controller").RangeController;
 var RepositoryController = require("adaptor/client/core/repository-controller").RepositoryController;
 
 var MAX_RECENT_ITEMS = 10;
+var LOCAL_STORAGE_KEY = "cachedOwnedRepositories";
 
 var Group = Montage.specialize( {
 
@@ -307,9 +308,25 @@ var RepositoriesController = Montage.specialize({
                 this._gotOwnedRepositoriesContent = true;
                 var self = this;
 
-                this._updateUserRepositories().then(function() {
-                    self._validateRecentRepositories();
-                }).done();
+                var cachedOwnedRepositories = localStorage.getItem(LOCAL_STORAGE_KEY);
+                if (cachedOwnedRepositories) {
+                    try {
+                        self._ownedRepositoriesContent.content.addEach(JSON.parse(cachedOwnedRepositories));
+                    } catch (error) {
+                        console.warn("Failed to parse cached owned repositories because " + error.message);
+                        localStorage.removeItem(LOCAL_STORAGE_KEY);
+                    }
+                }
+
+                // second if to fetch repositories if the JSON.parse failed
+                if (!this._ownedRepositoriesContent.content.length) {
+                    this._updateUserRepositories().then(function() {
+                        // save
+                        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(self._ownedRepositoriesContent.content));
+
+                        self._validateRecentRepositories();
+                    }).done();
+                }
             }
 
             return this._ownedRepositoriesContent;
