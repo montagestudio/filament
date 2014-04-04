@@ -28,8 +28,24 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
         }
     },
 
-    editingDocument: {
+    _editingDocument: {
         value: null
+    },
+
+    editingDocument: {
+        set: function (document) {
+            if (document && typeof document === "object") {
+                this.name = document.name;
+                this.version = document.version;
+                this.license = document.license;
+                this.homepage = document.homepage;
+                this.private = document.private;
+                this._editingDocument = document;
+            }
+        },
+        get: function () {
+            return this._editingDocument;
+        }
     },
 
     title: {
@@ -62,12 +78,12 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
 
     handlePropertyChange: {
         value: function (value, key) {
-            if (this.editingDocument) {
-                this.editingDocument.setProperty(key, value);
-            }
+            if (this._editingDocument) {
+                this._editingDocument.setProperty(key, value);
 
-            if (key === 'name') {
-                this.needsDraw = true;
+                if (key === 'name') {
+                    this.needsDraw = true;
+                }
             }
         }
     },

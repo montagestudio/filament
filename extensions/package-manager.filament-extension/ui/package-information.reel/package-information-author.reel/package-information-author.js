@@ -15,11 +15,13 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
         }
     },
 
-    didDraw: {
-        value: function () {
-            this.addPathChangeListener("author.name", this, "handleAuthorChange");
-            this.addPathChangeListener("author.email", this, "handleAuthorChange");
-            this.addPathChangeListener("author.url", this, "handleAuthorChange");
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this.addPathChangeListener("author.name", this, "handleAuthorChange");
+                this.addPathChangeListener("author.email", this, "handleAuthorChange");
+                this.addPathChangeListener("author.url", this, "handleAuthorChange");
+            }
         }
     },
 
