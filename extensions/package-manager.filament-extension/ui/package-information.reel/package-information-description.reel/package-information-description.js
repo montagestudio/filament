@@ -27,9 +27,11 @@ exports.PackageInformationDescription = Component.specialize(/** @lends PackageI
         value: null
     },
 
-    didDraw: {
-        value: function () {
-            this.addOwnPropertyChangeListener("description", this);
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this.addOwnPropertyChangeListener("description", this);
+            }
         }
     },
 
