@@ -79,11 +79,8 @@ exports.PackageExplorer = Component.specialize({
         value: null
     },
 
-    contextualMenu: {
-        get: function () {
-            if (this._contextualMenu) {
-                return this._contextualMenu;
-            }
+    _createContextualMenu: {
+        value: function () {
             var newFolderItem,
                 newComponentItem,
                 newModuleItem,
@@ -95,6 +92,17 @@ exports.PackageExplorer = Component.specialize({
             menu.insertItem(newFolderItem);
             menu.insertItem(newComponentItem);
             menu.insertItem(newModuleItem);
+
+            return menu;
+        }
+    },
+
+    contextualMenu: {
+        get: function () {
+            if (this._contextualMenu) {
+                return this._contextualMenu;
+            }
+            var menu = this._createContextualMenu();
             this._contextualMenu = menu;
 
             return this._contextualMenu;
