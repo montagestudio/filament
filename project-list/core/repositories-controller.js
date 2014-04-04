@@ -143,53 +143,46 @@ var RepositoriesController = Montage.specialize({
 
             page = (page)? page : 1;
 
-            if (self._ownedRepositoriesContent.content.length === 0) {
+            self._ownedRepositoriesContent.content.clear();
+            // get repo list from github
+            self._githubApi.then(function (githubApi) {
+                //jshint -W106
+                var options = {page: page, per_page: perPage};
+                //jshint +W106
+                return githubApi.listRepositories(options);
+            })
+            .then(function (repos) {
+                var pendingCommands = repos.length;
 
-                self._ownedRepositoriesContent.content.clear();
-                // get repo list from github
-                self._githubApi.then(function (githubApi) {
-                    //jshint -W106
-                    var options = {page: page, per_page: perPage};
-                    //jshint +W106
-                    return githubApi.listRepositories(options);
-                })
-                .then(function (repos) {
-                    var pendingCommands = repos.length;
+                self.totalDocuments += repos.length;
 
-                    self.totalDocuments += repos.length;
+                // HACK: workaround for progress not being able to have max = 0
+                // it's set as 1. (MON-402)
+                if (self.totalDocuments === 0) {
+                    self.processedDocuments = 1;
+                }
+                repos.forEach(function(repo) {
+                    self._isValidRepository(repo)
+                   .then(function(isValidRepository) {
+                        if (isValidRepository) {
+                            //jshint -W106
+                            repo.pushed_at = +new Date(repo.pushed_at);
+                            //jshint +W106
+                            self._ownedRepositoriesContent.content.push(repo);
+                        }
+                        self.processedDocuments++;
+                        if (--pendingCommands === 0) {
+                            deferred.resolve();
+                        }
+                    }).done();
+                });
 
-                    // HACK: workaround for progress not being able to have max = 0
-                    // it's set as 1. (MON-402)
-                    if (self.totalDocuments === 0) {
-                        self.processedDocuments = 1;
-                    }
-                    repos.forEach(function(repo) {
-                        self._isValidRepository(repo)
-                       .then(function(isValidRepository) {
-                            if (isValidRepository) {
-                                //jshint -W106
-                                repo.pushed_at = +new Date(repo.pushed_at);
-                                //jshint +W106
-                                self._ownedRepositoriesContent.content.push(repo);
-                            }
-                            self.processedDocuments++;
-                            if (-- pendingCommands === 0) {
-                                deferred.resolve();
-                            }
-                        }).done();
-                    });
-                    return repos.length;
-                })
-                .then(function (repoCount) {
-                    if (repoCount < perPage) {
-                        return deferred.resolve();
-                    } else {
-                        return self._updateUserRepositories(page + 1);
-                    }
-                }).done();
-            } else {
-                deferred.resolve();
-            }
+                if (repos.length >= perPage) {
+                    // If there's another page then we resolve when that's
+                    // resolved
+                    deferred.resolve(self._updateUserRepositories(page + 1));
+                }
+            }).done();
 
             return deferred.promise;
         }
