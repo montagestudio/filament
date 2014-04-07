@@ -134,7 +134,7 @@
                     "element": {"#": "explorePopcornButton"}
                 },
                 "bindings": {
-                    "label": {"<-": "!!@repositoriesController.ownedRepositoriesContent.organizedContent.has('popcorn') ? 'Open Popcorn' : 'Fork Popcorn'"},
+                    "label": {"<-": "!!@repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('popcorn') ? 'Open Popcorn' : 'Fork Popcorn'"},
                     "detail.get('owner')": {"<-": "'montagejs'"},
                     "detail.get('repository')": {"<-": "'popcorn'"}
                 },
