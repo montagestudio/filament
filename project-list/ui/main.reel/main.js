@@ -205,6 +205,31 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    handleExplorePopcornButtonAction: {
+        value: function (evt) {
+            var detail = evt.detail,
+                owner = detail ? detail.get("owner") : null,
+                repository = detail ? detail.get("repository") : null;
+
+            if (owner && repository) {
+                this._forkRepository(owner, repository).done();
+            }
+        }
+    },
+
+    _forkRepository: {
+        value: function (owner, repoName) {
+            var repositoriesController = this.templateObjects.repositoriesController;
+            return repositoriesController.forkRepository(owner, repoName).then(function (forkedRepo) {
+                console.log("forked repository", forkedRepo);
+                repositoriesController.open(forkedRepo);
+            }, function (err) {
+                console.error("failed to fork repository");
+                throw err;
+            });
+        }
+    },
+
     draw: {
         value: function () {
             if (this.isFirstRun) {

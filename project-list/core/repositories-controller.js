@@ -74,6 +74,14 @@ var RepositoriesController = Montage.specialize({
         }
     },
 
+    forkRepository: {
+        value: function (owner, repository, organization) {
+            return this._githubApi.then(function(githubApi) {
+                return githubApi.forkRepositoryInOrganization(owner, repository, organization);
+            });
+        }
+    },
+
     /**
      * Initialize the repository for the specified login with the specified repositoryName
      *

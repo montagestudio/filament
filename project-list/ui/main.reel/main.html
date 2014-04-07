@@ -128,6 +128,24 @@
                 ]
             },
 
+            "explorePopcornButton": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "explorePopcornButton"}
+                },
+                "bindings": {
+                    "label": {"<-": "!!@repositoriesController.ownedRepositoriesContent.organizedContent.has('popcorn') ? 'Open Popcorn' : 'Fork Popcorn'"},
+                    "detail.get('owner')": {"<-": "'montagejs'"},
+                    "detail.get('repository')": {"<-": "'popcorn'"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
             "versionText": {
                 "prototype": "montage/ui/text.reel",
                 "properties": {
@@ -276,6 +294,15 @@
         <section class="Intro">
             <img class="Intro-logo" src="../../../assets/img/logo.png" alt="Montage Studio">
             <p class="Intro-info"><span data-montage-id="versionText" class="Intro-version"></span><span class="Intro-support">(Optimized for Google Chrome)</span></p>
+
+
+            <ul class="Intro-examples">
+                <li data-montage-id="">
+                    <img src="../../assets/images/popcorn.jpg" width="320" height="201">
+                    <button data-montage-id="explorePopcornButton"></button>
+                </li>
+            </ul>
+
             <ul class="Intro-links">
                 <li>Explore a <a href="http://docs.montagestudio.com/montage-studio/tutorial-first-steps-sample-project.html" target="_blank">sample project</a></li>
                 <li>Build a <a href="http://docs.montagestudio.com/montage-studio/tutorial-simple-to-do.html" target="_blank">simple to-do application</a></li>
