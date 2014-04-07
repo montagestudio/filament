@@ -203,21 +203,20 @@ exports.Main = Montage.create(Component, {
 
     windowTitle: {
         get: function () {
-
             var projectTitle = [],
-                packageUrl = this.projectController ? this.projectController.packageUrl : null,
                 currentDocument = this.projectController ? this.projectController.currentDocument : null;
-
 
             if (currentDocument) {
                 projectTitle.push(currentDocument.title);
             }
 
-            if (packageUrl) {
-                projectTitle.push(packageUrl.substring(packageUrl.lastIndexOf("/") + 1));
+            if (this.projectController && this.projectController.packageDescription && this.projectController.packageDescription.name) {
+                projectTitle.push(this.projectController.packageDescription.name);
             }
 
-            return projectTitle.join(" - ");
+            projectTitle.push("Montage Studio");
+
+            return projectTitle.join(" – ");
         }
     },
 
