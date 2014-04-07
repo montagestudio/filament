@@ -109,15 +109,18 @@ exports.ProjectDocument = Document.specialize({
 
     _initBuild: {
         value: function() {
-            var mainMenu = application.mainMenu;
-            var projectMenu = mainMenu.menuItemForIdentifier(PROJECT_MENU);
-            var buildMenu = new MenuItem();
+            var mainMenu = application.mainMenu,
+                projectMenu = mainMenu.menuItemForIdentifier(PROJECT_MENU),
+                buildMenu;
 
-            buildMenu.title = "Build"; // This should be localized
-            buildMenu.identifier = "build";
-            projectMenu.insertItem(buildMenu, 2).done();
-            application.addEventListener("menuAction", this, false);
-            this._buildMenu = buildMenu;
+            if (projectMenu) {
+                buildMenu = new MenuItem();
+                buildMenu.title = "Build"; // This should be localized
+                buildMenu.identifier = "build";
+                projectMenu.insertItem(buildMenu, 2).done();
+                application.addEventListener("menuAction", this, false);
+                this._buildMenu = buildMenu;
+            }
 
             this.build = new Build();
             this.build.delegate = this;
@@ -127,19 +130,22 @@ exports.ProjectDocument = Document.specialize({
 
     didAddBuildChain: {
         value: function(chain) {
-            var menuItem = new MenuItem();
+            if (this._buildMenu) {
+                var menuItem = new MenuItem();
 
-            menuItem.title = chain.name;
-            menuItem.identifier = MENU_IDENTIFIER_PREFIX + chain.identifier;
-            this._buildMenu.insertItem(menuItem).done();
+                menuItem.title = chain.name;
+                menuItem.identifier = MENU_IDENTIFIER_PREFIX + chain.identifier;
+                this._buildMenu.insertItem(menuItem).done();
+            }
         }
     },
 
     didRemoveBuildChain: {
         value: function(chain) {
-            var menuItem = this._buildMenu.menuItemForIdentifier(MENU_IDENTIFIER_PREFIX + chain.identifier);
-
-            this._buildMenu.removeItem(menuItem).done();
+            if (this._buildMenu) {
+                var menuItem = this._buildMenu.menuItemForIdentifier(MENU_IDENTIFIER_PREFIX + chain.identifier);
+                this._buildMenu.removeItem(menuItem).done();
+            }
         }
     },
 
