@@ -1488,6 +1488,12 @@ exports.ReelDocument = EditingDocument.specialize({
     addOwnedObjectEventListener: {
         value: function (proxy, type, listener, useCapture, methodName) {
 
+            if (!this.isEventListenerValid(type, listener)) {
+                var error = new Error("Validation error");
+                error.listener = listener;
+                return Promise.reject(error);
+            }
+
             var installListenerPromise,
                 deferredUndoOperation = Promise.defer(),
                 self = this;
@@ -1529,6 +1535,12 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    isEventListenerValid: {
+        value: function (type, explicitListener) {
+            return type && explicitListener;
+        }
+    },
+
     /**
      * Updates an existing listener entry with the specified type, listener,
      * and phase information.
@@ -1553,6 +1565,12 @@ exports.ReelDocument = EditingDocument.specialize({
      */
     updateOwnedObjectEventListener: {
         value: function (proxy, existingListenerEntry, type, explicitListener, useCapture, methodName) {
+            if (!this.isEventListenerValid(type, explicitListener)) {
+                var error = new Error("Validation error");
+                error.listener = explicitListener;
+                return Promise.reject(error);
+            }
+
             var originalType = existingListenerEntry.type,
                 originalUseCapture = existingListenerEntry.useCapture,
                 originalListener = existingListenerEntry.listener,
