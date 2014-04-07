@@ -1,5 +1,7 @@
 .SearchModulesCell {
     margin-bottom: 10px;
+    display: -webkit-flex;
+    -webkit-flex: 1;
     display: flex;
     flex: 1;
     justify-content: space-between;
@@ -23,6 +25,7 @@
 
 .SearchModulesCell-information {
     padding: 4px;
+    -webkit-flex: 3;
     flex: 3;
 }
 
@@ -73,6 +76,8 @@
 }
 
 .SearchModulesCell-action {
+    display: -webkit-flex;
+    -webkit-flex: 1;
     display: flex;
     flex: 1;
     align-items: center;

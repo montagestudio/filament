@@ -10,8 +10,11 @@
 }
 
 .SearchModulesColumnContent {
-    flex: 1;
+    display: -webkit-flex;
+    -webkit-flex: 1;
+    -webkit-flex-direction: column;
     display: flex;
+    flex: 1;
     flex-direction: column;
 }
 
@@ -24,6 +27,9 @@
 #searchModulesResults {
     padding: 10px 5px 0 10px;
     overflow-y: scroll;
+    display: -webkit-flex;
+    -webkit-flex: 1;
+    -webkit-flex-direction: column;
     display: flex;
     flex: 1;
     flex-direction: column;
