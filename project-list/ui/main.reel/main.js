@@ -205,7 +205,7 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    handleExplorePopcornButtonAction: {
+    handleAction: {
         value: function (evt) {
             var detail = evt.detail,
                 owner = detail ? detail.get("owner") : null,
