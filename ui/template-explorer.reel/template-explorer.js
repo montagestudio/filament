@@ -195,7 +195,8 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                     data = event.dataTransfer.getData(MimeTypes.TEXT_PLAIN);
                 }
 
-                if (data) {
+                // Insert template if we have data and it doesn't look like a "@label"
+                if (data && !/^@\w+/.test(data)) {
                     this.editingDocument.insertTemplateContent(data).done();
                 }
             }
