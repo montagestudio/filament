@@ -92,7 +92,7 @@ exports.Main = Montage.create(Component, {
                 dir = null,
                 node = null,
                 directories = path.replace(/\/$/, "").replace(/^\//, "").split("/"),
-                nodes = this.templateObjects.packageExplorer.fileTreeController.nodes,
+                nodes = this.templateObjects.packageExplorer.fileTreeController.iterations,
                 currentPath = this.projectController.packageUrl;
 
             while (dir = directories.shift()) {

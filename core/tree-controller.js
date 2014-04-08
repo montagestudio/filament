@@ -1,29 +1,70 @@
+/**
+ * @module tree-controller
+ */
 var Montage = require("montage/core/core").Montage;
 var WeakMap = require("montage/collections/weak-map");
 
 /*
-            THIS IS A FORK, needs to be upstreamed to Montage
-*/
+ NEW EXPERIMENTAL VERSION of TreeController, it will eventually be graduated
+ to Montage.
+ */
 
 /**
  * @class TreeControllerNode
  * @extends Montage
  * @description A tree controller is a view-model that tracks whether each node in a
  * corresponding data-model is expanded or collapsed.  It also produces a
- * linearization of the visible iterations, transforming hierachical nesting
+ * linearization of the visible iterations, transforming hierarchical nesting
  * into a flat, incrementally-updated array of iterations with the
  * corresponding indentation depth.
  * Bind a root node from the data model to a tree controller and bind the tree
  * controller's iterations to a content controller for a repetition.
  */
-var TreeControllerNode = exports.TreeControllerNode = Montage.specialize( /** @lends TreeControllerNode# */ {
+exports.TreeControllerNode = Montage.specialize({
+    constructor: {
+        value: function(controller, parent, content, depth, index) {
+            var iterations = [],
+                childrenPath,
+                childrenContent;
+
+            this._controller = controller;
+            controller._nodeCount++;
+            this.parent = parent;
+            this.depth = depth;
+            this.index = index || 0;
+            if (controller.expandedPath && content[controller.expandedPath] !== undefined) {
+                this._expanded = content[controller.expandedPath];
+            } else {
+                this._expanded = controller.initiallyExpanded || false;
+            }
+
+            if (this._expanded) {
+                controller._expandedNodeCount++;
+            }
+
+            childrenPath = "content." + (controller.childrenPath||"children");
+            this.content = content;
+            this._ignoreChildrenContentChange = true;
+            this._cancelChildrenContentChangeListener = this.addRangeAtPathChangeListener(
+                childrenPath, this, "handleChildrenContentChange");
+            this._ignoreChildrenContentChange = false;
+            childrenContent = this.getPath(childrenPath);
+
+            if (childrenContent) {
+                this.children = this._createChildren(childrenContent, iterations);
+            } else {
+                this.children = [];
+            }
+
+            this.iterations = iterations;
+        }
+    },
 
     /**
-     * The only meaningful user-defined state for this tree view, whether the
-     * node is expanded (or collapsed).
+     * The governing content controller
      */
-    expanded: {
-        value: true
+    _controller: {
+        value: null
     },
 
     /**
@@ -35,8 +76,7 @@ var TreeControllerNode = exports.TreeControllerNode = Montage.specialize( /** @l
 
     /**
      * The number of times this node should be indented to reach its visually
-     * representative depth.  This property or `junctions` are alternately
-     * useful for tree visualization strategies.
+     * representative depth.
      */
     depth: {
         value: null
@@ -51,14 +91,6 @@ var TreeControllerNode = exports.TreeControllerNode = Montage.specialize( /** @l
     },
 
     /**
-     * Whether this node appears in the last position of the parent node's
-     * children, as maintained by bindings.
-     */
-    isFinal: {
-        value: null
-    },
-
-    /**
      * The node that is this node's parent, or null if this is the root node.
      */
     parent: {
@@ -68,42 +100,9 @@ var TreeControllerNode = exports.TreeControllerNode = Montage.specialize( /** @l
     /**
      * The child nodes is an array of the corresponding tree controller
      * view-model node for each of the children.  The child nodes array
-     * is maintained by `handleChildrenEntriesRangeChange`.
+     * is maintained by `handleChildrenContentChange`.
      */
     children: {
-        value: null
-    },
-
-    /**
-     * The governing content controller
-     */
-    _controller: {
-        value: null
-    },
-
-    /**
-     * An array of the children of the content for this node.  The content
-     * itself may hang its children however it likes, but this will always be a
-     * simple array, observed using the `childrenPath` provided to the tree
-     * controller upon initialization.
-     * @private
-     */
-    _childrenContent: {
-        value: null
-    },
-
-    /**
-     * The child entries are an array bound to an enumeration of its children
-     * collection.  The enumeration produces entries objects (duples of [index,
-     * child]).  The node watches this array for changes and reacts by producing
-     * corresponding child nodes, passing the entry object to the node so that
-     * it can watch its own index within the parent node's children.  Watching
-     * the index is important for judging whether it is in final position,
-     * which is in turn useful for determining the junction type to associate
-     * with the node.
-     * @private
-     */
-    _childrenEntries: {
         value: null
     },
 
@@ -117,162 +116,293 @@ var TreeControllerNode = exports.TreeControllerNode = Montage.specialize( /** @l
         value: null
     },
 
-    /**
-     * An array of hints for what kind of line art needs to be employed
-     * for each level of indentation leading up to this node's content.  The
-     * hints include "final", "medial", "before", and "after".  The "final"
-     * hint implies a junction that leads from above to the content to the
-     * right.  The "medial" hint implies a junction that follows from above and
-     * continues down, with a line to content to the right.  The "before" hint
-     * implies a junction that passed from above to below.  The "after" hint
-     * implies a junction with no lines at all.  The junctions array reacts
-     * synchronous to content changes.
-     */
-    junctions: {
-        value: null
+    _expanded: {
+        value: false
     },
 
     /**
-     * The last junction on this node's row, as determined solely by whether it
-     * is in final position by its immediate parent.
-     * @private
+     * The only meaningful user-defined state for this tree view, whether the
+     * node is expanded (or collapsed).
      */
-    _junction: {
-        value: null,
+    expanded: {
+        get: function() {
+            return this._expanded;
+        },
+        set: function(value) {
+            if (value !== this._expanded) {
+                if (value) {
+                    this._expanded = value;
+                    this._expand();
+                } else {
+                    this._collapse();
+                    // We need to collapse before setting expanded to false
+                    // because the collapsing algorithm relies on this property
+                    // to be true.
+                    this._expanded = value;
+                }
+                this._controller.handleIterationsChange();
+            }
+        }
     },
 
-    /**
-     * The penultimate junction on each of this node's children, as determined
-     * solely by whether it is in final position of its parent.
-     * @private
-     */
-    _followingJunction: {
-        value: null
+    _createChildren: {
+        value: function(childrenContent, iterations) {
+            return childrenContent.map(function(childContent, index) {
+                var child = new this.constructor(this._controller, this,
+                    childContent, this.depth + 1, index);
+
+                iterations.push(child);
+                if (child.expanded) {
+                    iterations.swap(iterations.length, 0, child.iterations);
+                }
+
+                return child;
+            }, this);
+        }
     },
 
-    /**
-     * All of the junctions that prefix each of this node's children's
-     * junctions.
-     * @private
-     */
-    _followingJunctions: {
-        value: null
+    _destroy: {
+        value: function() {
+            this._controller._nodeCount--;
+            if (this.expanded) {
+                this._controller._expandedNodeCount--;
+            }
+            this._controller = null;
+            this.parent = null;
+            this._cancelChildrenContentChangeListener();
+            this.content = null;
+
+            for (var i = 0; i < this.children.length; i++) {
+                this.children[i]._destroy();
+            }
+            this.children = null;
+        }
     },
 
-    /**
-     * An [index, node] duple maintained by an enumeration binding on this
-     * node's parent's children.  The object exists to provide the `index` for
-     * this node, which in turn propagates out to the `initial` and `final`
-     * properties.
-     * @private
-     */
-    _entry: {
-        value: null
+    _collapse: {
+        value: function() {
+            this._controller._expandedNodeCount--;
+            this._removeIterationsFromParent(this.iterations.length, this);
+        }
     },
 
-    /**
-     * Creates a tree controller node.
-     * @param content
-     * @param {string} childenPath
-     * @param {Node} parent
-     * @param {number} depth
-     * @param {[Number, Node]|null} entry
-     */
-    constructor: {
-        value: function TreeControllerNode(controller, parent, content, depth, entry) {
-            this.super();
+    _expand: {
+        value: function() {
+            this._controller._expandedNodeCount++;
+            this._addIterationsToParent(this.iterations, this);
+        }
+    },
 
-            this._controller = controller;
-            this.parent = parent;
-            this.content = content;
-            this.depth = depth;
-            this._entry = entry || [0, this];
-            this.expanded =  controller.initiallyExpanded || false;
-            this.expanded = (controller.expandedPath && content[controller.expandedPath] !== undefined) ? content[controller.expandedPath] : this.expanded;
-            this.children = [];
+    _addIterationsToParent: {
+        value: function(iterations, previousIteration) {
+            var parentIterations,
+                parentIterationsIndex;
 
-            this.defineBinding("index", {"<-": "_entry.0"});
-            this.defineBinding("isFinal", {"<-": "index == parent.children.length - 1"});
+            if (this.expanded) {
+                if (this.parent) {
+                    parentIterations = this.parent.iterations;
+                    parentIterationsIndex = parentIterations.indexOf(previousIteration) + 1;
+                    parentIterations.swap(parentIterationsIndex, 0, iterations);
+                    this.parent._addIterationsToParent(iterations, previousIteration);
+                } else {
+                    this._addIterationsToController(iterations, previousIteration);
+                }
+            }
+        }
+    },
 
-            // childrenPath -> _childrenContent
-            // waits for depth to be defined to ensure that child nodes know
-            // their depth when they are created by initialization of children
-            this.defineBinding("_childrenContent", {
-                "<-": "depth.defined() ? content.path(_controller.childrenPath ?? 'children') : []"
-            });
+    _removeIterationsFromParent: {
+        value: function(iterationsCount, previousIteration) {
+            var parentIterations,
+                parentIterationsIndex;
 
-            // _childrenContent -> _childrenEntries
-            this.defineBinding("_childrenEntries", {
-                "<-": "_childrenContent.enumerate()"
-            });
+            if (this.expanded) {
+                if (this.parent) {
+                    parentIterations = this.parent.iterations;
+                    parentIterationsIndex = parentIterations.indexOf(previousIteration) + 1;
+                    parentIterations.splice(parentIterationsIndex, iterationsCount);
+                    this.parent._removeIterationsFromParent(iterationsCount, previousIteration);
+                } else {
+                    this._removeIterationsFromController(iterationsCount, previousIteration);
+                }
+            }
+        }
+    },
 
-            // _childrenEntries -> children
-            this.handleChildrenEntriesRangeChange(this._childrenEntries, [], 0);
-            this._childrenEntries.addRangeChangeListener(this, "childrenEntries");
+    _addIterationsToController: {
+        value: function(iterations, previousIteration) {
+            var controllerIterations = this._controller.iterations,
+                parentIterationsIndex;
 
-            // this + children if expanded -> iterations
-            this.defineBinding("iterations", {
-                "<-": "[this].concat(expanded ? children.flatten{iterations} : [])"
-            });
+            parentIterationsIndex = controllerIterations.indexOf(previousIteration) + 1;
+            controllerIterations.swap(parentIterationsIndex, 0, iterations);
+        }
+    },
 
-            // the all nodes binding facilitates the allExpanded binding
-            this.defineBinding("nodes", {
-                "<-": "[this].concat(children.flatten{nodes})"
-            });
+    _removeIterationsFromController: {
+        value: function(iterationsCount, previousIteration) {
+            var controllerIterations = this._controller.iterations,
+                parentIterationsIndex;
 
-            // line art hints
-            this.defineBinding("_junction", {
-                "<-": "isFinal ? 'final' : 'medial'"
-            });
-            this.defineBinding("_followingJunction", {
-                "<-": "isFinal ? 'after' : 'before'"
-            });
-            this.defineBinding("_followingJunctions", {
-                "<-": "(parent._followingJunctions ?? []).concat([_followingJunction])"
-            });
-            this.defineBinding("junctions", {
-                "<-": "(parent._followingJunctions ?? []).concat([_junction])"
-            });
-
+            parentIterationsIndex = controllerIterations.indexOf(previousIteration) + 1;
+            controllerIterations.splice(parentIterationsIndex, iterationsCount);
         }
     },
 
     /**
-     * Propagates changes to `_childrenEntries` (by way of `_childrenContent.enumerate()`)
-     * into `children`, by constructing the respective node for each child.
-     * @private
+     * Finds and return the node having the given content.
+     * Takes an optional second argument to specify the compare function to use.
+     * note: If you are doing find operations frequently, it might be better to attach
+     * a binding that will facilitate incremental updates and O(1) lookups.
+     * `nodeForContent <- nodes{[content, this]}.toMap()`
      */
-    handleChildrenEntriesRangeChange: {
-        value: function (plus, minus, index) {
-            this.children.swap(
-                index,
-                minus.length,
-                plus.map(function (entry) {
-                    return new this.constructor(
-                        this._controller,
-                        this,
-                        entry[1], // content
-                        this.depth + 1,
-                        entry
-                    );
-                }, this)
-            );
+    findNodeByContent: {
+        value: function (content, equals) {
+            equals = equals || Object.is;
+            if (equals(this.content, content)) {
+                return this;
+            }
+            var node;
+            for (var i = 0; i < this.children.length; i++) {
+                if (node = this.children[i].findNodeByContent(content, equals)) {
+                    break;
+                }
+            }
+            return node;
+        }
+    },
+
+    /**
+     * Performs a traversal of the tree, executes the callback function for each node.
+     * The callback is called before continuing the walk on its children.
+     */
+    preOrderWalk: {
+        value: function (callback) {
+            callback(this);
+            for (var i = 0; i < this.children.length; i++) {
+                this.children[i].preOrderWalk(callback);
+            }
+        }
+    },
+
+    /**
+     * Performs a traversal of the tree, executes the callback function for each node.
+     * The callback is called after continuing the walk on its children.
+     */
+    postOrderWalk: {
+        value: function (callback) {
+            for (var i = 0; i < this.children.length; i++) {
+                this.children[i].postOrderWalk(callback);
+            }
+            callback(this);
+        }
+    },
+
+    _updateChildrenIndexes: {
+        value: function(index) {
+            var children = this.children;
+
+            for (var i = index; i < children.length; i++) {
+                children[i].index = i;
+            }
+        }
+    },
+
+    handleChildrenContentChange: {
+        value: function(plus, minus, index) {
+            var children = this.children,
+                iterations = this.iterations,
+                iterationsIndex,
+                nextIterationsIndex,
+                iterationsCount,
+                child,
+                nextChild,
+                newChildren,
+                removedChildren,
+                newIterations;
+
+            if (this._ignoreChildrenContentChange) {
+                return;
+            }
+
+            if (minus.length > 0) {
+                child = children[index];
+                iterationsIndex = iterations.indexOf(child);
+                nextChild = children[index + minus.length];
+                nextIterationsIndex = iterations.indexOf(nextChild);
+
+                if (iterationsIndex < 0) {
+                    iterationsIndex = 0;
+                }
+                if (nextIterationsIndex < 0) {
+                    nextIterationsIndex = iterations.length;
+                }
+
+                iterationsCount = nextIterationsIndex - iterationsIndex;
+                removedChildren = this.children.splice(index, minus.length);
+                this._updateChildrenIndexes(index);
+                iterations.splice(iterationsIndex, iterationsCount);
+                this._removeIterationsFromParent(iterationsCount, iterations[iterationsIndex - 1] || this);
+                for (var i = 0; i < removedChildren.length; i++) {
+                    removedChildren[i]._destroy();
+                }
+            }
+
+            if (plus.length > 0) {
+                nextChild = children[index];
+                newIterations = [];
+
+                newChildren = this._createChildren(plus, newIterations);
+                this.children.swap(index, 0, newChildren);
+                this._updateChildrenIndexes(index + plus.length);
+
+                if (nextChild) {
+                    iterationsIndex = iterations.indexOf(nextChild);
+                } else {
+                    iterationsIndex = iterations.length;
+                }
+                this.iterations.swap(iterationsIndex, 0, newIterations);
+                this._addIterationsToParent(newIterations, iterations[iterationsIndex-1] || this);
+            }
+
+            this._controller.handleIterationsChange();
         }
     }
-
 });
-
 
 /**
  * @class TreeController
+ * @extends Montage
  */
-exports.TreeController = Montage.specialize( /** @lends TreeController# */ {
+exports.TreeController = Montage.specialize(/** @lends TreeController# */ {
+    constructor: {
+        value: function TreeController(content, childrenPath, initiallyExpanded, expandedPath) {
+            this.super();
+
+            this._states = new WeakMap();
+            this.childrenPath = childrenPath;
+            this.initiallyExpanded = initiallyExpanded;
+            this.expandedPath = expandedPath;
+            this.content = content;
+        }
+    },
 
     /**
-     * The input of a tree controller, an object to serve at the root of the
-     * tree.
+     * A by-product of the tree controller, the root node of the tree for the
+     * current content.
      */
-    content: {
+    root: {
+        value: null
+    },
+
+    /**
+     * A WeakMap of alternate [content, {root, nodeCount, expandedNodeCount}]
+     * pairs. If the content is dropped, the view-model (tree controller nodes)
+     * may be collected.  If a content references is restored, the corresponding
+     * view model and all of its expanded/collapsed state, is restored.
+     * @private
+     */
+    _states: {
         value: null
     },
 
@@ -290,6 +420,10 @@ exports.TreeController = Montage.specialize( /** @lends TreeController# */ {
         value: null
     },
 
+    expandedPath: {
+        value: null
+    },
+
     /**
      * Whether nodes of the tree are initially expanded.
      *
@@ -301,12 +435,119 @@ exports.TreeController = Montage.specialize( /** @lends TreeController# */ {
     },
 
     /**
+     * The product of a tree controller, an array of tree controller nodes
+     * corresponding to each branch of the content for which every parent node
+     * is `expanded`.
+     */
+    iterations: {
+        value: void 0
+    },
+
+    _nodeCount: {
+        value: 0
+    },
+
+    _expandedNodeCount: {
+        value: 0
+    },
+
+    _content: {
+        value: null
+    },
+
+    content: {
+        get: function() {
+            return this._content;
+        },
+        set: function(value) {
+            if (value !== this._content) {
+                // save state for the current content
+                if (this._content) {
+                    this._saveState();
+                }
+                this._content = value;
+                if (value) {
+                    if (this._states.has(value)) {
+                        this._restoreState(value);
+                    } else {
+                        this._nodeCount = 0;
+                        this._expandedNodeCount = 0;
+                        this.root = new this.ControllerNode(this, null, value, 0);
+                    }
+
+                    var iterations = [this.root];
+                    if (this.root.expanded) {
+                        iterations.swap(1, 0, this.root.iterations);
+                    }
+                    this.iterations = iterations;
+                } else {
+                    this.root = null;
+                    this.iterations = void 0;
+                }
+                this.handleIterationsChange();
+            }
+        }
+    },
+
+    /**
+     * Saves the content to tree controller root nodes and other state
+     * properties, using the `_states` `WeakMap` to retain
+     * `expanded` / collapsed state.
+     * @private
+     */
+    _saveState: {
+        value: function() {
+            this._states.set(
+                this._content, {
+                    root: this.root,
+                    _nodeCount: this._nodeCount,
+                    _expandedNodeCount: this._expandedNodeCount
+                }
+            );
+        }
+    },
+
+    /**
+     * Restores the tree controller to the state that was previously saved for
+     * a specific content.
+     */
+    _restoreState: {
+        value: function(content) {
+            var state = this._states.get(content);
+            this.root = state.root;
+            this._nodeCount = state._nodeCount;
+            this._expandedNodeCount = state._expandedNodeCount ;
+
+        }
+    },
+
+    _allExpanded: {
+        value: null
+    },
+
+    /**
      * Whether every node eligible for expansion is expanded.
      *
      * This is a readable and writable property.  Setting to true causes all
      * nodes to be expanded.
      */
     allExpanded: {
+        get: function() {
+            return this._allExpanded;
+        },
+        set: function(value) {
+            if (value !== this._allExpanded) {
+                if (value) {
+                    this.preOrderWalk(function(node) {
+                        node.expanded = true;
+                    });
+                }
+                this._allExpanded = value;
+            }
+        }
+    },
+
+    _noneExpanded: {
         value: null
     },
 
@@ -317,103 +558,93 @@ exports.TreeController = Montage.specialize( /** @lends TreeController# */ {
      * nodes to be collapsed.
      */
     noneExpanded: {
-        value: null
+        get: function() {
+            return this._noneExpanded;
+        },
+        set: function(value) {
+            if (value !== this._noneExpanded) {
+                if (value) {
+                    // Have to do it manually otherwise it's too slow.
+                    this.preOrderWalk(function(node) {
+                        node._expanded = false;
+                        node.iterations = node.children.slice(0);
+                    });
+                    this._expandedNodeCount = 0;
+                    this.iterations.splice(1, this.iterations.length - 1);
+                    this.handleIterationsChange();
+                }
+                this._noneExpanded = value;
+            }
+        }
+    },
+
+    _changeOwnProperty: {
+        value: function(propertyName, value) {
+            if (value !== this[propertyName]) {
+                this["_"+propertyName] = value;
+                this.dispatchOwnPropertyChange(propertyName, value);
+            }
+        }
+    },
+
+    handleIterationsChange: {
+        value: function() {
+            if (this.iterations) {
+                this._changeOwnProperty("allExpanded", this.iterations.length === this._nodeCount);
+            }
+            this._changeOwnProperty("noneExpanded", this._expandedNodeCount === 0);
+        }
+    },
+
+    ControllerNode: {
+        value: exports.TreeControllerNode
     },
 
     /**
-     * The product of a tree controller, an array of tree controller nodes
-     * corresponding to each branch of the content for which every parent node
-     * is `expanded`.
+     * Finds and returns the node having the given content.
+     * Takes an optional second argument to specify the compare function to use.
+     * note: If you are doing find operations frequently, it might be better to attach
+     * a binding that will facilitate incremental updates and O(1) lookups.
+     * `nodeForContent <- nodes{[content, this]}.toMap()`
      */
-    iterations: {
-        value: null
-    },
-
-    /**
-     * A by-product of the tree controller, the root node of the tree for the
-     * current content.
-     */
-    root: {
-        value: null
-    },
-
-    /**
-     * A WeakMap of alternate [content, root] pairs.  If the content is
-     * dropped, the view-model (tree controller nodes) may be collected.  If a
-     * content references is restored, the corresponding view model and all of
-     * its expanded/collapsed state, is restored.
-     * @private
-     */
-    _roots: {
-        value: null
-    },
-
-    /**
-     * Creates a tree controller.
-     */
-    constructor: {
-        value: function TreeController(content, childrenPath, initiallyExpanded, expandedPath) {
-            this.super();
-
-            this._roots = new WeakMap();
-            this.addOwnPropertyChangeListener("content", this);
-            this.defineBinding("iterations", {"<-": "root.iterations"});
-            this.defineBinding("nodes", {"<-": "root.nodes"});
-            this.defineBinding(
-                "allExpanded",
-                {"<->": "nodes.every{expanded || children.length == 0}"}
-            );
-            this.defineBinding(
-                "noneExpanded",
-                {"<->": "nodes.every{!expanded}"}
-            );
-
-            this.initiallyExpanded = initiallyExpanded;
-            this.childrenPath = childrenPath;
-            this.expandedPath = expandedPath;
-            this.content = content;
+    findNodeByContent: {
+        value: function(content, equals) {
+            if (this.root) {
+                return  this.root.findNodeByContent(content, equals);
+            }
+            else {
+                return null;
+            }
         }
     },
 
     /**
-     * Memoizes content to tree controller root nodes, using the `_roots`
-     * `WeakMap` to retain `expanded` / collapsed state.
-     * @private
+     * Performs a traversal of the tree, executes the callback function for each node.
+     * The callback is called before continuing the walk on its children.
      */
-    handleContentChange: {
-        value: function (content) {
-            if (!content) {
-                this.root = null;
-                return;
+    preOrderWalk: {
+        value: function(callback) {
+            if (this.root) {
+                this.root.preOrderWalk(callback);
             }
-            if (!this._roots.has(content)) {
-                this._roots.set(
-                    content,
-                    new this.Node(
-                        this, // controller
-                        null, // parent
-                        content,
-                        0, // depth
-                        null // entry
-                    )
-                );
-            }
-            this.root = this._roots.get(content);
         }
     },
 
     /**
-     * @type TreeControllerNode
+     * Performs a traversal of the tree, executes the callback function for each node.
+     * The callback is called after continuing the walk on its children.
      */
-    Node: {
-        value: TreeControllerNode
+    postOrderWalk: {
+        value: function(callback) {
+            if (this.root) {
+                this.root.postOrderWalk(callback);
+            }
+        }
     }
-
 }, {
 
-    blueprintModuleId:require("montage")._blueprintModuleIdDescriptor,
+    blueprintModuleId: require("montage")._blueprintModuleIdDescriptor,
 
-    blueprint:require("montage")._blueprintDescriptor
+    blueprint: require("montage")._blueprintDescriptor
 
 });
-
