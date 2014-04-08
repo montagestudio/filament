@@ -8,6 +8,8 @@ var Component = require("montage/ui/component").Component,
 
     /*jshint -W079 */
     Node = require("mjs-volume/runtime/node").Node,
+    /*jshint +W079*/
+
     Material = require("mjs-volume/runtime/material").Material;
 
 /**
@@ -155,11 +157,11 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
                 var self = this;
 
                 properties.keys().forEach(function (key) {
-                   if (key === 'scene') {
-                       component.scene = self.scene;
-                   } else {
-                     component[key] = properties.get(key);
-                   }
+                    if (key === 'scene') {
+                        component.scene = self.scene;
+                    } else {
+                        component[key] = properties.get(key);
+                    }
                 });
             }
 

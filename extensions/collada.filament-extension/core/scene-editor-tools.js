@@ -1,3 +1,6 @@
+/*global module*/
+/*jshint -W092*/
+
 var SceneEditorTools = {};
 
 SceneEditorTools.isMaterialProxy = function (proxyId) {
@@ -15,3 +18,5 @@ SceneEditorTools.isSupportedProxy = function (proxyId) {
 };
 
 module.exports = SceneEditorTools;
+
+/*jshint +W092*/
