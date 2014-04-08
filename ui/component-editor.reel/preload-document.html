@@ -1,24 +1,163 @@
 <!doctype html>
 <html>
 <head>
+    <script type="text/montage-serialization">
+        {
+            "title": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "title"}
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.data.title" }
+                }
+            },
+
+            "description": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "description"}
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.data.synopsis" }
+                }
+            },
+
+            "dates": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "dates-content"}
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.data.release_dates.theater" }
+                }
+            },
+
+            "maturity": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "maturity-content"}
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.data.mpaa_rating" }
+                }
+            },
+
+            "runtime": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "runtime-content"}
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.data.runtime" }
+                }
+            },
+
+            "rentButton": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "rent-button"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "trailerButton": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "trailer-button"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "expandButton": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "expand"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "audienceScore": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "audience-score-content"}
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.data.ratings.audience_score" }
+                }
+            },
+
+            "criticsScore": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "critics-score-content"}
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.data.ratings.critics_score" }
+                }
+            },
+
+            "scroller": {
+                "prototype": "matte/ui/scroller.reel",
+                "properties": {
+                    "element": {"#": "scroller"},
+                    "hasMomentum": true
+                }
+            },
+
+            "owner": {
+                "properties": {
+                    "element": {"#": "details"},
+                    "cImage": {"#": "c-image"},
+                    "aImage": {"#": "a-image"}
+                }
+            }
+        }
+    </script>
 </head>
 <body>
-    <div data-montage-id="owner">
-        <!--
-        These nodes will make the repetition in the DOM Explorer generate a few
-        repetitions so that they can be recycled later when a Reel is opened.
-        This way we avoid creating the repetitions at Reel opening time.
-        -->
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
+    <div data-montage-id="details" class="details">
+        <div data-montage-id="expand" class="expand">
+            <h2 data-montage-id="title" class="title"></h2>
+            <div class="summary">
+                <div>
+                    Release: <time data-montage-id="dates-content" class="score"></time><span data-montage-id="maturity-content" class="maturity"></span>
+                </div>
+                <div>
+                    Duration: <span data-montage-id="runtime-content" class="score"></span>′
+                </div>
+                <div>
+                    <span data-montage-id="a-image" class="rt-icon icon-audience"></span>Audience:
+                    <span data-montage-id="audience-score-content" class="score"></span>%
+                </div>
+                <div>
+                    <span data-montage-id="c-image" class="rt-icon icon-critics"></span>Critics:
+                    <span data-montage-id="critics-score-content" class="score"></span>%
+                </div>
+            </div>
+        </div>
+        <div data-montage-id="scroller" class="scroller">
+            <p data-montage-id="description" class="description"></p>
+        </div>
+        <nav class="action-buttons">
+            <button data-montage-id="trailer-button" class="button button-trailer">Trailer</button>
+            <button data-montage-id="rent-button" class="button button-rent">Rent</button>
+        </nav>
     </div>
 </body>
 </html>
