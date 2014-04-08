@@ -4,6 +4,7 @@
  */
 var Component = require("montage/ui/component").Component,
     application = require("montage/core/application").application,
+    SceneEditorTools = require("core/scene-editor-tools"),
     MimeTypes = require("core/mime-types");
 
 /**
@@ -18,6 +19,10 @@ exports.NodeExplorer = Component.specialize(/** @lends NodeExplorer# */ {
     },
 
     editingDocument: {
+        value: null
+    },
+
+    editor: {
         value: null
     },
 
@@ -40,9 +45,7 @@ exports.NodeExplorer = Component.specialize(/** @lends NodeExplorer# */ {
                 this._element.addEventListener("dragleave", this, false);
                 this._element.addEventListener("drop", this, false);
                 this._element.addEventListener("click", this);
-
                 application.addEventListener("sceneNodeSelected", this, false);
-
                 this.addPathChangeListener("selectedTemplate", this, "handleSelectedTemplate");
             }
         }
@@ -76,9 +79,9 @@ exports.NodeExplorer = Component.specialize(/** @lends NodeExplorer# */ {
     handleSelectedTemplate: {
         value: function (selectedTemplate) {
             if (selectedTemplate) {
-                if (/mjs-volume\/runtime\/node/.test(selectedTemplate.exportId)) {
+                if (SceneEditorTools.isNodeProxy(selectedTemplate.exportId)) {
                     this.sceneGraph.selectNodeById(selectedTemplate.properties.get("id"));
-                } else if (/mjs-volume\/runtime\/material/.test(selectedTemplate.exportId)) {
+                } else if (SceneEditorTools.isMaterialProxy(selectedTemplate.exportId)) {
                     this.sceneGraph.clearSelection();
                 }
             }
@@ -129,9 +132,17 @@ exports.NodeExplorer = Component.specialize(/** @lends NodeExplorer# */ {
                     } else {
                         var self = this;
 
-                        this.editingDocument.insertTemplateContent(data).then(function (objects) {
-                            if (objects && objects.length > 0) {
-                                self.templateObjects.nodeTemplatesListController.select(objects[0]);
+                        this.editingDocument.insertTemplateContent(data).then(function (proxies) {
+                            if (proxies && proxies.length > 0) {
+                                proxies.some(function (proxy) {
+                                    var proxyId = proxy.properties.get('id');
+
+                                    if (proxyId && proxyId === id) {
+                                        self.templateObjects.nodeTemplatesListController.select(proxy);
+
+                                        return true;
+                                    }
+                                });
                             }
                         }).done();
                     }

@@ -30,11 +30,8 @@
 
         "nodeTemplatesListController": {
             "prototype": "montage/core/range-controller",
-            "properties": {
-                "filterPath" : "exportId == 'mjs-volume/runtime/node' || exportId == 'mjs-volume/runtime/material'"
-            },
             "bindings": {
-                "content": {"<-": "@owner.editingDocument.editingProxies"}
+                "content": {"<-": "@owner.editor.editingProxies"}
             }
         },
 
