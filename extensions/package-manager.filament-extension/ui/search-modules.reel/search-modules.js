@@ -17,7 +17,6 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
     constructor: {
         value: function SearchModules() {
             this.super();
-            this.addOwnPropertyChangeListener("request", this);
         }
     },
 
@@ -30,6 +29,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
 
                 application.addEventListener("dependencyInstalled", this);
                 application.addEventListener("dependencyRemoved", this);
+                this.addOwnPropertyChangeListener("request", this);
             }
         }
     },
@@ -58,7 +58,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
      */
     request: {
         set: function (request) {
-            this._request = (typeof request === 'string') ? request : null;
+            this._request = typeof request === 'string' ? request : null;
         },
         get: function () {
             return this._request;
@@ -108,8 +108,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
      */
     isSearching: {
         set: function (searching) {
-            this._searching = (typeof searching === 'boolean') ? searching : false;
-            this.searchInput.element.disabled = this._searching;
+            this.searchInput.element.disabled = this._searching = typeof searching === 'boolean' ? searching : false;
         },
         get: function () {
             return this._searching;
@@ -163,7 +162,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
      */
     _terminateSearch: {
         value: function (results) {
-            this.results = results || [];
+            this.results = results || null;
             this.isSearching = false;
         }
     },
@@ -186,7 +185,7 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
     handleDependencyInstalled: {
         value: function (event) {
             var dependencyInstalled = event.detail.installed,
-                dependency = this._findResult(dependencyInstalled.requestedName);
+                dependency = this._findPackageIntoResult(dependencyInstalled.requestedName);
 
             if (dependency) {
                 dependency.state = CELL_STATES.INSTALLED;
@@ -196,11 +195,14 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
 
     handleDependencyRemoved: {
         value: function (event) {
-            var dependencyRemoved = event.detail.removed,
-                dependency = this._findResult(dependencyRemoved.name);
+            var dependencyRemoved = event.detail.removed;
 
-            if (dependency) {
-                dependency.state = CELL_STATES.DEFAULT;
+            if (dependencyRemoved && dependencyRemoved.name) {
+                var dependency = this._findPackageIntoResult(dependencyRemoved.name);
+
+                if (dependency) {
+                    dependency.state = CELL_STATES.DEFAULT;
+                }
             }
         }
     },
@@ -212,17 +214,18 @@ exports.SearchModules = Component.specialize(/** @lends SearchModules# */ {
      * @param {boolean} index
      * @return {Object|Integer}
      */
-    _findResult: {
+    _findPackageIntoResult: {
         value: function (name, index) {
             if (this.results && typeof name === 'string') {
                 var keys = Object.keys(this.results);
 
                 for (var i = 0, length = keys.length; i < length; i++) {
                     if (name === this.results[keys[i]].name) {
-                        return (index) ? keys[i] : this.results[keys[i]]; // return index or the dependency
+                        return index ? keys[i] : this.results[keys[i]]; // return index or the dependency
                     }
                 }
             }
+
             return null;
         }
     },

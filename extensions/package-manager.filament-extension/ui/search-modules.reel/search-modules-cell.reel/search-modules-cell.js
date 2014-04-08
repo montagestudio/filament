@@ -3,6 +3,7 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
+
     LABELS_STATE = {
         0: "Install",
         1: "Installing...",
@@ -52,21 +53,12 @@ exports.SearchModulesCell = Component.specialize(/** @lends SearchModulesCell# *
         }
     },
 
-    _module: {
-        value: null
-    },
-
     /**
      * Represents the cell module.
      * @type {Object}
      */
     module: {
-        set: function (module) {
-            this._module = module;
-        },
-        get: function () {
-            return this._module;
-        }
+        value: null
     },
 
     _label: {

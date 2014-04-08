@@ -2,7 +2,9 @@
     margin-bottom: 10px;
     display: -webkit-flex;
     -webkit-flex: 1;
-    -webkit-justify-content: space-between;
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
     background-color: hsl(0,0%,96%);
     border: 1px solid hsl(0,0%,70%);
     border-radius: 5px;
@@ -24,6 +26,7 @@
 .SearchModulesCell-information {
     padding: 4px;
     -webkit-flex: 3;
+    flex: 3;
 }
 
 .SearchModulesCell-information > * {
@@ -57,17 +60,14 @@
     display: inline-block;
 }
 
-.SearchModulesCell-information--header.hidden{
+.SearchModulesCell-information--header.hidden,
+.SearchModulesCell-information--author.hidden {
     display: none;
 }
 
 .SearchModulesCell-information--author {
     text-indent: 4px;
     display: inline-block;
-}
-
-.SearchModulesCell-information--author.hidden{
-    display: none;
 }
 
 .SearchModulesCell-information--description {
@@ -78,12 +78,20 @@
 .SearchModulesCell-action {
     display: -webkit-flex;
     -webkit-flex: 1;
-    -webkit-align-items: center;
-    -webkit-justify-content: flex-end;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: flex-end;
     min-width: 178px;
 }
 
-.SearchModulesCell-action  button {
+.SearchModulesCell-action button {
     height: 30px;
     margin-right: 15px;
+}
+
+.SearchModulesCell-action .SearchModulesCell-action--install.matte-Button.disabled:hover,
+.SearchModulesCell-action .SearchModulesCell-action--install.matte-Button.disabled:active {
+    color: inherit;
+    background-color: inherit;
 }
