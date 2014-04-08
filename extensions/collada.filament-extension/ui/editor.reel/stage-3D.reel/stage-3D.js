@@ -4,6 +4,7 @@
  */
 var Component = require("montage/ui/component").Component,
     Application = require("montage/core/application").application,
+    SceneEditorTools = require("core/scene-editor-tools"),
 
     /*jshint -W079 */
     Node = require("mjs-volume/runtime/node").Node,
@@ -58,6 +59,10 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
         value: null
     },
 
+    editingDocument: {
+        value: null
+    },
+
     templateDidLoad: {
         value: function () {
             this.sceneView.delegate = this;
@@ -86,10 +91,8 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
     handleStatusChange: {
         value: function(status) {
             if (status === "loaded" && this._scene) {
-                if (Array.isArray(this.editingProxies)) {
-                    this.addOwnPropertyChangeListener("editingProxies", this);
-                    this._injectEditingProxyToScene();
-                }
+                this.addOwnPropertyChangeListener("editingProxies", this);
+                this._applyEditingProxyToScene();
             }
         }
     },
@@ -97,23 +100,22 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
     handleEditingProxiesChange: {
         value: function (proxies) {
             if (proxies) {
-                this._injectEditingProxyToScene();
+                this._applyEditingProxyToScene();
             }
         }
     },
 
     // todo check if a proxy has been removed, will work for the demo
     // because for removing a reelProxy we need to exit the scene editor.
-    // fixme change its name
-    _injectEditingProxyToScene: {
+    _applyEditingProxyToScene: {
         value: function () {
             if (Array.isArray(this.editingProxies)) {
                 var self = this;
 
                 this.editingProxies.forEach(function (proxy) {
-                    if (/mjs-volume\/runtime\/material/.test(proxy.exportId)) {
+                    if (SceneEditorTools.isMaterialProxy(proxy.exportId)) {
                         self._createMaterialWithReelProxy(proxy);
-                    } else if (/mjs-volume\/runtime\/node/.test(proxy.exportId)) {
+                    } else if (SceneEditorTools.isNodeProxy(proxy.exportId)) {
                         self._createNodeWithReelProxy(proxy);
                     }
                 });
@@ -127,17 +129,8 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
                 var id = reelProxy.properties.get('id'),
                     element = this._scene.glTFElement.ids[id];
 
-                if (!(element instanceof Material)) {
-                    var material = new Material();
-
-                    material.id = id;
-                    material.scene = this.scene;
-                    material.image = reelProxy.properties.get('image');
-                    material.opacity = reelProxy.properties.get('opacity');
-
-                    //fixme should use the blueprintproperties,
-
-                    this._scene.glTFElement.ids[id] = material;
+                if (!(element instanceof Material)) { // doesn't exist yet
+                    this._scene.glTFElement.ids[id] = this._fullfilComponend3D(new Material(), reelProxy.properties);
                 }
             }
         }
@@ -149,16 +142,28 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
                 var id = reelProxy.properties.get('id'),
                     element = this._scene.glTFElement.ids[id];
 
-                if (!(element instanceof Node)) {
-                    var node = new Node();
-
-                    node.id = id;
-                    node.scene = this.scene;
-                    node.hidden = reelProxy.properties.get('hidden');
-
-                    this._scene.glTFElement.ids[id] = node;
+                if (!(element instanceof Node)) { // doesn't exist yet
+                    this._scene.glTFElement.ids[id] = this._fullfilComponend3D(new Node(), reelProxy.properties);
                 }
             }
+        }
+    },
+
+    _fullfilComponend3D: {
+        value: function (component, properties) {
+            if (component && properties) {
+                var self = this;
+
+                properties.keys().forEach(function (key) {
+                   if (key === 'scene') {
+                       component.scene = self.scene;
+                   } else {
+                     component[key] = properties.get(key);
+                   }
+                });
+            }
+
+            return component;
         }
     },
 

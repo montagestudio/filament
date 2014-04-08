@@ -5,6 +5,7 @@
 var Component = require("montage/ui/component").Component,
     application = require("montage/core/application").application,
     SceneHelper = require("mjs-volume/runtime/scene-helper").SceneHelper,
+    SceneEditorTools = require("core/scene-editor-tools"),
 
     CONFIGURATION = {
 
@@ -126,9 +127,9 @@ exports.Inspector = Component.specialize(/** @lends Inspector# */ {
                 var oldTemplateType = this.templateType,
                     newTemplateType = null;
 
-                if (/mjs-volume\/runtime\/node/.test(this.selectedTemplate.exportId)) {
+                if (SceneEditorTools.isNodeProxy(this.selectedTemplate.exportId)) {
                     newTemplateType = CONFIGURATION.TEMPLATE_TYPES.node;
-                } else if (/mjs-volume\/runtime\/material/.test(this.selectedTemplate.exportId)) {
+                } else if (SceneEditorTools.isMaterialProxy(this.selectedTemplate.exportId)) {
                     newTemplateType = CONFIGURATION.TEMPLATE_TYPES.material;
                 }
 

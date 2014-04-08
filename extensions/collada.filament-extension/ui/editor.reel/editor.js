@@ -2,7 +2,8 @@
  * @module ui/editor.reel
  * @requires montage/ui/component
  */
-var Component = require("montage/ui/component").Component;
+var Component = require("montage/ui/component").Component,
+    SceneEditorTools = require("core/scene-editor-tools");
 
 /**
  * @class Editor
@@ -77,11 +78,13 @@ exports.Editor = Component.specialize(/** @lends Editor# */ {
     editingProxies: {
         set: function (editingProxies) {
             if (Array.isArray(editingProxies)) {
-                var regex = new RegExp("mjs-volume/runtime/(node|material)");
+                var filteredProxies = editingProxies.filter(function (proxy) {
+                        return SceneEditorTools.isSupportedProxy(proxy.exportId);
+                    });
 
-                this._editingProxies = editingProxies.filter(function (proxy) {
-                    return regex.test(proxy.exportId);
-                });
+                if ((!this._editingProxies) || (this._editingProxies && filteredProxies.length !== this._editingProxies.length)) {
+                    this._editingProxies = filteredProxies;
+                }
             }
         },
         get: function () {
@@ -99,7 +102,9 @@ exports.Editor = Component.specialize(/** @lends Editor# */ {
     },
 
     handleExitSceneEditor: {
-        value: function () {
+        value: function (event) {
+            event.stop();
+
             this.editingDocument.selectObjectsOnAddition = true;
             this.scene = null;
         }
