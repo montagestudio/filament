@@ -97,23 +97,25 @@ exports.FileCell = Montage.create(Component, {
                 identifier = menuItem.identifier;
 
             switch (identifier) {
-            case "newFolder":
-                this.dispatchEventNamed("addDirectory", true, true);
+            case "newDirectory":
+                evt.stop();
+                this.dispatchEventNamed("addDirectory", true, true, {path: this.fileInfo.filename});
                 break;
 
             case "newComponent":
-                this.dispatchEventNamed("addFile", true, true);
+                evt.stop();
+                this.dispatchEventNamed("addFile", true, true, {path: this.fileInfo.filename});
                 break;
 
             case "newModule":
-                this.dispatchEventNamed("addModule", true, true);
+                evt.stop();
+                this.dispatchEventNamed("addModule", true, true, {path: this.fileInfo.filename});
                 break;
 
             case "delete":
-                debugger
-                // this.fileInfo will need to be send
-                this.dispatchEventNamed("deletePath", true, true);
-                break
+                evt.stop();
+                this.dispatchEventNamed("removeTree", true, true, {path: this.fileInfo.filename});
+                break;
             }
         }
     },

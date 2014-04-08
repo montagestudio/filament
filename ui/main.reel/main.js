@@ -30,6 +30,7 @@ exports.Main = Montage.create(Component, {
                 application.addEventListener("addFile", this);
                 application.addEventListener("addModule", this);
                 application.addEventListener("addDirectory", this);
+                application.addEventListener("removeTree", this);
                 application.addEventListener("expandTree", this);
 
                 //TODO make this less environment specific
@@ -146,25 +147,33 @@ exports.Main = Montage.create(Component, {
 
     handleAddFile: {
         enumerable: false,
-        value: function () {
+        value: function (evt) {
+            var path = evt.detail.path;
             //TODO don't call addComponent until we know it's a component we want
-            this.projectController.createComponent().done();
+            this.projectController.createComponent(path).done();
         }
     },
 
     handleAddModule: {
         value: function (evt) {
+            var path = evt.detail.path;
             if (this.projectController.canCreateModule) {
-                this.projectController.createModule().done();
+                this.projectController.createModule(path).done();
             }
         }
     },
 
     handleAddDirectory: {
-        enumerable: false,
-        value: function () {
-            //TODO: implement
-            debugger
+        value: function (evt) {
+            var path = evt.detail.path;
+            this.projectController.addDirectory(path).done();
+        }
+    },
+
+    handleRemoveTree: {
+        value: function (evt) {
+            var path = evt.detail.path;
+            this.projectController.removeTree(path).done();
         }
     },
 

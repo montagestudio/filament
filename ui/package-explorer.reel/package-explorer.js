@@ -85,7 +85,7 @@ exports.PackageExplorer = Component.specialize({
                 newComponentItem,
                 newModuleItem,
                 menu = new MenuModule.Menu();
-            newFolderItem = MenuModule.makeMenuItem("New Folder…", "newFolder", true, "");
+            newFolderItem = MenuModule.makeMenuItem("New Folder…", "newDirectory", true, "");
             newComponentItem = MenuModule.makeMenuItem("New Component…", "newComponent", true, "");
             newModuleItem = MenuModule.makeMenuItem("New Module…", "newModule", true, "");
 
@@ -130,16 +130,16 @@ exports.PackageExplorer = Component.specialize({
                 identifier = menuItem.identifier;
 
             switch (identifier) {
-            case "newFolder":
-                this.dispatchEventNamed("addDirectory", true, true);
+            case "newDirectory":
+                this.dispatchEventNamed("addDirectory", true, true, {path: "/"});
                 break;
 
             case "newComponent":
-                this.dispatchEventNamed("addFile", true, true);
+                this.dispatchEventNamed("addFile", true, true, {path: "/"});
                 break;
 
             case "newModule":
-                this.dispatchEventNamed("addModule", true, true);
+                this.dispatchEventNamed("addModule", true, true, {path: "/"});
                 break;
             }
         }
