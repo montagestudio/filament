@@ -9,6 +9,7 @@ var Component = require("montage/ui/component").Component;
  * @extends Component
  */
 exports.DependencyActions = Component.specialize(/** @lends DependencyActions# */ {
+
     constructor: {
         value: function DependencyActions() {
             this.super();
@@ -52,23 +53,14 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
         value: null
     },
 
-    _rangeValidity: {
-        value: function (valid) {
-            this.rangeTextField.element.setCustomValidity(valid ? '' : 'range is not valid');
-            return valid;
-        }
-    },
-
     handleRangeChange: {
         value: function (range) {
-            if (this.editingDocument && typeof range === "string") {
-                range = range.trim();
-
+            if (this.editingDocument && this.currentDependency && typeof range === "string") {
                 if (this.currentDependency.version !== range) {
-                    this._rangeValidity(this.editingDocument.updateDependencyRange(this.currentDependency, range));
-                } else {
-                    this._rangeValidity(this.editingDocument.isRangeValid(range));
+                    this.editingDocument.updateDependencyRange(this.currentDependency, range);
                 }
+
+                this.needsDraw = true;
             }
         }
     },
@@ -83,21 +75,28 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
             if (type && !this.loadingDependency && this.editingDocument &&
                 this.currentDependency && this.currentDependency.type !== type) {
 
-                var self = this;
-
-                this.editingDocument.switchDependencyType(this.currentDependency, type).then(function () {
-                    self.currentDependency.type = type;
-                }).done();
+                this.editingDocument.switchDependencyType(this.currentDependency, type).done();
             }
         }
     },
 
     handleAcceptUpdateAction: {
         value: function () {
-            var update = this.currentDependency.update ? this.currentDependency.update.available : null;
+            if (this.currentDependency && !this.loadingDependency && this.editingDocument) {
+                var update = this.currentDependency.update ? this.currentDependency.update.available : null;
 
-            if (this.currentDependency && !this.loadingDependency &&this.editingDocument && update) {
-                this.editingDocument.updateDependency(this.currentDependency.name, update);
+                if (update) {
+                    this.editingDocument.updateDependency(this.currentDependency.name, update);
+                }
+            }
+        }
+    },
+
+    draw: {
+        value: function () {
+            if (this.range) {
+                var validity = this.editingDocument.isRangeValid(this.range);
+                this.rangeTextField.element.setCustomValidity(validity ? '' : 'range is not valid');
             }
         }
     }
