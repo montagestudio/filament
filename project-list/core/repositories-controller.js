@@ -74,10 +74,27 @@ var RepositoriesController = Montage.specialize({
         }
     },
 
+    /**
+     * Fork a repository from the specified owner and name
+     *
+     * @param {String} owner The owner/organization of the repository to fork from
+     * @param {String} name An The name of the repository to fork
+     * @param {String} organization The organization where to fork to (optional)
+     * @return {Promise} A promise for the forked repository
+     */
     forkRepository: {
-        value: function (owner, repository, organization) {
+        value: function(owner, name, organization) {
+            var self = this;
             return this._githubApi.then(function(githubApi) {
-                return githubApi.forkRepositoryInOrganization(owner, repository, organization);
+                return githubApi.forkRepositoryInOrganization(owner, name, organization)
+                .then(function(repo) {
+                    /* jshint -W106 */
+                    // This is the format expected by the github API, ignoring for now
+                    repo.pushed_at = +new Date(repo.pushed_at);
+                    /* jshint +W106 */
+                    self._ownedRepositoriesContent.content.push(repo);
+                    return repo;
+                });
             });
         }
     },
