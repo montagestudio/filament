@@ -295,6 +295,8 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
             if (!this.isSubMenu()) {
                 this._triggerAction();
             }
+            // CSS's pseudo class hover is not applied durring a drag, this is a workaround [2/2]
+            this.templateObjects.menuButton.classList.remove("over");
         }
     },
 
