@@ -142,24 +142,13 @@ exports.TemplateObjectCell = Component.specialize({
     _describeTemplateObject: {
         value: function () {
             var templateObject = this.templateObject,
-                packageRequire = templateObject.editingDocument.packageRequire,
                 description = {};
 
             // Determine if this object is provided by the project's own package
             // TODO not restrict this to components within the ui directory
             description.isInProjectPackage = /^ui\//.test(templateObject.moduleId);
-
-            return Promise.all([
-                    packageRequire.async(templateObject.moduleId).get(templateObject.exportName),
-                    packageRequire.async("montage/ui/component").get("Component")
-                ])
-                .spread(function (objectConstructor, componentConstructor) {
-                    description.isTemplateObjectComponent = objectConstructor.prototype instanceof componentConstructor;
-                })
-                .fail(function () {
-                    description.isTemplateObjectComponent = null;
-                })
-                .thenResolve([templateObject, description]);
+            description.isTemplateObjectComponent = /\.reel$/.test(templateObject.moduleId);
+            return Promise.resolve([templateObject, description]);
         }
     },
 
