@@ -1,4 +1,50 @@
-#packageMaintainers {
+.DependencyDetailsList {
+    align-items: flex-start;
+    flex-direction: row;
+    flex: 1;
+    padding: 0;
+    margin: 0 20px 0 40px;
+}
+
+.DependencyDetails-item {
+    display: -webkit-flex;
+    -webkit-flex: 1;
+    display: flex;
+    flex: 1;
+    overflow-x: hidden;
+    justify-content: space-between;
+}
+
+.DependencyDetails-item--hidden {
+    display: none;
+}
+
+.DependencyDetails-label{
+    font-weight: 600;
+    color: hsl(0,0%,40%);
+    flex: 1;
+    min-width: 80px;
+}
+
+.DependencyDetails-value{
+    font-size: 11px;
+    text-indent: 30px;
+    display: inline-block;
+    font-style: italic;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    -webkit-flex: 3;
+    flex: 3;
+}
+
+.DependencyDetails-value.matte-Anchor {
+    color: hsl(0, 0%, 33%);
+}
+
+#PackageMaintainers {
+    -webkit-flex: 3;
+    flex: 3;
     list-style: none;
     margin: 0;
     padding: 0;

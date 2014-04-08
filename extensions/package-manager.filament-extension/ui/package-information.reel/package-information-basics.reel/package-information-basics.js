@@ -41,6 +41,8 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
                 this.homepage = document.homepage;
                 this.private = document.private;
                 this._editingDocument = document;
+
+                this.needsDraw = true;
             }
         },
         get: function () {

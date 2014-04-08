@@ -1,3 +1,63 @@
 .DependencyActions-content {
+    display: -webkit-flex;
+    -webkit-flex: 1;
     -webkit-flex-direction: column;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 8px;
+    background: hsl(0,0%,94%);
+    border-radius: 0 0 4px 4px;
+    align-items: center;
+    justify-content: center;
+}
+
+.DependencyActions-list {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    overflow: hidden;
+    width: 100%;
+}
+
+.DependencyAction-item {
+    padding: 8px 3px;
+    display: -webkit-flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.DependencyActionItem-label {
+    color: hsl(0,0%,40%);
+    min-width: 100px;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.DependencyActionItem-content {
+    display: -webkit-flex;
+    -webkit-flex: 3;
+    display: flex;
+    flex: 3;
+    justify-content: space-around;
+    align-items: center;
+    overflow-x: hidden;
+    max-width: 280px;
+}
+
+.DependencyActionItem-content .matte-RadioButton,
+.DependencyActionItem-content .matte-RadioButton:hover {
+    background-color: #fff;
+    margin: 0;
+}
+
+.DependencyActionItem-content .matte-InputText {
+    width: 100%;
+}
+
+.dependencyTypeLabel {
+    margin: 0 4px;
 }
