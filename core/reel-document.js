@@ -21,8 +21,8 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
 exports.ReelDocument = EditingDocument.specialize({
 
     constructor: {
-        value: function ReelDocument() {
-            this.super();
+        value: function ReelDocument(fileUrl) {
+            this.super(fileUrl);
             this.sideData = Object.create(null);
             this.references = new ObjectReferences();
             this.selectedElements = [];
@@ -2661,9 +2661,8 @@ exports.ReelDocument = EditingDocument.specialize({
                 });
             }
         }
-    }
+    },
 
-}, {
     load: {
         value: function (fileUrl, packageUrl, packageRequire, dataReader) {
             var self = this;
@@ -2680,11 +2679,11 @@ exports.ReelDocument = EditingDocument.specialize({
                 htmlDocument.documentElement.innerHTML = templateContent;
                 return new Template().initWithDocument(htmlDocument, packageRequire);
             }).then(function (template) {
-                return self.create().init(fileUrl, template, packageRequire, componentModuleId);
+                return self.init(fileUrl, template, packageRequire, componentModuleId);
             }, function (error) {
                 // There is no template. This could still be a valid component…
                 console.log("Cannot load component template.", error);
-                return self.create().init(fileUrl, null, packageRequire, componentModuleId);
+                return self.init(fileUrl, null, packageRequire, componentModuleId);
             });
         }
     },
@@ -2693,7 +2692,9 @@ exports.ReelDocument = EditingDocument.specialize({
         value: function(moduleId) {
             return moduleId.replace(/\/([^/]+).reel$/, "/$1.reel/$1.html");
         }
-    },
+    }
+
+}, {
 
     editorType: {
         get: function () {

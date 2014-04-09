@@ -5,8 +5,8 @@ var Document = require("palette/core/document").Document;
 var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
 
     constructor: {
-        value: function CodeEditorDocument() {
-            this.super();
+        value: function CodeEditorDocument(fileUrl) {
+            this.super(fileUrl);
             this.handleCodeMirrorDocumentChange = this.handleCodeMirrorDocumentChange.bind(this);
         }
     },
@@ -205,6 +205,17 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
                 this._expectedRedoCount = redoHistoryCount;
             }
         }
+    },
+
+    load: {
+        value: function (fileUrl, packageUrl, packageRequire, dataReader) {
+            var self = this;
+
+            return dataReader(fileUrl)
+            .then(function (content) {
+                return self.init(fileUrl, null, content);
+            });
+        }
     }
 
 }, {
@@ -267,15 +278,6 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
         enumerable:false,
         value:function (fileUrl) {
             return (/\.md\/?$/).test(fileUrl);
-        }
-    },
-
-    load: {
-        value: function (fileUrl, packageUrl, packageRequire, dataReader) {
-            return dataReader(fileUrl)
-            .then(function (content) {
-                return new CodeEditorDocument().init(fileUrl, null, content);
-            });
         }
     },
 

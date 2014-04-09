@@ -25,17 +25,20 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
         author: "author"
     };
 
-exports.PackageDocument = EditingDocument.specialize( {
+var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
+    constructor: {
+        value: function PackageDocument(fileUrl) {
+            this.super(fileUrl);
+        }
+    },
 
     load: {
-        value: function (fileUrl, packageUrl) {
+        value: function (fileUrl, packageUrl, packageRequire) {
             var self = this,
-                projectController = this.sharedProjectController;
+                projectController = PackageDocument.sharedProjectController;
 
-            return require.loadPackage(packageUrl).then(function (packageRequire) {
-                return projectController.environmentBridge.listDependenciesAtUrl(fileUrl).then(function(dependencyTree) {
-                    return self.create().init(fileUrl, packageRequire, projectController, dependencyTree);
-                });
+            return projectController.environmentBridge.listDependenciesAtUrl(fileUrl).then(function(dependencyTree) {
+                return self.init(fileUrl, packageRequire, projectController, dependencyTree);
             });
         }
     },

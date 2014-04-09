@@ -224,7 +224,7 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
 
             this._mode = null;
             if (!this._isDocumentOpen(editingDocument)) {
-                codeMirrorDocument = CodeMirror.Doc(this.currentDocument.content, this.mode, 0);
+                codeMirrorDocument = CodeMirror.Doc(this.currentDocument.content || "", this.mode, 0);
                 editingDocument.codeMirrorDocument = codeMirrorDocument;
                 editingDocument.editor = this;
                 //TODO why put the code mirror document into the openDocument list and not the code-editor-doc?
