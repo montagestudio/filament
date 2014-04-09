@@ -1,5 +1,7 @@
 var Montage = require("montage").Montage,
-    Promise = require("montage/core/promise").Promise;
+    Promise = require("montage/core/promise").Promise,
+    menuMock = require("./menu-mocks").menuMock,
+    menuItemMock = require("./menu-mocks").menuItemMock;
 
 var Bridge = Montage.specialize({
 
@@ -25,6 +27,12 @@ var Bridge = Montage.specialize({
         value: function (url) {
             return Promise.resolve({packageUrl: "projectUrl", dependencies: []});
         }
+    },
+
+    MenuItem: {
+        value: function() {
+            return menuItemMock();
+        }
     }
 
 });
@@ -48,14 +56,15 @@ exports.environmentBridgeMock = function (options) {
         launchPreviewPromise = Promise.resolve(),
         promptForSavePromise = Promise.resolve(),
         getExtensionsAtPromise = Promise([]),
-        readPromise = Promise("{}");
+        readPromise = Promise("{}"),
+        mainMenu = menuMock();
 
     Object.keys(options).forEach(function (key) {
         bridge[key] = options[key];
     });
 
     // Properly set expected promises
-    bridge.mainMenu = Promise.resolve(options.mainMenu || null);
+    bridge.mainMenu = Promise.resolve(options.mainMenu || mainMenu);
     bridge.availableExtensions = Promise.resolve(options.extensionUrls || []);
     bridge.getExtensionsAt = options.getExtensionsAt || promiseFunction(getExtensionsAtPromise);
 
