@@ -1,7 +1,6 @@
 var Document = require("palette/core/document").Document,
     Promise = require("montage/core/promise").Promise,
     application = require("montage/core/application").application,
-    MenuItem = require("adaptor/client/core/menu-item").MenuItem,
     Build = require("core/build").Build;
 
 var PROJECT_MENU = "project";
@@ -114,7 +113,7 @@ exports.ProjectDocument = Document.specialize({
                 build,
                 buildMenu;
 
-            buildMenu = new MenuItem();
+            buildMenu = new this._environmentBridge.MenuItem();
             buildMenu.title = "Build"; // This should be localized
             buildMenu.identifier = "build";
             this._buildMenu = buildMenu;
@@ -140,7 +139,7 @@ exports.ProjectDocument = Document.specialize({
     didAddBuildChain: {
         value: function(chain) {
             if (this._buildMenu) {
-                var menuItem = new MenuItem();
+                var menuItem = new this._environmentBridge.MenuItem();
 
                 menuItem.title = chain.name;
                 menuItem.identifier = MENU_IDENTIFIER_PREFIX + chain.identifier;
