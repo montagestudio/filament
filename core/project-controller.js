@@ -1142,8 +1142,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 throw new Error("Cannot create " + thing + " without an open project"); // TODO localize
             }
 
-            var options = {
-                    defaultDirectory: Url.resolve(this.packageUrl, subdirectory),
+            var defaultDirectory = (subdirectory)? Url.resolve(this.packageUrl, subdirectory) : this.packageUrl,
+                options = {
+                    defaultDirectory: defaultDirectory.replace(/\/$/, ""),
                     defaultName: "my-" + thing, // TODO localize
                     prompt: "Create " + thing, //TODO localize
                     submitLabel: "Create"
@@ -1215,7 +1216,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             var self = this,
                 projectDocument = this.projectDocument;
 
-            path = (path)? path.replace(/^\//, "").replace(/\/$/, "") : "core";
+            path = (path)? path.replace(/^\//, "").replace(/\/$/, "") : undefined;
             return this._create("module", path, projectDocument.createModule.bind(projectDocument))
                 .then(function (url) {
                     var result;
@@ -1235,8 +1236,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     addDirectory: {
         value: function (path) {
-            var options = {
-                    defaultDirectory: Url.resolve(this.packageUrl, path),
+            var defaultDirectory = (path)? Url.resolve(this.packageUrl, path) : this.packageUrl,
+                options = {
+                    defaultDirectory: defaultDirectory,
                     defaultName: "Untitled Folder", // TODO localize
                     prompt: "Create Folder", // TODO localize
                     submitLabel: "Create"
