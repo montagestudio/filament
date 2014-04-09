@@ -5,6 +5,7 @@ var Montage = require("montage/core/core").Montage,
     PreviewController = require("core/preview-controller").PreviewController,
     ProjectController = require("core/project-controller").ProjectController,
     ReelDocument = require("core/reel-document").ReelDocument,
+    Document = require("palette/core/document").Document,
     FilamentService = require("core/filament-service").FilamentService;
 
 var InnerTemplateInspector = require("contextual-inspectors/inner-template/ui/inner-template-inspector.reel").InnerTemplateInspector;
@@ -112,7 +113,8 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                 promisedBridge = this.getEnvironmentBridge(),
                 extensionController,
                 loadedExtensions,
-                projectController;
+                projectController,
+                preloadDocument;
 
             Promise.all([promisedApplication, promisedBridge, promisedMainComponent])
                 .spread(function (app, bridge, mainComponent) {
@@ -160,6 +162,10 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                     }).then(function (projectUrl) {
                         var promisedProjectUrl;
 
+                        preloadDocument = new Document().init("ui/component.reel");
+                        projectController.documents.push(preloadDocument);
+                        projectController.selectDocument(preloadDocument);
+
                         // With extensions now loaded and activated, load a project
                         if (projectUrl) {
                             promisedProjectUrl = projectController.loadProject(projectUrl);
@@ -169,6 +175,9 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
                         return promisedProjectUrl;
                     }).then(function (projectUrl) {
+                        var ix = projectController.documents.indexOf(preloadDocument);
+                        projectController.documents.splice(ix, 1);
+
                         //TODO only do this if we have an index.html
                         return self.previewController.registerPreview(projectUrl, projectUrl + "/index.html").then(function () {
                             //TODO not launch the preview automatically?
