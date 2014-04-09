@@ -2638,18 +2638,10 @@ exports.ReelDocument = EditingDocument.specialize({
 
             // require.async() expect moduleId not URLs
             var componentModuleId = Url.toModuleId(fileUrl, packageUrl);
+            var templateModuleId = this._getTemplateModuleId(componentModuleId);
 
-            var objectName = MontageReviver.parseObjectLocationId(componentModuleId).objectName;
-
-            return packageRequire.async(componentModuleId).get(objectName).then(function (componentPrototype) {
-                if (!componentPrototype) {
-                    throw new Error("Cannot load component: Syntax error in " + componentModuleId + "[" + objectName + "] implementation");
-                }
-
-                return dataReader(packageUrl + componentPrototype.templateModuleId);
-            },function (error) {
-                throw new Error("Cannot load component: " + error);
-            }).then(function (templateContent) {
+            return dataReader(packageUrl + templateModuleId)
+            .then(function (templateContent) {
                 // Create the document for the template ourselves to avoid any massaging
                 // we might do for templates intended for use; namely, rebasing resources
                 var htmlDocument = document.implementation.createHTMLDocument("");
@@ -2662,6 +2654,12 @@ exports.ReelDocument = EditingDocument.specialize({
                 console.log("Cannot load component template.", error);
                 return self.create().init(fileUrl, null, packageRequire, componentModuleId);
             });
+        }
+    },
+
+    _getTemplateModuleId: {
+        value: function(moduleId) {
+            return moduleId.replace(/\/([^/]+).reel$/, "/$1.reel/$1.html");
         }
     },
 
