@@ -154,6 +154,21 @@ var SceneHelper = exports.SceneHelper = Object.create(Object.prototype, {
 
             return m3dNode;
         }
+    },
+
+    getGLTFCamera: {
+        value: function(node) {
+            var glTFCamera = null;
+            if (node.glTFElement) {
+                var glTFNode = node.glTFElement;
+                if (glTFNode.cameras != null) {
+                    if (glTFNode.cameras.length > 0) {
+                        glTFCamera = glTFNode.cameras[0];
+                    } 
+                }
+            }
+            return glTFCamera;
+        }
     }
 
 });

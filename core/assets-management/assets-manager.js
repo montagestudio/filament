@@ -391,7 +391,7 @@ exports.AssetsManager = Montage.specialize({
     },
 
     /**
-     * Removes whitespace & add missing first trailing slash.
+     * Removes whitespace & remove last trailing slash.
      * @function
      * @private
      * @param {String} path - an path.
@@ -401,8 +401,8 @@ exports.AssetsManager = Montage.specialize({
         value: function (path) {
             path = path.trim();
 
-            if (path.indexOf('/', 0) !== 0) { // add first trailing slash.
-                path = "/" + path;
+            if (path.charAt(path.length - 1) === "/") { // remove last trailing slash.
+                path = path.slice(0, -1);
             }
 
             return path;
@@ -423,10 +423,6 @@ exports.AssetsManager = Montage.specialize({
                 rootPath = this._cleanPath(rootPath);
                 appendPath = this._cleanPath(appendPath);
 
-                if (rootPath.charAt(rootPath.length - 1) === "/") { // remove last trailing slash.
-                    rootPath = rootPath.slice(0, -1);
-                }
-
                 var rootPathParts = this._decomposePath(rootPath),
 
                     // Determine the number of parent directories.
@@ -445,10 +441,14 @@ exports.AssetsManager = Montage.specialize({
                             startPath += rootPathParts[i] + "/";
                         }
 
-                        return startPath + endPath.slice(1);
+                        return startPath + endPath;
                     }
 
-                    return rootPath + endPath;
+                    if (rootPath.charAt(0) !== "/") {
+                        rootPath = '/' + rootPath;
+                    }
+
+                    return rootPath + '/' + endPath;
                 }
             }
         }
@@ -477,7 +477,7 @@ exports.AssetsManager = Montage.specialize({
                         ++pos;
                     }
 
-                    var deepPart = this._decomposePath(reelDocumentRelativeUrl.substring(pos)),
+                    var deepPart = this._decomposePath(this._cleanPath(reelDocumentRelativeUrl.substring(pos))),
                         relativePath = "";
 
                     for (var i = 0, length = deepPart.length; i < length; i++) {
@@ -652,10 +652,10 @@ exports.AssetsManager = Montage.specialize({
             if (typeof relativePath === "string" && relativePath.length > 0 && this._currentDocument) {
                 relativePath = relativePath.replace(/^\.\/|^\//, ''); // remove ./ or / from the begin of a path.
 
-                var documentUrlPath = this._currentDocument.url.replace(/^fs:\//, ''),
-                    assetUrl = this._resolvePaths(documentUrlPath, relativePath);
+                var reelDocumentRelativeUrl = this._currentDocument.url.substring(this._projectUrl.length),
+                    assetUrl = this._resolvePaths(reelDocumentRelativeUrl, relativePath);
 
-                return this._findAssetWithFileUrl("fs:/" + assetUrl);
+                return this._findAssetWithFileUrl(this._projectUrl + assetUrl);
             }
         }
     },
