@@ -73,7 +73,9 @@ exports.ListenerJig = Montage.create(Component, /** @lends module:"./listener-ji
     handleUpdateEventListenerButtonAction: {
         value: function (evt) {
             evt.stop();
-            this._commitListenerEdits();
+            this._commitListenerEdits().catch(function(error) {
+                // Ignore validation error
+            }).done();
         }
     },
 
@@ -108,20 +110,26 @@ exports.ListenerJig = Montage.create(Component, /** @lends module:"./listener-ji
                 listener = model.listener,
                 useCapture = model.useCapture,
                 methodName = model.methodName,
-                listenerEntry;
+                listenerPromise;
 
             if (this.existingListener) {
-                listenerEntry = this.editingDocument.updateOwnedObjectEventListener(proxy, this.existingListener, type, listener, useCapture, methodName);
+                listenerPromise = this.editingDocument.updateOwnedObjectEventListener(proxy, this.existingListener, type, listener, useCapture, methodName);
             } else {
-                listenerEntry = this.editingDocument.addOwnedObjectEventListener(proxy, type, listener, useCapture, methodName);
+                listenerPromise = this.editingDocument.addOwnedObjectEventListener(proxy, type, listener, useCapture, methodName);
             }
 
-            this.dispatchEventNamed("commit", true, false, {
-                listenerEntry: listenerEntry
+            var self = this;
+            return listenerPromise.then(function(listenerEntry) {
+                self.dispatchEventNamed("commit", true, false, {
+                    listenerEntry: listenerEntry
+                });
+
+                self.existingListener = null;
+                self.listenerModel = null;
+
+                return listenerEntry;
             });
 
-            this.existingListener = null;
-            this.listenerModel = null;
         }
     },
 
