@@ -17,5 +17,32 @@ exports.Toggle = InputCheckbox.specialize(/** @lends Toggle# */ {
             this.classList.add("Toggle");
             this.super();
         }
+    },
+
+    _label: {
+        value: null
+    },
+
+    label: {
+        get: function() {
+            return this._label;
+        },
+        set: function(value) {
+            this._label = value;
+            this.needsDraw = true;
+        }
+    },
+
+    draw: {
+        value: function() {
+            this.super();
+
+            var label = this._label;
+            if (label) {
+                this.element.setAttribute("aria-label", label);
+            } else {
+                this.element.removeAttribute("aria-label");
+            }
+        }
     }
 });
