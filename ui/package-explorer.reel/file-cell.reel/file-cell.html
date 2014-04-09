@@ -53,7 +53,8 @@
                 "element": {"#": "expanded"}
             },
             "bindings": {
-                "checked": {"<->": "@owner.iteration.expanded"}
+                "checked": {"<->": "@owner.iteration.expanded"},
+                "label": {"<-": "(!!@owner.iteration.expanded ? 'Expand ' : 'Collapse ') + @owner.fileInfo.name"}
             }
         },
 
