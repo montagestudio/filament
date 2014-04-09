@@ -154,6 +154,9 @@ exports.BindingJig = Montage.create(Component, {
                 bindingEntry = this.editingDocument.defineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath, converter);
             }
 
+            if (!bindingEntry) {
+                return;
+            }
 
             this.dispatchEventNamed("commit", true, false, {
                 bindingEntry: bindingEntry
