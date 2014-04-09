@@ -33,13 +33,15 @@ exports.Extension = CoreExtension.specialize( {
 
             projectController.addPathChangeListener("projectDocument", function(projectDocument) {
                 if (projectDocument) {
-                    projectDocument.build.addChain("gh-pages",
-                        "Publish to Github Pages",
-                        null,
-                        [{
-                            thisp: self,
-                            performBuildStep: self.publishToGithubPages
-                        }]);
+                    projectDocument.build.then(function(build) {
+                        build.addChain("gh-pages",
+                            "Publish to Github Pages",
+                            null,
+                            [{
+                                thisp: self,
+                                performBuildStep: self.publishToGithubPages
+                            }]);
+                    }).done();
                 }
             });
         }
@@ -47,9 +49,9 @@ exports.Extension = CoreExtension.specialize( {
 
     deactivate: {
         value: function (application, projectController) {
-            if (projectController.projectDocument) {
-                projectController.projectDocument.build.removeChain("download");
-            }
+            projectController.projectDocument.build.then(function(build) {
+                build.removeChain("gh-pages");
+            }).done();
             this.application = null;
             this.projectController = null;
         }

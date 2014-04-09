@@ -31,16 +31,21 @@ exports.Extension = CoreExtension.specialize( {
 
             projectController.addPathChangeListener("projectDocument", function(projectDocument) {
                 if (projectDocument) {
-                    projectDocument.build.addChain("download",
-                        "Download",
-                        null,
-                        [{
-                            thisp: self,
-                            performBuildStep: self.archive
-                        }, {
-                            thisp: self,
-                            performBuildStep: self.downloadArchive
-                        }]);
+                    projectDocument.build.then(function (build) {
+                        build.addChain("download",
+                            "Download",
+                            null,
+                            [
+                                {
+                                    thisp: self,
+                                    performBuildStep: self.archive
+                                },
+                                {
+                                    thisp: self,
+                                    performBuildStep: self.downloadArchive
+                                }
+                            ]);
+                    }).done();
                 }
             });
         }
@@ -48,9 +53,9 @@ exports.Extension = CoreExtension.specialize( {
 
     deactivate: {
         value: function (application, projectController) {
-            if (projectController.projectDocument) {
-                projectController.projectDocument.build.removeChain("download");
-            }
+            projectController.projectDocument.build.then(function(build) {
+                build.removeChain("download");
+            }).done();
             this.application = null;
             this.projectController = null;
         }
