@@ -297,18 +297,6 @@ exports.PackageExplorer = Component.specialize({
         }
     },
 
-    handleAddFileButtonAction: {
-        value: function (evt) {
-            this.dispatchEventNamed("addFile", true, true);
-        }
-    },
-
-    handleAddModuleButtonAction: {
-        value: function (evt) {
-            this.dispatchEventNamed("addModule", true, true);
-        }
-    },
-
     handleMenuAction: {
         value: function (event) {
             if (event.detail.identifier !== MENU_IDENTIFIER) {

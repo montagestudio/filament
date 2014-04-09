@@ -89,38 +89,6 @@
                     "projectController": {"<-": "@owner.projectController"},
                     "classList.has('contextualMenu-selection')": {"<-": "@owner.templateObjects.contextualMenu.fileInfo == fileInfo"}
                 }
-            },
-
-            "addFileButton": {
-                "prototype": "matte/ui/button.reel",
-                "properties": {
-                    "element": {"#": "add-file-button"}
-                },
-                "localizations": {
-                    "label": {"key": "add_component"}
-                },
-                "listeners": [
-                    {
-                        "type": "action",
-                        "listener": {"@": "owner"}
-                    }
-                ]
-            },
-
-            "addModuleButton": {
-                "prototype": "matte/ui/button.reel",
-                "properties": {
-                    "element": {"#": "add-module-button"}
-                },
-                "localizations": {
-                    "label": {"key": "add_module"}
-                },
-                "listeners": [
-                    {
-                        "type": "action",
-                        "listener": {"@": "owner"}
-                    }
-                ]
             }
         }
     </script>
@@ -141,11 +109,6 @@
         <div data-montage-id="fileList" class="PackageExplorer-list">
             <span data-montage-id="file-cell" data-arg="treeNode"></span>
         </div>
-        <div class="Shadow Shadow--bottom"></div>
-        <footer class="PackageExplorer-footer">
-            <button data-montage-id="add-file-button" class="PackageExplorer-footer-button" title="Add a new component to the project's ui directory">Component</button>
-            <button data-montage-id="add-module-button" class="PackageExplorer-footer-button" title="Add a new module to the project's core directory">Module</button>
-        </footer>
     </div>
 
 </body>
