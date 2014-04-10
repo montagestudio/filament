@@ -1,7 +1,6 @@
 var Document = require("palette/core/document").Document,
     Promise = require("montage/core/promise").Promise,
     application = require("montage/core/application").application,
-    MenuItem = require("adaptor/client/core/menu-item").MenuItem,
     Build = require("core/build").Build;
 
 var PROJECT_MENU = "project";
@@ -109,29 +108,38 @@ exports.ProjectDocument = Document.specialize({
 
     _initBuild: {
         value: function() {
-            var mainMenu = application.mainMenu,
-                projectMenu = mainMenu.menuItemForIdentifier(PROJECT_MENU),
+            var self = this,
+                projectMenu,
+                build,
                 buildMenu;
 
-            if (projectMenu) {
-                buildMenu = new MenuItem();
-                buildMenu.title = "Build"; // This should be localized
-                buildMenu.identifier = "build";
-                projectMenu.insertItem(buildMenu, 2).done();
-                application.addEventListener("menuAction", this, false);
-                this._buildMenu = buildMenu;
-            }
+            buildMenu = new this._environmentBridge.MenuItem();
+            buildMenu.title = "Build"; // This should be localized
+            buildMenu.identifier = "build";
+            this._buildMenu = buildMenu;
 
-            this.build = new Build();
-            this.build.delegate = this;
-            this.build.init(this._environmentBridge);
+            this.build = this._environmentBridge.mainMenu.then(function(mainMenu) {
+                projectMenu = mainMenu.menuItemForIdentifier(PROJECT_MENU);
+
+                if (projectMenu) {
+                    projectMenu.insertItem(buildMenu, 2).done();
+                    application.addEventListener("menuAction", self, false);
+                }
+
+                build = new Build();
+                build.delegate = self;
+                build.init(self._environmentBridge);
+
+                return build;
+            });
+            this.build.done();
         }
     },
 
     didAddBuildChain: {
         value: function(chain) {
             if (this._buildMenu) {
-                var menuItem = new MenuItem();
+                var menuItem = new this._environmentBridge.MenuItem();
 
                 menuItem.title = chain.name;
                 menuItem.identifier = MENU_IDENTIFIER_PREFIX + chain.identifier;
@@ -156,7 +164,9 @@ exports.ProjectDocument = Document.specialize({
 
             if (identifier.indexOf(MENU_IDENTIFIER_PREFIX) === 0) {
                 chainIdentifier = identifier.slice(MENU_IDENTIFIER_PREFIX.length);
-                this.build.buildFor(chainIdentifier).done();
+                this.build.then(function(build) {
+                    return build.buildFor(chainIdentifier);
+                }).done();
             }
         }
     },

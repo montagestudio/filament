@@ -14,12 +14,20 @@ var Menu = Montage.create(Montage, {
 
 });
 
+var MenuItem = Montage.specialize({
+
+});
+
 exports.menuMock = function (options) {
     var menu = Menu.create();
+    options = options || {};
     menu.menuItems = options.menuItems || {};
 
     return menu;
 };
 
+exports.menuItemMock = function(options) {
+    var menuItem = new MenuItem();
 
-
+    return menuItem;
+};
