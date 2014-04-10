@@ -45,9 +45,7 @@ exports.ComponentEditor = Editor.specialize({
 
     nextTarget: {
         get: function () {
-            // Consider whichever documentEditor is upfront to be the nextTarget
-            // unless there's a modalEditor open, in which case, start there
-            return this.modalEditorComponent || this._frontEditor;
+            return this._frontEditor;
         }
     },
 
