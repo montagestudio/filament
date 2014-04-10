@@ -35,6 +35,16 @@
             "localizations": {
                 "value": {"key": "copyright"}
             }
+        },
+
+        "forkNoticeCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "forkNoticeCondition"}
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.needsTutorial"}
+            }
         }
     }
     </script>
@@ -42,20 +52,22 @@
 <body>
     <div data-montage-id="main" class="Main">
         <section class="Intro">
-            <img class="Intro-logo" src="../../../assets/img/logo.png" alt="Montage Studio">
-            <p class="Intro-info"><span data-montage-id="versionText" class="Intro-version"></span><span class="Intro-support">(Optimized for Chrome)</span></p>
+            <h1 class="Intro-headline">Develop. Run. Share.</h1>
+            <p class="Intro-copy">Montage Studio lets you build MontageJS applications in the cloud and uses GitHub to store your source code.
+            </p>
+
+
+            <a href="/auth/github/" class="Action-button Action-button--login">
+                <div><em>Sign in with GitHub</em> <span data-montage-id="forkNoticeCondition">and fork an example project</span></div>
+            </a>
+
+            <p class="Intro-info"><span data-montage-id="versionText" class="Intro-version"></span><span class="Intro-support">(Optimized for Google Chrome)</span></p>
             <ul class="Intro-links">
                 <li>Need help? See our <a href="http://docs.montagestudio.com/montage-studio/tutorial-first-steps.html" target="_blank">First Steps</a> guide</li>
             </ul>
+
+            <img class="Intro-logo" src="../../../assets/img/logo.png" alt="Montage Studio">
             <p class="Intro-meta" data-montage-id="introMeta"></p>
-        </section>
-
-        <section class="Launcher">
-
-            <section class="Launcher-section Action">
-                <a href="/auth/github/" class="Action-button Action-button--login">Sign in with GitHub</a>
-            </section>
-
         </section>
 
     </div>

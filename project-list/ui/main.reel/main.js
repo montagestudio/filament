@@ -42,6 +42,17 @@ exports.Main = Montage.create(Component, {
 
             if (window.location.hash === "#new") {
                 this.showNewAppForm = true;
+            } else {
+                if (localStorage && JSON.parse(localStorage.getItem("needsTutorial"))) {
+                    repositoriesController.forkRepository("montagejs", "popcorn")
+                        .then(function (forkedRepo) {
+                            localStorage.setItem("needsTutorial", JSON.stringify(false));
+                            //TODO start setting up the workspace to avoid prompting user
+                            repositoriesController.open(forkedRepo);
+                        })
+                        .done();
+                }
+
             }
 
             this._upkeepProgressBar();
