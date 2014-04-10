@@ -320,12 +320,7 @@ var RepositoriesController = Montage.specialize({
 
                 // second if to fetch repositories if the JSON.parse failed
                 if (!this._ownedRepositoriesContent.content.length) {
-                    this.updateUserRepositories().then(function() {
-                        // save
-                        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(self._ownedRepositoriesContent.content));
-
-                        self._validateRecentRepositories();
-                    }).done();
+                    this.updateAndCacheUserRepositories().done();
                 }
             }
 
@@ -333,6 +328,19 @@ var RepositoriesController = Montage.specialize({
         },
         set: function (value) {
             this._ownedRepositoriesContent = value;
+        }
+    },
+
+    updateAndCacheUserRepositories: {
+        value: function () {
+            var self = this;
+
+            return this.updateUserRepositories().then(function () {
+                // cache repositories
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(self._ownedRepositoriesContent.content));
+                // validate recent repositories cache
+                self._validateRecentRepositories();
+            });
         }
     },
 

@@ -187,6 +187,12 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    handleHistoryRefreshAction: {
+        value: function () {
+            this.templateObjects.repositoriesController.updateAndCacheUserRepositories().done();
+        }
+    },
+
     _createNewApplication: {
         value: function () {
             var templateObjects = this.templateObjects,
