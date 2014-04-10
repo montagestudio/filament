@@ -17,20 +17,46 @@
             "owner": {
                 "prototype": "montage/ui/loader.reel",
                 "properties": {
+                    "element": {"#": "loader"},
                     "mainModule": "login/ui/main.reel"
                 }
             },
-            "loader": {
+            "loaderWidget": {
                 "prototype": "ui/widgets/loader.reel",
                 "properties": {
-                    "element": {"#": "loader"}
+                    "element": {"#": "loaderWidget"}
                 }
             }
         }
     </script>
 
+    <style>
+        .Attract {
+            position: absolute;
+            top: 0;
+            right: 300px;
+            bottom: 0;
+            left: 0;
+            pointer-events: none;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -100;
+            overflow: hidden;
+        }
+    </style>
+
 </head>
 <body>
-    <div data-montage-id="loader"></div>
+    <video autoplay="true" loop="true" poster="../../../assets/videos/3d-attract.jpg" class="Attract">
+        <source src="../../../assets/videos/3d-attract.mp4" type="video/mp4">
+        <source src="../../../assets/videos/3d-attract.webm" type="video/webm">
+        <source src="../../../assets/videos/3d-attract.ogg" type="video/ogg">
+    </video>
+
+    <div data-montage-id="loader">
+        <div data-montage-id="loaderWidget"></div>
+    </div>
 </body>
 </html>
