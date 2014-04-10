@@ -652,10 +652,10 @@ exports.AssetsManager = Montage.specialize({
             if (typeof relativePath === "string" && relativePath.length > 0 && this._currentDocument) {
                 relativePath = relativePath.replace(/^\.\/|^\//, ''); // remove ./ or / from the begin of a path.
 
-                var reelDocumentRelativeUrl = this._currentDocument.url.substring(this._projectUrl.length),
+                var reelDocumentRelativeUrl = this._currentDocument.url.substring(this.projectUrl.length),
                     assetUrl = this._resolvePaths(reelDocumentRelativeUrl, relativePath);
 
-                return this._findAssetWithFileUrl(this._projectUrl + assetUrl);
+                return this._findAssetWithFileUrl(this.projectUrl + assetUrl);
             }
         }
     },
