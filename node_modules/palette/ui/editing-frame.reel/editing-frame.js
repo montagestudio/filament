@@ -53,7 +53,7 @@ var PACKAGE_WINDOWS = [];
 var STAGE_CSS;
 require.read(require.mappings.stage.location + "stage.css")
 .then(function (contents) {
-    STAGE_CSS = contents.replace("bg-stage.svg", require.mappings.stage.location + "bg-stage.svg");
+    STAGE_CSS = contents;
 }).done();
 
 
@@ -118,37 +118,6 @@ exports.EditingFrame = Montage.create(Component, /** @lends module:"montage/ui/e
             }
 
             this.needsDraw = true;
-        }
-    },
-
-    load: {
-        value: function (fileUrl, packageUrl) {
-
-            if (!fileUrl) {
-                throw new Error("Missing required fileUrl");
-            }
-
-            // If already loading reject current loading request and load the new one
-            if (this._deferredEditingInformation) {
-                this._deferredEditingInformation.reject(new Error("New file loaded"));
-            }
-
-            this._deferredEditingInformation = Promise.defer();
-
-            var encodedFileUrl = encodeURIComponent(fileUrl);
-            // use mappings as the location of the stage package changes after mopping
-            this._stageUrl = require.mappings.stage.location + "index.html?reel-location=" + encodedFileUrl;
-
-            if (packageUrl) {
-                this._stageUrl += "&package-location=" + encodeURIComponent(packageUrl);
-            }
-
-            //Normalize slashes a bit, without affecting the protocol
-            this._stageUrl = this._stageUrl.replace(/([^:])\/\//g, "$1/");
-
-            this.needsDraw = true;
-
-            return this._deferredEditingInformation.promise;
         }
     },
 

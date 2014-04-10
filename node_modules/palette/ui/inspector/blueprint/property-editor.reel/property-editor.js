@@ -167,6 +167,7 @@ exports.PropertyEditor = Component.specialize(/** @lends module:"./property-edit
         }
     },
 
+    //jshint -W074
     handlePropertyTypeDependencyChange: {
         value: function() {
             var blueprint = this.propertyBlueprint;
@@ -218,5 +219,5 @@ exports.PropertyEditor = Component.specialize(/** @lends module:"./property-edit
             }
         }
     }
-
+    //jshint +W074
 });

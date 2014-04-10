@@ -10,7 +10,13 @@ the ```selectedObjects```. Only single selection is currently enabled.
 Loading a Component
 -------------------
  ```javascript
- editingFrame.load("http://localhost/my-app/ui/my-component.reel")
+ var module = "http://localhost/my-app/ui/my-component.reel";
+ editingFrame.loadTemplate(module)
+ aRequire.async("http://localhost/my-app/ui/my-component.reel").then(function (component) {
+     return component.MyComponent._loadTemplate();
+ }).then(function (template) {
+     return workbench.loadTemplate(template, module);
+ });
  ```
 
- The ```load``` method promises to resolve an EditingDocument.
+ The ```loadTemplate``` method promises to resolve an EditingDocument.

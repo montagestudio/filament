@@ -5,9 +5,9 @@ var Target = require("montage/core/target").Target,
 exports.Document = Target.specialize({
 
     constructor: {
-        value: function Document() {
+        value: function Document(url) {
             this.super();
-
+            this._url = url;
             this.defineBinding("isDirty", {
                 "<-": "_changeCount != 0"
             });
@@ -15,14 +15,14 @@ exports.Document = Target.specialize({
     },
 
     /**
-     * Return a promise for a document representing the specified URL
+     * Return a promise for the loading of this document the specified URL
      *
-     * @param {string} url The url for which to create a representative document
-     * @return {Promise} A promise that resolves to an initialized document instance
+     * @param {string} url The url for which to load the document.
+     * @return {Promise} A promise that resolves to this.
      */
     load: {
         value: function (url) {
-            return Promise.resolve(this.create().init(url));
+            return Promise.resolve(this.init(url));
         }
     },
 
@@ -147,10 +147,10 @@ exports.Document = Target.specialize({
         value: function (url, dataWriter) {
             var self = this;
             return Promise.when(dataWriter("", url))
-            .then(function (value) {
-                self._changeCount = 0;
-                return value;
-            });
+                .then(function (value) {
+                    self._changeCount = 0;
+                    return value;
+                });
         }
     },
 

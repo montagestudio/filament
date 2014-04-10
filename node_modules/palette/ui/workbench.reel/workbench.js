@@ -21,14 +21,6 @@ var Montage = require("montage").Montage,
 
 exports.Workbench = Montage.create(Component, /** @lends module:"ui/workbench.reel".Workbench# */ {
 
-    // Load the specified reel onto the workbench, optionally specifying the packageUrl
-    // Returns a promised editingInfo {owner, template}
-    load: {
-        value: function (fileUrl, packageUrl) {
-            return this.editingFrame.load(fileUrl, packageUrl);
-        }
-    },
-
     loadTemplate: {
         value: function (template, ownerModule, ownerName) {
             return this.editingFrame.loadTemplate(template, ownerModule, ownerName);

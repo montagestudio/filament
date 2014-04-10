@@ -80,6 +80,7 @@ exports.DocumentController = Target.specialize({
         value: function (url) {
             var openDocument = this.documentForUrl(url),
                 documentType,
+                doc,
                 self = this;
 
             if (openDocument) {
@@ -97,9 +98,11 @@ exports.DocumentController = Target.specialize({
 
                 documentType = this.documentTypeForUrl(url);
                 if (documentType) {
-                    return this.createDocumentWithTypeAndUrl(documentType, url)
-                    .then(function (doc) {
-                        self.addDocument(doc);
+                    doc = this.createDocumentWithTypeAndUrl(documentType, url);
+                    this.addDocument(doc);
+                    this.selectDocument(doc);
+                    return this.loadDocument(doc)
+                    .then(function() {
                         if (doc.url === self._latestUrl) {
                             self._setCurrentDocument(doc);
                         }
@@ -127,7 +130,13 @@ exports.DocumentController = Target.specialize({
      */
     createDocumentWithTypeAndUrl: {
         value: function (documentType, url) {
-            return documentType.load(url);
+            return new documentType(url);
+        }
+    },
+
+    loadDocument: {
+        value: function(doc) {
+            return doc.load(doc.url);
         }
     },
 
@@ -167,6 +176,10 @@ exports.DocumentController = Target.specialize({
                 this._urlDocumentMap.set(document.url, document);
             }
         }
+    },
+
+    selectDocument: {
+        value: Function.noop
     },
 
     /**

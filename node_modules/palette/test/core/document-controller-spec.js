@@ -79,23 +79,24 @@ describe("core/document-controller-spec", function () {
                 documentC;
 
             // Inject our own document loading to resolve documents in the order B, C,  A
-            documentController.createDocumentWithTypeAndUrl = function (documentType, url) {
+            documentController.loadDocument = function (doc) {
+                var url = doc.url;
 
                 if ("fileA" === url) {
                     return deferredC.promise.then(function () {
-                        return documentType.load(url).then(function (doc) {
+                        return doc.load(url).then(function (doc) {
                             deferredA.resolve(doc);
                             return doc;
                         });
                     });
                 } else if ("fileB" === url) {
-                    return documentType.load(url).then(function (doc) {
+                    return doc.load(url).then(function (doc) {
                         deferredB.resolve(doc);
                         return doc;
                     });
                 } else {
                     return deferredB.promise.then(function () {
-                        return documentType.load(url).then(function (doc) {
+                        return doc.load(url).then(function (doc) {
                             documentC = doc;
                             deferredC.resolve(doc);
                             return doc;

@@ -9,8 +9,8 @@ var Montage = require("montage").Montage,
 exports.EditingDocument = Document.specialize( {
 
     constructor: {
-        value: function EditingDocument() {
-            this.super();
+        value: function EditingDocument(url) {
+            this.super(url);
             this._editingProxyMap = {};
             this.selectedObjects = [];
             this.highlightedElements = [];
@@ -23,14 +23,8 @@ exports.EditingDocument = Document.specialize( {
     },
 
     load: {
-        value: function (fileUrl, packageUrl) {
-            var deferredDoc = Promise.defer(),
-                documentType = this;
-
-            require.loadPackage(packageUrl).then(function (packageRequire) {
-                deferredDoc.resolve(documentType.create().init(fileUrl, packageRequire));
-            });
-            return deferredDoc.promise;
+        value: function (fileUrl, packageUrl, packageRequire) {
+            return Promise.resolve(this.init(fileUrl, packageRequire));
         }
     },
 
