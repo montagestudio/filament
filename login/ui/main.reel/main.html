@@ -35,6 +35,16 @@
             "localizations": {
                 "value": {"key": "copyright"}
             }
+        },
+
+        "forkNoticeCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "forkNoticeCondition"}
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.needsTutorial"}
+            }
         }
     }
     </script>
@@ -46,7 +56,10 @@
             <p class="Intro-copy">Montage Studio lets you build MontageJS applications in the cloud and uses GitHub to store your source code.
             </p>
 
-            <a href="/auth/github/" class="Action-button Action-button--login">Sign in with GitHub</a>
+
+            <a href="/auth/github/" class="Action-button Action-button--login">
+                <div><em>Sign in with GitHub</em> <span data-montage-id="forkNoticeCondition">and fork an example project</span></div>
+            </a>
 
             <p class="Intro-info"><span data-montage-id="versionText" class="Intro-version"></span><span class="Intro-support">(Optimized for Google Chrome)</span></p>
             <ul class="Intro-links">

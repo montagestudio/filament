@@ -15,14 +15,25 @@ exports.Main = Component.specialize(/** @lends Main# */ {
         }
     },
 
+    needsTutorial: {
+        value: true
+    },
+
     enterDocument: {
         value: function (firstTime) {
             if (!firstTime) {
                 return;
             }
 
-            if (localStorage && JSON.parse(localStorage.getItem("needsTutorial")) === null) {
-                localStorage.setItem("needsTutorial", true);
+            if (localStorage) {
+                var needsTutorial = JSON.parse(localStorage.getItem("needsTutorial"));
+
+                if (null === needsTutorial) {
+                    localStorage.setItem("needsTutorial", true);
+                    needsTutorial = true;
+                }
+
+                this.needsTutorial = needsTutorial;
             }
         }
     }
