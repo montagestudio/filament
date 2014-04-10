@@ -1339,6 +1339,10 @@ exports.ReelDocument = EditingDocument.specialize({
 
     defineOwnedObjectBinding: {
         value: function (proxy, targetPath, oneway, sourcePath, converter) {
+            if (!this.isBindingParamsValid(targetPath, sourcePath)) {
+                return null;
+            }
+
             var binding = proxy.defineObjectBinding(targetPath, oneway, sourcePath, converter);
 
             if (binding) {
@@ -1407,8 +1411,18 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    isBindingParamsValid: {
+        value: function(targetPath, sourcePath) {
+            return targetPath && sourcePath;
+        }
+    },
+
     updateOwnedObjectBinding: {
         value: function (proxy, existingBinding, targetPath, oneway, sourcePath, converter) {
+            if (!this.isBindingParamsValid(targetPath, sourcePath)) {
+                return null;
+            }
+
             var originalTargetPath = existingBinding.targetPath,
                 originalOneway = existingBinding.oneway,
                 originalSourcePath = existingBinding.sourcePath,
