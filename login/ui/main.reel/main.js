@@ -13,5 +13,17 @@ exports.Main = Component.specialize(/** @lends Main# */ {
         value: function Main() {
             this.super();
         }
+    },
+
+    enterDocument: {
+        value: function (firstTime) {
+            if (!firstTime) {
+                return;
+            }
+
+            if (localStorage && JSON.parse(localStorage.getItem("needsTutorial")) === null) {
+                localStorage.setItem("needsTutorial", true);
+            }
+        }
     }
 });
