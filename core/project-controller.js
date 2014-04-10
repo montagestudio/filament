@@ -1215,8 +1215,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 throw new Error("Cannot create " + thing + " without an open project"); // TODO localize
             }
 
-            var options = {
-                    defaultDirectory: Url.resolve(this.packageUrl, subdirectory),
+            var defaultDirectory = (subdirectory)? Url.resolve(this.packageUrl, subdirectory) : this.packageUrl,
+                options = {
+                    defaultDirectory: defaultDirectory.replace(/\/$/, ""),
                     defaultName: "my-" + thing, // TODO localize
                     prompt: "Create " + thing, //TODO localize
                     submitLabel: "Create"
@@ -1233,8 +1234,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     var destinationDividerIndex = destination.lastIndexOf("/"),
                         name = destination.substring(destinationDividerIndex + 1),
                     //TODO complain if packageHome does not match this.packageUrl?
-                        packageHome = destination.substring(0, destinationDividerIndex).replace("file://localhost", ""),
-                        relativeDestination = destination.substring(0, destinationDividerIndex).replace(packageHome, "").replace(/^\//, ""),
+                        packageHome = self.packageUrl,
+                        relativeDestination = destination.substring(self.packageUrl.length, destinationDividerIndex),
                         promise = fn(name, packageHome, relativeDestination);
 
                     self.dispatchEventNamed("asyncActivity", true, false, {
@@ -1261,11 +1262,12 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      * @returns {Promise} A Promise for the url of the created component
      */
     createComponent: {
-        value: function () {
+        value: function (path) {
             var self = this,
                 projectDocument = this.projectDocument;
 
-            return this._create("component", "ui", projectDocument.createComponent.bind(projectDocument))
+            path = (path)? path.replace(/^\//, "").replace(/\/$/, "") : "ui";
+            return this._create("component", path, projectDocument.createComponent.bind(projectDocument))
                 .then(function (url) {
                     var result;
                     if (url) {
@@ -1283,11 +1285,12 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     },
 
     createModule: {
-        value: function () {
+        value: function (path) {
             var self = this,
                 projectDocument = this.projectDocument;
 
-            return this._create("module", "core", projectDocument.createModule.bind(projectDocument))
+            path = (path)? path.replace(/^\//, "").replace(/\/$/, "") : undefined;
+            return this._create("module", path, projectDocument.createModule.bind(projectDocument))
                 .then(function (url) {
                     var result;
                     if (url) {
@@ -1297,6 +1300,43 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 });
         }
     },
+
+    canAddDirectory: {
+        get: function () {
+            return this.canEdit;
+        }
+    },
+
+    addDirectory: {
+        value: function (path) {
+            var defaultDirectory = (path)? Url.resolve(this.packageUrl, path) : this.packageUrl,
+                options = {
+                    defaultDirectory: defaultDirectory,
+                    defaultName: "Untitled Folder", // TODO localize
+                    prompt: "Create Folder", // TODO localize
+                    submitLabel: "Create"
+                },
+                self = this;
+
+            return this.environmentBridge.promptForSave(options)
+                .then(function (destination) {
+                    return self.projectDocument.makeTree(destination);
+                });
+        }
+    },
+
+    canRemoveTree: {
+        get: function () {
+            return this.canEdit;
+        }
+    },
+
+    removeTree: {
+        value: function (path) {
+            return this.projectDocument.removeTree(path);
+        }
+    },
+
 
     //TODO get rid of this when we get property dependencies
     handleCanEditDependencyWillChange: {

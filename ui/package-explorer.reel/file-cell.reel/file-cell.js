@@ -2,6 +2,7 @@ var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     application = require("montage/core/application").application,
     Promise = require("montage/core/promise").Promise,
+    MenuModule = require("core/menu"),
     Url = require("core/url");
 
 exports.FileCell = Montage.create(Component, {
@@ -46,23 +47,80 @@ exports.FileCell = Montage.create(Component, {
                     this.element.addEventListener("dragstart", this);
                 }
 
-                this.element.addEventListener("mouseup", this, false);
-                this.element.addEventListener("contextmenu", this, false);
+                this.element.addEventListener("mouseup", this);
+
+                // contextualMenu
+                this.addEventListener("contextualMenuValidate", this, false);
+                this.addEventListener("contextualMenuAction", this, false);
             }
         }
     },
 
-    handleContextmenu: {
-        value: function (evt) {
-            evt.stopImmediatePropagation();
-            evt.stop();
+    _contextualMenu: {
+        value: null
+    },
 
-            this.dispatchEventNamed("showContextualMenu", true, true, {
-                fileInfo: this.fileInfo,
-                position: {top: evt.clientY, left: evt.clientX}
-            });
+    contextualMenu: {
+        get: function () {
+            if (this._contextualMenu) {
+                return this._contextualMenu;
+            }
+
+            // TODO: one menu instance for every file, RLY ?!!!
+            var menu = this.ownerComponent._createContextualMenu(),
+                deleteItem = MenuModule.makeMenuItem("Delete", "delete", true, "");
+            menu.insertItem(deleteItem);
+            this._contextualMenu = menu;
+
+            return this._contextualMenu;
         }
     },
+
+    handleContextualMenuValidate: {
+        value: function (evt) {
+            var menuItem = evt.detail,
+                identifier = menuItem.identifier;
+
+            switch (identifier) {
+            case "delete":
+                evt.stop();
+                menuItem.enabled = true;
+                break;
+            }
+
+        }
+    },
+
+    handleContextualMenuAction: {
+        value: function (evt) {
+            var menuItem = evt.detail,
+                identifier = menuItem.identifier;
+
+            switch (identifier) {
+            case "newDirectory":
+                evt.stop();
+                this.dispatchEventNamed("addDirectory", true, true, {path: this.fileInfo.filename});
+                break;
+
+            case "newComponent":
+                evt.stop();
+                this.dispatchEventNamed("addFile", true, true, {path: this.fileInfo.filename});
+                break;
+
+            case "newModule":
+                evt.stop();
+                this.dispatchEventNamed("addModule", true, true, {path: this.fileInfo.filename});
+                break;
+
+            case "delete":
+                evt.stop();
+                this.dispatchEventNamed("removeTree", true, true, {path: this.fileInfo.filename});
+                break;
+            }
+        }
+    },
+
+
 
     _isUploading: {
         value: false
@@ -363,9 +421,7 @@ exports.FileCell = Montage.create(Component, {
     handleMouseup: {
         value: function (evt) {
             if (evt.button === 2) {
-                evt.stopImmediatePropagation();
                 evt.stop();
-                this.ownerComponent.templateObjects.contextualMenu.hide();
             }
         }
     }
