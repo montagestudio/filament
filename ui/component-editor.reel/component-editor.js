@@ -1,8 +1,7 @@
 var WeakMap = require("montage/collections/weak-map"),
     Editor = require("palette/ui/editor.reel").Editor,
     Promise = require("montage/core/promise").Promise,
-    Template = require("montage/core/template").Template,
-    defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
+    Template = require("montage/core/template").Template;
 
 exports.ComponentEditor = Editor.specialize({
 
@@ -25,10 +24,6 @@ exports.ComponentEditor = Editor.specialize({
     constructor: {
         value: function ComponentEditor() {
             this.super();
-            this._editorsToInsert = [];
-            this._editorsToRemove = [];
-            this._openEditors = [];
-            this._documentEditorMap = new WeakMap();
             this._documentModalEditorMap = new WeakMap();
         }
     },
