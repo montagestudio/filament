@@ -4,8 +4,8 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
 exports.ImageDocument = EditingDocument.specialize({
 
     constructor: {
-        value: function ImageDocument () {
-            this.super();
+        value: function ImageDocument(fileUrl) {
+            this.super(fileUrl);
         }
     }
 

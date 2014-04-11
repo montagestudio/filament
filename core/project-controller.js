@@ -485,8 +485,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     /**
      * @override
      */
-    createDocumentWithTypeAndUrl: {
-        value: function (documentType, url) {
+    loadDocument: {
+        value: function(doc) {
             var self = this;
             var environmentBridge = this.environmentBridge;
             function dataReader(url) {
@@ -495,7 +495,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             return this.getPackageRequire(this.packageUrl)
             .then(function(packageRequire) {
-                return documentType.load(url, self.packageUrl, packageRequire, dataReader);
+                return doc.load(doc.url, self.packageUrl, packageRequire, dataReader);
             });
         }
     },
@@ -617,6 +617,12 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             var result = this.super(document);
             this.dispatchFileChanges(document);
             return result;
+        }
+    },
+
+    selectDocument: {
+        value: function(document) {
+            this.openDocumentsController.selection = [document];
         }
     },
 

@@ -6,8 +6,8 @@ exports.ColladaDocument = EditingDocument.specialize ({
     compiledFileURL: { value: null, writable: true },
 
     constructor: {
-        value: function ColladaDocument () {
-            this.super();
+        value: function ColladaDocument(fileUrl) {
+            this.super(fileUrl);
         }
     }
 

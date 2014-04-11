@@ -16,7 +16,7 @@ describe("core/reel-document-spec", function () {
     describe("loading a data model given a locationId", function () {
 
         beforeEach(function () {
-            reelDocumentPromise = ReelDocument.load(require.location + "test/mocks/ui/simple.reel", require.location, require, dataReader);
+            reelDocumentPromise = new ReelDocument().load(require.location + "test/mocks/ui/simple.reel", require.location, require, dataReader);
         });
 
         it("should return a promise for the populated document", function () {
@@ -36,7 +36,7 @@ describe("core/reel-document-spec", function () {
 
     describe("loading a template with image references", function () {
         beforeEach(function () {
-            reelDocumentPromise = ReelDocument.load(require.location + "test/mocks/ui/images.reel", require.location, require, dataReader);
+            reelDocumentPromise = new ReelDocument().load(require.location + "test/mocks/ui/images.reel", require.location, require, dataReader);
         });
 
         it("should return a promise for the populated document", function () {
