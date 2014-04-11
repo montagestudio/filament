@@ -211,7 +211,7 @@
                 "bindings": {
                     "max": {"<-": "@repositoriesController.totalDocuments"},
                     "value": {"<-": "[value, @repositoriesController.processedDocuments].max{}"},
-                    "classList.has('is-done')": {"<-": "@repositoriesController.totalDocuments == [value, @repositoriesController.processedDocuments].max{}"}
+                    "classList.has('is-done')": {"<-": "[value, @repositoriesController.processedDocuments].max{} >= [max, @repositoriesController.totalDocuments].min{}"}
                 }
             },
 
