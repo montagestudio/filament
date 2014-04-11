@@ -47,12 +47,17 @@ exports.Main = Montage.create(Component, {
                     repositoriesController.forkRepository("montagejs", "popcorn")
                         .then(function (forkedRepo) {
                             localStorage.setItem("needsTutorial", JSON.stringify(false));
-                            //TODO start setting up the workspace to avoid prompting user
-                            repositoriesController.open(forkedRepo);
+
+                            return requestOk({
+                                method: "POST",
+                                url: "/api/" + forkedRepo.owner.login + "/" + forkedRepo.name + "/init_popcorn"
+                            })
+                            .then(function() {
+                                return repositoriesController.open(forkedRepo);
+                            });
                         })
                         .done();
                 }
-
             }
 
             this._upkeepProgressBar();
@@ -232,8 +237,7 @@ exports.Main = Montage.create(Component, {
         value: function (owner, repoName) {
             var repositoriesController = this.templateObjects.repositoriesController;
             return repositoriesController.forkRepository(owner, repoName).then(function (forkedRepo) {
-                console.log("forked repository", forkedRepo);
-                repositoriesController.open(forkedRepo);
+                return repositoriesController.open(forkedRepo);
             }, function (err) {
                 console.error("failed to fork repository");
                 throw err;
