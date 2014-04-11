@@ -128,8 +128,26 @@ var RepositoriesController = Montage.specialize({
         }
     },
 
-    totalDocuments: {
+    _totalDocuments: {
         value: 0
+    },
+
+    totalDocuments: {
+        get: function () {
+            return this._totalDocuments;
+        },
+
+        set: function (value) {
+            if (value === this._totalDocuments) {
+                return;
+            }
+
+            if (this._totalDocuments && value > this._totalDocuments) {
+                var growth = value / this._totalDocuments;
+                this.processedDocuments = Math.ceil(this.processedDocuments * growth);
+            }
+            this._totalDocuments = value;
+        }
     },
 
     processedDocuments: {
@@ -334,7 +352,8 @@ var RepositoriesController = Montage.specialize({
     updateAndCacheUserRepositories: {
         value: function () {
             var self = this;
-
+            this.totalDocuments = 0;
+            this.processedDocuments = 0;
             return this.updateUserRepositories().then(function () {
                 // cache repositories
                 localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(self._ownedRepositoriesContent.content));
