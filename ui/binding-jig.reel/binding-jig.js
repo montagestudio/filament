@@ -86,7 +86,9 @@ exports.BindingJig = Montage.create(Component, {
     handleDefineBindingButtonAction: {
         value: function (evt) {
             evt.stop();
-            this._commitBindingEdits();
+            this._commitBindingEdits().catch(function(error) {
+                // Ignore validation error
+            }).done();
         }
     },
 
@@ -126,7 +128,9 @@ exports.BindingJig = Montage.create(Component, {
                 return;
             }
 
-            this._commitBindingEdits();
+            this._commitBindingEdits().catch(function(error) {
+                // Ignore validation error
+            }).done();
         }
     },
 
@@ -146,24 +150,25 @@ exports.BindingJig = Montage.create(Component, {
                 oneway = model.oneway,
                 sourcePath = model.sourcePath,
                 converter = model.converter,
-                bindingEntry;
+                bindingPromise;
 
             if (this.existingBinding) {
-                bindingEntry = this.editingDocument.updateOwnedObjectBinding(proxy, this.existingBinding, targetPath, oneway, sourcePath, converter);
+                bindingPromise = this.editingDocument.updateOwnedObjectBinding(proxy, this.existingBinding, targetPath, oneway, sourcePath, converter);
             } else {
-                bindingEntry = this.editingDocument.defineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath, converter);
+                bindingPromise = this.editingDocument.defineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath, converter);
             }
 
-            if (!bindingEntry) {
-                return;
-            }
+            var self = this;
+            return bindingPromise.then(function(bindingEntry) {
+                self.dispatchEventNamed("commit", true, false, {
+                    bindingEntry: bindingEntry
+                });
 
-            this.dispatchEventNamed("commit", true, false, {
-                bindingEntry: bindingEntry
+                self.existingBinding = null;
+                self.bindingModel = null;
+
             });
 
-            this.existingBinding = null;
-            this.bindingModel = null;
         }
     },
 
