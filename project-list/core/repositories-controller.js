@@ -117,6 +117,14 @@ var RepositoriesController = Montage.specialize({
         }
     },
 
+    yyy: {
+        value: function (ownerLogin, repositoryName) {
+            var repositoryController = new RepositoryController();
+            repositoryController.init(ownerLogin, repositoryName);
+            return repositoryController.xxx();
+        }
+    },
+
     _getListOfRepositories: {
         value: function() {
             if (this.selectedGroup === this.recent) {

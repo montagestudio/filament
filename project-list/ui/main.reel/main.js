@@ -47,8 +47,11 @@ exports.Main = Montage.create(Component, {
                     repositoriesController.forkRepository("montagejs", "popcorn")
                         .then(function (forkedRepo) {
                             localStorage.setItem("needsTutorial", JSON.stringify(false));
-                            //TODO start setting up the workspace to avoid prompting user
-                            repositoriesController.open(forkedRepo);
+
+                            return repositoriesController.yyy(forkedRepo.owner.login, forkedRepo.name)
+                            .then(function () {
+                                repositoriesController.open(forkedRepo);
+                            });
                         })
                         .done();
                 }
