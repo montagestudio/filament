@@ -36,6 +36,8 @@ exports.Main = Montage.create(Component, {
 
     enterDocument: {
         value: function (firstTime) {
+            var self = this;
+
             if (!firstTime) {
                 return;
             }
@@ -48,11 +50,15 @@ exports.Main = Montage.create(Component, {
                         .then(function (forkedRepo) {
                             localStorage.setItem("needsTutorial", JSON.stringify(false));
                             //TODO start setting up the workspace to avoid prompting user
-                            repositoriesController.open(forkedRepo);
+                            return self.userController.getUser().then(function(user) {
+                                return requestOk({url:"/api/" + user.login + "/popcorn/init_popcorn", method: "POST"})
+                                .then(function() {
+                                    return repositoriesController.open(forkedRepo);
+                                });
+                            });
                         })
                         .done();
                 }
-
             }
 
             this._upkeepProgressBar();
@@ -230,10 +236,16 @@ exports.Main = Montage.create(Component, {
 
     _forkRepository: {
         value: function (owner, repoName) {
+            var self = this;
+
             var repositoriesController = this.templateObjects.repositoriesController;
             return repositoriesController.forkRepository(owner, repoName).then(function (forkedRepo) {
-                console.log("forked repository", forkedRepo);
-                repositoriesController.open(forkedRepo);
+                return self.userController.getUser().then(function(user) {
+                    return requestOk({url:"/api/" + user.login + "/" + repoName + "/init_" + repoName, method: "POST"})
+                    .then(function() {
+                        return repositoriesController.open(forkedRepo);
+                    });
+                });
             }, function (err) {
                 console.error("failed to fork repository");
                 throw err;
