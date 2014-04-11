@@ -444,11 +444,15 @@ exports.AssetsManager = Montage.specialize({
                         return startPath + endPath;
                     }
 
-                    if (rootPath.charAt(0) !== "/") {
+                    if (rootPath[0] !== "/") {
                         rootPath = '/' + rootPath;
                     }
 
-                    return rootPath + '/' + endPath;
+                    if (endPath[0] !== "/") {
+                        endPath = '/' + endPath;
+                    }
+
+                    return rootPath + endPath;
                 }
             }
         }
@@ -463,7 +467,7 @@ exports.AssetsManager = Montage.specialize({
      */
     getRelativePathWithAssetFromCurrentReelDocument: {
         value: function (asset) {
-            var projectUrl = this.projectUrl,
+            var projectUrl = this._projectUrl,
                 currentReelDocument = this._currentDocument;
 
             if (projectUrl && AssetTools.isAssetValid(asset) && currentReelDocument instanceof ReelDocument) {
@@ -652,10 +656,10 @@ exports.AssetsManager = Montage.specialize({
             if (typeof relativePath === "string" && relativePath.length > 0 && this._currentDocument) {
                 relativePath = relativePath.replace(/^\.\/|^\//, ''); // remove ./ or / from the begin of a path.
 
-                var reelDocumentRelativeUrl = this._currentDocument.url.substring(this.projectUrl.length),
+                var reelDocumentRelativeUrl = this._currentDocument.url.substring(this._projectUrl.length),
                     assetUrl = this._resolvePaths(reelDocumentRelativeUrl, relativePath);
 
-                return this._findAssetWithFileUrl(this.projectUrl + assetUrl);
+                return this._findAssetWithFileUrl(this._cleanPath(this._projectUrl) + assetUrl);
             }
         }
     },
