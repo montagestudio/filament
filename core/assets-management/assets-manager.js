@@ -444,11 +444,11 @@ exports.AssetsManager = Montage.specialize({
                         return startPath + endPath;
                     }
 
-                    if (rootPath.charAt(0) !== "/") {
+                    if (rootPath[0] !== "/") {
                         rootPath = '/' + rootPath;
                     }
 
-                    if (endPath.charAt(0) !== "/") {
+                    if (endPath[0] !== "/") {
                         endPath = '/' + endPath;
                     }
 
