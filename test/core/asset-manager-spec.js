@@ -363,7 +363,6 @@ describe("asset-manager-spec", function () {
             assetsManager._projectUrl = 'http://a/b/c/';
             assetsManager.projectController.currentDocument._url = 'http://a/b/c/d/';
 
-            debugger
             expect(assetsManager.getAssetByRelativePath("e/f.png").fileUrl).toEqual(asset.fileUrl);
             expect(assetsManager.getAssetByRelativePath("./e/f.png").fileUrl).toEqual(asset.fileUrl);
             expect(assetsManager.getAssetByRelativePath("/e/f.png").fileUrl).toEqual(asset.fileUrl);
