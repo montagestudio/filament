@@ -635,15 +635,6 @@ exports.Editor = Montage.create(Component, {
         }
     },
 
-    willDraw: {
-        enumerable: false,
-        value: function () {
-            if (!this.standAlone && !window.top.document.getElementsByTagName("iframe")[0].parentNode.component.currentMode) {
-                window.top.document.getElementsByTagName("iframe")[0].parentNode.component.currentMode = 1;
-            }
-        }
-    },
-
     draw: {
         enumerable: false,
         value: function () {
