@@ -29,12 +29,17 @@
 }
 
 .ComponentEditor-column-row--fixed {
-    -webkit-flex: 0 1 200px;
+    -webkit-flex: 1 1 200px;
     font-size: 12px;
     text-shadow: 0 1px 0 hsla(0,0%,100%,0.4);
     padding: 0;
     background: hsl(0, 0%, 92%);
 }
+
+.ComponentEditor-column .Bar{
+    height: 47px;
+}
+
 
 /* States ----------------------- */
 
