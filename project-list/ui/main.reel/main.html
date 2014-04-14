@@ -146,6 +146,24 @@
                 ]
             },
 
+            "exploreTodoButton": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "exploreTodoButton"}
+                },
+                "bindings": {
+                    "label": {"<-": "!!@repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('studio-todo') ? 'Open Todo' : 'Fork Todo'"},
+                    "detail.get('owner')": {"<-": "'montagejs'"},
+                    "detail.get('repository')": {"<-": "'studio-todo'"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
             "versionText": {
                 "prototype": "montage/ui/text.reel",
                 "properties": {
@@ -297,16 +315,17 @@
 
 
             <ul class="Intro-examples">
-                <li data-montage-id="">
-                    <img src="../../assets/images/popcorn.jpg" width="320" height="201">
-                    <button data-montage-id="explorePopcornButton"></button>
+                <li class="Intro-examples--featured">
+                    <img src="../../assets/images/todo.jpg" width="320" height="201" class="Intro-examples-image">
+                    <button data-montage-id="exploreTodoButton" class="Button Button--action"></button>
+                    <a href="http://docs.montagestudio.com/montage-studio/tutorial-simple-to-do.html" target="_blank" data-montage-id="openDocs" class="Button Button--action">Build it Yourself</a>
+                </li>
+                <li class="Intro-examples--featured">
+                    <img src="../../assets/images/popcorn.jpg" width="320" height="201" class="Intro-examples-image">
+                    <button data-montage-id="explorePopcornButton" class="Button Button--action"></button>
                 </li>
             </ul>
 
-            <ul class="Intro-links">
-                <li>Explore a <a href="http://docs.montagestudio.com/montage-studio/tutorial-first-steps-sample-project.html" target="_blank">sample project</a></li>
-                <li>Build a <a href="http://docs.montagestudio.com/montage-studio/tutorial-simple-to-do.html" target="_blank">simple to-do application</a></li>
-            </ul>
             <p class="Intro-meta" data-montage-id="introMeta"></p>
         </section>
 

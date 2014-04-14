@@ -73,6 +73,25 @@
 
 
 
+/* Examples --------------------------------- */
+
+.Intro-examples--featured {
+    margin: 2em 0;
+}
+
+.Intro-examples--featured .Intro-examples-image {
+    -webkit-box-shadow: 0 0 2px hsla(0,0%,30%,0.5);
+    margin-bottom: 0.2em;
+}
+
+.Intro-examples--featured .Button {
+    min-width: 10em;
+}
+
+.Intro-examples-description {
+    margin: 0.2em 0;
+    text-align: left;
+}
 
 /* Launcher --------------------------------- */
 
