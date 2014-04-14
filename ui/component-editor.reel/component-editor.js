@@ -58,6 +58,7 @@ exports.ComponentEditor = Editor.specialize({
                 this.addEventListener("addBinding", this, false);
 
                 this.needsDraw = true;
+                document.editor = this;
 
                 // Component highlight templateExplorer -> stage & domExplorer
                 this.addEventListener("highlightComponent", this, false);
