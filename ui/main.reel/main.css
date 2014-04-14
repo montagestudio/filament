@@ -28,7 +28,7 @@
     min-height: 0;
     display: -webkit-flex;
     -webkit-flex-direction: column;
-    background-color: hsl(0, 0%, 26%);
+    background: hsl(0, 0%, 26%) url(reference.png) no-repeat;
 }
 
 .standby {
