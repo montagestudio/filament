@@ -42,22 +42,6 @@ exports.Main = Montage.create(Component, {
 
             if (window.location.hash === "#new") {
                 this.showNewAppForm = true;
-            } else {
-                if (localStorage && JSON.parse(localStorage.getItem("needsTutorial"))) {
-                    repositoriesController.forkRepository("montagejs", "popcorn")
-                        .then(function (forkedRepo) {
-                            localStorage.setItem("needsTutorial", JSON.stringify(false));
-
-                            return requestOk({
-                                method: "POST",
-                                url: "/api/" + forkedRepo.owner.login + "/" + forkedRepo.name + "/init_popcorn"
-                            })
-                            .then(function() {
-                                return repositoriesController.open(forkedRepo);
-                            });
-                        })
-                        .done();
-                }
             }
 
             this._upkeepProgressBar();
