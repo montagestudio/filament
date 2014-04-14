@@ -394,6 +394,11 @@ exports.ComponentEditor = Editor.specialize({
                 this.projectController.removeEventListener("willOpenDocument", this, false);
             }
         }
+    },
+
+    //TODO this should be removed when no longer needed; it fulfills the API expected by the documentEditor this replaces
+    refresh: {
+        value: Function.noop
     }
 
 }, {
