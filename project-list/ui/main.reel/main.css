@@ -34,12 +34,11 @@
 
 .Intro-logo {
     display: block;
-    width: 240px;
     margin: auto;
 }
 
 .Intro-info {
-    margin: 2em 0;
+    margin: 0.2em 0;
 }
 
 .Intro-version {
