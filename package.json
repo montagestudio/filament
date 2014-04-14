@@ -14,7 +14,7 @@
         "minit": "git+ssh://git@github.com:montagejs/minit.git#v0.5.3",
         "mousse": "0.3.0",
         "q": "0.9.7",
-        "q-connection": "0.5.5",
+        "q-connection": "0.6.1",
         "q-io": "1.10.0",
         "mjs-volume": "git+ssh://git@github.com:fabrobinet/mjs-volume.git#1435ff07ac6f8e8e9a42624a3f4414b2d44238fa",
         "mop": "0.13.2",
