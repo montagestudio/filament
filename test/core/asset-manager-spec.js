@@ -335,7 +335,7 @@ describe("asset-manager-spec", function () {
                 assetRoot = assetsManager.getAssetByFileUrl("http://a/b/c/winter.jpg");
 
             assetsManager.addAsset(asset);
-            assetsManager._projectUrl = 'http://a/b/c/';
+            assetsManager.projectUrl = 'http://a/b/c/';
             assetsManager.projectController.currentDocument._url = 'http://a/b/c/d/';
 
             expect(assetsManager.getRelativePathWithAssetFromCurrentReelDocument(assetRoot)).toEqual('../winter.jpg');
@@ -360,7 +360,7 @@ describe("asset-manager-spec", function () {
 
             assetsManager.addAsset(asset);
             assetsManager.addAsset(asset2);
-            assetsManager._projectUrl = 'http://a/b/c/';
+            assetsManager.projectUrl = 'http://a/b/c/';
             assetsManager.projectController.currentDocument._url = 'http://a/b/c/d/';
 
             expect(assetsManager.getAssetByRelativePath("e/f.png").fileUrl).toEqual(asset.fileUrl);
