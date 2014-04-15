@@ -110,6 +110,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             this.undoManager.clearUndo();
             this.undoManager.clearRedo();
+            this._hasModifiedData = {undoCount: 0, redoCount: 0};
 
             this._template = template;
             this._templateBodyNode = new NodeProxy().init(template.document.body, this);
@@ -2720,6 +2721,7 @@ exports.ReelDocument = EditingDocument.specialize({
             this._packageRequire = packageRequire;
             this._moduleId = moduleId;
             this._exportName = MontageReviver.parseObjectLocationId(moduleId).objectName;
+            dataSource.registerDataModifier(this);
             return this;
         }
     },
@@ -2727,6 +2729,67 @@ exports.ReelDocument = EditingDocument.specialize({
     _getTemplateModuleId: {
         value: function(moduleId) {
             return moduleId.replace(/\/([^/]+).reel$/, "/$1.reel/$1.html");
+        }
+    },
+
+    _getHtmlFileUrl: {
+        value: function() {
+            var filenameMatch = this.url.match(/.+\/(.+)\.reel/);
+            return this.url + filenameMatch[1] + ".html";
+        }
+    },
+
+    _hasModifiedData: {
+        value: null
+    },
+
+    hasModifiedData: {
+        value: function(url) {
+            if (url === this._getHtmlFileUrl()) {
+                var undoManager = this._undoManager;
+                var hasModifiedData = this._hasModifiedData;
+                return undoManager && hasModifiedData &&
+                    (hasModifiedData.undoCount !== undoManager.undoCount ||
+                    hasModifiedData.redoCount !== undoManager.redoCount);
+            }
+        }
+    },
+
+    acceptModifiedData: {
+        value: function(url) {
+            if (url === this._getHtmlFileUrl()) {
+                this._hasModifiedData.undoCount = this._undoManager.undoCount;
+                this._hasModifiedData.redoCount = this._undoManager.redoCount;
+                return Promise.resolve(this._generateHtml());
+            }
+        }
+    },
+
+    rejectModifiedData: {
+        value: function(url) {
+            console.warn("modifications reseted");
+        }
+    },
+
+    needsRefresh: {
+        value: function() {
+            return this._dataSource.isModified(this._getHtmlFileUrl());
+        }
+    },
+
+    refresh: {
+        value: function() {
+            var self = this;
+            var htmlUrl = this._getHtmlFileUrl();
+
+            return this._dataSource.read(htmlUrl).then(function(content) {
+                var htmlDocument = document.implementation.createHTMLDocument("");
+                htmlDocument.documentElement.innerHTML = content;
+                return new Template().initWithDocument(htmlDocument, self._packageRequire);
+            }).then(function (template) {
+                self._openTemplate(template);
+                return true;
+            });
         }
     }
 
