@@ -165,9 +165,7 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
 
     description: {
         set: function (description) {
-            if (typeof description === 'string') {
-                this._package.description = description;
-            }
+            this._package.description = typeof description === 'string' ? description : '';
         },
         get: function () {
             return this._package.description;
@@ -189,9 +187,7 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
 
     license: {
         set: function (license) {
-            if (typeof license === 'string') {
-                this._package.license = license;
-            }
+            this._package.license = typeof license === 'string' ? license : '';
         },
         get: function () {
             return this._package.license;
@@ -200,9 +196,7 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
 
     private: {
         set: function (privacy) {
-            if (typeof privacy === "boolean") {
-                this._package.private = privacy;
-            }
+            this._package.private = !!privacy;
         },
         get: function () {
             return this._package.private;
