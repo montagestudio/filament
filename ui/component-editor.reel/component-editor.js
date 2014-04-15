@@ -1,7 +1,6 @@
 var WeakMap = require("montage/collections/weak-map"),
     Editor = require("palette/ui/editor.reel").Editor,
-    Promise = require("montage/core/promise").Promise,
-    Template = require("montage/core/template").Template;
+    Promise = require("montage/core/promise").Promise;
 
 exports.ComponentEditor = Editor.specialize({
 
@@ -19,6 +18,10 @@ exports.ComponentEditor = Editor.specialize({
 
     _modalEditorSlot: {
         value: null
+    },
+
+    _documentNeedsRefresh: {
+        value: false
     },
 
     constructor: {
@@ -62,6 +65,12 @@ exports.ComponentEditor = Editor.specialize({
         value: function (document) {
 
             if (document) {
+                if (document.needsRefresh()) {
+                    this._showLoadingPanel();
+                    this._documentNeedsRefresh = true;
+                } else if (document.errors.length > 0) {
+                    this._showErrorPanel();
+                }
 
                 //TODO why are these done here and not in the template? not sure they need to be here
                 this.addEventListener("addListenerForObject", this, false);
@@ -88,9 +97,23 @@ exports.ComponentEditor = Editor.specialize({
         }
     },
 
+    _refreshDocument: {
+        value: function() {
+            var self = this;
+
+            this.dispatchOwnPropertyChange("currentDocument", null);
+            this.dispatchOwnPropertyChange("editingDocument", null);
+            return this._currentDocument.refresh().then(function() {
+                self.dispatchOwnPropertyChange("currentDocument", self._currentDocument);
+                self.dispatchOwnPropertyChange("editingDocument", self._editingDocument);
+            });
+        }
+    },
+
     draw: {
         value: function () {
-            var modalEditorArea = this._modalEditorSlot,
+            var self = this,
+                modalEditorArea = this._modalEditorSlot,
                 modalEditorAreaHasContent = modalEditorArea.children.length > 0,
                 modalEditor = this.modalEditorComponent,
                 modalContentRange;
@@ -124,6 +147,42 @@ exports.ComponentEditor = Editor.specialize({
             } else {
                 this.element.classList.remove("palettes-hidden");
             }
+
+            if (this._documentNeedsRefresh) {
+                this._documentNeedsRefresh = false;
+                // Update the document on the next tick because it's too slow
+                // to do it inside the draw cycle.
+                // This draw cycle is just useful to show the component editor
+                // and the loading overlay.
+                Promise.fcall(function() {
+                    return self._refreshDocument();
+                }).then(function() {
+                    self._hidePanel();
+                }, function(reason) {
+                    console.log("Failed reloading document", reason);
+                    self._showErrorPanel();
+                });
+            }
+        }
+    },
+
+    _hidePanel: {
+        value: function() {
+            this.templateObjects.overlayPanel.visible = false;
+        }
+    },
+
+    _showLoadingPanel: {
+        value: function() {
+            this.templateObjects.overlayPanelMessage.value = "Reloading Component…";
+            this.templateObjects.overlayPanel.visible = true;
+        }
+    },
+
+    _showErrorPanel: {
+        value: function() {
+            this.templateObjects.overlayPanelMessage.value = "Error: Invalid document…";
+            this.templateObjects.overlayPanel.visible = true;
         }
     },
 
@@ -369,12 +428,13 @@ exports.ComponentEditor = Editor.specialize({
             var self = this;
             var ReelDocument = require("core/reel-document").ReelDocument,
                 reelDocument = new ReelDocument(),
-                fakePackageRequire;
+                preloadPackageRequire,
+                preloadDataSource;
 
             this.projectController.addEventListener("willOpenDocument", this, false);
 
-            fakePackageRequire = {
-                location: "",
+            preloadPackageRequire = {
+                location: "/",
                 async: function() {
                     return Promise.resolve({
                         PropertyBlueprint: {},
@@ -388,9 +448,16 @@ exports.ComponentEditor = Editor.specialize({
                 }
             };
 
-            return new Template().initWithModuleId("./preload-document.html", require)
-            .then(function(template) {
-                reelDocument.init("fileUrl", template, fakePackageRequire, "moduleId");
+            preloadDataSource = {
+                read: function() {
+                    return Promise.resolve(
+                        require("./preload-document.html").content);
+                },
+                registerDataModifier: Function.noop
+            };
+
+            return reelDocument.init("/module-id.reel", preloadDataSource, preloadPackageRequire).load()
+            .then(function() {
                 self._currentDocument = reelDocument;
             });
         }
