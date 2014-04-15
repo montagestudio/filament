@@ -5,11 +5,10 @@
     cursor: default;
 }
 
-
 /* Intro --------------------------------- */
 
 .Intro {
-    margin: 40px;
+    margin: 20px;
     color: hsl(0,0%,50%);
     text-align: center;
     -webkit-animation: Intro-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
@@ -34,11 +33,12 @@
 
 .Intro-logo {
     display: block;
+    width: 240px;
     margin: auto;
 }
 
 .Intro-info {
-    margin: 0.2em 0;
+    margin: 2em 0;
 }
 
 .Intro-version {
@@ -70,18 +70,31 @@
     text-align: center;
 }
 
+/* About ------------------------------------ */
 
+.About {
+    min-width: 240px;
+}
 
 /* Examples --------------------------------- */
 
+.Examples {
+    text-align: left;
+    min-width: 240px;
+}
+
+.Examples-headline {
+    margin-bottom: 0.2em;
+}
+
 .Intro-examples--featured {
     margin: 2em 0;
-    text-align: left;
 }
 
 .Intro-examples--featured .Intro-examples-image {
     -webkit-box-shadow: 0 0 2px hsla(0,0%,30%,0.5);
     margin-bottom: 0.2em;
+    width: 100%;
 }
 
 .Intro-examples--featured .Button {
@@ -97,6 +110,8 @@
 
 .Launcher {
     margin: 40px;
+    margin-left: 20px;
+    min-width: 240px;
     -webkit-animation: Launcher-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
 }
 
