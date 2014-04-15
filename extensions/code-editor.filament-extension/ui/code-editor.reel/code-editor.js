@@ -237,6 +237,10 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
                 this._codeMirror.swapDoc(this._openDocuments[editingDocument.uuid]);
                 this.needsDraw = true;
             }
+
+            if (editingDocument.needsRefresh()) {
+                editingDocument.refresh().done();
+            }
         }
     },
 
