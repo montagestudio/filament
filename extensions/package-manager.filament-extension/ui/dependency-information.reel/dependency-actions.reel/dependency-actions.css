@@ -32,7 +32,7 @@
 
 .DependencyActionItem-label {
     color: hsl(0,0%,40%);
-    min-width: 100px;
+    min-width: 120px;
     font-size: 12px;
     font-style: italic;
 }
@@ -54,10 +54,18 @@
     margin: 0;
 }
 
+.DependencyActionItem-content .matte-Button {
+    height: 25px;
+}
+
 .DependencyActionItem-content .matte-InputText {
     width: 100%;
 }
 
 .dependencyTypeLabel {
     margin: 0 4px;
+}
+
+.DependencyUpdate-item {
+    margin-left: auto;
 }
