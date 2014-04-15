@@ -2361,7 +2361,6 @@ exports.ReelDocument = EditingDocument.specialize({
                     expanded: true,
                     children: []
                 };
-            this.templateObjectsTree = root;
             insertionMap.set(ownerObject, root);
             return root;
         }
@@ -2411,18 +2410,24 @@ exports.ReelDocument = EditingDocument.specialize({
             return nodePosition;
         }
     },
+
+    buildTemplateObjectTree: {
+        value: function() {
+            this.templateObjectsTree = this.createTemplateObjectTree(this._editingProxyMap);
+        }
+    },
     /*
         Build the templateObjectsTree from the templatesNodes
         Steps:
             - add the root element
             - create a list of components to be arranged in the tree, "proxyFIFO"
-            - pick the head element, "nodeProxy" of the list and try to add it to the tree. 
+            - pick the head element, "nodeProxy" of the list and try to add it to the tree.
               While adding to the tree we keep a map of elements to tree node updated.
             - if the element has no DOM representation it is added to the root of the tree as first child
             - otherwise we seek the element's parentComponent to then add it
             - if the parentComponent has not yet been added we postpone adding this node for later by pushing back into the FIFO
     */
-    buildTemplateObjectTree: {
+    createTemplateObjectTree: {
         value: function () {
             var successivePushes = 0,
                 toggleStates = this.templateObjectsTreeToggleStates,
@@ -2431,7 +2436,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 // add the root
                 root = this._buildTreeAddRoot(insertionMap),
                 // filling the FIFO
-                proxyFIFO = this._buildTreeFillFIFO(proxyFIFO),
+                proxyFIFO = this._buildTreeFillFIFO(),
                 reelProxy,
                 parentReelProxy;
             while (reelProxy = proxyFIFO.shift()) {
@@ -2488,6 +2493,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 }
             }
             this.templateObjectsTreeToggleStates.clear();
+            return root;
         }
     },
 
