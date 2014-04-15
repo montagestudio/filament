@@ -460,11 +460,16 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    _generateHtml: {
+        value: function() {
+            this._buildSerializationObjects();
+            return new TemplateFormatter().init(this._template).getHtml();
+        }
+    },
+
     _saveHtml: {
         value: function (location, dataWriter) {
-            this._buildSerializationObjects();
-            var html = TemplateFormatter.create().init(this._template).getHtml();
-
+            var html = this._generateHtml();
             return dataWriter(html, location);
         }
     },
