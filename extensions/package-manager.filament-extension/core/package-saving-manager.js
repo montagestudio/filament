@@ -55,7 +55,7 @@ exports.PackageSavingManager = Montage.specialize({
             this._packageDocument.dispatchAsyncActivity(this._savingInProgressPromise, "Saving modification");
 
             return this._savingInProgressPromise.finally(function () {
-                // todo display the saving report
+                self._reportErrors();
                 self.reset();
             });
         }
@@ -102,16 +102,35 @@ exports.PackageSavingManager = Montage.specialize({
 
     _writeReport: {
         value: function (packageName, operation, error) {
-            var message = "[" + packageName + "]: ";
+            var objectReport = {
+                packageName: packageName,
+                message: "[" + packageName + "]: ",
+                operation: operation,
+                error: !!error,
+            };
 
             if (error) {
-                message += error.message;
+                objectReport.message += error.message;
             } else {
                 // todo localize
-                message += "has been " + (operation === DependencyManager.ACTIONS.INSTALL ? "installed" : "removed");
+                objectReport.message += "has been " + (operation === DependencyManager.ACTIONS.INSTALL ? "installed" : "removed");
             }
 
-            this._reportLastSaving.push(message);
+            this._reportLastSaving.push(objectReport);
+        }
+    },
+
+    _reportErrors: {
+        value: function () {
+            if (this._reportLastSaving.length > 0) {
+                var document = this._packageDocument;
+
+                this._reportLastSaving.forEach(function (report) {
+                    if (report.error) {
+                        document.dispatchAsyncActivity(Promise.reject(report.message), "PackageManager");
+                    }
+                });
+            }
         }
     },
 
