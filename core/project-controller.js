@@ -30,10 +30,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     // PROPERTIES
 
-    _deferredPackageRequireLoading: {
-        value: null
-    },
-
     _environmentBridge: {
         value: null
     },
@@ -104,6 +100,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      * package.json
      */
     packageDescription: {
+        value: null
+    },
+
+    _packageRequirePromise: {
         value: null
     },
 
@@ -194,13 +194,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             //TODO get rid of this once we have property dependencies
             this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyWillChange", true);
             this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyChange");
-            this.addPathChangeListener("packageUrl", this, "handlePackageUrlChange");
 
             this.addPathChangeListener("currentDocument.undoManager.undoLabel", this);
             this.addPathChangeListener("currentDocument.undoManager.redoLabel", this);
             this.addPathChangeListener("currentDocument.undoManager.undoCount", this);
-
-            this._deferredPackageRequireLoading = Promise.defer();
 
             application.addEventListener("openUrl", this);
             application.addEventListener("openModuleId", this);
@@ -212,28 +209,16 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
-    handlePackageUrlChange: {
-        value: function(value) {
-            if (value) {
-                // preload package require
-                this.getPackageRequire(value).done();
-            }
-        }
-    },
-
     _packageRequires: {
         value: {}
     },
     getPackageRequire: {
         value: function(packageUrl) {
-            var self = this;
-
             if (!this._packageRequires[packageUrl]) {
                 this._packageRequires[packageUrl] = sandboxMontageApp(packageUrl)
                 .spread(function (packageRequire) {
-                    self._deferredPackageRequireLoading.resolve();
                     return packageRequire;
-                }, self._deferredPackageRequireLoading.reject);
+                });
             }
 
             return this._packageRequires[packageUrl];
@@ -260,7 +245,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             })
             .then(function() {
                 self._applicationDelegate.updateStatusMessage("Loading package…");
-                return self._deferredPackageRequireLoading.promise;
+                return self._packageRequirePromise;
             });
         }
     },
@@ -277,6 +262,11 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 packageUrl: packageUrl
             });
 
+            this._packageRequirePromise = this.getPackageRequire(packageUrl)
+            .then(function(packageRequire) {
+                self._packageRequire = packageRequire;
+                return packageRequire;
+            });
             this.packageUrl = packageUrl;
             this.dependencies = dependencies;
 

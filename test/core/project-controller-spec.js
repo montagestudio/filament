@@ -33,7 +33,7 @@ describe("core/project-controller-spec", function () {
 
         viewController = ViewController.create();
         projectController = ProjectController.create().init(bridge, viewController, editorController, null, null, applicationDelegate);
-        projectController._deferredPackageRequireLoading.resolve();
+        projectController._packageRequirePromise = Promise.resolve();
     });
 
     describe("canEdit status", function () {
