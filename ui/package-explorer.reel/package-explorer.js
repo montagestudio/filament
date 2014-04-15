@@ -5,7 +5,7 @@ var menuItemExports,
     MenuItem;
 
 try {
-    menuItemExports = require("adaptor/client/core/menu-item");
+    menuItemExports = require("/core/menu-item");
 } catch (e) {
     console.log("Environment did not provide a MenuItem");
 }

@@ -151,7 +151,6 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
         }
     },
 
-    // go to lines 138-139
     _dispatchValidate: {
         value: function (menuItem) {
             if (this.dispatchTarget) {
@@ -199,12 +198,13 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
 
     _openSubmenu: {
         value: function () {
-            var element = this.templateObjects.menuButton.element;
+            var element = this.templateObjects.menuButton.element,
+                self = this;
             this._toggleContextualMenu(element);
 
             if (this.isOpen) {
                 this.menuItemModel.items.forEach(function (item) {
-                    this._dispatchValidate(item);
+                    self._dispatchValidate(item);
                 });
             }
         }
