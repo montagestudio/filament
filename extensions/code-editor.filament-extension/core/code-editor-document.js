@@ -57,14 +57,13 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
     },
 
     init: {
-        value: function (fileUrl, packageRequire, content) {
-            var self = this.super(fileUrl);
-            self.content = content;
+        value: function (fileUrl, dataSource) {
+            this.super(fileUrl, dataSource);
 
-            self._mimeType = CodeEditorDocument.editorMimeType(fileUrl);
-            self.codeEditorInstance = null;
+            this._mimeType = CodeEditorDocument.editorMimeType(fileUrl);
+            this.codeEditorInstance = null;
 
-            return self;
+            return this;
         }
     },
 
@@ -208,12 +207,12 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
     },
 
     load: {
-        value: function (fileUrl, packageUrl, packageRequire, dataReader) {
+        value: function () {
             var self = this;
 
-            return dataReader(fileUrl)
+            return this._dataSource.read(this.url)
             .then(function (content) {
-                return self.init(fileUrl, null, content);
+                self.content = content;
             });
         }
     }

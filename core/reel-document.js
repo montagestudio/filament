@@ -22,8 +22,8 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
 exports.ReelDocument = EditingDocument.specialize({
 
     constructor: {
-        value: function ReelDocument(fileUrl) {
-            this.super(fileUrl);
+        value: function ReelDocument() {
+            this.super();
             this.sideData = Object.create(null);
             this.references = new ObjectReferences();
             this.selectedElements = [];
@@ -89,58 +89,54 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    init: {
-        value: function (fileUrl, template, packageRequire, moduleId) {
-            var self = this.super(fileUrl, packageRequire);
-            var error;
+    _openTemplate: {
+        value: function(template) {
+            var error,
+                editingProxyMap,
+                context;
 
-            self._template = template;
-            this._moduleId = moduleId;
-            this._exportName = MontageReviver.parseObjectLocationId(moduleId).objectName;
+            if (this.templateNodes) {
+                this.templateNodes.forEach(function(nodeProxy) {
+                    nodeProxy.destroy();
+                });
+            }
 
-            if (template) {
-                this.registerFile("html", this._saveHtml, this);
-
-                self._templateBodyNode = NodeProxy.create().init(this.htmlDocument.body, this);
-                self.templateNodes = this._children(self._templateBodyNode);
-                //TODO handle external serializations
-                try {
-                    var serialization = JSON.parse(template.getInlineObjectsString(template.document));
-                    if (serialization) {
-                        var context = this.deserializationContext(serialization);
-                        context.ownerExportId = moduleId;
-                        self._addProxies(context.getObjects());
-                        this.buildTemplateObjectTree();
-                    }
-                } catch (e) {
-
-                    error = {
-                        file: self.fileUrl,
-                        error: {
-                            id: "serializationError",
-                            reason: e.message,
-                            stack: e.stack
-                        }
-                    };
-                    self.errors.push(error);
+            editingProxyMap = this._editingProxyMap;
+            for (var key in editingProxyMap) {
+                if (editingProxyMap.hasOwnProperty(key) && editingProxyMap[key]) {
+                    editingProxyMap[key].destroy();
                 }
-            } else {
+            }
+
+            this.undoManager.clearUndo();
+            this.undoManager.clearRedo();
+
+            this._template = template;
+            this._templateBodyNode = new NodeProxy().init(template.document.body, this);
+            this.templateNodes = this._children(this._templateBodyNode);
+
+            this.errors.clear();
+            try {
+                var serialization = JSON.parse(template.getInlineObjectsString(template.document));
+                if (serialization) {
+                    context = this.deserializationContext(serialization);
+                    context.ownerExportId = this._moduleId;
+                    this._replaceProxies(context.getObjects());
+                }
+            } catch (e) {
+
                 error = {
-                    file: self.fileUrl,
+                    file: this.fileUrl,
                     error: {
-                        id: "syntaxError",
-                        reason: "Template was not found or was invalid"
+                        id: "serializationError",
+                        reason: e.message,
+                        stack: e.stack
                     }
                 };
+                this.errors.push(error);
 
-                self.errors.push(error);
             }
-
-            if (self.errors.length) {
-                console.error("Errors loading document", self.errors);
-            }
-
-            return self;
+            this.buildTemplateObjectTree();
         }
     },
 
@@ -2667,28 +2663,64 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    load: {
-        value: function (fileUrl, packageUrl, packageRequire, dataReader) {
+    _createTemplateWithUrl: {
+        value: function(url) {
             var self = this;
 
-            // require.async() expect moduleId not URLs
-            var componentModuleId = Url.toModuleId(fileUrl, packageUrl);
-            var templateModuleId = this._getTemplateModuleId(componentModuleId);
-
-            return dataReader(packageUrl + templateModuleId)
+            return this._dataSource.read(url)
             .then(function (templateContent) {
                 // Create the document for the template ourselves to avoid any massaging
                 // we might do for templates intended for use; namely, rebasing resources
                 var htmlDocument = document.implementation.createHTMLDocument("");
                 htmlDocument.documentElement.innerHTML = templateContent;
-                return new Template().initWithDocument(htmlDocument, packageRequire);
-            }).then(function (template) {
-                return self.init(fileUrl, template, packageRequire, componentModuleId);
-            }, function (error) {
-                // There is no template. This could still be a valid component…
-                console.log("Cannot load component template.", error);
-                return self.init(fileUrl, null, packageRequire, componentModuleId);
+                return new Template().initWithDocument(htmlDocument, self._packageRequire);
             });
+        }
+    },
+
+    load: {
+        value: function() {
+            var self = this;
+            var packageUrl = this._packageRequire.location;
+            var moduleId = Url.toModuleId(this.url, packageUrl);
+            var templateModuleId = this._getTemplateModuleId(moduleId);
+
+            return this._createTemplateWithUrl(packageUrl + templateModuleId)
+            .then(function(template) {
+                self._template = template;
+                self.registerFile("html", self._saveHtml, self);
+                self._openTemplate(template);
+                return self;
+            }, function() {
+                var error = {
+                    file: self.fileUrl,
+                    error: {
+                        id: "syntaxError",
+                        reason: "Template was not found or was invalid"
+                    }
+                };
+                self.errors.push(error);
+            })
+            .then(function() {
+                if (self.errors.length) {
+                    console.error("Errors loading document", self.errors);
+                }
+                return self;
+            });
+        }
+    },
+
+    init: {
+        value: function(fileUrl, dataSource, packageRequire) {
+            var packageUrl = packageRequire.location;
+            var moduleId = Url.toModuleId(fileUrl, packageUrl);
+
+            this.super(fileUrl, dataSource);
+
+            this._packageRequire = packageRequire;
+            this._moduleId = moduleId;
+            this._exportName = MontageReviver.parseObjectLocationId(moduleId).objectName;
+            return this;
         }
     },
 

@@ -32,7 +32,7 @@ describe("core/project-controller-spec", function () {
         applicationDelegate = applicationDelegateMock();
 
         viewController = ViewController.create();
-        projectController = ProjectController.create().init(bridge, viewController, editorController, null, null, applicationDelegate);
+        projectController = new ProjectController().init(bridge, viewController, editorController, null, null, applicationDelegate);
         projectController._packageRequirePromise = Promise.resolve();
     });
 

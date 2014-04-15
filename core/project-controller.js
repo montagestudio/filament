@@ -14,6 +14,7 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     Template = require("montage/core/template").Template,
     Url = require("core/url"),
     ProjectDocument = require("core/project-document").ProjectDocument,
+    DocumentDataSource = require("core/document-data-source").DocumentDataSource,
     sandboxMontageApp = require("palette/core/sandbox-montage-app");
 
 exports.ProjectController = ProjectController = DocumentController.specialize({
@@ -177,6 +178,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._extensionController = extensionController;
             this.previewController = previewController;
             this._applicationDelegate = applicationDelegate;
+
+            this._documentDataSource = new DocumentDataSource(bridge);
 
             this._moduleIdIconUrlMap = new Map();
             this._moduleIdLibraryItemMap = new Map();
@@ -472,21 +475,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
-    /**
-     * @override
-     */
-    loadDocument: {
-        value: function(doc) {
-            var self = this;
-            var environmentBridge = this.environmentBridge;
-            function dataReader(url) {
-                return environmentBridge.read(url);
-            }
-
-            return this.getPackageRequire(this.packageUrl)
-            .then(function(packageRequire) {
-                return doc.load(doc.url, self.packageUrl, packageRequire, dataReader);
-            });
+    createDocumentWithTypeAndUrl: {
+        value: function (documentType, url) {
+            return new documentType().init(url, this._documentDataSource, this._packageRequire);
         }
     },
 
