@@ -351,11 +351,13 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
             }
 
             if (this.menuFlashing) {
-                this.element.classList.remove("Flashing");
-                // Trigger a reflow to make sure the animation is played (http://css-tricks.com/restart-css-animation/)
-                this.element.offsetWidth = this.element.offsetWidth;
-                this.element.classList.add("Flashing");
-                this.menuFlashing = false;
+                if(this.element.classList.has("Flashing")) {
+                    this.element.classList.remove("Flashing");
+                    this.needsDraw = true;
+                } else {
+                    this.element.classList.add("Flashing");
+                     this.menuFlashing = false;
+                }
             }
         }
     }
