@@ -7,10 +7,16 @@
 .BindingJig-section--source,
 .BindingJig-section--target {
     -webkit-flex: 1 1 auto;
+    -moz-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
 }
 
 .BindingJig-section--direction {
     -webkit-flex: 0 0 auto;
+    -moz-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
 }
 
 
@@ -54,6 +60,9 @@
     border-radius: 3px 0 0 3px;
     background-image: url(/assets/icons/binding-un.svg),
                         -webkit-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+                        -moz-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+                        -ms-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+                        linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
 }
 .BindingJig-radio--unidirectional.montage-RadioButton--checked {
     background-image: url(/assets/icons/binding-un.svg);
@@ -63,6 +72,9 @@
     border-radius: 0 3px 3px 0;
     background-image: url(/assets/icons/binding-bi.svg),
                         -webkit-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+                        -moz-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+                        -ms-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+                        linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
 }
 .BindingJig-radio--bidirectional.montage-RadioButton--checked {
     background-image: url(/assets/icons/binding-bi.svg);

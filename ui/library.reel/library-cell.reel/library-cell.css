@@ -5,6 +5,9 @@
 
 .LibraryCell-button.matte-Button {
 	-webkit-appearance: none;
+	-moz-appearance: none;
+	-ms-appearance: none;
+	appearance: none;
 	display: block;
 	width: 100%;
 	height: auto;
@@ -75,11 +78,20 @@
 
 .LibraryGroup-list {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     -webkit-flex-flow: row wrap;
+    -moz-flex-flow: row wrap;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
 }
 
 .LibraryCell {
     -webkit-flex: 1 0 60px;
+    -moz-flex: 1 0 60px;
+    -ms-flex: 1 0 60px;
+    flex: 1 0 60px;
     max-width: 60px;
 }
 

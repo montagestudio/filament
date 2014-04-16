@@ -12,6 +12,9 @@
 
 .Search.matte-InputText {
     -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
     padding-right: 0; /* space for cancel button */
     font-family: inherit;
     color: hsl(0,0%,30%);
@@ -31,17 +34,26 @@
 }
 
 /* Search Close Button */
-.Search.matte-InputText::-webkit-search-cancel-button {
+.Search.matte-InputText::-webkit-search-cancel-button,
+.Search.matte-InputText::-moz-search-cancel-button,
+.Search.matte-InputText::-ms-search-cancel-button,
+.Search.matte-InputText::search-cancel-button {
   margin: 2px 8px 0 4px;
   opacity: .8;
   cursor: pointer;
 }
 
-.Search.matte-InputText::-webkit-search-cancel-button:hover {
+.Search.matte-InputText::-webkit-search-cancel-button:hover,
+.Search.matte-InputText::-moz-search-cancel-button:hover,
+.Search.matte-InputText::-ms-search-cancel-button:hover,
+.Search.matte-InputText::search-cancel-button:hover {
   opacity: 1;
 }
 
-.Search.matte-InputText::-webkit-search-cancel-button:active {
+.Search.matte-InputText::-webkit-search-cancel-button:active,
+.Search.matte-InputText::-moz-search-cancel-button:active,
+.Search.matte-InputText::-ms-search-cancel-button:active,
+.Search.matte-InputText::search-cancel-button:active {
   opacity: .3;
 }
 
@@ -77,6 +89,9 @@
     margin: 0;
     border-bottom: 1px solid hsl(0,0%,75%);
     background: -webkit-linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
+    background: -moz-linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
+    background: -ms-linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
+    background: linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
 }
 
 .Bar > .Button {
@@ -87,6 +102,9 @@
 
 .Panel.Panel--hidden {
     -webkit-flex: 0 1 0;
+    -moz-flex: 0 1 0;
+    -ms-flex: 0 1 0;
+    flex: 0 1 0;
     border: none;
 }
 
@@ -94,6 +112,9 @@
     position: absolute;
     z-index: 1;
     -webkit-flex: 0 1 0;
+    -moz-flex: 0 1 0;
+    -ms-flex: 0 1 0;
+    flex: 0 1 0;
     width: 200px;
     top: 40px;
     right: 40px;
@@ -104,15 +125,30 @@
 
 .Panel.Panel--noAnimation {
     -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    transition: none;
 }
 
 .Panel {
     -webkit-flex: 0 0 200px;
+    -moz-flex: 0 0 200px;
+    -ms-flex: 0 0 200px;
+    flex: 0 0 200px;
     min-width: 0;
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     -webkit-flex-flow: column;
+    -moz-flex-flow: column;
+    -ms-flex-flow: column;
+    flex-flow: column;
     position: relative;
     -webkit-transition: -webkit-flex .3s cubic-bezier(.26, .06, .08, 1);
+    -moz-transition: -moz-flex .3s cubic-bezier(.26, .06, .08, 1);
+    -ms-transition: -ms-flex .3s cubic-bezier(.26, .06, .08, 1);
+    transition: flex .3s cubic-bezier(.26, .06, .08, 1);
 }
 
 .Panel-bar {
@@ -121,6 +157,9 @@
     border-top: 1px solid hsla(0,0%,100%,1);
     border-bottom: 1px solid hsla(0,0%,0%,.2);
     background: -webkit-linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
+    background: -moz-linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
+    background: -ms-linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
+    background: linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
 }
 
 .Panel-title-button {
@@ -131,6 +170,9 @@
 
 .Panel-content {
     -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
     min-height: 0;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -142,6 +184,9 @@
     height: 4px;
     top: 32px; left: 0; right: 0;
     background-image: -webkit-radial-gradient(center 0%, ellipse farthest-side, hsla(0,0%,0%,0.1), hsla(0,0%,0%,.02) 110% );
+    background-image: -moz-radial-gradient(center 0%, ellipse farthest-side, hsla(0,0%,0%,0.1), hsla(0,0%,0%,.02) 110% );
+    background-image: -ms-radial-gradient(center 0%, ellipse farthest-side, hsla(0,0%,0%,0.1), hsla(0,0%,0%,.02) 110% );
+    background-image: radial-gradient(center 0%, ellipse farthest-side, hsla(0,0%,0%,0.1), hsla(0,0%,0%,.02) 110% );
 }
 
 
@@ -165,6 +210,9 @@
 	text-shadow: 0 1px 0 hsla(0,0%,100%,.8);
 	border-bottom: 1px solid hsla(0,0%,0%,.1);
 	background: -webkit-linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
+	background: -moz-linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
+	background: -ms-linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
+	background: linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
 	cursor: pointer;
 }
 
@@ -216,8 +264,14 @@
 
 .Shadow--top {
     background-image: -webkit-radial-gradient(center 0%, ellipse farthest-side, hsla(0, 0%, 0%, 0.2), hsla(0, 0%, 0%, 0.02) );
+    background-image: -moz-radial-gradient(center 0%, ellipse farthest-side, hsla(0, 0%, 0%, 0.2), hsla(0, 0%, 0%, 0.02) );
+    background-image: -ms-radial-gradient(center 0%, ellipse farthest-side, hsla(0, 0%, 0%, 0.2), hsla(0, 0%, 0%, 0.02) );
+    background-image: radial-gradient(center 0%, ellipse farthest-side, hsla(0, 0%, 0%, 0.2), hsla(0, 0%, 0%, 0.02) );
 }
 .Shadow--bottom {
     margin-top: -4px;
     background-image: -webkit-radial-gradient(center 100%, ellipse farthest-side, hsla(0, 0%, 0%, 0.1), hsla(0, 0%, 0%, 0.02) );
+    background-image: -moz-radial-gradient(center 100%, ellipse farthest-side, hsla(0, 0%, 0%, 0.1), hsla(0, 0%, 0%, 0.02) );
+    background-image: -ms-radial-gradient(center 100%, ellipse farthest-side, hsla(0, 0%, 0%, 0.1), hsla(0, 0%, 0%, 0.02) );
+    background-image: radial-gradient(center 100%, ellipse farthest-side, hsla(0, 0%, 0%, 0.1), hsla(0, 0%, 0%, 0.02) );
 }

@@ -1,14 +1,26 @@
 .SchematicsContainer {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
 }
 
 .SchematicsContainer.shouldStartPanning {
     cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: -ms-grab;
+    cursor: grab;
 }
 
 .SchematicsContainer.isPanning {
     cursor: -webkit-grabbing;
+    cursor: -moz-grabbing;
+    cursor: -ms-grabbing;
+    cursor: grabbing;
 }
 
 .SchematicsContainer.error .SchematicsContainer-viewport {
@@ -19,13 +31,25 @@
 
 .SchematicsContainer-bar {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     -webkit-justify-content: space-between;
+    -moz-justify-content: space-between;
+    -ms-justify-content: space-between;
+    justify-content: space-between;
     -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
     height: 34px;
     border-radius: 4px 4px 0 0;
     padding-bottom: 1px; /* Fixes vertical centering */
     border-top: 1px solid hsla(0, 0%, 100%, 1);
     background: -webkit-linear-gradient( hsl(0, 0%, 98%), hsl(0, 0%, 94%) );
+    background: -moz-linear-gradient( hsl(0, 0%, 98%), hsl(0, 0%, 94%) );
+    background: -ms-linear-gradient( hsl(0, 0%, 98%), hsl(0, 0%, 94%) );
+    background: linear-gradient( hsl(0, 0%, 98%), hsl(0, 0%, 94%) );
 }
 
 /* Tools --------------------------------- */
@@ -34,6 +58,9 @@
 
 .SchematicsContainerTools .SchematicsContainerTools-zoomSlider {
     -webkit-flex: 1 1 auto;
+    -moz-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
     min-width: 0;
     margin: 0 8px;
     max-width: 200px;
@@ -48,6 +75,9 @@
     margin: -8px 0 0 -1px;
     border-color: hsl(0, 0%, 74%);
     background-image: -webkit-linear-gradient(top, hsl(0, 0%, 98%), hsl(0, 0%, 90%) );
+    background-image: -moz-linear-gradient(top, hsl(0, 0%, 98%), hsl(0, 0%, 90%) );
+    background-image: -ms-linear-gradient(top, hsl(0, 0%, 98%), hsl(0, 0%, 90%) );
+    background-image: linear-gradient(top, hsl(0, 0%, 98%), hsl(0, 0%, 90%) );
     box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, .8), inset 0 -1px 1px hsla(0, 0%, 0%, .04);
 }
 
@@ -56,6 +86,9 @@
 
 .SchematicsContainerTools .matte-ButtonGroup {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     margin: 0 7px;
     line-height: 0;
 }
@@ -70,6 +103,9 @@
 
 .SchematicsContainer-viewport {
     -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
     min-height: 0;
     overflow: hidden;
     border-radius: 0 0 4px 4px;

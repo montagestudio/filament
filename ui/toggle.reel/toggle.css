@@ -1,5 +1,8 @@
 .Toggle.matte-InputCheckbox {
     -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
     position: relative;
     box-sizing: border-box;
     margin: 0;
@@ -15,7 +18,13 @@
     cursor: pointer;
     vertical-align: middle;
     -webkit-transform-origin: 6px center;
+    -moz-transform-origin: 6px center;
+    -ms-transform-origin: 6px center;
+    transform-origin: 6px center;
     -webkit-transition: -webkit-transform .1s ease-in-out;
+    -moz-transition: -moz-transform .1s ease-in-out;
+    -ms-transition: -ms-transform .1s ease-in-out;
+    transition: transform .1s ease-in-out;
 }
 
 .Toggle.matte-InputCheckbox:focus {
@@ -24,5 +33,8 @@
 
 .Toggle.matte-InputCheckbox:checked {
     -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
 }
 

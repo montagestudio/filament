@@ -15,18 +15,27 @@
     text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
     box-shadow: inset 0 1px 2px hsla(0,0%,100%,.1), 0 1px 4px hsla(0,0%,0%,.4);
     background-image: -webkit-linear-gradient( hsl(0,0%,36%), hsl(0,0%,30%) );
+    background-image: -moz-linear-gradient( hsl(0,0%,36%), hsl(0,0%,30%) );
+    background-image: -ms-linear-gradient( hsl(0,0%,36%), hsl(0,0%,30%) );
+    background-image: linear-gradient( hsl(0,0%,36%), hsl(0,0%,30%) );
     cursor: pointer;
 }
 
 .Nav .Nav-button:hover {
     color: hsla(0,0%,100%,.5);
     background-image: -webkit-linear-gradient( hsl(0,0%,38%), hsl(0,0%,32%) );
+    background-image: -moz-linear-gradient( hsl(0,0%,38%), hsl(0,0%,32%) );
+    background-image: -ms-linear-gradient( hsl(0,0%,38%), hsl(0,0%,32%) );
+    background-image: linear-gradient( hsl(0,0%,38%), hsl(0,0%,32%) );
 }
 
 .Nav .Nav-button:active {
     color: hsla(0,0%,100%,.3);
     box-shadow: inset 0 1px 2px hsla(0,0%,100%,0), 0 1px 2px hsla(0,0%,0%,.4);
     background-image: -webkit-linear-gradient( hsl(0,0%,32%), hsl(0,0%,26%) );
+    background-image: -moz-linear-gradient( hsl(0,0%,32%), hsl(0,0%,26%) );
+    background-image: -ms-linear-gradient( hsl(0,0%,32%), hsl(0,0%,26%) );
+    background-image: linear-gradient( hsl(0,0%,32%), hsl(0,0%,26%) );
 }
 
 
@@ -37,7 +46,13 @@
     text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
     box-shadow: inset 0 1px 0px hsla(0,0%,100%,.6), 2px 2px 4px hsla(0,0%,0%,.2);
     background-image: -webkit-linear-gradient(hsl(0,0%,92%), hsl(0,0%,82%) );
+    background-image: -moz-linear-gradient(hsl(0,0%,92%), hsl(0,0%,82%) );
+    background-image: -ms-linear-gradient(hsl(0,0%,92%), hsl(0,0%,82%) );
+    background-image: linear-gradient(hsl(0,0%,92%), hsl(0,0%,82%) );
     -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    transition: none;
 }
 
 .Nav-tabs .Nav-button.selected:hover {
@@ -56,7 +71,13 @@
     height: 12px;
     border-radius: 2px;
     background: -webkit-linear-gradient(45deg, hsl(0,0%,80%) 50%, hsl(0,0%,70%) );
+    background: -moz-linear-gradient(45deg, hsl(0,0%,80%) 50%, hsl(0,0%,70%) );
+    background: -ms-linear-gradient(45deg, hsl(0,0%,80%) 50%, hsl(0,0%,70%) );
+    background: linear-gradient(45deg, hsl(0,0%,80%) 50%, hsl(0,0%,70%) );
     -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
 }
 
 .Nav-tabs .Nav-button.selected.locked:after {
@@ -66,4 +87,7 @@
 .Nav-tabs .Nav-button.locked {
     border-radius: 0 12px 12px 0;
     -webkit-transform: translateX(-4px);
+    -moz-transform: translateX(-4px);
+    -ms-transform: translateX(-4px);
+    transform: translateX(-4px);
 }

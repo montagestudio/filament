@@ -7,14 +7,32 @@
     padding: 8px;
     border-top: 1px solid hsl(0,0%,86%);
     background: -webkit-linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
+    background: -moz-linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
+    background: -ms-linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
+    background: linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
     -webkit-transform: translate3d(0, 100%, 0);
+    -moz-transform: translate3d(0, 100%, 0);
+    -ms-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
     /* There is also a .06s transion on the create-node-cell. */
     -webkit-transition: -webkit-transform .12s cubic-bezier(.68, .08, 1, 1), visibility 0 .12s;
+    -moz-transition: -moz-transform .12s cubic-bezier(.68, .08, 1, 1), visibility 0 .12s;
+    -ms-transition: -ms-transform .12s cubic-bezier(.68, .08, 1, 1), visibility 0 .12s;
+    transition: transform .12s cubic-bezier(.68, .08, 1, 1), visibility 0 .12s;
 }
 
 .Drawer.is-open {
     visibility: visible;
     -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    -ms-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
     -webkit-transition-delay: 0;
+    -moz-transition-delay: 0;
+    -ms-transition-delay: 0;
+    transition-delay: 0;
     -webkit-transition-timing-function: cubic-bezier(.06, .20, .20, .94);
+    -moz-transition-timing-function: cubic-bezier(.06, .20, .20, .94);
+    -ms-transition-timing-function: cubic-bezier(.06, .20, .20, .94);
+    transition-timing-function: cubic-bezier(.06, .20, .20, .94);
 }

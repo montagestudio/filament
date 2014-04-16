@@ -20,9 +20,15 @@
 
 .ListenerJig--copyable {
     -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
 }
 
 .Jig-row.ListenerJig-eventRow,
 .Jig-row.ListenerJig-listenerRow {
     -webkit-justify-content: flex-start;
+    -moz-justify-content: flex-start;
+    -ms-justify-content: flex-start;
+    justify-content: flex-start;
 }

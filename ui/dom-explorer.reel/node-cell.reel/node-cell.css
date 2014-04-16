@@ -1,7 +1,16 @@
 .NodeCell {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     -webkit-flex-flow: row nowrap;
+    -moz-flex-flow: row nowrap;
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
     -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
     position: relative;
     background: hsl(0,0%,92%);
 }
@@ -11,6 +20,9 @@
 
 .NodeCell-segment {
     display: -webkit-inline-flex;
+    display: -moz-inline-flex;
+    display: -ms-inline-flex;
+    display: inline-flex;
     margin: 3px 0;
     border-radius: 22px;
     background: hsl(0,0%,96%);
@@ -196,6 +208,9 @@
     width: 180px;
     height: 2px;
     background: -webkit-linear-gradient(left, hsl(208,100%,50%), hsla(208,100%,50%,0) );
+    background: -moz-linear-gradient(left, hsl(208,100%,50%), hsla(208,100%,50%,0) );
+    background: -ms-linear-gradient(left, hsl(208,100%,50%), hsla(208,100%,50%,0) );
+    background: linear-gradient(left, hsl(208,100%,50%), hsla(208,100%,50%,0) );
 }
 
 /* Toggle tree expansion -------------- */

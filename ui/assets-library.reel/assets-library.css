@@ -1,5 +1,8 @@
 .AssetsLibrary {
     -webkit-flex: 0 1 190px;
+    -moz-flex: 0 1 190px;
+    -ms-flex: 0 1 190px;
+    flex: 0 1 190px;
     font-size: 12px;
     padding: 0;
     color: hsl(0, 0%, 56%);
