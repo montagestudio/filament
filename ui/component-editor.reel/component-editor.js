@@ -28,6 +28,16 @@ exports.ComponentEditor = Editor.specialize({
         }
     },
 
+    // Accept activeTarget status, this puts us in the position
+    // of power when we need to validate menus etc.
+    //
+    // ModalEditors that we may be presenting are given a first
+    // shot at being activeTarget, so if they rejected the role
+    // and we made it this far, we do indeed want to accept it.
+    acceptsActiveTarget: {
+        value: true
+    },
+
     enterDocument: {
         value: function (firstTime) {
             if (firstTime) {
