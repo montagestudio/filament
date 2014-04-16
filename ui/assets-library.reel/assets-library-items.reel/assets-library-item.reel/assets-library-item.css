@@ -1,5 +1,8 @@
 .AssetsLibraryItem .AssetsLibraryItem-button {
     -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
     display: flex;
     width: 100%;
     padding: 4px 8px;

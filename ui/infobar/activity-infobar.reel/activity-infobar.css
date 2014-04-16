@@ -19,7 +19,13 @@ Classes to toggle counter
 
 .Infobar-content {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
     height: 32px;
     color: hsla(0,0%,100%,.9);
     text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
@@ -38,17 +44,26 @@ Classes to toggle counter
     font-weight: bold;
     margin: 0 8px;
     -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
     cursor: auto;
 }
 
 .ActivityInfobar-status {
     -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
     min-width: 0;
     color: hsla(0, 0%, 100%, .8);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
     -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
     cursor: auto;
 }
 
@@ -60,10 +75,28 @@ Classes to toggle counter
     background-color: hsla(0,0%,0%,.6);
     background-size: 8px;
     background-image:   -webkit-repeating-linear-gradient( 0deg,
+    background-image:   -moz-repeating-linear-gradient( 0deg,
+    background-image:   -ms-repeating-linear-gradient( 0deg,
+    background-image:   repeating-linear-gradient( 0deg,
         hsla(0,0%,100%,0), hsla(0,0%,100%,0) 4px, hsla(0,0%,100%,.2) 4px, hsla(0,0%,100%,.2) 8px );
     -webkit-animation: progress 1s linear infinite;
+    -moz-animation: progress 1s linear infinite;
+    -ms-animation: progress 1s linear infinite;
+    animation: progress 1s linear infinite;
 }
 @-webkit-keyframes progress {
+    from { background-position: 0 0; }
+    to { background-position: 32px 0; }
+}
+@-moz-keyframes progress {
+    from { background-position: 0 0; }
+    to { background-position: 32px 0; }
+}
+@-ms-keyframes progress {
+    from { background-position: 0 0; }
+    to { background-position: 32px 0; }
+}
+@keyframes progress {
     from { background-position: 0 0; }
       to { background-position: 32px 0; }
 }
@@ -151,16 +184,25 @@ Classes to toggle counter
     border-color: hsl(0, 0%, 25%);
     border-radius: 0 12px 12px 0;
     background: -webkit-linear-gradient(hsl(0, 0%, 50%), hsl(0, 0%, 40%));
+    background: -moz-linear-gradient(hsl(0, 0%, 50%), hsl(0, 0%, 40%));
+    background: -ms-linear-gradient(hsl(0, 0%, 50%), hsl(0, 0%, 40%));
+    background: linear-gradient(hsl(0, 0%, 50%), hsl(0, 0%, 40%));
 }
 
 .ActivityInfobar .ActivityInfobar-detailsButton:hover {
     color: hsla(0,0%,100%,.9);
     background: -webkit-linear-gradient(hsl(0, 0%, 54%), hsl(0, 0%, 44%));
+    background: -moz-linear-gradient(hsl(0, 0%, 54%), hsl(0, 0%, 44%));
+    background: -ms-linear-gradient(hsl(0, 0%, 54%), hsl(0, 0%, 44%));
+    background: linear-gradient(hsl(0, 0%, 54%), hsl(0, 0%, 44%));
 }
 
 .ActivityInfobar .ActivityInfobar-detailsButton.active {
     color: hsla(0,0%,100%,.7);
     background: -webkit-linear-gradient(hsl(0, 0%, 36%), hsl(0, 0%, 30%));
+    background: -moz-linear-gradient(hsl(0, 0%, 36%), hsl(0, 0%, 30%));
+    background: -ms-linear-gradient(hsl(0, 0%, 36%), hsl(0, 0%, 30%));
+    background: linear-gradient(hsl(0, 0%, 36%), hsl(0, 0%, 30%));
 }
 
 .ActivityInfobar--noneCompleted.ActivityInfobar--noneFailed .ActivityInfobar-detailsButton {

@@ -1,5 +1,8 @@
 .Library {
     -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     border-left: 1px solid hsl(0, 0%, 22%);
 }
 
@@ -53,6 +56,9 @@
 .is-assets .Library-tab:nth-child(2) {
     border-top-color: hsl(0, 0%, 42%);
     background: -webkit-linear-gradient( hsl(0, 0%, 38%), hsl(0, 0%, 30%) );
+    background: -moz-linear-gradient( hsl(0, 0%, 38%), hsl(0, 0%, 30%) );
+    background: -ms-linear-gradient( hsl(0, 0%, 38%), hsl(0, 0%, 30%) );
+    background: linear-gradient( hsl(0, 0%, 38%), hsl(0, 0%, 30%) );
     cursor: default;
 }
 
@@ -87,6 +93,9 @@
 .Library-search.matte-InputText {
     flex: 1;
     -webkit-appearance: none; padding-right: 0; font-family: inherit; 
+    -moz-appearance: none; padding-right: 0; font-family: inherit; 
+    -ms-appearance: none; padding-right: 0; font-family: inherit; 
+    appearance: none; padding-right: 0; font-family: inherit; 
     color: hsl(0, 0%, 60%); 
     border-color: hsl(0, 0%, 20%);
     border-radius: 20px; 
@@ -104,17 +113,26 @@
 }
 
 /* Search Close Button */
-.Library-search.matte-InputText::-webkit-search-cancel-button {
+.Library-search.matte-InputText::-webkit-search-cancel-button,
+.Library-search.matte-InputText::-moz-search-cancel-button,
+.Library-search.matte-InputText::-ms-search-cancel-button,
+.Library-search.matte-InputText::search-cancel-button {
   margin: 2px 8px 0 4px;
   opacity: .5;
   cursor: pointer;
 }
 
-.Library-search.matte-InputText::-webkit-search-cancel-button:hover {
+.Library-search.matte-InputText::-webkit-search-cancel-button:hover,
+.Library-search.matte-InputText::-moz-search-cancel-button:hover,
+.Library-search.matte-InputText::-ms-search-cancel-button:hover,
+.Library-search.matte-InputText::search-cancel-button:hover {
   opacity: .7;
 }
 
-.Library-search.matte-InputText::-webkit-search-cancel-button:active {
+.Library-search.matte-InputText::-webkit-search-cancel-button:active,
+.Library-search.matte-InputText::-moz-search-cancel-button:active,
+.Library-search.matte-InputText::-ms-search-cancel-button:active,
+.Library-search.matte-InputText::search-cancel-button:active {
   opacity: .3;
 }
 
@@ -154,6 +172,9 @@
 
 .Library-list {
     -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
     position: relative;
     min-height: 0;
     overflow-x: hidden;
@@ -168,14 +189,23 @@
 
 /* Scrollbar -------------------------------- */
 
-.Library ::-webkit-scrollbar {
+.Library ::-webkit-scrollbar,
+.Library ::-moz-scrollbar,
+.Library ::-ms-scrollbar,
+.Library ::scrollbar {
     -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
     width: 3px;
     height: 0px;
     background-color: hsl(0, 0%, 18%);
 }
 
-.Library ::-webkit-scrollbar-thumb {
+.Library ::-webkit-scrollbar-thumb,
+.Library ::-moz-scrollbar-thumb,
+.Library ::-ms-scrollbar-thumb,
+.Library ::scrollbar-thumb {
     border: none;
     background-color: hsl(0, 0%, 32%);
 }

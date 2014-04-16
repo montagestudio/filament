@@ -1,9 +1,21 @@
 .CreateNodeCell {
     position: relative;
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     -webkit-flex-flow: row nowrap;
+    -moz-flex-flow: row nowrap;
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
     -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
     -webkit-justify-content: center;
+    -moz-justify-content: center;
+    -ms-justify-content: center;
+    justify-content: center;
     padding: 1px 0 2px 0; /* TODO: Fix consistent footer height */
     opacity: 0;
 }
@@ -11,10 +23,16 @@
 .DomExplorer.is-drawerOpen .CreateNodeCell {
     opacity: 1;
     -webkit-transition: opacity .12s .12s;
+    -moz-transition: opacity .12s .12s;
+    -ms-transition: opacity .12s .12s;
+    transition: opacity .12s .12s;
 }
 
 .CreateNodeCell-segment {
     display: -webkit-inline-flex;
+    display: -moz-inline-flex;
+    display: -ms-inline-flex;
+    display: inline-flex;
     margin: 2px 0;
     border-radius: 22px;
     border: 1px solid hsl(0, 0%, 75%);
@@ -29,6 +47,9 @@
 
 .CreateNodeCell--draggable {
     cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: -ms-grab;
+    cursor: grab;
 }
 
 .CreateNodeCell-segment-item {

@@ -4,6 +4,9 @@
     white-space: nowrap;
 
     -webkit-transition: .1s linear background-color, outline-color;
+    -moz-transition: .1s linear background-color, outline-color;
+    -ms-transition: .1s linear background-color, outline-color;
+    transition: .1s linear background-color, outline-color;
     position: relative;
 }
 
@@ -21,6 +24,9 @@
 .FileCell .FileCell-button {
     flex-shrink: 0;
 	-webkit-appearance: none;
+	-moz-appearance: none;
+	-ms-appearance: none;
+	appearance: none;
 	text-align: left;
 	height: auto;
     min-height: 20px;
@@ -109,6 +115,9 @@
     opacity: 0;
     color: hsl(0, 0%, 97%);
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
 }
 
 .FileCell-uploadStatus * {
@@ -122,6 +131,9 @@
 .FileCell-uploadStatus-report {
     background-color: rgb(255, 135, 0);
     -webkit-flex: initial;
+    -moz-flex: initial;
+    -ms-flex: initial;
+    flex: initial;
 }
 
 .FileCell-uploadStatus-progress.matte-Progress {

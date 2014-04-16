@@ -1,8 +1,14 @@
 .SplitControl {
     -webkit-flex: 0 0 0px;
+    -moz-flex: 0 0 0px;
+    -ms-flex: 0 0 0px;
+    flex: 0 0 0px;
     min-width: 10;
     z-index: 100;
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     position: relative;
     background: hsl(301, 56%, 46%);
     outline: none;

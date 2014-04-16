@@ -1,6 +1,12 @@
 .ElementField {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
 }
 
 .ElementField-icon {

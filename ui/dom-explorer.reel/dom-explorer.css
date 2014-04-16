@@ -1,12 +1,21 @@
 .DomExplorer {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
     overflow: hidden;
     position: relative;
 }
 
 .NodeList {
     -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
     overflow: scroll;
     min-height: 0;
 }
@@ -36,7 +45,13 @@
     font-size: 20px;
     color: hsl(0, 0%, 50%);
     -webkit-font-smoothing: none;
+    -moz-font-smoothing: none;
+    -ms-font-smoothing: none;
+    font-smoothing: none;
     -webkit-transition: -webkit-transform .12s;
+    -moz-transition: -moz-transform .12s;
+    -ms-transition: -ms-transform .12s;
+    transition: transform .12s;
     margin: 0;
     padding: 0;
     height: 32px;
@@ -60,5 +75,8 @@
 
 .DomExplorer.is-drawerOpen .DomExplorer-drawerButton {
     -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
     background-color: hsla(0, 0%, 92%, 0);
 }

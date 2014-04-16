@@ -17,6 +17,9 @@
 	speak: none;
 	font-weight: normal;
 	-webkit-font-smoothing: antialiased;
+	-moz-font-smoothing: antialiased;
+	-ms-font-smoothing: antialiased;
+	font-smoothing: antialiased;
 	
 	position: absolute;
 	top: 0;
@@ -34,6 +37,9 @@
 	speak: none;
 	font-weight: normal;
 	-webkit-font-smoothing: antialiased;
+	-moz-font-smoothing: antialiased;
+	-ms-font-smoothing: antialiased;
+	font-smoothing: antialiased;
 }
 .icon-arrow:before {
 	content: "\21";

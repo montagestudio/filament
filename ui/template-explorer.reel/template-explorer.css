@@ -1,6 +1,12 @@
 .TemplateExplorer {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
 }
 
 .TemplateExplorer.ComponentEditor-column {
@@ -20,8 +26,17 @@
 
 .TemplateExplorer-header {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     -webkit-justify-content: space-between;
+    -moz-justify-content: space-between;
+    -ms-justify-content: space-between;
+    justify-content: space-between;
     -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
 }
 
 .TemplateExplorer-header .matte-InputText {
@@ -118,6 +133,9 @@
 
 .TemplateExplorer-list {
     -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
     min-height: 0;
     overflow: scroll;
     margin: 0;
@@ -146,6 +164,9 @@
 
 .TemplateObjectCell-Wrapper {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     align-items: center;
     justify-content:center;
 }
@@ -159,6 +180,9 @@
 .TemplateObjectCell {
     background-color: hsl(0,0%,96%);
     -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
     width: 100%;
 }
 
@@ -195,6 +219,9 @@
 
 .TemplateObjectCell-header {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
 }
 
 .TemplateObjectCell-icon {
@@ -215,6 +242,9 @@
 
 .TemplateObjectCell-title {
     -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
     margin: 0;
     font-size: 12px;
     font-weight: normal;
@@ -269,6 +299,9 @@
     border: none;
     background-color: transparent;
     -webkit-font-smoothing: none;
+    -moz-font-smoothing: none;
+    -ms-font-smoothing: none;
+    font-smoothing: none;
 }
 
 .TemplateObjectCell-button.matte-Button:hover {

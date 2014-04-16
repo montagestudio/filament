@@ -6,11 +6,20 @@
 
 .DocumentTab {
     -webkit-flex: 1 1 auto;
+    -moz-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
     min-width: 0;
     max-width: 180px;
     position: relative;
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
     height: 28px;
     padding: 0 3px 0 8px;
     margin: 0 1px 0 0;
@@ -80,6 +89,9 @@
 .DocumentTab .DocumentTab-label {
     display: block;
     -webkit-flex: 1 1 auto;
+    -moz-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -103,6 +115,9 @@
     background: transparent;
     cursor: pointer;
     -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
 }
 
 .DocumentTab .DocumentTab-close:hover {
