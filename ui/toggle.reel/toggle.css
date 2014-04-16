@@ -38,3 +38,15 @@
     transform: rotate(90deg);
 }
 
+/* 
+    Workaround just for Firefox
+    Use a non-standard built-in "tree twisty" appearance
+    https://bugzilla.mozilla.org/show_bug.cgi?id=605985
+*/
+.Toggle.matte-InputCheckbox {
+    -moz-appearance: treetwisty;
+}
+.Toggle.matte-InputCheckbox:checked {
+    -moz-appearance: treetwistyopen;
+    -moz-transform: none;
+}
