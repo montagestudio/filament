@@ -902,10 +902,10 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
     },
 
     _writePackageJson: {
-        value: function (packageJson, url, dataWriter) {
+        value: function (packageJson, url, dataSource) {
             var self = this;
 
-            return Promise.when(dataWriter(packageJson, url)).then(function (value) {
+            return Promise.when(dataSource.write(url, packageJson)).then(function (value) {
                 self._changeCount = 0;
                 self._packageFileChangeByAppCount++;
 
@@ -915,8 +915,8 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
     },
 
     save: {
-        value: function (url, dataWriter) {
-            return this._packageSavingManager.scheduleSaving(url, dataWriter);
+        value: function (url) {
+            return this._packageSavingManager.scheduleSaving(url, this._dataSource);
         }
     }
 

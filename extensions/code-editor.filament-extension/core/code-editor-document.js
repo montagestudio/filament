@@ -148,11 +148,11 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
     },
 
     save: {
-        value: function (location, dataWriter) {
+        value: function (location) {
             var self = this;
 
             this.dispatchEventNamed("willSave", true, false);
-            return Promise.when(dataWriter(self.content, location)).then(function (value) {
+            return Promise.when(this._dataSource.write(location, self.content)).then(function (value) {
                 self.isDirty = false;
                 self.dispatchEventNamed("didSave", true, false);
                 return value;

@@ -51,6 +51,12 @@ exports.DocumentDataSource = Montage.specialize({
         }
     },
 
+    write: {
+        value: function(url, content) {
+            return this._environmentBridge.saveFile(content, url);
+        }
+    },
+
     /**
      * Registers a new data modifier that can lazily tell the data source that
      * it has modified the data it read.

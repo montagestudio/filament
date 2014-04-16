@@ -80,10 +80,10 @@ exports.EditProperties = Component.specialize({
     },
 
     _saveMeta: {
-        value: function (location, dataWriter) {
+        value: function (location, dataSource) {
             var serializer = Serializer.create().initWithRequire(this.ownerObject.editingDocument._packageRequire);
             var serializedDescription = serializer.serializeObject(this.ownerBlueprint);
-            return dataWriter(serializedDescription, location);
+            return dataSource.write(location, serializedDescription);
         }
     },
 

@@ -435,7 +435,7 @@ exports.ReelDocument = EditingDocument.specialize({
      * Registers a new file to save when the document is saved.
      *
      * @param  {string}   extension The extension of the file.
-     * @param  {function(location, dataWriter): Promise} saveCallback
+     * @param  {function(location, dataSource): Promise} saveCallback
      * A function to call to save the file. Passed the location of the file
      * created by taking the reel location, extracting the basename and
      * suffixing the extensions. Must return a promise for the saving of the
@@ -465,14 +465,14 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     _saveHtml: {
-        value: function (location, dataWriter) {
+        value: function (location, dataSource) {
             var html = this._generateHtml();
-            return dataWriter(html, location);
+            return dataSource.write(location, html);
         }
     },
 
     save: {
-        value: function (location, dataWriter) {
+        value: function (location) {
             var self = this;
             //TODO I think I've made this regex many times...and probably differently
             var filenameMatch = location.match(/.+\/(.+)\.reel/),
@@ -491,7 +491,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 }
                 promise = Promise.all(Object.map(registeredFiles, function (info, extension) {
                     var fileLocation = Url.resolve(location, filenameMatch[1] + "." + extension);
-                    return info.callback.call(info.thisArg, fileLocation, dataWriter);
+                    return info.callback.call(info.thisArg, fileLocation, self._dataSource);
                 }));
             }
 
