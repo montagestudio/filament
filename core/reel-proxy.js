@@ -51,53 +51,6 @@ var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
-    /**
-     * The live object this editingProxy is representing
-     * @note Edits made to the proxy are set on the live objects, this may not be the case forever
-     * as there's really no way to know whether setting properties in a declaration translates
-     * to setting values at runtime without issue.
-     * @deprecated Don't use this for anything. I intend to remove this property to further decouple
-     * the editing model from the live representation with the intent of being able to have a single
-     * editingModel presented by several live presentations in different contexts at the same time;
-     * there will be no definitive live representation to supply the editing model with.
-     */
-    stageObject: {
-        value: null
-    },
-
-
-    setObjectProperty: {
-        value: function (property, value) {
-            var previous = this.properties.get(property);
-            if (previous instanceof NodeProxy) {
-                this.editingDocument.references.delete(previous, this, property);
-            }
-
-            // The value being set here should always be something of worth to the
-            // editingModel, in contrast to what we do later if we have live
-            // representations to update as well
-            this.super(property, value);
-
-            if (value instanceof NodeProxy) {
-                this.editingDocument.references.add(value, this, property);
-            }
-
-            if (this.stageObject) {
-                // At this point, we're setting values in a live application;
-                // objects need to be part of that application, not the editingModel
-
-                //TODO there are probably other scenarios where this arises and we need to find the non-editingModel value to pass along
-                value = value instanceof ReelProxy ? value.stageObject : value;
-
-                if (this.stageObject.setPath) {
-                    this.stageObject.setPath(property, value);
-                } else if (this.stageObject.setProperty) {
-                    this.stageObject.setProperty(property, value);
-                }
-            }
-        }
-    },
-
     editorMetadata: {
         value: null
     },

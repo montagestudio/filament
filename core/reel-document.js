@@ -561,49 +561,6 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    associateWithLiveRepresentations: {
-        value: function (documentPart, template, frame) {
-            var labels = Object.keys(documentPart.objects),
-                self = this,
-                proxy,
-                serialization = template.getSerialization().getSerializationObject(),
-                owner;
-
-            var editController = this._editingController = EditingController.create();
-            editController.frame = frame;
-            editController.template = template;
-            editController.owner = owner = documentPart.objects.owner;
-
-            labels.forEach(function (label) {
-                proxy = self.editingProxyMap[label];
-                var stageObject = owner.templateObjects[label];
-                // If this is an array, and not just array...
-                if (Array.isArray(stageObject) && !("value" in serialization[label])) {
-                    // ... then it's something repeated, and so we don't
-                    // currently have a live representation. This will
-                    // be provided by an inspector
-                    proxy.stageObject = null;
-                    // FIXME/HACK: need a way to get the parent of a component
-                    // without having a live object
-                    if (!stageObject.length) {
-                        console.error("TODO: cannot get parentComponent of " + label);
-                        proxy.parentComponent = null;
-                        return;
-                    }
-                    stageObject = stageObject[0];
-                } else {
-                    // Only set stage object if component is not repeated
-                    proxy.stageObject = stageObject;
-                }
-
-                // Owner has no parent
-                if (stageObject === owner) {
-                    return;
-                }
-            }, this);
-        }
-    },
-
     componentProxyForElement: {
         value: function (element) {
             var proxies = this.editingProxies,
