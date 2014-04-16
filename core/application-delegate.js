@@ -8,8 +8,6 @@ var Montage = require("montage/core/core").Montage,
     Document = require("palette/core/document").Document,
     FilamentService = require("core/filament-service").FilamentService;
 
-var InnerTemplateInspector = require("contextual-inspectors/inner-template/ui/inner-template-inspector.reel").InnerTemplateInspector;
-
 exports.ApplicationDelegate = Montage.create(Montage, {
 
     _bridgePromise: {
@@ -82,28 +80,6 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             this._deferredMainComponent = Promise.defer();
 
             this.viewController = ViewController.create();
-
-            this.viewController.registerContextualInspectorForObjectTypeMatcher(InnerTemplateInspector, function (object) {
-                return (
-                    object &&
-                    object.moduleId &&
-                    (/montage\/ui\/repetition\.reel/).test(object.moduleId)
-                );
-            });
-            this.viewController.registerContextualInspectorForObjectTypeMatcher(InnerTemplateInspector, function (object) {
-                return (
-                    object &&
-                    object.stageObject &&
-                    object.stageObject._template &&
-                    object.stageObject._template.hasParameters() &&
-                    // HACK: Don't show the inner template inspector for the
-                    // flow because it interupts the modal editor
-                    !(
-                        object.moduleId ||
-                        (/montage\/ui\/flow\.reel/).test(object.moduleId)
-                    )
-                );
-            });
 
             this.previewController = (new PreviewController()).init(this);
 

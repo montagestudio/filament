@@ -10,9 +10,6 @@ exports.ViewController = Montage.specialize({
 
             this.modalEditorMatchers = [];
             this.matcherModalEditorTypeMap = new WeakMap();
-
-            this.contextualInspectorMatchers = [];
-            this.matcherContextualInspectorMap = new WeakMap();
         }
     },
 
@@ -119,50 +116,6 @@ exports.ViewController = Montage.specialize({
             }
 
             return editorType;
-        }
-    },
-
-    //Contextual Inspectors
-
-    matcherContextualInspectorMap: {
-        enumerable: false,
-        value: null
-    },
-
-    contextualInspectorMatchers: {
-        enumerable: false,
-        value: null
-    },
-
-    registerContextualInspectorForObjectTypeMatcher: {
-        value: function (contextualInspector, objectTypeMatcher) {
-            if (!(contextualInspector && objectTypeMatcher)) {
-                throw new Error("Both an contextual inspector type and a matcher function are needed to register");
-            }
-
-            if (this.matcherContextualInspectorMap.has(objectTypeMatcher)) {
-                throw new Error("Already has a contextual inspector type registered for this matcher");
-            }
-
-            //TODO use one data structure for both of these
-            this.contextualInspectorMatchers.push(objectTypeMatcher);
-            this.matcherContextualInspectorMap.set(objectTypeMatcher, contextualInspector);
-        }
-    },
-
-    unregisterContextualInspectorForObjectTypeMatcher: {
-        value: function (objectTypeMatcher) {
-            // this.contextualInspectorMatchers.splice(this.contextualInspectorMatchers.indexOf(objectTypeMatcher), 1);
-        }
-    },
-
-    contextualInspectorsForObject: {
-        value: function (object) {
-            return this.contextualInspectorMatchers.filter(function (matcher) {
-                return matcher(object) ? matcher : false;
-            }).map(function (match) {
-                    return this.matcherContextualInspectorMap.get(match);
-                }, this);
         }
     },
 
