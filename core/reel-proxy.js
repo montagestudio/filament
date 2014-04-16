@@ -29,7 +29,7 @@ var EditingProxy = require("palette/core/editing-proxy").EditingProxy,
  * even this usage is not currently advised.
  * @type {ReelProxy}
  */
-var ReelProxy = exports.ReelProxy = EditingProxy.specialize( {
+exports.ReelProxy = EditingProxy.specialize( {
 
     constructor: {
         value: function ReelProxy() {

@@ -174,20 +174,6 @@ describe("core/reel-proxy-spec", function () {
             expect(proxy.identifier).toBe("aNewIdentifier");
             expect(proxy.getObjectProperty("identifier")).toBe("aNewIdentifier");
         });
-
-        it("should accept proxies as property values, but pass along the proxied object to live representations", function () {
-            var stageObject = new Montage();
-            proxy.stageObject = stageObject;
-
-            serialization = {};
-            var otherProxy = ReelProxy.create().init("otherProxy", serialization, "different/export-id");
-            var otherObject = new Montage();
-            otherProxy.stageObject = otherObject;
-
-            proxy.setObjectProperty("someObject", otherProxy);
-            expect(proxy.stageObject.someObject).toBe(otherObject);
-        });
-
     });
 
 

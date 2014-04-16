@@ -1,5 +1,4 @@
 var EditingDocument = require("palette/core/editing-document").EditingDocument,
-    EditingController = require("palette/core/controller/editing-controller").EditingController,
     TemplateFormatter = require("palette/core/template-formatter").TemplateFormatter,
     Template = require("montage/core/template").Template,
     Promise = require("montage/core/promise").Promise,
