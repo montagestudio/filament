@@ -35,22 +35,46 @@ body {
 
 /* Scrollbar -------------------------------- */
 
-::-webkit-scrollbar,
-::-moz-scrollbar,
-::-ms-scrollbar,
-::scrollbar {
+::-webkit-scrollbar {
     -webkit-appearance: none;
+    width: 8px;
+    height: 0px;
+    background-color: hsla(0,0%,0%,0);
+}
+::-moz-scrollbar {
     -moz-appearance: none;
+    width: 8px;
+    height: 0px;
+    background-color: hsla(0,0%,0%,0);
+}
+::-ms-scrollbar {
     -ms-appearance: none;
+    width: 8px;
+    height: 0px;
+    background-color: hsla(0,0%,0%,0);
+}
+::scrollbar {
     appearance: none;
     width: 8px;
     height: 0px;
     background-color: hsla(0,0%,0%,0);
 }
 
-::-webkit-scrollbar-thumb,
-::-moz-scrollbar-thumb,
-::-ms-scrollbar-thumb,
+::-webkit-scrollbar-thumb {
+    border-left: 6px solid hsla(0, 0%, 0%, 0);
+    background-clip: padding-box;
+    background-color: hsla(0, 0%, 0%, 0.15);
+}
+::-moz-scrollbar-thumb {
+    border-left: 6px solid hsla(0, 0%, 0%, 0);
+    background-clip: padding-box;
+    background-color: hsla(0, 0%, 0%, 0.15);
+}
+::-ms-scrollbar-thumb {
+    border-left: 6px solid hsla(0, 0%, 0%, 0);
+    background-clip: padding-box;
+    background-color: hsla(0, 0%, 0%, 0.15);
+}
 ::scrollbar-thumb {
     border-left: 6px solid hsla(0, 0%, 0%, 0);
     background-clip: padding-box;

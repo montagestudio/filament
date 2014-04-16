@@ -80,22 +80,43 @@
 
 /* Scrollbar -------------------------------- */
 
-.BlueprintEditor::-webkit-scrollbar,
-.BlueprintEditor::-moz-scrollbar,
-.BlueprintEditor::-ms-scrollbar,
-.BlueprintEditor::scrollbar {
+.BlueprintEditor::-webkit-scrollbar {
     -webkit-appearance: none;
+    width: 3px;
+    height: 0px;
+    background-color: hsl(0, 0%, 70%);
+}
+.BlueprintEditor::-moz-scrollbar {
     -moz-appearance: none;
+    width: 3px;
+    height: 0px;
+    background-color: hsl(0, 0%, 70%);
+}
+.BlueprintEditor::-ms-scrollbar {
     -ms-appearance: none;
+    width: 3px;
+    height: 0px;
+    background-color: hsl(0, 0%, 70%);
+}
+.BlueprintEditor::scrollbar {
     appearance: none;
     width: 3px;
     height: 0px;
     background-color: hsl(0, 0%, 70%);
 }
 
-.BlueprintEditor::-webkit-scrollbar-thumb,
-.BlueprintEditor::-moz-scrollbar-thumb,
-.BlueprintEditor::-ms-scrollbar-thumb,
+.BlueprintEditor::-webkit-scrollbar-thumb {
+    border: none;
+    background-color: hsl(0, 0%, 90%);
+}
+.BlueprintEditor::-moz-scrollbar-thumb {
+    border: none;
+    background-color: hsl(0, 0%, 90%);
+}
+.BlueprintEditor::-ms-scrollbar-thumb {
+    border: none;
+    background-color: hsl(0, 0%, 90%);
+}
 .BlueprintEditor::scrollbar-thumb {
     border: none;
     background-color: hsl(0, 0%, 90%);

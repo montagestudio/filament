@@ -43,16 +43,28 @@
   cursor: pointer;
 }
 
-.Search.matte-InputText::-webkit-search-cancel-button:hover,
-.Search.matte-InputText::-moz-search-cancel-button:hover,
-.Search.matte-InputText::-ms-search-cancel-button:hover,
+.Search.matte-InputText::-webkit-search-cancel-button:hover {
+    opacity: 1;
+}
+.Search.matte-InputText::-moz-search-cancel-button:hover {
+    opacity: 1;
+}
+.Search.matte-InputText::-ms-search-cancel-button:hover {
+    opacity: 1;
+}
 .Search.matte-InputText::search-cancel-button:hover {
   opacity: 1;
 }
 
-.Search.matte-InputText::-webkit-search-cancel-button:active,
-.Search.matte-InputText::-moz-search-cancel-button:active,
-.Search.matte-InputText::-ms-search-cancel-button:active,
+.Search.matte-InputText::-webkit-search-cancel-button:active {
+    opacity: .3;
+}
+.Search.matte-InputText::-moz-search-cancel-button:active {
+    opacity: .3;
+}
+.Search.matte-InputText::-ms-search-cancel-button:active {
+    opacity: .3;
+}
 .Search.matte-InputText::search-cancel-button:active {
   opacity: .3;
 }
