@@ -1296,7 +1296,7 @@ exports.ReelDocument = EditingDocument.specialize({
     defineOwnedObjectBinding: {
         value: function (proxy, targetPath, oneway, sourcePath, converter) {
             if (!this.isBindingParamsValid(targetPath, sourcePath)) {
-                return null;
+                return Promise.reject();
             }
 
             var binding = proxy.defineObjectBinding(targetPath, oneway, sourcePath, converter);
@@ -1317,7 +1317,7 @@ exports.ReelDocument = EditingDocument.specialize({
             // Refresh the stage
             this.editor.refresh();
 
-            return binding;
+            return Promise.resolve(binding);
         }
     },
 
@@ -1376,7 +1376,7 @@ exports.ReelDocument = EditingDocument.specialize({
     updateOwnedObjectBinding: {
         value: function (proxy, existingBinding, targetPath, oneway, sourcePath, converter) {
             if (!this.isBindingParamsValid(targetPath, sourcePath)) {
-                return null;
+                return Promise.reject();
             }
 
             var originalTargetPath = existingBinding.targetPath,
@@ -1407,7 +1407,7 @@ exports.ReelDocument = EditingDocument.specialize({
             // Refresh the stage
             this.editor.refresh();
 
-            return updatedBinding;
+            return Promise.resolve(updatedBinding);
         }
     },
 
