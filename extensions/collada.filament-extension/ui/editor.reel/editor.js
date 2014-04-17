@@ -16,8 +16,10 @@ exports.Editor = Component.specialize(/** @lends Editor# */ {
             this.super();
 
             this.defineBinding("sceneLabel", {"<-": "object.label"});
-            this.defineBinding("fileName", {"<-": "object.stageObject.path"});
             this.defineBinding("editingProxies", {"<-": "editingDocument.editingProxies"});
+
+            this.addPathChangeListener("object.properties.get('path')", this, "handleScenePathChange");
+
         }
     },
 
@@ -50,6 +52,32 @@ exports.Editor = Component.specialize(/** @lends Editor# */ {
 
     sceneLabel: {
         value: null
+    },
+
+    _sceneUrl: {
+        value: null
+    },
+
+    sceneUrl: {
+        get: function () {
+            return this._sceneUrl;
+        }
+    },
+
+    handleScenePathChange: {
+        value: function (path) {
+            this.dispatchBeforeOwnPropertyChange("sceneUrl", this.sceneUrl);
+
+            //TODO this can certainly be improved, I quickly put this in place to get the sceneEditor back on its feet
+            if (this.object && this.object.properties) {
+                // The object will report a path that expects to be relative to the project
+                // make sure it's relative to the project/component and not relative to filament.
+                this._sceneUrl = this.object.editingDocument.fileUrl + this.object.properties.get("path");
+            } else {
+                this._sceneUrl = null;
+            }
+            this.dispatchOwnPropertyChange("sceneUrl", this.sceneUrl);
+        }
     },
 
     _scene: {
