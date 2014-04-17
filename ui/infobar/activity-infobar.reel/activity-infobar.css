@@ -74,10 +74,15 @@ Classes to toggle counter
 .ActivityInfobar--running .ActivityInfobar-icon {
     background-color: hsla(0,0%,0%,.6);
     background-size: 8px;
-    background-image:   -webkit-repeating-linear-gradient( 0deg,
-    background-image:   -moz-repeating-linear-gradient( 0deg,
-    background-image:   -ms-repeating-linear-gradient( 0deg,
+    /* the unprefixed one needs to come before the -webkit- one because
+    otherwise Chrome doesn't process it */
     background-image:   repeating-linear-gradient( 0deg,
+                           hsla(0,0%,100%,0), hsla(0,0%,100%,0) 4px, hsla(0,0%,100%,.2) 4px, hsla(0,0%,100%,.2) 8px );
+    background-image:   -webkit-repeating-linear-gradient( 0deg,
+        hsla(0,0%,100%,0), hsla(0,0%,100%,0) 4px, hsla(0,0%,100%,.2) 4px, hsla(0,0%,100%,.2) 8px );
+    background-image:   -moz-repeating-linear-gradient( 0deg,
+        hsla(0,0%,100%,0), hsla(0,0%,100%,0) 4px, hsla(0,0%,100%,.2) 4px, hsla(0,0%,100%,.2) 8px );
+    background-image:   -ms-repeating-linear-gradient( 0deg,
         hsla(0,0%,100%,0), hsla(0,0%,100%,0) 4px, hsla(0,0%,100%,.2) 4px, hsla(0,0%,100%,.2) 8px );
     -webkit-animation: progress 1s linear infinite;
     -moz-animation: progress 1s linear infinite;
