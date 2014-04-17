@@ -1,7 +1,13 @@
 .SearchModulesCell {
     margin-bottom: 10px;
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
     display: flex;
     flex: 1;
     justify-content: space-between;
@@ -12,20 +18,32 @@
     padding: 8px;
 }
 
-.SearchModulesCell:-webkit-drag {
+.SearchModulesCell:-webkit-drag,
+.SearchModulesCell:-moz-drag,
+.SearchModulesCell:-ms-drag,
+.SearchModulesCell:drag {
     background: hsla(0,0%,100%,.8) !important;
     text-align: center;
     font-size: 22px;
 }
 
 .SearchModulesCell:-webkit-drag .SearchModulesCell-action,
-.SearchModulesCell:-webkit-drag .SearchModulesCell-information--shift {
+.SearchModulesCell:-moz-drag .SearchModulesCell-action,
+.SearchModulesCell:-ms-drag .SearchModulesCell-action,
+.SearchModulesCell:drag .SearchModulesCell-action,
+.SearchModulesCell:-webkit-drag .SearchModulesCell-information--shift,
+.SearchModulesCell:-moz-drag .SearchModulesCell-information--shift,
+.SearchModulesCell:-ms-drag .SearchModulesCell-information--shift,
+.SearchModulesCell:drag .SearchModulesCell-information--shift {
     display: none;
 }
 
 .SearchModulesCell-information {
     padding: 4px;
     -webkit-flex: 3;
+    -moz-flex: 3;
+    -ms-flex: 3;
+    flex: 3;
     flex: 3;
 }
 
@@ -77,7 +95,13 @@
 
 .SearchModulesCell-action {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
     display: flex;
     flex: 1;
     align-items: center;
