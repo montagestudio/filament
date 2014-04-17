@@ -84,7 +84,9 @@ exports.DocumentController = Target.specialize({
                 self = this;
 
             if (openDocument) {
-                self._setCurrentDocument(openDocument);
+                if (openDocument.url !== this._latestUrl) {
+                    this._setCurrentDocument(openDocument);
+                }
                 return Promise(openDocument);
             } else {
                 // While opening a new document that is not already the opened,
