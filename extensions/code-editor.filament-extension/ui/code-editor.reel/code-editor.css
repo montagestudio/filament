@@ -1,7 +1,13 @@
 .CodeEditor {
     position: relative;
     -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
 }
 
 
@@ -46,6 +52,9 @@
 .CodeEditor .cm-s-solarized.cm-s-light .CodeMirror-linenumber {
     color: hsl(46, 12%, 75%);
     -webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: antialiased;
+    -ms-font-smoothing: antialiased;
+    font-smoothing: antialiased;
 }
 
 .CodeEditor .cm-s-solarized.cm-s-light .cm-tab:before {
@@ -58,6 +67,9 @@
 .CodeEditor .cm-s-solarized.cm-s-light .cm-comment {
     color: hsl(44, 20%, 64%);
     -webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: antialiased;
+    -ms-font-smoothing: antialiased;
+    font-smoothing: antialiased;
 }
 
 .CodeEditor .cm-s-solarized.CodeMirror, 
