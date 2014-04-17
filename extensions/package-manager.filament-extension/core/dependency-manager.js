@@ -1,4 +1,5 @@
 var DependencyManagerQueue = require("./dependency-manager-queue").DependencyManagerQueue,
+    Confirm = require("matte/ui/popup/confirm.reel").Confirm,
     PackageTools = require("./package-tools").ToolsBox,
     Promise = require("montage/core/promise").Promise,
     Montage = require("montage").Montage;
@@ -237,7 +238,28 @@ var DependencyManager = Montage.specialize({
                     if (dependency.missing) {
                         promise = environmentBride.installPackages(request);
                     } else if (dependency.extraneous) {
-                        promise = this._packageDocument.save(request);
+                        var confirmCloseDialogOptions = {
+                            message: "Do you want to save this dependency?",
+                            okLabel: "Save",
+                            cancelLabel: "Cancel"
+                        },
+
+                        deferred = Promise.defer();
+
+                        Confirm.show(confirmCloseDialogOptions, function () {
+                            var document = self._packageDocument;
+
+                            //save the extraneous dependency within the package.json
+                            document.environmentBridge.save(document, document.url).then(function () {
+                                deferred.resolve(true);
+                            }).done();
+                        }, function () {
+                            // do nothing
+                            deferred.resolve(false);
+                        });
+
+                        promise = deferred.promise;
+
                     } else {
                         promise = environmentBride.removePackage(dependencyName).then(function () {
                             return environmentBride.installPackages(request);
