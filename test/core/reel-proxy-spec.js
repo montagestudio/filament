@@ -1,5 +1,4 @@
-var Montage = require("montage").Montage,
-    reelDocumentMock = require("test/mocks/reel-document-mocks").reelDocumentMock,
+var reelDocumentMock = require("test/mocks/reel-document-mocks").reelDocumentMock,
     ReelProxy = require("core/reel-proxy").ReelProxy;
 
 describe("core/reel-proxy-spec", function () {
