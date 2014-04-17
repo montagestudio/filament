@@ -86,6 +86,7 @@ exports.DocumentController = Target.specialize({
             if (openDocument) {
                 if (openDocument.url !== this._latestUrl) {
                     this._setCurrentDocument(openDocument);
+                    this._latestUrl = url;
                 }
                 return Promise(openDocument);
             } else {
