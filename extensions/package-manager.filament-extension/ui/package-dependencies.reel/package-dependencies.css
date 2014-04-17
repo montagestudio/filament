@@ -13,6 +13,9 @@
     border: none;
     background-color: transparent;
     -webkit-font-smoothing: none;
+    -moz-font-smoothing: none;
+    -ms-font-smoothing: none;
+    font-smoothing: none;
 }
 
 .PackageEditorPanel-title--button.matte-Button:hover {

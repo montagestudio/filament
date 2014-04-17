@@ -3,6 +3,9 @@
     background-color: hsl(0,0%,96%);
     justify-content: flex-start;
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     align-items: center;
     height: 51px;
 }
@@ -24,10 +27,34 @@
     text-align: center;
     font-size: 22px;
 }
+.PackageDependencyCell:-moz-drag {
+    background: hsla(0,0%,100%,.8) !important;
+    text-align: center;
+    font-size: 22px;
+}
+.PackageDependencyCell:-ms-drag {
+    background: hsla(0,0%,100%,.8) !important;
+    text-align: center;
+    font-size: 22px;
+}
+.PackageDependencyCell:drag {
+    background: hsla(0,0%,100%,.8) !important;
+    text-align: center;
+    font-size: 22px;
+}
 
 .PackageDependencyCell:-webkit-drag .PackageDependencyCell-item--version,
+.PackageDependencyCell:-moz-drag .PackageDependencyCell-item--version,
+.PackageDependencyCell:-ms-drag .PackageDependencyCell-item--version,
+.PackageDependencyCell:drag .PackageDependencyCell-item--version,
 .PackageDependencyCell:-webkit-drag .PackageDependencyCell-item--state,
-.PackageDependencyCell:-webkit-drag .PackageDependencyCellButton {
+.PackageDependencyCell:-moz-drag .PackageDependencyCell-item--state,
+.PackageDependencyCell:-ms-drag .PackageDependencyCell-item--state,
+.PackageDependencyCell:drag .PackageDependencyCell-item--state,
+.PackageDependencyCell:-webkit-drag .PackageDependencyCellButton,
+.PackageDependencyCell:-moz-drag .PackageDependencyCellButton,
+.PackageDependencyCell:-ms-drag .PackageDependencyCellButton,
+.PackageDependencyCell:drag .PackageDependencyCellButton {
     display: none;
 }
 
@@ -43,6 +70,9 @@
 
 .PackageDependencyCell-details {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     flex-direction: column;
 }
 
@@ -79,6 +109,9 @@
     border: none;
     background-color: transparent;
     -webkit-font-smoothing: none;
+    -moz-font-smoothing: none;
+    -ms-font-smoothing: none;
+    font-smoothing: none;
 }
 
 .PackageDependencyCellButton.matte-Button:hover {
@@ -97,6 +130,9 @@
     height: 50px;
     width: 50px;
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
 }

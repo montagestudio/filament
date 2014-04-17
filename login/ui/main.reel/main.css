@@ -2,6 +2,9 @@
 .Main {
     text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
     -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     cursor: default;
 }
 
@@ -14,11 +17,20 @@
     color: hsl(0,0%,50%);
     text-align: center;
     -webkit-animation: Intro-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
+    -moz-animation: Intro-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
+    -ms-animation: Intro-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
+    animation: Intro-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
 
     background-color: hsla(0,0%,100%, 0.95);
     padding: 3em 1.5em;
     -webkit-transition: background-color 200ms ease-in-out;
+    -moz-transition: background-color 200ms ease-in-out;
+    -ms-transition: background-color 200ms ease-in-out;
+    transition: background-color 200ms ease-in-out;
     -webkit-box-shadow: 0 1px 3px hsla(0,0%,30%, 0.7);
+    -moz-box-shadow: 0 1px 3px hsla(0,0%,30%, 0.7);
+    -ms-box-shadow: 0 1px 3px hsla(0,0%,30%, 0.7);
+    box-shadow: 0 1px 3px hsla(0,0%,30%, 0.7);
     font-size: 12px;
 }
 
@@ -31,6 +43,27 @@
     0% {
         opacity: 0;
         -webkit-transform: translateX(60px);
+        transform: translateX(60px);
+    }
+}
+@-moz-keyframes Intro-fade {
+    0% {
+        opacity: 0;
+        -moz-transform: translateX(60px);
+        transform: translateX(60px);
+    }
+}
+@-ms-keyframes Intro-fade {
+    0% {
+        opacity: 0;
+        -ms-transform: translateX(60px);
+        transform: translateX(60px);
+    }
+}
+@keyframes Intro-fade {
+    0% {
+        opacity: 0;
+        transform: translateX(60px);
     }
 }
 
@@ -73,6 +106,9 @@
     font-style: italic;
     text-align: center;
     -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
     cursor: text;
 }
 
@@ -98,12 +134,36 @@
 .Launcher {
     margin: 40px;
     -webkit-animation: Launcher-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
+    -moz-animation: Launcher-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
+    -ms-animation: Launcher-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
+    animation: Launcher-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
 }
 
 @-webkit-keyframes Launcher-fade {
     0% {
         opacity: 0;
         -webkit-transform: translateX(-60px);
+        transform: translateX(-60px);
+    }
+}
+@-moz-keyframes Launcher-fade {
+    0% {
+        opacity: 0;
+        -moz-transform: translateX(-60px);
+        transform: translateX(-60px);
+    }
+}
+@-ms-keyframes Launcher-fade {
+    0% {
+        opacity: 0;
+        -ms-transform: translateX(-60px);
+        transform: translateX(-60px);
+    }
+}
+@keyframes Launcher-fade {
+    0% {
+        opacity: 0;
+        transform: translateX(-60px);
     }
 }
 
@@ -119,6 +179,9 @@
 
 .Intro .Action-button {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
     position: relative;
     padding: .5em .5em .5em 5em;
     font-size: 12px;
@@ -167,14 +230,23 @@
 .Action-button--login {
     border-color: hsl(210,100%,56%);
     background-image: -webkit-linear-gradient(top, hsl(210,100%,72%), hsl(210,100%,62%) );
+    background-image: -moz-linear-gradient(top, hsl(210,100%,72%), hsl(210,100%,62%) );
+    background-image: -ms-linear-gradient(top, hsl(210,100%,72%), hsl(210,100%,62%) );
+    background-image: linear-gradient(top, hsl(210,100%,72%), hsl(210,100%,62%) );
 }
 
 .Action-button--login:hover {
     background-image: -webkit-linear-gradient(top, hsl(210,100%,76%), hsl(210,100%,64%) );
+    background-image: -moz-linear-gradient(top, hsl(210,100%,76%), hsl(210,100%,64%) );
+    background-image: -ms-linear-gradient(top, hsl(210,100%,76%), hsl(210,100%,64%) );
+    background-image: linear-gradient(top, hsl(210,100%,76%), hsl(210,100%,64%) );
 }
 
 .Action-button--login:active {
     background-image: -webkit-linear-gradient(top, hsl(210,100%,66%), hsl(210,100%,56%) );
+    background-image: -moz-linear-gradient(top, hsl(210,100%,66%), hsl(210,100%,56%) );
+    background-image: -ms-linear-gradient(top, hsl(210,100%,66%), hsl(210,100%,56%) );
+    background-image: linear-gradient(top, hsl(210,100%,66%), hsl(210,100%,56%) );
 }
 
 .Action-button--login:before {
@@ -192,6 +264,9 @@
 
     .Main {
         display: -webkit-flex;
+        display: -moz-flex;
+        display: -ms-flex;
+        display: flex;
         justify-content: center;
         height: 100%;
     }
@@ -204,8 +279,17 @@
     .Launcher {
         width: 320px;
         display: -webkit-flex;
+        display: -moz-flex;
+        display: -ms-flex;
+        display: flex;
         -webkit-flex-direction: column;
+        -moz-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
         -webkit-justify-content: center;
+        -moz-justify-content: center;
+        -ms-justify-content: center;
+        justify-content: center;
     }
 }
 
