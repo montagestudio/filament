@@ -195,6 +195,16 @@ exports.Configurator = Montage.create(Panel, {
 
             this._willAcceptDrop = false;
         }
+    },
+
+    handleHeaderAction: {
+        value: function () {
+            if (this.isInProjectPackage) {
+                this.dispatchEventNamed("openModuleId", true ,true, {
+                    moduleId: this.templateObject.moduleId
+                });
+            }
+        }
     }
 
 

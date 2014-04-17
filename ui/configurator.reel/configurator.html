@@ -14,7 +14,13 @@
                     "element": {
                         "#": "configurator"
                     }
-                }
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             },
 
             "inspector": {
@@ -48,7 +54,32 @@
                 "bindings": {
                     "templateObject": {"<-": "@owner.templateObject"}
                 }
+            },
+
+            "header": {
+                "prototype": "./template-object-header.reel",
+                "properties": {
+                    "element": {"#": "header"}
+                },
+                "bindings": {
+                    "templateObject": {"<-": "@owner.templateObject"}
+                }
+            },
+
+            "objectLabel": {
+                "prototype": "ui/text-editor-field.reel",
+                "properties": {
+                    "element": {"#": "objectLabel"},
+                    "shouldSaveOnBlur": true
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.templateObject.label"}
+                },
+                "listeners": [
+                    {"type": "action", "listener": {"@": "owner"}}
+                ]
             }
+
 
         }
     </script>
@@ -57,6 +88,10 @@
 <body>
     <aside id="configurator" data-montage-id="configurator" class="Configurator">
         <div class="Configurator-title">Inspector</div>
+        <header data-montage-id="header">
+            <span data-arg="title" data-montage-id="objectLabel"></span>
+            <div data-arg="toolbar"></div>
+        </header>
         <div class="Configurator-fiftyFifty">
             <div class="Configurator-firstHalf" data-montage-id="inspector"></div>
             <div class="Configurator-secondHalf">
