@@ -104,7 +104,7 @@
 
 /* HiddenCheckbox */
 
-.TemplateExplorer-hiddenCheckbox.matte-InputCheckbox {
+.TemplateObjectCell-hiddenToggleButton.matte-Button {
     width: 2.5em;
     height: 2.5em;
     margin: 0;
@@ -114,16 +114,16 @@
     opacity: .3;
 }
 
-.TemplateExplorer-hiddenCheckbox.matte-InputCheckbox:hover {
+.TemplateObjectCell-hiddenToggleButton.matte-Button:hover {
     background-color: transparent;
     opacity: .5;
 }
 
-.TemplateExplorer-hiddenCheckbox.matte-InputCheckbox:active {
+.TemplateObjectCell-hiddenToggleButton.matte-Button:active {
     opacity: .3;
 }
 
-.TemplateExplorer-hiddenCheckbox.matte-InputCheckbox:checked {
+.TemplateObjectCell-hiddenToggleButton.matte-Button.pressed {
     background: url(/assets/icons/eye.png) no-repeat center;
     background-size: 14px;
 }

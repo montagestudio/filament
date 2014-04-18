@@ -109,14 +109,14 @@
                 }
             },
 
-            "hiddenCheckbox": {
-                "prototype": "matte/ui/input-checkbox.reel",
+            "hiddenToggleButton": {
+                "prototype": "matte/ui/toggle-button.reel",
                 "properties": {
-                    "element": {"#": "hiddenCheckbox"},
+                    "element": {"#": "hiddenToggleButton"},
                     "title": "Hidden"
                 },
                 "bindings": {
-                    "checked": {"<-": "@owner.templateObject.editorMetadata.get('isHidden')"}
+                    "pressed": {"<-": "!@owner.templateObject.editorMetadata.get('isHidden')"}
                 },
                 "listeners": [
                     {
@@ -183,7 +183,7 @@
         <header data-montage-id="header">
             <div data-arg="title" data-montage-id="objectLabel"></div>
             <div data-arg="toolbar">
-                <input type="checkbox" data-montage-id="hiddenCheckbox" class="TemplateObjectCell-hiddenCheckbox">
+                <button data-montage-id="hiddenToggleButton" class="TemplateObjectCell-hiddenToggleButton">
             </div>
         </header>
     
