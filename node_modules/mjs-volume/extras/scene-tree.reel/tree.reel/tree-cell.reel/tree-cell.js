@@ -2,7 +2,11 @@
  * @module ui/tree-cell.reel
  * @requires montage/ui/component
  */
+
 var Component = require("montage/ui/component").Component,
+    ModuleLocation = module.location.replace(/[^\/]+.js$/m, ""),
+    SceneTreeNode = require("extras/scene-tree.reel/core/scene-tree-node").SceneTreeNode,
+
     NODE_TYPES = require("extras/scene-tree.reel/core/scene-tree-node").SceneTreeNodeTypes,
     MIME_TYPES = require("extras/scene-tree.reel/core/mime-types");
 
@@ -98,7 +102,8 @@ exports.TreeCell = Component.specialize(/** @lends TreeCell# */ {
     draw: {
         value: function () {
             if (this.node) {
-                var indentValue = this.configuration.get("indentValue") * (this.node.depth - 1);
+                var indentValue = this.configuration.get("indentValue") * (this.node.depth - 1),
+                    sceneNode = this.node.content;
 
                 this._element.style.marginLeft = indentValue + this.configuration.get("indentUnit");
 
@@ -106,13 +111,26 @@ exports.TreeCell = Component.specialize(/** @lends TreeCell# */ {
                     this._element.setAttribute("draggable", "true");
                 }
 
-                if (this.configuration.get("displayNodeType")) {
-                    var nodeTypeElement = this.templateObjects.nodeTypeLabel;
+                if (sceneNode && sceneNode instanceof SceneTreeNode && !sceneNode.hasChildren()) {
+                    this.classList.add('LastSceneNode');
+                }
 
-                    if (this.type === NODE_TYPES.MESH) {
-                        nodeTypeElement.value = "M";
-                    } else {
-                        nodeTypeElement.value = "N";
+                if (this.configuration.get("displayNodeType")) {
+                    var nodeTypeElement = this.templateObjects.nodeTypeImage;
+
+                    switch (this.type) {
+                        case NODE_TYPES.NODE:
+                            nodeTypeElement.src = ModuleLocation + "icons/cube.png";
+                            nodeTypeElement.alt = "node";
+                            break;
+                        case NODE_TYPES.LIGHT:
+                            nodeTypeElement.src = ModuleLocation + "icons/light.png";
+                            nodeTypeElement.alt = "light";
+                            break;
+                        case NODE_TYPES.CAMERA:
+                            nodeTypeElement.src = ModuleLocation + "icons/camera.png";
+                            nodeTypeElement.alt = "camera";
+                            break;
                     }
                 }
             }
