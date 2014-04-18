@@ -17,6 +17,7 @@ exports.Editor = Component.specialize(/** @lends Editor# */ {
 
             this.defineBinding("sceneLabel", {"<-": "object.label"});
             this.defineBinding("editingProxies", {"<-": "editingDocument.editingProxies"});
+            this.defineBinding("fileName", {"<-": "object.properties.get('path')"});
 
             this.addPathChangeListener("object.properties.get('path')", this, "handleScenePathChange");
 
