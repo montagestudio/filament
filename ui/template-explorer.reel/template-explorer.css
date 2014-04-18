@@ -65,7 +65,7 @@
     line-height: 0;
 }
 
-.TemplateExplorer-filterToggle.matte-InputCheckbox {
+.TemplateExplorer-filterToggle.matte-Button {
     margin: 0;
     vertical-align: middle;
     border: none;
@@ -76,28 +76,28 @@
 }
 
 .TemplateExplorer-hiddenControl.is-disabled .TemplateExplorer-filterToggle,
-.TemplateExplorer-filterToggle.matte-InputCheckbox:checked {
+.TemplateExplorer-filterToggle.matte-Button.pressed {
     opacity: 1;
 }
 
-.TemplateExplorer-filterToggle--binding.matte-InputCheckbox,
-.TemplateExplorer-filterToggle--binding.matte-InputCheckbox:checked {
+.TemplateExplorer-filterToggle--binding.matte-Button,
+.TemplateExplorer-filterToggle--binding.matte-Button.pressed {
     background: url(/assets/icons/binding.png) no-repeat center;
     background-size: auto 14px;
 }
 
-.TemplateExplorer-filterToggle--listener.matte-InputCheckbox,
-.TemplateExplorer-filterToggle--listener.matte-InputCheckbox:checked {
+.TemplateExplorer-filterToggle--listener.matte-Button,
+.TemplateExplorer-filterToggle--listener.matte-Button.pressed {
     background: url(/assets/icons/event.png) no-repeat center;
     background-size: auto 14px;
 }
 
-.TemplateExplorer-filterToggle.matte-InputCheckbox:hover {
+.TemplateExplorer-filterToggle.matte-Button:hover {
     background-color: hsl(0,0%,100%);
 }
 
-.TemplateExplorer-filterToggle.matte-InputCheckbox:active,
-.TemplateExplorer-filterToggle.matte-InputCheckbox:checked:active {
+.TemplateExplorer-filterToggle.matte-Button:active,
+.TemplateExplorer-filterToggle.matte-Button.pressed:active {
     background-color: hsl(0,0%,90%);
 }
 

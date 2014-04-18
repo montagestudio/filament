@@ -46,30 +46,30 @@
             }
         },
         "showBindings": {
-            "prototype": "matte/ui/input-checkbox.reel",
+            "prototype": "matte/ui/toggle-button.reel",
             "properties": {
                 "element": {"#": "showBindings"}
             },
             "bindings": {
-                "checked": {"<->": "@owner.showBindings"}
+                "pressed": {"<->": "!@owner.showBindings"}
             }
         },
         "showHidden": {
-            "prototype": "matte/ui/input-checkbox.reel",
+            "prototype": "matte/ui/toggle-button.reel",
             "properties": {
                 "element": {"#": "showHidden"}
             },
             "bindings": {
-                "checked": {"<->": "@owner.showHidden"}
+                "pressed": {"<->": "!@owner.showHidden"}
             }
         },
         "showListeners": {
-            "prototype": "matte/ui/input-checkbox.reel",
+            "prototype": "matte/ui/toggle-button.reel",
             "properties": {
                 "element": {"#": "showListeners"}
             },
             "bindings": {
-                "checked": {"<->": "@owner.showListeners"}
+                "pressed": {"<->": "!@owner.showListeners"}
             }
         },
         "templateObjectCell": {
@@ -127,11 +127,11 @@
         <header class="TemplateExplorer-header Bar">
             <div>
                 <input data-montage-id="templateObjectFilter" class="Search" type="search" placeholder="Search Template">
-                <input data-montage-id="showBindings" class="TemplateExplorer-filterToggle TemplateExplorer-filterToggle--binding" type="checkbox" title="Toggle Bindings">
-                <input data-montage-id="showListeners" class="TemplateExplorer-filterToggle TemplateExplorer-filterToggle--listener" type="checkbox" title="Toggle Listeners">
+                <button data-montage-id="showBindings" class="TemplateExplorer-filterToggle TemplateExplorer-filterToggle--binding" title="Toggle Bindings"></button>
+                <button data-montage-id="showListeners" class="TemplateExplorer-filterToggle TemplateExplorer-filterToggle--listener" title="Toggle Listeners"></button>
             </div>
             <label class="TemplateExplorer-hiddenControl">
-                <input data-montage-id="showHidden" type="checkbox" class="TemplateExplorer-hiddenCheckbox" title="Toggle Hidden">
+                <button data-montage-id="showHidden" class="TemplateObjectCell-hiddenToggleButton" title="Toggle Hidden"></button>
                 <span data-montage-id="hiddenCount" class="TemplateExplorer-header-counter"></span>
             </label>
         </header>
