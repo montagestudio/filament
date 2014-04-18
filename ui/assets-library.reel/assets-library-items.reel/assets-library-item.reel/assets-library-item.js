@@ -37,6 +37,12 @@ exports.AssetsLibraryItem = Component.specialize(/** @lends AssetsLibraryItem# *
                     if (dataTransfer) {
                         dataTransfer.effectAllowed = "copyMove";
 
+                        if (this.prototypeAsset.isGlTFBundle()) {
+                            relativeUrl = relativeUrl.replace(/\/?$/, ''); // remove hypothetical last trailling character.
+                            relativeUrl = relativeUrl + '/' + this.prototypeAsset.name + ".json";
+                            // Fixme: Does not work if the json file inside the bundle
+                            // doesn't have the same name of the GlTF bundle.
+                        }
 
                         dataTransfer.setData("text/plain", relativeUrl);
 
