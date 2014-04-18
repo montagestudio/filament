@@ -358,15 +358,20 @@ describe("asset-manager-spec", function () {
             fileDescriptor2.mimeType = "image/png";
             var asset2 = assetsManager.createAssetWithFileDescriptor(fileDescriptor2);
 
+            var documentUrl = 'http://a/b/c/d/';
+
             assetsManager.addAsset(asset);
             assetsManager.addAsset(asset2);
             assetsManager.projectUrl = 'http://a/b/c/';
-            assetsManager.projectController.currentDocument._url = 'http://a/b/c/d/';
+            assetsManager.projectController.currentDocument._url = documentUrl;
 
-            expect(assetsManager.getAssetByRelativePath("e/f.png").fileUrl).toEqual(asset.fileUrl);
-            expect(assetsManager.getAssetByRelativePath("./e/f.png").fileUrl).toEqual(asset.fileUrl);
-            expect(assetsManager.getAssetByRelativePath("/e/f.png").fileUrl).toEqual(asset.fileUrl);
+            // Absolute cases
+            expect(assetsManager.getAssetByRelativePath("e/f.png").fileUrl).toEqual(assetsManager.projectUrl + "e/f.png");
+            expect(assetsManager.getAssetByRelativePath("/e/f.png").fileUrl).toEqual(assetsManager.projectUrl + "e/f.png");
+
+            // relative cases
             expect(assetsManager.getAssetByRelativePath("../e/f.png").fileUrl).toEqual(asset2.fileUrl);
+            expect(assetsManager.getAssetByRelativePath("./e/f.png").fileUrl).toEqual(documentUrl + 'e/f.png');
             expect(assetsManager.getAssetByRelativePath("../../e/f.png")).toBe(null);
 
             // Some tests about the private _resolvePaths & _decomposePath functions.

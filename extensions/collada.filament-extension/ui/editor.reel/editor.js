@@ -69,11 +69,29 @@ exports.Editor = Component.specialize(/** @lends Editor# */ {
         value: function (path) {
             this.dispatchBeforeOwnPropertyChange("sceneUrl", this.sceneUrl);
 
-            //TODO this can certainly be improved, I quickly put this in place to get the sceneEditor back on its feet
             if (this.object && this.object.properties) {
-                // The object will report a path that expects to be relative to the project
-                // make sure it's relative to the project/component and not relative to filament.
-                this._sceneUrl = this.object.editingDocument.fileUrl + this.object.properties.get("path");
+                var scenePath = this.object.properties.get("path"),
+                    document = this.object.editingDocument;
+
+                if (scenePath && document) {
+                    var sceneUrl = null;
+
+                    if(/^https?:/i.test(scenePath)) { // is Url
+                        sceneUrl = scenePath;
+                    } else {
+                        var assetManager = document.editor.projectController.assetsManager;
+
+                        // relative and absolute paths
+                        sceneUrl = assetManager.getAssetUrlWithPathAndDocument(scenePath, document);
+                    }
+
+                    if (sceneUrl) {
+                        this._sceneUrl = sceneUrl;
+                    }
+
+                    //TODO Inform user when the sceneUrl is not valid.
+                }
+
             } else {
                 this._sceneUrl = null;
             }
