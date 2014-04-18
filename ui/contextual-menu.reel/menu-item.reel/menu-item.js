@@ -356,7 +356,7 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
                     this.needsDraw = true;
                 } else {
                     this.element.classList.add("Flashing");
-                     this.menuFlashing = false;
+                    this.menuFlashing = false;
                 }
             }
         }
