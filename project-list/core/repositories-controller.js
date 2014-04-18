@@ -128,29 +128,29 @@ var RepositoriesController = Montage.specialize({
         }
     },
 
-    _totalDocuments: {
+    _repositoriesCount: {
         value: 0
     },
 
-    totalDocuments: {
+    repositoriesCount: {
         get: function () {
-            return this._totalDocuments;
+            return this._repositoriesCount;
         },
 
         set: function (value) {
-            if (value === this._totalDocuments) {
+            if (value === this._repositoriesCount) {
                 return;
             }
 
-            if (this._totalDocuments && value > this._totalDocuments) {
-                var growth = value / this._totalDocuments;
-                this.processedDocuments = Math.ceil(this.processedDocuments * growth);
+            if (this._repositoriesCount && value > this._repositoriesCount) {
+                var growth = value / this._repositoriesCount;
+                this.processedRepositories = Math.ceil(this.processedRepositories * growth);
             }
-            this._totalDocuments = value;
+            this._repositoriesCount = value;
         }
     },
 
-    processedDocuments: {
+    processedRepositories: {
         value: 0
     },
 
@@ -173,12 +173,12 @@ var RepositoriesController = Montage.specialize({
             .then(function (repos) {
                 var pendingCommands = repos.length;
 
-                self.totalDocuments += repos.length;
+                self.repositoriesCount += repos.length;
 
                 // HACK: workaround for progress not being able to have max = 0
                 // it's set as 1. (MON-402)
-                if (self.totalDocuments === 0) {
-                    self.processedDocuments = 1;
+                if (self.repositoriesCount === 0) {
+                    self.processedRepositories = 1;
                 }
                 repos.forEach(function(repo) {
                     self._isValidRepository(repo)
@@ -189,7 +189,7 @@ var RepositoriesController = Montage.specialize({
                             //jshint +W106
                             self._ownedRepositoriesContent.content.push(repo);
                         }
-                        self.processedDocuments++;
+                        self.processedRepositories++;
                         if (--pendingCommands === 0) {
                             deferred.resolve();
                         }
@@ -352,8 +352,8 @@ var RepositoriesController = Montage.specialize({
     updateAndCacheUserRepositories: {
         value: function () {
             var self = this;
-            this.totalDocuments = 0;
-            this.processedDocuments = 0;
+            this.repositoriesCount = 0;
+            this.processedRepositories = 0;
             return this.updateUserRepositories().then(function () {
                 // cache repositories
                 localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(self._ownedRepositoriesContent.content));

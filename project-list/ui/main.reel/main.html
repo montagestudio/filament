@@ -209,9 +209,9 @@
                     "element": {"#": "historyProgress"}
                 },
                 "bindings": {
-                    "max": {"<-": "@repositoriesController.totalDocuments"},
-                    "value": {"<-": "[value, @repositoriesController.processedDocuments].max{}"},
-                    "classList.has('is-done')": {"<-": "[value, @repositoriesController.processedDocuments].max{} >= [max, @repositoriesController.totalDocuments].min{}"}
+                    "max": {"<-": "@repositoriesController.repositoriesCount"},
+                    "value": {"<-": "[value, @repositoriesController.processedRepositories].max{}"},
+                    "classList.has('is-done')": {"<-": "[value, @repositoriesController.processedRepositories].max{} >= [max, @repositoriesController.repositoriesCount].min{}"}
                 }
             },
 
