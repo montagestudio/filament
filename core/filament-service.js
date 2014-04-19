@@ -25,6 +25,14 @@ exports.FilamentService = Montage.specialize({
         }
     },
 
+    inspectComponent: {
+        value: function(moduleId, label) {
+            var packageUrl = this._applicationDelegate.projectController.packageUrl;
+
+            application.dispatchEventNamed("openUrl", true, true, packageUrl + moduleId);
+        }
+    },
+
     dispatchAppEventNamed: {
         value: function(type, canBubble, cancelable, detail) {
             application.dispatchEventNamed(type, canBubble, cancelable, detail);
