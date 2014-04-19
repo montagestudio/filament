@@ -793,7 +793,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     canCloseAllDocuments: {
         value: function () {
             return this.documents.every(function (document) {
-                console.log(document, !document.isDirty)
                 return !document.isDirty;
             });
         }
