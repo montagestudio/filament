@@ -40,6 +40,7 @@ exports.Main = Montage.create(Component, {
                 //TODO make this less environment specific
                 if (typeof lumieres === "undefined") {
                     application.addEventListener("menuAction", this);
+                    window.onbeforeunload = this.handleBeforeunload.bind(this);
                 } else {
                     document.addEventListener("save", this, false);
                 }
@@ -63,6 +64,19 @@ exports.Main = Montage.create(Component, {
                     event.preventDefault();
                 }
             });
+        }
+    },
+
+    handleBeforeunload: {
+        value: function(evt) {
+            if (this.projectController.canCloseAllDocuments()) {
+                return;
+            }
+
+            var confirmationMessage = "You have unsaved changes. Do you want to leave without saving them ?"; // TODO localisation
+            event.preventDefault();
+            (evt || window.event).returnValue = confirmationMessage;     //Gecko + IE
+            return confirmationMessage;                                //Webkit, Safari, Chrome etc.
         }
     },
 
