@@ -16,11 +16,12 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
     getEnvironmentBridge: {
         value: function () {
+            var self = this;
             var bridgePromise = this._bridgePromise;
 
             if (!bridgePromise) {
                 bridgePromise = require.async("adaptor/client/core/environment-bridge").then(function (exported) {
-                    return new exported.EnvironmentBridge().init("filament-backend", new FilamentService());
+                    return new exported.EnvironmentBridge().init("filament-backend", new FilamentService(self));
                 });
                 this._bridgePromise = bridgePromise;
             }

@@ -5,7 +5,8 @@ var Montage = require("montage/core/core").Montage,
 exports.FilamentService = Montage.specialize({
 
     constructor: {
-        value: function FilamentService () {
+        value: function FilamentService (applicationDelegate) {
+            this._applicationDelegate = applicationDelegate;
         }
     },
 
