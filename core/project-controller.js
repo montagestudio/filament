@@ -1210,7 +1210,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 };
 
                 self.addEventListener("didOpenPackage", openMainReel, false);
-                return self.loadProject(applicationUrl);
+                return applicationUrl;
             });
         }
     },
