@@ -66,7 +66,7 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
         value: function (evt) {
             var target = evt.target,
                 referenceProxyElement = this._referenceProxyElement,
-                transfer = event.dataTransfer;
+                transfer = evt.dataTransfer;
 
             // Dragging the templateObject reference
             if (target === referenceProxyElement) {
