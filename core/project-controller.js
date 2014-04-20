@@ -233,7 +233,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 .spread(function (packageRequire) {
                     self._deferredPackageRequireLoading.resolve();
                     return packageRequire;
-                });
+                }, self._deferredPackageRequireLoading.reject);
             }
 
             return this._packageRequires[packageUrl];

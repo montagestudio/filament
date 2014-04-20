@@ -10,16 +10,11 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         value: function ApplicationDelegate () {
             this.super();
             var originalOnerror = Promise.onerror;
-            this._deferredProjectLoaded = Promise.defer();
             Promise.onerror = function (error) {
                 track.error(error);
                 return originalOnerror(error);
             };
         }
-    },
-
-    _deferredProjectLoaded: {
-        value: null
     },
 
     _deferredRepositoryInitialization: {
@@ -169,14 +164,6 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                     return Promise(readyWorkspacePromise);
 
                 })
-                .then(function(readyWorkspacePromise) {
-                    self.progressPanel.message = "Loading project…";
-                    self._deferredProjectLoaded.promise.then(function() {
-                        self.showModal = false;
-                        self.currentPanelKey = null;
-                    }).done();
-                    return readyWorkspacePromise;
-                })
                 .catch(function(err) {
 
                     var message = err.message || "Internal Server Error";
@@ -198,12 +185,50 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         }
     },
 
+    loadProject: {
+        value: function(projectUrl) {
+            var self = this;
+            var deferred = Promise.defer();
+            var superMethod = ApplicationDelegate.prototype.loadProject;
+
+            var loadProject = function() {
+                self.currentPanelKey = "progress";
+                self.progressPanel.message = "Loading project…";
+                self.showModal = true;
+                superMethod.call(self, projectUrl)
+                .then(deferred.resolve)
+                .fail(loadProjectFail)
+                .done();
+            };
+
+            var loadProjectFail = function(reason) {
+                var message = reason.message || "Internal Server Error";
+                console.log(message);
+                self.currentPanelKey = "confirm";
+                track.error(new Error("Error loading the project: " + message));
+
+                self.confirmPanel.getResponse("Error loading the project", true, "Retry", "Close")
+                .then(function (response) {
+                    self.showModal = false;
+                    if (response === true) {
+                        loadProject();
+                    } else {
+                        window.location = "/";
+                    }
+                });
+            };
+
+            loadProject();
+
+            return deferred.promise;
+        }
+    },
+
     didLoadProject: {
         value: function () {
             var superPromise = this.super(),
                 self = this;
 
-            this._deferredProjectLoaded.resolve();
             superPromise.then(function () {
                 return self._bridgePromise;
             }).then(function (bridge) {
@@ -212,6 +237,9 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                     repo: bridge.repositoryController.repo
                 };
                 repositoriesController.addRepositoryToRecent(project);
+
+                self.showModal = false;
+                self.currentPanelKey = null;
             }).done();
 
             return superPromise;

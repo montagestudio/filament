@@ -150,7 +150,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
 
                         // With extensions now loaded and activated, load a project
                         return promisedProjectUrl.then(function(projectUrl) {
-                            return projectController.loadProject(projectUrl).thenResolve(projectUrl);
+                            return self.loadProject(projectUrl).thenResolve(projectUrl);
                         });
                     }).then(function (projectUrl) {
                         var ix = projectController.documents.indexOf(preloadDocument);
@@ -198,6 +198,12 @@ exports.ApplicationDelegate = Montage.create(Montage, {
     willLoadProject: {
         value: function () {
             return Promise.resolve();
+        }
+    },
+
+    loadProject: {
+        value: function(projectUrl) {
+            return this.projectController.loadProject(projectUrl);
         }
     },
 
