@@ -1405,12 +1405,14 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 return;
             }
 
-            var changes = this._lastFileChangeForDocumentMap.get(document, this._fileChangesHead);
+            var changes = this._lastFileChangeForDocumentMap.get(document);
             var changeList = [];
-            // skip first change as that has already been dispatched to the
-            // document
-            while (changes = changes.next) {
-                changeList.push(changes);
+            if (changes) {
+                // skip first change as that has already been dispatched to the
+                // document
+                while (changes = changes.next) {
+                    changeList.push(changes);
+                }
             }
             this._lastFileChangeForDocumentMap.set(document, this._fileChangesHead);
             if (changeList.length) {
