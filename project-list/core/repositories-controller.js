@@ -7,6 +7,7 @@ var RepositoryController = require("adaptor/client/core/repository-controller").
 
 var MAX_RECENT_ITEMS = 10;
 var LOCAL_STORAGE_KEY = "cachedOwnedRepositories";
+var LOCAL_STORAGE_REPOSITORIES_COUNT_KEY = "cachedProcessedRepositoriesCount";
 
 var Group = Montage.specialize( {
 
@@ -330,6 +331,7 @@ var RepositoriesController = Montage.specialize({
                 if (cachedOwnedRepositories) {
                     try {
                         self._ownedRepositoriesContent.content.addEach(JSON.parse(cachedOwnedRepositories));
+                        self.validateUserRepositoriesCache();
                     } catch (error) {
                         console.warn("Failed to parse cached owned repositories because " + error.message);
                         localStorage.removeItem(LOCAL_STORAGE_KEY);
@@ -349,6 +351,33 @@ var RepositoriesController = Montage.specialize({
         }
     },
 
+    validateUserRepositoriesCache: {
+        value: function () {
+            var self = this;
+            return this._githubApi.then(function(githubApi) {
+                return githubApi.getUser().then(function(user) {
+                    /* jshint -W106 */
+                    if (!user.public_repos || !user.total_private_repos) {
+                        throw "Failed to validate cache, Github's API result is incomplete";
+                    }
+                    var userRepositoriesCount = user.public_repos + user.total_private_repos,
+                        cachedCount = localStorage.getItem(LOCAL_STORAGE_REPOSITORIES_COUNT_KEY),
+                        count;
+                    userRepositoriesCount += (user.collaborators) ? user.collaborators : 0;
+                    /* jshint +W106 */
+                    if (!cachedCount) {
+                        // no cache count to check against
+                        self.updateAndCacheUserRepositories();
+                    }
+                    count = JSON.parse(cachedCount);
+                    if (count !== userRepositoriesCount) {
+                        self.updateAndCacheUserRepositories();
+                    }
+                });
+            });
+        }
+    },
+
     updateAndCacheUserRepositories: {
         value: function () {
             var self = this;
@@ -357,6 +386,8 @@ var RepositoriesController = Montage.specialize({
             return this.updateUserRepositories().then(function () {
                 // cache repositories
                 localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(self._ownedRepositoriesContent.content));
+                // cache repositories processes count
+                localStorage.setItem(LOCAL_STORAGE_REPOSITORIES_COUNT_KEY, JSON.stringify(self.repositoriesCount));
                 // validate recent repositories cache
                 self._validateRecentRepositories();
             });
