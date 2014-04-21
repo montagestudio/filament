@@ -1,5 +1,6 @@
 .BindingJig.Jig {
     min-width: 560px;
+    display: block;
 }
 
 /* BindingJig sections ---------------------- */
