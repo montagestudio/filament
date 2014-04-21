@@ -142,14 +142,16 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                         projectController.documents.push(preloadDocument);
                         projectController.selectDocument(preloadDocument);
 
-                        // With extensions now loaded and activated, load a project
                         if (projectUrl) {
-                            promisedProjectUrl = projectController.loadProject(projectUrl);
+                            promisedProjectUrl = Promise.resolve(projectUrl);
                         } else {
                             promisedProjectUrl = projectController.createApplication();
                         }
 
-                        return promisedProjectUrl;
+                        // With extensions now loaded and activated, load a project
+                        return promisedProjectUrl.then(function(projectUrl) {
+                            return self.loadProject(projectUrl).thenResolve(projectUrl);
+                        });
                     }).then(function (projectUrl) {
                         var ix = projectController.documents.indexOf(preloadDocument);
                         projectController.documents.splice(ix, 1);
@@ -196,6 +198,12 @@ exports.ApplicationDelegate = Montage.create(Montage, {
     willLoadProject: {
         value: function () {
             return Promise.resolve();
+        }
+    },
+
+    loadProject: {
+        value: function(projectUrl) {
+            return this.projectController.loadProject(projectUrl);
         }
     },
 

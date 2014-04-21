@@ -233,7 +233,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 .spread(function (packageRequire) {
                     self._deferredPackageRequireLoading.resolve();
                     return packageRequire;
-                });
+                }, self._deferredPackageRequireLoading.reject);
             }
 
             return this._packageRequires[packageUrl];
@@ -1210,7 +1210,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 };
 
                 self.addEventListener("didOpenPackage", openMainReel, false);
-                return self.loadProject(applicationUrl);
+                return applicationUrl;
             });
         }
     },
