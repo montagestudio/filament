@@ -45,6 +45,10 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
         value: "menuValidate"
     },
 
+    dispatchTarget :{
+        value : null
+    },
+
     enterDocument: {
         value: function (firstTime) {
             if (!firstTime) { return; }
@@ -147,7 +151,6 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
         }
     },
 
-    // go to lines 138-139
     _dispatchValidate: {
         value: function (menuItem) {
             if (this.dispatchTarget) {
@@ -195,12 +198,13 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
 
     _openSubmenu: {
         value: function () {
-            var element = this.templateObjects.menuButton.element;
+            var element = this.templateObjects.menuButton.element,
+                self = this;
             this._toggleContextualMenu(element);
 
             if (this.isOpen) {
                 this.menuItemModel.items.forEach(function (item) {
-                    this._dispatchValidate(item);
+                    self._dispatchValidate(item);
                 });
             }
         }
@@ -253,19 +257,20 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
             // CSS's pseudo class hover is not applied durring a drag, this is a workaround [1/2]
             this.templateObjects.menuButton.classList.add("over");
 
-            // Open a submenu
-            if (this.isSubMenu() && !this.templateObjects.contextualMenu.isOpen) {
-                this._openSubmenu();
-                return;
-            }
 
             // Closing sub menus
-            if (this.menu.activePath.length) {
+            if (activePath.length) {
                 var parentIndex = activePath.indexOf(this.parentMenuItem);
                 for (var i = parentIndex + 1; i < activePath.length; i++) {
                     activePath[i].close();
                 }
                 activePath.slice(parentIndex, activePath.length);
+            }
+
+            // Open a submenu
+            if (this.isSubMenu() && !this.templateObjects.contextualMenu.isOpen) {
+                this._openSubmenu();
+                return;
             }
 
             // Root menuItem hover act like click if there is already a sub menu open

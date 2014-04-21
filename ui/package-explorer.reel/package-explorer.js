@@ -1,27 +1,14 @@
-var Component = require("montage/ui/component").Component;
-var Url = require("core/url");
-
-var menuItemExports,
-    MenuItem;
-
-try {
-    menuItemExports = require("adaptor/client/core/menu-item");
-} catch (e) {
-    console.log("Environment did not provide a MenuItem");
-}
-
-if (menuItemExports) {
-    MenuItem = menuItemExports.MenuItem;
-}
-
-var application = require("montage/core/application").application,
-    MenuModule = require("core/menu");
-
-// TODO: localize
-var HIDE_MENU_TEXT = "Hide Package Explorer";
-var SHOW_MENU_TEXT = "Show Package Explorer";
-var MENU_IDENTIFIER = "showHidePackageExplorer";
-var MENU_KEY = "command+0";
+var Component = require("montage/ui/component").Component,
+    Url = require("core/url"),
+    menuItemExports = require("core/menu-item"),
+    MenuItem = menuItemExports.MenuItem,
+    application = require("montage/core/application").application,
+    MenuModule = require("core/menu"),
+    // TODO: localize
+    HIDE_MENU_TEXT = "Hide Package Explorer",
+    SHOW_MENU_TEXT = "Show Package Explorer",
+    MENU_IDENTIFIER = "showHidePackageExplorer",
+    MENU_KEY = "command+0";
 
 exports.PackageExplorer = Component.specialize({
 
