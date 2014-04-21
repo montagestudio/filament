@@ -13,10 +13,6 @@
                 {
                     "type": "keyPress",
                     "listener": {"@": "owner"}
-                },
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
                 }
             ]
         },
@@ -130,7 +126,13 @@
             },
             "bindings": {
                 "value": {"<->": "@owner.bindingModel.targetPath"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "sourcePath": {
@@ -147,7 +149,13 @@
             },
             "bindings": {
                 "value": {"<->": "@owner.bindingModel.sourcePath"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
 
     }
