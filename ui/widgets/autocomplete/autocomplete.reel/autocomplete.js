@@ -495,12 +495,6 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
             var code = evt.keyCode,
                 popup = this._getPopup();
             switch(code) {
-            case KEY_ENTER:
-                if (popup.displayed) {
-                    evt.stop();
-                }
-                break;
-
             case KEY_DOWN:
                 evt.preventDefault();
                 break;

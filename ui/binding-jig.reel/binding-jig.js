@@ -30,8 +30,6 @@ exports.BindingJig = Montage.create(Component, {
             this._focusTimeout = setTimeout(function () {
                 self.templateObjects.targetPath.element.focus();
             }, 100);
-
-            this.element.addEventListener("submit", this);
         }
     },
 
@@ -85,9 +83,9 @@ exports.BindingJig = Montage.create(Component, {
         }
     },
 
-    handleSubmit: {
-        value: function(event) {
-            event.stop();
+    handleDefineBindingButtonAction: {
+        value: function (evt) {
+            evt.stop();
             this._commitBindingEdits().catch(function(error) {
                 // Ignore validation error
             }).done();
