@@ -563,6 +563,8 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
                     this.resultsController.selection = [this.suggestions[this.activeItemIndex]];
                     e.preventDefault();
                     // select the currently active item in the results list
+                } else {
+                    this._dispatchActionEvent();
                 }
 
                 break;
