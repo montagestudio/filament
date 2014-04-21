@@ -653,7 +653,7 @@ exports.AssetsManager = Montage.specialize({
      */
     getAssetByRelativePath: {
         value: function (relativePath) {
-            var url = this.getAssetUrlWithPathAndDocument(relativePath, this._currentDocument)
+            var url = this.getAssetUrlWithPathAndDocument(relativePath, this._currentDocument);
 
             return this._findAssetWithFileUrl(url);
         }
