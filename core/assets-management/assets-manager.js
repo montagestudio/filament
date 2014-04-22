@@ -645,22 +645,40 @@ exports.AssetsManager = Montage.specialize({
     },
 
     /**
-     * Finds and Gets an Asset with a relative path.
+     * Finds and Gets an Asset with a path.
      * @function
      * @public
-     * @param {String} relativePath - a relative path.
+     * @param {String} path - a path.
      * @return {(Object|null)} Asset Object.
      */
-    getAssetByRelativePath: {
-        value: function (relativePath) {
-            if (typeof relativePath === "string" && relativePath.length > 0 && this._currentDocument) {
-                relativePath = relativePath.replace(/^\.\/|^\//, ''); // remove ./ or / from the begin of a path.
+    getAssetWithPath: {
+        value: function (path) {
+            var url = this.getAssetUrlWithPathAndDocument(path, this._currentDocument);
 
-                var reelDocumentRelativeUrl = this._currentDocument.url.substring(this.projectUrl.length),
-                    assetUrl = this._resolvePaths(reelDocumentRelativeUrl, relativePath);
+            return this._findAssetWithFileUrl(url);
+        }
+    },
 
-                return this._findAssetWithFileUrl(this._cleanPath(this.projectUrl) + assetUrl);
+    getAssetUrlWithPathAndDocument: {
+        value: function (path, document) {
+            if (/^\.\.?\/|^[^\.\/]/.test(path)) { //is Relative
+                if (typeof path === "string" && path.length > 0 && this._currentDocument) {
+                    path = path.replace(/^\.\//, ''); // remove ./ from the begin of a path.
+
+                    var reelDocumentRelativeUrl = document.url.substring(this.projectUrl.length),
+                        assetUrl = this._resolvePaths(reelDocumentRelativeUrl, path);
+
+                    return this._cleanPath(this.projectUrl) + assetUrl;
+                }
+            } else {
+                if (path[0] !== "/") {
+                    path = '/' + path;
+                }
+
+                return this._cleanPath(this.projectUrl) + path;
             }
+
+            return null;
         }
     },
 
