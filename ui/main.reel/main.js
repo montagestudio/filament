@@ -40,6 +40,8 @@ exports.Main = Montage.create(Component, {
                 //TODO make this less environment specific
                 if (typeof lumieres === "undefined") {
                     application.addEventListener("menuAction", this);
+                    window.onbeforeunload = this.handleBeforeunload.bind(this);
+                    window.addEventListener("beforeunload", this, false);
                 } else {
                     document.addEventListener("save", this, false);
                 }
@@ -63,6 +65,19 @@ exports.Main = Montage.create(Component, {
                     event.preventDefault();
                 }
             });
+        }
+    },
+
+    handleBeforeunload: {
+        value: function(evt) {
+            if (this.projectController.canCloseAllDocuments()) {
+                return;
+            }
+            // From https://developer.mozilla.org/en-US/docs/Web/Reference/Events/beforeunload
+            var confirmationMessage = "You have unsaved changes, leaving now will lose these changes."; // TODO localisation
+            evt.preventDefault();
+            (evt || window.event).returnValue = confirmationMessage;    //Gecko + IE
+            return confirmationMessage;                                 //Webkit, Safari, Chrome etc.
         }
     },
 

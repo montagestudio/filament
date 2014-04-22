@@ -790,6 +790,14 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+    canCloseAllDocuments: {
+        value: function () {
+            return this.documents.every(function (document) {
+                return !document.isDirty;
+            });
+        }
+    },
+
     handlePathChange: {
         value: function (value, path, object) {
             switch (path) {
