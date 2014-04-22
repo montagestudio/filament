@@ -645,15 +645,15 @@ exports.AssetsManager = Montage.specialize({
     },
 
     /**
-     * Finds and Gets an Asset with a relative path.
+     * Finds and Gets an Asset with a path.
      * @function
      * @public
-     * @param {String} relativePath - a relative path.
+     * @param {String} path - a path.
      * @return {(Object|null)} Asset Object.
      */
-    getAssetByRelativePath: {
-        value: function (relativePath) {
-            var url = this.getAssetUrlWithPathAndDocument(relativePath, this._currentDocument);
+    getAssetWithPath: {
+        value: function (path) {
+            var url = this.getAssetUrlWithPathAndDocument(path, this._currentDocument);
 
             return this._findAssetWithFileUrl(url);
         }
@@ -661,7 +661,7 @@ exports.AssetsManager = Montage.specialize({
 
     getAssetUrlWithPathAndDocument: {
         value: function (path, document) {
-            if (/^\.\.?\//.test(path)) { //is Relative
+            if (/^\.\.?\/|^[^\.\/]/.test(path)) { //is Relative
                 if (typeof path === "string" && path.length > 0 && this._currentDocument) {
                     path = path.replace(/^\.\//, ''); // remove ./ from the begin of a path.
 

@@ -352,27 +352,25 @@ describe("asset-manager-spec", function () {
         it("should be able to find an asset with a relative path in terms of the current reel document", function () {
             var fileDescriptor = new FileDescriptor().initWithUrlAndStat("http://a/b/c/d/e/f.png", {ino: 2065});
             fileDescriptor.mimeType = "image/png";
-            var asset = assetsManager.createAssetWithFileDescriptor(fileDescriptor);
+            var asset = assetsManager.createAssetWithFileDescriptor(fileDescriptor); // asset localized inside a document
 
             var fileDescriptor2 = new FileDescriptor().initWithUrlAndStat("http://a/b/c/e/f.png", {ino: 2066});
             fileDescriptor2.mimeType = "image/png";
-            var asset2 = assetsManager.createAssetWithFileDescriptor(fileDescriptor2);
-
-            var documentUrl = 'http://a/b/c/d/';
+            var asset2 = assetsManager.createAssetWithFileDescriptor(fileDescriptor2); // asset localized at the project root
 
             assetsManager.addAsset(asset);
             assetsManager.addAsset(asset2);
             assetsManager.projectUrl = 'http://a/b/c/';
-            assetsManager.projectController.currentDocument._url = documentUrl;
+            assetsManager.projectController.currentDocument._url = 'http://a/b/c/d/';
 
-            // Absolute cases
-            expect(assetsManager.getAssetByRelativePath("e/f.png").fileUrl).toEqual(assetsManager.projectUrl + "e/f.png");
-            expect(assetsManager.getAssetByRelativePath("/e/f.png").fileUrl).toEqual(assetsManager.projectUrl + "e/f.png");
+            // Absolute case
+            expect(assetsManager.getAssetWithPath("/e/f.png").fileUrl).toEqual(asset2.fileUrl); // "http://a/b/c/e/f.png"
 
-            // relative cases
-            expect(assetsManager.getAssetByRelativePath("../e/f.png").fileUrl).toEqual(asset2.fileUrl);
-            expect(assetsManager.getAssetByRelativePath("./e/f.png").fileUrl).toEqual(documentUrl + 'e/f.png');
-            expect(assetsManager.getAssetByRelativePath("../../e/f.png")).toBe(null);
+            // relative cases (relative path to the current document)
+            expect(assetsManager.getAssetWithPath("e/f.png").fileUrl).toEqual(asset.fileUrl); // "http://a/b/c/d/e/f.png"
+            expect(assetsManager.getAssetWithPath("./e/f.png").fileUrl).toEqual(asset.fileUrl); // "http://a/b/c/d/e/f.png"
+            expect(assetsManager.getAssetWithPath("../e/f.png").fileUrl).toEqual(asset2.fileUrl); // "http://a/b/c/e/f.png"
+            expect(assetsManager.getAssetWithPath("../../e/f.png")).toBe(null); // does not exist
 
             // Some tests about the private _resolvePaths & _decomposePath functions.
             expect(assetsManager._resolvePaths('/root/', 'file.zip')).toEqual('/root/file.zip');
