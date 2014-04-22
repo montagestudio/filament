@@ -70,7 +70,7 @@ exports.Main = Montage.create(Component, {
 
     handleBeforeunload: {
         value: function(evt) {
-            if (this.projectController.canCloseAllDocuments()) {
+            if (!this.projectController || this.projectController.canCloseAllDocuments()) {
                 return;
             }
             // From https://developer.mozilla.org/en-US/docs/Web/Reference/Events/beforeunload
