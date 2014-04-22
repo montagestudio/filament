@@ -74,7 +74,7 @@ exports.Main = Montage.create(Component, {
                 return;
             }
             // From https://developer.mozilla.org/en-US/docs/Web/Reference/Events/beforeunload
-            var confirmationMessage = "You have unsaved changes. Do you want to leave without saving them ?"; // TODO localisation
+            var confirmationMessage = "You have unsaved changes, leaving now will lose these changes."; // TODO localisation
             evt.preventDefault();
             (evt || window.event).returnValue = confirmationMessage;    //Gecko + IE
             return confirmationMessage;                                 //Webkit, Safari, Chrome etc.
