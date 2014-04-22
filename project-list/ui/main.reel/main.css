@@ -288,6 +288,10 @@
     background: transparent;
     border: 0px;
     box-shadow: none;
+    -webkit-transform-origin-y: 20px;
+    -moz-transform-origin-y: 20px;
+    -ms-transform-origin-y: 20px;
+    -o-transform-origin-y: 20px;
     -webkit-transform: rotate(45deg);
        -moz-transform: rotate(45deg);
         -ms-transform: rotate(45deg);
