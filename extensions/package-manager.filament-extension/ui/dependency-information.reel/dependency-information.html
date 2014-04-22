@@ -8,7 +8,14 @@
         "owner": {
             "properties": {
                 "element": {"#": "dependency-information"}
-            }
+            },
+
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "dependencyCondition": {
@@ -40,13 +47,7 @@
             "bindings": {
                 "currentDependency": {"<-": "@owner.currentDependency"},
                 "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency.problems || @owner.currentDependency.problems.length == 0"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
+            }
         },
 
         "dependencyActions": {

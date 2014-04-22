@@ -3,6 +3,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     DependencyManager = require('./dependency-manager').DependencyManager,
     PackageSavingManager = require('./package-saving-manager').PackageSavingManager,
     application = require("montage/core/application").application,
+    Confirm = require("matte/ui/popup/confirm.reel").Confirm,
     Promise = require("montage/core/promise").Promise,
     Dependency = require('./dependency').Dependency,
     DependencyState = require('./dependency').DependencyState,
@@ -529,10 +530,43 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
 
     updateDependency: {
         value: function (name, version) {
-            var promise = this._dependencyManager.updateDependency(name, version);
-            this.dispatchAsyncActivity(promise, "Updating Dependency");
+            var dependency = this.findDependency(name);
 
-            return promise;
+            if (dependency) {
+                var promise = null;
+
+                if (semver.satisfies(version, dependency.version)) {
+                    promise = this._dependencyManager.updateDependency(name, version);
+                } else {
+                    var confirmCloseDialogOptions = {
+                            message: "This selected version will change the dependency range",
+                            okLabel: "Ok",
+                            cancelLabel: "Cancel"
+                        },
+
+                        self = this,
+                        deferred = Promise.defer();
+
+                    Confirm.show(confirmCloseDialogOptions, function () {
+                        self.updateDependencyRange(name, version); // update the dependency range
+
+                        // save package.json and install new dependency version.
+                        self._dependencyManager.updateDependency(name, version).then(function (message) {
+                            return self.environmentBridge.save(self, self.url).then(function () {
+                                deferred.resolve(message);
+                            });
+                        }, deferred.reject);
+                    });
+
+                    promise = deferred.promise;
+                }
+
+                this.dispatchAsyncActivity(promise, "Updating Dependency");
+
+                return promise;
+            }
+
+            return Promise.reject(new Error ("dependency does not exist"));
         }
     },
 

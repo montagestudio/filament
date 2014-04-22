@@ -94,9 +94,15 @@ exports.DependencyActions = Component.specialize(/** @lends DependencyActions# *
 
     draw: {
         value: function () {
-            if (this.range) {
-                var validity = this.editingDocument.isRangeValid(this.range);
-                this.rangeTextField.element.setCustomValidity(validity ? '' : 'range is not valid');
+            if (this.currentDependency) {
+                if (this.range) {
+                    var validity = this.editingDocument.isRangeValid(this.range);
+                    this.rangeTextField.element.setCustomValidity(validity ? '' : 'range is not valid');
+                }
+
+                if (Array.isArray(this.currentDependency.information.versions) && this.currentDependency.information.versions.length > 0) {
+                    this.templateObjects.versionsAvailable.contentController.select(this.currentDependency.versionInstalled);
+                }
             }
         }
     }
