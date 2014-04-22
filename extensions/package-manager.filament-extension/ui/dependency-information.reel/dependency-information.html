@@ -11,14 +11,24 @@
             }
         },
 
+        "dependencyCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "dependencyCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "!!@owner.currentDependency"}
+            }
+        },
+
         "dependencyDetails": {
             "prototype": "./dependency-details.reel",
             "properties": {
                 "element": {"#": "dependencyDetails"}
             },
             "bindings": {
-                "currentDependency": {"<-": "@owner.currentDependency"},
-                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency"}
+                "currentDependency": {"<-": "@owner.currentDependency"}
             }
         },
 
@@ -29,7 +39,7 @@
             },
             "bindings": {
                 "currentDependency": {"<-": "@owner.currentDependency"},
-                "classList.has('hide-component')" : { "<-" : "!@owner.hasError"}
+                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency.problems || @owner.currentDependency.problems.length == 0"}
             },
             "listeners": [
                 {
@@ -48,7 +58,7 @@
                 "currentDependency": {"<-": "@owner.currentDependency"},
                 "loadingDependency": {"<-": "@owner.loadingDependency"},
                 "editingDocument": {"<-": "@owner.editingDocument"},
-                "classList.has('hide-component')" : { "<-" : "!@owner.currentDependency || @owner.currentDependency.extraneous"},
+                "classList.has('hide-component')" : { "<-" : "@owner.currentDependency.extraneous"},
                 "range": {"<-": "@owner.currentDependency.version"}
             }
         },
@@ -74,9 +84,11 @@
         </span>
     </header>
     <div class="PackageEditorColumnContent">
-        <div data-montage-id="dependencyDetails" class="PackageEditorPanel"></div>
-        <div data-montage-id="dependencyErrors" class="PackageEditorPanel"></div>
-        <div data-montage-id="dependencyActions" class="PackageEditorPanel"></div>
+        <div data-montage-id="dependencyCondition">
+            <div data-montage-id="dependencyDetails" class="PackageEditorPanel"></div>
+            <div data-montage-id="dependencyErrors" class="PackageEditorPanel"></div>
+            <div data-montage-id="dependencyActions" class="PackageEditorPanel"></div>
+        </div>
     </div>
 </div>
 </body>

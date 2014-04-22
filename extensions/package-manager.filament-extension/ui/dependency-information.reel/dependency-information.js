@@ -25,10 +25,6 @@ exports.DependencyInformation = Component.specialize(/** @lends DependencyInform
         value: null
     },
 
-    _currentDependency: {
-        value: null
-    },
-
     _loadingDependency: {
         value: false
     },
@@ -44,32 +40,20 @@ exports.DependencyInformation = Component.specialize(/** @lends DependencyInform
 
     /**
      * Reference to the current selected dependency.
-     * Determines if the current selected dependency has some errors.
      * @type {Object}
      * @default null
      */
     currentDependency: {
-        set: function (module) {
-            this._currentDependency = module;
-            this.hasError = (module && Array.isArray(module.problems) && module.problems.length > 0);
-        },
-        get: function () {
-            return this._currentDependency;
-        }
-    },
-
-    /**
-     * True if the current selected dependency has some errors.
-     * @type {Boolean}
-     * @default false
-     */
-    hasError: {
-        value: false
+        value: null
     },
 
     handleFixDependencyErrorAction: {
         value: function () {
-            this.editingDocument.repairDependency(this.currentDependency.name);
+            var self = this;
+
+            this.editingDocument.repairDependency(this.currentDependency.name).then(function () {
+                self.currentDependency.problems = null;
+            }).done();
         }
     }
 
