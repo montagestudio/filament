@@ -239,9 +239,9 @@ var DependencyManager = Montage.specialize({
                         promise = environmentBride.installPackages(request);
                     } else if (dependency.extraneous) {
                         var confirmCloseDialogOptions = {
-                            message: "Do you want to save this dependency?",
-                            okLabel: "Save",
-                            cancelLabel: "Cancel"
+                            message: "Add '" + dependencyName + "' as a dependency?",
+                            okLabel: "Add",
+                            cancelLabel: "Remove"
                         },
 
                         deferred = Promise.defer();
@@ -250,12 +250,12 @@ var DependencyManager = Montage.specialize({
                             var document = self._packageDocument;
 
                             //save the extraneous dependency within the package.json
-                            document.environmentBridge.save(document, document.url).then(function () {
+                            environmentBride.save(document, document.url).then(function () {
                                 deferred.resolve(true);
-                            }).done();
+                            }, deferred.reject).done();
                         }, function () {
-                            // do nothing
-                            deferred.resolve(false);
+                            // Remove the extraneous dependency
+                            environmentBride.removePackage(dependencyName).then(deferred.resolve, deferred.reject);
                         });
 
                         promise = deferred.promise;
