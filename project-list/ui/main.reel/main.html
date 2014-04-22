@@ -227,10 +227,20 @@
                     "element": {"#": "historyProgress"}
                 },
                 "bindings": {
-                    "max": {"<-": "@repositoriesController.totalDocuments"},
-                    "value": {"<-": "[value, @repositoriesController.processedDocuments].max{}"},
-                    "classList.has('is-done')": {"<-": "@repositoriesController.totalDocuments == [value, @repositoriesController.processedDocuments].max{}"}
+                    "max": {"<-": "@repositoriesController.repositoriesCount"},
+                    "value": {"<-": "[value, @repositoriesController.processedRepositories].max{}"},
+                    "classList.has('is-done')": {"<-": "[value, @repositoriesController.processedRepositories].max{} >= [max, @repositoriesController.repositoriesCount].min{}"}
                 }
+            },
+
+            "historyRefresh": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "historyRefresh"}
+                },
+                "listeners": [
+                    {"type": "action", "listener": {"@": "owner"}}
+                ]
             },
 
             "historyEmpty": {
@@ -358,8 +368,13 @@
             </section>
 
             <section class="Launcher-section History">
-                <h2 data-montage-id="recentTitle" class="Launcher-title"></h2>
-                <div data-montage-id="historyProgress" class="History-progress"></div>
+                <div class="Title-section">
+                    <h2 data-montage-id="recentTitle" class="Launcher-title"></h2>
+                    <button data-montage-id="historyRefresh" data-arg="" aria-label="Refresh project list" class="Button History-refresh"></button>
+                </div>
+                <div data-montage-id="updatingRepositories" class="History-update">
+                    <div data-montage-id="historyProgress" class="History-progress"></div>
+                </div>
                 <div data-montage-id="historyEmpty" class="History-empty">
                     <span data-montage-id="historyEmptyTitle"></span>
                 </div>

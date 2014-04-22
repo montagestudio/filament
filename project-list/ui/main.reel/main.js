@@ -59,21 +59,21 @@ exports.Main = Montage.create(Component, {
                 UPKEEP_INCREASE = 100,
                 historyProgress = this.templateObjects.historyProgress,
                 repositoriesController = this.templateObjects.repositoriesController,
-                totalDocuments = repositoriesController.totalDocuments,
-                processedDocuments = 0;
+                repositoriesCount = repositoriesController.repositoriesCount,
+                processedRepositories = 0;
 
             setTimeout(function upkeep() {
-                var newProcessedDocuments = repositoriesController.processedDocuments;
+                var newProcessedRepositories = repositoriesController.processedRepositories;
 
-                if (totalDocuments > 0 && totalDocuments === newProcessedDocuments ||
+                if (repositoriesCount > 0 && repositoriesCount === newProcessedRepositories ||
                     // make sure we don't go to 100%
                     historyProgress.value >= (historyProgress.max - 1)) {
                     return;
-                } else if (processedDocuments === newProcessedDocuments) {
+                } else if (processedRepositories === newProcessedRepositories) {
                     historyProgress.value++;
                 }
 
-                processedDocuments = newProcessedDocuments;
+                processedRepositories = newProcessedRepositories;
 
                 window.setTimeout(upkeep, UPKEEP_INTERVAL += UPKEEP_INCREASE);
             }, UPKEEP_INTERVAL);
@@ -173,6 +173,12 @@ exports.Main = Montage.create(Component, {
                 self._getWorkspaces();
             })
             .done();
+        }
+    },
+
+    handleHistoryRefreshAction: {
+        value: function () {
+            this.templateObjects.repositoriesController.updateAndCacheUserRepositories().done();
         }
     },
 

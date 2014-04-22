@@ -6,6 +6,8 @@ var RangeController = require("montage/core/range-controller").RangeController;
 var RepositoryController = require("adaptor/client/core/repository-controller").RepositoryController;
 
 var MAX_RECENT_ITEMS = 10;
+var LOCAL_STORAGE_KEY = "cachedOwnedRepositories";
+var LOCAL_STORAGE_REPOSITORIES_COUNT_KEY = "cachedProcessedRepositoriesCount";
 
 var Group = Montage.specialize( {
 
@@ -127,15 +129,33 @@ var RepositoriesController = Montage.specialize({
         }
     },
 
-    totalDocuments: {
+    _repositoriesCount: {
         value: 0
     },
 
-    processedDocuments: {
+    repositoriesCount: {
+        get: function () {
+            return this._repositoriesCount;
+        },
+
+        set: function (value) {
+            if (value === this._repositoriesCount) {
+                return;
+            }
+
+            if (this._repositoriesCount && value > this._repositoriesCount) {
+                var growth = value / this._repositoriesCount;
+                this.processedRepositories = Math.ceil(this.processedRepositories * growth);
+            }
+            this._repositoriesCount = value;
+        }
+    },
+
+    processedRepositories: {
         value: 0
     },
 
-    _updateUserRepositories: {
+    updateUserRepositories: {
         value: function(page) {
             var self = this,
                 perPage = 30,
@@ -143,53 +163,46 @@ var RepositoriesController = Montage.specialize({
 
             page = (page)? page : 1;
 
-            if (self._ownedRepositoriesContent.content.length === 0) {
+            self._ownedRepositoriesContent.content.clear();
+            // get repo list from github
+            self._githubApi.then(function (githubApi) {
+                //jshint -W106
+                var options = {page: page, per_page: perPage};
+                //jshint +W106
+                return githubApi.listRepositories(options);
+            })
+            .then(function (repos) {
+                var pendingCommands = repos.length;
 
-                self._ownedRepositoriesContent.content.clear();
-                // get repo list from github
-                self._githubApi.then(function (githubApi) {
-                    //jshint -W106
-                    var options = {page: page, per_page: perPage};
-                    //jshint +W106
-                    return githubApi.listRepositories(options);
-                })
-                .then(function (repos) {
-                    var pendingCommands = repos.length;
+                self.repositoriesCount += repos.length;
 
-                    self.totalDocuments += repos.length;
+                // HACK: workaround for progress not being able to have max = 0
+                // it's set as 1. (MON-402)
+                if (self.repositoriesCount === 0) {
+                    self.processedRepositories = 1;
+                }
+                repos.forEach(function(repo) {
+                    self._isValidRepository(repo)
+                   .then(function(isValidRepository) {
+                        if (isValidRepository) {
+                            //jshint -W106
+                            repo.pushed_at = +new Date(repo.pushed_at);
+                            //jshint +W106
+                            self._ownedRepositoriesContent.content.push(repo);
+                        }
+                        self.processedRepositories++;
+                        if (--pendingCommands === 0) {
+                            deferred.resolve();
+                        }
+                    }).done();
+                });
 
-                    // HACK: workaround for progress not being able to have max = 0
-                    // it's set as 1. (MON-402)
-                    if (self.totalDocuments === 0) {
-                        self.processedDocuments = 1;
-                    }
-                    repos.forEach(function(repo) {
-                        self._isValidRepository(repo)
-                       .then(function(isValidRepository) {
-                            if (isValidRepository) {
-                                //jshint -W106
-                                repo.pushed_at = +new Date(repo.pushed_at);
-                                //jshint +W106
-                                self._ownedRepositoriesContent.content.push(repo);
-                            }
-                            self.processedDocuments++;
-                            if (-- pendingCommands === 0) {
-                                deferred.resolve();
-                            }
-                        }).done();
-                    });
-                    return repos.length;
-                })
-                .then(function (repoCount) {
-                    if (repoCount < perPage) {
-                        return deferred.resolve();
-                    } else {
-                        return self._updateUserRepositories(page + 1);
-                    }
-                }).done();
-            } else {
-                deferred.resolve();
-            }
+                if (repos.length >= perPage) {
+                    // If there's another page then we resolve when that's
+                    // resolved
+                    deferred.resolve(self.updateUserRepositories(page + 1));
+                }
+            }).done();
 
             return deferred.promise;
         }
@@ -314,15 +327,70 @@ var RepositoriesController = Montage.specialize({
                 this._gotOwnedRepositoriesContent = true;
                 var self = this;
 
-                this._updateUserRepositories().then(function() {
-                    self._validateRecentRepositories();
-                }).done();
+                var cachedOwnedRepositories = localStorage.getItem(LOCAL_STORAGE_KEY);
+                if (cachedOwnedRepositories) {
+                    try {
+                        self._ownedRepositoriesContent.content.addEach(JSON.parse(cachedOwnedRepositories));
+                        self.validateUserRepositoriesCache();
+                    } catch (error) {
+                        console.warn("Failed to parse cached owned repositories because " + error.message);
+                        localStorage.removeItem(LOCAL_STORAGE_KEY);
+                    }
+                }
+
+                // second if to fetch repositories if the JSON.parse failed
+                if (!this._ownedRepositoriesContent.content.length) {
+                    this.updateAndCacheUserRepositories().done();
+                }
             }
 
             return this._ownedRepositoriesContent;
         },
         set: function (value) {
             this._ownedRepositoriesContent = value;
+        }
+    },
+
+    validateUserRepositoriesCache: {
+        value: function () {
+            var self = this;
+            return this._githubApi.then(function(githubApi) {
+                return githubApi.getUser().then(function(user) {
+                    /* jshint -W106 */
+                    if (!user.public_repos || !user.total_private_repos) {
+                        throw "Failed to validate cache, Github's API result is incomplete";
+                    }
+                    var userRepositoriesCount = user.public_repos + user.total_private_repos,
+                        cachedCount = localStorage.getItem(LOCAL_STORAGE_REPOSITORIES_COUNT_KEY),
+                        count;
+                    userRepositoriesCount += (user.collaborators) ? user.collaborators : 0;
+                    /* jshint +W106 */
+                    if (!cachedCount) {
+                        // no cache count to check against
+                        self.updateAndCacheUserRepositories();
+                    }
+                    count = JSON.parse(cachedCount);
+                    if (count !== userRepositoriesCount) {
+                        self.updateAndCacheUserRepositories();
+                    }
+                });
+            });
+        }
+    },
+
+    updateAndCacheUserRepositories: {
+        value: function () {
+            var self = this;
+            this.repositoriesCount = 0;
+            this.processedRepositories = 0;
+            return this.updateUserRepositories().then(function () {
+                // cache repositories
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(self._ownedRepositoriesContent.content));
+                // cache repositories processes count
+                localStorage.setItem(LOCAL_STORAGE_REPOSITORIES_COUNT_KEY, JSON.stringify(self.repositoriesCount));
+                // validate recent repositories cache
+                self._validateRecentRepositories();
+            });
         }
     },
 

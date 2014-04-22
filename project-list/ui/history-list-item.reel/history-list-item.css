@@ -2,8 +2,28 @@
     display: none;
 }
 
+.HistoryListItem.History-list-item {
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+}
+
+.HistoryListItem .HistoryListItem-link {
+    text-decoration: none;
+    color: hsl(0, 0%, 0%);
+    -webkit-flex-direction: column;
+    flex-grow:4;
+    line-height: 32px;
+    padding-left: 4px;
+}
+
+.HistoryListItem .HistoryListItem-link:hover {
+    color: hsl(0, 0%, 0%);
+}
+
 .HistoryListItem-type.is-private {
     display: inline;
+    -webkit-flex-direction: column;
+    flex-grow:0;
     padding: 0.2em 0.4em;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
