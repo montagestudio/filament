@@ -41,6 +41,7 @@ exports.Main = Montage.create(Component, {
                 if (typeof lumieres === "undefined") {
                     application.addEventListener("menuAction", this);
                     window.onbeforeunload = this.handleBeforeunload.bind(this);
+                    window.addEventListener("beforeunload", this, false);
                 } else {
                     document.addEventListener("save", this, false);
                 }
@@ -72,11 +73,11 @@ exports.Main = Montage.create(Component, {
             if (this.projectController.canCloseAllDocuments()) {
                 return;
             }
-
+            // From https://developer.mozilla.org/en-US/docs/Web/Reference/Events/beforeunload
             var confirmationMessage = "You have unsaved changes. Do you want to leave without saving them ?"; // TODO localisation
-            event.preventDefault();
-            (evt || window.event).returnValue = confirmationMessage;     //Gecko + IE
-            return confirmationMessage;                                //Webkit, Safari, Chrome etc.
+            evt.preventDefault();
+            (evt || window.event).returnValue = confirmationMessage;    //Gecko + IE
+            return confirmationMessage;                                 //Webkit, Safari, Chrome etc.
         }
     },
 
