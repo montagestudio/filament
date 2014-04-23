@@ -39,7 +39,10 @@ exports.PreviewFrame = Component.specialize({
                 if (!previewUrl) {
                     frameElement.src = "";
                 } else if (frameElement.src !== previewUrl) {
-                    frameElement.src = previewUrl;
+                    //TODO remove featureFlag check in the future
+                    if (localStorage && JSON.parse(localStorage.getItem("previewControlPanel"))) {
+                        frameElement.src = previewUrl;
+                    }
                 }
             }
         }

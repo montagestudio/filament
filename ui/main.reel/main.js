@@ -217,6 +217,14 @@ exports.Main = Montage.create(Component, {
                 this.projectController.save(evt.detail.url).done();
 
                 break;
+            case "preview":
+                evt.preventDefault();
+                evt.stopPropagation();
+
+                //TODO not simply toggle this
+                this.isShowingPreviewPanel = !this.isShowingPreviewPanel;
+
+                break;
             }
         }
     },
@@ -319,6 +327,10 @@ exports.Main = Montage.create(Component, {
                     }).done();
             }
         }
+    },
+
+    isShowingPreviewPanel: {
+        value: false
     },
 
     draw: {
