@@ -15,6 +15,10 @@ exports.error = function(error) {
     Rollbar.error(error);
 };
 
+exports.message = function(message) {
+    Rollbar.info(message);
+};
+
 exports.setUsername = function(username) {
     username = username.toLowerCase();
     Rollbar.configure({payload: {
