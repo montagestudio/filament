@@ -16,6 +16,8 @@
 .PreviewControlPanel-Controls {
     -webkit-flex: 0 1 auto;
     -webkit-align-self: stretch;
+
+    padding: 0 1em;
 }
 
 .PreviewControlPanel .PreviewFrame {
