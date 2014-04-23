@@ -456,6 +456,19 @@
     background: transparent;
 }
 
+.History .Title-section .History-refresh.disabled,
+.History .Title-section .History-refresh.disabled:hover {
+    opacity: .3;
+    -webkit-transform: rotate(45deg);
+       -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+         -o-transform: rotate(45deg);
+            transform: rotate(45deg);
+}
+.History .Title-section .History-refresh.disabled:hover:before {
+    color: hsl(0, 0%, 75%);
+}
+
 .History .History-update {
     display: -webkit-flex;
     -webkit-flex-direction: column;
