@@ -356,7 +356,7 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
             }
 
             if (this.menuFlashing) {
-                if(this.element.classList.has("Flashing")) {
+                if(this.element.classList.contains("Flashing")) {
                     this.element.classList.remove("Flashing");
                     this.needsDraw = true;
                 } else {
