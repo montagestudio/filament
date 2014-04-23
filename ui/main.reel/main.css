@@ -61,7 +61,6 @@
     -moz-flex-direction: column;
     -ms-flex-direction: column;
     flex-direction: column;
-    background: hsl(0, 0%, 26%) url(reference.png) no-repeat;
 }
 
 .standby {
@@ -109,4 +108,25 @@
 
 .componentEditorArea .ComponentEditor.standby {
     display: none;
+}
+
+/* Preview Control panel ---------------*/
+
+.PreviewControlPanel {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    -webkit-transform: translate3d(0,-100%,0);
+    -moz-transform: translate3d(0,-100%,0);
+    -ms-transform: translate3d(0,-100%,0);
+    transform: translate3d(0,-100%,0);
+
+    -webkit-transition: all 300ms ease-in-out;
+}
+
+.isShowingPreviewPanel .PreviewControlPanel {
+    -webkit-transform: translate3d(0,0,0);
+    -moz-transform: translate3d(0,0,0);
+    -ms-transform: translate3d(0,0,0);
 }
