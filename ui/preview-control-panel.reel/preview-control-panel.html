@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="preview-control-panel.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            }
+        },
+
+        "previewFrame": {
+            "prototype": "/ui/preview-frame.reel",
+            "properties": {
+                "element": {"#": "previewFrame"}
+            },
+            "bindings": {
+                "previewUrl": {"<-": "@owner.previewController.previewUrl"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="PreviewControlPanel">
+        <aside class="PreviewControlPanel-Controls"></aside>
+
+        <div data-montage-id="previewFrame"></div>
+    </div>
+</body>
+</html>
