@@ -195,6 +195,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 self.currentPanelKey = "progress";
                 self.progressPanel.message = "Loading project…";
                 self.showModal = true;
+                track.message("Loading project " + projectUrl);
                 superMethod.call(self, projectUrl)
                 .then(deferred.resolve)
                 .fail(loadProjectFail)
@@ -205,7 +206,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 var message = reason.message || "Internal Server Error";
                 console.log(message);
                 self.currentPanelKey = "confirm";
-                track.error(new Error("Error loading the project: " + message));
+                track.error("Couldn't load project: " + message);
 
                 self.confirmPanel.getResponse("Error loading the project", true, "Retry", "Close")
                 .then(function (response) {
