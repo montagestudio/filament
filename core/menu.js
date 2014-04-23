@@ -144,7 +144,6 @@ Montage.defineProperty(exports, "defaultMenu", {
                 // Project
                 //  File
                 newSubMenu = makeMenuItem("New", "new", true, "", [
-                    makeMenuItem("Application", "newApplication", false, "control+n"),
                     makeMenuItem("Component", "newComponent", true, "shift+control+n"),
                     makeMenuItem("Module", "newModule", true, "")
                 ]);
