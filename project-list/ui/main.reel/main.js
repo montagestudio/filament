@@ -181,7 +181,7 @@ exports.Main = Montage.create(Component, {
             var self = this;
 
             this.templateObjects.historyRefresh.disabled = true;
-            this.templateObjects.repositoriesController.updateAndCacheUserRepositories().then(function () {
+            this.templateObjects.repositoriesController.updateAndCacheUserRepositories().finally(function () {
                 self.templateObjects.historyRefresh.disabled = false;
             }).done();
         }
