@@ -25,6 +25,11 @@ exports.PreviewFrame = Component.specialize({
                 return;
             }
 
+            if (value) {
+                // Use the same protocol as the host window
+                value = value.replace(/^\w+:/, window.location.protocol);
+            }
+
             this._previewUrl = value;
             this.needsDraw = true;
         }
