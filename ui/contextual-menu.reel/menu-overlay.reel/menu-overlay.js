@@ -27,6 +27,10 @@ exports.MenuOverlay = Component.specialize(/** @lends MenuOverlay# */ {
         value: null
     },
 
+    extraCSSClass: {
+        value: null
+    },
+
     show: {
         value: function (position) {
             this.position = position;
@@ -44,7 +48,7 @@ exports.MenuOverlay = Component.specialize(/** @lends MenuOverlay# */ {
         value: function (firstTime) {
             if (!firstTime) {return;}
 
-            // TODO because of the way the overly works, we can not listen on element, context-menu should extend o
+            // TODO because of the way the overly works, we can not listen on element, context-menu should extend overlay
             this.menu.addEventListener("contextmenu", this, false);
         }
     },
@@ -71,6 +75,14 @@ exports.MenuOverlay = Component.specialize(/** @lends MenuOverlay# */ {
     handleContextmenu: {
         value: function (evt) {
             evt.stop();
+        }
+    },
+
+    draw: {
+        value: function () {
+            if (this.extraCSSClass) {
+                this.menu.classList.add(this.extraCSSClass);
+            }
         }
     }
 
