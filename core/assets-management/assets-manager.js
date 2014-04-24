@@ -762,6 +762,30 @@ exports.AssetsManager = Montage.specialize({
                 }
             }
         }
+    },
+
+    // Fixme: Temporary way to convert a collada file into a GlTF bundle
+    handleDidSetResourceProperty: {
+        value: function (event) {
+            var resourceProperty = event.detail.resourceProperty,
+                path = event.detail.value;
+
+            if (resourceProperty && path && /\.dae$/.test(path)) {
+                var asset = null;
+
+                if(/^https?:/i.test(path)) { // if Url
+                    asset = this._findAssetWithFileUrl(path);
+                } else {
+                    asset = this.getAssetWithPath(path);
+                }
+
+                if (asset) {
+                    this.assetConverter.convertModelToGlTFBundle(asset, this._currentDocument.url).then(function (outputUrl) {
+                        resourceProperty.objectValue = outputUrl + '/' + asset.name + '.json';
+                    });
+                }
+            }
+        }
     }
 
 });
