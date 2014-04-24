@@ -188,8 +188,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._editorTypeInstanceMap = new WeakMap();
 
             this.openDocumentsController = RangeController.create().initWithContent(this.documents);
-            this.assetsManager = AssetsManager.create();
-            this.assetsManager.projectController = this;
+            this.assetsManager = new AssetsManager(this);
 
             //TODO get rid of this once we have property dependencies
             this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyWillChange", true);

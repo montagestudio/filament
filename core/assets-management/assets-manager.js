@@ -2,6 +2,7 @@ var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescript
     application = require("montage/core/application").application,
     ReelDocument = require("core/reel-document").ReelDocument,
     AssetsConfig = require("./assets-config").AssetsConfig,
+    AssetConverter = require("./asset-converter").AssetConverter,
     Promise = require("montage/core/promise").Promise,
     AssetTools = require("./asset-tools").AssetTools,
     Montage = require("montage/core/core").Montage,
@@ -9,7 +10,6 @@ var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescript
 
     PACKAGE_LOCATION = require.location,
     GLTF_BUNDLE_MIME_TYPE = "model/gltf-bundle",
-    CONVERSION_GLTF_ENABLED = false,
 
     FILE_SYSTEM_CHANGES = {
         CREATE: "create",
@@ -24,13 +24,15 @@ var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescript
 exports.AssetsManager = Montage.specialize({
 
     constructor: {
-        value: function AssetsManager() {
+        value: function AssetsManager(projectController) {
             this.super();
 
             this.assets = {};
             this.assetCategories = {};
             this.assetsToHide = [];
             this.assetsTemplate = [];
+            this.projectController = projectController;
+            this.assetConverter = new AssetConverter(projectController);
 
             var self = this,
                 assetCategories = AssetsConfig.assetCategories;
@@ -53,6 +55,7 @@ exports.AssetsManager = Montage.specialize({
 
             application.addEventListener("didOpenPackage", this);
             application.addEventListener("fileSystemChange", this);
+            application.addEventListener("didSetResourceProperty", this);
         }
     },
 
@@ -115,6 +118,10 @@ exports.AssetsManager = Montage.specialize({
      * @return {Object}
      */
     projectController: {
+        value: null
+    },
+
+    assetConverter: {
         value: null
     },
 
@@ -239,77 +246,6 @@ exports.AssetsManager = Montage.specialize({
 
                 return createdAsset;
             }
-        }
-    },
-
-    /**
-     * Creates an Asset Object from another asset and save it.
-     * @function
-     * @public
-     * @param {Object} asset - an Asset Object which represents a "Template".
-     * @param {String} [location="asset.fileUrl"] - the path where the new asset wants to be saved.
-     * @return {Promise} for the created Asset Object.
-     */
-    createAndSaveAssetFromTemplate: {
-        value: function (assetTemplate, location) {
-            if (!CONVERSION_GLTF_ENABLED) { // Temporary fix, feature not used at the moment.
-                return Promise.reject("GlTF conversion is disabled");
-            }
-
-            if (AssetTools.isAssetValid(assetTemplate) && assetTemplate.isTemplate) {
-                var promise = null;
-
-                // If the asset template is a 3D model, we create a new "glTF bundle asset"
-                if (AssetsConfig.assetCategories.MODEL.templates.indexOf(assetTemplate.mimeType) >= 0) {
-                    promise = this._createAndSaveGlTFModelAsset(assetTemplate, location);
-                }
-
-                if (promise) {
-                    this._currentDocument.dispatchEventNamed("asyncActivity", true, false, {
-                        promise: promise,
-                        status: assetTemplate.fileName,
-                        title: "Converting asset"
-                    });
-
-                    return promise;
-                }
-            }
-
-            return Promise.reject("Can not create an asset with the template given");
-        }
-    },
-
-    /**
-     * Creates a glTF bundle Asset from a 3D asset and save it.
-     * @function
-     * @public
-     * @param {Object} asset - a 3D Asset which represents a "Template".
-     * @param {String} location - the path where the new asset wants to be saved.
-     * @return {Promise} for the created Asset Object.
-     */
-    _createAndSaveGlTFModelAsset: {
-        value: function (assetTemplate, location) {
-            var self = this;
-
-            return this._assetCompiler.convert(assetTemplate.fileUrl, location).then(function(outputURL) {
-                return self._getStatsAtUrl(outputURL).then(function (stat) {
-                    var fileDescriptor = FileDescriptor.create().initWithUrlAndStat(outputURL, stat);
-                    fileDescriptor.mimeType = GLTF_BUNDLE_MIME_TYPE;
-
-                    var assetFound = self._findAssetWithFileUrl(outputURL);
-
-                    if (assetFound && assetFound.exist) {
-                        assetFound.updateWithFileDescriptor(fileDescriptor);
-                        return assetFound;
-                    }
-
-                    var assetCreated = self.createAssetWithFileDescriptor(fileDescriptor);
-
-                    if (self.addAsset(assetCreated)) {
-                        return assetCreated;
-                    }
-                });
-            });
         }
     },
 
