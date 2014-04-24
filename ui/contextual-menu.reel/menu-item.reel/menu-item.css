@@ -77,3 +77,60 @@
     50% { background-color: hsla(0,0%,28%,1); }
    100% { background-color: hsla(0,0%,0%,0); }
 }
+
+
+
+/* list ------------------------- */
+.MenuItem-ContextualMenu-list {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ContextualMenu-list-item {
+    padding: 0;
+    margin: 0;
+}
+
+/* button ----------------------- */
+.MenuItem-ContextualMenu-list button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    text-align: left;
+    height: 33px;
+    min-height: 23px;
+    line-height: 20px;
+    min-width: 0;
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    color: hsl(0, 0%, 60%);
+    background: hsla(0,0%,0%,0);
+}
+
+.MenuItem-ContextualMenu-list button:hover {
+    color: hsl(0, 0%, 81%);
+    background-color: hsl(0, 0%, 36%);
+}
+
+.MenuItem-ContextualMenu-list .matte-Button.active {
+    border-color:  hsl(0, 0%, 22%);
+    background-color: hsl(0, 0%, 24%);
+}
+.MenuItem-ContextualMenu-list button:focus {
+    border-color: hsl(0, 0%, 22%);
+}
+

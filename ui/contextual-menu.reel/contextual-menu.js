@@ -27,10 +27,6 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
         value: []
     },
 
-    menuElement: {
-        value: null
-    },
-
     menuModel: {
         value: null
     },
@@ -60,7 +56,7 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
                 target.contextualMenu.items.forEach(function (item) {
                     target.dispatchEventNamed("contextualMenuValidate", true, true, item);
                 });
-                this.templateObjects.contextualMenuOverlay.show();
+                this.templateObjects.contextualMenuOverlay.show(this.position);
             }
         }
     },
@@ -72,38 +68,10 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
         }
     },
 
-    enterDocument: {
-        value: function (firstTime) {
-            if (!firstTime) {return;}
-
-            // TODO because of the way the overlays works, we can not listen on element, context-menu should extend overlay
-            this.menuElement.addEventListener("contextmenu", this, false);
-        }
-    },
-
     surrendersActiveTarget: {
         value: function () {
             this.menuModel = null;
             return true;
-        }
-    },
-
-    willPositionOverlay: {
-        value: function (overlay, calculatedPosition) {
-            return this.position;
-        }
-    },
-
-    shouldDismissOverlay: {
-        value: function (overlay, target, evt) {
-            this.menuModel = null;
-            return true;
-        }
-    },
-
-    handleContextmenu: {
-        value: function (evt) {
-            evt.stop();
         }
     },
 
@@ -113,6 +81,6 @@ exports.ContextualMenu = Component.specialize(/** @lends ContextualMenu# */ {
         value: function (evt) {
             this.hide();
         }
-    },
+    }
 
 });

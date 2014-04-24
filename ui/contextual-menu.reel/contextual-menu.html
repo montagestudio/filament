@@ -7,17 +7,22 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "contextualMenu"},
-                "menuElement": {"#": "menu"}
+                "element": {"#": "contextualMenu"}
             }
         },
 
         "contextualMenuOverlay": {
-            "prototype": "montage/ui/overlay.reel",
+            "prototype": "./menu-overlay.reel",
                 "properties": {
                     "element": {"#": "contextualMenuOverlay"},
-                    "delegate": {"@": "owner"}
+                    "extraCSSClass": "ContextualMenu-Overlay"
+            },
+            "listeners": [
+                {
+                    "type": "hideContextualMenu",
+                    "listener": {"@": "owner"}
                 }
+            ]
         },
 
         "menuRepetition": {
@@ -58,11 +63,9 @@
 <body>
     <div data-montage-id="contextualMenu" class="ContextualMenu">
         <div data-montage-id="contextualMenuOverlay">
-            <div data-montage-id="menu" class="ContextualMenu-menu">
-                <ul data-montage-id="menuRepetition" class="ContextualMenu-list">
-                    <li data-montage-id="contextualMenuItem" class="ContextualMenu-list-item"></li>
-                </ul>
-            </div>
+            <ul data-montage-id="menuRepetition" class="MenuItem-ContextualMenu-list">
+                <li data-montage-id="contextualMenuItem" class="MenuItem-ContextualMenu-list-item"></li>
+            </ul>
         </div>
     </div>
 </body>
