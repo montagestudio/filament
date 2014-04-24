@@ -301,6 +301,11 @@ exports.PreviewController = Target.specialize({
     handleDidSave: {
         value: function () {
             this.refreshPreview().done();
+            if (typeof this.environmentBridge.didSaveProject === "function") {
+                return this.environmentBridge.didSaveProject(this._previewId);
+            } else {
+                return Promise.resolve(null);
+            }
         }
     },
 
