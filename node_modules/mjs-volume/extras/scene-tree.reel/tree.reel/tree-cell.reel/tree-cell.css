@@ -1,5 +1,6 @@
 .TreeCell > div {
-    display: -flex;
+    display: flex;
+    display: -webkit-flex;
     align-items: center;
 }
 
@@ -13,16 +14,17 @@
     border-bottom: 5px solid transparent;
     border-top: 5px solid transparent;
     -webkit-transition: -webkit-transform .1s ease-in-out;
+    transition: transform .1s ease-in-out
 }
 
 .TreeCell-toggle:hover {
     cursor: pointer;
     border-left: 10px solid #AEAEAE;
-
 }
 
 .TreeCell-toggle:checked {
     -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
 }
 
 .TreeCell-toggle-invisible {
@@ -50,4 +52,13 @@
 
 .TreeCell-type {
     margin-left: auto;
+    width: 15px;
+    height: 15px;
+    opacity: 0.4;
+    flex-shrink: 0;
+    -webkit-flex-shrink: 0;
+}
+
+.TreeCell.LastSceneNode .TreeCell-type {
+    opacity: 0.8;
 }
