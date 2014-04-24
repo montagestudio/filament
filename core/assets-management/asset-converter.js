@@ -1,4 +1,5 @@
 var Montage = require("montage/core/core").Montage,
+    Promise = require("montage/core/promise").Promise,
     AssetsConfig = require("./assets-config").AssetsConfig,
     AssetTools = require("./asset-tools").AssetTools;
 

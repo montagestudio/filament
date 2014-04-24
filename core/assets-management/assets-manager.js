@@ -3,13 +3,11 @@ var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescript
     ReelDocument = require("core/reel-document").ReelDocument,
     AssetsConfig = require("./assets-config").AssetsConfig,
     AssetConverter = require("./asset-converter").AssetConverter,
-    Promise = require("montage/core/promise").Promise,
     AssetTools = require("./asset-tools").AssetTools,
     Montage = require("montage/core/core").Montage,
     Asset = require("./asset").Asset,
 
     PACKAGE_LOCATION = require.location,
-    GLTF_BUNDLE_MIME_TYPE = "model/gltf-bundle",
 
     FILE_SYSTEM_CHANGES = {
         CREATE: "create",
