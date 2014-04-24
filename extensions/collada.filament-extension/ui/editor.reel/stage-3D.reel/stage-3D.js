@@ -116,9 +116,9 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
 
                 this.editingProxies.forEach(function (proxy) {
                     if (SceneEditorTools.isMaterialProxy(proxy.exportId)) {
-                        self._createMaterialWithReelProxy(proxy);
+                        self._setupMaterialWithReelProxy(proxy);
                     } else if (SceneEditorTools.isNodeProxy(proxy.exportId)) {
-                        self._createNodeWithReelProxy(proxy);
+                        self._setupNodeWithReelProxy(proxy);
                     }
                 });
             }
@@ -138,25 +138,25 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
         }
     },
 
-    _createMaterialWithReelProxy: {
+    _setupMaterialWithReelProxy: {
         value: function (reelProxy) {
             var element = this._elementForReelProxy(reelProxy);
             if (element.component3D == null) {
-                element.component3D = this._fullfilComponend3D(new Material(), reelProxy.properties);
+                element.component3D = this._fullfilComponent3D(new Material(), reelProxy.properties);
             }
         }
     },
 
-    _createNodeWithReelProxy: {
+    _setupNodeWithReelProxy: {
         value: function (reelProxy) {
             var element = this._elementForReelProxy(reelProxy);
             if (element.component3D == null) {
-                element.component3D = this._fullfilComponend3D(new Node(), reelProxy.properties);
+                element.component3D = this._fullfilComponent3D(new Node(), reelProxy.properties);
             }
         }
     },
 
-    _fullfilComponend3D: {
+    _fullfilComponent3D: {
         value: function (component, properties) {
             if (component && properties) {
                 var self = this;
