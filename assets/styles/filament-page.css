@@ -57,3 +57,14 @@ a:hover {
 .Aside-section {
     padding: inherit;
 }
+
+.Aside-logo {
+    display: block;
+    width: 180px;
+    margin: 0 auto;
+}
+
+.Aside-meta {
+    font-size: .8em;
+    color: hsl(0, 0%, 50%);
+}

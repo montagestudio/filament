@@ -28,7 +28,7 @@
                     }
                 ]
             },
-
+            
             "newAppButtonCondition": {
                 "prototype": "montage/ui/condition.reel",
                 "properties": {
@@ -126,67 +126,6 @@
                         "listener": {"@": "owner"}
                     }
                 ]
-            },
-
-            "explorePopcornButton": {
-                "prototype": "matte/ui/button.reel",
-                "properties": {
-                    "element": {"#": "explorePopcornButton"}
-                },
-                "bindings": {
-                    "label": {"<-": "!!@repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('popcorn') ? 'Open Popcorn' : 'Fork Popcorn'"},
-                    "detail.get('owner')": {"<-": "'montagejs'"},
-                    "detail.get('repository')": {"<-": "'popcorn'"}
-                },
-                "listeners": [
-                    {
-                        "type": "action",
-                        "listener": {"@": "owner"}
-                    }
-                ]
-            },
-
-            "exploreTodoButton": {
-                "prototype": "matte/ui/button.reel",
-                "properties": {
-                    "element": {"#": "exploreTodoButton"}
-                },
-                "bindings": {
-                    "label": {"<-": "!!@repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('studio-todo') ? 'Open Todo' : 'Fork Todo'"},
-                    "detail.get('owner')": {"<-": "'montagejs'"},
-                    "detail.get('repository')": {"<-": "'studio-todo'"}
-                },
-                "listeners": [
-                    {
-                        "type": "action",
-                        "listener": {"@": "owner"}
-                    }
-                ]
-            },
-
-            "versionText": {
-                "prototype": "montage/ui/text.reel",
-                "properties": {
-                    "element": {"#": "versionText"}
-                },
-                "localizations": {
-                    "value": {
-                        "key": "version",
-                        "data": {
-                            "number": {"<-": "@owner.version"}
-                        }
-                    }
-                }
-            },
-
-            "introMeta": {
-                "prototype": "montage/ui/text.reel",
-                "properties": {
-                    "element": {"#": "introMeta"}
-                },
-                "localizations": {
-                    "value": {"key": "copyright"}
-                }
             },
 
             "recentTitle": {
@@ -288,44 +227,146 @@
             "repositoriesController": {
                 "prototype": "../../core/repositories-controller"
             },
-              "username": {
-                  "prototype": "montage/ui/text.reel",
-                  "properties": {
-                      "element": {"#": "username"}
-                  },
-                  "bindings": {
-                      "value": {
-                          "<-": "@owner.userController.user.name"
-                      }
-                  }
+            "username": {
+              "prototype": "montage/ui/text.reel",
+              "properties": {
+                  "element": {"#": "username"}
               },
-
-              "avatar": {
-                  "prototype": "matte/ui/image.reel",
-                  "properties": {
-                      "element": {"#": "avatar"}
-                  },
-                  "bindings": {
-                      "src": {
-                          "<-": "@owner.userController.user.avatarUrl"
-                      }
+              "bindings": {
+                  "value": {
+                      "<-": "@owner.userController.user.name"
                   }
               }
+            },
+            
+            "avatar": {
+              "prototype": "matte/ui/image.reel",
+              "properties": {
+                  "element": {"#": "avatar"}
+              },
+              "bindings": {
+                  "src": {
+                      "<-": "@owner.userController.user.avatarUrl"
+                  }
+              }
+            },
+            "beta": {
+                "prototype": "ui/widgets/beta.reel",
+                "properties": {
+                    "element": {"#": "beta"}
+                }
+            },
+            "copyright": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "copyright"}
+                },
+                "localizations": {
+                    "value": {"key": "copyright"}
+                }
+            },
+            "explorePopcornButton": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "explorePopcornButton"}
+                },
+                "bindings": {
+                    "label": {"<-": "!!@repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('popcorn') ? 'Open Popcorn' : 'Fork Popcorn'"},
+                    "detail.get('owner')": {"<-": "'montagejs'"},
+                    "detail.get('repository')": {"<-": "'popcorn'"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+    
+            "exploreTodoButton": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "exploreTodoButton"}
+                },
+                "bindings": {
+                    "label": {"<-": "!!@repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('studio-todo') ? 'Open Todo' : 'Fork Todo'"},
+                    "detail.get('owner')": {"<-": "'montagejs'"},
+                    "detail.get('repository')": {"<-": "'studio-todo'"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            }
         }
     </script>
 
 </head>
 <body>
 
-    <div data-montage-id="main" class="Main Projects">
+    <div data-montage-id="main" class="Main">
 
-        <section class="Intro About Column">
-            <img class="Intro-logo" src="../../../assets/img/logo.png" alt="Montage Studio">
-            <p class="Intro-info"><span data-montage-id="versionText" class="Intro-version"></span><span class="Intro-support">(Optimized for Google Chrome)</span></p>
-            <p class="Intro-meta" data-montage-id="introMeta"></p>
-        </section>
+        <aside class="Aside">
+                
+            <div class="Aside-content">
+                
+                <div data-montage-id="beta"></div>
+                
+                <section class="Aside-section">
+                    <img class="Aside-logo" src="../../../assets/img/logo.svg" alt="Montage Studio">
+                </section>
+                
+                <section class="Aside-section">
+                    <h2 class="Aside-title">Get Started</h2>
+                    <ul class="Aside-list">
+                        <li>
+                            <span><a href="http://docs.montagestudio.com/montage-studio/ide-at-a-glance.html" target="_blank">Overview</a></span>
+                            <span>Take a tour of Montage Studio.</span>
+                        </li>
+                        <li>
+                            <span><button data-montage-id="exploreTodoButton"></button></span>
+                            <span>Fork and explore a simple MontageJS application.</span>
+                        </li>
+                        <li>
+                            <span><button data-montage-id="explorePopcornButton"></button></span>
+                            <span>Fork and explore a complex MontageJS application.</span>
+                        </li>
+                        <li>
+                            <span><a href="http://docs.montagestudio.com/montage-studio/tutorial-simple-to-do.html" target="_blank">Quick Start</a></span>
+                            <span>Build a simple application.</span>
+                        </li>
+                    </ul>
+                </section>
+                
+                <section class="Aside-section">
+                    <h2 class="Aside-title">Help and Support</h2>
+                    <p class="Aside-links">
+                        <a href="http://docs.montagestudio.com/montage-studio/" target="_blank">Documentation</a>
+                        <a href="http://forum.montagestudio.com" target="_blank">Forum</a>
+                    </p>
+                    </ul>
+                </section>
+                
+                <section class="Aside-section">
+                    <h2 class="Aside-title">Follow Us</h2>
+                    <p class="Aside-links">
+                        <a href="http://montagestudio.com/blog/" target="_blank">Blog</a>
+                    </p>
+                </section>
+                
+                            
+                <section class="Aside-section">
+                    <p>Need help? <a href="http://webchat.freenode.net/?channels=montage" target="_blank">Chat with the team</a>.</p>
+                    
+                    <p data-montage-id="copyright" class="Aside-meta"></p>
+                </section>
+            </div>
+    
+        </aside>
 
-        <section class="Intro Examples Column">
+        <section class="Intro Examples Column" style="display: none;">
             <ul class="Intro-examples">
                 <li class="Intro-examples--featured">
                     <img src="../../assets/images/todo.jpg" class="Intro-examples-image">
@@ -340,13 +381,14 @@
             </ul>
         </section>
 
-        <section class="Launcher Column">
-            <section class="Launcher-section">
+
+        <div class="Projects">
+            <section class="Projects-section">
                 <img data-montage-id="avatar" class="User-avatar" src="">
                 <span data-montage-id="username" class="User-name"></span>
             </section>
 
-            <section class="Launcher-section">
+            <section class="Projects-section">
                 <div data-montage-id="newAppButtonCondition">
                     <div class="Action">
                         <button data-montage-id="newAppButton" class="Action-button Action-button--new"></button>
@@ -367,7 +409,7 @@
                 </div>
             </section>
 
-            <section class="Launcher-section History">
+            <section class="Projects-section History">
                 <div class="Title-section">
                     <h2 data-montage-id="recentTitle" class="Launcher-title"></h2>
                     <button data-montage-id="historyRefresh" data-arg="" aria-label="Refresh project list" class="Button History-refresh"></button>

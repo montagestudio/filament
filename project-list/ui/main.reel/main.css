@@ -1,154 +1,137 @@
 
 .Main {
-    text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    cursor: default;
+    
 }
+
+
 
 /* Intro --------------------------------- */
 
-.Intro {
-    margin: 20px;
-    color: hsl(0,0%,50%);
-    text-align: center;
-    -webkit-animation: Intro-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
-    -moz-animation: Intro-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
-    -ms-animation: Intro-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
-    animation: Intro-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
+
+.Aside-title {
+    //text-align: left;
+    font-size: 1.8em;
+    font-weight: 200;
+    color: #fff;
+    margin: 0;
 }
 
-@-webkit-keyframes Intro-fade {
-    0% {
-        opacity: 0;
-        -webkit-transform: translateX(60px);
-        transform: translateX(60px);
-    }
-}
-@-moz-keyframes Intro-fade {
-    0% {
-        opacity: 0;
-        -moz-transform: translateX(60px);
-        transform: translateX(60px);
-    }
-}
-@-ms-keyframes Intro-fade {
-    0% {
-        opacity: 0;
-        -ms-transform: translateX(60px);
-        transform: translateX(60px);
-    }
-}
-@keyframes Intro-fade {
-    0% {
-        opacity: 0;
-        transform: translateX(60px);
-    }
+.Aside-list {
+    list-style: none;
+    text-align: left;
+    padding: 0;
+    font-size: 0.85em;
 }
 
-.Intro a,
-.Intro a:active {
-    text-decoration: none;
-    color: hsl(212, 56%, 58%);
+.Aside-list li {
+    display: table-row;
 }
 
-.Intro a:hover {
-    color: hsl(212, 56%, 38%);
-}
-
-.Intro-logo {
-    display: block;
-    width: 240px;
-    margin: auto;
-}
-
-.Intro-info {
-    margin: 2em 0;
-}
-
-.Intro-version {
-    display: inline-block;
-    font-size: 14px;
-    text-align: center;
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
-    user-select: text;
-    cursor: text;
-    padding: 0.2em 0.4em;
-    border-radius: 4px;
-    border: 1px solid hsl(0, 0%, 75%);
+.Aside-list span {
+    display: table-cell;
+    padding: 0.6em;
     vertical-align: middle;
 }
 
-.Intro-support {
-    margin-left: .5em;
-    font-size: 12px;
-}
-
-.Intro-links,
-.Intro-examples {
-    padding: 0;
-    list-style: none;
-}
-
-.Intro-meta {
-    font-size: 11px;
-    color: hsl(0, 0%, 70%);
-    text-align: center;
-}
-
-/* About ------------------------------------ */
-
-.About {
-    min-width: 240px;
-}
-
-/* Examples --------------------------------- */
-
-.Examples {
-    text-align: left;
-    min-width: 240px;
-}
-
-.Examples-headline {
-    margin-bottom: 0.2em;
-}
-
-.Intro-examples--featured {
-    margin: 2em 0;
-}
-
-.Intro-examples--featured .Intro-examples-image {
-    -webkit-box-shadow: 0 0 2px hsla(0,0%,30%,0.5);
-    -moz-box-shadow: 0 0 2px hsla(0,0%,30%,0.5);
-    -ms-box-shadow: 0 0 2px hsla(0,0%,30%,0.5);
-    box-shadow: 0 0 2px hsla(0,0%,30%,0.5);
-    margin-bottom: 0.2em;
+.Aside-list a,
+.Aside-list button,
+.Aside-list button:active {
+    display: block;
     width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0 0.8em;
+    line-height: 2;
+    color: hsl(212, 60%, 72%);
+    font-family: inherit;
+    font-size: inherit;
+    border: 1px solid;
+    border-radius: 0.5em;
+    white-space: nowrap;
+    text-align: center;
+    background: transparent;
 }
 
-.Intro-examples--featured .Button {
-    min-width: 10em;
+.Aside-list button:hover {
+    color: hsl(212, 60%, 80%);
+    background: transparent;
 }
 
-.Intro-examples-description {
-    margin: 0.2em 0 0.5em;
-    text-align: left;
+
+.Aside-links a {
+    display: inline-block;
+    margin: 0 .5em;
 }
 
-/* Launcher --------------------------------- */
 
-.Launcher {
-    margin: 40px;
-    margin-left: 20px;
-    min-width: 240px;
-    -webkit-animation: Launcher-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
-    -moz-animation: Launcher-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
-    -ms-animation: Launcher-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
-    animation: Launcher-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
+/* Button --------------------------------- */
+
+.Button {
+    display: inline-block;
+    position: relative;
+    padding: .6em 1em .6em 4em;
+    font-size: 1.4em;
+    line-height: 1.4;
+    color: hsl(0,0%,100%);
+    text-decoration: none;
+    text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
+    border-radius: 0.3em;
+    box-shadow: inset 0 1px 0 hsla(0, 100%, 100%, 0.15), 0 1px 3px hsla(0, 100%, 0%, 0.3);
+    background-color: hsl(210,100%,56%);
+}
+
+.Button:hover {
+    color: hsl(0,0%,100%);
+}
+
+.Button.active {
+    box-shadow: 0 1px 0 hsla(0,0%,100%,.6);
+}
+
+/* Login */
+
+.Button--login {
+    background-image: linear-gradient( hsl(210,100%,66%), hsl(210,100%,56%) );
+}
+
+.Button--login:hover {
+    background-image: linear-gradient( hsl(210,100%,70%), hsl(210,100%,60%) );
+}
+
+.Button--login:active {
+    box-shadow: inset 0 1px 0 hsla(0, 100%, 100%, 0.15);
+    background-image: linear-gradient( hsl(210,100%,60%), hsl(210,100%,56%) );
+}
+
+.Button--login:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 3em;
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+    background: hsla(0, 0%, 0%, 0.08) no-repeat center;
+    background-size: 1.5em;
+    background-image: url(../../../assets/img/github.svg);
+}
+
+
+
+
+/* Projects --------------------------------- */
+
+.Projects {
+    position: absolute;
+    top: 0;
+    left: 512px;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 3rem;
+    background-color: #fff;
 }
 
 @-webkit-keyframes Launcher-fade {
@@ -179,7 +162,7 @@
     }
 }
 
-.Launcher-section {
+.Projects-section {
     -webkit-flex: 0 0 auto;
     -moz-flex: 0 0 auto;
     -ms-flex: 0 0 auto;
@@ -192,7 +175,7 @@
     box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.06), 0 1px 0 hsla(0,0%,100%,1);
 }
 
-.Launcher-title {
+.Projects-title {
     margin: 0 0 10px 0;
     font-size: 20px;
     font-weight: normal;
@@ -201,7 +184,7 @@
     text-align: center;
 }
 
-.History-progress {
+.Projects-progress {
     -webkit-transition: height .3s;
     -moz-transition: height .3s;
     -ms-transition: height .3s;
@@ -561,7 +544,7 @@
 
 /* Respsonsive --------------------------------- */
 
-@media (min-width:640px) {
+/*@media (min-width:640px) {
 
     html,
     body {
@@ -607,4 +590,4 @@
     .Intro {
         align-self: flex-start;
     }
-}
+}*/

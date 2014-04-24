@@ -1,11 +1,5 @@
 
-/* Intro --------------------------------- */
-
-.Aside-logo {
-    display: block;
-    width: 180px;
-    margin: 0 auto;
-}
+/* Aside --------------------------------- */
 
 .Aside-headline {
     text-align: left;
@@ -38,10 +32,6 @@
     font-size: .85em;
 }
 
-.Aside-meta {
-    font-size: .8em;
-    color: hsl(0, 0%, 50%);
-}
 
 /* Button --------------------------------- */
 
