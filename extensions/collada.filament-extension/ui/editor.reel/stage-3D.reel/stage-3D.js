@@ -125,28 +125,33 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
         }
     },
 
+    _elementForReelProxy: {
+        value: function(reelProxy) {
+            var element = null;
+            if (this._scene) {
+                var id = reelProxy.properties.get('id');
+                if (id != null) {
+                    element = this._scene.glTFElement.ids[id];
+                }
+            }
+            return element;
+        }
+    },
+
     _createMaterialWithReelProxy: {
         value: function (reelProxy) {
-            if (this._scene) {
-                var id = reelProxy.properties.get('id'),
-                    element = this._scene.glTFElement.ids[id];
-
-                if (!(element instanceof Material)) { // doesn't exist yet
-                    this._scene.glTFElement.ids[id] = this._fullfilComponend3D(new Material(), reelProxy.properties);
-                }
+            var element = this._elementForReelProxy(reelProxy);
+            if (element.component3D == null) {
+                element.component3D = this._fullfilComponend3D(new Material(), reelProxy.properties);
             }
         }
     },
 
     _createNodeWithReelProxy: {
         value: function (reelProxy) {
-            if (this._scene) {
-                var id = reelProxy.properties.get('id'),
-                    element = this._scene.glTFElement.ids[id];
-
-                if (!(element instanceof Node)) { // doesn't exist yet
-                    this._scene.glTFElement.ids[id] = this._fullfilComponend3D(new Node(), reelProxy.properties);
-                }
+            var element = this._elementForReelProxy(reelProxy);
+            if (element.component3D == null) {
+                element.component3D = this._fullfilComponend3D(new Node(), reelProxy.properties);
             }
         }
     },
