@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="object-explorer.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            }
+        },
+
+        "rangeController": {
+            "prototype": "montage/core/range-controller",
+            "bindings": {
+                "content": {"<-": "@owner.editingDocument.plainTemplateObjects"}
+            }
+        },
+
+        "objectList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "objectList"},
+                "isSelectionEnabled": true,
+                "contentController": {"@": "rangeController"}
+            }
+        },
+
+        "objectCell": {
+            "prototype": "./object-cell.reel",
+            "properties": {
+                "element": {"#": "objectCell"},
+                "explorer": {"@": "owner"}
+            },
+            "bindings": {
+                "data": {"<-": "@objectList:iteration.object"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="ObjectExplorer">
+        <div data-montage-id="objectList" class="ObjectExplorer-objectList">
+            <div data-montage-id="objectCell"></div>
+        </div>
+    </div>
+</body>
+</html>

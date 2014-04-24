@@ -2521,6 +2521,9 @@ exports.ReelDocument = EditingDocument.specialize({
                 proxyFIFO = this._buildTreeFillFIFO(),
                 reelProxy,
                 parentReelProxy;
+
+            this.plainTemplateObjects = [];
+
             while (reelProxy = proxyFIFO.shift()) {
                 if (reelProxy.properties && reelProxy.properties.get('element')) {
                     // find the parent component
@@ -2561,13 +2564,8 @@ exports.ReelDocument = EditingDocument.specialize({
                         successivePushes++;
                     }
                 } else {
-                    // has not DOM representation, added as root children
-                    var nodeTemplateLess = {
-                        templateObject: reelProxy,
-                        children: []
-                    };
-                    // let's add them in top to keep the tree "cleaner"
-                    root.children.unshift(nodeTemplateLess);
+                    // has no DOM representation, added to plain template objects array.
+                    this.plainTemplateObjects.push(reelProxy);
                 }
                 // to be safe, guard to prevent an infinite loop
                 if (successivePushes > proxyFIFO.length) {

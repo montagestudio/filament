@@ -30,25 +30,6 @@
                 }
             },
 
-            "editPropertiesCondition": {
-                "prototype": "montage/ui/condition.reel",
-                "properties": {
-                    "element": {"#": "editPropertiesCondition"},
-                    "removalStrategy": "hide"
-                },
-                "bindings": {
-                    "condition": {"<-": "@editPropertiesButton.pressed"}
-                }
-            },
-
-            "editPropertiesButton": {
-                "prototype": "matte/ui/toggle-button.reel",
-                "properties": {
-                    "element": {"#": "editPropertiesButton"},
-                    "title": "Edit"
-                }
-            },
-
             "editProperties": {
                 "prototype": "../content/edit-properties.reel",
                 "properties": {
@@ -56,69 +37,6 @@
                 },
                 "bindings": {
                     "ownerObject": {"<-": "@owner.templateObject"}
-                }
-            },
-
-            "elementCondition": {
-                "prototype": "montage/ui/condition.reel",
-                "properties": {
-                    "element": {"#": "elementCondition"},
-                    "removalStrategy": "hide"
-                },
-                "bindings": {
-                    "condition": {"<-": "@owner.isTemplateObjectComponent"}
-                }
-            },
-
-            "elementField": {
-                "prototype": "../content/element-field.reel",
-                "properties": {
-                    "element": {"#": "elementField"}
-                },
-                "bindings": {
-                    "templateObject": {"<-": "@owner.templateObject"}
-                }
-            },
-
-            "bindingsCondition": {
-                "prototype": "montage/ui/condition.reel",
-                "properties": {
-                    "element": {"#": "bindingsCondition"},
-                    "removalStrategy": "hide"
-                },
-                "bindings": {
-                    "condition": {"<-": "@owner.showBindings"}
-                }
-            },
-
-            "bindingExplorer": {
-                "prototype": "../content/binding-explorer.reel",
-                "properties": {
-                    "element": {"#": "bindingExplorer"}
-                },
-                "bindings": {
-                    "templateObject": {"<-": "@owner.templateObject"}
-                }
-            },
-
-            "listenersCondition": {
-                "prototype": "montage/ui/condition.reel",
-                "properties": {
-                    "element": {"#": "listenersCondition"},
-                    "removalStrategy": "hide"
-                },
-                "bindings": {
-                    "condition": {"<-": "@owner.showListeners"}
-                }
-            },
-
-            "listenerExplorer": {
-                "prototype": "../content/listener-explorer.reel",
-                "properties": {
-                    "element": {"#": "listenerExplorer"}
-                },
-                "bindings": {
-                    "templateObject": {"<-": "@owner.templateObject"}
                 }
             },
 
@@ -143,28 +61,12 @@
 
 <header data-montage-id="template-object-cell" class="TemplateObjectCell TemplateObjectCell--owner">
 
-    <header data-montage-id="header">
+    <header data-montage-id="header" class="OwnerObjectCell-header">
         <span data-arg="title">owner</span>
-        <div data-arg="toolbar">
-            <button data-montage-id="editPropertiesButton" class="TemplateObjectHeader-button TemplateObjectHeader-button--edit"></button>
-        </div>
+        <div data-arg="toolbar"></div>
     </header>
 
-    <section data-montage-id="editPropertiesCondition" class="TemplateObjectCell-section">
-        <div data-montage-id="editProperties"></div>
-    </section>
-
-    <section data-montage-id="elementCondition" class="TemplateObjectCell-section">
-        <div data-montage-id="elementField"></div>
-    </section>
-
-    <section data-montage-id="bindingsCondition" class="TemplateObjectCell-section">
-        <div data-montage-id="bindingExplorer"></div>
-    </section>
-
-    <section data-montage-id="listenersCondition" class="TemplateObjectCell-section">
-        <div data-montage-id="listenerExplorer"></div>
-    </section>
+    <div data-montage-id="editProperties"></div>
 
 </header>
 

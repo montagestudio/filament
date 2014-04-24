@@ -65,10 +65,8 @@
             "prototype": "ui/tree.reel",
             "properties": {
                 "element": {"#": "nodeList"},
-                "isSelectionEnabled": false
-            },
-            "bindings": {
-                "treeController": {"<-": "@owner.nodeTreeController"}
+                "isSelectionEnabled": false,
+                "treeController": {"@": "nodeTreeController"}
             }
         },
 

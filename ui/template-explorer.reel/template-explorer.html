@@ -44,33 +44,6 @@
                 "templateObjectsController": {"<-": "@owner.templateObjectsController"}
             }
         },
-        "showBindings": {
-            "prototype": "matte/ui/toggle-button.reel",
-            "properties": {
-                "element": {"#": "showBindings"}
-            },
-            "bindings": {
-                "pressed": {"<->": "!@owner.showBindings"}
-            }
-        },
-        "showHidden": {
-            "prototype": "matte/ui/toggle-button.reel",
-            "properties": {
-                "element": {"#": "showHidden"}
-            },
-            "bindings": {
-                "pressed": {"<->": "!@owner.showHidden"}
-            }
-        },
-        "showListeners": {
-            "prototype": "matte/ui/toggle-button.reel",
-            "properties": {
-                "element": {"#": "showListeners"}
-            },
-            "bindings": {
-                "pressed": {"<->": "!@owner.showListeners"}
-            }
-        },
         "templateObjectFilter": {
             "prototype": "ui/widgets/input-search.reel",
             "properties": {
@@ -88,8 +61,6 @@
         <header class="TemplateExplorer-header Bar">
             <div>
                 <input data-montage-id="templateObjectFilter" class="TemplateExplorer-search" type="search" placeholder="Search Template">
-                <button data-montage-id="showBindings" class="TemplateExplorer-filterToggle TemplateExplorer-filterToggle--binding" title="Toggle Bindings"></button>
-                <button data-montage-id="showListeners" class="TemplateExplorer-filterToggle TemplateExplorer-filterToggle--listener" title="Toggle Listeners"></button>
             </div>
             <label class="TemplateExplorer-hiddenControl">
                 <button data-montage-id="showHidden" class="TemplateObjectCell-hiddenToggleButton" title="Toggle Hidden"></button>

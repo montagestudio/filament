@@ -38,12 +38,19 @@
     /*min-height: 48px; *//* Keep top and bottom bars still visible */
 }
 
-.ComponentEditor-column-row--fill {
+.ComponentEditor-templateContent {
     -webkit-flex: 1 1 0;
     -moz-flex: 1 1 0;
     -ms-flex: 1 1 0;
     flex: 1 1 0;
-    /*overflow: hidden;*/
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
     border-bottom: 1px solid hsl(0, 0%, 75%);
     background: hsl(0, 0%, 86%);
 }
@@ -66,8 +73,20 @@
     background: hsl(0, 0%, 92%);
 }
 
-.ComponentEditor-column .Bar{
-    height: 47px;
+.ComponentEditor .ComponentEditor-templateContent .Bar {
+    -webkit-flex: 0 0 47px;
+}
+
+.ComponentEditor .ComponentEditor-templateObjects {
+    -webkit-flex-grow: 1;
+}
+
+.ComponentEditor .ComponentEditor-objectExplorer {
+    -webkit-flex-grow: 1;
+}
+
+.ComponentEditor .ComponentEditor-domObjects {
+    -webkit-flex-grow: 1;
 }
 
 

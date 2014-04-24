@@ -264,6 +264,12 @@ exports.ComponentEditor = Editor.specialize({
         }
     },
 
+    handleSelectTemplateObject: {
+        value: function (evt) {
+            this.currentDocument.selectObject(evt.detail.templateObject);
+        }
+    },
+
     handleSelectElement: {
         value: function (evt) {
             // for now we only support single element selection
