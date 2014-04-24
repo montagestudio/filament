@@ -217,6 +217,10 @@
     border: none !important;
 }
 
+.Launcher .Button {
+    margin: 0.5em 0;
+}
+
 /* Action --------------------------------- */
 
 .Launcher-section .Action {

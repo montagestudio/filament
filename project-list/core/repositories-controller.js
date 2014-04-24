@@ -378,6 +378,18 @@ var RepositoriesController = Montage.specialize({
         }
     },
 
+    clearCachedRepositories: {
+        value: function () {
+            this.repositoriesCount = 0;
+            localStorage.removeItem(LOCAL_STORAGE_REPOSITORIES_COUNT_KEY);
+
+            this.processedRepositories = 0;
+            localStorage.removeItem(LOCAL_STORAGE_KEY);
+
+            return Promise();
+        }
+    },
+
     updateAndCacheUserRepositories: {
         value: function () {
             var self = this;

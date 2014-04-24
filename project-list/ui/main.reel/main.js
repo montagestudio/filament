@@ -187,6 +187,16 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    handleAuthorizePrivateAccessButtonAction: {
+        value: function () {
+            this.templateObjects.repositoriesController.clearCachedRepositories()
+                .finally(function () {
+                    window.location = "/auth/github/private";
+                })
+                .done();
+        }
+    },
+
     _createNewApplication: {
         value: function () {
             var templateObjects = this.templateObjects,
