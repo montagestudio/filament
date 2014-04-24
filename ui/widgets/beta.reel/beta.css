@@ -1,0 +1,20 @@
+.Beta {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 3em 3em 1em 3em;
+    background: rgba(0, 0, 0, 0.1);
+    -webkit-transform-origin: 0 0;
+    -webkit-transform: rotate(-45deg) translateX(-50%);
+}
+
+.Beta-version {
+    display: block;
+    font-size: 1.6em;
+    color: #fff;
+}
+
+.Beta-support {
+    display: block;
+    font-size: 0.8em;
+}

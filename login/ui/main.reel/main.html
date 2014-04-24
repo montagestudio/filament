@@ -13,6 +13,12 @@
                 "element": {"#": "main"}
             }
         },
+        "beta": {
+            "prototype": "ui/widgets/beta.reel",
+            "properties": {
+                "element": {"#": "beta"}
+            }
+        },
         "versionText": {
             "prototype": "montage/ui/text.reel",
             "properties": {
@@ -43,18 +49,22 @@
     <aside data-montage-id="main" class="Main Aside">
         
         <div class="Aside-content">
+            
+            <div data-montage-id="beta"></div>
+            
             <section class="Aside-section">
                 <img class="Aside-logo" src="../../../assets/img/logo.svg" alt="Montage Studio">
             </section>
             
             <section class="Aside-section">
                 <h1 class="Aside-headline">Develop. Run. Share.</h1>
-                <p class="Aside-description">Montage Studio lets you build MontageJS applications in the cloud and uses GitHub to store your source code.</p>
+                <p class="Aside-description">Build MontageJS applications in the cloud; store your code on GitHub.</p>
             </section>
             
             <section class="Aside-section">
                 <a href="/auth/github/" class="Button Button--login">Sign in with GitHub</a>
-                <p class="Aside-info">
+                <p class="Aside-privacy">Montage Studio requires your permission to access your GitHub account to create git repositories for your projects.</p>
+                <p class="Aside-info" style="display: none;">
                     <span data-montage-id="versionText" class="Aside-version"></span>
                     <span class="Aside-support">(Optimized for Google Chrome)</span>
                 </p>

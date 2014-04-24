@@ -27,14 +27,15 @@
     color: #fff;
 }
 
-.Aside-support {
-    margin-left: .5em;
-    font-size: .8em;
+.Aside-privacy {
+    font-size: .85em;
+    font-style: italic;
+    color: hsl(0, 0%, 50%);
 }
 
-.Aside-links {
-    padding: 0;
-    list-style: none;
+.Aside-support {
+    margin-left: .5em;
+    font-size: .85em;
 }
 
 .Aside-meta {
