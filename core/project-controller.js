@@ -445,16 +445,26 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      */
     documentTypeForUrl: {
         value: function (url) {
-            var documentType,
+            var documentTypes = this.documentTypesForUrl(url);
+
+            return documentTypes[documentTypes.length - 1];
+        }
+    },
+
+    /**
+     * The document prototypes possible to use for the specified url
+     * @override
+     */
+    documentTypesForUrl: {
+        value: function (url) {
+            var self = this,
                 matchResults = this._documentTypeUrlMatchers.filter(function (matcher) {
                     return matcher(url) ? matcher : false;
                 });
 
-            if (matchResults.length) {
-                documentType = this._urlMatcherDocumentTypeMap.get(matchResults[matchResults.length - 1]);
-            }
-
-            return documentType;
+            return matchResults.map(function (match) {
+                return self._urlMatcherDocumentTypeMap.get(match);
+            });
         }
     },
 
