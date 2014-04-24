@@ -234,7 +234,12 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
             }
 
             if (this._codeMirror) {
-                this._codeMirror.swapDoc(this._openDocuments[editingDocument.uuid]);
+                try {
+                    this._codeMirror.swapDoc(this._openDocuments[editingDocument.uuid]);
+                } catch (ex) {
+                    console.error("Error loading CodeMirror document", ex);
+                }
+
                 this.needsDraw = true;
             }
 
