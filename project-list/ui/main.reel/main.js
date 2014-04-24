@@ -178,11 +178,11 @@ exports.Main = Montage.create(Component, {
 
     handleHistoryRefreshAction: {
         value: function () {
-            var self = this;
+            var refreshButton = this.templateObjects.historyRefresh;
 
-            this.templateObjects.historyRefresh.disabled = true;
+            refreshButton.disabled = true;
             this.templateObjects.repositoriesController.updateAndCacheUserRepositories().finally(function () {
-                self.templateObjects.historyRefresh.disabled = false;
+                refreshButton.disabled = false;
             }).done();
         }
     },
