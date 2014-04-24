@@ -36,7 +36,7 @@
             top: 0;
             right: 0;
             bottom: 0;
-            left: 0;
+            left: 512px;
             pointer-events: none;
             min-width: 100%;
             min-height: 100%;
@@ -46,21 +46,25 @@
             overflow: hidden;
         }
         
-        .Login {
-            height: 100%;
+        .Loader {
+            right: auto;
+            width: 512px;
         }
+        
     </style>
 
 </head>
 <body>
-    <video autoplay="true" loop="true" poster="/assets/videos/3d-attract.jpg" class="Attract">
+    
+    <div data-montage-id="loader">
+        <div data-montage-id="loaderWidget"></div>
+    </div>
+    
+    <video class="Attract" autoplay loop poster="/assets/videos/3d-attract.jpg">
         <source src="/assets/videos/3d-attract.mp4" type="video/mp4">
         <source src="/assets/videos/3d-attract.webm" type="video/webm">
         <source src="/assets/videos/3d-attract.ogg" type="video/ogg">
     </video>
 
-    <div data-montage-id="loader" class="Login">
-        <div data-montage-id="loaderWidget"></div>
-    </div>
 </body>
 </html>

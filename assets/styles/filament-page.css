@@ -7,21 +7,53 @@
 }
 
 html {
-    background-color: hsl(0,0%,98%);
+    font-family: Clear Sans, sans-serif;
+    font-size: 16px;
+    color: #B8B8B8;
+    /*background-color: hsl(212, 20%, 20%);*/
+    background-color: hsl(0, 0%, 22%);
 }
 
 body {
     margin: 0;
-    font-family: Clear Sans, sans-serif;
+    font-size: 16px;
 }
+
+a,
+a:active {
+    text-decoration: none;
+    color: hsl(212, 60%, 72%);
+}
+a:hover {
+    color: hsl(212, 60%, 80%);
+}
+
 
 .montage-invisible {
     display: none;
 }
 
-/* Bootstrapping ------------------------------------- */
 
-.montage-app-bootstrapping .main,
-.montage-app-loading .main {
-    display: none;
+
+/* Aside ------------------------------------- */
+
+.Aside {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    max-width: 512px;
+    text-align: center;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.Aside-content {
+    margin: auto;
+    padding: 2rem;
+}
+
+.Aside-section {
+    padding: inherit;
 }

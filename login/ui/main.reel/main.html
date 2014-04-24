@@ -27,10 +27,10 @@
                 }
             }
         },
-        "introMeta": {
+        "copyright": {
             "prototype": "montage/ui/text.reel",
             "properties": {
-                "element": {"#": "introMeta"}
+                "element": {"#": "copyright"}
             },
             "localizations": {
                 "value": {"key": "copyright"}
@@ -40,26 +40,33 @@
     </script>
 </head>
 <body>
-    <div data-montage-id="main" class="Main">
-        <section class="Intro">
-            <h1 class="Intro-headline">Develop. Run. Share.</h1>
-            <p class="Intro-copy">Montage Studio lets you build MontageJS applications in the cloud and uses GitHub to store your source code.
-            </p>
+    <aside data-montage-id="main" class="Main Aside">
+        
+        <div class="Aside-content">
+            <section class="Aside-section">
+                <img class="Aside-logo" src="../../../assets/img/logo.svg" alt="Montage Studio">
+            </section>
+            
+            <section class="Aside-section">
+                <h1 class="Aside-headline">Develop. Run. Share.</h1>
+                <p class="Aside-description">Montage Studio lets you build MontageJS applications in the cloud and uses GitHub to store your source code.</p>
+            </section>
+            
+            <section class="Aside-section">
+                <a href="/auth/github/" class="Button Button--login">Sign in with GitHub</a>
+                <p class="Aside-info">
+                    <span data-montage-id="versionText" class="Aside-version"></span>
+                    <span class="Aside-support">(Optimized for Google Chrome)</span>
+                </p>
+            </section>
+            
+            <section class="Aside-section">
+                <p>Need help? See our <a href="http://docs.montagestudio.com/montage-studio/tutorial-first-steps.html" target="_blank">First Steps</a> guide</p>
+                
+                <p data-montage-id="copyright" class="Aside-meta"></p>
+            </section>
+        </div>
 
-
-            <a href="/auth/github/" class="Action-button Action-button--login">
-                <div><em>Sign in with GitHub</em></div>
-            </a>
-
-            <p class="Intro-info"><span data-montage-id="versionText" class="Intro-version"></span><span class="Intro-support">(Optimized for Google Chrome)</span></p>
-            <ul class="Intro-links">
-                <li>Need help? See our <a href="http://docs.montagestudio.com/montage-studio/tutorial-first-steps.html" target="_blank">First Steps</a> guide</li>
-            </ul>
-
-            <img class="Intro-logo" src="../../../assets/img/logo.png" alt="Montage Studio">
-            <p class="Intro-meta" data-montage-id="introMeta"></p>
-        </section>
-
-    </div>
+    </aside>
 </body>
 </html>
