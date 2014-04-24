@@ -1,0 +1,40 @@
+.ObjectCell {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+    -webkit-flex-flow: row nowrap;
+    -moz-flex-flow: row nowrap;
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
+    position: relative;
+
+    height: 22px;
+    font-size: 13px;
+    padding-left: 11px;
+    /* line-height: 2.5em; */
+    background: hsl(0,0%,96%);
+    margin: 3px 0;
+}
+
+.ObjectCell.ObjectCell--selected {
+    background: hsl(0,0%,92%);
+    border: 1px solid hsl(210,100%,60%);
+}
+
+.ObjectCell.ObjectCell--dragged {
+    opacity: 0.4;
+}
+
+.ObjectCell.ObjectCell--dropTarget {
+    padding: 0px;
+    border: 2px;
+    border-style: dashed;
+    border-color: hsl(216,100%,70%);
+    margin-top: 1px;
+    margin-bottom: 1px;
+}

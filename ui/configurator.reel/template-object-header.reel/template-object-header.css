@@ -4,6 +4,7 @@
 .TemplateObjectCell--owner .TemplateObjectHeader,
 .TemplateObjectCell.TemplateObjectCell--owner.selected .TemplateObjectHeader {
     background-color: hsl(43, 100%, 85%);
+    flex-grow: 1;
 }
 
 .TemplateObjectCell--selected .TemplateObjectHeader {

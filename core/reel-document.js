@@ -2416,7 +2416,7 @@ exports.ReelDocument = EditingDocument.specialize({
         Steps:
             - add the root element
             - create a list of components to be arranged in the tree, "proxyFIFO"
-            - pick the head element, "nodeProxy" of the list and try to add it to the tree. 
+            - pick the head element, "nodeProxy" of the list and try to add it to the tree.
               While adding to the tree we keep a map of elements to tree node updated.
             - if the element has no DOM representation it is added to the root of the tree as first child
             - otherwise we seek the element's parentComponent to then add it
@@ -2434,6 +2434,9 @@ exports.ReelDocument = EditingDocument.specialize({
                 proxyFIFO = this._buildTreeFillFIFO(proxyFIFO),
                 reelProxy,
                 parentReelProxy;
+
+            this.plainTemplateObjects = [];
+
             while (reelProxy = proxyFIFO.shift()) {
                 if (reelProxy.properties && reelProxy.properties.get('element')) {
                     // find the parent component
@@ -2474,13 +2477,8 @@ exports.ReelDocument = EditingDocument.specialize({
                         successivePushes++;
                     }
                 } else {
-                    // has not DOM representation, added as root children
-                    var nodeTemplateLess = {
-                        templateObject: reelProxy,
-                        children: []
-                    };
-                    // let's add them in top to keep the tree "cleaner"
-                    root.children.unshift(nodeTemplateLess);
+                    // has no DOM representation, added to plain template objects array.
+                    this.plainTemplateObjects.push(reelProxy);
                 }
                 // to be safe, guard to prevent an infinite loop
                 if (successivePushes > proxyFIFO.length) {

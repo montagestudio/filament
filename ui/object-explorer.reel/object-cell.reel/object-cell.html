@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="object-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            }
+        },
+
+        "objectName": {
+            "prototype": "ui/text-editor-field.reel",
+            "properties": {
+                "element": {"#": "objectName"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "selectObject": {
+            "prototype": "montage/composer/press-composer",
+            "properties": {
+                "component": {"@": "owner"},
+                "element": {"#": "owner"},
+                "identifier": "selectObject"
+            },
+            "listeners": [
+                {
+                    "type": "press",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="ObjectCell" draggable="true">
+        <span data-montage-id="objectName" class=""></span>
+    </div>
+</body>
+</html>

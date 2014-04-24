@@ -26,6 +26,10 @@
                     {
                         "type": "selectComponent",
                         "listener": {"@": "owner"}
+                    },
+                    {
+                        "type": "selectTemplateObject",
+                        "listener": {"@": "owner"}
                     }
                 ]
             },
@@ -93,13 +97,22 @@
                 }
             },
 
+            "objectExplorer": {
+                "prototype": "ui/object-explorer.reel",
+                "properties": {
+                    "element": {"#": "objectExplorer"}
+                },
+                "bindings": {
+                    "editingDocument": {"<-": "@owner.currentDocument"}
+                }
+            },
+
             "domExplorer": {
                 "prototype": "ui/dom-explorer.reel",
                 "properties": {
                     "element": {"#": "domExplorer"}
                 },
                 "bindings": {
-                    "templateObjectsController": {"<-": "@owner.templateObjectsController"},
                     "editingDocument": {"<-": "@owner.currentDocument"}
                 }
             },
@@ -116,6 +129,14 @@
                 "prototype": "montage-splitter/ui/splitter.reel",
                 "properties": {
                     "element": {"#": "propertiesSplit"},
+                    "splitAxis": "horizontal"
+                }
+            },
+
+            "templateObjectsSplit": {
+                "prototype": "montage-splitter/ui/splitter.reel",
+                "properties": {
+                    "element": {"#": "templateObjectsSplit"},
                     "splitAxis": "horizontal"
                 }
             },
@@ -213,7 +234,13 @@
         <div data-montage-id="ownerSplit" class="ComponentEditor-column ComponentEditor-ownerSplitter">
             <section data-arg="first" data-montage-id="templateExplorer" class=""></section>
             <section data-arg="second" data-montage-id="propertiesSplit" class="ComponentEditor-splitter">
-                <div data-arg="first" data-montage-id="domExplorer" class="ComponentEditor-column-row--fill"></div>
+                <div data-arg="first" class="ComponentEditor-templateContent">
+                    <header class="Bar"></header>
+                    <section data-montage-id="templateObjectsSplit" class="ComponentEditor-templateObjects">
+                        <div data-arg="first" data-montage-id="objectExplorer" class="ComponentEditor-objectExplorer"></div>
+                        <div data-arg="second" data-montage-id="domExplorer" class="ComponentEditor-domExplorer"></div>
+                    </section>
+                </div>
                 <footer data-arg="second" data-montage-id="configurator" class="palette"></footer>
             </section>
         </div>

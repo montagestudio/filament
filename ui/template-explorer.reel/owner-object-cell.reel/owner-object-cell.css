@@ -2,6 +2,8 @@
 .TemplateObjectCell--owner.selected {
     position: relative;
     border-bottom: 1px solid hsl(0,0%,70%);
+    flex-grow: 1;
+    background-color: hsl(43, 100%, 85%);
 }
 
 .TemplateObjectCell--owner.selected:before {
@@ -11,7 +13,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    border: 1px solid hsl(210,100%,60%);
+    border: none;
     background: transparent;
     pointer-events: none;
 }

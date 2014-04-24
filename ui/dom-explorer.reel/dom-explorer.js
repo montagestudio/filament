@@ -26,10 +26,6 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
-    templateObjectsController: {
-        value: null
-    },
-
     _editingDocument: {
         value: null
     },
