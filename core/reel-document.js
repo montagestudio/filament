@@ -1381,7 +1381,7 @@ exports.ReelDocument = EditingDocument.specialize({
             return existingBinding.targetPath !== targetPath ||
                 existingBinding.oneway !== oneway ||
                 existingBinding.sourcePath !== sourcePath ||
-                existingBinding.converter !== converter
+                existingBinding.converter !== converter;
         }
     },
 
