@@ -1,6 +1,7 @@
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     MimeTypes = require("core/mime-types"),
+    NotModifiedError = require("core/error").NotModifiedError,
     replaceDroppedTextPlain = require("ui/drag-and-drop").replaceDroppedTextPlain,
     defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
@@ -86,8 +87,11 @@ exports.BindingJig = Montage.create(Component, {
     handleDefineBindingButtonAction: {
         value: function (evt) {
             evt.stop();
+            var self = this;
             this._commitBindingEdits().catch(function(error) {
-                // Ignore validation error
+                if (error instanceof NotModifiedError) {
+                    self._discardBindingEdits();
+                }
             }).done();
         }
     },

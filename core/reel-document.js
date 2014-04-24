@@ -14,6 +14,8 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     visit = require("montage/mousse/serialization/malker").visit,
     Url = require("core/node/url"),
     WeakMap = require("montage/collections/weak-map"),
+    ValidationError = require("core/error").ValidationError,
+    NotModifiedError = require("core/error").NotModifiedError,
     ObjectReferences = require("core/object-references").ObjectReferences;
 
 // The ReelDocument is used for editing Montage Reels
@@ -1296,7 +1298,8 @@ exports.ReelDocument = EditingDocument.specialize({
     defineOwnedObjectBinding: {
         value: function (proxy, targetPath, oneway, sourcePath, converter) {
             if (!this.isBindingParamsValid(targetPath, sourcePath)) {
-                return Promise.reject();
+                var error = new ValidationError("Invalid binding.");
+                return Promise.reject(error);
             }
 
             var binding = proxy.defineObjectBinding(targetPath, oneway, sourcePath, converter);
@@ -1373,10 +1376,27 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    _hasBindingChanged: {
+        value: function(existingBinding, targetPath, oneway, sourcePath, converter) {
+            return existingBinding.targetPath !== targetPath ||
+                existingBinding.oneway !== oneway ||
+                existingBinding.sourcePath !== sourcePath ||
+                existingBinding.converter !== converter
+        }
+    },
+
     updateOwnedObjectBinding: {
         value: function (proxy, existingBinding, targetPath, oneway, sourcePath, converter) {
+            var error;
+
             if (!this.isBindingParamsValid(targetPath, sourcePath)) {
-                return Promise.reject();
+                error = new ValidationError("Invalid binding.");
+                return Promise.reject(error);
+            }
+
+            if (!this._hasBindingChanged(existingBinding, targetPath, oneway, sourcePath, converter)) {
+                error = new NotModifiedError("Nothing has been modified.");
+                return Promise.reject(error);
             }
 
             var originalTargetPath = existingBinding.targetPath,
@@ -1459,7 +1479,7 @@ exports.ReelDocument = EditingDocument.specialize({
         value: function (proxy, type, listener, useCapture, methodName) {
 
             if (!this.isEventListenerValid(type, listener)) {
-                var error = new Error("Validation error");
+                var error = new Error("Invalid event listener.");
                 error.listener = listener;
                 return Promise.reject(error);
             }
@@ -1535,8 +1555,16 @@ exports.ReelDocument = EditingDocument.specialize({
      */
     updateOwnedObjectEventListener: {
         value: function (proxy, existingListenerEntry, type, explicitListener, useCapture, methodName) {
+            var error;
+
             if (!this.isEventListenerValid(type, explicitListener)) {
-                var error = new Error("Validation error");
+                error = new ValidationError("Invalid event listener.");
+                error.listener = explicitListener;
+                return Promise.reject(error);
+            }
+
+            if (!this._hasEventListenerChanged(existingListenerEntry, type, explicitListener, useCapture, methodName)) {
+                error = new NotModifiedError("Nothing has been modified.");
                 error.listener = explicitListener;
                 return Promise.reject(error);
             }
@@ -1583,6 +1611,15 @@ exports.ReelDocument = EditingDocument.specialize({
                 self.editor.refresh();
                 return updatedListenerEntry;
             });
+        }
+    },
+
+    _hasEventListenerChanged: {
+        value: function(existingListenerEntry, type, explicitListener, useCapture, methodName) {
+            return existingListenerEntry.type !== type ||
+                existingListenerEntry.listener.label !== explicitListener.label ||
+                existingListenerEntry.useCapture !== useCapture ||
+                existingListenerEntry.methodName !== methodName;
         }
     },
 
