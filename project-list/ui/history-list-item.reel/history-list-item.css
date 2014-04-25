@@ -1,37 +1,42 @@
+
+
+.HistoryListItem {
+    border-bottom: 1px solid hsl(0, 0%, 86%);
+    display: flex;
+    align-items: center;
+}
+
+.HistoryListItem-link {
+    flex: 1;
+    padding: 0.8rem;
+    text-decoration: none;
+    color: inherit;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.HistoryListItem-link:hover {
+    background-color: hsl(0, 0%, 98%);
+    color: inherit;
+}
+
+.HistoryListItem-link:active {
+    background-color: hsl(0, 0%, 100%);
+    color: inherit;
+}
+
 .HistoryListItem-type {
     display: none;
-}
-
-.HistoryListItem.History-list-item {
-    display: -webkit-flex;
-    -webkit-flex-direction: row;
-}
-
-.HistoryListItem .HistoryListItem-link {
-    text-decoration: none;
-    color: hsl(0, 0%, 0%);
-    -webkit-flex-direction: column;
-    flex-grow:4;
-    line-height: 32px;
-    padding-left: 4px;
-}
-
-.HistoryListItem .HistoryListItem-link:hover {
-    color: hsl(0, 0%, 0%);
+    margin: 0 0.8rem;
+    padding: 0.4em 0.6em;
+    line-height: 1;
+    font-size: 0.85em;
+    border-radius: 4px;
+    color: #fff;
+    background-color: hsl(0, 0%, 80%);
 }
 
 .HistoryListItem-type.is-private {
-    display: inline;
-    -webkit-flex-direction: column;
-    flex-grow:0;
-    padding: 0.2em 0.4em;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    -ms-border-radius: 4px;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-    -ms-border-radius: 4px;
-    border-radius: 4px;
-    color: hsl(46, 100%, 43%);
-    border: 1px solid hsl(46, 100%, 43%);
+    background-color: hsl(46, 100%, 43%);
 }

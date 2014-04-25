@@ -3,10 +3,7 @@
     
 }
 
-
-
-/* Intro --------------------------------- */
-
+/* Aside --------------------------------- */
 
 .Aside-title {
     //text-align: left;
@@ -64,58 +61,6 @@
 }
 
 
-/* Button --------------------------------- */
-
-.Button {
-    display: inline-block;
-    position: relative;
-    padding: .6em 1em .6em 4em;
-    font-size: 1.4em;
-    line-height: 1.4;
-    color: hsl(0,0%,100%);
-    text-decoration: none;
-    text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
-    border-radius: 0.3em;
-    box-shadow: inset 0 1px 0 hsla(0, 100%, 100%, 0.15), 0 1px 3px hsla(0, 100%, 0%, 0.3);
-    background-color: hsl(210,100%,56%);
-}
-
-.Button:hover {
-    color: hsl(0,0%,100%);
-}
-
-.Button.active {
-    box-shadow: 0 1px 0 hsla(0,0%,100%,.6);
-}
-
-/* Login */
-
-.Button--login {
-    background-image: linear-gradient( hsl(210,100%,66%), hsl(210,100%,56%) );
-}
-
-.Button--login:hover {
-    background-image: linear-gradient( hsl(210,100%,70%), hsl(210,100%,60%) );
-}
-
-.Button--login:active {
-    box-shadow: inset 0 1px 0 hsla(0, 100%, 100%, 0.15);
-    background-image: linear-gradient( hsl(210,100%,60%), hsl(210,100%,56%) );
-}
-
-.Button--login:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 3em;
-    border-top-left-radius: inherit;
-    border-bottom-left-radius: inherit;
-    background: hsla(0, 0%, 0%, 0.08) no-repeat center;
-    background-size: 1.5em;
-    background-image: url(../../../assets/img/github.svg);
-}
 
 
 
@@ -128,38 +73,18 @@
     left: 512px;
     right: 0;
     bottom: 0;
-    display: flex;
-    flex-direction: column;
-    padding: 3rem;
+    color: hsl(0, 0%, 26%);
     background-color: #fff;
 }
 
-@-webkit-keyframes Launcher-fade {
-    0% {
-        opacity: 0;
-        -webkit-transform: translateX(-60px);
-        transform: translateX(-60px);
-    }
-}
-@-moz-keyframes Launcher-fade {
-    0% {
-        opacity: 0;
-        -moz-transform: translateX(-60px);
-        transform: translateX(-60px);
-    }
-}
-@-ms-keyframes Launcher-fade {
-    0% {
-        opacity: 0;
-        -ms-transform: translateX(-60px);
-        transform: translateX(-60px);
-    }
-}
-@keyframes Launcher-fade {
-    0% {
-        opacity: 0;
-        transform: translateX(-60px);
-    }
+.Projects-content {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-align: center;
 }
 
 .Projects-section {
@@ -167,168 +92,74 @@
     -moz-flex: 0 0 auto;
     -ms-flex: 0 0 auto;
     flex: 0 0 auto;
-    margin: 10px 0;
-    padding: 15px;
-    border-radius: 6px;
-    border: 1px solid hsla(0, 0%, 0%, .1);
-    background: hsla(0,0%,0%,.04);
-    box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.06), 0 1px 0 hsla(0,0%,100%,1);
+    position: relative;
+    padding: 15px 0;
 }
 
-.Projects-title {
-    margin: 0 0 10px 0;
-    font-size: 20px;
-    font-weight: normal;
-    color: hsl(0, 0%, 50%);
-    text-shadow: 0 1px 0 hsla(0, 0%, 100%, .3);
+
+/* User --------------------------------- */
+
+.User {
+    display: block;
+    margin: 0 0 15px 0;
     text-align: center;
 }
 
-.Projects-progress {
-    -webkit-transition: height .3s;
-    -moz-transition: height .3s;
-    -ms-transition: height .3s;
-    transition: height .3s;
-    -moz-transition: height .3s;
-    -moz-transition: height .3s;
-    transition: height .3s;
-    overflow: hidden;
+.User-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 30PX;
 }
 
-.History-progress.is-done {
-    height: 0px;
-    border: none !important;
-}
-
-/* Action --------------------------------- */
-
-.Launcher-section .Action {
-    display: -webkit-flex;
-    display: -moz-flex;
-    display: -ms-flex;
-    display: flex;
-}
-
-.Action-button {
-    -webkit-flex: 1;
-    -moz-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
-    position: relative;
-    margin: 0;
-    padding-left: 3.2em;
-    font-size: 16px;
-    color: hsla(0,0%,100%,1);
-    text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
-    border-radius: 4px;
-    background-color: hsl(210,100%,56%);
-    box-shadow: inset 0 1px 0 hsla(0,0%,100%,.15), 0 1px 0 hsla(0,0%,100%,.6);
-}
-
-.Action-button:hover {
-    color: hsla(0,0%,100%,1);
-}
-
-.Action-button.active {
-    box-shadow: 0 1px 0 hsla(0,0%,100%,.6);
-}
-
-.Action-button:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 2.5em;
-    border-top-left-radius: inherit;
-    border-bottom-left-radius: inherit;
-    border-right: 1px solid hsla(0,0%,0%,.06);
-    background: hsla(0,0%,0%,.06) no-repeat center;
+.User-name {
+    font-size: 1.4em;
+    color: hsl(0, 0%, 72%);
+    display: block;
 }
 
 
-/* New */
 
-.Action-button--new {
-    border-color: hsl(210,100%,56%);
-    background-image: -webkit-linear-gradient(top, hsl(210,100%,72%), hsl(210,100%,62%) );
-    background-image: -moz-linear-gradient(top, hsl(210,100%,72%), hsl(210,100%,62%) );
-    background-image: -ms-linear-gradient(top, hsl(210,100%,72%), hsl(210,100%,62%) );
-    background-image: linear-gradient(top, hsl(210,100%,72%), hsl(210,100%,62%) );
-}
-
-.Action-button--new:hover {
-    background-image: -webkit-linear-gradient(top, hsl(210,100%,76%), hsl(210,100%,64%) );
-    background-image: -moz-linear-gradient(top, hsl(210,100%,76%), hsl(210,100%,64%) );
-    background-image: -ms-linear-gradient(top, hsl(210,100%,76%), hsl(210,100%,64%) );
-    background-image: linear-gradient(top, hsl(210,100%,76%), hsl(210,100%,64%) );
-}
-
-.Action-button--new.active {
-    background-image: -webkit-linear-gradient(top, hsl(210,100%,66%), hsl(210,100%,56%) );
-    background-image: -moz-linear-gradient(top, hsl(210,100%,66%), hsl(210,100%,56%) );
-    background-image: -ms-linear-gradient(top, hsl(210,100%,66%), hsl(210,100%,56%) );
-    background-image: linear-gradient(top, hsl(210,100%,66%), hsl(210,100%,56%) );
-}
-
-.Action-button--new:before {
-    background-image: url(../../assets/images/plus.svg);
-}
-
-
-/* Open */
-
-.Action-button--open {
-    border-color: hsl(170,80%,40%);
-    background-image: -webkit-linear-gradient(top, hsl(170,80%,48%), hsl(170,80%,42%) );
-    background-image: -moz-linear-gradient(top, hsl(170,80%,48%), hsl(170,80%,42%) );
-    background-image: -ms-linear-gradient(top, hsl(170,80%,48%), hsl(170,80%,42%) );
-    background-image: linear-gradient(top, hsl(170,80%,48%), hsl(170,80%,42%) );
-}
-
-.Action-button--open:hover {
-    background-image: -webkit-linear-gradient(top, hsl(170,80%,50%), hsl(170,80%,44%) );
-    background-image: -moz-linear-gradient(top, hsl(170,80%,50%), hsl(170,80%,44%) );
-    background-image: -ms-linear-gradient(top, hsl(170,80%,50%), hsl(170,80%,44%) );
-    background-image: linear-gradient(top, hsl(170,80%,50%), hsl(170,80%,44%) );
-}
-
-.Action-button--open.active {
-    background-image: -webkit-linear-gradient(top, hsl(170,80%,44%), hsl(170,80%,38%) );
-    background-image: -moz-linear-gradient(top, hsl(170,80%,44%), hsl(170,80%,38%) );
-    background-image: -ms-linear-gradient(top, hsl(170,80%,44%), hsl(170,80%,38%) );
-    background-image: linear-gradient(top, hsl(170,80%,44%), hsl(170,80%,38%) );
-}
-
-.Action-button--open:before {
-    background-image: url(../../assets/images/open.svg);
-}
-
-/* Form Fields --------------------------------- */
+/* New Form --------------------------------- */
 
 .NewForm {
-    padding: 15px;
+    padding: 1rem;
+    border: 1px solid hsla(0, 0%, 0%, 0.1);
+    text-align: left;
+    background: hsl(0, 0%, 96%);
 }
 
-.NewForm-field {
+.NewForm-fieldset {
+    border: none;
+    margin: 0 0 1rem 0;
+    padding: 0;
+}
+
+.NewForm-label {
     display: block;
-    margin-bottom: 4px;
-    line-height: 30px;
-    font-size: .9em;
-    text-align: right;
-    vertical-align: top;
+    font-size: .85em;
+    line-height: 1;
+    margin-bottom: .4em;
+    color: hsl(0, 0%, 50%);
 }
 
 .NewForm-bar {
     text-align: right;
 }
 
+.NewForm-bar .Button:last-child {
+    margin-right: 0;
+}
+
 .NewForm .matte-InputText,
 .NewForm .matte-Textarea {
     font-family: inherit;
-    border-color: hsl(0, 0%, 70%);
+    border-color: hsl(0, 0%, 80%);
     background-color: hsla(0, 100%, 100%, 0.7);
-    box-shadow: inset 0 1px 2px hsla(0, 0%, 0%, 0.08), 0 1px 0 hsla(0, 100%, 100%, 0.6);
+    width: 100%;
+    color: inherit;
+    font-size: inherit;
+    height: auto;
+    margin: 0;
 }
 
 .NewForm .matte-InputText:hover,
@@ -346,6 +177,8 @@
     font-size: .9em;
     color: hsl(10, 80%, 54%);
 }
+
+
 
 /* List --------------------------------- */
 
@@ -378,91 +211,15 @@
     font-size: .9em;
 }
 
-.History .History-update button.Button {
-    margin: 0 0;
-}
-
-
-.History .Title-section {
-    display: flex;
-    flex-direction: row;
-}
-.History .Title-section .Launcher-title {
-    flex-grow: 2;
-    padding-top: 4px;
-    padding-left: 50px;
-}
-
-.History .Title-section .History-refresh {
-    flex-grow:0;
-    width: 38px;
-    height: 38px;
-    padding: 0;
-    background: transparent;
-    border: 0px;
-    box-shadow: none;
-    -webkit-transform-origin-y: 20px;
-    -moz-transform-origin-y: 20px;
-    -ms-transform-origin-y: 20px;
-    -o-transform-origin-y: 20px;
-    -webkit-transform: rotate(45deg);
-       -moz-transform: rotate(45deg);
-        -ms-transform: rotate(45deg);
-         -o-transform: rotate(45deg);
-            transform: rotate(45deg);
-    -webkit-transition: -webkit-transform 1s ease-in-out;
-       -moz-transition: -moz-transform 1s ease-in-out;
-        -ms-transition: -ms-transform 1s ease-in-out;
-         -o-transition: -o-transform 1s ease-in-out;
-            transition: transform 1s ease-in-out;
-}
-
-.History .Title-section .History-refresh:before {
-    content: "\21BB";
-    font-size: 24px;
-    color: hsl(0, 0%, 75%);
-}
-
-.History .Title-section .History-refresh:hover:before {
-    color: hsl(0, 0%, 50%);
-}
-
-.History .Title-section .History-refresh:hover {
-    background: transparent;
-    -webkit-transform: rotate(405deg);
-       -moz-transform: rotate(405deg);
-        -ms-transform: rotate(405deg);
-         -o-transform: rotate(405deg);
-            transform: rotate(405deg);
-}
-.History .Title-section .History-refresh:active {
-    background: transparent;
-}
-
-.History .History-update {
-    display: -webkit-flex;
-    -webkit-flex-direction: column;
-    -webkit-justify-content: center;
-}
-
-.History-progress.matte-Progress {
-    width: 100%;
-    margin: 10px 0;
-    border: 1px solid hsl(0, 0%, 80%);
-    background-color: hsl(0, 0%, 84%);
-}
-
-.History-progress.matte-Progress .matte-Progress-bar {
-    height: 8px;
-    background-color: hsl(0,0%,96%);
-}
-
 .History-empty {
     margin-top: 1em;
     color: hsl(0, 0%, 70%);
     text-align: center;
     font-size: 14px;
 }
+
+
+/* List ---------------------------- */
 
 .History-list {
     position: relative;
@@ -475,70 +232,169 @@
     -ms-flex: 1 1 0;
     flex: 1 1 0;
     min-height: 0;
+    border: 1px solid hsla(0, 0%, 0%, 0.1);
+    text-align: left;
 }
 
-.History-list-item {
-    padding: 8px 16px;
-    font-size: 14px;
-    line-height: 24px;
-    border-top: 1px solid hsla(0, 0%, 100%, .5);
-    border-bottom: 1px solid hsla(0, 0%, 0%, .1);
-    background-color: hsla(0,0%,100%,.6);
-    cursor: pointer;
-    display: block;
-    text-overflow: ellipsis;
+
+
+/* Progress --------------------------------- */
+
+.Projects-progress.matte-Progress {
+    width: 100%;
+    margin: -20px 0 0 0;
+    border: 1px solid hsl(0, 0%, 80%);
+    background-color: hsl(0, 0%, 84%);
+    transition: height .3s;
     overflow: hidden;
+    position: absolute;
+    left: 0;
+}
+
+.Projects-progress.matte-Progress .matte-Progress-bar {
+    height: 8px;
+    background-color: hsl(0,0%,96%);
+}
+
+.Projects-progress.is-done {
+    height: 0px;
+    border: none;
+}
+
+
+
+
+/* Buttons --------------------------------- */
+
+.Button.matte-Button {    
     white-space: nowrap;
+    font-family: inherit;
+    font-size: inherit;
+    height: auto;
+    padding: 0.4em 1em;
+    color: hsla(0,0%,0%,.7);
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
+    border-color: hsl(0,0%,80%);
+    background-image: linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,.8), inset 0 -1px 1px hsla(0,0%,0%,.04), 0 1px 0 hsla(0,0%,100%,.6);
 }
 
-.History-list-item:hover {
-    background-color: hsla(0,0%,100%,.8);
+.Button.matte-Button:hover {
+    background-image: linear-gradient( hsl(0,0%,100%), hsl(0,0%,92%) );
 }
 
-.History-list-item:active {
-    border-top: 1px solid hsla(0, 0%, 100%, .1);
-    background-color: hsla(210,100%,50%,.1);
+.Button.matte-Button.active {
+    background-image: linear-gradient( hsl(0,0%,90%), hsl(0,0%,90%) );
+    box-shadow: inset 0 -1px 1px hsla(0,0%,0%,.04), 0 1px 0 hsla(0,0%,100%,.6);
 }
 
-.History .matte-RadioButton {
-    border-color: hsl(0, 0%, 70%);
-    background-color: hsla(0, 100%, 100%, 0.7);
-    box-shadow: inset 0 1px 2px hsla(0, 0%, 0%, 0.08), 0 1px 0 hsla(0, 100%, 100%, 0.6);
+.Button.matte-Button:focus {
+    border-color: inherit;
 }
 
-.History .matte-RadioButton:hover {
-    background-color: hsla(0,0%,100%,1);
+.Button.matte-Button.disabled {
+    border-color: hsl(0,0%,87%);
+    color: hsl(0,0%,70%);
+    background: hsl(0,0%,94%);
+    box-shadow: none;
+    pointer-events: none;
 }
 
-.History .matte-RadioButton:focus {
-    border-color: hsl(210,100%,70%);
-    background-color: hsla(0,0%,100%,1);
+
+/* Button Action */
+
+.Button.Button--action {    
+    color: hsla(0,0%,100%,1);
+    text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
+    border-color: hsl(210,100%,50%);
+    background-color: hsl(210,100%,56%);
+    background-image: linear-gradient( hsl(210,100%,66%), hsl(210,100%,56%) );
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,.15), 0 1px 0 hsla(0,0%,100%,.6);
 }
 
-/* User --------------------------------- */
-
-.User {
-    display: block;
-    margin: 0 0 15px 0;
-    text-align: center;
+.Button.Button--action:hover {
+    color: hsla(0,0%,100%,1);
+    background-image: linear-gradient( hsl(210,100%,70%), hsl(210,100%,60%) );
 }
 
-.User-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 4px;
-    vertical-align: middle;
-    border: 1px solid hsla(0, 0%, 0%, 0.15);
+.Button.Button--action.active {
+    background-image: linear-gradient( hsl(210,100%,56%), hsl(210,100%,56%) );
+    box-shadow: 0 1px 0 hsla(0,0%,100%,.6);
 }
 
-.User-name {
-    margin-left: 10px;
-    line-height: 40px;
-    font-size: 20px;
-    vertical-align: middle;
+.Button.Button--action:focus {
+    border-color: hsl(210,100%,20%);
+}
+
+
+/* Button New */
+
+.Button.Button--new {
+    position: relative;
+    padding-left: 3.5em;
+    width: 100%;
+    margin: 0;
+}
+
+.Button.Button--new:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 2.5em;
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+    border-right: 1px solid hsla(0,0%,0%,.06);
+    background: hsla(0,0%,0%,.06) no-repeat center;
+    background-image: url(../../assets/images/plus.svg);
+}
+
+
+
+/* Refresh Button ---------------------------- */
+
+.Projects-refreshButton {
+    width: 1em;
+    min-width: 0;
+    height: 1em;
+    line-height: 1;
+    margin: 0 0.4em 0 0;
+    padding: 0 0 0 2px;
+    background: transparent;
+    border: 0px;
+    font-size: 1.6em;
+    font-weight: 600;
+    color: hsl(0, 0%, 72%);
+    box-shadow: none;
+    border-radius: 0;
+    -webkit-transform: rotate(45deg);
+       -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+    -webkit-transition: -webkit-transform .4s cubic-bezier(.70, 0, .30, 1);
+       -moz-transition:    -moz-transform .4s cubic-bezier(.70, 0, .30, 1);
+        -ms-transition:     -ms-transform .4s cubic-bezier(.70, 0, .30, 1);
+            transition:         transform .4s cubic-bezier(.70, 0, .30, 1);
+}
+
+.Projects-refreshButton:hover {
     color: hsl(0, 0%, 50%);
+    background: transparent;
+    -webkit-transform: rotate(405deg);
+       -moz-transform: rotate(405deg);
+        -ms-transform: rotate(405deg);
+         -o-transform: rotate(405deg);
+            transform: rotate(405deg);
 }
 
+.Projects-refreshButton:active {
+    background: transparent;
+}
+
+.Projects-refreshButton:before {
+    content: "\21BB";
+}
 
 
 
