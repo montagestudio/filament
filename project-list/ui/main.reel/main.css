@@ -75,12 +75,13 @@
     bottom: 0;
     color: hsl(0, 0%, 26%);
     background-color: #fff;
+    overflow: auto;
 }
 
 .Projects-content {
     max-width: 480px;
     margin: 0 auto;
-    padding: 3rem;
+    padding: 0 3rem;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -93,7 +94,15 @@
     -ms-flex: 0 0 auto;
     flex: 0 0 auto;
     position: relative;
-    padding: 15px 0;
+    padding: 0.8rem 0;
+}
+
+.Projects-section:first-child {
+    padding-top: 3rem;
+}
+
+.Projects-section:last-child {
+    padding-bottom: 3rem;
 }
 
 
@@ -195,7 +204,7 @@
     -moz-flex-direction: column;
     -ms-flex-direction: column;
     flex-direction: column;
-    min-height: 166px;
+    min-height: 174px;
 }
 
 .History-filter {
@@ -231,7 +240,7 @@
     -moz-flex: 1 1 0;
     -ms-flex: 1 1 0;
     flex: 1 1 0;
-    min-height: 0;
+    min-height: 0em;
     border: 1px solid hsla(0, 0%, 0%, 0.1);
     text-align: left;
 }
@@ -350,10 +359,9 @@
     background-image: url(../../assets/images/plus.svg);
 }
 
-/* Button Private */
-
 .Button--private {
     width: 100%;
+    margin: 0;
 }
 
 
@@ -404,52 +412,18 @@
 
 
 
-/* Respsonsive --------------------------------- */
+/* Responsive --------------------------------- */
 
-/*@media (min-width:640px) {
-
-    html,
-    body {
-        height: 100%;
+@media (max-width: 900px) {
+    
+    .Projects {
+        position: relative;
+        left: initial;
     }
-
-    .Main {
-        display: -webkit-flex;
-        display: -moz-flex;
-        display: -ms-flex;
-        display: flex;
-        justify-content: center;
-        height: 100%;
-    }
-
-    .Intro {
-        width: 320px;
-        align-self: center;
-    }
-
-    .Launcher {
-        width: 320px;
-        display: -webkit-flex;
-        display: -moz-flex;
-        display: -ms-flex;
-        display: flex;
-        -webkit-flex-direction: column;
-        -moz-flex-direction: column;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        -webkit-justify-content: center;
-        -moz-justify-content: center;
-        -ms-justify-content: center;
-        justify-content: center;
+    
+    .Projects-content {
+        display: block;
+        height: auto;
     }
 }
 
-@media (min-width:640px) and (max-height:600px) {
-    .Main {
-        height: auto;
-    }
-
-    .Intro {
-        align-self: flex-start;
-    }
-}*/

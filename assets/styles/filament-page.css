@@ -68,3 +68,19 @@ a:hover {
     font-size: .8em;
     color: hsl(0, 0%, 50%);
 }
+
+
+/* Responsive --------------------------------- */
+
+@media (max-width: 900px) {
+    
+    .Aside {
+        position: relative;
+        max-width: none;
+    }
+    
+    .Aside-content {
+        padding: 2rem 1rem;
+    }
+    
+}

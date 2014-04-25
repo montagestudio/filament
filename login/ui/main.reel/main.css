@@ -2,15 +2,10 @@
 /* Aside --------------------------------- */
 
 .Aside-headline {
-    text-align: left;
     font-size: 2.4em;
     font-weight: 200;
     color: #fff;
     margin: 0;
-}
-
-.Aside-description {
-    text-align: left;
 }
 
 .Aside-info {
@@ -86,55 +81,3 @@
     background-image: url(../../../assets/img/github.svg);
 }
 
-
-
-
-/* Respsonsive --------------------------------- */
-
-/*@media (min-width:640px) {
-
-    html,
-    body {
-        height: 100%;
-    }
-
-    .Main {
-        display: -webkit-flex;
-        display: -moz-flex;
-        display: -ms-flex;
-        display: flex;
-        justify-content: center;
-        height: 100%;
-    }
-
-    .Intro {
-        width: 320px;
-        align-self: center;
-    }
-
-    .Launcher {
-        width: 320px;
-        display: -webkit-flex;
-        display: -moz-flex;
-        display: -ms-flex;
-        display: flex;
-        -webkit-flex-direction: column;
-        -moz-flex-direction: column;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        -webkit-justify-content: center;
-        -moz-justify-content: center;
-        -ms-justify-content: center;
-        justify-content: center;
-    }
-}
-
-@media (min-width:640px) and (max-height:400px) {
-    .Main {
-        height: auto;
-    }
-
-    .Intro {
-        align-self: flex-start;
-    }
-}*/
