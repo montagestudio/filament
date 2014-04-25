@@ -87,3 +87,7 @@
 .DependencyUpdate-item {
     margin-left: auto;
 }
+
+.DependencyAction-item--versions .matte-Selectd {
+    margin-right: auto;
+}

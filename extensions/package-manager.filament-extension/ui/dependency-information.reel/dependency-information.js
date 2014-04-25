@@ -55,6 +55,16 @@ exports.DependencyInformation = Component.specialize(/** @lends DependencyInform
                 self.currentDependency.problems = null;
             }).done();
         }
+    },
+
+    handleInstallVersionAction: {
+        value: function (event) {
+            var versionRequired = event.detail.get("version");
+
+            if (versionRequired) {
+                this.editingDocument.updateDependency(this.currentDependency.name, versionRequired);
+            }
+        }
     }
 
 });

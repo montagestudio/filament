@@ -122,6 +122,38 @@
             "bindings": {
                 "loading": {"<-": "!!@owner.currentDependency.isBusy"}
             }
+        },
+
+        "versionsCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "versionsCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.currentDependency.information.versions.length > 0"}
+            }
+        },
+
+        "versionsAvailable": {
+            "prototype": "matte/ui/select.reel",
+            "properties": {
+                "element": {"#": "versionsAvailable"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.currentDependency.information.versions"}
+            }
+        },
+
+        "installVersion": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "label": "Install",
+                "element": {"#": "installVersionButton"}
+            },
+            "bindings": {
+                "detail.get('version')": {"<-": "@versionsAvailable.contentController.selection.one()"}
+            }
         }
 
     }
@@ -154,6 +186,15 @@
 
                     <div class="DependencyActionItem-content">
                         <input id="dependencyRangeValue" data-montage-id="dependencyRangeValue" type="text" />
+                    </div>
+                </li>
+
+                <li class="DependencyAction-item DependencyAction-item--versions" data-montage-id="versionsCondition">
+                    <span class="DependencyActionItem-label">Versions available:</span>
+
+                    <div class="DependencyActionItem-content">
+                        <select data-montage-id="versionsAvailable"></select>
+                        <button data-montage-id="installVersionButton"></button>
                     </div>
                 </li>
 
