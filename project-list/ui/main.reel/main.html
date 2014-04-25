@@ -285,6 +285,17 @@
                     }
                 }
             },
+
+            "authorizePrivateAccessButton": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "authorizePrivateAccessButton"}
+                },
+                "listeners": [
+                    {"type": "action", "listener": {"@": "owner"}}
+                ]
+            },
+
             "repositoriesController": {
                 "prototype": "../../core/repositories-controller"
             },
@@ -382,6 +393,8 @@
                     <li class="History-list-item" data-montage-id="historyListItem"></li>
                 </ul>
             </section>
+
+            <button data-montage-id="authorizePrivateAccessButton" class="Button">Authorize private repository access</button>
 
             <button data-montage-id="removeWorkspaces" class="Button"></button>
 
