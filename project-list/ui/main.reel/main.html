@@ -299,6 +299,13 @@
                         "listener": {"@": "owner"}
                     }
                 ]
+            },
+            
+            "chat": {
+                "prototype": "ui/widgets/chat.reel",
+                "properties": {
+                    "element": {"#": "chat"}
+                }
             }
         }
     </script>
@@ -358,8 +365,6 @@
                 
                             
                 <section class="Aside-section">
-                    <p>Need help? <a href="http://webchat.freenode.net/?channels=montage" target="_blank">Chat with the team</a>.</p>
-                    
                     <p data-montage-id="copyright" class="Aside-meta"></p>
                 </section>
             </div>
@@ -419,7 +424,9 @@
                 </section>
                 
             </div>
-
+            
+            <div data-montage-id="chat"></div>
+            
         </div>
 
     </div>
