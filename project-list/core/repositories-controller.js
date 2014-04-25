@@ -331,7 +331,7 @@ var RepositoriesController = Montage.specialize({
                 if (cachedOwnedRepositories) {
                     try {
                         self._ownedRepositoriesContent.content.addEach(JSON.parse(cachedOwnedRepositories));
-                        self.validateUserRepositoriesCache();
+                        // TODO: call self._validateUserRepositoriesCache if we ever change the Github API scope to have `user`
                     } catch (error) {
                         console.warn("Failed to parse cached owned repositories because " + error.message);
                         localStorage.removeItem(LOCAL_STORAGE_KEY);
@@ -351,7 +351,7 @@ var RepositoriesController = Montage.specialize({
         }
     },
 
-    validateUserRepositoriesCache: {
+    _validateUserRepositoriesCache: {
         value: function () {
             var self = this;
             return this._githubApi.then(function(githubApi) {
@@ -375,6 +375,18 @@ var RepositoriesController = Montage.specialize({
                     }
                 });
             });
+        }
+    },
+
+    clearCachedRepositories: {
+        value: function () {
+            this.repositoriesCount = 0;
+            localStorage.removeItem(LOCAL_STORAGE_REPOSITORIES_COUNT_KEY);
+
+            this.processedRepositories = 0;
+            localStorage.removeItem(LOCAL_STORAGE_KEY);
+
+            return Promise();
         }
     },
 

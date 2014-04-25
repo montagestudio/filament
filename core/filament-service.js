@@ -5,7 +5,8 @@ var Montage = require("montage/core/core").Montage,
 exports.FilamentService = Montage.specialize({
 
     constructor: {
-        value: function FilamentService () {
+        value: function FilamentService (applicationDelegate) {
+            this._applicationDelegate = applicationDelegate;
         }
     },
 
@@ -21,6 +22,14 @@ exports.FilamentService = Montage.specialize({
                 promise: Promise.resolve(),
                 title: message
             });
+        }
+    },
+
+    inspectComponent: {
+        value: function(moduleId, label) {
+            var packageUrl = this._applicationDelegate.projectController.packageUrl;
+
+            application.dispatchEventNamed("openUrl", true, true, packageUrl + moduleId);
         }
     },
 

@@ -178,7 +178,22 @@ exports.Main = Montage.create(Component, {
 
     handleHistoryRefreshAction: {
         value: function () {
-            this.templateObjects.repositoriesController.updateAndCacheUserRepositories().done();
+            var refreshButton = this.templateObjects.historyRefresh;
+
+            refreshButton.disabled = true;
+            this.templateObjects.repositoriesController.updateAndCacheUserRepositories().finally(function () {
+                refreshButton.disabled = false;
+            }).done();
+        }
+    },
+
+    handleAuthorizePrivateAccessButtonAction: {
+        value: function () {
+            this.templateObjects.repositoriesController.clearCachedRepositories()
+                .finally(function () {
+                    window.location = "/auth/github/private";
+                })
+                .done();
         }
     },
 

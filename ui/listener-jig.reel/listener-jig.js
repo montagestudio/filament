@@ -5,6 +5,7 @@
 */
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
+    NotModifiedError = require("core/error").NotModifiedError,
     defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
 /**
@@ -73,8 +74,11 @@ exports.ListenerJig = Montage.create(Component, /** @lends module:"./listener-ji
     handleUpdateEventListenerButtonAction: {
         value: function (evt) {
             evt.stop();
+            var self = this;
             this._commitListenerEdits().catch(function(error) {
-                // Ignore validation error
+                if (error instanceof NotModifiedError) {
+                    self._discardListenerEdits();
+                }
             }).done();
         }
     },

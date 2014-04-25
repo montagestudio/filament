@@ -116,42 +116,47 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
 
                 this.editingProxies.forEach(function (proxy) {
                     if (SceneEditorTools.isMaterialProxy(proxy.exportId)) {
-                        self._createMaterialWithReelProxy(proxy);
+                        self._setupMaterialWithReelProxy(proxy);
                     } else if (SceneEditorTools.isNodeProxy(proxy.exportId)) {
-                        self._createNodeWithReelProxy(proxy);
+                        self._setupNodeWithReelProxy(proxy);
                     }
                 });
             }
         }
     },
 
-    _createMaterialWithReelProxy: {
-        value: function (reelProxy) {
+    _elementForReelProxy: {
+        value: function(reelProxy) {
+            var element = null;
             if (this._scene) {
-                var id = reelProxy.properties.get('id'),
+                var id = reelProxy.properties.get('id');
+                if (id != null) {
                     element = this._scene.glTFElement.ids[id];
-
-                if (!(element instanceof Material)) { // doesn't exist yet
-                    this._scene.glTFElement.ids[id] = this._fullfilComponend3D(new Material(), reelProxy.properties);
                 }
+            }
+            return element;
+        }
+    },
+
+    _setupMaterialWithReelProxy: {
+        value: function (reelProxy) {
+            var element = this._elementForReelProxy(reelProxy);
+            if (element.component3D == null) {
+                element.component3D = this._fullfilComponent3D(new Material(), reelProxy.properties);
             }
         }
     },
 
-    _createNodeWithReelProxy: {
+    _setupNodeWithReelProxy: {
         value: function (reelProxy) {
-            if (this._scene) {
-                var id = reelProxy.properties.get('id'),
-                    element = this._scene.glTFElement.ids[id];
-
-                if (!(element instanceof Node)) { // doesn't exist yet
-                    this._scene.glTFElement.ids[id] = this._fullfilComponend3D(new Node(), reelProxy.properties);
-                }
+            var element = this._elementForReelProxy(reelProxy);
+            if (element.component3D == null) {
+                element.component3D = this._fullfilComponent3D(new Node(), reelProxy.properties);
             }
         }
     },
 
-    _fullfilComponend3D: {
+    _fullfilComponent3D: {
         value: function (component, properties) {
             if (component && properties) {
                 var self = this;
