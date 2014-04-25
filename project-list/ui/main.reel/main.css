@@ -350,6 +350,12 @@
     background-image: url(../../assets/images/plus.svg);
 }
 
+/* Button Private */
+
+.Button--private {
+    width: 100%;
+}
+
 
 
 /* Refresh Button ---------------------------- */
