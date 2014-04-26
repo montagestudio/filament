@@ -43,7 +43,7 @@ a:hover {
     left: 0;
     bottom: 0;
     display: flex;
-    max-width: 512px;
+    width: 512px;
     text-align: center;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
@@ -77,7 +77,9 @@ a:hover {
     .Aside {
         position: relative;
         max-width: none;
-    }
+    
+        width: initial;
+}
     
     .Aside-content {
         padding: 2rem 1rem;
