@@ -189,6 +189,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._documentTypeUrlMatchers = [];
             this._urlMatcherDocumentTypeMap = new WeakMap();
             this._editorTypeInstanceMap = new WeakMap();
+            this._editorTypeNameDocumentTypeMap = new Map(); // TODO: this REALLY needs to be improved
 
             this.openDocumentsController = RangeController.create().initWithContent(this.documents);
             this.assetsManager = AssetsManager.create();
@@ -417,12 +418,12 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             if (this._urlMatcherDocumentTypeMap.has(urlMatcher)) {
                 throw new Error("Already has this url matcher registered for a document type");
             }
-
+            editorType = documentType.editorType;
             //TODO use one data structure for both of these
             this._documentTypeUrlMatchers.push(urlMatcher);
             this._urlMatcherDocumentTypeMap.set(urlMatcher, documentType);
+            this._editorTypeNameDocumentTypeMap.set(editorType.name, documentType);
 
-            editorType = documentType.editorType;
             if (editorType.requestsPreload) {
                 editor = this._getEditor(editorType);
                 this._applicationDelegate.updateStatusMessage("Loading editor…");
@@ -530,7 +531,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      * @return {Promise} A promise for the representative document
      */
     openUrlForEditing: {
-        value: function (fileUrl) {
+        value: function (fileUrl, editorTypeName) {
             var self = this,
                 editor,
                 alreadyOpenedDoc,
@@ -549,8 +550,12 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             if (alreadyOpenedDoc) {
                 editorType = alreadyOpenedDoc.constructor.editorType;
             } else {
-                documentType = this.documentTypeForUrl(fileUrl);
-
+                if (editorTypeName) {
+                    documentType = this._editorTypeNameDocumentTypeMap.get(editorTypeName);
+                } else {
+                    documentType = this.documentTypeForUrl(fileUrl);
+                }
+                
                 if (documentType) {
                     editorType = documentType.editorType;
                 }
@@ -579,7 +584,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 this._recentDocumentUrls.unshift(fileUrl);
                 this.dispatchOwnPropertyChange("recentDocumentUrls", self.recentDocumentUrls);
 
-                return this.openUrl(fileUrl).then(function (doc) {
+                return this.openUrl(fileUrl, documentType).then(function (doc) {
                     self.dispatchEventNamed("didOpenDocument", true, false, {
                         document: doc,
                         isCurrentDocument: doc === self.currentDocument,

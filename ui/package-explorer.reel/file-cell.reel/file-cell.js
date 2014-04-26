@@ -74,10 +74,10 @@ exports.FileCell = Montage.create(Component, {
 
             // openWith menuItem
             var prototypes = this.projectController.documentTypesForUrl(this.fileInfo.fileUrl);
-            if (prototypes.length > 1) {
+            if (prototypes.length > 0) {
                 menu.insertItem(openWithItem, 0);
                 prototypes.forEach(function (proto) {
-                var name = proto.name,
+                    var name = proto.editorType.name,
                     // TODO: we should be able to provide event details
                     item = MenuModule.makeMenuItem(name, "openWith" + name, true, "");
                     openWithItem.insertItem(item, 0);
@@ -135,16 +135,14 @@ exports.FileCell = Montage.create(Component, {
                 break;
 
             default:
-                debugger
                 if (identifier.startsWith("openWith")) {
                     evt.stop();
-                    debugger
+                    var editorName = identifier.replace("openWith", "");
+                    this.projectController.openUrlForEditing(this.fileInfo.fileUrl, editorName);
                 }
             }
         }
     },
-
-
 
     _isUploading: {
         value: false
@@ -206,7 +204,6 @@ exports.FileCell = Montage.create(Component, {
             } else {
                 element.classList.remove("FileCell--uploading");
             }
-
         }
     },
 
