@@ -329,19 +329,19 @@
                     <h2 class="Aside-title">Get Started</h2>
                     <ul class="Aside-list">
                         <li>
-                            <span><a href="http://docs.montagestudio.com/montage-studio/ide-at-a-glance.html" target="_blank">Overview</a></span>
+                            <span><a class="Aside-linkButton" href="http://docs.montagestudio.com/montage-studio/ide-at-a-glance.html" target="_blank">Overview</a></span>
                             <span>Take a tour of Montage Studio.</span>
                         </li>
                         <li>
-                            <span><button data-montage-id="exploreTodoButton"></button></span>
+                            <span><button data-montage-id="exploreTodoButton" class="Aside-linkButton"></button></span>
                             <span>Explore a simple application.</span>
                         </li>
                         <li>
-                            <span><button data-montage-id="explorePopcornButton"></button></span>
+                            <span><button data-montage-id="explorePopcornButton" class="Aside-linkButton"></button></span>
                             <span>Explore a complex application.</span>
                         </li>
                         <li>
-                            <span><a href="http://docs.montagestudio.com/montage-studio/tutorial-simple-to-do.html" target="_blank">Quick Start</a></span>
+                            <span><a class="Aside-linkButton" href="http://docs.montagestudio.com/montage-studio/tutorial-simple-to-do.html" target="_blank">Quick Start</a></span>
                             <span>Build a simple application.</span>
                         </li>
                     </ul>
@@ -376,7 +376,7 @@
             
             <div class="Projects-content">
                 
-                <section class="Projects-section">
+                <section class="Projects-section User">
                     <img data-montage-id="avatar" class="User-avatar" src="">
                     <span data-montage-id="username" class="User-name"></span>
                 </section>
@@ -389,7 +389,7 @@
                     <div data-montage-id="newAppFormCondition" class="NewForm">
                         <fieldset class="NewForm-fieldset">
                             <label class="NewForm-label">Name</label>
-                            <input type="text" data-montage-id="newAppName" placeholder="my-app">
+                            <input data-montage-id="newAppName" placeholder="my-app" type="text">
                         </fieldset>
                         <fieldset class="NewForm-fieldset">
                             <label class="NewForm-label">Description </label>
@@ -405,11 +405,9 @@
                 </section>
     
                 <section class="Projects-section History">
-                    <div data-montage-id="historyEmpty" class="History-empty">
-                        <span data-montage-id="historyEmptyTitle"></span>
-                    </div>
-                    <ul class="History-list" data-montage-id="historyList">
-                        <li class="History-list-item" data-montage-id="historyListItem"></li>
+                    <div data-montage-id="historyEmpty" class="History-empty"><span data-montage-id="historyEmptyTitle"></span></div>
+                    <ul data-montage-id="historyList" class="History-list">
+                        <li data-montage-id="historyListItem"></li>
                     </ul>
                 </section>
                 

@@ -70,6 +70,59 @@ a:hover {
 }
 
 
+/* Aside Button (big blue) --------------------------------- */
+
+.Aside-button {
+    display: inline-block;
+    position: relative;
+    padding: .6em 1em;
+    font-size: 1.4em;
+    line-height: 1.4;
+    color: hsl(0,0%,100%);
+    text-decoration: none;
+    text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
+    border-radius: 0.3em;
+    box-shadow: inset 0 1px 0 hsla(0, 100%, 100%, 0.15), 0 1px 3px hsla(0, 100%, 0%, 0.3);
+    background-color: hsl(210,100%,56%);
+    background-image: linear-gradient( hsl(210,100%,66%), hsl(210,100%,56%) );
+}
+
+.Aside-button:hover {
+    color: hsl(0,0%,100%);
+    background-image: linear-gradient( hsl(210,100%,70%), hsl(210,100%,60%) );
+}
+
+.Aside-button.active {
+    box-shadow: inset 0 1px 0 hsla(0, 100%, 100%, 0.15);
+    background-image: linear-gradient( hsl(210,100%,60%), hsl(210,100%,56%) );
+}
+
+
+/* Link Button (outline only) --------------------------------- */
+
+.Aside-linkButton,
+.Aside-linkButton:active {
+    display: inline-block;
+    height: auto;
+    margin: 0;
+    padding: 0 0.8em;
+    line-height: 2;
+    color: hsl(212, 60%, 72%);
+    font-family: inherit;
+    font-size: inherit;
+    border: 1px solid;
+    border-radius: 0.5em;
+    white-space: nowrap;
+    text-align: center;
+    background: transparent;
+}
+
+.Aside-linkButton:hover {
+    color: hsl(212, 60%, 80%);
+    background: transparent;
+}
+
+
 /* Responsive --------------------------------- */
 
 @media (max-width: 900px) {

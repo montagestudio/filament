@@ -8,7 +8,10 @@
     margin: 0;
 }
 
-.Aside-info {
+.Aside-privacy {
+    font-size: .85em;
+    font-style: italic;
+    color: hsl(0, 0%, 50%);
 }
 
 .Aside-version {
@@ -16,58 +19,18 @@
     color: #fff;
 }
 
-.Aside-privacy {
-    font-size: .85em;
-    font-style: italic;
-    color: hsl(0, 0%, 50%);
-}
-
 .Aside-support {
     margin-left: .5em;
     font-size: .85em;
 }
 
-
-/* Button --------------------------------- */
-
-.Button {
-    display: inline-block;
-    position: relative;
-    padding: .6em 1em .6em 4em;
-    font-size: 1.4em;
-    line-height: 1.4;
-    color: hsl(0,0%,100%);
-    text-decoration: none;
-    text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
-    border-radius: 0.3em;
-    box-shadow: inset 0 1px 0 hsla(0, 100%, 100%, 0.15), 0 1px 3px hsla(0, 100%, 0%, 0.3);
-    background-color: hsl(210,100%,56%);
-}
-
-.Button:hover {
-    color: hsl(0,0%,100%);
-}
-
-.Button.active {
-    box-shadow: 0 1px 0 hsla(0,0%,100%,.6);
-}
-
 /* Login */
 
-.Button--login {
-    background-image: linear-gradient( hsl(210,100%,66%), hsl(210,100%,56%) );
+.Aside-button.Aside-button--login {
+    padding-left: 4em; /* Space for icon */
 }
 
-.Button--login:hover {
-    background-image: linear-gradient( hsl(210,100%,70%), hsl(210,100%,60%) );
-}
-
-.Button--login:active {
-    box-shadow: inset 0 1px 0 hsla(0, 100%, 100%, 0.15);
-    background-image: linear-gradient( hsl(210,100%,60%), hsl(210,100%,56%) );
-}
-
-.Button--login:before {
+.Aside-button--login:before {
     content: "";
     position: absolute;
     top: 0;

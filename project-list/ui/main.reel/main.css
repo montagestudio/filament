@@ -6,11 +6,10 @@
 /* Aside --------------------------------- */
 
 .Aside-title {
-    //text-align: left;
+    margin: 0;
     font-size: 1.8em;
     font-weight: 200;
     color: #fff;
-    margin: 0;
 }
 
 .Aside-list {
@@ -30,30 +29,10 @@
     vertical-align: middle;
 }
 
-.Aside-list a,
-.Aside-list button,
-.Aside-list button:active {
+.Aside-list .Aside-linkButton {
     display: block;
     width: 100%;
-    height: auto;
-    margin: 0;
-    padding: 0 0.8em;
-    line-height: 2;
-    color: hsl(212, 60%, 72%);
-    font-family: inherit;
-    font-size: inherit;
-    border: 1px solid;
-    border-radius: 0.5em;
-    white-space: nowrap;
-    text-align: center;
-    background: transparent;
 }
-
-.Aside-list button:hover {
-    color: hsl(212, 60%, 80%);
-    background: transparent;
-}
-
 
 .Aside-links a {
     display: inline-block;
@@ -189,7 +168,7 @@
 
 
 
-/* List --------------------------------- */
+/* History --------------------------------- */
 
 .History {
     -webkit-flex: 1;
@@ -207,26 +186,13 @@
     min-height: 174px;
 }
 
-.History-filter {
-    margin: 0 0 10px 0;
-    padding: 0;
-    list-style: none;
-    text-align: center;
-}
-
-.History-filter-item {
-    display: inline-block;
-    margin: 0 5px;
-    font-size: .9em;
-}
-
 .History-empty {
     margin: 1em 0;
     color: hsl(0, 0%, 72%);
 }
 
 
-/* List ---------------------------- */
+/* History List ---------------------------- */
 
 .History-list {
     position: relative;
@@ -249,7 +215,7 @@
 
 .Projects-progress.matte-Progress {
     width: 100%;
-    margin: -20px 0 0 0;
+    margin: -18px 0 0 0;
     border: 1px solid hsl(0, 0%, 80%);
     background-color: hsl(0, 0%, 84%);
     transition: height .3s;
