@@ -1,6 +1,8 @@
 .HistoryListItem {
     border-bottom: 1px solid hsl(0, 0%, 86%);
+    display: -webkit-flex;
     display: flex;
+    -webkit-align-items: center;
     align-items: center;
 }
 
@@ -26,6 +28,7 @@
 /* Link --------------------------------- */
 
 .HistoryListItem-link {
+    -webkit-flex: 1;
     flex: 1;
     padding: 0.8rem;
     text-decoration: none;

@@ -5,7 +5,11 @@
     padding: 3em 3em 1em 3em;
     background: rgba(0, 0, 0, 0.1);
     -webkit-transform-origin: 0 0;
+        -ms-transform-origin: 0 0;
+            transform-origin: 0 0;
     -webkit-transform: rotate(-45deg) translateX(-50%);
+        -ms-transform: rotate(-45deg) translateX(-50%);
+            transform: rotate(-45deg) translateX(-50%);
 }
 
 .Beta-version {

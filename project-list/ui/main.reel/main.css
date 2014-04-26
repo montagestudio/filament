@@ -1,6 +1,6 @@
 
 .Main {
-    
+
 }
 
 /* Aside --------------------------------- */
@@ -61,16 +61,16 @@
     max-width: 480px;
     margin: 0 auto;
     padding: 0 3rem;
+    display: -webkit-flex;
     display: flex;
     flex-direction: column;
+    -webkit-flex-direction: column;
     height: 100%;
     text-align: center;
 }
 
 .Projects-section {
     -webkit-flex: 0 0 auto;
-    -moz-flex: 0 0 auto;
-    -ms-flex: 0 0 auto;
     flex: 0 0 auto;
     position: relative;
     padding: 0.8rem 0;
@@ -172,16 +172,10 @@
 
 .History {
     -webkit-flex: 1;
-    -moz-flex: 1;
-    -ms-flex: 1;
     flex: 1;
     display: -webkit-flex;
-    display: -moz-flex;
-    display: -ms-flex;
     display: flex;
     -webkit-flex-direction: column;
-    -moz-flex-direction: column;
-    -ms-flex-direction: column;
     flex-direction: column;
     min-height: 174px;
 }
@@ -201,8 +195,6 @@
     list-style: none;
     overflow-y: scroll;
     -webkit-flex: 1 1 0;
-    -moz-flex: 1 1 0;
-    -ms-flex: 1 1 0;
     flex: 1 1 0;
     min-height: 0em;
     border: 1px solid hsla(0, 0%, 0%, 0.1);
@@ -239,7 +231,7 @@
 
 /* Buttons --------------------------------- */
 
-.Button.matte-Button {    
+.Button.matte-Button {
     white-space: nowrap;
     font-family: inherit;
     font-size: inherit;
@@ -276,7 +268,7 @@
 
 /* Button Action */
 
-.Button.Button--action {    
+.Button.Button--action {
     color: hsla(0,0%,100%,1);
     text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
     border-color: hsl(210,100%,50%);
@@ -379,15 +371,14 @@
 /* Responsive --------------------------------- */
 
 @media (max-width: 900px) {
-    
+
     .Projects {
         position: relative;
         left: initial;
     }
-    
+
     .Projects-content {
         display: block;
         height: auto;
     }
 }
-

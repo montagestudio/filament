@@ -3,7 +3,8 @@
 /* Global ------------------------------------- */
 
 * {
-    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+         box-sizing: border-box;
 }
 
 html {
@@ -42,6 +43,7 @@ a:hover {
     top: 0;
     left: 0;
     bottom: 0;
+    display: -webkit-flex;
     display: flex;
     width: 512px;
     text-align: center;
@@ -126,16 +128,16 @@ a:hover {
 /* Responsive --------------------------------- */
 
 @media (max-width: 900px) {
-    
+
     .Aside {
         position: relative;
         max-width: none;
-    
+
         width: initial;
 }
-    
+
     .Aside-content {
         padding: 2rem 1rem;
     }
-    
+
 }
