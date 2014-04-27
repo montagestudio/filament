@@ -293,6 +293,12 @@ exports.PackageExplorer = Component.specialize({
             this.isShown = !this.isShown;
             this._menuItem.title = this.isShown ? HIDE_MENU_TEXT : SHOW_MENU_TEXT;
         }
+    },
+
+    handleAddComponentButtonAction: {
+        value: function (evt) {
+            this.dispatchEventNamed("addFile", true, true);
+        }
     }
 
 });
