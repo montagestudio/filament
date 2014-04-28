@@ -19,7 +19,7 @@
             "bindings": {
                 "label": {"<-": "@owner.menuItemModel.title"},
                 "disabled": {"<-": "@owner.menuItemModel.enabled != undefined && !@owner.menuItemModel.enabled"},
-                "classList.has('subMenu')": {"<-": "@owner.isSubMenu()"},
+                "classList.has('subMenu')": {"<-": "@owner.menuItemModel && @owner.menuItemModel.items && @owner.menuItemModel.items.length && !@owner.isRootMenu()"},
                 "classList.has('selected')": {"<-": "@owner.menu.activePath.has(@owner)"}
             },
             "listeners": [
