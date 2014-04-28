@@ -860,6 +860,11 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 if (this.canLaunchPreview) {
                     this.openPreview();
                 }
+            case "closeProject":
+                evt.stop();
+
+                this.closeProject();
+                break;
             }
         }
     },
@@ -1125,6 +1130,12 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             }
 
             return iconUrl;
+        }
+    },
+
+    closeProject: {
+        value: function () {
+            document.location.href = "/";
         }
     },
 
