@@ -169,13 +169,11 @@ var DependencyManager = Montage.specialize({
                 if (dependency && !dependency.missing && dependency.versionInstalled === version) {
                     if (this._pendingOperations[name]) {
                         delete this._pendingOperations[name];
-                        this._packageDocument._changeCount--;
                     }
 
                     dependency.state.pendingInstall = false;
                 } else {
                     this._pendingOperations[name] = operation;
-                    this._packageDocument._changeCount++;
                     dependency.state.pendingInstall = true;
                 }
             }
@@ -196,7 +194,6 @@ var DependencyManager = Montage.specialize({
                     var operation = this._createOperation(request, DependencyManager.ACTIONS.UNINSTALL);
 
                     this._pendingOperations[name] = operation;
-                    packageDocument._changeCount++;
 
                 } else if (dependency.missing && this._pendingOperations[name]) {
                     var packageNotInstalled = packageDocument._isPackageFileHasDependency(name);
@@ -211,11 +208,7 @@ var DependencyManager = Montage.specialize({
                         dependencyState.acceptInstall = true;
                     }
 
-                    packageDocument._changeCount--;
                     delete this._pendingOperations[name];
-
-                } else {
-                    packageDocument._changeCount--;
                 }
             }
         }
