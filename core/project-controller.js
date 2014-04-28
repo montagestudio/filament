@@ -189,7 +189,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._documentTypeUrlMatchers = [];
             this._urlMatcherDocumentTypeMap = new WeakMap();
             this._editorTypeInstanceMap = new WeakMap();
-            this._editorTypeNameDocumentTypeMap = new Map(); // TODO: this REALLY needs to be improved
+            this._editorTypeNameDocumentTypeMap = new Map(); // TODO: another to many map, they must be a better way
 
             this.openDocumentsController = RangeController.create().initWithContent(this.documents);
             this.assetsManager = AssetsManager.create();
