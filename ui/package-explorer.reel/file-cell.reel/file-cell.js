@@ -87,29 +87,33 @@ exports.FileCell = Montage.create(Component, {
                 menuItem.enabled = true;
                 break;
             }
-
         }
     },
 
     handleContextualMenuAction: {
         value: function (evt) {
             var menuItem = evt.detail,
-                identifier = menuItem.identifier;
+                identifier = menuItem.identifier,
+                path = this.fileInfo.filename;
+
+            if (!this.fileInfo.isDirectory) {
+                path = this.fileInfo.filename.substring(0, this.fileInfo.filename.lastIndexOf(this.fileInfo.name));
+            }
 
             switch (identifier) {
             case "newDirectory":
                 evt.stop();
-                this.dispatchEventNamed("addDirectory", true, true, {path: this.fileInfo.filename});
+                this.dispatchEventNamed("addDirectory", true, true, {path: path});
                 break;
 
             case "newComponent":
                 evt.stop();
-                this.dispatchEventNamed("addFile", true, true, {path: this.fileInfo.filename});
+                this.dispatchEventNamed("addFile", true, true, {path: path});
                 break;
 
             case "newModule":
                 evt.stop();
-                this.dispatchEventNamed("addModule", true, true, {path: this.fileInfo.filename});
+                this.dispatchEventNamed("addModule", true, true, {path: path});
                 break;
 
             case "delete":
