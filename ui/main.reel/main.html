@@ -25,7 +25,8 @@
                 },
                 "bindings": {
                     "projectController": {"<-": "@application.delegate.projectController"},
-                    "extensionController": {"<-": "@application.delegate.extensionController"}
+                    "extensionController": {"<-": "@application.delegate.extensionController"},
+                    "classList.has('isShowingPreviewPanel')": {"<-": "isShowingPreviewPanel"}
                 }
             },
 
@@ -42,6 +43,16 @@
                         "listener": {"@": "owner"}
                     }
                 ]
+            },
+
+            "previewControlPanel": {
+                "prototype": "ui/preview-control-panel.reel",
+                "properties": {
+                    "element": {"#": "previewControlPanel"}
+                },
+                "bindings": {
+                    "previewController": {"<-": "@owner.projectController.previewController"}
+                }
             },
 
             "tasksInfobar": {
@@ -166,6 +177,9 @@
         <div data-montage-id="tasksInfobar"></div>
 
         <div data-montage-id="containerElement" class="Main">
+
+            <div data-montage-id="previewControlPanel"></div>
+
             <aside data-montage-id="packageExplorer"></aside>
             <div data-montage-id="split"></div>
             <section class="editor">

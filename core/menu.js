@@ -164,8 +164,14 @@ Montage.defineProperty(exports, "defaultMenu", {
 
                 // View
                 viewMenu = makeMenuItem("View", "", true, "", [
-                    makeMenuItem("Launch Preview", "launchPreview", true, "control+r")
+                    makeMenuItem("Launch Preview", "launchPreview", true, "control+r"),
                 ]);
+
+                //TODO remove featureFlag check in the future
+                if (localStorage && JSON.parse(localStorage.getItem("previewControlPanel"))) {
+                    viewMenu.insertItem(makeMenuItem("Manage Previews", "preview", true, "control+m"));
+                }
+
                 _defaultMenu.insertItem(viewMenu);
 
                 // Help
