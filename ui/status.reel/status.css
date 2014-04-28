@@ -1,0 +1,22 @@
+.Status {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 34px;
+    z-index: 100;
+    display: none;
+}
+
+.Status--visible {
+    display: block;
+}
+
+.Status--minor {
+    background: #FF0;
+}
+
+.Status--major {
+    background: #F00;
+}

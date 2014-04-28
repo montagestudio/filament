@@ -29,6 +29,15 @@
                 ]
             },
 
+            "status": {
+                "prototype": "ui/status.reel",
+                "properties": {
+                    "element": {"#": "status"},
+                    "siteUrl": "montage-studio-status.tumblr.com",
+                    "apiKey": "kwIaGviLwYPXw8LzfozHdQxWxJ8hI1MwtNMRMuxZEeJb2CneR3"
+                }
+            },
+
             "newAppButtonCondition": {
                 "prototype": "montage/ui/condition.reel",
                 "properties": {
@@ -329,7 +338,7 @@
 <body>
 
     <div data-montage-id="main" class="Main Projects">
-
+        <div data-montage-id="status"></div>
         <section class="Intro About Column">
             <img class="Intro-logo" src="../../../assets/img/logo.png" alt="Montage Studio">
             <p class="Intro-info"><span data-montage-id="versionText" class="Intro-version"></span><span class="Intro-support">(Optimized for Google Chrome)</span></p>
