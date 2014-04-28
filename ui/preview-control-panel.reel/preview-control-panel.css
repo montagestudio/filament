@@ -15,7 +15,14 @@
 
 .PreviewControlPanel-Controls {
     -webkit-flex: 0 1 auto;
+    -moz-flex: 0 1 auto;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+
     -webkit-align-self: stretch;
+    -moz-align-self: stretch;
+    -ms-align-self: stretch;
+    align-self: stretch;
 
     padding: 0 1em;
     border-right: 1px solid hsl(0,0%,22%);
@@ -27,7 +34,15 @@
 
 .PreviewControlPanel .PreviewFrame {
     -webkit-flex: 1 1 auto;
+    -moz-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+
     -webkit-align-self: stretch;
+    -moz-align-self: stretch;
+    -ms-align-self: stretch;
+    align-self: stretch;
+
     height: 100%;
     background: hsl(0,0%,90%);
 }
