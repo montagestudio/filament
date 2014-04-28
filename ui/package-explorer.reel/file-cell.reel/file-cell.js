@@ -94,7 +94,11 @@ exports.FileCell = Montage.create(Component, {
         value: function (evt) {
             var menuItem = evt.detail,
                 identifier = menuItem.identifier,
+                path = this.fileInfo.filename;
+
+            if (!this.fileInfo.isDirectory) {
                 path = this.fileInfo.filename.substring(0, this.fileInfo.filename.lastIndexOf(this.fileInfo.name));
+            }
 
             switch (identifier) {
             case "newDirectory":
