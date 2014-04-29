@@ -105,6 +105,12 @@
     display: block;
 }
 
+.User-logout {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
 
 /* Header --------------------------------- */
 
@@ -343,12 +349,17 @@
 
 /* Button Link ---------------------------- */
 
-.ButtonLink {
+.ButtonLink,
+.ButtonLink:active {
     border-radius: 0;
     border: none;
     background: transparent;
     font-size: 0.8em;
     color: hsl(0, 0%, 50%);
+}
+
+.ButtonLink:hover {
+    color: hsl(0, 0%, 26%);
 }
 
 
