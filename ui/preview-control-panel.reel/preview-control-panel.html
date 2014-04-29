@@ -19,6 +19,56 @@
             "bindings": {
                 "previewUrl": {"<-": "@owner.previewController.previewUrl"}
             }
+        },
+
+        "previewUrl": {
+            "prototype": "matte/ui/anchor.reel",
+            "properties": {
+                "element": {"#": "previewUrl"}
+            },
+            "bindings": {
+                "href": {"<-": "@owner.previewController.previewUrl"}
+            }
+        },
+
+        "accessCode": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "accessCode"},
+                "value": "abcd efgh"
+            }
+        },
+
+        "previewList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": { "#": "previewList" },
+                "contentController": {"@": "rangeController"}
+            }
+        },
+
+        "rangeController": {
+            "prototype": "montage/core/range-controller"
+        },
+
+        "previewItemIp": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": { "#": "previewItemIp" }
+            },
+            "bindings": {
+                "value": { "<-": "@previewList:iteration.object.remoteAddress" }
+            }
+        },
+
+        "previewItemIcon": {
+            "prototype": "matte/ui/image.reel",
+            "properties": {
+                "element": { "#": "previewItemIcon" }
+            },
+            "bindings": {
+                "src": { "<-": "@owner.browserIconFor(@previewList:iteration.object)" }
+            }
         }
     }
     </script>
@@ -26,9 +76,17 @@
 <body>
     <div data-montage-id="owner" class="PreviewControlPanel">
         <aside class="PreviewControlPanel-Controls">
-            <code class="PreviewControlPanel-PreviewAccessCode"></code>
+            <div class="PreviewControlPanel-link-wrap">
+                <a data-montage-id="previewUrl" class="PreviewControlPanel-link" target="_blank">Preview</a>
+            </div>
+            <input data-montage-id="accessCode" class="PreviewControlPanel-PreviewAccessCode Input matte-InputText" readonly>
+            <ul class="PreviewControlPanel-list" data-montage-id="previewList">
+                <li data-montage-id="previewItem" class="PreviewControlPanel-item">
+                    <img data-montage-id="previewItemIcon" class="PreviewControlPanel-icon"/>
+                    <span data-montage-id="previewItemIp" class="PreviewControlPanel-ip">172.17.42.1</span>
+                </li>
+            </ul>
         </aside>
-
         <div data-montage-id="previewFrame"></div>
     </div>
 </body>
