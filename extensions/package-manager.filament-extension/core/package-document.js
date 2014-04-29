@@ -236,7 +236,7 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
             this._package.private = !!privacy;
         },
         get: function () {
-            return this._package.private;
+            return this._package.private || false;
         }
     },
 

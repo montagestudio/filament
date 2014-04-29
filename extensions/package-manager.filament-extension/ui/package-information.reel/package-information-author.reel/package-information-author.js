@@ -22,6 +22,10 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
             if (firstTime) {
                 this.addOwnPropertyChangeListener("author", this);
                 application.addEventListener("packageDocumentDidSetAuthorProperty", this);
+
+                this.addPathChangeListener("name", this, "handlePropertyChange");
+                this.addPathChangeListener("url", this, "handlePropertyChange");
+                this.addPathChangeListener("email", this, "handlePropertyChange");
             }
         }
     },
@@ -38,10 +42,6 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
                     this.url = document.author.url;
                     this.email = document.author.email;
                 }
-
-                this.addPathChangeListener("name", this, "handlePropertyChange");
-                this.addPathChangeListener("url", this, "handlePropertyChange");
-                this.addPathChangeListener("email", this, "handlePropertyChange");
 
                 this._editingDocument = document;
             }
@@ -69,13 +69,13 @@ exports.PackageInformationAuthor = Component.specialize(/** @lends PackageInform
 
     handlePropertyChange: {
         value: function (value, key) {
-            var urlInput = this.templateObjects.authorUrl,
-                emailInput = this.templateObjects.authorEmail;
+            if (this.templateObjects && this.editingDocument) {
+                var urlInput = this.templateObjects.authorUrl,
+                    emailInput = this.templateObjects.authorEmail;
 
-            if (urlInput && emailInput && this.editingDocument &&
-                urlInput.element.validity.valid && emailInput.element.validity.valid) {
-
-                this.editingDocument.setAuthorProperty(key, value);
+                if (urlInput && emailInput && urlInput.element.validity.valid && emailInput.element.validity.valid) {
+                    this.editingDocument.setAuthorProperty(key, value);
+                }
             }
         }
     },
