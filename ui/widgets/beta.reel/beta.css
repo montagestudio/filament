@@ -3,7 +3,7 @@
     top: 0;
     left: 0;
     padding: 3em 3em 1em 3em;
-    background: rgba(0, 0, 0, 0.1);
+    background: hsl(210, 24%, 20%);
     -webkit-transform-origin: 0 0;
         -ms-transform-origin: 0 0;
             transform-origin: 0 0;

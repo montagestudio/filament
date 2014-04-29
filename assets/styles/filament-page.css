@@ -10,9 +10,9 @@
 html {
     font-family: Clear Sans, sans-serif;
     font-size: 16px;
-    color: #B8B8B8;
-    /*background-color: hsl(212, 20%, 20%);*/
-    background-color: hsl(0, 0%, 22%);
+    color: hsl(210, 10%, 75%);
+    background-color: hsl(210, 24%, 16%);
+    /* background-color: hsl(0, 0%, 22%); */
 }
 
 body {
@@ -23,7 +23,7 @@ body {
 a,
 a:active {
     text-decoration: none;
-    color: hsl(212, 60%, 72%);
+    color: hsl(210, 75%, 75%);
 }
 a:hover {
     color: hsl(212, 60%, 80%);
@@ -47,6 +47,8 @@ a:hover {
     display: flex;
     width: 512px;
     text-align: center;
+    background: url(../../../assets/img/bg.jpg) no-repeat center top;
+    background-size: 100% auto;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
 }
@@ -68,7 +70,7 @@ a:hover {
 
 .Aside-meta {
     font-size: .8em;
-    color: hsl(0, 0%, 50%);
+    color: hsl(210, 10%, 50%);
 }
 
 
@@ -109,7 +111,7 @@ a:hover {
     margin: 0;
     padding: 0 0.8em;
     line-height: 2;
-    color: hsl(212, 60%, 72%);
+    color: hsl(210, 75%, 75%);
     font-family: inherit;
     font-size: inherit;
     border: 1px solid;

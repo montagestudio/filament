@@ -1,8 +1,17 @@
 
 /* Aside --------------------------------- */
 
+.Aside.Aside--login {
+    width: 400px;
+}
+
+.Aside--login .Aside-content {
+    padding: 2rem 1.5rem;
+}
+
+
 .Aside-headline {
-    font-size: 2.4em;
+    font-size: 2em;
     font-weight: 200;
     color: #fff;
     margin: 0;
@@ -11,7 +20,7 @@
 .Aside-privacy {
     font-size: .85em;
     font-style: italic;
-    color: hsl(0, 0%, 50%);
+    color: hsl(210, 10%, 50%);
 }
 
 .Aside-version {
