@@ -189,7 +189,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._documentTypeUrlMatchers = [];
             this._urlMatcherDocumentTypeMap = new WeakMap();
             this._editorTypeInstanceMap = new WeakMap();
-            this._editorTypeNameDocumentTypeMap = new Map(); // TODO: another to many map, they must be a better way
+            this._editorTypeDocumentTypeMap = new WeakMap(); // TODO: another to many map, they must be a better way
 
             this.openDocumentsController = RangeController.create().initWithContent(this.documents);
             this.assetsManager = AssetsManager.create();
@@ -406,6 +406,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: null
     },
 
+    _editorTypeDocumentTypeMap: {
+        value: null
+    },
+
     registerUrlMatcherForDocumentType: {
         value: function (urlMatcher, documentType) {
             var editorType,
@@ -422,7 +426,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             //TODO use one data structure for both of these
             this._documentTypeUrlMatchers.push(urlMatcher);
             this._urlMatcherDocumentTypeMap.set(urlMatcher, documentType);
-            this._editorTypeNameDocumentTypeMap.set(editorType.name, documentType);
+            this._editorTypeDocumentTypeMap.set(editorType, documentType);
 
             if (editorType.requestsPreload) {
                 editor = this._getEditor(editorType);
@@ -531,12 +535,11 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      * @return {Promise} A promise for the representative document
      */
     openUrlForEditing: {
-        value: function (fileUrl, editorTypeName) {
+        value: function (fileUrl, editorType) {
             var self = this,
                 editor,
                 alreadyOpenedDoc,
                 documentType,
-                editorType,
                 lastDocument = this.currentDocument,
                 recentUrlIndex;
 
@@ -550,13 +553,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             if (alreadyOpenedDoc) {
                 editorType = alreadyOpenedDoc.constructor.editorType;
             } else {
-                if (editorTypeName) {
-                    documentType = this._editorTypeNameDocumentTypeMap.get(editorTypeName);
+                if (editorType) {
+                    documentType = this._editorTypeDocumentTypeMap.get(editorType);
                 } else {
                     documentType = this.documentTypeForUrl(fileUrl);
-                }
-                
-                if (documentType) {
                     editorType = documentType.editorType;
                 }
             }

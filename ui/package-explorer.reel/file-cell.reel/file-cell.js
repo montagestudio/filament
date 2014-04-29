@@ -79,7 +79,8 @@ exports.FileCell = Montage.create(Component, {
                 prototypes.forEach(function (proto) {
                     var name = proto.editorType.name,
                     // TODO: we should be able to provide event details
-                    item = MenuModule.makeMenuItem(name, "openWith" + name, true, "");
+                    item = MenuModule.makeMenuItem(name, "openWith", true, "");
+                    item.editorType = proto.editorType;
                     openWithItem.insertItem(item, 0);
                 });
             }
@@ -134,12 +135,11 @@ exports.FileCell = Montage.create(Component, {
                 this.dispatchEventNamed("removeTree", true, true, {path: this.fileInfo.filename});
                 break;
 
-            default:
-                if (identifier.startsWith("openWith")) {
-                    evt.stop();
-                    var editorName = identifier.replace("openWith", "");
-                    this.projectController.openUrlForEditing(this.fileInfo.fileUrl, editorName);
-                }
+            case "openWith":
+                evt.stop();
+                var editorType = menuItem.editorType;
+                this.projectController.openUrlForEditing(this.fileInfo.fileUrl, editorType);
+                break;
             }
         }
     },
