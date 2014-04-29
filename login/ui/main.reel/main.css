@@ -17,12 +17,6 @@
     margin: 0;
 }
 
-.Aside-privacy {
-    font-size: .85em;
-    font-style: italic;
-    color: hsl(210, 10%, 50%);
-}
-
 .Aside-version {
     font-style: italic;
     color: #fff;
