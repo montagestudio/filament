@@ -178,6 +178,8 @@ exports.Scene = Target.specialize( {
                     //HACK: packages[0] is guaranted to be the entry point
                     absolutePath = URL.resolve(require.packages[0], absolutePath);
                 } else if (!URLObject.scheme) {
+                    if (this._ownerDocumentPart == null) 
+                        return;
                     var rebase = this._ownerDocumentPart.template.getBaseUrl();
                     absolutePath = URL.resolve(rebase, absolutePath);
                 }
