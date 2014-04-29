@@ -145,8 +145,8 @@ Montage.defineProperty(exports, "defaultMenu", {
                 // Project
                 //  File
                 newSubMenu = makeMenuItem("New", "new", true, "", [
-                    makeMenuItem("Component", "newComponent", true, "shift+control+n"),
-                    makeMenuItem("Module", "newModule", true, "")
+                    makeMenuItem("Component…", "newComponent", true, "shift+control+n"),
+                    makeMenuItem("Module…", "newModule", true, "")
                 ]);
                 projectMenu = makeMenuItem("Project", "project", true, "", [
                     newSubMenu,
@@ -158,8 +158,8 @@ Montage.defineProperty(exports, "defaultMenu", {
 
                 // File
                 fileMenu = makeMenuItem("File", "file", true, "", [
-                    makeMenuItem("Goto Anything", "goto", true, "command+e"),
-                    makeMenuItem("Goto Anything Again", "gotoAgain", true, "command+shift+e"),
+                    makeMenuItem("Goto Anything…", "goto", true, "command+e"),
+                    makeMenuItem("Goto Anything Again…", "gotoAgain", true, "command+shift+e"),
                 ]);
                 _defaultMenu.insertItem(fileMenu);
 
