@@ -7,8 +7,6 @@
     -moz-flex: 5;
     -ms-flex: 5;
     flex: 5;
-    display: flex;
-    flex: 5;
     margin-left: 40px;
     padding: 0;
     list-style: none;
@@ -23,8 +21,6 @@
     -moz-flex: 1;
     -ms-flex: 1;
     flex: 1;
-    display: flex;
-    flex: 1;
     line-height: 26px;
 }
 
@@ -36,8 +32,6 @@
     -webkit-flex: 1;
     -moz-flex: 1;
     -ms-flex: 1;
-    flex: 1;
-    display: flex;
     flex: 1;
     justify-content: center;
     min-width: 96px;
