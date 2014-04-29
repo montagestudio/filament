@@ -139,6 +139,7 @@ Montage.defineProperty(exports, "defaultMenu", {
                     editMenu,
                     viewMenu,
                     helpMenu,
+                    fileMenu,
                     newSubMenu;
 
                 // Project
