@@ -62,36 +62,6 @@
                 }
             },
 
-            "goToFileKey": {
-                "prototype": "montage/composer/key-composer",
-                "properties": {
-                    "keys": "command+e",
-                    "identifier": "goToFile",
-                    "component": {"@": "application"}
-                },
-                "listeners": [
-                    {
-                        "type": "keyPress",
-                        "listener": {"@": "owner"}
-                    }
-                ]
-            },
-
-            "goToFilePreservedKey": {
-                "prototype": "montage/composer/key-composer",
-                "properties": {
-                    "keys": "command+shift+e",
-                    "identifier": "goToFilePreserved",
-                    "component": {"@": "application"}
-                },
-                "listeners": [
-                    {
-                        "type": "keyPress",
-                        "listener": {"@": "owner"}
-                    }
-                ]
-            },
-
             "packageExplorer": {
                 "prototype": "ui/package-explorer.reel",
                 "properties": {

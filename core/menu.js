@@ -155,6 +155,13 @@ Montage.defineProperty(exports, "defaultMenu", {
                 ]);
                 _defaultMenu.insertItem(projectMenu);
 
+                // File
+                fileMenu = makeMenuItem("File", "file", true, "", [
+                    makeMenuItem("Goto Anything", "goto", true, "command+e"),
+                    makeMenuItem("Goto Anything Again", "gotoAgain", true, "command+shift+e"),
+                ]);
+                _defaultMenu.insertItem(fileMenu);
+
                 // Edit
                 editMenu = makeMenuItem("Edit", "", true, "", [
                     makeMenuItem("Undo", "undo", false, "control+z"),
