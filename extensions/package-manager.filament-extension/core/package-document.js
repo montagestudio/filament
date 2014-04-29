@@ -537,6 +537,9 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
 
                 if (semver.satisfies(version, dependency.version)) {
                     promise = this._dependencyManager.updateDependency(name, version);
+
+                    this.dispatchAsyncActivity(promise, "Updating Dependency");
+
                 } else {
                     var confirmCloseDialogOptions = {
                             message: "This selected version will change the dependency range",
@@ -548,6 +551,8 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
                         deferred = Promise.defer();
 
                     Confirm.show(confirmCloseDialogOptions, function () {
+                        self.dispatchAsyncActivity(promise, "Updating Dependency");
+
                         self.updateDependencyRange(name, version); // update the dependency range
 
                         // save package.json and install new dependency version.
@@ -560,8 +565,6 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
 
                     promise = deferred.promise;
                 }
-
-                this.dispatchAsyncActivity(promise, "Updating Dependency");
 
                 return promise;
             }

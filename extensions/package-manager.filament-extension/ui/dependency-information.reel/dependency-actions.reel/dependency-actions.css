@@ -84,10 +84,8 @@
     margin: 0 4px;
 }
 
+.DependencyAction-item--versions .matte-Select,
+.DependencyAction-item--versions .matte-Button,
 .DependencyUpdate-item {
     margin-left: auto;
-}
-
-.DependencyAction-item--versions .matte-Selectd {
-    margin-right: auto;
 }
