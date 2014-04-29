@@ -860,6 +860,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 if (this.canLaunchPreview) {
                     this.openPreview();
                 }
+                break;
             case "closeProject":
                 evt.stop();
 
