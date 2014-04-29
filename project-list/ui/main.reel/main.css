@@ -362,6 +362,11 @@
     color: hsl(0, 0%, 26%);
 }
 
+.ButtonLink.disabled {
+    color: hsl(0,0%,72%);
+    pointer-events: none;
+}
+
 
 /* Refresh Button ---------------------------- */
 
