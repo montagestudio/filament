@@ -500,10 +500,6 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    _editingController: {
-        value: null
-    },
-
     // Editing Model
 
     __removeProxy: {
@@ -1004,35 +1000,11 @@ exports.ReelDocument = EditingDocument.specialize({
                         }
                     });
                 }))
-                .then(function (addedProxies) {
-
+                .then(function(addedProxies) {
                     self.undoManager.closeBatch();
-
                     self._dispatchDidChangeTemplate(destinationTemplate);
-                    // Introduce the revised template into the stage
-                    if (this._editingController) {
-
-                        //TODO not sneak this in through the editingController
-                        // Make the owner component in the stage look like we expect before trying to install objects
-                        this._editingController.owner._template.objectsString = destinationTemplate.objectsString;
-                        this._editingController.owner._template.setDocument(destinationTemplate.document);
-
-                        return self._editingController.addObjectsFromTemplate(revisedTemplate, stageElement).then(function (objects) {
-                            for (var label in objects) {
-                                if (typeof objects.hasOwnProperty !== "function" || objects.hasOwnProperty(label)) {
-                                    self._editingProxyMap[label].stageObject = objects[label];
-                                }
-                            }
-
-                            return addedProxies;
-                        });
-                    } else {
-                        return addedProxies;
-                    }
-                })
-                .then(function(result) {
                     self._dispatchDidAddObjectsFromTemplate(revisedTemplate, parentElement, nextSiblingElement);
-                    return result;
+                    return addedProxies;
                 });
         }
     },
@@ -1216,14 +1188,9 @@ exports.ReelDocument = EditingDocument.specialize({
                 deferredUndo = Promise.defer();
 
             this.undoManager.openBatch("Remove");
-
             this.undoManager.register("Remove", deferredUndo.promise);
 
-            if (this._editingController && proxy.stageObject) {
-                removalPromise = this._editingController.removeObject(proxy.stageObject);
-            } else {
-                removalPromise = Promise.resolve(proxy);
-            }
+            removalPromise = Promise.resolve(proxy);
 
             return removalPromise.then(function () {
                 var element = proxy.properties.get("element");
@@ -1305,10 +1272,6 @@ exports.ReelDocument = EditingDocument.specialize({
             var binding = proxy.defineObjectBinding(targetPath, oneway, sourcePath, converter);
 
             if (binding) {
-                // if (this._editingController) {
-                //     // TODO define the binding on the stage, make sure we can cancel it later
-                // }
-
                 this.undoManager.register("Define Binding", Promise.resolve([this.cancelOwnedObjectBinding, this, proxy, binding]));
                 this._dispatchDidDefineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath, converter);
             }
@@ -1349,10 +1312,6 @@ exports.ReelDocument = EditingDocument.specialize({
             removedIndex = removedInfo.index;
 
             if (removedBinding) {
-                // if (this._editingController) {
-                //     // TODO cancel the binding in the stage
-                // }
-
                 this.undoManager.register("Cancel Binding", Promise.resolve([
                     this._addOwnedObjectBinding, this, proxy, removedBinding, removedIndex
                 ]));
@@ -1409,11 +1368,6 @@ exports.ReelDocument = EditingDocument.specialize({
             updatedBinding = proxy.updateObjectBinding(existingBinding, targetPath, oneway, sourcePath, converter);
 
             if (updatedBinding) {
-                // if (this._editingController) {
-                //     // TODO cancel the binding in the stage
-                //     // TODO define the binding on the stage, make sure we can cancel it later
-                // }
-
                 this.undoManager.register("Edit Binding", Promise.resolve([
                     this.updateOwnedObjectBinding, this, proxy, updatedBinding, originalTargetPath, originalOneway, originalSourcePath, originalconverter
                 ]));
