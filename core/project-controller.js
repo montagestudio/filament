@@ -818,20 +818,17 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             switch (menuItem.identifier) {
             case "newComponent":
-                evt.preventDefault();
-                evt.stopPropagation();
+                evt.stop();
 
                 menuItem.enabled = this.canCreateComponent;
                 break;
             case "newModule":
-                evt.preventDefault();
-                evt.stopPropagation();
+                evt.stop();
 
                 menuItem.enabled = this.canCreateModule;
                 break;
             case "launchPreview":
-                evt.preventDefault();
-                evt.stopPropagation();
+                evt.stop();
 
                 menuItem.enabled = this.canLaunchPreview;
                 break;
@@ -844,28 +841,31 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: function (evt) {
             switch (evt.detail.identifier) {
             case "newComponent":
-                evt.preventDefault();
-                evt.stopPropagation();
+                evt.stop();
 
                 if (this.canCreateComponent) {
                     this.createComponent().done();
                 }
                 break;
             case "newModule":
-                evt.preventDefault();
-                evt.stopPropagation();
+                evt.stop();
 
                 if (this.canCreateModule) {
                     this.createModule().done();
                 }
                 break;
             case "launchPreview":
-                evt.preventDefault();
-                evt.stopPropagation();
+                evt.stop();
 
                 if (this.canLaunchPreview) {
                     this.openPreview();
                 }
+                break;
+            case "closeProject":
+                evt.stop();
+
+                this.closeProject();
+                break;
             }
         }
     },
@@ -1131,6 +1131,12 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             }
 
             return iconUrl;
+        }
+    },
+
+    closeProject: {
+        value: function () {
+            document.location.href = "/";
         }
     },
 
