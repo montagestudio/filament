@@ -366,12 +366,26 @@
                     <img data-montage-id="avatar" class="User-avatar" src="">
                     <span data-montage-id="username" class="User-name"></span>
                 </section>
-    
+                                
+                <section class="Projects-section History">
+                    
+                    <header class="Header">
+                        <div data-montage-id="historyProgress" class="Projects-progress"></div>
+                        <h1 class="Header-title">Recent Projects</h1>
+                        <button data-montage-id="historyRefresh" class="Projects-refreshButton" data-arg="" aria-label="Refresh project list" title="Refresh project list"></button>
+                    </header>
+                                        
+                    <div data-montage-id="historyEmpty" class="History-empty"><span data-montage-id="historyEmptyTitle"></span></div>
+                    <ul data-montage-id="historyList" class="History-list">
+                        <li data-montage-id="historyListItem"></li>
+                    </ul>
+                    
+                </section>
+                
                 <section class="Projects-section">
                     <div data-montage-id="newAppButtonCondition">
-                        <button data-montage-id="newAppButton" class="Button Button--action Button--new"></button>
+                        <button data-montage-id="newAppButton" class="NewProjectButton"></button>
                     </div>
-                    
                     <div data-montage-id="newAppFormCondition" class="NewForm">
                         <fieldset class="NewForm-fieldset">
                             <label class="NewForm-label">Name</label>
@@ -387,28 +401,15 @@
                             <button data-montage-id="createNewAppButton" class="Button Button--action"></button>
                         </footer>
                     </div>
-                    
-                </section>
-    
-                <section class="Projects-section History">
-                    <div data-montage-id="historyEmpty" class="History-empty"><span data-montage-id="historyEmptyTitle"></span></div>
-                    <ul data-montage-id="historyList" class="History-list">
-                        <li data-montage-id="historyListItem"></li>
-                    </ul>
                 </section>
                 
-                <section class="Projects-section">
-                    <button data-montage-id="authorizePrivateAccessButton" class="Button Button--private">Authorize private repository access</button>
+                <section class="Projects-section Settings">
+                    <button data-montage-id="authorizePrivateAccessButton" class="ButtonLink">Authorize private repositories</button>
+                    <button data-montage-id="removeWorkspaces" class="ButtonLink"></button>
                 </section>
-                
-                <section class="Projects-section">
-                    <div data-montage-id="historyProgress" class="Projects-progress"></div>
-                    <button data-montage-id="historyRefresh" class="Projects-refreshButton" data-arg="" aria-label="Refresh project list" title="Refresh project list"></button>
-                    <button data-montage-id="removeWorkspaces" class="Button"></button>
-                </section>
-                
+                                
             </div>
-                        
+            
         </div>
 
     </div>

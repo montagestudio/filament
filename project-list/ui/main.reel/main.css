@@ -106,6 +106,20 @@
 }
 
 
+/* Header --------------------------------- */
+
+.Header {
+    margin-bottom: 1rem;
+}
+
+.Header-title {
+    flex: 1;
+    line-height: 1;
+    font-size: 1.2em;
+    font-weight: 400;
+    margin: 0;
+}
+
 
 /* New Form --------------------------------- */
 
@@ -186,6 +200,7 @@
 }
 
 
+
 /* History List ---------------------------- */
 
 .History-list {
@@ -225,7 +240,6 @@
     height: 0px;
     border: none;
 }
-
 
 
 
@@ -294,46 +308,65 @@
 
 /* Button New */
 
-.Button.Button--new {
+.NewProjectButton {
     position: relative;
-    padding-left: 3.5em;
+    padding: .8rem .8rem .8rem 4em;
     width: 100%;
+    height: auto;
     margin: 0;
+    border-radius: 0;
+    font-size: inherit;
+    text-align: left;
+    color: inherit;
+    border: 1px solid hsla(0, 0%, 0%, 0.1);
+    background-color: hsl(0, 0%, 96%);
 }
 
-.Button.Button--new:before {
+.NewProjectButton:hover {
+    background-color: hsl(0, 0%, 98%);
+}
+
+.NewProjectButton:before {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
-    width: 2.5em;
+    width: 3em;
     border-top-left-radius: inherit;
     border-bottom-left-radius: inherit;
     border-right: 1px solid hsla(0,0%,0%,.06);
-    background: hsla(0,0%,0%,.06) no-repeat center;
+    background: no-repeat center;
     background-image: url(../../assets/images/plus.svg);
 }
 
-.Button--private {
-    width: 100%;
-    margin: 0;
-}
 
+/* Button Link ---------------------------- */
+
+.ButtonLink {
+    border-radius: 0;
+    border: none;
+    background: transparent;
+    font-size: 0.8em;
+    color: hsl(0, 0%, 50%);
+}
 
 
 /* Refresh Button ---------------------------- */
 
 .Projects-refreshButton {
+    position: absolute;
+    top: 0.5em;
+    right: 0;
     width: 1em;
     min-width: 0;
     height: 1em;
     line-height: 1;
-    margin: 0 0.4em 0 0;
+    margin: 0;
     padding: 0 0 0 2px;
     background: transparent;
     border: 0px;
-    font-size: 1.6em;
+    font-size: 1.4em;
     font-weight: 600;
     color: hsl(0, 0%, 72%);
     box-shadow: none;
