@@ -223,6 +223,16 @@
                     {"type": "action", "listener": {"@": "owner"}}
                 ]
             },
+            
+            "logoutButton": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "logoutButton"}
+                },
+                "listeners": [
+                    {"type": "action", "listener": {"@": "owner"}}
+                ]
+            },
 
             "repositoriesController": {
                 "prototype": "../../core/repositories-controller"
@@ -360,7 +370,7 @@
 
         <div class="Projects">
         
-            <a class="User-logout ButtonLink" href="/logout">Logout</a>
+            <button data-montage-id="logoutButton" class="Button User-logout">Logout</button>
             
             <div class="Projects-content">
                 
