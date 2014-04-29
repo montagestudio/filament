@@ -15,8 +15,6 @@
     -moz-flex: 1;
     -ms-flex: 1;
     flex: 1;
-    display: flex;
-    flex: 1;
     overflow-x: hidden;
     justify-content: space-between;
 }
@@ -44,7 +42,6 @@
     -moz-flex: 3;
     -ms-flex: 3;
     flex: 3;
-    flex: 3;
 }
 
 .DependencyDetails-value.matte-Anchor {
@@ -55,7 +52,6 @@
     -webkit-flex: 3;
     -moz-flex: 3;
     -ms-flex: 3;
-    flex: 3;
     flex: 3;
     list-style: none;
     margin: 0;
