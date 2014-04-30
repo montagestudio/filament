@@ -71,6 +71,16 @@ exports.SceneTreeNode = Montage.specialize(/** @lends SceneTreeNode# */ {
         value: null
     },
 
+    hasChildren: {
+        value: function () {
+            if (this.glTFElement && Array.isArray(this.glTFElement.children)) {
+                return this.glTFElement.children.length > 0;
+            }
+
+            return false;
+        }
+    },
+
     fulfill: {
         value: function () {
             if (this.rawChildren && !this.fulfilled) {
