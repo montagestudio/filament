@@ -15,7 +15,13 @@
     padding: 8px;
     background: hsl(0,0%,94%);
     border-radius: 0 0 4px 4px;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
     align-items: center;
+    -webkit-justify-content: center;
+    -moz-justify-content: center;
+    -ms-justify-content: center;
     justify-content: center;
 }
 
@@ -33,7 +39,13 @@
     display: -moz-flex;
     display: -ms-flex;
     display: flex;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
     align-items: center;
+    -webkit-justify-content: center;
+    -moz-justify-content: center;
+    -ms-justify-content: center;
     justify-content: center;
     overflow: hidden;
 }
@@ -54,7 +66,13 @@
     -moz-flex: 3;
     -ms-flex: 3;
     flex: 3;
+    -webkit-justify-content: space-around;
+    -moz-justify-content: space-around;
+    -ms-justify-content: space-around;
     justify-content: space-around;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
     align-items: center;
     overflow-x: hidden;
     max-width: 280px;

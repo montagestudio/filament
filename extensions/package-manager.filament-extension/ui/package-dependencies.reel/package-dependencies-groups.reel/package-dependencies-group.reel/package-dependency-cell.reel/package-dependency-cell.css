@@ -1,11 +1,17 @@
 .PackageDependencyCell {
     border-bottom: 1px solid hsla(0, 0%, 0%, .06);
     background-color: hsl(0,0%,96%);
+    -webkit-justify-content: flex-start;
+    -moz-justify-content: flex-start;
+    -ms-justify-content: flex-start;
     justify-content: flex-start;
     display: -webkit-flex;
     display: -moz-flex;
     display: -ms-flex;
     display: flex;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
     align-items: center;
     height: 51px;
 }
@@ -73,6 +79,9 @@
     display: -moz-flex;
     display: -ms-flex;
     display: flex;
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
     flex-direction: column;
 }
 
@@ -133,6 +142,12 @@
     display: -moz-flex;
     display: -ms-flex;
     display: flex;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
     align-items: center;
+    -webkit-justify-content: center;
+    -moz-justify-content: center;
+    -ms-justify-content: center;
     justify-content: center;
 }
