@@ -4,8 +4,16 @@
     display: flex;
     -webkit-align-items: center;
     align-items: center;
+    background-color: hsl(0, 0%, 96%);
 }
 
+.HistoryListItem:hover {
+    background-color: hsl(0,0%,98%);
+}
+
+.HistoryListItem:active {
+    background-color: hsl(0, 0%, 100%);
+}
 
 /* Type --------------------------------- */
 
@@ -17,11 +25,11 @@
     font-size: 0.85em;
     border-radius: 4px;
     color: #fff;
-    background-color: hsl(0, 0%, 80%);
 }
 
 .HistoryListItem-type.is-private {
     background-color: hsl(46, 100%, 43%);
+    display: inline-block;
 }
 
 
@@ -36,15 +44,12 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    background-color: hsl(0, 0%, 96%);
 }
 
 .HistoryListItem-link:hover {
-    background-color: hsl(0,0%,98%);
     color: hsl(0, 0%, 0%);
 }
 
 .HistoryListItem-link:active {
-    background-color: hsl(0, 0%, 100%);
     color: inherit;
 }
