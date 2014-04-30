@@ -1,4 +1,7 @@
 .PackageInformation--maintainers .PackageEditorPanel-content {
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
     flex-direction: column;
     padding: 15px;
 }
