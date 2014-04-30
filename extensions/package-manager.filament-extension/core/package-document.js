@@ -852,21 +852,29 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
 
     filesDidChange: {
         value: function (files) {
-            // Update the PackageManager when the Package.json file has not been changed by the app,
-            // except when the PackageQueueManager is performing some actions, it will reload the list
-            // once it will be done.
+            // Refresh the PackageManager when the Package.json file has not been modified by the app,
+            // Or when a module has been added manually.
+            // Refreshing will be not apply if the DependencyManager is performing some actions
 
-            var self = this;
+            if (this._dependencyManager && !this._dependencyManager.isBusy && this.sharedProjectController && files) {
+                var self = this;
 
-            files.forEach(function (file) {
-                if (self.url === file.fileUrl) { // Package.json file has been modified.
-                    if (self._packageFileChangeByAppCount === 0) {
+                files.forEach(function (file) {
+                    var fileUrl = file.fileUrl,
+                        pattern = "^" + self.sharedProjectController.projectUrl + "/node_modules/(.*)/$",
+                        isModuleChanged = new RegExp(pattern).test(fileUrl);
+
+                    if (isModuleChanged) {
                         self.needRefresh = true;
-                    } else {
-                        self._packageFileChangeByAppCount--;
+                    } else if (self.url === fileUrl) { // Package.json file has not been modified by the app.
+                        if (self._packageFileChangeByAppCount === 0) {
+                            self.needRefresh = true;
+                        } else {
+                            self._packageFileChangeByAppCount--;
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     },
 
