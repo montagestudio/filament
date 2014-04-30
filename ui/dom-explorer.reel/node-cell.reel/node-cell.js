@@ -549,16 +549,16 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             templateObjects.canRemoveNodeCondition.condition = nodeInfo.canRemoveNode;
 
             var childrenLength = nodeInfo && nodeInfo.children && nodeInfo.children.length || 0;
-            var componentLabel = nodeInfo.component && nodeInfo.component.label;
+            var component = nodeInfo.component;
 
             // @owner: classList.has('NodeCell--owner') <- nodeInfo.component.label == 'owner'
-            this.changeClassListItem(this.classList, 'NodeCell--owner', componentLabel === "owner");
+            this.changeClassListItem(this.classList, 'NodeCell--owner', component ? component.label === "owner": false);
             // @owner: classList.has('NodeCell--noChildren') <- !@owner.nodeInfo.children.length
             this.changeClassListItem(this.classList, 'NodeCell--noChildren', childrenLength === 0);
             // @hasChildrenCondition: condition <- @owner.nodeInfo.children.length
             templateObjects.hasChildrenCondition.condition = childrenLength > 0;
             // @componentLabel: value <- @owner.nodeInfo.component.label
-            templateObjects.componentLabel.value = componentLabel;
+//            templateObjects.componentLabel.value = componentLabel;
 
             this.updateNodeInfoAndMontageIdDependencies();
             this.updateNodeInfoAndDomExplorerDependencies();
@@ -643,8 +643,10 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
 
             // new
             this.changeClassListItem(this.classList, 'NodeCell--collapseDom', nodeInfo && !nodeInfo.component && domExplorer && domExplorer.collapseNonComponents);
-            var isComponentTreeNode = nodeInfo && nodeInfo.component && domExplorer && domExplorer.collapseNonComponents;
-            this.changeClassListItem(this.classList, 'NodeCell--component', isComponentTreeNode);
+            var isComponent = nodeInfo && nodeInfo.component;
+            var isComponentTreeNode = isComponent && domExplorer && domExplorer.collapseNonComponents;
+            this.changeClassListItem(this.classList, 'NodeCell--componentTreeNode', isComponentTreeNode);
+            this.changeClassListItem(this.classList, 'NodeCell--component', isComponent);
             // Need to correct the indentation if we're only showing components
             if (this._isComponentTreeNode !== isComponentTreeNode) {
                 this._isComponentTreeNode = isComponentTreeNode;
