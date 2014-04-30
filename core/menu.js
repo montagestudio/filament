@@ -139,21 +139,27 @@ Montage.defineProperty(exports, "defaultMenu", {
                     editMenu,
                     viewMenu,
                     helpMenu,
+                    fileMenu,
+                    gotoMenu,
                     newSubMenu;
 
                 // Project
-                //  File
-                newSubMenu = makeMenuItem("New", "new", true, "", [
-                    makeMenuItem("Component", "newComponent", true, "shift+control+n"),
-                    makeMenuItem("Module", "newModule", true, "")
-                ]);
                 projectMenu = makeMenuItem("Project", "project", true, "", [
-                    newSubMenu,
-                    makeMenuItem("Save All", "save", true, "command+s"),
-                    makeMenuItem("Source", "source", true, ""),
+                    makeMenuItem("Github repository", "source", true, ""),
                     makeMenuItem("Close Project", "closeProject", true, "control+q")
                 ]);
                 _defaultMenu.insertItem(projectMenu);
+
+                 // File
+                newSubMenu = makeMenuItem("New", "new", true, "", [
+                    makeMenuItem("Component…", "newComponent", true, "shift+control+n"),
+                    makeMenuItem("Module…", "newModule", true, "")
+                ]);
+                fileMenu = makeMenuItem("File", "file", true, "", [
+                    newSubMenu,
+                    makeMenuItem("Save All", "save", true, "command+s")
+                ]);
+                _defaultMenu.insertItem(fileMenu);
 
                 // Edit
                 editMenu = makeMenuItem("Edit", "", true, "", [
@@ -167,13 +173,19 @@ Montage.defineProperty(exports, "defaultMenu", {
                 viewMenu = makeMenuItem("View", "", true, "", [
                     makeMenuItem("Launch Preview", "launchPreview", true, "control+r"),
                 ]);
+                _defaultMenu.insertItem(viewMenu);
+
+                // Goto
+                gotoMenu = makeMenuItem("Goto", "goto", true, "", [
+                    makeMenuItem("Anything…", "goto", true, "command+e"),
+                    makeMenuItem("Anything Again…", "gotoAgain", true, "command+shift+e")
+                ]);
+                _defaultMenu.insertItem(gotoMenu);
 
                 //TODO remove featureFlag check in the future
                 if (localStorage && JSON.parse(localStorage.getItem("previewControlPanel"))) {
                     viewMenu.insertItem(makeMenuItem("Manage Previews", "preview", true, "control+m"));
                 }
-
-                _defaultMenu.insertItem(viewMenu);
 
                 // Help
                 helpMenu = makeMenuItem("Help", "", true, "", [

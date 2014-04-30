@@ -211,19 +211,28 @@ exports.Main = Montage.create(Component, {
         value: function (evt) {
             switch (evt.detail.identifier) {
             case "save":
-                evt.preventDefault();
-                evt.stopPropagation();
+                evt.stop();
 
                 this.projectController.save(evt.detail.url).done();
-
                 break;
+
             case "preview":
-                evt.preventDefault();
-                evt.stopPropagation();
+                evt.stop();
 
                 //TODO not simply toggle this
                 this.isShowingPreviewPanel = !this.isShowingPreviewPanel;
+                break;
 
+            case "goto":
+                evt.stop();
+
+                this._showGotoFileDialog(false);
+                break;
+
+            case "gotoAgain":
+                evt.stop();
+
+                this._showGotoFileDialog(true);
                 break;
             }
         }
@@ -283,35 +292,6 @@ exports.Main = Montage.create(Component, {
             } else {
                 window.close();
             }
-        }
-    },
-
-    handleGoToFileKeyPress: {
-        value: function (event) {
-            if (event.eventPhase !== event.AT_TARGET) {
-                // This component is also listening directly to the application
-                // for keyPress, this function is called twice because of it.
-                // On target (the desired by this function) and on bubble when
-                // it reaches the component.
-                return;
-            }
-
-            this._showGotoFileDialog(false);
-        }
-    },
-
-
-    handleGoToFilePreservedKeyPress: {
-        value: function (event) {
-            if (event.eventPhase !== event.AT_TARGET) {
-                // This component is also listening directly to the application
-                // for keyPress, this function is called twice because of it.
-                // On target (the desired by this function) and on bubble when
-                // it reaches the component.
-                return;
-            }
-
-            this._showGotoFileDialog(true);
         }
     },
 
