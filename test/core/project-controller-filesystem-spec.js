@@ -67,7 +67,7 @@ describe("core/project-controller-filesystem-spec", function () {
 
         viewController = ViewController.create();
         projectController = new ProjectController().init(bridge, viewController, editorController, null, null, applicationDelegate);
-        projectController._deferredPackageRequireLoading.resolve();
+        projectController._packageRequires["projectUrl/"] = Promise.resolve(require);
         projectControllerLoadedPromise = projectController.loadProject("projectUrl");
 
         watcher = {};

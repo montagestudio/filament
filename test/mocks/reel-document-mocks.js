@@ -1,11 +1,13 @@
 var Montage = require("montage").Montage,
     ReelDocument = require("core/reel-document").ReelDocument,
-    Template = require("montage/core/template").Template;
+    documentDataSourceMock = require("./document-data-source-mocks").documentDataSourceMock,
+    Promise = require("montage/core/promise").Promise;
 
 //TODO this could be brought inline with the rest of the "mocking system"
 exports.mockReelDocument = function (fileUrl, serialization, bodyMarkup) {
 
     var mockDocument = document.implementation.createHTMLDocument(),
+        dataSource,
         serializationNode = mockDocument.createElement("script");
 
     serializationNode.setAttribute("type", "text/montage-serialization");
@@ -15,10 +17,18 @@ exports.mockReelDocument = function (fileUrl, serialization, bodyMarkup) {
     mockDocument.getElementsByTagName("body")[0].innerHTML = bodyMarkup;
 
     //TODO insert bodyMarkup
+    dataSource = documentDataSourceMock({
+        read: function() {
+            return Promise(mockDocument.documentElement.outerHTML);
+        },
+        write: function() {
+            return Promise();
+        }
+    });
 
-    return Template.create().initWithDocument(mockDocument, require).then(function (template) {
-        return ReelDocument.create().init(fileUrl, template, require, "mock");
-    }).then(function (reelDocument) {
+    fileUrl = require.location + fileUrl;
+    return new ReelDocument().init(fileUrl, dataSource, require).load()
+    .then(function (reelDocument) {
         // Mini mock for ui/component-editor/document-editor.reel
         // use _editor to avoid setter
         reelDocument._editor = {

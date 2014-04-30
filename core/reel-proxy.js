@@ -37,6 +37,13 @@ exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
+    destroy: {
+        value: function() {
+            this.cancelBindings();
+            this._editingDocument = null;
+        }
+    },
+
     /**
      * The identifier of the representedObject
      */

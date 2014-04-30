@@ -14,6 +14,7 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     Template = require("montage/core/template").Template,
     Url = require("core/url"),
     ProjectDocument = require("core/project-document").ProjectDocument,
+    DocumentDataSource = require("core/document-data-source").DocumentDataSource,
     sandboxMontageApp = require("palette/core/sandbox-montage-app");
 
 exports.ProjectController = ProjectController = DocumentController.specialize({
@@ -29,10 +30,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     },
 
     // PROPERTIES
-
-    _deferredPackageRequireLoading: {
-        value: null
-    },
 
     _environmentBridge: {
         value: null
@@ -107,6 +104,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: null
     },
 
+    _packageRequirePromise: {
+        value: null
+    },
+
     /**
      * The require used by the package being edited
      */
@@ -178,6 +179,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this.previewController = previewController;
             this._applicationDelegate = applicationDelegate;
 
+            this._documentDataSource = new DocumentDataSource(bridge);
+
             this._moduleIdIconUrlMap = new Map();
             this._moduleIdLibraryItemMap = new Map();
             this._packageNameLibraryItemsMap = new Map();
@@ -194,13 +197,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             //TODO get rid of this once we have property dependencies
             this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyWillChange", true);
             this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyChange");
-            this.addPathChangeListener("packageUrl", this, "handlePackageUrlChange");
 
             this.addPathChangeListener("currentDocument.undoManager.undoLabel", this);
             this.addPathChangeListener("currentDocument.undoManager.redoLabel", this);
             this.addPathChangeListener("currentDocument.undoManager.undoCount", this);
-
-            this._deferredPackageRequireLoading = Promise.defer();
 
             application.addEventListener("openUrl", this);
             application.addEventListener("openModuleId", this);
@@ -212,28 +212,16 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
-    handlePackageUrlChange: {
-        value: function(value) {
-            if (value) {
-                // preload package require
-                this.getPackageRequire(value).done();
-            }
-        }
-    },
-
     _packageRequires: {
         value: {}
     },
     getPackageRequire: {
         value: function(packageUrl) {
-            var self = this;
-
             if (!this._packageRequires[packageUrl]) {
                 this._packageRequires[packageUrl] = sandboxMontageApp(packageUrl)
                 .spread(function (packageRequire) {
-                    self._deferredPackageRequireLoading.resolve();
                     return packageRequire;
-                }, self._deferredPackageRequireLoading.reject);
+                });
             }
 
             return this._packageRequires[packageUrl];
@@ -260,7 +248,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             })
             .then(function() {
                 self._applicationDelegate.updateStatusMessage("Loading package…");
-                return self._deferredPackageRequireLoading.promise;
+                return self._packageRequirePromise;
             });
         }
     },
@@ -277,6 +265,11 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 packageUrl: packageUrl
             });
 
+            this._packageRequirePromise = this.getPackageRequire(packageUrl)
+            .then(function(packageRequire) {
+                self._packageRequire = packageRequire;
+                return packageRequire;
+            });
             this.packageUrl = packageUrl;
             this.dependencies = dependencies;
 
@@ -482,21 +475,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
-    /**
-     * @override
-     */
-    loadDocument: {
-        value: function(doc) {
-            var self = this;
-            var environmentBridge = this.environmentBridge;
-            function dataReader(url) {
-                return environmentBridge.read(url);
-            }
-
-            return this.getPackageRequire(this.packageUrl)
-            .then(function(packageRequire) {
-                return doc.load(doc.url, self.packageUrl, packageRequire, dataReader);
-            });
+    createDocumentWithTypeAndUrl: {
+        value: function (documentType, url) {
+            return new documentType().init(url, this._documentDataSource, this._packageRequire);
         }
     },
 

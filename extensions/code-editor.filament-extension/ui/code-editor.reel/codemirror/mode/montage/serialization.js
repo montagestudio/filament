@@ -23,7 +23,10 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
 
         if (block) {
             var properties = block.properties;
-            return properties[properties.length - 1].name;
+            var length = properties.length;
+            if (length > 0) {
+                return properties[length - 1].name;
+            }
         }
     }
 
@@ -33,7 +36,7 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
 
         // String
         if (ch == '"') {
-            if (state.block.readingPropertyName) {
+            if (state.block && state.block.readingPropertyName) {
                 return tokenPropertyName(stream, state);
             } else {
                 return tokenPropertyValueString(stream, state);

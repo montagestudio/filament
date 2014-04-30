@@ -68,6 +68,10 @@ describe("core/reel-context-spec", function () {
                         "properties": {
                             "element": {"#": "fooElement"}
                         }
+                    },
+                    "owner": {
+                        "properties": {
+                        }
                     }
                 };
 
@@ -85,6 +89,10 @@ describe("core/reel-context-spec", function () {
                         "object": "core/foo",
                         "properties": {
                             "element": {"#": "fooElement"}
+                        }
+                    },
+                    "owner": {
+                        "properties": {
                         }
                     }
                 };

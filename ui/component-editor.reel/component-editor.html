@@ -172,6 +172,21 @@
                 ]
             },
 
+            "overlayPanel": {
+                "prototype": "adaptor/client/ui/modal-overlay.reel",
+                "properties": {
+                    "element": {"#": "overlayPanel"},
+                    "visible": false
+                }
+            },
+
+            "overlayPanelMessage": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "overlayPanelMessage"}
+                }
+            },
+
              "application": {}
         }
     </script>
@@ -201,8 +216,9 @@
         <aside data-montage-id="configurator" class="Column palette"></aside>
         <aside data-arg="modalEditor" data-montage-id="modalEditorSlot" class="modalEditorSlot"></aside>
         <aside data-montage-id="library" class="palette"></aside>
-
-
+        <div data-montage-id="overlayPanel">
+            <span data-arg="panel" data-montage-id="overlayPanelMessage"></span>
+        </div>
     </section>
 
 </body>

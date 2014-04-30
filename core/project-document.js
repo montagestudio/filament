@@ -423,7 +423,7 @@ exports.ProjectDocument = Document.specialize({
      * Override default implementation
      */
     save: {
-        value: function (url, dataWriter) {
+        value: function (url) {
             return this.saveAll();
         }
     },

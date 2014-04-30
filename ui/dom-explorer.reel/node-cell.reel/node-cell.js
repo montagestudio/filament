@@ -504,6 +504,9 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                     this.treeControllerNode = value;
                     this.nodeInfo = value.content;
                     this.isExpanded = value.expanded;
+                } else {
+                    this.treeControllerNode = null;
+                    this.nodeInfo = null;
                 }
             }
         }
