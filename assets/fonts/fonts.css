@@ -1,4 +1,9 @@
-
+@font-face {
+  font-family: 'Clear Sans';
+  font-style: normal;
+  font-weight: 200;
+  src: local('Clear Sans Thin'), local('ClearSans-Thin'), url(ClearSans-Thin.woff) format('woff');
+}
 @font-face {
   font-family: 'Clear Sans';
   font-style: normal;

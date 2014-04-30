@@ -5,7 +5,6 @@
     <meta charset="utf-8">
 
     <link href="main.css" rel="stylesheet" />
-    <link href="/assets/styles/filament-matte.css" rel="stylesheet" />
 
     <script type="text/montage-serialization">
         {
@@ -137,77 +136,6 @@
                 ]
             },
 
-            "explorePopcornButton": {
-                "prototype": "matte/ui/button.reel",
-                "properties": {
-                    "element": {"#": "explorePopcornButton"}
-                },
-                "bindings": {
-                    "label": {"<-": "!!@repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('popcorn') ? 'Open Popcorn' : 'Fork Popcorn'"},
-                    "detail.get('owner')": {"<-": "'montagejs'"},
-                    "detail.get('repository')": {"<-": "'popcorn'"}
-                },
-                "listeners": [
-                    {
-                        "type": "action",
-                        "listener": {"@": "owner"}
-                    }
-                ]
-            },
-
-            "exploreTodoButton": {
-                "prototype": "matte/ui/button.reel",
-                "properties": {
-                    "element": {"#": "exploreTodoButton"}
-                },
-                "bindings": {
-                    "label": {"<-": "!!@repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('studio-todo') ? 'Open Todo' : 'Fork Todo'"},
-                    "detail.get('owner')": {"<-": "'montagejs'"},
-                    "detail.get('repository')": {"<-": "'studio-todo'"}
-                },
-                "listeners": [
-                    {
-                        "type": "action",
-                        "listener": {"@": "owner"}
-                    }
-                ]
-            },
-
-            "versionText": {
-                "prototype": "montage/ui/text.reel",
-                "properties": {
-                    "element": {"#": "versionText"}
-                },
-                "localizations": {
-                    "value": {
-                        "key": "version",
-                        "data": {
-                            "number": {"<-": "@owner.version"}
-                        }
-                    }
-                }
-            },
-
-            "introMeta": {
-                "prototype": "montage/ui/text.reel",
-                "properties": {
-                    "element": {"#": "introMeta"}
-                },
-                "localizations": {
-                    "value": {"key": "copyright"}
-                }
-            },
-
-            "recentTitle": {
-                "prototype": "montage/ui/text.reel",
-                "properties": {
-                    "element": {"#": "recentTitle"}
-                },
-                "localizations": {
-                    "value": {"key": "recent_projects"}
-                }
-            },
-
             "removeWorkspaces": {
                 "prototype": "matte/ui/button.reel",
                 "properties": {
@@ -304,110 +232,206 @@
                     {"type": "action", "listener": {"@": "owner"}}
                 ]
             },
+            
+            "logoutButton": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "logoutButton"}
+                },
+                "listeners": [
+                    {"type": "action", "listener": {"@": "owner"}}
+                ]
+            },
 
             "repositoriesController": {
                 "prototype": "../../core/repositories-controller"
             },
-              "username": {
-                  "prototype": "montage/ui/text.reel",
-                  "properties": {
-                      "element": {"#": "username"}
-                  },
-                  "bindings": {
-                      "value": {
-                          "<-": "@owner.userController.user.name"
-                      }
-                  }
+            "username": {
+              "prototype": "montage/ui/text.reel",
+              "properties": {
+                  "element": {"#": "username"}
               },
-
-              "avatar": {
-                  "prototype": "matte/ui/image.reel",
-                  "properties": {
-                      "element": {"#": "avatar"}
-                  },
-                  "bindings": {
-                      "src": {
-                          "<-": "@owner.userController.user.avatarUrl"
-                      }
+              "bindings": {
+                  "value": {
+                      "<-": "@owner.userController.user.name"
                   }
               }
+            },
+            
+            "avatar": {
+              "prototype": "matte/ui/image.reel",
+              "properties": {
+                  "element": {"#": "avatar"}
+              },
+              "bindings": {
+                  "src": {
+                      "<-": "@owner.userController.user.avatarUrl"
+                  }
+              }
+            },
+            "beta": {
+                "prototype": "ui/widgets/beta.reel",
+                "properties": {
+                    "element": {"#": "beta"}
+                }
+            },
+            "copyright": {
+                "prototype": "montage/ui/text.reel",
+                "properties": {
+                    "element": {"#": "copyright"}
+                },
+                "localizations": {
+                    "value": {"key": "copyright"}
+                }
+            },
+            "explorePopcornButton": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "explorePopcornButton"}
+                },
+                "bindings": {
+                    "label": {"<-": "!!@repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('popcorn') ? 'Open Popcorn' : 'Fork Popcorn'"},
+                    "detail.get('owner')": {"<-": "'montagejs'"},
+                    "detail.get('repository')": {"<-": "'popcorn'"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+    
+            "exploreTodoButton": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "exploreTodoButton"}
+                },
+                "bindings": {
+                    "label": {"<-": "!!@repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('studio-todo') ? 'Open Todo' : 'Fork Todo'"},
+                    "detail.get('owner')": {"<-": "'montagejs'"},
+                    "detail.get('repository')": {"<-": "'studio-todo'"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            }
         }
     </script>
 
 </head>
 <body>
 
-    <div data-montage-id="main" class="Main Projects">
+    <div data-montage-id="main" class="Main">
         <div data-montage-id="status"></div>
-        <section class="Intro About Column">
-            <img class="Intro-logo" src="../../../assets/img/logo.png" alt="Montage Studio">
-            <p class="Intro-info"><span data-montage-id="versionText" class="Intro-version"></span><span class="Intro-support">(Optimized for Google Chrome)</span></p>
-            <p class="Intro-meta" data-montage-id="introMeta"></p>
-        </section>
+        <aside class="Aside">
+                
+            <div class="Aside-content">
+                
+                <div data-montage-id="beta"></div>
+                
+                <section class="Aside-section">
+                    <img class="Aside-logo" src="../../../assets/img/logo.svg" alt="Montage Studio">
+                </section>
+                
+                <section class="Aside-section">
+                    <h2 class="Aside-title">Get Started</h2>
+                    <ul class="Aside-list">
+                        <li>
+                            <span><a class="Aside-linkButton" href="http://docs.montagestudio.com/montage-studio/ide-at-a-glance.html" target="_blank">Overview</a></span>
+                            <span>Take a tour of Montage Studio.</span>
+                        </li>
+                        <li>
+                            <span><button data-montage-id="exploreTodoButton" class="Aside-linkButton"></button></span>
+                            <span>Explore a simple application.</span>
+                        </li>
+                        <li>
+                            <span><button data-montage-id="explorePopcornButton" class="Aside-linkButton"></button></span>
+                            <span>Explore a complex application.</span>
+                        </li>
+                        <li>
+                            <span><a class="Aside-linkButton" href="http://docs.montagestudio.com/montage-studio/tutorial-simple-to-do.html" target="_blank">Quick Start</a></span>
+                            <span>Build a simple application.</span>
+                        </li>
+                    </ul>
+                </section>
+                
+                <section class="Aside-section">
+                    <h2 class="Aside-title">Help and Support</h2>
+                    <p class="Aside-links">
+                        <a href="http://docs.montagestudio.com/montage-studio/" target="_blank">Documentation</a>
+                        <a href="http://forum.montagestudio.com" target="_blank">Forum</a>
+                        <a href="http://webchat.freenode.net/?channels=montage" target="_blank">Chat with the team</a>
+                    </p>
+                    </ul>
+                </section>                
+                            
+                <section class="Aside-section">
+                    <p data-montage-id="copyright" class="Aside-meta"></p>
+                </section>
+            </div>
+    
+        </aside>
 
-        <section class="Intro Examples Column">
-            <ul class="Intro-examples">
-                <li class="Intro-examples--featured">
-                    <img src="../../assets/images/todo.jpg" class="Intro-examples-image">
-                    <p class="Intro-examples-description">Learn the basics by editing the simple todo-list application described in <a href="http://docs.montagestudio.com/montage-studio/tutorial-simple-to-do.html" target="_blank" data-montage-id="openDocs" class="Button Button--action">our tutorial</a>.</p>
-                    <button data-montage-id="exploreTodoButton" class="Button Button--action"></button>
-                </li>
-                <li class="Intro-examples--featured">
-                    <img src="../../assets/images/popcorn.jpg" class="Intro-examples-image">
-                    <p class="Intro-examples-description">Explore a real-world application that includes many different components.</p>
-                    <button data-montage-id="explorePopcornButton" class="Button Button--action"></button>
-                </li>
-            </ul>
-        </section>
 
-        <section class="Launcher Column">
-            <section class="Launcher-section">
-                <img data-montage-id="avatar" class="User-avatar" src="">
-                <span data-montage-id="username" class="User-name"></span>
-            </section>
-
-            <section class="Launcher-section">
-                <div data-montage-id="newAppButtonCondition">
-                    <div class="Action">
-                        <button data-montage-id="newAppButton" class="Action-button Action-button--new"></button>
+        <div class="Projects">
+        
+            <button data-montage-id="logoutButton" class="Button User-logout">Logout</button>
+            
+            <div class="Projects-content">
+                
+                <section class="Projects-section User">
+                    <img data-montage-id="avatar" class="User-avatar" src="">
+                    <span data-montage-id="username" class="User-name"></span>
+                </section>
+                                
+                <section class="Projects-section History">
+                    
+                    <header class="Header">
+                        <div data-montage-id="historyProgress" class="Projects-progress"></div>
+                        <h1 class="Header-title">Recent Projects</h1>
+                        <button data-montage-id="historyRefresh" class="Projects-refreshButton" data-arg="" aria-label="Refresh project list" title="Refresh project list"></button>
+                    </header>
+                                        
+                    <div data-montage-id="historyEmpty" class="History-empty"><span data-montage-id="historyEmptyTitle"></span></div>
+                    <ul data-montage-id="historyList" class="History-list">
+                        <li data-montage-id="historyListItem"></li>
+                    </ul>
+                    
+                </section>
+                
+                <section class="Projects-section">
+                    <div data-montage-id="newAppButtonCondition">
+                        <button data-montage-id="newAppButton" class="NewProjectButton"></button>
                     </div>
-                </div>
-                <div data-montage-id="newAppFormCondition" class="NewForm">
-                    <label class="NewForm-field">
-                        Name <input type="text" data-montage-id="newAppName" placeholder="my-app">
-                    </label>
-                    <label class="NewForm-field">
-                        Description <textarea data-montage-id="newAppDescription" placeholder="(optional)"></textarea>
-                    </label>
-                    <div data-montage-id="newAppError" class="NewForm-error"></div>
-                    <footer class="NewForm-bar">
-                        <button data-montage-id="cancelNewAppButton" class="Button"></button>
-                        <button data-montage-id="createNewAppButton" class="Button Button--action"></button>
-                    </footer>
-                </div>
-            </section>
-
-            <section class="Launcher-section History">
-                <div class="Title-section">
-                    <h2 data-montage-id="recentTitle" class="Launcher-title"></h2>
-                    <button data-montage-id="historyRefresh" data-arg="" aria-label="Refresh project list" class="Button History-refresh"></button>
-                </div>
-                <div data-montage-id="updatingRepositories" class="History-update">
-                    <div data-montage-id="historyProgress" class="History-progress"></div>
-                </div>
-                <div data-montage-id="historyEmpty" class="History-empty">
-                    <span data-montage-id="historyEmptyTitle"></span>
-                </div>
-                <ul class="History-list" data-montage-id="historyList">
-                    <li class="History-list-item" data-montage-id="historyListItem"></li>
-                </ul>
-            </section>
-
-            <button data-montage-id="authorizePrivateAccessButton" class="Button">Authorize private repository access</button>
-
-            <button data-montage-id="removeWorkspaces" class="Button"></button>
-
-        </section>
+                    <div data-montage-id="newAppFormCondition" class="NewForm">
+                        <fieldset class="NewForm-fieldset">
+                            <label class="NewForm-label">Name</label>
+                            <input data-montage-id="newAppName" placeholder="my-app" type="text">
+                        </fieldset>
+                        <fieldset class="NewForm-fieldset">
+                            <label class="NewForm-label">Description </label>
+                            <textarea data-montage-id="newAppDescription" placeholder="(optional)"></textarea>
+                        </fieldset>
+                        <div data-montage-id="newAppError" class="NewForm-error"></div>
+                        <footer class="NewForm-bar">
+                            <button data-montage-id="cancelNewAppButton" class="Button"></button>
+                            <button data-montage-id="createNewAppButton" class="Button Button--action"></button>
+                        </footer>
+                    </div>
+                </section>
+                
+                <section class="Projects-section Settings">
+                    <button data-montage-id="authorizePrivateAccessButton" class="ButtonLink">Authorize private repositories</button>
+                    <button data-montage-id="removeWorkspaces" class="ButtonLink"></button>
+                </section>
+                                
+            </div>
+            
+        </div>
 
     </div>
 

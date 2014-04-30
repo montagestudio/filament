@@ -196,6 +196,16 @@ exports.Main = Montage.create(Component, {
                 .done();
         }
     },
+    
+    handleLogoutButtonAction: {
+        value: function () {
+            this.templateObjects.repositoriesController.clearCachedRepositories()
+                .finally(function () {
+                    window.location = "/logout";
+                })
+                .done();
+        }
+    },
 
     _createNewApplication: {
         value: function () {
