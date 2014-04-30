@@ -263,9 +263,10 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
     handleWillSave: {
         value: function(event) {
             var document = event.target;
+            var codeMirrorDocument = this._openDocuments[document.uuid];
 
-            if (this._codeMirror && document === this.currentDocument) {
-                document.content = this.getContent();
+            if (codeMirrorDocument) {
+                document.content = codeMirrorDocument.getValue();
             }
         }
     },
