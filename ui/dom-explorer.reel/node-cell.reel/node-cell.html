@@ -77,18 +77,11 @@
             }
         },
 
-        "componentLabel": {
-            "prototype": "montage/ui/text.reel",
-            "properties": {
-                "element": {"#": "componentLabel"}
-            }
-        },
-
         "selectComponent": {
             "prototype": "montage/composer/press-composer",
             "properties": {
                 "component": {"@": "owner"},
-                "element": {"#": "componentLabel"},
+                "element": {"#": "component"},
                 "identifier": "selectComponent"
             },
             "listeners": [
@@ -242,6 +235,30 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
+
+        "component": {
+            "prototype": "./template-object-header.reel",
+            "properties": {
+                "element": {"#": "component"}
+            },
+            "bindings": {
+                "templateObject": {"<-": "@owner.nodeInfo.component"}
+            }
+        },
+
+        "componentLabel": {
+            "prototype": "ui/text-editor-field.reel",
+            "properties": {
+                "element": {"#": "componentLabel"},
+                "shouldSaveOnBlur": true
+            },
+            "bindings": {
+                "value": {"<-": "@owner.nodeInfo.component.label"}
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
         }
     }
     </script>
@@ -259,20 +276,23 @@
                 <input data-montage-id="toggleExpanded" type="checkbox">
             </span>
 
-            <span data-montage-id="nodeSegment" class="NodeCell-segment"  draggable="true">
-                <span data-montage-id="tagName" class="NodeCell-segment-item NodeCell-segment-item--tag"></span>
-
-                <span data-montage-id="montageArg" class="NodeCell-segment-item NodeCell-segment-item--montageArg"></span>
-                <span data-montage-id="montageParam" class="NodeCell-segment-item NodeCell-segment-item--montageParam"></span>
-                <span data-montage-id="montageId" class="NodeCell-segment-item NodeCell-segment-item--montageId"></span>
-
-                <span data-montage-id="componentCondition" class="NodeCell-segment-item NodeCell-segment-item--component">
-                    <strong data-montage-id="componentLabel" class="NodeCell-label"></strong>
-                </span>
-                <span data-montage-id="canRemoveNodeCondition" class="NodeCell-removeButtonCondition">
-                    <button data-montage-id="removeNodeButton" class="NodeCell-removeButton Button Button--circle" title="Remove node">-</button>
-                </span>
-            </span>
+            <div data-montage-id="nodeSegment" class="NodeCell-content"  draggable="true">
+                <div class="NodeCell-elementInfo">
+                    <span data-montage-id="tagName" class="NodeCell-elementInfo-item NodeCell-elementInfo-item--tag"></span>
+                    <span data-montage-id="montageArg" class="NodeCell-elementInfo-item NodeCell-elementInfo-item--montageArg"></span>
+                    <span data-montage-id="montageParam" class="NodeCell-elementInfo-item NodeCell-elementInfo-item--montageParam"></span>
+                    <span data-montage-id="montageId" class="NodeCell-elementInfo-item NodeCell-elementInfo-item--montageId"></span>
+                    <span data-montage-id="canRemoveNodeCondition" class="NodeCell-removeButtonCondition">
+                        <button data-montage-id="removeNodeButton" class="NodeCell-removeButton Button Button--circle" title="Remove node">-</button>
+                    </span>
+                </div>
+                <div data-montage-id="componentCondition">
+                    <div data-montage-id="component" class="Bar">
+                        <span data-arg="title" data-montage-id="componentLabel"></span>
+                        <div data-arg="toolbar"></div>
+                    </div>
+                </div>
+            </div>
 
 
         </div>

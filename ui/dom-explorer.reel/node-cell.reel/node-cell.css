@@ -14,52 +14,64 @@
     position: relative;
     /* background: hsl(0,0%,92%); */
 
-    height: 24px;
+    /*height: 24px;*/
     overflow: hidden;
+    border-radius: 22px;
     -webkit-transition: height .4s ease-in-out, margin-top .4s ease-in-out, margin-bottom .4s ease-in-out;
     -moz-transition: height .4s ease-in-out, margin-top .4s ease-in-out, margin-bottom .4s ease-in-out;
     transition: height .4s ease-in-out, margin-top .4s ease-in-out, margin-bottom .4s ease-in-out;
 }
 
 
-/* NodeCell-segment ------------------------- */
+/* NodeCell-elementInfo ------------------------- */
 
-.NodeCell-segment {
-    display: -webkit-inline-flex;
-    display: -moz-inline-flex;
-    display: -ms-inline-flex;
-    display: inline-flex;
+.NodeCell-content {
     margin: 3px 14px 3px 0px;
-    /* border-radius: 22px; */
+    border-radius: 10px;
     background: hsl(0,0%,96%);
     border: 1px solid hsl(0, 0%, 80%);
+    width: 100%;
+}
+
+.NodeCell-elementInfo {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+    /* border-radius: 22px; */
 
     height: 22px;
     -webkit-transition: opacity .4s ease-in-out, height .4s ease-in-out;
     -moz-transition: opacity .4s ease-in-out, height .4s ease-in-out;
     transition: opacity .4s ease-in-out, height .4s ease-in-out;
     width: 100%;
+    /* overflow: hidden; */
+    /* height: 0px; */
 }
 
-.NodeCell--highlighted .NodeCell-segment {
+.NodeCell--highlighted .NodeCell-content {
     background: hsl(210,100%,92%);
 }
 
-.NodeCell--dragged .NodeCell-segment {
+.NodeCell--dragged .NodeCell-elementInfo {
     opacity: 0.4;
 }
 
-.NodeCell--selected .NodeCell-segment {
+.NodeCell--selected .NodeCell-content {
     border: 1px solid hsl(210,100%,60%);
 }
 
 
-/* NodeCell-segment-item ------------------------- */
+/* NodeCell-elementInfo-item ------------------------- */
+.NodeCellWrapper .NodeCell-elementInfo-elementInfo {
+    height: 22px;
+    -webkit-transition: height .4s ease-in-out, opacity .4s ease-in-out;
+}
 
-.NodeCell-segment-item {
-    display: block;
+.NodeCell-elementInfo-item {
+    display: inline-block;
     padding: 0 12px;
-    line-height: 1.5em;
+    line-height: 1.6em;
     color: hsl(0, 0%, 30%);
     overflow: hidden;
 
@@ -68,37 +80,38 @@
     transition: padding-left .4s ease-in-out, padding-right .4s ease-in-out, font-size .4s ease-in-out, border-left-width .4s ease-in-out;
 }
 
-.NodeCell-segment-item--tag {
+.NodeCell-elementInfo-item--tag {
+    color: hsl(0,0%,60%);
     text-transform: lowercase;
 }
 
-.NodeCell-segment-item--montageId {
+.NodeCell-elementInfo-item--montageId {
     border-left: 1px solid hsla(0,0%,0%,.1);
     font-weight: bold;
     font-style: italic;
 }
 
-.NodeCell-segment-item--montageArg {
+.NodeCell-elementInfo-item--montageArg {
     border-left: 1px solid hsla(0,0%,0%,.1);
     font-weight: normal;
     background-color: hsl(75,44%,85%);
 }
 
-.NodeCell-segment-item--montageParam {
+.NodeCell-elementInfo-item--montageParam {
     border-left: 1px solid hsla(0,0%,0%,.1);
     font-weight: normal;
     background-color: hsla(85,60%,85%, 0.3);
 }
 
-.NodeCell-segment-item--montageId.TextEditorField--editing,
-.NodeCell-segment-item--montageArg.TextEditorField--editing
-.NodeCell-segment-item--montageParam.TextEditorField--editing {
+.NodeCell-elementInfo-item--montageId.TextEditorField--editing,
+.NodeCell-elementInfo-item--montageArg.TextEditorField--editing
+.NodeCell-elementInfo-item--montageParam.TextEditorField--editing {
     z-index: 10;
     box-shadow: 0 0 0 1px hsl(210,100%,70%);
     background-color: hsla(210,100%,60%,0.1);
 }
 
-.NodeCell-segment .NodeCell-segment-item.NodeCell-segment-item--component {
+.NodeCell-elementInfo .NodeCell-elementInfo-item.NodeCell-elementInfo-item--component {
     padding-left: 10px;
     border-radius: 0 11px 11px 0;
     font-weight: bold;
@@ -107,12 +120,12 @@
     padding-right: 12px;
 }
 
-.NodeCell--owner .NodeCell-segment-item.NodeCell-segment-item--component {
+.NodeCell--owner .NodeCell-elementInfo-item.NodeCell-elementInfo-item--component {
     background: hsl(43, 100%, 85%);
     border-left-color: hsl(43, 100%, 65%);
 }
 
-.NodeCell--dropTarget .NodeCell-segment {
+.NodeCell--dropTarget .NodeCell-elementInfo {
     padding: 0px;
     border: 2px;
     border-style: dashed;
@@ -252,6 +265,7 @@
     -webkit-transition: margin-left .4s ease-in-out;
     -moz-transition: margin-left .4s ease-in-out;
     transition: margin-left .4s ease-in-out;
+    /* width: 100%; */
 }
 
 .NodeCell-toggle {
@@ -280,29 +294,38 @@
     opacity: 0;
 }
 
-.NodeCell--collapseDom .NodeCell-segment {
+.NodeCell--collapseDom .NodeCell-elementInfo {
     height: 0;
 }
 
-.NodeCell--collapseDom .NodeCell-segment .montage-Text {
+.NodeCell--collapseDom .NodeCell-elementInfo .montage-Text {
     opacity: 0;
 }
 
-/* Component Tree -------------- */
-.NodeCell--component .NodeCell-segment-item {
+.DomExplorer--collapseDom .NodeCell-elementInfo {
+    height: 0px;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.DomExplorer--collapseDom .NodeCell-elementInfo-item {
     padding-left: 0;
     padding-right: 0;
 }
 
-.NodeCell--component .NodeCell-segment-item.NodeCell-segment-item--tag {
+.DomExplorer--collapseDom .NodeCell-elementInfo-item.NodeCell-elementInfo-item--tag {
     padding-left: 8px;
 }
 
-.NodeCell--component .NodeCell-segment-item--tag,
-.NodeCell--component .NodeCell-segment-item--montageArg,
-.NodeCell--component .NodeCell-segment-item--montageParam,
-.NodeCell--component .NodeCell-segment-item--montageId {
-    font-size: 0;
-    border-left-width: 0;
-    opacity: 0;
+/* Component Tree -------------- */
+.NodeCell--component .NodeCell-content {
+    border-radius: 10px 10px 0px 0px;
+}
+
+.NodeCell--component .NodeCell {
+    /*height: 70px;*/
+}
+
+.DomExplorer--collapseDom .NodeCell--component .NodeCell {
+    /*height: 48px;*/
 }

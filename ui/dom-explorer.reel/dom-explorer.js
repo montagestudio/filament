@@ -13,6 +13,14 @@ var Montage = require("montage").Montage,
 */
 exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explorer.reel".DomExplorer# */ {
 
+    constructor: {
+        value: function DomExplorer() {
+            this.super();
+            this.defineBinding("classList.has('DomExplorer--collapseDom')", {"<-": "collapseNonComponents"});
+        }
+    },
+
+
     // TODO this is a temporary solution inspired by main.js
     handleKeyPress: {
         value: function(evt) {
