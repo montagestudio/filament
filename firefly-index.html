@@ -35,6 +35,15 @@
                 }
             },
 
+            "status": {
+                "prototype": "ui/status.reel",
+                "properties": {
+                    "element": {"#": "status"},
+                    "siteUrl": "status.montagestudio.com",
+                    "apiKey": "kwIaGviLwYPXw8LzfozHdQxWxJ8hI1MwtNMRMuxZEeJb2CneR3"
+                }
+            },
+
             "toolbar": {
                 "prototype": "adaptor/client/ui/toolbar.reel",
                 "properties": {
@@ -163,6 +172,8 @@
 
 </head>
 <body class="Filament">
+
+    <div data-montage-id="status"></div>
 
     <section data-montage-id="modalOverlay">
         <div data-montage-id="panelSwitcher" data-arg="panel">

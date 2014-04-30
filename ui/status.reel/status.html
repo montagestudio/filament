@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="status.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            },
+            "bindings": {
+                "classList.has('Status--visible')": {"<-": "@owner.isVisible"}
+            }
+        },
+
+        "title": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "title"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.post.title"}
+            }
+        },
+
+        "updated": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "updated"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.post.date"}
+            }
+        },
+
+        "refresh": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "refresh"}
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
+        },
+
+        "close": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "close"}
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="Status">
+        <div class="Status-group--info">
+            <span data-montage-id="title" class="Status-title"></span>
+            <span data-montage-id="updated" class="Status-time"></span>
+            <a class="Status-link" href="http://status.montagestudio.com" target="_blank">More information…</a>
+        </div>
+        <div class="Status-group--fixed">
+            <button type="button" data-montage-id="refresh" class="Status-refreshButton">Refresh</button>
+            <button type="button" data-montage-id="close" class="Status-closeButton">×</button>
+        </div>
+    </div>
+</body>
+</html>
