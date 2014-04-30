@@ -10,8 +10,7 @@ exports.ReelContext = ProxyContext.specialize({
 
     getElementById: {
         value: function (id) {
-            var element = this.editingDocument.htmlDocument.querySelector("[data-montage-id='" + id + "']");
-            return element ? this.editingDocument.nodeProxyForNode(element) : null;
+            return this.editingDocument.nodeProxyForMontageId(id);
         }
     }
 

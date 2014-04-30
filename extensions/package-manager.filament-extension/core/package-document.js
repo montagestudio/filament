@@ -28,44 +28,46 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
 
 var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
     constructor: {
-        value: function PackageDocument(fileUrl) {
-            this.super(fileUrl);
+        value: function PackageDocument() {
+            this.super();
         }
     },
 
     load: {
-        value: function (fileUrl, packageUrl, packageRequire) {
+        value: function () {
             var self = this,
-                projectController = PackageDocument.sharedProjectController;
+                fileUrl = this.url,
+                projectController = this.sharedProjectController;
 
             return projectController.environmentBridge.listDependenciesAtUrl(fileUrl).then(function(dependencyTree) {
-                return self.init(fileUrl, packageRequire, projectController, dependencyTree);
+                self._package = dependencyTree.fileJsonRaw || {};
+                self.dependencyCollection = dependencyTree; // setter will get correct information
+                self._dependencyManager = DependencyManager.create().initWithPackageDocument(self);
+                self._packageSavingManager = PackageSavingManager.create().initWithPackageDocument(self);
+                self._changeCount = 0;
+
+                var author = PackageTools.getValidPerson(self._package.author);
+                self._package.author = author ? author : {
+                    name: "",
+                    email: "",
+                    url: ""
+                };
+
+                self._getOutDatedDependencies();
             });
         }
     },
 
     init: {
-        value: function (fileUrl, packageRequire, projectController, dependencyTree) {
-            this.super(fileUrl, packageRequire);
+        value: function (fileUrl, dataSource, packageRequire) {
+            this.super(fileUrl, dataSource, packageRequire);
+
+            var projectController = PackageDocument.sharedProjectController;
 
             this._livePackage = packageRequire.packageDescription;
             this.sharedProjectController = projectController;
             this.editor = projectController.currentEditor;
             this.environmentBridge = projectController.environmentBridge;
-            this._package = dependencyTree.fileJsonRaw || {};
-            this.dependencyCollection = dependencyTree; // setter will get correct information
-            this._changeCount = 0;
-
-            var author = PackageTools.getValidPerson(this._package.author);
-
-            this._package.author = author ? author : {
-                name: "",
-                email: "",
-                url: ""
-            };
-
-            this._dependencyManager = DependencyManager.create().initWithPackageDocument(this);
-            this._packageSavingManager = PackageSavingManager.create().initWithPackageDocument(this);
 
             application.addEventListener("dependencyInstalled", this);
             application.addEventListener("dependencyRemoved", this);
@@ -986,10 +988,10 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
     },
 
     _writePackageJson: {
-        value: function (packageJson, url, dataWriter) {
+        value: function (packageJson, url, dataSource) {
             var self = this;
 
-            return Promise.when(dataWriter(packageJson, url)).then(function (value) {
+            return Promise.when(dataSource.write(url, packageJson)).then(function (value) {
                 self._changeCount = 0;
                 self._packageFileChangeByAppCount++;
 
@@ -999,8 +1001,8 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
     },
 
     save: {
-        value: function (url, dataWriter) {
-            return this._packageSavingManager.scheduleSaving(url, dataWriter);
+        value: function (url) {
+            return this._packageSavingManager.scheduleSaving(url, this._dataSource);
         }
     }
 

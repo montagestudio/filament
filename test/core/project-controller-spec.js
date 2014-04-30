@@ -32,8 +32,8 @@ describe("core/project-controller-spec", function () {
         applicationDelegate = applicationDelegateMock();
 
         viewController = ViewController.create();
-        projectController = ProjectController.create().init(bridge, viewController, editorController, null, null, applicationDelegate);
-        projectController._deferredPackageRequireLoading.resolve();
+        projectController = new ProjectController().init(bridge, viewController, editorController, null, null, applicationDelegate);
+        projectController._packageRequirePromise = Promise.resolve();
     });
 
     describe("canEdit status", function () {

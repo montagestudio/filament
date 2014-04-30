@@ -32,6 +32,17 @@ exports.NodeProxy = NodeProxy = Target.specialize({
         }
     },
 
+    destroy: {
+        value: function() {
+            this.cancelBindings();
+            this.removePathChangeListener("component.label", this);
+            this.removePathChangeListener("children.length", this);
+
+            this._editingDocument = null;
+            this.component = null;
+        }
+    },
+
     proxyType: {
         get: function() {
             return "NodeProxy";

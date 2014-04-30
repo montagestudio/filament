@@ -57,14 +57,15 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
     },
 
     init: {
-        value: function (fileUrl, packageRequire, content) {
-            var self = this.super(fileUrl);
-            self.content = content;
+        value: function (fileUrl, dataSource) {
+            this.super(fileUrl, dataSource);
 
-            self._mimeType = CodeEditorDocument.editorMimeType(fileUrl);
-            self.codeEditorInstance = null;
+            this._hasModifiedData = {undoCount: 0, redoCount: 0};
+            this._mimeType = CodeEditorDocument.editorMimeType(fileUrl);
+            this.codeEditorInstance = null;
+            dataSource.registerDataModifier(this);
 
-            return self;
+            return this;
         }
     },
 
@@ -147,11 +148,11 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
     },
 
     save: {
-        value: function (location, dataWriter) {
+        value: function (location) {
             var self = this;
 
             this.dispatchEventNamed("willSave", true, false);
-            return Promise.when(dataWriter(self.content, location)).then(function (value) {
+            return Promise.when(this._dataSource.write(location, self.content)).then(function (value) {
                 self.isDirty = false;
                 self.dispatchEventNamed("didSave", true, false);
                 return value;
@@ -208,12 +209,71 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
     },
 
     load: {
-        value: function (fileUrl, packageUrl, packageRequire, dataReader) {
+        value: function () {
             var self = this;
 
-            return dataReader(fileUrl)
+            return this._dataSource.read(this.url)
             .then(function (content) {
-                return self.init(fileUrl, null, content);
+                self.content = content;
+            });
+        }
+    },
+
+    _hasModifiedData: {
+        value: null
+    },
+
+    hasModifiedData: {
+        value: function(url) {
+            if (url === this.url) {
+                var undoManager = this._undoManager;
+                var hasModifiedData = this._hasModifiedData;
+                return undoManager && hasModifiedData &&
+                    (hasModifiedData.undoCount !== undoManager.undoCount ||
+                        hasModifiedData.redoCount !== undoManager.redoCount);
+            }
+        }
+    },
+
+    acceptModifiedData: {
+        value: function(url) {
+            if (url === this.url) {
+                this.content = this.codeMirrorDocument.getValue();
+                this._hasModifiedData.undoCount = this._undoManager.undoCount;
+                this._hasModifiedData.redoCount = this._undoManager.redoCount;
+                return Promise.resolve(this.content);
+            }
+        }
+    },
+
+    rejectModifiedData: {
+        value: function(url) {
+            if (url === this.url) {
+                console.warn("modifications reseted");
+            }
+        }
+    },
+
+    needsRefresh: {
+        value: function() {
+            return this._dataSource.isModified(this.url);
+        }
+    },
+
+    /**
+     * Refreshes the document, it returns a promise for true or false indicating
+     * if the refresh resulted in the content being changed or not.
+     */
+    refresh: {
+        value: function() {
+            var self = this;
+
+            return this._dataSource.read(this.url).then(function(content) {
+                self.content = content;
+                self.codeMirrorDocument.setValue(content);
+                self._hasModifiedData.undoCount = self._undoManager.undoCount;
+                self._hasModifiedData.redoCount = self._undoManager.redoCount;
+                return true;
             });
         }
     }

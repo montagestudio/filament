@@ -40,7 +40,7 @@ exports.PackageSavingManager = Montage.specialize({
     },
 
     scheduleSaving: {
-        value: function (url, dataWriter) {
+        value: function (url, dataSource) {
             var self = this,
                 packageJson = this._packageDocument.toJSON();
 
@@ -49,7 +49,7 @@ exports.PackageSavingManager = Montage.specialize({
                 return Promise(true);
             }
 
-            this._savingInProgressPromise = this._performSaving(packageJson, url, dataWriter);
+            this._savingInProgressPromise = this._performSaving(packageJson, url, dataSource);
 
             //todo localize
             this._packageDocument.dispatchAsyncActivity(this._savingInProgressPromise, "Saving modification");
@@ -68,17 +68,17 @@ exports.PackageSavingManager = Montage.specialize({
     },
 
     _performSaving: {
-        value: function (packageJson, url, dataWriter) {
+        value: function (packageJson, url, dataSource) {
             var self = this;
 
             if (this._dependencyManager.hasPendingOperations()) {
                 return this._dependencyManager.executePendingOperation().then(function () {
-                    return self._saveModification(packageJson, url, dataWriter);
+                    return self._saveModification(packageJson, url, dataSource);
 
                 }, null, this._handlePackageModified.bind(this));
             }
 
-            return this._saveModification(packageJson, url, dataWriter);
+            return this._saveModification(packageJson, url, dataSource);
         }
     },
 
@@ -135,15 +135,15 @@ exports.PackageSavingManager = Montage.specialize({
     },
 
     _saveModification: {
-        value: function (packageJson, url, dataWriter) {
+        value: function (packageJson, url, dataSource) {
             var self = this;
 
-            return this._packageDocument._writePackageJson(packageJson, url, dataWriter).then(function () {
+            return this._packageDocument._writePackageJson(packageJson, url, dataSource).then(function () {
                 if (self._packageJsonPending) {
                     packageJson = self._packageJsonPending;
                     self._packageJsonPending = null;
 
-                    return self._performSaving(packageJson, url, dataWriter);
+                    return self._performSaving(packageJson, url, dataSource);
 
                 }
 

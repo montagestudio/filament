@@ -201,55 +201,55 @@ describe("core/reel-document-saving-spec", function () {
             });
         });
 
-        it("calls dataWriter", function () {
-            var dataWriter = jasmine.createSpy('dataWriter');
+        it("calls data source write", function () {
+            var spy;
             return promisedDocument.then(function (reelDocument) {
-                return reelDocument.save("foo/bar/mock.reel/", dataWriter);
+                spy = spyOn(reelDocument._dataSource, "write");
+                return reelDocument.save("foo/bar/mock.reel/");
             })
             .then(function () {
-                expect(dataWriter).toHaveBeenCalled();
+                expect(spy).toHaveBeenCalled();
             });
         });
 
-        it("calls callback for each type of file", function () {
-            var dataWriter = function (){};
+        it("calls the save function for each type of file", function () {
             var savePassFile = jasmine.createSpy('savePassFile');
 
             return promisedDocument.then(function (reelDocument) {
                 reelDocument.registerFile("pass", savePassFile);
 
-                return reelDocument.save("foo/bar/mock.reel/", dataWriter);
+                return reelDocument.save("foo/bar/mock.reel/");
             })
             .then(function () {
                 expect(savePassFile).toHaveBeenCalled();
             });
         });
 
-        it("calls dataWriter with the file location", function () {
-            var dataWriter = function () {};
+        it("calls the save function with the file location", function () {
+            var dataSource;
             var savePassFile = jasmine.createSpy('savePassFile');
             return promisedDocument.then(function (reelDocument) {
                 reelDocument.registerFile("pass", savePassFile);
-
-                return reelDocument.save("foo/bar/mock.reel/", dataWriter);
+                dataSource = reelDocument._dataSource;
+                return reelDocument.save("foo/bar/mock.reel/");
             })
             .then(function () {
                 // toHaveBeenCalledWith is buggy
-                expect(savePassFile.mostRecentCall.args).toEqual(['foo/bar/mock.reel/mock.pass', dataWriter]);
+                expect(savePassFile.mostRecentCall.args).toEqual(['foo/bar/mock.reel/mock.pass', dataSource]);
             });
         });
 
-        it("calls dataWriter with the correct file location if original location doesn't have trailing slash", function () {
-            var dataWriter = function () {};
+        it("calls the save function with the correct file location if original location doesn't have trailing slash", function () {
+            var dataSource;
             var savePassFile = jasmine.createSpy('savePassFile');
             return promisedDocument.then(function (reelDocument) {
                 reelDocument.registerFile("pass", savePassFile);
-
-                return reelDocument.save("foo/bar/mock.reel", dataWriter);
+                dataSource = reelDocument._dataSource;
+                return reelDocument.save("foo/bar/mock.reel");
             })
             .then(function () {
                 // toHaveBeenCalledWith is buggy
-                expect(savePassFile.mostRecentCall.args).toEqual(['foo/bar/mock.reel/mock.pass', dataWriter]);
+                expect(savePassFile.mostRecentCall.args).toEqual(['foo/bar/mock.reel/mock.pass', dataSource]);
             });
         });
     });
