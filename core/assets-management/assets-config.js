@@ -23,8 +23,8 @@ var AssetsConfig = {
                 "model/vnd.collada+xml"
             ],
             hidden: [
-                "model/vnd.collada+xml"
-                //fixme collada files are hidden for the demo
+                "model/gltf-bundle",
+                "model/gltf"
             ]
         },
 
