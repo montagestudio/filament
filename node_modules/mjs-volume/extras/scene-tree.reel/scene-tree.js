@@ -14,7 +14,7 @@ var Component = require("montage/ui/component").Component,
         indentValue: 10,
         indentUnit: "px",
         meshesEnabled: false,
-        displayNodeType: false
+        displayNodeType: true
     };
 
 /**
