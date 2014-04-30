@@ -47,3 +47,16 @@
     background-image: url(../../../assets/img/github.svg);
 }
 
+
+
+/* Responsive --------------------------------- */
+
+@media (max-width: 900px) {
+
+    .Aside.Aside--login {
+        position: absolute;
+        right: 0;
+        width: auto;
+    }
+
+}
