@@ -189,6 +189,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._documentTypeUrlMatchers = [];
             this._urlMatcherDocumentTypeMap = new WeakMap();
             this._editorTypeInstanceMap = new WeakMap();
+            this._editorTypeDocumentTypeMap = new WeakMap(); // TODO: another to many map, they must be a better way
 
             this.openDocumentsController = RangeController.create().initWithContent(this.documents);
             this.assetsManager = AssetsManager.create();
@@ -405,6 +406,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: null
     },
 
+    _editorTypeDocumentTypeMap: {
+        value: null
+    },
+
     registerUrlMatcherForDocumentType: {
         value: function (urlMatcher, documentType) {
             var editorType,
@@ -417,12 +422,12 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             if (this._urlMatcherDocumentTypeMap.has(urlMatcher)) {
                 throw new Error("Already has this url matcher registered for a document type");
             }
-
+            editorType = documentType.editorType;
             //TODO use one data structure for both of these
             this._documentTypeUrlMatchers.push(urlMatcher);
             this._urlMatcherDocumentTypeMap.set(urlMatcher, documentType);
+            this._editorTypeDocumentTypeMap.set(editorType, documentType);
 
-            editorType = documentType.editorType;
             if (editorType.requestsPreload) {
                 editor = this._getEditor(editorType);
                 this._applicationDelegate.updateStatusMessage("Loading editor…");
@@ -445,16 +450,26 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      */
     documentTypeForUrl: {
         value: function (url) {
-            var documentType,
+            var documentTypes = this.documentTypesForUrl(url);
+
+            return documentTypes[documentTypes.length - 1];
+        }
+    },
+
+    /**
+     * The document prototypes possible to use for the specified url
+     * @override
+     */
+    documentTypesForUrl: {
+        value: function (url) {
+            var self = this,
                 matchResults = this._documentTypeUrlMatchers.filter(function (matcher) {
                     return matcher(url) ? matcher : false;
                 });
 
-            if (matchResults.length) {
-                documentType = this._urlMatcherDocumentTypeMap.get(matchResults[matchResults.length - 1]);
-            }
-
-            return documentType;
+            return matchResults.map(function (match) {
+                return self._urlMatcherDocumentTypeMap.get(match);
+            });
         }
     },
 
@@ -520,16 +535,19 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      * @return {Promise} A promise for the representative document
      */
     openUrlForEditing: {
-        value: function (fileUrl) {
+        value: function (fileUrl, editorType) {
             var self = this,
                 editor,
                 alreadyOpenedDoc,
                 documentType,
-                editorType,
                 lastDocument = this.currentDocument,
                 recentUrlIndex;
 
-            if (lastDocument && fileUrl === lastDocument.url) {
+            // Document is the current document and is being edited by the same editor
+            if (
+                lastDocument && fileUrl === lastDocument.url &&
+                !editorType && lastDocument.editor.constructor === editorType
+                ) {
                 return Promise.resolve(lastDocument);
             }
 
@@ -537,13 +555,24 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             alreadyOpenedDoc = this.documentForUrl(fileUrl);
 
             if (alreadyOpenedDoc) {
-                editorType = alreadyOpenedDoc.constructor.editorType;
+                if (editorType && alreadyOpenedDoc.editor.constructor !== editorType) {
+                    // Close the document before opening it in a different editor
+                    return this.closeDocument(alreadyOpenedDoc).then(function (closeAccepted) {
+                        if (closeAccepted) {
+                            return self.openUrlForEditing(fileUrl, editorType);
+                        } else {
+                            return Promise.resolve(lastDocument);
+                        }
+                    });
+                } else {
+                    editorType = alreadyOpenedDoc.constructor.editorType;
+                }
+            } else if (editorType) {
+                // Use the documentType associated with the given editorType
+                documentType = this._editorTypeDocumentTypeMap.get(editorType);
             } else {
                 documentType = this.documentTypeForUrl(fileUrl);
-
-                if (documentType) {
-                    editorType = documentType.editorType;
-                }
+                editorType = documentType.editorType;
             }
 
             if (editorType) {
@@ -569,7 +598,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 this._recentDocumentUrls.unshift(fileUrl);
                 this.dispatchOwnPropertyChange("recentDocumentUrls", self.recentDocumentUrls);
 
-                return this.openUrl(fileUrl).then(function (doc) {
+                return this.openUrl(fileUrl, documentType).then(function (doc) {
                     self.dispatchEventNamed("didOpenDocument", true, false, {
                         document: doc,
                         isCurrentDocument: doc === self.currentDocument,

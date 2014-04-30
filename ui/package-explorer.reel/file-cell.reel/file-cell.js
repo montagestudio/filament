@@ -68,8 +68,22 @@ exports.FileCell = Montage.create(Component, {
 
             // TODO: one menu instance for every file, RLY ?!!!
             var menu = this.ownerComponent._createContextualMenu(),
-                deleteItem = MenuModule.makeMenuItem("Delete", "delete", true, "");
+                deleteItem = MenuModule.makeMenuItem("Delete", "delete", true, ""),
+                openWithItem = MenuModule.makeMenuItem("Open with", "openWith", true, "");
             menu.insertItem(deleteItem);
+
+            // openWith menuItem
+            var prototypes = this.projectController.documentTypesForUrl(this.fileInfo.fileUrl);
+            if (prototypes.length > 0) {
+                menu.insertItem(openWithItem, 0);
+                prototypes.forEach(function (proto) {
+                    var name = proto.editorType.name,
+                    // TODO: we should be able to provide event details
+                    item = MenuModule.makeMenuItem(name, "openWith", true, "");
+                    item.editorType = proto.editorType;
+                    openWithItem.insertItem(item, 0);
+                });
+            }
             this._contextualMenu = menu;
 
             return this._contextualMenu;
@@ -120,11 +134,15 @@ exports.FileCell = Montage.create(Component, {
                 evt.stop();
                 this.dispatchEventNamed("removeTree", true, true, {path: this.fileInfo.filename});
                 break;
+
+            case "openWith":
+                evt.stop();
+                var editorType = menuItem.editorType;
+                this.projectController.openUrlForEditing(this.fileInfo.fileUrl, editorType);
+                break;
             }
         }
     },
-
-
 
     _isUploading: {
         value: false
@@ -186,7 +204,6 @@ exports.FileCell = Montage.create(Component, {
             } else {
                 element.classList.remove("FileCell--uploading");
             }
-
         }
     },
 

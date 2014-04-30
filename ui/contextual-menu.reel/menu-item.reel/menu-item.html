@@ -19,7 +19,7 @@
             "bindings": {
                 "label": {"<-": "@owner.menuItemModel.title"},
                 "disabled": {"<-": "@owner.menuItemModel.enabled != undefined && !@owner.menuItemModel.enabled"},
-                "classList.has('subMenu')": {"<-": "@owner.isSubMenu()"},
+                "classList.has('subMenu')": {"<-": "@owner.menuItemModel && @owner.menuItemModel.items && @owner.menuItemModel.items.length && !@owner.isRootMenu()"},
                 "classList.has('selected')": {"<-": "@owner.menu.activePath.has(@owner)"}
             },
             "listeners": [
@@ -94,7 +94,7 @@
         <button data-montage-id="menuButton" class="MenuItem-button"><div data-param="*"></div></button>
         <div data-montage-id="contextualMenuCondition">
             <div data-montage-id="contextualMenu">
-                <ul data-montage-id="contextualMenuRepetition" class="ContextualMenu-list">
+                <ul data-montage-id="contextualMenuRepetition" class="MenuItem-ContextualMenu-list">
                     <li data-montage-id="contextualMenuItem"></li>
                 </ul>
             </div>
