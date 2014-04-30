@@ -543,7 +543,11 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 lastDocument = this.currentDocument,
                 recentUrlIndex;
 
-            if (lastDocument && fileUrl === lastDocument.url) {
+            // Document is the current document and is being edited by the same editor
+            if (
+                lastDocument && fileUrl === lastDocument.url &&
+                !editorType && lastDocument.editor.constructor === editorType
+                ) {
                 return Promise.resolve(lastDocument);
             }
 
@@ -551,14 +555,24 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             alreadyOpenedDoc = this.documentForUrl(fileUrl);
 
             if (alreadyOpenedDoc) {
-                editorType = alreadyOpenedDoc.constructor.editorType;
-            } else {
-                if (editorType) {
-                    documentType = this._editorTypeDocumentTypeMap.get(editorType);
+                if (editorType && alreadyOpenedDoc.editor.constructor !== editorType) {
+                    // Close the document before opening it in a different editor
+                    return this.closeDocument(alreadyOpenedDoc).then(function (closeAccepted) {
+                        if (closeAccepted) {
+                            return self.openUrlForEditing(fileUrl, editorType);
+                        } else {
+                            return Promise.resolve(lastDocument);
+                        }
+                    });
                 } else {
-                    documentType = this.documentTypeForUrl(fileUrl);
-                    editorType = documentType.editorType;
+                    editorType = alreadyOpenedDoc.constructor.editorType;
                 }
+            } else if (editorType) {
+                // Use the documentType associated with the given editorType
+                documentType = this._editorTypeDocumentTypeMap.get(editorType);
+            } else {
+                documentType = this.documentTypeForUrl(fileUrl);
+                editorType = documentType.editorType;
             }
 
             if (editorType) {
