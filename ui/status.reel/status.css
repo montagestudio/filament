@@ -65,7 +65,7 @@
 }
 
 .Status-refreshButton.matte-Button {
-    margin: 0 4px 0 0;
+    margin: 5px 4px 0 0;
     height: 24px;
     color: hsla(0, 100%, 100%, 1);
     border-color: hsl(0, 0%, 25%);
@@ -74,6 +74,7 @@
     background: -moz-linear-gradient(hsl(0, 0%, 50%), hsl(0, 0%, 40%));
     background: -ms-linear-gradient(hsl(0, 0%, 50%), hsl(0, 0%, 40%));
     background: linear-gradient(hsl(0, 0%, 50%), hsl(0, 0%, 40%));
+    vertical-align: top;
 }
 
 .Status-refreshButton.matte-Button:hover {
