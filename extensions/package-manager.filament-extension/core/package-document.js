@@ -70,6 +70,9 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
             application.addEventListener("dependencyInstalled", this);
             application.addEventListener("dependencyRemoved", this);
 
+            this.editor.addEventListener("menuValidate", this);
+            this.editor.addEventListener("menuAction", this);
+
             this._getOutDatedDependencies();
 
             return this;
@@ -100,39 +103,72 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
         value: null
     },
 
+    canUndo: {
+        get: function () {
+            return this.getPath("undoManager.undoCount > 0") && !this.isReloadingList && !this._dependencyManager.isBusy;
+        }
+    },
+
+    canRedo: {
+        get: function () {
+            return this.getPath("undoManager.redoCount > 0") && !this.isReloadingList && !this._dependencyManager.isBusy;
+        }
+    },
+
     setProperty: {
         value: function (key, value) {
             var response = false;
 
             if (typeof key === 'string' && PACKAGE_PROPERTIES_ALLOWED_MODIFY.hasOwnProperty(key)) {
                 response = true; // Could be the same value.
+                var oldValue = this[key];
 
-                switch (key) {
+                if(oldValue !== value) { // Different values.
+                    this[key] = value; // Try to set the new value.
 
-                case PACKAGE_PROPERTIES_ALLOWED_MODIFY.author:
-                    if (!PackageTools.isPersonEqual(this[key], value)) { // Different values.
-                        this[key] = value; // Try to set the new value.
-                        // Check if the modification has been accepted.
-                        response = PackageTools.isPersonEqual(this[key], value);
+                    response = this[key] === value;// Check if the modification has been accepted.
 
-                        if (response && this.undoManager) {
-                            this.undoManager.register("Set Property", Promise.resolve([this.setProperty, this, key, value]));
-                        }
+                    if (response && this.undoManager) {
+                        var undoArgs = [this.setProperty, this, key, oldValue];
+
+                        this.undoManager.register("Set Package Property", Promise.resolve(undoArgs));
+
+                        this.dispatchEventNamed("packageDocumentDidSetOwnProperty", true, false, {
+                            key: key,
+                            value: value
+                        });
                     }
-                    break;
-
-                default:
-                    if(this[key] !== value) { // Different values.
-                        this[key] = value; // Try to set the new value.
-                        response = this[key] === value;// Check if the modification has been accepted.
-
-                        if (response && this.undoManager) {
-                            this.undoManager.register("Set Property", Promise.resolve([this.setProperty, this, key, value]));
-                        }
-                    }
-                    break;
                 }
             }
+
+            return response;
+        }
+    },
+
+    setAuthorProperty: {
+        value: function (key, value) {
+            var response = false;
+
+            if (this.author && this.author[key] !== value) {
+                var oldValue = this.author[key];
+
+                this.author[key] = value; // Try to set the new value.
+
+                // Check if the modification has been accepted.
+                response = this.author[key] === value;
+
+                if (response && this.undoManager) {
+                    var undoArgs = [this.setAuthorProperty, this, key, oldValue];
+
+                    this.undoManager.register("Set Author Property", Promise.resolve(undoArgs));
+
+                    this.dispatchEventNamed("packageDocumentDidSetAuthorProperty", true, false, {
+                        key: key,
+                        value: value
+                    });
+                }
+            }
+
             return response;
         }
     },
@@ -200,7 +236,7 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
             this._package.private = !!privacy;
         },
         get: function () {
-            return this._package.private;
+            return this._package.private || false;
         }
     },
 
@@ -251,7 +287,7 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
             if (maintainer) {
                 if (this._findMaintainerIndex(maintainer) < 0) { // Already exists. Must be unique.
                     this.maintainers.push(maintainer);
-                    this._changeCount++;
+                    this.undoManager.register("Add Maintainer", Promise.resolve([this.removeMaintainer, this, maintainer]));
                 }
 
                 return true;
@@ -267,8 +303,7 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
 
                 if (maintainerIndex >= 0) {
                     this.maintainers.splice(maintainerIndex, 1);
-                    this._changeCount++;
-
+                    this.undoManager.register("Remove Maintainer", Promise.resolve([this.addMaintainer, this, maintainer]));
                     return true;
                 }
             }
@@ -584,10 +619,16 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
 
     installDependency: {
         value: function (name, version, type) {
-            var dependency = new Dependency(name, version, type);
+            var undoArgs = [this.uninstallDependency, this, name];
 
-            this._addDependencyToCollection(dependency);
-            this._dependencyManager.installDependency(dependency.name, dependency.version);
+            if (!this._findDependency(name)) {
+                var dependency = new Dependency(name, version, type);
+
+                this._addDependencyToCollection(dependency);
+            }
+
+            this._dependencyManager.installDependency(name, version);
+            this.undoManager.register("Install Dependency", Promise.resolve(undoArgs));
         }
     },
 
@@ -639,7 +680,10 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
                     throw new Error('Can not uninstall the dependency ' + name + ', required by the App');
                 }
 
+                var undoArgs = [this.installDependency, this, dependency.name, dependency.version, dependency.type];
+
                 this._dependencyManager.removeDependency(name);
+                this.undoManager.register("Uninstall Dependency", Promise.resolve(undoArgs));
 
                 return true;
             }
@@ -663,11 +707,12 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
                 } else {
                     this._removeDependencyFromCollection(dependency);
 
+                    var undoArgs = [this.switchDependencyType, this, dependency, dependency.type];
                     dependency.type = type;
 
                     this._addDependencyToCollection(dependency);
                     this.editor.updateSelectionDependencyList();
-                    this._changeCount++;
+                    this.undoManager.register("Switch Dependency", Promise.resolve(undoArgs));
 
                     return Promise.resolve(true);
                 }
@@ -838,14 +883,50 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
             }
 
             if (dependency && !dependency.extraneous && (this.isRangeValid(range) || PackageTools.isNpmCompatibleGitUrl(range))) {
+                var undoArgs = [this.updateDependencyRange, this, dependencyName, dependency.version];
                 dependency.version = range.trim();
 
-                this._changeCount++;
+                this.undoManager.register("Change Dependency's Range", Promise.resolve(undoArgs));
 
                 return true;
             }
 
             return false;
+        }
+    },
+
+    handleMenuValidate: {
+        value: function (evt) {
+            var menuItem = evt.detail,
+                identifier = evt.detail.identifier;
+
+            if ("undo" === identifier) {
+                menuItem.enabled = this.canUndo;
+                menuItem.title = this.canUndo ? "Undo " + this.undoManager.undoLabel : "Undo";
+                evt.stop();
+            } else if ("redo" === identifier) {
+                menuItem.enabled = this.canRedo;
+                menuItem.title = this.canRedo ? "Redo " + this.undoManager.redoLabel : "Redo";
+                evt.stop();
+            }
+        }
+    },
+
+    handleMenuAction: {
+        value: function (evt) {
+            var identifier = evt.detail.identifier;
+
+            if ("undo" === identifier) {
+                if (this.canUndo) {
+                    this.undo().done();
+                }
+                evt.stop();
+            } else if ("redo" === identifier) {
+                if (this.canRedo) {
+                    this.redo().done();
+                }
+                evt.stop();
+            }
         }
     },
 

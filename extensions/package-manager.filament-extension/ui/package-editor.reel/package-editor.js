@@ -12,6 +12,10 @@ exports.PackageEditor = Montage.create(Editor, {
         }
     },
 
+    acceptsActiveTarget: {
+        value: true
+    },
+
     enterDocument: {
         value: function (firstTime) {
             if (firstTime) {

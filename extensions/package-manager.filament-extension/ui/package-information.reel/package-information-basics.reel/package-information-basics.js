@@ -3,6 +3,7 @@
  * @requires montage/ui/component
  */
 var Component = require("montage/ui/component").Component,
+    application = require("montage/core/application").application,
     PackageTools = require('../../../core/package-tools').ToolsBox;
 
 /**
@@ -24,6 +25,7 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
                 this.addPathChangeListener("license", this, "handlePropertyChange");
                 this.addPathChangeListener("private", this, "handlePropertyChange");
                 this.addPathChangeListener("homepage", this, "handlePropertyChange");
+                application.addEventListener("packageDocumentDidSetOwnProperty", this);
             }
         }
     },
@@ -85,6 +87,18 @@ exports.PackageInformationBasics = Component.specialize(/** @lends PackageInform
 
                 if (key === 'name') {
                     this.needsDraw = true;
+                }
+            }
+        }
+    },
+
+    handlePackageDocumentDidSetOwnProperty: {
+        value: function (event) {
+            var property = event.detail;
+
+            if (property && property.hasOwnProperty("key") && property.hasOwnProperty("value")) {
+                if (typeof this[property.key] !== "undefined" && this[property.key] !== property.value) {
+                    this[property.key] = property.value;
                 }
             }
         }
