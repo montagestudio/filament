@@ -1,10 +1,73 @@
 .Viewer {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+
     -webkit-flex: auto;
-    -webkit-justify-content: center;
-    -webkit-align-items: center;
+    -moz-flex: auto;
+    -ms-flex: auto;
+    flex: auto;
+
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+
+    background: hsl(0,0%,40%) url(./checkerboard.svg);
 }
 
-.Viewer .imageView {
-    -webkit-box-shadow: 0 2px 5px hsl(0,0%,20%);
+.Viewer-Controls {
+    position: relative;
+    width: 100%;
+    height: 15px;
+
+    -webkit-flex: 0 0 auto;
+    -moz-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+
+    background-color: hsl(0,0%,96%);
+    box-shadow: 0 2px 6px hsla(0,0%,20%,.6);
+}
+
+.Viewer-ArtBoard {
+    -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+
+    -webkit-justify-content: center;
+    -moz-justify-content: center;
+    -ms-justify-content: center;
+    justify-content: center;
+
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
+    
+    overflow: auto;
+}
+
+.Viewer-Image {
+    border: 1px solid hsla(0,0%,96%, 0);
+    -webkit-transition: border 200ms ease-in-out;
+    -moz-transition: border 200ms ease-in-out;
+    -ms-transition: border 200ms ease-in-out;
+    transition: border 200ms ease-in-out;
+    
+    -webkit-flex: 0 0 auto;
+    -moz-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+}
+
+.Viewer-Image:hover {
+    border-color: hsla(0,0%,96%, 0.3);
 }
