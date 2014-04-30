@@ -1,355 +1,174 @@
 
 .Main {
-    text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    cursor: default;
+
 }
 
-/* Intro --------------------------------- */
+/* Aside --------------------------------- */
 
-.Intro {
-    margin: 20px;
-    color: hsl(0,0%,50%);
-    text-align: center;
-    -webkit-animation: Intro-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
-    -moz-animation: Intro-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
-    -ms-animation: Intro-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
-    animation: Intro-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
+.Aside-title {
+    margin: 0;
+    font-size: 1.8em;
+    font-weight: 200;
+    color: #fff;
 }
 
-@-webkit-keyframes Intro-fade {
-    0% {
-        opacity: 0;
-        -webkit-transform: translateX(60px);
-        transform: translateX(60px);
-    }
-}
-@-moz-keyframes Intro-fade {
-    0% {
-        opacity: 0;
-        -moz-transform: translateX(60px);
-        transform: translateX(60px);
-    }
-}
-@-ms-keyframes Intro-fade {
-    0% {
-        opacity: 0;
-        -ms-transform: translateX(60px);
-        transform: translateX(60px);
-    }
-}
-@keyframes Intro-fade {
-    0% {
-        opacity: 0;
-        transform: translateX(60px);
-    }
+.Aside-list {
+    list-style: none;
+    text-align: left;
+    padding: 0;
+    font-size: 0.85em;
 }
 
-.Intro a,
-.Intro a:active {
-    text-decoration: none;
-    color: hsl(212, 56%, 58%);
+.Aside-list li {
+    display: table-row;
 }
 
-.Intro a:hover {
-    color: hsl(212, 56%, 38%);
-}
-
-.Intro-logo {
-    display: block;
-    width: 240px;
-    margin: auto;
-}
-
-.Intro-info {
-    margin: 2em 0;
-}
-
-.Intro-version {
-    display: inline-block;
-    font-size: 14px;
-    text-align: center;
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
-    user-select: text;
-    cursor: text;
-    padding: 0.2em 0.4em;
-    border-radius: 4px;
-    border: 1px solid hsl(0, 0%, 75%);
+.Aside-list span {
+    display: table-cell;
+    padding: 0.6em;
     vertical-align: middle;
 }
 
-.Intro-support {
-    margin-left: .5em;
-    font-size: 12px;
-}
-
-.Intro-links,
-.Intro-examples {
-    padding: 0;
-    list-style: none;
-}
-
-.Intro-meta {
-    font-size: 11px;
-    color: hsl(0, 0%, 70%);
-    text-align: center;
-}
-
-/* About ------------------------------------ */
-
-.About {
-    min-width: 240px;
-}
-
-/* Examples --------------------------------- */
-
-.Examples {
-    text-align: left;
-    min-width: 240px;
-}
-
-.Examples-headline {
-    margin-bottom: 0.2em;
-}
-
-.Intro-examples--featured {
-    margin: 2em 0;
-}
-
-.Intro-examples--featured .Intro-examples-image {
-    -webkit-box-shadow: 0 0 2px hsla(0,0%,30%,0.5);
-    -moz-box-shadow: 0 0 2px hsla(0,0%,30%,0.5);
-    -ms-box-shadow: 0 0 2px hsla(0,0%,30%,0.5);
-    box-shadow: 0 0 2px hsla(0,0%,30%,0.5);
-    margin-bottom: 0.2em;
+.Aside-list .Aside-linkButton {
+    display: block;
     width: 100%;
 }
 
-.Intro-examples--featured .Button {
-    min-width: 10em;
+.Aside-links a {
+    display: inline-block;
+    margin: 0 .5em;
 }
 
-.Intro-examples-description {
-    margin: 0.2em 0 0.5em;
-    text-align: left;
+
+
+
+
+
+/* Projects --------------------------------- */
+
+.Projects {
+    position: absolute;
+    top: 0;
+    left: 512px;
+    right: 0;
+    bottom: 0;
+    color: hsl(0, 0%, 26%);
+    background-color: #fff;
+    overflow: auto;
 }
 
-/* Launcher --------------------------------- */
-
-.Launcher {
-    margin: 40px;
-    margin-left: 20px;
-    min-width: 240px;
-    -webkit-animation: Launcher-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
-    -moz-animation: Launcher-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
-    -ms-animation: Launcher-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
-    animation: Launcher-fade .4s cubic-bezier(0, 0.7, 0.3, 1);
-}
-
-@-webkit-keyframes Launcher-fade {
-    0% {
-        opacity: 0;
-        -webkit-transform: translateX(-60px);
-        transform: translateX(-60px);
-    }
-}
-@-moz-keyframes Launcher-fade {
-    0% {
-        opacity: 0;
-        -moz-transform: translateX(-60px);
-        transform: translateX(-60px);
-    }
-}
-@-ms-keyframes Launcher-fade {
-    0% {
-        opacity: 0;
-        -ms-transform: translateX(-60px);
-        transform: translateX(-60px);
-    }
-}
-@keyframes Launcher-fade {
-    0% {
-        opacity: 0;
-        transform: translateX(-60px);
-    }
-}
-
-.Launcher-section {
-    -webkit-flex: 0 0 auto;
-    -moz-flex: 0 0 auto;
-    -ms-flex: 0 0 auto;
-    flex: 0 0 auto;
-    margin: 10px 0;
-    padding: 15px;
-    border-radius: 6px;
-    border: 1px solid hsla(0, 0%, 0%, .1);
-    background: hsla(0,0%,0%,.04);
-    box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.06), 0 1px 0 hsla(0,0%,100%,1);
-}
-
-.Launcher-title {
-    margin: 0 0 10px 0;
-    font-size: 20px;
-    font-weight: normal;
-    color: hsl(0, 0%, 50%);
-    text-shadow: 0 1px 0 hsla(0, 0%, 100%, .3);
+.Projects-content {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 3rem;
+    display: -webkit-flex;
+    display: flex;
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    height: 100%;
     text-align: center;
 }
 
-.History-progress {
-    -webkit-transition: height .3s;
-    -moz-transition: height .3s;
-    -ms-transition: height .3s;
-    transition: height .3s;
-    -moz-transition: height .3s;
-    -moz-transition: height .3s;
-    transition: height .3s;
-    overflow: hidden;
-}
-
-.History-progress.is-done {
-    height: 0px;
-    border: none !important;
-}
-
-.Launcher .Button {
-    margin: 0.5em 0;
-}
-
-/* Action --------------------------------- */
-
-.Launcher-section .Action {
-    display: -webkit-flex;
-    display: -moz-flex;
-    display: -ms-flex;
-    display: flex;
-}
-
-.Action-button {
-    -webkit-flex: 1;
-    -moz-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
+.Projects-section {
+    -webkit-flex: 0 0 auto;
+    flex: 0 0 auto;
     position: relative;
-    margin: 0;
-    padding-left: 3.2em;
-    font-size: 16px;
-    color: hsla(0,0%,100%,1);
-    text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
-    border-radius: 4px;
-    background-color: hsl(210,100%,56%);
-    box-shadow: inset 0 1px 0 hsla(0,0%,100%,.15), 0 1px 0 hsla(0,0%,100%,.6);
+    padding: 0.8rem 0;
 }
 
-.Action-button:hover {
-    color: hsla(0,0%,100%,1);
+.Projects-section:first-child {
+    padding-top: 3rem;
 }
 
-.Action-button.active {
-    box-shadow: 0 1px 0 hsla(0,0%,100%,.6);
+.Projects-section:last-child {
+    padding-bottom: 3rem;
 }
 
-.Action-button:before {
-    content: "";
+
+/* User --------------------------------- */
+
+.User {
+    display: block;
+    margin: 0 0 15px 0;
+    text-align: center;
+}
+
+.User-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 30PX;
+}
+
+.User-name {
+    font-size: 1.4em;
+    color: hsl(0, 0%, 72%);
+    display: block;
+}
+
+.User-logout {
     position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 2.5em;
-    border-top-left-radius: inherit;
-    border-bottom-left-radius: inherit;
-    border-right: 1px solid hsla(0,0%,0%,.06);
-    background: hsla(0,0%,0%,.06) no-repeat center;
+    top: 1rem;
+    right: 1rem;
+    margin: 0;
 }
 
 
-/* New */
+/* Header --------------------------------- */
 
-.Action-button--new {
-    border-color: hsl(210,100%,56%);
-    background-image: -webkit-linear-gradient(top, hsl(210,100%,72%), hsl(210,100%,62%) );
-    background-image: -moz-linear-gradient(top, hsl(210,100%,72%), hsl(210,100%,62%) );
-    background-image: -ms-linear-gradient(top, hsl(210,100%,72%), hsl(210,100%,62%) );
-    background-image: linear-gradient(top, hsl(210,100%,72%), hsl(210,100%,62%) );
+.Header {
+    margin-bottom: 1rem;
 }
 
-.Action-button--new:hover {
-    background-image: -webkit-linear-gradient(top, hsl(210,100%,76%), hsl(210,100%,64%) );
-    background-image: -moz-linear-gradient(top, hsl(210,100%,76%), hsl(210,100%,64%) );
-    background-image: -ms-linear-gradient(top, hsl(210,100%,76%), hsl(210,100%,64%) );
-    background-image: linear-gradient(top, hsl(210,100%,76%), hsl(210,100%,64%) );
-}
-
-.Action-button--new.active {
-    background-image: -webkit-linear-gradient(top, hsl(210,100%,66%), hsl(210,100%,56%) );
-    background-image: -moz-linear-gradient(top, hsl(210,100%,66%), hsl(210,100%,56%) );
-    background-image: -ms-linear-gradient(top, hsl(210,100%,66%), hsl(210,100%,56%) );
-    background-image: linear-gradient(top, hsl(210,100%,66%), hsl(210,100%,56%) );
-}
-
-.Action-button--new:before {
-    background-image: url(../../assets/images/plus.svg);
+.Header-title {
+    flex: 1;
+    line-height: 1;
+    font-size: 1.2em;
+    font-weight: 400;
+    margin: 0;
 }
 
 
-/* Open */
-
-.Action-button--open {
-    border-color: hsl(170,80%,40%);
-    background-image: -webkit-linear-gradient(top, hsl(170,80%,48%), hsl(170,80%,42%) );
-    background-image: -moz-linear-gradient(top, hsl(170,80%,48%), hsl(170,80%,42%) );
-    background-image: -ms-linear-gradient(top, hsl(170,80%,48%), hsl(170,80%,42%) );
-    background-image: linear-gradient(top, hsl(170,80%,48%), hsl(170,80%,42%) );
-}
-
-.Action-button--open:hover {
-    background-image: -webkit-linear-gradient(top, hsl(170,80%,50%), hsl(170,80%,44%) );
-    background-image: -moz-linear-gradient(top, hsl(170,80%,50%), hsl(170,80%,44%) );
-    background-image: -ms-linear-gradient(top, hsl(170,80%,50%), hsl(170,80%,44%) );
-    background-image: linear-gradient(top, hsl(170,80%,50%), hsl(170,80%,44%) );
-}
-
-.Action-button--open.active {
-    background-image: -webkit-linear-gradient(top, hsl(170,80%,44%), hsl(170,80%,38%) );
-    background-image: -moz-linear-gradient(top, hsl(170,80%,44%), hsl(170,80%,38%) );
-    background-image: -ms-linear-gradient(top, hsl(170,80%,44%), hsl(170,80%,38%) );
-    background-image: linear-gradient(top, hsl(170,80%,44%), hsl(170,80%,38%) );
-}
-
-.Action-button--open:before {
-    background-image: url(../../assets/images/open.svg);
-}
-
-/* Form Fields --------------------------------- */
+/* New Form --------------------------------- */
 
 .NewForm {
-    padding: 15px;
+    padding: 1rem;
+    border: 1px solid hsla(0, 0%, 0%, 0.1);
+    text-align: left;
+    background: hsl(0, 0%, 96%);
 }
 
-.NewForm-field {
+.NewForm-fieldset {
+    border: none;
+    margin: 0 0 1rem 0;
+    padding: 0;
+}
+
+.NewForm-label {
     display: block;
-    margin-bottom: 4px;
-    line-height: 30px;
-    font-size: .9em;
-    text-align: right;
-    vertical-align: top;
+    font-size: .85em;
+    line-height: 1;
+    margin-bottom: .4em;
+    color: hsl(0, 0%, 50%);
 }
 
 .NewForm-bar {
     text-align: right;
 }
 
+.NewForm-bar .Button:last-child {
+    margin-right: 0;
+}
+
 .NewForm .matte-InputText,
 .NewForm .matte-Textarea {
     font-family: inherit;
-    border-color: hsl(0, 0%, 70%);
+    border-color: hsl(0, 0%, 80%);
     background-color: hsla(0, 100%, 100%, 0.7);
-    box-shadow: inset 0 1px 2px hsla(0, 0%, 0%, 0.08), 0 1px 0 hsla(0, 100%, 100%, 0.6);
+    width: 100%;
+    color: inherit;
+    font-size: inherit;
+    height: auto;
+    margin: 0;
 }
 
 .NewForm .matte-InputText:hover,
@@ -368,135 +187,28 @@
     color: hsl(10, 80%, 54%);
 }
 
-/* List --------------------------------- */
+
+
+/* History --------------------------------- */
 
 .History {
     -webkit-flex: 1;
-    -moz-flex: 1;
-    -ms-flex: 1;
     flex: 1;
     display: -webkit-flex;
-    display: -moz-flex;
-    display: -ms-flex;
     display: flex;
     -webkit-flex-direction: column;
-    -moz-flex-direction: column;
-    -ms-flex-direction: column;
     flex-direction: column;
-    min-height: 166px;
-}
-
-.History-filter {
-    margin: 0 0 10px 0;
-    padding: 0;
-    list-style: none;
-    text-align: center;
-}
-
-.History-filter-item {
-    display: inline-block;
-    margin: 0 5px;
-    font-size: .9em;
-}
-
-.History .History-update button.Button {
-    margin: 0 0;
-}
-
-
-.History .Title-section {
-    display: flex;
-    flex-direction: row;
-}
-.History .Title-section .Launcher-title {
-    flex-grow: 2;
-    padding-top: 4px;
-    padding-left: 50px;
-}
-
-.History .Title-section .History-refresh {
-    flex-grow:0;
-    width: 38px;
-    height: 38px;
-    padding: 0;
-    background: transparent;
-    border: 0px;
-    box-shadow: none;
-    -webkit-transform-origin-y: 20px;
-    -moz-transform-origin-y: 20px;
-    -ms-transform-origin-y: 20px;
-    -o-transform-origin-y: 20px;
-    -webkit-transform: rotate(45deg);
-       -moz-transform: rotate(45deg);
-        -ms-transform: rotate(45deg);
-         -o-transform: rotate(45deg);
-            transform: rotate(45deg);
-    -webkit-transition: -webkit-transform 1s ease-in-out;
-       -moz-transition: -moz-transform 1s ease-in-out;
-        -ms-transition: -ms-transform 1s ease-in-out;
-         -o-transition: -o-transform 1s ease-in-out;
-            transition: transform 1s ease-in-out;
-}
-
-.History .Title-section .History-refresh:before {
-    content: "\21BB";
-    font-size: 24px;
-    color: hsl(0, 0%, 75%);
-}
-
-.History .Title-section .History-refresh:hover:before {
-    color: hsl(0, 0%, 50%);
-}
-
-.History .Title-section .History-refresh:hover {
-    background: transparent;
-    -webkit-transform: rotate(405deg);
-       -moz-transform: rotate(405deg);
-        -ms-transform: rotate(405deg);
-         -o-transform: rotate(405deg);
-            transform: rotate(405deg);
-}
-.History .Title-section .History-refresh:active {
-    background: transparent;
-}
-
-.History .Title-section .History-refresh.disabled,
-.History .Title-section .History-refresh.disabled:hover {
-    opacity: .3;
-    -webkit-transform: rotate(45deg);
-       -moz-transform: rotate(45deg);
-        -ms-transform: rotate(45deg);
-         -o-transform: rotate(45deg);
-            transform: rotate(45deg);
-}
-.History .Title-section .History-refresh.disabled:hover:before {
-    color: hsl(0, 0%, 75%);
-}
-
-.History .History-update {
-    display: -webkit-flex;
-    -webkit-flex-direction: column;
-    -webkit-justify-content: center;
-}
-
-.History-progress.matte-Progress {
-    width: 100%;
-    margin: 10px 0;
-    border: 1px solid hsl(0, 0%, 80%);
-    background-color: hsl(0, 0%, 84%);
-}
-
-.History-progress.matte-Progress .matte-Progress-bar {
-    height: 8px;
-    background-color: hsl(0,0%,96%);
+    min-height: 174px;
 }
 
 .History-empty {
-    margin-top: 1em;
-    color: hsl(0, 0%, 70%);
-    text-align: center;
-    font-size: 14px;
+    margin: 1em 0;
+    color: hsl(0, 0%, 72%);
 }
+
+
+
+/* History List ---------------------------- */
 
 .History-list {
     position: relative;
@@ -505,123 +217,218 @@
     list-style: none;
     overflow-y: scroll;
     -webkit-flex: 1 1 0;
-    -moz-flex: 1 1 0;
-    -ms-flex: 1 1 0;
     flex: 1 1 0;
-    min-height: 0;
+    min-height: 0em;
+    border: 1px solid hsla(0, 0%, 0%, 0.1);
+    text-align: left;
 }
 
-.History-list-item {
-    padding: 8px 16px;
-    font-size: 14px;
-    line-height: 24px;
-    border-top: 1px solid hsla(0, 0%, 100%, .5);
-    border-bottom: 1px solid hsla(0, 0%, 0%, .1);
-    background-color: hsla(0,0%,100%,.6);
-    cursor: pointer;
-    display: block;
-    text-overflow: ellipsis;
+
+
+/* Progress --------------------------------- */
+
+.Projects-progress.matte-Progress {
+    width: 100%;
+    margin: -18px 0 0 0;
+    border: 1px solid hsl(0, 0%, 80%);
+    background-color: hsl(0, 0%, 84%);
+    transition: height .3s;
     overflow: hidden;
+    position: absolute;
+    left: 0;
+}
+
+.Projects-progress.matte-Progress .matte-Progress-bar {
+    height: 8px;
+    background-color: hsl(0,0%,96%);
+}
+
+.Projects-progress.is-done {
+    height: 0px;
+    border: none;
+}
+
+
+
+/* Buttons --------------------------------- */
+
+.Button.matte-Button {
     white-space: nowrap;
+    font-family: inherit;
+    font-size: inherit;
+    height: auto;
+    padding: 0.4em 1em;
+    color: hsla(0,0%,0%,.7);
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
+    border-color: hsl(0,0%,80%);
+    background-image: linear-gradient( hsl(0,0%,98%), hsl(0,0%,94%) );
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,.8), inset 0 -1px 1px hsla(0,0%,0%,.04), 0 1px 0 hsla(0,0%,100%,.6);
 }
 
-.History-list-item:hover {
-    background-color: hsla(0,0%,100%,.8);
+.Button.matte-Button:hover {
+    background-image: linear-gradient( hsl(0,0%,100%), hsl(0,0%,92%) );
 }
 
-.History-list-item:active {
-    border-top: 1px solid hsla(0, 0%, 100%, .1);
-    background-color: hsla(210,100%,50%,.1);
+.Button.matte-Button.active {
+    background-image: linear-gradient( hsl(0,0%,90%), hsl(0,0%,90%) );
+    box-shadow: inset 0 -1px 1px hsla(0,0%,0%,.04), 0 1px 0 hsla(0,0%,100%,.6);
 }
 
-.History .matte-RadioButton {
-    border-color: hsl(0, 0%, 70%);
-    background-color: hsla(0, 100%, 100%, 0.7);
-    box-shadow: inset 0 1px 2px hsla(0, 0%, 0%, 0.08), 0 1px 0 hsla(0, 100%, 100%, 0.6);
+.Button.matte-Button:focus {
+    border-color: inherit;
 }
 
-.History .matte-RadioButton:hover {
-    background-color: hsla(0,0%,100%,1);
+.Button.matte-Button.disabled {
+    border-color: hsl(0,0%,87%);
+    color: hsl(0,0%,70%);
+    background: hsl(0,0%,94%);
+    box-shadow: none;
+    pointer-events: none;
 }
 
-.History .matte-RadioButton:focus {
-    border-color: hsl(210,100%,70%);
-    background-color: hsla(0,0%,100%,1);
+
+/* Button Action */
+
+.Button.Button--action {
+    color: hsla(0,0%,100%,1);
+    text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
+    border-color: hsl(210,100%,50%);
+    background-color: hsl(210,100%,56%);
+    background-image: linear-gradient( hsl(210,100%,66%), hsl(210,100%,56%) );
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,.15), 0 1px 0 hsla(0,0%,100%,.6);
 }
 
-/* User --------------------------------- */
-
-.User {
-    display: block;
-    margin: 0 0 15px 0;
-    text-align: center;
+.Button.Button--action:hover {
+    color: hsla(0,0%,100%,1);
+    background-image: linear-gradient( hsl(210,100%,70%), hsl(210,100%,60%) );
 }
 
-.User-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 4px;
-    vertical-align: middle;
-    border: 1px solid hsla(0, 0%, 0%, 0.15);
+.Button.Button--action.active {
+    background-image: linear-gradient( hsl(210,100%,56%), hsl(210,100%,56%) );
+    box-shadow: 0 1px 0 hsla(0,0%,100%,.6);
 }
 
-.User-name {
-    margin-left: 10px;
-    line-height: 40px;
-    font-size: 20px;
-    vertical-align: middle;
+.Button.Button--action:focus {
+    border-color: hsl(210,100%,20%);
+}
+
+
+/* Button New */
+
+.NewProjectButton {
+    position: relative;
+    padding: .8rem .8rem .8rem 4em;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    border-radius: 0;
+    font-size: inherit;
+    text-align: left;
+    color: inherit;
+    border: 1px solid hsla(0, 0%, 0%, 0.1);
+    background-color: hsl(0, 0%, 96%);
+}
+
+.NewProjectButton:hover {
+    background-color: hsl(0, 0%, 98%);
+}
+
+.NewProjectButton:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 3em;
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+    border-right: 1px solid hsla(0,0%,0%,.06);
+    background: no-repeat center;
+    background-image: url(../../assets/images/plus.svg);
+}
+
+
+/* Button Link ---------------------------- */
+
+.ButtonLink,
+.ButtonLink:active {
+    border-radius: 0;
+    border: none;
+    background: transparent;
+    font-size: 0.8em;
     color: hsl(0, 0%, 50%);
 }
 
-
-
-
-/* Respsonsive --------------------------------- */
-
-@media (min-width:640px) {
-
-    html,
-    body {
-        height: 100%;
-    }
-
-    .Main {
-        display: -webkit-flex;
-        display: -moz-flex;
-        display: -ms-flex;
-        display: flex;
-        justify-content: center;
-        height: 100%;
-    }
-
-    .Intro {
-        width: 320px;
-        align-self: center;
-    }
-
-    .Launcher {
-        width: 320px;
-        display: -webkit-flex;
-        display: -moz-flex;
-        display: -ms-flex;
-        display: flex;
-        -webkit-flex-direction: column;
-        -moz-flex-direction: column;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        -webkit-justify-content: center;
-        -moz-justify-content: center;
-        -ms-justify-content: center;
-        justify-content: center;
-    }
+.ButtonLink:hover {
+    color: hsl(0, 0%, 26%);
 }
 
-@media (min-width:640px) and (max-height:600px) {
-    .Main {
-        height: auto;
+.ButtonLink.disabled {
+    color: hsl(0,0%,72%);
+    pointer-events: none;
+}
+
+
+/* Refresh Button ---------------------------- */
+
+.Projects-refreshButton {
+    position: absolute;
+    top: 0.5em;
+    right: 0;
+    width: 1em;
+    min-width: 0;
+    height: 1em;
+    line-height: 1;
+    margin: 0;
+    padding: 0 0 0 2px;
+    background: transparent;
+    border: 0px;
+    font-size: 1.4em;
+    font-weight: 600;
+    color: hsl(0, 0%, 72%);
+    box-shadow: none;
+    border-radius: 0;
+    -webkit-transform: rotate(45deg);
+       -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+    -webkit-transition: -webkit-transform .4s cubic-bezier(.70, 0, .30, 1);
+       -moz-transition:    -moz-transform .4s cubic-bezier(.70, 0, .30, 1);
+        -ms-transition:     -ms-transform .4s cubic-bezier(.70, 0, .30, 1);
+            transition:         transform .4s cubic-bezier(.70, 0, .30, 1);
+}
+
+.Projects-refreshButton:hover {
+    color: hsl(0, 0%, 50%);
+    background: transparent;
+    -webkit-transform: rotate(405deg);
+       -moz-transform: rotate(405deg);
+        -ms-transform: rotate(405deg);
+         -o-transform: rotate(405deg);
+            transform: rotate(405deg);
+}
+
+.Projects-refreshButton:active {
+    background: transparent;
+}
+
+.Projects-refreshButton:before {
+    content: "\21BB";
+}
+
+
+
+/* Responsive --------------------------------- */
+
+@media (max-width: 900px) {
+
+    .Projects {
+        position: relative;
+        left: initial;
     }
 
-    .Intro {
-        align-self: flex-start;
+    .Projects-content {
+        display: block;
+        height: auto;
     }
 }

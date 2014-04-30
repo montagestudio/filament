@@ -3,25 +3,143 @@
 /* Global ------------------------------------- */
 
 * {
-    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+         box-sizing: border-box;
 }
 
 html {
-    background-color: hsl(0,0%,98%);
+    font-family: Clear Sans, sans-serif;
+    font-size: 16px;
+    color: hsl(210, 10%, 75%);
+    background-color: hsl(210, 24%, 16%);
+    /* background-color: hsl(0, 0%, 22%); */
 }
 
 body {
     margin: 0;
-    font-family: Clear Sans, sans-serif;
+    font-size: 16px;
 }
+
+a,
+a:active {
+    text-decoration: none;
+    color: hsl(210, 75%, 75%);
+}
+a:hover {
+    color: hsl(212, 60%, 80%);
+}
+
 
 .montage-invisible {
     display: none;
 }
 
-/* Bootstrapping ------------------------------------- */
 
-.montage-app-bootstrapping .main,
-.montage-app-loading .main {
-    display: none;
+
+/* Aside ------------------------------------- */
+
+.Aside {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    display: -webkit-flex;
+    display: flex;
+    width: 512px;
+    text-align: center;
+    background: url(../../../assets/img/bg.jpg) no-repeat center top;
+    background-size: 100% auto;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.Aside-content {
+    margin: auto;
+    padding: 2rem;
+}
+
+.Aside-section {
+    padding: inherit;
+}
+
+.Aside-logo {
+    display: block;
+    width: 180px;
+    margin: 0 auto;
+}
+
+.Aside-meta {
+    font-size: .8em;
+    color: hsl(210, 10%, 50%);
+}
+
+
+/* Aside Button (big blue) --------------------------------- */
+
+.Aside-button {
+    display: inline-block;
+    position: relative;
+    padding: .6em 1em;
+    font-size: 1.4em;
+    line-height: 1.4;
+    color: hsl(0,0%,100%);
+    text-decoration: none;
+    text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
+    border-radius: 0.3em;
+    box-shadow: inset 0 1px 0 hsla(0, 100%, 100%, 0.15), 0 1px 3px hsla(0, 100%, 0%, 0.3);
+    background-color: hsl(210,100%,56%);
+    background-image: linear-gradient( hsl(210,100%,66%), hsl(210,100%,56%) );
+}
+
+.Aside-button:hover {
+    color: hsl(0,0%,100%);
+    background-image: linear-gradient( hsl(210,100%,70%), hsl(210,100%,60%) );
+}
+
+.Aside-button.active {
+    box-shadow: inset 0 1px 0 hsla(0, 100%, 100%, 0.15);
+    background-image: linear-gradient( hsl(210,100%,60%), hsl(210,100%,56%) );
+}
+
+
+/* Link Button (outline only) --------------------------------- */
+
+.Aside-linkButton,
+.Aside-linkButton:active {
+    display: inline-block;
+    height: auto;
+    margin: 0;
+    padding: 0 0.8em;
+    line-height: 2;
+    color: hsl(210, 75%, 75%);
+    font-family: inherit;
+    font-size: inherit;
+    border: 1px solid;
+    border-radius: 0.5em;
+    white-space: nowrap;
+    text-align: center;
+    background: transparent;
+}
+
+.Aside-linkButton:hover {
+    color: hsl(212, 60%, 80%);
+    background: transparent;
+}
+
+
+/* Responsive --------------------------------- */
+
+@media (max-width: 900px) {
+
+    .Aside {
+        position: relative;
+        max-width: none;
+
+        width: initial;
+}
+
+    .Aside-content {
+        padding: 2rem 1rem;
+    }
+
 }

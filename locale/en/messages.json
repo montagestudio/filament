@@ -115,14 +115,14 @@
         ]
     },
     "copyright": {
-        "message": "© 2012–2014 Montage Studio",
+        "message": "© 2014 Montage Studio",
         "description": "",
         "locations": [
             "welcome/ui/main.reel/main.html"
         ]
     },
     "new_application": {
-        "message": "New",
+        "message": "New Project",
         "description": "Button to create a new application",
         "locations": [
             "welcome/ui/main.reel/main.html"
@@ -131,13 +131,6 @@
     "open_application": {
         "message": "Open",
         "description": "Button to open an application",
-        "locations": [
-            "welcome/ui/main.reel/main.html"
-        ]
-    },
-    "recent_projects": {
-        "message": "Projects",
-        "description": "Title for the projects the user has most recently worked on",
         "locations": [
             "welcome/ui/main.reel/main.html"
         ]
