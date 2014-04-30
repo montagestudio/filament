@@ -13,7 +13,7 @@ exports.Extension = CoreExtension.specialize( {
     name: {
         get:function () {
             //TODO read the name from the package or something
-            return "Build Github Pages";
+            return "Build GitHub Pages";
         }
     },
 
@@ -35,7 +35,7 @@ exports.Extension = CoreExtension.specialize( {
                 if (projectDocument) {
                     projectDocument.build.then(function(build) {
                         build.addChain("gh-pages",
-                            "Publish to Github Pages",
+                            "Publish to GitHub Pages",
                             null,
                             [{
                                 thisp: self,

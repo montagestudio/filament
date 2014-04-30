@@ -145,7 +145,7 @@ Montage.defineProperty(exports, "defaultMenu", {
 
                 // Project
                 projectMenu = makeMenuItem("Project", "project", true, "", [
-                    makeMenuItem("Github repository", "source", true, ""),
+                    makeMenuItem("GitHub repository", "source", true, ""),
                     makeMenuItem("Close Project", "closeProject", true, "control+q")
                 ]);
                 _defaultMenu.insertItem(projectMenu);
