@@ -93,6 +93,7 @@ exports.ProjectDocument = Document.specialize({
                         }
                     })
                     .then(function () {
+                        application.addEventListener("remoteChange", self, false);
                         return self.updateRefs();
                     })
                     .catch(Function.noop)
@@ -168,6 +169,13 @@ exports.ProjectDocument = Document.specialize({
                     return build.buildFor(chainIdentifier);
                 }).done();
             }
+        }
+    },
+
+    handleRemoteChange: {
+        value: function(event) {
+            console.log("REMOTE CHANGE DETECTED", event.detail);
+            this.updateRefs();
         }
     },
 
