@@ -75,8 +75,6 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
             this.editor.addEventListener("menuValidate", this);
             this.editor.addEventListener("menuAction", this);
 
-            this._getOutDatedDependencies();
-
             return this;
         }
     },
