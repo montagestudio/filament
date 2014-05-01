@@ -37,6 +37,10 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         value: null
     },
 
+    mergeConflictPanel: {
+        value: null
+    },
+
     showModal: {
         value: false
     },
