@@ -183,7 +183,8 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
     name: {
         set: function (name) {
             if (PackageTools.isNameValid(name)) {
-                this._livePackage.name = this._package.name = name;
+                this.sharedProjectController.packageDescription.name =
+                    this._livePackage.name = this._package.name = name;
             }
         },
         get: function () {
@@ -194,7 +195,8 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
     version: {
         set: function (version) {
             if (PackageTools.isVersionValid(version)) {
-                this._livePackage.version = this._package.version = version;
+                this.sharedProjectController.packageDescription.version =
+                    this._livePackage.version = this._package.version = version;
             }
         },
         get: function () {
