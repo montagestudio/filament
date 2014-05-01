@@ -1034,7 +1034,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     libraryItem.templateContent = template.html;
                     libraryItem.name = objectName;
                     //TODO well this can't be hardcoded
-                    libraryItem.iconUrl = "/assets/img/library-icon.png";
+                    libraryItem.iconUrl = document.baseURI + "/assets/img/library-icon.png";
                     return libraryItem;
                 });
             } else {
@@ -1137,7 +1137,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             if (iconUrls && iconUrls.length > 0) {
                 iconUrl = iconUrls.one();
             } else {
-                iconUrl = "/assets/img/library-icon.png";
+                iconUrl = document.baseURI + "/assets/img/library-icon.png";
             }
 
             return iconUrl;
