@@ -90,21 +90,14 @@
             }
         },
 
-        "substitutionState": {
-            "prototype": "montage/ui/substitution.reel",
-            "properties": {
-                "element": {"#": "substitutionState"}
-            },
-            "bindings": {
-                "switchValue": {"<-": "!!@owner.currentDependency.isBusy ? 'spinner' : 'button'"}
-            }
-        },
-
         "acceptUpdate": {
             "prototype": "matte/ui/button.reel",
             "properties": {
                 "label": "Update",
                 "element": {"#": "updateButton"}
+            },
+            "bindings": {
+                "disabled": {"<-": "!!@owner.currentDependency.isBusy"}
             },
             "listeners": [
                 {
@@ -112,16 +105,6 @@
                     "listener": {"@": "owner"}
                 }
             ]
-        },
-
-        "updateSpinner": {
-            "prototype": "../../spinner.reel",
-            "properties": {
-                "element": {"#": "updateSpinner"}
-            },
-            "bindings": {
-                "loading": {"<-": "!!@owner.currentDependency.isBusy"}
-            }
         },
 
         "versionsCondition": {
@@ -141,7 +124,8 @@
                 "element": {"#": "versionsAvailable"}
             },
             "bindings": {
-                "content": {"<-": "@owner.currentDependency.information.versions"}
+                "content": {"<-": "@owner.currentDependency.information.versions"},
+                "disabled": {"<-": "!!@owner.currentDependency.isBusy"}
             }
         },
 
@@ -152,7 +136,8 @@
                 "element": {"#": "installVersionButton"}
             },
             "bindings": {
-                "detail.get('version')": {"<-": "@versionsAvailable.contentController.selection.one()"}
+                "detail.get('version')": {"<-": "@versionsAvailable.contentController.selection.one()"},
+                "disabled": {"<-": "!!@owner.currentDependency.isBusy"}
             }
         }
 
@@ -203,10 +188,7 @@
 
                     <div class="DependencyActionItem-content">
                         <span data-montage-id="dependencyUpdateAvailable" class="DependencyUpdate-item"></span>
-                        <span data-montage-id="substitutionState" class="DependencyUpdate-item">
-                            <button data-arg="button" data-montage-id="updateButton"></button>
-                            <span data-arg="spinner" data-montage-id="updateSpinner"></span>
-                        </span>
+                        <button data-montage-id="updateButton" class="DependencyUpdate-item"></button>
                     </div>
                 </li>
 

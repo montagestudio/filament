@@ -98,6 +98,7 @@
 
 .DependencyAction-item--versions .matte-Select,
 .DependencyAction-item--versions .matte-Button,
-.DependencyUpdate-item {
+.DependencyUpdate-item,
+.DependencyUpdate-item.matte-Button{
     margin-left: auto;
 }
