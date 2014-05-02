@@ -71,7 +71,7 @@
 .PackageExplorer-name {
     margin: 0;
     padding: 0;
-    color: hsl(0, 0%, 86%);
+    color: hsl(0, 0%, 94%);
     text-shadow: 0 -1px 0 hsl(0, 0%, 23%);
     font-size: 18px;
     line-height: 22px;
@@ -82,7 +82,7 @@
 
 .PackageExplorer-version {
    display: block;
-   color: hsl(0, 0%, 60%);
+   color: hsl(0, 0%, 64%);
    font-size: 11px;
    line-height: 14px;
 }
@@ -153,7 +153,6 @@
     -moz-font-smoothing: none;
     -ms-font-smoothing: none;
     font-smoothing: none;
-    color: hsl(0, 0%, 70%);
 }
 
 .PackageExplorer-footer-button.matte-Button {
@@ -166,7 +165,7 @@
     font-family: inherit;
     font-weight: 600;
     font-size: 13px;
-    color: hsl(0, 0%, 66%);
+    color: hsl(0, 0%, 94%);
     border-radius: 0;
     border: none;
     border-top: 1px solid hsl(0, 0%, 36%);
@@ -175,7 +174,7 @@
 }
 
 .PackageExplorer-footer-button.matte-Button:hover {
-    color: hsl(0, 0%, 81%);
+    color: hsl(0, 0%, 100%);
     background-color: hsl(0, 0%, 36%);
 }
 

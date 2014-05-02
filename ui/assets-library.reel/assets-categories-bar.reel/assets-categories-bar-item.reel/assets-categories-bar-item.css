@@ -4,13 +4,13 @@
     line-height: 26px;
     font-size: 10px;
     text-align: center;
-    color: hsl(0, 0%, 40%);
+    color: hsl(0, 0%, 64%);
     background-color: hsl(0, 0%, 22%);
     cursor: pointer;
 }
 
 .AssetsCategoriesBarItem:hover {
-    color: hsl(0, 0%, 50%);
+    color: hsl(0, 0%, 94%);
 }
 
 .AssetsCategoriesBarItem:active {
@@ -18,7 +18,7 @@
 }
 
 .AssetsCategoriesBarItem.selected {
-    color: inherit;
+    color: hsl(0, 0%, 94%);
     cursor: default;
     background-color: hsl(0, 0%, 26%);
 }
