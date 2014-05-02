@@ -176,7 +176,7 @@ Montage.defineProperty(exports, "defaultMenu", {
                 _defaultMenu.insertItem(viewMenu);
 
                 // Goto
-                gotoMenu = makeMenuItem("Goto", "goto", true, "", [
+                gotoMenu = makeMenuItem("Goto", "", true, "", [
                     makeMenuItem("Anything…", "goto", true, "command+e"),
                     makeMenuItem("Anything Again…", "gotoAgain", true, "command+shift+e")
                 ]);
