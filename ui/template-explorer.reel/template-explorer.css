@@ -72,7 +72,7 @@
     width: 24px;
     height: 24px;
     border-radius: 6px;
-    opacity: .3;
+    opacity: 0.5;
 }
 
 .TemplateExplorer-hiddenControl.is-disabled .TemplateExplorer-filterToggle,
@@ -111,12 +111,12 @@
     border: none;
     background: url(/assets/icons/eye-off.png) no-repeat center;
     background-size: 14px;
-    opacity: .3;
+    opacity: 0.5;
 }
 
 .TemplateExplorer-hiddenCheckbox.matte-InputCheckbox:hover {
     background-color: transparent;
-    opacity: .5;
+    opacity: 0.7;
 }
 
 .TemplateExplorer-hiddenCheckbox.matte-InputCheckbox:active {
@@ -178,7 +178,7 @@
 }
 
 .TemplateObjectCell {
-    background-color: hsl(0,0%,96%);
+    background-color: hsl(0, 0%, 96%);
     -webkit-flex-direction: column;
     -moz-flex-direction: column;
     -ms-flex-direction: column;
@@ -249,7 +249,7 @@
     font-size: 12px;
     font-weight: normal;
     line-height: 32px;
-    color: hsl(0, 0%, 60%);
+    color: hsl(0, 0%, 30%);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

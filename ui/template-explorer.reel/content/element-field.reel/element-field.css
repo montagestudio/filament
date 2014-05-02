@@ -22,7 +22,8 @@
 
 .ElementField-tagName {
     margin-right: 4px;
-    color: hsl(0, 0%, 60%);
+    color: hsl(0, 0%, 30%);
+    /* font-weight: 600; */
 }
 
 .ElementField--invalid .ElementField-tagName {
@@ -30,5 +31,5 @@
 }
 
 .ElementField-id {
-    color: hsl(0, 0%, 40%);
+    color: hsl(0, 0%, 30%);
 }
