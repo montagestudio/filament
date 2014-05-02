@@ -1,0 +1,44 @@
+.ResourcePropertyInspector .PropertyValue-text {
+    display: inline-block;
+    color: hsl(0,0%,50%);
+    height: 26px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ResourcePropertyInspector .PropertyValue-text--drop {
+    border: 1px dashed hsl(0,0%,50%);
+    border-radius: 6px;
+    text-align: center;
+    font-size: 10px;
+    width: 100px;
+}
+
+.PropertyValue-container {
+    display: -moz-flex;
+    display: -webkit-flex;
+    display: flex;
+    align-items: center;
+}
+
+.PropertyValue-container .matte-Button.button--circle {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    padding: 0;
+    line-height: 0;
+    font-size: 11px;
+    border-radius: 11px;
+    background: transparent;
+    color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    margin-left: auto;
+}
+
+.PropertyEditor .matte-Button.button--circle:hover {
+    color: hsl(0,0%,50%);
+    background: transparent;
+    border-color: hsl(0,0%,50%);
+}

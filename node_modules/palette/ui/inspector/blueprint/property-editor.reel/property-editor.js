@@ -214,6 +214,8 @@ exports.PropertyEditor = Component.specialize(/** @lends module:"./property-edit
                         this._propertyType = "string-property";
                     } else if (blueprint.valueType === "url") {
                         this._propertyType = "url-property";
+                    } else if (blueprint.valueType === "resource") {
+                        this._propertyType = "resource-property";
                     }
                 }
             }
