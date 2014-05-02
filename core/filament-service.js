@@ -33,9 +33,9 @@ exports.FilamentService = Montage.specialize({
         }
     },
 
-    dispatchAppEventNamed: {
+    dispatchEventNamed: {
         value: function(type, canBubble, cancelable, detail) {
-            application.dispatchEventNamed(type, canBubble, cancelable, detail);
+            this._applicationDelegate.environmentBridge.dispatchEventNamed(type, canBubble, cancelable, detail);
         }
     }
 });
