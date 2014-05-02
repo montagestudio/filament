@@ -54,6 +54,7 @@ exports.PreviewController = Target.specialize({
             app.addEventListener("didInsertNodeAfterTemplateNode", this);
             app.addEventListener("didSetNodeAttribute", this);
             app.addEventListener("didChangeTemplate", this);
+            app.addEventListener("fileContentModified", this);
 
             app.addEventListener("objectRemoved", this);
             app.addEventListener("nodeRemoved", this);
@@ -272,6 +273,16 @@ exports.PreviewController = Target.specialize({
         value: function(moduleId, label, type, listenerLabel, useCapture) {
             if (typeof this.environmentBridge.removePreviewObjectEventListener === "function") {
                 return this.environmentBridge.removePreviewObjectEventListener(this._previewId, moduleId, label, type, listenerLabel, useCapture);
+            } else {
+                return Promise.resolve(null);
+            }
+        }
+    },
+
+    updateCssFileContent: {
+        value: function(url, content) {
+            if (typeof this.environmentBridge.updatePreviewCssFileContent === "function") {
+                return this.environmentBridge.updatePreviewCssFileContent(this._previewId, url, content);
             } else {
                 return Promise.resolve(null);
             }
@@ -812,6 +823,15 @@ exports.PreviewController = Target.specialize({
             console.log(elementLocation);
             this.deletePreviewElement(ownerProxy.moduleId, elementLocation)
                 .done();
+        }
+    },
+
+    handleFileContentModified: {
+        value: function(event) {
+            var url = event.detail.url;
+            if (/\.css$/.test(url)) {
+                this.updateCssFileContent(url, event.detail.content);
+            }
         }
     }
 
