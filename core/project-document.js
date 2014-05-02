@@ -174,8 +174,7 @@ exports.ProjectDocument = Document.specialize({
 
     handleRemoteChange: {
         value: function(event) {
-            console.log("REMOTE CHANGE DETECTED", event.detail);
-            this.updateRefs();
+            this.updateRefs().done();
         }
     },
 
