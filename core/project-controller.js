@@ -746,6 +746,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     if (editor && editingDocument) {
                         editor.close(editingDocument);
                         self.removeDocument(editingDocument);
+                        editingDocument.destroy();
 
                         self.dispatchEventNamed("didCloseDocument", true, false, {
                             document: editingDocument,

@@ -38,6 +38,7 @@ describe("core/project-controller-file-spec", function () {
             beforeEach(function () {
                 unopenedDocument = Montage.create();
                 unopenedDocument.url = "notOpen";
+                unopenedDocument.destroy = Function.noop;
             });
 
             it("must return a rejected promise", function () {
@@ -76,6 +77,10 @@ describe("core/project-controller-file-spec", function () {
                     },
 
                     canClose: {
+                        value: Function.noop
+                    },
+
+                    destroy: {
                         value: Function.noop
                     }
                 }, {
@@ -148,6 +153,10 @@ describe("core/project-controller-file-spec", function () {
 
                         canClose: {
                             value: Function.noop
+                        },
+
+                        destroy: {
+                            value: Function.noop
                         }
                     }, {
                         editorType: {
@@ -170,6 +179,10 @@ describe("core/project-controller-file-spec", function () {
                         },
 
                         canClose: {
+                            value: Function.noop
+                        },
+
+                        destroy: {
                             value: Function.noop
                         }
                     }, {
