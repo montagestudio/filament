@@ -6,6 +6,7 @@ var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescript
     AssetTools = require("./asset-tools").AssetTools,
     Montage = require("montage/core/core").Montage,
     Asset = require("./asset").Asset,
+    URL = require("core/url"),
 
     PACKAGE_LOCATION = require.location,
 
@@ -762,6 +763,16 @@ exports.AssetsManager = Montage.specialize({
         }
     },
 
+    _commitAssetAtUrl: {
+        value: function (assetUrl) {
+            var path = URL.parse(assetUrl).pathname.slice(1),
+                parts = path.split('/'),
+                assetName = parts[parts.length - 1];
+
+            return this.projectController.environmentBridge.commitFiles([path], "Add glTF Bundle: " + assetName);
+        }
+    },
+
     // Fixme: Temporary way to convert a collada file into a GlTF bundle
     handleDidSetResourceProperty: {
         value: function (event) {
@@ -778,9 +789,14 @@ exports.AssetsManager = Montage.specialize({
                 }
 
                 if (asset) {
+                    var self = this;
+
                     this.assetConverter.convertModelToGlTFBundle(asset, this._currentDocument.url).then(function (outputUrl) {
                         resourceProperty.objectValue = outputUrl + '/' + asset.name + '.json';
-                    });
+
+                        // commit GlTF bundle separately.
+                        self._commitAssetAtUrl(outputUrl).done();
+                    }).done();
                 }
             }
         }
