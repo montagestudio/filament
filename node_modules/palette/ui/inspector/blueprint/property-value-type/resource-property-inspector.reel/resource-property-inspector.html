@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="resource-property-inspector.css">
+    <script type="text/montage-serialization">
+    {
+        "owner":{
+            "properties":{
+                "element": {"#":"resource-property-inspector"}
+            }
+        },
+
+        "propertyNameSubstitution":{
+            "prototype":"montage/ui/substitution.reel",
+            "properties":{
+                "element":{
+                    "#":"propertyNameSubstitution"
+                }
+            },
+            "bindings":{
+                "switchValue": {"<-":"@owner.readOnlyLabel ? 'readOnly' : 'readWrite'"}
+            }
+        },
+
+        "readOnlyPropertyName": {
+            "prototype":"montage/ui/text.reel",
+            "properties":{
+                "element":{"#":"readOnlyPropertyName"}
+            },
+            "bindings":{
+                "value": {"<-":"@owner.label"}
+            }
+        },
+
+        "readWritePropertyName": {
+            "prototype":"matte/ui/input-text.reel",
+            "properties":{
+                "element":{
+                    "#":"readWritePropertyName"
+                }
+            },
+            "bindings":{
+                "value": {"<->":"@owner.label"}
+            }
+        },
+
+        "readWritePropertySubstitution":{
+            "prototype":"montage/ui/substitution.reel",
+            "properties":{
+                "element":{
+                    "#":"readWritePropertySubstitution"
+                }
+            },
+            "bindings":{
+                "switchValue": {"<-":"@owner.propertyBlueprint.readOnly ? 'readOnly' : 'readWrite'"}
+            }
+        },
+
+        "propertyValueReadOnly":{
+            "prototype":"montage/ui/text.reel",
+            "properties":{
+                "element":{
+                    "#":"propertyValueReadOnly"
+                }
+            },
+            "bindings":{
+                "value": {"<-": "@owner.filename || 'no resource'"}
+            }
+        },
+
+        "substitutionValue": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "substitutionValue"}
+            },
+            "bindings": {
+                "switchValue": {"<-": "!!@owner.objectValue ? 'text' : 'drop'"}
+            }
+        },
+
+        "propertyValueDrop": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "propertyValueDrop"},
+                "value": "Drop Resource"
+            }
+        },
+
+        "propertyValueText": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "propertyValueText"}
+            },
+            "bindings":{
+                "value": {"<-": "@owner.fileName"}
+            }
+        },
+
+        "propertyValueText": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "propertyValueText"}
+            },
+            "bindings":{
+                "value": {"<-": "@owner.fileName"}
+            }
+        },
+
+        "resetObjectValue": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "resetObjectValue"},
+                "label": "-"
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+
+    }
+    </script>
+</head>
+<body>
+<div data-montage-id="resource-property-inspector" class="Property ResourcePropertyInspector">
+    <div data-montage-id="propertyNameSubstitution" class="Property-label">
+        <span data-arg="readOnly" data-montage-id="readOnlyPropertyName"></span>
+        <input data-arg="readWrite" data-montage-id="readWritePropertyName"/>
+    </div>
+
+    <div data-montage-id="readWritePropertySubstitution" class="Property-field">
+        <span data-arg="readOnly" data-montage-id="propertyValueReadOnly" class="PropertyValue-text"></span>
+        <div data-arg="readWrite" data-montage-id="substitutionValue">
+            <span data-arg="drop" data-montage-id="propertyValueDrop" class="PropertyValue-text PropertyValue-text--drop"></span>
+            <div data-arg="text" class="PropertyValue-container">
+                <span data-montage-id="propertyValueText" class="PropertyValue-text"></span>
+                <button data-montage-id="resetObjectValue" class="button--circle"></button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
