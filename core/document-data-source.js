@@ -76,6 +76,16 @@ exports.DocumentDataSource = Montage.specialize({
         }
     },
 
+    unregisterDataModifier: {
+        value: function(dataModifier) {
+            var ix = this._dataModifiers.indexOf(dataModifier);
+
+            if (ix >= 0) {
+                this._dataModifiers.splice(ix, 1);
+            }
+        }
+    },
+
     isModified: {
         value: function(url) {
             var dataModifiers = this._dataModifiers;
