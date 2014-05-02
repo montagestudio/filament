@@ -94,6 +94,7 @@ exports.ProjectDocument = Document.specialize({
                     })
                     .then(function () {
                         application.addEventListener("remoteChange", self, false);
+                        application.addEventListener("repositoryFlushed", self, false);
                         return self.updateRefs();
                     })
                     .catch(Function.noop)
@@ -173,8 +174,18 @@ exports.ProjectDocument = Document.specialize({
     },
 
     handleRemoteChange: {
-        value: function(event) {
+        value: function() {
             this.updateRefs().done();
+        }
+    },
+
+    handleRepositoryFlushed: {
+        value: function(event) {
+            if (event.detail.success) {
+                this._updateShadowDelta().done()
+            } else {
+                this.updateRefs().done();
+            }
         }
     },
 
