@@ -2680,6 +2680,12 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    destroy: {
+        value: function() {
+            this._dataSource.unregisterDataModifier(this);
+        }
+    },
+
     _getTemplateModuleId: {
         value: function(moduleId) {
             return moduleId.replace(/\/([^/]+).reel$/, "/$1.reel/$1.html");
