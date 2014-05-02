@@ -132,7 +132,7 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
             if (this._scene) {
                 var id = reelProxy.properties.get('id');
 
-                if (id !== null) {
+                if (id) {
                     element = this._scene.glTFElement.ids[id];
                 }
             }
@@ -145,7 +145,7 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
         value: function (reelProxy) {
             var element = this._elementForReelProxy(reelProxy);
 
-            if (element !== null && element.component3D === null) {
+            if (element && element.component3D) {
                 element.component3D = this._fullfilComponent3D(new Material(), reelProxy.properties);
             }
         }
@@ -155,7 +155,7 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
         value: function (reelProxy) {
             var element = this._elementForReelProxy(reelProxy);
 
-            if (element !== null && element.component3D === null) {
+            if (element && element.component3D) {
                 element.component3D = this._fullfilComponent3D(new Node(), reelProxy.properties);
             }
         }
