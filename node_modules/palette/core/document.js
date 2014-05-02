@@ -61,6 +61,10 @@ exports.Document = Target.specialize({
         }
     },
 
+    destroy: {
+        value: Function.noop
+    },
+
     /**
      * The actual component currently presenting this document
      */
