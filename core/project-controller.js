@@ -571,7 +571,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 documentType = this._editorTypeDocumentTypeMap.get(editorType);
             } else {
                 documentType = this.documentTypeForUrl(fileUrl);
-                editorType = documentType.editorType;
+                editorType = documentType ? documentType.editorType : null;
             }
 
             if (editorType) {
