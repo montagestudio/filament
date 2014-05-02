@@ -319,6 +319,7 @@ exports.ProjectDocument = Document.specialize({
                             //jshint +W106
                         }
 
+                        response = false;
                         return self._updateShadowDelta()
                         .then(function(shadowStatus) {
                             var refs = [shadowStatus.localParent, shadowStatus.remoteParent, shadowStatus.remoteShadow],
@@ -332,16 +333,18 @@ exports.ProjectDocument = Document.specialize({
                             });
 
                             if (needSync) {
-                                return self._updateProjectRefs().then(function() {
-                                    // The branches references might have change, let's update the shadow delta one last time
-                                    return self._updateShadowDelta();
+                                return self._updateProjectRefs()
+                                .then(function(result) {
+                                    response = result.success;
+                                    self._updateShadowDelta();  // refs might have changed
                                 });
+                            } else {
+                                response = true;
                             }
                         }).thenResolve(response);
                     })
-                    .finally(function (result) {
+                    .finally(function () {
                         self.isBusy = false;
-                        return result;
                     });
             }
 
