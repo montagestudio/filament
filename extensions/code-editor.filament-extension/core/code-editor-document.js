@@ -205,6 +205,18 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
 
                 this._expectedRedoCount = redoHistoryCount;
             }
+
+            // TODO: I don't feel too confident in firing this event for all
+            // files for performance reasons so I'm hard coding it here to CSS
+            // files for the moment. There should be a way for interested
+            // parties to announce they're interested in listening for changes
+            // in particular files.
+            if (/\.css$/.test(this.url)) {
+                this.dispatchEventNamed("fileContentModified", true, false, {
+                    url: this.url,
+                    content: codeDoc.getValue()
+                });
+            }
         }
     },
 
