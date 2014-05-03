@@ -51,7 +51,8 @@
                 },
                 "bindings": {
                     "mainMenu": {"<-": "@application.mainMenu"},
-                    "environmentBridge": {"<-": "@applicationDelegate.environmentBridge"}
+                    "environmentBridge": {"<-": "@applicationDelegate.environmentBridge"},
+                    "projectDocument": {"<-": "@applicationDelegate.projectController.projectDocument"}
                 }
             },
 
@@ -73,6 +74,7 @@
                     "confirmPanel": {"@": "confirmPanel"},
                     "initializeRepositoryPanel": {"@": "initializeRepoPanel"},
                     "unknownRepositoryPanel": {"@": "unknownRepositoryPanel"},
+                    "mergeConflictPanel": {"@": "mergeConflictPanel"},
                     "infoPanel": {"@": "infoPanel"},
                     "downloadLink": {"#": "downloadLink"}
                 }
@@ -129,6 +131,23 @@
                 ]
             },
 
+            "mergeConflictPanel": {
+                "prototype": "adaptor/client/ui/merge-conflict-panel.reel",
+                "properties": {
+                    "element": {"#": "mergeConflictPanel"}
+                },
+                "bindings": {
+                    "owner": {"<-": "@applicationDelegate.environmentBridge.repositoryController.owner"},
+                    "repo": {"<-": "@applicationDelegate.environmentBridge.repositoryController.repo"}
+                },
+                "listeners": [
+                    {
+                        "type": "createRepository",
+                        "listener": {"@": "applicationDelegate"}
+                    }
+                ]
+            },
+
             "progressPanel": {
                 "prototype": "adaptor/client/ui/progress-panel.reel",
                 "properties": {
@@ -179,6 +198,7 @@
         <div data-montage-id="panelSwitcher" data-arg="panel">
             <div data-arg="unknown" data-montage-id="unknownRepositoryPanel" class="ModalOverlay-item"></div>
             <div data-arg="initialize" data-montage-id="initializeRepoPanel" class="ModalOverlay-item"></div>
+            <div data-arg="conflict" data-montage-id="mergeConflictPanel" class="ModalOverlay-item"></div>
             <div data-arg="progress" data-montage-id="progressPanel" class="ModalOverlay-item"></div>
             <div data-arg="prompt" data-montage-id="promptPanel" class="ModalOverlay-item"></div>
             <div data-arg="confirm" data-montage-id="confirmPanel" class="ModalOverlay-item"></div>
