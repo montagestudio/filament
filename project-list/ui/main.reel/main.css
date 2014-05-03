@@ -394,7 +394,7 @@
     vertical-align: top;
 }
 
-.ButtonLink[data-icon="signout"]:before { background-image: url(/assets/icons/sign-out.svg); }
+.ButtonLink[data-icon="logout"]:before { background-image: url(/assets/icons/logout.svg); }
 .ButtonLink[data-icon="private"]:before { background-image: url(/assets/icons/private.svg); }
 .ButtonLink[data-icon="delete"]:before { background-image: url(/assets/icons/delete.svg); }
 
