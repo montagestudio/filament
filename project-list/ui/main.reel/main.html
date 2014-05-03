@@ -379,14 +379,13 @@
 
         <div class="Projects">
         
-            <button data-montage-id="logoutButton" class="Button User-logout">Logout</button>
+            <header class="User">
+                <img data-montage-id="avatar" class="User-avatar" src="">
+                <span data-montage-id="username" class="User-name"></span>
+                <button data-montage-id="logoutButton" data-icon="signout" class="ButtonLink User-logout">Sign out</button>
+            </header>
             
             <div class="Projects-content">
-                
-                <section class="Projects-section User">
-                    <img data-montage-id="avatar" class="User-avatar" src="">
-                    <span data-montage-id="username" class="User-name"></span>
-                </section>
                                 
                 <section class="Projects-section History">
                     
@@ -425,8 +424,8 @@
                 </section>
                 
                 <section class="Projects-section Settings">
-                    <button data-montage-id="authorizePrivateAccessButton" class="ButtonLink">Authorize private repositories</button>
-                    <button data-montage-id="removeWorkspaces" class="ButtonLink"></button>
+                    <button data-montage-id="authorizePrivateAccessButton" data-icon="private" class="ButtonLink">Authorize private repositories</button>
+                    <button data-montage-id="removeWorkspaces" data-icon="delete" class="ButtonLink"></button>
                 </section>
                                 
             </div>

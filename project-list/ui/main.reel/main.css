@@ -54,18 +54,23 @@
     bottom: 0;
     color: hsl(0, 0%, 26%);
     background-color: #fff;
-    overflow: auto;
+    overflow: auto; 
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
 }
 
 .Projects-content {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 0 3rem;
     display: -webkit-flex;
     display: flex;
     flex-direction: column;
     -webkit-flex-direction: column;
-    height: 100%;
+    -webkit-flex: 1;
+    flex: 1;
+    max-width: 512px;
+    margin: 0 auto;
+    padding: 0 3rem;
     text-align: center;
 }
 
@@ -88,28 +93,35 @@
 /* User --------------------------------- */
 
 .User {
-    display: block;
-    margin: 0 0 15px 0;
-    text-align: center;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+    padding: 0.8rem;
+    border-bottom: 1px solid hsl(0, 0%, 90%);
+    background: hsl(0, 0%, 95%);
 }
 
 .User-avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 30PX;
+    width: 40px;
+    height: 40px;
+    border-radius: 32px;
 }
 
 .User-name {
     font-size: 1.4em;
-    color: hsl(0, 0%, 72%);
+    color: hsl(0, 0%, 50%);
     display: block;
+    margin-left: .5em;
 }
 
 .User-logout {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    margin: 0;
+    top: 16px;
+    right: 0.5rem;
+    margin: auto 1em;
 }
 
 
@@ -117,12 +129,13 @@
 
 .Header {
     margin-bottom: 1rem;
+    position: relative;
 }
 
 .Header-title {
     flex: 1;
     line-height: 1;
-    font-size: 1.2em;
+    font-size: 1.4em;
     font-weight: 400;
     margin: 0;
 }
@@ -357,23 +370,42 @@
     background: transparent;
     font-size: 0.8em;
     color: hsl(0, 0%, 50%);
+    padding: 0 0.5em;
 }
 
 .ButtonLink:hover {
     color: hsl(0, 0%, 26%);
+    background: transparent;
 }
 
 .ButtonLink.disabled {
-    color: hsl(0,0%,72%);
+    opacity: .5;
     pointer-events: none;
 }
+
+.ButtonLink[data-icon]:before {
+    content: "";
+    background: no-repeat center center;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    display: inline-block;
+    margin-right: .5em;
+    vertical-align: top;
+}
+
+.ButtonLink[data-icon="signout"]:before { background-image: url(/assets/icons/sign-out.svg); }
+.ButtonLink[data-icon="private"]:before { background-image: url(/assets/icons/private.svg); }
+.ButtonLink[data-icon="delete"]:before { background-image: url(/assets/icons/delete.svg); }
+
+
 
 
 /* Refresh Button ---------------------------- */
 
 .Projects-refreshButton {
     position: absolute;
-    top: 0.5em;
+    top: 0;
     right: 0;
     width: 1em;
     min-width: 0;
