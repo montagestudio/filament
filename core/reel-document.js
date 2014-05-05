@@ -984,7 +984,7 @@ exports.ReelDocument = EditingDocument.specialize({
                     label = objects[0].label;
                     //TODO why is the node association done so late?
                     if (nodeProxy) {
-                        self.setOwnedObjectElement(objects[0], montageId);
+                        self.setOwnedObjectForMontageId(objects[0], montageId);
                     }
                 }
 
@@ -1291,7 +1291,7 @@ exports.ReelDocument = EditingDocument.specialize({
             return removalPromise.then(function () {
                 var element = proxy.properties.get("element");
                 if (element) {
-                    self.setOwnedObjectElement(proxy, void 0);
+                    self.setOwnedObjectForMontageId(proxy, void 0);
                 }
 
                 self._removeProxies(proxy);
@@ -1967,42 +1967,65 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     setOwnedObjectElement: {
-        value: function (proxy, montageId) {
-            var element;
-            if (montageId) {
-                element = this.nodeProxyForMontageId(montageId);
+        value: function (reelProxy, nodeProxy) {
+            if(nodeProxy) {
+                this.undoManager.openBatch("Set element");
 
-                if (!element) {
+                this.createMontageIdForProxy(reelProxy.label, reelProxy.moduleId, nodeProxy);
+                var dispatchChange = this._setOwnedObjectElement(reelProxy, nodeProxy);
+
+                this.undoManager.closeBatch();
+                dispatchChange();
+            }
+        }
+    },
+
+    setOwnedObjectForMontageId: {
+        value: function (proxy, montageId) {
+            var nodeProxy;
+            if (montageId) {
+                nodeProxy = this.nodeProxyForMontageId(montageId);
+
+                if (!nodeProxy) {
                     throw new Error(montageId + " not found in templateNodes");
                 }
             }
 
-            var existingComponent = element ? element.component : null;
+            this.undoManager.openBatch("Set element");
+
+            var dispatchChange = this._setOwnedObjectElement(proxy, nodeProxy);
+
+            this.undoManager.closeBatch();
+            dispatchChange();
+        }
+    },
+
+    _setOwnedObjectElement: {
+        value: function (proxy, nodeProxy) {
+
+            var existingComponent = nodeProxy ? nodeProxy.component : null;
 
             if (existingComponent) {
-                this.undoManager.openBatch("Set element");
-                this.setOwnedObjectElement(existingComponent, null);
+                this._setOwnedObjectElement(existingComponent, null);
             }
 
             var properties = proxy.properties;
             var oldElement = properties.get("element");
 
-            proxy.setObjectProperty("element", element);
+            proxy.setObjectProperty("element", nodeProxy);
             this.undoManager.register("Set element", Promise.resolve([
-                this.setOwnedObjectElement, this, proxy, (oldElement) ? oldElement.montageId : void 0
+                this.setOwnedObjectForMontageId, this, proxy, (oldElement) ? oldElement.montageId : void 0
             ]));
-            this._dispatchDidSetOwnedObjectProperty(proxy, "element", element);
+            this._dispatchDidSetOwnedObjectProperty(proxy, "element", nodeProxy);
 
-            if (existingComponent) {
-                this.undoManager.closeBatch();
-            }
-
-            if (oldElement) {
-                oldElement.dispatchOwnPropertyChange("component", void 0);
-            }
-            if (element) {
-                element.dispatchOwnPropertyChange("component", proxy);
-            }
+            return function () {
+                if (oldElement) {
+                    oldElement.dispatchOwnPropertyChange("component", void 0);
+                }
+                if (nodeProxy) {
+                    nodeProxy.dispatchOwnPropertyChange("component", proxy);
+                }
+            };
         }
     },
 

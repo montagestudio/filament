@@ -8,7 +8,9 @@
         "owner": {
             "properties": {
                 "element": {"#": "node-cell"},
-                "_nodeSegment": {"#": "nodeSegment"}
+                "_nodeSegment": {"#": "nodeSegment"},
+                "_elementElement": {"#": "elementInfo"},
+                "_componentElement": {"#": "componentInfo"}
             },
             "bindings": {
                 "classList.has('NodeCell--dropTarget')": {
@@ -72,7 +74,7 @@
         "componentCondition": {
             "prototype": "montage/ui/condition.reel",
             "properties": {
-                "element": {"#": "componentCondition"},
+                "element": {"#": "componentInfo"},
                 "removalStrategy": "hide"
             }
         },
@@ -81,7 +83,7 @@
             "prototype": "montage/composer/press-composer",
             "properties": {
                 "component": {"@": "owner"},
-                "element": {"#": "component"},
+                "element": {"#": "componentInfo"},
                 "identifier": "selectComponent"
             },
             "listeners": [
@@ -96,7 +98,7 @@
             "prototype": "montage/composer/press-composer",
             "properties": {
                 "component": {"@": "owner"},
-                "element": {"#": "nodeSegment"},
+                "element": {"#": "elementInfo"},
                 "identifier": "selectElement"
             },
             "listeners": [
@@ -277,7 +279,7 @@
             </span>
 
             <div data-montage-id="nodeSegment" class="NodeCell-content"  draggable="true">
-                <div class="NodeCell-elementInfo">
+                <div data-montage-id="elementInfo" class="NodeCell-elementInfo">
                     <span data-montage-id="tagName" class="NodeCell-elementInfo-item NodeCell-elementInfo-item--tag"></span>
                     <span data-montage-id="montageArg" class="NodeCell-elementInfo-item NodeCell-elementInfo-item--montageArg"></span>
                     <span data-montage-id="montageParam" class="NodeCell-elementInfo-item NodeCell-elementInfo-item--montageParam"></span>
@@ -286,7 +288,7 @@
                         <button data-montage-id="removeNodeButton" class="NodeCell-removeButton Button Button--circle" title="Remove node">-</button>
                     </span>
                 </div>
-                <div data-montage-id="componentCondition">
+                <div data-montage-id="componentInfo" class="NodeCell-componentInfo" draggable="true">
                     <div data-montage-id="component" class="Bar">
                         <span data-arg="title" data-montage-id="componentLabel"></span>
                         <div data-arg="toolbar"></div>

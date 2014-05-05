@@ -12,10 +12,6 @@ exports.ComponentEditor = Editor.specialize({
         value: null
     },
 
-    templateObjectsController: {
-        value: null
-    },
-
     _modalEditorSlot: {
         value: null
     },
@@ -260,6 +256,7 @@ exports.ComponentEditor = Editor.specialize({
 
     handleSelectComponent: {
         value: function (evt) {
+            console.log("handleSelectComponent");
             this.currentDocument.selectObject(evt.detail.templateObject);
         }
     },
@@ -272,6 +269,7 @@ exports.ComponentEditor = Editor.specialize({
 
     handleSelectElement: {
         value: function (evt) {
+            console.log("handleSelectElement");
             // for now we only support single element selection
             this.currentDocument.clearSelectedElements();
             this.currentDocument.selectElement(evt.detail.proxy);

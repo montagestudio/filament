@@ -23,9 +23,6 @@
                     "classList.has('TemplateObjectCell--highlighted')": {
                         "<-": "@owner.templateExplorer.highlightedComponent == @owner.templateObject"},
 
-                    "classList.has('TemplateObjectCell--excluded')": {
-                        "<-": "!@owner.templateExplorer.templateObjectsController.organizedContent.has(@owner.templateObject)"
-                    },
 
                     "classList.has('TemplateObjectCell--notCollapsible')": {
                         "<-": "!isCollapsible"
@@ -155,7 +152,7 @@
                 },
                 "bindings": {
                     "condition": {"<-": "@owner.isCollapsible"}
-                } 
+                }
             },
 
             "toggleExpanded": {
@@ -186,15 +183,15 @@
                 <button data-montage-id="hiddenToggleButton" class="TemplateObjectCell-hiddenToggleButton"></button>
             </div>
         </header>
-    
+
         <section data-montage-id="elementCondition" class="TemplateObjectCell-section">
             <div data-montage-id="elementField"></div>
         </section>
-    
+
         <section data-montage-id="bindingsCondition" class="TemplateObjectCell-section">
             <div data-montage-id="bindingExplorer"></div>
         </section>
-    
+
         <section data-montage-id="listenersCondition" class="TemplateObjectCell-section" >
             <div data-montage-id="listenerExplorer"></div>
         </section>
