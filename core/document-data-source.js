@@ -53,7 +53,29 @@ exports.DocumentDataSource = Montage.specialize({
 
     write: {
         value: function(url, content) {
-            return this._environmentBridge.saveFile(content, url);
+            var self = this,
+                dataPromise = this._data[url] || Promise.resolve(null);
+
+            return dataPromise.then(function(currentContent) {
+                self._data[url] = Promise.resolve(content);
+                self._rejectAllModifiedData(url);
+                return self._environmentBridge.saveFile(content, url);
+            });
+        }
+    },
+
+    _rejectAllModifiedData: {
+        value: function(url) {
+            var dataModifiers = this._dataModifiers,
+                dataModifier;
+
+            if (dataModifiers) {
+                for (var i = 0; dataModifier =/*assign*/ dataModifiers[i]; i++) {
+                    if (dataModifier.hasModifiedData(url)) {
+                        dataModifier.rejectModifiedData(url);
+                    }
+                }
+            }
         }
     },
 

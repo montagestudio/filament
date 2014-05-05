@@ -57,6 +57,16 @@ describe("core/object-references-spec", function () {
                 expect(files.file1.content).toBe(content);
             });
         });
+
+        it("should read the data that was written", function() {
+            var content = "new content";
+
+            return dataSource.write(files.file1.url, content).then(function() {
+                return dataSource.read(files.file1.url).then(function(contentRead) {
+                    expect(contentRead).toBe(content);
+                });
+            });
+        });
     });
 
     describe("modifications", function() {
