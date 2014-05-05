@@ -1,6 +1,7 @@
-var Montage = require("montage/core/core").Montage;
+var Target = require("montage/core/target").Target,
+    Promise = require("montage/core/promise").Promise;
 
-exports.DocumentDataSource = Montage.specialize({
+exports.DocumentDataSource = Target.specialize({
     constructor: {
         value: function DocumentDataSource(environmentBridge) {
             this._data = {};
@@ -59,7 +60,18 @@ exports.DocumentDataSource = Montage.specialize({
             return dataPromise.then(function(currentContent) {
                 self._data[url] = Promise.resolve(content);
                 self._rejectAllModifiedData(url);
+                if (content !== currentContent) {
+                    self._dispatchDataChange(url);
+                }
                 return self._environmentBridge.saveFile(content, url);
+            });
+        }
+    },
+
+    _dispatchDataChange: {
+        value: function(url) {
+            this.dispatchEventNamed("dataChange", true, false, {
+                url: url
             });
         }
     },
@@ -108,6 +120,12 @@ exports.DocumentDataSource = Montage.specialize({
         }
     },
 
+    /**
+     * Reports if the data source has been modified by a data modifier with
+     * changes that haven't been accepted yet.
+     * The next call to read() will accept the modified changes and return a
+     * modified version of the url contents.
+     */
     isModified: {
         value: function(url) {
             var dataModifiers = this._dataModifiers;

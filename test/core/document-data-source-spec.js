@@ -19,7 +19,7 @@ function DataModifier(file) {
     };
 }
 
-describe("core/object-references-spec", function () {
+describe("core/document-data-source-spec", function () {
     var dataSource, files;
     beforeEach(function () {
         files = {
@@ -137,6 +137,34 @@ describe("core/object-references-spec", function () {
                 return dataSource.read(files.file1.url)
                 .then(function() {
                     expect(dataModifier2.rejectModifiedData).toHaveBeenCalled();
+                });
+            });
+        });
+    });
+
+    describe("dataChange event", function() {
+        it("should fire dataChange event when write is called", function() {
+            var listener = jasmine.createSpy("listener");
+
+            dataSource.addEventListener("dataChange", listener, false);
+            return dataSource.read(files.file1.url)
+            .then(function(content) {
+                return dataSource.write(files.file1.url, content + " change")
+                .then(function() {
+                    expect(listener).toHaveBeenCalled();
+                });
+            });
+        });
+
+        it("should not fire dataChange event when write is called with the same content", function() {
+            var listener = jasmine.createSpy("listener");
+
+            dataSource.addEventListener("dataChange", listener, false);
+            return dataSource.read(files.file1.url)
+            .then(function(content) {
+                return dataSource.write(files.file1.url, content)
+                .then(function() {
+                    expect(listener).not.toHaveBeenCalled();
                 });
             });
         });
