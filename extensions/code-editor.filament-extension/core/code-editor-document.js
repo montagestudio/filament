@@ -257,6 +257,7 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
         value: function(url) {
             if (url === this.url) {
                 this.content = this.codeMirrorDocument.getValue();
+                this._resetModifiedDataState();
                 return Promise.resolve(this.content);
             }
         }
