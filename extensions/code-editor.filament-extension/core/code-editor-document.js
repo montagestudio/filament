@@ -69,6 +69,12 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
         }
     },
 
+    destroy: {
+        value: function() {
+            this._dataSource.unregisterDataModifier(this);
+        }
+    },
+
     _editor: {
         value: null
     },
