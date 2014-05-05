@@ -1657,14 +1657,14 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 return self.environmentBridge.getExtensionsAt(dependency.url);
             }))
             .then(function (extensions) {
-                return Promise.all(extensions.flatten().map(function (extensionDetails) {
+                return Promise.all(extensions.flatten().map(function (extensionUrl) {
                     // TODO only load if name is the same as dependency?
-                    return self._extensionController.loadExtension(extensionDetails.url)
+                    return self._extensionController.loadExtension(extensionUrl)
                     .then(function (extension) {
                         return self._extensionController.activateExtension(extension);
                     })
                     .catch(function (error) {
-                        console.error("Could not load extension at", extensionDetails.url, "because", error.message);
+                        console.error("Could not load extension at", extensionUrl, "because", error.message);
                     });
                 }));
             });

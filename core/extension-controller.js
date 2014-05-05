@@ -1,6 +1,7 @@
 var Montage = require("montage/core/core").Montage,
     Target = require("montage/core/target").Target,
     Promise = require("montage/core/promise").Promise,
+    CoreExtension = require("filament-extension/core/extension").Extension,
     application = require("montage/core/application").application;
 
 exports.ExtensionController = Montage.create(Target, {
@@ -99,9 +100,38 @@ exports.ExtensionController = Montage.create(Target, {
 
             // TODO npm install?
             return require.loadPackage(extensionUrl).then(function (packageRequire) {
+                var extension;
+
                 packageRequire.injectMapping({name: "montage", location: require.getPackage({name: "montage"}).location});
                 packageRequire.injectMapping({name: "filament-extension", location: require.getPackage({name: "filament-extension"}).location});
-                return Promise.all([packageRequire.async("extension"), Promise.resolve(packageRequire)]);
+
+                // load extension even if it does not have an extension.js file
+                extension = packageRequire.async("extension").catch(function (error) {
+                    var ext = CoreExtension.specialize({
+                        activate: {
+                            value: function (application, projectController) {
+                                return Promise.all([
+                                    this.installLibraryItems(projectController, "Extensions"),
+                                    this.installModuleIcons(projectController, "Extensions")
+                                ]).thenResolve(this);
+                            }
+                        },
+
+                        deactivate: {
+                            value: function (application, projectController) {
+                                return Promise.all([
+                                    this.uninstallLibraryItems(projectController, "Extensions"),
+                                    this.uninstallModuleIcons(projectController, "Extensions")
+                                ]).thenResolve(this);
+                            }
+                        }
+                    });
+                    ext.packageLocation = packageRequire.location;
+
+                    return {Extension : ext};
+                });
+
+                return Promise.all([extension, Promise.resolve(packageRequire)]);
             }).spread(function (exports, require) {
                 var extension = new exports.Extension();
                 extension.extensionRequire = require;
