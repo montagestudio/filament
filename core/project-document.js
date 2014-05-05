@@ -115,7 +115,7 @@ exports.ProjectDocument = Document.specialize({
                 buildMenu;
 
             buildMenu = new this._environmentBridge.MenuItem();
-            buildMenu.title = "Mop"; // This should be localized
+            buildMenu.title = "Build"; // This should be localized
             buildMenu.identifier = "build";
             this._buildMenu = buildMenu;
 
