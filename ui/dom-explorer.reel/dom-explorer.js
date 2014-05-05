@@ -38,7 +38,11 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         value: null
     },
 
-    _editDocumentRangeListenerCancel: {
+    _editDocumentSelectedElementsListenerCancel: {
+        value: null
+    },
+
+    _editDocumentSelectedObjectsListenerCancel: {
         value: null
     },
 
@@ -49,11 +53,13 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         set: function(value) {
             if (this._editingDocument !== value) {
                 if (this._editingDocument) {
-                    this._editDocumentRangeListenerCancel();
+                    this._editDocumentSelectedElementsListenerCancel();
+                    this._editDocumentSelectedObjectsListenerCancel();
                 }
                 this._editingDocument = value;
                 if (value) {
-                    this._editDocumentRangeListenerCancel = value.addRangeAtPathChangeListener("selectedElements", this, "handleSelectedElementsChange");
+                    this._editDocumentSelectedElementsListenerCancel = value.addRangeAtPathChangeListener("selectedElements", this, "handleSelectedElementsChange");
+                    this._editDocumentSelectedObjectsListenerCancel = value.addRangeAtPathChangeListener("selectedObjects", this, "handleSelectedObjectsChange");
                 }
 
                 if (value && this.templateObjects) {
@@ -328,6 +334,12 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
     // MANUAL BINDINGS
     handleSelectedElementsChange: {
+        value: function() {
+            this._dispatchPropertiesChange();
+        }
+    },
+
+    handleSelectedObjectsChange: {
         value: function() {
             this._dispatchPropertiesChange();
         }

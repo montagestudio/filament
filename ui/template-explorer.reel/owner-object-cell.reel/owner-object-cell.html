@@ -14,7 +14,7 @@
                         "<-": "@owner.templateObject.label == 'owner'"
                     },
                     "classList.has('selected')": {
-                        "<-": "@owner.templateObjectsController.selection.has(templateObject)"
+                        "<-": "@owner.editingDocument.activeSelection.has(templateObject)"
                     },
                     "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"}
                 }

@@ -111,7 +111,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     constructor: {
         value: function TemplateExplorer() {
             this.super();
-            this.defineBinding("templateObjectsController.filterPath", {"<-": "templateObjectFilterPath"});
+//            this.defineBinding("templateObjectsController.filterPath", {"<-": "templateObjectFilterPath"});
         }
     },
 
@@ -139,10 +139,6 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             this.addRangeAtPathChangeListener("editingDocument.selectedObjects", this, "handleSelectedObjectsChange");
             this.addEventListener("toggle", this);
         }
-    },
-
-    templateObjectsController: {
-        value: null
     },
 
     _editingDocument: {
@@ -304,7 +300,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
 
     handleRemoveElementAction: {
         value: function (evt) {
-            this.editingDocument.setOwnedObjectElement(evt.detail.get('templateObject'), null);
+            this.editingDocument.setOwnedObjectForMontageId(evt.detail.get('templateObject'), null);
         }
     },
 

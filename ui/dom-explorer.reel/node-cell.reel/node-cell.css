@@ -1,3 +1,21 @@
+.NodeCellWrapper {
+    height: 28px;
+}
+
+.NodeCellWrapper.NodeCell--draggedElement {
+    height: 0px;
+}
+
+.NodeCellWrapper.NodeCell--component.NodeCell--draggedElement {
+    height: 0px;
+}
+
+.NodeCellWrapper.NodeCell--component.NodeCell--draggedComponent {
+    height: 28px;
+}
+
+/* NodeCell ------------------------- */
+
 .NodeCell {
     display: -webkit-flex;
     display: -moz-flex;
@@ -14,7 +32,7 @@
     position: relative;
     /* background: hsl(0,0%,92%); */
 
-    /*height: 24px;*/
+    height: 100%;
     overflow: hidden;
     border-radius: 22px;
     -webkit-transition: height .4s ease-in-out, margin-top .4s ease-in-out, margin-bottom .4s ease-in-out;
@@ -22,16 +40,21 @@
     transition: height .4s ease-in-out, margin-top .4s ease-in-out, margin-bottom .4s ease-in-out;
 }
 
-
-/* NodeCell-elementInfo ------------------------- */
+/* NodeCell-content ------------------------- */
 
 .NodeCell-content {
     margin: 3px 14px 3px 0px;
     border-radius: 10px;
     background: hsl(0,0%,96%);
-    border: 1px solid hsl(0, 0%, 80%);
+    border: 0px solid hsl(0, 0%, 80%);
     width: 100%;
 }
+
+.NodeCell--component.NodeCell--draggedElement .NodeCell {
+    opacity: 0;
+}
+
+/* NodeCell-elementInfo ------------------------- */
 
 .NodeCell-elementInfo {
     display: -webkit-flex;
@@ -47,9 +70,11 @@
     width: 100%;
     /* overflow: hidden; */
     /* height: 0px; */
+    border-radius: 10px;
+    border: 1px solid hsl(0, 0%, 80%);
 }
 
-.NodeCell--highlighted .NodeCell-content {
+.NodeCell--highlighted .NodeCell-elementInfo {
     background: hsl(210,100%,92%);
 }
 
@@ -57,7 +82,7 @@
     opacity: 0.4;
 }
 
-.NodeCell--selected .NodeCell-content {
+.NodeCell--selected .NodeCell-elementInfo {
     border: 1px solid hsl(210,100%,60%);
 }
 
@@ -140,6 +165,66 @@
     padding-left: 14px;
 }
 
+/* Component Tree -------------- */
+
+.NodeCell-componentInfo {
+    border-top: 1px solid hsl(0,0%,96%);
+    border-left: 1px solid hsl(0, 0%, 80%);
+    border-bottom: 1px solid hsl(0, 0%, 80%);
+    border-right: 1px solid hsl(0, 0%, 80%);
+}
+
+
+.NodeCell--selectedComponent .NodeCell-componentInfo {
+    border-top: 1px solid hsl(210,100%,60%);
+    border-left: 1px solid hsl(210,100%,60%);
+    border-bottom: 1px solid hsl(210,100%,60%);
+    border-right: 1px solid hsl(210,100%,60%);
+}
+
+.NodeCellWrapper.NodeCell--component {
+    height: 93px;
+}
+
+.NodeCell--component .NodeCell {
+    /* height:93px
+ */}
+
+.NodeCell--component.NodeCell--draggedElement .NodeCellWrapper {
+    height: 0px;
+}
+
+.NodeCell--component.NodeCell--draggedComponent .NodeCellWrapper {
+    height: 28px;
+}
+
+.NodeCell--component.NodeCell--draggedComponent .NodeCell-componentInfo {
+    display: none;
+}
+
+.NodeCell--component .NodeCell-content {
+    border-radius: 10px 10px 0px 0px;
+}
+
+.NodeCell--component .NodeCell-elementInfo {
+    border-radius: 10px 10px 0px 0px;
+    border-bottom: 1px solid hsl(0, 0%, 80%);
+}
+
+.NodeCell--component .NodeCell-elementInfo {
+    border-bottom: 1px solid hsl(0, 0%, 80%);
+}
+.NodeCell--selected.NodeCell--component .NodeCell-elementInfo {
+    border-bottom: 1px solid hsl(210,100%,60%);
+}
+
+.NodeCell--component .NodeCell {
+    /*height: 70px;*/
+}
+
+.DomExplorer--collapseDom .NodeCell--component .NodeCell {
+    /*height: 48px;*/
+}
 
 /* Overrides ---------------------------- */
 
@@ -318,15 +403,3 @@
     padding-left: 8px;
 }
 
-/* Component Tree -------------- */
-.NodeCell--component .NodeCell-content {
-    border-radius: 10px 10px 0px 0px;
-}
-
-.NodeCell--component .NodeCell {
-    /*height: 70px;*/
-}
-
-.DomExplorer--collapseDom .NodeCell--component .NodeCell {
-    /*height: 48px;*/
-}

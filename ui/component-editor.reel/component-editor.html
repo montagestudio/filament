@@ -15,8 +15,7 @@
             "owner": {
                 "properties": {
                     "element": {"#": "componentEditor"},
-                    "_modalEditorSlot": {"#": "modalEditorSlot"},
-                    "templateObjectsController": {"@": "templateObjectsController"}
+                    "_modalEditorSlot": {"#": "modalEditorSlot"}
                 },
                 "listeners": [
                     {
@@ -52,17 +51,6 @@
                 ]
             },
 
-            "templateObjectsController": {
-                "prototype": "montage/core/range-controller",
-                "properties": {
-                    "avoidsEmptySelection": true
-                },
-                "bindings": {
-                    "content": {"<-": "@owner.currentDocument.editingProxies"},
-                    "selection": {"<->": "@owner.currentDocument.selectedObjects"}
-                }
-            },
-
             "HIDDEN_STATE": {
                 "object": "ui/panel.reel[HIDDEN_STATE]"
             },
@@ -92,7 +80,6 @@
                 },
                 "bindings": {
                     "ownerObject": {"<-": "@owner.currentDocument.editingProxyMap.owner"},
-                    "templateObjectsController": {"<-": "@owner.templateObjectsController"},
                     "editingDocument": {"<-": "@owner.currentDocument"}
                 }
             },

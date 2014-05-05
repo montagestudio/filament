@@ -253,8 +253,8 @@ exports.NodeProxy = NodeProxy = Target.specialize({
         set: function(value) {
             if (value !== this._component) {
                 if (this._component) {
-                    this._component.removePathChangeListener("label", this, "_dispatchPropertiesChange");
-                    this._component.removePathChangeListener("components.length", this, "_dispatchPropertiesChange");
+                    this._component.removePathChangeListener("label", this);
+                    this._component.removePathChangeListener("components.length", this);
                 }
                 this._component = value;
                 if (value) {
