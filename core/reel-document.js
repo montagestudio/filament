@@ -466,6 +466,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
     _saveHtml: {
         value: function (location, dataSource) {
+            var self = this;
             var html;
 
             if (!this.hasModifiedData(location)) {
@@ -473,7 +474,12 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             html = this._generateHtml();
-            return dataSource.write(location, html);
+
+            this._ignoreDataChange = true;
+            return dataSource.write(location, html)
+            .then(function() {
+                self._ignoreDataChange = false;
+            });
         }
     },
 
@@ -2650,6 +2656,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             return this._createTemplateWithUrl(packageUrl + templateModuleId)
             .then(function(template) {
+                self._dataSource.addEventListener("dataChange", self, false);
                 self._template = template;
                 self.registerFile("html", self._saveHtml, self);
                 self._openTemplate(template);
@@ -2691,6 +2698,7 @@ exports.ReelDocument = EditingDocument.specialize({
     destroy: {
         value: function() {
             this._dataSource.unregisterDataModifier(this);
+            this._dataSource.removeEventListener("dataChange", this, false);
         }
     },
 
@@ -2705,6 +2713,14 @@ exports.ReelDocument = EditingDocument.specialize({
             var filenameMatch = this.url.match(/.+\/(.+)\.reel/);
             return this.url + filenameMatch[1] + ".html";
         }
+    },
+
+    _dataChanged: {
+        value: null
+    },
+
+    _ignoreDataChange: {
+        value: null
     },
 
     _hasModifiedData: {
@@ -2751,7 +2767,8 @@ exports.ReelDocument = EditingDocument.specialize({
 
     needsRefresh: {
         value: function() {
-            return this._dataSource.isModified(this._getHtmlFileUrl());
+            return this._dataChanged ||
+                this._dataSource.isModified(this._getHtmlFileUrl());
         }
     },
 
@@ -2763,11 +2780,21 @@ exports.ReelDocument = EditingDocument.specialize({
             return this._dataSource.read(htmlUrl).then(function(content) {
                 var htmlDocument = document.implementation.createHTMLDocument("");
                 htmlDocument.documentElement.innerHTML = content;
+                self._dataChanged = false;
                 return new Template().initWithDocument(htmlDocument, self._packageRequire);
             }).then(function (template) {
                 self._openTemplate(template);
                 return true;
             });
+        }
+    },
+
+    handleDataChange: {
+        value: function() {
+            if (!this._ignoreDataChange) {
+                this._changeCount = 0;
+                this._dataChanged = true;
+            }
         }
     }
 

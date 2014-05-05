@@ -72,6 +72,7 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
     destroy: {
         value: function() {
             this._dataSource.unregisterDataModifier(this);
+            this._dataSource.removeEventListener("dataChange", this, false);
         }
     },
 
@@ -238,9 +239,14 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
 
             return this._dataSource.read(this.url)
             .then(function (content) {
+                self._dataSource.addEventListener("dataChange", self, false);
                 self.content = content;
             });
         }
+    },
+
+    _dataChanged: {
+        value: null
     },
 
     _hasModifiedData: {
@@ -290,7 +296,8 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
 
     needsRefresh: {
         value: function() {
-            return this._dataSource.isModified(this.url);
+            return this._dataChanged ||
+                this._dataSource.isModified(this.url);
         }
     },
 
@@ -305,9 +312,17 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
             return this._dataSource.read(this.url).then(function(content) {
                 self.content = content;
                 self.codeMirrorDocument.setValue(content);
+                self._dataChange = false;
                 self._resetModifiedDataState();
                 return true;
             });
+        }
+    },
+
+    handleDataChange: {
+        value: function() {
+            this._changeCount = 0;
+            this._dataChanged = true;
         }
     }
 

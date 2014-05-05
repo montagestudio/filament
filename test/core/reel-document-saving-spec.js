@@ -204,7 +204,7 @@ describe("core/reel-document-saving-spec", function () {
         it("calls data source write", function () {
             var spy;
             return promisedDocument.then(function (reelDocument) {
-                spy = spyOn(reelDocument._dataSource, "write");
+                spy = spyOn(reelDocument._dataSource, "write").andCallThrough();
                 reelDocument._hasModifiedData.undoCount = -1;
                 return reelDocument.save(reelDocument.url);
             })
@@ -254,14 +254,31 @@ describe("core/reel-document-saving-spec", function () {
             });
         });
 
+
         it("should not call write if there are no modifications", function() {
             return promisedDocument.then(function (doc) {
                 var url = doc.url + "mock.html";
 
                 var spy = spyOn(doc._dataSource, "write");
 
-                return doc.save(url).then(function() {
+                return doc.save(url).then(function () {
                     expect(spy).not.toHaveBeenCalled();
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should stop reporting modifications on the data source on save", function() {
+            return promisedDocument.then(function (doc) {
+                var url = doc.url + "mock.html";
+
+                doc._hasModifiedData = {
+                    undoCount: -1,
+                    redoCount: -1
+                };
+
+                expect(doc.hasModifiedData(url)).toBe(true);
+                return doc.save(url).then(function() {
+                    expect(doc.hasModifiedData(url)).toBe(false);
                 });
             }).timeout(WAITSFOR_TIMEOUT);
         });
