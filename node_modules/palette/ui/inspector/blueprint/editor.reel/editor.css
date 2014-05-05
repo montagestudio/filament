@@ -3,6 +3,9 @@
 
 .Editor-header {
     display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
 	font-size: 14px;
 	padding: 8px;
 	font-weight: bold;
@@ -14,6 +17,9 @@
 
 .Editor-header-title {
     -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
     font-weight: bold;
     color: hsl(0,0%,30%);
     background: hsl(0,0%,95%);
