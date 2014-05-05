@@ -35,6 +35,10 @@ describe("package document", function () {
                 save: function () {
                     return Promise();
                 }
+            },
+
+            packageDescription: {
+                name: null
             }
         };
     });
