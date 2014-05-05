@@ -1,4 +1,5 @@
 .LibraryGroup {
+    display: block;
 }
 
 .LibraryGroup:last-child {
@@ -9,6 +10,7 @@
 /* Header ------------------------- */
 
 .LibraryGroup-header {
+    display: block;
     position: relative;
 	padding: 4px 8px;
 	margin: 0;

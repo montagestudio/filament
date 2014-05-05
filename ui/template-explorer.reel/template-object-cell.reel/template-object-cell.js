@@ -257,12 +257,13 @@ exports.TemplateObjectCell = Component.specialize({
         }
     },
 
-    handleHiddenCheckboxAction: {
+    handleHiddenToggleButtonAction: {
         value: function (evt) {
             var proxy = this.templateObject,
-                editingDocument = proxy._editingDocument;
+                editingDocument = proxy._editingDocument,
+                hidden = !this.templateObjects.hiddenToggleButton.pressed;
 
-            editingDocument.setOwnedObjectEditorMetadata(proxy, "isHidden", evt.target.checked);
+            editingDocument.setOwnedObjectEditorMetadata(proxy, "isHidden", hidden);
         }
     },
 
@@ -283,7 +284,7 @@ exports.TemplateObjectCell = Component.specialize({
                 this.toggle.element === evt.target ||
                 (
                     evt.target.component &&
-                    (evt.target.component.identifier === "hiddenCheckbox")
+                    (evt.target.component.identifier === "hiddenToggleButton")
                 )
             );
         }
