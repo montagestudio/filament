@@ -256,10 +256,19 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
         value: function(url) {
             if (url === this.url) {
                 this.content = this.codeMirrorDocument.getValue();
-                this._hasModifiedData.undoCount = this._undoManager.undoCount;
-                this._hasModifiedData.redoCount = this._undoManager.redoCount;
                 return Promise.resolve(this.content);
             }
+        }
+    },
+
+    /**
+     * When the modified data state is reseted the document stops reporting as
+     * having modified the data source.
+     */
+    _resetModifiedDataState: {
+        value: function() {
+            this._hasModifiedData.undoCount = this._undoManager.undoCount;
+            this._hasModifiedData.redoCount = this._undoManager.redoCount;
         }
     },
 
@@ -288,8 +297,7 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
             return this._dataSource.read(this.url).then(function(content) {
                 self.content = content;
                 self.codeMirrorDocument.setValue(content);
-                self._hasModifiedData.undoCount = self._undoManager.undoCount;
-                self._hasModifiedData.redoCount = self._undoManager.redoCount;
+                self._resetModifiedDataState();
                 return true;
             });
         }

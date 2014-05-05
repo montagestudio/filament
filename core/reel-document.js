@@ -2724,8 +2724,7 @@ exports.ReelDocument = EditingDocument.specialize({
     acceptModifiedData: {
         value: function(url) {
             if (url === this._getHtmlFileUrl()) {
-                this._hasModifiedData.undoCount = this._undoManager.undoCount;
-                this._hasModifiedData.redoCount = this._undoManager.redoCount;
+                this._resetModifiedDataState();
                 return Promise.resolve(this._generateHtml());
             }
         }
@@ -2734,6 +2733,17 @@ exports.ReelDocument = EditingDocument.specialize({
     rejectModifiedData: {
         value: function(url) {
             console.warn("modifications reseted");
+        }
+    },
+
+    /**
+     * When the modified data state is reseted the document stops reporting as
+     * having modified the data source.
+     */
+    _resetModifiedDataState: {
+        value: function() {
+            this._hasModifiedData.undoCount = this._undoManager.undoCount;
+            this._hasModifiedData.redoCount = this._undoManager.redoCount;
         }
     },
 
