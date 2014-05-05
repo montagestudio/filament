@@ -151,6 +151,10 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
         value: function (location) {
             var self = this;
 
+            if (!this.hasModifiedData(location)) {
+                return Promise.resolve();
+            }
+
             this.dispatchEventNamed("willSave", true, false);
             return Promise.when(this._dataSource.write(location, self.content)).then(function (value) {
                 self.isDirty = false;

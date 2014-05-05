@@ -466,7 +466,13 @@ exports.ReelDocument = EditingDocument.specialize({
 
     _saveHtml: {
         value: function (location, dataSource) {
-            var html = this._generateHtml();
+            var html;
+
+            if (!this.hasModifiedData(location)) {
+                return;
+            }
+
+            html = this._generateHtml();
             return dataSource.write(location, html);
         }
     },
