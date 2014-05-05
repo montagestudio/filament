@@ -154,6 +154,7 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
             this.dispatchEventNamed("willSave", true, false);
             return Promise.when(this._dataSource.write(location, self.content)).then(function (value) {
                 self.isDirty = false;
+                self._changeCount = 0;
                 self.dispatchEventNamed("didSave", true, false);
                 return value;
             });
