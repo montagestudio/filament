@@ -495,6 +495,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 if (location.charAt(location.length - 1) !== "/") {
                     location += "/";
                 }
+
                 promise = Promise.all(Object.map(registeredFiles, function (info, extension) {
                     var fileLocation = Url.resolve(location, filenameMatch[1] + "." + extension);
                     return info.callback.call(info.thisArg, fileLocation, self._dataSource);
@@ -502,6 +503,7 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return promise.then(function (value) {
+                self._resetModifiedDataState();
                 self._changeCount = 0;
                 return value;
             });
