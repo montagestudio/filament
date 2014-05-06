@@ -5,6 +5,7 @@ require("montage-testing").run(require, [
     "extensions/package-manager.filament-extension/test/package-document-spec.js",
     "extensions/package-manager.filament-extension/test/package-tools-spec.js",
     "test/core/asset-manager-spec",
+    "test/core/code-editor-document-spec",
     "test/core/document-data-source-spec",
     "test/core/node-proxy-spec",
     "test/core/object-references-spec",

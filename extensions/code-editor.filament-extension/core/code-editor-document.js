@@ -241,6 +241,7 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
             .then(function (content) {
                 self._dataSource.addEventListener("dataChange", self, false);
                 self.content = content;
+                return self;
             });
         }
     },
