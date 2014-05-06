@@ -229,6 +229,21 @@ describe("core/reel-document-headless-editing-spec", function () {
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
+        it("must not remove the owner from the serialization of the editing document", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var proxyToRemove = reelDocument.editingProxyMap["owner"],
+                    removalPromise = reelDocument.removeObject(proxyToRemove),
+                    templateSerialization;
+
+                return removalPromise.catch(function (error) {
+                    expect(error).toBeTruthy();
+                    expect(reelDocument.editingProxies.length).toBe(4);
+                    templateSerialization = reelDocument._buildSerializationObjects();
+                    expect(templateSerialization.owner).toBeTruthy();
+                });
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
         it("should add an undo operation for this removal", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 var proxyToRemove = reelDocument.editingProxyMap[labelInOwner],
