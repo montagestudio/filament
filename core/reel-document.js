@@ -256,7 +256,11 @@ exports.ReelDocument = EditingDocument.specialize({
 
     canDelete: {
         get: function () {
-            return !!this.activeSelection && this.activeSelection.length > 0;
+            return !!this.activeSelection &&
+                this.activeSelection.length > 0 &&
+                !this.activeSelection.some(function (obj) {
+                    return obj.label === "owner";
+                });
         }
     },
 
@@ -1181,6 +1185,10 @@ exports.ReelDocument = EditingDocument.specialize({
      */
     removeObject: {
         value: function (proxy) {
+
+            if (proxy && "owner" === proxy.label) {
+                return Promise.reject(new Error("Cannot remove Owner"));
+            }
 
             //TODO add options to remove child components and/or the DOM tree under this component
             //TODO this warrants some minor forking of removingObject vs removingComponent though I don't want seperata API if I can help it
