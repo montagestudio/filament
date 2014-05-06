@@ -1158,7 +1158,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 savePromise;
 
             if (this.currentDocument) {
-                this.dispatchEventNamed("willSave", true, false);
+                this.dispatchEventNamed("willSaveProject", true, false);
 
                 savePromise = this.projectDocument.saveAll()
                     .then(function (result) {
@@ -1167,7 +1167,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                             self.environmentBridge.setDocumentDirtyState(false);
                         }
 
-                        self.dispatchEventNamed("didSave", true, false);
+                        self.dispatchEventNamed("didSaveProject", true, false);
                         return result;
                     });
             }
