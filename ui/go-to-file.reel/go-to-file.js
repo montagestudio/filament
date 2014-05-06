@@ -48,7 +48,7 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
         value: null
     },
 
-    recentUrls: {
+    projectController: {
         value: null
     },
 
@@ -60,7 +60,7 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
         value: function() {
             this.addPathChangeListener("files", this, "_updateMatchList");
             this.addPathChangeListener("filesMap", this, "_updateMatchList");
-            this.addPathChangeListener("recentUrls", this, "_updateMatchList");
+            this.addPathChangeListener("projectController.recentUrls", this, "_updateMatchList");
 
             this._updatingSelection = true;
             this.templateObjects.matchList.addRangeAtPathChangeListener("contentController.selection", this, "handleSelectionChange");
@@ -117,7 +117,7 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
             var searchText = this.searchText,
                 files = this.files,
                 filesMap = this.filesMap,
-                recentUrls = this.recentUrls,
+                recentUrls = this.projectController ? this.projectController.recentDocumentUrls : null,
                 content,
                 selectedMatchIndex,
                 selectedContent;
@@ -170,15 +170,28 @@ exports.GoToFile = Component.specialize(/** @lends GoToFile# */ {
 
     _openSelectedFile: {
         value: function() {
+
+            var self = this,
+                file;
+
             if (this.searchText) {
                 this.lastSearchText = this.searchText;
             }
 
-            var file = this.templateObjects.matchList.contentController.selection[0];
+            file = this.templateObjects.matchList.contentController.selection[0];
 
             if (file) {
-                this.dispatchEventNamed("openUrl", true, true, file.fileUrl);
-                this.templateObjects.overlay.hide();
+                this.projectController.openUrlForEditing(file.fileUrl)
+                    .then(function (doc) {
+                        var overlay = self.templateObjects.overlay;
+
+                        // The overlay restores an activeTarget as it is hidden,
+                        // normally this is ok, but we want the activeTarget to be
+                        // the editor we just opened
+                        overlay._previousActiveTarget = doc.editor;
+                        overlay.hide();
+                    })
+                    .done();
             }
         }
     },
