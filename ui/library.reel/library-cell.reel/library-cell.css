@@ -22,6 +22,7 @@
 	border: none;
 	background: transparent;
 	cursor: move;
+	-webkit-font-smoothing: antialiased;
 }
 
 .LibraryCell-button.matte-Button:hover,

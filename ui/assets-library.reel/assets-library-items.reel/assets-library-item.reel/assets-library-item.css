@@ -16,6 +16,7 @@
     border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
     outline: none;
     cursor: move;
+    -webkit-font-smoothing: antialiased;
 }
 
 .AssetsLibraryItem .AssetsLibraryItem-button:hover {

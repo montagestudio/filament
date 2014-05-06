@@ -43,6 +43,7 @@
     padding-left: 18px; /* Same as indentValue of tree.reel/indent.js */
     background-size: 14px;
     background-position: 2px center;
+    -webkit-font-smoothing: inherit;
 }
 
 .FileCell .FileCell-button:hover {

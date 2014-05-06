@@ -21,6 +21,7 @@
     -moz-backface-visibility: hidden; 
     -ms-backface-visibility: hidden; 
     backface-visibility: hidden; 
+    -webkit-font-smoothing: antialiased;
 }
 
 .PackageExplorer .Panel-shadow {
@@ -171,6 +172,7 @@
     border-top: 1px solid hsl(0, 0%, 36%);
     box-shadow: none;
     background-color: hsl(0, 0%, 32%);
+    -webkit-font-smoothing: inherit;
 }
 
 .PackageExplorer-footer-button.matte-Button:hover {
