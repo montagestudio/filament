@@ -182,7 +182,7 @@ exports.ProjectDocument = Document.specialize({
     handleRepositoryFlushed: {
         value: function(event) {
             if (event.detail.success) {
-                this._updateShadowDelta().done()
+                this._updateShadowDelta().done();
             } else {
                 this.updateRefs().done();
             }
@@ -505,7 +505,7 @@ exports.ProjectDocument = Document.specialize({
                 var url = doc.url;
 
                 if (defaultCommitMessage) {
-                   defaultCommitMessage = "Update components";
+                    defaultCommitMessage = "Update components";
                 } else {
                     var index = url.indexOf("/", url.indexOf("//") + 2),    // simplified url parsing
                         filePath = decodeURIComponent(url.substring(index + 1));
