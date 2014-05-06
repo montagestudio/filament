@@ -313,6 +313,7 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
                 self.content = content;
                 self.codeMirrorDocument.setValue(content);
                 self._dataChange = false;
+                self._changeCount = 0;
                 self._resetModifiedDataState();
                 return true;
             });
