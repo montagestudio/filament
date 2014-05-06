@@ -1,6 +1,34 @@
 var Target = require("montage/core/target").Target,
     Promise = require("montage/core/promise").Promise;
 
+/**
+ * The DocumentDataSource manages the contents of a url (or more) that is needed
+ * by multiple consumers at the same time.
+ *
+ * It allows read and write operations to urls. It fires a "dataChange" event
+ * when the content of the url are changed by a write operation from one of the
+ * consumers.
+ *
+ * In addition to these operations the DocumentDataSource also provides a
+ * way for consumers to announce data modifications they have done to the
+ * contents of the url.
+ * Announcing data modifications is done by registering a data modifier that
+ * implements a specific API. This API will be called when the DocumentDataSource
+ * needs to know if a data modifier has modifications.
+ * Modifications are not immediately integrated into the data, only when the
+ * DocumentDataSource chooses to. This is to avoid the data modifiers from
+ * having to generate the contents of the url everytime they perform a change.
+ * Even after being accepted the new contents only remain in memory and an
+ * explicit call to write() has to happen for it to be saved.
+ *
+ * registerDataModifier(dataModifier)
+ *
+ * dataModifier shape:
+ * - hasModifiedData(url) - returns whether there are modifications at the url
+ * - acceptModifiedData(url) - returns a pormise to the modified contents of the url
+ * - rejectModifiedData(url) - informs the data modifier that another concurrent
+ *                             modification was accepted instead.
+ */
 exports.DocumentDataSource = Target.specialize({
     constructor: {
         value: function DocumentDataSource(environmentBridge) {
@@ -95,9 +123,9 @@ exports.DocumentDataSource = Target.specialize({
      * Registers a new data modifier that can lazily tell the data source that
      * it has modified the data it read.
      * A data modifier needs to implement the following functions:
-     * - hasModifiedData: called to check if the data was modified.
-     * - acceptModifiedData: returns a promise to the modified data.
-     * - rejectModifiedData(data): indicates that the data was modified by
+     * - hasModifiedData(url): called to check if the data was modified.
+     * - acceptModifiedData(url): returns a promise to the modified data.
+     * - rejectModifiedData(url): indicates that the data was modified by
      *   another data modifier and this one rejected.
      */
     registerDataModifier: {
