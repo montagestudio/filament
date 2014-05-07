@@ -1114,15 +1114,7 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             // Add nodeProxies for newly added node
-            newChildNodes.forEach(function (newChild) {
-                var nodeProxy = NodeProxy.create().init(newChild, this);
-
-                if (nextSiblingElement) {
-                    this._insertNodeBeforeTemplateNode(nodeProxy, nextSiblingElement);
-                } else {
-                    this._appendChildToTemplateNode(nodeProxy, parentElement);
-                }
-            }, this);
+            newChildNodes.forEach(this._mergeChild(parentElement, nextSiblingElement), this);
 
             // Merge serialization
             labeler = new MontageLabeler();
@@ -1161,6 +1153,20 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return revisedTemplate;
+        }
+    },
+
+    _mergeChild: {
+        value: function (parentElement, nextSiblingElement) {
+            var self = this;
+            return function mergeChild (newChild) {
+                var nodeProxy = NodeProxy.create().init(newChild, this);
+                if (nextSiblingElement) {
+                    self._insertNodeBeforeTemplateNode(nodeProxy, nextSiblingElement);
+                } else {
+                    self._appendChildToTemplateNode(nodeProxy, parentElement);
+                }
+            };
         }
     },
 
