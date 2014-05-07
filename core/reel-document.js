@@ -18,6 +18,30 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     NotModifiedError = require("core/error").NotModifiedError,
     ObjectReferences = require("core/object-references").ObjectReferences;
 
+// An object to use when merging templates to ensure labels are applied correctly
+var MergeDelegate = function (labeler, serializationToMerge) {
+    this.labeler = labeler;
+    this.serializationToMerge = serializationToMerge;
+};
+
+MergeDelegate.prototype.willMergeObjectWithLabel = function(label, collisionLabel) {
+    var id = this.serializationToMerge.getElementId(label);
+    var isExternalObject;
+
+    if (collisionLabel) {
+        isExternalObject = this.serializationToMerge.isExternalObject(label);
+        // Do not import external objects, assume they exist
+        // in the template serialiation.
+        if (isExternalObject) {
+            return label;
+        } else if (id !== collisionLabel) {
+            return id;
+        }
+    } else if (id !== label) {
+        return id;
+    }
+};
+
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = EditingDocument.specialize({
 
@@ -1107,26 +1131,7 @@ exports.ReelDocument = EditingDocument.specialize({
             // to rename some labels with their data-montage-id counterpart we
             // avoid generating labels that match a used data-montage-id.
             labeler.addLabels(destinationTemplate.getElementIds());
-            mergeDelegate = {
-                labeler: labeler,
-                willMergeObjectWithLabel: function(label, collisionLabel) {
-                    var id = serializationToMerge.getElementId(label);
-                    var isExternalObject;
-
-                    if (collisionLabel) {
-                        isExternalObject = serializationToMerge.isExternalObject(label);
-                        // Do not import external objects, assume they exist
-                        // in the template serialiation.
-                        if (isExternalObject) {
-                            return label;
-                        } else if (id !== collisionLabel) {
-                            return id;
-                        }
-                    } else if (id !== label) {
-                        return id;
-                    }
-                }
-            };
+            mergeDelegate = new MergeDelegate(labeler, serializationToMerge);
 
             if (incomingLabels) {
                 labelsCollisionTable = templateSerialization.mergeSerialization(serializationToMerge, mergeDelegate);
