@@ -1116,17 +1116,19 @@ exports.ReelDocument = EditingDocument.specialize({
             // Add nodeProxies for newly added node
             newChildNodes.forEach(this._mergeChild(parentElement, nextSiblingElement), this);
 
-            // Merge serialization
-            labeler = new MontageLabeler();
-            // Add all the data-montage-ids to make sure we don't use
-            // these strings when solving label conflicts. Since we're going
-            // to rename some labels with their data-montage-id counterpart we
-            // avoid generating labels that match a used data-montage-id.
-            labeler.addLabels(destinationTemplate.getElementIds());
-            mergeDelegate = new MergeDelegate(labeler, serializationToMerge);
-
             if (incomingLabels) {
+                // Merge serialization
+                labeler = new MontageLabeler();
+                // Add all the data-montage-ids to make sure we don't use
+                // these strings when solving label conflicts. Since we're going
+                // to rename some labels with their data-montage-id counterpart we
+                // avoid generating labels that match a used data-montage-id.
+                labeler.addLabels(destinationTemplate.getElementIds());
+                mergeDelegate = new MergeDelegate(labeler, serializationToMerge);
+
                 labelsCollisionTable = templateSerialization.mergeSerialization(serializationToMerge, mergeDelegate);
+            } else {
+                labeler = null;
             }
 
             //Update underlying template string
