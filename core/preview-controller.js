@@ -36,7 +36,7 @@ exports.PreviewController = Target.specialize({
 
             var app = require("montage/core/application").application;
 
-            app.addEventListener("didSave", this);
+            app.addEventListener("didSaveProject", this);
             app.addEventListener("didSetOwnedObjectProperties", this);
             app.addEventListener("didSetOwnedObjectProperty", this);
             app.addEventListener("didSetOwnedObjectLabel", this);
@@ -309,7 +309,7 @@ exports.PreviewController = Target.specialize({
 
     //// LISTENERS
 
-    handleDidSave: {
+    handleDidSaveProject: {
         value: function () {
             this.refreshPreview().done();
             if (typeof this.environmentBridge.didSaveProject === "function") {
