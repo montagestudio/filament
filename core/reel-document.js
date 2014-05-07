@@ -2789,6 +2789,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 var htmlDocument = document.implementation.createHTMLDocument("");
                 htmlDocument.documentElement.innerHTML = content;
                 self._dataChanged = false;
+                self._changeCount = 0;
                 return new Template().initWithDocument(htmlDocument, self._packageRequire);
             }).then(function (template) {
                 self._openTemplate(template);
