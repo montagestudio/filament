@@ -833,7 +833,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 return self.addObjectsFromTemplate(template, parentElement, nextSiblingElement, stageElement);
             }).then(function (objects) {
                 // only if there's only one object?
-                if (objects.length && self.selectObjectsOnAddition) {
+                if (objects && objects.length && self.selectObjectsOnAddition) {
                     self.clearSelectedObjects();
                     self.selectObject(objects[0]);
                 }
@@ -976,7 +976,9 @@ exports.ReelDocument = EditingDocument.specialize({
                 context,
                 self = this,
                 revisedTemplate,
-                applicationProxy;
+                revisedLabels,
+                applicationProxy,
+                addedObjectPromise;
 
             if (!parentElement) {
                 parentElement = this._ownerElement;
@@ -986,7 +988,8 @@ exports.ReelDocument = EditingDocument.specialize({
             revisedTemplate = this._merge(destinationTemplate, sourceTemplate, parentElement, nextSiblingElement);
 
             // Ensure that we specially craft the application object the sourceTemplate introduced it
-            if (revisedTemplate.getSerialization().getSerializationLabels().indexOf("application") > -1 && !this._editingProxyMap.application) {
+            revisedLabels = revisedTemplate.getSerialization().getSerializationLabels();
+            if (revisedLabels && revisedLabels.indexOf("application") > -1 && !this._editingProxyMap.application) {
                 applicationProxy = new ReelProxy().init("application", revisedTemplate.getSerialization().getSerializationObject().application, "montage/core/application", self, true);
                 this.addObject(applicationProxy);
             }
@@ -995,7 +998,8 @@ exports.ReelDocument = EditingDocument.specialize({
             // creating new editing proxies
             context = this.deserializationContext(destinationTemplate.getSerialization().getSerializationObject(), this._editingProxyMap);
 
-            return Promise.all(revisedTemplate.getSerialization().getSerializationLabels().map(function (label) {
+            if (revisedLabels) {
+                addedObjectPromise = Promise.all(revisedLabels.map(function (label) {
                     return Promise(context.getObject(label)).then(function (proxy) {
                         // The application was already formally added to the reelDocument to get it into the editingProxyMap
                         // in constructing the context, there's no need to add it again here
@@ -1005,12 +1009,17 @@ exports.ReelDocument = EditingDocument.specialize({
                             return self.addObject(proxy);
                         }
                     });
-                }))
-                .then(function(addedProxies) {
+                }));
+            } else {
+                addedObjectPromise = Promise.resolve(null);
+            }
+
+            return addedObjectPromise
+                .then(function (addedObjects) {
                     self.undoManager.closeBatch();
                     self._dispatchDidChangeTemplate(destinationTemplate);
                     self._dispatchDidAddObjectsFromTemplate(revisedTemplate, parentElement, nextSiblingElement);
-                    return addedProxies;
+                    return addedObjects;
                 });
         }
     },
@@ -1035,6 +1044,8 @@ exports.ReelDocument = EditingDocument.specialize({
                 sourceContentFragment,
                 sourceDocument = sourceTemplate.document,
                 templateSerialization = destinationTemplate.getSerialization(),
+                labeler,
+                incomingLabels,
                 labelsCollisionTable,
                 idsCollisionTable,
                 newChildNodes,
@@ -1059,9 +1070,14 @@ exports.ReelDocument = EditingDocument.specialize({
             // not clash with any of the labels. This allow us to easily rename
             // the labels when merging the serialization to make sure they match
             // their data-montage-id counterpart.
-            var labeler = new MontageLabeler();
+            labeler = new MontageLabeler();
             labeler.addLabels(templateSerialization.getSerializationLabels());
-            labeler.addLabels(serializationToMerge.getSerializationLabels());
+
+
+            incomingLabels = serializationToMerge.getSerializationLabels();
+            if (incomingLabels) {
+                labeler.addLabels(incomingLabels);
+            }
 
             if (nextSiblingElement) {
                 idsCollisionTable = destinationTemplate.insertNodeBefore(sourceContentFragment, nextSiblingElement._templateNode, labeler);
@@ -1112,7 +1128,9 @@ exports.ReelDocument = EditingDocument.specialize({
                 }
             };
 
-            labelsCollisionTable = templateSerialization.mergeSerialization(serializationToMerge, mergeDelegate);
+            if (incomingLabels) {
+                labelsCollisionTable = templateSerialization.mergeSerialization(serializationToMerge, mergeDelegate);
+            }
 
             //Update underlying template string
             destinationTemplate.objectsString = templateSerialization.getSerializationString();
