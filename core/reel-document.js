@@ -207,6 +207,10 @@ exports.ReelDocument = EditingDocument.specialize({
             var menuItem = evt.detail,
                 identifier = evt.detail.identifier;
 
+            if (this._editor.currentDocument !== this) {
+                return;
+            }
+
             if ("delete" === identifier) {
                 menuItem.enabled = this.canDelete;
                 evt.stop();
@@ -227,6 +231,10 @@ exports.ReelDocument = EditingDocument.specialize({
     handleMenuAction: {
         value: function (evt) {
             var identifier = evt.detail.identifier;
+
+            if (this._editor.currentDocument !== this) {
+                return;
+            }
 
             if ("delete" === identifier) {
                 if (this.canDelete) {
