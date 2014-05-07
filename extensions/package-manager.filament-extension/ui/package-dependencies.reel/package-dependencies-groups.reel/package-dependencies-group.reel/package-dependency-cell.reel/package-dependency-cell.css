@@ -1,6 +1,5 @@
 .PackageDependencyCell {
-    border-bottom: 1px solid hsla(0, 0%, 0%, .06);
-    background-color: hsl(0,0%,96%);
+    border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
     -webkit-justify-content: flex-start;
     -moz-justify-content: flex-start;
     -ms-justify-content: flex-start;
@@ -13,11 +12,11 @@
     -moz-align-items: center;
     -ms-align-items: center;
     align-items: center;
-    height: 51px;
+    height: 60px;
 }
 
 .PackageDependencyCell-details {
-    margin-left: 10px;
+    margin-left: 12px;
 }
 
 .PackageDependencyCell > div:nth-child(2){
@@ -25,7 +24,7 @@
 }
 
 .PackageDependencyCell.selected {
-    background: hsl(210,100%,92%) !important;
+    background: hsl(210, 100%, 92%);
 }
 
 .PackageDependencyCell:-webkit-drag {
@@ -65,7 +64,6 @@
 }
 
 .PackageDependencyCell:last-child {
-    border-radius: 0 0 6px 6px;
 }
 
 .PackageDependencyCell-item {
@@ -91,36 +89,22 @@
 
 .PackageDependencyCell-item--name {
     color: hsl(0,0%,30%);
-    font-size: 15px;
+    font-size: 16px;
     font-weight: bold;
     text-transform: capitalize;
 }
 
 .PackageDependencyCell-item--version {
-    text-indent: 10px;
+    text-indent: 12px;
     font-style: italic;
-    font-size: 12px;
-    height: 16px;
-    color: hsl(0, 0%, 60%);
+    font-size: 13px;
+    color: hsl(0, 0%, 50%);
 }
 
 .PackageDependencyCellButton.matte-Button {
-    margin: 0;
-    padding: 0;
-    min-width: 0;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 59px;
     font-size: 20px;
-    font-weight: bold;
-    line-height: 0;
-    color: hsl(0, 0%, 60%);
-    border-radius: 0;
-    border: none;
-    background-color: transparent;
-    -webkit-font-smoothing: none;
-    -moz-font-smoothing: none;
-    -ms-font-smoothing: none;
-    font-smoothing: none;
 }
 
 .PackageDependencyCellButton.matte-Button:hover {

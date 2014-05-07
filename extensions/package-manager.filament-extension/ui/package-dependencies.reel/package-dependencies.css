@@ -1,24 +1,8 @@
 .PackageEditorPanel-title--button.matte-Button {
-    margin: 0;
-    padding: 0;
-    min-width: 0;
     float: right;
-    width: 37px;
-    height: 37px;
+    position: relative;
+    width: 40px;
+    height: 45px;
     font-size: 20px;
-    font-weight: bold;
-    line-height: 0;
-    color: hsl(0, 0%, 60%);
-    border-radius: 0;
-    border: none;
-    background-color: transparent;
-    -webkit-font-smoothing: none;
-    -moz-font-smoothing: none;
-    -ms-font-smoothing: none;
-    font-smoothing: none;
-}
-
-.PackageEditorPanel-title--button.matte-Button:hover {
-    background-color: transparent;
-    border-radius: 0 4px 0 0;
+    right: -12px;
 }

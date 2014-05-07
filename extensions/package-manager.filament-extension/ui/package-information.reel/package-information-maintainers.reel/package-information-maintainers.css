@@ -23,28 +23,10 @@
 }
 
 .AddMaintainerButton-header.matte-Button {
-    margin: 0;
-    padding: 0;
-    min-width: 0;
     float: right;
-    width: 25px;
-    height: 25px;
+    width: 27px;
+    height: 27px;
     font-size: 18px;
-    font-weight: bold;
-    line-height: 0;
-    color: hsl(0, 0%, 60%);
-    border-radius: 0;
-    border: none;
-    background-color: transparent;
-    -webkit-font-smoothing: none;
-    -moz-font-smoothing: none;
-    -ms-font-smoothing: none;
-    font-smoothing: none;
-}
-
-.AddMaintainerButton-header.matte-Button:hover {
-    background-color: hsl(0,0%,92%);
-    border-radius: 0 4px 0 0;
 }
 
 .MaintainersList {
