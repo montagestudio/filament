@@ -155,12 +155,15 @@ exports.DocumentDataSource = Target.specialize({
      * modified version of the url contents.
      */
     isModified: {
-        value: function(url) {
+        value: function(url, ignoreDataModifier) {
             var dataModifiers = this._dataModifiers;
             var dataModifier;
 
             if (dataModifiers) {
                 for (var i = 0; dataModifier =/*assign*/ dataModifiers[i]; i++) {
+                    if (dataModifier === ignoreDataModifier) {
+                        continue;
+                    }
                     if (dataModifier.hasModifiedData(url)) {
                         return true;
                     }

@@ -2768,7 +2768,7 @@ exports.ReelDocument = EditingDocument.specialize({
     needsRefresh: {
         value: function() {
             return this._dataChanged ||
-                this._dataSource.isModified(this._getHtmlFileUrl());
+                this._dataSource.isModified(this._getHtmlFileUrl(), this);
         }
     },
 

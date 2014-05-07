@@ -298,7 +298,7 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
     needsRefresh: {
         value: function() {
             return this._dataChanged ||
-                this._dataSource.isModified(this.url);
+                this._dataSource.isModified(this.url, this);
         }
     },
 
