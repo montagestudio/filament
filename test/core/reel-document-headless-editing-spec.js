@@ -231,7 +231,7 @@ describe("core/reel-document-headless-editing-spec", function () {
 
         it("must not remove the owner from the serialization of the editing document", function () {
             return reelDocumentPromise.then(function (reelDocument) {
-                var proxyToRemove = reelDocument.editingProxyMap["owner"],
+                var proxyToRemove = reelDocument.editingProxyMap.owner,
                     removalPromise = reelDocument.removeObject(proxyToRemove),
                     templateSerialization;
 
