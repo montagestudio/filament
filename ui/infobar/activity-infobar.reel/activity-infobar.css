@@ -50,6 +50,7 @@ Classes to toggle counter
     -ms-user-select: text;
     user-select: text;
     cursor: auto;
+    -webkit-font-smoothing: antialiased;
 }
 
 .ActivityInfobar-status {
@@ -66,6 +67,7 @@ Classes to toggle counter
     -ms-user-select: text;
     user-select: text;
     cursor: auto;
+    -webkit-font-smoothing: antialiased;
 }
 
 
