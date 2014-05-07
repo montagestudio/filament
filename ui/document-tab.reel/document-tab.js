@@ -31,6 +31,12 @@ exports.DocumentTab = Component.specialize({
         value: null
     },
 
+    nextTarget: {
+        get: function () {
+            return this.document.editor;
+        }
+    },
+
     packageUrl: {
         value: null
     },
