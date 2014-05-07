@@ -107,12 +107,13 @@ exports.ExtensionController = Montage.create(Target, {
 
                 // load extension even if it does not have an extension.js file
                 extension = packageRequire.async("extension").catch(function (error) {
-                    var ext = CoreExtension.specialize({
+                    var extensionName = (extensionUrl.match(/\/([^\/]+?)\.filament-extension/))[1],
+                        ext = CoreExtension.specialize({
                         activate: {
                             value: function (application, projectController) {
                                 return Promise.all([
-                                    this.installLibraryItems(projectController, "Extensions"),
-                                    this.installModuleIcons(projectController, "Extensions")
+                                    this.installLibraryItems(projectController, extensionName),
+                                    this.installModuleIcons(projectController, extensionName)
                                 ]).thenResolve(this);
                             }
                         },
@@ -120,8 +121,8 @@ exports.ExtensionController = Montage.create(Target, {
                         deactivate: {
                             value: function (application, projectController) {
                                 return Promise.all([
-                                    this.uninstallLibraryItems(projectController, "Extensions"),
-                                    this.uninstallModuleIcons(projectController, "Extensions")
+                                    this.uninstallLibraryItems(projectController, extensionName),
+                                    this.uninstallModuleIcons(projectController, extensionName)
                                 ]).thenResolve(this);
                             }
                         }
