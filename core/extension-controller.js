@@ -81,6 +81,15 @@ exports.ExtensionController = Montage.create(Target, {
         }
     },
 
+    extensionNameFromExtentionUrl: {
+        value: function (extensionUrl) {
+            var matches = extensionUrl.match(/\/([^\/]+?)\.filament-extension/),
+                name = (matches.length > 1)? matches[1] : null;
+
+            return name;
+        }
+    },
+
     /**
      * Asynchronously load the extension package from the specified
      * extensionUrl, returning a reference to the exported Extension.
@@ -95,7 +104,6 @@ exports.ExtensionController = Montage.create(Target, {
     loadExtension: {
         enumerable: false,
         value: function (extensionUrl) {
-
             var self = this;
 
             // TODO npm install?
@@ -105,10 +113,10 @@ exports.ExtensionController = Montage.create(Target, {
                 packageRequire.injectMapping({name: "montage", location: require.getPackage({name: "montage"}).location});
                 packageRequire.injectMapping({name: "filament-extension", location: require.getPackage({name: "filament-extension"}).location});
 
-                // load extension even if it does not have an extension.js file
+                // Create a dummy extension package if the extension does not have one
                 extension = packageRequire.async("extension").catch(function (error) {
-                    var extensionName = (extensionUrl.match(/\/([^\/]+?)\.filament-extension/))[1],
-                        ext = CoreExtension.specialize({
+                    var extensionName = self.extensionNameFromExtentionUrl(extensionUrl),
+                        extensionPackage = CoreExtension.specialize({
                         activate: {
                             value: function (application, projectController) {
                                 return Promise.all([
@@ -127,9 +135,9 @@ exports.ExtensionController = Montage.create(Target, {
                             }
                         }
                     });
-                    ext.packageLocation = packageRequire.location;
+                    extensionPackage.packageLocation = packageRequire.location;
 
-                    return {Extension : ext};
+                    return {Extension : extensionPackage};
                 });
 
                 return Promise.all([extension, Promise.resolve(packageRequire)]);
