@@ -1104,9 +1104,11 @@ exports.ReelDocument = EditingDocument.specialize({
             sourceContentFragment = sourceContentRange.cloneContents();
 
             newChildNodes = [];
-            //TODO do we want children or childNodes (textnodes included)?
-            for (i = 0; (iChild = sourceContentFragment.children[i]); i++) {
-                newChildNodes.push(iChild);
+            for (i = 0; (iChild = sourceContentFragment.childNodes[i]); i++) {
+                //TODO do we want children or childNodes (textnodes included)?
+                if (iChild.nodeType === Node.ELEMENT_NODE) {
+                    newChildNodes.push(iChild);
+                }
             }
 
             // Merge markup
