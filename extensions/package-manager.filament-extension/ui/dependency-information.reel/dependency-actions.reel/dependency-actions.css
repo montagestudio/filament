@@ -82,6 +82,10 @@
     vertical-align: middle;
 }
 
+.DependencyUpdate-item {
+    line-height: 30px;
+}
+
 .DependencyAction-item--versions .matte-Select,
 .DependencyAction-item--versions .matte-Button,
 .DependencyUpdate-item,
