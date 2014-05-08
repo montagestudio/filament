@@ -11,7 +11,7 @@
     -moz-flex-direction: row;
     -ms-flex-direction: row;
     flex-direction: row;
-    background: hsl(0,0%,92%);
+    background: hsl(0, 0%, 92%);
     font-size: 13px;
     color: hsl(0, 0%, 30%);;
     text-shadow: 0 1px hsla(0,0%,100%,.5);
@@ -124,7 +124,7 @@
 
 .PackageEditorPanel-content {
     padding: 8px;
-    background: hsl(0,0%,94%);
+    background: hsl(0, 0%, 96%);
     border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
     display: -webkit-flex;
     display: -moz-flex;
