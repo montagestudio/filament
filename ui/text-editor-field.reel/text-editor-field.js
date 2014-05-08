@@ -2,7 +2,9 @@
  * @module ./text-editor-field.reel
  * @requires montage/ui/component
  */
-var AbstractControl = require("montage/ui/base/abstract-control").AbstractControl;
+var AbstractControl = require("montage/ui/base/abstract-control").AbstractControl,
+    Promise = require("montage/core/promise").Promise,
+    UndoManager = require("montage/core/undo-manager").UndoManager;
 
 /**
  * @class TextEditorField
@@ -13,6 +15,8 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
     constructor: {
         value: function TextEditorField() {
             this.super();
+            //TODO we can probably share an undo manager across all editing fields...
+            this.undoManager = UndoManager.create();
         }
     },
 
@@ -48,6 +52,10 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
         value: false
     },
 
+    undoManager: {
+        value: null
+    },
+
     prepareForActivationEvents: {
         value: function () {
             // Listen to start editing
@@ -63,6 +71,93 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
             this.element.addEventListener("focusin", this, false);
 
             this.addOwnPropertyChangeListener("value", this);
+
+            // Register changes to the input value for undo consideration
+            this.addPathChangeListener("templateObjects.inputText.value", this, "handleInputValueChange");
+
+            this.addEventListener("menuValidate", this);
+            this.addEventListener("menuAction", this);
+        }
+    },
+
+    handleMenuValidate: {
+        value: function (evt) {
+            var menuItem = evt.detail,
+                identifier = evt.detail.identifier;
+
+            if ("undo" === identifier) {
+                menuItem.enabled = this.canUndo;
+                //TODO localize
+                menuItem.title = this.canUndo ? "Undo " + this.undoManager.undoLabel : "Undo";
+                evt.stop();
+            } else if ("redo" === identifier) {
+                menuItem.enabled = this.canRedo;
+                //TODO localize
+                menuItem.title = this.canRedo ? "Redo " + this.undoManager.redoLabel : "Redo";
+                evt.stop();
+            }
+        }
+    },
+
+    handleMenuAction: {
+        value: function (evt) {
+            var identifier = evt.detail.identifier;
+
+            if ("undo" === identifier) {
+                if (this.canUndo) {
+                    this.undoManager.undo().done();
+                }
+                evt.stop();
+            } else if ("redo" === identifier) {
+                if (this.canRedo) {
+                    this.undoManager.redo().done();
+                }
+                evt.stop();
+            }
+        }
+    },
+
+    canUndo: {
+        get: function () {
+            return this.getPath("undoManager.undoCount > 0");
+        }
+    },
+
+    canRedo: {
+        get: function () {
+            return this.getPath("undoManager.redoCount > 0");
+        }
+    },
+
+    _previousValue: {
+        value: null
+    },
+
+    handleInputValueChange: {
+        value: function () {
+            var value = this.templateObjects.inputText.value;
+
+            if (value === this._previousValue) {
+                return;
+            }
+
+            //TODO throttle this so we don't have only single character undo
+            this.undoManager.register("Typing", Promise.resolve([this._setInputValue, this, this._previousValue]));
+
+            this._previousValue = value;
+        }
+    },
+
+    _setInputValue: {
+        value: function (value) {
+            this.templateObjects.inputText.value = value;
+        }
+    },
+
+    shouldAcceptValue: {
+        value: function (field, value) {
+            // Ensure we can set the value while we're focused on the field
+            return field === this.templateObjects.inputText;
         }
     },
 
@@ -78,6 +173,9 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
                 return;
             }
 
+            // Keep this around for tracking undoability
+            this._previousValue = this.value;
+
             this._inputValue = this.value;
             this.isEditing = true;
             this.shouldBeFocus = true;
@@ -91,6 +189,8 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
             this.value = this._inputValue;
 
             var ok = this.dispatchActionEvent();
+            this.undoManager.clearUndo();
+            this.undoManager.clearRedo();
 
             if (ok) {
                 this.isEditing = false;
@@ -104,6 +204,10 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
         value: function () {
             this.value = null;
             this._inputValue = null;
+
+            this.undoManager.clearUndo();
+            this.undoManager.clearRedo();
+
             this.isEditing = false;
             this.needsDraw = true;
         }
