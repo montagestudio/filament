@@ -1339,17 +1339,21 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     addDirectory: {
         value: function (path) {
-            var defaultDirectory = (path)? Url.resolve(this.packageUrl, path) : this.packageUrl,
+            var self = this,
+                defaultDirectory = (path)? Url.resolve(this.packageUrl, path) : this.packageUrl,
                 options = {
                     defaultDirectory: defaultDirectory,
                     defaultName: "Untitled Folder", // TODO localize
                     prompt: "Create Folder", // TODO localize
                     submitLabel: "Create"
-                },
-                self = this;
+                };
 
             return this.environmentBridge.promptForSave(options)
                 .then(function (destination) {
+                    if (!destination) {
+                        return Promise.resolve(null);
+                    }
+
                     return self.projectDocument.makeTree(destination);
                 });
         }
