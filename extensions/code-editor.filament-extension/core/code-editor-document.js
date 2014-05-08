@@ -69,6 +69,13 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
         }
     },
 
+    destroy: {
+        value: function() {
+            this._dataSource.unregisterDataModifier(this);
+            this._dataSource.removeEventListener("dataChange", this, false);
+        }
+    },
+
     _editor: {
         value: null
     },
@@ -151,9 +158,15 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
         value: function (location) {
             var self = this;
 
+            if (!this.hasModifiedData(location)) {
+                return Promise.resolve();
+            }
+
             this.dispatchEventNamed("willSave", true, false);
+            this._resetModifiedDataState();
             return Promise.when(this._dataSource.write(location, self.content)).then(function (value) {
                 self.isDirty = false;
+                self._changeCount = 0;
                 self.dispatchEventNamed("didSave", true, false);
                 return value;
             });
@@ -226,9 +239,15 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
 
             return this._dataSource.read(this.url)
             .then(function (content) {
+                self._dataSource.addEventListener("dataChange", self, false);
                 self.content = content;
+                return self;
             });
         }
+    },
+
+    _dataChanged: {
+        value: null
     },
 
     _hasModifiedData: {
@@ -251,10 +270,20 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
         value: function(url) {
             if (url === this.url) {
                 this.content = this.codeMirrorDocument.getValue();
-                this._hasModifiedData.undoCount = this._undoManager.undoCount;
-                this._hasModifiedData.redoCount = this._undoManager.redoCount;
+                this._resetModifiedDataState();
                 return Promise.resolve(this.content);
             }
+        }
+    },
+
+    /**
+     * When the modified data state is reseted the document stops reporting as
+     * having modified the data source.
+     */
+    _resetModifiedDataState: {
+        value: function() {
+            this._hasModifiedData.undoCount = this._undoManager.undoCount;
+            this._hasModifiedData.redoCount = this._undoManager.redoCount;
         }
     },
 
@@ -268,7 +297,8 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
 
     needsRefresh: {
         value: function() {
-            return this._dataSource.isModified(this.url);
+            return this._dataChanged ||
+                this._dataSource.isModified(this.url, this);
         }
     },
 
@@ -283,10 +313,18 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
             return this._dataSource.read(this.url).then(function(content) {
                 self.content = content;
                 self.codeMirrorDocument.setValue(content);
-                self._hasModifiedData.undoCount = self._undoManager.undoCount;
-                self._hasModifiedData.redoCount = self._undoManager.redoCount;
+                self._dataChange = false;
+                self._changeCount = 0;
+                self._resetModifiedDataState();
                 return true;
             });
+        }
+    },
+
+    handleDataChange: {
+        value: function() {
+            this._changeCount = 0;
+            this._dataChanged = true;
         }
     }
 

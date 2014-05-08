@@ -231,6 +231,10 @@ exports.ReelDocument = EditingDocument.specialize({
             var menuItem = evt.detail,
                 identifier = evt.detail.identifier;
 
+            if (this._editor.currentDocument !== this) {
+                return;
+            }
+
             if ("delete" === identifier) {
                 menuItem.enabled = this.canDelete;
                 evt.stop();
@@ -251,6 +255,10 @@ exports.ReelDocument = EditingDocument.specialize({
     handleMenuAction: {
         value: function (evt) {
             var identifier = evt.detail.identifier;
+
+            if (this._editor.currentDocument !== this) {
+                return;
+            }
 
             if ("delete" === identifier) {
                 if (this.canDelete) {
@@ -494,8 +502,20 @@ exports.ReelDocument = EditingDocument.specialize({
 
     _saveHtml: {
         value: function (location, dataSource) {
-            var html = this._generateHtml();
-            return dataSource.write(location, html);
+            var self = this;
+            var html;
+
+            if (!this.hasModifiedData(location)) {
+                return;
+            }
+
+            html = this._generateHtml();
+
+            this._ignoreDataChange = true;
+            return dataSource.write(location, html)
+            .then(function() {
+                self._ignoreDataChange = false;
+            });
         }
     },
 
@@ -517,6 +537,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 if (location.charAt(location.length - 1) !== "/") {
                     location += "/";
                 }
+
                 promise = Promise.all(Object.map(registeredFiles, function (info, extension) {
                     var fileLocation = Url.resolve(location, filenameMatch[1] + "." + extension);
                     return info.callback.call(info.thisArg, fileLocation, self._dataSource);
@@ -524,6 +545,7 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return promise.then(function (value) {
+                self._resetModifiedDataState();
                 self._changeCount = 0;
                 return value;
             });
@@ -2687,6 +2709,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             return this._createTemplateWithUrl(packageUrl + templateModuleId)
             .then(function(template) {
+                self._dataSource.addEventListener("dataChange", self, false);
                 self._template = template;
                 self.registerFile("html", self._saveHtml, self);
                 self._openTemplate(template);
@@ -2728,6 +2751,7 @@ exports.ReelDocument = EditingDocument.specialize({
     destroy: {
         value: function() {
             this._dataSource.unregisterDataModifier(this);
+            this._dataSource.removeEventListener("dataChange", this, false);
         }
     },
 
@@ -2742,6 +2766,14 @@ exports.ReelDocument = EditingDocument.specialize({
             var filenameMatch = this.url.match(/.+\/(.+)\.reel/);
             return this.url + filenameMatch[1] + ".html";
         }
+    },
+
+    _dataChanged: {
+        value: null
+    },
+
+    _ignoreDataChange: {
+        value: null
     },
 
     _hasModifiedData: {
@@ -2763,8 +2795,7 @@ exports.ReelDocument = EditingDocument.specialize({
     acceptModifiedData: {
         value: function(url) {
             if (url === this._getHtmlFileUrl()) {
-                this._hasModifiedData.undoCount = this._undoManager.undoCount;
-                this._hasModifiedData.redoCount = this._undoManager.redoCount;
+                this._resetModifiedDataState();
                 return Promise.resolve(this._generateHtml());
             }
         }
@@ -2776,9 +2807,21 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    /**
+     * When the modified data state is reseted the document stops reporting as
+     * having modified the data source.
+     */
+    _resetModifiedDataState: {
+        value: function() {
+            this._hasModifiedData.undoCount = this._undoManager.undoCount;
+            this._hasModifiedData.redoCount = this._undoManager.redoCount;
+        }
+    },
+
     needsRefresh: {
         value: function() {
-            return this._dataSource.isModified(this._getHtmlFileUrl());
+            return this._dataChanged ||
+                this._dataSource.isModified(this._getHtmlFileUrl(), this);
         }
     },
 
@@ -2790,11 +2833,22 @@ exports.ReelDocument = EditingDocument.specialize({
             return this._dataSource.read(htmlUrl).then(function(content) {
                 var htmlDocument = document.implementation.createHTMLDocument("");
                 htmlDocument.documentElement.innerHTML = content;
+                self._dataChanged = false;
+                self._changeCount = 0;
                 return new Template().initWithDocument(htmlDocument, self._packageRequire);
             }).then(function (template) {
                 self._openTemplate(template);
                 return true;
             });
+        }
+    },
+
+    handleDataChange: {
+        value: function() {
+            if (!this._ignoreDataChange) {
+                this._changeCount = 0;
+                this._dataChanged = true;
+            }
         }
     }
 
