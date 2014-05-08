@@ -148,3 +148,9 @@
     border-color: hsla(0,0%,0%,.2);
     background: hsl(42, 83%, 98%);
 }
+
+/* References */
+
+.TemplateObjectHeader.is-acceptingReference {
+    background: linear-gradient( hsl(0,0%,76%), hsl(0,0%,72%));
+}
