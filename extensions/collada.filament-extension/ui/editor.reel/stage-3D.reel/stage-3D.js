@@ -182,10 +182,10 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
     _updateComponent3D: {
         value: function (id, property, value) {
             if (this._scene && typeof id === "string" && typeof property === "string") {
-                var component3D = this._scene.glTFElement.ids[id];
+                var glTFElement = this._scene.glTFElement.ids[id];
 
-                if (component3D) {
-                    component3D[property] = value;
+                if (glTFElement && glTFElement.component3D) {
+                    glTFElement.component3D[property] = value;
                 }
             }
         }
