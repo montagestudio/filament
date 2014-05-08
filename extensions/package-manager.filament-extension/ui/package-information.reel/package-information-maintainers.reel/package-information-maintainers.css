@@ -1,41 +1,16 @@
-.PackageInformation--maintainers .PackageEditorPanel-content {
-    -webkit-flex-direction: column;
-    -moz-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    padding: 15px;
-}
-
-.PackageInformationMaintainers-header {
-    border-radius: 4px 4px 0 0;
-    border-bottom: 1px solid hsla(0,0%,0%,.1);
-    box-shadow: inset 0 1px 0 hsla(0,0%,100%,1);
-    background: -webkit-linear-gradient( hsl(0,0%,99%), hsl(0,0%,96%) );
-    background: -moz-linear-gradient( hsl(0,0%,99%), hsl(0,0%,96%) );
-    background: -ms-linear-gradient( hsl(0,0%,99%), hsl(0,0%,96%) );
-    background: linear-gradient( hsl(0,0%,99%), hsl(0,0%,96%) );
-}
-
-.PackageInformationMaintainers-header .PackageEditorPanel-title {
-    display: inline-block;
-    text-shadow: none;
-    border-bottom: none;
-}
-
 .AddMaintainerButton-header.matte-Button {
     float: right;
-    width: 27px;
-    height: 27px;
+    width: 30px;
+    height: 30px;
     font-size: 18px;
+    right: -12px;
+    top: -1px;
+    position: relative;
 }
 
 .MaintainersList {
-    background-color: #ffffff;
     width: 100%;
     padding: 0;
-    max-height: 160px;
-    overflow-y: auto;
-    border-radius: 5px;
     margin: 0;
     list-style: none;
 }

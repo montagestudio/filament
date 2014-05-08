@@ -139,14 +139,19 @@
     justify-content: center;
 }
 
+.PackageEditorPanel-content--hasList {
+    padding: 0;
+}
+
 .PackageEditorPanel-title {    
     position: relative;
 	
-    padding: 4px 12px;
+    padding: 0 12px;
 	margin: 0;
     font-size: 13px;
 	
 	
+    line-height: 30px;
     color: hsl(0, 0%, 50%);
     text-shadow: 0 1px 0 hsla(0,0%,100%,.8);
     border-top: 1px solid hsl(0,0%,100%);

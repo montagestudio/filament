@@ -1,6 +1,5 @@
 .PersonCell {
-    border-bottom: 1px solid hsla(0, 0%, 0%, .06);
-    background-color: hsla(0, 0%, 96%, 0.07);
+    border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
     -webkit-justify-content: flex-start;
     -moz-justify-content: flex-start;
     -ms-justify-content: flex-start;
@@ -17,7 +16,7 @@
     -moz-align-items: center;
     -ms-align-items: center;
     align-items: center;
-    padding: 8px 8px 8px 12px;
+    padding: 8px 0 8px 12px;
 }
 
 .PersonCell:last-child {
@@ -46,30 +45,18 @@
     text-indent: 10px;
     font-style: italic;
     font-size: 11px;
-    color: hsl(0, 0%, 60%);
+    color: hsl(0, 0%, 50%);
 }
 
 .PersonCell .PersonCellButtons {
     margin-left: auto;
+    margin-right: 4px;
 }
 
 .PersonCell .PersonCellEditButton.matte-Button, .PersonCellDeleteButton.matte-Button {
-    margin: 0;
-    padding: 0;
-    min-width: 0;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 30px;
     font-size: 20px;
-    font-weight: bold;
-    line-height: 0;
-    color: hsl(0, 0%, 60%);
-    border-radius: 0;
-    border: none;
-    background-color: transparent;
-    -webkit-font-smoothing: none;
-    -moz-font-smoothing: none;
-    -ms-font-smoothing: none;
-    font-smoothing: none;
 }
 
 .PersonCell .PersonCellEditButton.matte-Button {
@@ -79,7 +66,6 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: 13px;
-    margin-right: 4px;
     opacity: .3;
 }
 
