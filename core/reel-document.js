@@ -1134,9 +1134,15 @@ exports.ReelDocument = EditingDocument.specialize({
             //Update underlying template string
             destinationTemplate.objectsString = templateSerialization.getSerializationString();
 
-            // Revise the sourceSerialization
+            return this._reviseTemplate(sourceTemplate, idsCollisionTable, labelsCollisionTable);
+        }
+    },
+
+    _reviseTemplate: {
+        value: function (sourceTemplate, idsCollisionTable, labelsCollisionTable) {
             var revisedTemplate = sourceTemplate.clone(),
-                revisedSerialization = revisedTemplate.getSerialization();
+                revisedSerialization = revisedTemplate.getSerialization(),
+                id;
 
             if (idsCollisionTable) {
                 revisedSerialization.renameElementReferences(idsCollisionTable);
@@ -1147,7 +1153,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             revisedTemplate.objectsString = revisedSerialization.getSerializationString();
 
-            for (var id in idsCollisionTable) {
+            for (id in idsCollisionTable) {
                 if (typeof idsCollisionTable.hasOwnProperty !== "function" || idsCollisionTable.hasOwnProperty(id)) {
                     var element = revisedTemplate.getElementById(id);
                     revisedTemplate.setElementId(element, idsCollisionTable[id]);
