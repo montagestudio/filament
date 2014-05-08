@@ -145,7 +145,7 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
         value: function (reelProxy) {
             var element = this._elementForReelProxy(reelProxy);
 
-            if (element && element.component3D) {
+            if (element) {
                 element.component3D = this._fullfilComponent3D(new Material(), reelProxy.properties);
             }
         }
@@ -155,7 +155,7 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
         value: function (reelProxy) {
             var element = this._elementForReelProxy(reelProxy);
 
-            if (element && element.component3D) {
+            if (element) {
                 element.component3D = this._fullfilComponent3D(new Node(), reelProxy.properties);
             }
         }
