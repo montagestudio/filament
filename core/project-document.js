@@ -515,6 +515,8 @@ exports.ProjectDocument = Document.specialize({
                 return self._environmentBridge.save(doc, url);
             });
 
+            message = message || defaultCommitMessage;
+
             return Promise.all(savedPromises)
                 .then(function(result) {
                     return self._environmentBridge.flushProject(message).thenResolve(result);
