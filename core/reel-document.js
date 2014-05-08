@@ -18,6 +18,30 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     NotModifiedError = require("core/error").NotModifiedError,
     ObjectReferences = require("core/object-references").ObjectReferences;
 
+// An object to use when merging templates to ensure labels are applied correctly
+var MergeDelegate = function (labeler, serializationToMerge) {
+    this.labeler = labeler;
+    this.serializationToMerge = serializationToMerge;
+};
+
+MergeDelegate.prototype.willMergeObjectWithLabel = function(label, collisionLabel) {
+    var id = this.serializationToMerge.getElementId(label);
+    var isExternalObject;
+
+    if (collisionLabel) {
+        isExternalObject = this.serializationToMerge.isExternalObject(label);
+        // Do not import external objects, assume they exist
+        // in the template serialiation.
+        if (isExternalObject) {
+            return label;
+        } else if (id !== collisionLabel) {
+            return id;
+        }
+    } else if (id !== label) {
+        return id;
+    }
+};
+
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = EditingDocument.specialize({
 
@@ -1090,54 +1114,35 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             // Add nodeProxies for newly added node
-            newChildNodes.forEach(function (newChild) {
-                var nodeProxy = NodeProxy.create().init(newChild, this);
-
-                if (nextSiblingElement) {
-                    this._insertNodeBeforeTemplateNode(nodeProxy, nextSiblingElement);
-                } else {
-                    this._appendChildToTemplateNode(nodeProxy, parentElement);
-                }
-            }, this);
-
-            // Merge serialization
-            labeler = new MontageLabeler();
-            // Add all the data-montage-ids to make sure we don't use
-            // these strings when solving label conflicts. Since we're going
-            // to rename some labels with their data-montage-id counterpart we
-            // avoid generating labels that match a used data-montage-id.
-            labeler.addLabels(destinationTemplate.getElementIds());
-            mergeDelegate = {
-                labeler: labeler,
-                willMergeObjectWithLabel: function(label, collisionLabel) {
-                    var id = serializationToMerge.getElementId(label);
-                    var isExternalObject;
-
-                    if (collisionLabel) {
-                        isExternalObject = serializationToMerge.isExternalObject(label);
-                        // Do not import external objects, assume they exist
-                        // in the template serialiation.
-                        if (isExternalObject) {
-                            return label;
-                        } else if (id !== collisionLabel) {
-                            return id;
-                        }
-                    } else if (id !== label) {
-                        return id;
-                    }
-                }
-            };
+            newChildNodes.forEach(this._mergeChild(parentElement, nextSiblingElement), this);
 
             if (incomingLabels) {
+                // Merge serialization
+                labeler = new MontageLabeler();
+                // Add all the data-montage-ids to make sure we don't use
+                // these strings when solving label conflicts. Since we're going
+                // to rename some labels with their data-montage-id counterpart we
+                // avoid generating labels that match a used data-montage-id.
+                labeler.addLabels(destinationTemplate.getElementIds());
+                mergeDelegate = new MergeDelegate(labeler, serializationToMerge);
+
                 labelsCollisionTable = templateSerialization.mergeSerialization(serializationToMerge, mergeDelegate);
+            } else {
+                labeler = null;
             }
 
             //Update underlying template string
             destinationTemplate.objectsString = templateSerialization.getSerializationString();
 
-            // Revise the sourceSerialization
+            return this._reviseTemplate(sourceTemplate, idsCollisionTable, labelsCollisionTable);
+        }
+    },
+
+    _reviseTemplate: {
+        value: function (sourceTemplate, idsCollisionTable, labelsCollisionTable) {
             var revisedTemplate = sourceTemplate.clone(),
-                revisedSerialization = revisedTemplate.getSerialization();
+                revisedSerialization = revisedTemplate.getSerialization(),
+                id;
 
             if (idsCollisionTable) {
                 revisedSerialization.renameElementReferences(idsCollisionTable);
@@ -1148,7 +1153,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             revisedTemplate.objectsString = revisedSerialization.getSerializationString();
 
-            for (var id in idsCollisionTable) {
+            for (id in idsCollisionTable) {
                 if (typeof idsCollisionTable.hasOwnProperty !== "function" || idsCollisionTable.hasOwnProperty(id)) {
                     var element = revisedTemplate.getElementById(id);
                     revisedTemplate.setElementId(element, idsCollisionTable[id]);
@@ -1156,6 +1161,20 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return revisedTemplate;
+        }
+    },
+
+    _mergeChild: {
+        value: function (parentElement, nextSiblingElement) {
+            var self = this;
+            return function mergeChild (newChild) {
+                var nodeProxy = NodeProxy.create().init(newChild, this);
+                if (nextSiblingElement) {
+                    self._insertNodeBeforeTemplateNode(nodeProxy, nextSiblingElement);
+                } else {
+                    self._appendChildToTemplateNode(nodeProxy, parentElement);
+                }
+            };
         }
     },
 
