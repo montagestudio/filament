@@ -2,8 +2,9 @@
  * @module ./template-object-header.reel
  * @requires montage/ui/component
  */
-var Component = require("montage/ui/component").Component,
-    MimeTypes = require("core/mime-types");
+var Component = require("montage/ui/component").Component;
+var MimeTypes = require("core/mime-types");
+var ReferenceSource = require("../../../reference/reference-source").ReferenceSource;
 
 /**
  * @class TemplateObjectHeader
@@ -29,6 +30,11 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
         value: function(firstTime) {
             if (firstTime) {
                 this.element.addEventListener("keyup", this, false);
+                // As the recipient
+                var referenceSourceComposer = new ReferenceSource();
+                referenceSourceComposer.delegate = this;
+                this.addComposerForElement(referenceSourceComposer, this.element);
+
             }
         }
     },
@@ -104,6 +110,37 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
     handleDblclick: {
         value: function () {
             this.dispatchEventNamed("action", true ,true);
+        }
+    },
+
+    // ReferenceSource delegate
+
+    canProvideReference: {
+        value: function (composer, session) {
+//            return session.accepts(MimeTypes.SERIALIZATION_OBJECT_LABEL);
+            return true;
+        }
+    },
+
+
+    acceptingReference: {
+        value: function () {
+            this.classList.add("is-acceptingReference");
+        }
+    },
+
+
+    resigningReference: {
+        value: function () {
+            this.classList.remove("is-acceptingReference");
+        }
+    },
+
+
+    provideReference: {
+        value: function () {
+            this.classList.remove("is-acceptingReference");
+            return this.templateObject.label;
         }
     }
 
