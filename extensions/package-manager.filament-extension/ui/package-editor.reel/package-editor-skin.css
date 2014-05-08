@@ -66,6 +66,10 @@
 }
 
 
+.PackageEditor-search.matte-InputText {
+    border-radius: 2em;
+}
+
 /* Textarea */
 
 .PackageEditor .matte-Textarea {
