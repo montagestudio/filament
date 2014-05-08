@@ -114,7 +114,7 @@
     line-height: 45px;
     font-size: 18px;
     font-weight: normal;
-    color: hsl(0, 0%, 50%);
+    color: hsl(0, 0%, 30%);
     border-bottom: 1px solid hsl(0, 0%, 75%);
     background: -webkit-linear-gradient( hsl(0, 0%, 96%), hsl(0, 0%, 92%) );
     background: -moz-linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
@@ -153,11 +153,11 @@
 	
     padding: 0 12px;
 	margin: 0;
-    font-size: 13px;
+    font-size: 14px;
 	
 	
     line-height: 30px;
-    color: hsl(0, 0%, 50%);
+    color: hsl(0, 0%, 30%);
     text-shadow: 0 1px 0 hsla(0,0%,100%,.8);
     border-top: 1px solid hsl(0,0%,100%);
     border-bottom: 1px solid hsla(0, 0%, 86%, 1);
@@ -193,7 +193,6 @@
     width: 80px;
     margin-right: 6px;
     text-align: right;
-    color: hsl(0, 0%, 50%);
 }
 
 .SearchModules.packageEditorAsideColumn {

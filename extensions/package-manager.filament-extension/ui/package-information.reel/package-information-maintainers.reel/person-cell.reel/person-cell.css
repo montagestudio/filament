@@ -16,7 +16,7 @@
     -moz-align-items: center;
     -ms-align-items: center;
     align-items: center;
-    padding: 8px 0 8px 12px;
+    padding: 8px 0 8px 24px;
 }
 
 .PersonCell:last-child {

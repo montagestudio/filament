@@ -37,7 +37,6 @@
 }
 
 .DependencyDetails-label{
-    color: hsl(0, 0%, 50%);
     -webkit-flex: 1;
     -moz-flex: 1;
     -ms-flex: 1;
@@ -45,12 +44,13 @@
     min-width: 80px;
     text-align: right;
     margin-right: 12px;
+    color: hsl(0, 0%, 50%);
 }
 
 .DependencyDetails-value{
-    font-size: 13px;
+    font-size: 14px;
     display: inline-block;
-    /* font-style: italic; */
+    font-style: italic;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -58,7 +58,6 @@
     -moz-flex: 3;
     -ms-flex: 3;
     flex: 3;
-    /* margin-left: 12px; */
 }
 
 .DependencyDetails-value.matte-Anchor {
