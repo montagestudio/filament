@@ -257,12 +257,14 @@ exports.ComponentEditor = Editor.specialize({
     handleSelectComponent: {
         value: function (evt) {
             console.log("handleSelectComponent");
+            this.currentDocument.clearSelectedObjects();
             this.currentDocument.selectObject(evt.detail.templateObject);
         }
     },
 
     handleSelectTemplateObject: {
         value: function (evt) {
+            this.currentDocument.clearSelectedObjects();
             this.currentDocument.selectObject(evt.detail.templateObject);
         }
     },
