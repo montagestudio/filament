@@ -97,6 +97,21 @@
 }
 
 
+
+/* Scrollbar -------------------------------- */
+
+.PackageEditor ::-webkit-scrollbar {
+    width: 3px;
+    background-color: hsl(0, 0%, 86%);
+}
+
+.PackageEditor ::-webkit-scrollbar-thumb {
+    border: none;
+    background-color: hsl(0, 0%, 75%);
+}
+
+
+
 /*
  * Note: The Package Editor Panels
  * are styled here so they don't have to be repeated in all the other reels
