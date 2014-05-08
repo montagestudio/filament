@@ -11,8 +11,8 @@
     -moz-flex: 1;
     -ms-flex: 1;
     flex: 1;
-    padding: 0;
-    margin: 0 20px 0 40px;
+    padding: 0 6px;
+    margin: 0;
 }
 
 .DependencyDetails-item {
@@ -29,6 +29,7 @@
     -moz-justify-content: space-between;
     -ms-justify-content: space-between;
     justify-content: space-between;
+    padding: 0.2em 0;
 }
 
 .DependencyDetails-item--hidden {
@@ -36,20 +37,20 @@
 }
 
 .DependencyDetails-label{
-    font-weight: 600;
-    color: hsl(0,0%,40%);
+    color: hsl(0, 0%, 50%);
     -webkit-flex: 1;
     -moz-flex: 1;
     -ms-flex: 1;
     flex: 1;
     min-width: 80px;
+    text-align: right;
+    margin-right: 12px;
 }
 
 .DependencyDetails-value{
-    font-size: 11px;
-    text-indent: 30px;
+    font-size: 13px;
     display: inline-block;
-    font-style: italic;
+    /* font-style: italic; */
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -57,6 +58,7 @@
     -moz-flex: 3;
     -ms-flex: 3;
     flex: 3;
+    /* margin-left: 12px; */
 }
 
 .DependencyDetails-value.matte-Anchor {
