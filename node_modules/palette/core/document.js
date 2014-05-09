@@ -169,7 +169,7 @@ exports.Document = Target.specialize({
     canClose: {
         value: function () {
             // TODO PJYF This message needs to be localized
-            return (this.isDirty ? "You have unsaved Changes" : null);
+            return (this.isDirty ? "You have unsaved changes." : null);
         }
     },
 
