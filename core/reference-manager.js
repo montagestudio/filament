@@ -45,9 +45,10 @@ var ReferenceManager = Montage.specialize(/** @lends ReferenceManager# */ {
     },
 
     registerActiveSource: {
-        value: function (activeSource) {
+        value: function (activeSource, expectedType) {
             if (this._session._activeSource === null) {
                 this._session._activeSource = activeSource;
+                this._session._expectedType = expectedType;
                 return activeSource;
             } else {
                 // return failure
@@ -60,6 +61,7 @@ var ReferenceManager = Montage.specialize(/** @lends ReferenceManager# */ {
         value: function (activeSource) {
             if (this._session._activeSource === activeSource) {
                 this._session._activeSource = null;
+                this._session._expectedType = null;
             }
         }
     },
@@ -150,7 +152,7 @@ var Session = Montage.specialize(/** @lends Session# */ {
                         }
                     }
                     if(outside) {
-                        this._activeSource.leave();
+                        this._activeSource.leave(this);
                     }
                 }
                 //if the _activeSource hasn't changed in the mean time
@@ -161,7 +163,7 @@ var Session = Montage.specialize(/** @lends Session# */ {
                     while(element = element.parentNode) {
                         source = this._manager.sourceForElement(element);
                         if(source) {
-                            source.enter();
+                            source.enter(this);
                             break;
                         }
                     }
@@ -193,7 +195,7 @@ var Session = Montage.specialize(/** @lends Session# */ {
                 this.visualizer.end(this);
             }
             if (this._activeSource) {
-                return this._activeSource.provideReference(this);
+                return this._activeSource.provideReference(this, this._expectedType);
             }
         }
     },
@@ -212,6 +214,10 @@ var Session = Montage.specialize(/** @lends Session# */ {
     },
 
     startPositionY: {
+        value: null
+    },
+
+    _expectedType: {
         value: null
     },
 

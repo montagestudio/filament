@@ -5,6 +5,7 @@
 var Component = require("montage/ui/component").Component;
 var TranslateComposer = require("montage/composer/translate-composer").TranslateComposer;
 var sharedReferenceManager = require("../../../core/reference-manager").sharedReferenceManager;
+var MimeTypes = require("core/mime-types");
 
 /**
  * @class Recipient
@@ -47,7 +48,12 @@ exports.Recipient = Component.specialize(/** @lends Recipient# */ {
             // update the session with start position of mouse
             this._session.startPosition(event.clientX, event.clientY);
             // delegate method to let the delegate populate desired types
-            this.callDelegateMethod("acceptTypesReference", this, this._session);
+
+            var types = this.callDelegateMethod("recipientAcceptsTypes", this);
+            if (!types) {
+                types = [MimeTypes.SERIALIZATION_OBJECT_LABEL];
+            }
+            this._session.setAcceptedTypes(types);
 
             //TODO make activeTarget to respond to esc key
         }

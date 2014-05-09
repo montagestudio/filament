@@ -19,21 +19,26 @@ exports.ReferenceSource = Composer.specialize(/** @lends ReferenceSource# */ {
 
 
     provideReference: {
-        value: function (session) {
-            return this.callDelegateMethod("provideReference", this, session);
+        value: function (session, expectedType) {
+            var reference = this.callDelegateMethod("provideReference", this, expectedType);
+            this.leave();
+            return reference;
         }
     },
 
     enter: {
-        value: function () {
+        value: function (session) {
             if(!sharedReferenceManager.hasSession) {
                 return;
             }
             this._mouseIsOver = true;
             // see if the ReferenceManger's session needs anything we could provide.
             // if it does register with RM, on commit it will ask for the data and send it to the recipient.
-            if (!!this.callDelegateMethod("canProvideReference", this, this._session)) {
-                var registrationSuccessful = sharedReferenceManager.registerActiveSource(this);
+
+            var expectedType = this.callDelegateMethod("canProvideReference", this, session._acceptTypes);
+
+            if (expectedType) {
+                var registrationSuccessful = sharedReferenceManager.registerActiveSource(this, expectedType);
                 if (registrationSuccessful) {
                     this._canAcceptReference = true;
                     this.callDelegateMethod("acceptingReference", this);
