@@ -268,6 +268,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._packageRequirePromise = this.getPackageRequire(packageUrl)
             .then(function(packageRequire) {
                 self._packageRequire = packageRequire;
+
+                application.addEventListener("dependencyInstalled", self);
+                application.addEventListener("dependencyRemoved", self);
+
                 return packageRequire;
             });
             this.packageUrl = packageUrl;
@@ -1664,6 +1668,20 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     });
                 }));
             });
+        }
+    },
+
+    handleDependencyInstalled: {
+        value: function (evt) {
+            // TODO It seems like it might be safer to make sure this is coordinated
+            // with the setting of the dependencies that triggers adding to the library
+            this._packageRequire.injectDependency(evt.detail.installed.requestedName);
+        }
+    },
+
+    handleDependencyRemoved: {
+        value: function(evt) {
+            // TODO remove the dependency
         }
     },
 
