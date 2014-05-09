@@ -14,6 +14,10 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
     constructor: {
         value: function MenuItem() {
             this.super();
+
+            this.isMac = /Macintosh/i.test(navigator.userAgent);
+            this.isWindows = /Windows/i.test(navigator.userAgent);
+            this.isLinux = /Linux/i.test(navigator.userAgent);
         }
     },
 
@@ -74,10 +78,6 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
             this.element.addEventListener("mousedown", this, false);
 
             this.templateObjects.menuButton.element.addEventListener("mouseleave", this, false);
-
-            this.isMac = /Macintosh/i.test(navigator.userAgent);
-            this.isWindows = /Windows/i.test(navigator.userAgent);
-            this.isLinux = /Linux/i.test(navigator.userAgent);
 
             if (this.isRootMenu()) {
                 this.addEventListener("menuFlashing", this, false);
@@ -158,7 +158,11 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
             case "ctrl":
             case "control":
                 //"⌃"
-                keyIconified = String.fromCharCode(8963);
+                if (this.isMac) {
+                    keyIconified = String.fromCharCode(8963);
+                } else {
+                    keyIconified = "Ctrl";
+                }
                 break;
 
             case "alt":
@@ -500,7 +504,7 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
 
     draw: {
         value: function () {
-            if (this.menuItemModel && this.menuItemModel.keyEquivalent && this.menuItemModel.keyEquivalent.length) {
+            if (this.keys && this.keys.length) {
                 var delimitator = (this.isMac) ? "" : "+";
                 this.templateObjects.menuButton.element.dataset.shortcut = this.keys.join(delimitator);
             }

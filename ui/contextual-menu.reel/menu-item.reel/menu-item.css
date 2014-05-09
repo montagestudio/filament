@@ -134,9 +134,3 @@
     border-color: hsl(0, 0%, 22%);
 }
 
-/* shortcut ----------------------- */
-
-.MenuItem .MenuItem-button .keys {
-    display: inline-block;
-    float: right;
-}
