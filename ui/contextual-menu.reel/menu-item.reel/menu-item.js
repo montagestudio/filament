@@ -130,126 +130,69 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
         }
     },
 
-    _iconifiedKey: {
+    iconForKeyMap: {
+        value: {
+            //"⇤" "&larrb;"
+            "backspace":        String.fromCharCode(8676),
+            //"⇥ "&rarrb;"
+            "tab":              String.fromCharCode(8677),
+            //"⇧" "&#8679;"
+            "shift":            String.fromCharCode(8679),
+            //"⇪" "&#8682;"
+            "capslock":         String.fromCharCode(8682),
+            //"←" "&larr;"
+            "left":             String.fromCharCode(8592),
+            "up":               String.fromCharCode(8593),
+            "right":            String.fromCharCode(8594),
+            "down":             String.fromCharCode(8595),
+            //"↵" "&crarr;"
+            "enter":            String.fromCharCode(8629),
+            //"⌫" &#9003;
+            "delete":           String.fromCharCode(9003),
+            "plus":             "+",
+            "minus":            "-",
+            "period":           ".",
+            "comma":            ","
+        }
+    },
+
+    /* jshint -W074 */
+    // JSHint bug https://github.com/jshint/jshint/issues/840
+    iconForKey: {
         value: function (key) {
-            var keyIconified;
+            if (key in this.iconForKeyMap) {
+                return this.iconForKeyMap[key];
+            }
 
             switch (key) {
-            case "backspace":
-                //"⇤" "&larrb;"
-                keyIconified = String.fromCharCode(8676);
-                break;
-
-            case "tab":
-                //"⇥ "&rarrb;"
-                keyIconified = String.fromCharCode(8677);
-                break;
-
-            case "enter":
-                //"↵" "&crarr;"
-                keyIconified = String.fromCharCode(8629);
-                break;
-
-            case "shift":
-                //"⇧" "&#8679;"
-                keyIconified = String.fromCharCode(8679);
-                break;
-
-            case "ctrl":
-            case "control":
-                //"⌃"
-                if (this.isMac) {
-                    keyIconified = String.fromCharCode(8963);
-                } else {
-                    keyIconified = "Ctrl";
-                }
-                break;
-
-            case "alt":
-                if (this.isMac) {
-                    //"⌥" "&#8997;"
-                    keyIconified = String.fromCharCode(8997);
-                } else {
-                    keyIconified = "Alt";
-                }
-                break;
-
-            case "capslock":
-                //"⇪" "&#8682;"
-                keyIconified = String.fromCharCode(8682);
-                break;
-
-            case "escape":
-                if (this.isMac) {
-                    //"⎋" "&#9099;"
-                    keyIconified = String.fromCharCode(9099);
-                } else {
-                    keyIconified = "Esc";
-                }
-                break;
-
-            case "space":
-                keyIconified = "Space";
-                break;
-
-            case "left":
-                //"←" "&larr;"
-                keyIconified = String.fromCharCode(8592);
-                break;
-
-            case "up":
-                keyIconified = String.fromCharCode(8593);
-                break;
-
-            case "right":
-                keyIconified = String.fromCharCode(8594);
-                break;
-
-            case "down":
-                keyIconified = String.fromCharCode(8595);
-                break;
-
-            case "delete":
-                //"⌫" &#9003;
-                keyIconified = String.fromCharCode(9003);
-                break;
-
+            //"⌘" "&#8984;"
             case "meta":
             case "window":
             case "win":
             case "command":
             case "cmd":
-                if (this.isMac) {
-                    //"⌘" "&#8984;"
-                    keyIconified = String.fromCharCode(8984);
-                } else {
-                    keyIconified = "Cmd";
-                }
+                key = (this.isMac) ? String.fromCharCode(8984) : "Cmd";
                 break;
-
-            case "plus":
-                keyIconified = "+";
+            //"⎋" "&#9099;"
+            case "escape":
+                key = (this.isMac)? String.fromCharCode(9099) : "Esc";
                 break;
-
-            case "minus":
-                keyIconified = "-";
+            //"⌃"
+            case "ctrl":
+            case "control":
+                key = (this.isMac)? String.fromCharCode(8963) : "Ctrl";
                 break;
-
-            case "period":
-                keyIconified = ".";
+            //"⌥" "&#8997;"
+            case "alt":
+                key = (this.isMac)? String.fromCharCode(8997) : "Alt";
                 break;
-
-            case "comma":
-                keyIconified = ",";
-                break;
-
             default:
-                keyIconified = key.toUpperCase();
+                key = key.charAt(0).toUpperCase() + key.slice(1);
             }
-
-            return keyIconified;
+            return key;
         }
     },
+    /* jshint +W074 */
 
     updateKeys: {
         value: function (keyEquivalent) {
@@ -257,7 +200,8 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
                 keys = keyEquivalent.split("+");
 
             this.keys = keys.map(function (key){
-                return self._iconifiedKey(key.trim());
+                key = key.trim();
+                return self.iconForKey(key);
             });
         }
     },
