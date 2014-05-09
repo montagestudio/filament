@@ -116,9 +116,10 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
     // ReferenceSource delegate
 
     canProvideReference: {
-        value: function (composer, session) {
-//            return session.accepts(MimeTypes.SERIALIZATION_OBJECT_LABEL);
-            return true;
+        value: function (composer, types) {
+            if (types.has(MimeTypes.SERIALIZATION_OBJECT_LABEL)) {
+                return MimeTypes.SERIALIZATION_OBJECT_LABEL;
+            }
         }
     },
 
@@ -138,9 +139,11 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
 
 
     provideReference: {
-        value: function () {
+        value: function (composer, type) {
             this.classList.remove("is-acceptingReference");
-            return this.templateObject.label;
+            if (type === MimeTypes.SERIALIZATION_OBJECT_LABEL) {
+                return this.templateObject.label;
+            }
         }
     }
 
