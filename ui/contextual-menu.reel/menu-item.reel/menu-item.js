@@ -33,6 +33,10 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
         value: false
     },
 
+    keys: {
+        value: null
+    },
+
     ignoreAction : {
         value: false
     },
@@ -110,6 +114,137 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
         }
     },
 
+    _iconifiedKey: {
+        value: function (key) {
+            var keyIconified,
+                isMac = /Macintosh/i.test(navigator.userAgent),
+                isWindows = /Windows/i.test(navigator.userAgent),
+                isLinux = /Linux/i.test(navigator.userAgent);
+
+            switch (key) {
+            case "backspace":
+                //"⇤" "&larrb;"
+                keyIconified = String.fromCharCode(8676);
+                break;
+
+            case "tab":
+                //"⇥ "&rarrb;"
+                keyIconified = String.fromCharCode(8677);
+                break;
+
+            case "enter":
+                //"↵" "&crarr;"
+                keyIconified = String.fromCharCode(8629);
+                break;
+
+            case "shift":
+                //"⇧" "&#8679;"
+                keyIconified = String.fromCharCode(8679);
+                break;
+
+            case "ctrl":
+            case "control":
+                //"⌃"
+                keyIconified = String.fromCharCode(8963);
+                break;
+
+            case "alt":
+                if (isMac) {
+                    //"⌥" "&#8997;"
+                    keyIconified = String.fromCharCode(8997);
+                } else {
+                    keyIconified = "Alt";
+                }
+                break;
+
+            case "capslock":
+                //"⇪" "&#8682;"
+                keyIconified = String.fromCharCode(8682);
+                break;
+
+            case "escape":
+                if (isMac) {
+                    //"⎋" "&#9099;"
+                    keyIconified = String.fromCharCode(9099);
+                } else {
+                    keyIconified = "Esc";
+                }
+                break;
+
+            case "space":
+                keyIconified = "Space";
+                break;
+
+            case "left":
+                //"←" "&larr;"
+                keyIconified = String.fromCharCode(8592);
+                break;
+
+            case "up":
+                keyIconified = String.fromCharCode(8593);
+                break;
+
+            case "right":
+                keyIconified = String.fromCharCode(8594);
+                break;
+
+            case "down":
+                keyIconified = String.fromCharCode(8595);
+                break;
+
+            case "delete":
+                //"⌫" &#9003;
+                keyIconified = String.fromCharCode(9003);
+                break;
+
+            case "meta":
+            case "window":
+            case "win":
+            case "command":
+            case "cmd":
+                if (isMac) {
+                    //"⌘" "&#8984;"
+                    keyIconified = String.fromCharCode(8984);
+                } else {
+                    keyIconified = "Cmd";
+                }
+                break;
+
+            case "plus":
+                keyIconified = "+";
+                break;
+
+            case "minus":
+                keyIconified = "-";
+                break;
+
+            case "periode":
+                keyIconified = ".";
+                break;
+
+            case "comma":
+                keyIconified = ",";
+                break;
+
+            default:
+                keyIconified = key.toUpperCase();
+            }
+
+            return keyIconified;
+        }
+    },
+
+    updateKeys: {
+        value: function (keyEquivalent) {
+            var self = this,
+                keys = keyEquivalent.split("+");
+
+            this.keys = keys.map(function (key){
+                return self._iconifiedKey(key.trim());
+            });
+        }
+    },
+
     menuItemModel: {
         get: function () {
             return this._menuItemModel;
@@ -134,6 +269,7 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
 
                     this.addEventListener("keyPress", this, false);
                     this._keyComposer.addEventListener("keyPress", null, false);
+                    this.updateKeys(keyEquivalent);
                 }
             }
         }
