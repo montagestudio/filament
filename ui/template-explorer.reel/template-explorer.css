@@ -11,6 +11,7 @@
 
 .TemplateExplorer.ComponentEditor-column {
     border-left: none;
+    min-width: 300px;
 }
 
 .TemplateExplorer.Filament--willAcceptDrop {
