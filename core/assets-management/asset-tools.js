@@ -49,7 +49,7 @@ var AssetTools = {
      * @return {Boolean}
      */
     isGlTFBundle: function (bundleUrl) {
-        return typeof bundleUrl === 'string' && bundleUrl.length > 0 && /\.glTF\/?$/.test(bundleUrl);
+        return typeof bundleUrl === 'string' && bundleUrl.length > 0 && /\.gltf\/?$/i.test(bundleUrl);
     },
 
     /**
