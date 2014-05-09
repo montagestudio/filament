@@ -107,13 +107,17 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
                 if (this.canUndo) {
                     this.undoManager.undo().done();
                 }
-                evt.stop();
             } else if ("redo" === identifier) {
                 if (this.canRedo) {
                     this.undoManager.redo().done();
                 }
-                evt.stop();
             }
+
+            // By default stop all menuActions from further consideration
+            // This prevents you from doing anything that might alter
+            // the state of the document before committing or discarding
+            // the modal editing you're in the middle of performing
+            evt.stop();
         }
     },
 
