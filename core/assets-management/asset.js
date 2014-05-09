@@ -86,7 +86,7 @@ exports.Asset = Montage.specialize({
 
     isGlTFBundle: {
         value: function () {
-            return (/\.glTF\/?$/).test(this._fileUrl);
+            return (/\.glTF\/?$/i).test(this._fileUrl);
         }
     },
 

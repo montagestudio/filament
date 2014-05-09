@@ -768,7 +768,7 @@ exports.AssetsManager = Montage.specialize({
             var resourceProperty = event.detail.resourceProperty,
                 path = event.detail.value;
 
-            if (resourceProperty && path && /\.dae$/.test(path)) {
+            if (resourceProperty && path && /\.dae$/i.test(path)) {
                 var asset = null;
 
                 if(/^https?:/i.test(path)) { // if Url
