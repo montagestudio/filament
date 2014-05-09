@@ -235,7 +235,7 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
                 keyIconified = "-";
                 break;
 
-            case "periode":
+            case "period":
                 keyIconified = ".";
                 break;
 
