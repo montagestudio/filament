@@ -125,7 +125,7 @@
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "@keyRepetition:iteration.index != @owner.keys.length -1"}
+                "condition": {"<-": "!@owner.isMac  && @keyRepetition:iteration.index != @owner.keys.length -1"}
             }
         }
     }
@@ -135,11 +135,11 @@
     <div data-montage-id="menuItem" class="MenuItem">
         <button data-montage-id="menuButton" class="MenuItem-button">
             <div data-param="*"></div>
-            <div data-montage-id="keyCondition">
+            <div data-montage-id="keyCondition" class="keys">
                 <span data-montage-id="keyRepetition">
-                    <span data-montage-id="keyLabel"></span>
+                    <span data-montage-id="keyLabel" class="keyLabel"></span>
                     <span data-montage-id="keyPlusCondition">
-                        <span>+</span>
+                        <span class="keyPlus">+</span>
                     </span>
                 </span>
             </div>

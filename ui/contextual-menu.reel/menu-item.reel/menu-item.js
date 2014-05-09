@@ -53,6 +53,18 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
         value : null
     },
 
+    isMac: {
+        value: null
+    },
+
+    isWindows: {
+        value: null
+    },
+
+    isLinux: {
+        value: null
+    },
+
     enterDocument: {
         value: function (firstTime) {
             if (!firstTime) { return; }
@@ -62,6 +74,10 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
             this.element.addEventListener("mousedown", this, false);
 
             this.templateObjects.menuButton.element.addEventListener("mouseleave", this, false);
+
+            this.isMac = /Macintosh/i.test(navigator.userAgent);
+            this.isWindows = /Windows/i.test(navigator.userAgent);
+            this.isLinux = /Linux/i.test(navigator.userAgent);
 
             if (this.isRootMenu()) {
                 this.addEventListener("menuFlashing", this, false);
@@ -116,10 +132,7 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
 
     _iconifiedKey: {
         value: function (key) {
-            var keyIconified,
-                isMac = /Macintosh/i.test(navigator.userAgent),
-                isWindows = /Windows/i.test(navigator.userAgent),
-                isLinux = /Linux/i.test(navigator.userAgent);
+            var keyIconified;
 
             switch (key) {
             case "backspace":
@@ -149,7 +162,7 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
                 break;
 
             case "alt":
-                if (isMac) {
+                if (this.isMac) {
                     //"⌥" "&#8997;"
                     keyIconified = String.fromCharCode(8997);
                 } else {
@@ -163,7 +176,7 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
                 break;
 
             case "escape":
-                if (isMac) {
+                if (this.isMac) {
                     //"⎋" "&#9099;"
                     keyIconified = String.fromCharCode(9099);
                 } else {
@@ -202,7 +215,7 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
             case "win":
             case "command":
             case "cmd":
-                if (isMac) {
+                if (this.isMac) {
                     //"⌘" "&#8984;"
                     keyIconified = String.fromCharCode(8984);
                 } else {
@@ -488,7 +501,8 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
     draw: {
         value: function () {
             if (this.menuItemModel && this.menuItemModel.keyEquivalent && this.menuItemModel.keyEquivalent.length) {
-                this.templateObjects.menuButton.element.dataset.shortcut = this.menuItemModel.keyEquivalent;
+                var delimitator = (this.isMac) ? "" : "+";
+                this.templateObjects.menuButton.element.dataset.shortcut = this.keys.join(delimitator);
             }
 
             if (this.menuFlashing) {
