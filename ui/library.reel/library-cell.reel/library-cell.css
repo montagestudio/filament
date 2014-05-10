@@ -22,7 +22,6 @@
 	border: none;
 	background: transparent;
 	cursor: move;
-	-webkit-font-smoothing: antialiased;
 }
 
 .LibraryCell-button.matte-Button:hover,
@@ -136,6 +135,8 @@
     display: flex;
     padding: 4px 4px 4px 12px;
     border-radius: 0;
+    color: hsl(0, 0%, 84%);
+    -webkit-font-smoothing: subpixel-antialiased;
 }
 
 .Library.isList .LibraryCell-button[draggable=false].matte-Button {
@@ -153,7 +154,7 @@
 
 .Library.isList .LibraryCell-button-label {
     flex: 1;
-    font-size: 12px;
+    font-size: 14px;
     text-align: left;
     margin-left: 12px;
     line-height: 19px;
