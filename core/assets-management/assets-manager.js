@@ -779,7 +779,8 @@ exports.AssetsManager = Montage.specialize({
 
                 if (asset) {
                     this.assetConverter.convertModelToGlTFBundle(asset, this._currentDocument.url).then(function (outputUrl) {
-                        resourceProperty.objectValue = outputUrl + '/' + asset.name + '.json';
+                        var fileData = AssetTools.defineFileDataWithUrl(outputUrl);
+                        resourceProperty.objectValue = fileData.fileName + '/' + asset.name + '.json';
                     });
                 }
             }
