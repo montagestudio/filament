@@ -43,14 +43,12 @@ Classes to toggle counter
 }
 
 .ActivityInfobar-title {
-    font-weight: bold;
     margin: 0 16px 0 8px;
     -webkit-user-select: text;
     -moz-user-select: text;
     -ms-user-select: text;
     user-select: text;
     cursor: auto;
-    -webkit-font-smoothing: antialiased;
 }
 
 .ActivityInfobar-status {
@@ -67,7 +65,7 @@ Classes to toggle counter
     -ms-user-select: text;
     user-select: text;
     cursor: auto;
-    -webkit-font-smoothing: antialiased;
+    font-style: italic;
 }
 
 
