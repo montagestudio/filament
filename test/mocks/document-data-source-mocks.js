@@ -13,6 +13,18 @@ var DocumentDataSource = Montage.specialize({
         value: Function.noop
     },
 
+    unregisterDataModifier: {
+        value: Function.noop
+    },
+
+    addEventListener: {
+        value: Function.noop
+    },
+
+    removeEventListener: {
+        value: Function.noop
+    },
+
     isModified: {
         value: Function.noop
     }

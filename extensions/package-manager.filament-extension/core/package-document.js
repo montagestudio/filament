@@ -75,8 +75,6 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
             this.editor.addEventListener("menuValidate", this);
             this.editor.addEventListener("menuAction", this);
 
-            this._getOutDatedDependencies();
-
             return this;
         }
     },
@@ -183,7 +181,8 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
     name: {
         set: function (name) {
             if (PackageTools.isNameValid(name)) {
-                this._livePackage.name = this._package.name = name;
+                this.sharedProjectController.packageDescription.name =
+                    this._livePackage.name = this._package.name = name;
             }
         },
         get: function () {
@@ -194,7 +193,8 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
     version: {
         set: function (version) {
             if (PackageTools.isVersionValid(version)) {
-                this._livePackage.version = this._package.version = version;
+                this.sharedProjectController.packageDescription.version =
+                    this._livePackage.version = this._package.version = version;
             }
         },
         get: function () {
@@ -283,29 +283,44 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
     },
 
     addMaintainer: {
-        value: function (maintainer) {
+        value: function (maintainer, maintainerIndex) {
             maintainer = PackageTools.getValidPerson(maintainer);
 
-            if (maintainer) {
-                if (this._findMaintainerIndex(maintainer) < 0) { // Already exists. Must be unique.
-                    this.maintainers.push(maintainer);
-                    this.undoManager.register("Add Maintainer", Promise.resolve([this.removeMaintainer, this, maintainer]));
+            if (maintainer && typeof maintainer === 'object') {
+                if (this._findMaintainerIndex(maintainer) < 0) { // Maintainer Object does not exist.
+                    if (typeof maintainerIndex === "number" && maintainerIndex < this.maintainers.length) {
+                        this.maintainers.splice(maintainerIndex, 0, maintainer);
+                    } else {
+                        this.maintainers.push(maintainer);
+                        maintainerIndex = this.maintainers.length - 1;
+                    }
+
+                    if (this.undoManager) {
+                        this.undoManager.register("Add Maintainer", Promise.resolve([this.removeMaintainer, this, maintainer, maintainerIndex]));
+                    }
                 }
 
                 return true;
             }
+
             return false;
         }
     },
 
     removeMaintainer: {
-        value: function (maintainer) {
+        value: function (maintainer, maintainerIndex) {
             if (maintainer && typeof maintainer === 'object') {
-                var maintainerIndex = this._findMaintainerIndex(maintainer);
+                if (typeof maintainerIndex !== "number" || maintainerIndex >= this.maintainers.length) {
+                    maintainerIndex = this._findMaintainerIndex(maintainer);
+                }
 
                 if (maintainerIndex >= 0) {
+                    if (this.undoManager) {
+                        this.undoManager.register("Remove Maintainer", Promise.resolve([this.addMaintainer, this, maintainer, maintainerIndex]));
+                    }
+
                     this.maintainers.splice(maintainerIndex, 1);
-                    this.undoManager.register("Remove Maintainer", Promise.resolve([this.addMaintainer, this, maintainer]));
+
                     return true;
                 }
             }
@@ -315,8 +330,26 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
     },
 
     replaceMaintainer: {
-        value: function (oldMaintainer, newMaintainer) {
-            return this.removeMaintainer(oldMaintainer) && this.addMaintainer(newMaintainer);
+        value: function (oldMaintainer, newMaintainer, maintainerIndex) {
+            if (oldMaintainer && typeof oldMaintainer === 'object' && newMaintainer && typeof newMaintainer === 'object') {
+                if (typeof maintainerIndex !== "number" || maintainerIndex >= this.maintainers.length) {
+                    maintainerIndex = this._findMaintainerIndex(oldMaintainer);
+                }
+
+                if (maintainerIndex >= 0) {
+                    if (!PackageTools.isPersonEqual(oldMaintainer, newMaintainer)) {
+                        if (this.undoManager) {
+                            this.undoManager.register("Modify Maintainer", Promise.resolve([this.replaceMaintainer, this, newMaintainer, oldMaintainer, maintainerIndex]));
+                        }
+
+                        this.maintainers.splice(maintainerIndex, 1, newMaintainer);
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
         }
     },
 

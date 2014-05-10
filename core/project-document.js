@@ -93,6 +93,7 @@ exports.ProjectDocument = Document.specialize({
                         }
                     })
                     .then(function () {
+                        application.addEventListener("remoteChange", self, false);
                         return self.updateRefs();
                     })
                     .catch(Function.noop)
@@ -114,7 +115,7 @@ exports.ProjectDocument = Document.specialize({
                 buildMenu;
 
             buildMenu = new this._environmentBridge.MenuItem();
-            buildMenu.title = "Mop"; // This should be localized
+            buildMenu.title = "Build"; // This should be localized
             buildMenu.identifier = "build";
             this._buildMenu = buildMenu;
 
@@ -168,6 +169,12 @@ exports.ProjectDocument = Document.specialize({
                     return build.buildFor(chainIdentifier);
                 }).done();
             }
+        }
+    },
+
+    handleRemoteChange: {
+        value: function(event) {
+            this.updateRefs().done();
         }
     },
 
@@ -312,6 +319,7 @@ exports.ProjectDocument = Document.specialize({
                             //jshint +W106
                         }
 
+                        response = false;
                         return self._updateShadowDelta()
                         .then(function(shadowStatus) {
                             var refs = [shadowStatus.localParent, shadowStatus.remoteParent, shadowStatus.remoteShadow],
@@ -325,13 +333,18 @@ exports.ProjectDocument = Document.specialize({
                             });
 
                             if (needSync) {
-                                return self._updateProjectRefs();
+                                return self._updateProjectRefs()
+                                .then(function(result) {
+                                    response = result.success;
+                                    self._updateShadowDelta();  // refs might have changed
+                                });
+                            } else {
+                                response = true;
                             }
                         }).thenResolve(response);
                     })
-                    .finally(function (result) {
+                    .finally(function () {
                         self.isBusy = false;
-                        return result;
                     });
             }
 
@@ -360,42 +373,76 @@ exports.ProjectDocument = Document.specialize({
     },
 
     _updateProjectRefs: {
-        value: function(resolution) {
-            var bridge = this._environmentBridge,
+        value: function(resolution, reference) {
+            var self = this,
+                bridge = this._environmentBridge,
+                applicationDelegate = application.delegate,
+                hasShownModal,
                 retVal;
 
             if (bridge && bridge.updateProjectRefs && typeof bridge.updateProjectRefs === "function") {
-                retVal = bridge.updateProjectRefs(resolution)
-                .then(function(result) {
-                    var notifications = result.notifications,
-                        nbrNotification = notifications ? notifications.length : 0,
-                        resolutionStrategy = result.resolutionStrategy;
+                var previousProgressMessage = applicationDelegate.progressPanel.message;
+                applicationDelegate.progressPanel.message = reference ? "Resolving conflict…" : "Updating repository…";
 
-                    if (result.success === false && nbrNotification && resolutionStrategy.indexOf("rebase") !== -1) {
-                        // Automatically sync the shadow branch with its remote counter part or parent
-                        return bridge.updateProjectRefs("rebase");
+                retVal = bridge.updateProjectRefs(resolution, reference)
+                .then(function(result) {
+                    var resolutionStrategy = result.resolutionStrategy;
+
+                    if (result.success === false && resolutionStrategy.indexOf("rebase") !== -1) {
+                        hasShownModal = applicationDelegate.showModal !== true;
+                        applicationDelegate.showModal = true;
+                        applicationDelegate.currentPanelKey = "confirm";
+
+                        return applicationDelegate.confirmPanel.getResponse("We have detected remote changes. Would you like to update?", "rebase", "Update", "Cancel").then(function(response) {
+                            if (response === "rebase") {
+                                applicationDelegate.showModal = true;
+                                applicationDelegate.currentPanelKey = "progress";
+                                return self._updateProjectRefs("rebase", result.reference);
+                            } else {
+                                return {success: true}; // update has been aborted by the user, let's bailout by returning success=true
+                            }
+                        }).finally(function() {
+                            if (hasShownModal) {
+                                applicationDelegate.showModal = false;
+                                applicationDelegate.currentPanelKey = null;
+                            }
+                        });
+                    } else {
+                        return result;
                     }
-                    return result;
                 })
                 .then(function(result) {
-                    var notifications = result.notifications,
-                       nbrNotification = notifications ? notifications.length : 0,
-                       lastNotification = notifications[nbrNotification - 1];
-
-                    // jshint noempty:false
                     if (result.success !== true) {
-                        if (lastNotification.type === "shadowsOutOfSync") {
-                            // Local shadow has diverged from remote shadow (not a rebase case)
-                            // TODO: ask user what to do in case of conflict
-                            /* TODO: Possible options to propose to user
-                                1. Discard remote changes  --> updateRefs("revert")
-                                2. Discard Local changes   --> updateRefs("discard")
-                                3. Cancel
-                            */
+                        // Local shadow has diverged from remote shadow (not a rebase case)
+                        hasShownModal = applicationDelegate.showModal !== true;
+                        applicationDelegate.showModal = true;
+                        applicationDelegate.currentPanelKey = "conflict";
+
+                        if (result.remote.indexOf("/__mb__") !== -1) {
+                            // Let's cleanup the branch name we show to the user
+                            result.remote = "work";
                         }
+                        return applicationDelegate.mergeConflictPanel.getResponse("Updating Project", "work", result.remote, result.ahead, result.behind, result.resolutionStrategy)
+                            .then(function(response) {
+                            if (response && typeof response.resolution) {
+                                applicationDelegate.showModal = true;
+                                applicationDelegate.currentPanelKey = "progress";
+                                return self._updateProjectRefs(response.resolution, result.reference);
+                            } else {
+                                return {success: true}; // update has been aborted by the user, let's bailout by returning success=true
+                            }
+                        }).finally(function() {
+                            if (hasShownModal) {
+                                applicationDelegate.showModal = false;
+                                applicationDelegate.currentPanelKey = null;
+                            }
+                        });
+                    } else {
+                        return result;
                     }
-                    // jshint noempty:true
-                    return result;
+                })
+                .finally(function() {
+                    applicationDelegate.progressPanel.message = previousProgressMessage;
                 });
             }
 

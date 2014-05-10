@@ -36,7 +36,7 @@ exports.PreviewController = Target.specialize({
 
             var app = require("montage/core/application").application;
 
-            app.addEventListener("didSave", this);
+            app.addEventListener("didSaveProject", this);
             app.addEventListener("didSetOwnedObjectProperties", this);
             app.addEventListener("didSetOwnedObjectProperty", this);
             app.addEventListener("didSetOwnedObjectLabel", this);
@@ -54,6 +54,7 @@ exports.PreviewController = Target.specialize({
             app.addEventListener("didInsertNodeAfterTemplateNode", this);
             app.addEventListener("didSetNodeAttribute", this);
             app.addEventListener("didChangeTemplate", this);
+            app.addEventListener("fileContentModified", this);
 
             app.addEventListener("objectRemoved", this);
             app.addEventListener("nodeRemoved", this);
@@ -278,6 +279,16 @@ exports.PreviewController = Target.specialize({
         }
     },
 
+    updateCssFileContent: {
+        value: function(url, content) {
+            if (typeof this.environmentBridge.updatePreviewCssFileContent === "function") {
+                return this.environmentBridge.updatePreviewCssFileContent(this._previewId, url, content);
+            } else {
+                return Promise.resolve(null);
+            }
+        }
+    },
+
     /**
      * Unregister the preview server for this project
      *
@@ -298,7 +309,7 @@ exports.PreviewController = Target.specialize({
 
     //// LISTENERS
 
-    handleDidSave: {
+    handleDidSaveProject: {
         value: function () {
             this.refreshPreview().done();
             if (typeof this.environmentBridge.didSaveProject === "function") {
@@ -812,6 +823,15 @@ exports.PreviewController = Target.specialize({
             console.log(elementLocation);
             this.deletePreviewElement(ownerProxy.moduleId, elementLocation)
                 .done();
+        }
+    },
+
+    handleFileContentModified: {
+        value: function(event) {
+            var url = event.detail.url;
+            if (/\.css$/.test(url)) {
+                this.updateCssFileContent(url, event.detail.content);
+            }
         }
     }
 

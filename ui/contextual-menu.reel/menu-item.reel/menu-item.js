@@ -14,6 +14,10 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
     constructor: {
         value: function MenuItem() {
             this.super();
+
+            this.isMac = /Macintosh/i.test(navigator.userAgent);
+            this.isWindows = /Windows/i.test(navigator.userAgent);
+            this.isLinux = /Linux/i.test(navigator.userAgent);
         }
     },
 
@@ -33,6 +37,10 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
         value: false
     },
 
+    keys: {
+        value: null
+    },
+
     ignoreAction : {
         value: false
     },
@@ -47,6 +55,18 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
 
     dispatchTarget :{
         value : null
+    },
+
+    isMac: {
+        value: null
+    },
+
+    isWindows: {
+        value: null
+    },
+
+    isLinux: {
+        value: null
     },
 
     enterDocument: {
@@ -110,6 +130,82 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
         }
     },
 
+    iconForKeyMap: {
+        value: {
+            //"⇤" "&larrb;"
+            "backspace":        String.fromCharCode(8676),
+            //"⇥ "&rarrb;"
+            "tab":              String.fromCharCode(8677),
+            //"⇧" "&#8679;"
+            "shift":            String.fromCharCode(8679),
+            //"⇪" "&#8682;"
+            "capslock":         String.fromCharCode(8682),
+            //"←" "&larr;"
+            "left":             String.fromCharCode(8592),
+            "up":               String.fromCharCode(8593),
+            "right":            String.fromCharCode(8594),
+            "down":             String.fromCharCode(8595),
+            //"↵" "&crarr;"
+            "enter":            String.fromCharCode(8629),
+            //"⌫" &#9003;
+            "delete":           String.fromCharCode(9003),
+            "plus":             "+",
+            "minus":            "-",
+            "period":           ".",
+            "comma":            ","
+        }
+    },
+
+    /* jshint -W074 */
+    // JSHint bug https://github.com/jshint/jshint/issues/840
+    iconForKey: {
+        value: function (key) {
+            if (key in this.iconForKeyMap) {
+                return this.iconForKeyMap[key];
+            }
+
+            switch (key) {
+            //"⌘" "&#8984;"
+            case "meta":
+            case "window":
+            case "win":
+            case "command":
+            case "cmd":
+                key = (this.isMac) ? String.fromCharCode(8984) : "Cmd";
+                break;
+            //"⎋" "&#9099;"
+            case "escape":
+                key = (this.isMac)? String.fromCharCode(9099) : "Esc";
+                break;
+            //"⌃"
+            case "ctrl":
+            case "control":
+                key = (this.isMac)? String.fromCharCode(8963) : "Ctrl";
+                break;
+            //"⌥" "&#8997;"
+            case "alt":
+                key = (this.isMac)? String.fromCharCode(8997) : "Alt";
+                break;
+            default:
+                key = key.charAt(0).toUpperCase() + key.slice(1);
+            }
+            return key;
+        }
+    },
+    /* jshint +W074 */
+
+    updateKeys: {
+        value: function (keyEquivalent) {
+            var self = this,
+                keys = keyEquivalent.split("+");
+
+            this.keys = keys.map(function (key){
+                key = key.trim();
+                return self.iconForKey(key);
+            });
+        }
+    },
+
     menuItemModel: {
         get: function () {
             return this._menuItemModel;
@@ -134,6 +230,7 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
 
                     this.addEventListener("keyPress", this, false);
                     this._keyComposer.addEventListener("keyPress", null, false);
+                    this.updateKeys(keyEquivalent);
                 }
             }
         }
@@ -351,8 +448,9 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
 
     draw: {
         value: function () {
-            if (this.menuItemModel && this.menuItemModel.keyEquivalent && this.menuItemModel.keyEquivalent.length) {
-                this.templateObjects.menuButton.element.dataset.shortcut = this.menuItemModel.keyEquivalent;
+            if (this.keys && this.keys.length) {
+                var delimitator = (this.isMac) ? "" : "+";
+                this.templateObjects.menuButton.element.dataset.shortcut = this.keys.join(delimitator);
             }
 
             if (this.menuFlashing) {

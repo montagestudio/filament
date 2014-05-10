@@ -18,6 +18,30 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     NotModifiedError = require("core/error").NotModifiedError,
     ObjectReferences = require("core/object-references").ObjectReferences;
 
+// An object to use when merging templates to ensure labels are applied correctly
+var MergeDelegate = function (labeler, serializationToMerge) {
+    this.labeler = labeler;
+    this.serializationToMerge = serializationToMerge;
+};
+
+MergeDelegate.prototype.willMergeObjectWithLabel = function(label, collisionLabel) {
+    var id = this.serializationToMerge.getElementId(label);
+    var isExternalObject;
+
+    if (collisionLabel) {
+        isExternalObject = this.serializationToMerge.isExternalObject(label);
+        // Do not import external objects, assume they exist
+        // in the template serialiation.
+        if (isExternalObject) {
+            return label;
+        } else if (id !== collisionLabel) {
+            return id;
+        }
+    } else if (id !== label) {
+        return id;
+    }
+};
+
 // The ReelDocument is used for editing Montage Reels
 exports.ReelDocument = EditingDocument.specialize({
 
@@ -207,6 +231,10 @@ exports.ReelDocument = EditingDocument.specialize({
             var menuItem = evt.detail,
                 identifier = evt.detail.identifier;
 
+            if (this._editor.currentDocument !== this) {
+                return;
+            }
+
             if ("delete" === identifier) {
                 menuItem.enabled = this.canDelete;
                 evt.stop();
@@ -227,6 +255,10 @@ exports.ReelDocument = EditingDocument.specialize({
     handleMenuAction: {
         value: function (evt) {
             var identifier = evt.detail.identifier;
+
+            if (this._editor.currentDocument !== this) {
+                return;
+            }
 
             if ("delete" === identifier) {
                 if (this.canDelete) {
@@ -256,7 +288,11 @@ exports.ReelDocument = EditingDocument.specialize({
 
     canDelete: {
         get: function () {
-            return !!this.activeSelection && this.activeSelection.length > 0;
+            return !!this.activeSelection &&
+                this.activeSelection.length > 0 &&
+                !this.activeSelection.some(function (obj) {
+                    return obj.label === "owner";
+                });
         }
     },
 
@@ -466,8 +502,20 @@ exports.ReelDocument = EditingDocument.specialize({
 
     _saveHtml: {
         value: function (location, dataSource) {
-            var html = this._generateHtml();
-            return dataSource.write(location, html);
+            var self = this;
+            var html;
+
+            if (!this.hasModifiedData(location)) {
+                return;
+            }
+
+            html = this._generateHtml();
+
+            this._ignoreDataChange = true;
+            return dataSource.write(location, html)
+            .then(function() {
+                self._ignoreDataChange = false;
+            });
         }
     },
 
@@ -489,6 +537,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 if (location.charAt(location.length - 1) !== "/") {
                     location += "/";
                 }
+
                 promise = Promise.all(Object.map(registeredFiles, function (info, extension) {
                     var fileLocation = Url.resolve(location, filenameMatch[1] + "." + extension);
                     return info.callback.call(info.thisArg, fileLocation, self._dataSource);
@@ -496,6 +545,7 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return promise.then(function (value) {
+                self._resetModifiedDataState();
                 self._changeCount = 0;
                 return value;
             });
@@ -829,7 +879,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 return self.addObjectsFromTemplate(template, parentElement, nextSiblingElement, stageElement);
             }).then(function (objects) {
                 // only if there's only one object?
-                if (objects.length && self.selectObjectsOnAddition) {
+                if (objects && objects.length && self.selectObjectsOnAddition) {
                     self.clearSelectedObjects();
                     self.selectObject(objects[0]);
                 }
@@ -972,7 +1022,9 @@ exports.ReelDocument = EditingDocument.specialize({
                 context,
                 self = this,
                 revisedTemplate,
-                applicationProxy;
+                revisedLabels,
+                applicationProxy,
+                addedObjectPromise;
 
             if (!parentElement) {
                 parentElement = this._ownerElement;
@@ -982,7 +1034,8 @@ exports.ReelDocument = EditingDocument.specialize({
             revisedTemplate = this._merge(destinationTemplate, sourceTemplate, parentElement, nextSiblingElement);
 
             // Ensure that we specially craft the application object the sourceTemplate introduced it
-            if (revisedTemplate.getSerialization().getSerializationLabels().indexOf("application") > -1 && !this._editingProxyMap.application) {
+            revisedLabels = revisedTemplate.getSerialization().getSerializationLabels();
+            if (revisedLabels && revisedLabels.indexOf("application") > -1 && !this._editingProxyMap.application) {
                 applicationProxy = new ReelProxy().init("application", revisedTemplate.getSerialization().getSerializationObject().application, "montage/core/application", self, true);
                 this.addObject(applicationProxy);
             }
@@ -991,7 +1044,8 @@ exports.ReelDocument = EditingDocument.specialize({
             // creating new editing proxies
             context = this.deserializationContext(destinationTemplate.getSerialization().getSerializationObject(), this._editingProxyMap);
 
-            return Promise.all(revisedTemplate.getSerialization().getSerializationLabels().map(function (label) {
+            if (revisedLabels) {
+                addedObjectPromise = Promise.all(revisedLabels.map(function (label) {
                     return Promise(context.getObject(label)).then(function (proxy) {
                         // The application was already formally added to the reelDocument to get it into the editingProxyMap
                         // in constructing the context, there's no need to add it again here
@@ -1001,12 +1055,17 @@ exports.ReelDocument = EditingDocument.specialize({
                             return self.addObject(proxy);
                         }
                     });
-                }))
-                .then(function(addedProxies) {
+                }));
+            } else {
+                addedObjectPromise = Promise.resolve(null);
+            }
+
+            return addedObjectPromise
+                .then(function (addedObjects) {
                     self.undoManager.closeBatch();
                     self._dispatchDidChangeTemplate(destinationTemplate);
                     self._dispatchDidAddObjectsFromTemplate(revisedTemplate, parentElement, nextSiblingElement);
-                    return addedProxies;
+                    return addedObjects;
                 });
         }
     },
@@ -1031,6 +1090,8 @@ exports.ReelDocument = EditingDocument.specialize({
                 sourceContentFragment,
                 sourceDocument = sourceTemplate.document,
                 templateSerialization = destinationTemplate.getSerialization(),
+                labeler,
+                incomingLabels,
                 labelsCollisionTable,
                 idsCollisionTable,
                 newChildNodes,
@@ -1043,9 +1104,11 @@ exports.ReelDocument = EditingDocument.specialize({
             sourceContentFragment = sourceContentRange.cloneContents();
 
             newChildNodes = [];
-            //TODO do we want children or childNodes (textnodes included)?
-            for (i = 0; (iChild = sourceContentFragment.children[i]); i++) {
-                newChildNodes.push(iChild);
+            for (i = 0; (iChild = sourceContentFragment.childNodes[i]); i++) {
+                //TODO do we want children or childNodes (textnodes included)?
+                if (iChild.nodeType === Node.ELEMENT_NODE) {
+                    newChildNodes.push(iChild);
+                }
             }
 
             // Merge markup
@@ -1055,9 +1118,14 @@ exports.ReelDocument = EditingDocument.specialize({
             // not clash with any of the labels. This allow us to easily rename
             // the labels when merging the serialization to make sure they match
             // their data-montage-id counterpart.
-            var labeler = new MontageLabeler();
+            labeler = new MontageLabeler();
             labeler.addLabels(templateSerialization.getSerializationLabels());
-            labeler.addLabels(serializationToMerge.getSerializationLabels());
+
+
+            incomingLabels = serializationToMerge.getSerializationLabels();
+            if (incomingLabels) {
+                labeler.addLabels(incomingLabels);
+            }
 
             if (nextSiblingElement) {
                 idsCollisionTable = destinationTemplate.insertNodeBefore(sourceContentFragment, nextSiblingElement._templateNode, labeler);
@@ -1070,52 +1138,35 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             // Add nodeProxies for newly added node
-            newChildNodes.forEach(function (newChild) {
-                var nodeProxy = NodeProxy.create().init(newChild, this);
+            newChildNodes.forEach(this._mergeChild(parentElement, nextSiblingElement), this);
 
-                if (nextSiblingElement) {
-                    this._insertNodeBeforeTemplateNode(nodeProxy, nextSiblingElement);
-                } else {
-                    this._appendChildToTemplateNode(nodeProxy, parentElement);
-                }
-            }, this);
+            if (incomingLabels) {
+                // Merge serialization
+                labeler = new MontageLabeler();
+                // Add all the data-montage-ids to make sure we don't use
+                // these strings when solving label conflicts. Since we're going
+                // to rename some labels with their data-montage-id counterpart we
+                // avoid generating labels that match a used data-montage-id.
+                labeler.addLabels(destinationTemplate.getElementIds());
+                mergeDelegate = new MergeDelegate(labeler, serializationToMerge);
 
-            // Merge serialization
-            labeler = new MontageLabeler();
-            // Add all the data-montage-ids to make sure we don't use
-            // these strings when solving label conflicts. Since we're going
-            // to rename some labels with their data-montage-id counterpart we
-            // avoid generating labels that match a used data-montage-id.
-            labeler.addLabels(destinationTemplate.getElementIds());
-            mergeDelegate = {
-                labeler: labeler,
-                willMergeObjectWithLabel: function(label, collisionLabel) {
-                    var id = serializationToMerge.getElementId(label);
-                    var isExternalObject;
-
-                    if (collisionLabel) {
-                        isExternalObject = serializationToMerge.isExternalObject(label);
-                        // Do not import external objects, assume they exist
-                        // in the template serialiation.
-                        if (isExternalObject) {
-                            return label;
-                        } else if (id !== collisionLabel) {
-                            return id;
-                        }
-                    } else if (id !== label) {
-                        return id;
-                    }
-                }
-            };
-
-            labelsCollisionTable = templateSerialization.mergeSerialization(serializationToMerge, mergeDelegate);
+                labelsCollisionTable = templateSerialization.mergeSerialization(serializationToMerge, mergeDelegate);
+            } else {
+                labeler = null;
+            }
 
             //Update underlying template string
             destinationTemplate.objectsString = templateSerialization.getSerializationString();
 
-            // Revise the sourceSerialization
+            return this._reviseTemplate(sourceTemplate, idsCollisionTable, labelsCollisionTable);
+        }
+    },
+
+    _reviseTemplate: {
+        value: function (sourceTemplate, idsCollisionTable, labelsCollisionTable) {
             var revisedTemplate = sourceTemplate.clone(),
-                revisedSerialization = revisedTemplate.getSerialization();
+                revisedSerialization = revisedTemplate.getSerialization(),
+                id;
 
             if (idsCollisionTable) {
                 revisedSerialization.renameElementReferences(idsCollisionTable);
@@ -1126,7 +1177,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             revisedTemplate.objectsString = revisedSerialization.getSerializationString();
 
-            for (var id in idsCollisionTable) {
+            for (id in idsCollisionTable) {
                 if (typeof idsCollisionTable.hasOwnProperty !== "function" || idsCollisionTable.hasOwnProperty(id)) {
                     var element = revisedTemplate.getElementById(id);
                     revisedTemplate.setElementId(element, idsCollisionTable[id]);
@@ -1134,6 +1185,20 @@ exports.ReelDocument = EditingDocument.specialize({
             }
 
             return revisedTemplate;
+        }
+    },
+
+    _mergeChild: {
+        value: function (parentElement, nextSiblingElement) {
+            var self = this;
+            return function mergeChild (newChild) {
+                var nodeProxy = NodeProxy.create().init(newChild, this);
+                if (nextSiblingElement) {
+                    self._insertNodeBeforeTemplateNode(nodeProxy, nextSiblingElement);
+                } else {
+                    self._appendChildToTemplateNode(nodeProxy, parentElement);
+                }
+            };
         }
     },
 
@@ -1181,6 +1246,10 @@ exports.ReelDocument = EditingDocument.specialize({
      */
     removeObject: {
         value: function (proxy) {
+
+            if (proxy && "owner" === proxy.label) {
+                return Promise.reject(new Error("Cannot remove Owner"));
+            }
 
             //TODO add options to remove child components and/or the DOM tree under this component
             //TODO this warrants some minor forking of removingObject vs removingComponent though I don't want seperata API if I can help it
@@ -2642,6 +2711,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             return this._createTemplateWithUrl(packageUrl + templateModuleId)
             .then(function(template) {
+                self._dataSource.addEventListener("dataChange", self, false);
                 self._template = template;
                 self.registerFile("html", self._saveHtml, self);
                 self._openTemplate(template);
@@ -2680,6 +2750,13 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    destroy: {
+        value: function() {
+            this._dataSource.unregisterDataModifier(this);
+            this._dataSource.removeEventListener("dataChange", this, false);
+        }
+    },
+
     _getTemplateModuleId: {
         value: function(moduleId) {
             return moduleId.replace(/\/([^/]+).reel$/, "/$1.reel/$1.html");
@@ -2691,6 +2768,14 @@ exports.ReelDocument = EditingDocument.specialize({
             var filenameMatch = this.url.match(/.+\/(.+)\.reel/);
             return this.url + filenameMatch[1] + ".html";
         }
+    },
+
+    _dataChanged: {
+        value: null
+    },
+
+    _ignoreDataChange: {
+        value: null
     },
 
     _hasModifiedData: {
@@ -2712,8 +2797,7 @@ exports.ReelDocument = EditingDocument.specialize({
     acceptModifiedData: {
         value: function(url) {
             if (url === this._getHtmlFileUrl()) {
-                this._hasModifiedData.undoCount = this._undoManager.undoCount;
-                this._hasModifiedData.redoCount = this._undoManager.redoCount;
+                this._resetModifiedDataState();
                 return Promise.resolve(this._generateHtml());
             }
         }
@@ -2725,9 +2809,21 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    /**
+     * When the modified data state is reseted the document stops reporting as
+     * having modified the data source.
+     */
+    _resetModifiedDataState: {
+        value: function() {
+            this._hasModifiedData.undoCount = this._undoManager.undoCount;
+            this._hasModifiedData.redoCount = this._undoManager.redoCount;
+        }
+    },
+
     needsRefresh: {
         value: function() {
-            return this._dataSource.isModified(this._getHtmlFileUrl());
+            return this._dataChanged ||
+                this._dataSource.isModified(this._getHtmlFileUrl(), this);
         }
     },
 
@@ -2739,11 +2835,22 @@ exports.ReelDocument = EditingDocument.specialize({
             return this._dataSource.read(htmlUrl).then(function(content) {
                 var htmlDocument = document.implementation.createHTMLDocument("");
                 htmlDocument.documentElement.innerHTML = content;
+                self._dataChanged = false;
+                self._changeCount = 0;
                 return new Template().initWithDocument(htmlDocument, self._packageRequire);
             }).then(function (template) {
                 self._openTemplate(template);
                 return true;
             });
+        }
+    },
+
+    handleDataChange: {
+        value: function() {
+            if (!this._ignoreDataChange) {
+                this._changeCount = 0;
+                this._dataChanged = true;
+            }
         }
     }
 

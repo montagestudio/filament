@@ -453,7 +453,8 @@ exports.ComponentEditor = Editor.specialize({
                     return Promise.resolve(
                         require("./preload-document.html").content);
                 },
-                registerDataModifier: Function.noop
+                registerDataModifier: Function.noop,
+                addEventListener: Function.noop
             };
 
             return reelDocument.init("/module-id.reel", preloadDataSource, preloadPackageRequire).load()

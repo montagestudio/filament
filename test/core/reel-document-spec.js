@@ -12,13 +12,16 @@ describe("core/reel-document-spec", function () {
                 .then(function(exports) {
                     return exports.content;
                 });
+            },
+            write: function(url) {
+                return Promise.resolve();
             }
         });
 
     describe("loading a data model given a locationId", function () {
 
         beforeEach(function () {
-            reelDocumentPromise = new ReelDocument().init(require.location + "test/mocks/ui/simple.reel", dataSource, require).load();
+            reelDocumentPromise = new ReelDocument().init(require.location + "test/mocks/ui/simple.reel/", dataSource, require).load();
         });
 
         it("should return a promise for the populated document", function () {
@@ -106,7 +109,7 @@ describe("core/reel-document-spec", function () {
                 }
             });
 
-            reelDocumentPromise = new ReelDocument().init(require.location + "test/mocks/ui/simple.reel", dataSource, require).load();
+            reelDocumentPromise = new ReelDocument().init(require.location + "test/mocks/ui/simple.reel/", dataSource, require).load();
         });
 
         it("should have a proxy object for each serialization label", function () {
@@ -124,4 +127,13 @@ describe("core/reel-document-spec", function () {
 
     });
 
+    describe("external data changes", function() {
+        it("should consider the document not modified once the data source has been changed", function() {
+            return reelDocumentPromise.then(function (doc) {
+                doc._changeCount = 1;
+                doc.handleDataChange();
+                expect(doc._changeCount).toBe(0);
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+    });
 });

@@ -128,12 +128,15 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
     _elementForReelProxy: {
         value: function(reelProxy) {
             var element = null;
+
             if (this._scene) {
                 var id = reelProxy.properties.get('id');
-                if (id != null) {
+
+                if (id) {
                     element = this._scene.glTFElement.ids[id];
                 }
             }
+
             return element;
         }
     },
@@ -141,7 +144,8 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
     _setupMaterialWithReelProxy: {
         value: function (reelProxy) {
             var element = this._elementForReelProxy(reelProxy);
-            if (element.component3D == null) {
+
+            if (element) {
                 element.component3D = this._fullfilComponent3D(new Material(), reelProxy.properties);
             }
         }
@@ -150,7 +154,8 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
     _setupNodeWithReelProxy: {
         value: function (reelProxy) {
             var element = this._elementForReelProxy(reelProxy);
-            if (element.component3D == null) {
+
+            if (element) {
                 element.component3D = this._fullfilComponent3D(new Node(), reelProxy.properties);
             }
         }
@@ -177,10 +182,10 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
     _updateComponent3D: {
         value: function (id, property, value) {
             if (this._scene && typeof id === "string" && typeof property === "string") {
-                var component3D = this._scene.glTFElement.ids[id];
+                var glTFElement = this._scene.glTFElement.ids[id];
 
-                if (component3D) {
-                    component3D[property] = value;
+                if (glTFElement && glTFElement.component3D) {
+                    glTFElement.component3D[property] = value;
                 }
             }
         }

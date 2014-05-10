@@ -106,7 +106,7 @@ exports.PackageSavingManager = Montage.specialize({
                 packageName: packageName,
                 message: "[" + packageName + "]: ",
                 operation: operation,
-                error: !!error,
+                error: !!error
             };
 
             if (error) {

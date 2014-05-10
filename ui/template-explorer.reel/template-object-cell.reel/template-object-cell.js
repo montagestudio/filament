@@ -223,24 +223,32 @@ exports.TemplateObjectCell = Component.specialize({
     handleMouseover: {
         value: function () {
             var proxy = this.templateObject,
-                editingDocument = proxy._editingDocument,
+                editingDocument,
+                nodeProxy;
+
+            if (proxy) {
+                editingDocument = proxy._editingDocument;
                 nodeProxy = editingDocument.nodeProxyForComponent(proxy);
 
-            this.dispatchEventNamed("highlightComponent", true, true, {
-                component: proxy,
-                element: nodeProxy,
-                highlight: true
-            });
+                this.dispatchEventNamed("highlightComponent", true, true, {
+                    component: proxy,
+                    element: nodeProxy,
+                    highlight: true
+                });
+            }
         }
     },
 
     handleMouseout: {
         value: function () {
             var proxy = this.templateObject;
-            this.dispatchEventNamed("highlightComponent", true, true, {
-                component: proxy,
-                highlight: false
-            });
+
+            if (proxy) {
+                this.dispatchEventNamed("highlightComponent", true, true, {
+                    component: proxy,
+                    highlight: false
+                });
+            }
         }
     },
 
@@ -257,12 +265,13 @@ exports.TemplateObjectCell = Component.specialize({
         }
     },
 
-    handleHiddenCheckboxAction: {
+    handleHiddenToggleButtonAction: {
         value: function (evt) {
             var proxy = this.templateObject,
-                editingDocument = proxy._editingDocument;
+                editingDocument = proxy._editingDocument,
+                hidden = !this.templateObjects.hiddenToggleButton.pressed;
 
-            editingDocument.setOwnedObjectEditorMetadata(proxy, "isHidden", evt.target.checked);
+            editingDocument.setOwnedObjectEditorMetadata(proxy, "isHidden", hidden);
         }
     },
 
@@ -283,7 +292,7 @@ exports.TemplateObjectCell = Component.specialize({
                 this.toggle.element === evt.target ||
                 (
                     evt.target.component &&
-                    (evt.target.component.identifier === "hiddenCheckbox")
+                    (evt.target.component.identifier === "hiddenToggleButton")
                 )
             );
         }

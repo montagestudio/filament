@@ -145,7 +145,7 @@ Montage.defineProperty(exports, "defaultMenu", {
 
                 // Project
                 projectMenu = makeMenuItem("Project", "project", true, "", [
-                    makeMenuItem("GitHub repository", "source", true, ""),
+                    makeMenuItem("GitHub Repository", "source", true, ""),
                     makeMenuItem("Close Project", "closeProject", true, "control+q")
                 ]);
                 _defaultMenu.insertItem(projectMenu);
@@ -176,9 +176,9 @@ Montage.defineProperty(exports, "defaultMenu", {
                 _defaultMenu.insertItem(viewMenu);
 
                 // Goto
-                gotoMenu = makeMenuItem("Goto", "goto", true, "", [
-                    makeMenuItem("Anything…", "goto", true, "command+e"),
-                    makeMenuItem("Anything Again…", "gotoAgain", true, "command+shift+e")
+                gotoMenu = makeMenuItem("Go", "", true, "", [
+                    makeMenuItem("Go to Anything…", "goto", true, "command+e"),
+                    makeMenuItem("Go to Anything Again…", "gotoAgain", true, "command+shift+e")
                 ]);
                 _defaultMenu.insertItem(gotoMenu);
 

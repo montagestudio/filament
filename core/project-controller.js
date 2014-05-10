@@ -192,8 +192,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._editorTypeDocumentTypeMap = new WeakMap(); // TODO: another to many map, they must be a better way
 
             this.openDocumentsController = RangeController.create().initWithContent(this.documents);
-            this.assetsManager = AssetsManager.create();
-            this.assetsManager.projectController = this;
+            this.assetsManager = new AssetsManager(this);
 
             //TODO get rid of this once we have property dependencies
             this.addPathChangeListener("packageUrl", this, "handleCanEditDependencyWillChange", true);
@@ -269,6 +268,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._packageRequirePromise = this.getPackageRequire(packageUrl)
             .then(function(packageRequire) {
                 self._packageRequire = packageRequire;
+
+                application.addEventListener("dependencyInstalled", self);
+                application.addEventListener("dependencyRemoved", self);
+
                 return packageRequire;
             });
             this.packageUrl = packageUrl;
@@ -572,7 +575,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 documentType = this._editorTypeDocumentTypeMap.get(editorType);
             } else {
                 documentType = this.documentTypeForUrl(fileUrl);
-                editorType = documentType.editorType;
+                editorType = documentType ? documentType.editorType : null;
             }
 
             if (editorType) {
@@ -747,6 +750,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     if (editor && editingDocument) {
                         editor.close(editingDocument);
                         self.removeDocument(editingDocument);
+                        editingDocument.destroy();
 
                         self.dispatchEventNamed("didCloseDocument", true, false, {
                             document: editingDocument,
@@ -1034,7 +1038,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     libraryItem.templateContent = template.html;
                     libraryItem.name = objectName;
                     //TODO well this can't be hardcoded
-                    libraryItem.iconUrl = "/assets/img/library-icon.png";
+                    libraryItem.iconUrl = document.baseURI + "/assets/img/library-icon.png";
                     return libraryItem;
                 });
             } else {
@@ -1137,7 +1141,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             if (iconUrls && iconUrls.length > 0) {
                 iconUrl = iconUrls.one();
             } else {
-                iconUrl = "/assets/img/library-icon.png";
+                iconUrl = document.baseURI + "/assets/img/library-icon.png";
             }
 
             return iconUrl;
@@ -1158,7 +1162,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 savePromise;
 
             if (this.currentDocument) {
-                this.dispatchEventNamed("willSave", true, false);
+                this.dispatchEventNamed("willSaveProject", true, false);
 
                 savePromise = this.projectDocument.saveAll()
                     .then(function (result) {
@@ -1167,7 +1171,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                             self.environmentBridge.setDocumentDirtyState(false);
                         }
 
-                        self.dispatchEventNamed("didSave", true, false);
+                        self.dispatchEventNamed("didSaveProject", true, false);
                         return result;
                     });
             }
@@ -1339,17 +1343,21 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     addDirectory: {
         value: function (path) {
-            var defaultDirectory = (path)? Url.resolve(this.packageUrl, path) : this.packageUrl,
+            var self = this,
+                defaultDirectory = (path)? Url.resolve(this.packageUrl, path) : this.packageUrl,
                 options = {
                     defaultDirectory: defaultDirectory,
                     defaultName: "Untitled Folder", // TODO localize
                     prompt: "Create Folder", // TODO localize
                     submitLabel: "Create"
-                },
-                self = this;
+                };
 
             return this.environmentBridge.promptForSave(options)
                 .then(function (destination) {
+                    if (!destination) {
+                        return Promise.resolve(null);
+                    }
+
                     return self.projectDocument.makeTree(destination);
                 });
         }
@@ -1660,6 +1668,20 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     });
                 }));
             });
+        }
+    },
+
+    handleDependencyInstalled: {
+        value: function (evt) {
+            // TODO It seems like it might be safer to make sure this is coordinated
+            // with the setting of the dependencies that triggers adding to the library
+            this._packageRequire.injectDependency(evt.detail.installed.requestedName);
+        }
+    },
+
+    handleDependencyRemoved: {
+        value: function(evt) {
+            // TODO remove the dependency
         }
     },
 

@@ -200,6 +200,7 @@
                 "propertyBlueprint": {"<-": "@owner.propertyBlueprint"}
             }
         },
+
         "urlPropertyInspector": {
             "prototype": "../property-value-type/url-property-inspector.reel",
             "properties": {
@@ -212,7 +213,23 @@
                 "objectValue": {"<->": "@owner.objectValue"},
                 "propertyBlueprint": {"<-": "@owner.propertyBlueprint"}
             }
+        },
+
+        "resourcePropertyInspector": {
+            "prototype": "../property-value-type/resource-property-inspector.reel",
+            "properties": {
+                "element": {"#": "resourcePropertyInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "objectValue": {"<->": "@owner.objectValue"},
+                "propertyBlueprint": {"<-": "@owner.propertyBlueprint"},
+                "label": {"<-": "@owner.propertyBlueprint.name"
+                }
+            }
         }
+
     }
     </script>
 </head>
@@ -234,6 +251,7 @@
             <div data-arg="list-property" data-montage-id="listPropertyInspector"></div>
             <div data-arg="set-property" data-montage-id="setPropertyInspector"></div>
             <div data-arg="map-property" data-montage-id="mapPropertyInspector"></div>
+            <div data-arg="resource-property" data-montage-id="resourcePropertyInspector"></div>
         </div>
     </label>
 </body>
