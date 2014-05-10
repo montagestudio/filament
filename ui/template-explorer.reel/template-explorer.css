@@ -247,7 +247,7 @@
     -ms-flex: 1;
     flex: 1;
     margin: 0;
-    font-size: 12px;
+    font-size: inherit;
     font-weight: normal;
     line-height: 32px;
     color: hsl(0, 0%, 30%);
