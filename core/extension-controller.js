@@ -90,6 +90,34 @@ exports.ExtensionController = Montage.create(Target, {
         }
     },
 
+    _createExtension: {
+        value: function (extensionUrl, packageRequire) {
+            var extensionName = this.extensionNameFromExtentionUrl(extensionUrl),
+                extensionPackage = CoreExtension.specialize({
+                activate: {
+                    value: function (application, projectController) {
+                        return Promise.all([
+                            this.installLibraryItems(projectController, extensionName),
+                            this.installModuleIcons(projectController, extensionName)
+                        ]).thenResolve(this);
+                    }
+                },
+
+                deactivate: {
+                    value: function (application, projectController) {
+                        return Promise.all([
+                            this.uninstallLibraryItems(projectController, extensionName),
+                            this.uninstallModuleIcons(projectController, extensionName)
+                        ]).thenResolve(this);
+                    }
+                }
+            });
+            extensionPackage.packageLocation = packageRequire.location;
+
+            return Promise.resolve({Extension : extensionPackage});
+        }
+    },
+
     /**
      * Asynchronously load the extension package from the specified
      * extensionUrl, returning a reference to the exported Extension.
@@ -113,32 +141,14 @@ exports.ExtensionController = Montage.create(Target, {
                 packageRequire.injectMapping({name: "montage", location: require.getPackage({name: "montage"}).location});
                 packageRequire.injectMapping({name: "filament-extension", location: require.getPackage({name: "filament-extension"}).location});
 
-                // Create a dummy extension package if the extension does not have one
-                extension = packageRequire.async("extension").catch(function (error) {
-                    var extensionName = self.extensionNameFromExtentionUrl(extensionUrl),
-                        extensionPackage = CoreExtension.specialize({
-                        activate: {
-                            value: function (application, projectController) {
-                                return Promise.all([
-                                    this.installLibraryItems(projectController, extensionName),
-                                    this.installModuleIcons(projectController, extensionName)
-                                ]).thenResolve(this);
-                            }
-                        },
-
-                        deactivate: {
-                            value: function (application, projectController) {
-                                return Promise.all([
-                                    this.uninstallLibraryItems(projectController, extensionName),
-                                    this.uninstallModuleIcons(projectController, extensionName)
-                                ]).thenResolve(this);
-                            }
-                        }
+                // Do not even try to require and therefore execute third party provided code
+                if (extensionUrl.indexOf("node_module") !== -1) {
+                    extension = self._createExtension(extensionUrl, packageRequire);
+                } else {
+                    extension = packageRequire.async("extension").catch(function (error) {
+                        return self._createExtension(extensionUrl, packageRequire);
                     });
-                    extensionPackage.packageLocation = packageRequire.location;
-
-                    return {Extension : extensionPackage};
-                });
+                }
 
                 return Promise.all([extension, Promise.resolve(packageRequire)]);
             }).spread(function (exports, require) {
