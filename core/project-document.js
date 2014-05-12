@@ -94,6 +94,7 @@ exports.ProjectDocument = Document.specialize({
                     })
                     .then(function () {
                         application.addEventListener("remoteChange", self, false);
+                        application.addEventListener("repositoryFlushed", self, false);
                         return self.updateRefs();
                     })
                     .catch(Function.noop)
@@ -173,8 +174,18 @@ exports.ProjectDocument = Document.specialize({
     },
 
     handleRemoteChange: {
-        value: function(event) {
+        value: function() {
             this.updateRefs().done();
+        }
+    },
+
+    handleRepositoryFlushed: {
+        value: function(event) {
+            if (event.detail.success) {
+                this._updateShadowDelta().done();
+            } else {
+                this.updateRefs().done();
+            }
         }
     },
 
@@ -485,21 +496,33 @@ exports.ProjectDocument = Document.specialize({
     saveAll: {
         value: function (message, amend) {
             var self = this,
-                savedPromises;
+                savedPromises,
+                defaultCommitMessage;
 
             this.isBusy = true;
 
             savedPromises = this.dirtyDocuments.map(function (doc) {
-                return self._environmentBridge.save(doc, doc.url);
+                var url = doc.url;
+
+                if (defaultCommitMessage) {
+                    defaultCommitMessage = "Update components";
+                } else {
+                    var index = url.indexOf("/", url.indexOf("//") + 2),    // simplified url parsing
+                        filePath = decodeURIComponent(url.substring(index + 1));
+                    defaultCommitMessage = "Update component " + filePath;
+                }
+
+                return self._environmentBridge.save(doc, url);
             });
 
+            message = message || defaultCommitMessage;
+
             return Promise.all(savedPromises)
-                .finally(function(result) {
-                    return self._updateShadowDelta().thenResolve(result);
+                .then(function(result) {
+                    return self._environmentBridge.flushProject(message).thenResolve(result);
                 })
                 .finally(function (result) {
                     self.isBusy = false;
-                    return result;
                 });
         }
     },
