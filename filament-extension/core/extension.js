@@ -1,6 +1,7 @@
 var Target = require("montage/core/target").Target,
     Promise = require("montage/core/promise").Promise,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
+    LibraryItem = require("core/library-item").LibraryItem,
     Map = require("montage/collections/map");
 
 exports.Extension = Target.specialize( {
@@ -68,8 +69,29 @@ exports.Extension = Target.specialize( {
                     var libraryItemModuleName = url.match(/([^\/]+)\.library-item\/$/m)[1],
                         libraryItemModuleInfo = MontageReviver.parseObjectLocationId(libraryItemModuleName),
                         rootModuleId = url.replace(extensionRequire.location, ''),
-                        moduleId = rootModuleId + libraryItemModuleName + ".js",
-                        templateModuleId = rootModuleId + libraryItemModuleName + ".html";
+                        modulePath = rootModuleId + libraryItemModuleName,
+                        moduleId = modulePath + ".js",
+                        templateModuleId = modulePath + ".html",
+                        jsonModuleId = modulePath + ".json";
+
+                    // If the library item comes from an untrustable package,
+                    // then we try to load load a .json instead of executing random code.
+                    if (/node_module/i.test(url)) {
+                        return extensionRequire.async(jsonModuleId).then(function (exports) {
+                            if (!exports || !exports.name || !exports.description || !exports.iconUrl) {
+                                throw new Error("Library Item json file is incomplete.\n" + JSON.stringify(exports) + "\ngiven, where {name:... , description:... , iconUrl:...} is required.");
+                            }
+                            var libraryItem = new LibraryItem();
+                            libraryItem.uri = url;
+                            libraryItem.name = exports.name;
+                            libraryItem.description = exports.description;
+                            libraryItem.iconUrl = url + exports.iconUrl;
+                            libraryItem.require = extensionRequire;
+                            libraryItem.templateModuleId = templateModuleId;
+
+                            return libraryItem;
+                        });
+                    }
 
                     return extensionRequire.async(moduleId).then(function (exports) {
                         var libraryItem;
