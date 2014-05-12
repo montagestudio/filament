@@ -74,10 +74,10 @@ exports.Extension = Target.specialize( {
                         templateModuleId = modulePath + ".html",
                         jsonModuleId = modulePath + ".json";
 
-                    // If the library item comes from an untrustable package,
-                    // then we try to load load a .json instead of executing random code.
-                    if (/node_module/i.test(url)) {
-                        return extensionRequire.async(jsonModuleId).then(function (exports) {
+                    // First we try to load a *.json file rather than executing a module.
+                    // If it fails and only if the extension is not issued by a third party (node_module folder)
+                    // then we require the js module.
+                    return extensionRequire.async(jsonModuleId).then(function (exports) {
                             if (!exports || !exports.name || !exports.description || !exports.iconUrl) {
                                 throw new Error("Library Item json file is incomplete.\n" + JSON.stringify(exports) + "\ngiven, where {name:... , description:... , iconUrl:...} is required.");
                             }
@@ -90,19 +90,21 @@ exports.Extension = Target.specialize( {
                             libraryItem.templateModuleId = templateModuleId;
 
                             return libraryItem;
+                        }, function (error) {
+                            if (/node_module/i.test(url)) {
+                                throw new Error ("Library Item json file not found at: " + jsonModuleId);
+                            }
+                            return extensionRequire.async(moduleId).then(function (exports) {
+                                var libraryItem;
+                                libraryItem = new exports[libraryItemModuleInfo.objectName]();
+                                libraryItem.uri = url;
+
+                                libraryItem.require = extensionRequire;
+                                libraryItem.templateModuleId = templateModuleId;
+
+                                return libraryItem;
+                            });
                         });
-                    }
-
-                    return extensionRequire.async(moduleId).then(function (exports) {
-                        var libraryItem;
-                        libraryItem = new exports[libraryItemModuleInfo.objectName]();
-                        libraryItem.uri = url;
-
-                        libraryItem.require = extensionRequire;
-                        libraryItem.templateModuleId = templateModuleId;
-
-                        return libraryItem;
-                    });
                 }));
             }).then(function (libraryItems) {
                 self._packageNameLibraryItemMap.set(packageName, libraryItems);
