@@ -91,7 +91,7 @@ exports.Extension = Target.specialize( {
 
                             return libraryItem;
                         }, function (error) {
-                            if (/node_module/i.test(url)) {
+                            if (url.indexOf("node_module") !== -1) {
                                 throw new Error ("Library Item json file not found at: " + jsonModuleId);
                             }
                             return extensionRequire.async(moduleId).then(function (exports) {
