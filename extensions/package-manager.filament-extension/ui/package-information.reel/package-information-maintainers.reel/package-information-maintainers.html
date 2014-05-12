@@ -85,12 +85,12 @@
 </head>
 <body>
     <div data-montage-id="package-information-maintainers" class="PackageInformation--maintainers">
-        <header class="PackageInformationMaintainers-header">
-            <h3 data-montage-id="packageInformationBoxTitle" class="PackageEditorPanel-title"></h3>
-            <button data-montage-id="addMaintainerButton" class="AddMaintainerButton-header"></button>
-        </header>
+        <h3 class="PackageEditorPanel-title">
+            <span data-montage-id="packageInformationBoxTitle"></span>
+            <button data-montage-id="addMaintainerButton" class="AddMaintainerButton-header IconButton"></button>
+        </h3>
 
-        <div class="PackageEditorPanel-content">
+        <div class="PackageEditorPanel-content PackageEditorPanel-content--hasList">
             <ul data-montage-id="maintainersList" class="MaintainersList">
                 <li data-montage-id="maintainerCell"></li>
             </ul>

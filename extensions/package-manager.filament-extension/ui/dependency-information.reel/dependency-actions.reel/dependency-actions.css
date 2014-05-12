@@ -13,8 +13,6 @@
     flex-direction: column;
     overflow: hidden;
     padding: 8px;
-    background: hsl(0,0%,94%);
-    border-radius: 0 0 4px 4px;
     -webkit-align-items: center;
     -moz-align-items: center;
     -ms-align-items: center;
@@ -23,6 +21,7 @@
     -moz-justify-content: center;
     -ms-justify-content: center;
     justify-content: center;
+    background: hsl(0, 0%, 96%);
 }
 
 .DependencyActions-list {
@@ -51,31 +50,18 @@
 }
 
 .DependencyActionItem-label {
-    color: hsl(0,0%,40%);
+    color: hsl(0, 0%, 50%);
     min-width: 120px;
-    font-size: 12px;
-    font-style: italic;
+    font-size: 13px;
+    text-align: right;
+    margin-right: 12px;
 }
 
 .DependencyActionItem-content {
-    display: -webkit-flex;
-    display: -moz-flex;
-    display: -ms-flex;
-    display: flex;
     -webkit-flex: 3;
     -moz-flex: 3;
     -ms-flex: 3;
     flex: 3;
-    -webkit-justify-content: space-around;
-    -moz-justify-content: space-around;
-    -ms-justify-content: space-around;
-    justify-content: space-around;
-    -webkit-align-items: center;
-    -moz-align-items: center;
-    -ms-align-items: center;
-    align-items: center;
-    overflow-x: hidden;
-    max-width: 280px;
 }
 
 .DependencyActionItem-content .matte-RadioButton,
@@ -85,20 +71,26 @@
 }
 
 .DependencyActionItem-content .matte-Button {
-    height: 25px;
+    float: right;
 }
 
 .DependencyActionItem-content .matte-InputText {
-    width: 100%;
 }
 
 .dependencyTypeLabel {
-    margin: 0 4px;
+    margin: 0 12px 0 2px;
+    vertical-align: middle;
+}
+
+.DependencyUpdate-item {
+    line-height: 30px;
 }
 
 .DependencyAction-item--versions .matte-Select,
 .DependencyAction-item--versions .matte-Button,
 .DependencyUpdate-item,
 .DependencyUpdate-item.matte-Button{
-    margin-left: auto;
+    margin: 0;
+    vertical-align: middle;
 }
+
