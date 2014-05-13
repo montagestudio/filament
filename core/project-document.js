@@ -497,31 +497,72 @@ exports.ProjectDocument = Document.specialize({
         value: function (message, amend) {
             var self = this,
                 savedPromises,
-                defaultCommitMessage;
+                components = {},
+                otherFiles = [],
+                commitBatch = null;
 
             this.isBusy = true;
 
             savedPromises = this.dirtyDocuments.map(function (doc) {
                 var url = doc.url;
 
-                if (defaultCommitMessage) {
-                    defaultCommitMessage = "Update components";
-                } else {
+                commitBatch = commitBatch || self._environmentBridge.openCommitBatch(message);
+
+                if (!message) {
                     var index = url.indexOf("/", url.indexOf("//") + 2),    // simplified url parsing
-                        filePath = decodeURIComponent(url.substring(index + 1));
-                    defaultCommitMessage = "Update component " + filePath;
+                        filePath = decodeURIComponent(url.substring(index + 1)),
+                        componentExt = ".reel";
+
+                    index = filePath.indexOf(componentExt);
+                    if (index !== -1) {
+                        components[filePath] = filePath.substring(0, index + componentExt.length);
+                    } else {
+                        otherFiles.push(filePath);
+                    }
                 }
 
-                return self._environmentBridge.save(doc, url);
+                return self._environmentBridge.save(doc, url)
+                    .then(function(result) {
+                        return self._environmentBridge.stageFiles(commitBatch, url).thenResolve(result);
+                    });
             });
 
-            message = message || defaultCommitMessage;
+            if (!message) {
+                message = "Update";
+                components = Object.keys(components);
+
+                var nbrComponents = components.length,
+                    nbrFiles = otherFiles.length;
+
+                if (nbrComponents) {
+                    if (nbrComponents === 1) {
+                        message += " component " + components[0];
+                    } else {
+                        message += " components";
+                    }
+
+                }
+                if (nbrFiles) {
+                    if (nbrComponents) {
+                        message += " and";
+                        if (nbrFiles > 1) {
+                            message += " other";
+                        }
+                    }
+                    if (nbrFiles === 1) {
+                        message += " file " + otherFiles[0];
+                    } else {
+                        message += " files";
+                    }
+                }
+            }
 
             return Promise.all(savedPromises)
                 .then(function(result) {
-                    return self._environmentBridge.flushProject(message).thenResolve(result);
+                    return self._environmentBridge.closeCommitBatch(commitBatch, message).thenResolve(result);
                 })
-                .finally(function (result) {
+                .finally(function () {
+                    self._environmentBridge.releaseCommitBatch(commitBatch);
                     self.isBusy = false;
                 });
         }
