@@ -1,0 +1,5 @@
+{
+    "name": "RadioButtonController",
+    "description": "Manages the state of radio buttons",
+    "iconUrl": "radio-button-controller.png"
+}

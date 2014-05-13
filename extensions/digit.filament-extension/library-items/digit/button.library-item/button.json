@@ -1,0 +1,5 @@
+{
+    "name": "Button",
+    "description": "Reacts to click or tap events and sends an action message to a target object.",
+    "iconUrl": "button.png"
+}

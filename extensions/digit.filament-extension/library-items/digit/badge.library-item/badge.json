@@ -1,0 +1,5 @@
+{
+    "name": "Badge",
+    "description": "Displays whole numbers and can be used as a notification counter.",
+    "iconUrl": "badge.png"
+}

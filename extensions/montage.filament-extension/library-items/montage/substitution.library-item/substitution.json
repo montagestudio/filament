@@ -1,0 +1,5 @@
+{
+    "name": "Substitution",
+    "description": "Selectively shows a subset of its content based upon a switch value",
+    "iconUrl": "substitution.png"
+}

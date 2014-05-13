@@ -1,0 +1,5 @@
+{
+    "name": "Slider",
+    "description": "Displays a range of values for a feature in the application.",
+    "iconUrl": "slider.png"
+}
