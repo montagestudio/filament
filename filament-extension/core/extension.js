@@ -78,13 +78,15 @@ exports.Extension = Target.specialize( {
                     // If it fails and only if the extension is not issued by a third party (node_module folder)
                     // then we require the js module.
                     return extensionRequire.async(jsonModuleId).then(function (exports) {
-                            if (!exports || !exports.name || !exports.description || !exports.iconUrl) {
+                            if (!exports || !exports.name || !exports.iconUrl) {
                                 throw new Error("Library Item json file is incomplete.\n" + JSON.stringify(exports) + "\ngiven, where {name:... , description:... , iconUrl:...} is required.");
                             }
                             var libraryItem = new LibraryItem();
                             libraryItem.uri = url;
                             libraryItem.name = exports.name;
-                            libraryItem.description = exports.description;
+                            if (exports.libraryItem) {
+                                libraryItem.description = exports.description;
+                            }
                             libraryItem.iconUrl = url + exports.iconUrl;
                             libraryItem.require = extensionRequire;
                             libraryItem.templateModuleId = templateModuleId;
