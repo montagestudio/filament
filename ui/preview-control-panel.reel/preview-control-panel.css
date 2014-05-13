@@ -10,6 +10,7 @@
     width: 100%;
     height: 100%;
 
+    color: hsl(0,0%,95%);
     background-color: hsl(0,0%,26%);
 }
 
@@ -30,6 +31,19 @@
 
 .PreviewControlPanel-PreviewAccessCode {
     font-size: 20px;
+    font-family: monospace;
+    width: 7em;
+    max-width: 100%;
+    text-align: center;
+    margin-top: 1em;
+    color: inherit;
+}
+
+.matte-InputText.Input.PreviewControlPanel-PreviewAccessCode {
+    /*TODO: Unify dark theme */
+    border-color: hsl(0, 0%, 20%);
+    box-shadow: inset 0 1px 2px hsla(0, 0%, 0%, 0.15), 0 1px 0 hsla(0, 100%, 100%, 0.15);
+    color: hsl(0, 0%, 90%);
 }
 
 .PreviewControlPanel .PreviewFrame {
@@ -45,4 +59,31 @@
 
     height: 100%;
     background: hsl(0,0%,90%);
+}
+
+.PreviewControlPanel-link-wrap {
+    margin-top: 1em;
+}
+
+.PreviewControlPanel-link {
+    color: inherit;
+}
+
+.PreviewControlPanel-list {
+    padding-left: 0;
+}
+
+.PreviewControlPanel-item {
+    list-style: none;
+    padding: 1px 0;
+}
+.PreviewControlPanel-icon {
+    vertical-align: middle;
+    width: 16px;
+    height: 16px;
+}
+.PreviewControlPanel-ip {
+    color: inherit;
+    display: inline-block;
+    vertical-align: middle;
 }
