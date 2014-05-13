@@ -5,7 +5,7 @@
     font-size: 10px;
     text-align: center;
     color: hsl(0, 0%, 64%);
-    background-color: hsl(0, 0%, 22%);
+    background-color: hsl(0, 0%, 20%);
     cursor: pointer;
 }
 
@@ -20,5 +20,5 @@
 .AssetsCategoriesBarItem.selected {
     color: hsl(0, 0%, 94%);
     cursor: default;
-    background-color: hsl(0, 0%, 26%);
+    background-color: hsl(0, 0%, 25%);
 }
