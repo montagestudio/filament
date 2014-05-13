@@ -274,9 +274,9 @@ body .matte-Button.Button.disabled:focus {
 
 .Filament .matte-Popup-header {
     color: hsl(0, 0%, 50%);
-    font-size: 11px;
+    font-size: 15px;
     line-height: 1;
-    padding: 10px 8px 10px 16px;
+    padding: 1em 16px;
     border-radius: 6px 6px 0 0;
 }
 
@@ -286,7 +286,9 @@ body .matte-Button.Button.disabled:focus {
 }
 
 .Filament .matte-Confirm-content {
-    padding: 15px;
+    font-size: 14px;
+    color: hsl(0, 0%, 30%);
+    padding: 16px;
     max-width: 500px;
 }
 

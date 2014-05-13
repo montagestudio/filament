@@ -14,11 +14,11 @@
     position: relative;
 	padding: 4px 8px;
 	margin: 0;
-    font-size: 13px;
-    color: hsl(0, 0%, 86%);
-    border-top: 1px solid hsla(0, 100%, 100%, 0.12);
-    border-bottom: 1px solid hsl(0, 0%, 28%);
-    background: linear-gradient( hsl(0, 0%, 40%), hsl(0, 0%, 36%) );
+    font-size: 15px;
+    color: hsl(0, 0%, 90%);
+    border-top: 1px solid hsla(0, 100%, 100%, 0.15);
+    border-bottom: 1px solid hsla(0, 0%, 0%, 0.5);
+    background: hsl(0, 0%, 30%) linear-gradient( hsl(0, 0%, 32%), hsl(0, 0%, 28%) );
     cursor: pointer;
 }
 

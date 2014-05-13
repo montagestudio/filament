@@ -1,6 +1,5 @@
 .FileCell {
     display: flex;
-    font-size: 13px;
     white-space: nowrap;
 
     -webkit-transition: .1s linear background-color, outline-color;
@@ -35,8 +34,10 @@
 	border-radius: 0;
     border: none;
 	font-family: inherit;
-	font-size: inherit;
-	color: hsl(0, 0%, 56%);
+	
+    font-size: 14px;
+	
+    color: hsl(0, 0%, 70%);
     background: none;
     background-repeat: no-repeat;
     padding-left: 18px; /* Same as indentValue of tree.reel/indent.js */
@@ -45,7 +46,7 @@
 }
 
 .FileCell .FileCell-button:hover {
-    color: hsl(0, 0%, 70%);
+    color: hsl(0, 0%, 100%);
 }
 
 .FileCell .FileCell-button:hover,

@@ -54,9 +54,9 @@
 
 .TemplateObjectHeader-title {
     margin: 0;
-    font-size: 13px;
-    line-height: 15px;
-    color: hsl(0, 0%, 30%);
+    font-size: 15px;
+    line-height: 1.2;
+    color: hsl(0, 0%, 20%);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -65,9 +65,9 @@
 .TemplateObjectHeader-exportId {
     display: block;
     font-style: italic;
-    font-size: 11px;
-    line-height: 14px;
-    color: hsl(0, 0%, 60%);
+    font-size: 12px;
+    line-height: 1.2;
+    color: hsl(0, 0%, 50%);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

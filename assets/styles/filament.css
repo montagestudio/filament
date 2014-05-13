@@ -10,13 +10,15 @@
 
 html {
     height: 100%;
-    background-color: hsl(0,0%,90%);
+    font-family: Clear Sans, sans-serif;
+    font-size: 13px;
+    color: hsl(0, 0%, 70%);
+    background-color: hsl(0, 0%, 20%);
 }
 
 body {
     margin: 0;
     height: 100%;
-    font-family: Clear Sans, sans-serif;
     overflow: hidden; /* Removes bounce when scrolling on body */
     -webkit-user-select: none; /* Disable text selection */
     -moz-user-select: none; /* Disable text selection */
@@ -27,10 +29,6 @@ body {
 
 .montage-invisible {
     display: none;
-}
-
-.Filament {
-    background-color: hsl(0, 0%, 26%);
 }
 
 /* Scrollbar -------------------------------- */

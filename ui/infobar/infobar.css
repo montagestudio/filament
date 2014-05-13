@@ -7,7 +7,7 @@
     line-height: 32px;
     font-size: 15px;
     overflow: hidden;
-    color: hsla(0,0%,100%,.8);
+    color: hsl(0,0%,84%);
     box-shadow: inset 0 -1px 0 hsla(0, 0%, 0%, 0.2);
     background: hsl(0,0%,30%);
     -webkit-transition: height 200ms cubic-bezier(.37, .05, .22, .95);
@@ -35,7 +35,7 @@
     width: 32px;
     min-width: 32px;
     line-height: 32px;
-    color: hsla(0,0%,100%,.8);
+    color: hsla(0, 0%, 94%, 1);
     font-size: 20px;
     border-radius: 0;
     border: none;
@@ -45,6 +45,7 @@
 
 .Infobar-close.matte-Button:hover {
     background-color: hsla(0,0%,100%,.15);
+    color: #fff;
 }
 
 .Infobar-close.matte-Button.active {

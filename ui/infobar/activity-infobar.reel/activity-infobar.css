@@ -28,7 +28,7 @@ Classes to toggle counter
     -ms-align-items: center;
     align-items: center;
     height: 32px;
-    color: hsla(0,0%,100%,.9);
+    color: hsl(0, 0%, 94%);
     text-shadow: 0 1px 0 hsla(0,0%,0%,.1);
 }
 
@@ -38,12 +38,12 @@ Classes to toggle counter
     height: 32px;
     line-height: 32px;
     text-align: center;
+    color: #fff;
     background-color: hsla(0,0%,0%,.2);
 }
 
 .ActivityInfobar-title {
-    font-weight: bold;
-    margin: 0 8px;
+    margin: 0 16px 0 8px;
     -webkit-user-select: text;
     -moz-user-select: text;
     -ms-user-select: text;
@@ -57,7 +57,6 @@ Classes to toggle counter
     -ms-flex: 1;
     flex: 1;
     min-width: 0;
-    color: hsla(0, 0%, 100%, .8);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -66,6 +65,7 @@ Classes to toggle counter
     -ms-user-select: text;
     user-select: text;
     cursor: auto;
+    font-style: italic;
 }
 
 
@@ -169,7 +169,6 @@ Classes to toggle counter
 .ActivityInfobar-counter-failed:before {
     margin-right: 4px;
     font-size: 13px;
-    color: hsla(0,0%,100%,.5);
 }
 
 .ActivityInfobar-counter-failed {
@@ -186,7 +185,7 @@ Classes to toggle counter
 .ActivityInfobar .ActivityInfobar-detailsButton {
     margin: 0 4px 0 0;
     height: 24px;
-    color: hsla(0,0%,100%,.8);
+    color: hsla(0, 0%, 94%, 1);
     border-color: hsl(0, 0%, 25%);
     border-radius: 0 12px 12px 0;
     background: -webkit-linear-gradient(hsl(0, 0%, 50%), hsl(0, 0%, 40%));
@@ -196,7 +195,7 @@ Classes to toggle counter
 }
 
 .ActivityInfobar .ActivityInfobar-detailsButton:hover {
-    color: hsla(0,0%,100%,.9);
+    color: #fff;
     background: -webkit-linear-gradient(hsl(0, 0%, 54%), hsl(0, 0%, 44%));
     background: -moz-linear-gradient(hsl(0, 0%, 54%), hsl(0, 0%, 44%));
     background: -ms-linear-gradient(hsl(0, 0%, 54%), hsl(0, 0%, 44%));
