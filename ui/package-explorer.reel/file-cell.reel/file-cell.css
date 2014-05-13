@@ -34,7 +34,8 @@
 	border-radius: 0;
     border: none;
 	font-family: inherit;
-	font-size: inherit;
+	
+    font-size: 14px;
 	
     color: hsl(0, 0%, 70%);
     background: none;
