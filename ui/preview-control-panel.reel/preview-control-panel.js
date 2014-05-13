@@ -53,14 +53,14 @@ exports.PreviewControlPanel = Component.specialize({
         value: function(item) {
             var browser = item.browser.toLowerCase();
             switch (browser) {
-                case 'chrome':
-                case 'safari':
-                case 'firefox':
-                    return document.baseURI + 'assets/img/' + browser + '_32x32.png';
-                default:
-                    //TODO: Show some dummy icon, such as "?"
-                    console.warn('No browser icon for', browser);
-                    return '';
+            case 'chrome':
+            case 'safari':
+            case 'firefox':
+                return document.baseURI + 'assets/img/' + browser + '_32x32.png';
+            default:
+                //TODO: Show some dummy icon, such as "?"
+                console.warn('No browser icon for', browser);
+                return '';
             }
         }
     },
