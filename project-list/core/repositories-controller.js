@@ -70,6 +70,7 @@ var RepositoriesController = Montage.specialize({
                     repo.pushed_at = +new Date(repo.pushed_at);
                     /* jshint +W106 */
                     self._ownedRepositoriesContent.content.push(repo);
+                    self.cacheUserRepositories();
                     return repo;
                 });
             });
@@ -396,13 +397,19 @@ var RepositoriesController = Montage.specialize({
             this.repositoriesCount = 0;
             this.processedRepositories = 0;
             return this.updateUserRepositories().then(function () {
-                // cache repositories
-                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(self._ownedRepositoriesContent.content));
-                // cache repositories processes count
-                localStorage.setItem(LOCAL_STORAGE_REPOSITORIES_COUNT_KEY, JSON.stringify(self.repositoriesCount));
-                // validate recent repositories cache
-                self._validateRecentRepositories();
+                self.cacheUserRepositories();
             });
+        }
+    },
+
+    cacheUserRepositories: {
+        value: function () {
+            // cache repositories
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this._ownedRepositoriesContent.content));
+            // cache repositories processes count
+            localStorage.setItem(LOCAL_STORAGE_REPOSITORIES_COUNT_KEY, JSON.stringify(this.repositoriesCount));
+            // validate recent repositories cache
+            this._validateRecentRepositories();
         }
     },
 
