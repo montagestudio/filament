@@ -65,6 +65,8 @@ var RepositoriesController = Montage.specialize({
             return this._githubApi.then(function(githubApi) {
                 return githubApi.createRepository(name, options)
                 .then(function(repo) {
+                    // busting the project list cache
+                    self.clearCachedRepositories().done();
                     /* jshint -W106 */
                     // This is the format expected by the github API, ignoring for now
                     repo.pushed_at = +new Date(repo.pushed_at);
