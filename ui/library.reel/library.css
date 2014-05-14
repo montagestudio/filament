@@ -9,7 +9,10 @@
 
 .Library-tabs {
     position: relative;
-    display: flex;
+    display: -webkit-flex;
+    display:    -moz-flex;
+    display:     -ms-flex;
+    display:         flex;
     z-index: 1;
     list-style: none;
     margin: 0;
@@ -17,7 +20,10 @@
 }
 
 .Library-tab.matte-Button {
-    flex: 1;
+    -webkit-flex: 1;
+       -moz-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
     height: auto;
     margin: 0;
     padding: 8px;
@@ -69,9 +75,18 @@
 /* Content ------------------------- */
 
 .Library-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+    -webkit-flex: 1;
+       -moz-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    display: -webkit-flex;
+    display:    -moz-flex;
+    display:     -ms-flex;
+    display:         flex;
+    -webkit-flex-direction: column;
+       -moz-flex-direction: column;
+        -ms-flex-direction: column;
+            flex-direction: column;
 }
 
 /* TODO: Implement properly */
@@ -85,7 +100,10 @@
 
 .Library-header {
     position: relative;
-    display: flex;
+    display: -webkit-flex;
+    display:    -moz-flex;
+    display:     -ms-flex;
+    display:         flex;
     padding: 8px;
     height: 47px;
     border-bottom: 1px solid hsla(0, 0%, 0%, 0.5);
@@ -94,11 +112,16 @@
 }
 
 .Library-search.matte-InputText {
-    flex: 1;
-    -webkit-appearance: none; padding-right: 0; font-family: inherit; 
-    -moz-appearance: none; padding-right: 0; font-family: inherit; 
-    -ms-appearance: none; padding-right: 0; font-family: inherit; 
-    appearance: none; padding-right: 0; font-family: inherit; 
+    -webkit-flex: 1;
+       -moz-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    -webkit-appearance: none;
+    -moz-appearance: none; 
+    -ms-appearance: none; 
+    appearance: none; 
+    padding-right: 0; 
+    font-family: inherit; 
     color: hsl(0, 0%, 60%); 
     border-color: hsl(0, 0%, 15%);
     border-radius: 20px; 
