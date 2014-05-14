@@ -292,7 +292,19 @@ exports.ProjectDocument = Document.specialize({
      */
     removeTree:{
         value: function (path) {
-            return this._environmentBridge.removeTree(path);
+            var self = this;
+
+            return this._environmentBridge.removeTree(path)
+                .then(function() {
+                    var message = path.slice(-1) === "/" ? "Remove directory " : "Remove file ",
+                        commitBatch = self._environmentBridge.openCommitBatch(message);
+
+                    return self._environmentBridge.stageFilesForDeletion(commitBatch, path).then(function() {
+                        return self._environmentBridge.closeCommitBatch(commitBatch);
+                    }).finally(function() {
+                        self._environmentBridge.releaseCommitBatch(commitBatch);
+                    });
+                });
         }
     },
 
