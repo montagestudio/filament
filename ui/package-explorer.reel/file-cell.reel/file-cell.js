@@ -255,7 +255,6 @@ exports.FileCell = Montage.create(Component, {
             if (files.length === 0) {
                 return;
             }
-
             var uploadOperation = this._uploadFiles(files)
                 .then(function (finishedUploads) {
                     activeUploads.splice(activeUploads.indexOf(uploadOperation), 1);
@@ -281,7 +280,10 @@ exports.FileCell = Montage.create(Component, {
                 deferredCompletion = Promise.defer(),
                 self = this,
                 initialActivityMessage,
-                uploadPromises;
+                uploadPromises,
+                commitBatch = self.projectController.environmentBridge.openCommitBatch(),
+                urlsToCommit = [],
+                commitMessage;
 
             // Do what we can immediately
             this.isUploading = true;
@@ -309,6 +311,12 @@ exports.FileCell = Montage.create(Component, {
                     sizeToReportOnLoad = file.size,
                     lastReportedLoadedBytes = 0;
 
+                if (commitMessage === undefined) {
+                    commitMessage = "Adding file " + file.name;
+                } else {
+                    commitMessage = "Adding files";
+                }
+
                 reader.readAsBinaryString(file);
 
                 reader.onprogress = function (e) {
@@ -331,6 +339,7 @@ exports.FileCell = Montage.create(Component, {
                             self.uploadedBytes += sizeToReportOnLoad;
                             self.uploadedFileCount++;
                             self.needsDraw = true;
+                            urlsToCommit.push(destinationUrl);
                         }, function (failure) {
                             deferredUpload.reject(failure);
                         }).done();
@@ -347,10 +356,17 @@ exports.FileCell = Montage.create(Component, {
             return Promise.all(uploadPromises)
                 .then(function (uploads) {
                     deferredCompletion.resolve("Done");
-                    return uploads;
+                    return self.projectController.environmentBridge.stageFiles(commitBatch, urlsToCommit)
+                    .then(function() {
+                        self.projectController.environmentBridge.closeCommitBatch(commitBatch, commitMessage);
+                        return uploads;
+                    });
                 }, function (failure) {
                     deferredCompletion.resolve(failure);
                     return failure;
+                })
+                .finally(function() {
+                    self.projectController.environmentBridge.releaseCommitBatch(commitBatch);
                 });
         }
     },
