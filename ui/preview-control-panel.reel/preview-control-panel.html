@@ -69,6 +69,16 @@
             "bindings": {
                 "src": { "<-": "@owner.browserIconFor(@previewList:iteration.object)" }
             }
+        },
+
+        "qrcode": {
+            "prototype": "ui/qr-code.reel",
+            "properties": {
+                "element": { "#": "qrcode" }
+            },
+            "bindings": {
+                "value": {"<-": "@owner.previewController.previewUrl"}
+            }
         }
     }
     </script>
@@ -76,6 +86,7 @@
 <body>
     <div data-montage-id="owner" class="PreviewControlPanel">
         <aside class="PreviewControlPanel-Controls">
+            <span data-montage-id="qrcode"></span>
             <div class="PreviewControlPanel-link-wrap">
                 <a data-montage-id="previewUrl" class="PreviewControlPanel-link" target="_blank">Preview</a>
             </div>
