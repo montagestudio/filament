@@ -2,7 +2,8 @@ var Target = require("montage/core/target").Target,
     Promise = require("montage/core/promise").Promise,
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     LibraryItem = require("core/library-item").LibraryItem,
-    Map = require("montage/collections/map");
+    Map = require("montage/collections/map"),
+    FILAMENT_EXTENSION = "filament-extension";
 
 exports.Extension = Target.specialize( {
 
@@ -20,7 +21,8 @@ exports.Extension = Target.specialize( {
 
     name: {
         get: function () {
-            return this.extensionRequire.packageDescription.name.replace(/\W*filament-extension$/, "");
+            var re = new RegExp("\\/([^\\/]+?)\\." + FILAMENT_EXTENSION);
+            return this.extensionRequire.packageDescription.name.replace(re, "");
         }
     },
 

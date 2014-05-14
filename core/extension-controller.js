@@ -2,7 +2,8 @@ var Montage = require("montage/core/core").Montage,
     Target = require("montage/core/target").Target,
     Promise = require("montage/core/promise").Promise,
     CoreExtension = require("filament-extension/core/extension").Extension,
-    application = require("montage/core/application").application;
+    application = require("montage/core/application").application,
+    FILAMENT_EXTENSION = "filament-extension";
 
 exports.ExtensionController = Montage.create(Target, {
 
@@ -83,7 +84,8 @@ exports.ExtensionController = Montage.create(Target, {
 
     extensionNameFromExtentionUrl: {
         value: function (extensionUrl) {
-            var matches = extensionUrl.match(/\/([^\/]+?)\.filament-extension/),
+            var re = new RegExp("\\/([^\\/]+?)\\." + FILAMENT_EXTENSION),
+                matches = extensionUrl.match(re),
                 name = (matches.length > 1)? matches[1] : null;
 
             return name;
