@@ -62,52 +62,36 @@ exports.Extension = Target.specialize( {
     _loadLibraryItemsForPackageName: {
         value: function (serviceProvider, packageName) {
             var self = this,
-                extensionRequire = this.extensionRequire;
+                extensionRequire = (this.extensionRequire) ? this.extensionRequire : require,
+                location = (self.extensionRequire)? self.extensionRequire.location: self.packageLocation;
 
             //TODO what if the desired service isn't offered, is a different version; where are we resolving all of that?
             //TODO here, or in the service itself, we should find library items by package directory within the extension
-            return serviceProvider.listLibraryItemUrls(this.constructor.packageLocation, packageName).then(function (urls) {
+            return serviceProvider.listLibraryItemUrls(location, packageName).then(function (urls) {
                 return Promise.all(urls.map(function (url) {
                     var libraryItemModuleName = url.match(/([^\/]+)\.library-item\/$/m)[1],
                         libraryItemModuleInfo = MontageReviver.parseObjectLocationId(libraryItemModuleName),
-                        rootModuleId = url.replace(extensionRequire.location, ''),
+                        rootModuleId = url.replace(location, ''),
                         modulePath = rootModuleId + libraryItemModuleName,
-                        moduleId = modulePath + ".js",
                         templateModuleId = modulePath + ".html",
-                        jsonModuleId = modulePath + ".json";
+                        moduleJsonUrl = url + libraryItemModuleName + ".json";
 
                     // First we try to load a *.json file rather than executing a module.
                     // If it fails and only if the extension is not issued by a third party (node_module folder)
                     // then we require the js module.
-                    return extensionRequire.async(jsonModuleId).then(function (exports) {
-                            if (!exports || !exports.name || !exports.iconUrl) {
-                                throw new Error("Library Item json file is incomplete.\n" + JSON.stringify(exports) + "\ngiven, where {name:... , description:... , iconUrl:...} is required.");
-                            }
+                    return serviceProvider.loadLibraryItemJson(moduleJsonUrl).then(function (json) {
                             var libraryItem = new LibraryItem();
+
                             libraryItem.uri = url;
-                            libraryItem.name = exports.name;
-                            if (exports.libraryItem) {
-                                libraryItem.description = exports.description;
+                            libraryItem.name = json.name;
+                            if (json.libraryItem) {
+                                libraryItem.description = json.description;
                             }
-                            libraryItem.iconUrl = url + exports.iconUrl;
+                            libraryItem.iconUrl = url + json.iconUrl;
                             libraryItem.require = extensionRequire;
                             libraryItem.templateModuleId = templateModuleId;
 
                             return libraryItem;
-                        }, function (error) {
-                            if (url.indexOf("node_module") !== -1) {
-                                throw new Error ("Library Item json file not found at: " + jsonModuleId);
-                            }
-                            return extensionRequire.async(moduleId).then(function (exports) {
-                                var libraryItem;
-                                libraryItem = new exports[libraryItemModuleInfo.objectName]();
-                                libraryItem.uri = url;
-
-                                libraryItem.require = extensionRequire;
-                                libraryItem.templateModuleId = templateModuleId;
-
-                                return libraryItem;
-                            });
                         });
                 }));
             }).then(function (libraryItems) {
@@ -130,7 +114,7 @@ exports.Extension = Target.specialize( {
             if (libraryItems) {
                 promisedLibraryItems = Promise.resolve(libraryItems);
             } else {
-                promisedLibraryItems = this._loadLibraryItemsForPackageName(serviceProvider, packageName);
+                promisedLibraryItems = this._loadLibraryItemsForPackageName(serviceProvider, packageName, serviceProvider);
             }
 
             return promisedLibraryItems.then(function (libraryItems) {
@@ -159,16 +143,16 @@ exports.Extension = Target.specialize( {
 
     _loadIconUrlsForPackageName: {
         value: function (serviceProvider, packageName) {
-            var extensionRequire = this.extensionRequire;
+            var location = (this.extensionRequire)? this.extensionRequire.location: this.packageLocation;
 
-            return serviceProvider.listModuleIconUrls(extensionRequire.location, packageName).then(function (urls) {
+            return serviceProvider.listModuleIconUrls(location, packageName).then(function (urls) {
 
                 return urls.reduce(function (iconMap, url) {
                     // NOTE the url for the icon captures the moduleId within the directory hierarchy;
                     // strip away everything but that hierarchy before parsing it with the MontageReviver's
                     // utility function
                     //e.g. "extension/icons/foo/bar/baz.png" is the icon representing the module "foo/bar/baz"
-                    var moduleLocationFragment = url.replace(extensionRequire.location + "icons/", "").replace(/\.[^\.]+$/m, ""),
+                    var moduleLocationFragment = url.replace(location + "icons/", "").replace(/\.[^\.]+$/m, ""),
                         iconModuleInfo = MontageReviver.parseObjectLocationId(moduleLocationFragment);
 
                     iconMap.set(iconModuleInfo.moduleId, url);
