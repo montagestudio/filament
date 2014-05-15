@@ -70,15 +70,11 @@ exports.Extension = Target.specialize( {
             return serviceProvider.listLibraryItemUrls(location, packageName).then(function (urls) {
                 return Promise.all(urls.map(function (url) {
                     var libraryItemModuleName = url.match(/([^\/]+)\.library-item\/$/m)[1],
-                        libraryItemModuleInfo = MontageReviver.parseObjectLocationId(libraryItemModuleName),
                         rootModuleId = url.replace(location, ''),
                         modulePath = rootModuleId + libraryItemModuleName,
                         templateModuleId = modulePath + ".html",
                         moduleJsonUrl = url + libraryItemModuleName + ".json";
 
-                    // First we try to load a *.json file rather than executing a module.
-                    // If it fails and only if the extension is not issued by a third party (node_module folder)
-                    // then we require the js module.
                     return serviceProvider.loadLibraryItemJson(moduleJsonUrl).then(function (json) {
                             var libraryItem = new LibraryItem();
 
