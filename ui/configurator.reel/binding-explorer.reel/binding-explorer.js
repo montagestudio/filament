@@ -38,6 +38,38 @@ exports.BindingExplorer = Component.specialize( /** @lends BindingsExplorer# */ 
         value: false
     },
 
+    objectBlueprint: {
+        value: null
+    },
+
+    _templateObject: {
+        value: null
+    },
+    templateObject: {
+        get: function () {
+            return this._templateObject;
+        },
+        set: function (value) {
+            if (value === this._templateObject) {
+                return;
+            }
+
+            var self = this;
+            this._templateObject = value;
+            this.objectBlueprint = null;
+            if (value) {
+                value.proxyBlueprint.then(function (blueprint) {
+                    // Check if the inspected object is still the same.
+                    if (self._templateObject === value) {
+                        self.objectBlueprint = blueprint;
+                    }
+                }).done();
+            }
+
+            this.needsDraw = true;
+        }
+    },
+
     acceptsDrop: {
         value: function(event) {
             var availableTypes = event.dataTransfer.types,
