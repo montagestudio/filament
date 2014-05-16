@@ -1425,6 +1425,58 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    // TODO: not sure about this name because it's defining a binding.
+    replaceOwnedObjectPropertyWithBinding: {
+        value: function(proxy, property, oneway, sourcePath) {
+            var value = proxy.getObjectProperty(property);
+
+            proxy.deleteObjectProperty(property);
+            var binding = proxy.defineObjectBinding(property, oneway, sourcePath);
+
+            this.undoManager.register("Replace value with binding", Promise.resolve([
+                this.replaceOwnedObjectBindingWithProperty, this, proxy, binding, value
+            ]));
+            this._dispatchDidDefineOwnedObjectBinding(proxy, property, oneway, sourcePath);
+            // TODO: dispatch changes
+        }
+    },
+
+    _replaceOwnedObjectPropertyWithBinding: {
+        value: function(proxy, property, binding, insertionIndex) {
+            var value = proxy.getObjectProperty(property);
+            var addedBinding;
+
+            proxy.deleteObjectProperty(property);
+            proxy.addBinding(binding, insertionIndex);
+
+            if (addedBinding) {
+                this.undoManager.register("Replace value with binding", Promise.resolve([
+                    this.replaceOwnedObjectBindingWithProperty, this, proxy, binding, value
+                ]));
+            }
+        }
+    },
+
+    replaceOwnedObjectBindingWithProperty: {
+        value: function(proxy, binding, value) {
+            var removedInfo, removedBinding, removedIndex;
+            var property = binding.targetPath;
+
+            removedInfo = proxy.cancelObjectBinding(binding);
+            proxy.setObjectProperty(property, value);
+
+            removedBinding = removedInfo.removedBinding;
+            removedIndex = removedInfo.index;
+
+            this.undoManager.register("Replace binding with value", Promise.resolve([
+                this._replaceOwnedObjectPropertyWithBinding, this, proxy, property, removedBinding, removedIndex
+            ]));
+            this._dispatchDidCancelOwnedObjectBinding(proxy, binding);
+
+            // TODO: dispatch changes
+        }
+    },
+
     isBindingParamsValid: {
         value: function(targetPath, sourcePath) {
             return targetPath;
