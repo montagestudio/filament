@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="mixed-value.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            }
+        },
+        "textField": {
+            "prototype": "../mixed-value.reel[TextField]",
+            "properties": {
+                "element": {"#": "textField"},
+                "hasTemplate": false
+            },
+            "bindings": {
+                "value": {"<-": "@owner._textFieldValue"}
+            }
+        }
+    }
+    </script>
+</head>
+<div data-montage-id="owner">
+    <input type="text" data-montage-id="textField" class="MixedValue">
+</div>
+</html>

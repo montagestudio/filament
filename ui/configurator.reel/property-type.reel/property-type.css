@@ -1,0 +1,40 @@
+.PropertyType-type {
+    display: block;
+    position: relative;
+    margin: 0 4px;
+    width: 22px;
+    height: 22px;
+    border-radius: 22px;
+    background: hsl(0, 0%, 92%);
+    background-position: center;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    text-align: center;
+    color: #3892e3;
+}
+
+.PropertyType-type:before,
+.PropertyType-type:after {
+    content: "";
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    top: 9px;
+    background-color: inherit;
+}
+
+.PropertyType-type:before {
+    left: -4px;
+}
+
+.PropertyType-type:after {
+    right: -4px;
+}
+
+.PropertyType-oneWayBinding {
+    background-image: url(/assets/icons/binding-un.svg);
+}
+
+.PropertyType-twoWayBinding {
+    background-image: url(/assets/icons/binding-bi.svg);
+}

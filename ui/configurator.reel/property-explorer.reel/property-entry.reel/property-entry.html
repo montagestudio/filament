@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="property-entry.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "property-entry"}
+            },
+            "bindings": {
+                "propertyBlueprint": {"<-": "property.blueprint"},
+                "classList.has('PropertyEntry--unused')": {"<-": "!@owner.property.value.defined()"}
+            }
+        },
+
+        "rangeController": {
+            "prototype": "montage/core/range-controller",
+            "properties": {
+
+            },
+            "bindings": {
+                "content": {"<-": "@owner.propertyBlueprint.owner.(_propertyBlueprintGroups[exportName])"}
+            }
+        },
+
+        "propertyName": {
+            "prototype": "../../property-name.reel",
+            "properties": {
+                "element": {"#": "propertyName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.propertyBlueprint.name"}
+            }
+        },
+
+        "propertyType": {
+            "prototype": "../../property-type.reel",
+            "properties": {
+                "element": {"#": "propertyType"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.property.type"}
+            }
+        },
+
+        "propertyValue": {
+            "prototype": "montage/ui/slot.reel",
+            "properties": {
+                "element": {"#": "propertyValue"}
+            }
+        },
+
+        "removeButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "removeButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+        "outletCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "outletCondition"}
+            },
+            "bindings": {
+                "condition": {"<-": "@owner._valueType == 'object'"}
+            }
+        },
+        "outlet": {
+            "prototype": "ui/reference/recipient.reel",
+            "properties": {
+                "element": {"#": "outlet"},
+                "delegate": {"@": "owner"},
+                "needsDraw": true
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <li data-montage-id="property-entry" class="PropertyEntry">
+        <div data-montage-id="propertyName" class="PropertyEntry-pill PropertyEntry-name"></div>
+        <div data-montage-id="propertyType" class="PropertyEntry-type"></div>
+        <div data-montage-id="propertyValue" class="PropertyEntry-pill"></div>
+        <div data-montage-id="outletCondition">
+            <div data-montage-id="outlet" class="PropertyEntry-outlet"></div>
+        </div>
+        <button data-montage-id="removeButton" class="PropertyEntry-removeButton TemplateObjectCell-button TemplateObjectCell-button--pill">-</button>
+    </li>
+</body>
+</html>
