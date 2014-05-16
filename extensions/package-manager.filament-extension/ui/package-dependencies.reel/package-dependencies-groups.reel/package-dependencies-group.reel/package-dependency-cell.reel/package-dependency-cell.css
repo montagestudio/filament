@@ -16,6 +16,10 @@
     background: hsl(0, 0%, 96%);
 }
 
+.PackageDependencyCell[draggable="true"] {
+    cursor: move;
+}
+
 .PackageDependencyCell-details {
     margin-left: 24px;
 }
