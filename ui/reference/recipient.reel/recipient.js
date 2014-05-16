@@ -72,7 +72,6 @@ exports.Recipient = Component.specialize(/** @lends Recipient# */ {
             var data = sharedReferenceManager.endSession(this._session);
             // if data then use it to tell the delegate
             if(data) {
-                console.log("didReceiveReference",data);
                 this.callDelegateMethod("didReceiveReference", this, data);
             }
         }
