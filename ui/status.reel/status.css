@@ -5,7 +5,7 @@
     right: 0;
     font-size: 16px;
     line-height: 32px;
-    height: 32px;
+    height: 34px;
     z-index: 2000;
     display: none;
 }
@@ -65,7 +65,7 @@
 }
 
 .Status-refreshButton.matte-Button {
-    margin: 5px 0px 0 0;
+    margin: 5px 4px 0 0;
     height: 24px;
     color: hsla(0, 100%, 100%, 1);
     border-color: hsl(0, 0%, 25%);
@@ -96,10 +96,10 @@
 .Status-closeButton.matte-Button {
     padding: 0;
     margin: 0;
-    height: 32px;
-    width: 32px;
-    min-width: 32px;
-    line-height: 32px;
+    height: 34px;
+    width: 34px;
+    min-width: 34px;
+    line-height: 34px;
     color: inherit;
     font-size: 20px;
     border-radius: 0;
