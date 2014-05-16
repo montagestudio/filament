@@ -1427,7 +1427,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
     isBindingParamsValid: {
         value: function(targetPath, sourcePath) {
-            return targetPath && sourcePath;
+            return targetPath;
         }
     },
 
