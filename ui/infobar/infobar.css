@@ -4,7 +4,7 @@
 .Infobar {
     position: relative;
     height: 0;
-    line-height: 32px;
+    line-height: 34px;
     font-size: 15px;
     overflow: hidden;
     color: hsl(0,0%,84%);
@@ -17,7 +17,7 @@
 }
 
 .Infobar--open {
-    height: 32px;
+    height: 34px;
 }
 
 .Infobar-content {
@@ -31,10 +31,10 @@
     top: 0;
     padding: 0;
     margin: 0;
-    height: 32px;
-    width: 32px;
-    min-width: 32px;
-    line-height: 32px;
+    height: 34px;
+    width: 34px;
+    min-width: 34px;
+    line-height: 34px;
     color: hsla(0, 0%, 94%, 1);
     font-size: 20px;
     border-radius: 0;
