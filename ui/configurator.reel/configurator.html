@@ -23,15 +23,13 @@
                 ]
             },
 
-            "inspector": {
-                "prototype": "palette/ui/inspector/inspector.reel",
+            "propertyExplorer": {
+                "prototype": "./property-explorer.reel",
                 "properties": {
-                    "element": {"#": "inspector"}
+                    "element": {"#": "propertyExplorer"}
                 },
                 "bindings": {
-                    "object": {"<-": "@owner.editingDocument.selectedObjects.0"},
-                    "inspectorController": {"<-": "@owner.inspectorControllers.0"},
-                    "editingDocument": {"<-": "@owner.editingDocument"}
+                    "templateObject": {"<-": "@owner.templateObject"}
                 }
             },
 
@@ -92,6 +90,9 @@
         </header>
         <div class="Configurator-fiftyFifty">
             <div class="Configurator-firstHalf">
+                <section class="TemplateObjectCell-section">
+                    <div data-montage-id="propertyExplorer"></div>
+                </section>
 
                 <section class="TemplateObjectCell-section">
                     <div data-montage-id="bindingExplorer"></div>
@@ -102,7 +103,6 @@
                 </section>
 
             </div>
-            <div class="Configurator-secondHalf" data-montage-id="inspector"></div>
         </div>
     </aside>
 </body>
