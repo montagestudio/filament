@@ -1,5 +1,6 @@
 var EditingProxy = require("palette/core/editing-proxy").EditingProxy,
     Map = require("montage/collections/map"),
+    Promise = require("montage/core/promise").Promise,
     NodeProxy = require("core/node-proxy").NodeProxy,
     BUILDER_UNIT_LABEL = "_dev";
 
@@ -75,6 +76,29 @@ exports.ReelProxy = EditingProxy.specialize( {
     getEditorMetadata: {
         value: function (property) {
             return this.editorMetadata.get(property);
+        }
+    },
+
+    _blueprintPromise: {
+        value: null
+    },
+
+    proxyBlueprint: {
+        get: function () {
+            if (this._blueprintPromise) {
+                return this._blueprintPromise;
+            }
+
+            var deferred = Promise.defer();
+
+            this.packageRequire.async(this.moduleId)
+            .get(this.exportName).get("blueprint")
+            .then(deferred.resolve, function (reason) {
+                console.warn("Unable to load blueprint: ", reason.message ? reason.message : reason);
+                deferred.reject(null);
+            }).done();
+
+            return this._blueprintPromise = deferred.promise;
         }
     },
 
