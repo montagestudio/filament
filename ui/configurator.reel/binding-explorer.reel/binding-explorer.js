@@ -15,6 +15,13 @@ exports.BindingExplorer = Component.specialize( /** @lends BindingsExplorer# */ 
     constructor: {
         value: function BindingExplorer() {
             this.super();
+            this.defineBinding("_blueprintsMap", {
+                "<-": "objectBlueprint.propertyBlueprints.map{[name, this]}.toMap()"
+            });
+            this.defineBinding("bindings", {
+                "<-": "templateObject.bindings.filter{!^_blueprintsMap.get(targetPath).defined()}",
+                source: this
+            });
         }
     },
 
