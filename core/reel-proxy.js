@@ -231,6 +231,18 @@ exports.ReelProxy = EditingProxy.specialize( {
         }
     },
 
+    getObjectBinding: {
+        value: function(targetPath) {
+            for (var i = 0, binding; binding =/*assign*/ this.bindings[i]; i++) {
+                if (binding.targetPath === targetPath) {
+                    return binding;
+                }
+            }
+
+            return null;
+        }
+    },
+
     /**
      * Update an existing binding with new parameters
      *
