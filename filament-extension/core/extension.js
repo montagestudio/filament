@@ -70,9 +70,7 @@ exports.Extension = Target.specialize( {
             return serviceProvider.listLibraryItemUrls(location, packageName).then(function (urls) {
                 return Promise.all(urls.map(function (url) {
                     var libraryItemModuleName = url.match(/([^\/]+)\.library-item\/$/m)[1],
-                        rootModuleId = url.replace(location, ''),
-                        modulePath = rootModuleId + libraryItemModuleName,
-                        templateModuleId = modulePath + ".html",
+                        templateUrl = url + libraryItemModuleName + ".html",
                         moduleJsonUrl = url + libraryItemModuleName + ".json";
 
                     return serviceProvider.loadLibraryItemJson(moduleJsonUrl).then(function (json) {
@@ -85,7 +83,7 @@ exports.Extension = Target.specialize( {
                             }
                             libraryItem.iconUrl = url + json.iconUrl;
                             libraryItem.require = extensionRequire;
-                            libraryItem.templateModuleId = templateModuleId;
+                            libraryItem.templateUrl = templateUrl;
 
                             return libraryItem;
                         });
