@@ -342,29 +342,14 @@ exports.ProjectDocument = Document.specialize({
                             //jshint +W106
                         }
 
-                        response = false;
-                        return self._updateShadowDelta()
-                        .then(function(shadowStatus) {
-                            var refs = [shadowStatus.localParent, shadowStatus.remoteParent, shadowStatus.remoteShadow],
-                                needSync = false;
-
-                            refs.some(function(status) {
-                                if (status.ahead > 0 || status.behind > 0) {
-                                    needSync = true;
-                                    return true;
-                                }
+                        return self._updateProjectRefs()
+                            .then(function() {
+                                return true;
+                            }, function() {
+                                return false;
+                            }).then(function(response) {
+                                return self._updateShadowDelta().thenResolve(response);
                             });
-
-                            if (needSync) {
-                                return self._updateProjectRefs()
-                                .then(function(result) {
-                                    response = result.success;
-                                    self._updateShadowDelta();  // refs might have changed
-                                });
-                            } else {
-                                response = true;
-                            }
-                        }).thenResolve(response);
                     })
                     .finally(function () {
                         self.isBusy = false;
