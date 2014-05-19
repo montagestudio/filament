@@ -528,11 +528,11 @@ exports.ProjectDocument = Document.specialize({
                 message = "Update";
                 components = Object.keys(components);
 
-                var nbrComponents = components.length,
+                var componentCount = components.length,
                     nbrFiles = otherFiles.length;
 
-                if (nbrComponents) {
-                    if (nbrComponents === 1) {
+                if (componentCount) {
+                    if (componentCount === 1) {
                         message += " component " + components[0];
                     } else {
                         message += " components";
@@ -540,7 +540,7 @@ exports.ProjectDocument = Document.specialize({
 
                 }
                 if (nbrFiles) {
-                    if (nbrComponents) {
+                    if (componentCount) {
                         message += " and";
                         if (nbrFiles > 1) {
                             message += " other";
