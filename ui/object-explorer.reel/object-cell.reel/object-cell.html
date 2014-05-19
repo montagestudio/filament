@@ -11,6 +11,16 @@
             }
         },
 
+        "component": {
+            "prototype": "ui/configurator.reel/template-object-header.reel",
+            "properties": {
+                "element": {"#": "component"}
+            },
+            "bindings": {
+                "templateObject": {"<-": "@owner.data"}
+            }
+        },
+
         "objectName": {
             "prototype": "ui/text-editor-field.reel",
             "properties": {
@@ -44,7 +54,10 @@
 </head>
 <body>
     <div data-montage-id="owner" class="ObjectCell" draggable="true">
-        <span data-montage-id="objectName" class=""></span>
+        <div data-montage-id="component" class="ObjectCell-Bar">
+            <span data-arg="title" data-montage-id="objectName"></span>
+            <span data-arg="toolbar"></span>
+        </div>
     </div>
 </body>
 </html>

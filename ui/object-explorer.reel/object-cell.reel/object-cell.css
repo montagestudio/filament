@@ -13,12 +13,11 @@
     align-items: center;
     position: relative;
 
-    height: 22px;
     font-size: 13px;
-    padding-left: 11px;
     /* line-height: 2.5em; */
     background: hsl(0,0%,96%);
     margin: 3px 0;
+    border: 1px solid hsl(0,0%,75%);
 }
 
 .ObjectCell.ObjectCell--selected {
@@ -37,4 +36,12 @@
     border-color: hsl(216,100%,70%);
     margin-top: 1px;
     margin-bottom: 1px;
+}
+
+.ObjectCell-Bar {
+    width: 100%;
+    background: -webkit-linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
+    background: -moz-linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
+    background: -ms-linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
+    background: linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
 }
