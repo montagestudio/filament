@@ -292,7 +292,19 @@ exports.ProjectDocument = Document.specialize({
      */
     removeTree:{
         value: function (path) {
-            return this._environmentBridge.removeTree(path);
+            var self = this;
+
+            return this._environmentBridge.removeTree(path)
+                .then(function() {
+                    var message = path.slice(-1) === "/" ? "Remove directory " : "Remove file ",
+                        commitBatch = self._environmentBridge.openCommitBatch(message);
+
+                    return self._environmentBridge.stageFilesForDeletion(commitBatch, path).then(function() {
+                        return self._environmentBridge.closeCommitBatch(commitBatch);
+                    }).finally(function() {
+                        self._environmentBridge.releaseCommitBatch(commitBatch);
+                    });
+                });
         }
     },
 
@@ -330,29 +342,14 @@ exports.ProjectDocument = Document.specialize({
                             //jshint +W106
                         }
 
-                        response = false;
-                        return self._updateShadowDelta()
-                        .then(function(shadowStatus) {
-                            var refs = [shadowStatus.localParent, shadowStatus.remoteParent, shadowStatus.remoteShadow],
-                                needSync = false;
-
-                            refs.some(function(status) {
-                                if (status.ahead > 0 || status.behind > 0) {
-                                    needSync = true;
-                                    return true;
-                                }
+                        return self._updateProjectRefs()
+                            .then(function() {
+                                return true;
+                            }, function() {
+                                return false;
+                            }).then(function(response) {
+                                return self._updateShadowDelta().thenResolve(response);
                             });
-
-                            if (needSync) {
-                                return self._updateProjectRefs()
-                                .then(function(result) {
-                                    response = result.success;
-                                    self._updateShadowDelta();  // refs might have changed
-                                });
-                            } else {
-                                response = true;
-                            }
-                        }).thenResolve(response);
                     })
                     .finally(function () {
                         self.isBusy = false;
@@ -497,31 +494,72 @@ exports.ProjectDocument = Document.specialize({
         value: function (message, amend) {
             var self = this,
                 savedPromises,
-                defaultCommitMessage;
+                components = {},
+                otherFiles = [],
+                commitBatch = null;
 
             this.isBusy = true;
 
             savedPromises = this.dirtyDocuments.map(function (doc) {
                 var url = doc.url;
 
-                if (defaultCommitMessage) {
-                    defaultCommitMessage = "Update components";
-                } else {
+                commitBatch = commitBatch || self._environmentBridge.openCommitBatch(message);
+
+                if (!message) {
                     var index = url.indexOf("/", url.indexOf("//") + 2),    // simplified url parsing
-                        filePath = decodeURIComponent(url.substring(index + 1));
-                    defaultCommitMessage = "Update component " + filePath;
+                        filePath = decodeURIComponent(url.substring(index + 1)),
+                        componentExt = ".reel";
+
+                    index = filePath.indexOf(componentExt);
+                    if (index !== -1) {
+                        components[filePath] = filePath.substring(0, index + componentExt.length);
+                    } else {
+                        otherFiles.push(filePath);
+                    }
                 }
 
-                return self._environmentBridge.save(doc, url);
+                return self._environmentBridge.save(doc, url)
+                    .then(function(result) {
+                        return self._environmentBridge.stageFiles(commitBatch, url).thenResolve(result);
+                    });
             });
 
-            message = message || defaultCommitMessage;
+            if (!message) {
+                message = "Update";
+                components = Object.keys(components);
+
+                var componentCount = components.length,
+                    nbrFiles = otherFiles.length;
+
+                if (componentCount) {
+                    if (componentCount === 1) {
+                        message += " component " + components[0];
+                    } else {
+                        message += " components";
+                    }
+
+                }
+                if (nbrFiles) {
+                    if (componentCount) {
+                        message += " and";
+                        if (nbrFiles > 1) {
+                            message += " other";
+                        }
+                    }
+                    if (nbrFiles === 1) {
+                        message += " file " + otherFiles[0];
+                    } else {
+                        message += " files";
+                    }
+                }
+            }
 
             return Promise.all(savedPromises)
                 .then(function(result) {
-                    return self._environmentBridge.flushProject(message).thenResolve(result);
+                    return self._environmentBridge.closeCommitBatch(commitBatch, message).thenResolve(result);
                 })
-                .finally(function (result) {
+                .finally(function () {
+                    self._environmentBridge.releaseCommitBatch(commitBatch);
                     self.isBusy = false;
                 });
         }
