@@ -908,7 +908,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             // TODO rename most of this to simply refer to "package" not necessarily dependencies
 
             return Promise.all(dependencies.map(function (dependencyInfo) {
-                var packageUrl = dependencyInfo.url,
+                var packageUrl = (/\/$/.test(dependencyInfo.url))? dependencyInfo.url : dependencyInfo.url + "/",
                     packageName = dependencyInfo.dependency,
                     isProjectPackage = !/\/node_modules\//.test(packageUrl),
                     packageLibraryItems = self._packageNameLibraryItemsMap.get(packageName),
@@ -918,10 +918,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     dependency: packageName
                 };
 
-                if (isProjectPackage || !packageLibraryItems) {
+                if (isProjectPackage) {
                     promisedLibraryItems = self._findLibraryItemsForPackageUrl(packageUrl, packageName)
                         .then(function (libraryItems) {
-
                             // Add entry for ths package we previously had no entries for, if we find any
                             libraryItems.forEach(function (item) {
                                 self.addLibraryItemToPackage(item, packageName);
@@ -929,6 +928,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                             return libraryItems;
                         });
+                } else if (!packageLibraryItems) {
+                    return self.environmentBridge.getExtensionsAt(packageUrl).then(function (extensions) {
+                        return self.loadExtensionsFromDependency(extensions);
+                    });
                 } else {
                     //TODO is there a reason we didn't share the same array before?
                     promisedLibraryItems = Promise.resolve(packageLibraryItems);
@@ -1646,6 +1649,22 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+    loadExtensionsFromDependency: {
+        value: function (extensions) {
+            var self = this;
+            return Promise.all(extensions.map(function (extensionUrl) {
+                // TODO only load if name is the same as dependency?
+                return self._extensionController.loadExtension(extensionUrl)
+                .then(function (extension) {
+                    return self._extensionController.activateExtension(extension);
+                })
+                .catch(function (error) {
+                    console.error("Could not load extension at", extensionUrl, "because", error.message);
+                });
+            }));
+        }
+    },
+
     /**
      * Load extensions provided by dependencies
      * @returns {Promise} A promise for the extensions to have been activated
@@ -1657,16 +1676,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 return self.environmentBridge.getExtensionsAt(dependency.url);
             }))
             .then(function (extensions) {
-                return Promise.all(extensions.flatten().map(function (extensionUrl) {
-                    // TODO only load if name is the same as dependency?
-                    return self._extensionController.loadExtension(extensionUrl)
-                    .then(function (extension) {
-                        return self._extensionController.activateExtension(extension);
-                    })
-                    .catch(function (error) {
-                        console.error("Could not load extension at", extensionUrl, "because", error.message);
-                    });
-                }));
+                return self.loadExtensionsFromDependency(extensions.flatten());
             });
         }
     },
