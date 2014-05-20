@@ -144,12 +144,14 @@ exports.PackageSavingManager = Montage.specialize({
                     self._packageJsonPending = null;
 
                     return self._performSaving(packageJson, url, dataSource);
-
                 }
 
-                self._packageDocument.needRefresh = true;
+                var document = self._packageDocument;
 
-                return self._packageDocument._updateLibraryGroups();
+                document.sharedProjectController.packageDescription = JSON.parse(packageJson);
+                document.needRefresh = true;
+
+                return document._updateLibraryGroups();
             });
         }
     }
