@@ -126,7 +126,7 @@ var SceneHelper = exports.SceneHelper = Object.create(Object.prototype, {
                                 material = Montage.create(Material);
                                 material.scene = scene;
                                 material.id = glTFMaterial.baseId;
-                                scene.glTFElement.ids[glTFMaterial.baseId] = material;
+                                scene.glTFElement.ids[glTFMaterial.baseId] = glTFMaterial;
                                 glTFMaterial.component3D = material;
                             } else {
                                 material = glTFMaterial.component3D;
