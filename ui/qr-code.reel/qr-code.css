@@ -1,0 +1,9 @@
+.QrCode {
+    background: #fff;
+    padding: 4px;
+    display: inline-block;
+}
+
+.QrCode canvas {
+    vertical-align: top;
+}
