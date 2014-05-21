@@ -846,6 +846,11 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                 menuItem.enabled = this.canLaunchPreview;
                 break;
+            case "closeFile":
+                evt.stop();
+
+                menuItem.enabled = !!this.currentDocument;
+                break;
             }
         }
     },
@@ -879,6 +884,13 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 evt.stop();
 
                 this.closeProject();
+                break;
+            case "closeFile" :
+                evt.stop();
+
+                if (this.currentDocument) {
+                    this.closeDocument(this.currentDocument).done();
+                }
                 break;
             }
         }
