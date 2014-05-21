@@ -4,6 +4,7 @@
     @requires montage/ui/component
 */
 var Component = require("montage/ui/component").Component,
+    MimeTypes = require("core/mime-types"),
     Url = require("core/url");
 
 /**
@@ -18,6 +19,15 @@ exports.DocumentTab = Component.specialize({
             this.super();
             this.addPathChangeListener("document.url", this, "triggerRelativePathChange");
             this.addPathChangeListener("packageUrl", this, "triggerRelativePathChange");
+        }
+    },
+
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this._element.addEventListener("dragstart", this, false);
+                this._element.addEventListener("dragend", this, false);
+            }
         }
     },
 
@@ -78,6 +88,24 @@ exports.DocumentTab = Component.specialize({
         value: function (evt) {
             var parentDirectory = Url.resolve(this.document.fileUrl, "..");
             this.dispatchEventNamed("expandTree", true, true, parentDirectory);
+        }
+    },
+
+    handleDragstart:{
+        value: function (evt) {
+            debugger
+            evt.dataTranfer.setData(MimeType.DOCUMENTTAB, "");
+            evt.dataTranfer.setData(MimeType.TEXT_PLAIN, this.document.title);
+
+            // soft remove tab
+            this.classList.add("hide");
+        }
+    },
+
+    handleDragend:{
+        value: function (evt) {
+            this.dispatchEventNamed("tabmoveend", true, true, this.document);
+            // TODO: Remove tab OR put it back on
         }
     },
 
