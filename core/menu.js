@@ -157,7 +157,8 @@ Montage.defineProperty(exports, "defaultMenu", {
                 ]);
                 fileMenu = makeMenuItem("File", "file", true, "", [
                     newSubMenu,
-                    makeMenuItem("Save All", "save", true, "command+s")
+                    makeMenuItem("Save All", "save", true, "command+s"),
+                    makeMenuItem("Close File", "closeFile", true, "control+w")
                 ]);
                 _defaultMenu.insertItem(fileMenu);
 
