@@ -1918,15 +1918,6 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.setOwnedObjectElement(existingComponent, null);
             }
 
-            // HACK to give the flow height so that it can been seen and edited
-            if (element && proxy.moduleId === "montage/ui/flow.reel") {
-                var template = this.editor.projectController._libraryItemForModuleId(proxy.moduleId, proxy.exportName).html;
-                var container = document.createElement("div");
-                container.innerHTML = template;
-                element._templateNode.setAttribute("style", container.firstChild.getAttribute("style"));
-            }
-            // END HACK
-
             var properties = proxy.properties;
             var oldElement = properties.get("element");
 
