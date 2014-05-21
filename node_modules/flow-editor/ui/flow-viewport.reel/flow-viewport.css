@@ -1,2 +1,23 @@
 .FlowViewport {
+    position: relative;
+    -webkit-flex: 1;
+    flex: 1;
+    background: #eee;
+    border-bottom: 1px solid #1D1D1D;
+}
+
+.FlowViewport-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+}
+
+.FlowViewport-select {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 2;
 }

@@ -1,0 +1,33 @@
+.FlowStage {
+    position: relative;
+    background-color: hsl(0, 0%, 96%);
+    -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+}
+
+.slide {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+    -ms-align-items: center;
+    -moz-align-items: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -ms-justify-content: center;
+    -moz-justify-content: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    margin-left: -50px;
+    margin-top: -50px;
+    font-family: sans-serif;
+    font-size: 38px;
+    background: hsl(0, 0%, 38%);
+    color: #fff;
+    border-radius: 4px;
+    cursor: default;
+}

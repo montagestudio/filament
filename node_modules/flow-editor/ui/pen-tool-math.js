@@ -1814,7 +1814,7 @@ var BezierSpline = exports.BezierSpline = MapReducible.specialize({
         value: function () {
             var bezierCurve = this._data.pop();
 
-            //bezierCurve.setControlPoint(0, bezierCurve.getControlPoint(0).clone());
+            bezierCurve.setControlPoint(0, bezierCurve.getControlPoint(0).clone());
             bezierCurve.nextTarget = null;
             this.dispatchEventIfNeeded("bezierSplineChange");
             return bezierCurve;

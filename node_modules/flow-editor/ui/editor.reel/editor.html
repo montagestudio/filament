@@ -7,7 +7,8 @@
         "owner": {
             "properties": {
                 "element": {"#": "editor"},
-                "viewport": {"@": "viewport"}
+                "viewport": {"@": "viewport"},
+                "stage": {"@": "flowEditorStage"}
             }
         },
         "camera": {
@@ -17,12 +18,7 @@
             "prototype": "ui/flow-viewport.reel",
             "properties": {
                 "element": {"#": "viewport"},
-                "matrix": [
-                    0.1, 0, 0, 0,
-                    0, 0.1, 0, 0,
-                    0, 0, 1, 0,
-                    0, 0, 0, 1
-                ],
+                "type": "front",
                 "camera": {"@": "camera"},
                 "editor": {"@": "owner"}
             },
@@ -34,12 +30,7 @@
             "prototype": "ui/flow-viewport.reel",
             "properties": {
                 "element": {"#": "viewport2"},
-                "matrix": [
-                    0.1, 0, 0, 0,
-                    0, 0, 1, 0,
-                    0, 0.1, 0, 0,
-                    0, 0, 0, 1
-                ],
+                "type": "top",
                 "camera": {"@": "camera"},
                 "editor": {"@": "owner"}
             },
@@ -79,22 +70,35 @@
                 "viewport": {"@": "viewport"},
                 "viewport2": {"@": "viewport2"}
             }
+        },
+
+        "flowEditorStage": {
+            "prototype": "ui/flow-stage.reel",
+            "properties": {
+                "element": {"#": "flowEditorStage"}
+            },
+            "bindings": {
+                "editor": {"<-": "@owner"}
+            }
         }
+
     }
     </script>
 </head>
 <body>
-    <div data-montage-id="editor" class="flow-Editor">
-        <div data-montage-id="viewport2" class="viewport">
-        </div>
-        <div data-montage-id="viewport" class="viewport viewport2">
-        </div>
-        <div data-montage-id="toolbar" class="toolbar">
-        </div>
-        <div data-montage-id="inspector" class="inspector">
-        </div>
-        <div data-montage-id="tree" class="tree">
-        </div>
+    <div data-montage-id="editor" class="FlowEditor">
+        <section class="FlowEditorColumn">
+            <div data-montage-id="flowEditorStage"></div>
+        </section>
+
+        <section class="FlowEditorColumn FlowEditorColumn-inspector">
+            <div data-montage-id="viewport2"></div>
+            <div data-montage-id="viewport" class="viewport2"></div>
+            <div data-montage-id="toolbar" class="toolbar"></div>
+        </section>
+
+        <div data-montage-id="inspector" class="inspector"></div>
+        <div data-montage-id="tree" class="tree"></div>
     </div>
 </body>
 </html>

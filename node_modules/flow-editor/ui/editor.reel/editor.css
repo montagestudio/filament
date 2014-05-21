@@ -1,35 +1,31 @@
-.flow-Editor {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 500px;
-    bottom: 44px;
+.FlowEditor {
     -webkit-user-select: none;
+    display: -webkit-flex;
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 100%;
 }
 
-.viewport {
-    display: block;
-    position: absolute;
-    top: 0;
-    width: 500px;
-    height: 50%;
-    background: #eee;
-    border-bottom: 5px solid black;
+.FlowEditorColumn {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex: 1;
+    flex: 1;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+}
+
+.FlowEditorColumn-inspector {
+    -webkit-flex: 0 0 500px;
+    flex: 0 0 500px;
+    border-left: 1px solid #1D1D1D;
+    position: relative;
+    z-index: 2;
 }
 
 .viewport2 {
-    display: block;
-    position: absolute;
-    top: 50%;
-    width: 500px;
-    height: 50%;
-    background: #eee;
     border-bottom: none;
-}
-
-.toolbar {
-    position: absolute;
-    bottom: -44px;
 }
 
 .inspector {

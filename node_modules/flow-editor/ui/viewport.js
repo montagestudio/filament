@@ -156,13 +156,16 @@ exports.Viewport = Montage.create(Component, {
     enterDocument: {
         value: function () {
             this._element.addEventListener("mousemove", this, true);
+
+            var wheelEventName = typeof window.onwheel !== "undefined" ? "wheel" : "mousewheel";
+            this._element.addEventListener(wheelEventName, this._handleWheelChange.bind(this), false);
+
         }
     },
 
     prepareForActivationEvents: {
         value: function () {
             this._element.addEventListener("mousedown", this, false);
-            this._element.addEventListener("mousewheel", this, false);
         }
     },
 
@@ -197,7 +200,6 @@ exports.Viewport = Montage.create(Component, {
                 }
                 document.addEventListener("mousemove", this, false);
                 document.addEventListener("mouseup", this, false);
-                event.preventDefault();
             }
         }
     },
@@ -225,7 +227,7 @@ exports.Viewport = Montage.create(Component, {
         }
     },
 
-    handleMousewheel: {
+    _handleWheelChange: {
         value: function (event) {
             var x = event.offsetX - this.translateX,
                 y = event.offsetY - this.translateY;

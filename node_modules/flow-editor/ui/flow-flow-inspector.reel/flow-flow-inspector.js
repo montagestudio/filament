@@ -118,8 +118,9 @@ exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow
             return this._duration;
         },
         set: function (value) {
-            this._duration = value;
-            this.durationInput = value;
+            var intValue = parseInt(value);
+
+            this.durationInput = this._duration = !isNaN(intValue) ? intValue : 0;
         }
     },
 

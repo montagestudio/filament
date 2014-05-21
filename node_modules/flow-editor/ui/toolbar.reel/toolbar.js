@@ -95,16 +95,39 @@ exports.Toolbar = Montage.create(Component, /** @lends module:"ui/toolbar.reel".
                 scaleY = this.viewport._height / y,
                 scaleZ = this.viewport._height / z,
                 scale = Math.min(scaleX, scaleY, scaleZ) * 0.8,
-                xCenter = (boundaries[0].max + boundaries[0].min) / 2,
-                yCenter = (boundaries[1].max + boundaries[1].min) / 2,
-                zCenter = (boundaries[2].max + boundaries[2].min) / 2;
+                center = {
+                    x: (boundaries[0].max + boundaries[0].min) / 2,
+                    y: (boundaries[1].max + boundaries[1].min) / 2,
+                    z: (boundaries[2].max + boundaries[2].min) / 2
+                };
 
             this.viewport.scale = scale;
             this.viewport2.scale = scale;
-            this.viewport.translateX = (this.viewport._width / 2) - (xCenter * scale);
-            this.viewport.translateY = (this.viewport._height / 2) - (yCenter * scale);
-            this.viewport2.translateX = (this.viewport2._width / 2) - (xCenter * scale);
-            this.viewport2.translateY = (this.viewport2._height / 2) - (zCenter * scale);
+
+            this._updateViewPortAfterZoom(this.viewport, scale, center);
+            this._updateViewPortAfterZoom(this.viewport2, scale, center);
+        }
+    },
+
+    _updateViewPortAfterZoom: {
+        value: function (viewport, scale, center) {
+           switch (viewport.type) {
+
+               case "front":
+                   viewport.translateX = (viewport._width / 2) - (center.x * scale);
+                   viewport.translateY = (viewport._height / 2) - (center.y * scale);
+                   break;
+
+               case "top":
+                   viewport.translateX = (viewport._width / 2) - (center.x * scale);
+                   viewport.translateY = (viewport._height / 2) - (center.z * scale);
+                   break;
+
+               case "profile":
+                   viewport.translateX = (viewport._width / 2) - (center.z * scale);
+                   viewport.translateY = (viewport._height / 2) - (center.y * scale);
+                   break;
+           }
         }
     }
 

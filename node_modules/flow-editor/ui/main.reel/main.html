@@ -8,8 +8,7 @@
         "owner": {
             "properties": {
                 "element": {"#": "main"},
-                "editor": {"@": "editor"},
-                "flow": {"@": "flow"}
+                "editor": {"@": "editor"}
             }
         },
         "editor": {
@@ -18,50 +17,6 @@
                 "element": {"#": "editor"},
                 "standAlone": true
             }
-        },
-        "flow": {
-            "prototype": "montage/ui/flow.reel",
-            "properties": {
-                "element": {"#": "flow"},
-                "content": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100],
-                "paths": [
-                    {
-                        "knots": [
-                            {
-                                "knotPosition": [-900, 0, 0],
-                                "nextHandlerPosition": [-300, 0, 0],
-                                "previousDensity": 5,
-                                "nextDensity": 5,
-                                "rotateY": 1.5
-                            },
-                            {
-                                "knotPosition": [900, 0, 0],
-                                "previousHandlerPosition": [300, 0, 0],
-                                "previousDensity": 5,
-                                "nextDensity": 5,
-                                "rotateY": -1.5
-                            }
-                        ],
-                        "headOffset": 2.5,
-                        "tailOffset": 2.5,
-                        "units": {
-                            "rotateY": ""
-                        }
-                    }
-                ]
-            },
-            "bindings": {
-                "needsDraw": {"<->": "@editor.hasSplineUpdated"}
-            }
-        },
-        "slide": {
-            "prototype": "montage/ui/text.reel",
-            "properties": {
-                "element": {"#": "slide"}
-            },
-            "bindings": {
-                "value": {"<-": "@flow.contentAtCurrentIteration"}
-            }
         }
     }
     </script>
@@ -69,9 +24,6 @@
 <body>
     <div data-montage-id="main" class="Main">
         <div data-montage-id="editor" class="editor"></div>
-        <div data-montage-id="flow" class="flow">
-            <div data-montage-id="slide" class="slide"></div>
-        </div>
     </div>
 </body>
 </html>
