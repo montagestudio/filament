@@ -229,7 +229,7 @@ exports.ReelDocument = EditingDocument.specialize({
     handleMenuValidate: {
         value: function (evt) {
             var menuItem = evt.detail,
-                identifier = evt.detail.identifier;
+                identifier = menuItem.identifier;
 
             if (this._editor.currentDocument !== this) {
                 return;
