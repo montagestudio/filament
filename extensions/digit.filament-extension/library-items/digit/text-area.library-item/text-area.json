@@ -1,0 +1,5 @@
+{
+    "name": "Text Area",
+    "description": "Displays multiline text that the user can edit and select.",
+    "iconUrl": "text-area.png"
+}

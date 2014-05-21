@@ -1,0 +1,5 @@
+{
+    "name": "Condition",
+    "description": "Displays content if a certain condition is true",
+    "iconUrl": "condition.png"
+}

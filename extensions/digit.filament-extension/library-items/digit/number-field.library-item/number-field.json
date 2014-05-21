@@ -1,0 +1,5 @@
+{
+    "name": "Number Field",
+    "description": "Displays numbers that the user can select, edit, or increase or decrease using the spinner controls.",
+    "iconUrl": "number-field.png"
+}

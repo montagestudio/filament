@@ -1,7 +1,9 @@
 var Montage = require("montage/core/core").Montage,
     Target = require("montage/core/target").Target,
     Promise = require("montage/core/promise").Promise,
-    application = require("montage/core/application").application;
+    CoreExtension = require("filament-extension/core/extension").Extension,
+    application = require("montage/core/application").application,
+    FILAMENT_EXTENSION = "filament-extension";
 
 exports.ExtensionController = Montage.create(Target, {
 
@@ -80,6 +82,83 @@ exports.ExtensionController = Montage.create(Target, {
         }
     },
 
+    extensionNameFromExtentionUrl: {
+        value: function (extensionUrl) {
+            var re = new RegExp("\\/([^\\/]+?)\\." + FILAMENT_EXTENSION),
+                matches = extensionUrl.match(re),
+                name = (matches.length > 1)? matches[1] : null;
+
+            return name;
+        }
+    },
+
+    _createExtension: {
+        value: function (extensionUrl) {
+            var extensionName = this.extensionNameFromExtentionUrl(extensionUrl),
+                extension,
+                Extension = CoreExtension.specialize({
+                activate: {
+                    value: function (application, projectController) {
+                        return Promise.all([
+                            this.installLibraryItems(projectController, extensionName),
+                            this.installModuleIcons(projectController, extensionName)
+                        ]).thenResolve(this);
+                    }
+                },
+
+                deactivate: {
+                    value: function (application, projectController) {
+                        return Promise.all([
+                            this.uninstallLibraryItems(projectController, extensionName),
+                            this.uninstallModuleIcons(projectController, extensionName)
+                        ]).thenResolve(this);
+                    }
+                }
+            });
+            extension = new Extension();
+            extension.packageLocation = extensionUrl;
+
+            if (this.loadedExtensions) {
+                this.loadedExtensions.push(extension);
+            }
+
+            return Promise.resolve(extension);
+        }
+    },
+
+    _loadExtensionFromPackage: {
+        value: function (extensionUrl) {
+            var self = this;
+
+            return require.loadPackage(extensionUrl).then(function (packageRequire) {
+                var extension;
+
+                packageRequire.injectMapping({name: "montage", location: require.getPackage({name: "montage"}).location});
+                packageRequire.injectMapping({name: "filament-extension", location: require.getPackage({name: "filament-extension"}).location});
+
+                extension = packageRequire.async("extension").then(function (exports) {
+                    var extension = new exports.Extension();
+                    extension.extensionRequire = packageRequire;
+                    if (!extension) {
+                        throw new Error("Malformed extension. Expected '" + extensionUrl + "' to export 'Extension'");
+                    }
+                    if (self.loadedExtensions) {
+                        self.loadedExtensions.push(extension);
+                    }
+                    return extension;
+                }).catch(function (error) {
+                    // no extension.js found ?
+                    return self._createExtension(extensionUrl);
+                }, function (error) {
+                    // no package.json found ?
+                    return self._createExtension(extensionUrl);
+                });
+
+                return extension;
+            });
+        }
+    },
+
     /**
      * Asynchronously load the extension package from the specified
      * extensionUrl, returning a reference to the exported Extension.
@@ -92,33 +171,12 @@ exports.ExtensionController = Montage.create(Target, {
      * @return {Promise} A promise for the exported Extension object
      */
     loadExtension: {
-        enumerable: false,
         value: function (extensionUrl) {
-
-            var self = this;
-
-            // TODO npm install?
-            return require.loadPackage(extensionUrl).then(function (packageRequire) {
-                packageRequire.injectMapping({name: "montage", location: require.getPackage({name: "montage"}).location});
-                packageRequire.injectMapping({name: "filament-extension", location: require.getPackage({name: "filament-extension"}).location});
-                return Promise.all([packageRequire.async("extension"), Promise.resolve(packageRequire)]);
-            }).spread(function (exports, require) {
-                var extension = new exports.Extension();
-                extension.extensionRequire = require;
-
-                if (!extension) {
-                    throw new Error("Malformed extension. Expected '" + extensionUrl + "' to export 'Extension'");
-                }
-
-                if (self.loadedExtensions) {
-                    self.loadedExtensions.push(extension);
-                }
-
-                return extension;
-            }, function (error) {
-                console.log("Could not load extension at", extensionUrl, "because", error.message);
-                throw new Error("Could not load extension at: " + extensionUrl + " because " + error.message);
-            });
+            if (extensionUrl.startsWith(require.location)) {
+                return this._loadExtensionFromPackage(extensionUrl);
+            } else {
+                return this._createExtension(extensionUrl);
+            }
         }
     },
 

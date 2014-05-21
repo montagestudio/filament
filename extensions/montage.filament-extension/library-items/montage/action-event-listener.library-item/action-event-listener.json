@@ -1,0 +1,5 @@
+{
+    "name": "ActionEventListener",
+    "description": "Defines what should be done in reaction to an event",
+    "iconUrl": "action-event-listener.png"
+}

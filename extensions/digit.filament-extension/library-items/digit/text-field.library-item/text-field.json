@@ -1,0 +1,5 @@
+{
+    "name": "Text Field",
+    "description": "Displays single-line text that the user can edit and select.",
+    "iconUrl": "text-field.png"
+}

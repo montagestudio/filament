@@ -1,0 +1,5 @@
+{
+    "name": "PromiseController",
+    "description": "Exposes the state of a promise with bindable properties.",
+    "iconUrl": "promise-controller.png"
+}

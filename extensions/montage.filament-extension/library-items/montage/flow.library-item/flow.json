@@ -1,0 +1,5 @@
+{
+    "name": "Flow",
+    "description": "Repeats specified content along a Bézier path",
+    "iconUrl": "flow.png"
+}
