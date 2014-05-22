@@ -199,7 +199,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 self.currentPanelKey = "progress";
                 self.progressPanel.message = "Loading project…";
                 self.showModal = true;
-                track.message("Loading project " + projectUrl);
+                track.message("loading project");
                 superMethod.call(self, projectUrl)
                 .then(deferred.resolve)
                 .fail(loadProjectFail)
