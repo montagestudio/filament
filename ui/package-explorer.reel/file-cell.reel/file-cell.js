@@ -405,23 +405,30 @@ exports.FileCell = Montage.create(Component, {
         }
     },
 
+    expandFolder: {
+        value: function () {
+            var self = this;
+
+            this.projectController.filesAtUrl(this.fileInfo.fileUrl).then(function (fileDescriptors) {
+                self.fileInfo.expanded = true;
+                self.fileInfo.children.addEach(fileDescriptors);
+
+                //TODO not reach into the projectController to do this; formalize when we get the mimetypes
+                fileDescriptors.forEach(function (fd) {
+                    self.projectController.environmentBridge.detectMimeTypeAtUrl(fd.fileUrl).then(function (mimeType) {
+                        fd.mimeType = mimeType;
+                    }).done();
+                });
+
+                application.dispatchEventNamed("treeExpanded", true, true);
+            }).done();
+        }
+    },
+
     handleExpandedChange: {
         value: function(newValue) {
             if (newValue && this.fileInfo && !this.fileInfo.expanded) {
-                var self = this;
-                this.projectController.filesAtUrl(this.fileInfo.fileUrl).then(function (fileDescriptors) {
-                    self.fileInfo.expanded = true;
-                    self.fileInfo.children.addEach(fileDescriptors);
-
-                    //TODO not reach into the projectController to do this; formalize when we get the mimetypes
-                    fileDescriptors.forEach(function (fd) {
-                        self.projectController.environmentBridge.detectMimeTypeAtUrl(fd.fileUrl).then(function (mimeType) {
-                            fd.mimeType = mimeType;
-                        }).done();
-                    });
-
-                    application.dispatchEventNamed("treeExpanded", true, true);
-                }).done();
+                this.expandFolder();
             }
         }
     },
@@ -450,7 +457,11 @@ exports.FileCell = Montage.create(Component, {
 
     handleOpenFileButtonAction: {
         value: function (evt) {
-            this.dispatchEventNamed("openUrl", true, true, this.fileInfo.fileUrl);
+            if (this.fileInfo.isDirectory && !this.fileInfo.isReel) {
+                this.iteration.expanded = !this.iteration.expanded;
+            } else {
+                this.dispatchEventNamed("openUrl", true, true, this.fileInfo.fileUrl);
+            }
         }
     },
 
