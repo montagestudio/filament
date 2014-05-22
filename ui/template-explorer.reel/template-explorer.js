@@ -196,8 +196,8 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                 }
 
                 // Insert template if we have data and it looks like a template
-                // e.g. it starts with an "<"
-                if (data && /^<\S+/.test(data)) {
+                // e.g. it starts with an "<", and optional leading whitespace
+                if (data && /^\s*<\S+/.test(data)) {
                     this.editingDocument.insertTemplateContent(data).done();
                 }
             }
