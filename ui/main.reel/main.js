@@ -81,6 +81,7 @@ exports.Main = Montage.create(Component, {
         value: function (evt) {
             // TODO: move tabs arround
             evt.preventDefault();
+            evt.dataTransfer.dropEffect = "move";
         }
     },
 
