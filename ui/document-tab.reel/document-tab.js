@@ -41,9 +41,15 @@ exports.DocumentTab = Component.specialize({
         value: null
     },
 
+    iteration: {
+        value: null
+    },
+
     nextTarget: {
         get: function () {
-            return this.document.editor;
+            if (this.document) {
+                return this.document.editor;
+            }
         }
     },
 
@@ -93,12 +99,11 @@ exports.DocumentTab = Component.specialize({
 
     handleDragstart:{
         value: function (evt) {
-            debugger
-            evt.dataTranfer.setData(MimeType.DOCUMENTTAB, "");
-            evt.dataTranfer.setData(MimeType.TEXT_PLAIN, this.document.title);
+            var data = JSON.stringify({index: this.iteration.index});
+            evt.dataTransfer.setData(MimeTypes.DOCUMENTTAB, data);
+            evt.dataTransfer.setData(MimeTypes.TEXT_PLAIN, this.document.title);
 
-            // soft remove tab
-            this.classList.add("hide");
+            // TODO: soft remove tab while dragging
         }
     },
 

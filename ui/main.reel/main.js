@@ -1,5 +1,6 @@
 var Montage = require("montage/core/core").Montage,
     Component = require("montage/ui/component").Component,
+    MimeTypes = require("core/mime-types"),
     application = require("montage/core/application").application;
 
 // Browser Compatibility
@@ -62,12 +63,87 @@ exports.Main = Montage.create(Component, {
                 }
             }
 
+            // tab re-arranging
+            this.templateObjects.openDocumentList.element.addEventListener("dragover", this, false);
+            this.templateObjects.openDocumentList.element.addEventListener("dragleave", this, false);
+            this.templateObjects.openDocumentList.element.addEventListener("drop", this, false);
+
             //prevent navigating backwards with backspace
             window.addEventListener("keydown", function (event) {
                 if(event.keyCode === 8 && (document.activeElement !== event.target || event.target === document.body)) {
                     event.preventDefault();
                 }
             });
+        }
+    },
+
+    handleDragover: {
+        value: function (evt) {
+            // TODO: move tabs arround
+            evt.preventDefault();
+        }
+    },
+
+    handleDragleave: {
+        value: function (evt) {
+            // TODO: if we do not come back on dragover the dropover should reset the tab
+        }
+    },
+
+    _documentTabNewIndex: {
+        value: function (element) {
+            var tab;
+
+            while (element.dataset.montageId !== "documentTab" && element.parentElement) {
+                element = element.parentElement;
+            }
+            if (element.dataset.montageId) {
+                tab = element;
+            }
+            else {
+                throw "Can not move re-arrange this tab because this tab can not be found";
+            }
+
+            return tab.component.iteration.index;
+        }
+    },
+
+    handleDrop: {
+        value: function (evt) {
+            var availableTypes = evt.dataTransfer.types,
+                element = document.elementFromPoint(evt.pageX, evt.pageY),
+                documents = this.projectController.documents,
+                currentDocument = this.projectController.currentDocument,
+                data,
+                doc,
+                index,
+                newIndex;
+
+            if(availableTypes.has(MimeTypes.DOCUMENTTAB)) {
+                data = JSON.parse(evt.dataTransfer.getData(MimeTypes.DOCUMENTTAB));
+                index = data.index;
+
+                if ( index === undefined || !documents[index]) {
+                    throw "Can not move re-arrange this tab because this tab index is incorrect";
+                }
+
+                // move to last if not droped on a tab but in the empty space of the tab bar
+                if (element === this.templateObjects.openDocumentList.element) {
+                    newIndex = documents.length;
+                }
+                else {
+                    newIndex = this._documentTabNewIndex(element);
+                }
+                doc = documents[index];
+                documents.splice(newIndex, 0, doc);
+                index = (newIndex < index)? index + 1: index;
+                documents.splice(index, 1);
+                if (currentDocument !== doc) {
+                    this.dispatchEventNamed("openUrl", true, true, doc.url);
+                } else {
+                    this.projectController.openDocumentsController.select(doc);
+                }
+            }
         }
     },
 
