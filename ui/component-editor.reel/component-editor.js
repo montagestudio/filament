@@ -70,6 +70,8 @@ exports.ComponentEditor = Editor.specialize({
                     this._documentNeedsRefresh = true;
                 } else if (document.errors.length > 0) {
                     this._showErrorPanel();
+                } else {
+                    this._hidePanel();
                 }
 
                 //TODO why are these done here and not in the template? not sure they need to be here
