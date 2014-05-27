@@ -279,9 +279,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             var packagePromise = this.environmentBridge.read(this.packageUrl + "package.json").then(function (content) {
                 var packageDescription = JSON.parse(content);
+
                 self.loadProjectIcon(self.packageUrl);
                 self.packageDescription = packageDescription;
-                self.projectDocument = new ProjectDocument().init(self, self.environmentBridge);
 
                 // Add a dependency entry for this package so that the
                 // we pick up its extensions and components later
@@ -289,6 +289,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     dependency: packageDescription.name,
                     url: self.packageUrl
                 });
+                return ProjectDocument.load(self, self.environmentBridge)
+                    .then(function(projectDocument) {
+                        self.projectDocument = projectDocument;
+                    });
             });
 
             // Do these operations sequentially because populateLibrary and
