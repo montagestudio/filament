@@ -242,37 +242,132 @@ exports.FileCell = Montage.create(Component, {
         value: 0
     },
 
+    readDirectory: {
+        value: function(entries) {
+            var promises = [];
+
+            for (var i = 0; i < entries.length; i++) {
+                if (entries[i].isDirectory) {
+
+                    console.log('FOLDER', entries[i].name);
+                    var directoryReader = entries[i].createReader();
+                    promises = promises.concat(this.getAllEntries(directoryReader));
+
+                } else {
+
+                    //var defer = Promise.defer();
+                    //promises.push(defer.promise);
+                    //defer.resolve(entries[i]);
+
+                }
+            }
+
+            return Promise.all(promises).then(function(files) {
+                console.log('readDirectory DONE', files);
+                return files && files[0];
+            }, function(err) {
+                console.warn('readDirectory FAIL', err);
+            });
+        }
+    },
+
+    getAllEntries: {
+        value: function(directoryReader) {
+            var defer = Promise.defer();
+            var entries = [];
+
+            var readEntries = function() {
+                directoryReader.readEntries(function(results) {
+                    // We probably want to exclude .DS_Store
+                    console.log('READ', results);
+                    if (!results.length) {
+                        entries.sort();
+                        defer.resolve(entries);
+                    } else {
+                        entries.push.apply(entries, results);
+                        readEntries();
+                    }
+                }, function onError(er) {
+                    defer.reject(err);
+                    console.warn('ERROR', er);
+                });
+            };
+
+            readEntries();
+            return defer.promise;
+        }
+    },
+
     handleDrop: {
         value: function(e) {
             this.captureDragleave(e);
 
-            var files = e.dataTransfer.files,
+            var files = [],
+                items = e.dataTransfer.items,
                 self = this,
                 activeUploads = this.activeUploads;
 
-            if (files.length === 0) {
-                return;
-            }
-            var uploadOperation = this._uploadFiles(files)
-                .then(function (finishedUploads) {
-                    activeUploads.splice(activeUploads.indexOf(uploadOperation), 1);
-                })
-                // Wait a bit before considering the upload batch closed
-                // This allows the 100% progress to show and not simply disappear/flash briefly
-                // This also gives us a chance to accommodate adding more uploads to the batch
-                .delay(1500)
-                .then(function () {
-                    if (0 === activeUploads.length) {
-                        self.isUploading = false;
-                    }
-                }).done();
+            if (items[0] && typeof items[0].webkitGetAsEntry === 'function') {
+                // Directory drag-n-dropping is supported
+                // http://codebits.glennjones.net/dragdrop/dropfolder.htm
+                var entries = [].map.call(items, function(item) {
+                	return item.webkitGetAsEntry();
+                });
+                this.readDirectory(entries).then(function(files) {
+                    files = files.filter(function(f) {
+                    	return f.isFile;
+                    });
 
-            activeUploads.push(uploadOperation);
+                    self._startUploading(files);
+                }, function(err) {
+                    console.warn('readDirectory FAIL', err);
+                });
+
+            } else {
+                files = Array.prototype.slice.call(e.dataTransfer.files, 0);
+                self._startUploading(files);
+            }
+        }
+    },
+
+    _startUploading: {
+        value: function(files) {
+            var self = this;
+            var activeUploads = this.activeUploads;
+
+            console.log('_startUploading');
+            Promise.all(files.map(function(item) {
+                var defer = Promise.defer();
+                item.file(function(file) {
+                    file.fullPath = item.fullPath;
+                    defer.resolve(file);
+                });
+                return defer.promise;
+            })).then(function(files) {
+
+                var uploadOperation = self._uploadFiles(files)
+                    .then(function(finishedUploads) {
+                        activeUploads.splice(activeUploads.indexOf(uploadOperation), 1);
+                    })
+                    // Wait a bit before considering the upload batch closed
+                    // This allows the 100% progress to show and not simply disappear/flash briefly
+                    // This also gives us a chance to accommodate adding more uploads to the batch
+                    .delay(1500)
+                    .then(function() {
+                        if (0 === activeUploads.length) {
+                            self.isUploading = false;
+                        }
+                    }).done();
+
+                activeUploads.push(uploadOperation);
+
+            }).done();
+
         }
     },
 
     _uploadFiles: {
-        value: function (files) {
+        value: function(files) {
             var destination = this.fileInfo.fileUrl,
                 relativeDestination = destination.replace(this.projectController.packageUrl, ""),
                 deferredCompletion = Promise.defer(),
@@ -286,7 +381,7 @@ exports.FileCell = Montage.create(Component, {
             // Do what we can immediately
             this.isUploading = true;
             this.expectedUploadedFileCount += files.length;
-            this.expectedUploadedBytes += Array.prototype.reduce.call(files, function (total, file) {
+            this.expectedUploadedBytes += files.reduce(function (total, file) {
                 return total + file.size;
             }, 0);
 
@@ -303,7 +398,7 @@ exports.FileCell = Montage.create(Component, {
             });
 
             // Now start trying to upload files
-            uploadPromises = Array.prototype.map.call(files, function(file) {
+            uploadPromises = files.map(function(file) {
                 var reader = new FileReader(),
                     deferredUpload = Promise.defer(),
                     sizeToReportOnLoad = file.size,
@@ -327,8 +422,11 @@ exports.FileCell = Montage.create(Component, {
 
                 reader.onload = function(e) {
                     var base64 = btoa(e.target.result),
-                        filename = decodeURIComponent(file.name),
+                        fullPath = file.fullPath || file.name,
+                        filename = decodeURIComponent(fullPath),
                         destinationUrl = Url.resolve(destination, filename);
+
+                    console.log('DESTINATION', destinationUrl);
 
                     self.projectController.projectDocument.add(base64, destinationUrl)
                         .then(function (success) {
