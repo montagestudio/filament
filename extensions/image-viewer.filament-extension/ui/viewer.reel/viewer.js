@@ -1,4 +1,16 @@
-var Montage = require("montage").Montage,
-    Editor = require("palette/ui/editor.reel").Editor;
+var Editor = require("palette/ui/editor.reel").Editor;
 
-exports.Viewer = Montage.create(Editor, {});
+exports.Viewer = Editor.specialize({
+
+    constructor: {
+        value: function Viewer() {
+            this.super();
+        }
+    },
+
+    openDocument: {
+        value: function (editingDocument) {
+            editingDocument.editor = this;
+        }
+    }
+});
