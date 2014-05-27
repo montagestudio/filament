@@ -19,6 +19,10 @@
     padding: 8px;
 }
 
+.SearchModulesCell[draggable="true"] {
+    cursor: move;
+}
+
 .SearchModulesCell:-webkit-drag,
 .SearchModulesCell:-moz-drag,
 .SearchModulesCell:-ms-drag,
