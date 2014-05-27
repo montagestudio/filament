@@ -124,8 +124,9 @@ exports.Build = Montage.specialize({
             .then(function(message) {
                 self._hideProgressPanel();
                 self._showInfoPanel(message);
-            }, function() {
+            }, function(error) {
                 self._showErrorPanel(chainIdentifier);
+                throw error;
             });
         }
     },
