@@ -6,6 +6,21 @@ var Montage = require("montage").Montage,
     MimeTypes = require("core/mime-types"),
     Url = require("core/url");
 
+
+function flatten(list) {
+    return list.reduce(function (result, array) {
+        if (Array.isArray(array)) {
+            array.forEach(function (value) {
+                this.push(value);
+            }, result, list);
+        } else {
+            result.push(array);
+        }
+        return result;
+    }, []);
+}
+
+
 exports.FileCell = Montage.create(Component, {
 
     projectController: {
@@ -255,16 +270,17 @@ exports.FileCell = Montage.create(Component, {
 
                 } else {
 
-                    //var defer = Promise.defer();
-                    //promises.push(defer.promise);
-                    //defer.resolve(entries[i]);
+                    var defer = Promise.defer();
+                    promises.push(defer.promise);
+                    defer.resolve(entries[i]);
 
                 }
             }
 
             return Promise.all(promises).then(function(files) {
                 console.log('readDirectory DONE', files);
-                return files && files[0];
+                files = flatten(files);
+                return files;
             }, function(err) {
                 console.warn('readDirectory FAIL', err);
             });
@@ -285,6 +301,7 @@ exports.FileCell = Montage.create(Component, {
                         defer.resolve(entries);
                     } else {
                         entries.push.apply(entries, results);
+                        console.log('ENTRIES', results);
                         readEntries();
                     }
                 }, function onError(er) {
