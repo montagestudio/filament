@@ -1715,7 +1715,19 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         enumerable: false,
         value: function () {
             var self = this;
-            //TODO I' not quite sure why this method exists, though it does divide finding from populating...
+
+            // Make sure this package is in the dependencies
+            var packageDependeny = this.dependencies.filter(function(e){
+                return e.dependency === self.packageDescription.name;
+            });
+            if (packageDependeny && !packageDependeny.length) {
+                this.dependencies.unshift({
+                    dependency: this.packageDescription.name,
+                    url: this.packageUrl
+                });
+            }
+
+            //TODO I'm not quite sure why this method exists, though it does divide finding from populating...
             return this.findLibraryItems(this.dependencies).then(function (dependencyLibraryEntries) {
                 self.libraryGroups = dependencyLibraryEntries;
             });
