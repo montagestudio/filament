@@ -165,17 +165,32 @@ exports.ComponentEditor = Editor.specialize({
                     self._showErrorPanel();
                 });
             }
+
+            if (this.currentDocument == null) {
+                // display a "click shade"
+                this._showShadePanel();
+            }
         }
     },
 
     _hidePanel: {
         value: function() {
+            this.templateObjects.overlayPanel.classList.remove('transparent');
             this.templateObjects.overlayPanel.visible = false;
+        }
+    },
+
+    _showShadePanel: {
+        value: function () {
+            this.templateObjects.overlayPanel.classList.add('transparent');
+            this.templateObjects.overlayPanelMessage.value = "";
+            this.templateObjects.overlayPanel.visible = true;
         }
     },
 
     _showLoadingPanel: {
         value: function() {
+            this.templateObjects.overlayPanel.classList.remove('transparent');
             this.templateObjects.overlayPanelMessage.value = "Reloading Component…";
             this.templateObjects.overlayPanel.visible = true;
         }
@@ -183,6 +198,7 @@ exports.ComponentEditor = Editor.specialize({
 
     _showErrorPanel: {
         value: function() {
+            this.templateObjects.overlayPanel.classList.remove('transparent');
             this.templateObjects.overlayPanelMessage.value = "Error: Invalid document…";
             this.templateObjects.overlayPanel.visible = true;
         }
@@ -460,6 +476,8 @@ exports.ComponentEditor = Editor.specialize({
         value: function(event) {
             if (event.detail.editor === this) {
                 this._currentDocument = null;
+                // force a redraw to display the overlay shade and prevent use of unloaded UI
+                this.needsDraw = true;
                 this.dispatchOwnPropertyChange("currentDocument", null);
                 this.projectController.removeEventListener("willOpenDocument", this, false);
             }
