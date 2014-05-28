@@ -19,6 +19,14 @@ exports.BooleanPropertyInspector = ValueTypeInspector.specialize(/** @lends modu
         }
     },
 
+    draw: {
+        value: function() {
+            if (this.propertyBlueprint) {
+                this.templateObjects.propertyNameSubstitution.element.setAttribute("title", this.propertyBlueprint.name);
+            }
+        }
+    },
+
     _valueChanged: {
         value: function() {
             this.dispatchOwnPropertyChange("booleanValue", this.booleanValue);

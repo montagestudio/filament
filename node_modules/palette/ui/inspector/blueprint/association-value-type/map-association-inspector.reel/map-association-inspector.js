@@ -21,6 +21,14 @@ exports.MapAssociationInspector = ValueTypeInspector.specialize(/** @lends modul
         }
     },
 
+    draw: {
+        value: function() {
+            if (this.propertyBlueprint) {
+                this.templateObjects.associationNameSubstitution.element.setAttribute("title", this.propertyBlueprint.name);
+            }
+        }
+    },
+
     _valueChanged: {
         value: function() {
             this.dispatchOwnPropertyChange("collectionValue", this.collectionValue);

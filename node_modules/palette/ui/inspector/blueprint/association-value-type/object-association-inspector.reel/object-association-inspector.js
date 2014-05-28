@@ -20,6 +20,14 @@ exports.ObjectAssociationInspector = ValueTypeInspector.specialize(/** @lends mo
         }
     },
 
+    draw: {
+        value: function() {
+            if (this.propertyBlueprint) {
+                this.templateObjects.propertyNameSubstitution.element.setAttribute("title", this.propertyBlueprint.name);
+            }
+        }
+    },
+
     _valueChanged: {
         value: function() {
             this.dispatchOwnPropertyChange("objectReferenceValue", this.objectReferenceValue);

@@ -16,6 +16,14 @@ exports.NumberPropertyInspector = ValueTypeInspector.specialize(/** @lends modul
         value: function NumberPropertyInspector() {
             this.super();
         }
+    },
+
+    draw: {
+        value: function() {
+            if (this.propertyBlueprint) {
+                this.templateObjects.propertyNameSubstitution.element.setAttribute("title", this.propertyBlueprint.name);
+            }
+        }
     }
 
 

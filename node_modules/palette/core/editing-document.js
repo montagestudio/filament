@@ -124,6 +124,17 @@ exports.EditingDocument = Document.specialize( {
         }
     },
 
+    deleteOwnedObjectProperty: {
+        value: function(proxy, property) {
+            var undoManager = this.undoManager,
+                undoneValue = proxy.getObjectProperty(property);
+
+            proxy.deleteObjectProperty(property);
+            undoManager.register("Delete Property", Promise.resolve([this.setOwnedObjectProperty, this, proxy, property, undoneValue]));
+            this._dispatchDidDeleteOwnedObjectProperty(proxy, property);
+        }
+    },
+
     setOwnedObjectProperties: {
         value: function (proxy, values) {
 
@@ -385,6 +396,17 @@ exports.EditingDocument = Document.specialize( {
                     proxy: proxy,
                     property: property,
                     value: value
+                });
+            }
+        }
+    },
+
+    _dispatchDidDeleteOwnedObjectProperty: {
+        value: function(proxy, property) {
+            if (this.propertyChangesDispatchingEnabled) {
+                this.dispatchEventNamed("didDeleteOwnedObjectProperty", true, false, {
+                    proxy: proxy,
+                    property: property
                 });
             }
         }

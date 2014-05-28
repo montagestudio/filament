@@ -52,6 +52,7 @@ exports.ValueTypeInspector = Component.specialize(/** @lends module:"./value-typ
         },
         set: function (value) {
             this._objectValue = value;
+            this.needsDraw = true;
         }
     },
 

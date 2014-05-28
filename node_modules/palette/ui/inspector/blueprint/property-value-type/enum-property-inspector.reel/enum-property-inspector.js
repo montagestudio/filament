@@ -16,7 +16,13 @@ exports.EnumPropertyInspector = ValueTypeInspector.specialize(/** @lends module:
         value: function EnumPropertyInspector() {
             this.super();
         }
+    },
+
+    draw: {
+        value: function() {
+            if (this.propertyBlueprint) {
+                this.templateObjects.propertyNameSubstitution.element.setAttribute("title", this.propertyBlueprint.name);
+            }
+        }
     }
-
-
 });
