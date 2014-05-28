@@ -16,7 +16,13 @@ exports.DatePropertyInspector = ValueTypeInspector.specialize(/** @lends module:
         value: function DatePropertyInspector() {
             this.super();
         }
+    },
+
+    draw: {
+        value: function() {
+            if (this.propertyBlueprint) {
+                this.templateObjects.propertyNameSubstitution.element.setAttribute("title", this.propertyBlueprint.name);
+            }
+        }
     }
-
-
 });

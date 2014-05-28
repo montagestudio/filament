@@ -45,6 +45,14 @@ exports.ResourcePropertyInspector = ValueTypeInspector.specialize(/** @lends Res
         }
     },
 
+    draw: {
+        value: function() {
+            if (this.propertyBlueprint) {
+                this.templateObjects.propertyNameSubstitution.element.setAttribute("title", this.propertyBlueprint.name);
+            }
+        }
+    },
+
     _dispatchDidSetResourceProperty: {
         value: function () {
             this.dispatchEventNamed("didSetResourceProperty", true, false, {

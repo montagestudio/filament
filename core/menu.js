@@ -194,7 +194,8 @@ Montage.defineProperty(exports, "defaultMenu", {
                     makeMenuItem("Forum", "forum", true, ""),
                     makeMenuItem("Report a Bug", "report", true, ""),
                     makeMenuItem("API Reference", "api", true, ""),
-                    makeMenuItem("Framework", "framework", true, "")
+                    makeMenuItem("Framework", "framework", true, ""),
+                    makeMenuItem("Show licenses…", "licenses", true, "")
                 ]);
                 _defaultMenu.insertItem(helpMenu);
             });

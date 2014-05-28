@@ -4,6 +4,8 @@ var ApplicationDelegate = require("./application-delegate").ApplicationDelegate,
     //TODO I wouldn't expect the project list to house this functionality
     repositoriesController = require("project-list/core/repositories-controller").repositoriesController;
 
+var LICENSES = require("./licenses.html").content;
+
 exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
 
     constructor: {
@@ -310,6 +312,16 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 break;
             case "framework":
                 window.open("http://docs.montagestudio.com/montagejs/");
+                break;
+            case "licenses":
+                var self = this;
+                this.showModal = true;
+                this.currentPanelKey = "info";
+                this.infoPanel.getResponse(LICENSES, "Close")
+                .then(function() {
+                    self.showModal = false;
+                    self.currentPanelKey = null;
+                }).done();
                 break;
             }
         }

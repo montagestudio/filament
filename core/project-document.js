@@ -74,32 +74,10 @@ exports.ProjectDocument = Document.specialize({
      */
     init: {
         value: function (documentController, environmentBridge) {
-            var self = this.super(),
-                bridge;
+            var self = this.super();
 
+            self._environmentBridge = environmentBridge;
             self._documentController = documentController;
-            bridge = self._environmentBridge = environmentBridge;
-
-            if (bridge && typeof bridge.listRepositoryBranches === "function") {
-                bridge.listRepositoryBranches()
-                    .then(function (response) {
-                        var currentBranchName = response.current,
-                            branches = self.branches = response.branches;
-
-                        self.currentBranch = branches[currentBranchName];
-
-                        if (!response.currentIsShadow) {
-                            return bridge.checkoutShadowBranch(currentBranchName);
-                        }
-                    })
-                    .then(function () {
-                        application.addEventListener("remoteChange", self, false);
-                        application.addEventListener("repositoryFlushed", self, false);
-                        return self.updateRefs();
-                    })
-                    .catch(Function.noop)
-                    .done();
-            }
 
             this._initBuild();
             window.pd = self;
@@ -361,14 +339,13 @@ exports.ProjectDocument = Document.specialize({
     },
 
     _updateShadowDelta: {
-        value: function () {
+        value: function (forceFetch) {
             var self = this,
                 bridge = this._environmentBridge,
                 result;
 
             if (bridge && bridge.shadowBranchStatus && typeof bridge.shadowBranchStatus === "function") {
-
-                result = this._environmentBridge.shadowBranchStatus(this.currentBranch.name)
+                result = this._environmentBridge.shadowBranchStatus(this.currentBranch.name, forceFetch)
                     .then(function(shadowStatus) {
                         self.aheadCount = shadowStatus.localParent.ahead;
                         self.behindCount = shadowStatus.localParent.behind;
@@ -385,7 +362,7 @@ exports.ProjectDocument = Document.specialize({
             var self = this,
                 bridge = this._environmentBridge,
                 applicationDelegate = application.delegate,
-                hasShownModal,
+                currentPanelKey,
                 retVal;
 
             if (bridge && bridge.updateProjectRefs && typeof bridge.updateProjectRefs === "function") {
@@ -397,7 +374,7 @@ exports.ProjectDocument = Document.specialize({
                     var resolutionStrategy = result.resolutionStrategy;
 
                     if (result.success === false && resolutionStrategy.indexOf("rebase") !== -1) {
-                        hasShownModal = applicationDelegate.showModal !== true;
+                        currentPanelKey = applicationDelegate.showModal === true ? applicationDelegate.currentPanelKey : null;
                         applicationDelegate.showModal = true;
                         applicationDelegate.currentPanelKey = "confirm";
 
@@ -410,7 +387,9 @@ exports.ProjectDocument = Document.specialize({
                                 return {success: true}; // update has been aborted by the user, let's bailout by returning success=true
                             }
                         }).finally(function() {
-                            if (hasShownModal) {
+                            if (currentPanelKey) {
+                                applicationDelegate.currentPanelKey = currentPanelKey;
+                            } else {
                                 applicationDelegate.showModal = false;
                                 applicationDelegate.currentPanelKey = null;
                             }
@@ -422,7 +401,7 @@ exports.ProjectDocument = Document.specialize({
                 .then(function(result) {
                     if (result.success !== true) {
                         // Local shadow has diverged from remote shadow (not a rebase case)
-                        hasShownModal = applicationDelegate.showModal !== true;
+                        currentPanelKey = applicationDelegate.showModal === true ? applicationDelegate.currentPanelKey : null;
                         applicationDelegate.showModal = true;
                         applicationDelegate.currentPanelKey = "conflict";
 
@@ -440,7 +419,9 @@ exports.ProjectDocument = Document.specialize({
                                 return {success: true}; // update has been aborted by the user, let's bailout by returning success=true
                             }
                         }).finally(function() {
-                            if (hasShownModal) {
+                            if (currentPanelKey) {
+                                applicationDelegate.currentPanelKey = currentPanelKey;
+                            } else {
                                 applicationDelegate.showModal = false;
                                 applicationDelegate.currentPanelKey = null;
                             }
@@ -656,9 +637,32 @@ exports.ProjectDocument = Document.specialize({
 // Constructor Properties
 {
     load: {
-        value: function (environmentBridge) {
-            var self = this;
-            return Promise.resolve((new self()).init(environmentBridge));
+        value: function (documentController, environmentBridge) {
+            var self = this,
+                projectDocument;
+
+            projectDocument = new self().init(documentController, environmentBridge);
+
+            if (environmentBridge && typeof environmentBridge.listRepositoryBranches === "function") {
+                return environmentBridge.listRepositoryBranches()
+                    .then(function (response) {
+                        var currentBranchName = response.current,
+                            branches = self.branches = response.branches;
+
+                        self.currentBranch = branches[currentBranchName];
+                        if (!response.currentIsShadow) {
+                            return environmentBridge.checkoutShadowBranch(currentBranchName);
+                        }
+                    })
+                    .then(function () {
+                        application.addEventListener("remoteChange", self, false);
+                        application.addEventListener("repositoryFlushed", self, false);
+                        return projectDocument.updateRefs();
+                    })
+                    .thenResolve(projectDocument);
+            }
+
+            return Promise.resolve(projectDocument);
         }
     },
 

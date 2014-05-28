@@ -16,6 +16,14 @@ exports.UrlPropertyInspector = ValueTypeInspector.specialize(/** @lends module:"
         value: function UrlPropertyInspector() {
             this.super();
         }
+    },
+
+    draw: {
+        value: function() {
+            if (this.propertyBlueprint) {
+                this.templateObjects.propertyNameSubstitution.element.setAttribute("title", this.propertyBlueprint.name);
+            }
+        }
     }
 
 });
