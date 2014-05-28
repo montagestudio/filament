@@ -67,6 +67,10 @@
     height: 47px;
 }
 
+.ComponentEditor-overlayPanel.ModalOverlay.transparent {
+    background-color: transparent;
+}
+
 
 /* States ----------------------- */
 

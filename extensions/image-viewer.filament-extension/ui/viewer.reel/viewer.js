@@ -10,7 +10,9 @@ exports.Viewer = Editor.specialize({
 
     openDocument: {
         value: function (editingDocument) {
-            editingDocument.editor = this;
+            if (editingDocument) {
+                editingDocument.editor = this;
+            }
         }
     }
 });
