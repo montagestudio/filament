@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.0.2 (7799) - http://www.bohemiancoding.com/sketch -->
+    <title>icon</title>
+    <description>Created with Sketch.</description>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Slices" sketch:type="MSLayerGroup"></g>
+        <g id="Folder" sketch:type="MSLayerGroup" transform="translate(1.000000, 2.000000)">
+            <rect id="Folder-2" fill="#7F7F7F" sketch:type="MSShapeGroup" x="0" y="4" width="14" height="8" rx="1"></rect>
+            <path d="M5.5,3 L1,3 L1,0.998956561 C1,0.442660332 1.44358641,0 1.99077797,0 L6.00922203,0 C6.54902482,0 7,0.447248087 7,0.998956561 L7,1 L12.0024554,1 C12.5536886,1 13,1.44771525 13,2 L13,3 L5.5,3 Z" id="Rectangle-5" fill="#666666" sketch:type="MSShapeGroup"></path>
+        </g>
+    </g>
+</svg>

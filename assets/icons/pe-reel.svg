@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.0.2 (7799) - http://www.bohemiancoding.com/sketch -->
+    <title>icon</title>
+    <description>Created with Sketch.</description>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Slices" sketch:type="MSLayerGroup"></g>
+        <g id="Reel" sketch:type="MSLayerGroup" transform="translate(1.000000, 0.000000)">
+            <path d="M6,1.07085183 C2.6077255,1.55597123 0,4.47345129 0,8 C0,11.5266875 2.6077255,14.4440531 6,14.9291514 L6,11.874021 C4.27478133,11.4300394 3,9.86395261 3,8 C3,6.13612076 4.27478133,4.56998349 6,4.1259844 L6,1.07085183 Z M8,14.9290758 C11.3922922,14.44375 14,11.5265043 14,8 C14,4.47362294 11.3924017,1.55625524 8,1.07092269 L8,4.12604563 C9.72527397,4.57012747 11,6.13620644 11,8 C11,9.86385647 9.72522638,11.4298779 8,11.8739523 L8,14.9290758 Z" fill="#7F7F7F" sketch:type="MSShapeGroup"></path>
+            <path d="M6.99991304,6 C5.8953913,6 5,6.89543478 5,8 C5,9.1046087 5.8953913,10 6.99991304,10 C8.10452174,10 9,9.1046087 9,8 C9,6.89543478 8.10456522,6 6.99991304,6 L6.99991304,6 Z" id="Path-3" fill="#666666" sketch:type="MSShapeGroup"></path>
+        </g>
+    </g>
+</svg>
