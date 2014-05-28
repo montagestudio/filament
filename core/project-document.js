@@ -405,7 +405,7 @@ exports.ProjectDocument = Document.specialize({
                         applicationDelegate.showModal = true;
                         applicationDelegate.currentPanelKey = "conflict";
 
-                        if (result.remote.indexOf("/__mb__") !== -1) {
+                        if (result.remote.indexOf("/montagestudio/") !== -1) {
                             // Let's cleanup the branch name we show to the user
                             result.remote = "work";
                         }
