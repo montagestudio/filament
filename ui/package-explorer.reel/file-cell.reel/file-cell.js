@@ -7,17 +7,19 @@ var Montage = require("montage").Montage,
     Url = require("core/url");
 
 
-function flatten(list) {
-    return list.reduce(function (result, array) {
-        if (Array.isArray(array)) {
-            array.forEach(function (value) {
-                this.push(value);
-            }, result, list);
+// Can't use flatten() from montagejs/collections
+// https://github.com/montagejs/collections/issues/74#issuecomment-44437489
+function flatten(array) {
+    var result = [];
+    for (var i = 0; i < array.length; i++) {
+        var item = array[i];
+        if (Array.isArray(item)) {
+            result.push.apply(result, flatten(item))
         } else {
-            result.push(array);
+            result.push(item);
         }
-        return result;
-    }, []);
+    }
+    return result;
 }
 
 
