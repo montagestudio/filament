@@ -13,7 +13,7 @@ exports.PackageEditor = Montage.create(Editor, {
     },
 
     friendlyName : {
-        value: "Package Editor"
+        value: "Package Manager"
     },
 
     acceptsActiveTarget: {

@@ -39,7 +39,7 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
     },
 
     friendlyName : {
-        value: "Code Editor"
+        value: "Text Editor"
     },
 
     acceptsActiveTarget: {
