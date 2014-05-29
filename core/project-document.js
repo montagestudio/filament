@@ -479,6 +479,11 @@ exports.ProjectDocument = Document.specialize({
                 otherFiles = [],
                 commitBatch = null;
 
+            // Make sure we actually have something to save
+            if (this.dirtyDocuments.length === 0) {
+                return Promise.resolve();
+            }
+
             this.isBusy = true;
 
             savedPromises = this.dirtyDocuments.map(function (doc) {
