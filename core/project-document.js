@@ -691,7 +691,13 @@ exports.ProjectDocument = Document.specialize({
                     if (result.success) {
                         applicationDelegate.currentPanelKey = "merge";
                         applicationDelegate.showModal = true;
-                        return applicationDelegate.mergePanel.getResponse(self.currentBranch.name, self.aheadCount, true, "Update files")
+
+                        return self._environmentBridge.getRepositoryInfo(self.currentBranch.name)
+                        .then(function(info) {
+                            var commitUrl = info.repositoryUrl + "/compare/" + info.branch + "..." + info.shadowBranch;
+                            return applicationDelegate.mergePanel.getResponse(self.currentBranch.name, self.aheadCount,
+                                commitUrl, true, "Update files");
+                        })
                         .then(function (response) {
                             if (typeof response === "object") {
                                 applicationDelegate.currentPanelKey = "progress";
