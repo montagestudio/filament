@@ -850,6 +850,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                 menuItem.enabled = this.canLaunchPreview;
                 break;
+            case "save":
+                evt.stop();
+                menuItem.enabled = this.projectDocument.isProjectDirty;
+                break;
             case "closeFile":
                 evt.stop();
 
