@@ -6,6 +6,10 @@
     right: 0;
 }
 
+.Filament-loader--firefly .Loader {
+    z-index: 2000;
+}
+
 .Main-wrap {
     position: absolute;
     top: 0;
@@ -13,4 +17,14 @@
     bottom: 0;
     right: 0;
     margin: 0;
+}
+.ModalOverlay.is-booting,
+.ModalOverlay.ModalOverlay-no-Display.is-booting {
+    opacity: 1;
+    background-color: hsl(0, 0%, 20%);
+    visibility: visible;
+    -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    transition: none;
 }

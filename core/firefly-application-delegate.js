@@ -47,6 +47,10 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
         value: false
     },
 
+    isProjectLoaded: {
+        value: false
+    },
+
     currentPanelKey: {
         value: null
     },
@@ -246,6 +250,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 repositoriesController.addRepositoryToRecent(project);
 
                 self.showModal = false;
+                self.isProjectLoaded = true;
                 self.currentPanelKey = null;
             }).done();
 

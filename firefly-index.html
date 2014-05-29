@@ -93,7 +93,8 @@
                     "element": {"#": "modalOverlay"}
                 },
                 "bindings": {
-                    "visible": {"<-": "@applicationDelegate.showModal"}
+                    "visible": {"<-": "@applicationDelegate.showModal"},
+                    "classList.has('is-booting')": {"<-": "!@applicationDelegate.isProjectLoaded"}
                 }
             },
 
@@ -194,7 +195,7 @@
 
     <div data-montage-id="status"></div>
 
-    <section data-montage-id="modalOverlay">
+    <section data-montage-id="modalOverlay" class="ModalOverlay-noDisplay">
         <div data-montage-id="panelSwitcher" data-arg="panel" class="ModalOverlay-switcher">
             <div data-arg="unknown" data-montage-id="unknownRepositoryPanel" class="ModalOverlay-item"></div>
             <div data-arg="initialize" data-montage-id="initializeRepoPanel" class="ModalOverlay-item"></div>
