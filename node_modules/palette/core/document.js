@@ -79,7 +79,7 @@ exports.Document = Target.specialize({
         get: function () {
             // Get the last pathname component of the url, whether it's a file
             // or directory (trailing-slash).
-            return this.url.match(/\/([^\/]+)\/*$/)[1];
+            return decodeURI(this.url.match(/\/([^\/]+)\/*$/)[1]);
         }
     },
 
