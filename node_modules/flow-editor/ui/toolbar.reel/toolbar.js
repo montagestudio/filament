@@ -1,5 +1,7 @@
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
+    ToolBarConfig = require("core/configuration").FlowEditorConfig.toolbar,
+    ToolBarDelegate = require("core/toolbar-delegate").ToolBarDelegate,
     PenTools = require("ui/pen-tools");
 
 /**
@@ -9,125 +11,107 @@ var Montage = require("montage").Montage,
 */
 exports.Toolbar = Montage.create(Component, /** @lends module:"ui/toolbar.reel".Toolbar# */ {
 
+    constructor: {
+        value: function ToolbarCell() {
+            this.super();
+
+            this.items = ToolBarConfig.items;
+            this._delegate = new ToolBarDelegate();
+            this._delegate.source = this;
+        }
+    },
+
     selectedTool: {
         value: null
     },
 
-    _tools: {
-        value: {}
-    },
-
-    handleClick: {
-        enumerable: false,
-        value: function (event) {
-            if (event.target.getAttribute("data-tool")) {
-                if (event.target !== this._element) {
-                    var elements = this.element.getElementsByTagName("*"),
-                        i;
-
-                    for (i = 0; i < elements.length; i++) {
-                        elements[i].classList.remove("flow-Editor-Toolbar-Button--selected");
-                    }
-                    event.target.classList.add("flow-Editor-Toolbar-Button--selected");
-                    this.selectedTool = this._tools[event.target.getAttribute("data-tool")];
-                }
-                event.preventDefault();
-            }
-        }
-    },
-
-    enterDocument: {
-        value: function (firstTime) {
-            if (firstTime) {
-                this._tools = {
-                    "arrow": PenTools.ArrowTool.create(),
-                    "convert": PenTools.ConvertTool.create(),
-                    "pen": PenTools.PenTool.create(),
-                    "add": PenTools.AddTool.create(),
-                    "helix": PenTools.HelixTool.create()
-                };
-                this.selectedTool = this._tools.convert;
-            }
-        }
-    },
-
-    prepareForActivationEvents: {
-        enumerable: false,
-        value: function () {
-            this._element.addEventListener("click", this, false);
-        }
-    },
-
-    handleCloseButtonAction: {
-        value: function (evt) {
-            evt.stop();
-            this.dispatchEventNamed("exitModalEditor", true, true);
-        }
-    },
-
-    isInspectorVisible: {
-        value: false
-    },
-
-    handleInspectorButtonAction: {
-        value: function () {
-            this.isInspectorVisible = !this.isInspectorVisible;
-        }
+    items: {
+        value: null
     },
 
     isTreeVisible: {
         value: false
     },
 
-    handleTreeButtonAction: {
-        value: function () {
-            this.isTreeVisible = !this.isTreeVisible;
-        }
+    isInspectorVisible: {
+        value: false
     },
 
-    handleZoomExtendsAction: {
-        value: function () {
-            var boundaries = this.viewport.scene.getRecursiveAxisAlignedBoundaries(),
-                x = boundaries[0].max - boundaries[0].min,
-                y = boundaries[1].max - boundaries[1].min,
-                z = boundaries[2].max - boundaries[2].min,
-                scaleX = this.viewport._width / x,
-                scaleY = this.viewport._height / y,
-                scaleZ = this.viewport._height / z,
-                scale = Math.min(scaleX, scaleY, scaleZ) * 0.8,
-                center = {
-                    x: (boundaries[0].max + boundaries[0].min) / 2,
-                    y: (boundaries[1].max + boundaries[1].min) / 2,
-                    z: (boundaries[2].max + boundaries[2].min) / 2
+    selectedCell: {
+        value: null
+    },
+
+    _delegate: {
+        value: null
+    },
+
+    _tools: {
+        value: null
+    },
+
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                this._tools = {
+                    "arrow": PenTools.ArrowTool.create(), // Todo check if still used
+                    "convert": PenTools.ConvertTool.create(),
+                    "pen": PenTools.PenTool.create(),
+                    "add": PenTools.AddTool.create(),
+                    "helix": PenTools.HelixTool.create()
                 };
 
-            this.viewport.scale = scale;
-            this.viewport2.scale = scale;
-
-            this._updateViewPortAfterZoom(this.viewport, scale, center);
-            this._updateViewPortAfterZoom(this.viewport2, scale, center);
+                this.selectedTool = this._tools.convert;
+            }
         }
     },
 
-    _updateViewPortAfterZoom: {
-        value: function (viewport, scale, center) {
-           switch (viewport.type) {
+    handleButtonAction: {
+        value: function (event) {
+            if (event) {
+                var source = event.detail.get("source");
 
-               case "front":
-                   viewport.translateX = (viewport._width / 2) - (center.x * scale);
-                   viewport.translateY = (viewport._height / 2) - (center.y * scale);
-                   break;
+                if (source) {
+                    var buttonID = source.object.id;
 
-               case "top":
-                   viewport.translateX = (viewport._width / 2) - (center.x * scale);
-                   viewport.translateY = (viewport._height / 2) - (center.z * scale);
-                   break;
+                    if (source.object.canBeSelected) {
+                        this.selectedCell.buttonElement.classList.remove("flow-Editor-Toolbar-Button--selected");
+                        this.selectedCell = source;
+                        this.selectedTool = this._tools[buttonID];
 
-               case "profile":
-                   viewport.translateX = (viewport._width / 2) - (center.z * scale);
-                   viewport.translateY = (viewport._height / 2) - (center.y * scale);
-                   break;
-           }
+                        source.buttonElement.classList.add("flow-Editor-Toolbar-Button--selected");
+                    }
+
+                    if (this._delegate) {
+                        var handlerName = "handle" + buttonID[0].toUpperCase() + buttonID.slice(1) + "Action";
+
+                        if (handlerName && typeof this._delegate[handlerName] === "function") {
+                            this._delegate[handlerName](event);
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    handleButtonHold: {
+        value: function (event) {
+            //Todo display some addtional tools for the same category of tool within an orverlay.
+        }
+    },
+
+    draw: {
+        value: function () {
+            if (!this.selectedButton) {
+                var cells = this.templateObjects.flowEditorToolbarItemList.childComponents,
+                    self = this;
+
+                cells.some(function (cell) {
+                    if (cell.object.id === ToolBarConfig.initialToolSelected) {
+                        cell.buttonElement.classList.add("flow-Editor-Toolbar-Button--selected");
+                        self.selectedCell = cell;
+                    }
+                });
+            }
         }
     }
 

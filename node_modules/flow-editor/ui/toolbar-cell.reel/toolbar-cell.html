@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="toolbar-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"},
+                "buttonElement": {"#": "toolBarCellButton"}
+            }
+        },
+
+        "button": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "toolBarCellButton"}
+            },
+            "bindings": {
+                "detail.get('source')": {"<-": "@owner"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <li data-montage-id="owner" class="ToolbarCell">
+        <div data-montage-id="toolBarCellButton" class="flow-Editor-Toolbar-Button"></div>
+    </li>
+</body>
+</html>

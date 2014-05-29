@@ -1,27 +1,7 @@
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component,
     Viewport = require("ui/viewport").Viewport,
-
-    VIEW_PORT_TYPES = {
-        top: [
-            0.1,  0,    0,   0,
-            0,    0,    1,   0,
-            0,    0.1,  0,   0,
-            0,    0,    0,   1
-        ],
-        front: [
-            0.1,  0,    0,   0,
-            0,    0.1,  0,   0,
-            0,    0,    1,   0,
-            0,    0,    0,   1
-        ],
-        profile: [
-            0,    0,    0.1, 0,
-            0,    0.1,  0,   0,
-            0.1,  0,    0,   0,
-            0,    0,    0,   1
-        ]
-    };
+    ViewPortConfig = require("core/configuration").FlowEditorConfig.viewPort;
 
 exports.FlowViewport = Montage.create(Viewport, {
 
@@ -45,8 +25,10 @@ exports.FlowViewport = Montage.create(Viewport, {
 
     type: {
         set: function (type) {
-            if (VIEW_PORT_TYPES.hasOwnProperty(type)) {
-                this.matrix = VIEW_PORT_TYPES[type];
+            var matrixList = ViewPortConfig.matrix;
+
+            if (matrixList.hasOwnProperty(type)) {
+                this.matrix = matrixList[type].slice(0);
                 this._type = type;
 
                 this.needsDraw = true;
@@ -59,7 +41,7 @@ exports.FlowViewport = Montage.create(Viewport, {
 
     types: {
         get: function () {
-            return Object.keys(VIEW_PORT_TYPES).slice(0);
+            return Object.keys(ViewPortConfig.types);
         }
     },
 

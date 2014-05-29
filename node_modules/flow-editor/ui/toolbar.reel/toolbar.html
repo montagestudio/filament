@@ -38,73 +38,46 @@ POSSIBILITY OF SUCH DAMAGE.
         "owner": {
             "properties": {
                 "element": {"#": "toolbar"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "hold",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "flowEditorToolbarItemList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "flowEditorToolbarItemList"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.items"}
             }
         },
 
-        "closeButton": {
-            "prototype": "matte/ui/button.reel",
+        "flowEditorToolbarItem": {
+            "prototype": "ui/toolbar-cell.reel",
             "properties": {
-                "element": {"#": "closeButton"}
+                "element": {"#": "flowEditorToolbarItem"}
             },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
-        "inspectorButton": {
-            "prototype": "matte/ui/button.reel",
-            "properties": {
-                "element": {"#": "inspectorButton"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
-        "zoomExtends": {
-            "prototype": "matte/ui/button.reel",
-            "properties": {
-                "element": {"#": "zoomExtends"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
-        "treeButton": {
-            "prototype": "matte/ui/button.reel",
-            "properties": {
-                "element": {"#": "treeButton"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
+            "bindings": {
+                "object": {"<-": "@flowEditorToolbarItemList:iteration.object"}
+            }
         }
     }
     </script>
 </head>
 <body>
     <div data-montage-id="toolbar" class="flow-Editor-Toolbar">
-        <div data-tool="convert" class="flow-Editor-Toolbar-Button flow-Editor-Toolbar-Button-Convert flow-Editor-Toolbar-Button--selected"></div>
-        <div data-tool="pen" class="flow-Editor-Toolbar-Button flow-Editor-Toolbar-Button-Pen"></div>
-        <div data-tool="add" class="flow-Editor-Toolbar-Button flow-Editor-Toolbar-Button-Add"></div>
-        <div data-tool="helix" class="flow-Editor-Toolbar-Button flow-Editor-Toolbar-Button-Helix"></div>
-        <div data-montage-id="zoomExtends" class="flow-Editor-Toolbar-Button flow-Editor-Toolbar-Button-Zoom-Extends"></div>
-        <div data-montage-id="inspectorButton" class="flow-Editor-Toolbar-Button flow-Editor-Toolbar-Button-Inspector"></div>
-        <div data-montage-id="treeButton" class="flow-Editor-Toolbar-Button flow-Editor-Toolbar-Button-Tree"></div>
-        <div data-montage-id="closeButton" class="flow-Editor-Toolbar-Button flow-Editor-Toolbar-Button-Close"></div>
+        <ul data-montage-id="flowEditorToolbarItemList" class="flow-Editor-Toolbar-List">
+            <li data-montage-id="flowEditorToolbarItem"></li>
+        </ul>
     </div>
 </body>
 </html>
