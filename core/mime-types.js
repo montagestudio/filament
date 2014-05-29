@@ -48,3 +48,6 @@ exports.JSON_NODE = "x-filament/x-montage-json-node";
 // Represents a document targetLabel
 // Value is the document filename
 exports.DOCUMENTTAB = "x-filament/x-document-tab";
+
+// Represents a url
+exports.URL = "text/x-url";
