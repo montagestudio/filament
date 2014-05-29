@@ -1184,7 +1184,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 bridge = this.environmentBridge,
                 savePromise;
 
-            if (this.currentDocument) {
+            if (this.projectDocument && this.projectDocument.isProjectDirty) {
                 this.dispatchEventNamed("willSaveProject", true, false);
 
                 savePromise = this.projectDocument.saveAll()
