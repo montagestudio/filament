@@ -31,6 +31,10 @@ exports.ComponentEditor = Editor.specialize({
         }
     },
 
+    friendlyName : {
+        value: "Component Editor"
+    },
+
     // Accept activeTarget status, this puts us in the position
     // of power when we need to validate menus etc.
     //

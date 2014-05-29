@@ -77,7 +77,7 @@ exports.FileCell = Montage.create(Component, {
             if (prototypes.length > 0) {
                 menu.insertItem(openWithItem, 0);
                 prototypes.forEach(function (proto) {
-                    var name = proto.editorType.name,
+                    var name = (proto.editorType.friendlyName)? proto.editorType.friendlyName : proto.editorType.name,
                     // TODO: we should be able to provide event details
                     item = MenuModule.makeMenuItem(name, "openWith", true, "");
                     item.editorType = proto.editorType;
