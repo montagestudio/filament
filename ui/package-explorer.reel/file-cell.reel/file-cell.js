@@ -293,14 +293,16 @@ exports.FileCell = Montage.create(Component, {
         value: function(directoryReader) {
             var defer = Promise.defer();
             var entries = [];
+            var self = this;
 
             var readEntries = function() {
                 directoryReader.readEntries(function(results) {
                     // We probably want to exclude .DS_Store
                     console.log('READ', results);
                     if (!results.length) {
-                        entries.sort();
-                        defer.resolve(entries);
+                        self.readDirectory(entries).then(function(dirEntries) {
+                            defer.resolve(dirEntries);
+                        });
                     } else {
                         entries.push.apply(entries, results);
                         console.log('ENTRIES', results);
