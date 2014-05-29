@@ -56,7 +56,7 @@ exports.Main = Montage.create(Component, {
             document.body.addEventListener("drop", stop, false);
             function stop(evt) {
                 // Prevent "loading" dropped files as a browser is wont to do
-                if (evt.dataTransfer.types.indexOf("Files") > -1) {
+                if (evt.dataTransfer.types && evt.dataTransfer.types.indexOf("Files") > -1) {
                     evt.stopPropagation();
                     evt.preventDefault();
                 }

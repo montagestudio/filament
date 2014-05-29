@@ -76,7 +76,7 @@ exports.BindingJig = Montage.create(Component, {
 
     handleDrop: {
         value: function (event) {
-            if (event.dataTransfer.types.has(MimeTypes.SERIALIZATION_OBJECT_LABEL)) {
+            if (event.dataTransfer.types && event.dataTransfer.types.has(MimeTypes.SERIALIZATION_OBJECT_LABEL)) {
                 var plain = event.dataTransfer.getData("text/plain");
                 var rich = "@" + event.dataTransfer.getData(MimeTypes.SERIALIZATION_OBJECT_LABEL);
                 replaceDroppedTextPlain(plain, rich, this.templateObjects.sourcePath.element);

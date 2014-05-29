@@ -209,7 +209,7 @@ exports.FileCell = Montage.create(Component, {
 
     captureDragenter: {
         value: function(e) {
-            if (e.dataTransfer.types.indexOf("Files") === -1) {
+            if (e.dataTransfer.types && e.dataTransfer.types.indexOf("Files") === -1) {
                 return;
             }
             e.stopPropagation();
