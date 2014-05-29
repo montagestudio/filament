@@ -120,7 +120,7 @@ exports.Main = Montage.create(Component, {
                 index,
                 newIndex;
 
-            if(availableTypes.has(MimeTypes.DOCUMENTTAB)) {
+            if(availableTypes && availableTypes.has(MimeTypes.DOCUMENTTAB)) {
                 data = JSON.parse(evt.dataTransfer.getData(MimeTypes.DOCUMENTTAB));
                 index = data.index;
 
