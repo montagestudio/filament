@@ -879,6 +879,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+    /* jshint -W074 */
     handleMenuAction: {
         enumerable: false,
         value: function (evt) {
@@ -929,6 +930,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             }
         }
     },
+    /* jshint +W074 */
 
     openPreview: {
         value: function () {
