@@ -100,7 +100,7 @@ exports.DocumentTab = Component.specialize({
     handleDragstart:{
         value: function (evt) {
             var data = JSON.stringify({index: this.iteration.index});
-            evt.dataTransfer.setData(MimeTypes.DOCUMENTTAB, data);
+            evt.dataTransfer.setData(MimeTypes.DOCUMENT_TAB, data);
             evt.dataTransfer.setData(MimeTypes.URL, this.document.url);
             evt.dataTransfer.setData(MimeTypes.TEXT_PLAIN, this.document.url);
             // TODO: soft remove tab while dragging
