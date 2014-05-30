@@ -176,8 +176,6 @@ exports.Main = Montage.create(Component, {
                 } else {
                     this.projectController.openDocumentsController.select(doc);
                 }
-            } else {
-                debugger
             }
         }
     },
