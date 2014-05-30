@@ -95,7 +95,6 @@ exports.DocumentTab = Component.specialize({
 
     handleDragstart:{
         value: function (evt) {
-            evt.dataTransfer.setData(MimeTypes.DOCUMENT_TAB, this.document.url);
             evt.dataTransfer.setData(MimeTypes.URL, this.document.url);
             evt.dataTransfer.setData(MimeTypes.TEXT_PLAIN, this.document.url);
             // TODO: soft remove tab while dragging

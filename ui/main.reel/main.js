@@ -81,6 +81,7 @@ exports.Main = Montage.create(Component, {
         value: function (evt) {
             // TODO: move tabs arround
             evt.preventDefault();
+            evt.stopPropagation();
             evt.dataTransfer.dropEffect = "move";
         }
     },
@@ -91,10 +92,11 @@ exports.Main = Montage.create(Component, {
         }
     },
 
-    _documentTabNewIndex: {
+    tabIndexForElement: {
         value: function (element) {
             var tab;
 
+            // Make sure we are on a documentTab and not the children of one
             while (element.dataset.montageId !== "documentTab" && element.parentElement) {
                 element = element.parentElement;
             }
@@ -105,7 +107,15 @@ exports.Main = Montage.create(Component, {
                 throw "Can not move re-arrange this tab because this tab can not be found";
             }
 
-            return tab.component.iteration.index;
+            var iterations = this.templateObjects.openDocumentList.iterations.filter(function(i) {
+                return i.firstElement === tab;
+            });
+
+            if (!iterations.length) {
+                throw "Can not find iteration document for tab element";
+            }
+
+            return iterations[0].index;
         }
     },
 
@@ -142,8 +152,8 @@ exports.Main = Montage.create(Component, {
                 index,
                 newIndex;
 
-            if(availableTypes && availableTypes.has(MimeTypes.DOCUMENT_TAB)) {
-                url = evt.dataTransfer.getData(MimeTypes.DOCUMENT_TAB);
+            if(availableTypes && availableTypes.has(MimeTypes.URL)) {
+                url = evt.dataTransfer.getData(MimeTypes.URL);
                 index = this.tabIndexForUrl(url);
 
                 if ( index === undefined || !documents[index]) {
@@ -155,7 +165,7 @@ exports.Main = Montage.create(Component, {
                     newIndex = documents.length;
                 }
                 else {
-                    newIndex = this._documentTabNewIndex(element);
+                    newIndex = this.tabIndexForElement(element);
                 }
                 doc = documents[index];
                 documents.splice(newIndex, 0, doc);
@@ -166,6 +176,8 @@ exports.Main = Montage.create(Component, {
                 } else {
                     this.projectController.openDocumentsController.select(doc);
                 }
+            } else {
+                debugger
             }
         }
     },

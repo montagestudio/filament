@@ -45,9 +45,5 @@ exports.MONTAGE_LISTENER = "x-filament/x-montage-listener";
 // Value is an HTML node element in a json simple format
 exports.JSON_NODE = "x-filament/x-montage-json-node";
 
-// Represents a document targetLabel
-// Value is the document filename
-exports.DOCUMENT_TAB = "x-filament/x-document-tab";
-
 // Represents a url
 exports.URL = "text/x-url";
