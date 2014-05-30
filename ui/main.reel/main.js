@@ -109,20 +109,42 @@ exports.Main = Montage.create(Component, {
         }
     },
 
+    tabIndexForUrl: {
+        value: function (url) {
+            var documents = this.projectController.documents.filter(function (doc) {
+                return doc.url === url;
+            });
+
+            if (documents.length === 1) {
+                var doc = documents[0],
+                    iterations = this.templateObjects.openDocumentList.iterations.filter(function(i) {
+                        return i.object === doc;
+                    });
+                if (iterations.length) {
+                    return iterations[0].index;
+                } else {
+                    throw "Can not find iteration for unique document for url:" + url;
+                }
+            } else {
+                throw "Can not find unique document for url:" + url;
+            }
+        }
+    },
+
     handleDrop: {
         value: function (evt) {
             var availableTypes = evt.dataTransfer.types,
                 element = document.elementFromPoint(evt.pageX, evt.pageY),
                 documents = this.projectController.documents,
                 currentDocument = this.projectController.currentDocument,
-                data,
+                url,
                 doc,
                 index,
                 newIndex;
 
             if(availableTypes && availableTypes.has(MimeTypes.DOCUMENT_TAB)) {
-                data = JSON.parse(evt.dataTransfer.getData(MimeTypes.DOCUMENT_TAB));
-                index = data.index;
+                url = evt.dataTransfer.getData(MimeTypes.DOCUMENT_TAB);
+                index = this.tabIndexForUrl(url);
 
                 if ( index === undefined || !documents[index]) {
                     throw "Can not move re-arrange this tab because this tab index is incorrect";
