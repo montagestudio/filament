@@ -121,6 +121,7 @@ exports.Main = Montage.create(Component, {
 
     tabIndexForUrl: {
         value: function (url) {
+            // Find documents associated with this url
             var documents = this.projectController.documents.filter(function (doc) {
                 return doc.url === url;
             });
@@ -136,7 +137,8 @@ exports.Main = Montage.create(Component, {
                     throw "Can not find iteration for unique document for url:" + url;
                 }
             } else {
-                throw "Can not find unique document for url:" + url;
+                // Unopened file
+                return -1;
             }
         }
     },
@@ -156,8 +158,12 @@ exports.Main = Montage.create(Component, {
                 url = evt.dataTransfer.getData(MimeTypes.URL);
                 index = this.tabIndexForUrl(url);
 
-                if ( index === undefined || !documents[index]) {
-                    throw "Can not move re-arrange this tab because this tab index is incorrect";
+                if (index && index === -1) {
+                    // Open file
+                    this.dispatchEventNamed("openUrl", true, true, url);
+                    return;
+                } else if ( index === undefined || !documents[index]) {
+                    throw "Can not re-arrange this tab because this tab index is incorrect";
                 }
 
                 // move to last if not droped on a tab but in the empty space of the tab bar
