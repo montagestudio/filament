@@ -172,7 +172,7 @@ Montage.defineProperty(exports, "defaultMenu", {
 
                 // View
                 viewMenu = makeMenuItem("View", "", true, "", [
-                    makeMenuItem("Launch Preview", "launchPreview", true, "control+r"),
+                    makeMenuItem("Live View", "launchPreview", true, "control+r")
                 ]);
                 _defaultMenu.insertItem(viewMenu);
 
