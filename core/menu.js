@@ -179,7 +179,9 @@ Montage.defineProperty(exports, "defaultMenu", {
                 // Goto
                 gotoMenu = makeMenuItem("Go", "", true, "", [
                     makeMenuItem("Go to Anything…", "goto", true, "command+e"),
-                    makeMenuItem("Go to Anything Again…", "gotoAgain", true, "command+shift+e")
+                    makeMenuItem("Go to Anything Again…", "gotoAgain", true, "command+shift+e"),
+                    makeMenuItem("Select Next Tab", "selectNextDocument", true, "control+option+right"),
+                    makeMenuItem("Select Previous Tab", "selectPreviousDocument", true, "control+option+left")
                 ]);
                 _defaultMenu.insertItem(gotoMenu);
 

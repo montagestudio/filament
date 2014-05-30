@@ -808,6 +808,22 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+    _getDocumentPlus: {
+        value: function (n) {
+            var editingDocuments = this.openDocumentsController.organizedContent,
+                docIndex = editingDocuments.indexOf(this.currentDocument),
+                nextDocIndex = docIndex + n;
+
+            if (nextDocIndex > editingDocuments.length - 1) {
+                nextDocIndex = 0;
+            } else if (nextDocIndex < 0) {
+                nextDocIndex = editingDocuments.length - 1;
+            }
+
+            return editingDocuments[nextDocIndex];
+        }
+    },
+
     canCloseAllDocuments: {
         value: function () {
             return this.documents.every(function (document) {
@@ -892,6 +908,16 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 evt.stop();
 
                 this.closeProject();
+                break;
+            case "selectNextDocument":
+                evt.stop();
+
+                this.openUrlForEditing(this._getDocumentPlus(1).url).done();
+                break;
+            case "selectPreviousDocument":
+                evt.stop();
+
+                this.openUrlForEditing(this._getDocumentPlus(-1).url).done();
                 break;
             case "closeFile" :
                 evt.stop();
