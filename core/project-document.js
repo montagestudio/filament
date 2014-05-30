@@ -93,46 +93,36 @@ exports.ProjectDocument = Document.specialize({
 
     _initMerge: {
         value: function() {
-            var self = this,
-                mergeAllowed;
+            var self = this;
 
-            // TODO: We need a secure way to check if the current user is authorized to merge project into github
-            // for now, just keep it simple
-            mergeAllowed = localStorage.merge;
-            if (mergeAllowed === undefined) {
-                mergeAllowed = "false";
-                localStorage.merge = mergeAllowed;
-            }
-            if (mergeAllowed === "true") {
-                var mergeMenu = new this._environmentBridge.MenuItem();
+            var mergeMenu = new this._environmentBridge.MenuItem();
 
-                mergeMenu.title = "Push…"; //TODO: This should be localized
-                mergeMenu.identifier = MERGE_MENU_IDENTIFIER;
+            mergeMenu.title = "Push…"; //TODO: This should be localized
+            mergeMenu.identifier = MERGE_MENU_IDENTIFIER;
 
-                this._environmentBridge.mainMenu.then(function(mainMenu) {
-                    var projectMenu = mainMenu.menuItemForIdentifier(PROJECT_MENU);
-                    if (projectMenu) {
-                        // Let's figure out where to insert the build menu
-                        var itemsMap = {},
-                            insertAfter;
+            this._environmentBridge.mainMenu.then(function(mainMenu) {
+                var projectMenu = mainMenu.menuItemForIdentifier(PROJECT_MENU);
+                if (projectMenu) {
+                    // Let's figure out where to insert the build menu
+                    var itemsMap = {},
+                        insertAfter;
 
-                        projectMenu.items.forEach(function(item, index) {
-                            itemsMap[item.identifier] = index + 1;
-                        });
-                        insertAfter = itemsMap.save || itemsMap.new;
-                        projectMenu.insertItem(mergeMenu, insertAfter).done();
-                        if (!self._menuValidateRegistered) {
-                            application.addEventListener("menuValidate", self, false);
-                            self._menuValidateRegistered = true;
-                        }
-                        if (!self._menuActionRegistered) {
-                            application.addEventListener("menuAction", self, false);
-                            self._menuActionRegistered = true;
-                        }
-
+                    projectMenu.items.forEach(function(item, index) {
+                        itemsMap[item.identifier] = index + 1;
+                    });
+                    insertAfter = itemsMap.save || itemsMap.new;
+                    projectMenu.insertItem(mergeMenu, insertAfter).done();
+                    if (!self._menuValidateRegistered) {
+                        application.addEventListener("menuValidate", self, false);
+                        self._menuValidateRegistered = true;
                     }
-                });
-            }
+                    if (!self._menuActionRegistered) {
+                        application.addEventListener("menuAction", self, false);
+                        self._menuActionRegistered = true;
+                    }
+
+                }
+            });
         }
     },
 
