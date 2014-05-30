@@ -1,10 +1,12 @@
 var Document = require("palette/core/document").Document,
     Promise = require("montage/core/promise").Promise,
     application = require("montage/core/application").application,
-    Build = require("core/build").Build;
+    Build = require("core/build").Build,
+    track = require("track");
 
 var PROJECT_MENU = "project";
-var MENU_IDENTIFIER_PREFIX = "build-";
+var MERGE_MENU_IDENTIFIER = "merge";
+var BUILD_MENU_IDENTIFIER_PREFIX = "build-";
 
 /**
  * The ProjectDocument represents the editing interface for the project itself.
@@ -79,10 +81,58 @@ exports.ProjectDocument = Document.specialize({
             self._environmentBridge = environmentBridge;
             self._documentController = documentController;
 
+            this._menuValidateRegistered = false;
+            this._menuActionRegistered = false;
+            this._initMerge();
             this._initBuild();
             window.pd = self;
 
             return self;
+        }
+    },
+
+    _initMerge: {
+        value: function() {
+            var self = this,
+                mergeAllowed;
+
+            // TODO: We need a secure way to check if the current user is authorized to merge project into github
+            // for now, just keep it simple
+            mergeAllowed = localStorage.merge;
+            if (mergeAllowed === undefined) {
+                mergeAllowed = "false";
+                localStorage.merge = mergeAllowed;
+            }
+            if (mergeAllowed === "true") {
+                var mergeMenu = new this._environmentBridge.MenuItem();
+
+                mergeMenu.title = "Push…"; //TODO: This should be localized
+                mergeMenu.identifier = MERGE_MENU_IDENTIFIER;
+
+                this._environmentBridge.mainMenu.then(function(mainMenu) {
+                    var projectMenu = mainMenu.menuItemForIdentifier(PROJECT_MENU);
+                    if (projectMenu) {
+                        // Let's figure out where to insert the build menu
+                        var itemsMap = {},
+                            insertAfter;
+
+                        projectMenu.items.forEach(function(item, index) {
+                            itemsMap[item.identifier] = index + 1;
+                        });
+                        insertAfter = itemsMap.save || itemsMap.new;
+                        projectMenu.insertItem(mergeMenu, insertAfter).done();
+                        if (!self._menuValidateRegistered) {
+                            application.addEventListener("menuValidate", self, false);
+                            self._menuValidateRegistered = true;
+                        }
+                        if (!self._menuActionRegistered) {
+                            application.addEventListener("menuAction", self, false);
+                            self._menuActionRegistered = true;
+                        }
+
+                    }
+                });
+            }
         }
     },
 
@@ -100,10 +150,20 @@ exports.ProjectDocument = Document.specialize({
 
             this.build = this._environmentBridge.mainMenu.then(function(mainMenu) {
                 projectMenu = mainMenu.menuItemForIdentifier(PROJECT_MENU);
-
                 if (projectMenu) {
-                    projectMenu.insertItem(buildMenu, 2).done();
-                    application.addEventListener("menuAction", self, false);
+                    // Let's figure out where to insert the build menu
+                    var itemsMap = {},
+                        insertAfter;
+
+                    projectMenu.items.forEach(function(item, index) {
+                        itemsMap[item.identifier] = index + 1;
+                    });
+                    insertAfter = itemsMap.merge || itemsMap.save || itemsMap.new;
+                    projectMenu.insertItem(buildMenu, insertAfter).done();
+                    if (!self._menuActionRegistered) {
+                        application.addEventListener("menuAction", self, false);
+                        self._menuActionRegistered = true;
+                    }
                 }
 
                 build = new Build();
@@ -122,7 +182,7 @@ exports.ProjectDocument = Document.specialize({
                 var menuItem = new this._environmentBridge.MenuItem();
 
                 menuItem.title = chain.name;
-                menuItem.identifier = MENU_IDENTIFIER_PREFIX + chain.identifier;
+                menuItem.identifier = BUILD_MENU_IDENTIFIER_PREFIX + chain.identifier;
                 this._buildMenu.insertItem(menuItem).done();
             }
         }
@@ -131,19 +191,42 @@ exports.ProjectDocument = Document.specialize({
     didRemoveBuildChain: {
         value: function(chain) {
             if (this._buildMenu) {
-                var menuItem = this._buildMenu.menuItemForIdentifier(MENU_IDENTIFIER_PREFIX + chain.identifier);
+                var menuItem = this._buildMenu.menuItemForIdentifier(BUILD_MENU_IDENTIFIER_PREFIX + chain.identifier);
                 this._buildMenu.removeItem(menuItem).done();
+            }
+        }
+    },
+
+    handleMenuValidate: {
+        value: function(event) {
+            var menuItem = event.detail,
+                identifier = menuItem.identifier;
+
+            if (identifier === MERGE_MENU_IDENTIFIER) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                menuItem.enabled = !this._mergePromise && this.aheadCount > 0;
+                if (this.currentBranch.name && this.currentBranch.name.length) {
+                    menuItem.title = "Push to " + this.currentBranch.name + "…"; //TODO: This should be localized
+                } else {
+                    menuItem.title = "Push…"; //TODO: This should be localized
+                }
             }
         }
     },
 
     handleMenuAction: {
         value: function(event) {
-            var identifier = event.detail.identifier;
-            var chainIdentifier;
+            var identifier = event.detail.identifier,
+                chainIdentifier;
 
-            if (identifier.indexOf(MENU_IDENTIFIER_PREFIX) === 0) {
-                chainIdentifier = identifier.slice(MENU_IDENTIFIER_PREFIX.length);
+            if (identifier === MERGE_MENU_IDENTIFIER) {
+                this.doMerge();
+                return;
+            }
+            else if (identifier.indexOf(BUILD_MENU_IDENTIFIER_PREFIX) === 0) {
+                chainIdentifier = identifier.slice(BUILD_MENU_IDENTIFIER_PREFIX.length);
                 this.build.then(function(build) {
                     return build.buildFor(chainIdentifier);
                 }).done();
@@ -320,7 +403,7 @@ exports.ProjectDocument = Document.specialize({
                             //jshint +W106
                         }
 
-                        return self._updateProjectRefs()
+                        return self._updateProjectRefs("update")
                             .then(function() {
                                 return true;
                             }, function() {
@@ -344,7 +427,7 @@ exports.ProjectDocument = Document.specialize({
                 bridge = this._environmentBridge,
                 result;
 
-            if (bridge && bridge.shadowBranchStatus && typeof bridge.shadowBranchStatus === "function") {
+            if (bridge && typeof bridge.shadowBranchStatus === "function") {
                 result = this._environmentBridge.shadowBranchStatus(this.currentBranch.name, forceFetch)
                     .then(function(shadowStatus) {
                         self.aheadCount = shadowStatus.localParent.ahead;
@@ -358,48 +441,61 @@ exports.ProjectDocument = Document.specialize({
     },
 
     _updateProjectRefs: {
-        value: function(resolution, reference) {
+        value: function(updateType, resolution, reference) {
             var self = this,
                 bridge = this._environmentBridge,
                 applicationDelegate = application.delegate,
                 currentPanelKey,
+                operationAborted = false,
                 retVal;
 
-            if (bridge && bridge.updateProjectRefs && typeof bridge.updateProjectRefs === "function") {
+            if (bridge && typeof bridge.updateProjectRefs === "function") {
                 var previousProgressMessage = applicationDelegate.progressPanel.message;
-                applicationDelegate.progressPanel.message = reference ? "Resolving conflict…" : "Updating repository…";
+                if (updateType !== "merge") {
+                    applicationDelegate.progressPanel.message =
+                        reference && resolution !== "rebase" ? "Resolving conflict…" : "Updating repository…";
+                }
 
                 retVal = bridge.updateProjectRefs(resolution, reference)
                 .then(function(result) {
-                    var resolutionStrategy = result.resolutionStrategy;
+                    var resolutionStrategy = result.resolutionStrategy,
+                        message;
 
                     if (result.success === false && resolutionStrategy.indexOf("rebase") !== -1) {
                         currentPanelKey = applicationDelegate.showModal === true ? applicationDelegate.currentPanelKey : null;
                         applicationDelegate.showModal = true;
                         applicationDelegate.currentPanelKey = "confirm";
 
-                        return applicationDelegate.confirmPanel.getResponse("We have detected remote changes. Would you like to update?", "rebase", "Update", "Cancel").then(function(response) {
-                            if (response === "rebase") {
-                                applicationDelegate.showModal = true;
-                                applicationDelegate.currentPanelKey = "progress";
-                                return self._updateProjectRefs("rebase", result.reference);
-                            } else {
-                                return {success: true}; // update has been aborted by the user, let's bailout by returning success=true
-                            }
-                        }).finally(function() {
-                            if (currentPanelKey) {
-                                applicationDelegate.currentPanelKey = currentPanelKey;
-                            } else {
-                                applicationDelegate.showModal = false;
-                                applicationDelegate.currentPanelKey = null;
-                            }
-                        });
+                        if (updateType === "merge") {
+                            message = "We have detected remote changes. Before being able to push your work, you must update your project";
+                        } else {
+                            message = "We have detected remote changes. Would you like to update?";
+                        }
+                        return applicationDelegate.confirmPanel.getResponse(message, "rebase", "Update", "Cancel")
+                            .then(function(response) {
+                                if (response === "rebase") {
+                                    applicationDelegate.showModal = true;
+                                    applicationDelegate.currentPanelKey = "progress";
+                                    return self._updateProjectRefs(updateType, "rebase", result.reference);
+                                } else {
+                                     // update has been aborted by the user
+                                    operationAborted = true;
+                                    return {success: false};
+                                }
+                            }).finally(function() {
+                                if (currentPanelKey) {
+                                    applicationDelegate.currentPanelKey = currentPanelKey;
+                                } else {
+                                    applicationDelegate.showModal = false;
+                                    applicationDelegate.currentPanelKey = null;
+                                }
+                            });
                     } else {
                         return result;
                     }
                 })
                 .then(function(result) {
-                    if (result.success !== true) {
+                    if (!operationAborted && result.success !== true) {
                         // Local shadow has diverged from remote shadow (not a rebase case)
                         currentPanelKey = applicationDelegate.showModal === true ? applicationDelegate.currentPanelKey : null;
                         applicationDelegate.showModal = true;
@@ -414,7 +510,7 @@ exports.ProjectDocument = Document.specialize({
                             if (response && typeof response.resolution) {
                                 applicationDelegate.showModal = true;
                                 applicationDelegate.currentPanelKey = "progress";
-                                return self._updateProjectRefs(response.resolution, result.reference);
+                                return self._updateProjectRefs(updateType, response.resolution, result.reference);
                             } else {
                                 return {success: true}; // update has been aborted by the user, let's bailout by returning success=true
                             }
@@ -485,7 +581,6 @@ exports.ProjectDocument = Document.specialize({
             }
 
             this.isBusy = true;
-
             savedPromises = this.dirtyDocuments.map(function (doc) {
                 var url = doc.url;
 
@@ -582,6 +677,73 @@ exports.ProjectDocument = Document.specialize({
     },
 
     /**
+    * handle merge request from user
+    * @returns none
+    */
+    doMerge: {
+        value: function() {
+            var self = this,
+                applicationDelegate = application.delegate,
+                pushSuccessful = false;
+
+            // Before we can merge, we need to make sure there wont be any conflict
+            applicationDelegate.showModal = true;
+            applicationDelegate.progressPanel.message = "Preparing to push…";
+            applicationDelegate.currentPanelKey = "progress";
+
+            this._updateProjectRefs("merge")
+                .then(function(result) {
+                    if (result.success) {
+                        applicationDelegate.currentPanelKey = "merge";
+                        applicationDelegate.showModal = true;
+
+                        return self._environmentBridge.getRepositoryInfo(self.currentBranch.name)
+                        .then(function(info) {
+                            var commitUrl = info.repositoryUrl + "/compare/" + info.branch + "..." + info.shadowBranch;
+                            return applicationDelegate.mergePanel.getResponse(self.currentBranch.name, self.aheadCount,
+                                commitUrl, true, "Update files");
+                        })
+                        .then(function (response) {
+                            if (typeof response === "object") {
+                                applicationDelegate.currentPanelKey = "progress";
+                                return self._mergePromise = self.merge(response.squash, response.message)
+                                .then(function(result) {
+                                    if (result.success === true) {
+                                        pushSuccessful = true;
+                                    }
+                                })
+                                .finally(function() {
+                                    self._mergePromise = null;
+                                });
+                            } else {
+                                pushSuccessful = true;
+                            }
+                        });
+                    }
+                })
+                .finally(function() {
+                    applicationDelegate.showModal = false;
+                    applicationDelegate.currentPanelKey = null;
+
+                    if (pushSuccessful !== true) {
+                        applicationDelegate.currentPanelKey = "confirm";
+                        applicationDelegate.showModal = true;
+                        track.error("Couldn't push project: ");
+
+                        applicationDelegate.confirmPanel.getResponse("Error pushing", true, "Retry", "Close")
+                        .then(function (response) {
+                            applicationDelegate.showModal = false;
+                            if (response === true) {
+                                self.doMerge();
+                            }
+                        });
+                    }
+                });
+        }
+    },
+
+
+    /**
      * Merges the shadow branch changes into its actual branch.
      *
      * While typically not an operation that should be offered
@@ -596,42 +758,28 @@ exports.ProjectDocument = Document.specialize({
      * @see discard
      */
     merge: {
-        value: function (message, squash) {
+        value: function (squash, message) {
             var bridge = this._environmentBridge,
+                applicationDelegate = application.delegate,
                 self = this,
                 retValue,
                 result;
 
-            if (bridge && bridge.mergeShadowBranch && typeof bridge.mergeShadowBranch === "function") {
+            if (bridge && typeof bridge.mergeShadowBranch === "function") {
                 this.isBusy = true;
 
-                result = this._updateProjectRefs()
-                    .then(function(updateResult) {
-                        if (updateResult.success === true) {
-                            return bridge.mergeShadowBranch(self.currentBranch.name, message, squash)
-                                .then(function(mergeResult) {
-                                    // jshint noempty:false
-                                    if (mergeResult !== true) {
-                                        // cannot merge, try to update the project refs one more time
-                                        // TODO: call _updateProjectRefs and ask user what to do or just cancel the merge
-                                    }
-                                    retValue = {success: mergeResult};
-                                    // jshint noempty:true
-                                })
-                                .then(function() {
-                                    return self._updateShadowDelta().then(function() {
-                                        return retValue;
-                                    });
-                                });
-                        } else {
-                            // repo not up-to-date, need to update first
-                            //TODO: ask user to update local branches first
-                            retValue = updateResult;
-                        }
+                applicationDelegate.progressPanel.message = "Pushing to " + self.currentBranch.name + "…";
+                result = bridge.mergeShadowBranch(self.currentBranch.name, message, squash)
+                    .then(function(mergeResult) {
+                        retValue = {success: mergeResult};
+                    })
+                    .then(function() {
+                        return self._updateShadowDelta().then(function() {
+                            return retValue;
+                        });
                     })
                     .finally(function () {
                         self.isBusy = false;
-                        return retValue;
                     });
             }
 
@@ -660,8 +808,8 @@ exports.ProjectDocument = Document.specialize({
                         }
                     })
                     .then(function () {
-                        application.addEventListener("remoteChange", self, false);
-                        application.addEventListener("repositoryFlushed", self, false);
+                        application.addEventListener("remoteChange", projectDocument, false);
+                        application.addEventListener("repositoryFlushed", projectDocument, false);
                         return projectDocument.updateRefs();
                     })
                     .thenResolve(projectDocument);
