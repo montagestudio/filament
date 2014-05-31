@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="document-tab-list.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "documentTabList"}
+            }
+        },
+
+        "tabRepetition": {
+                "prototype": "montage/ui/repetition.reel",
+                "properties": {
+                    "element": {"#": "tabRepetition"}
+                },
+                "bindings": {
+                    "contentController": {"<-": "@owner.projectController.openDocumentsController"}
+                }
+            },
+
+        "documentTab": {
+            "prototype": "ui/document-tab.reel",
+            "properties": {
+                "element": {"#": "documentTab"}
+            },
+            "bindings": {
+                "document": {"<-": "@tabRepetition:iteration.object"},
+                "packageUrl": {"<-": "@owner.projectController.packageUrl"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="documentTabList">
+        <ul data-montage-id="tabRepetition" class="DocumentTabList">
+            <li data-montage-id="documentTab"></li>
+        </ul>
+    </div>
+</body>
+</html>

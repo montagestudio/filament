@@ -86,26 +86,16 @@
                 ]
             },
 
-            "openDocumentList": {
-                "prototype": "montage/ui/repetition.reel",
+            "documentTabList": {
+                "prototype": "ui/document-tab-list.reel",
                 "properties": {
-                    "element": {"#": "openDocumentList"}
+                    "element": {"#": "documentTabList"}
                 },
                 "bindings": {
-                    "contentController": {"<-": "@owner.projectController.openDocumentsController"}
+                    "projectController": {"<-": "@owner.projectController"}
                 }
             },
 
-            "documentTab": {
-                "prototype": "ui/document-tab.reel",
-                "properties": {
-                    "element": {"#": "documentTab"}
-                },
-                "bindings": {
-                    "document": {"<-": "@openDocumentList:iteration.object"},
-                    "packageUrl": {"<-": "@owner.projectController.packageUrl"}
-                }
-            },
             "split": {
                 "prototype": "ui/split-control.reel",
                 "properties": {
@@ -153,9 +143,7 @@
             <aside data-montage-id="packageExplorer"></aside>
             <div data-montage-id="split"></div>
             <section class="editor">
-                <ul data-montage-id="openDocumentList" class="Tabs">
-                    <li data-montage-id="documentTab"></li>
-                </ul>
+                <div data-montage-id="documentTabList"></div>
                 <section data-montage-id="editorSlot" class="editorSlot"></section>
             </section>
 
