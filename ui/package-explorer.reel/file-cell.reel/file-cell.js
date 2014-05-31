@@ -42,11 +42,8 @@ exports.FileCell = Montage.create(Component, {
                     this.element.addEventListener("drop", this, false);
                     this.element.addEventListener("dragenter", this, true);
                     this.element.addEventListener("dragleave", this, true);
-                } else {
-                    //TODO eventually allow downloading directories
-                    //TODO eventually allow moving directories
-                    this.element.addEventListener("dragstart", this);
                 }
+                this.element.addEventListener("dragstart", this);
 
                 this.element.addEventListener("mouseup", this);
 
@@ -387,8 +384,12 @@ exports.FileCell = Montage.create(Component, {
 
     handleDragstart: {
         value: function (evt) {
-            var fileDetails = this.element.dataset.downloadurl;
-            evt.dataTransfer.setData("DownloadURL", fileDetails);
+            // TODO eventually allow downloading directories
+            // TODO eventually allow moving directories
+            if (!this.fileInfo.isDirectory) {
+                var fileDetails = this.element.dataset.downloadurl;
+                evt.dataTransfer.setData("DownloadURL", fileDetails);
+            }
             evt.dataTransfer.setData(MimeTypes.URL, this.fileInfo.fileUrl);
         }
     },
