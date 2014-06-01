@@ -3,6 +3,7 @@ var Montage = require("montage").Montage,
     application = require("montage/core/application").application,
     Promise = require("montage/core/promise").Promise,
     MenuModule = require("core/menu"),
+    MimeTypes = require("core/mime-types"),
     Url = require("core/url");
 
 exports.FileCell = Montage.create(Component, {
@@ -41,11 +42,8 @@ exports.FileCell = Montage.create(Component, {
                     this.element.addEventListener("drop", this, false);
                     this.element.addEventListener("dragenter", this, true);
                     this.element.addEventListener("dragleave", this, true);
-                } else {
-                    //TODO eventually allow downloading directories
-                    //TODO eventually allow moving directories
-                    this.element.addEventListener("dragstart", this);
                 }
+                this.element.addEventListener("dragstart", this);
 
                 this.element.addEventListener("mouseup", this);
 
@@ -386,8 +384,13 @@ exports.FileCell = Montage.create(Component, {
 
     handleDragstart: {
         value: function (evt) {
-            var fileDetails = this.element.dataset.downloadurl;
-            evt.dataTransfer.setData("DownloadURL", fileDetails);
+            // TODO eventually allow downloading directories
+            // TODO eventually allow moving directories
+            if (!this.fileInfo.isDirectory) {
+                var fileDetails = this.element.dataset.downloadurl;
+                evt.dataTransfer.setData("DownloadURL", fileDetails);
+            }
+            evt.dataTransfer.setData(MimeTypes.URL, this.fileInfo.fileUrl);
         }
     },
 
