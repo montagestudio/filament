@@ -14,7 +14,7 @@ function flatten(array) {
     for (var i = 0; i < array.length; i++) {
         var item = array[i];
         if (Array.isArray(item)) {
-            result.push.apply(result, flatten(item))
+            result.push.apply(result, flatten(item));
         } else {
             result.push(item);
         }
@@ -308,9 +308,9 @@ exports.FileCell = Montage.create(Component, {
                         console.log('ENTRIES', results);
                         readEntries();
                     }
-                }, function onError(er) {
-                    defer.reject(err);
-                    console.warn('ERROR', er);
+                }, function onError(error) {
+                    defer.reject(error);
+                    console.warn('ERROR', error);
                 });
             };
 
@@ -325,18 +325,17 @@ exports.FileCell = Montage.create(Component, {
 
             var files = [],
                 items = e.dataTransfer.items,
-                self = this,
-                activeUploads = this.activeUploads;
+                self = this;
 
             if (items[0] && typeof items[0].webkitGetAsEntry === 'function') {
                 // Directory drag-n-dropping is supported
                 // http://codebits.glennjones.net/dragdrop/dropfolder.htm
                 var entries = [].map.call(items, function(item) {
-                	return item.webkitGetAsEntry();
+                    return item.webkitGetAsEntry();
                 });
                 this.readDirectory(entries).then(function(files) {
                     files = files.filter(function(f) {
-                    	return f.isFile;
+                        return f.isFile;
                     });
 
                     self._startUploading(files);
