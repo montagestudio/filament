@@ -98,17 +98,13 @@ exports.FlowSplineInspector = Montage.create(Component, /** @lends module:"ui/fl
 
     handleReverseAction: {
         value: function () {
-            this.editor.sceneWillChange();
             this.spline.reverse();
-            this.editor.sceneDidChange();
         }
     },
 
     handleDeleteAction: {
         value: function () {
-            this.editor.sceneWillChange();
             this.scene.removeCanvasFlowSpline(this.spline);
-            this.editor.sceneDidChange();
         }
     }
 

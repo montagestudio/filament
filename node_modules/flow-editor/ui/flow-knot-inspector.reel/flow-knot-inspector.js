@@ -24,9 +24,7 @@ exports.FlowKnotInspector = Montage.create(Component, /** @lends module:"ui/flow
         },
         set: function (value) {
             if (value) {
-                this.editor.sceneWillChange();
                 this._type = value;
-                this.editor.sceneDidChange();
             }
         }
     },

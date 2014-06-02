@@ -24,7 +24,7 @@ exports.FlowKnot = Vector3.specialize({
         },
         set: function (value) {
             this._rotateX = value;
-            this.dispatchEventNamed("vectorChange", true, true);
+            this.dispatchEventIfNeeded("vectorChange", true, true);
         }
     },
 
@@ -38,7 +38,7 @@ exports.FlowKnot = Vector3.specialize({
         },
         set: function (value) {
             this._rotateY = value;
-            this.dispatchEventNamed("vectorChange", true, true);
+            this.dispatchEventIfNeeded("vectorChange", true, true);
         }
     },
 
@@ -52,7 +52,7 @@ exports.FlowKnot = Vector3.specialize({
         },
         set: function (value) {
             this._rotateZ = value;
-            this.dispatchEventNamed("vectorChange", true, true);
+            this.dispatchEventIfNeeded("vectorChange", true, true);
         }
     },
 
@@ -66,7 +66,7 @@ exports.FlowKnot = Vector3.specialize({
         },
         set: function (value) {
             this._opacity = value;
-            this.dispatchEventNamed("vectorChange", true, true);
+            this.dispatchEventIfNeeded("vectorChange", true, true);
         }
     },
 
@@ -80,7 +80,7 @@ exports.FlowKnot = Vector3.specialize({
         },
         set: function (value) {
             this._density = value;
-            this.dispatchEventNamed("vectorChange", true, true);
+            this.dispatchEventIfNeeded("vectorChange", true, true);
         }
     }
 });
@@ -102,7 +102,7 @@ exports.CanvasFlowSplineHandlers = Montage.create(CanvasShape, {
         set: function (value) {
             var length, i;
 
-            if (this._data && this._data.dispatchEventNamed) {
+            if (this._data && this._data.dispatchEventIfNeeded) {
                 this._data._isSelected = value;
                 length = this.children.length;
                 for (i = 0; i < length; i++) {
@@ -212,7 +212,7 @@ exports.CanvasFlowSplineHandlers = Montage.create(CanvasShape, {
                 case "smooth":
                     break;
             }
-            this._data.dispatchEventNamed("vectorChange", true, true);
+            this._data.dispatchEventIfNeeded("vectorChange", true, true);
         }
     },
 

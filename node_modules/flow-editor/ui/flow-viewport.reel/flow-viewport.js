@@ -51,6 +51,10 @@ exports.FlowViewport = Montage.create(Viewport, {
         }
     },
 
+    _originNeedsCenter: {
+        value: null
+    },
+
     findSelectedShape: {
         value: function (x, y) {
             return this.scene.findSelectedShape(x, y, this.matrix);
@@ -79,41 +83,35 @@ exports.FlowViewport = Montage.create(Viewport, {
     enterDocument: {
         value: function (firstTime) {
             Viewport.enterDocument.call(this);
-            var viewPortElement = this.viewPort._element;
-
-            this._width = viewPortElement.offsetWidth;
-            this._height = viewPortElement.offsetHeight;
 
             if (firstTime) {
-                this.translateX = this._width / 2;
-                this.translateY = this._height / 2;
-                this._context = viewPortElement.getContext("2d");
-                this.templateObjects.selectViewPort.contentController.select(this._type);
+                this._context = this._element.getContext("2d");
+                this._element.addEventListener("mousedown", this, true);
+                this._originNeedsCenter = true;
 
-                viewPortElement.addEventListener("mousedown", this, true);
                 window.addEventListener("resize", this, false);
             }
         }
     },
 
-    handleSelectViewPortAction: {
-        value: function (event) {
-            this.type = this.templateObjects.selectViewPort.contentController.selection.one();
-        }
-    },
-
     handleResize: {
         value: function (event) {
+            this._originNeedsCenter = true;
             this.needsDraw = true;
         }
     },
 
     willDraw: {
         value: function () {
-            var viewPortElement = this.viewPort._element;
+            this._width = this._element.clientWidth;
+            this._height = this._element.clientHeight;
 
-            this._width = viewPortElement.clientWidth;
-            this._height = viewPortElement.clientHeight;
+            if (this._originNeedsCenter) {
+                this.translateX = this._width / 2;
+                this.translateY = this._height / 2;
+
+                this._originNeedsCenter = false;
+            }
         }
     },
 
@@ -326,12 +324,11 @@ exports.FlowViewport = Montage.create(Viewport, {
     draw: {
         value: function () {
             var length = this.scene.length,
-                viewPortElement = this.viewPort._element,
                 i;
 
-            viewPortElement.width = this._width;
-            viewPortElement.height = this._height;
-            this.scene.canvas = viewPortElement;
+            this._element.width = this._width;
+            this._element.height = this._height;
+            this.scene.canvas = this._element;
             this.scene.draw(this.matrix);
             /*this.scene._data.sort(function (a, b) {
                 return a.zIndex - b.zIndex;

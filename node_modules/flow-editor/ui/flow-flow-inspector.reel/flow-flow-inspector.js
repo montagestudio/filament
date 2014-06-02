@@ -37,9 +37,7 @@ exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow
         },
         set: function (value) {
             if (this._isSelectionEnabled !== value) {
-                this.editor.sceneWillChange();
                 this.isSelectionEnabled = value;
-                this.editor.sceneDidChange();
             }
             this._isSelectionEnabledInput = value;
         }
@@ -69,9 +67,7 @@ exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow
         },
         set: function (value) {
             if (this._hasSelectedIndexScrolling !== value) {
-                this.editor.sceneWillChange();
                 this.hasSelectedIndexScrolling = value;
-                this.editor.sceneDidChange();
             }
             this._hasSelectedIndexScrollingInput = value;
         }
@@ -101,9 +97,7 @@ exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow
         },
         set: function (value) {
             if (this._scrollingTransitionTimingFunction !== value) {
-                this.editor.sceneWillChange();
                 this.scrollingTransitionTimingFunction = value;
-                this.editor.sceneDidChange();
             }
             this._scrollingTransitionTimingFunctionInput = value;
         }
@@ -134,9 +128,7 @@ exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow
         },
         set: function (value) {
             if (this._duration !== value) {
-                this.editor.sceneWillChange();
                 this.duration = value;
-                this.editor.sceneDidChange();
             }
             this._durationInput = value;
         }
@@ -166,9 +158,7 @@ exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow
         },
         set: function (value) {
             if (this._scrollVectorX !== value) {
-                this.editor.sceneWillChange();
                 this.scrollVectorX = value;
-                this.editor.sceneDidChange();
             }
             this._scrollVectorXInput = value;
         }
@@ -198,9 +188,7 @@ exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow
         },
         set: function (value) {
             if (this._scrollVectorY !== value) {
-                this.editor.sceneWillChange();
                 this.scrollVectorY = value;
-                this.editor.sceneDidChange();
             }
             this._scrollVectorYInput = value;
         }
@@ -230,9 +218,7 @@ exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow
         },
         set: function (value) {
             if (this._offset !== value) {
-                this.editor.sceneWillChange();
                 this.offset = value;
-                this.editor.sceneDidChange();
             }
             this._offsetInput = value;
         }

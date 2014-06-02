@@ -7,7 +7,7 @@
     height: 100%;
 }
 
-.FlowEditorColumn {
+.FlowEditor-grid {
     display: -webkit-flex;
     display: flex;
     -webkit-flex: 1;
@@ -16,16 +16,20 @@
     flex-direction: column;
 }
 
-.FlowEditorColumn-inspector {
-    -webkit-flex: 0 0 500px;
-    flex: 0 0 500px;
-    border-left: 1px solid #1D1D1D;
-    position: relative;
-    z-index: 2;
+.FlowEditorGrid-row {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex: 1;
+    flex: 1;
+    border-bottom: 1px solid #1D1D1D;
 }
 
-.viewport2 {
-    border-bottom: none;
+.FlowEditorGrid-row .FlowViewPort:first-child {
+    border-right: 1px solid #1d1d1d;
+}
+
+.FlowEditorGrid-row--toolbar {
+    max-height: 44px;
 }
 
 .inspector {

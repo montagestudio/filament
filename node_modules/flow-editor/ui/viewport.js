@@ -194,7 +194,6 @@ exports.Viewport = Montage.create(Component, {
     handleMousedown: {
         value: function (event) {
             if (this._selectedTool) {
-                //this.editor.sceneWillChange();
                 if (this._selectedTool.handleMousedown) {
                     this._selectedTool.handleMousedown(event, this, this.editor);
                 }
@@ -223,7 +222,6 @@ exports.Viewport = Montage.create(Component, {
             }
             document.removeEventListener("mousemove", this, false);
             document.removeEventListener("mouseup", this, false);
-            //this.editor.sceneDidChange();
         }
     },
 

@@ -25,48 +25,24 @@ exports.FlowStage = Component.specialize(/** @lends FlowStage# */ {
         }
     },
 
-    enterDocument: {
-        value: function (firstime) {
-            if (firstime) {
-                Application.addEventListener("didSetOwnedObjectProperties", this);
-            }
-        }
-    },
-
-    exitDocument: {
-        value: function () {
-            Application.removeEventListener("didSetOwnedObjectProperties", this);
-        }
-    },
-
     editor: {
         value: null
     },
 
-    paths: {
-        value: null
-    },
-
-    handleDidSetOwnedObjectProperties: {
-        value: function (event) {
-            var detail = event.detail;
-
-            if (detail && detail.proxy && /montage\/ui\/flow.reel/.test(detail.proxy.exportId)) {
-                this.refreshStage();
+    refresh: {
+        value: function (objectProperties) {
+            if (!objectProperties) {
+                if (this.editor && this.editor.object) {
+                    objectProperties = this.editor.object.getObjectProperties();
+                }
             }
-        }
-    },
 
-    refreshStage: {
-        value: function () {
-            if (this.editor && this.editor.object) {
-                var flow = this.templateObjects.flow,
-                    properties = this.editor.object.getObjectProperties();
+            if (objectProperties) {
+                var flow = this.templateObjects.flow;
 
-                Object.keys(properties).forEach(function (key) {
+                Object.keys(objectProperties).forEach(function (key) {
                     if (PROPERTIES_NOT_REQUIRED.indexOf(key) < 0) {
-
-                        flow[key] = properties[key];
+                        flow[key] = objectProperties[key];
                     }
                 });
 

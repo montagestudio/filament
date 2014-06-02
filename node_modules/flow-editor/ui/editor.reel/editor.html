@@ -7,17 +7,24 @@
         "owner": {
             "properties": {
                 "element": {"#": "editor"},
-                "viewport": {"@": "viewport"},
+                "viewPortShared": {"@": "viewPortFront"},
+                "viewPorts": [
+                    {"@": "viewPortFront"},
+                    {"@": "viewPortProfile"},
+                    {"@": "viewPortTop"}
+                ],
                 "stage": {"@": "flowEditorStage"}
             }
         },
+
         "camera": {
             "prototype": "ui/camera"
         },
-        "viewport": {
+
+        "viewPortFront": {
             "prototype": "ui/flow-viewport.reel",
             "properties": {
-                "element": {"#": "viewport"},
+                "element": {"#": "viewPortFront"},
                 "type": "front",
                 "camera": {"@": "camera"},
                 "editor": {"@": "owner"}
@@ -26,49 +33,34 @@
                 "selectedTool": {"<-": "@toolbar.selectedTool"}
             }
         },
-        "viewport2": {
+
+        "viewPortProfile": {
             "prototype": "ui/flow-viewport.reel",
             "properties": {
-                "element": {"#": "viewport2"},
+                "element": {"#": "viewPortProfile"},
+                "type": "profile",
+                "camera": {"@": "camera"},
+                "editor": {"@": "owner"}
+            },
+            "bindings": {
+                "selectedTool": {"<-": "@toolbar.selectedTool"},
+                "selection": {"<->": "@owner.viewPortShared.selection"},
+                "scene": {"<-": "@owner.viewPortShared.scene"}
+            }
+        },
+
+        "viewPortTop": {
+            "prototype": "ui/flow-viewport.reel",
+            "properties": {
+                "element": {"#": "viewPortTop"},
                 "type": "top",
                 "camera": {"@": "camera"},
                 "editor": {"@": "owner"}
             },
             "bindings": {
                 "selectedTool": {"<-": "@toolbar.selectedTool"},
-                "selection": {"<->": "@viewport.selection"},
-                "scene": {"<-": "@viewport.scene"}
-            }
-        },
-        "inspector": {
-            "prototype": "ui/flow-inspector.reel",
-            "properties": {
-                "element": {"#": "inspector"},
-                "editor": {"@": "owner"}
-            },
-            "bindings": {
-                "scene": {"<->": "@viewport.scene"},
-                "isVisible": {"<->": "@toolbar.isInspectorVisible"}
-            }
-        },
-        "tree": {
-            "prototype": "ui/flow-tree.reel",
-            "properties": {
-                "element": {"#": "tree"},
-                "viewport": {"@": "viewport"},
-                "editor": {"@": "owner"}
-            },
-            "bindings": {
-                "scene": {"<->": "@viewport.scene"},
-                "isVisible": {"<->": "@toolbar.isTreeVisible"}
-            }
-        },
-        "toolbar": {
-            "prototype": "ui/toolbar.reel",
-            "properties": {
-                "element": {"#": "toolbar"},
-                "viewport": {"@": "viewport"},
-                "viewport2": {"@": "viewport2"}
+                "selection": {"<->": "@owner.viewPortShared.selection"},
+                "scene": {"<-": "@owner.viewPortShared.scene"}
             }
         },
 
@@ -80,22 +72,62 @@
             "bindings": {
                 "editor": {"<-": "@owner"}
             }
-        }
+        },
 
+        "toolbar": {
+            "prototype": "ui/toolbar.reel",
+            "properties": {
+                "element": {"#": "toolbar"}
+            },
+            "bindings": {
+                "viewPorts": {"<->": "@owner.viewPorts"}
+            }
+        },
+
+        "inspector": {
+            "prototype": "ui/flow-inspector.reel",
+            "properties": {
+                "element": {"#": "inspector"},
+                "editor": {"@": "owner"}
+            },
+            "bindings": {
+                "scene": {"<->": "@owner.viewPortShared.scene"},
+                "isVisible": {"<->": "@toolbar.isInspectorVisible"}
+            }
+        },
+
+        "tree": {
+            "prototype": "ui/flow-tree.reel",
+            "properties": {
+                "element": {"#": "tree"},
+                "viewport": {"@": "viewPortFront"},
+                "editor": {"@": "owner"}
+            },
+            "bindings": {
+                "scene": {"<->": "@owner.viewPortShared.scene"},
+                "isVisible": {"<->": "@toolbar.isTreeVisible"}
+            }
+        }
     }
     </script>
 </head>
 <body>
     <div data-montage-id="editor" class="FlowEditor">
-        <section class="FlowEditorColumn">
-            <div data-montage-id="flowEditorStage"></div>
-        </section>
+        <div class="FlowEditor-grid">
+            <div class="FlowEditorGrid-row">
+                <div data-montage-id="viewPortFront"></div>
+                <div data-montage-id="viewPortProfile"></div>
+            </div>
 
-        <section class="FlowEditorColumn FlowEditorColumn-inspector">
-            <div data-montage-id="viewport2"></div>
-            <div data-montage-id="viewport" class="viewport2"></div>
-            <div data-montage-id="toolbar" class="toolbar"></div>
-        </section>
+            <div class="FlowEditorGrid-row">
+                <div data-montage-id="viewPortTop"></div>
+                <div data-montage-id="flowEditorStage"></div>
+            </div>
+
+            <div class="FlowEditorGrid-row FlowEditorGrid-row--toolbar">
+                <div data-montage-id="toolbar" class="toolbar"></div>
+            </div>
+        </div>
 
         <div data-montage-id="inspector" class="inspector"></div>
         <div data-montage-id="tree" class="tree"></div>

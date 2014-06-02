@@ -50,7 +50,6 @@ exports.FlowNumberInput = Montage.create(Component, /** @lends module:"ui/flow-n
 
     handleMousedown: {
         value: function (event) {
-            this.editor.sceneWillChange();
             this._pointerX = event.pageX;
             this._isDragging = true;
             this.needsDraw = true;
@@ -79,15 +78,12 @@ exports.FlowNumberInput = Montage.create(Component, /** @lends module:"ui/flow-n
             document.removeEventListener("mousemove", this, false);
             document.removeEventListener("mouseup", this, false);
             document.body.style.pointerEvents = "auto";
-            this.editor.sceneDidChange();
         }
     },
 
     handleChange: {
         value: function (event) {
-            this.editor.sceneWillChange();
             this.value = this.input.value;
-            this.editor.sceneDidChange();
         }
     },
 

@@ -7,41 +7,13 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "flow-viewport"},
-                "viewPort": {"@": "viewPort"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
-        },
-
-        "viewPort": {
-            "prototype": "montage/ui/component",
-            "properties": {
-                "element": {"#": "viewPort"},
-                "hasTemplate": false
-            }
-        },
-
-        "selectViewPort": {
-            "prototype": "matte/ui/select.reel",
-            "properties": {
-                "element": {"#": "selectViewPort"}
-            },
-            "bindings": {
-                "content": {"<-": "@owner.types"}
+                "element": {"#": "flowViewPort"}
             }
         }
     }
     </script>
 </head>
 <body>
-    <div data-montage-id="flow-viewport" class="FlowViewport">
-        <select data-montage-id="selectViewPort" class="FlowViewport-select"></select>
-        <canvas data-montage-id="viewPort" class="FlowViewport-canvas"></canvas>
-    </div>
+    <canvas data-montage-id="flowViewPort" class="FlowViewPort"></canvas>
 </body>
 </html>

@@ -31,7 +31,6 @@ exports.ArrowTool = Montage.create(Montage, {
         value: function (event, viewport, editor) {
             var selected = viewport.findSelectedShape(event.offsetX, event.offsetY);
 
-            editor.sceneWillChange();
             viewport.unselect();
             if (selected) {
                 selected.isSelected = true;
@@ -66,12 +65,6 @@ exports.ArrowTool = Montage.create(Montage, {
             this._pointerX = event.pageX;
             this._pointerY = event.pageY;
         }
-    },
-
-    handleMouseup: {
-        value: function (event, viewport, editor) {
-            editor.sceneDidChange();
-        }
     }
 
 });
@@ -101,7 +94,6 @@ exports.ConvertTool = Montage.create(Montage, {
             var path,
                 i;
 
-            editor.sceneWillChange();
             this._selectedChild = viewport.findSelectedChild(event.offsetX, event.offsetY);
             if (this._selectedChild) {
                 path = viewport.findPathToNode(this._selectedChild);
@@ -141,12 +133,6 @@ exports.ConvertTool = Montage.create(Montage, {
             }
             this._pointerX = event.pageX;
             this._pointerY = event.pageY;
-        }
-    },
-
-    handleMouseup: {
-        value: function (event, viewport, editor) {
-            editor.sceneDidChange();
         }
     }
 
@@ -193,7 +179,6 @@ exports.PenTool = Montage.create(Montage, {
                 canvasSpline,
                 canvasKnot;
 
-            editor.sceneWillChange();
             if (this._editingCanvasSpline) {
                 if (this._previousKnot) {
                     this._previousKnot.isSelected = false;
@@ -270,12 +255,6 @@ exports.PenTool = Montage.create(Montage, {
             this._pointerX = event.pageX;
             this._pointerY = event.pageY;
         }
-    },
-
-    handleMouseup: {
-        value: function (event, viewport, editor) {
-            editor.sceneDidChange();
-        }
     }
 
 });
@@ -351,7 +330,6 @@ exports.AddTool = Montage.create(Montage, {
 
     handleMousedown: {
         value: function (event, viewport, editor) {
-            editor.sceneWillChange();
             if (!this._editingCanvasSpline) {
                 var selected = viewport.findCloserShapeType("FlowKnot", event.offsetX, event.offsetY),
                     path,
@@ -522,12 +500,6 @@ exports.AddTool = Montage.create(Montage, {
                 this._pointerY = event.pageY;
             }
         }
-    },
-
-    handleMouseup: {
-        value: function (event, viewport, editor) {
-            editor.sceneDidChange();
-        }
     }
 
 });
@@ -566,7 +538,6 @@ exports.HelixTool = Montage.create(Montage, {
 
             editor._helixCounter++;
             canvasHelix.name = "Helix " + editor._helixCounter;
-            editor.sceneWillChange();
             viewport.unselect();
             canvasHelix._x = axisOriginPosition[0];
             canvasHelix._y = axisOriginPosition[1];
@@ -599,12 +570,6 @@ exports.HelixTool = Montage.create(Montage, {
             );
             this._pointerX = event.pageX;
             this._pointerY = event.pageY;
-        }
-    },
-
-    handleMouseup: {
-        value: function (event, viewport, editor) {
-            editor.sceneDidChange();
         }
     }
 

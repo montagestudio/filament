@@ -174,9 +174,7 @@ exports.FlowHelixInspector = Montage.create(Component, {
 
     handleDeleteAction: {
         value: function () {
-            this.editor.sceneWillChange();
             this.scene.removeCanvasFlowHelix(this.helix);
-            this.editor.sceneDidChange();
         }
     }
 

@@ -29,6 +29,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 </copyright> */
 .flow-Editor-Toolbar {
+    -webkit-flex: 1;
+    flex: 1;
     height: 44px;
     border-top: 1px solid #1D1D1D;
     border-bottom: 1px solid #1D1D1D;

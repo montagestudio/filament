@@ -36,7 +36,7 @@ var Grid = exports.Grid = Montage.create(Scene, {
         },
         set: function (value) {
             this._isSelectionEnabled = value;
-            this.dispatchEventNamed("sceneChange", true, true);
+            this.dispatchEventIfNeeded("sceneChange", true, true);
         }
     },
 
@@ -50,7 +50,7 @@ var Grid = exports.Grid = Montage.create(Scene, {
         },
         set: function (value) {
             this._hasSelectedIndexScrolling = value;
-            this.dispatchEventNamed("sceneChange", true, true);
+            this.dispatchEventIfNeeded("sceneChange", true, true);
         }
     },
 
@@ -64,7 +64,7 @@ var Grid = exports.Grid = Montage.create(Scene, {
         },
         set: function (value) {
             this._scrollingTransitionDuration = value;
-            this.dispatchEventNamed("sceneChange", true, true);
+            this.dispatchEventIfNeeded("sceneChange", true, true);
         }
     },
 
@@ -78,7 +78,7 @@ var Grid = exports.Grid = Montage.create(Scene, {
         },
         set: function (value) {
             this._scrollingTransitionTimingFunction = value;
-            this.dispatchEventNamed("sceneChange", true, true);
+            this.dispatchEventIfNeeded("sceneChange", true, true);
         }
     },
 
@@ -92,7 +92,7 @@ var Grid = exports.Grid = Montage.create(Scene, {
         },
         set: function (value) {
             this._selectedIndexScrollingOffset = value;
-            this.dispatchEventNamed("sceneChange", true, true);
+            this.dispatchEventIfNeeded("sceneChange", true, true);
         }
     },
 
@@ -106,7 +106,7 @@ var Grid = exports.Grid = Montage.create(Scene, {
         },
         set: function (value) {
             this._scrollVectorX = value;
-            this.dispatchEventNamed("sceneChange", true, true);
+            this.dispatchEventIfNeeded("sceneChange", true, true);
         }
     },
 
@@ -120,7 +120,7 @@ var Grid = exports.Grid = Montage.create(Scene, {
         },
         set: function (value) {
             this._scrollVectorY = value;
-            this.dispatchEventNamed("sceneChange", true, true);
+            this.dispatchEventIfNeeded("sceneChange", true, true);
         }
     }
 });
