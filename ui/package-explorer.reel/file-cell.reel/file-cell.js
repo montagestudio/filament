@@ -185,10 +185,8 @@ exports.FileCell = Montage.create(Component, {
 
             if (fileInfo && fileInfo.mimeType && fileInfo.name && fileInfo.fileUrl) {
                 element.setAttribute("draggable", true);
-                element.dataset.downloadurl = this.fileInfo.mimeType + ":" + this.fileInfo.name + ":" + this.fileInfo.fileUrl;
             } else {
                 element.removeAttribute("draggable");
-                delete this.element.dataset.downloadurl;
             }
 
             if (this._hoverCounter > 0) {
@@ -387,7 +385,7 @@ exports.FileCell = Montage.create(Component, {
             // TODO eventually allow downloading directories
             // TODO eventually allow moving directories
             if (!this.fileInfo.isDirectory) {
-                var fileDetails = this.element.dataset.downloadurl;
+                var fileDetails = this.fileInfo.mimeType + ":" + this.fileInfo.name + ":" + this.fileInfo.fileUrl;
                 evt.dataTransfer.setData("DownloadURL", fileDetails);
             }
             evt.dataTransfer.setData(MimeTypes.URL, this.fileInfo.fileUrl);
