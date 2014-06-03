@@ -1550,12 +1550,10 @@ exports.ReelDocument = EditingDocument.specialize({
                     self.setOwnedObjectProperty(actionEventListener, "action", methodName);
                     return actionEventListener;
                 });
+            } else if (listener.label === "owner") {
+                this._addJavascriptEventHandler(proxy, type, listener, useCapture);
+                installListenerPromise = Promise.resolve(listener);
             } else {
-                if (listener.label === "owner") {
-                    methodName = (useCapture ? "capture" : "handle") + proxy.label.toCapitalized() + type.toCapitalized();
-                    this._javascript = modifyModule.injectMethod(this._javascript, this._exportName, methodName, "event");
-                    this._isJavascriptModified = true;
-                }
                 installListenerPromise = Promise.resolve(listener);
             }
 
@@ -1577,6 +1575,30 @@ exports.ReelDocument = EditingDocument.specialize({
 
                 return listenerEntry;
             });
+        }
+    },
+
+    _addJavascriptEventHandler: {
+        value: function (proxy, type, listener, useCapture) {
+            this.undoManager.register("Add JavaScript event handler", Promise.resolve([
+                this._removeJavascriptEventHandler, this, proxy, type, listener, useCapture
+            ]));
+
+            var methodName = (useCapture ? "capture" : "handle") + proxy.label.toCapitalized() + type.toCapitalized();
+            this._javascript = modifyModule.injectMethod(this._javascript, this._exportName, methodName, "event");
+            this._isJavascriptModified = true;
+        }
+    },
+
+    _removeJavascriptEventHandler: {
+        value: function (proxy, type, listener, useCapture) {
+            this.undoManager.register("Remove JavaScript event handler", Promise.resolve([
+                this._addJavascriptEventHandler, this, proxy, type, listener, useCapture
+            ]));
+
+            var methodName = (useCapture ? "capture" : "handle") + proxy.label.toCapitalized() + type.toCapitalized();
+            this._javascript = modifyModule.removeMethod(this._javascript, this._exportName, methodName, "event");
+            this._isJavascriptModified = true;
         }
     },
 
