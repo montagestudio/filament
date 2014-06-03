@@ -444,7 +444,7 @@ exports.FileCell = Montage.create(Component, {
                     var base64 = btoa(e.target.result),
                         fullPath = file.fullPath || file.name,
                         filename = decodeURIComponent(fullPath),
-                        destinationUrl = Url.resolve(destination, filename);
+                        destinationUrl = Url.resolve(destination, filename.replace(/^\//, ""));
 
                     console.log('DESTINATION', destinationUrl);
 
