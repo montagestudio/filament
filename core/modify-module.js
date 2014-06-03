@@ -46,13 +46,22 @@ exports.removeMethod = function (input, name, methodName) {
     }
 
     var entry = findEntry(declaration, methodName);
-
     if (!entry) {
         return input;
     }
 
+    var lastEntry = findLastEntry(declaration);
+
     var leader = input.slice(0, entry.range[0]).trimRight();
-    var follower = input.slice(declaration.range[1] - 1);
+    var follower = input.slice(entry.range[1]);
+
+    if (entry === lastEntry) {
+        // remove trailing comma
+        leader = leader.replace(/,$/, "");
+    } else {
+        // remove leading comma
+        follower = follower.replace(/^,/, "");
+    }
 
     return leader + follower;
 };

@@ -38,7 +38,19 @@ describe("modify-module", function () {
 
     describe("removeMethod", function () {
         it("removes a method", function () {
-            test("removeMethod", "method", "empty-one-line");
+            test("removeMethod", "method", "empty-multi-line");
+        });
+
+        it("removes a method at the end and leaves a method", function () {
+            test("removeMethod", "other-method-method", "other-method");
+        });
+
+        it("removes a method at the begining and leaves a method", function () {
+            test("removeMethod", "method-other-method", "other-method");
+        });
+
+        it("removes a method in the middle and leaves the methods", function () {
+            test("removeMethod", "2-other-methods-method", "2-other-methods");
         });
 
         it("idempotence", function () {
