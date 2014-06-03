@@ -2735,15 +2735,16 @@ exports.ReelDocument = EditingDocument.specialize({
                 self.registerFile("js", self._saveJs, self);
                 self._openTemplate(template);
                 return self;
-            }, function() {
-                var error = {
+            }, function (error) {
+                var wrappedError = {
                     file: self.fileUrl,
                     error: {
                         id: "syntaxError",
                         reason: "Template was not found or was invalid"
-                    }
+                    },
+                    stack: error.stack
                 };
-                self.errors.push(error);
+                self.errors.push(wrappedError);
             })
             .then(function() {
                 if (self.errors.length) {
