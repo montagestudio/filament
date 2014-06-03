@@ -486,7 +486,14 @@ exports.ProjectDocument = Document.specialize({
                 })
                 .then(function(result) {
                     if (!operationAborted && result.success !== true) {
-                        // Local shadow has diverged from remote shadow (not a rebase case)
+                        /*
+                            conflict could be either between the local branch and the remote shadow branch or between
+                            the local branch and the remote parent (master) branch.
+                            We always check the local vs shadow branch first.
+                         */
+                        var comparedToParentBranch = true;
+
+                        // Local shadow has diverged from remote branch (not a rebase case)
                         currentPanelKey = applicationDelegate.showModal === true ? applicationDelegate.currentPanelKey : null;
                         applicationDelegate.showModal = true;
                         applicationDelegate.currentPanelKey = "conflict";
@@ -494,8 +501,30 @@ exports.ProjectDocument = Document.specialize({
                         if (result.remote.indexOf("/montagestudio/") !== -1) {
                             // Let's cleanup the branch name we show to the user
                             result.remote = "work";
+                            comparedToParentBranch = false;
                         }
-                        return applicationDelegate.mergeConflictPanel.getResponse("Updating Project", "work", result.remote, result.ahead, result.behind, result.resolutionStrategy)
+
+                        return self._environmentBridge.getRepositoryInfo(self.currentBranch.name)
+                            .then(function(info) {
+                                var localUrl = info.repositoryUrl + "/compare/",
+                                    remoteUrl = localUrl;
+                                /*
+                                    we cannot compare against the local branch has we haven't obviously pushed to github,
+                                    however we can compare against a previous reference pushed to github)
+                                 */
+
+                                if (comparedToParentBranch) {
+                                    //  in that case, the remote shadow branch should be in sync with the local branch
+                                    localUrl += info.shadowBranch + "~" + result.ahead + "..." + info.shadowBranch;
+                                    remoteUrl += info.branch + "~" + result.behind + "..." + info.branch;
+                                } else {
+                                    // TODO: The local changes are not accessible from github, should we push it to a temp branch
+                                    localUrl = null;
+                                    remoteUrl += info.shadowBranch + "~" + result.behind + "..." + info.shadowBranch;
+                                }
+                                return applicationDelegate.mergeConflictPanel.getResponse("Updating Project", "work",
+                                    result.remote, result.ahead, result.behind, localUrl, remoteUrl, result.resolutionStrategy);
+                            })
                             .then(function(response) {
                             if (response && typeof response.resolution) {
                                 applicationDelegate.showModal = true;
