@@ -16,7 +16,8 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     WeakMap = require("montage/collections/weak-map"),
     ValidationError = require("core/error").ValidationError,
     NotModifiedError = require("core/error").NotModifiedError,
-    ObjectReferences = require("core/object-references").ObjectReferences;
+    ObjectReferences = require("core/object-references").ObjectReferences,
+    injectEventHandler = require("core/inject-event-handler");
 
 // An object to use when merging templates to ensure labels are applied correctly
 var MergeDelegate = function (labeler, serializationToMerge) {
@@ -1550,6 +1551,11 @@ exports.ReelDocument = EditingDocument.specialize({
                     return actionEventListener;
                 });
             } else {
+                if (listener.label === "owner") {
+                    methodName = (useCapture ? "capture" : "handle") + proxy.label.toCapitalized() + type.toCapitalized();
+                    this._javascript = injectEventHandler(this._javascript, this._exportName, methodName, "event");
+                    this._isJavascriptModified = true;
+                }
                 installListenerPromise = Promise.resolve(listener);
             }
 
@@ -2825,9 +2831,11 @@ exports.ReelDocument = EditingDocument.specialize({
 
     acceptModifiedData: {
         value: function(url) {
-            if (url === this._getHtmlFileUrl() || url === this._getJsFileUrl()) {
+            if (url === this._getHtmlFileUrl()) {
                 this._resetModifiedDataState();
                 return Promise.resolve(this._generateHtml());
+            } else if (url === this._getJsFileUrl()) {
+                return Promise.resolve(this._javascript);
             }
         }
     },
