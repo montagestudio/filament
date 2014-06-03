@@ -1,6 +1,6 @@
 var Esprima = require("esprima");
 
-module.exports = function inject(input, name, methodName) {
+exports.injectMethod = function (input, name, methodName) {
     var argNames = Array.prototype.slice.call(arguments, 3);
     var injection = "\n\n    " + methodName + ": {\n        value: function (" + argNames.join(", ") + ") {\n        }\n    }\n\n";
     var syntax = Esprima.parse(input, {
@@ -34,6 +34,29 @@ module.exports = function inject(input, name, methodName) {
     return leader + comma + between + injection + follower;
 };
 
+exports.removeMethod = function (input, name, methodName) {
+    var syntax = Esprima.parse(input, {
+        comment: true,
+        loc: true,
+        range: true
+    });
+    var declaration = findDeclaration(syntax, name);
+    if (!declaration) {
+        throw new Error("Can't find a declaration of " + name);
+    }
+
+    var entry = findEntry(declaration, methodName);
+
+    if (!entry) {
+        return input;
+    }
+
+    var leader = input.slice(0, entry.range[0]).trimRight();
+    var follower = input.slice(declaration.range[1] - 1);
+
+    return leader + follower;
+};
+
 function findDeclaration(syntax, name) {
     var nodes = syntax.body;
     for (var index = 0, length = nodes.length; index < length; index++) {
@@ -61,11 +84,15 @@ function findLastEntry(declaration) {
 }
 
 function alreadyHasEntry(declaration, name) {
+    return !!findEntry(declaration, name);
+}
+
+function findEntry(declaration, name) {
     var properties = declaration.properties;
     for (var index = 0; index < properties.length; index++) {
         var property = properties[index];
         if (property.key.type === "Identifier" && property.key.name === name) {
-            return true;
+            return property;
         }
     }
     return false;

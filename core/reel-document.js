@@ -17,7 +17,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     ValidationError = require("core/error").ValidationError,
     NotModifiedError = require("core/error").NotModifiedError,
     ObjectReferences = require("core/object-references").ObjectReferences,
-    injectEventHandler = require("core/inject-event-handler");
+    modifyModule = require("core/modify-module");
 
 // An object to use when merging templates to ensure labels are applied correctly
 var MergeDelegate = function (labeler, serializationToMerge) {
@@ -1553,7 +1553,7 @@ exports.ReelDocument = EditingDocument.specialize({
             } else {
                 if (listener.label === "owner") {
                     methodName = (useCapture ? "capture" : "handle") + proxy.label.toCapitalized() + type.toCapitalized();
-                    this._javascript = injectEventHandler(this._javascript, this._exportName, methodName, "event");
+                    this._javascript = modifyModule.injectMethod(this._javascript, this._exportName, methodName, "event");
                     this._isJavascriptModified = true;
                 }
                 installListenerPromise = Promise.resolve(listener);

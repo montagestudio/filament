@@ -3,4 +3,4 @@ npm-cache/**
 core/emmet.js
 core/node/*
 **/codemirror/*
-test/inject-event-handler/*
+test/modify-module/*

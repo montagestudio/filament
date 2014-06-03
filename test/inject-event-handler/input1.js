@@ -1,3 +1,0 @@
-
-exports.Input = Bar.specialize({ });
-
