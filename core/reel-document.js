@@ -134,7 +134,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             this.undoManager.clearUndo();
             this.undoManager.clearRedo();
-            this._hasModifiedData = {undoCount: 0, redoCount: 0};
+            this._resetModifiedDataState();
 
             this._template = template;
             this._templateBodyNode = new NodeProxy().init(template.document.body, this);
@@ -294,6 +294,14 @@ exports.ReelDocument = EditingDocument.specialize({
                     return obj.label === "owner";
                 });
         }
+    },
+
+    _javascript: {
+        value: null
+    },
+
+    _isJavascriptModified: {
+        value: false
     },
 
     _template: {
@@ -513,6 +521,22 @@ exports.ReelDocument = EditingDocument.specialize({
 
             this._ignoreDataChange = true;
             return dataSource.write(location, html)
+            .then(function() {
+                self._ignoreDataChange = false;
+            });
+        }
+    },
+
+    _saveJs: {
+        value: function (location, dataSource) {
+            var self = this;
+
+            if (!this.hasModifiedData(location)) {
+                return;
+            }
+
+            this._ignoreDataChange = true;
+            return dataSource.write(location, this._javascript)
             .then(function() {
                 self._ignoreDataChange = false;
             });
@@ -2700,11 +2724,15 @@ exports.ReelDocument = EditingDocument.specialize({
             var moduleId = Url.toModuleId(this.url, packageUrl);
             var templateModuleId = this._getTemplateModuleId(moduleId);
 
-            return this._createTemplateWithUrl(packageUrl + templateModuleId)
-            .then(function(template) {
+            return Promise.all([
+                this._createTemplateWithUrl(packageUrl + templateModuleId),
+                this._dataSource.read(this._getJsFileUrl())
+            ]).spread(function (template, javascript) {
                 self._dataSource.addEventListener("dataChange", self, false);
                 self._template = template;
+                self._javascript = javascript;
                 self.registerFile("html", self._saveHtml, self);
+                self.registerFile("js", self._saveJs, self);
                 self._openTemplate(template);
                 return self;
             }, function() {
@@ -2761,6 +2789,13 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    _getJsFileUrl: {
+        value: function() {
+            var filenameMatch = this.url.match(/.+\/(.+)\.reel/);
+            return this.url + filenameMatch[1] + ".js";
+        }
+    },
+
     _dataChanged: {
         value: null
     },
@@ -2781,13 +2816,15 @@ exports.ReelDocument = EditingDocument.specialize({
                 return undoManager && hasModifiedData &&
                     (hasModifiedData.undoCount !== undoManager.undoCount ||
                     hasModifiedData.redoCount !== undoManager.redoCount);
+            } else if (url === this._getJsFileUrl()) {
+                return this._isJavascriptModified;
             }
         }
     },
 
     acceptModifiedData: {
         value: function(url) {
-            if (url === this._getHtmlFileUrl()) {
+            if (url === this._getHtmlFileUrl() || url === this._getJsFileUrl()) {
                 this._resetModifiedDataState();
                 return Promise.resolve(this._generateHtml());
             }
@@ -2806,8 +2843,12 @@ exports.ReelDocument = EditingDocument.specialize({
      */
     _resetModifiedDataState: {
         value: function() {
+            if (!this._hasModifiedData) {
+                this._hasModifiedData = {undoCount: 0, redoCount: 0};
+            }
             this._hasModifiedData.undoCount = this._undoManager.undoCount;
             this._hasModifiedData.redoCount = this._undoManager.redoCount;
+            this._isJavascriptModified = false;
         }
     },
 
