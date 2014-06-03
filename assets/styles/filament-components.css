@@ -34,39 +34,18 @@
 }
 
 /* Search Close Button */
-.Search.matte-InputText::-webkit-search-cancel-button,
-.Search.matte-InputText::-moz-search-cancel-button,
-.Search.matte-InputText::-ms-search-cancel-button,
-.Search.matte-InputText::search-cancel-button {
+.Search.matte-InputText::-webkit-search-cancel-button {
   margin: 2px 8px 0 4px;
-  opacity: .8;
+  opacity: 1;
   cursor: pointer;
 }
 
 .Search.matte-InputText::-webkit-search-cancel-button:hover {
-    opacity: 1;
-}
-.Search.matte-InputText::-moz-search-cancel-button:hover {
-    opacity: 1;
-}
-.Search.matte-InputText::-ms-search-cancel-button:hover {
-    opacity: 1;
-}
-.Search.matte-InputText::search-cancel-button:hover {
-  opacity: 1;
+    opacity: .8;
 }
 
 .Search.matte-InputText::-webkit-search-cancel-button:active {
     opacity: .3;
-}
-.Search.matte-InputText::-moz-search-cancel-button:active {
-    opacity: .3;
-}
-.Search.matte-InputText::-ms-search-cancel-button:active {
-    opacity: .3;
-}
-.Search.matte-InputText::search-cancel-button:active {
-  opacity: .3;
 }
 
 

@@ -139,26 +139,17 @@
 }
 
 /* Search Close Button */
-.Library-search.matte-InputText::-webkit-search-cancel-button,
-.Library-search.matte-InputText::-moz-search-cancel-button,
-.Library-search.matte-InputText::-ms-search-cancel-button,
-.Library-search.matte-InputText::search-cancel-button {
+.Library-search.matte-InputText::-webkit-search-cancel-button {
   margin: 2px 8px 0 4px;
   opacity: .5;
   cursor: pointer;
 }
 
-.Library-search.matte-InputText::-webkit-search-cancel-button:hover,
-.Library-search.matte-InputText::-moz-search-cancel-button:hover,
-.Library-search.matte-InputText::-ms-search-cancel-button:hover,
-.Library-search.matte-InputText::search-cancel-button:hover {
+.Library-search.matte-InputText::-webkit-search-cancel-button:hover {
   opacity: .7;
 }
 
-.Library-search.matte-InputText::-webkit-search-cancel-button:active,
-.Library-search.matte-InputText::-moz-search-cancel-button:active,
-.Library-search.matte-InputText::-ms-search-cancel-button:active,
-.Library-search.matte-InputText::search-cancel-button:active {
+.Library-search.matte-InputText::-webkit-search-cancel-button:active {
   opacity: .3;
 }
 
