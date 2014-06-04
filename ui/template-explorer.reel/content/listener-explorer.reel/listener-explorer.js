@@ -183,8 +183,8 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
     },
 
     handleDragstart: {
-        value: function (evt) {
-            var target = evt.target,
+        value: function (event) {
+            var target = event.target,
                 listenerButtonElement = this.templateObjects.addListenerButton.element,
                 transfer = event.dataTransfer;
 

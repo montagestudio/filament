@@ -183,7 +183,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     },
 
     handleDrop: {
-        value: function (evt) {
+        value: function (event) {
             var availableTypes = event.dataTransfer.types,
                 data;
 
@@ -202,6 +202,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                 }
             }
             this._willAcceptDrop = false;
+            event.preventDefault();
         }
     },
 
