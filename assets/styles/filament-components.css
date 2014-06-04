@@ -49,6 +49,23 @@
 }
 
 
+/* Dark Input --------------------------------- */
+.Input.Input--dark {
+    border-color: hsl(0, 0%, 15%);
+    box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, 0.1), 0 1px 0 hsla(0, 100%, 100%, 0.1);
+    color: hsl(0, 0%, 90%);
+    background-color: hsl(0, 0%, 22%);
+}
+
+.Input.Input--dark:hover {
+    background-color: hsl(0, 0%, 23%);
+}
+
+.Input.Input--dark:focus {
+    color: hsl(0, 100%, 100%);
+    background-color: hsla(0, 0%, 20%, 1);
+}
+
 /* Column --------------------------------- */
 
 .Column {

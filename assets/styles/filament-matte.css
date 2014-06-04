@@ -210,6 +210,7 @@ body .matte-Button.Button.disabled:focus {
     background-color: hsla(210,100%,60%,0.1);
 }
 
+
 /* Checkbox --------------------------------- */
 
 .matte-InputCheckbox.Checkbox {
@@ -231,6 +232,30 @@ body .matte-Button.Button.disabled:focus {
     background-image: url(../matte/check.svg);
     background-size: 16px;
 }
+
+
+/* Checkbox Dark */
+
+.matte-InputCheckbox.Checkbox--dark {
+    border-color: hsl(0, 0%, 15%);
+    box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, 0.1), 0 1px 0 hsla(0, 100%, 100%, 0.1);
+    background-color: hsl(0, 0%, 22%);
+}
+
+.matte-InputCheckbox.Checkbox--dark:hover {
+    background-color: hsl(0, 0%, 24%);
+}
+
+.matte-InputCheckbox.Checkbox--dark:focus {
+    background-color: hsla(0, 0%, 20%, 1);
+}
+
+.matte-InputCheckbox.Checkbox--dark:checked {
+    background-image: url(../matte/check-dark.svg);
+    background-size: 16px;
+}
+
+
 
 /* Select --------------------------------- */
 
