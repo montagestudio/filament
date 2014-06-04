@@ -1584,9 +1584,12 @@ exports.ReelDocument = EditingDocument.specialize({
                 this._removeJavascriptEventHandler, this, proxy, type, listener, useCapture
             ]));
 
-            var methodName = (useCapture ? "capture" : "handle") + proxy.label.toCapitalized() + type.toCapitalized();
-            this._javascript = modifyModule.injectMethod(this._javascript, this._exportName, methodName, "event");
-            this._isJavascriptModified = true;
+            var self = this;
+            return this._dataSource.read(this._getJsFileUrl()).then(function (javascript) {
+                var methodName = (useCapture ? "capture" : "handle") + proxy.label.toCapitalized() + type.toCapitalized();
+                self._javascript = modifyModule.injectMethod(javascript, self._exportName, methodName, "event");
+                self._isJavascriptModified = true;
+            });
         }
     },
 
@@ -1596,9 +1599,12 @@ exports.ReelDocument = EditingDocument.specialize({
                 this._addJavascriptEventHandler, this, proxy, type, listener, useCapture
             ]));
 
-            var methodName = (useCapture ? "capture" : "handle") + proxy.label.toCapitalized() + type.toCapitalized();
-            this._javascript = modifyModule.removeMethod(this._javascript, this._exportName, methodName, "event");
-            this._isJavascriptModified = true;
+            var self = this;
+            return this._dataSource.read(this._getJsFileUrl()).then(function (javascript) {
+                var methodName = (useCapture ? "capture" : "handle") + proxy.label.toCapitalized() + type.toCapitalized();
+                self._javascript = modifyModule.removeMethod(javascript, self._exportName, methodName, "event");
+                self._isJavascriptModified = true;
+            });
         }
     },
 
@@ -2839,14 +2845,17 @@ exports.ReelDocument = EditingDocument.specialize({
 
     hasModifiedData: {
         value: function(url) {
+            var undoManager = this._undoManager;
+            var hasModifiedData = this._hasModifiedData;
             if (url === this._getHtmlFileUrl()) {
-                var undoManager = this._undoManager;
-                var hasModifiedData = this._hasModifiedData;
                 return undoManager && hasModifiedData &&
                     (hasModifiedData.undoCount !== undoManager.undoCount ||
                     hasModifiedData.redoCount !== undoManager.redoCount);
             } else if (url === this._getJsFileUrl()) {
-                return this._isJavascriptModified;
+                return this._isJavascriptModified && undoManager &&
+                    hasModifiedData &&
+                    (hasModifiedData.undoCount !== undoManager.undoCount ||
+                    hasModifiedData.redoCount !== undoManager.redoCount);
             }
         }
     },
@@ -2857,6 +2866,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 this._resetModifiedDataState();
                 return Promise.resolve(this._generateHtml());
             } else if (url === this._getJsFileUrl()) {
+                this._resetModifiedDataState();
                 return Promise.resolve(this._javascript);
             }
         }
