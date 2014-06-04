@@ -202,6 +202,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                 }
             }
             this._willAcceptDrop = false;
+            event.preventDefault();
         }
     },
 
