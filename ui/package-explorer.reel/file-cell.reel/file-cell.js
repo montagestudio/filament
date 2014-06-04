@@ -259,13 +259,18 @@ exports.FileCell = Montage.create(Component, {
         value: 0
     },
 
-    readDirectory: {
+    /**
+     * Subroutine used to walk throught a folder drag and drop
+     * _readDirectory iter on a given array of entries.
+     * An entry can either be a FileEntry or DirectoryEntry
+     */
+    _readDirectory: {
         value: function(entries) {
             var promises = [];
 
             for (var i = 0; i < entries.length; i++) {
                 if (entries[i].isDirectory) {
-                    promises = promises.concat(this.getAllEntries(entries[i]));
+                    promises = promises.concat(this._getAllEntries(entries[i]));
                 } else {
                     var defer = Promise.defer();
                     promises.push(defer.promise);
@@ -277,32 +282,36 @@ exports.FileCell = Montage.create(Component, {
                 files = flatten(files);
                 return files;
             }, function(err) {
-                console.warn('readDirectory FAIL', err);
+                console.warn('_readDirectory FAIL', err);
             });
         }
     },
 
-    getAllEntries: {
-        value: function(directory) {
+    /**
+     * Subroutine used by _readDirectory to read a directoryEntry's entries
+     */
+    _getAllEntries: {
+        value: function(directoryEntry) {
             var defer = Promise.defer(),
                 entries = [],
-                directoryReader = directory.createReader(),
+                directoryReader = directoryEntry.createReader(),
                 ignore = [".git", ".DS_Store"],
                 self = this;
 
             var readEntries = function() {
-                directoryReader.readEntries(function(results) {
+                directoryReader.readEntries(function(entryArray) {
                     // Filter out ignored files
-                    results  = results.filter(function (entry) {
+                    entryArray  = entryArray.filter(function (entry) {
                         return ignore.indexOf(entry.name) === -1;
                     });
 
-                    if (!results.length) {
-                        self.readDirectory(entries).then(function(dirEntries) {
-                            // Call makeTree for an empty directory
+                    if (!entryArray.length) {
+                        self._readDirectory(entries).then(function(dirEntries) {
+                            // Call makeTree to create an empty directory
+                            // TODO: this directory creation is not reflected in the upload progression
                             if (dirEntries.length === 0) {
                                 var destination = self.fileInfo.fileUrl,
-                                    dirname = directory.fullPath,
+                                    dirname = directoryEntry.fullPath,
                                     destinationUrl = Url.resolve(destination, dirname.replace(/^\//, ""));
 
                                 self.projectController.projectDocument.makeTree(destinationUrl).done();
@@ -310,7 +319,7 @@ exports.FileCell = Montage.create(Component, {
                             defer.resolve(dirEntries);
                         }).done();
                     } else {
-                        entries.push.apply(entries, results);
+                        entries.push.apply(entries, entryArray);
                         readEntries();
                     }
                 }, function onError(error) {
@@ -335,17 +344,17 @@ exports.FileCell = Montage.create(Component, {
             if (items[0] && typeof items[0].webkitGetAsEntry === "function") {
                 // Directory drag-n-dropping is supported
                 // http://codebits.glennjones.net/dragdrop/dropfolder.htm
-                var entries = [].map.call(items, function(item) {
+                var entries = Array.prototype.map.call(items, function(item) {
                     return item.webkitGetAsEntry();
                 });
-                this.readDirectory(entries).then(function(files) {
+                this._readDirectory(entries).then(function(files) {
                     files = files.filter(function(f) {
                         return f.isFile;
                     });
 
                     self._startUploading(files);
                 }, function(err) {
-                    console.warn('readDirectory FAIL', err);
+                    console.warn('_readDirectory FAIL', err);
                 });
 
             } else {
