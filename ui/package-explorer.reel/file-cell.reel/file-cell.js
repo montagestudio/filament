@@ -265,7 +265,6 @@ exports.FileCell = Montage.create(Component, {
 
             for (var i = 0; i < entries.length; i++) {
                 if (entries[i].isDirectory) {
-                    console.log('FOLDER', entries[i].name);
                     promises = promises.concat(this.getAllEntries(entries[i]));
                 } else {
                     var defer = Promise.defer();
@@ -275,7 +274,6 @@ exports.FileCell = Montage.create(Component, {
             }
 
             return Promise.all(promises).then(function(files) {
-                console.log('readDirectory DONE', files);
                 files = flatten(files);
                 return files;
             }, function(err) {
@@ -299,7 +297,6 @@ exports.FileCell = Montage.create(Component, {
                         return ignore.indexOf(entry.name) === -1;
                     });
 
-                    console.log('READ', results);
                     if (!results.length) {
                         self.readDirectory(entries).then(function(dirEntries) {
                             // Call makeTree for an empty directory
@@ -314,7 +311,6 @@ exports.FileCell = Montage.create(Component, {
                         }).done();
                     } else {
                         entries.push.apply(entries, results);
-                        console.log('ENTRIES', results);
                         readEntries();
                     }
                 }, function onError(error) {
@@ -364,7 +360,6 @@ exports.FileCell = Montage.create(Component, {
             var self = this;
             var activeUploads = this.activeUploads;
 
-            console.log('_startUploading');
             Promise.all(files.map(function(item) {
                 var defer = Promise.defer();
                 item.file(function(file) {
@@ -455,8 +450,6 @@ exports.FileCell = Montage.create(Component, {
                         filename = decodeURIComponent(fullPath),
                         makeSubDirectories = (file.fullPath && file.fullPath !== file.filename),
                         destinationUrl = Url.resolve(destination, filename.replace(/^\//, ""));
-
-                    console.log('DESTINATION', destinationUrl);
 
                     self.projectController.projectDocument.add(base64, destinationUrl, makeSubDirectories)
                         .then(function (success) {
