@@ -248,13 +248,13 @@ exports.ProjectDocument = Document.specialize({
      * @return {Promise} A promise for success
      */
     add: {
-        value: function(data, url) {
+        value: function(data, url, makeSubDirectories) {
             var deferredUndoOperation = Promise.defer(),
+                makeFileMethod = (makeSubDirectories)? this._environmentBridge.makeFile : this._environmentBridge.writeFile,
                 self = this;
 
             this.undoManager.register("Add File", deferredUndoOperation.promise);
-
-            return this._environmentBridge.writeFile(url, data)
+            return makeFileMethod.call(this._environmentBridge, url, data)
                 .then(function (result) {
                     return self._updateShadowDelta().thenResolve(result);
                 })

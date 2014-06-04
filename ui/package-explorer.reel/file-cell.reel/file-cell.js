@@ -265,17 +265,12 @@ exports.FileCell = Montage.create(Component, {
 
             for (var i = 0; i < entries.length; i++) {
                 if (entries[i].isDirectory) {
-
                     console.log('FOLDER', entries[i].name);
-                    var directoryReader = entries[i].createReader();
-                    promises = promises.concat(this.getAllEntries(directoryReader));
-
+                    promises = promises.concat(this.getAllEntries(entries[i]));
                 } else {
-
                     var defer = Promise.defer();
                     promises.push(defer.promise);
                     defer.resolve(entries[i]);
-
                 }
             }
 
@@ -290,19 +285,33 @@ exports.FileCell = Montage.create(Component, {
     },
 
     getAllEntries: {
-        value: function(directoryReader) {
-            var defer = Promise.defer();
-            var entries = [];
-            var self = this;
+        value: function(directory) {
+            var defer = Promise.defer(),
+                entries = [],
+                directoryReader = directory.createReader(),
+                ignore = [".git", ".DS_Store"],
+                self = this;
 
             var readEntries = function() {
                 directoryReader.readEntries(function(results) {
-                    // We probably want to exclude .DS_Store
+                    // Filter out ignored files
+                    results  = results.filter(function (entry) {
+                        return ignore.indexOf(entry.name) === -1;
+                    });
+
                     console.log('READ', results);
                     if (!results.length) {
                         self.readDirectory(entries).then(function(dirEntries) {
+                            // Call makeTree for an empty directory
+                            if (dirEntries.length === 0) {
+                                var destination = self.fileInfo.fileUrl,
+                                    dirname = directory.fullPath,
+                                    destinationUrl = Url.resolve(destination, dirname.replace(/^\//, ""));
+
+                                self.projectController.projectDocument.makeTree(destinationUrl).done();
+                            }
                             defer.resolve(dirEntries);
-                        });
+                        }).done();
                     } else {
                         entries.push.apply(entries, results);
                         console.log('ENTRIES', results);
@@ -327,7 +336,7 @@ exports.FileCell = Montage.create(Component, {
                 items = e.dataTransfer.items,
                 self = this;
 
-            if (items[0] && typeof items[0].webkitGetAsEntry === 'function') {
+            if (items[0] && typeof items[0].webkitGetAsEntry === "function") {
                 // Directory drag-n-dropping is supported
                 // http://codebits.glennjones.net/dragdrop/dropfolder.htm
                 var entries = [].map.call(items, function(item) {
@@ -444,11 +453,12 @@ exports.FileCell = Montage.create(Component, {
                     var base64 = btoa(e.target.result),
                         fullPath = file.fullPath || file.name,
                         filename = decodeURIComponent(fullPath),
+                        makeSubDirectories = (file.fullPath && file.fullPath !== file.filename),
                         destinationUrl = Url.resolve(destination, filename.replace(/^\//, ""));
 
                     console.log('DESTINATION', destinationUrl);
 
-                    self.projectController.projectDocument.add(base64, destinationUrl)
+                    self.projectController.projectDocument.add(base64, destinationUrl, makeSubDirectories)
                         .then(function (success) {
                             deferredUpload.resolve(destinationUrl);
                             deferredCompletion.notify(filename);
