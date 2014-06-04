@@ -1,23 +1,22 @@
 /**
  * @module ui/input-search.reel
- * @requires matte/ui/input-text
+ * @requires native/ui/input-text
  */
-var InputText = require("matte/ui/input-text.reel").InputText,
+var AbstractTextField = require("montage/ui/base/abstract-text-field").AbstractTextField,
     KeyComposer = require("montage/composer/key-composer").KeyComposer;
 
 /**
  * @class InputSearch
- * @extends matte/ui/input-text
+ * @extends module:"native/ui/input-text.reel".InputText
  */
-exports.InputSearch = InputText.specialize(/** @lends InputSearch# */ {
+exports.InputSearch = AbstractTextField.specialize(/** @lends InputSearch# */ {
 
-    _templateModuleId: {
-        value: "matte/ui/input-text.reel/input-text.html"
-    },
+    hasTemplate: {value: true},
 
     constructor: {
         value: function InputSearch() {
             this.super();
+            this.classList.add("InputSearch");
         }
     },
 
