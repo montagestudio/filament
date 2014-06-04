@@ -14,80 +14,76 @@
                 "z": {"<->": "@owner.spline.boundingBoxCorner.z"},
                 "headOffset": {"<->": "@owner.spline._data.headOffset"},
                 "tailOffset": {"<->": "@owner.spline._data.tailOffset"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
+
         "xInput": {
             "prototype": "ui/flow-number-input.reel",
             "properties": {
                 "element": {"#": "x"}
             },
             "bindings": {
-                "value": {"<->": "@owner.x"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.x"}
             }
         },
+
         "yInput": {
             "prototype": "ui/flow-number-input.reel",
             "properties": {
                 "element": {"#": "y"}
             },
             "bindings": {
-                "value": {"<->": "@owner.y"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.y"}
             }
         },
+
         "zInput": {
             "prototype": "ui/flow-number-input.reel",
             "properties": {
                 "element": {"#": "z"}
             },
             "bindings": {
-                "value": {"<->": "@owner.z"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.z"}
             }
         },
+
         "reverse": {
             "prototype": "matte/ui/button.reel",
             "properties": {
                 "element": {"#": "reverse"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
+            }
         },
+
         "delete": {
             "prototype": "matte/ui/button.reel",
             "properties": {
                 "element": {"#": "delete"}
-            },
-            "listeners": [
-                {
-                    "type": "action",
-                    "listener": {"@": "owner"}
-                }
-            ]
+            }
         },
+
         "headInput": {
             "prototype": "ui/flow-number-input.reel",
             "properties": {
                 "element": {"#": "headOffset"}
             },
             "bindings": {
-                "value": {"<->": "@owner.headOffset"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.headOffset"}
             }
         },
+
         "tailInput": {
             "prototype": "ui/flow-number-input.reel",
             "properties": {
                 "element": {"#": "tailOffset"}
             },
             "bindings": {
-                "value": {"<->": "@owner.tailOffset"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.tailOffset"}
             }
         }
     }

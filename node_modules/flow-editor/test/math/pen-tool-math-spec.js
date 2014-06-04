@@ -3,7 +3,8 @@ var Montage = require("montage").Montage,
     Vector2 = require("ui/pen-tool-math").Vector2,
     Vector3 = require("ui/pen-tool-math").Vector3,
     BezierCurve = require("ui/pen-tool-math").BezierCurve,
-    BezierSpline = require("ui/pen-tool-math").BezierSpline;
+    BezierSpline = require("ui/pen-tool-math").BezierSpline,
+    CubicBezierSpline = require("ui/pen-tool-math").CubicBezierSpline;
 
 /* Vector spec */
 
@@ -1911,6 +1912,24 @@ describe("pen-tool-math Bezier-Spline-spec", function() {
     xdescribe("transformMatrix3d", function() {
         it("test is missing", function() {
             expect(0).toBe(1);
+        });
+    });
+});
+
+/* Cubic Bézier Spline spec */
+
+describe("pen-tool-math Cubic-Bezier-Spline-spec", function() {
+    var cubicBezierSpline;
+
+    describe("initialization using init", function() {
+        beforeEach(function() {
+            cubicBezierSpline = new CubicBezierSpline().init();
+        });
+        it("length should be defined", function() {
+            expect(cubicBezierSpline.length).toBeDefined();
+        });
+        it("length should be equal to 0", function() {
+            expect(cubicBezierSpline.length).toEqual(0);
         });
     });
 });

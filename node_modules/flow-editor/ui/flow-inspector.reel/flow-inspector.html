@@ -11,6 +11,7 @@
                 "title": {"#": "label"}
             }
         },
+
         "label": {
             "prototype": "montage/ui/text.reel",
             "properties": {
@@ -20,6 +21,7 @@
                 "value": {"<-": "@owner.titleText"}
             }
         },
+
         "close": {
             "prototype": "matte/ui/button.reel",
             "properties": {
@@ -32,6 +34,7 @@
                 }
             ]
         },
+
         "panels": {
             "prototype": "montage/ui/substitution.reel",
             "properties": {
@@ -41,6 +44,7 @@
                 "switchValue": {"<-": "@owner.type"}
             }
         },
+
         "knot": {
             "prototype": "ui/flow-knot-inspector.reel",
             "properties": {
@@ -48,10 +52,10 @@
             },
             "bindings": {
                 "knot": {"<-": "@owner.selection"},
-                "scene": {"<-": "@owner.scene"},
-                "editor": {"<-": "@owner.editor"}
+                "scene": {"<-": "@owner.scene"}
             }
         },
+
         "spline": {
             "prototype": "ui/flow-spline-inspector.reel",
             "properties": {
@@ -59,10 +63,10 @@
             },
             "bindings": {
                 "spline": {"<-": "@owner.selection"},
-                "scene": {"<-": "@owner.scene"},
-                "editor": {"<-": "@owner.editor"}
+                "scene": {"<-": "@owner.scene"}
             }
         },
+
         "grid": {
             "prototype": "ui/flow-flow-inspector.reel",
             "properties": {
@@ -70,10 +74,10 @@
             },
             "bindings": {
                 "flow": {"<-": "@owner.selection"},
-                "scene": {"<-": "@owner.scene"},
-                "editor": {"<-": "@owner.editor"}
+                "scene": {"<-": "@owner.scene"}
             }
         },
+
         "camera": {
             "prototype": "ui/flow-camera-inspector.reel",
             "properties": {
@@ -81,10 +85,10 @@
             },
             "bindings": {
                 "camera": {"<-": "@owner.selection"},
-                "scene": {"<-": "@owner.scene"},
-                "editor": {"<-": "@owner.editor"}
+                "scene": {"<-": "@owner.scene"}
             }
         },
+
         "vector": {
             "prototype": "ui/flow-vector3-inspector.reel",
             "properties": {
@@ -92,10 +96,10 @@
             },
             "bindings": {
                 "vector": {"<-": "@owner.selection"},
-                "scene": {"<-": "@owner.scene"},
-                "editor": {"<-": "@owner.editor"}
+                "scene": {"<-": "@owner.scene"}
             }
         },
+
         "helix": {
             "prototype": "ui/flow-helix-inspector.reel",
             "properties": {
@@ -103,8 +107,7 @@
             },
             "bindings": {
                 "helix": {"<-": "@owner.selection"},
-                "scene": {"<-": "@owner.scene"},
-                "editor": {"<-": "@owner.editor"}
+                "scene": {"<-": "@owner.scene"}
             }
         }
     }

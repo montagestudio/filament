@@ -1,17 +1,16 @@
 /**
-    @module "ui/flow-flow-inspector.reel"
-    @requires montage
-    @requires montage/ui/component
-*/
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+ @module "ui/flow-flow-inspector.reel"
+ @requires montage
+ @requires montage/ui/component
+ */
+var Component = require("montage/ui/component").Component;
 
 /**
-    Description TODO
-    @class module:"ui/flow-flow-inspector.reel".FlowFlowInspector
-    @extends module:montage/ui/component.Component
-*/
-exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow-flow-inspector.reel".FlowFlowInspector# */ {
+ Description TODO
+ @class module:"ui/flow-flow-inspector.reel".FlowFlowInspector
+ @extends module:montage/ui/component.Component
+ */
+exports.FlowFlowInspector = Component.specialize( /** @lends module:"ui/flow-flow-inspector.reel".FlowFlowInspector# */ {
 
     _isSelectionEnabled: {
         value: null
@@ -39,6 +38,7 @@ exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow
             if (this._isSelectionEnabled !== value) {
                 this.isSelectionEnabled = value;
             }
+
             this._isSelectionEnabledInput = value;
         }
     },
@@ -69,6 +69,7 @@ exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow
             if (this._hasSelectedIndexScrolling !== value) {
                 this.hasSelectedIndexScrolling = value;
             }
+
             this._hasSelectedIndexScrollingInput = value;
         }
     },
@@ -99,6 +100,7 @@ exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow
             if (this._scrollingTransitionTimingFunction !== value) {
                 this.scrollingTransitionTimingFunction = value;
             }
+
             this._scrollingTransitionTimingFunctionInput = value;
         }
     },
@@ -130,6 +132,7 @@ exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow
             if (this._duration !== value) {
                 this.duration = value;
             }
+
             this._durationInput = value;
         }
     },
@@ -160,6 +163,7 @@ exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow
             if (this._scrollVectorX !== value) {
                 this.scrollVectorX = value;
             }
+
             this._scrollVectorXInput = value;
         }
     },
@@ -190,6 +194,7 @@ exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow
             if (this._scrollVectorY !== value) {
                 this.scrollVectorY = value;
             }
+
             this._scrollVectorYInput = value;
         }
     },
@@ -220,6 +225,7 @@ exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow
             if (this._offset !== value) {
                 this.offset = value;
             }
+
             this._offsetInput = value;
         }
     },
@@ -233,11 +239,13 @@ exports.FlowFlowInspector = Montage.create(Component, /** @lends module:"ui/flow
             return this._flow;
         },
         set: function (value) {
-            if (value && (value._data.type === "FlowGrid")) {
-                this._flow = value;
-            } else {
-                this._flow = null;
-            }
+            this._flow = value && value._data.type === "FlowGrid" ? value : null;
+        }
+    },
+
+    handleAction: {
+        value: function () {
+            this.dispatchEventNamed("flowPropertyChangeSet", true, true);
         }
     }
 

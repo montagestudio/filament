@@ -2100,6 +2100,19 @@ var BezierSpline = exports.BezierSpline = MapReducible.specialize({
     }
 });
 
+var CubicBezierSpline = exports.CubicBezierSpline = BezierSpline.specialize({
+
+    constructor: {
+        value: function CubicBezierSpline () {
+        }
+    },
+
+    type: {
+        serializable: false,
+        value: "CubicBezierSpline"
+    }
+});
+
 var Scene = exports.Scene = MapReducible.specialize({
 
     constructor: {

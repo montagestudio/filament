@@ -3,15 +3,14 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+var Component = require("montage/ui/component").Component;
 
 /**
     Description TODO
     @class module:"ui/flow-spline-inspector.reel".FlowSplineInspector
     @extends module:montage/ui/component.Component
 */
-exports.FlowSplineInspector = Montage.create(Component, /** @lends module:"ui/flow-spline-inspector.reel".FlowSplineInspector# */ {
+exports.FlowSplineInspector = Component.specialize( /** @lends module:"ui/flow-spline-inspector.reel".FlowSplineInspector# */ {
 
     _spline: {
         value: null
@@ -22,11 +21,7 @@ exports.FlowSplineInspector = Montage.create(Component, /** @lends module:"ui/fl
             return this._spline;
         },
         set: function (value) {
-            if (value && (value._data.type === "FlowSpline")) {
-                this._spline = value;
-            } else {
-                this._spline = null;
-            }
+            this._spline = value && value._data.type === "FlowSpline" ? value : null;
         }
     },
 
@@ -39,15 +34,13 @@ exports.FlowSplineInspector = Montage.create(Component, /** @lends module:"ui/fl
             return this._x;
         },
         set: function (value) {
-            if (!this.spline) {
-                return 0;
-            }
+            if (this.spline) {
+                var dX = value - this.spline.boundingBoxCorner.x;
+                this._x = value;
 
-            var dX = value - this.spline.boundingBoxCorner.x;
-
-            this._x = value;
-            if (this.spline && dX) {
-                this.spline.translate([dX, 0, 0]);
+                if (dX) {
+                    this.spline.translate([dX, 0, 0]);
+                }
             }
         }
     },
@@ -61,15 +54,13 @@ exports.FlowSplineInspector = Montage.create(Component, /** @lends module:"ui/fl
             return this._y;
         },
         set: function (value) {
-            if (!this.spline) {
-                return 0;
-            }
+            if (this.spline) {
+                var dY = value - this.spline.boundingBoxCorner.y;
+                this._y = value;
 
-            var dY = value - this.spline.boundingBoxCorner.y;
-
-            this._y = value;
-            if (this.spline && dY) {
-                this.spline.translate([0, dY, 0]);
+                if (dY) {
+                    this.spline.translate([0, dY, 0]);
+                }
             }
         }
     },
@@ -83,15 +74,13 @@ exports.FlowSplineInspector = Montage.create(Component, /** @lends module:"ui/fl
             return this._z;
         },
         set: function (value) {
-            if (!this.spline) {
-                return 0;
-            }
+            if (this.spline) {
+                var dZ = value - this.spline.boundingBoxCorner.z;
+                this._z = value;
 
-            var dZ = value - this.spline.boundingBoxCorner.z;
-
-            this._z = value;
-            if (this.spline && dZ) {
-                this.spline.translate([0, 0, dZ]);
+                if (dZ) {
+                    this.spline.translate([0, 0, dZ]);
+                }
             }
         }
     },
@@ -99,12 +88,14 @@ exports.FlowSplineInspector = Montage.create(Component, /** @lends module:"ui/fl
     handleReverseAction: {
         value: function () {
             this.spline.reverse();
+            this.dispatchEventNamed("flowPropertyChangeSet", true, true);
         }
     },
 
     handleDeleteAction: {
         value: function () {
             this.scene.removeCanvasFlowSpline(this.spline);
+            this.dispatchEventNamed("flowPropertyChangeSet", true, true);
         }
     }
 

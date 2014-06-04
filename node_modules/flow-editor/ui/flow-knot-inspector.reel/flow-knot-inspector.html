@@ -18,7 +18,13 @@
                 "rotateZ": {"<->": "@owner.knot._data.rotateZ"},
                 "opacity": {"<->": "@owner.knot._data.opacity"},
                 "density": {"<->": "@owner.knot._data.density"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
         "xInput": {
             "prototype": "ui/flow-number-input.reel",
@@ -26,8 +32,7 @@
                 "element": {"#": "x"}
             },
             "bindings": {
-                "value": {"<->": "@owner.x"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.x"}
             }
         },
         "yInput": {
@@ -36,8 +41,7 @@
                 "element": {"#": "y"}
             },
             "bindings": {
-                "value": {"<->": "@owner.y"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.y"}
             }
         },
         "zInput": {
@@ -46,8 +50,7 @@
                 "element": {"#": "z"}
             },
             "bindings": {
-                "value": {"<->": "@owner.z"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.z"}
             }
         },
         "junction": {
@@ -76,8 +79,7 @@
                 "step": 0.01
             },
             "bindings": {
-                "value": {"<->": "@owner.rotateX"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.rotateX"}
             }
         },
         "rotateY": {
@@ -87,8 +89,7 @@
                 "step": 0.01
             },
             "bindings": {
-                "value": {"<->": "@owner.rotateY"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.rotateY"}
             }
         },
         "rotateZ": {
@@ -98,8 +99,7 @@
                 "step": 0.01
             },
             "bindings": {
-                "value": {"<->": "@owner.rotateZ"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.rotateZ"}
             }
         },
         "opacity": {
@@ -109,8 +109,7 @@
                 "step": 0.01
             },
             "bindings": {
-                "value": {"<->": "@owner.opacity"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.opacity"}
             }
         },
         "density": {
@@ -120,8 +119,7 @@
                 "step": 0.1
             },
             "bindings": {
-                "value": {"<->": "@owner.density"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.density"}
             }
         }
     }

@@ -11,6 +11,16 @@
                 "input": {"#": "number-input"},
                 "knob": {"#": "number-knob"}
             }
+        },
+
+        "value":{
+            "prototype": "native/ui/input-number.reel",
+            "properties": {
+                "element": {"#": "number-input"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.value"}
+            }
         }
     }
     </script>

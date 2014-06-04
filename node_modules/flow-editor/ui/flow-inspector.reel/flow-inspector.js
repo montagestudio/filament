@@ -3,19 +3,14 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
-    Vector3 = require("ui/pen-tool-math").Vector3,
-    inspectors = {
-        FlowKnot: require("ui/flow-knot-inspector.reel").FlowKnotInspector
-    };
+var Component = require("montage/ui/component").Component;
 
 /**
     Description TODO
     @class module:"ui/flow-inspector.reel".FlowInspector
     @extends module:montage/ui/component.Component
 */
-exports.FlowInspector = Montage.create(Component, /** @lends module:"ui/flow-inspector.reel".FlowInspector# */ {
+exports.FlowInspector = Component.specialize( /** @lends module:"ui/flow-inspector.reel".FlowInspector# */ {
 
     _scene: {
         value: null
@@ -27,6 +22,7 @@ exports.FlowInspector = Montage.create(Component, /** @lends module:"ui/flow-ins
         },
         set: function (value) {
             this._scene = value;
+
             if (value) {
                 this._scene._data.addEventListener("selectionChange", this, false);
                 this._scene._data.addEventListener("sceneChange", this, false);
@@ -56,6 +52,7 @@ exports.FlowInspector = Montage.create(Component, /** @lends module:"ui/flow-ins
         value: function () {
             this.selection = this._scene.getSelection(this._scene)[0];
             this.type = this.selection._data.type;
+
             if (this.selection) {
                 switch (this.type) {
                     case "FlowKnot":
@@ -179,20 +176,26 @@ exports.FlowInspector = Montage.create(Component, /** @lends module:"ui/flow-ins
     draw: {
         value: function () {
             this.element.style.display = this._isVisible ? "block" : "none";
+
             if (this._windowPositionX > this._bodyWidth - this._width) {
                 this._windowPositionX = this._bodyWidth - this._width;
             }
+
             if (this._windowPositionX < 0) {
                 this._windowPositionX = 0;
             }
+
             if (this._windowPositionY > this._bodyHeight - this._height) {
                 this._windowPositionY = this._bodyHeight - this._height;
             }
+
             if (this._windowPositionY < 0) {
                 this._windowPositionY = 0;
             }
+
             this.element.style.left = this._windowPositionX + "px";
             this.element.style.top = this._windowPositionY + "px";
+
             if (this._isVisible && (this._width === 0)) {
                 this.needsDraw = true;
             }

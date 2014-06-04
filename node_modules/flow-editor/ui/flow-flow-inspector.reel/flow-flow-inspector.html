@@ -16,8 +16,15 @@
                 "scrollVectorX": {"<->": "@owner.flow._data.scrollVectorX"},
                 "scrollVectorY": {"<->": "@owner.flow._data.scrollVectorY"},
                 "scrollingTransitionTimingFunction": {"<->": "@owner.flow._data.scrollingTransitionTimingFunction"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
+
         "selectionEnabled": {
             "prototype": "matte/ui/input-checkbox.reel",
             "properties": {
@@ -27,6 +34,7 @@
                 "checked": {"<->": "@owner.isSelectionEnabledInput"}
             }
         },
+
         "scrollIntoView": {
             "prototype": "matte/ui/input-checkbox.reel",
             "properties": {
@@ -36,26 +44,27 @@
                 "checked": {"<->": "@owner.hasSelectedIndexScrollingInput"}
             }
         },
+
         "offset": {
             "prototype": "ui/flow-number-input.reel",
             "properties": {
                 "element": {"#": "offset"}
             },
             "bindings": {
-                "value": {"<->": "@owner.offsetInput"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.offsetInput"}
             }
         },
+
         "duration": {
             "prototype": "ui/flow-number-input.reel",
             "properties": {
                 "element": {"#": "duration"}
             },
             "bindings": {
-                "value": {"<->": "@owner.durationInput"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.durationInput"}
             }
         },
+
         "timingFunction": {
             "prototype": "matte/ui/select.reel",
             "properties": {
@@ -87,24 +96,24 @@
                 "value": {"<->": "@owner.scrollingTransitionTimingFunctionInput"}
             }
         },
+
         "scrollVectorX": {
             "prototype": "ui/flow-number-input.reel",
             "properties": {
                 "element": {"#": "scrollVectorX"}
             },
             "bindings": {
-                "value": {"<->": "@owner.scrollVectorXInput"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.scrollVectorXInput"}
             }
         },
+
         "scrollVectorY": {
             "prototype": "ui/flow-number-input.reel",
             "properties": {
                 "element": {"#": "scrollVectorY"}
             },
             "bindings": {
-                "value": {"<->": "@owner.scrollVectorYInput"},
-                "editor": {"<-": "@owner.editor"}
+                "value": {"<->": "@owner.scrollVectorYInput"}
             }
         }
     }
