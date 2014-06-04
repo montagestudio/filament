@@ -250,7 +250,7 @@ exports.ProjectDocument = Document.specialize({
     add: {
         value: function(data, url, makeSubDirectories) {
             var deferredUndoOperation = Promise.defer(),
-                makeFileMethod = (makeSubDirectories)? this._environmentBridge.makeFile : this._environmentBridge.writeFile,
+                makeFileMethod = (makeSubDirectories)? this._environmentBridge.makeTreeWriteFile : this._environmentBridge.writeFile,
                 self = this;
 
             this.undoManager.register("Add File", deferredUndoOperation.promise);
