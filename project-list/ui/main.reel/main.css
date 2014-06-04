@@ -184,6 +184,7 @@
     font-size: inherit;
     height: auto;
     margin: 0;
+    display: block;
 }
 
 .NewForm .matte-InputText:hover,
@@ -200,6 +201,7 @@
 .NewForm-error {
     font-size: .9em;
     color: hsl(10, 80%, 54%);
+    margin: 1rem 0;
 }
 
 
