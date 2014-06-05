@@ -86,7 +86,7 @@ exports.Visualizer = Component.specialize(/** @lends Visualizer# */ {
             } else {
                 // animate to shrink
                 this.path.classList.add("is-shrink");
-               if (this.x > this.startX) {
+                if (this.x > this.startX) {
                     if (this.y < this.startY) {
                         this.path.classList.add("bottomLeft");
                     } else {

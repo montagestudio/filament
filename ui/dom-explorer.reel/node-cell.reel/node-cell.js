@@ -612,13 +612,14 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     updateDomExplorerDependencies: {
         value: function() {
             var templateObjects = this.templateObjects;
+            var addElementNodeHover;
 
             if (!templateObjects) {
                 return;
             }
 
             if (this.domExplorer) {
-                var addElementNodeHover = this.domExplorer.addElementNodeHover;
+                addElementNodeHover = this.domExplorer.addElementNodeHover;
             }
 
             // @addElementBefore: classList.has('dropover') <- @owner.domExplorer.addElementNodeHover == @owner
@@ -714,7 +715,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function(classList, name, value) {
             var hasClass = classList.has(name);
 
-            if (value != hasClass) {
+            if (value !== hasClass) {
                 if (value) {
                     classList.add(name);
                 } else {

@@ -116,7 +116,7 @@ exports.MixedValue = Component.specialize(/** @lends MixedValue# */ {
                     value = JSON.parse(textFieldValue);
                 } catch(ex) {
                 }
-                if (typeof value !== "array") {
+                if (Array.isArray(value)) {
                     value = this._value;
                 }
             }

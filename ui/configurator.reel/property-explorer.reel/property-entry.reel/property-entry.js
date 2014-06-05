@@ -4,7 +4,6 @@
     @requires montage/ui/component
 */
 var Component = require("montage/ui/component").Component,
-    MimeTypes = require("core/mime-types"),
     BindingValue = require("../../values/binding-value.reel").BindingValue,
     StringValue = require("../../values/string-value.reel").StringValue,
     BooleanValue = require("../../values/boolean-value.reel").BooleanValue,
@@ -75,6 +74,7 @@ exports.PropertyEntry = Component.specialize(/** @lends module:"./property-entry
         value: null
     },
 
+    //jshint -W074
     _getValueEditorComponent: {
         value: function(propertyType) {
             var valueType = this.property.blueprint.valueType;
@@ -82,7 +82,6 @@ exports.PropertyEntry = Component.specialize(/** @lends module:"./property-entry
             var isBinding = this._isBinding(propertyType);
             var component;
             var componentType;
-            var value;
 
             // We don't know how to handle arrays of different types of objects
             // so consider it a generic array.
@@ -147,7 +146,7 @@ exports.PropertyEntry = Component.specialize(/** @lends module:"./property-entry
             return component;
         }
     },
-
+    //jshint +W074
     didReceiveReference: {
         value: function(outlet, label) {
             var proxyMap = this.property.templateObject._editingDocument.editingProxyMap;

@@ -95,7 +95,7 @@ exports.ObjectCell = Component.specialize(/** @lends ObjectCell# */ {
 
     acceptsDrop: {
         value: function (event) {
-            return false
+            return false;
         }
     },
 
@@ -218,7 +218,7 @@ exports.ObjectCell = Component.specialize(/** @lends ObjectCell# */ {
         value: function(classList, name, value) {
             var hasClass = classList.has(name);
 
-            if (value != hasClass) {
+            if (value !== hasClass) {
                 if (value) {
                     classList.add(name);
                 } else {
