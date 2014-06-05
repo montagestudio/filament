@@ -1587,7 +1587,11 @@ exports.ReelDocument = EditingDocument.specialize({
             var self = this;
             return this._dataSource.read(this._getJsFileUrl()).then(function (javascript) {
                 var methodName = (useCapture ? "capture" : "handle") + proxy.label.toCapitalized() + type.toCapitalized();
-                self._javascript = modifyModule.injectMethod(javascript, self._exportName, methodName, "event");
+                try {
+                    self._javascript = modifyModule.injectMethod(javascript, self._exportName, methodName, "event");
+                } catch (error) {
+                    // ignore
+                }
                 self._isJavascriptModified = true;
             });
         }
@@ -1602,7 +1606,11 @@ exports.ReelDocument = EditingDocument.specialize({
             var self = this;
             return this._dataSource.read(this._getJsFileUrl()).then(function (javascript) {
                 var methodName = (useCapture ? "capture" : "handle") + proxy.label.toCapitalized() + type.toCapitalized();
-                self._javascript = modifyModule.removeMethod(javascript, self._exportName, methodName, "event");
+                try {
+                    self._javascript = modifyModule.removeMethod(javascript, self._exportName, methodName, "event");
+                } catch (error) {
+                    // ignore
+                }
                 self._isJavascriptModified = true;
             });
         }
