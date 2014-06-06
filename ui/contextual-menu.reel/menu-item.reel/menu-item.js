@@ -183,7 +183,7 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
                 key = (this.isMac)? String.fromCharCode(8963) : "Ctrl";
                 break;
             //"⌥" "&#8997;"
-            case "alt":
+            case "option":
                 key = (this.isMac)? String.fromCharCode(8997) : "Alt";
                 break;
             default:
