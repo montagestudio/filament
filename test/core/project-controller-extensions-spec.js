@@ -1,3 +1,4 @@
+/*global global */
 var rollbarMock = require("test/mocks/rollbar-mocks").rollbarMock;
 
 global.Rollbar = rollbarMock();
