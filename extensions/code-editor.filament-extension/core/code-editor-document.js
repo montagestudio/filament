@@ -344,6 +344,8 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
                 return "x-shader/x-fragment";
             } else if (CodeEditorDocument.editorFileMatchMarkdown(fileUrl)) {
                 return "text/plain";
+            } else if (CodeEditorDocument.editorFileMatchText(fileUrl)) {
+                return "text/plain";
             }
             return null;
         }
@@ -388,6 +390,13 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
         enumerable:false,
         value:function (fileUrl) {
             return (/\.md\/?$/).test(fileUrl);
+        }
+    },
+
+    editorFileMatchText:{
+        enumerable:false,
+        value:function (fileUrl) {
+            return (/\.txt\/?$/).test(fileUrl);
         }
     },
 
