@@ -16,7 +16,8 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     WeakMap = require("montage/collections/weak-map"),
     ValidationError = require("core/error").ValidationError,
     NotModifiedError = require("core/error").NotModifiedError,
-    ObjectReferences = require("core/object-references").ObjectReferences;
+    ObjectReferences = require("core/object-references").ObjectReferences,
+    modifyModule = require("core/modify-module");
 
 // An object to use when merging templates to ensure labels are applied correctly
 var MergeDelegate = function (labeler, serializationToMerge) {
@@ -134,7 +135,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             this.undoManager.clearUndo();
             this.undoManager.clearRedo();
-            this._hasModifiedData = {undoCount: 0, redoCount: 0};
+            this._resetModifiedDataState();
 
             this._template = template;
             this._templateBodyNode = new NodeProxy().init(template.document.body, this);
@@ -294,6 +295,14 @@ exports.ReelDocument = EditingDocument.specialize({
                     return obj.label === "owner";
                 });
         }
+    },
+
+    _javascript: {
+        value: null
+    },
+
+    _isJavascriptModified: {
+        value: false
     },
 
     _template: {
@@ -513,6 +522,22 @@ exports.ReelDocument = EditingDocument.specialize({
 
             this._ignoreDataChange = true;
             return dataSource.write(location, html)
+            .then(function() {
+                self._ignoreDataChange = false;
+            });
+        }
+    },
+
+    _saveJs: {
+        value: function (location, dataSource) {
+            var self = this;
+
+            if (!this.hasModifiedData(location)) {
+                return;
+            }
+
+            this._ignoreDataChange = true;
+            return dataSource.write(location, this._javascript)
             .then(function() {
                 self._ignoreDataChange = false;
             });
@@ -1525,6 +1550,9 @@ exports.ReelDocument = EditingDocument.specialize({
                     self.setOwnedObjectProperty(actionEventListener, "action", methodName);
                     return actionEventListener;
                 });
+            } else if (listener.label === "owner") {
+                this._addJavascriptEventHandler(proxy, type, listener, useCapture);
+                installListenerPromise = Promise.resolve(listener);
             } else {
                 installListenerPromise = Promise.resolve(listener);
             }
@@ -1546,6 +1574,44 @@ exports.ReelDocument = EditingDocument.specialize({
                 self.editor.refresh();
 
                 return listenerEntry;
+            });
+        }
+    },
+
+    _addJavascriptEventHandler: {
+        value: function (proxy, type, listener, useCapture) {
+            this.undoManager.register("Add JavaScript event handler", Promise.resolve([
+                this._removeJavascriptEventHandler, this, proxy, type, listener, useCapture
+            ]));
+
+            var self = this;
+            return this._dataSource.read(this._getJsFileUrl()).then(function (javascript) {
+                var methodName = (useCapture ? "capture" : "handle") + proxy.label.toCapitalized() + type.toCapitalized();
+                try {
+                    self._javascript = modifyModule.injectMethod(javascript, self._exportName, methodName, "event");
+                } catch (error) {
+                    // ignore
+                }
+                self._isJavascriptModified = true;
+            });
+        }
+    },
+
+    _removeJavascriptEventHandler: {
+        value: function (proxy, type, listener, useCapture) {
+            this.undoManager.register("Remove JavaScript event handler", Promise.resolve([
+                this._addJavascriptEventHandler, this, proxy, type, listener, useCapture
+            ]));
+
+            var self = this;
+            return this._dataSource.read(this._getJsFileUrl()).then(function (javascript) {
+                var methodName = (useCapture ? "capture" : "handle") + proxy.label.toCapitalized() + type.toCapitalized();
+                try {
+                    self._javascript = modifyModule.removeMethod(javascript, self._exportName, methodName, "event");
+                } catch (error) {
+                    // ignore
+                }
+                self._isJavascriptModified = true;
             });
         }
     },
@@ -2700,22 +2766,27 @@ exports.ReelDocument = EditingDocument.specialize({
             var moduleId = Url.toModuleId(this.url, packageUrl);
             var templateModuleId = this._getTemplateModuleId(moduleId);
 
-            return this._createTemplateWithUrl(packageUrl + templateModuleId)
-            .then(function(template) {
+            return Promise.all([
+                this._createTemplateWithUrl(packageUrl + templateModuleId),
+                this._dataSource.read(this._getJsFileUrl())
+            ]).spread(function (template, javascript) {
                 self._dataSource.addEventListener("dataChange", self, false);
                 self._template = template;
+                self._javascript = javascript;
                 self.registerFile("html", self._saveHtml, self);
+                self.registerFile("js", self._saveJs, self);
                 self._openTemplate(template);
                 return self;
-            }, function() {
-                var error = {
+            }, function (error) {
+                var wrappedError = {
                     file: self.fileUrl,
                     error: {
                         id: "syntaxError",
                         reason: "Template was not found or was invalid"
-                    }
+                    },
+                    stack: error.stack
                 };
-                self.errors.push(error);
+                self.errors.push(wrappedError);
             })
             .then(function() {
                 if (self.errors.length) {
@@ -2761,6 +2832,13 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    _getJsFileUrl: {
+        value: function() {
+            var filenameMatch = this.url.match(/.+\/(.+)\.reel/);
+            return this.url + filenameMatch[1] + ".js";
+        }
+    },
+
     _dataChanged: {
         value: null
     },
@@ -2775,10 +2853,15 @@ exports.ReelDocument = EditingDocument.specialize({
 
     hasModifiedData: {
         value: function(url) {
+            var undoManager = this._undoManager;
+            var hasModifiedData = this._hasModifiedData;
             if (url === this._getHtmlFileUrl()) {
-                var undoManager = this._undoManager;
-                var hasModifiedData = this._hasModifiedData;
                 return undoManager && hasModifiedData &&
+                    (hasModifiedData.undoCount !== undoManager.undoCount ||
+                    hasModifiedData.redoCount !== undoManager.redoCount);
+            } else if (url === this._getJsFileUrl()) {
+                return this._isJavascriptModified && undoManager &&
+                    hasModifiedData &&
                     (hasModifiedData.undoCount !== undoManager.undoCount ||
                     hasModifiedData.redoCount !== undoManager.redoCount);
             }
@@ -2790,6 +2873,9 @@ exports.ReelDocument = EditingDocument.specialize({
             if (url === this._getHtmlFileUrl()) {
                 this._resetModifiedDataState();
                 return Promise.resolve(this._generateHtml());
+            } else if (url === this._getJsFileUrl()) {
+                this._resetModifiedDataState();
+                return Promise.resolve(this._javascript);
             }
         }
     },
@@ -2806,8 +2892,12 @@ exports.ReelDocument = EditingDocument.specialize({
      */
     _resetModifiedDataState: {
         value: function() {
+            if (!this._hasModifiedData) {
+                this._hasModifiedData = {undoCount: 0, redoCount: 0};
+            }
             this._hasModifiedData.undoCount = this._undoManager.undoCount;
             this._hasModifiedData.redoCount = this._undoManager.redoCount;
+            this._isJavascriptModified = false;
         }
     },
 

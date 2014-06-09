@@ -29,7 +29,7 @@ describe("extensions/code-editor.filament-extension/core/code-editor-document-sp
     beforeEach(function() {
         beforeEachPromise = CodeEditorDocumentPromise
         .then(function(CodeEditorDocument) {
-            promisedDocument = new CodeEditorDocument().init(require.location + "test/mocks/ui/simple.reel/", dataSource, require).load();
+            promisedDocument = new CodeEditorDocument().init(require.location + "test/mocks/ui/simple.reel/simple.js", dataSource, require).load();
         });
     });
 

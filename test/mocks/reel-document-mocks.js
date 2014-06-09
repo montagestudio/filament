@@ -18,8 +18,15 @@ exports.mockReelDocument = function (fileUrl, serialization, bodyMarkup) {
 
     //TODO insert bodyMarkup
     dataSource = documentDataSourceMock({
-        read: function() {
-            return Promise(mockDocument.documentElement.outerHTML);
+        read: function(url) {
+            var content;
+
+            if (/\.js$/.test(url)) {
+                content = "";
+            } else {
+                content = mockDocument.documentElement.outerHTML;
+            }
+            return Promise(content);
         },
         write: function() {
             return Promise();

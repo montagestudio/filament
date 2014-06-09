@@ -41,7 +41,7 @@ describe("core/reel-document-spec", function () {
 
     describe("loading a template with image references", function () {
         beforeEach(function () {
-            reelDocumentPromise = new ReelDocument().init(require.location + "test/mocks/ui/images.reel", dataSource, require).load();
+            reelDocumentPromise = new ReelDocument().init(require.location + "test/mocks/ui/images.reel/", dataSource, require).load();
         });
 
         it("should return a promise for the populated document", function () {

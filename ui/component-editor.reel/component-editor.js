@@ -430,7 +430,7 @@ exports.ComponentEditor = Editor.specialize({
             this.projectController.addEventListener("willOpenDocument", this, false);
 
             preloadPackageRequire = {
-                location: "/",
+                location: "https://localhost/",
                 async: function() {
                     return Promise.resolve({
                         PropertyBlueprint: {},
@@ -453,7 +453,7 @@ exports.ComponentEditor = Editor.specialize({
                 addEventListener: Function.noop
             };
 
-            return reelDocument.init("/module-id.reel", preloadDataSource, preloadPackageRequire).load()
+            return reelDocument.init("https://localhost/module-id.reel", preloadDataSource, preloadPackageRequire).load()
             .then(function() {
                 self._currentDocument = reelDocument;
             });

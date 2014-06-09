@@ -3,3 +3,4 @@ npm-cache/**
 core/emmet.js
 core/node/*
 **/codemirror/*
+test/modify-module/*
