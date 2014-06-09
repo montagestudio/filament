@@ -1,3 +1,7 @@
+var rollbarMock = require("test/mocks/rollbar-mocks").rollbarMock;
+
+global.Rollbar = rollbarMock();
+
 var environmentBridgeMock = require("test/mocks/environment-bridge-mocks").environmentBridgeMock,
     editorControllerMock = require("test/mocks/editor-controller-mocks").editorControllerMock,
     extensionControllerMock = require("test/mocks/extension-controller-mocks").extensionControllerMock,
