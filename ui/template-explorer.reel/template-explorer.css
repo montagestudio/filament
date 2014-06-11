@@ -294,7 +294,8 @@
     height: 32px;
     font-size: 18px; 
     font-weight: bold;
-    line-height: 0;
+    line-height: 32px;
+    text-align: center;
     color: hsl(0, 0%, 60%); 
     border-radius: 0;
     border: none;
@@ -315,6 +316,7 @@
 
 .TemplateObjectCell-button--pill.matte-Button {
     height: 22px;
+    line-height: 22px;
 }
 
 
