@@ -56,6 +56,10 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: null
     },
 
+    acceptsActiveTarget: {
+        value: true
+    },
+
     domExplorer: {
         get: function() {
             return this._domExplorer;

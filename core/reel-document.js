@@ -264,8 +264,8 @@ exports.ReelDocument = EditingDocument.specialize({
 
             if ("delete" === identifier) {
                 if (this.canDelete) {
-                    evt.stop();
                     this.deleteSelected();
+                    evt.stop();
                 }
             } else if ("undo" === identifier) {
                 if (this.canUndo) {
@@ -301,9 +301,12 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    _isActiveTartgetChildOfElement: {
+    _isActiveTartgetNodeCell: {
         value: function (obj) {
-            throw "Not implemented yet";
+            var activeTarget = defaultEventManager.activeTarget,
+                component = activeTarget;
+
+            return component.constructor.name === "NodeCell" && component.nodeInfo === obj;
         }
     },
 
@@ -312,7 +315,7 @@ exports.ReelDocument = EditingDocument.specialize({
             if (this.activeSelection === this.selectedObjects) {
                 return this._isActiveTartgetChildOfComponent(obj);
             } else if (this.activeSelection === this.selectedElements) {
-                return this._isActiveTartgetChildOfElement(obj);
+                return this._isActiveTartgetNodeCell(obj);
             } else {
                 return false;
             }
