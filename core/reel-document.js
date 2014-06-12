@@ -52,7 +52,6 @@ exports.ReelDocument = EditingDocument.specialize({
             this.sideData = Object.create(null);
             this.references = new ObjectReferences();
             this.selectedElements = [];
-            this.templateObjectsTreeToggleStates = new WeakMap();
 
             this.addRangeAtPathChangeListener("selectedObjects", this, "handleSelectedObjectsChange");
             this.addRangeAtPathChangeListener("selectedElements", this, "handleSelectedElementsChange");
@@ -162,7 +161,6 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.errors.push(error);
 
             }
-            this.buildTemplateObjectTree();
         }
     },
 
@@ -626,15 +624,6 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
-    setOwnedObjectProperty: {
-        value: function (proxy, property, value){
-            this.super(proxy, property, value);
-            if (property === "element") {
-                this.buildTemplateObjectTree();
-            }
-        }
-    },
-
     componentProxyForElement: {
         value: function (element) {
             var proxies = this.editingProxies,
@@ -993,7 +982,6 @@ exports.ReelDocument = EditingDocument.specialize({
                 self.undoManager.closeBatch();
                 self.editor.refresh();
                 self.dispatchEventNamed("domModified", true, false);
-                self.buildTemplateObjectTree();
             });
         }
     },
@@ -1230,7 +1218,6 @@ exports.ReelDocument = EditingDocument.specialize({
     addObject: {
         value: function (proxy) {
             this._addProxies(proxy);
-            this.buildTemplateObjectTree();
             this.undoManager.register("Add object", Promise.resolve([this.removeObject, this, proxy]));
 
             this.editor.refresh();
@@ -1303,7 +1290,6 @@ exports.ReelDocument = EditingDocument.specialize({
 
                 self.editor.refresh();
                 self.dispatchEventNamed("domModified", true, false);
-                self.buildTemplateObjectTree();
                 return proxy;
             });
         }
@@ -2122,7 +2108,6 @@ exports.ReelDocument = EditingDocument.specialize({
 
             this.undoManager.closeBatch();
             this.dispatchEventNamed("domModified", true, false);
-            this.buildTemplateObjectTree();
             return nodeProxy;
         }
     },
@@ -2209,7 +2194,6 @@ exports.ReelDocument = EditingDocument.specialize({
 
             this.undoManager.register("Append Node", Promise.resolve([this.removeTemplateNode, this, nodeProxy]));
             this.dispatchEventNamed("domModified", true, false);
-            this.buildTemplateObjectTree();
             return nodeProxy;
         }
     },
@@ -2262,7 +2246,6 @@ exports.ReelDocument = EditingDocument.specialize({
 
             this.undoManager.register("Insert Node Before", Promise.resolve([this.removeTemplateNode, this, nodeProxy]));
             this.dispatchEventNamed("domModified", true, false);
-            this.buildTemplateObjectTree();
             return nodeProxy;
         }
     },
@@ -2296,7 +2279,6 @@ exports.ReelDocument = EditingDocument.specialize({
             }
             this.editor.refresh();
             this.dispatchEventNamed("domModified", true, false);
-            this.buildTemplateObjectTree();
             return nodeProxy;
         }
     },
@@ -2322,7 +2304,6 @@ exports.ReelDocument = EditingDocument.specialize({
 
             this.editor.refresh();
             this.dispatchEventNamed("domModified", true, false);
-            this.buildTemplateObjectTree();
             return nodeProxy;
         }
     },
@@ -2348,7 +2329,6 @@ exports.ReelDocument = EditingDocument.specialize({
 
             this.editor.refresh();
             this.dispatchEventNamed("domModified", true, false);
-            this.buildTemplateObjectTree();
             return nodeProxy;
         }
     },
@@ -2392,7 +2372,6 @@ exports.ReelDocument = EditingDocument.specialize({
 
             this.undoManager.register("Insert Node After", Promise.resolve([this.removeTemplateNode, this, nodeProxy]));
             this.dispatchEventNamed("domModified", true, false);
-            this.buildTemplateObjectTree();
             return nodeProxy;
         }
     },
@@ -2499,156 +2478,6 @@ exports.ReelDocument = EditingDocument.specialize({
                     return [self.addOwnerBlueprintEvent, self, name];
                 })
             );
-        }
-    },
-
-        // Template Tree
-    templateObjectsTreeToggleStates: {
-        value: null
-    },
-    templateObjectsTree: {
-        value: null
-    },
-    // Subroutines for buildTemplateObjectTree
-    _buildTreeAddRoot: {
-        value: function (insertionMap) {
-            var ownerObject = this.editingProxyMap.owner,
-                root = {
-                    templateObject: ownerObject,
-                    expanded: true,
-                    children: []
-                };
-            insertionMap.set(ownerObject, root);
-            return root;
-        }
-    },
-    _buildTreeFillFIFO: {
-        value: function () {
-            var proxyMap = this.editingProxyMap,
-                ownerObject = proxyMap.owner;
-
-            return Object.keys(proxyMap).reduce(function (fifo, componentName) {
-                var component = proxyMap[componentName];
-                // we remove the owner as it is added as the root
-                if (component !== ownerObject) {
-                    fifo.push(component);
-                }
-                return fifo;
-            }, []);
-        }
-    },
-    _buildTreeFindParentComponent: {
-        value: function (reelProxy) {
-            var nodeProxy = reelProxy.properties.get('element'),
-                parentNodeProxy = nodeProxy,
-                parentReelProxy;
-            while (parentNodeProxy = parentNodeProxy.parentNode) {
-                if (parentNodeProxy.component) {
-                    parentReelProxy = parentNodeProxy.component;
-                    break;
-                }
-            }
-            return parentReelProxy;
-        }
-    },
-    _buildTreeFindChildPosition: {
-        value: function (reelProxy, parentReelProxy) {
-            var node = reelProxy.properties.get("element"),
-                parentNode = parentReelProxy.properties.get("element"),
-                nodePosition;
-            // the parentReelProxy does not have to be the direct parentNode
-            while (node.parentNode && (node.parentNode !== parentNode)) {
-                node = node.parentNode;
-            }
-            nodePosition = parentNode.children.indexOf(node);
-            if (nodePosition === -1) {
-                throw new Error("Can not find child position");
-            }
-            return nodePosition;
-        }
-    },
-
-    buildTemplateObjectTree: {
-        value: function() {
-            this.templateObjectsTree = this.createTemplateObjectTree(this._editingProxyMap);
-        }
-    },
-    /*
-        Build the templateObjectsTree from the templatesNodes
-        Steps:
-            - add the root element
-            - create a list of components to be arranged in the tree, "proxyFIFO"
-            - pick the head element, "nodeProxy" of the list and try to add it to the tree.
-              While adding to the tree we keep a map of elements to tree node updated.
-            - if the element has no DOM representation it is added to the root of the tree as first child
-            - otherwise we seek the element's parentComponent to then add it
-            - if the parentComponent has not yet been added we postpone adding this node for later by pushing back into the FIFO
-    */
-    createTemplateObjectTree: {
-        value: function () {
-            var successivePushes = 0,
-                toggleStates = this.templateObjectsTreeToggleStates,
-                // map of ReelProxy to tree node, for quick tree node access
-                insertionMap = new WeakMap(),
-                // add the root
-                root = this._buildTreeAddRoot(insertionMap),
-                // filling the FIFO
-                proxyFIFO = this._buildTreeFillFIFO(),
-                reelProxy,
-                parentReelProxy;
-
-            this.plainTemplateObjects = [];
-
-            while (reelProxy = proxyFIFO.shift()) {
-                if (reelProxy.properties && reelProxy.properties.get('element')) {
-                    // find the parent component
-                    parentReelProxy = this._buildTreeFindParentComponent(reelProxy);
-                    if (!parentReelProxy) {
-                        // orphan child
-                        var orphanNode = {
-                            templateObject: reelProxy,
-                            children: []
-                        };
-                        // let's add it to the root with the template-less nodes
-                        root.children.unshift(orphanNode);
-                        continue;
-                    }
-
-                    if (insertionMap.has(parentReelProxy)) {
-                        // restore expand status
-                        var expanded = (toggleStates.get(reelProxy) !== undefined) ? toggleStates.get(reelProxy) : true,
-                            // add the node to the tree
-                            node = {
-                                templateObject: reelProxy,
-                                expanded: expanded,
-                                children: []
-                            },
-                            parentNode = insertionMap.get(parentReelProxy),
-                            nodePosition = this._buildTreeFindChildPosition(reelProxy, parentReelProxy);
-                        if (nodePosition >=  parentNode.children.length) {
-                            parentNode.children.push(node);
-                        } else {
-                            parentNode.children.splice(nodePosition, 0, node);
-                        }
-                        insertionMap.set(reelProxy, node);
-                        // reset the infinite loop guard
-                        successivePushes = 0;
-                    } else {
-                        // parentReelProxy not found -> has not been added to the tree yet
-                        proxyFIFO.push(reelProxy);
-                        successivePushes++;
-                    }
-                } else {
-                    // has no DOM representation, added to plain template objects array.
-                    this.plainTemplateObjects.push(reelProxy);
-                }
-                // to be safe, guard to prevent an infinite loop
-                if (successivePushes > proxyFIFO.length) {
-                    throw new Error("Can not build templateObjectsTree: looping on the same components");
-                }
-            }
-            this.templateObjectsTreeToggleStates.clear();
-            return root;
         }
     },
 
