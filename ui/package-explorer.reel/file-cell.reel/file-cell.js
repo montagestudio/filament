@@ -145,6 +145,11 @@ exports.FileCell = Montage.create(Component, {
                 this.dispatchEventNamed("addModule", true, true, {path: path});
                 break;
 
+            case "newFile":
+                evt.stop();
+                this.dispatchEventNamed("newFile", true, true, {path: path});
+                break;
+
             case "delete":
                 evt.stop();
                 this.dispatchEventNamed("removeTree", true, true, {path: this.fileInfo.filename});
