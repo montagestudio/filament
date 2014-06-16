@@ -1,5 +1,4 @@
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
+var Component = require("montage/ui/component").Component,
     ToolBarConfig = require("core/configuration").FlowEditorConfig.toolbar,
     ToolBarDelegate = require("core/toolbar-delegate").ToolBarDelegate,
     PenTools = require("ui/pen-tools");
@@ -9,10 +8,10 @@ var Montage = require("montage").Montage,
     @class module:"ui/toolbar.reel".Toolbar
     @extends module:montage/ui/component.Component
 */
-exports.Toolbar = Montage.create(Component, /** @lends module:"ui/toolbar.reel".Toolbar# */ {
+exports.Toolbar = Component.specialize( /** @lends module:"ui/toolbar.reel".Toolbar# */ {
 
     constructor: {
-        value: function ToolbarCell() {
+        value: function Toolbar() {
             this.super();
 
             this.items = ToolBarConfig.items;
@@ -60,7 +59,7 @@ exports.Toolbar = Montage.create(Component, /** @lends module:"ui/toolbar.reel".
                     "helix": PenTools.HelixTool.create()
                 };
 
-                this.selectedTool = this._tools.convert;
+                this.addPathChangeListener("templateObjects.flowEditorToolbarItemList._completedFirstDraw", this, "_handleToolItemsCompletedFirstDraw");
             }
         }
     },
@@ -68,20 +67,13 @@ exports.Toolbar = Montage.create(Component, /** @lends module:"ui/toolbar.reel".
     handleButtonAction: {
         value: function (event) {
             if (event) {
-                var source = event.detail.get("source");
+                var sourceCell = event.detail.get("source");
 
-                if (source) {
-                    var buttonID = source.object.id;
+                if (sourceCell) {
+                    var buttonID = sourceCell.object.id;
 
-                    if (source.object.canBeSelected) {
-                        if (this.selectedCell) {
-                            this.selectedCell.buttonElement.classList.remove("flow-Editor-Toolbar-Button--selected");
-                        }
-
-                        this.selectedCell = source;
-                        this.selectedTool = this._tools[buttonID];
-
-                        source.buttonElement.classList.add("flow-Editor-Toolbar-Button--selected");
+                    if (sourceCell.object.canBeSelected) {
+                        this._selectCellTool(sourceCell);
                     }
 
                     if (this._delegate) {
@@ -102,19 +94,36 @@ exports.Toolbar = Montage.create(Component, /** @lends module:"ui/toolbar.reel".
         }
     },
 
-    draw: {
-        value: function () {
-            if (!this.selectedButton) {
+    _handleToolItemsCompletedFirstDraw: {
+        value: function (completed) {
+            if (completed) {
                 var cells = this.templateObjects.flowEditorToolbarItemList.childComponents,
                     self = this;
 
-                cells.some(function (cell) {
+                this.removePathChangeListener("templateObjects.flowEditorToolbarItemList._completedFirstDraw", this);
+
+                var rep = cells.some(function (cell) {
                     if (cell.object.id === ToolBarConfig.initialToolSelected) {
-                        cell.buttonElement.classList.add("flow-Editor-Toolbar-Button--selected");
-                        self.selectedCell = cell;
+                        self._selectCellTool(cell);
+
+                        return true;
                     }
                 });
             }
+        }
+    },
+
+    _selectCellTool: {
+        value: function (cell) {
+            var buttonID = cell.object.id;
+
+            if (this.selectedCell) {
+                this.selectedCell.unSelect();
+            }
+
+            cell.select();
+            this.selectedCell = cell;
+            this.selectedTool = this._tools[buttonID];
         }
     }
 

@@ -157,8 +157,11 @@ exports.Viewport = Montage.create(Component, {
         value: function () {
             this._element.addEventListener("mousemove", this, true);
 
-            var wheelEventName = typeof window.onwheel !== "undefined" ? "wheel" : "mousewheel";
-            this._element.addEventListener(wheelEventName, this._handleWheelChange.bind(this), false);
+            var wheelEventName = typeof window.onwheel !== "undefined" ? "wheel" : "mousewheel",
+                self = this,
+                callBack = function (event) { self._handleWheelChange(event); };
+
+            this._element.addEventListener(wheelEventName, callBack, false);
 
         }
     },

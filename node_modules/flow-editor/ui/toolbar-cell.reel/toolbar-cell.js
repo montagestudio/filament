@@ -24,16 +24,30 @@ exports.ToolbarCell = Component.specialize(/** @lends ToolbarCell# */ {
         value: null
     },
 
-    isFirstCellSelected: {
+    isSelected: {
         value: null
     },
 
     prepareForActivationEvents: {
-        value: function() {
+        value: function () {
             if (this.object && Array.isArray(this.object.children) && this.object.children.length > 0) {
                 var buttonComponent = this.templateObjects.button;
                 buttonComponent.addEventListener("hold", buttonComponent, false);
             }
+        }
+    },
+
+    select: {
+        value: function () {
+            this.isSelected = true;
+            this.needsDraw = true;
+        }
+    },
+
+    unSelect: {
+        value: function () {
+            this.isSelected = false;
+            this.needsDraw = true;
         }
     },
 
@@ -44,6 +58,12 @@ exports.ToolbarCell = Component.specialize(/** @lends ToolbarCell# */ {
                     classList = this.object.cssRules.class;
 
                 element.setAttribute("title", this.object.title);
+
+                if (this.isSelected) {
+                    element.classList.add("flow-Editor-Toolbar-Button--selected");
+                } else {
+                    element.classList.remove("flow-Editor-Toolbar-Button--selected");
+                }
 
                 if (Array.isArray(classList)) {
                     classList.forEach(function (classID) {

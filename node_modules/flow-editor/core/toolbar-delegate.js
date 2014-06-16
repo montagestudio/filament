@@ -43,6 +43,10 @@ exports.ToolBarDelegate = Target.specialize({
                             z: (boundaries[2].max + boundaries[2].min) / 2
                         };
 
+                    if (scale === Infinity || scale === -Infinity) {
+                        scale = .2;
+                    }
+
                     viewPort.scale = scale;
 
                     self._updateviewPortAfterZoom(viewPort, scale, center);
