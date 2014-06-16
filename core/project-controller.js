@@ -1414,6 +1414,29 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+    newFile: {
+        value: function (path) {
+            var self = this,
+                defaultDirectory = (path)? Url.resolve(this.packageUrl, path) : this.packageUrl,
+                options = {
+                    defaultDirectory: defaultDirectory,
+                    defaultName: "untitled", // TODO localize
+                    prompt: "Create file", // TODO localize
+                    submitLabel: "Create"
+                };
+
+            return this.environmentBridge.promptForSave(options)
+                .then(function (destination) {
+                    if (!destination) {
+                        return Promise.resolve(null);
+                    }
+
+                    return self.projectDocument.touch(destination);
+                });
+        }
+    },
+
+
     canRemoveTree: {
         get: function () {
             return this.canEdit;

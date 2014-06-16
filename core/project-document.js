@@ -265,6 +265,16 @@ exports.ProjectDocument = Document.specialize({
         }
     },
 
+    touch: {
+        value: function(url) {
+            var deferredUndoOperation = Promise.defer(),
+                self = this;
+
+            this.undoManager.register("Create File", deferredUndoOperation.promise);
+            return this._environmentBridge.touch(url);
+        }
+    },
+
     /**
      * Remove the specified file from the project
      *
