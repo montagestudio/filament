@@ -298,7 +298,7 @@ exports.ProjectDocument = Document.specialize({
                 self = this;
 
             return this._closeDocumentsBeforeRemoval(url).then(function (documents) {
-                if (documents.any(function (elt) { return elt === null;})) {
+                if (documents.any(function (doc) { return doc === null;})) {
                     return Promise.resolve(null);
                 }
 
@@ -373,7 +373,7 @@ exports.ProjectDocument = Document.specialize({
             var self = this;
 
             return this._closeDocumentsBeforeRemoval(path).then(function (documents) {
-                if (documents.any(function (elt) { return elt === null;})) {
+                if (documents.any(function (doc) { return doc === null;})) {
                     return Promise.resolve(null);
                 }
                 return self._environmentBridge.removeTree(path)
