@@ -267,10 +267,13 @@ exports.ProjectDocument = Document.specialize({
 
     touch: {
         value: function(url) {
-            var self = this;
+            var self = this,
+                deferredUndoOperation = Promise.defer();
+
+            this.undoManager.register("Create File", deferredUndoOperation.promise);
 
             return this._environmentBridge.touch(url).then(function (success) {
-                self.undoManager.register("Create File", Promise.resolve([self.remove, self, url]));
+                deferredUndoOperation.resolve([self.remove, self, url]);
                 return success;
             });
         }
