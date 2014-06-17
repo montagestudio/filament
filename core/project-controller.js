@@ -64,6 +64,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: null
     },
 
+    _filesWatchInstalled: {
+        value: false
+    },
+
     /**
      * The document representing this project and its file contents
      * This is the place to push most of the knowledge about the project
@@ -303,9 +307,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                     // Expand the ui directory by default, it;'s usually the first thing we open
                     application.dispatchEventNamed("expandTree", true, true, "ui/");
-
-                    // don't need to wait for this to complete
-                    self.watchForFileChanges();
 
                     //likewise while it's nice to know the type, that can come in shortly,
                     // we can rely on heuristics until the mimetype is known
@@ -1578,6 +1579,12 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 descriptor.expanded = true;
                 descriptor.children.addEach(fileDescriptors);
                 self.files = descriptor;
+            }).then(function() {
+                if (!self._filesWatchInstalled) {
+                    self._filesWatchInstalled = true;
+                    // don't need to wait for this to complete
+                    self.watchForFileChanges();
+                }
             });
         }
     },
