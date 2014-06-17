@@ -1431,7 +1431,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         return Promise.resolve(null);
                     }
 
-                    return self.projectDocument.touch(destination);
+                    return self.projectDocument.touch(destination).then(function () {
+                        self.openUrlForEditing(destination).done();
+                    });
                 });
         }
     },
