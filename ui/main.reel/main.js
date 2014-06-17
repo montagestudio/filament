@@ -35,6 +35,7 @@ exports.Main = Montage.create(Component, {
             if (firstTime) {
                 application.addEventListener("asyncActivity", this, false);
                 application.addEventListener("addFile", this);
+                application.addEventListener("newFile", this);
                 application.addEventListener("addModule", this);
                 application.addEventListener("addDirectory", this);
                 application.addEventListener("removeTree", this);
@@ -173,6 +174,13 @@ exports.Main = Montage.create(Component, {
             var path = (evt.detail && evt.detail.path)? evt.detail.path : undefined;
             //TODO don't call addComponent until we know it's a component we want
             this.projectController.createComponent(path).done();
+        }
+    },
+
+    handleNewFile: {
+        value: function (evt) {
+            var path = (evt.detail && evt.detail.path)? evt.detail.path : undefined;
+            this.projectController.newFile(path).done();
         }
     },
 

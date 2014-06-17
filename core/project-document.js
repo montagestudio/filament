@@ -265,6 +265,17 @@ exports.ProjectDocument = Document.specialize({
         }
     },
 
+    touch: {
+        value: function(url) {
+            var self = this;
+
+            return this._environmentBridge.touch(url).then(function (success) {
+                self.undoManager.register("Create File", Promise.resolve([self.remove, self, url]));
+                return success;
+            });
+        }
+    },
+
     /**
      * Remove the specified file from the project
      *

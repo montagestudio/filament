@@ -71,14 +71,17 @@ exports.PackageExplorer = Component.specialize({
             var newFolderItem,
                 newComponentItem,
                 newModuleItem,
+                newFileItem,
                 menu = new MenuModule.Menu();
             newFolderItem = MenuModule.makeMenuItem("New Folder…", "newDirectory", true, "");
             newComponentItem = MenuModule.makeMenuItem("New Component…", "newComponent", true, "");
             newModuleItem = MenuModule.makeMenuItem("New Module…", "newModule", true, "");
+            newFileItem = MenuModule.makeMenuItem("New File…", "newFile", true, "");
 
             menu.insertItem(newFolderItem);
             menu.insertItem(newComponentItem);
             menu.insertItem(newModuleItem);
+            menu.insertItem(newFileItem);
 
             return menu;
         }
@@ -127,6 +130,10 @@ exports.PackageExplorer = Component.specialize({
 
             case "newModule":
                 this.dispatchEventNamed("addModule", true, true, {path: "/"});
+                break;
+
+            case "newFile":
+                this.dispatchEventNamed("newFile", true, true, {path: "/"});
                 break;
             }
         }
