@@ -196,17 +196,16 @@
 }
 
 
-/* PackageEditorPanel content overrides ---------------- */
-/* TODO: Refactor */
+/* Overrides ------------------------------------------------- */
 
-.PackageEditorPanel-content .matte-Textarea {
+.PackageEditorPanel-content .Textarea {
     height: 60px;
     width: 100%;
     resize: none;
     margin: 3px;
 }
 
-.PackageEditorPanel-content .matte-InputCheckbox {
+.PackageEditorPanel-content .InputCheckbox {
     margin: 0;
 }
 
@@ -220,7 +219,7 @@
 	        flex: 0.2 0 50px;
 }
 
-.PackageEditorPanel-list-item input.matte-InputText,
+.PackageEditorPanel-list-item .InputText,
 .PackageEditorPanel-list-item-field {
     -webkit-flex: 1;
        -moz-flex: 1;
@@ -228,3 +227,82 @@
 	        flex: 1;
     width: auto;
 }
+
+
+/*
+ * TODO: Use filament widgets -------------------------
+ */
+
+
+/* Using filament/ui/widgets/input-search.reel currently doesn't work */
+
+.PackageEditor-search.matte-InputText {
+    border-color: hsl(0,0%,77%);
+    border-radius: 2em;
+    background-color: hsla(0,0%,0%,.04);
+    box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.08), 0 1px 0 hsla(0,0%,100%,.6);
+}
+ 
+.PackageEditor-search.matte-InputText:hover {
+    background-color: hsla(0,0%,0%,.02);
+}
+ 
+.PackageEditor-search.matte-InputText:focus {
+    border-color: hsl(210,100%,70%);
+    background-color: hsla(210,100%,60%,0.1);
+}
+
+
+
+/* IconButton */
+
+.IconButton.matte-Button {
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+    font-weight: bold;
+    line-height: 0;
+    color: hsl(0, 0%, 50%);
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    -webkit-font-smoothing: none;
+    -moz-font-smoothing: none;
+    -ms-font-smoothing: none;
+    font-smoothing: none;
+}
+
+
+/* Select */
+
+.PackageEditor .matte-Select {
+    color: hsla(0,0%,0%,.7);
+    text-shadow: 0 1px 0 hsla(0,0%,100%,.5);
+    border-color: hsl(0,0%,80%);
+    background: url(select.svg) no-repeat right center,
+                hsl(0,0%,94%) -webkit-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+    background: url(select.svg) no-repeat right center,
+                hsl(0,0%,94%) -moz-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+    background: url(select.svg) no-repeat right center,
+                hsl(0,0%,94%) -ms-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+    background: url(select.svg) no-repeat right center,
+                hsl(0,0%,94%) linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+    background-size: auto 10px, auto;
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,1), 0 1px 2px hsla(0,0%,0%,0.1);
+}
+
+.PackageEditor .matte-Select:hover {
+    background-color: hsl(0,0%,96%);
+}
+
+.PackageEditor .matte-Select.active {
+    background-color: hsl(0,0%,90%);
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,1), 0 1px 1px hsla(0,0%,0%,0.03);
+}
+
+.PackageEditor .matte-Select:focus {
+    border-color: hsl(210,100%,70%);
+}
+
+

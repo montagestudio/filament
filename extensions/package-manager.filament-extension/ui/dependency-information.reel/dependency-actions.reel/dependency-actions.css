@@ -70,11 +70,12 @@
     margin: 0;
 }
 
-.DependencyActionItem-content .matte-Button {
+.DependencyActionItem-content .Button {
     float: right;
 }
 
-.DependencyActionItem-content .matte-InputText {
+.DependencyActionItem-content .InputText {
+    width: 100%;
 }
 
 .dependencyTypeLabel {
@@ -87,9 +88,9 @@
 }
 
 .DependencyAction-item--versions .matte-Select,
-.DependencyAction-item--versions .matte-Button,
+.DependencyAction-item--versions .Button,
 .DependencyUpdate-item,
-.DependencyUpdate-item.matte-Button{
+.DependencyUpdate-item.Button{
     margin: 0;
     vertical-align: middle;
 }

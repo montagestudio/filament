@@ -92,16 +92,9 @@
     display: inline-block;
 }
 
-.SearchModulesCell-action {
-}
 
-.SearchModulesCell-action button {
-    /* height: 30px; */
+/* Overrides ------------------------ */
+
+.SearchModulesCell .Button {
     margin: 8px 8px 0 0;
-}
-
-.SearchModulesCell-action .SearchModulesCell-action--install.matte-Button.disabled:hover,
-.SearchModulesCell-action .SearchModulesCell-action--install.matte-Button.disabled:active {
-    color: inherit;
-    background-color: inherit;
 }
