@@ -10,44 +10,6 @@
  */
 
 
-.Search.matte-InputText {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    -ms-appearance: none;
-    appearance: none;
-    padding-right: 0; /* space for cancel button */
-    font-family: inherit;
-    color: hsl(0,0%,30%);
-    border-color: hsl(0,0%,77%);
-    border-radius: 20px;
-    background-color: hsla(0,0%,0%,.04);
-    box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.08), 0 1px 0 hsla(0,0%,100%,.6);
-}
-
-.Search.matte-InputText:hover {
-    background-color: hsla(0,0%,0%,.02);
-}
-
-.Search.matte-InputText:focus {
-    border-color: hsl(210,100%,70%);
-    background-color: hsla(210,100%,60%,0.1);
-}
-
-/* Search Close Button */
-.Search.matte-InputText::-webkit-search-cancel-button {
-  margin: 2px 8px 0 4px;
-  opacity: 1;
-  cursor: pointer;
-}
-
-.Search.matte-InputText::-webkit-search-cancel-button:hover {
-    opacity: .8;
-}
-
-.Search.matte-InputText::-webkit-search-cancel-button:active {
-    opacity: .3;
-}
-
 
 /* Dark Input --------------------------------- */
 .Input.Input--dark {
