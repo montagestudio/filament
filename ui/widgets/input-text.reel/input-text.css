@@ -1,0 +1,41 @@
+
+.InputText {
+    outline: none;
+    box-sizing: border-box;
+    font-size: 12px;
+    width: 150px;
+    height: 2.5em;
+    padding: 0.5em;
+    vertical-align: middle;
+    border: 1px solid hsl(0,0%,77%);
+    border-radius: 3px;
+    background-color: hsla(0,0%,0%,.04);
+    box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.08), 0 1px 0 hsla(0,0%,100%,.6);
+}
+
+.InputText:hover {
+    background-color: hsla(0,0%,0%,.02);
+}
+
+.InputText:focus {
+    border-color: hsl(210,100%,70%);
+    background-color: hsla(210,100%,60%,0.1);
+}
+
+.InputText:invalid {
+    border: 1px dashed #E73525;
+}
+
+.InputText:disabled {
+    opacity: .5;
+    border-style: dashed;
+    pointer-events: none;
+}
+
+.InputText[readonly] {
+    background-color: #e5e5e5;
+}
+
+.InputText[readonly]:hover {
+    border-color: #b3b3b3;
+}
