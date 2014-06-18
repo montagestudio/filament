@@ -1,0 +1,77 @@
+.Checkbox {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: .25em;
+    border: 1px solid;
+    fill: currentColor;
+    cursor: pointer;
+}
+
+
+/* States --------------------- */
+
+.Checkbox.montage-Checkbox--disabled {
+    opacity: .5;
+    border-style: dashed;
+    pointer-events: none;
+}
+
+
+/* Icon --------------------- */
+
+.Checkbox-icon {
+    fill: transparent;
+}
+
+.Checkbox.montage-Checkbox--checked .Checkbox-icon {
+    fill: inherit;
+}
+
+.Checkbox.montage--active .Checkbox-icon {
+    fill: transparent;
+}
+
+
+/* Light ---------------------------------------------------------- */
+
+[data-skin="light"] .Checkbox {
+    fill: hsla(0,0%,0%,.7);
+    border-color: hsl(0,0%,77%);
+    background-color: hsla(0,0%,0%,.04);
+    box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.08), 0 1px 0 hsla(0,0%,100%,.6);
+}
+
+[data-skin="light"] .Checkbox:hover {
+    background-color: hsla(0,0%,0%,.02);
+}
+
+[data-skin="light"] .Checkbox.montage--active,
+[data-skin="light"] .Checkbox:focus {
+    border-color: hsl(210,100%,70%);
+    background-color: hsla(210,100%,60%,0.1);
+}
+
+
+
+
+/* Dark ---------------------------------------------------------- */
+
+[data-skin="dark"] .Checkbox {
+    fill: hsla(0,0%,100%,.9);
+    border-color: hsl(0,0%,10%);
+    background-color: hsla(0,0%,0%,.2);
+    box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.08), 0 1px 0 hsla(0,0%,100%,.1);
+}
+
+[data-skin="dark"] .Checkbox:hover {
+    background-color: hsla(0,0%,0%,.1);
+}
+
+[data-skin="dark"] .Checkbox.montage--active,
+[data-skin="dark"] .Checkbox:focus {
+    border-color: hsl(210,100%,70%);
+    background-color: hsla(210,100%,60%,0.1);
+}
