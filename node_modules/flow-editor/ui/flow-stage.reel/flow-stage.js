@@ -4,14 +4,7 @@
  */
 var Component = require("montage/ui/component").Component,
     Application = require("montage/core/application").application,
-
-    PROPERTIES_NOT_REQUIRED = [
-        'element',
-        'flowEditorMetadata',
-        'slotContent',
-        'contentController',
-        'content'
-    ];
+    StageConfig = require("core/configuration").FlowEditorConfig.stage;
 
 /**
  * @class FlowStage
@@ -22,10 +15,22 @@ exports.FlowStage = Component.specialize(/** @lends FlowStage# */ {
     constructor: {
         value: function FlowStage() {
             this.super();
+
+            var content = [];
+
+            for (var i = StageConfig.slide.min; i <= StageConfig.slide.max; i++) {
+                content.push(i);
+            }
+
+            this.contentFlow = content
         }
     },
 
     editor: {
+        value: null
+    },
+
+    contentFlow: {
         value: null
     },
 
@@ -41,7 +46,7 @@ exports.FlowStage = Component.specialize(/** @lends FlowStage# */ {
                 var flow = this.templateObjects.flow;
 
                 Object.keys(objectProperties).forEach(function (key) {
-                    if (PROPERTIES_NOT_REQUIRED.indexOf(key) < 0) {
+                    if (StageConfig.propertiesNotRequiredForRefreshing.indexOf(key) < 0) {
                         flow[key] = objectProperties[key];
                     }
                 });

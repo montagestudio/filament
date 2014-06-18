@@ -4,3 +4,9 @@
     flex: 1;
     background: #eee;
 }
+
+.grabbing {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+}

@@ -95,6 +95,7 @@ exports.ConvertTool = Montage.create(Montage, {
                 i;
 
             this._selectedChild = viewport.findSelectedChild(event.offsetX, event.offsetY);
+
             if (this._selectedChild) {
                 path = viewport.findPathToNode(this._selectedChild);
                 viewport.unselect();
@@ -102,6 +103,7 @@ exports.ConvertTool = Montage.create(Montage, {
                     path[i].isSelected = true;
                 }
             } else {
+                viewport.classList.add("grabbing");
                 viewport.unselect();
             }
             this._pointerX = event.pageX;
@@ -134,7 +136,15 @@ exports.ConvertTool = Montage.create(Montage, {
             this._pointerX = event.pageX;
             this._pointerY = event.pageY;
         }
-    }
+    },
+
+    handleMouseup: {
+        value: function (event, viewport) {
+            if (!this._selectedTool) {
+                viewport.classList.remove("grabbing");
+            }
+        }
+    },
 
 });
 

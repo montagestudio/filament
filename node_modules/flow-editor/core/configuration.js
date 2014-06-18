@@ -25,6 +25,21 @@ var FlowEditorConfig = {
         }
     },
 
+    stage: {
+        slide: {
+            min: 0,
+            max: 100
+        },
+
+        propertiesNotRequiredForRefreshing: [
+            'element',
+            'flowEditorMetadata',
+            'slotContent',
+            'contentController',
+            'content'
+        ]
+    },
+
     toolbar: {
         initialToolSelected: "convert",
         items: [
