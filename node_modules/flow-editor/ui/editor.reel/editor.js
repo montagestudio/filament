@@ -76,6 +76,10 @@ exports.Editor = Montage.create(Component, {
         value: null
     },
 
+    _currentShapeSelected: {
+        value: null
+    },
+
     convertFlowToShape: {
         value: function () {
             var shape, spline, i, k, j, n, knot,
@@ -323,7 +327,7 @@ exports.Editor = Montage.create(Component, {
                         }
                     }
 
-                    if (metadata && metadata.selected === j) {
+                    if (this._currentShapeSelected === j) {
                         canvasSpline.isSelected = true;
                         this.camera.isSelected = false;
                     } else {
@@ -367,12 +371,14 @@ exports.Editor = Montage.create(Component, {
                             if (!splineExists) {
                                 canvasGrid.insertCanvasFlowHelix(canvasHelix, j + 3);
                             }
-                            if (metadata && metadata.selected === j) {
+
+                            if (this._currentShapeSelected === j) {
                                 canvasHelix.isSelected = true;
                                 this.camera.isSelected = false;
                             } else {
                                 canvasHelix.isSelected = false;
                             }
+
                             break;
                     }
                 }
@@ -471,11 +477,7 @@ exports.Editor = Montage.create(Component, {
             }
 
             if (selected !== null) {
-                this._objectProperties.flowEditorMetadata.selected = selected;
-
-                Object.defineProperty(this._objectProperties.flowEditorMetadata, "selected", {
-                    enumerable: false
-                });
+                this._currentShapeSelected = selected;
             }
 
             paths = [];

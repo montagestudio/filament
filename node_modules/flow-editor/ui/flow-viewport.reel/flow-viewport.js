@@ -329,7 +329,7 @@ exports.FlowViewport = Montage.create(Viewport, {
             this._element.width = this._width;
             this._element.height = this._height;
             this.scene.canvas = this._element;
-            this.scene.draw(this.matrix);
+            this.scene.draw(this.matrix, this.type);
             /*this.scene._data.sort(function (a, b) {
                 return a.zIndex - b.zIndex;
             });

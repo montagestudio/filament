@@ -385,7 +385,7 @@ var CanvasShape = exports.CanvasShape = Montage.create(Target, {
     },
 
     draw: {
-        value: function (transformMatrix) {
+        value: function (transformMatrix, viewPortType) {
             if (this.isVisible) {
                 var transform = this.getTransform ? this.getTransform(transformMatrix) : transformMatrix,
                     children = this.children,
@@ -394,7 +394,7 @@ var CanvasShape = exports.CanvasShape = Montage.create(Target, {
                     i;
 
                 if (this.drawSelf) {
-                    this.drawSelf(transform);
+                    this.drawSelf(transform, viewPortType);
                 }
                 sortedIndexes = this.sortedChildrenIndexesBy(this.sortByReversedZIndex);
                 for (i = 0; i < length; i++) {

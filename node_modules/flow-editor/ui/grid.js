@@ -2,6 +2,7 @@ var Montage = require("montage").Montage,
     Scene = require("ui/pen-tool-math").Scene,
     FlowSpline = require("ui/flow-spline").FlowSpline,
     CanvasFlowSpline = require("ui/flow-spline").CanvasFlowSpline,
+    GridConfig = require("core/configuration").FlowEditorConfig.grid,
     CanvasShape = require("ui/canvas-shape").CanvasShape;
 
 var Grid = exports.Grid = Montage.create(Scene, {
@@ -268,7 +269,7 @@ exports.CanvasGrid = Montage.create(CanvasShape, {
     },
 
     drawSelf: {
-        value: function (transformMatrix) {
+        value: function (transformMatrix, viewPortType) {
             var offsetX = transformMatrix[12],
                 offsetY = transformMatrix[13],
                 x,
@@ -303,9 +304,13 @@ exports.CanvasGrid = Montage.create(CanvasShape, {
                     this._context.fillRect(0, Math.floor(offsetY + y * step * scale), 9999, 1);
                 }
             }
-            this._context.fillStyle = "rgba(0,0,0,0.1)";
+
+            this._context.fillStyle = GridConfig[viewPortType].colorAbscissa;
             this._context.fillRect(0, Math.floor(offsetY), 9999, 1);
+
+            this._context.fillStyle = GridConfig[viewPortType].colorOrdinate;
             this._context.fillRect(Math.floor(offsetX), 0, 1,  9999);
+
             this._context.restore();
         }
     }
