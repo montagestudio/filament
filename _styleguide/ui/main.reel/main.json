@@ -1,0 +1,28 @@
+{
+    "owner": {
+        "properties": {
+            "element": {"#": "main"}
+        }
+    },
+
+    "button-1": { "prototype": "ui/widgets/button.reel", "properties": { "element": {"#": "button-1"} } },
+    "button-2": { "prototype": "ui/widgets/button.reel", "properties": { "element": {"#": "button-2"} } },
+
+    "ButtonGroupButton-1-A": { "prototype": "ui/widgets/button.reel", "properties": { "element": {"#": "ButtonGroupButton-1-A"} } },
+    "ButtonGroupButton-1-B": { "prototype": "ui/widgets/button.reel", "properties": { "element": {"#": "ButtonGroupButton-1-B"} } },
+    "ButtonGroupButton-1-C": { "prototype": "ui/widgets/button.reel", "properties": { "element": {"#": "ButtonGroupButton-1-C"} } },
+
+    "ButtonGroupButton-2-A": { "prototype": "ui/widgets/button.reel", "properties": { "element": {"#": "ButtonGroupButton-2-A"} } },
+    "ButtonGroupButton-2-B": { "prototype": "ui/widgets/button.reel", "properties": { "element": {"#": "ButtonGroupButton-2-B"} } },
+    "ButtonGroupButton-2-C": { "prototype": "ui/widgets/button.reel", "properties": { "element": {"#": "ButtonGroupButton-2-C"} } },
+    
+    "Checkbox-1": { "prototype": "ui/widgets/checkbox.reel", "properties": { "element": {"#": "Checkbox-1"}, "checked": true } },
+    "Checkbox-2": { "prototype": "ui/widgets/checkbox.reel", "properties": { "element": {"#": "Checkbox-2"}, "checked": true } },
+    
+    "InputSearch-1": { "prototype": "ui/widgets/input-search.reel", "properties": { "element": {"#": "InputSearch-1"}, "value": "Search" } },
+    "InputSearch-2": { "prototype": "ui/widgets/input-search.reel", "properties": { "element": {"#": "InputSearch-2"}, "value": "Search" } },
+    
+    "InputText-1": { "prototype": "ui/widgets/input-text.reel", "properties": { "element": {"#": "InputText-1"}, "value": "Text" } },
+    
+    "Textarea-1": { "prototype": "ui/widgets/textarea.reel", "properties": { "element": {"#": "Textarea-1"}, "value": "Textarea" } }
+}
