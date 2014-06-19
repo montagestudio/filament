@@ -240,6 +240,16 @@ exports.ProjectDocument = Document.specialize({
         }
     },
 
+    documentsForUrl: {
+        value: function(url) {
+            var projectController = this._documentController;
+
+            return projectController.documents.filter(function (doc) {
+                return doc.url.indexOf(url) !== -1;
+            });
+        }
+    },
+
     /**
      * Add the specified file to the project
      *
@@ -278,6 +288,17 @@ exports.ProjectDocument = Document.specialize({
             });
         }
     },
+    
+    _closeDocumentsBeforeRemoval: {
+        value : function (url) {
+            var projectController = this._documentController,
+                openDocuments = this.documentsForUrl(url);
+
+            return Promise.all(openDocuments.map(function (doc) {
+                return projectController.closeDocument(doc);
+            }));
+        }
+    },
 
     /**
      * Remove the specified file from the project
@@ -290,22 +311,28 @@ exports.ProjectDocument = Document.specialize({
             var deferredUndoOperation = Promise.defer(),
                 self = this;
 
-            this.undoManager.register("Remove File", deferredUndoOperation.promise);
+            return this._closeDocumentsBeforeRemoval(url).then(function (documents) {
+                if (documents.some(function (doc) { return doc === null;})) {
+                    return Promise.resolve(null);
+                }
 
-            //TODO not go to the backend directly
-            return this._environmentBridge.backend
-                .get("file-service")
-                .invoke("read", url)
-                .then(function (data) {
-                    return self._environmentBridge.remove(url)
-                        .then(function (result) {
-                            return self._updateShadowDelta().thenResolve(result);
-                        })
-                        .then(function (success) {
-                            deferredUndoOperation.resolve([self.add, self, btoa(data), url]);
-                            return success;
-                        });
-                });
+                this.undoManager.register("Remove File", deferredUndoOperation.promise);
+
+                //TODO not go to the backend directly
+                return this._environmentBridge.backend
+                    .get("file-service")
+                    .invoke("read", url)
+                    .then(function (data) {
+                        return self._environmentBridge.remove(url)
+                            .then(function (result) {
+                                return self._updateShadowDelta().thenResolve(result);
+                            })
+                            .then(function (success) {
+                                deferredUndoOperation.resolve([self.add, self, btoa(data), url]);
+                                return success;
+                            });
+                    });
+            });
         }
     },
 
@@ -340,7 +367,7 @@ exports.ProjectDocument = Document.specialize({
     /**
      * Create the specified tree from the project
      *
-     * @param {string} url such as file://localhost/path/to/project/assets/images/why not zoidberg.png
+     * @param {string} url such as file://localhost/path/to/project/assets/images/thumbnails
      * @return {Promise} A promise for success
      */
     makeTree:{
@@ -352,24 +379,29 @@ exports.ProjectDocument = Document.specialize({
     /**
      * Remove the specified tree from the project
      *
-     * @param {string} url such as file://localhost/path/to/project/assets/images/why not zoidberg.png
+     * @param {string} path such as file://localhost/path/to/project/assets/images/
      * @return {Promise} A promise for success
      */
     removeTree:{
         value: function (path) {
             var self = this;
 
-            return this._environmentBridge.removeTree(path)
-                .then(function() {
-                    var message = path.slice(-1) === "/" ? "Remove directory " : "Remove file ",
-                        commitBatch = self._environmentBridge.openCommitBatch(message);
+            return this._closeDocumentsBeforeRemoval(path).then(function (documents) {
+                if (documents.some(function (doc) { return doc === null;})) {
+                    return Promise.resolve(null);
+                }
+                return self._environmentBridge.removeTree(path)
+                    .then(function() {
+                        var message = path.slice(-1) === "/" ? "Remove directory " : "Remove file ",
+                            commitBatch = self._environmentBridge.openCommitBatch(message);
 
-                    return self._environmentBridge.stageFilesForDeletion(commitBatch, path).then(function() {
-                        return self._environmentBridge.closeCommitBatch(commitBatch);
-                    }).finally(function() {
-                        self._environmentBridge.releaseCommitBatch(commitBatch);
+                        return self._environmentBridge.stageFilesForDeletion(commitBatch, path).then(function() {
+                            return self._environmentBridge.closeCommitBatch(commitBatch);
+                        }).finally(function() {
+                            self._environmentBridge.releaseCommitBatch(commitBatch);
+                        });
                     });
-                });
+            });
         }
     },
 
