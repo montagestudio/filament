@@ -80,6 +80,10 @@ exports.Editor = Montage.create(Component, {
         value: null
     },
 
+    _isEditing: {
+        value: null
+    },
+
     convertFlowToShape: {
         value: function () {
             var shape, spline, i, k, j, n, knot,
@@ -652,7 +656,7 @@ exports.Editor = Montage.create(Component, {
         value: function (event) {
             var detail = event.detail;
 
-            if (detail) {
+            if (detail && !this._isEditing) {
                 var proxy = detail.proxy;
 
                 if (proxy && /montage\/ui\/flow.reel/.test(proxy.exportId) && proxy.uuid === this.object.uuid) {
@@ -670,22 +674,45 @@ exports.Editor = Montage.create(Component, {
         value: function (event) {
             this.convertShapeToFlow();
             this.stage.refresh(this._objectProperties);
+            this._isEditing = true;
+
+            this.object.setObjectProperties(this._objectProperties);
+
+            this.editingDocument.dispatchEventNamed("didSetOwnedObjectProperties", true, false, {
+                proxy: this.object,
+                values: this._objectProperties
+            });
         }
     },
 
     handleFlowEditingEnd: {
         value: function (event) {
             this.convertShapeToFlow();
-            var newSettings = JSON.stringify(this._objectProperties);
+            this._isEditing = false;
 
-            if (newSettings !== this._currentObjectPropertiesSnap) {
+            var newValuesSnap = JSON.stringify(this._objectProperties);
+
+            // check if the new properties are different from the latest that has been "saved".
+            if (newValuesSnap !== this._currentObjectPropertiesSnap) {
+
                 // fixme: (temporary fix)
                 // Find why the convertShapeToFlow function breaks the editing of the viewport, when the add tool is selected.
                 // (Moreover, that should explain why it's impossible to re-use the add tool after undo operations)
                 this._blockHandleDidSetOwnedObjectProperties = true;
-                this._currentObjectPropertiesSnap = newSettings;
 
-                this.editingDocument.setOwnedObjectProperties(this.object, JSON.parse(newSettings));
+                var editingDocument = this.editingDocument,
+                    newValues = JSON.parse(newValuesSnap),
+                    undoArgs = [editingDocument.setOwnedObjectProperties, editingDocument, this.object, JSON.parse(this._currentObjectPropertiesSnap)];
+
+                editingDocument.undoManager.register("Set Properties", Promise.resolve(undoArgs));
+
+                this._currentObjectPropertiesSnap = newValuesSnap;
+                this.object.setObjectProperties(newValues);
+
+                editingDocument.dispatchEventNamed("didSetOwnedObjectProperties", true, false, {
+                    proxy: this.object,
+                    values: newValues
+                });
             }
         }
     },
