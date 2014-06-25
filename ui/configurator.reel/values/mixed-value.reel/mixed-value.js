@@ -154,5 +154,9 @@ exports.TextField = AbstractTextField.specialize(/** @lends TextField */ {
         value: function ObjectValue() {
             this.super();
         }
+    },
+
+    hasTemplate: {
+        value: false
     }
 });
