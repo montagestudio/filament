@@ -230,7 +230,8 @@ exports.Main = Montage.create(Component, {
                 .then(function(repo) {
                     repositoriesController.open(repo);
                 }, function (error) {
-                    self.templateObjects.newAppError.value = error.message;
+                    // Use the shortMessage when available as it's more user friendly
+                    self.templateObjects.newAppError.value = error.shortMessage || error.message;
                     throw error;
                 });
         }
