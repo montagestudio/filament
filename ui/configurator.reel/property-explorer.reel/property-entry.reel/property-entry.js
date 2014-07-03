@@ -8,7 +8,8 @@ var Component = require("montage/ui/component").Component,
     StringValue = require("../../values/string-value.reel").StringValue,
     BooleanValue = require("../../values/boolean-value.reel").BooleanValue,
     ObjectValue = require("../../values/object-value.reel").ObjectValue,
-    ArrayValue = require("../../values/array-value.reel").ArrayValue;
+    ArrayValue = require("../../values/array-value.reel").ArrayValue,
+    NumberValue = require("../../values/number-value.reel").NumberValue;
 
 /**
     Description TODO
@@ -88,6 +89,9 @@ exports.PropertyEntry = Component.specialize(/** @lends module:"./property-entry
             if (cardinality === Number.POSITIVE_INFINITY) {
                 valueType = "array";
             }
+            if (valueType === "url") {
+                valueType = "string";
+            }
             this._valueType = valueType;
 
             // The component that edits objects and arrays is also able to
@@ -112,6 +116,8 @@ exports.PropertyEntry = Component.specialize(/** @lends module:"./property-entry
                     component = new StringValue();
                 } else if (componentType === "boolean") {
                     component = new BooleanValue();
+                } else if (componentType === "number") {
+                    component = new NumberValue();
                 } else {
                     console.log("unknown type: ", componentType);
                     return;

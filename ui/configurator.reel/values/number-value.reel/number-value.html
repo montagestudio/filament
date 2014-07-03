@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="number-value.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"},
+                "_numberFieldTextFieldComponent": {"@": "textField"},
+                "_numberFieldMinusComponent": {"#": "minus"},
+                "_numberFieldPlusComponent": {"#": "plus"}
+            }
+        },
+
+        "textField": {
+            "prototype": "./number-value[TextField]",
+            "properties": {
+                "element": {"#": "textField"}
+            },
+            "bindings" : {
+                "value": {"<->": "@owner.value"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+<div data-montage-id="owner">
+    <input type="number" data-montage-id="textField" class="NumberValue">
+    <span data-montage-id="minus"></span>
+    <span data-montage-id="plus"></span>
+</div>
+</body>
+</html>
