@@ -51,10 +51,7 @@ describe("extensions/code-editor.filament-extension/core/code-editor-document-sp
                 return promisedDocument.then(function (doc) {
                     var spy = spyOn(doc._dataSource, "write").andCallThrough();
 
-                    doc._hasModifiedData = {
-                        undoCount: -1,
-                        redoCount: -1
-                    };
+                    doc.isDirty = true;
 
                     return doc.save(doc.url).then(function () {
                         expect(spy).toHaveBeenCalled();
@@ -78,6 +75,7 @@ describe("extensions/code-editor.filament-extension/core/code-editor-document-sp
         it("should stop reporting modifications on the data source on save", function() {
             return beforeEachPromise.then(function() {
                 return promisedDocument.then(function (doc) {
+                    doc.isDirty = true;
                     doc._hasModifiedData = {
                         undoCount: -1,
                         redoCount: -1
