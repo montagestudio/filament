@@ -720,6 +720,11 @@ exports.Editor = Montage.create(Component, {
     draw: {
         enumerable: false,
         value: function () {
+
+            this.viewPorts.forEach(function (viewPort) {
+                viewPort.zoomExtents();
+            });
+
             //this.frontView.element.style.top = (this.topView.height + 1) + "px";
             /*this.removeClass(this._addButton, "selected");
             this.removeClass(this._moveButton, "selected");

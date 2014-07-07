@@ -28,9 +28,24 @@ exports.ToolbarCell = Component.specialize(/** @lends ToolbarCell# */ {
         value: null
     },
 
+    subTools: {
+        value: null
+    },
+
+    enterDocument: {
+        value: function (firstTime) {
+            if (firstTime) {
+                if (Array.isArray(this.object.groups) && this.object.groups.length > 0) {
+                    this.subTools = this.object.groups;
+                    this.object = this.subTools[0]; // Select the first sub tool
+                }
+            }
+        }
+    },
+
     prepareForActivationEvents: {
         value: function () {
-            if (this.object && Array.isArray(this.object.children) && this.object.children.length > 0) {
+            if (Array.isArray(this.subTools) && this.subTools.length > 0) {
                 var buttonComponent = this.templateObjects.button;
                 buttonComponent.addEventListener("hold", buttonComponent, false);
             }
@@ -54,16 +69,27 @@ exports.ToolbarCell = Component.specialize(/** @lends ToolbarCell# */ {
     draw: {
         value: function () {
             if (this.object && this.buttonElement) {
-                var element = this.buttonElement,
-                    classList = this.object.cssRules.class;
+                var element = this.buttonElement;
+
+                if (Array.isArray(this.subTools) && this.subTools.length > 0) {
+                    // reset classes
+                    element.className = "";
+
+                    // Add default class list
+                    element.classList.add("matte-Button");
+                    element.classList.add("flow-Editor-Toolbar-Button");
+                }
 
                 element.setAttribute("title", this.object.title);
+
 
                 if (this.isSelected) {
                     element.classList.add("flow-Editor-Toolbar-Button--selected");
                 } else {
                     element.classList.remove("flow-Editor-Toolbar-Button--selected");
                 }
+
+                var classList = this.object.cssRules.class;
 
                 if (Array.isArray(classList)) {
                     classList.forEach(function (classID) {

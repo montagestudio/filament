@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="tools-overlay.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "toolItemList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "toolItemList"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.items"}
+            }
+        },
+
+        "tool": {
+            "prototype": "ui/toolbar-cell.reel",
+            "properties": {
+                "element": {"#": "toolItem"}
+            },
+            "bindings": {
+                "object": {"<-": "@toolItemList:iteration.object"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="ToolsOverlay">
+        <ul data-montage-id="toolItemList" class="ToolItemList">
+            <li data-montage-id="toolItem"></li>
+        </ul>
+    </div>
+</body>
+</html>

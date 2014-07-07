@@ -6,7 +6,22 @@
 }
 
 .grabbing {
-    cursor: grabbing;
     cursor: -moz-grabbing;
     cursor: -webkit-grabbing;
+    cursor: -ms-grabbing;
+    cursor: grabbing;
+}
+
+.FlowViewPort-Zoom-In {
+    cursor: -webkit-zoom-in;
+    cursor: -moz-zoom-in;
+    cursor: -ms-zoom-in;
+    cursor: zoom-in;
+}
+
+.FlowViewPort-Zoom-Out {
+    cursor: -webkit-zoom-out;
+    cursor: -moz-zoom-out;
+    cursor: -ms-zoom-out;
+    cursor: zoom-out;
 }

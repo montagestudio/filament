@@ -1082,6 +1082,15 @@ describe("pen-tool-math Bezier-Curve-spec", function() {
             expect(bezierCurve.order).toEqual(0);
             expect(bezierCurve.getControlPoint(0)).toBe(vector1);
         });
+        it("removeControlPoint", function() {
+            bezierCurve.pushControlPoint(vector1);
+            bezierCurve.pushControlPoint(vector2);
+            expect(bezierCurve.isComplete).toBeTruthy();
+            bezierCurve.removeControlPoint(0);
+            expect(bezierCurve.isComplete).toBeFalsy();
+            expect(bezierCurve.getControlPoint(0)).toBeUndefined();
+            expect(bezierCurve.getControlPoint(1)).toBe(vector2);
+        });
     });
     describe("isComplete", function() {
         beforeEach(function() {
@@ -1097,6 +1106,15 @@ describe("pen-tool-math Bezier-Curve-spec", function() {
             bezierCurve.pushControlPoint(vector2);
             expect(bezierCurve.isComplete).toBeTruthy();
             bezierCurve.pushControlPoint(vector3);
+            expect(bezierCurve.isComplete).toBeTruthy();
+        });
+        it("should return expected values", function() {
+            expect(bezierCurve.isComplete).toBeFalsy();
+            bezierCurve.setControlPoint(2, vector3);
+            expect(bezierCurve.isComplete).toBeFalsy();
+            bezierCurve.setControlPoint(1, vector2);
+            expect(bezierCurve.isComplete).toBeFalsy();
+            bezierCurve.setControlPoint(0, vector1);
             expect(bezierCurve.isComplete).toBeTruthy();
         });
     });
@@ -1919,7 +1937,10 @@ describe("pen-tool-math Bezier-Spline-spec", function() {
 /* Cubic Bézier Spline spec */
 
 describe("pen-tool-math Cubic-Bezier-Spline-spec", function() {
-    var cubicBezierSpline;
+    var cubicBezierSpline,
+        cubicBezierCurve1, cubicBezierCurve2, cubicBezierCurve3, cubicBezierCurve4,
+        knot1, knot2, knot3, knot4, knot5, knot6;
+
 
     describe("initialization using init", function() {
         beforeEach(function() {
@@ -1930,6 +1951,666 @@ describe("pen-tool-math Cubic-Bezier-Spline-spec", function() {
         });
         it("length should be equal to 0", function() {
             expect(cubicBezierSpline.length).toEqual(0);
+        });
+    });
+
+    describe("knot operations in complete splines", function() {
+        beforeEach(function() {
+            cubicBezierSpline = new CubicBezierSpline().init();
+            cubicBezierCurve1 = new BezierCurve().init();
+            cubicBezierCurve1.setControlPoint(0, knot1 = new Vector().initWithCoordinates([1]));
+            cubicBezierCurve1.setControlPoint(1, new Vector().initWithCoordinates([2]));
+            cubicBezierCurve1.setControlPoint(2, new Vector().initWithCoordinates([3]));
+            cubicBezierCurve1.setControlPoint(3, knot2 = new Vector().initWithCoordinates([4]));
+            cubicBezierCurve2 = new BezierCurve().init();
+            cubicBezierCurve2.setControlPoint(0, new Vector().initWithCoordinates([5]));
+            cubicBezierCurve2.setControlPoint(1, new Vector().initWithCoordinates([6]));
+            cubicBezierCurve2.setControlPoint(2, new Vector().initWithCoordinates([7]));
+            cubicBezierCurve2.setControlPoint(3, knot3 = new Vector().initWithCoordinates([8]));
+            cubicBezierCurve3 = new BezierCurve().init();
+            cubicBezierCurve3.setControlPoint(0, new Vector().initWithCoordinates([9]));
+            cubicBezierCurve3.setControlPoint(1, new Vector().initWithCoordinates([10]));
+            cubicBezierCurve3.setControlPoint(2, new Vector().initWithCoordinates([11]));
+            cubicBezierCurve3.setControlPoint(3, knot4 = new Vector().initWithCoordinates([12]));
+            cubicBezierCurve4 = new BezierCurve().init();
+            cubicBezierCurve4.setControlPoint(0, new Vector().initWithCoordinates([13]));
+            cubicBezierCurve4.setControlPoint(1, new Vector().initWithCoordinates([14]));
+            cubicBezierCurve4.setControlPoint(2, new Vector().initWithCoordinates([15]));
+            cubicBezierCurve4.setControlPoint(3, knot5 = new Vector().initWithCoordinates([16]));
+            knot6 = new Vector().initWithCoordinates([0]);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve1);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve2);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve3);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve4);
+        });
+        it("spline should be properly initialized", function() {
+            expect(cubicBezierSpline.length).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(1).getCoordinate(0)).toEqual(2);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(1).getCoordinate(0)).toEqual(6);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(1).getCoordinate(0)).toEqual(10);
+            expect(cubicBezierSpline.getBezierCurve(3).getControlPoint(1).getCoordinate(0)).toEqual(14);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(0).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(0).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getBezierCurve(3).getControlPoint(0).getCoordinate(0)).toEqual(12);
+        });
+        it("firstKnot and lastKnot should work properly", function() {
+            expect(cubicBezierSpline.firstKnot.getCoordinate(0)).toEqual(1);
+            expect(cubicBezierSpline.lastKnot.getCoordinate(0)).toEqual(16);
+        });
+        it("getKnot should work properly", function () {
+            expect(cubicBezierSpline.getKnot(-1)).toEqual(null);
+            expect(cubicBezierSpline.getKnot(0).getCoordinate(0)).toEqual(1);
+            expect(cubicBezierSpline.getKnot(1).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getKnot(2).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getKnot(3).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getKnot(4).getCoordinate(0)).toEqual(16);
+            expect(cubicBezierSpline.getKnot(5)).toEqual(null);
+        });
+        it("knotsLength should return expected results", function () {
+            expect(cubicBezierSpline.knotsLength).toEqual(5);
+        });
+        it("getIndexForKnot should return expected results", function () {
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(3);
+            expect(cubicBezierSpline.getIndexForKnot(knot5)).toEqual(4);
+            expect(cubicBezierSpline.getIndexForKnot(knot6)).toEqual(null);
+        });
+        it("removeKnot from the left should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot1)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(4);
+            expect(cubicBezierSpline.knotsLength).toEqual(4);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(null);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot5)).toEqual(3);
+        });
+        it("removeKnot from the right should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot5)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(4);
+            expect(cubicBezierSpline.knotsLength).toEqual(4);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(3);
+            expect(cubicBezierSpline.getIndexForKnot(knot5)).toEqual(null);
+        });
+        it("removeKnot from the middle should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot2)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(3);
+            expect(cubicBezierSpline.knotsLength).toEqual(4);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot5)).toEqual(3);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(0).getCoordinate(0)).toEqual(1);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(1).getCoordinate(0)).toEqual(2);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(2).getCoordinate(0)).toEqual(7);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(3).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(0).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(1).getCoordinate(0)).toEqual(10);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(2).getCoordinate(0)).toEqual(11);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(3).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(0).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(1).getCoordinate(0)).toEqual(14);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(2).getCoordinate(0)).toEqual(15);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(3).getCoordinate(0)).toEqual(16);
+        });
+        it("removeKnot from the middle should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot3)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(3);
+            expect(cubicBezierSpline.knotsLength).toEqual(4);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot5)).toEqual(3);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(0).getCoordinate(0)).toEqual(1);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(1).getCoordinate(0)).toEqual(2);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(2).getCoordinate(0)).toEqual(3);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(3).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(0).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(1).getCoordinate(0)).toEqual(6);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(2).getCoordinate(0)).toEqual(11);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(3).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(0).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(1).getCoordinate(0)).toEqual(14);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(2).getCoordinate(0)).toEqual(15);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(3).getCoordinate(0)).toEqual(16);
+        });
+        it("removeKnot from the middle should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot4)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(3);
+            expect(cubicBezierSpline.knotsLength).toEqual(4);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot5)).toEqual(3);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(0).getCoordinate(0)).toEqual(1);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(1).getCoordinate(0)).toEqual(2);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(2).getCoordinate(0)).toEqual(3);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(3).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(0).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(1).getCoordinate(0)).toEqual(6);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(2).getCoordinate(0)).toEqual(7);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(3).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(0).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(1).getCoordinate(0)).toEqual(10);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(2).getCoordinate(0)).toEqual(15);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(3).getCoordinate(0)).toEqual(16);
+        });
+        it("removeKnot with a knot that is not part of the spline should return false", function () {
+            expect(cubicBezierSpline.removeKnot(knot6)).toEqual(false);
+            expect(cubicBezierSpline.knotsLength).toEqual(5);
+        });
+    });
+    describe("knot operations in incomplete splines by the left", function() {
+        beforeEach(function() {
+            cubicBezierSpline = new CubicBezierSpline().init();
+            cubicBezierCurve1 = new BezierCurve().init();
+            cubicBezierCurve1.setControlPoint(2, new Vector().initWithCoordinates([3]));
+            cubicBezierCurve1.setControlPoint(3, knot1 = new Vector().initWithCoordinates([4]));
+            cubicBezierCurve2 = new BezierCurve().init();
+            cubicBezierCurve2.setControlPoint(0, new Vector().initWithCoordinates([5]));
+            cubicBezierCurve2.setControlPoint(1, new Vector().initWithCoordinates([6]));
+            cubicBezierCurve2.setControlPoint(2, new Vector().initWithCoordinates([7]));
+            cubicBezierCurve2.setControlPoint(3, knot2 = new Vector().initWithCoordinates([8]));
+            cubicBezierCurve3 = new BezierCurve().init();
+            cubicBezierCurve3.setControlPoint(0, new Vector().initWithCoordinates([9]));
+            cubicBezierCurve3.setControlPoint(1, new Vector().initWithCoordinates([10]));
+            cubicBezierCurve3.setControlPoint(2, new Vector().initWithCoordinates([11]));
+            cubicBezierCurve3.setControlPoint(3, knot3 = new Vector().initWithCoordinates([12]));
+            cubicBezierCurve4 = new BezierCurve().init();
+            cubicBezierCurve4.setControlPoint(0, new Vector().initWithCoordinates([13]));
+            cubicBezierCurve4.setControlPoint(1, new Vector().initWithCoordinates([14]));
+            cubicBezierCurve4.setControlPoint(2, new Vector().initWithCoordinates([15]));
+            cubicBezierCurve4.setControlPoint(3, knot4 = new Vector().initWithCoordinates([16]));
+            knot5 = new Vector().initWithCoordinates([0]);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve1);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve2);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve3);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve4);
+        });
+        it("spline should be properly initialized", function() {
+            expect(cubicBezierSpline.length).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(1)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(1).getCoordinate(0)).toEqual(6);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(1).getCoordinate(0)).toEqual(10);
+            expect(cubicBezierSpline.getBezierCurve(3).getControlPoint(1).getCoordinate(0)).toEqual(14);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(0).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(0).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getBezierCurve(3).getControlPoint(0).getCoordinate(0)).toEqual(12);
+        });
+        it("firstKnot and lastKnot should work properly", function() {
+            expect(cubicBezierSpline.firstKnot.getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.lastKnot.getCoordinate(0)).toEqual(16);
+        });
+        it("getKnot should work properly", function () {
+            expect(cubicBezierSpline.getKnot(-1)).toEqual(null);
+            expect(cubicBezierSpline.getKnot(0).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getKnot(1).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getKnot(2).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getKnot(3).getCoordinate(0)).toEqual(16);
+            expect(cubicBezierSpline.getKnot(4)).toEqual(null);
+        });
+        it("knotsLength should return expected results", function () {
+            expect(cubicBezierSpline.knotsLength).toEqual(4);
+        });
+        it("getIndexForKnot should return expected results", function () {
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(3);
+            expect(cubicBezierSpline.getIndexForKnot(knot5)).toEqual(null);
+        });
+        it("removeKnot from the left should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot1)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(3);
+            expect(cubicBezierSpline.knotsLength).toEqual(3);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(null);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(2);
+        });
+        it("removeKnot from the right should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot4)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(4);
+            expect(cubicBezierSpline.knotsLength).toEqual(3);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(null);
+        });
+        it("removeKnot from the middle should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot2)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(3);
+            expect(cubicBezierSpline.knotsLength).toEqual(3);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(0)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(1)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(2).getCoordinate(0)).toEqual(3);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(3).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(0).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(1).getCoordinate(0)).toEqual(6);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(2).getCoordinate(0)).toEqual(11);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(3).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(0).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(1).getCoordinate(0)).toEqual(14);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(2).getCoordinate(0)).toEqual(15);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(3).getCoordinate(0)).toEqual(16);
+        });
+        it("removeKnot from the middle should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot3)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(3);
+            expect(cubicBezierSpline.knotsLength).toEqual(3);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(0)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(1)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(2).getCoordinate(0)).toEqual(3);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(3).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(0).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(1).getCoordinate(0)).toEqual(6);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(2).getCoordinate(0)).toEqual(7);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(3).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(0).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(1).getCoordinate(0)).toEqual(10);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(2).getCoordinate(0)).toEqual(15);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(3).getCoordinate(0)).toEqual(16);
+        });
+        it("removeKnot with a knot that is not part of the spline should return false", function () {
+            expect(cubicBezierSpline.removeKnot(knot5)).toEqual(false);
+            expect(cubicBezierSpline.knotsLength).toEqual(4);
+        });
+    });
+    describe("knot operations in incomplete splines by the right", function() {
+        beforeEach(function() {
+            cubicBezierSpline = new CubicBezierSpline().init();
+            cubicBezierCurve1 = new BezierCurve().init();
+            cubicBezierCurve1.setControlPoint(0, knot1 = new Vector().initWithCoordinates([1]));
+            cubicBezierCurve1.setControlPoint(1, new Vector().initWithCoordinates([2]));
+            cubicBezierCurve1.setControlPoint(2, new Vector().initWithCoordinates([3]));
+            cubicBezierCurve1.setControlPoint(3, knot2 = new Vector().initWithCoordinates([4]));
+            cubicBezierCurve2 = new BezierCurve().init();
+            cubicBezierCurve2.setControlPoint(0, new Vector().initWithCoordinates([5]));
+            cubicBezierCurve2.setControlPoint(1, new Vector().initWithCoordinates([6]));
+            cubicBezierCurve2.setControlPoint(2, new Vector().initWithCoordinates([7]));
+            cubicBezierCurve2.setControlPoint(3, knot3 = new Vector().initWithCoordinates([8]));
+            cubicBezierCurve3 = new BezierCurve().init();
+            cubicBezierCurve3.setControlPoint(0, new Vector().initWithCoordinates([9]));
+            cubicBezierCurve3.setControlPoint(1, new Vector().initWithCoordinates([10]));
+            cubicBezierCurve3.setControlPoint(2, new Vector().initWithCoordinates([11]));
+            cubicBezierCurve3.setControlPoint(3, knot4 = new Vector().initWithCoordinates([12]));
+            cubicBezierCurve4 = new BezierCurve().init();
+            cubicBezierCurve4.setControlPoint(0, new Vector().initWithCoordinates([13]));
+            cubicBezierCurve4.setControlPoint(1, new Vector().initWithCoordinates([14]));
+            knot5 = new Vector().initWithCoordinates([0]);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve1);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve2);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve3);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve4);
+        });
+        it("spline should be properly initialized", function() {
+            expect(cubicBezierSpline.length).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(1).getCoordinate(0)).toEqual(2);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(1).getCoordinate(0)).toEqual(6);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(1).getCoordinate(0)).toEqual(10);
+            expect(cubicBezierSpline.getBezierCurve(3).getControlPoint(1).getCoordinate(0)).toEqual(14);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(0).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(0).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getBezierCurve(3).getControlPoint(0).getCoordinate(0)).toEqual(12);
+        });
+        it("firstKnot and lastKnot should work properly", function() {
+            expect(cubicBezierSpline.firstKnot.getCoordinate(0)).toEqual(1);
+            expect(cubicBezierSpline.lastKnot.getCoordinate(0)).toEqual(12);
+        });
+        it("getKnot should work properly", function () {
+            expect(cubicBezierSpline.getKnot(-1)).toEqual(null);
+            expect(cubicBezierSpline.getKnot(0).getCoordinate(0)).toEqual(1);
+            expect(cubicBezierSpline.getKnot(1).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getKnot(2).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getKnot(3).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getKnot(4)).toEqual(null);
+        });
+        it("knotsLength should return expected results", function () {
+            expect(cubicBezierSpline.knotsLength).toEqual(4);
+        });
+        it("getIndexForKnot should return expected results", function () {
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(3);
+            expect(cubicBezierSpline.getIndexForKnot(knot5)).toEqual(null);
+        });
+        it("removeKnot from the left should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot1)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(4);
+            expect(cubicBezierSpline.knotsLength).toEqual(3);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(null);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(2);
+        });
+        it("removeKnot from the right should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot4)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(3);
+            expect(cubicBezierSpline.knotsLength).toEqual(3);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(null);
+        });
+        it("removeKnot from the middle should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot2)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(3);
+            expect(cubicBezierSpline.knotsLength).toEqual(3);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(0).getCoordinate(0)).toEqual(1);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(1).getCoordinate(0)).toEqual(2);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(2).getCoordinate(0)).toEqual(7);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(3).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(0).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(1).getCoordinate(0)).toEqual(10);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(2).getCoordinate(0)).toEqual(11);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(3).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(0).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(1).getCoordinate(0)).toEqual(14);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(2)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(3)).toEqual(null);
+        });
+        it("removeKnot from the middle should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot3)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(3);
+            expect(cubicBezierSpline.knotsLength).toEqual(3);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(0).getCoordinate(0)).toEqual(1);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(1).getCoordinate(0)).toEqual(2);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(2).getCoordinate(0)).toEqual(3);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(3).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(0).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(1).getCoordinate(0)).toEqual(6);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(2).getCoordinate(0)).toEqual(11);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(3).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(0).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(1).getCoordinate(0)).toEqual(14);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(2)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(3)).toEqual(null);
+        });
+        it("removeKnot with a knot that is not part of the spline should return false", function () {
+            expect(cubicBezierSpline.removeKnot(knot5)).toEqual(false);
+            expect(cubicBezierSpline.knotsLength).toEqual(4);
+        });
+    });
+    describe("knot operations in incomplete splines in both sides", function() {
+        beforeEach(function() {
+            cubicBezierSpline = new CubicBezierSpline().init();
+            cubicBezierCurve1 = new BezierCurve().init();
+            cubicBezierCurve1.setControlPoint(2, new Vector().initWithCoordinates([3]));
+            cubicBezierCurve1.setControlPoint(3, knot1 = new Vector().initWithCoordinates([4]));
+            cubicBezierCurve2 = new BezierCurve().init();
+            cubicBezierCurve2.setControlPoint(0, new Vector().initWithCoordinates([5]));
+            cubicBezierCurve2.setControlPoint(1, new Vector().initWithCoordinates([6]));
+            cubicBezierCurve2.setControlPoint(2, new Vector().initWithCoordinates([7]));
+            cubicBezierCurve2.setControlPoint(3, knot2 = new Vector().initWithCoordinates([8]));
+            cubicBezierCurve3 = new BezierCurve().init();
+            cubicBezierCurve3.setControlPoint(0, new Vector().initWithCoordinates([9]));
+            cubicBezierCurve3.setControlPoint(1, new Vector().initWithCoordinates([10]));
+            cubicBezierCurve3.setControlPoint(2, new Vector().initWithCoordinates([11]));
+            cubicBezierCurve3.setControlPoint(3, knot3 = new Vector().initWithCoordinates([12]));
+            cubicBezierCurve4 = new BezierCurve().init();
+            cubicBezierCurve4.setControlPoint(0, new Vector().initWithCoordinates([13]));
+            cubicBezierCurve4.setControlPoint(1, new Vector().initWithCoordinates([14]));
+            knot4 = new Vector().initWithCoordinates([0]);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve1);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve2);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve3);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve4);
+        });
+        it("spline should be properly initialized", function() {
+            expect(cubicBezierSpline.length).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(1)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(1).getCoordinate(0)).toEqual(6);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(1).getCoordinate(0)).toEqual(10);
+            expect(cubicBezierSpline.getBezierCurve(3).getControlPoint(1).getCoordinate(0)).toEqual(14);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(0).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(0).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getBezierCurve(3).getControlPoint(0).getCoordinate(0)).toEqual(12);
+        });
+        it("firstKnot and lastKnot should work properly", function() {
+            expect(cubicBezierSpline.firstKnot.getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.lastKnot.getCoordinate(0)).toEqual(12);
+        });
+        it("getKnot should work properly", function () {
+            expect(cubicBezierSpline.getKnot(-1)).toEqual(null);
+            expect(cubicBezierSpline.getKnot(0).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getKnot(1).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getKnot(2).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getKnot(3)).toEqual(null);
+        });
+        it("knotsLength should return expected results", function () {
+            expect(cubicBezierSpline.knotsLength).toEqual(3);
+        });
+        it("getIndexForKnot should return expected results", function () {
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot4)).toEqual(null);
+        });
+        it("removeKnot from the left should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot1)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(3);
+            expect(cubicBezierSpline.knotsLength).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(null);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(1);
+        });
+        it("removeKnot from the right should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot3)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(3);
+            expect(cubicBezierSpline.knotsLength).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(null);
+        });
+        it("removeKnot from the middle should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot2)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(3);
+            expect(cubicBezierSpline.knotsLength).toEqual(2);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(0)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(1)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(2).getCoordinate(0)).toEqual(3);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(3).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(0).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(1).getCoordinate(0)).toEqual(6);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(2).getCoordinate(0)).toEqual(11);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(3).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(0).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(1).getCoordinate(0)).toEqual(14);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(2)).toEqual(null);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(3)).toEqual(null);
+        });
+        it("removeKnot with a knot that is not part of the spline should return false", function () {
+            expect(cubicBezierSpline.removeKnot(knot4)).toEqual(false);
+            expect(cubicBezierSpline.knotsLength).toEqual(3);
+        });
+    });
+    describe("knot operations in empty splines", function() {
+        beforeEach(function() {
+            cubicBezierSpline = new CubicBezierSpline().init();
+            knot1 = new Vector().initWithCoordinates([0]);
+        });
+        it("spline should be properly initialized", function() {
+            expect(cubicBezierSpline.length).toEqual(0);
+            expect(cubicBezierSpline.getBezierCurve(0)).toEqual(null);
+        });
+        it("firstKnot and lastKnot should work properly", function() {
+            expect(cubicBezierSpline.firstKnot).toEqual(null);
+            expect(cubicBezierSpline.lastKnot).toEqual(null);
+        });
+        it("getKnot should work properly", function () {
+            expect(cubicBezierSpline.getKnot(-1)).toEqual(null);
+            expect(cubicBezierSpline.getKnot(0)).toEqual(null);
+            expect(cubicBezierSpline.getKnot(1)).toEqual(null);
+        });
+        it("knotsLength should return expected results", function () {
+            expect(cubicBezierSpline.knotsLength).toEqual(0);
+        });
+        it("getIndexForKnot should return expected results", function () {
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(null);
+        });
+        it("removeKnot with a knot that is not part of the spline should return false", function () {
+            expect(cubicBezierSpline.removeKnot(knot1)).toEqual(false);
+            expect(cubicBezierSpline.knotsLength).toEqual(0);
+        });
+    });
+    describe("knot operations in spline width single complete curve", function() {
+        beforeEach(function() {
+            cubicBezierSpline = new CubicBezierSpline().init();
+            cubicBezierCurve1 = new BezierCurve().init();
+            cubicBezierCurve1.setControlPoint(0, knot1 = new Vector().initWithCoordinates([1]));
+            cubicBezierCurve1.setControlPoint(1, new Vector().initWithCoordinates([2]));
+            cubicBezierCurve1.setControlPoint(2, new Vector().initWithCoordinates([3]));
+            cubicBezierCurve1.setControlPoint(3, knot2 = new Vector().initWithCoordinates([4]));
+            knot3 = new Vector().initWithCoordinates([0]);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve1);
+        });
+        it("spline should be properly initialized", function() {
+            expect(cubicBezierSpline.length).toEqual(1);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(1).getCoordinate(0)).toEqual(2);
+        });
+        it("firstKnot and lastKnot should work properly", function() {
+            expect(cubicBezierSpline.firstKnot.getCoordinate(0)).toEqual(1);
+            expect(cubicBezierSpline.lastKnot.getCoordinate(0)).toEqual(4);
+        });
+        it("getKnot should work properly", function () {
+            expect(cubicBezierSpline.getKnot(-1)).toEqual(null);
+            expect(cubicBezierSpline.getKnot(0).getCoordinate(0)).toEqual(1);
+            expect(cubicBezierSpline.getKnot(1).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getKnot(2)).toEqual(null);
+        });
+        it("knotsLength should return expected results", function () {
+            expect(cubicBezierSpline.knotsLength).toEqual(2);
+        });
+        it("getIndexForKnot should return expected results", function () {
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot3)).toEqual(null);
+        });
+        it("removeKnot from the left should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot1)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(1);
+            expect(cubicBezierSpline.knotsLength).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(null);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(0);
+        });
+        it("removeKnot from the right should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot2)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(1);
+            expect(cubicBezierSpline.knotsLength).toEqual(1);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(null);
+        });
+        it("removeKnot with a knot that is not part of the spline should return false", function () {
+            expect(cubicBezierSpline.removeKnot(knot3)).toEqual(false);
+            expect(cubicBezierSpline.knotsLength).toEqual(2);
+        });
+    });
+    describe("knot operations in spline width single incomplete curve by the left", function() {
+        beforeEach(function() {
+            cubicBezierSpline = new CubicBezierSpline().init();
+            cubicBezierCurve1 = new BezierCurve().init();
+            cubicBezierCurve1.setControlPoint(2, new Vector().initWithCoordinates([3]));
+            cubicBezierCurve1.setControlPoint(3, knot1 = new Vector().initWithCoordinates([4]));
+            knot2 = new Vector().initWithCoordinates([0]);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve1);
+        });
+        it("spline should be properly initialized", function() {
+            expect(cubicBezierSpline.length).toEqual(1);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(2).getCoordinate(0)).toEqual(3);
+        });
+        it("firstKnot and lastKnot should work properly", function() {
+            expect(cubicBezierSpline.firstKnot.getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.lastKnot.getCoordinate(0)).toEqual(4);
+        });
+        it("getKnot should work properly", function () {
+            expect(cubicBezierSpline.getKnot(-1)).toEqual(null);
+            expect(cubicBezierSpline.getKnot(0).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getKnot(1)).toEqual(null);
+        });
+        it("knotsLength should return expected results", function () {
+            expect(cubicBezierSpline.knotsLength).toEqual(1);
+        });
+        it("getIndexForKnot should return expected results", function () {
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(null);
+        });
+        it("removeKnot from the left should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot1)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(0);
+            expect(cubicBezierSpline.knotsLength).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(null);
+        });
+        it("removeKnot with a knot that is not part of the spline should return false", function () {
+            expect(cubicBezierSpline.removeKnot(knot2)).toEqual(false);
+            expect(cubicBezierSpline.knotsLength).toEqual(1);
+        });
+    });
+    describe("knot operations in spline width single incomplete curve by the right", function() {
+        beforeEach(function() {
+            cubicBezierSpline = new CubicBezierSpline().init();
+            cubicBezierCurve1 = new BezierCurve().init();
+            cubicBezierCurve1.setControlPoint(0, knot1 = new Vector().initWithCoordinates([1]));
+            cubicBezierCurve1.setControlPoint(1, new Vector().initWithCoordinates([2]));
+            knot2 = new Vector().initWithCoordinates([0]);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve1);
+        });
+        it("spline should be properly initialized", function() {
+            expect(cubicBezierSpline.length).toEqual(1);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(1).getCoordinate(0)).toEqual(2);
+        });
+        it("firstKnot and lastKnot should work properly", function() {
+            expect(cubicBezierSpline.firstKnot.getCoordinate(0)).toEqual(1);
+            expect(cubicBezierSpline.lastKnot.getCoordinate(0)).toEqual(1);
+        });
+        it("getKnot should work properly", function () {
+            expect(cubicBezierSpline.getKnot(-1)).toEqual(null);
+            expect(cubicBezierSpline.getKnot(0).getCoordinate(0)).toEqual(1);
+            expect(cubicBezierSpline.getKnot(1)).toEqual(null);
+        });
+        it("knotsLength should return expected results", function () {
+            expect(cubicBezierSpline.knotsLength).toEqual(1);
+        });
+        it("getIndexForKnot should return expected results", function () {
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot2)).toEqual(null);
+        });
+        it("removeKnot from the right should work as expected", function () {
+            expect(cubicBezierSpline.removeKnot(knot1)).toEqual(true);
+            expect(cubicBezierSpline.length).toEqual(0);
+            expect(cubicBezierSpline.knotsLength).toEqual(0);
+            expect(cubicBezierSpline.getIndexForKnot(knot1)).toEqual(null);
+        });
+        it("removeKnot with a knot that is not part of the spline should return false", function () {
+            expect(cubicBezierSpline.removeKnot(knot2)).toEqual(false);
+            expect(cubicBezierSpline.knotsLength).toEqual(1);
         });
     });
 });

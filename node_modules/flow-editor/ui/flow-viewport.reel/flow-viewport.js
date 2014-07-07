@@ -94,6 +94,48 @@ exports.FlowViewport = Montage.create(Viewport, {
         }
     },
 
+    zoomExtents: {
+        value: function () {
+            if (this.scene) {
+                var boundaries = this.scene.getRecursiveAxisAlignedBoundaries(),
+                    scaleX = this._width / (boundaries[0].max - boundaries[0].min),
+                    scaleY = this._height / (boundaries[1].max - boundaries[1].min),
+                    scaleZ = this._height / (boundaries[2].max - boundaries[2].min),
+                    scale = Math.min(scaleX, scaleY, scaleZ) * 0.8,
+                    center = {
+                        x: (boundaries[0].max + boundaries[0].min) / 2,
+                        y: (boundaries[1].max + boundaries[1].min) / 2,
+                        z: (boundaries[2].max + boundaries[2].min) / 2
+                    };
+
+                if (scale === Infinity || scale === -Infinity) {
+                    scale = .2;
+                }
+
+                this.scale = scale;
+
+                switch (this.type) {
+
+                    case ViewPortConfig.types.front:
+                        this.translateX = (this._width / 2) - (center.x * scale);
+                        this.translateY = (this._height / 2) - (center.y * scale);
+                        break;
+
+                    case ViewPortConfig.types.top:
+                        this.translateX = (this._width / 2) - (center.x * scale);
+                        this.translateY = (this._height / 2) - (center.z * scale);
+                        break;
+
+                    case ViewPortConfig.types.profile:
+                        this.translateX = (this._width / 2) - (center.z * scale);
+                        this.translateY = (this._height / 2) - (center.y * scale);
+                        break;
+                }
+            }
+        }
+    },
+
+
     handleResize: {
         value: function (event) {
             this._originNeedsCenter = true;
@@ -330,6 +372,7 @@ exports.FlowViewport = Montage.create(Viewport, {
             this._element.height = this._height;
             this.scene.canvas = this._element;
             this.scene.draw(this.matrix, this.type);
+
             /*this.scene._data.sort(function (a, b) {
                 return a.zIndex - b.zIndex;
             });

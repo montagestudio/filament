@@ -6,7 +6,7 @@ var Montage = require("montage").Montage,
     CanvasVector3 = require("ui/canvas-vector3").CanvasVector3,
     FlowSpline = require("ui/flow-spline").FlowSpline,
     CanvasFlowSpline = require("ui/flow-spline").CanvasFlowSpline,
-    BezierCurve = require("ui/pen-tool-math").BezierCurve;
+    BezierCurve = require("ui/pen-tool-math").CubicBezierCurve;
 
 var FlowHelix = exports.FlowHelix = Montage.create(FlowSpline, {
     type: {

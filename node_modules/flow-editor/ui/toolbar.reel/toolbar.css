@@ -41,6 +41,7 @@ POSSIBILITY OF SUCH DAMAGE.
     list-style: none;
     margin: 0;
     padding: 0;
+    font-size : 0
 }
 
 .flow-Editor-Toolbar-Button {
@@ -62,8 +63,7 @@ POSSIBILITY OF SUCH DAMAGE.
     content: "";
     position: absolute;
     background: url(pen-icons.png) no-repeat;
-    background-size: 448px 32px;
-    background-position: -224px 0;
+    background-size: auto 32px;
     width: 32px;
     height: 32px;
     opacity: .5;
@@ -77,38 +77,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 .flow-Editor-Toolbar-Button--selected:after {
     opacity: 1;
-}
-
-.flow-Editor-Toolbar-Button-Convert:after {
-    background-position: -288px 0;
-}
-
-.flow-Editor-Toolbar-Button-Convert:after {
-    background-position: -224px 0;
-}
-
-.flow-Editor-Toolbar-Button-Inspector:after {
-    background-position: -320px 0;
-}
-
-.flow-Editor-Toolbar-Button-Tree:after {
-    background-position: -352px 0;
-}
-
-.flow-Editor-Toolbar-Button-Helix:after {
-    background-position: -416px 0;
-}
-
-.flow-Editor-Toolbar-Button-Zoom-Extends:after {
-    background-position: -384px 0;
-}
-
-.flow-Editor-Toolbar-Button-Pen:after {
-    background-position: 0 0;
-}
-
-.flow-Editor-Toolbar-Button-Add:after {
-    background-position: -32px 0;
 }
 
 .flow-Editor-Toolbar-Button-MoveKnot:after {
@@ -156,10 +124,6 @@ POSSIBILITY OF SUCH DAMAGE.
     border-radius: 0;
 }
 
-.flow-Editor-Toolbar-Button-Close {
-    float: right;
-}
-
 .flow-Editor-Toolbar-Button.matte-Button:hover {
     background-color: inherit;
 }
@@ -169,4 +133,8 @@ POSSIBILITY OF SUCH DAMAGE.
     border-left: 1px solid #1D1D1D;
     border-right: 1px solid #363636;
     background: -webkit-gradient(linear, left top, left bottom,  from(#212121), to(#323232));
+}
+
+.flow-Editor-Toolbar-List > li:last-child {
+    float: right;
 }

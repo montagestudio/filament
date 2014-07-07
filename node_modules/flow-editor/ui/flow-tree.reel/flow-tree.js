@@ -16,6 +16,7 @@ exports.FlowTree = Montage.create(Component, {
             if (value) {
                 this._scene._data.addEventListener("selectionChange", this, false);
                 this._scene._data.addEventListener("sceneChange", this, false);
+                this._scene._data.addEventListener("bezierSplineChange", this, false);
             }
             this.needsDraw = true;
         }
@@ -108,6 +109,12 @@ exports.FlowTree = Montage.create(Component, {
     },
 
     handleSceneChange: {
+        value: function () {
+            this.needsDraw = true;
+        }
+    },
+
+    handleBezierSplineChange: {
         value: function () {
             this.needsDraw = true;
         }

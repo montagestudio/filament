@@ -121,6 +121,12 @@
             "bindings": {
                 "value": {"<->": "@owner.density"}
             }
+        },
+        "delete": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "delete"}
+            }
         }
     }
     </script>
@@ -154,6 +160,9 @@
         </li>
         <li>
             <span class="property">Density</span><div data-montage-id="density" class="inspector-input"></div>
+        </li>
+        <li>
+            <div data-montage-id="delete" class="inspector-button">♻ Delete Knot</div>
         </li>
     </ul>
 </body>

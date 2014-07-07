@@ -1106,13 +1106,21 @@ var BezierCurve = exports.BezierCurve = MapReducible.specialize({
     },
 
     /**
-        Returns false if the number of control points is lower than 2 or if the number of
-        control points is lower than the expected for the curve's order
+        Returns false if the number of control points is lower than 2, if the number of
+        control points is lower than the expected for the curve's order or if there are
+        undefined control points
     */
     isComplete: {
         get: function () {
+            var i;
+
             if (this.length < 2) {
                 return false;
+            }
+            for (i = 0; i < this.length; i++) {
+                if (!this.getControlPoint(i)) {
+                    return false;
+                }
             }
             return this.length > this.order;
         }
@@ -1162,6 +1170,21 @@ var BezierCurve = exports.BezierCurve = MapReducible.specialize({
             this._data[index] = vector;
             if (vector) {
                 vector.nextTarget = this;
+            }
+            this.dispatchEventIfNeeded("bezierCurveChange");
+        }
+    },
+
+    /**
+        Removes control point at the given index
+    */
+    removeControlPoint: {
+        value: function (index) {
+            var controlPoint = this.getControlPoint(index);
+
+            if (controlPoint) {
+                controlPoint.nextTarget = null;
+                delete this._data[index];
             }
             this.dispatchEventIfNeeded("bezierCurveChange");
         }
@@ -1724,44 +1747,6 @@ var BezierSpline = exports.BezierSpline = MapReducible.specialize({
     },
 
     /**
-        Returns the first knot of the bezier
-    */
-    firstKnot: {
-        get: function () {
-            var curve = this.getBezierCurve(0);
-
-            if (curve) {
-                if (curve.getControlPoint(0)) {
-                    return curve.getControlPoint(0);
-                } else {
-                    return curve.getControlPoint(3);
-                }
-            } else {
-                return null;
-            }
-        }
-    },
-
-    /**
-        Returns the last knot of the bezier
-    */
-    lastKnot: {
-        get: function () {
-            var curve = this.getBezierCurve(this.length - 1);
-
-            if (curve) {
-                if (curve.isComplete) {
-                    return curve.getControlPoint(curve.order);
-                } else {
-                    return curve.getControlPoint(0);
-                }
-            } else {
-                return null;
-            }
-        }
-    },
-
-    /**
         Inserts the provided Bézier curve at the end of the spline and if there is
         a previous Bézier curve, it sets the first control point of the inserted
         Bézier curve to be the last control point of the previous Bézier curve (if any)
@@ -2110,6 +2095,188 @@ var CubicBezierSpline = exports.CubicBezierSpline = BezierSpline.specialize({
     type: {
         serializable: false,
         value: "CubicBezierSpline"
+    },
+
+    /**
+        Returns the first knot of the bezier
+    */
+    firstKnot: {
+        get: function () {
+            var curve = this.getBezierCurve(0);
+
+            if (curve) {
+                if (curve.getControlPoint(0)) {
+                    return curve.getControlPoint(0);
+                } else {
+                    return curve.getControlPoint(3);
+                }
+            } else {
+                return null;
+            }
+        }
+    },
+
+    /**
+        Returns the last knot of the bezier
+    */
+    lastKnot: {
+        get: function () {
+            var curve = this.getBezierCurve(this.length - 1);
+
+            if (curve) {
+                if (curve.getControlPoint(3)) {
+                    return curve.getControlPoint(3);
+                } else {
+                    return curve.getControlPoint(0);
+                }
+            } else {
+                return null;
+            }
+        }
+    },
+
+    /**
+        Returns knot at the given index
+    */
+    getKnot: {
+        value: function (index) {
+            var curve = this.getBezierCurve(0);
+
+            if (curve) {
+                if (curve.getControlPoint(0)) {
+                    if ((index < this.length) && (curve = this.getBezierCurve(index))) {
+                        return curve.getControlPoint(0);
+                    } else {
+                        if ((index === this.length) && (curve = this.getBezierCurve(index - 1))) {
+                            return curve.getControlPoint(3);
+                        }
+                    }
+                } else {
+                    if (curve = this.getBezierCurve(index)) {
+                        return curve.getControlPoint(3);
+                    }
+                }
+            }
+            return null;
+        }
+    },
+
+    /**
+        Returns the number of knots in the bezier
+    */
+    knotsLength: {
+        get: function () {
+            var curve = this.getBezierCurve(0);
+
+            if (curve) {
+                if (curve.getControlPoint(0)) {
+                    if (this.getBezierCurve(this.length - 1).getControlPoint(3)) {
+                        return this.length + 1;
+                    } else {
+                        return this.length;
+                    }
+                } else {
+                    if (this.getBezierCurve(this.length - 1).getControlPoint(3)) {
+                        return this.length;
+                    } else {
+                        return this.length - 1;
+                    }
+                }
+            }
+            return 0;
+        }
+    },
+
+    /**
+        Returns the index within the spline of a given knot or null
+        if the knot is not part of the spline
+    */
+    getIndexForKnot: {
+        value: function (knot) {
+            var length, i;
+
+            if (knot === this.firstKnot) {
+                return 0;
+            }
+            length = this.knotsLength - 1;
+            if (knot === this.lastKnot) {
+                return length;
+            }
+            i = 1;
+            while ((i < length) && (this.getKnot(i) !== knot)) {
+                i++;
+            }
+            if (i < length) {
+                return i;
+            }
+            return null;
+        }
+    },
+
+    /**
+        Removes a given knot from the bezier and returns true if the operation was
+        sucessful or false if the given knot was not part of the bezier
+    */
+    removeKnot: {
+        value: function (knot) {
+            var index = this.getIndexForKnot(knot),
+                curve, curve2;
+
+            if (index !== null) {
+                if (knot === this.firstKnot) {
+                    if (knot === this.lastKnot) {
+                        this.removeBezierCurve(0);
+                        this.dispatchEventIfNeeded("bezierSplineChange");
+                        return true;
+                    } else {
+                        curve = this.getBezierCurve(0);
+                        if (curve.getControlPoint(0)) {
+                            curve.removeControlPoint(0);
+                            this.dispatchEventIfNeeded("bezierSplineChange");
+                            return true;
+                        } else {
+                            this.removeBezierCurve(0);
+                            curve = this.getBezierCurve(0);
+                            curve.removeControlPoint(0);
+                            this.dispatchEventIfNeeded("bezierSplineChange");
+                            return true;
+                        }
+                    }
+                }
+                if (knot === this.lastKnot) {
+                    curve = this.getBezierCurve(this.length - 1);
+                    if (curve.getControlPoint(3)) {
+                        curve.removeControlPoint(3);
+                        this.dispatchEventIfNeeded("bezierSplineChange");
+                        return true;
+                    } else {
+                        this.removeBezierCurve(this.length - 1);
+                        curve = this.getBezierCurve(this.length - 1);
+                        curve.removeControlPoint(3);
+                        this.dispatchEventIfNeeded("bezierSplineChange");
+                        return true;
+                    }
+                }
+                curve = this.getBezierCurve(0);
+                if (curve.getControlPoint(0)) {
+                    curve = this.getBezierCurve(index - 1);
+                    curve2 = this.getBezierCurve(index);
+                    curve.setControlPoint(2, curve2.getControlPoint(2));
+                    curve.setControlPoint(3, curve2.getControlPoint(3));
+                    this._data.splice(index, 1);
+                    this.dispatchEventIfNeeded("bezierSplineChange");
+                } else {
+                    curve = this.getBezierCurve(index);
+                    curve2 = this.getBezierCurve(index + 1);
+                    curve.setControlPoint(2, curve2.getControlPoint(2));
+                    curve.setControlPoint(3, curve2.getControlPoint(3));
+                    this._data.splice(index + 1, 1);
+                    this.dispatchEventIfNeeded("bezierSplineChange");
+                }
+                return true;
+            }
+            return false;
+        }
     }
 });
 

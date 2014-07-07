@@ -37,7 +37,8 @@ POSSIBILITY OF SUCH DAMAGE.
     {
         "owner": {
             "properties": {
-                "element": {"#": "owner"}
+                "element": {"#": "owner"},
+                "toolsOverlay": {"@": "toolsOverlay"}
             },
             "listeners": [
                 {
@@ -69,6 +70,13 @@ POSSIBILITY OF SUCH DAMAGE.
             "bindings": {
                 "object": {"<-": "@flowEditorToolbarItemList:iteration.object"}
             }
+        },
+
+        "toolsOverlay": {
+            "prototype": "ui/tools-overlay.reel",
+            "properties": {
+                "element": {"#": "toolsOverlay"}
+            }
         }
     }
     </script>
@@ -78,6 +86,8 @@ POSSIBILITY OF SUCH DAMAGE.
         <ul data-montage-id="flowEditorToolbarItemList" class="flow-Editor-Toolbar-List">
             <li data-montage-id="flowEditorToolbarItem"></li>
         </ul>
+
+        <div data-montage-id="toolsOverlay" class="montage-Overlay"></div>
     </div>
 </body>
 </html>

@@ -190,6 +190,27 @@ exports.CanvasGrid = Montage.create(CanvasShape, {
         }
     },
 
+    removeCanvasFlowKnot: {
+        value: function (canvasFlowKnot) {
+            var spline = canvasFlowKnot.parent,
+                i;
+
+            if (spline._data.knotsLength <= 2) {
+                this.removeCanvasFlowSpline(spline);
+            } else {
+                i = 0;
+                while ((i < spline.children.length) && (spline.children[i] !== canvasFlowKnot)) {
+                    i++;
+                }
+
+                if (i < spline.children.length) {
+                    spline._data.removeKnot(spline._data.getKnot(i));
+                    canvasFlowKnot.delete();
+                }
+            }
+        }
+    },
+
     // TODO: remove this and create appendFlowHelix in the same way as appendFlowSpline
     appendCanvasFlowHelix: {
         value: function (canvasFlowHelix) {
