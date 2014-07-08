@@ -968,18 +968,18 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 };
 
                 if (isProjectPackage) {
-                    promisedLibraryItems = self._findLibraryItemsForPackageUrl(packageUrl, packageName)
-                        .then(function (libraryItems) {
-                            // Add entry for ths package we previously had no entries for, if we find any
-                            libraryItems.forEach(function (item) {
-                                self.addLibraryItemToPackage(item, packageName);
-                            });
-
-                            return libraryItems;
-                        });
+                    // Finds Library items inside the project UI folder
+                    promisedLibraryItems = self._findAndAddLibraryItemsForPackageUrl(packageUrl, packageName);
                 } else if (!packageLibraryItems) {
-                    return self.environmentBridge.getExtensionsAt(packageUrl).then(function (extensions) {
-                        return self.loadExtensionsFromDependency(extensions);
+                    // Finds Library items within the node_module folder either through extensions or not
+                    promisedLibraryItems = self.environmentBridge.getExtensionsAt(packageUrl).then(function (extensions) {
+                        if (extensions && extensions.length) {
+                            // Finds Library items in extensions
+                            return self.loadExtensionsFromDependency(extensions);
+                        } else {
+                            // Finds Library items inside the package's UI folder
+                            return self._findAndAddLibraryItemsForPackageUrl(packageUrl, packageName);
+                        }
                     });
                 } else {
                     //TODO is there a reason we didn't share the same array before?
@@ -992,6 +992,25 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     return dependencyLibraryEntry;
                 });
             }));
+        }
+    },
+
+    /**
+     * Factorise search and addition of Library items from a package
+     */
+    _findAndAddLibraryItemsForPackageUrl: {
+        value: function (packageUrl, packageName) {
+            var self = this;
+
+            return this._findLibraryItemsForPackageUrl(packageUrl, packageName)
+                .then(function (libraryItems) {
+                    // Add entry for ths package we previously had no entries for, if we find any
+                    libraryItems.forEach(function (item) {
+                        self.addLibraryItemToPackage(item, packageName);
+                    });
+
+                    return libraryItems;
+                });
         }
     },
 
@@ -1068,7 +1087,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 serializationFragment,
                 htmlFragment;
 
-            if (!libraryItem && (/^ui\//).test(moduleId)) {
+            if (!libraryItem && (/ui\//).test(moduleId)) {
                 // TODO this regex is not exactly how we'll want this done in the future but it keeps things from getting too cluttered
 
                 montageId = objectName.replace(/(^.)/, function (_, firstChar) {
