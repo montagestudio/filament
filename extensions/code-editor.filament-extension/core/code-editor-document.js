@@ -158,7 +158,7 @@ var CodeEditorDocument = exports.CodeEditorDocument = Document.specialize({
         value: function (location) {
             var self = this;
 
-            if (!this.hasModifiedData(location)) {
+            if (location !== this.url || !this.isDirty) {
                 return Promise.resolve();
             }
 
