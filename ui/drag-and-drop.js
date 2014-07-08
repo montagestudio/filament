@@ -1,3 +1,4 @@
+/* global DOMStringList: false */
 var Promise = require("montage/core/promise").Promise;
 
 // Firefox uses DOMStringList for dataTransfer.types
