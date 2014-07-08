@@ -1,5 +1,13 @@
 var Promise = require("montage/core/promise").Promise;
 
+// Firefox uses DOMStringList for dataTransfer.types
+if (typeof DOMStringList === "object") {
+    DOMStringList.prototype.indexOf = Array.prototype.indexOf;
+    DOMStringList.prototype.has = Array.prototype.has;
+    DOMStringList.prototype.find = Array.prototype.find;
+    DOMStringList.prototype.forEach = Array.prototype.forEach;
+}
+
 /**
  * Because a text field takes the text/plain data from a drop event, we need to
  * go in afterwards and instead use the content we want.
