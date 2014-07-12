@@ -140,6 +140,10 @@ exports.PropertyEntry = Component.specialize(/** @lends module:"./property-entry
                     "<-": "property.value.sourcePath",
                     source: this
                 });
+                component.defineBinding("editingDocument", {
+                    "<-": "property.templateObject._editingDocument",
+                    source: this
+                });
             } else {
                 component.defineBinding("value", {
                     "<-": "property.value",

@@ -1,7 +1,9 @@
-.BindingValue {
+.BindingValue.autocomplete {
     width: 100%;
     border: 0;
     background-color: inherit;
     outline: none;
     font-size: 12px;
+    height: auto;
+    padding: 0 0;
 }
