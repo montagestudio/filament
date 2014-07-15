@@ -39,7 +39,18 @@ function sandboxMontageApp(applicationLocation, frameWindow) {
             }
         }, true);
 
+        var montageLocation = applicationLocation + "node_modules/montage/montage.js";
+
+        frameWindow.onerror = function (error, file, line) {
+            if (file === montageLocation) {
+                booted.reject(new Error(error));
+                delete frameWindow.onerror;
+            }
+        };
+
         frameWindow.montageDidLoad = function () {
+            // don't capture errors any more
+            delete frameWindow.onerror;
             frameWindow.require.dispose = dispose;
             booted.resolve([frameWindow.require, frameWindow.montageRequire]);
         };
@@ -52,7 +63,6 @@ function sandboxMontageApp(applicationLocation, frameWindow) {
             return xhr;
         };
 
-        var montageLocation = applicationLocation + "node_modules/montage/montage.js";
         var script = document.createElement("script");
         script.src = montageLocation;
         script.dataset.remoteTrigger = window.location.origin;
