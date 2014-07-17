@@ -1,7 +1,7 @@
 var Component = require("montage/ui/component").Component,
     ToolBarConfig = require("core/configuration").FlowEditorConfig.toolbar,
     ToolBarDelegate = require("core/toolbar-delegate").ToolBarDelegate,
-    PenTools = require("ui/pen-tools");
+    FlowEditorTools = require("core/flow-editor-tools").FlowEditorTools;
 
 /**
  Description TODO
@@ -55,20 +55,15 @@ exports.Toolbar = Component.specialize( /** @lends module:"ui/toolbar.reel".Tool
     enterDocument: {
         value: function (firstTime) {
             if (firstTime) {
-                this._tools = {
-                    "arrow": PenTools.ArrowTool.create(), // Todo check if still used
-                    "convert": PenTools.ConvertTool.create(),
-                    "pen": PenTools.PenTool.create(),
-                    "add": PenTools.AddTool.create(),
-                    "helix": PenTools.HelixTool.create(),
-                    "zoomOut": PenTools.ZoomOutTool.create(),
-                    "zoomIn": PenTools.ZoomInTool.create(),
-                    "remove": PenTools.RemoveTool.create()
-                }; // Todo: create them lazily
-
-                this.addPathChangeListener("templateObjects.flowEditorToolbarItemList._completedFirstDraw", this, "_handleToolItemsCompletedFirstDraw");
+                this._tools = new FlowEditorTools();
                 this.toolsOverlay.delegate = this;
             }
+        }
+    },
+
+    handleFlowEditorToolbarItemListFirstDraw: {
+        value: function () {
+            this.selectTool(ToolBarConfig.initialToolSelected);
         }
     },
 
@@ -81,7 +76,7 @@ exports.Toolbar = Component.specialize( /** @lends module:"ui/toolbar.reel".Tool
                     var buttonID = sourceCell.object.id;
 
                     if (sourceCell.object.canBeSelected) {
-                        this._selectCellTool(sourceCell);
+                        this.selectTool(buttonID);
                     }
 
                     if (this._delegate) {
@@ -112,41 +107,34 @@ exports.Toolbar = Component.specialize( /** @lends module:"ui/toolbar.reel".Tool
 
             if (toolSelected && toolSelected.object) {
                 toolCell.object = toolSelected.object;
-                this._selectCellTool(toolCell);
+                this._selectCellTool(toolCell.object.id);
             }
         }
     },
 
-    _handleToolItemsCompletedFirstDraw: {
-        value: function (completed) {
-            if (completed) {
+    selectTool: {
+        value: function (key) {
+            if (typeof key === "string") {
                 var cells = this.templateObjects.flowEditorToolbarItemList.childComponents,
-                    self = this;
+                    self = this,
 
-                this.removePathChangeListener("templateObjects.flowEditorToolbarItemList._completedFirstDraw", this);
+                    exists = cells.some(function (cell) {
+                        if (cell.object.id === key) {
+                            if (self.selectedCell) {
+                                self.selectedCell.unSelect();
+                            }
 
-                var rep = cells.some(function (cell) {
-                    if (cell.object.id === ToolBarConfig.initialToolSelected) {
-                        self._selectCellTool(cell);
+                            cell.select();
+                            self.selectedCell = cell;
 
-                        return true;
-                    }
-                });
+                            return true;
+                        }
+                    });
+
+                if (exists) {
+                    this.selectedTool = this._tools.get(key);
+                }
             }
-        }
-    },
-
-    _selectCellTool: {
-        value: function (cell) {
-            var buttonID = cell.object.id;
-
-            if (this.selectedCell) {
-                this.selectedCell.unSelect();
-            }
-
-            cell.select();
-            this.selectedCell = cell;
-            this.selectedTool = this._tools[buttonID];
         }
     }
 

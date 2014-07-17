@@ -114,6 +114,27 @@ exports.CanvasFlowHelix = Montage.create(CanvasFlowSpline, {
         }
     },
 
+    save: {
+        value: function () {
+            this._savedX = this._x;
+            this._savedY = this._y;
+            this._savedZ = this._z;
+            this.data.save();
+        }
+    },
+
+    restore: {
+        value: function () {
+            if (typeof this._savedX !== "undefined") {
+                this._x = this._savedX;
+                this._y = this._savedY;
+                this._z = this._savedZ;
+                this.data.restore();
+                this.update();
+            }
+        }
+    },
+
     update: {
         value: function () {
             var i, bezier,

@@ -47,6 +47,18 @@ exports.CanvasVector3 = Montage.create(CanvasShape, {
             }
             return false;
         }
+    },
+
+    save: {
+        value: function () {
+            this._data.save();
+        }
+    },
+
+    restore: {
+        value: function () {
+            this._data.restore();
+        }
     }
 
 });

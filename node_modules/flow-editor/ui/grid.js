@@ -211,6 +211,20 @@ exports.CanvasGrid = Montage.create(CanvasShape, {
         }
     },
 
+    appendCanvasOffsetShape: {
+        value: function (offsetShape) {
+            this._data.pushShape(offsetShape._data);
+            this.appendChild(offsetShape);
+        }
+    },
+
+    removeCanvasOffsetShape: {
+        value: function (offsetShape) {
+            this._data.removeShape(offsetShape._data);
+            offsetShape.delete();
+        }
+    },
+
     // TODO: remove this and create appendFlowHelix in the same way as appendFlowSpline
     appendCanvasFlowHelix: {
         value: function (canvasFlowHelix) {

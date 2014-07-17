@@ -14,15 +14,15 @@
     background-position: -416px 0;
 }
 
-.flow-Editor-Toolbar-Button.flow-Editor-Toolbar-Button-Zoom-In:after {
+.flow-Editor-Toolbar-Button.flow-Editor-Toolbar-Button-ZoomIn:after {
     background-position: -481px 0;
 }
 
-.flow-Editor-Toolbar-Button.flow-Editor-Toolbar-Button-Zoom-Out:after {
+.flow-Editor-Toolbar-Button.flow-Editor-Toolbar-Button-ZoomOut:after {
     background-position: -514px 0;
 }
 
-.flow-Editor-Toolbar-Button.flow-Editor-Toolbar-Button-Zoom-Extends:after {
+.flow-Editor-Toolbar-Button.flow-Editor-Toolbar-Button-ZoomExtents:after {
     background-position: -385px 0;
 }
 

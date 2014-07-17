@@ -241,6 +241,18 @@ exports.CanvasFlowSplineHandlers = Montage.create(CanvasShape, {
             vector.translate = function (vector) {
                 self.translatePreviousHandler(vector);
             };
+            vector.save = function () {
+                vector.data.save();
+                if (self._nextHandler) {
+                    self._nextHandler.save();
+                }
+            };
+            vector.restore = function () {
+                vector.data.restore();
+                if (self._nextHandler) {
+                    self._nextHandler.restore();
+                }
+            };
         }
     },
 
@@ -261,6 +273,18 @@ exports.CanvasFlowSplineHandlers = Montage.create(CanvasShape, {
             vector.translate = function (vector) {
                 self.translateNextHandler(vector);
             };
+            vector.save = function () {
+                vector.data.save();
+                if (self._previousHandler) {
+                    self._previousHandler.save();
+                }
+            };
+            vector.restore = function () {
+                vector.data.restore();
+                if (self._previousHandler) {
+                    self._previousHandler.restore();
+                }
+            };
         }
     },
 
@@ -272,6 +296,30 @@ exports.CanvasFlowSplineHandlers = Montage.create(CanvasShape, {
             }
             if (this.previousHandler) {
                 this.previousHandler.translate(vector);
+            }
+        }
+    },
+
+    save: {
+        value: function () {
+            this.data.save();
+            if (this.nextHandler) {
+                this.nextHandler.save();
+            }
+            if (this.previousHandler) {
+                this.previousHandler.save();
+            }
+        }
+    },
+
+    restore: {
+        value: function () {
+            this.data.restore();
+            if (this.nextHandler) {
+                this.nextHandler.restore();
+            }
+            if (this.previousHandler) {
+                this.previousHandler.restore();
             }
         }
     },

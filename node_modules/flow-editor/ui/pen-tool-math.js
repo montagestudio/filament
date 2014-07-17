@@ -383,6 +383,37 @@ var Vector = exports.Vector = MapReducible.specialize({
         value: function (vector) {
             return (this.clone().subtract(vector).magnitude);
         }
+    },
+
+    /**
+        Saves the current data to be restored later
+    */
+    save: {
+        value: function () {
+            var length = this.dimensions,
+                i;
+
+            this._savedData = [];
+            for (i = 0; i < length; i++) {
+                this._savedData[i] = this.getCoordinate(i);
+            }
+        }
+    },
+
+    /**
+        Restores the saved data into the current data
+    */
+    restore: {
+        value: function () {
+            if (this._savedData) {
+                var length = this._savedData.length,
+                    i;
+
+                for (i = 0; i < length; i++) {
+                    this.setCoordinate(i, this._savedData[i]);
+                }
+            }
+        }
     }
 });
 
@@ -2276,6 +2307,46 @@ var CubicBezierSpline = exports.CubicBezierSpline = BezierSpline.specialize({
                 return true;
             }
             return false;
+        }
+    },
+
+    /**
+        Saves the current data to be restored later
+    */
+    save: {
+        value: function () {
+            var length = this._data.length,
+                curveLength,
+                i, j;
+
+            for (i = 0; i < length; i++) {
+                curveLength = this._data[i].length;
+                for (j = 0; j < curveLength; j++) {
+                    if (this._data[i].getControlPoint(j)) {
+                        this._data[i].getControlPoint(j).save();
+                    }
+                }
+            }
+        }
+    },
+
+    /**
+        Restores the saved data into the current data
+    */
+    restore: {
+        value: function () {
+            var length = this._data.length,
+                curveLength,
+                i, j;
+
+            for (i = 0; i < length; i++) {
+                curveLength = this._data[i].length;
+                for (j = 0; j < curveLength; j++) {
+                    if (this._data[i].getControlPoint(j)) {
+                        this._data[i].getControlPoint(j).restore();
+                    }
+                }
+            }
         }
     }
 });

@@ -289,6 +289,20 @@ describe("pen-tool-math Vector-spec", function() {
             });
         });
     });
+    describe("save and restore", function() {
+        it("should work as expected", function() {
+            var vector = new Vector().initWithCoordinates([1, 2, 3]);
+
+            vector.save();
+            vector.setCoordinate(0, 9);
+            vector.setCoordinate(1, 9);
+            vector.setCoordinate(2, 9);
+            vector.restore();
+            expect(vector.getCoordinate(0)).toEqual(1);
+            expect(vector.getCoordinate(1)).toEqual(2);
+            expect(vector.getCoordinate(2)).toEqual(3);
+        });
+    });
 });
 
 /* Vector2 spec */
@@ -595,6 +609,18 @@ describe("pen-tool-math Vector2-spec", function() {
                 });
                 expect(result).toEqual([2]);
             });
+        });
+    });
+    describe("save and restore", function() {
+        it("should work as expected", function() {
+            var vector = new Vector2().initWithCoordinates([1, 2]);
+
+            vector.save();
+            vector.setCoordinate(0, 9);
+            vector.setCoordinate(1, 9);
+            vector.restore();
+            expect(vector.getCoordinate(0)).toEqual(1);
+            expect(vector.getCoordinate(1)).toEqual(2);
         });
     });
 });
@@ -1029,6 +1055,20 @@ describe("pen-tool-math Vector3-spec", function() {
                 });
                 expect(result).toEqual([2, 3]);
             });
+        });
+    });
+    describe("save and restore", function() {
+        it("should work as expected", function() {
+            var vector = new Vector3().initWithCoordinates([1, 2, 3]);
+
+            vector.save();
+            vector.setCoordinate(0, 9);
+            vector.setCoordinate(1, 9);
+            vector.setCoordinate(2, 9);
+            vector.restore();
+            expect(vector.getCoordinate(0)).toEqual(1);
+            expect(vector.getCoordinate(1)).toEqual(2);
+            expect(vector.getCoordinate(2)).toEqual(3);
         });
     });
 });
@@ -2611,6 +2651,64 @@ describe("pen-tool-math Cubic-Bezier-Spline-spec", function() {
         it("removeKnot with a knot that is not part of the spline should return false", function () {
             expect(cubicBezierSpline.removeKnot(knot2)).toEqual(false);
             expect(cubicBezierSpline.knotsLength).toEqual(1);
+        });
+    });
+    describe("save and restore operations", function() {
+        it("should work as expected", function() {
+            cubicBezierSpline = new CubicBezierSpline().init();
+            cubicBezierCurve1 = new BezierCurve().init();
+            cubicBezierCurve1.setControlPoint(0, knot1 = new Vector().initWithCoordinates([1]));
+            cubicBezierCurve1.setControlPoint(1, new Vector().initWithCoordinates([2]));
+            cubicBezierCurve1.setControlPoint(2, new Vector().initWithCoordinates([3]));
+            cubicBezierCurve1.setControlPoint(3, knot2 = new Vector().initWithCoordinates([4]));
+            cubicBezierCurve2 = new BezierCurve().init();
+            cubicBezierCurve2.setControlPoint(0, new Vector().initWithCoordinates([5]));
+            cubicBezierCurve2.setControlPoint(1, new Vector().initWithCoordinates([6]));
+            cubicBezierCurve2.setControlPoint(2, new Vector().initWithCoordinates([7]));
+            cubicBezierCurve2.setControlPoint(3, knot3 = new Vector().initWithCoordinates([8]));
+            cubicBezierCurve3 = new BezierCurve().init();
+            cubicBezierCurve3.setControlPoint(0, new Vector().initWithCoordinates([9]));
+            cubicBezierCurve3.setControlPoint(1, new Vector().initWithCoordinates([10]));
+            cubicBezierCurve3.setControlPoint(2, new Vector().initWithCoordinates([11]));
+            cubicBezierCurve3.setControlPoint(3, knot4 = new Vector().initWithCoordinates([12]));
+            cubicBezierCurve4 = new BezierCurve().init();
+            cubicBezierCurve4.setControlPoint(0, new Vector().initWithCoordinates([13]));
+            cubicBezierCurve4.setControlPoint(1, new Vector().initWithCoordinates([14]));
+            cubicBezierCurve4.setControlPoint(2, new Vector().initWithCoordinates([15]));
+            cubicBezierCurve4.setControlPoint(3, knot5 = new Vector().initWithCoordinates([16]));
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve1);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve2);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve3);
+            cubicBezierSpline.pushBezierCurve(cubicBezierCurve4);
+            cubicBezierSpline.save();
+            cubicBezierSpline.translate([100]);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(0).getCoordinate(0)).toEqual(101);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(1).getCoordinate(0)).toEqual(102);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(2).getCoordinate(0)).toEqual(103);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(0).getCoordinate(0)).toEqual(104);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(1).getCoordinate(0)).toEqual(106);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(2).getCoordinate(0)).toEqual(107);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(0).getCoordinate(0)).toEqual(108);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(1).getCoordinate(0)).toEqual(110);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(2).getCoordinate(0)).toEqual(111);
+            expect(cubicBezierSpline.getBezierCurve(3).getControlPoint(0).getCoordinate(0)).toEqual(112);
+            expect(cubicBezierSpline.getBezierCurve(3).getControlPoint(1).getCoordinate(0)).toEqual(114);
+            expect(cubicBezierSpline.getBezierCurve(3).getControlPoint(2).getCoordinate(0)).toEqual(115);
+            expect(cubicBezierSpline.getBezierCurve(3).getControlPoint(3).getCoordinate(0)).toEqual(116);
+            cubicBezierSpline.restore();
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(0).getCoordinate(0)).toEqual(1);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(1).getCoordinate(0)).toEqual(2);
+            expect(cubicBezierSpline.getBezierCurve(0).getControlPoint(2).getCoordinate(0)).toEqual(3);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(0).getCoordinate(0)).toEqual(4);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(1).getCoordinate(0)).toEqual(6);
+            expect(cubicBezierSpline.getBezierCurve(1).getControlPoint(2).getCoordinate(0)).toEqual(7);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(0).getCoordinate(0)).toEqual(8);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(1).getCoordinate(0)).toEqual(10);
+            expect(cubicBezierSpline.getBezierCurve(2).getControlPoint(2).getCoordinate(0)).toEqual(11);
+            expect(cubicBezierSpline.getBezierCurve(3).getControlPoint(0).getCoordinate(0)).toEqual(12);
+            expect(cubicBezierSpline.getBezierCurve(3).getControlPoint(1).getCoordinate(0)).toEqual(14);
+            expect(cubicBezierSpline.getBezierCurve(3).getControlPoint(2).getCoordinate(0)).toEqual(15);
+            expect(cubicBezierSpline.getBezierCurve(3).getControlPoint(3).getCoordinate(0)).toEqual(16);
         });
     });
 });

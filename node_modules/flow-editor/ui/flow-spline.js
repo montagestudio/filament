@@ -327,6 +327,18 @@ exports.CanvasFlowSpline = Montage.create(CanvasShape, {
             var s = this._data.clone().transformMatrix3d(transformMatrix).scale([1, 1, 0]);
             return (s.getCloserPointTo(Vector3.create().initWithCoordinates([x, y, 0])).distance < 10);
         }
+    },
+
+    save: {
+        value: function () {
+            this.data.save();
+        }
+    },
+
+    restore: {
+        value: function () {
+            this.data.restore();
+        }
     }
 
 });

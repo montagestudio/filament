@@ -53,6 +53,27 @@ exports.CanvasCamera = Montage.create(CanvasShape, {
         }
     },
 
+    save: {
+        value: function () {
+            this._savedCameraPosition = this.cameraPosition.slice(0);
+            this._savedCameraTargetPoint = this.cameraTargetPoint.slice(0);
+        }
+    },
+
+    restore: {
+        value: function () {
+            if (this._savedCameraPosition) {
+                this.cameraPosition[0] = this._savedCameraPosition[0];
+                this.cameraPosition[1] = this._savedCameraPosition[1];
+                this.cameraPosition[2] = this._savedCameraPosition[2];
+                this.cameraTargetPoint[0] = this._savedCameraTargetPoint[0];
+                this.cameraTargetPoint[1] = this._savedCameraTargetPoint[1];
+                this.cameraTargetPoint[2] = this._savedCameraTargetPoint[2];
+                this.dispatchEventNamed("cameraChange", true, true);
+            }
+        }
+    },
+
     isSelected: {
         get: function () {
             if (this._data) {

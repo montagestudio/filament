@@ -2,7 +2,8 @@
  * @module ui/toolbar-cell.reel
  * @requires montage/ui/component
  */
-var Component = require("montage/ui/component").Component;
+var Component = require("montage/ui/component").Component,
+    ToolBarConfig = require("core/configuration").FlowEditorConfig.toolbar;
 
 /**
  * @class ToolbarCell
@@ -69,7 +70,8 @@ exports.ToolbarCell = Component.specialize(/** @lends ToolbarCell# */ {
     draw: {
         value: function () {
             if (this.object && this.buttonElement) {
-                var element = this.buttonElement;
+                var element = this.buttonElement,
+                    id = this.object.id;
 
                 if (Array.isArray(this.subTools) && this.subTools.length > 0) {
                     // reset classes
@@ -82,20 +84,13 @@ exports.ToolbarCell = Component.specialize(/** @lends ToolbarCell# */ {
 
                 element.setAttribute("title", this.object.title);
 
-
                 if (this.isSelected) {
-                    element.classList.add("flow-Editor-Toolbar-Button--selected");
+                    element.classList.add(ToolBarConfig.classSelectedTools);
                 } else {
-                    element.classList.remove("flow-Editor-Toolbar-Button--selected");
+                    element.classList.remove(ToolBarConfig.classSelectedTools);
                 }
 
-                var classList = this.object.cssRules.class;
-
-                if (Array.isArray(classList)) {
-                    classList.forEach(function (classID) {
-                        element.classList.add(classID);
-                    });
-                }
+                element.classList.add(ToolBarConfig.classBaseName + "-" + id.charAt(0).toUpperCase() + id.slice(1));
             }
         }
     }

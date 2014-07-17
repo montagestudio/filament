@@ -59,7 +59,13 @@ POSSIBILITY OF SUCH DAMAGE.
             },
             "bindings": {
                 "content": {"<-": "@owner.items"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "firstDraw",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "flowEditorToolbarItem": {

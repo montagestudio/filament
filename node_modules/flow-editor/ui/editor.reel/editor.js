@@ -608,11 +608,65 @@ exports.Editor = Montage.create(Component, {
         enumerable: false,
         value: function (firstTime) {
             if (firstTime) {
-                Application.addEventListener("didSetOwnedObjectProperties", this, false);
-                Application.addEventListener("exitModalEditor", this, true);
-                Application.addEventListener("closeDocument", this, true);
+                this.application.addEventListener("didSetOwnedObjectProperties", this, false);
+                this.application.addEventListener("exitModalEditor", this, true);
+                this.application.addEventListener("closeDocument", this, true);
+                this.application.addEventListener("menuValidate", this, true);
+                this.application.addEventListener("menuAction", this, true);
 
                 this._refresh();
+            }
+        }
+    },
+
+    acceptsActiveTarget: {
+        value: true
+    },
+
+    canDelete: {
+        get: function () {
+            if (this.viewPortShared && this.viewPortShared.selectedTool) {
+                var selectedShape = this.viewPortShared.selectedTool.selectedChild;
+
+                return selectedShape && selectedShape.data.type === "FlowKnot";
+            }
+
+            return false;
+        }
+    },
+
+    captureMenuValidate: {
+        value: function (evt) {
+            var menuItem = evt.detail;
+
+            if ("delete" === menuItem.identifier) {
+                menuItem.enabled = this.canDelete;
+                evt.stop();
+            }
+        }
+    },
+
+    captureMenuAction: {
+        value: function (evt) {
+            if ("delete" === evt.detail.identifier) {
+                if (this.canDelete) {
+                    this._deleteSelectedKnot();
+                }
+
+                evt.stop();
+            }
+        }
+    },
+
+    _deleteSelectedKnot: {
+        value: function () {
+            if (this.viewPortShared && this.viewPortShared.selectedTool) {
+                var selectedShape = this.viewPortShared.selectedTool.selectedChild;
+
+                if (selectedShape && selectedShape.data.type === "FlowKnot") {
+                    this.viewPortShared.scene.removeCanvasFlowKnot(selectedShape);
+                    this.viewPortShared.dispatchEventNamed("flowPropertyChangeSet", true, true);
+                }
             }
         }
     },
@@ -634,9 +688,11 @@ exports.Editor = Montage.create(Component, {
 
     _removeListeners: {
         value: function () {
-            Application.removeEventListener("didSetOwnedObjectProperties", this, false);
-            Application.removeEventListener("closeDocument", this, true);
-            Application.removeEventListener("exitModalEditor", this, true);
+            this.application.removeEventListener("didSetOwnedObjectProperties", this, false);
+            this.application.removeEventListener("closeDocument", this, true);
+            this.application.removeEventListener("exitModalEditor", this, true);
+            this.application.removeEventListener("menuValidate", this, true);
+            this.application.removeEventListener("menuAction", this, true);
         }
     },
 
