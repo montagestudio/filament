@@ -47,31 +47,35 @@
 </head>
 <body>
     <aside data-montage-id="main" class="Main Aside Aside--login">
-        
+
         <div class="Aside-content">
-            
+
             <div data-montage-id="beta"></div>
-            
+
             <section class="Aside-section">
                 <img class="Aside-logo" src="../../../assets/img/logo.svg" alt="Montage Studio">
             </section>
-            
+
             <section class="Aside-section">
                 <h1 class="Aside-headline">Develop. Run. Share.</h1>
                 <p class="Aside-description">Build MontageJS applications in the cloud; store your code on GitHub.</p>
             </section>
-            
+
             <section class="Aside-section">
-                <a href="/auth/github/" class="Aside-button Aside-button--login">Sign in with GitHub</a>
+                <a href="https://github.com/settings/tokens/new">Generate new token</a><br/>
+                <form action="/auth/access-token/" method="post">
+                    Personal access token: <input type="text" name="token">
+                    <input type="submit">
+                </form>
                 <p class="Aside-info" style="display: none;">
                     <span data-montage-id="versionText" class="Aside-version"></span>
                     <span class="Aside-support">(Optimized for Google Chrome)</span>
                 </p>
             </section>
-            
+
             <section class="Aside-section">
                 <p>Need help? See our <a href="http://docs.montagestudio.com/montage-studio/tutorial-first-steps.html" target="_blank">First Steps</a> guide</p>
-                
+
                 <p data-montage-id="copyright" class="Aside-meta"></p>
             </section>
         </div>
