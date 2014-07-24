@@ -27,3 +27,22 @@
     border-style: dashed;
     pointer-events: none;
 }
+
+
+/* Dark Skin ------------------------------ */
+
+[data-skin="dark"] .Textarea {
+    color: hsl(0, 0%, 60%); 
+    border-color: hsl(0, 0%, 15%);
+    background-color: hsla(0, 0%, 0%, 0.08); 
+    box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, 0.1), 0 1px 0 hsla(0, 100%, 100%, 0.06);
+}
+
+[data-skin="dark"] .Textarea:hover {
+    background-color: hsla(0, 0%, 0%, 0.15);
+}
+ 
+[data-skin="dark"] .Textarea:focus {
+    border-color: hsl(0, 0%, 10%);
+    background-color: hsla(0, 0%, 0%, 0.2); 
+}
