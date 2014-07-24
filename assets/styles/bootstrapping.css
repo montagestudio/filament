@@ -1,3 +1,9 @@
+/* 
+ * Bootstrapping
+ * Used for: Hiding anything until fully loaded
+ * --------------------------------
+ * TODO: Move into filament.css or index.html to save a request
+ */
 
 .montage-app-bootstrapping .main,
 .montage-app-loading .main {

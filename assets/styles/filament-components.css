@@ -1,17 +1,20 @@
+/* 
+ * Filament Components
+ * Used for: CSS-Only components used in Filament
+ * --------------------------------
+ * Possible TODO: Replace with custom components in /ui/widgets
+ */
+
+
 /* Filament Utility Styles */
 
 .Filament--willAcceptDrop {
     outline: 1px solid hsl(210, 100%, 84%);
 }
 
-/*
- * CSS-Only components used in Filament
- * Could be moved into "real" reels.
- */
-
-
 
 /* Dark Input --------------------------------- */
+
 .Input.Input--dark {
     border-color: hsl(0, 0%, 15%);
     box-shadow: inset 0 1px 3px hsla(0, 0%, 0%, 0.1), 0 1px 0 hsla(0, 100%, 100%, 0.1);

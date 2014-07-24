@@ -1,7 +1,9 @@
-/* Jig
- * Overrides Matte
+/* 
+ * Jig
  * Used for: binding-jig.reel, listener-jig.reel
- * -------------------------------- */
+ * --------------------------------
+ * Possible TODO: Create a more generic popup that can be used instead of this
+ */
 
 
 .Jig {
