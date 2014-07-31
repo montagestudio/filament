@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+    <title>DocumentEditor</title>
+    <meta charset="utf-8">
+
+    <link href="document-editor.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "documentEditor"}
+                }
+            },
+        }
+    </script>
+
+</head>
+<body>
+
+    <div data-montage-id="documentEditor" class="DocumentEditor">
+        <header class="Bar">
+            <button data-montage-id="refresh" class="Button">Refresh</button>
+        </header>
+        <div data-montage-id="workbench" class="DocumentEditor-workbench">
+            <div data-arg="overlay">
+                <div data-montage-id="contextualInspectors"></div>
+                <div data-montage-id="selections"></div>
+                <div data-montage-id="highlights"></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

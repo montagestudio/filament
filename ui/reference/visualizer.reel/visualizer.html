@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="visualizer.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"},
+                "path": {"#": "path"},
+                "overlayElement": {"#": "referenceVisualizerOverlay"}
+            },
+            "bindings": {
+                "classList.has('is-active')": {"<-": "_isActive"}
+            }
+        },
+
+        "referenceVisualizerOverlay": {
+            "prototype": "montage/ui/overlay.reel",
+            "properties": {
+                "element": {"#": "referenceVisualizerOverlay"},
+                "delegate": {"@": "owner"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner">
+        <div data-montage-id="referenceVisualizerOverlay" class="Visualizer">
+            <svg data-montage-id="svg" class="Visualizer-path">
+                <path data-montage-id="path" fill="transparent" stroke="black" stroke-width="3px"/>
+            </svg>
+        </div>
+    </div>
+</body>
+</html>

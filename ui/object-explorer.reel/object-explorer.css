@@ -1,0 +1,11 @@
+.ObjectExplorer {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+    padding: 14px;
+}
+
+.ObjectExplorer-objectList {
+    -webkit-flex-grow: 1;
+}

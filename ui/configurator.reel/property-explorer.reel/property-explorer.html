@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="property-explorer.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "PropertyExplorer"}
+            }
+        },
+
+        "rangeController": {
+            "prototype": "montage/core/range-controller",
+            "properties": {
+                "filterPath": "blueprint.name != 'element' && (value.defined() || blueprint.owner.(_propertyBlueprintGroups[exportName]).has(blueprint))"
+            },
+            "bindings": {
+                "content": {"<-": "@owner.properties"}
+            }
+        },
+
+        "propertyList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "propertyList"},
+                "contentController": {"@": "rangeController"}
+            }
+        },
+
+        "propertyEntry": {
+            "prototype": "./property-entry.reel",
+            "properties": {
+                "element": {"#": "propertyEntry"},
+                "_blocksOwnerComponentDraw": false
+            },
+            "bindings": {
+                "property": {"<-": "@propertyList:iteration.object"},
+                "templateLabels": {"<-": "@owner._templateLabels"}
+            },
+            "listeners": [
+                {
+                    "type": "removeProperty",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "addButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "addButton"}
+            },
+            "listeners": [{
+                "type": "action",
+                "listener": {"@": "owner"}
+            }]
+        },
+
+        "addPropertyListOverlay": {
+            "prototype": "montage/ui/overlay.reel",
+            "properties": {
+                "element": {"#": "addPropertyListOverlay"},
+                "anchor": {"#": "addButton"}
+            }
+        },
+
+        "addPropertyList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "addPropertyList"},
+                "contentController": {"@": "addPropertyListRangeController"},
+                "isSelectionEnabled": true
+            }
+        },
+        "addPropertyListRangeController": {
+            "prototype": "montage/core/range-controller",
+            "properties": {
+                "filterPath": "!value.defined() && !(blueprint.owner.(_propertyBlueprintGroups[exportName]) ?? []).has(blueprint)"
+            },
+            "bindings": {
+                "content": {"<-": "@owner.properties"}
+            }
+        },
+        "addPropertyListItem": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "addPropertyListItem"}
+            },
+            "bindings": {
+                "value": {"<-": "@addPropertyList:iteration.object.blueprint.name"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+<div data-montage-id="PropertyExplorer" class="PropertyExplorer">
+    <header class="TemplateObjectCell-header">
+        <i class="TemplateObjectCell-icon TemplateObjectCell-icon--binding"></i>
+        <h2 class="TemplateObjectCell-title">Properties</h2>
+        <button data-montage-id="addButton" class="TemplateObjectCell-button" draggable="true">+</button>
+    </header>
+    <ul data-montage-id="propertyList" class="TemplateObjectCell-list">
+        <li data-montage-id="propertyEntry"></li>
+    </ul>
+    <div data-montage-id="addPropertyListOverlay" class="PropertyExplorer-addPropertyListOverlay">
+        <ul data-montage-id="addPropertyList" class="PropertyExplorer-addPropertyList">
+            <li data-montage-id="addPropertyListItem" class="PropertyExplorer-addPropertyListItem"></li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

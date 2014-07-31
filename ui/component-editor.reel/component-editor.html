@@ -15,8 +15,7 @@
             "owner": {
                 "properties": {
                     "element": {"#": "componentEditor"},
-                    "_modalEditorSlot": {"#": "modalEditorSlot"},
-                    "templateObjectsController": {"@": "templateObjectsController"}
+                    "_modalEditorSlot": {"#": "modalEditorSlot"}
                 },
                 "listeners": [
                     {
@@ -25,6 +24,10 @@
                     },
                     {
                         "type": "selectComponent",
+                        "listener": {"@": "owner"}
+                    },
+                    {
+                        "type": "selectTemplateObject",
                         "listener": {"@": "owner"}
                     }
                 ]
@@ -46,14 +49,6 @@
                         "listener": {"@": "owner"}
                     }
                 ]
-            },
-
-            "templateObjectsController": {
-                "prototype": "montage/core/range-controller",
-                "bindings": {
-                    "content": {"<-": "@owner.currentDocument.editingProxies"},
-                    "selection": {"<->": "@owner.currentDocument.selectedObjects"}
-                }
             },
 
             "HIDDEN_STATE": {
@@ -84,7 +79,16 @@
                 },
                 "bindings": {
                     "ownerObject": {"<-": "@owner.currentDocument.editingProxyMap.owner"},
-                    "templateObjectsController": {"<-": "@owner.templateObjectsController"},
+                    "editingDocument": {"<-": "@owner.currentDocument"}
+                }
+            },
+
+            "objectExplorer": {
+                "prototype": "ui/object-explorer.reel",
+                "properties": {
+                    "element": {"#": "objectExplorer"}
+                },
+                "bindings": {
                     "editingDocument": {"<-": "@owner.currentDocument"}
                 }
             },
@@ -95,8 +99,31 @@
                     "element": {"#": "domExplorer"}
                 },
                 "bindings": {
-                    "templateObjectsController": {"<-": "@owner.templateObjectsController"},
                     "editingDocument": {"<-": "@owner.currentDocument"}
+                }
+            },
+
+            "ownerSplit": {
+                "prototype": "montage-splitter/ui/splitter.reel",
+                "properties": {
+                    "element": {"#": "ownerSplit"},
+                    "splitAxis": "vertical"
+                }
+            },
+
+            "propertiesSplit": {
+                "prototype": "montage-splitter/ui/splitter.reel",
+                "properties": {
+                    "element": {"#": "propertiesSplit"},
+                    "splitAxis": "horizontal"
+                }
+            },
+
+            "templateObjectsSplit": {
+                "prototype": "montage-splitter/ui/splitter.reel",
+                "properties": {
+                    "element": {"#": "templateObjectsSplit"},
+                    "splitAxis": "horizontal"
                 }
             },
 
@@ -205,16 +232,22 @@
                 <div data-montage-id="bindingCreator"></div>
             </div>
         </section>
+        <div data-montage-id="ownerSplit" class="ComponentEditor-column ComponentEditor-ownerSplitter">
+            <section data-arg="first" data-montage-id="templateExplorer" class=""></section>
+            <section data-arg="second" data-montage-id="propertiesSplit" class="ComponentEditor-splitter">
+                <div data-arg="first" class="ComponentEditor-templateContent">
+                    <header class="Bar"></header>
+                    <section data-montage-id="templateObjectsSplit" class="ComponentEditor-templateObjects">
+                        <div data-arg="first" data-montage-id="domExplorer" class="ComponentEditor-domExplorer"></div>
+                        <div data-arg="second" data-montage-id="objectExplorer" class="ComponentEditor-objectExplorer"></div>
+                    </section>
+                </div>
+                <footer data-arg="second" data-montage-id="configurator" class="palette"></footer>
+            </section>
+        </div>
 
-        <section data-montage-id="templateExplorer" class="ComponentEditor-column palette" data-skin="light"></section>
-
-        <section data-montage-id="documentEditorExplorerColumn" class="ComponentEditor-column Column palette" data-skin="light">
-            <header class="Bar"></header>
-            <footer data-montage-id="domExplorer" class="ComponentEditor-column-row ComponentEditor-column-row--fixed"></footer>
-        </section>
-        <aside data-montage-id="configurator" class="Column palette" data-skin="light"></aside>
         <aside data-arg="modalEditor" data-montage-id="modalEditorSlot" class="modalEditorSlot"></aside>
-        <aside data-montage-id="library" class="palette" data-skin="dark"></aside>
+        <aside data-arg="second" data-montage-id="library" class="ComponentEditor-column palette"></aside>
         <div data-montage-id="overlayPanel">
             <span data-arg="panel" data-montage-id="overlayPanelMessage"></span>
         </div>

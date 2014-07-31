@@ -86,7 +86,7 @@ exports.ElementField = Component.specialize(/** @lends ElementField# */ {
                     montageId = editingDocument.createMontageIdForProxy(templateObject.label, templateObject.moduleId, nodeProxy);
                 }
 
-                editingDocument.setOwnedObjectElement(templateObject, montageId);
+                editingDocument.setOwnedObjectForMontageId(templateObject, montageId);
                 editingDocument.editor.refresh();
                 editingDocument.undoManager.closeBatch();
             }

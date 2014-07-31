@@ -32,6 +32,14 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
+    _elementElement: {
+        value: null
+    },
+
+    _componentElement: {
+        value: null
+    },
+
     _nodeSegment: {
         value: null
     },
@@ -139,30 +147,49 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
 
     handleDragstart: {
         value: function (event) {
-            event.dataTransfer.effectAllowed = "copyMove";
-            this.classList.add("NodeCell--dragged");
-            var nodeInfo = this.nodeInfo,
+            var target = event.target,
+                transfer = event.dataTransfer,
+                nodeInfo = this.nodeInfo,
                 component = nodeInfo.component,
                 uuid = this.nodeInfo.uuid,
                 sourceUuid = "x-montage-uuid/" + uuid;
-            event.dataTransfer.setData(sourceUuid, uuid);
-            if (component) {
-                event.dataTransfer.setData(MimeTypes.SERIALIZATION_OBJECT_LABEL, component.label);
+
+            transfer.effectAllowed = "copyMove";
+            // Dragging the templateObject reference
+            this.classList.add("NodeCell--dragged");
+            if (target === this._nodeSegment) {
+                this.classList.add("NodeCell--draggedElement");
+                event.dataTransfer.setData(sourceUuid, uuid);
+//                if (component) {
+//                    event.dataTransfer.setData(MimeTypes.SERIALIZATION_OBJECT_LABEL, component.label);
+//                }
+
+                var montageId = nodeInfo.montageId;
+                if (montageId) {
+                    event.dataTransfer.setData(MimeTypes.MONTAGE_TEMPLATE_ELEMENT, montageId);
+                    event.dataTransfer.setData("text/plain", '{"#": "' + montageId + '"}');
+                } else {
+                    event.dataTransfer.setData(MimeTypes.MONTAGE_TEMPLATE_XPATH, getElementXPath(this.nodeInfo._templateNode));
+                }
+            } else if (target === this._componentElement) {
+                this.classList.add("NodeCell--draggedComponent");
+                event.dataTransfer.setData(sourceUuid, uuid);
+                transfer.setData(MimeTypes.SERIALIZATION_OBJECT_LABEL, component.label);
+                transfer.setData("text/plain", "@" + component.label);
             }
 
-            var montageId = nodeInfo.montageId;
-            if (montageId) {
-                event.dataTransfer.setData(MimeTypes.MONTAGE_TEMPLATE_ELEMENT, montageId);
-                event.dataTransfer.setData("text/plain", '{"#": "' + montageId + '"}');
-            } else {
-                event.dataTransfer.setData(MimeTypes.MONTAGE_TEMPLATE_XPATH, getElementXPath(this.nodeInfo._templateNode));
-            }
         }
     },
 
     handleDragend: {
-        value: function (evt) {
+        value: function (event) {
+            var target = event.target;
             this.classList.remove("NodeCell--dragged");
+            if (target === this._nodeSegment) {
+                this.classList.remove("NodeCell--draggedElement");
+            } else if (target === this._componentElement) {
+                this.classList.remove("NodeCell--draggedComponent");
+            }
         }
     },
 
@@ -198,7 +225,8 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             return types && (uuid && uuid !== this.nodeInfo.uuid) &&
                 (
                     types.indexOf(MimeTypes.MONTAGE_TEMPLATE_ELEMENT) !== -1 ||
-                    types.indexOf(MimeTypes.MONTAGE_TEMPLATE_XPATH) !== -1
+                    types.indexOf(MimeTypes.MONTAGE_TEMPLATE_XPATH) !== -1 ||
+                    types.indexOf(MimeTypes.SERIALIZATION_OBJECT_LABEL) !== -1
                 );
         }
     },
@@ -237,11 +265,13 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     },
 
     handleDragover: {
-        enumerable: false,
         value: function (event) {
             if (this.acceptsDrop(event)) {
                 event.preventDefault();
                 event.dataTransfer.dropEffect = "copy";
+            } else if (this.acceptsMoveDrop(event)) {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = "move";
             } else {
                 event.dataTransfer.dropEffect = "none";
             }
@@ -256,7 +286,6 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
     },
 
     handleDragenter: {
-        enumerable: false,
         value: function (evt) {
             if (this.acceptsDropAddElement(evt) || this.acceptsMoveDrop(evt)) {
                 this.addElementOver();
@@ -302,6 +331,12 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                 editingDocument.insertTemplateObjectFromSerialization(data, nodeInfo).finally(function () {
                     self.isDropTarget = false;
                 }).done();
+            } else if (dataTransfer.types.has(MimeTypes.SERIALIZATION_OBJECT_LABEL)) {
+                data = dataTransfer.getData(MimeTypes.SERIALIZATION_OBJECT_LABEL);
+                var reelProxy = editingDocument.editingProxyMap[data];
+                if (reelProxy) {
+                    editingDocument.setOwnedObjectElement(reelProxy, this.nodeInfo);
+                }
             }
         }
     },
@@ -488,6 +523,19 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         }
     },
 
+    draw: {
+        value: function() {
+            if (this._isComponentTreeNode) {
+                var depth = this.treeControllerNode.depth - this._componentDepth;
+                var indentValue = this._indentValue;
+                var indentUnit = this._indentUnit;
+                this.element.style.marginLeft = -(indentValue * depth) + indentUnit;
+            } else {
+                this.element.style.marginLeft = "0";
+            }
+        }
+    },
+
     /// MANUAL BINDINGS
     _data: {
         value: null
@@ -504,6 +552,8 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
                     this.treeControllerNode = value;
                     this.nodeInfo = value.content;
                     this.isExpanded = value.expanded;
+                    this._indentValue = this.parentComponent.indentValue;
+                    this._indentUnit = this.parentComponent.indentUnit;
                 } else {
                     this.treeControllerNode = null;
                     this.nodeInfo = null;
@@ -537,16 +587,16 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             templateObjects.canRemoveNodeCondition.condition = nodeInfo.canRemoveNode;
 
             var childrenLength = nodeInfo && nodeInfo.children && nodeInfo.children.length || 0;
-            var componentLabel = nodeInfo.component && nodeInfo.component.label;
+            var component = nodeInfo.component;
 
             // @owner: classList.has('NodeCell--owner') <- nodeInfo.component.label == 'owner'
-            this.changeClassListItem(this.classList, 'NodeCell--owner', componentLabel === "owner");
+            this.changeClassListItem(this.classList, 'NodeCell--owner', component ? component.label === "owner": false);
             // @owner: classList.has('NodeCell--noChildren') <- !@owner.nodeInfo.children.length
             this.changeClassListItem(this.classList, 'NodeCell--noChildren', childrenLength === 0);
             // @hasChildrenCondition: condition <- @owner.nodeInfo.children.length
             templateObjects.hasChildrenCondition.condition = childrenLength > 0;
             // @componentLabel: value <- @owner.nodeInfo.component.label
-            templateObjects.componentLabel.value = componentLabel;
+//            templateObjects.componentLabel.value = componentLabel;
 
             this.updateNodeInfoAndMontageIdDependencies();
             this.updateNodeInfoAndDomExplorerDependencies();
@@ -585,8 +635,8 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
 
     updateNodeInfoAndMontageIdDependencies: {
         value: function() {
-            var templateObjects = this.templateObjects;
-            var childrenLength;
+            var templateObjects = this.templateObjects,
+                childrenLength;
 
             if (!templateObjects) {
                 return;
@@ -604,33 +654,60 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
             templateObjects.canAppendNodeCondition.condition = childrenLength === 0 && nodeInfo && nodeInfo.canAppendToNode && !isEditing;
             // @canInsertAfterNodeCondition: condition <- !@owner.nodeInfo.nextSibling &&  @owner.nodeInfo.canInsertAfterNode && !@montageId.isEditing
             templateObjects.canInsertAfterNodeCondition.condition = nodeInfo && (!nodeInfo.nextSibling && nodeInfo.canInsertAfterNode) && !isEditing;
-            // @montageId: classList.has('montage-invisible') <- !@owner.nodeInfo.component || @owner.nodeInfo.component.label != @owner.nodeInfo.montageId
-            this.changeClassListItem(templateObjects.montageId.classList, 'montage-invisible', !(nodeInfo && (!nodeInfo.component || nodeInfo.component.label !== nodeInfo.montageId)));
 
         }
     },
 
     updateNodeInfoAndDomExplorerDependencies: {
         value: function() {
-            var templateObjects = this.templateObjects;
-            var highlightedElement;
-            var selectedElements;
+            var templateObjects = this.templateObjects,
+                domExplorer = this.domExplorer,
+                highlightedElement,
+                activeSelection,
+                component;
 
             if (!templateObjects) {
                 return;
             }
 
             var nodeInfo = this.nodeInfo;
-            var domExplorer = this.domExplorer;
             if (domExplorer) {
-                highlightedElement = domExplorer.highlightedElement;
-                selectedElements = domExplorer.editingDocument && domExplorer.editingDocument.selectedElements;
+                highlightedElement = this.domExplorer.highlightedElement;
+                activeSelection = this.domExplorer.editingDocument && this.domExplorer.editingDocument.activeSelection;
+            }
+            if (nodeInfo) {
+                component = nodeInfo.component;
             }
 
             // @owner: classList.has('NodeCell--highlighted') <- @owner.domExplorer.highlightedElement == @owner.nodeInfo
             this.changeClassListItem(this.classList, 'NodeCell--highlighted', highlightedElement === nodeInfo);
             // @owner: classList.has('NodeCell--selected') <- @owner.domExplorer.editingDocument.selectedElements.has(@owner.nodeInfo)
-            this.changeClassListItem(this.classList, 'NodeCell--selected', selectedElements && selectedElements.indexOf(nodeInfo) >= 0);
+            this.changeClassListItem(this.classList, 'NodeCell--selected', activeSelection && activeSelection.indexOf(nodeInfo) >= 0);
+
+           // @owner: classList.has('NodeCell--selectedComponent') <- @owner.domExplorer.editingDocument.selectedObjects.has(@owner.nodeInfo.component)
+            this.changeClassListItem(this.classList, 'NodeCell--selectedComponent', activeSelection && component && activeSelection.indexOf(component) >= 0);
+
+            // new
+            this.changeClassListItem(this.classList, 'NodeCell--collapseDom', nodeInfo && !nodeInfo.component && domExplorer && domExplorer.collapseNonComponents);
+            var isComponent = nodeInfo && nodeInfo.component;
+            var isComponentTreeNode = isComponent && domExplorer && domExplorer.collapseNonComponents;
+            this.changeClassListItem(this.classList, 'NodeCell--componentTreeNode', isComponentTreeNode);
+            this.changeClassListItem(this.classList, 'NodeCell--component', isComponent);
+            // Need to correct the indentation if we're only showing components
+            if (this._isComponentTreeNode !== isComponentTreeNode) {
+                this._isComponentTreeNode = isComponentTreeNode;
+                if (isComponentTreeNode) {
+                    var node = nodeInfo;
+                    var depth = 0;
+                    while (node = /*assignment*/ node.parentNode) {
+                        if (node.component) {
+                            depth++;
+                        }
+                    }
+                    this._componentDepth = depth;
+                }
+                this.needsDraw = true;
+            }
         }
     },
 
@@ -638,9 +715,7 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function(classList, name, value) {
             var hasClass = classList.has(name);
 
-            //jshint -W116
-            if (value != hasClass) {
-            //jshint +W116
+            if (value !== hasClass) {
                 if (value) {
                     classList.add(name);
                 } else {
@@ -660,7 +735,8 @@ exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel
         value: function(event) {
             if (event.target === this.nodeInfo) {
                 this.updateNodeInfoDependencies();
-            } else if (event.target === this.domExplorer) {
+            }
+            if (event.target === this.domExplorer) {
                 this.updateDomExplorerDependencies();
             }
         }

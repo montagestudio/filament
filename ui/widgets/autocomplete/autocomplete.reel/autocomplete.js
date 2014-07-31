@@ -399,12 +399,18 @@ exports.Autocomplete = TextInput.specialize(/** @lends module:"matte/ui/autocomp
     // Delegate method to position the suggest popup
     willPositionPopup: {
         value: function(popup, defaultPosition) {
-            var anchor = popup.anchorElement, anchorPosition = getElementPosition(anchor);
-            return {
-                left: anchorPosition.left,
-                top: anchorPosition.top + 30
-            };
+            var anchor = popup.anchorElement,
+                anchorPosition = getElementPosition(anchor),
+                position = {
+                    left: anchorPosition.left,
+                    top: anchorPosition.top + anchor.offsetHeight
+                };
 
+            if (this.offset) {
+                position.left += (this.offset.left)? this.offset.left :0;
+                position.top += (this.offset.top)? this.offset.top :0;
+            }
+            return position;
         }
     },
 

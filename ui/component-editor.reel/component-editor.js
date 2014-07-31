@@ -12,10 +12,6 @@ exports.ComponentEditor = Editor.specialize({
         value: null
     },
 
-    templateObjectsController: {
-        value: null
-    },
-
     _modalEditorSlot: {
         value: null
     },
@@ -260,6 +256,14 @@ exports.ComponentEditor = Editor.specialize({
 
     handleSelectComponent: {
         value: function (evt) {
+            this.currentDocument.clearSelectedObjects();
+            this.currentDocument.selectObject(evt.detail.templateObject);
+        }
+    },
+
+    handleSelectTemplateObject: {
+        value: function (evt) {
+            this.currentDocument.clearSelectedObjects();
             this.currentDocument.selectObject(evt.detail.templateObject);
         }
     },

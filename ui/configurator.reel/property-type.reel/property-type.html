@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="property-type.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            }
+        },
+
+        "pressComposer": {
+            "prototype": "montage/composer/press-composer",
+            "properties": {
+                "component": {"@": "owner"}
+            },
+            "listeners": [
+                {
+                    "type": "press",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "substitution": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "substitution"}
+            },
+            "bindings": {
+                "switchValue": {"<-": "@owner.value"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <span data-montage-id="owner" class="PropertyType">
+        <span data-montage-id="substitution">
+            <span data-arg="assignment" class="PropertyType-type PropertyType-assignment">=</span>
+            <span data-arg="one-way-binding" class="PropertyType-type PropertyType-oneWayBinding"></span>
+            <span data-arg="two-way-binding" class="PropertyType-type PropertyType-twoWayBinding"></span>
+        </span>
+    </span>
+</body>
+</html>

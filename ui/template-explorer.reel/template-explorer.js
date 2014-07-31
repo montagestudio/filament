@@ -111,7 +111,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
     constructor: {
         value: function TemplateExplorer() {
             this.super();
-            this.defineBinding("templateObjectsController.filterPath", {"<-": "templateObjectFilterPath"});
+//            this.defineBinding("templateObjectsController.filterPath", {"<-": "templateObjectFilterPath"});
         }
     },
 
@@ -141,12 +141,23 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
         }
     },
 
-    templateObjectsController: {
+    _editingDocument: {
         value: null
     },
 
     editingDocument: {
-        value: null
+        get: function() {
+            return this._editingDocument;
+        },
+        set: function(value) {
+            this._editingDocument = value;
+            if (value && this.templateObjects) {
+                var startTime = window.performance.now();
+//                this.templateObjects.templateTreeController.content = value.templateObjectsTree;
+                var endTime = window.performance.now();
+                console.log("template-explorer: ", endTime - startTime);
+            }
+        }
     },
 
     showListeners: {
@@ -280,7 +291,6 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
             // clear selection on click outside from cards
             if (
                     target === this.element ||
-                    target === this.templateObjects.templateNodeList.element ||
                     (target.component && target.component.identifier === "row")
                 ) {
                 this.editingDocument.clearSelectedObjects();
@@ -291,7 +301,7 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
 
     handleRemoveElementAction: {
         value: function (evt) {
-            this.editingDocument.setOwnedObjectElement(evt.detail.get('templateObject'), null);
+            this.editingDocument.setOwnedObjectForMontageId(evt.detail.get('templateObject'), null);
         }
     },
 
@@ -301,24 +311,24 @@ exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./templa
                 return;
             }
 
-            //TODO do something sane if multiple objects are selected
-            var selectedObject = selectedObjects[0],
-                iterations = this.templateObjects.templateTreeController.iterations,
-                iterationCount,
-                iteration,
-                i,
-                selectedIteration;
-
-            for (i = 0, iterationCount = iterations.length; (!selectedIteration && (iteration = iterations[i])); i++) {
-                if (selectedObject === iteration.object) {
-                    selectedIteration = iteration;
-                }
-            }
-
-            if (selectedIteration) {
-                this._scrollToElement = selectedIteration.firstElement;
-                this.needsDraw = true;
-            }
+//            //TODO do something sane if multiple objects are selected
+//            var selectedObject = selectedObjects[0],
+//                iterations = this.templateObjects.templateTreeController.iterations,
+//                iterationCount,
+//                iteration,
+//                i,
+//                selectedIteration;
+//
+//            for (i = 0, iterationCount = iterations.length; (!selectedIteration && (iteration = iterations[i])); i++) {
+//                if (selectedObject === iteration.object) {
+//                    selectedIteration = iteration;
+//                }
+//            }
+//
+//            if (selectedIteration) {
+//                this._scrollToElement = selectedIteration.firstElement;
+//                this.needsDraw = true;
+//            }
         }
     },
 

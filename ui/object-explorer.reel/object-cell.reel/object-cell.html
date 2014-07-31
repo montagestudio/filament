@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="object-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            }
+        },
+
+        "component": {
+            "prototype": "ui/configurator.reel/template-object-header.reel",
+            "properties": {
+                "element": {"#": "component"}
+            },
+            "bindings": {
+                "templateObject": {"<-": "@owner.data"}
+            }
+        },
+
+        "objectName": {
+            "prototype": "ui/text-editor-field.reel",
+            "properties": {
+                "element": {"#": "objectName"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "selectObject": {
+            "prototype": "montage/composer/press-composer",
+            "properties": {
+                "component": {"@": "owner"},
+                "element": {"#": "owner"},
+                "identifier": "selectObject"
+            },
+            "listeners": [
+                {
+                    "type": "press",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="ObjectCell" draggable="true">
+        <div data-montage-id="component" class="ObjectCell-Bar">
+            <span data-arg="title" data-montage-id="objectName"></span>
+            <span data-arg="toolbar"></span>
+        </div>
+    </div>
+</body>
+</html>

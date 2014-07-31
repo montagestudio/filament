@@ -8,13 +8,11 @@
         "owner": {
             "prototype": "ui/template-explorer.reel",
             "properties": {
-                "element": {"#": "template-explorer"},
-                "templateTreeController": {"@": "templateTreeController"}
+                "element": {"#": "template-explorer"}
             },
             "bindings": {
                 "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"},
-                "templateObjectFilterTerm": {"<->": "editingDocument.sideData.templateObjectFilterTerm"},
-                "hiddenCardsCount": {"<-": "@owner.templateObjectsController.content.filter{!!editorMetadata.get('isHidden')}.length"}
+                "templateObjectFilterTerm": {"<->": "editingDocument.sideData.templateObjectFilterTerm"}
             },
             "listeners": [
                 {
@@ -41,51 +39,7 @@
             "bindings": {
                 "showBindings": {"<-": "@owner.showBindings"},
                 "showListeners": {"<-": "@owner.showListeners"},
-                "templateObject": {"<-": "@owner.ownerObject"},
-                "templateObjectsController": {"<-": "@owner.templateObjectsController"}
-            }
-        },
-        "showBindings": {
-            "prototype": "matte/ui/toggle-button.reel",
-            "properties": {
-                "element": {"#": "showBindings"}
-            },
-            "bindings": {
-                "pressed": {"<->": "!@owner.showBindings"}
-            }
-        },
-        "showHidden": {
-            "prototype": "matte/ui/toggle-button.reel",
-            "properties": {
-                "element": {"#": "showHidden"}
-            },
-            "bindings": {
-                "pressed": {"<->": "!@owner.showHidden"}
-            }
-        },
-        "showListeners": {
-            "prototype": "matte/ui/toggle-button.reel",
-            "properties": {
-                "element": {"#": "showListeners"}
-            },
-            "bindings": {
-                "pressed": {"<->": "!@owner.showListeners"}
-            }
-        },
-        "templateObjectCell": {
-            "prototype": "./template-object-cell.reel",
-            "properties": {
-                "element": {"#": "templateObjectCell"},
-                "_blocksOwnerComponentDraw": true
-            },
-            "bindings": {
-                "showBindings": {"<-": "@owner.showBindings"},
-                "showListeners": {"<-": "@owner.showListeners"},
-                "editingDocument": {"<-": "@owner.editingDocument"},
-                "templateExplorer": {"<-": "@owner"},
-                "templateObject": {"<-": "@templateObjectCell.parentComponent.iteration.content.templateObject"},
-                "isExpanded": {"<->": "@templateObjectCell.parentComponent.iteration.expanded"},
-                "isCollapsible": {"<->": "@templateObjectCell.parentComponent.iteration.children.length"}
+                "templateObject": {"<-": "@owner.ownerObject"}
             }
         },
         "templateObjectFilter": {
@@ -96,28 +50,6 @@
             "bindings": {
                 "value": {"<->": "@owner.templateObjectFilterTerm"}
             }
-        },
-        "templateTreeController": {
-            "prototype": "core/tree-controller",
-            "properties": {
-                "childrenPath": "children",
-                "expandedPath": "expanded",
-                "initiallyExpanded": true
-            },
-            "bindings": {
-                "content": {"<-": "@owner.editingDocument.templateObjectsTree"}
-            }
-        },
-        "templateNodeList": {
-            "prototype": "ui/tree.reel",
-            "properties": {
-                "element": {"#": "templateNodeList"},
-                "isSelectionEnabled": true,
-                "ignoreRoot": true
-            },
-            "bindings": {
-                "treeController": {"<-": "@owner.templateTreeController"}
-            }
         }
     }
     </script>
@@ -127,8 +59,6 @@
         <header class="TemplateExplorer-header Bar">
             <div>
                 <input data-montage-id="templateObjectFilter" class="TemplateExplorer-search" type="search" placeholder="Search Template">
-                <button data-montage-id="showBindings" class="TemplateExplorer-filterToggle TemplateExplorer-filterToggle--binding" title="Toggle Bindings"></button>
-                <button data-montage-id="showListeners" class="TemplateExplorer-filterToggle TemplateExplorer-filterToggle--listener" title="Toggle Listeners"></button>
             </div>
             <label class="TemplateExplorer-hiddenControl">
                 <button data-montage-id="showHidden" class="TemplateObjectCell-hiddenToggleButton" title="Toggle Hidden"></button>
@@ -136,9 +66,6 @@
             </label>
         </header>
         <section data-montage-id="ownerObjectCell"></section>
-        <ul data-montage-id="templateNodeList" class="TemplateExplorer-list">
-            <li data-montage-id="templateObjectCell" data-arg="treeNode"></li>
-        </ul>
     </div>
 </body>
 </html>

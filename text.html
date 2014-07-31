@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>Document</title>
+</head>
+<body>
+    <svg id="svg">
+        <path id="path" fill="transparent" stroke="black" d="M 515 398 Q 515 303.1246645804115, 645.5 398 T 515 398">
+        </path></svg>
+    <script type="application/javascript">
+        //<![CDATA[
+        document.documentElement.addEventListener("click", function () {
+
+            document.getElementById("path").innerHTML = '<animate attributeName="d" attributeType="XML" repeatCount="1" dur="1s" from="M 517 399 Q 899.4063491014543 179.84365089854563, 897.5 345 T 1278 291" to="M 517 399 Q 517 179.84365089854563, 897.5 399 T 517 399"></animate>'
+
+
+        });
+        //]]>
+    </script>
+
+</body>
+</html>
+

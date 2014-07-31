@@ -13,6 +13,14 @@ var Montage = require("montage").Montage,
 */
 exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explorer.reel".DomExplorer# */ {
 
+    constructor: {
+        value: function DomExplorer() {
+            this.super();
+            this.defineBinding("classList.has('DomExplorer--collapseDom')", {"<-": "collapseNonComponents"});
+        }
+    },
+
+
     // TODO this is a temporary solution inspired by main.js
     handleKeyPress: {
         value: function(evt) {
@@ -26,17 +34,18 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         }
     },
 
-    templateObjectsController: {
-        value: null
-    },
-
     _editingDocument: {
         value: null
     },
 
-    _editDocumentRangeListenerCancel: {
+    _editDocumentSelectedElementsListenerCancel: {
         value: null
     },
+
+    _editDocumentSelectedObjectsListenerCancel: {
+        value: null
+    },
+
     editingDocument: {
         get: function() {
             return this._editingDocument;
@@ -44,11 +53,27 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
         set: function(value) {
             if (this._editingDocument !== value) {
                 if (this._editingDocument) {
-                    this._editDocumentRangeListenerCancel();
+                    this._editDocumentSelectedElementsListenerCancel();
+                    this._editDocumentSelectedObjectsListenerCancel();
                 }
                 this._editingDocument = value;
                 if (value) {
-                    this._editDocumentRangeListenerCancel = value.addRangeAtPathChangeListener("selectedElements", this, "handleSelectedElementsChange");
+                    this._editDocumentSelectedElementsListenerCancel = value.addRangeAtPathChangeListener("selectedElements", this, "handleSelectedElementsChange");
+                    this._editDocumentSelectedObjectsListenerCancel = value.addRangeAtPathChangeListener("selectedObjects", this, "handleSelectedObjectsChange");
+                }
+
+                if (value && this.templateObjects) {
+                    if (!value.templateBodyNode) {
+                        return;
+                    }
+                    window.X = true;
+                    console.timeStamp("START");
+                    var startTime = window.performance.now();
+                    this.templateObjects.nodeTreeController.content = value.templateBodyNode.children[0];
+                    var endTime = window.performance.now();
+                    console.timeStamp("END");
+                    window.X = false;
+                    console.log("dom-explorer: ", endTime - startTime);
                 }
             }
         }
@@ -112,6 +137,22 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
             }
             this._addElementNodeHover = value;
             this._dispatchPropertiesChange();
+        }
+    },
+
+    _collapseNonComponents: {
+        value: false
+    },
+
+    collapseNonComponents: {
+        get: function() {
+            return this._collapseNonComponents;
+        },
+        set: function(value) {
+            if (this._collapseNonComponents !== value) {
+                this._collapseNonComponents = value;
+                this._dispatchPropertiesChange();
+            }
         }
     },
 
@@ -293,6 +334,12 @@ exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explore
 
     // MANUAL BINDINGS
     handleSelectedElementsChange: {
+        value: function() {
+            this._dispatchPropertiesChange();
+        }
+    },
+
+    handleSelectedObjectsChange: {
         value: function() {
             this._dispatchPropertiesChange();
         }

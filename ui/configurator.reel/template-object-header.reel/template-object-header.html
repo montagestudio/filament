@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="template-object-header.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "TemplateObjectHeader"},
+                "_referenceProxyElement": {"#": "referenceProxy"}
+            }
+        },
+
+        "icon": {
+            "prototype": "matte/ui/image.reel",
+            "properties": {
+                "element": {"#": "icon"}
+            },
+            "bindings": {
+                "src": {"<-": "@owner.templateObject.editingDocument.editor.projectController.iconUrlForModuleId(@owner.templateObject.moduleId, @owner.templateObject.exportName)"}
+            }
+        },
+
+        "templateObjectExportId": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "templateObjectExportId"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.exportId"}
+            }
+        },
+
+        "editCommentButton": {
+            "prototype": "matte/ui/toggle-button.reel",
+            "properties": {
+                "element": {"#": "editCommentButton"},
+                "title": "Comment"
+            },
+            "bindings": {
+                "classList.has('TemplateObjectHeader--active')": {"<-": "@owner.isEditingComment"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "commentCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "commentCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "(@owner.templateObject.editorMetadata.get('comment') || @owner.isEditingComment)"}
+            }
+        },
+
+        "commentField": {
+            "prototype": "matte/ui/textarea.reel",
+            "properties": {
+                "element": {"#": "commentField"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.templateObject.editorMetadata.get('comment')"},
+                "classList.has('TemplateObjectHeader-comment--disabled')": {"<-": "!@owner.isEditingComment"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <header data-montage-id="TemplateObjectHeader" class="TemplateObjectHeader">
+
+        <section class="TemplateObjectHeader-bar">
+            <div data-montage-id="referenceProxy" class="TemplateObjectHeader-referenceProxy" draggable="true">
+                <img data-montage-id="icon" class="TemplateObjectHeader-icon" src="" draggable="false" alt="">
+                <div class="TemplateObjectHeader-flex">
+                    <h3 class="TemplateObjectHeader-title"><div data-param="title"></div></h3>
+                    <label data-montage-id="templateObjectExportId" class="TemplateObjectHeader-exportId"></label>
+                </div>
+            </div>
+            <div class="TemplateObjectHeader-buttonGroup">
+                <button data-montage-id="editCommentButton" class="TemplateObjectHeader-button TemplateObjectHeader-button--comment"></button>
+                <section data-param="toolbar"></section>
+            </div>
+        </section>
+
+        <div data-montage-id="commentCondition">
+            <textarea data-montage-id="commentField" class="TemplateObjectHeader-comment" placeholder="Add a comment.."></textarea>
+        </div>
+
+    </header>
+</body>
+</html>

@@ -14,39 +14,95 @@
                     "element": {
                         "#": "configurator"
                     }
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "propertyExplorer": {
+                "prototype": "./property-explorer.reel",
+                "properties": {
+                    "element": {"#": "propertyExplorer"}
+                },
+                "bindings": {
+                    "templateObject": {"<-": "@owner.templateObject"}
                 }
             },
 
-            "inspectorCondition": {
-                "prototype": "montage/ui/condition.reel",
+            "bindingExplorer": {
+                "prototype": "./binding-explorer.reel",
                 "properties": {
-                    "element": {"#": "inspector-condition"},
-                    "removalStrategy": "hide"
+                    "element": {"#": "bindingExplorer"}
                 },
                 "bindings": {
-                    "condition": {"<-": "@owner.editingDocument.selectedObjects.0"}
+                    "templateObject": {"<-": "@owner.templateObject"}
                 }
             },
 
-            "inspector": {
-                "prototype": "palette/ui/inspector/inspector.reel",
+            "listenerExplorer": {
+                "prototype": "./listener-explorer.reel",
                 "properties": {
-                    "element": {"#": "inspector"}
+                    "element": {"#": "listenerExplorer"}
                 },
                 "bindings": {
-                    "object": {"<-": "@owner.editingDocument.selectedObjects.0"},
-                    "inspectorController": {"<-": "@owner.inspectorControllers.0"},
-                    "editingDocument": {"<-": "@owner.editingDocument"}
+                    "templateObject": {"<-": "@owner.templateObject"}
                 }
+            },
+
+            "header": {
+                "prototype": "./template-object-header.reel",
+                "properties": {
+                    "element": {"#": "header"}
+                },
+                "bindings": {
+                    "templateObject": {"<-": "@owner.templateObject"}
+                }
+            },
+
+            "objectLabel": {
+                "prototype": "ui/text-editor-field.reel",
+                "properties": {
+                    "element": {"#": "objectLabel"},
+                    "shouldSaveOnBlur": true
+                },
+                "bindings": {
+                    "value": {"<-": "@owner.templateObject.label"}
+                },
+                "listeners": [
+                    {"type": "action", "listener": {"@": "owner"}}
+                ]
             }
+
+
         }
     </script>
 
 </head>
 <body>
-    <aside id="configurator" data-montage-id="configurator" class="Panel Configurator">
-        <div data-montage-id="inspector-condition" class="Configurator-inspectorCondition">
-            <div data-montage-id="inspector"></div>
+    <aside id="configurator" data-montage-id="configurator" class="Configurator">
+        <header data-montage-id="header" class="Bar">
+            <span data-arg="title" data-montage-id="objectLabel"></span>
+            <div data-arg="toolbar"></div>
+        </header>
+        <div class="Configurator-fiftyFifty">
+            <div class="Configurator-firstHalf">
+                <section class="TemplateObjectCell-section">
+                    <div data-montage-id="propertyExplorer"></div>
+                </section>
+
+                <section class="TemplateObjectCell-section">
+                    <div data-montage-id="bindingExplorer"></div>
+                </section>
+            </div>
+            <div class="Configurator-secondHalf">
+                <section class="TemplateObjectCell-section" >
+                    <div data-montage-id="listenerExplorer"></div>
+                </section>
+            </div>
         </div>
     </aside>
 </body>
