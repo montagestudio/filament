@@ -121,3 +121,7 @@
     -moz-transform: translate3d(0,0,0);
     -ms-transform: translate3d(0,0,0);
 }
+
+.Main-splitter.Splitter > .Splitter-resizer-space {
+    background-color: hsl(0, 0%, 15%);
+}
