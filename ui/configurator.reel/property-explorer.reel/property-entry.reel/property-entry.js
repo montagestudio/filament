@@ -104,7 +104,11 @@ exports.PropertyEntry = Component.specialize(/** @lends module:"./property-entry
 
             component = this._typeToValueEditorComponent[componentType];
             if (component) {
+                // Cancel previsouly set binding before re-using component
                 component.cancelBinding("value");
+                if (component.getBinding("editingDocument")) {
+                    component.cancelBinding("editingDocument");
+                }
             } else {
                 if (componentType === "object") {
                     component = new ObjectValue();
@@ -138,6 +142,10 @@ exports.PropertyEntry = Component.specialize(/** @lends module:"./property-entry
             if (isBinding) {
                 component.defineBinding("value", {
                     "<-": "property.value.sourcePath",
+                    source: this
+                });
+                component.defineBinding("editingDocument", {
+                    "<-": "property.templateObject._editingDocument",
                     source: this
                 });
             } else {

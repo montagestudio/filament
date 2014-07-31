@@ -9,11 +9,40 @@
             "properties": {
                 "element": {"#": "owner"}
             }
+        },
+
+        "autocomplete": {
+            "prototype": "ui/widgets/autocomplete/autocomplete.reel",
+            "properties": {
+                "element": {"#": "autocomplete"},
+                "delegate": {"@": "owner"},
+                "offset": {
+                    "left": -10,
+                    "top": 0
+                },
+                "delay": 100,
+                "minLength": 0,
+                "separator": {
+                    "value" : " ",
+                    "distinct" : false
+                }
+            },
+            "bindings": {
+                "value": {"<-": "@owner.value"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>
 </head>
 <body>
-    <input type="text" data-montage-id="owner" class="BindingValue">
+    <div data-montage-id="owner" class="BindingValue">
+        <input data-montage-id="autocomplete" class="BindingValue autocomplete" type="text"></input>
+    </div>
 </body>
 </html>
