@@ -15,7 +15,8 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     Url = require("core/url"),
     ProjectDocument = require("core/project-document").ProjectDocument,
     DocumentDataSource = require("core/document-data-source").DocumentDataSource,
-    sandboxMontageApp = require("palette/core/sandbox-montage-app");
+    sandboxMontageApp = require("palette/core/sandbox-montage-app"),
+    FileSyncService = require("core/file-sync").FileSyncService;
 
 exports.ProjectController = ProjectController = DocumentController.specialize({
 
@@ -158,6 +159,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     // A map of documents that are being closed and a promise for them to be closed
     // When the document itself is closed, it is removed from this map
     _documentClosePromiseMap: {
+        value: null
+    },
+
+    _fileSyncService: {
         value: null
     },
 
@@ -552,10 +557,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 recentUrlIndex;
 
             // Document is the current document and is being edited by the same editor
-            if (
-                lastDocument && fileUrl === lastDocument.url &&
-                !editorType && lastDocument.editor.constructor === editorType
-                ) {
+            if (    lastDocument &&
+                    fileUrl === lastDocument.url &&
+                    !editorType &&
+                    lastDocument.editor.constructor === editorType ) {
                 return Promise.resolve(lastDocument);
             }
 
@@ -565,13 +570,15 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             if (alreadyOpenedDoc) {
                 if (editorType && alreadyOpenedDoc.editor.constructor !== editorType) {
                     // Close the document before opening it in a different editor
-                    return this.closeDocument(alreadyOpenedDoc).then(function (closeAccepted) {
-                        if (closeAccepted) {
-                            return self.openUrlForEditing(fileUrl, editorType);
-                        } else {
-                            return Promise.resolve(lastDocument);
-                        }
-                    });
+                    return this.closeDocument(alreadyOpenedDoc)
+                        .then(function (closeAccepted) {
+                            if (closeAccepted) {
+                                self.stopSyncingFile();
+                                return self.openUrlForEditing(fileUrl, editorType);
+                            } else {
+                                return Promise.resolve(lastDocument);
+                            }
+                        });
                 } else {
                     editorType = alreadyOpenedDoc.constructor.editorType;
                 }
@@ -612,6 +619,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         isCurrentDocument: doc === self.currentDocument,
                         alreadyOpened: !!alreadyOpenedDoc
                     });
+                    self.syncFile();
                     return doc;
                 }, function (error) {
 
@@ -731,6 +739,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                         if (wasCurrentDocument) {
                             nextDocument = self._nextDocument(editingDocument);
+                            self.stopSyncingFile();
                         }
 
                         self.dispatchEventNamed("willCloseDocument", true, false, {
@@ -1202,7 +1211,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             }
         }
     },
-
 
     iconUrlForModuleId: {
         value: function (moduleId) {
@@ -1800,7 +1808,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             var self = this;
 
             // Make sure this package is in the dependencies
-            var packageDependeny = this.dependencies.filter(function(e){
+            var packageDependeny = this.dependencies.filter(function (e) {
                 return e.dependency === self.packageDescription.name;
             });
             if (packageDependeny && !packageDependeny.length) {
@@ -1814,6 +1822,26 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             return this.findLibraryItems(this.dependencies).then(function (dependencyLibraryEntries) {
                 self.libraryGroups = dependencyLibraryEntries;
             });
+        }
+    },
+
+    syncFile: {
+        value: function() {
+            var self = this;
+            this.stopSyncingFile()
+                .then(function() {
+                    self._fileSyncService = new FileSyncService(self.currentDocument);
+                    self._fileSyncService.start(1000);
+                })
+        }
+    },
+
+    stopSyncingFile: {
+        value: function() {
+            if (this._fileSyncService) {
+                return this._fileSyncService.stop();
+            }
+            return Promise.resolve();
         }
     }
 
