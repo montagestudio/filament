@@ -1,6 +1,5 @@
 var Montage = require("montage/core/core").Montage,
-    Promise = require("montage/core/promise").Promise,
-    md5 = require("md5-jkmyers");
+    Promise = require("montage/core/promise").Promise;
 
 exports.FileSyncService = Montage.specialize({
     intervalId: {
