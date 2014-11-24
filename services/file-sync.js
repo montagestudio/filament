@@ -20,15 +20,17 @@ exports.FileSyncService = Montage.specialize({
         }
     },
 
-    _getDisplayedDocument: function () {
-        var lines = [];
-        for (var i = 0; i < this.document.codeMirrorDocument.children.length; i++) {
-            var part = this.document.codeMirrorDocument.children[i];
-            for (var j = 0; j < part.lines.length; j++) {
-                lines.push(part.lines[j].text);
+    _getDisplayedDocument: {
+        value: function () {
+            var lines = [];
+            for (var i = 0; i < this.document.codeMirrorDocument.children.length; i++) {
+                var part = this.document.codeMirrorDocument.children[i];
+                for (var j = 0; j < part.lines.length; j++) {
+                    lines.push(part.lines[j].text);
+                }
             }
+            return lines.join('\n');
         }
-        return lines.join('\n');
     },
 
     _documentHasChanged: {
@@ -41,7 +43,7 @@ exports.FileSyncService = Montage.specialize({
     _run: {
         value: function () {
             var self = this;
-            this._documentHasChanged().then(function(hasChanged) {
+            this._documentHasChanged().then(function (hasChanged) {
                 if (hasChanged) {
                     self.document.isDirty = true;
                 }

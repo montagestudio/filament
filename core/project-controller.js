@@ -16,7 +16,7 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     ProjectDocument = require("core/project-document").ProjectDocument,
     DocumentDataSource = require("core/document-data-source").DocumentDataSource,
     sandboxMontageApp = require("palette/core/sandbox-montage-app"),
-    FileSyncService = require("core/file-sync").FileSyncService;
+    FileSyncService = require("services/file-sync").FileSyncService;
 
 exports.ProjectController = ProjectController = DocumentController.specialize({
 
