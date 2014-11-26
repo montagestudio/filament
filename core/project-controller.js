@@ -27,6 +27,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._lastFileChangeForDocumentMap = new WeakMap();
             this._filesMap = new Map();
             this._recentDocumentUrls = [];
+            this._fileSyncService = new FileSyncService();
         }
     },
 
@@ -573,7 +574,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     return this.closeDocument(alreadyOpenedDoc)
                         .then(function (closeAccepted) {
                             if (closeAccepted) {
-                                self.stopSyncingFile();
                                 return self.openUrlForEditing(fileUrl, editorType);
                             } else {
                                 return Promise.resolve(lastDocument);
@@ -619,7 +619,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         isCurrentDocument: doc === self.currentDocument,
                         alreadyOpened: !!alreadyOpenedDoc
                     });
-                    self.syncFile();
+                    doc.codeMirrorDocument.on("change", function() {
+                        self.handleDocumentChange();
+                    });
                     return doc;
                 }, function (error) {
 
@@ -739,7 +741,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                         if (wasCurrentDocument) {
                             nextDocument = self._nextDocument(editingDocument);
-                            self.stopSyncingFile();
                         }
 
                         self.dispatchEventNamed("willCloseDocument", true, false, {
@@ -1825,24 +1826,21 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
-    syncFile: {
+    _ensureFileIsInSync: {
         value: function() {
             var self = this;
-            this.stopSyncingFile()
-                .then(function() {
-                    self._fileSyncService = new FileSyncService(self.currentDocument);
-                    self._fileSyncService.start(1000);
-                })
+            this._fileSyncService.isInSync(this.currentDocument).
+                then(function(inSync) {
+                    if (!inSync) {
+                        self.currentDocument.isDirty = true;
+                    }
+                });
         }
     },
 
-    stopSyncingFile: {
+    handleDocumentChange: {
         value: function() {
-            if (this._fileSyncService) {
-                return this._fileSyncService.stop();
-            }
-            return Promise.resolve();
+            this._ensureFileIsInSync();
         }
     }
-
 });
