@@ -1428,8 +1428,13 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     if (!destination) {
                         return Promise.resolve(null);
                     }
-
-                    return self.projectDocument.makeTree(destination);
+                    if (destination.substr(destination.length-1) !== '/') {
+                        destination += '/';
+                    }
+                    return self.projectDocument.makeTree(destination)
+                        .then(function() {
+                            self.handleFileSystemCreate(destination, {mode: FileDescriptor.S_IFDIR});
+                        });
                 });
         }
     },
@@ -1452,6 +1457,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     }
 
                     return self.projectDocument.touch(destination).then(function () {
+                        self.handleFileSystemCreate(destination, {});
                         self.openUrlForEditing(destination).done();
                     });
                 });
@@ -1467,7 +1473,11 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     removeTree: {
         value: function (path) {
-            return this.projectDocument.removeTree(path);
+            var self = this;
+            return this.projectDocument.removeTree(path)
+                .then(function() {
+                    self.handleFileSystemDelete(Url.resolve(self.packageUrl, path), null, {});
+                });
         }
     },
 
@@ -1552,11 +1562,18 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     handleFileSystemCreate: {
         value: function (fileUrl, currentStat, previousStat) {
             var parentUrl = fileUrl.substring(0, fileUrl.replace(/\/$/, "").lastIndexOf("/")),
-                parent = this.fileInTreeAtUrl(parentUrl),
+                parent = this.fileInTreeAtUrl(parentUrl) || this.files,
                 newFile;
+
+            function removeExistingChildWithSameName() {
+                if (parent.children.filter(function (x) { return newFile.name === x.name; }).length > 0) {
+                    parent.children = parent.children.filter(function (x) { return newFile.name !== x.name; });
+                }
+            }
 
             if (parent && parent.expanded) {
                 newFile = FileDescriptor.create().initWithUrlAndStat(fileUrl, currentStat);
+                removeExistingChildWithSameName();
                 //TODO account for some sort of sorting at this point?
                 parent.children.add(newFile);
                 this._storeFile(newFile);
