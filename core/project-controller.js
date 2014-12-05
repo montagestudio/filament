@@ -1559,15 +1559,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
-    _removeExistingChildWithSameName: {
-        value: function(children, name) {
-            if (children.filter(function (x) { return name === x.name; }).length > 0) {
-                return children.filter(function (x) { return name !== x.name; });
-            }
-            return children;
-        }
-    },
-
     handleFileSystemCreate: {
         value: function (fileUrl, currentStat, previousStat) {
             var parentUrl = fileUrl.substring(0, fileUrl.replace(/\/$/, "").lastIndexOf("/")),
@@ -1576,9 +1567,12 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             if (parent && parent.expanded) {
                 newFile = FileDescriptor.create().initWithUrlAndStat(fileUrl, currentStat);
-                this.parent.children = this._removeExistingChildWithSameName(this.parent.children, newFile.name);
-                //TODO account for some sort of sorting at this point?
-                parent.children.add(newFile);
+                var existingFileIndex = parent.children.indexOf(newFile);
+                if (existingFileIndex !== -1) {
+                    parent.children.swap(existingFileIndex, 1, newFile);
+                } else {
+                    parent.children.add(newFile);
+                }
                 this._storeFile(newFile);
             }
 
