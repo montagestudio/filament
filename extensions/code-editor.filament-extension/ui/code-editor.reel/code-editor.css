@@ -93,3 +93,17 @@
 .CodeEditor .cm-s-solarized .cm-module {
     color: #268bd2;
 }
+
+.syntax-error {
+    border-bottom: dotted #ff0000 1px;
+}
+
+.error-line-marker {
+    color: #ff0000;
+    font-weight: bold;
+    font-size: large;
+}
+
+.CodeMirror-markers {
+    padding-left: 1em;
+}

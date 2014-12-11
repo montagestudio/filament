@@ -15,7 +15,8 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     Url = require("core/url"),
     ProjectDocument = require("core/project-document").ProjectDocument,
     DocumentDataSource = require("core/document-data-source").DocumentDataSource,
-    sandboxMontageApp = require("palette/core/sandbox-montage-app");
+    sandboxMontageApp = require("palette/core/sandbox-montage-app"),
+    JsValidatorService = require("../services/js-validator").JsValidatorService;
 
 var DIRECTORY_STAT = {mode: FileDescriptor.S_IFDIR};
 var EMPTY_OBJECT = {};
@@ -29,6 +30,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._lastFileChangeForDocumentMap = new WeakMap();
             this._filesMap = new Map();
             this._recentDocumentUrls = [];
+            this._jsValidatorService = new JsValidatorService();
         }
     },
 
@@ -69,6 +71,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     _filesWatchInstalled: {
         value: false
+    },
+
+    _jsValidatorService: {
+        value: null
     },
 
     /**
@@ -614,6 +620,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         document: doc,
                         isCurrentDocument: doc === self.currentDocument,
                         alreadyOpened: !!alreadyOpenedDoc
+                    });
+                    self._validateCode();
+                    doc.codeMirrorDocument.on("change", function() {
+                        self.handleDocumentChange();
                     });
                     return doc;
                 }, function (error) {
@@ -1832,6 +1842,26 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 self.libraryGroups = dependencyLibraryEntries;
             });
         }
-    }
+    },
 
+    _validateCode: {
+        value: function() {
+            if (this.currentDocument && this.currentDocument.mimeType) {
+                var self = this;
+                switch (this.currentDocument.mimeType) {
+                    case "application/javascript":
+                        this._jsValidatorService.validate(this.currentDocument)
+                            .then(function(error) {
+                                self.currentEditor.markError(error);
+                            });
+                }
+            }
+        }
+    },
+
+    handleDocumentChange: {
+        value: function() {
+            this._validateCode();
+        }
+    }
 });

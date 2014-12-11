@@ -57,6 +57,10 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
         value: null
     },
 
+    _errorMarker: {
+        value: null
+    },
+
     _mode: {
         value: null
     },
@@ -148,7 +152,8 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
                 lineNumbers: this.lineNumbers,
                 readOnly: this.readOnly,
                 theme: this.theme,
-                value: ""
+                value: "",
+                gutters: ["CodeMirror-markers"]
             });
 
             codemirror.on("beforeChange", function(cm, changeObj) {
@@ -288,6 +293,97 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
         value: function() {
             if (this._codeMirror) {
                 this._codeMirror.changeGeneration();
+            }
+        }
+    },
+
+    _initializeErrorMarker: {
+        value: function () {
+            try {
+                this._errorMarker = document.createElement('span');
+                this._errorMarker.innerHTML = '&times;';
+                this._errorMarker.setAttribute('class', 'error-line-marker');
+            } catch (err) {
+                if (err.type !== 'not_defined' || err.message !== 'document is not defined') {
+                    throw err;
+                }
+            }
+        }
+    },
+
+    _getErrorMarker: {
+        value: function(message) {
+            if (!this._errorMarker) {
+                this._initializeErrorMarker();
+            }
+            this._errorMarker.setAttribute('title', message);
+            return this._errorMarker;
+        }
+    },
+
+    _clearMarks: {
+        value: function () {
+            if (this._codeMirror) {
+                this._codeMirror.getDoc().getAllMarks().forEach(function (mark) {
+                    mark.clear();
+                });
+                this._codeMirror.clearGutter('CodeMirror-markers');
+            }
+        }
+    },
+
+    _getTokenStart: {
+        value: function (lineNumber, column) {
+            return this._codeMirror.getTokenAt(this._getCodeMirrorPosition(lineNumber, column)).start;
+        }
+    },
+
+    _getTokenEnd: {
+        value: function (lineNumber, column) {
+            return this._codeMirror.getTokenAt(this._getCodeMirrorPosition(lineNumber, column)).end;
+        }
+    },
+
+    _getCodeMirrorPosition: {
+        value: function(line, column) {
+            return {
+                line: line,
+                ch: column
+            };
+        }
+    },
+
+    _showError: {
+        value: function (error) {
+            var codeMirrorDocument = this._codeMirror.getDoc();
+            var currentTokenStart = this._getTokenStart(error.line, error.column - 1);
+            var previousTokenStart = this._getTokenStart(error.line, currentTokenStart - 1);
+            var nextTokenEnd = this._getTokenEnd(error.line, error.column);
+            codeMirrorDocument.markText(
+                this._getCodeMirrorPosition(error.line, previousTokenStart),
+                this._getCodeMirrorPosition(error.line, nextTokenEnd),
+                {
+                    className: 'syntax-error',
+                    title: error.message
+                }
+            );
+            this._codeMirror.setGutterMarker(error.line, 'CodeMirror-markers', this._getErrorMarker('col. ' + error.column + ': ' + error.message));
+        }
+    },
+
+    markError: {
+        value: function(error) {
+            this._clearMarks();
+            if (error) {
+                if (this._codeMirror) {
+                    this._showError(error);
+                } else {
+                    var self = this;
+                    Promise.delay(50)
+                        .then(function() {
+                            self.markError(error);
+                        });
+                }
             }
         }
     }
