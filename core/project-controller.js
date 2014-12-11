@@ -620,7 +620,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         alreadyOpened: !!alreadyOpenedDoc
                     });
                     doc.codeMirrorDocument.on("change", function() {
-                        self.codemirrorDocumentDidChange();
+                        self.codeMirrorDocumentDidChange();
                     });
                     return doc;
                 }, function (error) {
@@ -1834,7 +1834,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
-    codemirrorDocumentDidChange: {
+    codeMirrorDocumentDidChange: {
         value: function() {
             this._ensureFileIsInSync();
         }
