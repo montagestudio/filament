@@ -1833,8 +1833,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             if (!this._fileSyncService.isInSync(this.currentDocument)) {
                 self.currentDocument.isDirty = true;
             }
-                then(function(inSync) {
-                });
         }
     },
 
