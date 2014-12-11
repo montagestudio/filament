@@ -1826,14 +1826,14 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
-    _ensureFileIsInSync: {
+    _ensureFileIsSynced: {
         value: function() {
             var self = this;
-            this._fileSyncService.isInSync(this.currentDocument).
+
+            if (!this._fileSyncService.isInSync(this.currentDocument)) {
+                self.currentDocument.isDirty = true;
+            }
                 then(function(inSync) {
-                    if (!inSync) {
-                        self.currentDocument.isDirty = true;
-                    }
                 });
         }
     },

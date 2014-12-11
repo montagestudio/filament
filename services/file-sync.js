@@ -9,7 +9,7 @@ exports.FileSyncService = Montage.specialize({
 
     isInSync: {
         value: function(_document) {
-            return Promise.resolve(_document.isDirty || _document.codeMirrorDocument.getValue() == _document.content);
+            return _document.isDirty || _document.codeMirrorDocument.getValue() === _document.content;
         }
     }
 });

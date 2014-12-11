@@ -2,7 +2,7 @@ var FileSyncService = require("../../services/file-sync").FileSyncService,
     Q = require("q");
 
 describe("core/file-sync-spec", function() {
-    it("should return false if displayed and model contents do not match", function(done) {
+    it("should return false if displayed and model contents do not match", function() {
         var document = {
             isDirty: false,
             content: 'FOO',
@@ -14,15 +14,10 @@ describe("core/file-sync-spec", function() {
         };
         var service = new FileSyncService();
 
-        service.isInSync(document)
-            .then(function(isInSync) {
-                expect(isInSync).toBeFalsy();
-                done();
-            });
-
+        expect(service.isInSync(document)).toBeFalsy();
     });
 
-    it("should return true if displayed and model contents match", function(done) {
+    it("should return true if displayed and model contents match", function() {
         var document = {
             isDirty: false,
             content: 'FOO',
@@ -34,15 +29,10 @@ describe("core/file-sync-spec", function() {
         };
         var service = new FileSyncService();
 
-        service.isInSync(document)
-            .then(function(isInSync) {
-                expect(isInSync).toBeTruthy();
-                done();
-            });
-
+        expect(service.isInSync(document)).toBeTruthy();
     });
 
-    it("should return true if document is already marked as dirty", function(done) {
+    it("should return true if document is already marked as dirty", function() {
         var document = {
             isDirty: true,
             content: 'FOO',
@@ -54,11 +44,6 @@ describe("core/file-sync-spec", function() {
         };
         var service = new FileSyncService();
 
-        service.isInSync(document)
-            .then(function(isInSync) {
-                expect(isInSync).toBeTruthy();
-                done();
-            });
-
+        expect(service.isInSync(document)).toBeTruthy();
     });
 });
