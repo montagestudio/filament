@@ -1828,10 +1828,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     _ensureFileIsSynced: {
         value: function() {
-            var self = this;
-
             if (!this._fileSyncService.isInSync(this.currentDocument)) {
-                self.currentDocument.isDirty = true;
+                this.currentDocument.isDirty = true;
             }
         }
     },
