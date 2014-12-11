@@ -17,6 +17,9 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     DocumentDataSource = require("core/document-data-source").DocumentDataSource,
     sandboxMontageApp = require("palette/core/sandbox-montage-app");
 
+var DIRECTORY_STAT = {mode: FileDescriptor.S_IFDIR};
+var EMPTY_OBJECT = {};
+
 exports.ProjectController = ProjectController = DocumentController.specialize({
 
     constructor: {
@@ -1428,8 +1431,13 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     if (!destination) {
                         return Promise.resolve(null);
                     }
-
-                    return self.projectDocument.makeTree(destination);
+                    if (destination.substr(destination.length-1) !== '/') {
+                        destination += '/';
+                    }
+                    return self.projectDocument.makeTree(destination)
+                        .then(function() {
+                            self.handleFileSystemCreate(destination, DIRECTORY_STAT);
+                        });
                 });
         }
     },
@@ -1452,6 +1460,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     }
 
                     return self.projectDocument.touch(destination).then(function () {
+                        self.handleFileSystemCreate(destination, EMPTY_OBJECT);
                         self.openUrlForEditing(destination).done();
                     });
                 });
@@ -1467,7 +1476,11 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     removeTree: {
         value: function (path) {
-            return this.projectDocument.removeTree(path);
+            var self = this;
+            return this.projectDocument.removeTree(path)
+                .then(function() {
+                    self.handleFileSystemDelete(Url.resolve(self.packageUrl, path), null, EMPTY_OBJECT);
+                });
         }
     },
 
@@ -1552,13 +1565,17 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     handleFileSystemCreate: {
         value: function (fileUrl, currentStat, previousStat) {
             var parentUrl = fileUrl.substring(0, fileUrl.replace(/\/$/, "").lastIndexOf("/")),
-                parent = this.fileInTreeAtUrl(parentUrl),
+                parent = this.fileInTreeAtUrl(parentUrl) || this.files,
                 newFile;
 
             if (parent && parent.expanded) {
                 newFile = FileDescriptor.create().initWithUrlAndStat(fileUrl, currentStat);
-                //TODO account for some sort of sorting at this point?
-                parent.children.add(newFile);
+                var existingFileIndex = parent.children.indexOf(newFile);
+                if (existingFileIndex !== -1) {
+                    parent.children.swap(existingFileIndex, 1, newFile);
+                } else {
+                    parent.children.add(newFile);
+                }
                 this._storeFile(newFile);
             }
 
@@ -1662,7 +1679,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             while (segmentIndex < segmentCount && root && root.children) {
                 pathSegment = hierarchy[segmentIndex];
-                childrenByName = root.children.reduce(collectChildrenByName, {});
+                childrenByName = root.children.reduce(collectChildrenByName, EMPTY_OBJECT);
                 root = childrenByName[pathSegment];
 
                 if (root) {
