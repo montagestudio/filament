@@ -17,6 +17,9 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     DocumentDataSource = require("core/document-data-source").DocumentDataSource,
     sandboxMontageApp = require("palette/core/sandbox-montage-app");
 
+var DIRECTORY_STAT = {mode: FileDescriptor.S_IFDIR};
+var EMPTY_OBJECT = {};
+
 exports.ProjectController = ProjectController = DocumentController.specialize({
 
     constructor: {
@@ -1433,7 +1436,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     }
                     return self.projectDocument.makeTree(destination)
                         .then(function() {
-                            self.handleFileSystemCreate(destination, {mode: FileDescriptor.S_IFDIR});
+                            self.handleFileSystemCreate(destination, DIRECTORY_STAT);
                         });
                 });
         }
@@ -1457,7 +1460,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     }
 
                     return self.projectDocument.touch(destination).then(function () {
-                        self.handleFileSystemCreate(destination, {});
+                        self.handleFileSystemCreate(destination, EMPTY_OBJECT);
                         self.openUrlForEditing(destination).done();
                     });
                 });
@@ -1476,7 +1479,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             var self = this;
             return this.projectDocument.removeTree(path)
                 .then(function() {
-                    self.handleFileSystemDelete(Url.resolve(self.packageUrl, path), null, {});
+                    self.handleFileSystemDelete(Url.resolve(self.packageUrl, path), null, EMPTY_OBJECT);
                 });
         }
     },
@@ -1676,7 +1679,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             while (segmentIndex < segmentCount && root && root.children) {
                 pathSegment = hierarchy[segmentIndex];
-                childrenByName = root.children.reduce(collectChildrenByName, {});
+                childrenByName = root.children.reduce(collectChildrenByName, EMPTY_OBJECT);
                 root = childrenByName[pathSegment];
 
                 if (root) {
