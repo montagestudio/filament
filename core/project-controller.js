@@ -15,7 +15,8 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     Url = require("core/url"),
     ProjectDocument = require("core/project-document").ProjectDocument,
     DocumentDataSource = require("core/document-data-source").DocumentDataSource,
-    sandboxMontageApp = require("palette/core/sandbox-montage-app");
+    sandboxMontageApp = require("palette/core/sandbox-montage-app"),
+    FileSyncService = require("services/file-sync").FileSyncService;
 
 var DIRECTORY_STAT = {mode: FileDescriptor.S_IFDIR};
 var EMPTY_OBJECT = {};
@@ -29,6 +30,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._lastFileChangeForDocumentMap = new WeakMap();
             this._filesMap = new Map();
             this._recentDocumentUrls = [];
+            this._fileSyncService = new FileSyncService();
         }
     },
 
@@ -161,6 +163,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     // A map of documents that are being closed and a promise for them to be closed
     // When the document itself is closed, it is removed from this map
     _documentClosePromiseMap: {
+        value: null
+    },
+
+    _fileSyncService: {
         value: null
     },
 
@@ -555,10 +561,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 recentUrlIndex;
 
             // Document is the current document and is being edited by the same editor
-            if (
-                lastDocument && fileUrl === lastDocument.url &&
-                !editorType && lastDocument.editor.constructor === editorType
-                ) {
+            if (    lastDocument &&
+                    fileUrl === lastDocument.url &&
+                    !editorType &&
+                    lastDocument.editor.constructor === editorType ) {
                 return Promise.resolve(lastDocument);
             }
 
@@ -568,13 +574,14 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             if (alreadyOpenedDoc) {
                 if (editorType && alreadyOpenedDoc.editor.constructor !== editorType) {
                     // Close the document before opening it in a different editor
-                    return this.closeDocument(alreadyOpenedDoc).then(function (closeAccepted) {
-                        if (closeAccepted) {
-                            return self.openUrlForEditing(fileUrl, editorType);
-                        } else {
-                            return Promise.resolve(lastDocument);
-                        }
-                    });
+                    return this.closeDocument(alreadyOpenedDoc)
+                        .then(function (closeAccepted) {
+                            if (closeAccepted) {
+                                return self.openUrlForEditing(fileUrl, editorType);
+                            } else {
+                                return Promise.resolve(lastDocument);
+                            }
+                        });
                 } else {
                     editorType = alreadyOpenedDoc.constructor.editorType;
                 }
@@ -614,6 +621,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         document: doc,
                         isCurrentDocument: doc === self.currentDocument,
                         alreadyOpened: !!alreadyOpenedDoc
+                    });
+                    doc.codeMirrorDocument.on("change", function() {
+                        self.codeMirrorDocumentDidChange();
                     });
                     return doc;
                 }, function (error) {
@@ -1205,7 +1215,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             }
         }
     },
-
 
     iconUrlForModuleId: {
         value: function (moduleId) {
@@ -1817,7 +1826,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             var self = this;
 
             // Make sure this package is in the dependencies
-            var packageDependeny = this.dependencies.filter(function(e){
+            var packageDependeny = this.dependencies.filter(function (e) {
                 return e.dependency === self.packageDescription.name;
             });
             if (packageDependeny && !packageDependeny.length) {
@@ -1832,6 +1841,19 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 self.libraryGroups = dependencyLibraryEntries;
             });
         }
-    }
+    },
 
+    _ensureFileIsSynced: {
+        value: function() {
+            if (!this._fileSyncService.isInSync(this.currentDocument)) {
+                this.currentDocument.isDirty = true;
+            }
+        }
+    },
+
+    codeMirrorDocumentDidChange: {
+        value: function() {
+            this._ensureFileIsSynced();
+        }
+    }
 });
