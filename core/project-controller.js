@@ -1836,7 +1836,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     codeMirrorDocumentDidChange: {
         value: function() {
-            this._ensureFileIsInSync();
+            this._ensureFileIsSynced();
         }
     }
 });
