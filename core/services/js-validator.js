@@ -18,13 +18,12 @@ exports.JsValidatorService = Montage.specialize({
                 this._running = true;
                 try {
                     esprima.parse(_document.codeMirrorDocument.getValue());
-                    return Promise.resolve();
                 } catch (err) {
-                    return Promise.resolve({
+                    return {
                         line: err.lineNumber - 1,
                         column: err.column,
                         message: err.description
-                    });
+                    };
                 } finally {
                     this._running = false;
                 }

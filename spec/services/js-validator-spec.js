@@ -1,4 +1,4 @@
-var JsValidatorService = require("../../services/js-validator").JsValidatorService,
+var JsValidatorService = require("../../core/services/js-validator").JsValidatorService,
     Q = require("q");
 
 describe("services/js-validator", function() {
@@ -9,7 +9,7 @@ describe("services/js-validator", function() {
         };
     });
 
-    it("should mark correct code as valid", function(done) {
+    it("should mark correct code as valid", function() {
         var document = {
             codeMirrorDocument: {
                 getValue: function() {
@@ -25,15 +25,12 @@ describe("services/js-validator", function() {
         service._processValidDocument = function() { this._document.isValid = true; };
         service._processInvalidDocument = function() { this._document.isValid = false; };
 
-        service.validate(document)
-            .then(function(error) {
-                expect(error).toBeUndefined();
-                done();
-            })
-            .fail(done);
+        var error = service.validate(document);
+
+        expect(error).toBeUndefined();
     });
 
-    it("should find errors in invalid code", function(done) {
+    it("should find errors in invalid code", function() {
         var document = {
             codeMirrorDocument: {
                 getValue: function() {
@@ -49,11 +46,8 @@ describe("services/js-validator", function() {
         service._processValidDocument = function() { this._document.isValid = true; };
         service._processInvalidDocument = function() { this._document.isValid = false; };
 
-        service.validate(document)
-            .then(function(error) {
-                expect(error).not.toBeUndefined();
-                done();
-            })
-            .fail(done);
+        var error = service.validate(document);
+
+        expect(error).not.toBeUndefined();
     });
 });

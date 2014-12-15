@@ -16,7 +16,7 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     ProjectDocument = require("core/project-document").ProjectDocument,
     DocumentDataSource = require("core/document-data-source").DocumentDataSource,
     sandboxMontageApp = require("palette/core/sandbox-montage-app"),
-    JsValidatorService = require("../services/js-validator").JsValidatorService;
+    JsValidatorService = require("services/js-validator").JsValidatorService;
 
 exports.ProjectController = ProjectController = DocumentController.specialize({
 
@@ -620,7 +620,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     });
                     self._validateCode();
                     doc.codeMirrorDocument.on("change", function() {
-                        self.handleDocumentChange();
+                        self.codeMirrorDocumentDidChange();
                     });
                     return doc;
                 }, function (error) {
@@ -1810,7 +1810,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             var self = this;
 
             // Make sure this package is in the dependencies
-            var packageDependeny = this.dependencies.filter(function(e){
+            var packageDependeny = this.dependencies.filter(function(e) {
                 return e.dependency === self.packageDescription.name;
             });
             if (packageDependeny && !packageDependeny.length) {
@@ -1830,19 +1830,17 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
     _validateCode: {
         value: function() {
             if (this.currentDocument && this.currentDocument.mimeType) {
-                var self = this;
+                var error;
                 switch (this.currentDocument.mimeType) {
                     case "application/javascript":
-                        this._jsValidatorService.validate(this.currentDocument)
-                            .then(function(error) {
-                                self.currentEditor.markError(error);
-                            });
+                        error = this._jsValidatorService.validate(this.currentDocument);
                 }
+                this.currentEditor.markError(error);
             }
         }
     },
 
-    handleDocumentChange: {
+    codeMirrorDocumentDidChange: {
         value: function() {
             this._validateCode();
         }
