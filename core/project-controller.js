@@ -1440,9 +1440,8 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     if (!destination) {
                         return Promise.resolve(null);
                     }
-                    if (destination.substr(destination.length-1) !== '/') {
-                        destination += '/';
-                    }
+                    destination += '/';
+                    destination = self._cleanupDestination(destination);
                     return self.projectDocument.makeTree(destination)
                         .then(function() {
                             self.handleFileSystemCreate(destination, DIRECTORY_STAT);
@@ -1468,6 +1467,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         return Promise.resolve(null);
                     }
 
+                    destination = self._cleanupDestination(destination);
                     return self.projectDocument.touch(destination).then(function () {
                         self.handleFileSystemCreate(destination, EMPTY_OBJECT);
                         self.openUrlForEditing(destination).done();
@@ -1476,6 +1476,19 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+
+    _cleanupDestination: {
+        value: function(destination) {
+            var oldValue = '//',
+                lastIndex = destination.lastIndexOf(oldValue),
+                firstIndex = destination.indexOf(oldValue);
+            while (lastIndex > firstIndex) {
+                destination = destination.slice(0,lastIndex) + destination.slice(lastIndex+1);
+                lastIndex = destination.lastIndexOf(oldValue);
+            }
+            return destination;
+        }
+    },
 
     canRemoveTree: {
         get: function () {
@@ -1575,16 +1588,21 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: function (fileUrl, currentStat, previousStat) {
             var parentUrl = fileUrl.substring(0, fileUrl.replace(/\/$/, "").lastIndexOf("/")),
                 parent = this.fileInTreeAtUrl(parentUrl) || this.files,
-                newFile;
+                newFile, oldFile;
 
             if (parent && parent.expanded) {
                 newFile = FileDescriptor.create().initWithUrlAndStat(fileUrl, currentStat);
-                var existingFileIndex = parent.children.indexOf(newFile);
-                if (existingFileIndex !== -1) {
-                    parent.children.swap(existingFileIndex, 1, newFile);
-                } else {
-                    parent.children.add(newFile);
+                if (parent.children.has(newFile)) {
+                    oldFile = this.fileInTreeAtUrl(fileUrl);
+                    parent.children.delete(oldFile);
+                    this.dispatchEventNamed("fileSystemChange", true, false, {
+                        change: "delete",
+                        fileUrl: fileUrl,
+                        currentStat: currentStat,
+                        previousStat: previousStat
+                    });
                 }
+                parent.children.add(newFile);
                 this._storeFile(newFile);
             }
 
@@ -1688,7 +1706,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             while (segmentIndex < segmentCount && root && root.children) {
                 pathSegment = hierarchy[segmentIndex];
-                childrenByName = root.children.reduce(collectChildrenByName, EMPTY_OBJECT);
+                childrenByName = root.children.reduce(collectChildrenByName, {});
                 root = childrenByName[pathSegment];
 
                 if (root) {

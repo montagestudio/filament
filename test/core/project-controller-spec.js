@@ -50,4 +50,14 @@ describe("core/project-controller-spec", function () {
 
     });
 
+    describe("path cleanup", function() {
+        it("should remove useless // in path", function() {
+            var dirtyPath = "http://foo/bar//baz";
+
+            var cleanPath = projectController._cleanupDestination(dirtyPath);
+
+            expect(cleanPath).toEqual("http://foo/bar/baz");
+        });
+    });
+
 });

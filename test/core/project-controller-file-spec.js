@@ -82,6 +82,12 @@ describe("core/project-controller-file-spec", function () {
 
                     destroy: {
                         value: Function.noop
+                    },
+
+                    codeMirrorDocument: {
+                        value: {
+                            on: Function.noop
+                        }
                     }
                 }, {
                     editorType: {
@@ -157,6 +163,12 @@ describe("core/project-controller-file-spec", function () {
 
                         destroy: {
                             value: Function.noop
+                        },
+
+                        codeMirrorDocument: {
+                            value: {
+                                on: Function.noop
+                            }
                         }
                     }, {
                         editorType: {
@@ -184,6 +196,12 @@ describe("core/project-controller-file-spec", function () {
 
                         destroy: {
                             value: Function.noop
+                        },
+
+                        codeMirrorDocument: {
+                            value: {
+                                on: Function.noop
+                            }
                         }
                     }, {
                         editorType: {
