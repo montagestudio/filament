@@ -622,9 +622,11 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         isCurrentDocument: doc === self.currentDocument,
                         alreadyOpened: !!alreadyOpenedDoc
                     });
-                    doc.codeMirrorDocument.on("change", function() {
-                        self.codeMirrorDocumentDidChange();
-                    });
+                    if (doc.codeMirrorDocument) {
+                        doc.codeMirrorDocument.on("change", function() {
+                            self.codeMirrorDocumentDidChange();
+                        });
+                    }
                     return doc;
                 }, function (error) {
 
