@@ -16,7 +16,8 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     ProjectDocument = require("core/project-document").ProjectDocument,
     DocumentDataSource = require("core/document-data-source").DocumentDataSource,
     sandboxMontageApp = require("palette/core/sandbox-montage-app"),
-    FileSyncService = require("services/file-sync").FileSyncService;
+    FileSyncService = require("services/file-sync").FileSyncService,
+    semver = require('semver');
 
 var DIRECTORY_STAT = {mode: FileDescriptor.S_IFDIR};
 var EMPTY_OBJECT = {};
@@ -952,6 +953,36 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         }
     },
 
+    _isLibraryItemValidForDependencyVersion: {
+        value: function (libraryItem, dependencyVersion) {
+            var isValid;
+            var libraryItemRange = this._buildVersionsRangeString(libraryItem);
+            var dependencyRange = semver.validRange(dependencyVersion);
+            if (dependencyRange === null) {
+                isValid = true;
+            } else if (semver.valid(dependencyVersion) !== null) {
+                isValid = semver.satisfies(dependencyVersion, libraryItemRange);
+            } else {
+                var dependencyConstraints = dependencyRange.split(' ');
+                var matchedConstraints = dependencyConstraints.filter(function (constraint) {
+                    var equalPosition = constraint.indexOf('=');
+                    if (equalPosition !== -1) {
+                        return semver.satisfies(constraint.substr(equalPosition + 1), libraryItemRange);
+                    } else {
+                        if (constraint.charAt(0) === '<') {
+                            return libraryItem.minVersion ? semver.gt(constraint.substr(1), libraryItem.minVersion) : true;
+                        } else if (constraint.charAt(0) === '>') {
+                            return libraryItem.maxVersion ? semver.lt(constraint.substr(1), libraryItem.maxVersion) : true;
+                        }
+                        return true;
+                    }
+                });
+                isValid = matchedConstraints.length == dependencyConstraints.length;
+            }
+            return isValid;
+        }
+    },
+
     //TODO cache this promise, clear cache when we detect a change?
     findLibraryItems: {
         enumerable: false,
@@ -1001,10 +1032,29 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
                 self._applicationDelegate.updateStatusMessage("Loading library…");
                 return promisedLibraryItems.then(function (libraryItems) {
-                    dependencyLibraryEntry.libraryItems = libraryItems;
+                    dependencyLibraryEntry.libraryItems = libraryItems.filter(function(libraryItem) {
+                        var dependencyVersion = dependencyInfo.version;
+                        return self._isLibraryItemValidForDependencyVersion(libraryItem, dependencyVersion);
+                    });
                     return dependencyLibraryEntry;
                 });
             }));
+        }
+    },
+
+    _buildVersionsRangeString: {
+        value: function(libraryItem) {
+            var range;
+            var minVersion = libraryItem.minVersion,
+                maxVersion = libraryItem.maxVersion;
+            if (minVersion || maxVersion) {
+                var lowerBound = minVersion ? '>=' + minVersion : '';
+                var upperBound = maxVersion ? '<' + maxVersion : '';
+                range = (lowerBound + ' ' + upperBound).trim();
+            } else {
+                range = '*';
+            }
+            return range;
         }
     },
 
@@ -1844,10 +1894,10 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             var self = this;
 
             // Make sure this package is in the dependencies
-            var packageDependeny = this.dependencies.filter(function (e) {
+            var packageDependency = this.dependencies.filter(function (e) {
                 return e.dependency === self.packageDescription.name;
             });
-            if (packageDependeny && !packageDependeny.length) {
+            if (packageDependency && !packageDependency.length) {
                 this.dependencies.unshift({
                     dependency: this.packageDescription.name,
                     url: this.packageUrl

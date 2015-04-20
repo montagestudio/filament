@@ -53,6 +53,14 @@ exports.LibraryItem = Montage.specialize( {
         value: null
     },
 
+    minVersion: {
+        value: null
+    },
+
+    maxVersion: {
+        value: null
+    },
+
     /**
      * The collection of moduleIds the backing template includes
      */

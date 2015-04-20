@@ -84,6 +84,8 @@ exports.Extension = Target.specialize( {
                             libraryItem.iconUrl = url + json.iconUrl;
                             libraryItem.require = extensionRequire;
                             libraryItem.templateUrl = templateUrl;
+                            libraryItem.minVersion = json.minVersion;
+                            libraryItem.maxVersion = json.maxVersion;
 
                             return libraryItem;
                         });
@@ -108,13 +110,13 @@ exports.Extension = Target.specialize( {
             if (libraryItems) {
                 promisedLibraryItems = Promise.resolve(libraryItems);
             } else {
-                promisedLibraryItems = this._loadLibraryItemsForPackageName(serviceProvider, packageName, serviceProvider);
+                promisedLibraryItems = this._loadLibraryItemsForPackageName(serviceProvider, packageName);
             }
 
             return promisedLibraryItems.then(function (libraryItems) {
-                libraryItems.forEach(function (libraryItem) {
-                    projectController.addLibraryItemToPackage(libraryItem, packageName);
-                });
+                for (var i = 0; i < libraryItems.length; i++) {
+                    projectController.addLibraryItemToPackage(libraryItems[i], packageName);
+                }
             }).thenResolve(this);
         }
     },
@@ -123,9 +125,9 @@ exports.Extension = Target.specialize( {
         value: function (projectController, packageName) {
 
             if (this._packageNameLibraryItemMap) {
-                this._packageNameLibraryItemMap.forEach(function (libraryItem) {
-                    projectController.removeLibraryItemFromPackage(libraryItem, packageName);
-                });
+                for (var i = 0; i < this._packageNameLibraryItemMap.length; i++) {
+                    projectController.removeLibraryItemFromPackage(this._packageNameLibraryItemMap[i], packageName);
+                }
             }
             return Promise.resolve(this);
         }
