@@ -967,7 +967,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 var matchedConstraints = dependencyConstraints.filter(function (constraint) {
                     var equalPosition = constraint.indexOf('=');
                     if (equalPosition !== -1) {
-                        return semver.satisfies(constraint.substr(equalPosition + 1), libraryItemRange);
+                        return semver.satisfies(constraint.substr(equalPosition + 1).split('-')[0], libraryItemRange);
                     } else {
                         if (constraint.charAt(0) === '<') {
                             return libraryItem.minVersion ? semver.gt(constraint.substr(1), libraryItem.minVersion) : true;
