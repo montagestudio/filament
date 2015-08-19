@@ -8,7 +8,7 @@
     -ms-flex-direction: column;
     flex-direction: column;
     height: 100%;
-    
+
     /* Min height and width so the UI doesn't get squeezed too much. */
     min-height: 450px;
     min-width: 900px;
@@ -27,6 +27,7 @@
     -moz-flex-direction: row;
     -ms-flex-direction: row;
     flex-direction: row;
+    min-height: 0;
 }
 
 .Main .editor {
