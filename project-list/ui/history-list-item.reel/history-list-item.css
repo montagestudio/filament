@@ -53,3 +53,17 @@
 .HistoryListItem-link:active {
     color: inherit;
 }
+
+/* Link --------------------------------- */
+
+.HistoryListItem-owner {
+    -webkit-flex: 1;
+    flex: 1;
+    padding: 0.8rem;
+    text-decoration: none;
+    color: inherit;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0.25;
+}

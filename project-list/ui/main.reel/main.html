@@ -201,6 +201,43 @@
                 }
             },
 
+            "organizationsList": {
+                "prototype": "montage/ui/repetition.reel",
+                "properties": {
+                    "element": {"#": "organizationsList"}
+                },
+                "bindings": {
+                    "contentController": {"<-": "@repositoriesController.organizationsController"}
+                }
+            },
+
+            "organizationsListItem": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "organizationsListItem"}
+                },
+                "bindings": {
+                    "title": {"<-": "@organizationsList:iteration.object.login"},
+                    "value": {"<-": "@organizationsList:iteration.object"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "organizationAvatar": {
+                "prototype": "matte/ui/image.reel",
+                "properties": {
+                    "element": {"#": "organizationAvatar"}
+                },
+                "bindings": {
+                    "src": {"<-": "@organizationsList:iteration.object.avatar_url"}
+                }
+            },
+
             "historyList": {
                 "prototype": "montage/ui/repetition.reel",
                 "properties": {
@@ -217,9 +254,7 @@
                     "repositoriesController": {"@": "repositoriesController"}
                 },
                 "bindings": {
-                    "repository": {
-                        "<-": "@historyList:iteration.object"
-                    }
+                    "repository": {"<-": "@historyList:iteration.object"}
                 }
             },
 
@@ -232,7 +267,7 @@
                     {"type": "action", "listener": {"@": "owner"}}
                 ]
             },
-            
+
             "logoutButton": {
                 "prototype": "matte/ui/button.reel",
                 "properties": {
@@ -257,16 +292,14 @@
                   }
               }
             },
-            
+
             "avatar": {
               "prototype": "matte/ui/image.reel",
               "properties": {
                   "element": {"#": "avatar"}
               },
               "bindings": {
-                  "src": {
-                      "<-": "@owner.userController.user.avatarUrl"
-                  }
+                  "src": {"<-": "@owner.userController.user.avatarUrl"}
               }
             },
             "beta": {
@@ -301,7 +334,7 @@
                     }
                 ]
             },
-    
+
             "exploreTodoButton": {
                 "prototype": "matte/ui/button.reel",
                 "properties": {
@@ -323,20 +356,18 @@
     </script>
 
 </head>
-<body>
-
     <div data-montage-id="main" class="Main">
         <div data-montage-id="status"></div>
         <aside class="Aside">
-                
+
             <div class="Aside-content">
-                
+
                 <div data-montage-id="beta"></div>
-                
+
                 <section class="Aside-section">
                     <img class="Aside-logo" src="../../../assets/img/logo.svg" alt="Montage Studio">
                 </section>
-                
+
                 <section class="Aside-section">
                     <h2 class="Aside-title">Get Started</h2>
                     <ul class="Aside-list">
@@ -358,7 +389,7 @@
                         </li>
                     </ul>
                 </section>
-                
+
                 <section class="Aside-section">
                     <h2 class="Aside-title">Help and Support</h2>
                     <p class="Aside-links">
@@ -366,42 +397,51 @@
                         <a href="http://forum.montagestudio.com" target="_blank">Forum</a>
                         <a href="http://webchat.freenode.net/?channels=montage" target="_blank">Chat with the team</a>
                     </p>
-                    </ul>
-                </section>                
-                            
+                </section>
+
                 <section class="Aside-section">
                     <p data-montage-id="copyright" class="Aside-meta"></p>
                 </section>
             </div>
-    
+
         </aside>
 
 
         <div class="Projects">
-        
+
             <header class="User">
                 <img data-montage-id="avatar" class="User-avatar" src="">
                 <span data-montage-id="username" class="User-name"></span>
                 <button data-montage-id="logoutButton" data-icon="logout" class="ButtonLink User-logout">Log out</button>
+
             </header>
-            
+
             <div class="Projects-content">
-                                
+
                 <section class="Projects-section History">
-                    
+
                     <header class="Header">
                         <div data-montage-id="historyProgress" class="Projects-progress"></div>
                         <h1 class="Header-title">Recent Projects</h1>
                         <button data-montage-id="historyRefresh" class="Projects-refreshButton" data-arg="" aria-label="Refresh project list" title="Refresh project list"></button>
                     </header>
-                                        
+
+                    <section class="Projects-section Organizations">
+                        <ul data-montage-id="organizationsList" class="Organizations-list">
+                            <li class="Organization">
+                                <button class="ButtonLink" data-montage-id="organizationsListItem">
+                                    <img class="Organization-avatar" data-montage-id="organizationAvatar" draggable="false">
+                                </button>
+                            </li>
+                        </ul>
+                    </section>
                     <div data-montage-id="historyEmpty" class="History-empty"><span data-montage-id="historyEmptyTitle"></span></div>
                     <ul data-montage-id="historyList" class="History-list">
                         <li data-montage-id="historyListItem"></li>
                     </ul>
-                    
+
                 </section>
-                
+
                 <section class="Projects-section">
                     <div data-montage-id="newAppButtonCondition">
                         <button data-montage-id="newAppButton" class="NewProjectButton"></button>
@@ -422,14 +462,14 @@
                         </footer>
                     </div>
                 </section>
-                
+
                 <section class="Projects-section Settings">
                     <button data-montage-id="authorizePrivateAccessButton" data-icon="private" class="ButtonLink">Authorize private repositories</button>
                     <button data-montage-id="removeWorkspaces" data-icon="delete" class="ButtonLink"></button>
                 </section>
-                                
+
             </div>
-            
+
         </div>
 
     </div>

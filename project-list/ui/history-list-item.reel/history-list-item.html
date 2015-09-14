@@ -19,12 +19,9 @@
                     "element": {"#": "name"}
                 },
                 "bindings": {
-                    "textContent": {
-                        "<-": "@owner.repository.name"
-                    },
-                    "href": {
-                        "<-": "'/'+ @owner.repository.owner.login + '/' + @owner.repository.name"
-                    }
+                    "textContent":  {"<-": "@owner.repository.name"},
+                    "href":         {"<-": "'/'+ @owner.repository.owner.login + '/' + @owner.repository.name"},
+                    "title":        {"<-": "@owner.repository.owner.login + '/' + @owner.repository.name"}
                 }
             },
 
@@ -46,6 +43,7 @@
 
 <li data-montage-id="historyListItem" class="HistoryListItem">
     <a data-montage-id="name" class="HistoryListItem-link"></a>
+    <span data-montage-id="owner" class="HistoryListItem-owner"></span>
     <span data-montage-id="typeIndicator" class="HistoryListItem-type"></span>
 </li>
 

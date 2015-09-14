@@ -46,6 +46,7 @@ exports.Main = Montage.create(Component, {
 
             this._upkeepProgressBar();
             this._getWorkspaces();
+            this.templateObjects.repositoriesController.loadOrganizations();
         }
     },
 
@@ -181,7 +182,7 @@ exports.Main = Montage.create(Component, {
             var refreshButton = this.templateObjects.historyRefresh;
 
             refreshButton.disabled = true;
-            this.templateObjects.repositoriesController.updateAndCacheUserRepositories().finally(function () {
+            this.templateObjects.repositoriesController.updateAndCacheRepositories().finally(function () {
                 refreshButton.disabled = false;
             }).done();
         }
@@ -196,7 +197,7 @@ exports.Main = Montage.create(Component, {
                 .done();
         }
     },
-    
+
     handleLogoutButtonAction: {
         value: function () {
             this.templateObjects.repositoriesController.clearCachedRepositories()
@@ -245,6 +246,16 @@ exports.Main = Montage.create(Component, {
 
             if (owner && repository) {
                 this._forkRepository(owner, repository).done();
+            }
+        }
+    },
+
+    handleOrganizationsListItemAction: {
+        value: function(event) {
+            var repositoriesController = this.templateObjects.repositoriesController;
+            var selection = repositoriesController.organizationsController.selection;
+            if (selection && selection.indexOf(event.target.value) === -1) {
+                repositoriesController.selectOrganization(event.target.value);
             }
         }
     },
