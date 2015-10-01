@@ -202,17 +202,12 @@ var RepositoriesController = Montage.specialize({
     updateUserRepositories: {
         value: function(page) {
             var self = this,
-                perPage = 30,
-                githubUser;
+                perPage = 30;
 
             page = page || 1;
 
             this._ownedRepositoriesContent.content.clear();
-            return this._githubUser
-                .then(function(user) {
-                    githubUser = user;
-                    return self._githubApi;
-                })
+            return this._githubApi
                 .then(function(_githubApi) {
                     //jshint -W106
                     var options = {page: page, per_page: perPage};
@@ -222,7 +217,7 @@ var RepositoriesController = Montage.specialize({
                 .then(function(userRepositories) {
                     self.repositoriesCount += userRepositories.length;
                     var filteringPromises = [];
-                    for (var i = 0; i < userRepositories.length; i++) {
+                    for (var i = 0, repositoriesCount = userRepositories.length; i < repositoriesCount; i++) {
                         filteringPromises.push(self._filterValidRepositories(userRepositories[i], self._ownedRepositoriesContent));
                     }
                     if (userRepositories.length === perPage) {
@@ -311,7 +306,7 @@ var RepositoriesController = Montage.specialize({
                     .then(function (repositories) {
                         self.repositoriesCount += repositories.length;
                         var filteringPromises = [];
-                        for (var i = 0; i < repositories.length; i++) {
+                        for (var i = 0, repositoriesCount = repositories.length; i < repositoriesCount; i++) {
                             filteringPromises.push(self._filterValidRepositories(repositories[i], self._organizationsRepositoriesContents[organizationName]));
                         }
                         if (repositories.length >= perPage) {
