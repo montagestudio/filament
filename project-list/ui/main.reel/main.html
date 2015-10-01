@@ -207,7 +207,8 @@
             "organizationsList": {
                 "prototype": "montage/ui/repetition.reel",
                 "properties": {
-                    "element": {"#": "organizationsList"}
+                    "element": {"#": "organizationsList"},
+                    "isSelectionEnabled": true
                 },
                 "bindings": {
                     "contentController": {"<-": "@repositoriesController.organizationsController"}
@@ -217,8 +218,7 @@
             "organizationsListItem": {
                 "prototype": "../organizations-list-item.reel",
                 "properties": {
-                    "element": {"#": "organizationsListItem"},
-                    "repositoriesController": {"@": "repositoriesController"}
+                    "element": {"#": "organizationsListItem"}
                 },
                 "bindings": {
                     "organization": {"<-": "@organizationsList:iteration.object"}

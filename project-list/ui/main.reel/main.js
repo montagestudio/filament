@@ -106,6 +106,7 @@ exports.Main = Montage.create(Component, {
 
     templateDidLoad: {
         value: function() {
+            this.templateObjects.repositoriesController.organizationsController.addRangeAtPathChangeListener("selection", this, "handleSelectionChange");
         }
     },
 
@@ -278,6 +279,14 @@ exports.Main = Montage.create(Component, {
                 this.element.classList.add("isFirstRun");
             } else {
                 this.element.classList.remove("isFirstRun");
+            }
+        }
+    },
+
+    handleSelectionChange: {
+        value: function(plus) {
+            if (plus && plus.length > 0) {
+                this.templateObjects.repositoriesController.selectOrganization(plus[0]);
             }
         }
     }
