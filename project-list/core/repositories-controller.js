@@ -26,6 +26,10 @@ var Group = Montage.specialize( {
 
 var RepositoriesController = Montage.specialize({
 
+    isOrganizationSelected: {
+        value: null
+    },
+
     organizationsController: {
         value: null
     },
@@ -277,6 +281,7 @@ var RepositoriesController = Montage.specialize({
                             }
                         });
                 }
+                self.isOrganizationSelected = !!self._selectedOrganization;
                 self._getListOfRepositories();
             });
         }

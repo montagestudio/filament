@@ -39,11 +39,6 @@
     margin: 0 .5em;
 }
 
-
-
-
-
-
 /* Projects --------------------------------- */
 
 .Projects {
@@ -68,7 +63,8 @@
     -webkit-flex-direction: column;
     -webkit-flex: 1;
     flex: 1;
-    max-width: 512px;
+    width: 100%;
+    max-width: 768px;
     margin: 0 auto;
     padding: 0 3rem;
     text-align: center;
@@ -89,6 +85,20 @@
     padding-bottom: 3rem;
 }
 
+.Footer {
+    display: flex;
+    align-items: center;
+    padding-bottom: 3rem;
+}
+
+.Footer .Projects-section {
+    width: 50%;
+}
+
+.Footer .Projects-section:first-child, .Footer .Projects-section:last-child {
+    padding-top: inherit;
+    padding-bottom: inherit;
+}
 
 /* User --------------------------------- */
 
@@ -102,6 +112,7 @@
     padding: 0.8rem;
     border-bottom: 1px solid hsl(0, 0%, 90%);
     background: hsl(0, 0%, 95%);
+    box-sizing: content-box;
 }
 
 .User-avatar {
@@ -227,50 +238,17 @@
     padding: 0;
 }
 
-.Organizations-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-}
-
-.Organization {
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    opacity: 0.5;
-    align-self: flex-end;
-}
-
-.Organization.selected {
-    width: 50px;
-    height: 50px;
-    opacity: 1;
-}
-
-.Organization .ButtonLink, .Organization .ButtonLink:active {
-    padding: 0;
-    margin: 0;
-    width: 40px;
-    height: 40px;
-}
-
-.Organization.selected .ButtonLink {
-    width: 50px;
-    height: 50px;
-}
-
-.Organization-avatar {
-    width: 100%;
-    height: 100%;
-    border: solid 1px silver;
-}
-
 /* History List ---------------------------- */
 
-.History-list {
+.ListNavigator {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 0;
+}
+
+.History-list, .Organizations-list {
     position: relative;
-    margin: 0;
+    margin: 0 2px;
     padding: 0;
     list-style: none;
     overflow-y: scroll;
@@ -389,6 +367,16 @@
 
 .NewProjectButton:hover {
     background-color: hsl(0, 0%, 98%);
+}
+
+.NewProjectButton.disabled {
+    opacity: 0.3;
+    cursor: auto;
+}
+
+.NewProjectButton.disabled:hover {
+    background-color: hsl(0, 0%, 96%);
+    color: inherit;
 }
 
 .NewProjectButton:before {

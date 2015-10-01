@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+    <title>OrganizationsListItem</title>
+    <meta charset="utf-8">
+    <link href="organizations-list-item.css" rel="stylesheet" />
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "organizationsListItem"}
+                }
+            },
+
+            "organizationName": {
+                "prototype": "matte/ui/button.reel",
+                "properties": {
+                    "element": {"#": "name"}
+                },
+                "bindings": {
+                    "label":  {"<-": "@owner.organization.login"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            }
+        }
+    </script>
+
+</head>
+<body>
+
+<li data-montage-id="organizationsListItem" class="OrganizationsListItem">
+    <button data-montage-id="name" class="OrganizationsListItem-link"></button>
+</li>
+
+</body>
+</html>
