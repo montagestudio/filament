@@ -13,7 +13,7 @@ exports.Extension = CoreExtension.specialize( {
     editorFileMatchFunction: {
         enumerable: false,
         value : function (fileUrl) {
-            return (/\.jpg|png|gif|svg|ico\/?$/).test(fileUrl);
+            return (/\.(jpg|png|gif|svg|ico)\/?$/).test(fileUrl);
         }
     },
 
