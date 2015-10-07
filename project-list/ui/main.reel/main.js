@@ -22,14 +22,35 @@ exports.Main = Montage.create(Component, {
         value: []
     },
 
+    repositoriesController: {
+        value: null
+    },
+
+    historyProgress: {
+        value: null
+    },
+
+    historyRefresh: {
+        value: null
+    },
+
+    newAppDescription: {
+        value: null
+    },
+
+    newAppName: {
+        value: null
+    },
+
+    newAppError: {
+        value: null
+    },
+
     constructor: {
         value: function Main() {
             this.super();
 
-            this.templateObjects = {
-                repositoriesController: repositoriesController
-            };
-
+            this.repositoriesController = repositoriesController;
             this.userController = new UserController().init();
         }
     },
@@ -46,7 +67,7 @@ exports.Main = Montage.create(Component, {
 
             this._upkeepProgressBar();
             this._getWorkspaces();
-            this.templateObjects.repositoriesController.loadOrganizations();
+            this.repositoriesController.loadOrganizations();
         }
     },
 
@@ -58,20 +79,20 @@ exports.Main = Montage.create(Component, {
         value: function() {
             var UPKEEP_INTERVAL = 500,
                 UPKEEP_INCREASE = 100,
-                historyProgress = this.templateObjects.historyProgress,
-                repositoriesController = this.templateObjects.repositoriesController,
+                repositoriesController = this.repositoriesController,
                 repositoriesCount = repositoriesController.repositoriesCount,
-                processedRepositories = 0;
+                processedRepositories = 0,
+                self = this;
 
             setTimeout(function upkeep() {
                 var newProcessedRepositories = repositoriesController.processedRepositories;
 
                 if (repositoriesCount > 0 && repositoriesCount === newProcessedRepositories ||
                     // make sure we don't go to 100%
-                    historyProgress.value >= (historyProgress.max - 1)) {
+                    self.historyProgress.value >= (self.historyProgress.max - 1)) {
                     return;
                 } else if (processedRepositories === newProcessedRepositories) {
-                    historyProgress.value++;
+                    self.historyProgress.value++;
                 }
 
                 processedRepositories = newProcessedRepositories;
@@ -100,13 +121,9 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
-    templateObjects: {
-        value: null
-    },
-
     templateDidLoad: {
         value: function() {
-            this.templateObjects.repositoriesController.organizationsController.addRangeAtPathChangeListener("selection", this, "handleSelectionChange");
+            this.repositoriesController.organizationsController.addRangeAtPathChangeListener("selection", this, "handleSelectionChange");
         }
     },
 
@@ -180,18 +197,18 @@ exports.Main = Montage.create(Component, {
 
     handleHistoryRefreshAction: {
         value: function () {
-            var refreshButton = this.templateObjects.historyRefresh;
+            var self = this;
 
-            refreshButton.disabled = true;
-            this.templateObjects.repositoriesController.updateAndCacheRepositories().finally(function () {
-                refreshButton.disabled = false;
+            this.historyRefresh.disabled = true;
+            this.repositoriesController.updateAndCacheRepositories().finally(function () {
+                self.historyRefresh.disabled = false;
             }).done();
         }
     },
 
     handleAuthorizePrivateAccessButtonAction: {
         value: function () {
-            this.templateObjects.repositoriesController.clearCachedRepositories()
+            this.repositoriesController.clearCachedRepositories()
                 .finally(function () {
                     window.location = "/auth/github/private";
                 })
@@ -201,7 +218,7 @@ exports.Main = Montage.create(Component, {
 
     handleLogoutButtonAction: {
         value: function () {
-            this.templateObjects.repositoriesController.clearCachedRepositories()
+            this.repositoriesController.clearCachedRepositories()
                 .finally(function () {
                     window.location = "/logout";
                 })
@@ -211,29 +228,27 @@ exports.Main = Montage.create(Component, {
 
     _createNewApplication: {
         value: function () {
-            var templateObjects = this.templateObjects,
-                name = templateObjects.newAppName.value,
-                description = templateObjects.newAppDescription.value,
-                repositoriesController = templateObjects.repositoriesController,
+            var name = this.newAppName.value,
+                description = this.newAppDescription.value,
                 self = this;
 
-            return repositoriesController.createRepository(name, {
+            return this.repositoriesController.createRepository(name, {
                     description: description
                 })
                 .then(function (repo) {
                     // Begin initialization, but don't hold up leaving this page
                     // Distribute the load across multiple screens
-                    repositoriesController.initializeRepository(repo.owner.login, name).done();
+                    self.repositoriesController.initializeRepository(repo.owner.login, name).done();
 
                     self.showNewAppForm = false;
                     return repo;
                 })
                 .delay(600)
                 .then(function(repo) {
-                    repositoriesController.open(repo);
+                    self.repositoriesController.open(repo);
                 }, function (error) {
                     // Use the shortMessage when available as it's more user friendly
-                    self.templateObjects.newAppError.value = error.shortMessage || error.message;
+                    self.newAppError.value = error.shortMessage || error.message;
                     throw error;
                 });
         }
@@ -253,7 +268,7 @@ exports.Main = Montage.create(Component, {
 
     handleOrganizationsListItemAction: {
         value: function(event) {
-            var repositoriesController = this.templateObjects.repositoriesController;
+            var repositoriesController = this.repositoriesController;
             var selection = repositoriesController.organizationsController.selection;
             if (selection && selection.indexOf(event.target.value) === -1) {
                 repositoriesController.selectOrganization(event.target.value);
@@ -263,7 +278,7 @@ exports.Main = Montage.create(Component, {
 
     _forkRepository: {
         value: function (owner, repoName) {
-            var repositoriesController = this.templateObjects.repositoriesController;
+            var repositoriesController = this.repositoriesController;
             return repositoriesController.forkRepository(owner, repoName).then(function (forkedRepo) {
                 return repositoriesController.open(forkedRepo);
             }, function (err) {
@@ -286,7 +301,7 @@ exports.Main = Montage.create(Component, {
     handleSelectionChange: {
         value: function(plus) {
             if (plus && plus.length > 0) {
-                this.templateObjects.repositoriesController.selectOrganization(plus[0]);
+                this.repositoriesController.selectOrganization(plus[0]);
             }
         }
     }

@@ -14,11 +14,16 @@
 
             "owner": {
                 "properties": {
-                    "element": {"#": "main"}
+                    "element": {"#": "main"},
+                    "historyProgress": {"@": "historyProgress"},
+                    "historyRefresh": {"@": "historyRefresh"},
+                    "newAppName": {"@": "newAppName"},
+                    "newAppDescription": {"@": "newAppDescription"},
+                    "newAppError": {"@": "newAppError"}
                 },
                 "bindings": {
-                    "projects.Recent": {"<-": "@repositoriesController.recentRepositoriesContent.organizedContent"},
-                    "projects.Owned": {"<-": "@repositoriesController.ownedRepositoriesContent.organizedContent"}
+                    "projects.Recent": {"<-": "@owner.repositoriesController.recentRepositoriesContent.organizedContent"},
+                    "projects.Owned": {"<-": "@owner.repositoriesController.ownedRepositoriesContent.organizedContent"}
                 },
                 "listeners": [
                     {
@@ -57,7 +62,7 @@
                     "label": {"key": "new_application"}
                 },
                 "bindings": {
-                    "enabled": {"<-": "!@repositoriesController.isOrganizationSelected"}
+                    "enabled": {"<-": "!@owner.repositoriesController.isOrganizationSelected"}
                 },
                 "listeners": [
                     {
@@ -167,9 +172,9 @@
                     "element": {"#": "historyProgress"}
                 },
                 "bindings": {
-                    "max": {"<-": "@repositoriesController.repositoriesCount"},
-                    "value": {"<-": "[value, @repositoriesController.processedRepositories].max{}"},
-                    "classList.has('is-done')": {"<-": "[value, @repositoriesController.processedRepositories].max{} >= [max, @repositoriesController.repositoriesCount].min{}"}
+                    "max": {"<-": "@owner.repositoriesController.repositoriesCount"},
+                    "value": {"<-": "[value, @owner.repositoriesController.processedRepositories].max{}"},
+                    "classList.has('is-done')": {"<-": "[value, @owner.repositoriesController.processedRepositories].max{} >= [max, @owner.repositoriesController.repositoriesCount].min{}"}
                 }
             },
 
@@ -211,7 +216,7 @@
                     "isSelectionEnabled": true
                 },
                 "bindings": {
-                    "contentController": {"<-": "@repositoriesController.organizationsController"}
+                    "contentController": {"<-": "@owner.repositoriesController.organizationsController"}
                 }
             },
 
@@ -231,17 +236,17 @@
                     "element": {"#": "historyList"}
                 },
                 "bindings": {
-                    "contentController": {"<-": "@repositoriesController.contentController"}
+                    "contentController": {"<-": "@owner.repositoriesController.contentController"}
                 }
             },
             "historyListItem": {
                 "prototype": "../history-list-item.reel",
                 "properties": {
-                    "element": {"#": "historyListItem"},
-                    "repositoriesController": {"@": "repositoriesController"}
+                    "element": {"#": "historyListItem"}
                 },
                 "bindings": {
-                    "repository": {"<-": "@historyList:iteration.object"}
+                    "repository": {"<-": "@historyList:iteration.object"},
+                    "repositoriesController": {"<-": "@owner.repositoriesController"}
                 }
             },
 
@@ -265,9 +270,6 @@
                 ]
             },
 
-            "repositoriesController": {
-                "prototype": "../../core/repositories-controller"
-            },
             "username": {
               "prototype": "montage/ui/text.reel",
               "properties": {
@@ -310,7 +312,7 @@
                     "element": {"#": "explorePopcornButton"}
                 },
                 "bindings": {
-                    "label": {"<-": "!!@repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('popcorn') ? 'Open Popcorn' : 'Fork Popcorn'"},
+                    "label": {"<-": "!!@owner.repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('popcorn') ? 'Open Popcorn' : 'Fork Popcorn'"},
                     "detail.get('owner')": {"<-": "'montagejs'"},
                     "detail.get('repository')": {"<-": "'popcorn'"}
                 },
@@ -328,7 +330,7 @@
                     "element": {"#": "exploreTodoButton"}
                 },
                 "bindings": {
-                    "label": {"<-": "!!@repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('studio-todo') ? 'Open Todo' : 'Fork Todo'"},
+                    "label": {"<-": "!!@owner.repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('studio-todo') ? 'Open Todo' : 'Fork Todo'"},
                     "detail.get('owner')": {"<-": "'montagejs'"},
                     "detail.get('repository')": {"<-": "'studio-todo'"}
                 },

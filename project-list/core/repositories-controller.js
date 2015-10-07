@@ -532,7 +532,7 @@ var RepositoriesController = Montage.specialize({
                     .then(function() {
                         self.cacheOrganizationsRepositories();
                     });
-            }else {
+            } else {
                 return this.updateUserRepositories()
                     .then(function () {
                         self.cacheUserRepositories();
