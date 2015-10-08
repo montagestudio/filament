@@ -1,8 +1,10 @@
-var Montage = require("montage/core/core").Montage;
-var Component = require("montage/ui/component").Component;
-var repositoriesController = require("../../core/repositories-controller").repositoriesController;
-var UserController = require("adaptor/client/core/user-controller").UserController;
-var requestOk = require("core/request").requestOk;
+var core = require("montage/core/core"),
+    Montage = core.Montage,
+    Bindings = core.Bindings,
+    Component = require("montage/ui/component").Component,
+    repositoriesController = require("../../core/repositories-controller").repositoriesController,
+    UserController = require("adaptor/client/core/user-controller").UserController,
+    requestOk = require("core/request").requestOk;
 
 exports.Main = Montage.create(Component, {
 
@@ -46,11 +48,16 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
+    ownedRepositoriesNames: {
+        value: null
+    },
+
     constructor: {
         value: function Main() {
             this.super();
 
             this.repositoriesController = repositoriesController;
+            Bindings.defineBinding(this, 'ownedRepositoriesNames', {'<-': 'this.repositoriesController.ownedRepositories.map{name}'});
             this.userController = new UserController().init();
         }
     },
@@ -200,7 +207,7 @@ exports.Main = Montage.create(Component, {
             var self = this;
 
             this.historyRefresh.disabled = true;
-            this.repositoriesController.updateAndCacheRepositories().finally(function () {
+            this.repositoriesController.updateRepositories().finally(function () {
                 self.historyRefresh.disabled = false;
             }).done();
         }

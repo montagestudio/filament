@@ -245,14 +245,6 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 self = this;
 
             superPromise.then(function () {
-                return self._bridgePromise;
-            }).then(function (bridge) {
-                var project = {
-                    owner: bridge.repositoryController.owner,
-                    repo: bridge.repositoryController.repo
-                };
-                repositoriesController.addRepositoryToRecent(project);
-
                 self.showModal = false;
                 self.isProjectLoaded = true;
                 self.currentPanelKey = null;

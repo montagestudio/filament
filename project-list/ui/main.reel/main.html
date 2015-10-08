@@ -21,10 +21,6 @@
                     "newAppDescription": {"@": "newAppDescription"},
                     "newAppError": {"@": "newAppError"}
                 },
-                "bindings": {
-                    "projects.Recent": {"<-": "@owner.repositoriesController.recentRepositoriesContent.organizedContent"},
-                    "projects.Owned": {"<-": "@owner.repositoriesController.ownedRepositoriesContent.organizedContent"}
-                },
                 "listeners": [
                     {
                         "type": "openDocument",
@@ -62,7 +58,7 @@
                     "label": {"key": "new_application"}
                 },
                 "bindings": {
-                    "enabled": {"<-": "!@owner.repositoriesController.isOrganizationSelected"}
+                    "enabled": {"<-": "@owner.repositoriesController.isUserSelected"}
                 },
                 "listeners": [
                     {
@@ -195,7 +191,7 @@
                     "removalStrategy": "hide"
                 },
                 "bindings": {
-                    "condition": {"<-": "@historyProgress.max == @historyProgress.value && @owner.projects.Owned.length == 0"}
+                    "condition": {"<-": "@historyProgress.max == @historyProgress.value && @owner.repositoriesController.contentController.content.length == 0"}
                 }
             },
 
@@ -312,7 +308,7 @@
                     "element": {"#": "explorePopcornButton"}
                 },
                 "bindings": {
-                    "label": {"<-": "!!@owner.repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('popcorn') ? 'Open Popcorn' : 'Fork Popcorn'"},
+                    "label": {"<-": "@owner.ownedRepositoriesNames.has('popcorn') ? 'Open Popcorn' : 'Fork Popcorn'"},
                     "detail.get('owner')": {"<-": "'montagejs'"},
                     "detail.get('repository')": {"<-": "'popcorn'"}
                 },
@@ -330,7 +326,7 @@
                     "element": {"#": "exploreTodoButton"}
                 },
                 "bindings": {
-                    "label": {"<-": "!!@owner.repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('studio-todo') ? 'Open Todo' : 'Fork Todo'"},
+                    "label": {"<-": "@owner.ownedRepositoriesNames.has('studio-todo') ? 'Open Todo' : 'Fork Todo'"},
                     "detail.get('owner')": {"<-": "'montagejs'"},
                     "detail.get('repository')": {"<-": "'studio-todo'"}
                 },
