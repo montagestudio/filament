@@ -348,15 +348,15 @@ var RepositoriesController = Montage.specialize({
         value: function (repository, targetRangeController) {
             var self = this;
             return this._isRepositoryValid(repository)
-                .then(function (isValidRepository) {
-                    if (isValidRepository) {
+                .then(function (isRepositoryValid) {
+                    if (isRepositoryValid) {
                         //jshint -W106
                         repository.pushed_at = +new Date(repository.pushed_at);
                         //jshint +W106
                         targetRangeController.content.push(repository);
                     }
                     self._increaseProcessedRepositories();
-                    return isValidRepository;
+                    return isRepositoryValid;
                 });
         }
     },
@@ -367,14 +367,26 @@ var RepositoriesController = Montage.specialize({
      */
     _isRepositoryValid: {
         value: function(repo) {
-            var repositoryController = new RepositoryController();
-
-            repositoryController.init(repo.owner.login, repo.name);
+            var repositoryController = new RepositoryController().init(repo.owner.login, repo.name),
+                isRepositoryValid;
 
             return repositoryController.isMontageRepository()
-            .then(function(value) {
-                return value || repositoryController.isRepositoryEmpty();
-            });
+                .then(function(isMontageRepository) {
+                    return isMontageRepository || repositoryController.isRepositoryEmpty();
+                })
+                .then(function(isValid) {
+                    isRepositoryValid = isValid;
+                    if (repo.fork) {
+                        return repositoryController.getParent();
+                    }
+                    return Promise.resolve();
+                })
+                .then(function(parent) {
+                    if (parent) {
+                        repo.parent = parent;
+                    }
+                    return isRepositoryValid;
+                });
         }
     },
 

@@ -10,6 +10,10 @@
             "owner": {
                 "properties": {
                     "element": {"#": "historyListItem"}
+                },
+                "bindings": {
+                    "classList.has('is-fork')": {"<-": "@owner.repository.fork"},
+                    "forkParent": {"<-": "@owner.repository.fork ? ' (forked from ' + @owner.repository.parent.full_name + ')' : ''"}
                 }
             },
 
@@ -21,7 +25,7 @@
                 "bindings": {
                     "textContent":  {"<-": "@owner.repository.name"},
                     "href":         {"<-": "'/'+ @owner.repository.owner.login + '/' + @owner.repository.name"},
-                    "title":        {"<-": "@owner.repository.owner.login + '/' + @owner.repository.name"}
+                    "title":        {"<-": "@owner.repository.owner.login + '/' + @owner.repository.name + @owner.forkParent"}
                 }
             },
 

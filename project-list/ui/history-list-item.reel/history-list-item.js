@@ -6,5 +6,4 @@ exports.HistoryListItem = Montage.create(Component, {
     repository: {
         value: null
     }
-
 });
