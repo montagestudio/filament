@@ -39,11 +39,6 @@
     margin: 0 .5em;
 }
 
-
-
-
-
-
 /* Projects --------------------------------- */
 
 .Projects {
@@ -54,7 +49,7 @@
     bottom: 0;
     color: hsl(0, 0%, 26%);
     background-color: #fff;
-    overflow: auto; 
+    overflow: auto;
     display: -webkit-flex;
     display: flex;
     -webkit-flex-direction: column;
@@ -68,7 +63,8 @@
     -webkit-flex-direction: column;
     -webkit-flex: 1;
     flex: 1;
-    max-width: 512px;
+    width: 100%;
+    max-width: 768px;
     margin: 0 auto;
     padding: 0 3rem;
     text-align: center;
@@ -89,6 +85,20 @@
     padding-bottom: 3rem;
 }
 
+.Footer {
+    display: flex;
+    align-items: center;
+    padding-bottom: 3rem;
+}
+
+.Footer .Projects-section {
+    width: 50%;
+}
+
+.Footer .Projects-section:first-child, .Footer .Projects-section:last-child {
+    padding-top: inherit;
+    padding-bottom: inherit;
+}
 
 /* User --------------------------------- */
 
@@ -102,6 +112,7 @@
     padding: 0.8rem;
     border-bottom: 1px solid hsl(0, 0%, 90%);
     background: hsl(0, 0%, 95%);
+    box-sizing: content-box;
 }
 
 .User-avatar {
@@ -223,13 +234,21 @@
     color: hsl(0, 0%, 72%);
 }
 
-
+.Projects-section.Organizations {
+    padding: 0;
+}
 
 /* History List ---------------------------- */
 
-.History-list {
+.ListNavigator {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 0;
+}
+
+.History-list, .Organizations-list {
     position: relative;
-    margin: 0;
+    margin: 0 2px;
     padding: 0;
     list-style: none;
     overflow-y: scroll;
@@ -348,6 +367,16 @@
 
 .NewProjectButton:hover {
     background-color: hsl(0, 0%, 98%);
+}
+
+.NewProjectButton.disabled {
+    opacity: 0.3;
+    cursor: auto;
+}
+
+.NewProjectButton.disabled:hover {
+    background-color: hsl(0, 0%, 96%);
+    color: inherit;
 }
 
 .NewProjectButton:before {

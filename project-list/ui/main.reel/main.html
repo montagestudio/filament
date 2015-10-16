@@ -14,11 +14,12 @@
 
             "owner": {
                 "properties": {
-                    "element": {"#": "main"}
-                },
-                "bindings": {
-                    "projects.Recent": {"<-": "@repositoriesController.recentRepositoriesContent.organizedContent"},
-                    "projects.Owned": {"<-": "@repositoriesController.ownedRepositoriesContent.organizedContent"}
+                    "element": {"#": "main"},
+                    "historyProgress": {"@": "historyProgress"},
+                    "historyRefresh": {"@": "historyRefresh"},
+                    "newAppName": {"@": "newAppName"},
+                    "newAppDescription": {"@": "newAppDescription"},
+                    "newAppError": {"@": "newAppError"}
                 },
                 "listeners": [
                     {
@@ -55,6 +56,9 @@
                 },
                 "localizations": {
                     "label": {"key": "new_application"}
+                },
+                "bindings": {
+                    "enabled": {"<-": "@owner.repositoriesController.isUserSelected"}
                 },
                 "listeners": [
                     {
@@ -164,9 +168,9 @@
                     "element": {"#": "historyProgress"}
                 },
                 "bindings": {
-                    "max": {"<-": "@repositoriesController.repositoriesCount"},
-                    "value": {"<-": "[value, @repositoriesController.processedRepositories].max{}"},
-                    "classList.has('is-done')": {"<-": "[value, @repositoriesController.processedRepositories].max{} >= [max, @repositoriesController.repositoriesCount].min{}"}
+                    "max": {"<-": "@owner.repositoriesController.repositoriesCount"},
+                    "value": {"<-": "[value, @owner.repositoriesController.processedRepositories].max{}"},
+                    "classList.has('is-done')": {"<-": "[value, @owner.repositoriesController.processedRepositories].max{} >= [max, @owner.repositoriesController.repositoriesCount].min{}"}
                 }
             },
 
@@ -187,7 +191,7 @@
                     "removalStrategy": "hide"
                 },
                 "bindings": {
-                    "condition": {"<-": "@historyProgress.max == @historyProgress.value && @owner.projects.Owned.length == 0"}
+                    "condition": {"<-": "@historyProgress.max == @historyProgress.value && @owner.repositoriesController.contentController.content.length == 0"}
                 }
             },
 
@@ -201,25 +205,45 @@
                 }
             },
 
+            "organizationsList": {
+                "prototype": "montage/ui/repetition.reel",
+                "properties": {
+                    "element": {"#": "organizationsList"},
+                    "isSelectionEnabled": true
+                },
+                "bindings": {
+                    "contentController": {"<-": "@owner.repositoriesController.organizationsController"}
+                }
+            },
+
+            "organizationsListItem": {
+                "prototype": "../organizations-list-item.reel",
+                "properties": {
+                    "element": {"#": "organizationsListItem"}
+                },
+                "bindings": {
+                    "organization": {"<-": "@organizationsList:iteration.object"}
+                }
+            },
+
             "historyList": {
                 "prototype": "montage/ui/repetition.reel",
                 "properties": {
                     "element": {"#": "historyList"}
                 },
                 "bindings": {
-                    "contentController": {"<-": "@repositoriesController.contentController"}
+                    "contentController": {"<-": "@owner.repositoriesController.contentController"}
                 }
             },
+
             "historyListItem": {
                 "prototype": "../history-list-item.reel",
                 "properties": {
-                    "element": {"#": "historyListItem"},
-                    "repositoriesController": {"@": "repositoriesController"}
+                    "element": {"#": "historyListItem"}
                 },
                 "bindings": {
-                    "repository": {
-                        "<-": "@historyList:iteration.object"
-                    }
+                    "repository": {"<-": "@historyList:iteration.object"},
+                    "repositoriesController": {"<-": "@owner.repositoriesController"}
                 }
             },
 
@@ -232,7 +256,7 @@
                     {"type": "action", "listener": {"@": "owner"}}
                 ]
             },
-            
+
             "logoutButton": {
                 "prototype": "matte/ui/button.reel",
                 "properties": {
@@ -243,9 +267,6 @@
                 ]
             },
 
-            "repositoriesController": {
-                "prototype": "../../core/repositories-controller"
-            },
             "username": {
               "prototype": "montage/ui/text.reel",
               "properties": {
@@ -257,16 +278,14 @@
                   }
               }
             },
-            
+
             "avatar": {
               "prototype": "matte/ui/image.reel",
               "properties": {
                   "element": {"#": "avatar"}
               },
               "bindings": {
-                  "src": {
-                      "<-": "@owner.userController.user.avatarUrl"
-                  }
+                  "src": {"<-": "@owner.userController.user.avatarUrl"}
               }
             },
             "beta": {
@@ -290,7 +309,7 @@
                     "element": {"#": "explorePopcornButton"}
                 },
                 "bindings": {
-                    "label": {"<-": "!!@repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('popcorn') ? 'Open Popcorn' : 'Fork Popcorn'"},
+                    "label": {"<-": "@owner.ownedRepositoriesNames.has('popcorn') ? 'Open Popcorn' : 'Fork Popcorn'"},
                     "detail.get('owner')": {"<-": "'montagejs'"},
                     "detail.get('repository')": {"<-": "'popcorn'"}
                 },
@@ -301,14 +320,14 @@
                     }
                 ]
             },
-    
+
             "exploreTodoButton": {
                 "prototype": "matte/ui/button.reel",
                 "properties": {
                     "element": {"#": "exploreTodoButton"}
                 },
                 "bindings": {
-                    "label": {"<-": "!!@repositoriesController.ownedRepositoriesContent.organizedContent.map{name}.has('studio-todo') ? 'Open Todo' : 'Fork Todo'"},
+                    "label": {"<-": "@owner.ownedRepositoriesNames.has('studio-todo') ? 'Open Todo' : 'Fork Todo'"},
                     "detail.get('owner')": {"<-": "'montagejs'"},
                     "detail.get('repository')": {"<-": "'studio-todo'"}
                 },
@@ -323,20 +342,18 @@
     </script>
 
 </head>
-<body>
-
     <div data-montage-id="main" class="Main">
         <div data-montage-id="status"></div>
         <aside class="Aside">
-                
+
             <div class="Aside-content">
-                
+
                 <div data-montage-id="beta"></div>
-                
+
                 <section class="Aside-section">
                     <img class="Aside-logo" src="../../../assets/img/logo.svg" alt="Montage Studio">
                 </section>
-                
+
                 <section class="Aside-section">
                     <h2 class="Aside-title">Get Started</h2>
                     <ul class="Aside-list">
@@ -358,7 +375,7 @@
                         </li>
                     </ul>
                 </section>
-                
+
                 <section class="Aside-section">
                     <h2 class="Aside-title">Help and Support</h2>
                     <p class="Aside-links">
@@ -366,70 +383,77 @@
                         <a href="http://forum.montagestudio.com" target="_blank">Forum</a>
                         <a href="http://webchat.freenode.net/?channels=montage" target="_blank">Chat with the team</a>
                     </p>
-                    </ul>
-                </section>                
-                            
+                </section>
+
                 <section class="Aside-section">
                     <p data-montage-id="copyright" class="Aside-meta"></p>
                 </section>
             </div>
-    
+
         </aside>
 
 
         <div class="Projects">
-        
+
             <header class="User">
                 <img data-montage-id="avatar" class="User-avatar" src="">
                 <span data-montage-id="username" class="User-name"></span>
                 <button data-montage-id="logoutButton" data-icon="logout" class="ButtonLink User-logout">Log out</button>
+
             </header>
-            
+
             <div class="Projects-content">
-                                
+
                 <section class="Projects-section History">
-                    
+
                     <header class="Header">
                         <div data-montage-id="historyProgress" class="Projects-progress"></div>
                         <h1 class="Header-title">Recent Projects</h1>
                         <button data-montage-id="historyRefresh" class="Projects-refreshButton" data-arg="" aria-label="Refresh project list" title="Refresh project list"></button>
                     </header>
-                                        
+
                     <div data-montage-id="historyEmpty" class="History-empty"><span data-montage-id="historyEmptyTitle"></span></div>
-                    <ul data-montage-id="historyList" class="History-list">
-                        <li data-montage-id="historyListItem"></li>
-                    </ul>
-                    
-                </section>
-                
-                <section class="Projects-section">
-                    <div data-montage-id="newAppButtonCondition">
-                        <button data-montage-id="newAppButton" class="NewProjectButton"></button>
+                    <div class="ListNavigator">
+                        <ul data-montage-id="organizationsList" class="Organizations-list">
+                            <li data-montage-id="organizationsListItem"></li>
+                        </ul>
+                        <ul data-montage-id="historyList" class="History-list">
+                            <li data-montage-id="historyListItem"></li>
+                        </ul>
                     </div>
-                    <div data-montage-id="newAppFormCondition" class="NewForm">
-                        <fieldset class="NewForm-fieldset">
-                            <label class="NewForm-label">Name</label>
-                            <input data-montage-id="newAppName" placeholder="my-app" type="text">
-                        </fieldset>
-                        <fieldset class="NewForm-fieldset">
-                            <label class="NewForm-label">Description </label>
-                            <textarea data-montage-id="newAppDescription" placeholder="(optional)"></textarea>
-                        </fieldset>
-                        <div data-montage-id="newAppError" class="NewForm-error"></div>
-                        <footer class="NewForm-bar">
-                            <button data-montage-id="cancelNewAppButton" class="Button"></button>
-                            <button data-montage-id="createNewAppButton" class="Button Button--action"></button>
-                        </footer>
-                    </div>
+
                 </section>
-                
-                <section class="Projects-section Settings">
-                    <button data-montage-id="authorizePrivateAccessButton" data-icon="private" class="ButtonLink">Authorize private repositories</button>
-                    <button data-montage-id="removeWorkspaces" data-icon="delete" class="ButtonLink"></button>
-                </section>
-                                
+
+                <div class="Footer">
+                    <section class="Projects-section Settings">
+                        <button data-montage-id="authorizePrivateAccessButton" data-icon="private" class="ButtonLink">Authorize private repositories</button>
+                        <button data-montage-id="removeWorkspaces" data-icon="delete" class="ButtonLink"></button>
+                    </section>
+
+                    <section class="Projects-section">
+                        <div data-montage-id="newAppButtonCondition">
+                            <button data-montage-id="newAppButton" class="NewProjectButton"></button>
+                        </div>
+                        <div data-montage-id="newAppFormCondition" class="NewForm">
+                            <fieldset class="NewForm-fieldset">
+                                <label class="NewForm-label">Name</label>
+                                <input data-montage-id="newAppName" placeholder="my-app" type="text">
+                            </fieldset>
+                            <fieldset class="NewForm-fieldset">
+                                <label class="NewForm-label">Description </label>
+                                <textarea data-montage-id="newAppDescription" placeholder="(optional)"></textarea>
+                            </fieldset>
+                            <div data-montage-id="newAppError" class="NewForm-error"></div>
+                            <footer class="NewForm-bar">
+                                <button data-montage-id="cancelNewAppButton" class="Button"></button>
+                                <button data-montage-id="createNewAppButton" class="Button Button--action"></button>
+                            </footer>
+                        </div>
+                    </section>
+                </div>
+
             </div>
-            
+
         </div>
 
     </div>

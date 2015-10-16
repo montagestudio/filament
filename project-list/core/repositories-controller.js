@@ -1,133 +1,76 @@
 /* global localStorage */
-var Montage = require("montage/core/core").Montage;
-var Promise = require("montage/core/promise").Promise;
-var github = require("adaptor/client/core/github");
-var RangeController = require("montage/core/range-controller").RangeController;
-var RepositoryController = require("adaptor/client/core/repository-controller").RepositoryController;
+/* jshint -W079 */
+var Montage = require("montage/core/core").Montage,
+    Promise = require("montage/core/promise").Promise,
+    github = require("adaptor/client/core/github"),
+    RangeController = require("montage/core/range-controller").RangeController,
+    RepositoryController = require("adaptor/client/core/repository-controller").RepositoryController;
+/* jshint +W079 */
 
-var MAX_RECENT_ITEMS = 10;
-var LOCAL_STORAGE_KEY = "cachedOwnedRepositories";
-var LOCAL_STORAGE_REPOSITORIES_COUNT_KEY = "cachedProcessedRepositoriesCount";
+var SORT_PATH = "-pushed_at",
+    TYPE_USER = 'USER',
+    LOGIN_MY_REPOS = 'my_repos',
+    LOGIN_CONTRIBUTING_ON = 'contributing_on',
+    LOCAL_STORAGE_INDEX = 'cachedRepositories',
+    LOCAL_STORAGE_PREFIX = 'cachedRepositories_',
+    LOCAL_STORAGE_REPOSITORIES_COUNT_KEY = "cachedProcessedRepositoriesCount";
 
-var Group = Montage.specialize( {
-
-    constructor: {
-        value: function Group(name) {
-            this.name = name;
-        }
+/* jshint -W106 */
+var GitUser = Montage.specialize({
+    login: {
+        value: null
     },
 
-    name: {
+    displayedName: {
         value: null
-    }
+    },
 
+    publicRepositories: {
+        value: null
+    },
+
+    privateRepositories: {
+        value: null
+    },
+
+    collaborators: {
+        value: null
+    },
+
+    listOwnedRepositories: {
+        value: true
+    },
+
+    listContributedRepositories: {
+        value: true
+    },
+
+    initWithGithubUser: {
+        value: function(githubUser) {
+            this.login = githubUser.login;
+            this.displayedName = githubUser.name;
+            this.publicRepositories = githubUser.public_repos;
+            this.privateRepositories = githubUser.total_private_repos;
+            this.collaborators = githubUser.collaborators || 0;
+            this.type = TYPE_USER;
+            return this;
+        }
+    }
 });
+/* jshint +W106 */
 
 var RepositoriesController = Montage.specialize({
 
-    constructor: {
-        value: function RepositoriesController() {
-            this.groups = [this.recent, this.owned];
-            this.addPathChangeListener("selectedGroup", this, "_getListOfRepositories");
-            this._initRecentRepositories();
-            this.recentRepositoriesContent = new RangeController().initWithContent(this._recentRepositoriesCache);
-            this._githubApi = github.githubApi();
-            this._ownedRepositoriesContent = new RangeController().initWithContent([]);
-            this._ownedRepositoriesContent.sortPath = "-pushed_at";
-
-            //initialize default value
-            this.selectedGroup = this.owned;
-        }
+    isUserSelected: {
+        value: null
     },
 
-
-    /**
-     * Open the specified repository by navigating to the expected URL
-     * @param {Object} repository The repository to open
-     */
-    open: {
-        value: function(repository) {
-            window.location.pathname = "/" + repository.owner.login + "/" + repository.name;
-        }
+    organizationsController: {
+        value: null
     },
 
-    /**
-     * Create a repository with the specified name and description
-     *
-     * @param {String} name The name of the repository to create
-     * @param {Object} options An object of key-value pair configuration options
-     * @return {Promise} A promise for the created repository
-     */
-    createRepository: {
-        value: function(name, options) {
-            var self = this;
-
-            return this._githubApi.then(function(githubApi) {
-                return githubApi.createRepository(name, options)
-                .then(function(repo) {
-                    /* jshint -W106 */
-                    // This is the format expected by the github API, ignoring for now
-                    repo.pushed_at = +new Date(repo.pushed_at);
-                    /* jshint +W106 */
-                    self._ownedRepositoriesContent.content.push(repo);
-                    self.cacheUserRepositories();
-                    return repo;
-                });
-            });
-        }
-    },
-
-    /**
-     * Fork a repository from the specified owner and name
-     *
-     * @param {String} owner The owner/organization of the repository to fork from
-     * @param {String} name An The name of the repository to fork
-     * @param {String} organization The organization where to fork to (optional)
-     * @return {Promise} A promise for the forked repository
-     */
-    forkRepository: {
-        value: function(owner, name, organization) {
-            var self = this;
-            return this._githubApi.then(function(githubApi) {
-                return githubApi.forkRepositoryInOrganization(owner, name, organization)
-                .then(function(repo) {
-                    /* jshint -W106 */
-                    // This is the format expected by the github API, ignoring for now
-                    repo.pushed_at = +new Date(repo.pushed_at);
-                    /* jshint +W106 */
-                    self._ownedRepositoriesContent.content.push(repo);
-                    return repo;
-                });
-            });
-        }
-    },
-
-    /**
-     * Initialize the repository for the specified login with the specified repositoryName
-     *
-     * Note this does not validate that the repository specified exists or is receptive
-     * to being initialized with a montage project
-     *
-     * @param {String} ownerLogin The login name of the user
-     * @param {String} repositoryName The name of the repository to initialize
-     * @return {Promise} A promise for the initialized repository workspace
-     */
-    initializeRepository: {
-        value: function (ownerLogin, repositoryName) {
-            var repositoryController = new RepositoryController();
-            repositoryController.init(ownerLogin, repositoryName);
-            return repositoryController.initializeRepositoryWorkspace();
-        }
-    },
-
-    _getListOfRepositories: {
-        value: function() {
-            if (this.selectedGroup === this.recent) {
-                this.contentController = this.recentRepositoriesContent;
-            } else if (this.selectedGroup === this.owned) {
-                this.contentController = this._ownedRepositoriesContent;
-            }
-        }
+    ownedRepositories: {
+        value: null
     },
 
     _repositoriesCount: {
@@ -156,272 +99,11 @@ var RepositoriesController = Montage.specialize({
         value: 0
     },
 
-    updateUserRepositories: {
-        value: function(page) {
-            var self = this,
-                perPage = 30,
-                deferred = Promise.defer();
-
-            page = (page)? page : 1;
-
-            self._ownedRepositoriesContent.content.clear();
-            // get repo list from github
-            self._githubApi.then(function (githubApi) {
-                //jshint -W106
-                var options = {page: page, per_page: perPage};
-                //jshint +W106
-                return githubApi.listRepositories(options);
-            })
-            .then(function (repos) {
-                var pendingCommands = repos.length;
-
-                self.repositoriesCount += repos.length;
-
-                // HACK: workaround for progress not being able to have max = 0
-                // it's set as 1. (MON-402)
-                if (self.repositoriesCount === 0) {
-                    self.processedRepositories = 1;
-                }
-                repos.forEach(function(repo) {
-                    self._isValidRepository(repo)
-                   .then(function(isValidRepository) {
-                        if (isValidRepository) {
-                            //jshint -W106
-                            repo.pushed_at = +new Date(repo.pushed_at);
-                            //jshint +W106
-                            self._ownedRepositoriesContent.content.push(repo);
-                        }
-                        self.processedRepositories++;
-                        if (--pendingCommands === 0) {
-                            deferred.resolve();
-                        }
-                    }).done();
-                });
-
-                if (repos.length >= perPage) {
-                    // If there's another page then we resolve when that's
-                    // resolved
-                    deferred.resolve(self.updateUserRepositories(page + 1));
-                }
-            }).done();
-
-            return deferred.promise;
-        }
-    },
-
-    /**
-     * A repository is valid if it's a Montage repository or an empty
-     * repository.
-     */
-    _isValidRepository: {
-        value: function(repo) {
-            var repositoryController = new RepositoryController();
-
-            repositoryController.init(repo.owner.login, repo.name);
-
-            return repositoryController.isMontageRepository()
-            .then(function(value) {
-                return value || repositoryController.isRepositoryEmpty();
-            });
-        }
-    },
-
-    _recentRepositoriesCache: {
-        value: null
-    },
-
-    addRepositoryToRecent: {
-        value: function(repository) {
-            var recentRepositories = this._recentRepositoriesCache;
-
-            var pos = -1;
-            recentRepositories.some(function(item, index) {
-                if (item.name === repository.repo) {
-                    pos = index;
-                    return true;
-                }
-                return false;
-            });
-            if (pos === -1) {   // New item
-                var toRemove = recentRepositories.length - (MAX_RECENT_ITEMS - 1);
-                if (toRemove > 0) {
-                    recentRepositories.splice(MAX_RECENT_ITEMS, toRemove);
-                }
-            } else {            //Existing item
-                recentRepositories.splice(pos, 1);
-            }
-
-            recentRepositories.unshift(
-               this._createRepositoryArchive(repository)
-            );
-            this._setRecentRepositories(recentRepositories);
-        }
-    },
-
-    _createRepositoryArchive: {
-        value: function(repository) {
-            var project = {
-                owner: {
-                    login: repository.owner
-                },
-                name: repository.repo
-            };
-            return project;
-        }
-    },
-
-
-    _initRecentRepositories: {
-        value: function() {
-            //init local storage if needed
-            var recentRepositories = localStorage.getItem("recent_repositories");
-            if (!recentRepositories) {
-                this._recentRepositoriesCache = [];
-                this._setRecentRepositories(this._recentRepositoriesCache);
-            } else {
-                recentRepositories = JSON.parse(recentRepositories);
-
-                if (recentRepositories.length > MAX_RECENT_ITEMS) {
-                    recentRepositories.splice(MAX_RECENT_ITEMS, recentRepositories.length - MAX_RECENT_ITEMS);
-                }
-                this._recentRepositoriesCache = recentRepositories;
-            }
-        }
-    },
-
-    _validateRecentRepositories: {
-        value: function() {
-            var recentRepos = this._recentRepositoriesCache,
-                nbrRecentRepos = recentRepos.length,
-                repoNames,
-                i;
-
-            repoNames = this._ownedRepositoriesContent.organizedContent.map(function(item) {
-                return item.name;
-            });
-
-            for (i = nbrRecentRepos - 1; i >= 0; i --) {
-                if (repoNames.indexOf(recentRepos[i].name.toLowerCase()) === -1) {
-                    recentRepos.splice(i, 1);
-                }
-            }
-        }
-    },
-
-    _setRecentRepositories: {
-        value: function(recentRepositories) {
-            localStorage.setItem("recent_repositories", JSON.stringify(recentRepositories));
-        }
-    },
-
-    _gotOwnedRepositoriesContent: {
-        value: false
-    },
-
-    _ownedRepositoriesContent: {
-        value: null
-    },
-
-    ownedRepositoriesContent: {
-        get: function () {
-            if (!this._gotOwnedRepositoriesContent) {
-                this._gotOwnedRepositoriesContent = true;
-                var self = this;
-
-                var cachedOwnedRepositories = localStorage.getItem(LOCAL_STORAGE_KEY);
-                if (cachedOwnedRepositories) {
-                    try {
-                        self._ownedRepositoriesContent.content.addEach(JSON.parse(cachedOwnedRepositories));
-                        // TODO: call self._validateUserRepositoriesCache if we ever change the Github API scope to have `user`
-                    } catch (error) {
-                        console.warn("Failed to parse cached owned repositories because " + error.message);
-                        localStorage.removeItem(LOCAL_STORAGE_KEY);
-                    }
-                }
-
-                // second if to fetch repositories if the JSON.parse failed
-                if (!this._ownedRepositoriesContent.content.length) {
-                    this.updateAndCacheUserRepositories().done();
-                }
-            }
-
-            return this._ownedRepositoriesContent;
-        },
-        set: function (value) {
-            this._ownedRepositoriesContent = value;
-        }
-    },
-
-    _validateUserRepositoriesCache: {
-        value: function () {
-            var self = this;
-            return this._githubApi.then(function(githubApi) {
-                return githubApi.getUser().then(function(user) {
-                    /* jshint -W106 */
-                    if (!user.public_repos || !user.total_private_repos) {
-                        throw "Failed to validate cache, Github's API result is incomplete";
-                    }
-                    var userRepositoriesCount = user.public_repos + user.total_private_repos,
-                        cachedCount = localStorage.getItem(LOCAL_STORAGE_REPOSITORIES_COUNT_KEY),
-                        count;
-                    userRepositoriesCount += (user.collaborators) ? user.collaborators : 0;
-                    /* jshint +W106 */
-                    if (!cachedCount) {
-                        // no cache count to check against
-                        self.updateAndCacheUserRepositories();
-                    }
-                    count = JSON.parse(cachedCount);
-                    if (count !== userRepositoriesCount) {
-                        self.updateAndCacheUserRepositories();
-                    }
-                });
-            });
-        }
-    },
-
-    clearCachedRepositories: {
-        value: function () {
-            this.repositoriesCount = 0;
-            localStorage.removeItem(LOCAL_STORAGE_REPOSITORIES_COUNT_KEY);
-
-            this.processedRepositories = 0;
-            localStorage.removeItem(LOCAL_STORAGE_KEY);
-
-            return Promise();
-        }
-    },
-
-    updateAndCacheUserRepositories: {
-        value: function () {
-            var self = this;
-            this.repositoriesCount = 0;
-            this.processedRepositories = 0;
-            return this.updateUserRepositories().then(function () {
-                self.cacheUserRepositories();
-            });
-        }
-    },
-
-    cacheUserRepositories: {
-        value: function () {
-            // cache repositories
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this._ownedRepositoriesContent.content));
-            // cache repositories processes count
-            localStorage.setItem(LOCAL_STORAGE_REPOSITORIES_COUNT_KEY, JSON.stringify(this.repositoriesCount));
-            // validate recent repositories cache
-            this._validateRecentRepositories();
-        }
-    },
-
-    selectedGroup: {
-        value: null
-    },
-
-    _authToken: {
-        value: null
-    },
-
     _githubApi: {
+        value: null
+    },
+
+    _githubUser: {
         value: null
     },
 
@@ -433,20 +115,331 @@ var RepositoriesController = Montage.specialize({
         value: null
     },
 
-    groups: {
+    _repositoriesContents: {
         value: null
     },
 
-    recent: {
-        value: new Group("Recent")
+    _selectedOrganization: {
+        value: null
     },
 
-    owned: {
-        value: new Group("Owned")
+    constructor: {
+        value: function RepositoriesController() {
+            this._repositoriesContents = {};
+            this.organizationsController = new RangeController().initWithContent([]);
+
+            var self = this;
+            this._githubApi = github.githubApi();
+            this._githubApi.then(function(githubApi) {
+                self._githubUser = githubApi.getUser()
+                    .then(function(user) {
+                        var gitUser = new GitUser().initWithGithubUser(user),
+                            contributedUser = new GitUser().initWithGithubUser(user);
+                        gitUser.listContributedRepositories = false;
+                        gitUser.displayedName = 'My repositories';
+                        gitUser.login = LOGIN_MY_REPOS;
+                        self.organizationsController.add(gitUser);
+                        self.organizationsController.select(gitUser);
+                        contributedUser.listOwnedRepositories = false;
+                        contributedUser.displayedName = 'Contributing on';
+                        contributedUser.login = LOGIN_CONTRIBUTING_ON;
+                        self.organizationsController.add(contributedUser);
+                        return gitUser;
+                    });
+            });
+        }
     },
 
-    all: {
-        value: new Group("All")
+    loadOrganizations: {
+        value: function() {
+            var self = this;
+            this._githubApi
+                .then(function(githubApi) {
+                    githubApi.listUserOrganizations()
+                        .then(function(organizations) {
+                            self.organizationsController.addEach(organizations);
+                        });
+                });
+        }
+    },
+
+    /**
+     * Open the specified repository by navigating to the expected URL
+     * @param {Object} repository The repository to open
+     */
+    open: {
+        value: function(repository) {
+            window.location.pathname = "/" + repository.owner.login + "/" + repository.name;
+        }
+    },
+
+    /**
+     * Create a repository with the specified name and description
+     *
+     * @param {String} name The name of the repository to create
+     * @param {Object} options An object of key-value pair configuration options
+     * @return {Promise} A promise for the created repository
+     */
+    createRepository: {
+        value: function(name, options) {
+            var self = this,
+                githubUser;
+
+            return this._githubUser
+                .then(function(user) {
+                    githubUser = user;
+                    return self._githubApi;
+                })
+                .then(function(githubApi) {
+                    return githubApi.createRepository(name, options);
+                })
+                .then(function(repo) {
+                    /* jshint -W106 */
+                    // This is the format expected by the github API, ignoring for now
+                    repo.pushed_at = +new Date(repo.pushed_at);
+                    /* jshint +W106 */
+                    self._repositoriesContents[githubUser.login].content.push(repo);
+                    self.cacheOwnerRepositories(githubUser);
+                    return repo;
+                });
+        }
+    },
+
+    /**
+     * Fork a repository from the specified owner and name
+     *
+     * @param {String} owner The owner/organization of the repository to fork from
+     * @param {String} name An The name of the repository to fork
+     * @param {String} organization The organization where to fork to (optional)
+     * @return {Promise} A promise for the forked repository
+     */
+    forkRepository: {
+        value: function(owner, name, organization) {
+            var self = this;
+
+            return this._githubUser
+                .then(function(user) {
+                    organization = organization || user;
+                    return self._githubApi;
+                })
+                .then(function(githubApi) {
+                    return githubApi.forkRepositoryInOrganization(owner, name, organization);
+                })
+                .then(function(repo) {
+                    /* jshint -W106 */
+                    // This is the format expected by the github API, ignoring for now
+                    repo.pushed_at = +new Date(repo.pushed_at);
+                    /* jshint +W106 */
+                    self._repositoriesContents[organization.login].content.push(repo);
+                    self.cacheOwnerRepositories(organization);
+                    return repo;
+                });
+        }
+    },
+
+    /**
+     * Initialize the repository for the specified login with the specified repositoryName
+     *
+     * Note this does not validate that the repository specified exists or is receptive
+     * to being initialized with a montage project
+     *
+     * @param {String} ownerLogin The login name of the user
+     * @param {String} repositoryName The name of the repository to initialize
+     * @return {Promise} A promise for the initialized repository workspace
+     */
+    initializeRepository: {
+        value: function (ownerLogin, repositoryName) {
+            var repositoryController = new RepositoryController();
+            repositoryController.init(ownerLogin, repositoryName);
+            return repositoryController.initializeRepositoryWorkspace();
+        }
+    },
+
+    _increaseProcessedRepositories: {
+        value: function() {
+            this.processedRepositories++;
+        }
+    },
+
+    selectOrganization: {
+        value: function(organization) {
+            var self = this;
+            this.organizationsController.clearSelection();
+            this.organizationsController.select(organization);
+            self._selectedOrganization = organization;
+            if (typeof self._repositoriesContents[organization.login] === "undefined") {
+                self._repositoriesContents[organization.login] = new RangeController().initWithContent([]);
+                self._repositoriesContents[organization.login].sortPath = SORT_PATH;
+            }
+            self.isUserSelected = organization.type === TYPE_USER && organization.login === LOGIN_MY_REPOS;
+            self._loadOwnerRepositories(organization)
+                .then(function(isFromCache) {
+                    if (!isFromCache) {
+                        self.cacheOwnerRepositories(organization);
+                    }
+                    if (self.isUserSelected) {
+                        self.ownedRepositories = self._repositoriesContents[organization.login].content;
+                    }
+                });
+            self.contentController = self._repositoriesContents[organization.login];
+        }
+    },
+
+    updateRepositories: {
+        value: function() {
+            var self = this,
+                owner = this._selectedOrganization;
+            localStorage.removeItem(LOCAL_STORAGE_PREFIX + owner.login);
+            if (this._repositoriesContents.hasOwnProperty(owner.login)) {
+                this._repositoriesContents[owner.login].content.clear();
+            } else {
+                this._repositoriesContents[owner.login] = new RangeController().initWithContent([]);
+                this._repositoriesContents[owner.login].sortPath = SORT_PATH;
+            }
+            return this._loadOwnerRepositories(owner)
+                .then(function() {
+                    self.cacheOwnerRepositories(owner);
+                });
+        }
+    },
+
+    _loadOwnerRepositoriesFromCache: {
+        value: function(owner) {
+            var cachedData = localStorage.getItem(LOCAL_STORAGE_PREFIX + owner.login);
+            if (cachedData) {
+                var parsedData = JSON.parse(cachedData);
+                this._repositoriesContents[owner.login] = new RangeController().initWithContent(parsedData);
+                this._repositoriesContents[owner.login].sortPath = SORT_PATH;
+            }
+        }
+    },
+
+    _loadOwnerRepositories: {
+        value: function(owner, page) {
+            var ownerName = owner.login;
+            this._loadOwnerRepositoriesFromCache(owner);
+            if (page || typeof this._repositoriesContents[owner.login] === "undefined" || this._repositoriesContents[owner.login].content.length === 0) {
+                var self = this,
+                    perPage = 30;
+
+                if (!page) {
+                    page = 1;
+                    self.processedRepositories = 0;
+                    self._repositoriesCount = 0;
+                }
+                page = page || 1;
+
+                return self._githubApi
+                    .then(function (githubApi) {
+                        //jshint -W106
+                        var options = {page: page, per_page: perPage};
+                        //jshint +W106
+                        if (owner.type === TYPE_USER) {
+                            if (owner.login === LOGIN_MY_REPOS) {
+                                return githubApi.listOwnedRepositories(options);
+                            } else if (owner.login === LOGIN_CONTRIBUTING_ON) {
+                                return githubApi.listContributingRepositories(options);
+                            }
+                        } else {
+                            return githubApi.listOrganizationRepositories(ownerName, options);
+                        }
+                    })
+                    .then(function (repositories) {
+                        self.repositoriesCount += repositories.length;
+                        var filteringPromises = [];
+                        for (var i = 0, repositoriesCount = repositories.length; i < repositoriesCount; i++) {
+                            filteringPromises.push(self._filterValidRepositories(repositories[i], self._repositoriesContents[ownerName]));
+                        }
+                        if (repositories.length >= perPage) {
+                            return self._loadOwnerRepositories(owner, ++page);
+                        } else {
+                            return Promise.all(filteringPromises)
+                                .then(function() {
+                                    return false;
+                                });
+                        }
+                    });
+            } else {
+                return Promise.resolve(true);
+            }
+        }
+    },
+
+    _filterValidRepositories: {
+        value: function (repository, targetRangeController) {
+            var self = this;
+            return this._isRepositoryValid(repository)
+                .then(function (isRepositoryValid) {
+                    if (isRepositoryValid) {
+                        //jshint -W106
+                        repository.pushed_at = +new Date(repository.pushed_at);
+                        //jshint +W106
+                        targetRangeController.content.push(repository);
+                    }
+                    self._increaseProcessedRepositories();
+                    return isRepositoryValid;
+                });
+        }
+    },
+
+    /**
+     * A repository is valid if it's a Montage repository or an empty
+     * repository.
+     */
+    _isRepositoryValid: {
+        value: function(repo) {
+            var repositoryController = new RepositoryController().init(repo.owner.login, repo.name),
+                isRepositoryValid;
+
+            return repositoryController.isMontageRepository()
+                .then(function(isMontageRepository) {
+                    return isMontageRepository || repositoryController.isRepositoryEmpty();
+                })
+                .then(function(isValid) {
+                    isRepositoryValid = isValid;
+                    if (repo.fork) {
+                        return repositoryController.getParent();
+                    }
+                    return Promise.resolve();
+                })
+                .then(function(parent) {
+                    if (parent) {
+                        repo.parent = parent;
+                    }
+                    return isRepositoryValid;
+                });
+        }
+    },
+
+    clearCachedRepositories: {
+        value: function () {
+            this.repositoriesCount = 0;
+            localStorage.removeItem(LOCAL_STORAGE_REPOSITORIES_COUNT_KEY);
+
+            this.processedRepositories = 0;
+            var cachedOrganizationsValue = localStorage.getItem(LOCAL_STORAGE_INDEX) || "[]",
+                cachedOrganizations = JSON.parse(cachedOrganizationsValue);
+            for (var i = 0, organizationsCount = cachedOrganizations.length; i < organizationsCount; i++) {
+                localStorage.removeItem(cachedOrganizations[i]);
+            }
+            localStorage.removeItem(LOCAL_STORAGE_INDEX);
+
+            return Promise();
+        }
+    },
+
+    cacheOwnerRepositories: {
+        value: function (owner) {
+            if (this._repositoriesContents.hasOwnProperty(owner.login)) {
+                var cache = this._repositoriesContents[owner.login].content;
+                localStorage.setItem(LOCAL_STORAGE_PREFIX + owner.login, JSON.stringify(cache));
+                var cachedOrganizationsValue = localStorage.getItem(LOCAL_STORAGE_INDEX) || "[]",
+                    cachedOrganizations = JSON.parse(cachedOrganizationsValue);
+
+                cachedOrganizations.push(LOCAL_STORAGE_PREFIX + owner.login);
+                localStorage.setItem(LOCAL_STORAGE_INDEX, JSON.stringify(cachedOrganizations));
+            }
+        }
     }
 });
 
