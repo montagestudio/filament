@@ -20,7 +20,13 @@
                 },
                 "bindings": {
                     "label":  {"<-": "@owner.organization.displayedName || @owner.organization.login"}
-                }
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             }
         }
     </script>

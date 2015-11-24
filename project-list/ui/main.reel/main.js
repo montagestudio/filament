@@ -64,17 +64,15 @@ exports.Main = Montage.create(Component, {
 
     enterDocument: {
         value: function (firstTime) {
-            if (!firstTime) {
-                return;
-            }
+            if (firstTime) {
+                if (window.location.hash === "#new") {
+                    this.showNewAppForm = true;
+                }
 
-            if (window.location.hash === "#new") {
-                this.showNewAppForm = true;
+                this._upkeepProgressBar();
+                this._getWorkspaces();
+                this.repositoriesController.loadOrganizations();
             }
-
-            this._upkeepProgressBar();
-            this._getWorkspaces();
-            this.repositoriesController.loadOrganizations();
         }
     },
 
@@ -269,16 +267,6 @@ exports.Main = Montage.create(Component, {
 
             if (owner && repository) {
                 this._forkRepository(owner, repository).done();
-            }
-        }
-    },
-
-    handleOrganizationsListItemAction: {
-        value: function(event) {
-            var repositoriesController = this.repositoriesController;
-            var selection = repositoriesController.organizationsController.selection;
-            if (selection && selection.indexOf(event.target.value) === -1) {
-                repositoriesController.selectOrganization(event.target.value);
             }
         }
     },

@@ -222,7 +222,8 @@
                     "element": {"#": "organizationsListItem"}
                 },
                 "bindings": {
-                    "organization": {"<-": "@organizationsList:iteration.object"}
+                    "organization": {"<-": "@organizationsList:iteration.object"},
+                    "repositoriesController": {"<-": "@owner.repositoriesController"}
                 }
             },
 
