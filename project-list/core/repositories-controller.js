@@ -264,8 +264,6 @@ var RepositoriesController = Montage.specialize({
     selectOrganization: {
         value: function(organization) {
             var self = this;
-            this.organizationsController.clearSelection();
-            this.organizationsController.select(organization);
             self._selectedOrganization = organization;
             if (typeof self._repositoriesContents[organization.login] === "undefined") {
                 self._repositoriesContents[organization.login] = new RangeController().initWithContent([]);

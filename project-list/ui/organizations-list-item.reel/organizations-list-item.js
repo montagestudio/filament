@@ -7,13 +7,14 @@ exports.OrganizationsListItem = Montage.create(Component, {
         value: null
     },
 
-    repositoriesController: {
+    organizationsController: {
         value: null
     },
 
     handleOrganizationNameAction: {
         value: function() {
-            this.repositoriesController.selectOrganization(this.organization);
+            this.organizationsController.clearSelection();
+            this.organizationsController.select(this.organization);
         }
     }
 });
