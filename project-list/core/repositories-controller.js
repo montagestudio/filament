@@ -138,6 +138,7 @@ var RepositoriesController = Montage.specialize({
                         gitUser.listContributedRepositories = false;
                         gitUser.displayedName = 'My repositories';
                         gitUser.login = LOGIN_MY_REPOS;
+                        gitUser.canCreateRepo = true;
                         self.organizationsController.add(gitUser);
                         self.organizationsController.select(gitUser);
                         contributedUser.listOwnedRepositories = false;
@@ -181,7 +182,7 @@ var RepositoriesController = Montage.specialize({
      * @return {Promise} A promise for the created repository
      */
     createRepository: {
-        value: function(name, options) {
+        value: function(repositoryName, options) {
             var self = this,
                 githubUser;
 
@@ -191,7 +192,13 @@ var RepositoriesController = Montage.specialize({
                     return self._githubApi;
                 })
                 .then(function(githubApi) {
-                    return githubApi.createRepository(name, options);
+                    var repositoryCreationPromise;
+                    if (self._selectedOrganization.type === TYPE_USER) {
+                        repositoryCreationPromise = githubApi.createUserRepository(repositoryName, options);
+                    } else {
+                        repositoryCreationPromise = githubApi.createOrganizationRepository(self._selectedOrganization.login, repositoryName, options);
+                    }
+                    return repositoryCreationPromise;
                 })
                 .then(function(repo) {
                     /* jshint -W106 */
@@ -269,7 +276,6 @@ var RepositoriesController = Montage.specialize({
                 self._repositoriesContents[organization.login] = new RangeController().initWithContent([]);
                 self._repositoriesContents[organization.login].sortPath = SORT_PATH;
             }
-            self.isUserSelected = organization.type === TYPE_USER && organization.login === LOGIN_MY_REPOS;
             self._loadOwnerRepositories(organization)
                 .then(function(isFromCache) {
                     if (!isFromCache) {
