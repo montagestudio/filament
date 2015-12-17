@@ -3,8 +3,7 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+var Component = require("montage/ui/component").Component;
 
 var converter = {
     convert: function(value) {
@@ -34,7 +33,7 @@ var converter = {
     @class module:"ui/array.reel".Array
     @extends module:montage/ui/component.Component
 */
-exports.Array = Montage.create(Component, /** @lends module:"ui/array.reel".Array# */ {
+exports.Array = Component.specialize(/** @lends module:"ui/array.reel".Array# */ {
 
     constructor: {
         value: function Array() {

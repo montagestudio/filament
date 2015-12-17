@@ -1,11 +1,10 @@
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
+var Component = require("montage/ui/component").Component,
     MimeTypes = require("core/mime-types"),
     NotModifiedError = require("core/error").NotModifiedError,
     replaceDroppedTextPlain = require("ui/drag-and-drop").replaceDroppedTextPlain,
     defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
-exports.BindingJig = Montage.create(Component, {
+exports.BindingJig = Component.specialize({
 
     _focusTimeout: {
         value: null

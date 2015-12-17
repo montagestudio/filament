@@ -1,12 +1,10 @@
-var core = require("montage/core/core"),
-    Montage = core.Montage,
-    Bindings = core.Bindings,
+var Bindings = require("montage/core/core").Bindings,
     Component = require("montage/ui/component").Component,
     repositoriesController = require("../../core/repositories-controller").repositoriesController,
     UserController = require("adaptor/client/core/user-controller").UserController,
     requestOk = require("core/request").requestOk;
 
-exports.Main = Montage.create(Component, {
+exports.Main = Component.specialize({
 
     version: {
         value: "X"

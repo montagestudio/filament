@@ -6,7 +6,7 @@ describe("package document", function () {
     var packageDocument;
 
     beforeEach(function() {
-        packageDocument = PackageDocument.create();
+        packageDocument = new PackageDocument();
         packageDocument._package = {
             dependencies: {},
             devDependencies:{}

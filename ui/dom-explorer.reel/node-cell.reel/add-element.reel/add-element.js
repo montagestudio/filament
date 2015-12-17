@@ -2,15 +2,14 @@
  * @module ui/add-element.reel
  * @requires montage/ui/component
  */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
+var Component = require("montage/ui/component").Component,
     MimeTypes = require("core/mime-types");
 
 /**
  * @class AddElement
  * @extends module:montage/ui/component.Component
  */
-exports.AddElement = Montage.create(Component, /** @lends AddElement# */ {
+exports.AddElement = Component.specialize(/** @lends AddElement# */ {
 
     type: {
         value: null

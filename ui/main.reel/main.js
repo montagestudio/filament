@@ -1,11 +1,10 @@
-var Montage = require("montage/core/core").Montage,
-    Component = require("montage/ui/component").Component,
+var Component = require("montage/ui/component").Component,
     application = require("montage/core/application").application;
 
 // Browser Compatibility
 require("core/compatibility");
 
-exports.Main = Montage.create(Component, {
+exports.Main = Component.specialize({
 
     projectController: {
         value: null

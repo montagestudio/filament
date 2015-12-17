@@ -1,9 +1,8 @@
-var Montage = require("montage/core/core").Montage,
-    CoreExtension = require("filament-extension/core/extension").Extension,
+var CoreExtension = require("filament-extension/core/extension").Extension,
     Promise = require("montage/core/promise").Promise,
     FlowEditorController = require("flow-editor/core/controller").Controller;
 
-exports.Extension = Montage.create(CoreExtension, {
+exports.Extension = CoreExtension.specialize({
 
     constructor: {
         value: function Extension() {

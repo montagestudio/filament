@@ -4,14 +4,13 @@
  * @requires montage/ui/component
  * @requires composer/translate-composer
  */
-var Montage = require("montage").Montage,
-    AbstractSlider = require("montage/ui/base/abstract-slider").AbstractSlider;
+var AbstractSlider = require("montage/ui/base/abstract-slider").AbstractSlider;
 
 /**
  * @class SplitControl
  * @extends AbstractSlider
  */
-exports.SplitControl = Montage.create(AbstractSlider, /** @lends SplitControl# */ {
+exports.SplitControl = AbstractSlider.specialize(/** @lends SplitControl# */ {
 
     // Lifecycle
     constructor: {

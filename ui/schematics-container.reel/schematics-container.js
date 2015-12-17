@@ -3,15 +3,14 @@
  @requires montage
  @requires montage/ui/component
  */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+var Component = require("montage/ui/component").Component;
 
 /**
  Description TODO
  @class module:"./schematics-container.reel".SchematicsContainer
  @extends module:montage/ui/component.Component
  */
-exports.SchematicsContainer = Montage.create(Component, /** @lends module:"./schematics-container.reel".SchematicsContainer# */ {
+exports.SchematicsContainer = Component.specialize(/** @lends module:"./schematics-container.reel".SchematicsContainer# */ {
 
     constructor: {
         value: function SchematicsContainer() {

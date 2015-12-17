@@ -14,8 +14,8 @@ describe("core/project-controller-file-spec", function () {
     beforeEach(function () {
         mockMenu = menuMock({
             menuItems: {
-                "newComponent": Montage.create(),
-                "newModule": Montage.create()
+                "newComponent": Montage.specialize({}),
+                "newModule": Montage.specialize({})
             }
         });
 
@@ -25,8 +25,8 @@ describe("core/project-controller-file-spec", function () {
 
         editorController = editorControllerMock();
 
-        viewController = ViewController.create();
-        projectController = ProjectController.create().init(bridge, viewController, editorController);
+        viewController = new ViewController();
+        projectController = new ProjectController().init(bridge, viewController, editorController);
     });
 
     describe("closing a file", function () {
@@ -36,7 +36,7 @@ describe("core/project-controller-file-spec", function () {
             var unopenedDocument;
 
             beforeEach(function () {
-                unopenedDocument = Montage.create();
+                unopenedDocument = Montage.specialize({});
                 unopenedDocument.url = "notOpen";
                 unopenedDocument.destroy = Function.noop;
             });

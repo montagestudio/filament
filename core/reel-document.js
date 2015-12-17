@@ -792,7 +792,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 doc.body.appendChild(importedNode);
             }
 
-            return Template.create().initWithDocument(doc, this._packageRequire);
+            return new Template().initWithDocument(doc, this._packageRequire);
         }
     },
 
@@ -872,7 +872,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 doc.body.innerHTML = htmlFragment;
             }
 
-            return Template.create().initWithDocument(doc, this._packageRequire);
+            return new Template().initWithDocument(doc, this._packageRequire);
         }
     },
 
@@ -900,7 +900,7 @@ exports.ReelDocument = EditingDocument.specialize({
         value: function (templateContent, parentElement, nextSiblingElement, stageElement) {
             var self = this;
 
-            return Template.create().initWithHtml(templateContent, this._packageRequire).then(function (template) {
+            return new Template().initWithHtml(templateContent, this._packageRequire).then(function (template) {
                 return self.addObjectsFromTemplate(template, parentElement, nextSiblingElement, stageElement);
             }).then(function (objects) {
                 // only if there's only one object?
@@ -1217,7 +1217,7 @@ exports.ReelDocument = EditingDocument.specialize({
         value: function (parentElement, nextSiblingElement) {
             var self = this;
             return function mergeChild (newChild) {
-                var nodeProxy = NodeProxy.create().init(newChild, this);
+                var nodeProxy = new NodeProxy().init(newChild, this);
                 if (nextSiblingElement) {
                     self._insertNodeBeforeTemplateNode(nodeProxy, nextSiblingElement);
                 } else {
@@ -2071,7 +2071,7 @@ exports.ReelDocument = EditingDocument.specialize({
             if (element.children.length) {
                 throw new Error("Cannot create template node for element with children");
             }
-            return NodeProxy.create().init(element, this);
+            return new NodeProxy().init(element, this);
         }
     },
 
@@ -2081,7 +2081,7 @@ exports.ReelDocument = EditingDocument.specialize({
             jsonNode.attributes.forEach(function (attr) {
                 element.setAttribute(attr.name, attr.value);
             });
-            return NodeProxy.create().init(element, this);
+            return new NodeProxy().init(element, this);
         }
     },
 

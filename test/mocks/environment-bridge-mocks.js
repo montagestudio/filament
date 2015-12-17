@@ -45,7 +45,7 @@ var promiseFunction = function (promise) {
 
 /*jshint maxcomplexity:false */
 exports.environmentBridgeMock = function (options) {
-    var bridge = Bridge.create(),
+    var bridge = new Bridge(),
         watchPromise = Promise.resolve(),
         listTreePromise = Promise.resolve(),
         listAssetAtUrl = Promise.resolve(),

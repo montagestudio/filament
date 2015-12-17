@@ -13,8 +13,8 @@ describe("core/project-controller-creation-spec", function () {
     beforeEach(function () {
         mockMenu = menuMock({
             menuItems: {
-                "newComponent": (newComponentMenuItem = Montage.create()),
-                "newModule": (newModuleMenuItem = Montage.create())
+                "newComponent": (newComponentMenuItem = Montage.specialize({})),
+                "newModule": (newModuleMenuItem = Montage.specialize({}))
             }
         });
 
@@ -22,8 +22,8 @@ describe("core/project-controller-creation-spec", function () {
             mainMenu: mockMenu
         });
 
-        viewController = ViewController.create();
-        projectController = ProjectController.create().init(bridge, viewController, []);
+        viewController = new ViewController();
+        projectController = new ProjectController().init(bridge, viewController, []);
     });
 
     describe("creating new components", function () {

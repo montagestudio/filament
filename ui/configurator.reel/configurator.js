@@ -1,7 +1,6 @@
-var Montage = require("montage/core/core").Montage,
-    Panel = require("ui/panel.reel").Panel;
+var Panel = require("ui/panel.reel").Panel;
 
-exports.Configurator = Montage.create(Panel, {
+exports.Configurator = Panel.specialize({
 
     constructor: {
         value: function Configurator() {

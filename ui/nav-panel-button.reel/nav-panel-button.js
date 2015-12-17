@@ -3,8 +3,7 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Button = require("matte/ui/button.reel").Button,
+var Button = require("matte/ui/button.reel").Button,
     panel = require("ui/panel.reel");
 
 /**
@@ -12,7 +11,7 @@ var Montage = require("montage").Montage,
     @class module:"ui/nav-panel-button.reel".NavPanelButton
     @extends module:montage/ui/component.Component
 */
-exports.NavPanelButton = Montage.create(Button, /** @lends module:"ui/nav-panel-button.reel".NavPanelButton# */ {
+exports.NavPanelButton = Button.specialize(/** @lends module:"ui/nav-panel-button.reel".NavPanelButton# */ {
 
     holdThreshold: {
         value: 500

@@ -18,8 +18,8 @@ describe("core/project-controller-filesystem-spec", function () {
     beforeEach(function () {
         mockMenu = menuMock({
             menuItems: {
-                "newComponent": Montage.create(),
-                "newModule": Montage.create()
+                "newComponent": Montage.specialize({}),
+                "newModule": Montage.specialize({})
             }
         });
 
@@ -65,7 +65,7 @@ describe("core/project-controller-filesystem-spec", function () {
             name: "test"
         });
 
-        viewController = ViewController.create();
+        viewController = new ViewController();
         projectController = new ProjectController().init(bridge, viewController, editorController, null, null, applicationDelegate);
         projectController._packageRequires["projectUrl/"] = Promise.resolve(require);
         projectControllerLoadedPromise = projectController.loadProject("projectUrl");

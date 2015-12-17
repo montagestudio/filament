@@ -45,7 +45,7 @@ exports.mockReelDocument = function (fileUrl, serialization, bodyMarkup) {
     });
 };
 
-var ReelDocMock = Montage.create(Montage, {
+var ReelDocMock = Montage.specialize({
 
     url: {
         value: "$reelDocumentUrl"
@@ -67,7 +67,7 @@ var ReelDocMock = Montage.create(Montage, {
 });
 
 exports.reelDocumentMock = function (options) {
-    var doc = ReelDocMock.create();
+    var doc = new ReelDocMock();
 
     if (options) {
         Object.keys(options).forEach(function (key) {

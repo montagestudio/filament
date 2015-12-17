@@ -3,8 +3,7 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
+var Component = require("montage/ui/component").Component,
     Set = require("montage/collections/set");
 
 var CLASS_PREFIX = "ActivityInfobar";
@@ -14,7 +13,7 @@ var CLASS_PREFIX = "ActivityInfobar";
     @class module:"ui/activity-infobar.reel".ActivityInfobar
     @extends module:montage/ui/component.Component
 */
-exports.ActivityInfobar = Montage.create(Component, /** @lends module:"ui/activity-infobar.reel".ActivityInfobar# */ {
+exports.ActivityInfobar = Component.specialize(/** @lends module:"ui/activity-infobar.reel".ActivityInfobar# */ {
 
     constructor: {
         value: function ActivityInfobar() {

@@ -69,7 +69,7 @@ exports.NodeProxy = NodeProxy = Target.specialize({
                 childProxy;
 
             for (i = 0; (iChildNode = children.item(i)); i++) {
-                childProxy = NodeProxy.create().init(iChildNode, this._editingDocument);
+                childProxy = new NodeProxy().init(iChildNode, this._editingDocument);
                 childrenProxies.push(childProxy);
                 childProxy.parentNode = this;
             }

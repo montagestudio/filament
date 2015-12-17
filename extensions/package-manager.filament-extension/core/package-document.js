@@ -42,8 +42,8 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
             return projectController.environmentBridge.listDependenciesAtUrl(fileUrl).then(function(dependencyTree) {
                 self._package = dependencyTree.fileJsonRaw || {};
                 self.dependencyCollection = dependencyTree; // setter will get correct information
-                self._dependencyManager = DependencyManager.create().initWithPackageDocument(self);
-                self._packageSavingManager = PackageSavingManager.create().initWithPackageDocument(self);
+                self._dependencyManager = new DependencyManager().initWithPackageDocument(self);
+                self._packageSavingManager = new PackageSavingManager().initWithPackageDocument(self);
                 self._changeCount = 0;
 
                 var author = PackageTools.getValidPerson(self._package.author);

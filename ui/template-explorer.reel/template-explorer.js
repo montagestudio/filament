@@ -3,8 +3,7 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
+var Component = require("montage/ui/component").Component,
     application = require("montage/core/application").application,
     MimeTypes = require("core/mime-types");
 
@@ -13,7 +12,7 @@ var Montage = require("montage").Montage,
     @class module:"./template-explorer.reel".TemplateExplorer
     @extends module:montage/ui/component.Component
 */
-exports.TemplateExplorer = Montage.create(Component, /** @lends module:"./template-explorer.reel".TemplateExplorer# */ {
+exports.TemplateExplorer = Component.specialize(/** @lends module:"./template-explorer.reel".TemplateExplorer# */ {
 
     _showHidden: {
         value: false

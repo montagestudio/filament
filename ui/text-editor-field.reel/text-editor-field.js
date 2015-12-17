@@ -16,7 +16,7 @@ exports.TextEditorField = AbstractControl.specialize(/** @lends TextEditorField#
         value: function TextEditorField() {
             this.super();
             //TODO we can probably share an undo manager across all editing fields...
-            this.undoManager = UndoManager.create();
+            this.undoManager = new UndoManager();
         }
     },
 

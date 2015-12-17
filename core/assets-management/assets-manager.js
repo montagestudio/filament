@@ -236,7 +236,7 @@ exports.AssetsManager = Montage.specialize({
             if ((AssetTools.isAFile(fileUrl) || AssetTools.isGlTFBundle(fileUrl)) &&
                 AssetTools.isMimeTypeSupported(fileDescriptor.mimeType)) {
 
-                var createdAsset = Asset.create().initWithFileDescriptor(fileDescriptor);
+                var createdAsset = new Asset().initWithFileDescriptor(fileDescriptor);
 
                 createdAsset.iconUrl = this.getIconWithAsset(createdAsset);
                 createdAsset.isHidden = this.assetsToHide.indexOf(createdAsset.mimeType) >= 0;
@@ -723,7 +723,7 @@ exports.AssetsManager = Montage.specialize({
 
                     this._detectMimeTypeWithFileUrl(fileUrl).then(function (mimeType) {
                         if (AssetTools.isMimeTypeSupported(mimeType)) {
-                            var fileDescriptor = FileDescriptor.create().initWithUrlAndStat(fileUrl, fileChangeDetail.currentStat);
+                            var fileDescriptor = new FileDescriptor().initWithUrlAndStat(fileUrl, fileChangeDetail.currentStat);
                             fileDescriptor.mimeType = mimeType;
 
                             if (!self._reviveAssetWithFileDescriptor(fileDescriptor)) {
@@ -747,7 +747,7 @@ exports.AssetsManager = Montage.specialize({
                     if (updatedAsset) {
                         this._detectMimeTypeWithFileUrl(fileUrl).then(function (mimeType) {
                             if (AssetTools.isMimeTypeSupported(mimeType)) {
-                                var fileDescriptor = FileDescriptor.create().initWithUrlAndStat(fileUrl, fileChangeDetail.currentStat);
+                                var fileDescriptor = new FileDescriptor().initWithUrlAndStat(fileUrl, fileChangeDetail.currentStat);
                                 fileDescriptor.mimeType = mimeType;
 
                                 // TODO once a thumbnail mechanism will has been implemented,

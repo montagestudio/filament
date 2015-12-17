@@ -1,6 +1,6 @@
 var Montage = require("montage/core/core").Montage;
 
-exports.HistoryItem = Montage.create(Montage, {
+exports.HistoryItem = Montage.specialize({
 
     url: {
         value: null

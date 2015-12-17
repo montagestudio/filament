@@ -3,8 +3,7 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
+var Component = require("montage/ui/component").Component,
     MimeTypes = require("core/mime-types"),
     getElementXPath = require("palette/core/xpath").getElementXPath;
 
@@ -13,7 +12,7 @@ var Montage = require("montage").Montage,
     @class module:"./node-cell.reel".NodeCell
     @extends module:montage/ui/component.Component
 */
-exports.NodeCell = Montage.create(Component, /** @lends module:"./node-cell.reel".NodeCell# */ {
+exports.NodeCell = Component.specialize(/** @lends module:"./node-cell.reel".NodeCell# */ {
     constructor: {
         value: function NodeCell() {
 

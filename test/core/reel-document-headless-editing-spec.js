@@ -12,7 +12,7 @@ var templateWithSerializationAndBodyContent = function (serializationObject, htm
     doc.body.innerHTML = htmlString;
 
 
-    return Template.create().initWithDocument(doc);
+    return new Template().initWithDocument(doc);
 };
 
 describe("core/reel-document-headless-editing-spec", function () {

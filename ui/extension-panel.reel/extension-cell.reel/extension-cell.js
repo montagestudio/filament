@@ -3,15 +3,14 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+var Component = require("montage/ui/component").Component;
 
 /**
     Description TODO
     @class module:"./extension-cell.reel".ExtensionCell
     @extends module:montage/ui/component.Component
 */
-exports.ExtensionCell = Montage.create(Component, /** @lends module:"./extension-cell.reel".ExtensionCell# */ {
+exports.ExtensionCell = Component.specialize(/** @lends module:"./extension-cell.reel".ExtensionCell# */ {
 
     extension: {
         value: null

@@ -8,7 +8,7 @@ var Montage = require("montage/core/core").Montage,
     Document = require("palette/core/document").Document,
     FilamentService = require("core/filament-service").FilamentService;
 
-exports.ApplicationDelegate = Montage.create(Montage, {
+exports.ApplicationDelegate = Montage.specialize({
 
     _bridgePromise: {
         value: null
@@ -80,7 +80,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
             this._deferredApplication = Promise.defer();
             this._deferredMainComponent = Promise.defer();
 
-            this.viewController = ViewController.create();
+            this.viewController = new ViewController;
 
             this.previewController = (new PreviewController()).init(this);
 
@@ -102,7 +102,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                         bridge.setEnableFileDrop(true);
                     }
 
-                    extensionController = self.extensionController = ExtensionController.create().init(self);
+                    extensionController = self.extensionController = new ExtensionController().init(self);
 
                     //TODO move this elsewhere, maybe rename to specifically reflect the stage of bootstrapping
                     return self.didLoadEnvironmentBridge().then(function () {
@@ -120,7 +120,7 @@ exports.ApplicationDelegate = Montage.create(Montage, {
                             loadedExtensions = extensions;
                         });
                     }).then(function () {
-                        projectController = self.projectController = ProjectController.create().init(self.environmentBridge, self.viewController, mainComponent, extensionController, self.previewController, self);
+                        projectController = self.projectController = new ProjectController().init(self.environmentBridge, self.viewController, mainComponent, extensionController, self.previewController, self);
 
                         projectController.registerUrlMatcherForDocumentType(function (fileUrl) {
                             return (/\.reel\/?$/).test(fileUrl);

@@ -3,8 +3,7 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
+var Component = require("montage/ui/component").Component,
     RangeController = require("montage/core/range-controller").RangeController;
 
 /**
@@ -12,7 +11,7 @@ var Montage = require("montage").Montage,
     @class module:"ui/activity-list.reel".ActivityList
     @extends module:montage/ui/component.Component
 */
-exports.ActivityList = Montage.create(Component, /** @lends module:"ui/activity-list.reel".ActivityList# */ {
+exports.ActivityList = Component.specialize(/** @lends module:"ui/activity-list.reel".ActivityList# */ {
 
     constructor: {
         value: function ActivityList() {
@@ -29,7 +28,7 @@ exports.ActivityList = Montage.create(Component, /** @lends module:"ui/activity-
             if (!value) {
                 return;
             }
-            value = RangeController.create().initWithContent(value);
+            value = new RangeController().initWithContent(value);
             this._runningActivities = value;
         }
     },
@@ -43,7 +42,7 @@ exports.ActivityList = Montage.create(Component, /** @lends module:"ui/activity-
             if (!value) {
                 return;
             }
-            value = RangeController.create().initWithContent(value);
+            value = new RangeController().initWithContent(value);
             this._failedActivities = value;
         }
     }

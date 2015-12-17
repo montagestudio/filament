@@ -15,8 +15,8 @@ describe("core/project-controller-spec", function () {
     beforeEach(function () {
         mockMenu = menuMock({
             menuItems: {
-                "newComponent": Montage.create(),
-                "newModule": Montage.create()
+                "newComponent": Montage.specialize({}),
+                "newModule": Montage.specialize({})
             }
         });
 
@@ -31,7 +31,7 @@ describe("core/project-controller-spec", function () {
 
         applicationDelegate = applicationDelegateMock();
 
-        viewController = ViewController.create();
+        viewController = new ViewController();
         projectController = new ProjectController().init(bridge, viewController, editorController, null, null, applicationDelegate);
         projectController._packageRequirePromise = Promise.resolve();
     });

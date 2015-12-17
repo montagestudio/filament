@@ -1,7 +1,6 @@
-var Montage = require("montage").Montage;
 var Component = require("montage/ui/component").Component;
 
-exports.Indent = Montage.create(Component, {
+exports.Indent = Component.specialize({
 
     hasTemplate: { value: false },
 

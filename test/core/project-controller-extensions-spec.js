@@ -34,8 +34,8 @@ describe("core/project-controller-extensions-spec", function () {
 
         applicationDelegate = applicationDelegateMock();
 
-        viewController = ViewController.create();
-        projectController = ProjectController.create().init(bridge, viewController, editorController, extensionController, null, applicationDelegate);
+        viewController = new ViewController();
+        projectController = new ProjectController().init(bridge, viewController, editorController, extensionController, null, applicationDelegate);
         projectController._packageRequires["projectUrl/"] = Promise.resolve(require);
 
         require.injectPackageDescription(require.location + "projectUrl/" , {
