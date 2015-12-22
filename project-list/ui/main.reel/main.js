@@ -59,7 +59,6 @@ exports.Main = Montage.create(Component, {
             this.repositoriesController = repositoriesController;
             Bindings.defineBinding(this, 'ownedRepositoriesNames', {'<-': 'this.repositoriesController.ownedRepositories.map{name}'});
             this.userController = new UserController().init();
-            console.log(this.repositoriesController);
         }
     },
 
