@@ -6,10 +6,4 @@ npm-cache
 npm-debug.log
 SikuliLog.txt
 node_modules/*
-!node_modules/flow-editor
 !node_modules/glTF-webgl-viewer
-!node_modules/matte
-!node_modules/mjs-volume
-!node_modules/montage
-!node_modules/montage-testing
-!node_modules/mop
