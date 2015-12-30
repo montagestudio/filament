@@ -1,4 +1,4 @@
-var Q = require("q");
+var Promise = require("bluebird");
 var optimize = require("mop");
 
 exports.optimize = function(location, config) {
@@ -7,7 +7,8 @@ exports.optimize = function(location, config) {
     var status = config.out.status;
 
     config.out.status = function() {
-        Q.fapply(status, slice.call(arguments));
+        // Translated from Q.fapply(status, slice.call(arguments));
+        Promise.resolve(status.apply(void 0, slice.call(arguments)));
     };
 
     return optimize(location, config);

@@ -742,7 +742,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         wasCurrentDocument = editingDocument === self.currentDocument;
 
                     if (!closeAccepted) {
-                        readyToClosePromise = Promise(null);
+                        readyToClosePromise = Promise.resolve(null);
                     } else {
 
                         if (wasCurrentDocument) {
@@ -754,10 +754,12 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                             isCurrentDocument: wasCurrentDocument
                         });
 
-                        readyToClosePromise = Promise(editor);
+                        readyToClosePromise = Promise.resolve(editor);
                         if (nextDocument) {
                             readyToClosePromise = self.openUrlForEditing(nextDocument.url)
-                                .thenResolve(editor);
+                                .then(function() {
+                                    return editor;
+                                });
 
                         } else if (self.documents.length === 1) {
                             // If this is the last remaining document then hide all
@@ -783,7 +785,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         deferredClosedDocument.resolve(null);
                     }
                 })
-                .fail(function (error) {
+                .catch(function (error) {
                     deferredClosedDocument.reject(error);
                 })
                 .then(function () {
@@ -1311,7 +1313,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     });
             }
 
-            return Promise(savePromise);
+            return Promise.resolve(savePromise);
         }
     },
 
@@ -1440,9 +1442,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 .then(function (url) {
                     var result;
                     if (url) {
-                        result = self.openUrlForEditing(url).thenResolve(url);
+                        result = self.openUrlForEditing(url).then(function() { return url; });
                     }
-                    return Promise(result);
+                    return Promise.resolve(result);
                 });
         }
     },
@@ -1463,9 +1465,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 .then(function (url) {
                     var result;
                     if (url) {
-                        result = self.openUrlForEditing(url).thenResolve(url);
+                        result = self.openUrlForEditing(url).then(function() { return url; });
                     }
-                    return Promise(result);
+                    return Promise.resolve(result);
                 });
         }
     },

@@ -18,13 +18,13 @@ describe("core/project-controller-extensions-spec", function () {
     beforeEach(function () {
         bridge = environmentBridgeMock({
             list: function() {
-                return Promise([]);
+                return Promise.resolve([]);
             },
             componentsInPackage: function () {
-                return Promise(["projectUrl/ui/pass.reel"]);
+                return Promise.resolve(["projectUrl/ui/pass.reel"]);
             },
             getExtensionsAt: function () {
-                return Promise([{url: "fs:///projectUrl/projectUrl.filament-extension"}]);
+                return Promise.resolve([{url: "fs:///projectUrl/projectUrl.filament-extension"}]);
             }
         });
 

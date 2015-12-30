@@ -86,7 +86,7 @@ var DependencyManager = Montage.specialize({
 
             this.reset();
 
-            Promise.allSettled(pendingOperationKeys.map(function (operationKey) {
+            Promise.all(pendingOperationKeys.map(function (operationKey) {
                 var operation = pendingOperation[operationKey],
                     dependency = self._packageDocument.findDependency(operationKey),
                     promise = null;
@@ -137,18 +137,9 @@ var DependencyManager = Montage.specialize({
 
                 return promise;
 
-            })).spread(function () {
-                var packagesModified = arguments;
-
-                for (var i = 0, length = packagesModified.length; i < length; i++) {
-                    var packageModified = packagesModified[i];
-
-                    if (packageModified.state === "rejected") {
-                        deferred.reject(packageModified.reason);
-                        break;
-                    }
-                }
-
+            })).catch(function(reason) {
+                deferred.reject(reason);
+            }).then(function() {
                 if (deferred.promise.isPending()) {
                     deferred.resolve("All modification have been saved");
                 }
@@ -263,7 +254,7 @@ var DependencyManager = Montage.specialize({
                         dependency.problems = dependency.update = null;
                         dependency.extraneous = dependency.missing = false;
 
-                    }).fin(function () {
+                    }).finally(function () {
                         dependency.isBusy = false;
                         self._immediateOperationsCount--;
                         self._packageDocument.needRefresh = true;

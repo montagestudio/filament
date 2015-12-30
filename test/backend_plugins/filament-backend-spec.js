@@ -2,7 +2,7 @@
 
 var SandboxedModule = require('sandboxed-module');
 var QFSMock = require("q-io/fs-mock");
-var Q = require("q");
+var Promise = require("bluebird");
 
 describe("filament backend", function () {
 
@@ -20,9 +20,9 @@ describe("filament backend", function () {
             });
 
             serverMock = {
-                application: Q({
+                application: Promise.resolve({
                     specialFolderURL: function () {
-                        return Q({url: "/user"});
+                        return Promise.resolve({url: "/user"});
                     }
                 })
             };
@@ -63,7 +63,7 @@ describe("filament backend", function () {
         beforeEach(function () {
             mockFS = QFSMock();
 
-            minitCreateSpy = jasmine.createSpy("minitCreate").andCallFake(function () { return Q(); });
+            minitCreateSpy = jasmine.createSpy("minitCreate").andCallFake(function () { return Promise.resolve(); });
 
             filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
                 requires: {
@@ -76,9 +76,9 @@ describe("filament backend", function () {
             })(mockFS);
 
             filamentBackend.setup(false, {
-                application: Q({
+                application: Promise.resolve({
                     specialFolderURL: function () {
-                        return Q({url: "fs://localhost/Application%20Support"});
+                        return Promise.resolve({url: "fs://localhost/Application%20Support"});
                     }
                 })
             }).done();
@@ -118,7 +118,7 @@ describe("filament backend", function () {
             mockFS = QFSMock();
 
             minitCreateSpy = jasmine.createSpy("minitCreate").andCallFake(function () {
-                return Q({resultPath: "resultPath"});
+                return Promise.resolve({resultPath: "resultPath"});
             });
 
             filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {
@@ -177,7 +177,7 @@ describe("filament backend", function () {
             mockFS = QFSMock();
 
             minitCreateSpy = jasmine.createSpy("minitCreate").andCallFake(function () {
-                return Q({name: "returnedName"});
+                return Promise.resolve({name: "returnedName"});
             });
 
             filamentBackend = SandboxedModule.require("../../backend_plugins/filament-backend", {

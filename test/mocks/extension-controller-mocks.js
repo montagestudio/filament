@@ -11,26 +11,26 @@ var ExtensionController = exports.ExtensionController = Target.specialize({
 
     loadExtensions: {
         value: function () {
-            return Promise([]);
+            return Promise.resolve([]);
         }
     },
 
     loadExtension: {
         enumerable: false,
         value: function () {
-            return Promise();
+            return Promise.resolve();
         }
     },
 
     activateExtension: {
         value: function () {
-            return Promise();
+            return Promise.resolve();
         }
     },
 
     deactivateExtension: {
         value: function () {
-            return Promise();
+            return Promise.resolve();
         }
     }
 

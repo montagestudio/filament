@@ -24,7 +24,7 @@ exports.ReelReviver = ProxyReviver.specialize({
         value: function () {
             var el = ProxyReviver.reviveElement.apply(this, arguments);
 
-            if (Promise.isPromise(el) && el.isRejected()) {
+            if (Promise.is(el) && el.isRejected()) {
                 return void 0;
             }
 

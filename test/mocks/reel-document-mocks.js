@@ -26,10 +26,10 @@ exports.mockReelDocument = function (fileUrl, serialization, bodyMarkup) {
             } else {
                 content = mockDocument.documentElement.outerHTML;
             }
-            return Promise(content);
+            return Promise.resolve(content);
         },
         write: function() {
-            return Promise();
+            return Promise.resolve();
         }
     });
 

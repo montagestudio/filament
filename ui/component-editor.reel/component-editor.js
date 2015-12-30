@@ -160,7 +160,9 @@ exports.ComponentEditor = Editor.specialize({
                 // to do it inside the draw cycle.
                 // This draw cycle is just useful to show the component editor
                 // and the loading overlay.
-                Promise.fcall(function() {
+                // Translated from Q.fcall(function() { return self._refreshDocument(); })
+                Promise.resolve()
+                .then(function() {
                     return self._refreshDocument();
                 }).then(function() {
                     self._hidePanel();

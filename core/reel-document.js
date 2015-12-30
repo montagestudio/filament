@@ -1071,7 +1071,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             if (revisedLabels) {
                 addedObjectPromise = Promise.all(revisedLabels.map(function (label) {
-                    return Promise(context.getObject(label)).then(function (proxy) {
+                    return Promise.resolve(context.getObject(label)).then(function (proxy) {
                         // The application was already formally added to the reelDocument to get it into the editingProxyMap
                         // in constructing the context, there's no need to add it again here
                         if ("application" === label) {
@@ -1733,7 +1733,8 @@ exports.ReelDocument = EditingDocument.specialize({
                 //No need to manually remove, that will happen when that undoable operation is performed
                 actualListenerPromise = Promise.resolve(explicitListener);
             } else {
-                actualListenerPromise = this.removeObject(originalListener).thenResolve(explicitListener);
+                actualListenerPromise = this.removeObject(originalListener)
+                    .then(function() { return explicitListener });
             }
 
             return actualListenerPromise;
@@ -2369,7 +2370,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 var propertyBlueprint = blueprint.propertyBlueprintForName(name);
                 var previousValue = propertyBlueprint[property];
                 if (value === previousValue) {
-                    return Promise();
+                    return Promise.resolve();
                 }
                 propertyBlueprint[property] = value;
                 return self.undoManager.register(

@@ -46,7 +46,7 @@ describe("core/project-controller-file-spec", function () {
 
                 expect(Promise.isPromiseAlike(closedDocumentPromise)).toBeTruthy();
 
-                return closedDocumentPromise.fail(function (error) {
+                return closedDocumentPromise.catch(function (error) {
                     expect(error instanceof Error).toBeTruthy();
                 });
             });

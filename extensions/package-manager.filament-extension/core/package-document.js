@@ -1025,7 +1025,7 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
         value: function (packageJson, url, dataSource) {
             var self = this;
 
-            return Promise.when(dataSource.write(url, packageJson)).then(function (value) {
+            return Promise.resolve(dataSource.write(url, packageJson)).then(function (value) {
                 self._changeCount = 0;
                 self._packageFileChangeByAppCount++;
 

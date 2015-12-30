@@ -33,7 +33,7 @@ describe("package document", function () {
         packageDocument.sharedProjectController = {
             environmentBridge: {
                 save: function () {
-                    return Promise();
+                    return Promise.resolve();
                 }
             },
 

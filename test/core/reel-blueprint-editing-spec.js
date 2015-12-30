@@ -27,7 +27,7 @@ describe("core/reel-blueprint-editing-spec", function () {
         },
         '<div id="ownerElement" data-montage-id="ownerElement"></div>')
         .then(function (reelDocument) {
-            reelDocument.__ownerBlueprint = Promise(blueprint);
+            reelDocument.__ownerBlueprint = Promise.resolve(blueprint);
             reelDocument._propertyBlueprintConstructor = PropertyBlueprint;
             reelDocument._eventBlueprintConstructor = EventBlueprint;
             return reelDocument;
@@ -62,7 +62,7 @@ describe("core/reel-blueprint-editing-spec", function () {
             it("adds a group named after the component if one doesn't exist", function () {
                 return reelDocumentPromise.then(function (reelDocument) {
                     blueprint = new Blueprint();
-                    reelDocument.__ownerBlueprint = Promise(blueprint);
+                    reelDocument.__ownerBlueprint = Promise.resolve(blueprint);
 
                     return reelDocument.addOwnerBlueprintProperty("pass")
                     .then(function () {

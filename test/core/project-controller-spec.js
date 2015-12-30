@@ -22,7 +22,7 @@ describe("core/project-controller-spec", function () {
 
         bridge = environmentBridgeMock({
             list: function() {
-                return Promise([]);
+                return Promise.resolve([]);
             },
             mainMenu: mockMenu
         });

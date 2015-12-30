@@ -266,7 +266,7 @@ exports.ProjectDocument = Document.specialize({
             this.undoManager.register("Add File", deferredUndoOperation.promise);
             return makeFileMethod.call(this._environmentBridge, url, data)
                 .then(function (result) {
-                    return self._updateShadowDelta().thenResolve(result);
+                    return self._updateShadowDelta().then(function() { return result; });
                 })
                 .then(function (success) {
                     deferredUndoOperation.resolve([self.remove, self, url]);
@@ -325,7 +325,7 @@ exports.ProjectDocument = Document.specialize({
                     .then(function (data) {
                         return self._environmentBridge.remove(url)
                             .then(function (result) {
-                                return self._updateShadowDelta().thenResolve(result);
+                                return self._updateShadowDelta().then(function() { return result; });
                             })
                             .then(function (success) {
                                 deferredUndoOperation.resolve([self.add, self, btoa(data), url]);
@@ -345,7 +345,7 @@ exports.ProjectDocument = Document.specialize({
 
             return this._environmentBridge.createComponent(name, packageHome, relativeDestination)
                 .then(function (result) {
-                    return self._updateShadowDelta().thenResolve(result);
+                    return self._updateShadowDelta().then(function() { return result; });
                 });
         }
     },
@@ -359,7 +359,7 @@ exports.ProjectDocument = Document.specialize({
 
             return this._environmentBridge.createModule(name, packageHome, relativeDestination)
                 .then(function (result) {
-                    return self._updateShadowDelta().thenResolve(result);
+                    return self._updateShadowDelta().then(function() { return result; });
                 });
         }
     },
@@ -445,7 +445,7 @@ exports.ProjectDocument = Document.specialize({
                             }, function() {
                                 return false;
                             }).then(function(response) {
-                                return self._updateShadowDelta().thenResolve(response);
+                                return self._updateShadowDelta().then(function() { return response; });
                             });
                     })
                     .finally(function () {
@@ -453,7 +453,7 @@ exports.ProjectDocument = Document.specialize({
                     });
             }
 
-            return Promise(updatePromise);
+            return Promise.resolve(updatePromise);
         }
     },
 
@@ -472,7 +472,7 @@ exports.ProjectDocument = Document.specialize({
                     });
             }
 
-            return Promise(result);
+            return Promise.resolve(result);
         }
     },
 
@@ -596,7 +596,7 @@ exports.ProjectDocument = Document.specialize({
                 });
             }
 
-            return Promise(retVal);
+            return Promise.resolve(retVal);
         }
     },
 
@@ -666,7 +666,7 @@ exports.ProjectDocument = Document.specialize({
 
                 return self._environmentBridge.save(doc, url)
                     .then(function(result) {
-                        return self._environmentBridge.stageFiles(commitBatch, url).thenResolve(result);
+                        return self._environmentBridge.stageFiles(commitBatch, url).then(function() { return result;});
                     });
             });
 
@@ -702,7 +702,8 @@ exports.ProjectDocument = Document.specialize({
 
             return Promise.all(savedPromises)
                 .then(function(result) {
-                    return self._environmentBridge.closeCommitBatch(commitBatch, message).thenResolve(result);
+                    return self._environmentBridge.closeCommitBatch(commitBatch, message)
+                        .then(function() { return result; });
                 })
                 .finally(function () {
                     self._environmentBridge.releaseCommitBatch(commitBatch);
@@ -848,7 +849,7 @@ exports.ProjectDocument = Document.specialize({
                     });
             }
 
-            return Promise(result);
+            return Promise.resolve(result);
         }
     }
 },
@@ -877,7 +878,7 @@ exports.ProjectDocument = Document.specialize({
                         application.addEventListener("repositoryFlushed", projectDocument, false);
                         return projectDocument.updateRefs();
                     })
-                    .thenResolve(projectDocument);
+                    .then(function() { return projectDocument; });
             }
 
             return Promise.resolve(projectDocument);

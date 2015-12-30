@@ -77,10 +77,10 @@ exports.TemplateObjectCell = Component.specialize({
                 .spread(function (objectConstructor, componentConstructor) {
                     description.isTemplateObjectComponent = objectConstructor.prototype instanceof componentConstructor;
                 })
-                .fail(function () {
+                .catch(function () {
                     description.isTemplateObjectComponent = null;
                 })
-                .thenResolve([templateObject, description]);
+                .then(function() { return [templateObject, description]; });
         }
     },
 

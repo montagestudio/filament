@@ -134,7 +134,11 @@ Montage.defineProperty(exports, "defaultMenu", {
             _defaultMenu = new Menu();
 
             //TODO clean up this whole initialization
-            Promise.nextTick(function () {
+            //TODO: With Montage 0.16.x moving away from Q.js in favor of bluebird for promises, we lost
+            // Promise.nextTick. I replaced it with setTimeout(..., 0) as it's the closest match I could come up
+            // with. However, setTimeout is significantly slower (see https://gist.github.com/mmalecki/1257394).
+            // Maybe someone else can come up with a better solution.
+            window.setTimeout(function () {
                 var projectMenu,
                     editMenu,
                     viewMenu,
@@ -200,7 +204,7 @@ Montage.defineProperty(exports, "defaultMenu", {
                     makeMenuItem("Show licenses…", "licenses", true, "")
                 ]);
                 _defaultMenu.insertItem(helpMenu);
-            });
+            }, 0);
         }
         return _defaultMenu;
     }

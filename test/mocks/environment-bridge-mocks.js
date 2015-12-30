@@ -55,8 +55,8 @@ exports.environmentBridgeMock = function (options) {
         registerPreviewPromise = Promise.resolve(),
         launchPreviewPromise = Promise.resolve(),
         promptForSavePromise = Promise.resolve(),
-        getExtensionsAtPromise = Promise([]),
-        readPromise = Promise("{}"),
+        getExtensionsAtPromise = Promise.resolve([]),
+        readPromise = Promise.resolve("{}"),
         mainMenu = menuMock();
 
     Object.keys(options).forEach(function (key) {

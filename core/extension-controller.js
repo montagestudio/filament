@@ -98,19 +98,21 @@ exports.ExtensionController = Target.specialize({
                 Extension = CoreExtension.specialize({
                 activate: {
                     value: function (application, projectController) {
+                        var self = this;
                         return Promise.all([
                             this.installLibraryItems(projectController, extensionName),
                             this.installModuleIcons(projectController, extensionName)
-                        ]).thenResolve(this);
+                        ]).then(function() { return self; });
                     }
                 },
 
                 deactivate: {
                     value: function (application, projectController) {
+                        var self = this;
                         return Promise.all([
                             this.uninstallLibraryItems(projectController, extensionName),
                             this.uninstallModuleIcons(projectController, extensionName)
-                        ]).thenResolve(this);
+                        ]).then(function() { return self; });
                     }
                 }
             });
@@ -199,7 +201,7 @@ exports.ExtensionController = Target.specialize({
 
                 if (typeof extension.activate === "function") {
                     //TODO only pass along the applicationDelegate?
-                    activationPromise = Promise(extension.activate(
+                    activationPromise = Promise.resolve(extension.activate(
                         this.applicationDelegate.application,
                         this.applicationDelegate.projectController,
                         this.applicationDelegate.viewController

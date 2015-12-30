@@ -113,7 +113,7 @@ exports.ApplicationDelegate = Montage.specialize({
                         // Give subclasses a way to interject before proceeding to load the project
                         return self.willLoadProject();
                     }).then(function () {
-                        return extensionController.loadExtensions().fail(function (error) {
+                        return extensionController.loadExtensions().catch(function (error) {
                             console.log("Failed loading extensions, proceeding with none");
                             return [];
                         }).then(function(extensions) {
@@ -151,7 +151,7 @@ exports.ApplicationDelegate = Montage.specialize({
 
                         // With extensions now loaded and activated, load a project
                         return promisedProjectUrl.then(function(projectUrl) {
-                            return self.loadProject(projectUrl).thenResolve(projectUrl);
+                            return self.loadProject(projectUrl).then(function() { return projectUrl; });
                         });
                     }).then(function (projectUrl) {
                         var ix = projectController.documents.indexOf(preloadDocument);

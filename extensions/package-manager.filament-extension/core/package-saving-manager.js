@@ -46,7 +46,7 @@ exports.PackageSavingManager = Montage.specialize({
 
             if (this._savingInProgressPromise && this._savingInProgressPromise.isPending()) {
                 this._packageJsonPending = packageJson;
-                return Promise(true);
+                return Promise.resolve(true);
             }
 
             this._savingInProgressPromise = this._performSaving(packageJson, url, dataSource);

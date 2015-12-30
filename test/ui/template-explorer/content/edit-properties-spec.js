@@ -17,12 +17,12 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
             blueprint = new Blueprint();
 
             editingDocument = {
-                addOwnerBlueprintProperty: function (name) { return Promise(); },
-                modifyOwnerBlueprintProperty: function (name, property, value) { return Promise(); },
-                removeOwnerBlueprintProperty: function (name) { return Promise(); },
-                addOwnerBlueprintEvent: function (name) { return Promise(); },
-                // modifyOwnerBlueprintEvent: function (name) { return Promise(); },
-                removeOwnerBlueprintEvent: function (name) { return Promise(); }
+                addOwnerBlueprintProperty: function (name) { return Promise.resolve(); },
+                modifyOwnerBlueprintProperty: function (name, property, value) { return Promise.resolve(); },
+                removeOwnerBlueprintProperty: function (name) { return Promise.resolve(); },
+                addOwnerBlueprintEvent: function (name) { return Promise.resolve(); },
+                // modifyOwnerBlueprintEvent: function (name) { return Promise.resolve(); },
+                removeOwnerBlueprintEvent: function (name) { return Promise.resolve(); }
             };
 
             editor._ownerObject = {
@@ -127,7 +127,7 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                         var propertyBlueprint = blueprint.propertyBlueprintForName(name);
                         expect(propertyBlueprint[property]).toBe("string");
                         expect(value).toBe("number");
-                        return Promise();
+                        return Promise.resolve();
                     });
 
                     runs(function () {
