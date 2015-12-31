@@ -48,7 +48,7 @@ var GitUser = Montage.specialize({
     initWithGithubUser: {
         value: function(githubUser) {
             this.login = githubUser.login;
-            this.displayedName = this.login;
+            this.displayedName = githubUser.name;
             this.publicRepositories = githubUser.public_repos;
             this.privateRepositories = githubUser.total_private_repos;
             this.collaborators = githubUser.collaborators || 0;
@@ -136,6 +136,7 @@ var RepositoriesController = Montage.specialize({
                         var gitUser = new GitUser().initWithGithubUser(user),
                             contributedUser = new GitUser().initWithGithubUser(user);
                         gitUser.listContributedRepositories = false;
+                        gitUser.displayedName = user.login;
                         gitUser.login = LOGIN_MY_REPOS;
                         gitUser.canCreateRepo = true;
                         self.organizationsController.add(gitUser);
