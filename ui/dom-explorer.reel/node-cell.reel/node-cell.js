@@ -21,7 +21,7 @@ exports.NodeCell = Component.specialize(/** @lends module:"./node-cell.reel".Nod
 
     templateDidLoad: {
         value: function() {
-            this.templateObjects.montageId.addPathChangeListener("isEditing", this, "handleMontageIdIsEditingChange");
+            this._montageId.addPathChangeListener("isEditing", this, "handleMontageIdIsEditingChange");
             if (this.nodeInfo) {
                 this.updateNodeInfoDependencies();
             }
@@ -127,7 +127,7 @@ exports.NodeCell = Component.specialize(/** @lends module:"./node-cell.reel".Nod
             this._nodeSegment.addEventListener("mouseover", this, false);
             this._nodeSegment.addEventListener("mouseout", this, false);
 
-            this.templateObjects.montageId.addEventListener("action", this);
+            this._montageId.addEventListener("action", this);
             this.element.addEventListener("mouseover", this);
             this.element.addEventListener("mouseout", this);
             this.element.addEventListener("dragleave", this, false);
@@ -513,9 +513,8 @@ exports.NodeCell = Component.specialize(/** @lends module:"./node-cell.reel".Nod
 
     updateNodeInfoDependencies: {
         value: function() {
-            var templateObjects = this.templateObjects;
-
-            if (!templateObjects) {
+            if (typeof this._tagName === "undefined") {
+                // Not loaded
                 return;
             }
 
@@ -523,17 +522,17 @@ exports.NodeCell = Component.specialize(/** @lends module:"./node-cell.reel".Nod
 
             // direct properties of nodeInfo
             // @tagName: value <- @owner.nodeInfo.tagName
-            templateObjects.tagName.value = nodeInfo.tagName;
+            this._tagName.value = nodeInfo.tagName;
             // @montageArg: value <- @owner.nodeInfo.montageArg
-            templateObjects.montageArg.value = nodeInfo.montageArg;
+            this._montageArg.value = nodeInfo.montageArg;
             // @montageParam: value <- @owner.nodeInfo.montageParam
-            templateObjects.montageParam.value = nodeInfo.montageParam;
+            this._montageParam.value = nodeInfo.montageParam;
             // @montageId: value <- @owner.nodeInfo.montageId
-            templateObjects.montageId.value = nodeInfo.montageId;
+            this._montageId.value = nodeInfo.montageId;
             // @componentCondition: condition <- @owner.nodeInfo.component
-            templateObjects.componentCondition.condition = !!nodeInfo.component;
+            this._componentCondition.condition = !!nodeInfo.component;
             // @canRemoveNodeCondition: condition <- @owner.nodeInfo.canRemoveNode
-            templateObjects.canRemoveNodeCondition.condition = nodeInfo.canRemoveNode;
+            this._canRemoveNodeCondition.condition = nodeInfo.canRemoveNode;
 
             var childrenLength = nodeInfo && nodeInfo.children && nodeInfo.children.length || 0;
             var componentLabel = nodeInfo.component && nodeInfo.component.label;
@@ -543,9 +542,9 @@ exports.NodeCell = Component.specialize(/** @lends module:"./node-cell.reel".Nod
             // @owner: classList.has('NodeCell--noChildren') <- !@owner.nodeInfo.children.length
             this.changeClassListItem(this.classList, 'NodeCell--noChildren', childrenLength === 0);
             // @hasChildrenCondition: condition <- @owner.nodeInfo.children.length
-            templateObjects.hasChildrenCondition.condition = childrenLength > 0;
+            this._hasChildrenCondition.condition = childrenLength > 0;
             // @componentLabel: value <- @owner.nodeInfo.component.label
-            templateObjects.componentLabel.value = componentLabel;
+            this._componentLabel.value = componentLabel;
 
             this.updateNodeInfoAndMontageIdDependencies();
             this.updateNodeInfoAndDomExplorerDependencies();
@@ -560,10 +559,10 @@ exports.NodeCell = Component.specialize(/** @lends module:"./node-cell.reel".Nod
 
     updateDomExplorerDependencies: {
         value: function() {
-            var templateObjects = this.templateObjects;
             var addElementNodeHover;
 
-            if (!templateObjects) {
+            if (typeof this._addElementBefore === "undefined") {
+                // Not loaded
                 return;
             }
 
@@ -572,11 +571,11 @@ exports.NodeCell = Component.specialize(/** @lends module:"./node-cell.reel".Nod
             }
 
             // @addElementBefore: classList.has('dropover') <- @owner.domExplorer.addElementNodeHover == @owner
-            this.changeClassListItem(templateObjects.addElementBefore.classList, 'dropover', addElementNodeHover === this);
+            this.changeClassListItem(this._addElementBefore.classList, 'dropover', addElementNodeHover === this);
             // @addElementAfter: classList.has('dropover') <- @owner.domExplorer.addElementNodeHover == @owner
-            this.changeClassListItem(templateObjects.addElementAfter.classList, 'dropover', addElementNodeHover === this);
+            this.changeClassListItem(this._addElementAfter.classList, 'dropover', addElementNodeHover === this);
             // @addChildElement: classList.has('dropover') <- @owner.domExplorer.addElementNodeHover == @owner
-            this.changeClassListItem(templateObjects.addChildElement.classList, 'dropover', addElementNodeHover === this);
+            this.changeClassListItem(this._addChildElement.classList, 'dropover', addElementNodeHover === this);
 
             this.updateNodeInfoAndDomExplorerDependencies();
         }
@@ -584,40 +583,35 @@ exports.NodeCell = Component.specialize(/** @lends module:"./node-cell.reel".Nod
 
     updateNodeInfoAndMontageIdDependencies: {
         value: function() {
-            var templateObjects = this.templateObjects;
             var childrenLength;
 
-            if (!templateObjects) {
+            if (typeof this._montageId === "undefined") {
+                // Not loaded
                 return;
             }
 
-            var isEditing = this.templateObjects.montageId && this.templateObjects.montageId.isEditing;
+            var isEditing = this._montageId && this._montageId.isEditing;
             var nodeInfo = this.nodeInfo;
             if (nodeInfo) {
                 childrenLength = nodeInfo.children && nodeInfo.children.length;
             }
 
             // @canInsertBeforeNodeCondition: condition <- @owner.nodeInfo.canInsertBeforeNode && && !@montageId.isEditing
-            templateObjects.canInsertBeforeNodeCondition.condition = nodeInfo && nodeInfo.canInsertBeforeNode && !isEditing;
+            this._canInsertBeforeNodeCondition.condition = nodeInfo && nodeInfo.canInsertBeforeNode && !isEditing;
             // @canAppendNodeCondition: condition <- 0 == @owner.nodeInfo.children.length && @owner.nodeInfo.canAppendToNode && !@montageId.isEditing
-            templateObjects.canAppendNodeCondition.condition = childrenLength === 0 && nodeInfo && nodeInfo.canAppendToNode && !isEditing;
+            this._canAppendNodeCondition.condition = childrenLength === 0 && nodeInfo && nodeInfo.canAppendToNode && !isEditing;
             // @canInsertAfterNodeCondition: condition <- !@owner.nodeInfo.nextSibling &&  @owner.nodeInfo.canInsertAfterNode && !@montageId.isEditing
-            templateObjects.canInsertAfterNodeCondition.condition = nodeInfo && (!nodeInfo.nextSibling && nodeInfo.canInsertAfterNode) && !isEditing;
+            this._canInsertAfterNodeCondition.condition = nodeInfo && (!nodeInfo.nextSibling && nodeInfo.canInsertAfterNode) && !isEditing;
             // @montageId: classList.has('montage-invisible') <- !@owner.nodeInfo.component || @owner.nodeInfo.component.label != @owner.nodeInfo.montageId
-            this.changeClassListItem(templateObjects.montageId.classList, 'montage-invisible', !(nodeInfo && (!nodeInfo.component || nodeInfo.component.label !== nodeInfo.montageId)));
+            this.changeClassListItem(this._montageId.classList, 'montage-invisible', !(nodeInfo && (!nodeInfo.component || nodeInfo.component.label !== nodeInfo.montageId)));
 
         }
     },
 
     updateNodeInfoAndDomExplorerDependencies: {
         value: function() {
-            var templateObjects = this.templateObjects;
             var highlightedElement;
             var selectedElements;
-
-            if (!templateObjects) {
-                return;
-            }
 
             var nodeInfo = this.nodeInfo;
             var domExplorer = this.domExplorer;
