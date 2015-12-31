@@ -5,7 +5,7 @@
 */
 var Component = require("montage/ui/component").Component,
     RangeController = require("montage/core/range-controller").RangeController,
-    Serializer = require("montage/core/serialization").Serializer;
+    Serializer = require("montage/core/serialization/serializer/montage-serializer").MontageSerializer;
 
 /**
     Description TODO

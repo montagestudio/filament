@@ -12,7 +12,6 @@
         "palette": "git+ssh://git@github.com:montagestudio/palette#cc98bcc738198b65db63cbe6d365d0db9b7765d4",
         "flow-editor": "git+ssh://git@github.com:montagestudio/flow-editor.git#4a33a664fe39e7a8f7e7977bfe8f32f3db29c25d",
         "minit": "git+ssh://git@github.com:montagejs/minit.git#60425519921b36c2d9722aec7343044142f5261e",
-        "mousse": "montagejs/mousse#7155f978f3d6a2325bca36effd50150f185e1fe4",
         "bluebird": "~3.3.1",
         "q": "0.9.7",
         "q-connection": "0.6.1",
