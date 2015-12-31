@@ -724,7 +724,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         cancelLabel: "Cancel"
                     };
 
-                    Confirm.show(confirmCloseDialogOptions, function () {
+                    Confirm.prototype.show(confirmCloseDialogOptions, function () {
                         deferredAcceptClose.resolve(true);
                     }, function () {
                         deferredAcceptClose.resolve(false);

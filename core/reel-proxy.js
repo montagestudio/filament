@@ -106,7 +106,7 @@ exports.ReelProxy = EditingProxy.specialize( {
 
             //TODO make sure that if the serialization specifically had no prototype, we don't go and write one in when saving
 
-            var self = EditingProxy.init.call(this, label, serialization, exportId, editingDocument);
+            var self = EditingProxy.prototype.init.call(this, label, serialization, exportId, editingDocument);
             self._exportId = exportId || serialization.prototype || serialization.object;
             self._isUserObject = isUserObject;
 

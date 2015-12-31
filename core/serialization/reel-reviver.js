@@ -22,7 +22,7 @@ exports.ReelReviver = ProxyReviver.specialize({
     // user can add one later
     reviveElement: {
         value: function () {
-            var el = ProxyReviver.reviveElement.apply(this, arguments);
+            var el = ProxyReviver.prototype.reviveElement.apply(this, arguments);
 
             if (Promise.is(el) && el.isRejected()) {
                 return void 0;

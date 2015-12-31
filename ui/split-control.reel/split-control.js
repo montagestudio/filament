@@ -40,7 +40,7 @@ exports.SplitControl = AbstractSlider.specialize(/** @lends SplitControl# */ {
 
     enterDocument: {
         value: function (firstTime) {
-            AbstractSlider.enterDocument.apply(this, arguments);
+            AbstractSlider.prototype.enterDocument.apply(this, arguments);
             if (firstTime) {
                 this.defineBinding("axis",
                     {"<-": "splitAxis == 'horizontal' ? 'vertical' : 'horizontal'", source: this});

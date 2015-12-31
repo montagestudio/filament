@@ -613,7 +613,7 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
                         self = this,
                         deferred = Promise.defer();
 
-                    Confirm.show(confirmCloseDialogOptions, function () {
+                    Confirm.prototype.show(confirmCloseDialogOptions, function () {
                         self.dispatchAsyncActivity(promise, "Updating Dependency");
 
                         self.updateDependencyRange(name, version); // update the dependency range

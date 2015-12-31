@@ -230,7 +230,7 @@ var DependencyManager = Montage.specialize({
 
                         deferred = Promise.defer();
 
-                        Confirm.show(confirmCloseDialogOptions, function () {
+                        Confirm.prototype.show(confirmCloseDialogOptions, function () {
                             var document = self._packageDocument;
 
                             //save the extraneous dependency within the package.json
