@@ -136,7 +136,7 @@ var RepositoriesController = Montage.specialize({
                         var gitUser = new GitUser().initWithGithubUser(user),
                             contributedUser = new GitUser().initWithGithubUser(user);
                         gitUser.listContributedRepositories = false;
-                        gitUser.displayedName = 'My repositories';
+                        gitUser.displayedName = user.login;
                         gitUser.login = LOGIN_MY_REPOS;
                         gitUser.canCreateRepo = true;
                         self.organizationsController.add(gitUser);

@@ -34,25 +34,46 @@ button.OrganizationsListItem-link {
     cursor: pointer;
     height: inherit;
     font: inherit;
-    border: inherit;
+    border: none;
+    margin: 0;
+    border-radius: 0;
+    position: relative;
 }
+
+/* lock icon */
+
+button.OrganizationsListItem-link:after {
+    content: '';
+    position: absolute;
+    background: url(/assets/icons/toggle.svg) no-repeat 96% center;
+    background-size: 18px;
+    height: 18px;
+    right: 14px;
+    width: 18px;
+    transition: transform .2s ease-in-out;
+}
+
 
 .selected button.OrganizationsListItem-link {
     background-color: inherit;
+}
+
+.selected button.OrganizationsListItem-link:after {
+    transform: translateX(8px);
 }
 
 .OrganizationsListItem-link:hover {
     color: hsl(0, 0%, 0%);
     height: inherit;
     font: inherit;
-    border: inherit;
+    border: none;
 }
 
 .OrganizationsListItem-link:active {
     color: inherit;
     height: inherit;
     font: inherit;
-    border: inherit;
+    border: none;
 }
 
 /* Link --------------------------------- */

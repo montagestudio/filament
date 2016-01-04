@@ -232,6 +232,9 @@
 .History-empty {
     margin: 1em 0;
     color: hsl(0, 0%, 72%);
+    position: absolute;
+    right: 0;
+    width: 50%;
 }
 
 .Projects-section.Organizations {
@@ -248,7 +251,7 @@
 
 .History-list, .Organizations-list {
     position: relative;
-    margin: 0 2px;
+    margin:  0;
     padding: 0;
     list-style: none;
     overflow-y: scroll;
@@ -257,6 +260,10 @@
     min-height: 0em;
     border: 1px solid hsla(0, 0%, 0%, 0.1);
     text-align: left;
+}
+
+.History-list {
+    border-left: none;
 }
 
 
