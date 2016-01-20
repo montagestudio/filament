@@ -4,19 +4,6 @@
     display: flex;
     -webkit-align-items: center;
     align-items: center;
-    background-color: hsl(0, 0%, 96%);
-}
-
-.OrganizationsListItem {
-    background-color: #fff;
-}
-
-.OrganizationsListItem:hover {
-    background-color: hsl(0,0%,98%);
-}
-
-.OrganizationsListItem:active {
-    background-color: hsl(0, 0%, 100%);
 }
 
 /* Link --------------------------------- */
@@ -38,6 +25,11 @@ button.OrganizationsListItem-link {
     margin: 0;
     border-radius: 0;
     position: relative;
+    background-color: inherit;
+}
+
+button.OrganizationsListItem-link:hover {
+    background-color: hsl(0, 0%, 96%);
 }
 
 /* lock icon */
@@ -53,27 +45,16 @@ button.OrganizationsListItem-link:after {
     transition: transform .2s ease-in-out;
 }
 
-
 .selected button.OrganizationsListItem-link {
-    background-color: inherit;
+    background-color: hsl(0, 0%, 96%);
+}
+
+.selected button.OrganizationsListItem-link:hover {
+    cursor: initial;
 }
 
 .selected button.OrganizationsListItem-link:after {
     transform: translateX(8px);
-}
-
-.OrganizationsListItem-link:hover {
-    color: hsl(0, 0%, 0%);
-    height: inherit;
-    font: inherit;
-    border: none;
-}
-
-.OrganizationsListItem-link:active {
-    color: inherit;
-    height: inherit;
-    font: inherit;
-    border: none;
 }
 
 /* Link --------------------------------- */
