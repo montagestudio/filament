@@ -602,7 +602,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.__addNodeProxy(child);
             }, this);
 
-            //TODO this is a hack to refresh the dpeth of everythign on a change
+            //TODO this is a hack to refresh the depth of everything on a change
             this.templateNodes = this._children(this._templateBodyNode);
         }
     },
@@ -627,7 +627,7 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     setOwnedObjectProperty: {
-        value: function (proxy, property, value){
+        value: function (proxy, property, value) {
             this.super(proxy, property, value);
             if (property === "element") {
                 this.buildTemplateObjectTree();
@@ -2512,71 +2512,106 @@ exports.ReelDocument = EditingDocument.specialize({
     */
     createTemplateObjectTree: {
         value: function () {
-            var successivePushes = 0,
-                toggleStates = this.templateObjectsTreeToggleStates,
+            var successivePushes = {number: 0},
                 // map of ReelProxy to tree node, for quick tree node access
                 insertionMap = new WeakMap(),
                 // add the root
                 root = this._buildTreeAddRoot(insertionMap),
                 // filling the FIFO
                 proxyFIFO = this._buildTreeFillFIFO(),
-                reelProxy,
-                parentReelProxy;
-            while (reelProxy = proxyFIFO.shift()) {
-                if (reelProxy.properties && reelProxy.properties.get('element')) {
-                    // find the parent component
-                    parentReelProxy = this._buildTreeFindParentComponent(reelProxy);
-                    if (!parentReelProxy) {
-                        // orphan child
-                        var orphanNode = {
-                            templateObject: reelProxy,
-                            children: []
-                        };
-                        // let's add it to the root with the template-less nodes
-                        root.children.unshift(orphanNode);
-                        continue;
-                    }
+                reelProxy;
 
-                    if (insertionMap.has(parentReelProxy)) {
-                        // restore expand status
-                        var expanded = (toggleStates.get(reelProxy) !== undefined) ? toggleStates.get(reelProxy) : true,
-                            // add the node to the tree
-                            node = {
-                                templateObject: reelProxy,
-                                expanded: expanded,
-                                children: []
-                            },
-                            parentNode = insertionMap.get(parentReelProxy),
-                            nodePosition = this._buildTreeFindChildPosition(reelProxy, parentReelProxy);
-                        if (nodePosition >=  parentNode.children.length) {
-                            parentNode.children.push(node);
-                        } else {
-                            parentNode.children.splice(nodePosition, 0, node);
-                        }
-                        insertionMap.set(reelProxy, node);
-                        // reset the infinite loop guard
-                        successivePushes = 0;
-                    } else {
-                        // parentReelProxy not found -> has not been added to the tree yet
-                        proxyFIFO.push(reelProxy);
-                        successivePushes++;
-                    }
+            while (reelProxy = proxyFIFO.shift()) {
+                if (this._reelProxyHasElementProperty(reelProxy)) {
+                    this._addNodeWithDOM(reelProxy, insertionMap, proxyFIFO, successivePushes);
                 } else {
-                    // has not DOM representation, added as root children
-                    var nodeTemplateLess = {
-                        templateObject: reelProxy,
-                        children: []
-                    };
-                    // let's add them in top to keep the tree "cleaner"
-                    root.children.unshift(nodeTemplateLess);
+                    this._addNodeWithoutDOM(reelProxy, root);
                 }
                 // to be safe, guard to prevent an infinite loop
-                if (successivePushes > proxyFIFO.length) {
+                if (successivePushes.number > proxyFIFO.length) {
                     throw new Error("Can not build templateObjectsTree: looping on the same components");
                 }
             }
             this.templateObjectsTreeToggleStates.clear();
             return root;
+        }
+    },
+
+    _reelProxyHasElementProperty: {
+        value: function(reelProxy) {
+            return reelProxy.properties && reelProxy.properties.get('element');
+        }
+    },
+
+    _addNodeWithDOM: {
+        value: function(reelProxy, insertionMap, proxyFIFO, successivePushes) {
+            // find the parent component
+            var parentReelProxy = this._buildTreeFindParentComponent(reelProxy);
+            if (!parentReelProxy) {
+                this._addOrphanToRoot(root, reelProxy);
+                return;
+            }
+
+            if (insertionMap.has(parentReelProxy)) {
+                this._addNodeToTree(reelProxy, insertionMap, parentReelProxy);
+
+                // reset the infinite loop guard
+                successivePushes.number = 0;
+            } else {
+                // parentReelProxy not found -> has not been added to the tree yet
+                proxyFIFO.push(reelProxy);
+                successivePushes.number++;
+            }
+        }
+    },
+
+    _addOrphanToRoot: {
+        value: function(root, reelProxy) {
+            // orphan child
+            var orphanNode = {
+                templateObject: reelProxy,
+                children: []
+            };
+            // let's add it to the root with the template-less nodes
+            root.children.unshift(orphanNode);
+        }
+    },
+
+    _addNodeToTree: {
+        value: function(reelProxy, insertionMap, parentReelProxy) {
+            // add the node to the tree
+            var node = {
+                    templateObject: reelProxy,
+                    expanded: this._expanded(reelProxy),
+                    children: []
+                },
+                parentNode = insertionMap.get(parentReelProxy),
+                nodePosition = this._buildTreeFindChildPosition(reelProxy, parentReelProxy);
+            if (nodePosition >= parentNode.children.length) {
+                parentNode.children.push(node);
+            } else {
+                parentNode.children.splice(nodePosition, 0, node);
+            }
+            insertionMap.set(reelProxy, node);
+        }
+    },
+
+    _expanded: {
+        value: function(reelProxy) {
+            var toggleStates = this.templateObjectsTreeToggleStates;
+            return (toggleStates.get(reelProxy) !== undefined) ? toggleStates.get(reelProxy) : true;
+        }
+    },
+
+    _addNodeWithoutDOM: {
+        value: function(reelProxy, root) {
+            // has not DOM representation, added as root children
+            var nodeTemplateLess = {
+                templateObject: reelProxy,
+                children: []
+            };
+            // let's add them in top to keep the tree "cleaner"
+            root.children.unshift(nodeTemplateLess);
         }
     },
 
