@@ -1,39 +1,33 @@
 .HistoryListItem {
+    position: relative;
     border-bottom: 1px solid hsl(0, 0%, 86%);
     display: -webkit-flex;
     display: flex;
     -webkit-align-items: center;
     align-items: center;
-    background-color: hsl(0, 0%, 96%);
-}
-
-.HistoryListItem:hover {
-    background-color: hsl(0,0%,98%);
-}
-
-.HistoryListItem:active {
-    background-color: hsl(0, 0%, 100%);
 }
 
 /* Type --------------------------------- */
 
 .HistoryListItem-type {
+    position: absolute;
+    height:      1em;
+    line-height: 1em;
+    right:  1em;
+    top: 50%;
+    margin-top: -.5em;
     display: none;
-    margin: 0 0.8rem;
-    padding: 0.4em 0.6em;
-    line-height: 1;
-    font-size: 0.85em;
-    border-radius: 4px;
     color: #6C6C6C;
+    pointer-events: none;
 }
 
 .HistoryListItem-type.is-private {
-    display: inline-block;
+    display: block;
 }
 
 /* Link --------------------------------- */
 
-.HistoryListItem-link {
+.HistoryListItem-link.matte-Anchor {
     -webkit-flex: 1;
     flex: 1;
     padding: 0.8rem;
@@ -42,14 +36,11 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    background: #fff;
 }
 
-.HistoryListItem-link:hover {
-    color: hsl(0, 0%, 0%);
-}
-
-.HistoryListItem-link:active {
-    color: inherit;
+.HistoryListItem-link.matte-Anchor:hover {
+    background-color: hsl(0, 0%, 96%);
 }
 
 /* Link --------------------------------- */
