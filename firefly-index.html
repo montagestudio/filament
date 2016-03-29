@@ -44,28 +44,6 @@
                 }
             },
 
-            "toolbar": {
-                "prototype": "adaptor/client/ui/toolbar.reel",
-                "properties": {
-                    "element": {"#": "toolbar"}
-                },
-                "bindings": {
-                    "mainMenu": {"<-": "@application.mainMenu"},
-                    "environmentBridge": {"<-": "@applicationDelegate.environmentBridge"},
-                    "projectDocument": {"<-": "@applicationDelegate.projectController.projectDocument"}
-                }
-            },
-
-             "workflow": {
-                "prototype": "adaptor/client/ui/workflow.reel",
-                "properties": {
-                    "element": {"#": "workflow"}
-                },
-                "bindings": {
-                    "projectDocument": {"<-": "@applicationDelegate.projectController.projectDocument"}
-                }
-            },
-
             "applicationDelegate": {
                 "prototype": "core/firefly-application-delegate",
                 "properties": {
@@ -214,10 +192,6 @@
         </div>
         <a href="" data-montage-id="downloadLink" download="download"></a>
     </section>
-
-    <nav data-montage-id="toolbar">
-        <div data-montage-id="workflow"></div>
-    </nav>
 
     <div data-montage-id="loader" class="Filament-loader--firefly">
         <div data-montage-id="loaderWidget"></div>
