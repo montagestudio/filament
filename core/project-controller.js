@@ -1552,11 +1552,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     removeTree: {
         value: function (path) {
-            var self = this;
-            return this.projectDocument.removeTree(path)
-                .then(function() {
-                    self.handleFileSystemDelete(Url.resolve(self.packageUrl, path), null, EMPTY_OBJECT);
-                });
+            return this.projectDocument.removeTree(path);
         }
     },
 
