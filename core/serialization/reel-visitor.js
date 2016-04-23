@@ -21,15 +21,14 @@ exports.ReelVisitor = ProxyVisitor.specialize({
             this.super(malker, object);
 
             var self = this,
-                unrecognizedKeys;
+                keys = object.originalSerializationMap.keys(),
+                key;
 
-            unrecognizedKeys = object.originalSerializationMap.keys().filter(function (key) {
-                return !("object" === key || "prototype" === key || "properties" === key || self._units[key]);
-            });
-
-            unrecognizedKeys.forEach(function (unitName) {
-                self.setObjectCustomUnit(malker, object, unitName);
-            });
+            while (key = keys.next().value) {
+                if (key !== "object" && key !== "prototype" && key !== "properties" && !self._units[key]) {
+                    self.setObjectCustomUnit(malker, object, key);
+                }
+            }
         }
     },
 
@@ -64,14 +63,16 @@ exports.ReelVisitor = ProxyVisitor.specialize({
                 builderObject.clearProperty("object");
             }
 
-            var metadataProperties = proxyObject.editorMetadata;
+            var metadataProperties = proxyObject.editorMetadata,
+                metadataPropertyEntries = metadataProperties.entries(),
+                metadataPropertyEntry;
 
-            if (metadataProperties.keys().length) {
+            if (metadataProperties.size > 0) {
                 var metadataSerializationObject = {};
 
-                metadataProperties.forEach(function (value, key) {
-                    metadataSerializationObject[key] = value;
-                });
+                while (metadataPropertyEntry = metadataPropertyEntries.next().value) {
+                    metadataSerializationObject[metadataPropertyEntry[0]] = metadataPropertyEntry[1];
+                }
 
                 builderObject.setProperty(BUILDER_UNIT_LABEL, metadataSerializationObject);
             } else {

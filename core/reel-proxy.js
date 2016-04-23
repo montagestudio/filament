@@ -161,7 +161,7 @@ exports.ReelProxy = EditingProxy.specialize( {
             }
             this._listeners = listeners;
 
-            this.editorMetadata = new Map(serialization[BUILDER_UNIT_LABEL]);
+            this.editorMetadata = Map.from(serialization[BUILDER_UNIT_LABEL]);
         }
     },
 

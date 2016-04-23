@@ -18,9 +18,9 @@ exports.ActivityInfobar = Component.specialize(/** @lends module:"ui/activity-in
     constructor: {
         value: function ActivityInfobar() {
             this.super();
-            this.runningActivities = Set();
-            this.completedActivities = Set();
-            this.failedActivities = Set();
+            this.runningActivities = new Set();
+            this.completedActivities = new Set();
+            this.failedActivities = new Set();
         }
     },
 

@@ -176,13 +176,14 @@ exports.Extension = Target.specialize( {
 
             return promisedIconUrlMap.then(function (iconUrlMap) {
                 var iconEntries = iconUrlMap.entries(),
+                    iconEntry,
                     moduleId,
                     iconUrl;
-                iconEntries.forEach(function (iconEntry) {
+                while (iconEntry = iconEntries.next().value) {
                     moduleId = iconEntry[0];
                     iconUrl = iconEntry[1];
                     projectController.addIconUrlForModuleId(iconUrl, moduleId);
-                });
+                }
             }).then(function() { return self; });
         }
     },
@@ -192,17 +193,18 @@ exports.Extension = Target.specialize( {
 
             var moduleIdIconUrlMap = this._packageNameIconUrlsMap.get(packageName),
                 iconEntries,
+                iconEntry,
                 moduleId,
                 iconUrl;
 
             if (moduleIdIconUrlMap) {
                 iconEntries = moduleIdIconUrlMap.entries();
 
-                iconEntries.forEach(function (iconEntry) {
+                while (iconEntry = iconEntries.next().value) {
                     moduleId = iconEntry[0];
                     iconUrl = iconEntry[1];
                     projectController.removeIconUrlForModuleId(iconUrl, moduleId);
-                });
+                }
             }
 
             return Promise.resolve(this);

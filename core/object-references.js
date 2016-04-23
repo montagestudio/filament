@@ -38,7 +38,7 @@ ObjectReferences.prototype.get = function(referencedObject) {
     var value = this.map.get(referencedObject);
 
     if (!value) {
-        value = Set(void 0, equals, hash);
+        value = new Set(void 0, equals, hash);
         this.map.set(referencedObject, value);
     }
 
