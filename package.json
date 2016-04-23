@@ -17,7 +17,7 @@
         "q-connection": "0.6.1",
         "q-io": "1.10.0",
         "qr-encode": "0.1.0",
-        "mjs-volume": "git+ssh://git@github.com:fabrobinet/mjs-volume.git#4c1f7706088477dc858dc80fd70f172267c4d867",
+        "mjs-volume": "git+ssh://git@github.com:montagestudio/mjs-volume.git#4c1f7706088477dc858dc80fd70f172267c4d867",
         "mop": "0.13.2",
         "mr": "0.13.4",
         "npm": "1.3.10",
@@ -31,7 +31,7 @@
         "montage-testing": "git+ssh://git@github.com:montagejs/montage-testing.git#86e0c6181e9694bca128bfa6b6da4333668619e1",
         "jshint": "2.1.9",
         "watchr": "2.3.3",
-        "glTF-webgl-viewer": "git+ssh://git@github.com:fabrobinet/glTF-webgl-viewer.git#df9b068db6bea24e5518058578c23bcf90f474a4"
+        "glTF-webgl-viewer": "./node_modules/glTF-webgl-viewer"
     },
     "mappings": {
         "filament-extension": {
