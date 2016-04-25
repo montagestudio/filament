@@ -19,7 +19,8 @@
                     "historyRefresh": {"@": "historyRefresh"},
                     "newAppName": {"@": "newAppName"},
                     "newAppDescription": {"@": "newAppDescription"},
-                    "newAppError": {"@": "newAppError"}
+                    "newAppError": {"@": "newAppError"},
+                    "createNewAppButton": {"@": "createNewAppButton"}
                 },
                 "listeners": [
                     {
@@ -111,9 +112,6 @@
                 "properties": {
                     "element": {"#": "createNewAppButton"},
                     "label": "Create"
-                },
-                "bindings": {
-                    "disabled": {"<-": "@newAppName.value.length == 0"}
                 },
                 "listeners": [
                     {

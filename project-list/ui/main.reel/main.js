@@ -50,6 +50,10 @@ exports.Main = Component.specialize({
         value: null
     },
 
+    createNewAppButton: {
+        value: null
+    },
+
     constructor: {
         value: function Main() {
             this.super();
@@ -62,6 +66,7 @@ exports.Main = Component.specialize({
 
     enterDocument: {
         value: function (firstTime) {
+            var self = this;
             if (firstTime) {
                 if (window.location.hash === "#new") {
                     this.showNewAppForm = true;
@@ -70,6 +75,13 @@ exports.Main = Component.specialize({
                 this._upkeepProgressBar();
                 this._getWorkspaces();
                 this.repositoriesController.loadOrganizations();
+
+                // TODO: This could be a binding, but matte buttons (and by extension Native buttons) don't redraw
+                // after the disabled/enabled property is changed.
+                this.newAppName.addPathChangeListener("value", function(value) {
+                    self.createNewAppButton.enabled = value != 0;
+                    self.createNewAppButton.needsDraw = true;
+                });
             }
         }
     },
