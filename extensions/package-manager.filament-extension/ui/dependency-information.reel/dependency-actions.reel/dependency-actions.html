@@ -118,13 +118,20 @@
             }
         },
 
+        "versionsController": {
+            "prototype": "montage/core/range-controller",
+            "bindings": {
+                "content": {"<-": "@owner.currentDependency.information.versions"}
+            }
+        },
+
         "versionsAvailable": {
             "prototype": "matte/ui/select.reel",
             "properties": {
                 "element": {"#": "versionsAvailable"}
             },
             "bindings": {
-                "content": {"<-": "@owner.currentDependency.information.versions"},
+                "contentController": {"<-": "@versionsController"},
                 "disabled": {"<-": "!!@owner.currentDependency.isBusy"}
             }
         },
