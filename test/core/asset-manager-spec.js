@@ -5,7 +5,7 @@ var environmentBridgeMock = require("test/mocks/environment-bridge-mocks").envir
     AssetsManager = require("core/assets-management/assets-manager").AssetsManager,
     AssetTools = require("core/assets-management/asset-tools").AssetTools,
     ReelDocument = require("core/reel-document").ReelDocument,
-    AssetCategories = AssetsManager.create().assetCategories,
+    AssetCategories = new AssetsManager().assetCategories,
     Promise = require("montage/core/promise").Promise;
 
 describe("asset-manager-spec", function () {
@@ -17,7 +17,7 @@ describe("asset-manager-spec", function () {
         beforeEach(function () {
             var fileDescriptors = [],
 
-                reelDocument = ReelDocument.create(),
+                reelDocument = new ReelDocument(),
 
                 projectController = {
                     environmentBridge: new environmentBridgeMock({

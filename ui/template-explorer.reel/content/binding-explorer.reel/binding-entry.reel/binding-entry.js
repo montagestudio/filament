@@ -3,8 +3,7 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
+var Component = require("montage/ui/component").Component,
     MimeTypes = require("core/mime-types");
 
 /**
@@ -12,8 +11,8 @@ var Montage = require("montage").Montage,
     @class module:"./binding-entry.reel".BindingEntry
     @extends module:montage/ui/component.Component
 */
-exports.BindingEntry = Montage.create(Component, /** @lends module:"./binding-entry.reel".BindingEntry# */ {
     
+exports.BindingEntry = Component.specialize(/** @lends module:"./binding-entry.reel".BindingEntry# */ {
     enterDocument: {
         value: function (firstTime) {
             if (firstTime) {

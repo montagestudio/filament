@@ -34,7 +34,7 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
     constructor: {
         value: function CodeEditor() {
             this.super();
-            this._openDocuments = Object.create(null);
+            this._openDocuments = new Map();
         }
     },
 
@@ -83,7 +83,7 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
     },
 
     /**
-     * A dictionary of document uuid -> codemirror document.
+     * A map of document -> codemirror document.
      */
     _openDocuments: {
         value: null
@@ -191,7 +191,7 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
                 var codemirror = this._codeMirror = this._createCodeMirror();
 
                 if (this.currentDocument) {
-                    var codeMirrorDocument = this._openDocuments[this.currentDocument.uuid];
+                    var codeMirrorDocument = this._openDocuments.get(this.currentDocument);
                     codemirror.swapDoc(codeMirrorDocument);
                 }
             }
@@ -213,7 +213,7 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
 
     _isDocumentOpen: {
         value: function(document) {
-            return document.uuid in this._openDocuments;
+            return this._openDocuments.has(document);
         }
     },
 
@@ -232,14 +232,14 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
                 editingDocument.codeMirrorDocument = codeMirrorDocument;
                 editingDocument.editor = this;
                 //TODO why put the code mirror document into the openDocument list and not the code-editor-doc?
-                this._openDocuments[editingDocument.uuid] = codeMirrorDocument;
+                this._openDocuments.set(editingDocument, codeMirrorDocument);
                 editingDocument.addEventListener("didSave", this, false);
                 editingDocument.addEventListener("willSave", this, false);
             }
 
             if (this._codeMirror) {
                 try {
-                    this._codeMirror.swapDoc(this._openDocuments[editingDocument.uuid]);
+                    this._codeMirror.swapDoc(this._openDocuments.get(editingDocument));
                 } catch (ex) {
                     console.error("Error loading CodeMirror document", ex);
                 }
@@ -263,20 +263,20 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
                 return;
             }
 
-            codeMirrorDocument = this._openDocuments[editingDocument.uuid];
+            codeMirrorDocument = this._openDocuments.get(editingDocument);
             editingDocument.removeEventListener("didSave", this, false);
             editingDocument.removeEventListener("willSave", this, false);
 
             //TODO need to remove the editor from the codeEditorDocument instance that was associated with this codeMirrorDocument
 
-            delete this._openDocuments[editingDocument.uuid];
+            this._openDocuments.delete(editingDocument);
         }
     },
 
     handleWillSave: {
         value: function(event) {
             var document = event.target;
-            var codeMirrorDocument = this._openDocuments[document.uuid];
+            var codeMirrorDocument = this._openDocuments.get(document);
 
             if (codeMirrorDocument) {
                 document.content = codeMirrorDocument.getValue();

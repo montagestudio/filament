@@ -105,8 +105,9 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                     self.progressPanel.message = "Verifying repository…";
 
                     return Promise.all([
-                        Promise(exists),
-                        (exists ? bridge.isProjectEmpty().then(function (empty) { return !empty; }) : Promise(false)),
+                        Promise.resolve(exists),
+                        (exists ? bridge.isProjectEmpty().then(function (empty) { return !empty; })
+                            : Promise.resolve(false)),
                         bridge.workspaceExists()
                     ]);
                 })
@@ -175,7 +176,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
 
                     }
 
-                    return Promise(readyWorkspacePromise);
+                    return readyWorkspacePromise;
 
                 })
                 .catch(function(err) {
@@ -192,7 +193,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                                 return self.willLoadProject();
                             } else {
                                 window.location = "/";
-                                return Promise(false);
+                                return Promise.resolve(false);
                             }
                         });
                 });
@@ -202,40 +203,38 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
     loadProject: {
         value: function(projectUrl) {
             var self = this;
-            var deferred = Promise.defer();
             var superMethod = ApplicationDelegate.prototype.loadProject;
 
-            var loadProject = function() {
-                self.currentPanelKey = "progress";
-                self.progressPanel.message = "Loading project…";
-                self.showModal = true;
-                track.message("loading project");
-                superMethod.call(self, projectUrl)
-                .then(deferred.resolve)
-                .fail(loadProjectFail)
-                .done();
-            };
+            return new Promise(function(resolve) {
+                var loadProject = function() {
+                    self.currentPanelKey = "progress";
+                    self.progressPanel.message = "Loading project…";
+                    self.showModal = true;
+                    track.message("loading project");
+                    superMethod.call(self, projectUrl)
+                        .then(resolve)
+                        .catch(loadProjectFail);
+                };
 
-            var loadProjectFail = function(reason) {
-                var message = reason.message || "Internal Server Error";
-                console.log(message);
-                self.currentPanelKey = "confirm";
-                track.error("Couldn't load project: " + message);
+                var loadProjectFail = function(reason) {
+                    var message = reason.message || "Internal Server Error";
+                    console.error(message);
+                    self.currentPanelKey = "confirm";
+                    track.error("Couldn't load project: " + message);
 
-                self.confirmPanel.getResponse("Error loading the project", true, "Retry", "Close")
-                .then(function (response) {
-                    self.showModal = false;
-                    if (response === true) {
-                        loadProject();
-                    } else {
-                        window.location = "/";
-                    }
-                });
-            };
+                    self.confirmPanel.getResponse("Error loading the project", true, "Retry", "Close")
+                        .then(function (response) {
+                            self.showModal = false;
+                            if (response === true) {
+                                loadProject();
+                            } else {
+                                window.location = "/";
+                            }
+                        });
+                };
 
-            loadProject();
-
-            return deferred.promise;
+                loadProject();
+            });
         }
     },
 
@@ -292,7 +291,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
                 initializationPromise = bridge.initializeProject();
             }
 
-            return Promise(initializationPromise);
+            return Promise.resolve(initializationPromise);
         }
     },
 

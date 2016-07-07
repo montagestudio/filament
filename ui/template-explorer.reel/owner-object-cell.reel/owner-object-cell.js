@@ -53,7 +53,7 @@ exports.OwnerObjectCell = Component.specialize({
                     .get(value.exportName)
                     .then(function (object) {
                         self.isTemplateObjectComponent = object.prototype instanceof Component;
-                    }).fail(Function.noop);
+                    }).catch(Function.noop);
             }
 
         }

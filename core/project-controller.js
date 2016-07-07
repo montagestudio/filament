@@ -205,7 +205,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._editorTypeInstanceMap = new WeakMap();
             this._editorTypeDocumentTypeMap = new WeakMap(); // TODO: another to many map, they must be a better way
 
-            this.openDocumentsController = RangeController.create().initWithContent(this.documents);
+            this.openDocumentsController = new RangeController().initWithContent(this.documents);
             this.assetsManager = new AssetsManager(this);
 
             //TODO get rid of this once we have property dependencies
@@ -359,7 +359,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     doc,
                     template;
 
-                template = Template.create();
+                template = new Template;
                 doc = template.createHtmlDocumentWithHtml(indexHtml);
 
                 // Use Apple touch or Android shortcut icon as the project icon, if present
@@ -724,7 +724,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         cancelLabel: "Cancel"
                     };
 
-                    Confirm.show(confirmCloseDialogOptions, function () {
+                    Confirm.prototype.show(confirmCloseDialogOptions, function () {
                         deferredAcceptClose.resolve(true);
                     }, function () {
                         deferredAcceptClose.resolve(false);
@@ -742,7 +742,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         wasCurrentDocument = editingDocument === self.currentDocument;
 
                     if (!closeAccepted) {
-                        readyToClosePromise = Promise(null);
+                        readyToClosePromise = Promise.resolve(null);
                     } else {
 
                         if (wasCurrentDocument) {
@@ -754,10 +754,12 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                             isCurrentDocument: wasCurrentDocument
                         });
 
-                        readyToClosePromise = Promise(editor);
+                        readyToClosePromise = Promise.resolve(editor);
                         if (nextDocument) {
                             readyToClosePromise = self.openUrlForEditing(nextDocument.url)
-                                .thenResolve(editor);
+                                .then(function() {
+                                    return editor;
+                                });
 
                         } else if (self.documents.length === 1) {
                             // If this is the last remaining document then hide all
@@ -783,7 +785,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                         deferredClosedDocument.resolve(null);
                     }
                 })
-                .fail(function (error) {
+                .catch(function (error) {
                     deferredClosedDocument.reject(error);
                 })
                 .then(function () {
@@ -1208,7 +1210,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     doc.body.innerHTML = htmlFragment;
                 }
 
-                return Template.create().initWithDocument(doc, self._packageRequire);
+                return new Template().initWithDocument(doc, self._packageRequire);
             });
         }
     },
@@ -1311,7 +1313,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     });
             }
 
-            return Promise(savePromise);
+            return Promise.resolve(savePromise);
         }
     },
 
@@ -1440,9 +1442,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 .then(function (url) {
                     var result;
                     if (url) {
-                        result = self.openUrlForEditing(url).thenResolve(url);
+                        result = self.openUrlForEditing(url).then(function() { return url; });
                     }
-                    return Promise(result);
+                    return Promise.resolve(result);
                 });
         }
     },
@@ -1463,9 +1465,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 .then(function (url) {
                     var result;
                     if (url) {
-                        result = self.openUrlForEditing(url).thenResolve(url);
+                        result = self.openUrlForEditing(url).then(function() { return url; });
                     }
-                    return Promise(result);
+                    return Promise.resolve(result);
                 });
         }
     },
@@ -1550,11 +1552,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     removeTree: {
         value: function (path) {
-            var self = this;
-            return this.projectDocument.removeTree(path)
-                .then(function() {
-                    self.handleFileSystemDelete(Url.resolve(self.packageUrl, path), null, EMPTY_OBJECT);
-                });
+            return this.projectDocument.removeTree(path);
         }
     },
 
@@ -1643,7 +1641,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 newFile, oldFile;
 
             if (parent && parent.expanded) {
-                newFile = FileDescriptor.create().initWithUrlAndStat(fileUrl, currentStat);
+                newFile = new FileDescriptor().initWithUrlAndStat(fileUrl, currentStat);
                 if (parent.children.has(newFile)) {
                     oldFile = this.fileInTreeAtUrl(fileUrl);
                     parent.children.delete(oldFile);

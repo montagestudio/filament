@@ -3,8 +3,7 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
+var Component = require("montage/ui/component").Component,
     MimeTypes = require("core/mime-types");
 
 /**
@@ -12,7 +11,7 @@ var Montage = require("montage").Montage,
     @class module:"./listener-entry.reel".ListenerEntry
     @extends module:montage/ui/component.Component
 */
-exports.ListenerEntry = Montage.create(Component, /** @lends module:"./listener-entry.reel".ListenerEntry# */ {
+exports.ListenerEntry = Component.specialize(/** @lends module:"./listener-entry.reel".ListenerEntry# */ {
 
     enterDocument: {
         value: function (firstTime) {

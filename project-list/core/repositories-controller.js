@@ -428,7 +428,7 @@ var RepositoriesController = Montage.specialize({
             }
             localStorage.removeItem(LOCAL_STORAGE_INDEX);
 
-            return Promise();
+            return Promise.resolve();
         }
     },
 

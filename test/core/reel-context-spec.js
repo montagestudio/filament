@@ -6,8 +6,8 @@ var ReelReviver = require("core/serialization/reel-reviver").ReelReviver,
 var getContextFor = function (ownerExportId, serialization, markup) {
     return mockReelDocument(ownerExportId, serialization, markup)
         .then(function (reelDocument) {
-            var reviver = ReelReviver.create();
-            var context = ReelContext.create().init(serialization, reviver);
+            var reviver = new ReelReviver();
+            var context = new ReelContext().init(serialization, reviver);
             context.ownerExportId = ownerExportId;
             context.editingDocument = reelDocument;
             return context;

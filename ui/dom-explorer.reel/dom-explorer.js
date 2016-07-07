@@ -3,15 +3,14 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+var Component = require("montage/ui/component").Component;
 
 /**
     Description TODO
     @class module:"./dom-explorer.reel".DomExplorer
     @extends module:montage/ui/component.Component
 */
-exports.DomExplorer = Montage.create(Component, /** @lends module:"./dom-explorer.reel".DomExplorer# */ {
+exports.DomExplorer = Component.specialize(/** @lends module:"./dom-explorer.reel".DomExplorer# */ {
 
     // TODO this is a temporary solution inspired by main.js
     handleKeyPress: {

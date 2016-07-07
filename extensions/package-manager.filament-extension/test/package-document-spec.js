@@ -6,7 +6,7 @@ describe("package document", function () {
     var packageDocument;
 
     beforeEach(function() {
-        packageDocument = PackageDocument.create();
+        packageDocument = new PackageDocument();
         packageDocument._package = {
             dependencies: {},
             devDependencies:{}
@@ -33,7 +33,7 @@ describe("package document", function () {
         packageDocument.sharedProjectController = {
             environmentBridge: {
                 save: function () {
-                    return Promise();
+                    return Promise.resolve();
                 }
             },
 

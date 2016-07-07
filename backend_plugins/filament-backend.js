@@ -1,6 +1,7 @@
 /* global global,unescape,module */
 var minitCreate = require("minit/lib/create").create,
     Q = require("q"),
+    Promise = require("bluebird"),
     npm = require("npm"),
     PATH = require('path');
 
@@ -9,7 +10,7 @@ function FilamentBackend (fs) {
     // Returned backend
     var backend = {};
 
-    var NPM_CACHE_DIR_PROMISE = Q.reject(new Error("npm cache directory not available. Call setup()"));
+    var NPM_CACHE_DIR_PROMISE = Promise.reject(new Error("npm cache directory not available. Call setup()"));
 
     backend.setup = function (firstLoad, server) {
         NPM_CACHE_DIR_PROMISE = server.application.invoke("specialFolderURL", "application-support")
@@ -34,7 +35,7 @@ function FilamentBackend (fs) {
                 });
             });
         }
-        return Q();
+        return Promise.resolve();
     };
 
     backend.createApplication = function(name, packageHome) {

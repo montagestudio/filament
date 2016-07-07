@@ -1,6 +1,6 @@
 var Montage = require("montage").Montage;
 
-var Menu = Montage.create(Montage, {
+var Menu = Montage.specialize({
 
     menuItems: {
         value: null
@@ -19,7 +19,7 @@ var MenuItem = Montage.specialize({
 });
 
 exports.menuMock = function (options) {
-    var menu = Menu.create();
+    var menu = new Menu();
     options = options || {};
     menu.menuItems = options.menuItems || {};
 

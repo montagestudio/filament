@@ -99,6 +99,7 @@ exports.Extension = Target.specialize( {
 
     installLibraryItems: {
         value: function (projectController, packageName) {
+            var self = this;
 
             //TODO hmmm not sure I like going in here to get this, we should
             // probably pass along a bridge (or other service provider/extension interface) with
@@ -117,7 +118,7 @@ exports.Extension = Target.specialize( {
                 for (var i = 0; i < libraryItems.length; i++) {
                     projectController.addLibraryItemToPackage(libraryItems[i], packageName);
                 }
-            }).thenResolve(this);
+            }).then(function() { return self; });
         }
     },
 
@@ -160,6 +161,7 @@ exports.Extension = Target.specialize( {
 
     installModuleIcons: {
         value: function (projectController, packageName) {
+            var self = this;
 
             // TODO similar concern echoing that of installLibraryItems
             var serviceProvider = projectController.environmentBridge,
@@ -174,14 +176,15 @@ exports.Extension = Target.specialize( {
 
             return promisedIconUrlMap.then(function (iconUrlMap) {
                 var iconEntries = iconUrlMap.entries(),
+                    iconEntry,
                     moduleId,
                     iconUrl;
-                iconEntries.forEach(function (iconEntry) {
+                while (iconEntry = iconEntries.next().value) {
                     moduleId = iconEntry[0];
                     iconUrl = iconEntry[1];
                     projectController.addIconUrlForModuleId(iconUrl, moduleId);
-                });
-            }).thenResolve(this);
+                }
+            }).then(function() { return self; });
         }
     },
 
@@ -190,17 +193,18 @@ exports.Extension = Target.specialize( {
 
             var moduleIdIconUrlMap = this._packageNameIconUrlsMap.get(packageName),
                 iconEntries,
+                iconEntry,
                 moduleId,
                 iconUrl;
 
             if (moduleIdIconUrlMap) {
                 iconEntries = moduleIdIconUrlMap.entries();
 
-                iconEntries.forEach(function (iconEntry) {
+                while (iconEntry = iconEntries.next().value) {
                     moduleId = iconEntry[0];
                     iconUrl = iconEntry[1];
                     projectController.removeIconUrlForModuleId(iconUrl, moduleId);
-                });
+                }
             }
 
             return Promise.resolve(this);

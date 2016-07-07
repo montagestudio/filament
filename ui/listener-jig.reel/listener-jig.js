@@ -3,8 +3,7 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
+var Component = require("montage/ui/component").Component,
     NotModifiedError = require("core/error").NotModifiedError,
     defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
@@ -13,7 +12,7 @@ var Montage = require("montage").Montage,
     @class module:"./listener-jig.reel".ListenerJig
     @extends module:montage/ui/component.Component
 */
-exports.ListenerJig = Montage.create(Component, /** @lends module:"./listener-jig.reel".ListenerJig# */ {
+exports.ListenerJig = Component.specialize(/** @lends module:"./listener-jig.reel".ListenerJig# */ {
 
     editingDocument: {
         value: null

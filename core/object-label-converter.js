@@ -1,7 +1,6 @@
-var Montage = require("montage").Montage,
-    Converter = require("montage/core/converter/converter").Converter;
+var Converter = require("montage/core/converter/converter").Converter;
 
-exports.ObjectLabelConverter = Montage.create(Converter, {
+exports.ObjectLabelConverter = Converter.specialize({
 
     editingDocument: {
         value: null

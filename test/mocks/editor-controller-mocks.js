@@ -1,6 +1,6 @@
 var Montage = require("montage").Montage;
 
-var EditorController = Montage.create(Montage, {
+var EditorController = Montage.specialize({
 
     bringEditorToFront: {
         value: Function.noop
@@ -13,7 +13,7 @@ var EditorController = Montage.create(Montage, {
 });
 
 exports.editorControllerMock = function (options) {
-    var editorController = EditorController.create();
+    var editorController = new EditorController();
 
     if (options) {
         Object.keys(options).forEach(function (key) {

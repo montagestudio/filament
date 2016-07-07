@@ -45,6 +45,28 @@
                 ]
             },
 
+            "toolbar": {
+                "prototype": "adaptor/client/ui/toolbar.reel",
+                "properties": {
+                    "element": {"#": "toolbar"}
+                },
+                "bindings": {
+                    "mainMenu": {"<-": "@owner.application.mainMenu"},
+                    "environmentBridge": {"<-": "@owner.application.delegate.environmentBridge"},
+                    "projectDocument": {"<-": "@owner.application.delegate.projectController.projectDocument"}
+                }
+            },
+
+            "workflow": {
+                "prototype": "adaptor/client/ui/workflow.reel",
+                "properties": {
+                    "element": {"#": "workflow"}
+                },
+                "bindings": {
+                    "projectDocument": {"<-": "@owner.application.delegate.projectController.projectDocument"}
+                }
+            },
+
             "previewControlPanel": {
                 "prototype": "ui/preview-control-panel.reel",
                 "properties": {
@@ -135,6 +157,11 @@
     <div data-montage-id="main" class="Main-wrap">
 
         <div data-montage-id="tasksInfobar"></div>
+
+        <nav data-montage-id="toolbar">
+            <div data-montage-id="workflow"></div>
+        </nav>
+
 
         <div data-montage-id="containerElement" class="Main">
 

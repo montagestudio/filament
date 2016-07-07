@@ -11,19 +11,23 @@ var Extension = exports.Extension = CoreExtension.specialize( {
 
     activate: {
         value: function (application, projectController) {
+            var self = this;
+
             return Promise.all([
                 this.installLibraryItems(projectController, "digit"),
                 this.installModuleIcons(projectController, "digit")
-            ]).thenResolve(this);
+            ]).then(function() { return self; });
         }
     },
 
     deactivate: {
         value: function (application, projectController) {
+            var self = this;
+
             return Promise.all([
                 this.uninstallLibraryItems(projectController, "digit"),
                 this.uninstallModuleIcons(projectController, "digit")
-            ]).thenResolve(this);
+            ]).then(function() { return self; });
         }
     }
 

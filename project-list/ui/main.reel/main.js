@@ -1,12 +1,10 @@
-var core = require("montage/core/core"),
-    Montage = core.Montage,
-    Bindings = core.Bindings,
+var Bindings = require("montage/core/core").Bindings,
     Component = require("montage/ui/component").Component,
     repositoriesController = require("../../core/repositories-controller").repositoriesController,
     UserController = require("adaptor/client/core/user-controller").UserController,
     requestOk = require("core/request").requestOk;
 
-exports.Main = Montage.create(Component, {
+exports.Main = Component.specialize({
 
     version: {
         value: "X"
@@ -52,6 +50,10 @@ exports.Main = Montage.create(Component, {
         value: null
     },
 
+    createNewAppButton: {
+        value: null
+    },
+
     constructor: {
         value: function Main() {
             this.super();
@@ -64,6 +66,7 @@ exports.Main = Montage.create(Component, {
 
     enterDocument: {
         value: function (firstTime) {
+            var self = this;
             if (firstTime) {
                 if (window.location.hash === "#new") {
                     this.showNewAppForm = true;
@@ -72,6 +75,13 @@ exports.Main = Montage.create(Component, {
                 this._upkeepProgressBar();
                 this._getWorkspaces();
                 this.repositoriesController.loadOrganizations();
+
+                // TODO: This could be a binding, but matte buttons (and by extension Native buttons) don't redraw
+                // after the disabled/enabled property is changed.
+                this.newAppName.addPathChangeListener("value", function(value) {
+                    self.createNewAppButton.enabled = value != 0;
+                    self.createNewAppButton.needsDraw = true;
+                });
             }
         }
     },

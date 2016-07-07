@@ -45,7 +45,7 @@ var promiseFunction = function (promise) {
 
 /*jshint maxcomplexity:false */
 exports.environmentBridgeMock = function (options) {
-    var bridge = Bridge.create(),
+    var bridge = new Bridge(),
         watchPromise = Promise.resolve(),
         listTreePromise = Promise.resolve(),
         listAssetAtUrl = Promise.resolve(),
@@ -55,8 +55,8 @@ exports.environmentBridgeMock = function (options) {
         registerPreviewPromise = Promise.resolve(),
         launchPreviewPromise = Promise.resolve(),
         promptForSavePromise = Promise.resolve(),
-        getExtensionsAtPromise = Promise([]),
-        readPromise = Promise("{}"),
+        getExtensionsAtPromise = Promise.resolve([]),
+        readPromise = Promise.resolve("{}"),
         mainMenu = menuMock();
 
     Object.keys(options).forEach(function (key) {

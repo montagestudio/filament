@@ -42,8 +42,8 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
             return projectController.environmentBridge.listDependenciesAtUrl(fileUrl).then(function(dependencyTree) {
                 self._package = dependencyTree.fileJsonRaw || {};
                 self.dependencyCollection = dependencyTree; // setter will get correct information
-                self._dependencyManager = DependencyManager.create().initWithPackageDocument(self);
-                self._packageSavingManager = PackageSavingManager.create().initWithPackageDocument(self);
+                self._dependencyManager = new DependencyManager().initWithPackageDocument(self);
+                self._packageSavingManager = new PackageSavingManager().initWithPackageDocument(self);
                 self._changeCount = 0;
 
                 var author = PackageTools.getValidPerson(self._package.author);
@@ -613,7 +613,7 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
                         self = this,
                         deferred = Promise.defer();
 
-                    Confirm.show(confirmCloseDialogOptions, function () {
+                    Confirm.prototype.show(confirmCloseDialogOptions, function () {
                         self.dispatchAsyncActivity(promise, "Updating Dependency");
 
                         self.updateDependencyRange(name, version); // update the dependency range
@@ -1025,7 +1025,7 @@ var PackageDocument = exports.PackageDocument = EditingDocument.specialize( {
         value: function (packageJson, url, dataSource) {
             var self = this;
 
-            return Promise.when(dataSource.write(url, packageJson)).then(function (value) {
+            return Promise.resolve(dataSource.write(url, packageJson)).then(function (value) {
                 self._changeCount = 0;
                 self._packageFileChangeByAppCount++;
 

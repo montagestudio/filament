@@ -1,8 +1,7 @@
-var Montage = require("montage/core/core").Montage,
-    Target = require("montage/core/target").Target,
+var Target = require("montage/core/target").Target,
     Promise = require("montage/core/promise").Promise;
 
-var ExtensionController = exports.ExtensionController = Montage.create(Target, {
+var ExtensionController = exports.ExtensionController = Target.specialize({
 
     init: {
         value: function () {
@@ -12,26 +11,26 @@ var ExtensionController = exports.ExtensionController = Montage.create(Target, {
 
     loadExtensions: {
         value: function () {
-            return Promise([]);
+            return Promise.resolve([]);
         }
     },
 
     loadExtension: {
         enumerable: false,
         value: function () {
-            return Promise();
+            return Promise.resolve();
         }
     },
 
     activateExtension: {
         value: function () {
-            return Promise();
+            return Promise.resolve();
         }
     },
 
     deactivateExtension: {
         value: function () {
-            return Promise();
+            return Promise.resolve();
         }
     }
 
@@ -39,7 +38,7 @@ var ExtensionController = exports.ExtensionController = Montage.create(Target, {
 
 
 exports.extensionControllerMock = function (options) {
-    var extensionController = ExtensionController.create();
+    var extensionController = new ExtensionController();
 
     if (options) {
         Object.keys(options).forEach(function (key) {

@@ -5,7 +5,7 @@
 */
 var Component = require("montage/ui/component").Component,
     RangeController = require("montage/core/range-controller").RangeController,
-    Serializer = require("montage/core/serialization").Serializer;
+    Serializer = require("montage/core/serialization/serializer/montage-serializer").MontageSerializer;
 
 /**
     Description TODO
@@ -16,8 +16,8 @@ exports.EditProperties = Component.specialize({
 
     constructor: {
         value: function EditProperties() {
-            this.propertiesController =  RangeController.create();
-            this.eventsController =  RangeController.create();
+            this.propertiesController =  new RangeController();
+            this.eventsController =  new RangeController();
         }
     },
 
@@ -81,7 +81,7 @@ exports.EditProperties = Component.specialize({
 
     _saveMeta: {
         value: function (location, dataSource) {
-            var serializer = Serializer.create().initWithRequire(this.ownerObject.editingDocument._packageRequire);
+            var serializer = new Serializer().initWithRequire(this.ownerObject.editingDocument._packageRequire);
             var serializedDescription = serializer.serializeObject(this.ownerBlueprint);
             return dataSource.write(location, serializedDescription);
         }

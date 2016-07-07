@@ -1,8 +1,7 @@
-var Montage = require("montage/core/core").Montage,
-    Converter = require("montage/core/converter/converter").Converter,
+var Converter = require("montage/core/converter/converter").Converter,
     HistoryItem = require("welcome/core/history-item").HistoryItem;
 
-exports.HistoryItemConverter = Montage.create(Converter, {
+exports.HistoryItemConverter = Converter.specialize({
 
     allowPartialConversion: {
         value: false
@@ -10,7 +9,7 @@ exports.HistoryItemConverter = Montage.create(Converter, {
 
     convert: {
         value: function (url) {
-            return HistoryItem.create().initWithUrl(url);
+            return new HistoryItem().initWithUrl(url);
         }
     },
 

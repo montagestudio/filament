@@ -1,11 +1,10 @@
-var Montage = require("montage/core/core").Montage,
-    Target = require("montage/core/target").Target,
+var Target = require("montage/core/target").Target,
     Promise = require("montage/core/promise").Promise,
     CoreExtension = require("filament-extension/core/extension").Extension,
     application = require("montage/core/application").application,
     FILAMENT_EXTENSION = "filament-extension";
 
-exports.ExtensionController = Montage.create(Target, {
+exports.ExtensionController = Target.specialize({
 
     _applicationDelegate: {
         value: null
@@ -99,19 +98,21 @@ exports.ExtensionController = Montage.create(Target, {
                 Extension = CoreExtension.specialize({
                 activate: {
                     value: function (application, projectController) {
+                        var self = this;
                         return Promise.all([
                             this.installLibraryItems(projectController, extensionName),
                             this.installModuleIcons(projectController, extensionName)
-                        ]).thenResolve(this);
+                        ]).then(function() { return self; });
                     }
                 },
 
                 deactivate: {
                     value: function (application, projectController) {
+                        var self = this;
                         return Promise.all([
                             this.uninstallLibraryItems(projectController, extensionName),
                             this.uninstallModuleIcons(projectController, extensionName)
-                        ]).thenResolve(this);
+                        ]).then(function() { return self; });
                     }
                 }
             });
@@ -200,7 +201,7 @@ exports.ExtensionController = Montage.create(Target, {
 
                 if (typeof extension.activate === "function") {
                     //TODO only pass along the applicationDelegate?
-                    activationPromise = Promise(extension.activate(
+                    activationPromise = Promise.resolve(extension.activate(
                         this.applicationDelegate.application,
                         this.applicationDelegate.projectController,
                         this.applicationDelegate.viewController

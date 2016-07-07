@@ -207,7 +207,7 @@ exports.PackageExplorer = Component.specialize({
                 viewMenu = application.mainMenu.menuItemForIdentifier("View");
 
                 if (viewMenu) {
-                    var item = MenuItem.create();
+                    var item = new MenuItem();
                     item.title = HIDE_MENU_TEXT;
                     item.identifier = MENU_IDENTIFIER;
                     item.keyEquivalent = MENU_KEY;

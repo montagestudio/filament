@@ -1,8 +1,7 @@
-var Montage = require("montage/core/core").Montage,
-    panel = require("ui/panel.reel"),
+var panel = require("ui/panel.reel"),
     Panel = panel.Panel;
 
-exports.Library = Montage.create(Panel, {
+exports.Library = Panel.specialize({
 
     groups: {
         value: null

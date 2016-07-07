@@ -1,7 +1,7 @@
 var Montage = require("montage").Montage,
     Promise = require("montage/core/promise").Promise;
 
-exports.Test = Montage.create(Montage, {
+exports.Test = Montage.specialize({
 
     handleCountdownAction: {
         value: function() {

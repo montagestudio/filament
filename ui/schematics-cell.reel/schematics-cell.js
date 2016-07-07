@@ -3,8 +3,7 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+var Component = require("montage/ui/component").Component;
 
 var CLASS_PREFIX = "SchematicsCell";
 
@@ -13,7 +12,7 @@ var CLASS_PREFIX = "SchematicsCell";
     @class module:"./schematics-cell.reel".SchematicsCell
     @extends module:montage/ui/component.Component
 */
-exports.SchematicsCell = Montage.create(Component, /** @lends module:"./schematics-cell.reel".SchematicsCell# */ {
+exports.SchematicsCell = Component.specialize(/** @lends module:"./schematics-cell.reel".SchematicsCell# */ {
 
     constructor: {
         value: function SchematicsCell() {

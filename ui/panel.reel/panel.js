@@ -3,8 +3,7 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+var Component = require("montage/ui/component").Component;
 
 var HIDDEN_STATE = exports.HIDDEN_STATE = 0;
 var FLOATING_STATE = exports.FLOATING_STATE = 1;
@@ -17,7 +16,7 @@ var STATES = [HIDDEN_STATE, FLOATING_STATE, LOCKED_STATE];
     @class module:"ui/panel.reel".Panel
     @extends module:montage/ui/component.Component
 */
-exports.Panel = Montage.create(Component, /** @lends module:"ui/panel.reel".Panel# */ {
+exports.Panel = Component.specialize(/** @lends module:"ui/panel.reel".Panel# */ {
 
     _state: {
         value: false

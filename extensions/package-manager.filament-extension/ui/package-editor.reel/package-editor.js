@@ -1,10 +1,9 @@
-var Montage = require("montage").Montage,
-    Editor = require("palette/ui/editor.reel").Editor,
+var Editor = require("palette/ui/editor.reel").Editor,
     Promise = require("montage/core/promise").Promise,
     ErrorsCommands = require('../../core/package-tools').Errors.commands,
     application = require("montage/core/application").application;
 
-exports.PackageEditor = Montage.create(Editor, {
+exports.PackageEditor = Editor.specialize({
 
     constructor: {
         value: function PackageEditor () {

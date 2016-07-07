@@ -2,7 +2,7 @@ var Montage = require("montage").Montage,
     lumieres;
     //TODO it looks like lumieres is always populated from an XHR, not the environment-provided-global it normally is; rename this to reduce confusion?
 
-exports.PreviewHome = Montage.create(Montage, {
+exports.PreviewHome = Montage.specialize({
     previewList: {
         value: []
     },

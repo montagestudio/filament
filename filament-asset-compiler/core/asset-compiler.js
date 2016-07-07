@@ -1,6 +1,6 @@
 var Montage = require("montage/core/core").Montage;
 
-exports.AssetCompiler = Montage.create(Montage, {
+exports.AssetCompiler = Montage.specialize({
 
     assetCompilerRequire: {
         value: null

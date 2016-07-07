@@ -164,15 +164,17 @@ exports.Stage3D = Component.specialize(/** @lends Stage3D# */ {
     _fullfilComponent3D: {
         value: function (component, properties) {
             if (component && properties) {
-                var self = this;
+                var self = this,
+                    propertyKeys = properties.keys(),
+                    propertyKey;
 
-                properties.keys().forEach(function (key) {
-                    if (key === 'scene') {
+                while (propertyKey = propertyKeys.next().value) {
+                    if (propertyKey === 'scene') {
                         component.scene = self.scene;
                     } else {
-                        component[key] = properties.get(key);
+                        component[propertyKey] = properties.get(propertyKey);
                     }
-                });
+                }
             }
 
             return component;

@@ -14,24 +14,24 @@ describe("core/reel-proxy-spec", function () {
         };
         editingDocument = reelDocumentMock();
 
-        proxy = ReelProxy.create().init(label, serialization, exportId, editingDocument);
+        proxy = new ReelProxy().init(label, serialization, exportId, editingDocument);
     });
 
     describe("initialization", function () {
 
         it("must reject conflicting serialization prototype and exportId arguments", function () {
             expect(function () {
-                ReelProxy.create().init(label, serialization, "different/export-id");
+                new ReelProxy().init(label, serialization, "different/export-id");
             }).toThrow();
         });
 
         it("should have the specified exportId if the serialization did not specify one", function () {
-            proxy = ReelProxy.create().init(label, {properties: {label: "owner"}}, "specified/export-id");
+            proxy = new ReelProxy().init(label, {properties: {label: "owner"}}, "specified/export-id");
             expect(proxy.exportId).toBe("specified/export-id");
         });
 
         it("should have the specified exportId if the serialization did specifed one", function () {
-            proxy = ReelProxy.create().init(label, {prototype: "specified/export-id", properties: {label: "foo"}});
+            proxy = new ReelProxy().init(label, {prototype: "specified/export-id", properties: {label: "foo"}});
             expect(proxy.exportId).toBe("specified/export-id");
         });
 
@@ -61,7 +61,7 @@ describe("core/reel-proxy-spec", function () {
 
         it("should report its explicit identifier as its identifier", function () {
             serialization.properties.identifier = "fooIdentifier";
-            proxy = ReelProxy.create().init(label, serialization, exportId);
+            proxy = new ReelProxy().init(label, serialization, exportId);
 
             expect(proxy.identifier).toBe("fooIdentifier");
         });
@@ -82,7 +82,7 @@ describe("core/reel-proxy-spec", function () {
                 }
             };
 
-            proxy = ReelProxy.create().init(label, serialization);
+            proxy = new ReelProxy().init(label, serialization);
             var bindingEntry = proxy.bindings[0];
 
             expect(bindingEntry).toBeTruthy();
@@ -103,7 +103,7 @@ describe("core/reel-proxy-spec", function () {
                 }
             };
 
-            proxy = ReelProxy.create().init(label, serialization);
+            proxy = new ReelProxy().init(label, serialization);
             var bindingEntry = proxy.bindings[0];
 
             expect(bindingEntry).toBeTruthy();
@@ -132,7 +132,7 @@ describe("core/reel-proxy-spec", function () {
                 ]
             };
 
-            proxy = ReelProxy.create().init(label, serialization);
+            proxy = new ReelProxy().init(label, serialization);
             var listenerEntry = proxy.listeners[0];
 
             expect(listenerEntry).toBeTruthy();
@@ -145,7 +145,7 @@ describe("core/reel-proxy-spec", function () {
 
         it("should read properties that were part of the original serialization", function () {
             serialization = {};
-            proxy = ReelProxy.create().init(label, serialization, "different/export-id");
+            proxy = new ReelProxy().init(label, serialization, "different/export-id");
             proxy.setObjectProperty("foo", 42);
 
             expect(proxy.getObjectProperty("foo")).toBe(42);
@@ -162,7 +162,7 @@ describe("core/reel-proxy-spec", function () {
                     foo: 42
                 }
             };
-            proxy = ReelProxy.create().init(label, serialization, "different/export-id");
+            proxy = new ReelProxy().init(label, serialization, "different/export-id");
             proxy.deleteObjectProperty("foo", 42);
 
             expect(proxy.getObjectProperty("foo")).toBeFalsy();

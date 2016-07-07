@@ -3,15 +3,14 @@
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+var Component = require("montage/ui/component").Component;
 
 /**
     Description TODO
     @class module:"ui/contextual-inspectors.reel".ContextualInspectors
     @extends module:montage/ui/component.Component
 */
-exports.ContextualInspectors = Montage.create(Component, /** @lends module:"ui/contextual-inspectors.reel".ContextualInspectors# */ {
+exports.ContextualInspectors = Component.specialize(/** @lends module:"ui/contextual-inspectors.reel".ContextualInspectors# */ {
     _contextualInspectors: {
         value: null
     },

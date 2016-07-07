@@ -1,5 +1,4 @@
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component,
+var Component = require("montage/ui/component").Component,
     application = require("montage/core/application").application,
     Promise = require("montage/core/promise").Promise,
     MenuModule = require("core/menu"),
@@ -23,7 +22,7 @@ function flatten(array) {
 }
 
 
-exports.FileCell = Montage.create(Component, {
+exports.FileCell = Component.specialize({
 
     projectController: {
         value: null
