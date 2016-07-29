@@ -11,7 +11,8 @@
             "owner": {
                 "properties": {
                     "element": {"#": "package-explorer"},
-                    "fileTreeController": {"@": "fileTreeController"}
+                    "fileTreeController": {"@": "fileTreeController"},
+                    "fileList": {"@": "fileList"}
                 }
             },
 
@@ -57,24 +58,26 @@
             },
 
             "fileTreeController": {
-                "prototype": "core/tree-controller",
+                "prototype": "montage/core/tree-controller",
                 "properties": {
-                    "childrenPath": "children"
+                    "childrenExpression": "children.array"
                 },
                 "bindings": {
-                    "content": {"<-": "@owner.files"}
+                    "data": {"<-": "@owner.files || null"}
                 }
             },
 
             "fileList": {
-                "prototype": "ui/tree.reel",
+                "prototype": "montage/ui/tree-list.reel",
                 "properties": {
                     "element": {"#": "fileList"},
-                    "isSelectionEnabled": true,
-                    "ignoreRoot": true
+                    "indentationWidth": 20,
+                    "rowHeight": 22,
+                    "isRootVisible": false,
+                    "isSelectionEnabled": true
                 },
                 "bindings": {
-                    "treeController": {"<-": "@owner.fileTreeController"}
+                    "controller": {"<-": "@owner.fileTreeController"}
                 }
             },
 
@@ -84,8 +87,7 @@
                     "element": {"#": "file-cell"}
                 },
                 "bindings": {
-                    "fileInfo": {"<-": "@fileCell.parentComponent.iteration.content"},
-                    "iteration": {"<-": "@fileCell.parentComponent.iteration"},
+                    "info": {"<-": "@fileList:iteration.object"},
                     "projectController": {"<-": "@owner.projectController"},
                     "classList.has('contextualMenu-selection')": {"<-": "@owner.templateObjects.contextualMenu.fileInfo == fileInfo"}
                 }
@@ -123,7 +125,7 @@
         </header>
         <div class="Shadow Shadow--top"></div>
         <div data-montage-id="fileList" class="PackageExplorer-list">
-            <span data-montage-id="file-cell" data-arg="treeNode"></span>
+            <span data-montage-id="file-cell"></span>
         </div>
         <div class="Shadow Shadow--bottom"></div>
         <footer class="PackageExplorer-footer">
