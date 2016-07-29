@@ -18,6 +18,10 @@ exports.Main = Component.specialize({
         value: null
     },
 
+    packageExplorer: {
+        value: null
+    },
+
     constructor: {
         value: function Main() {
             this.super();
@@ -109,22 +113,22 @@ exports.Main = Component.specialize({
     handleExpandTree: {
         value: function (evt) {
             var path = evt.detail.replace(this.projectController.packageUrl, ""),
-                dir = null,
+                dir,
                 node = null,
                 directories = path.replace(/\/$/, "").replace(/^\//, "").split("/"),
-                nodes = this.templateObjects.packageExplorer.fileTreeController.iterations,
+                nodes = this.packageExplorer.fileList.getIterations(),
                 currentPath = this.projectController.packageUrl;
 
             while (dir = directories.shift()) {
                 var directoryPath = currentPath + dir + "/";
-                for (var i = 0; (node = nodes[i]) && node.content.fileUrl !== directoryPath; ++i) {
+                for (var i = 0; (node = nodes[i]) && node.data.fileUrl !== directoryPath; ++i) {
                     continue;
                 }
-                if (!node || (node.content.name !== dir)) {
+                if (!node || (node.data.name !== dir)) {
                     // Directory not found, either not loaded or wrong path
                     return;
                 }
-                node.expanded = true;
+                node.isExpanded = true;
                 currentPath += dir + "/";
             }
         }

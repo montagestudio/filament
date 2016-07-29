@@ -218,7 +218,7 @@ exports.FireflyApplicationDelegate = ApplicationDelegate.specialize({
 
                 var loadProjectFail = function(reason) {
                     var message = reason.message || "Internal Server Error";
-                    console.error(message);
+                    console.error(reason);
                     self.currentPanelKey = "confirm";
                     track.error("Couldn't load project: " + message);
 

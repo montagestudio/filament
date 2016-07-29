@@ -28,22 +28,27 @@ exports.FileCell = Component.specialize({
         value: null
     },
 
-    fileInfo: {
+    info: {
         value: null
     },
 
-    iteration: {
+    fileDescriptor: {
+        get: function () {
+            return this.info ? this.info.data : null;
+        }
+    },
+
+    expandedToggle: {
         value: null
     },
 
     constructor: {
         value: function FileCell() {
             this.super();
-            this.addPathChangeListener("iteration", this);
-            this.addPathChangeListener("fileInfo", this);
-            this.addPathChangeListener("fileInfo.mimeType", this, "handleFileInfoChange");
-            this.addPathChangeListener("fileInfo.fileUrl", this, "handleFileInfoChange");
-            this.addPathChangeListener("iteration.expanded", this, "handleExpandedChange");
+            this.addPathChangeListener("info", this, "handleInfoChange");
+            this.addPathChangeListener("fileDescriptor.mimeType", this, "handleFileDescriptorChange");
+            this.addPathChangeListener("fileDescriptor.fileUrl", this, "handleFileDescriptorChange");
+            this.addPathChangeListener("info.isExpanded", this, "handleExpandedChange");
 
             this.activeUploads = [];
         }
@@ -51,10 +56,10 @@ exports.FileCell = Component.specialize({
 
     enterDocument: {
         value: function (firstTime) {
-            if (firstTime) {
+            if (firstTime && this.info) {
                 application.addEventListener("didOpenDocument", this);
 
-                if (this.fileInfo.isDirectory) {
+                if (this.fileDescriptor.isDirectory) {
                     this.element.addEventListener("drop", this, false);
                     this.element.addEventListener("dragenter", this, true);
                     this.element.addEventListener("dragleave", this, true);
@@ -87,7 +92,7 @@ exports.FileCell = Component.specialize({
             menu.insertItem(deleteItem);
 
             // openWith menuItem
-            var prototypes = this.projectController.documentTypesForUrl(this.fileInfo.fileUrl);
+            var prototypes = this.projectController.documentTypesForUrl(this.fileDescriptor.fileUrl);
             if (prototypes.length > 0) {
                 menu.insertItem(openWithItem, 0);
                 prototypes.forEach(function (proto) {
@@ -122,10 +127,10 @@ exports.FileCell = Component.specialize({
         value: function (evt) {
             var menuItem = evt.detail,
                 identifier = menuItem.identifier,
-                path = this.fileInfo.filename;
+                path = this.fileDescriptor.filename;
 
-            if (!this.fileInfo.isDirectory) {
-                path = this.fileInfo.filename.substring(0, this.fileInfo.filename.lastIndexOf(this.fileInfo.name));
+            if (!this.fileDescriptor.isDirectory) {
+                path = this.fileDescriptor.filename.substring(0, this.fileDescriptor.filename.lastIndexOf(this.fileDescriptor.name));
             }
 
             switch (identifier) {
@@ -151,13 +156,13 @@ exports.FileCell = Component.specialize({
 
             case "delete":
                 evt.stop();
-                this.dispatchEventNamed("removeTree", true, true, {path: this.fileInfo.filename});
+                this.dispatchEventNamed("removeTree", true, true, {path: this.fileDescriptor.filename});
                 break;
 
             case "openWith":
                 evt.stop();
                 var editorType = menuItem.editorType;
-                this.projectController.openUrlForEditing(this.fileInfo.fileUrl, editorType);
+                this.projectController.openUrlForEditing(this.fileDescriptor.fileUrl, editorType);
                 break;
             }
         }
@@ -201,10 +206,10 @@ exports.FileCell = Component.specialize({
         value: function() {
             this.super();
 
-            var fileInfo = this.fileInfo,
+            var fileDescriptor = this.fileDescriptor,
                 element = this.element;
 
-            if (fileInfo && fileInfo.mimeType && fileInfo.name && fileInfo.fileUrl) {
+            if (fileDescriptor && fileDescriptor.mimeType && fileDescriptor.name && fileDescriptor.fileUrl) {
                 element.setAttribute("draggable", true);
             } else {
                 element.removeAttribute("draggable");
@@ -312,7 +317,7 @@ exports.FileCell = Component.specialize({
                             // Call makeTree to create an empty directory
                             // TODO: this directory creation is not reflected in the upload progression
                             if (dirEntries.length === 0) {
-                                var destination = self.fileInfo.fileUrl,
+                                var destination = self.fileDescriptor.fileUrl,
                                     dirname = directoryEntry.fullPath,
                                     destinationUrl = Url.resolve(destination, dirname.replace(/^\//, ""));
 
@@ -403,7 +408,7 @@ exports.FileCell = Component.specialize({
 
     _uploadFiles: {
         value: function(files) {
-            var destination = this.fileInfo.fileUrl,
+            var destination = this.fileDescriptor.fileUrl,
                 relativeDestination = destination.replace(this.projectController.packageUrl, ""),
                 deferredCompletion = Promise.defer(),
                 self = this,
@@ -518,23 +523,21 @@ exports.FileCell = Component.specialize({
         value: function (evt) {
             // TODO eventually allow downloading directories
             // TODO eventually allow moving directories
-            if (!this.fileInfo.isDirectory) {
-                var fileDetails = this.fileInfo.mimeType + ":" + this.fileInfo.name + ":" + this.fileInfo.fileUrl;
+            if (!this.fileDescriptor.isDirectory) {
+                var fileDetails = this.fileDescriptor.mimeType + ":" + this.fileDescriptor.name + ":" + this.fileDescriptor.fileUrl;
                 evt.dataTransfer.setData("DownloadURL", fileDetails);
             }
-            evt.dataTransfer.setData(MimeTypes.URL, this.fileInfo.fileUrl);
+            evt.dataTransfer.setData(MimeTypes.URL, this.fileDescriptor.fileUrl);
         }
     },
 
-    handlePathChange: {
+    handleInfoChange: {
         value: function () {
-            if (this.fileInfo && this.iteration && this.fileInfo.root) {
-                this.iteration.expanded = true;
-            }
+            this.dispatchOwnPropertyChange("fileDescriptor", this.fileDescriptor);
         }
     },
 
-    handleFileInfoChange: {
+    handleFileDescriptorChange: {
         value: function () {
             this.needsDraw = true;
         }
@@ -544,9 +547,9 @@ exports.FileCell = Component.specialize({
         value: function () {
             var self = this;
 
-            this.projectController.filesAtUrl(this.fileInfo.fileUrl).then(function (fileDescriptors) {
-                self.fileInfo.expanded = true;
-                self.fileInfo.children.addEach(fileDescriptors);
+            this.projectController.filesAtUrl(this.fileDescriptor.fileUrl).then(function (fileDescriptors) {
+                self.fileDescriptor.expanded = true;
+                self.fileDescriptor.children.addEach(fileDescriptors);
 
                 //TODO not reach into the projectController to do this; formalize when we get the mimetypes
                 fileDescriptors.forEach(function (fd) {
@@ -562,7 +565,7 @@ exports.FileCell = Component.specialize({
 
     handleExpandedChange: {
         value: function(newValue) {
-            if (newValue && this.fileInfo && !this.fileInfo.expanded) {
+            if (newValue && this.fileDescriptor && !this.fileDescriptor.expanded) {
                 this.expandFolder();
             }
         }
@@ -571,8 +574,8 @@ exports.FileCell = Component.specialize({
     handleDidOpenDocument: {
         value: function (evt) {
             var openedDocument = evt.detail.document;
-            if (this.fileInfo && this.fileInfo.fileUrl === openedDocument.url) {
-                this.fileInfo.associatedDocument = openedDocument;
+            if (this.fileDescriptor && this.fileDescriptor.fileUrl === openedDocument.url) {
+                this.fileDescriptor.associatedDocument = openedDocument;
                 application.removeEventListener("didOpenDocument", this);
                 application.addEventListener("didCloseDocument", this);
             }
@@ -582,8 +585,8 @@ exports.FileCell = Component.specialize({
     handleDidCloseDocument: {
         value: function (evt) {
             var openedDocument = evt.detail.document;
-            if (this.fileInfo && this.fileInfo.fileUrl === openedDocument.url) {
-                this.fileInfo.associatedDocument = null;
+            if (this.fileDescriptor && this.fileDescriptor.fileUrl === openedDocument.url) {
+                this.fileDescriptor.associatedDocument = null;
                 application.addEventListener("didOpenDocument", this);
                 application.removeEventListener("didCloseDocument", this);
             }
@@ -592,10 +595,10 @@ exports.FileCell = Component.specialize({
 
     handleOpenFileButtonAction: {
         value: function (evt) {
-            if (this.fileInfo.isDirectory && !this.fileInfo.isReel) {
-                this.iteration.expanded = !this.iteration.expanded;
+            if (this.fileDescriptor.isDirectory && !this.fileDescriptor.isReel) {
+                this.info.isExpanded = !this.info.isExpanded;
             } else {
-                this.dispatchEventNamed("openUrl", true, true, this.fileInfo.fileUrl);
+                this.dispatchEventNamed("openUrl", true, true, this.fileDescriptor.fileUrl);
             }
         }
     },
