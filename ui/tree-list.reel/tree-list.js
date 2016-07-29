@@ -213,7 +213,7 @@ exports.TreeList = Component.specialize(/** @lends TreeList.prototype */ {
         value: function () {
             var iterations = [];
 
-            if (this._controller.data && (this._visibilityRange[1] > this._visibilityRange[0])) {
+            if (this._controller && this._controller.data && (this._visibilityRange[1] > this._visibilityRange[0])) {
                 if (this._isVisible(0, this._getNodeHeight(this._controller.data))) {
                     this._addIterations(this._controller.data, iterations, 0, 0, 0);
                 }
