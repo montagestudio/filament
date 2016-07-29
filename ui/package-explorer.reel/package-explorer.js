@@ -12,6 +12,10 @@ var Component = require("montage/ui/component").Component,
 
 exports.PackageExplorer = Component.specialize({
 
+    fileList: {
+        value: null
+    },
+
     constructor: {
         value: function PackageExplorer() {
             return this.super();

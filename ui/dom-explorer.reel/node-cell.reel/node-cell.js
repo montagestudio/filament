@@ -94,25 +94,6 @@ exports.NodeCell = Component.specialize(/** @lends module:"./node-cell.reel".Nod
         }
     },
 
-    _isExpanded: {
-        value: null
-    },
-
-    isExpanded: {
-        get: function() {
-            return this._isExpanded;
-        },
-        set: function(value) {
-            if (this._isExpanded !== value) {
-                this._isExpanded = value;
-                if (this.treeControllerNode &&
-                    this.treeControllerNode.expanded !== value) {
-                    this.treeControllerNode.expanded = value;
-                }
-            }
-        }
-    },
-
     enterDocument: {
         value: function (firstTime) {
             if (!firstTime) { return; }
@@ -488,21 +469,20 @@ exports.NodeCell = Component.specialize(/** @lends module:"./node-cell.reel".Nod
     },
 
     /// MANUAL BINDINGS
-    _data: {
+    _info: {
         value: null
     },
 
-    data: {
+    info: {
         get: function() {
-            return this._data;
+            return this._info;
         },
         set: function(value) {
-            if (value !== this._data) {
-                this._data = value;
+            if (value !== this._info) {
+                this._info = value;
                 if (value) {
                     this.treeControllerNode = value;
-                    this.nodeInfo = value.content;
-                    this.isExpanded = value.expanded;
+                    this.nodeInfo = value.data;
                 } else {
                     this.treeControllerNode = null;
                     this.nodeInfo = null;
