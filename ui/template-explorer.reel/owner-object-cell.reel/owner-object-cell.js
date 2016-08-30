@@ -48,12 +48,16 @@ exports.OwnerObjectCell = Component.specialize({
             }
             this._templateObject = value;
             if (value) {
-                var self = this;
-                value.editingDocument.packageRequire.async(value.moduleId)
+                var self = this,
+                    promise;
+                promise = value.editingDocument.packageRequire.async(value.moduleId)
                     .get(value.exportName)
                     .then(function (object) {
                         self.isTemplateObjectComponent = object.prototype instanceof Component;
-                    }).fail(Function.noop);
+                    });
+                // TODO: Remove this check once we can drop support for Montage<0.16 applications
+                // Use .fail for Q or .catch for bluebird
+                promise.fail ? promise.fail(Function.noop) : promise.catch(Function.noop);
             }
 
         }
