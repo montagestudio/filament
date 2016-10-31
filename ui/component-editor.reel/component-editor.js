@@ -176,7 +176,9 @@ exports.ComponentEditor = Editor.specialize({
 
     _hidePanel: {
         value: function() {
-            this.templateObjects.overlayPanel.visible = false;
+            if (this.templateObjects.overlayPanelMessage) {
+                this.templateObjects.overlayPanel.visible = false;
+            }
         }
     },
 

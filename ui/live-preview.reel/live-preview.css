@@ -1,0 +1,58 @@
+.LivePreview {
+    border-left: 1px solid hsl(0, 0%, 15%);
+    display: flex;
+    flex-direction: column;
+}
+
+.LivePreview-header {
+    justify-content: space-between;
+    padding: 8px;
+}
+
+.LivePreview-header *:focus {
+    outline: 0;
+}
+
+.LivePreview-controlGroup {
+    display: flex;
+    align-items: center;
+}
+
+.LivePreview-controlGroup * + * {
+    margin-left: 8px;
+}
+
+.LivePreview-title {
+    color: hsl(0, 0%, 94%);
+    text-shadow: 0 -1px 0 hsl(0, 0%, 23%);
+    font-size: 18px;
+    line-height: 22px;
+}
+
+.LivePreview-refreshButton {
+    background: url(/assets/icons/refresh.svg);
+    min-width: 24px;
+    min-height: 24px;
+}
+
+.LivePreview-previewArea {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.LivePreview-frameContainer {
+    position: absolute;
+    transition: all .5s ease;
+    resize: both;
+}
+
+.LivePreview-frame {
+    border: none;
+    width: 100%;
+    height: 100%;
+}

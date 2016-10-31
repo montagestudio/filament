@@ -60,10 +60,10 @@
 }
 
 .Main-panel--left {
-    -webkit-flex: 0 0 323px;
-    -moz-flex: 0 0 323px;
-    -ms-flex: 0 0 323px;
-    flex: 0 0 50%;
+    -webkit-flex: 1 1 225px;
+    -moz-flex: 1 1 225px;
+    -ms-flex: 1 1 225px;
+    flex: 1 1 25%;
     min-width: 210px;
     display: -webkit-flex;
     display: -moz-flex;
@@ -84,7 +84,10 @@
 }
 
 .Main-panel--middle {
-    flex: 1 0 50%;
+    -webkit-flex: 1 1 315px;
+    -moz-flex: 1 1 315px;
+    -ms-flex: 1 1 315px;
+    flex: 1 1 35%;
     display: -webkit-flex;
     display: -moz-flex;
     display: -ms-flex;
@@ -98,9 +101,11 @@
 
 .Main-panel-substitution {
     flex: 1;
+    display: flex;
+    flex-flow: column;
 }
 .Main-panel-substitution > * {
-    height: 100%;
+    flex: 1;
 }
 
 .Main-textEditor {
@@ -113,6 +118,18 @@
 
 .standby {
     display: none;
+}
+
+.Main-panel--right {
+    -webkit-flex: 1 1 360px;
+    -moz-flex: 1 1 360px;
+    -ms-flex: 1 1 360px;
+    flex: 1 1 40%;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+    position: relative;
 }
 
 /* Editor Area ----------------------- */

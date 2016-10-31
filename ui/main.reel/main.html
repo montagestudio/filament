@@ -208,6 +208,28 @@
                 }
             },
 
+            "split2": {
+                "prototype": "ui/split-control.reel",
+                "properties": {
+                    "element": {"#": "split2"},
+                    "splitAxis": "vertical",
+                    "isInverted": true,
+                    "containerElement": {"#": "containerElement"},
+                    "controlledComponent": {"@": "livePreview"}
+                }
+            },
+
+            "livePreview": {
+                "prototype": "ui/live-preview.reel",
+                "properties": {
+                    "element": {"#": "livePreview"}
+                },
+                "bindings": {
+                    "previewController": {"<-": "@application.delegate.previewController"},
+                    "projectController": {"<-": "@owner.projectController"}
+                }
+            },
+
             "goToFile": {
                 "prototype": "ui/go-to-file.reel",
                 "properties": {
@@ -269,6 +291,9 @@
                     <div data-arg="textEditor" data-montage-id="textEditor" class="Main-textEditor"></div>
                 </div>
             </aside>
+
+            <div data-montage-id="split2"></div>
+            <aside data-montage-id="livePreview" class="Main-panel--right"></aside>
 
             <div data-montage-id="goToFile"></div>
             <div data-montage-id="contextualMenu"></div>

@@ -34,7 +34,7 @@ exports.SplitControl = AbstractSlider.specialize(/** @lends SplitControl# */ {
             }
         },
         get: function () {
-            return this._valuePercentage;
+            return this.isInverted ? 100 - this._valuePercentage : this._valuePercentage;
         }
     },
 
@@ -72,7 +72,7 @@ exports.SplitControl = AbstractSlider.specialize(/** @lends SplitControl# */ {
 
     draw: {
         value: function () {
-            this.controlledElement.style.webkitFlexBasis = (this._valuePercentage/100)*this._sliderMagnitude + "px";
+            this.controlledElement.style.webkitFlexBasis = (this.valuePercentage/100)*this._sliderMagnitude + "px";
         }
     },
 
@@ -117,6 +117,10 @@ exports.SplitControl = AbstractSlider.specialize(/** @lends SplitControl# */ {
         value: null
     },
 
+    isInverted: {
+        value: false
+    },
+
     controlledComponent: {
         value: null
     },
@@ -147,11 +151,13 @@ exports.SplitControl = AbstractSlider.specialize(/** @lends SplitControl# */ {
     _updateValueFromDom: {
         value: function() {
             // value is from 0 to 100
+            var value;
             if(this.splitAxis === "vertical") {
-                this.value = (this.controlledElement.offsetWidth/this.containerElement.offsetWidth)*100;
+                value = (this.controlledElement.offsetWidth/this.containerElement.offsetWidth)*100;
             } else {
-                this.value = (this.controlledElement.offsetHeight/this.containerElement.offsetHeight)*100;
+                value = (this.controlledElement.offsetHeight/this.containerElement.offsetHeight)*100;
             }
+            this.value = this.isInverted? 100 - value : value;
         }
     },
 

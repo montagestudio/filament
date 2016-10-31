@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="live-preview.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"},
+                "frameContainer": {"#": "frameContainer"},
+                "iframe": {"#": "iframe"},
+                "newTabButton": {"@": "newTabButton"}
+            }
+        },
+
+        "refreshButton": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "element": {"#": "refreshButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "displaySizesController": {
+            "prototype": "montage/core/radio-button-controller",
+            "bindings": {
+                "value": {"<->": "@owner._previewSizeId"}
+            }
+        },
+
+        "fullDisplaySize": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "fullDisplaySize"},
+                "radioButtonController": {"@": "displaySizesController"},
+                "value": "1"
+            }
+        },
+
+        "largeDisplaySize": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "largeDisplaySize"},
+                "radioButtonController": {"@": "displaySizesController"},
+                "value": "2"
+            }
+        },
+
+        "smallDisplaySize": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "smallDisplaySize"},
+                "radioButtonController": {"@": "displaySizesController"},
+                "value": "3"
+            }
+        },
+
+        "newTabButton": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "element": {"#": "newTabButton"}
+            },
+            "bindings": {
+                "title": {"<-": "'Run the current application in a new tab: ' + @owner.previewUrl"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="LivePreview">
+        <div class="Main-panel-header LivePreview-header">
+            <div class="LivePreview-controlGroup">
+                <div class="LivePreview-title">Live</div>
+                <div data-montage-id="refreshButton" class="LivePreview-refreshButton"></div>
+            </div>
+            <div class="LivePreview-controlGroup LivePreview-displaySizes">
+                <input data-montage-id="fullDisplaySize" class="LivePreview-sizeButton" type="radio" name="displaySize" />
+                <input data-montage-id="largeDisplaySize" class="LivePreview-sizeButton" type="radio" name="displaySize" />
+                <input data-montage-id="smallDisplaySize" class="LivePreview-sizeButton" type="radio" name="displaySize" />
+            </div>
+            <div class="LivePreview-controlGroup">
+                <div data-montage-id="newTabButton" class="LivePreview-openInNewTabButton" title="Preview in New Tab">
+                    <svg width="24" height="24">
+                        <rect x="8" y="1" width="15" height="15" style="stroke-width:2;stroke:hsl(0, 0%, 70%)" fill-opacity="0"></rect>
+                        <rect x="1" y="8" width="15" height="15" style="stroke-width:2;stroke:hsl(0, 0%, 70%)" fill-opacity="0"></rect>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="LivePreview-previewArea">
+            <div data-montage-id="frameContainer" class="LivePreview-frameContainer">
+                <iframe data-montage-id="iframe" class="LivePreview-frame"></iframe>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
