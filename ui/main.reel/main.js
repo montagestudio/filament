@@ -18,6 +18,18 @@ exports.Main = Component.specialize({
         value: null
     },
 
+    packageExplorer: {
+        value: null
+    },
+
+    leftPanelTab: {
+        value: "package"
+    },
+
+    middlePanelTab: {
+        value: "inspector"
+    },
+
     constructor: {
         value: function Main() {
             this.super();

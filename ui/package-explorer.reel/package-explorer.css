@@ -1,10 +1,5 @@
 
 .PackageExplorer {
-    -webkit-flex: 0 0 200px;
-    -moz-flex: 0 0 200px;
-    -ms-flex: 0 0 200px;
-    flex: 0 0 200px;
-    min-width: 0;
     display: -webkit-flex;
     display: -moz-flex;
     display: -ms-flex;
@@ -14,7 +9,6 @@
     -ms-flex-flow: column;
     flex-flow: column;
     position: relative;
-    border-right: 1px solid hsl(0, 0%, 15%);
 
     /* Fixes flickering when hovering the name or toggle the tree menu */
     -webkit-backface-visibility: hidden; 
@@ -43,7 +37,6 @@
     margin: 0;
     padding: 8px;
     height: 75px;
-    border-top: 1px solid hsla(0, 100%, 100%, 0.2);
     border-bottom: 1px solid hsla(0, 0%, 0%, 0.6);
     background: -webkit-linear-gradient( hsl(0, 0%, 42%), hsl(0, 0%, 32%) );
     background: -moz-linear-gradient( hsl(0, 0%, 42%), hsl(0, 0%, 32%) );

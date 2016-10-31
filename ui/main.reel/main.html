@@ -21,7 +21,8 @@
             "owner": {
                 "properties": {
                     "element": {"#": "main"},
-                    "editorSlot": {"#": "editorSlot"}
+                    "editorSlot": {"#": "editorSlot"},
+                    "packageExplorer": {"@": "packageExplorer"}
                 },
                 "bindings": {
                     "projectController": {"<-": "@application.delegate.projectController"},
@@ -84,6 +85,51 @@
                 }
             },
 
+            "split": {
+                "prototype": "ui/split-control.reel",
+                "properties": {
+                    "element": {"#": "split"},
+                    "splitAxis": "vertical",
+                    "containerElement": {"#": "containerElement"},
+                    "controlledElement": {"#": "left"}
+                }
+            },
+
+            "leftPanelTabController": {
+                "prototype": "montage/core/radio-button-controller",
+                "bindings": {
+                    "value": {"<->": "@owner.leftPanelTab"}
+                }
+            },
+
+            "packageTab": {
+                "prototype": "matte/ui/radio-button.reel",
+                "properties": {
+                    "element": {"#": "packageTab"},
+                    "radioButtonController": {"@": "leftPanelTabController"},
+                    "value": "package"
+                }
+            },
+
+            "componentsTab": {
+                "prototype": "matte/ui/radio-button.reel",
+                "properties": {
+                    "element": {"#": "componentsTab"},
+                    "radioButtonController": {"@": "leftPanelTabController"},
+                    "value": "components"
+                }
+            },
+
+            "leftPanelSubstitution": {
+                "prototype": "montage/ui/substitution.reel",
+                "properties": {
+                    "element": {"#": "leftPanelSubstitution"}
+                },
+                "bindings": {
+                    "switchValue": {"<-": "@owner.leftPanelTab"}
+                }
+            },
+
             "packageExplorer": {
                 "prototype": "ui/package-explorer.reel",
                 "properties": {
@@ -108,25 +154,50 @@
                 ]
             },
 
-            "documentTabList": {
-                "prototype": "ui/document-tab-list.reel",
-                "properties": {
-                    "element": {"#": "documentTabList"}
-                },
+            "middlePanelTabController": {
+                "prototype": "montage/core/radio-button-controller",
                 "bindings": {
-                    "projectController": {"<-": "@owner.projectController"}
+                    "value": {"<->": "@owner.middlePanelTab"}
                 }
             },
 
-            "split": {
-                "prototype": "ui/split-control.reel",
+            "inspectorTab": {
+                "prototype": "matte/ui/radio-button.reel",
                 "properties": {
-                    "element": {"#": "split"},
-                    "splitAxis": "vertical",
-                    "containerElement": {"#": "containerElement"},
-                    "controlledComponent": {"@": "packageExplorer"}
+                    "element": {"#": "inspectorTab"},
+                    "radioButtonController": {"@": "middlePanelTabController"},
+                    "value": "inspector"
                 }
             },
+
+            "textEditorTab": {
+                "prototype": "matte/ui/radio-button.reel",
+                "properties": {
+                    "element": {"#": "textEditorTab"},
+                    "radioButtonController": {"@": "middlePanelTabController"},
+                    "value": "textEditor"
+                }
+            },
+
+            "libraryTab": {
+                "prototype": "matte/ui/radio-button.reel",
+                "properties": {
+                    "element": {"#": "libraryTab"},
+                    "radioButtonController": {"@": "middlePanelTabController"},
+                    "value": "library"
+                }
+            },
+
+            "middlePanelSubstitution": {
+                "prototype": "montage/ui/substitution.reel",
+                "properties": {
+                    "element": {"#": "middlePanelSubstitution"}
+                },
+                "bindings": {
+                    "switchValue": {"<-": "@owner.middlePanelTab"}
+                }
+            },
+
             "goToFile": {
                 "prototype": "ui/go-to-file.reel",
                 "properties": {
@@ -167,12 +238,27 @@
 
             <div data-montage-id="previewControlPanel"></div>
 
-            <aside data-montage-id="packageExplorer"></aside>
+            <aside data-montage-id="left" class="Main-panel--left">
+                <header class="Main-panel-header">
+                    <div data-montage-id="packageTab" class="Main-panel-header-tab">Package</div>
+                    <div data-montage-id="componentsTab" class="Main-panel-header-tab">Components</div>
+                </header>
+                <div data-montage-id="leftPanelSubstitution" class="Main-panel-substitution">
+                    <div data-arg="package" data-montage-id="packageExplorer" class="Main-packageExplorer"></div>
+                </div>
+            </aside>
             <div data-montage-id="split"></div>
-            <section class="editor">
-                <div data-montage-id="documentTabList"></div>
-                <section data-montage-id="editorSlot" class="editorSlot"></section>
-            </section>
+
+            <aside class="Main-panel--middle">
+                <header class="Main-panel-header">
+                    <div data-montage-id="inspectorTab" class="Main-panel-header-tab">Inspector</div>
+                    <div data-montage-id="textEditorTab" class="Main-panel-header-tab">Text Editor</div>
+                    <div data-montage-id="libraryTab" class="Main-panel-header-tab">Library</div>
+                </header>
+                <div data-montage-id="middlePanelSubstitution" class="Main-panel-substitution">
+                    <div data-arg="textEditor" data-montage-id="editorSlot" class="editorSlot"></div>
+                </div>
+            </aside>
 
             <div data-montage-id="goToFile"></div>
             <div data-montage-id="contextualMenu"></div>
