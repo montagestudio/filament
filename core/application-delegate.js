@@ -120,7 +120,7 @@ exports.ApplicationDelegate = Montage.specialize({
                             loadedExtensions = extensions;
                         });
                     }).then(function () {
-                        projectController = self.projectController = new ProjectController().init(self.environmentBridge, self.viewController, mainComponent, extensionController, self.previewController, self);
+                        projectController = self.projectController = new ProjectController().init(self.environmentBridge, self.viewController, extensionController, self.previewController, self);
 
                         projectController.registerUrlMatcherForDocumentType(function (fileUrl) {
                             return (/\.reel\/?$/).test(fileUrl);

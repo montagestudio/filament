@@ -178,17 +178,15 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      *
      * @param {EnvironmentBridge} bridge An environment bridge that normalizes different environment features
      * @param {Object} viewController A controller that manages registration of views that can appear through filament
-     * @param {Object} editorController A controller that manages the visible editor stack
      * @param {Object} previewController A controller that manages the preview
      * @return {ProjectController} An initialized instance of a ProjectController
      */
     init: {
-        value: function (bridge, viewController, editorController, extensionController, previewController, applicationDelegate) {
+        value: function (bridge, viewController, extensionController, previewController, applicationDelegate) {
             bridge.setDocumentDirtyState(false);
 
             this._environmentBridge = bridge;
             this._viewController = viewController;
-            this._editorController = editorController;
             this._extensionController = extensionController;
             this.previewController = previewController;
             this._applicationDelegate = applicationDelegate;
@@ -401,13 +399,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     // DOCUMENT HANDLING
 
-    // The controller that facilittates bringing editors components
-    // to the front as needed
-    // Typically this is filament's mainComponent
-    _editorController: {
-        value: null
-    },
-
     _editorTypeInstanceMap: {
         value: null
     },
@@ -450,7 +441,9 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 editor = this._getEditor(editorType);
                 this._applicationDelegate.updateStatusMessage("Loading editor…");
                 editor.preload().done();
-                this._editorController.preloadEditor(editor);
+                this.dispatchEventNamed("preloadEditor", true, false, {
+                    editor: editor
+                });
             }
         }
     },
@@ -597,7 +590,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             if (editorType) {
                 editor = this._getEditor(editorType);
 
-                this._editorController.bringEditorToFront(editor);
                 this.currentEditor = editor;
 
                 this.dispatchEventNamed("willOpenDocument", true, false, {
@@ -761,10 +753,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                                     return editor;
                                 });
 
-                        } else if (self.documents.length === 1) {
-                            // If this is the last remaining document then hide all
-                            // the editors
-                            self._editorController.hideEditors();
                         }
                     }
                     return readyToClosePromise;
