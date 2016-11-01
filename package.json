@@ -31,7 +31,7 @@
         "montage-testing": "git+ssh://git@github.com:montagejs/montage-testing.git#9eca56fcec3051de6ba0b24e397e309976c14c29",
         "jshint": "2.1.9",
         "watchr": "2.3.3",
-        "glTF-webgl-viewer": "./node_modules/glTF-webgl-viewer"
+        "glTF-webgl-viewer": "git+ssh://git@github.com:montagejs/glTF-webgl-viewer.git#master"
     },
     "mappings": {
         "filament-extension": {
