@@ -21,7 +21,6 @@
             "owner": {
                 "properties": {
                     "element": {"#": "main"},
-                    "editorSlot": {"#": "editorSlot"},
                     "packageExplorer": {"@": "packageExplorer"}
                 },
                 "bindings": {
@@ -198,6 +197,17 @@
                 }
             },
 
+            "textEditor": {
+                "prototype": "ui/text-editor.reel",
+                "properties": {
+                    "element": {"#": "textEditor"}
+                },
+                "bindings": {
+                    "projectController": {"<-": "@owner.projectController"},
+                    "preloadEditorSlot": {"<-": "@preloadEditorSlot"}
+                }
+            },
+
             "goToFile": {
                 "prototype": "ui/go-to-file.reel",
                 "properties": {
@@ -256,7 +266,7 @@
                     <div data-montage-id="libraryTab" class="Main-panel-header-tab">Library</div>
                 </header>
                 <div data-montage-id="middlePanelSubstitution" class="Main-panel-substitution">
-                    <div data-arg="textEditor" data-montage-id="editorSlot" class="editorSlot"></div>
+                    <div data-arg="textEditor" data-montage-id="textEditor" class="Main-textEditor"></div>
                 </div>
             </aside>
 

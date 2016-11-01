@@ -103,38 +103,12 @@
     height: 100%;
 }
 
-.Main .editor {
-    -webkit-flex: 1;
-    -moz-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
-    min-width: 0;
-    display: -webkit-flex;
-    display: -moz-flex;
-    display: -ms-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    -moz-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    position: relative;
-}
-
-
-.editorSlot {
+.Main-textEditor {
     -webkit-flex: 1;
     -moz-flex: 1;
     -ms-flex: 1;
     flex: 1;
     min-height: 0;
-    display: -webkit-flex;
-    display: -moz-flex;
-    display: -ms-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    -moz-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
 }
 
 .standby {

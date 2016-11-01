@@ -10,10 +10,6 @@ exports.Main = Component.specialize({
         value: null
     },
 
-    editorSlot: {
-        value: null
-    },
-
     preloadSlot: {
         value: null
     },
@@ -33,8 +29,6 @@ exports.Main = Component.specialize({
     constructor: {
         value: function Main() {
             this.super();
-            this._editorsToInsert = [];
-            this._openEditors = [];
 
             this.addPathChangeListener("projectController.currentDocument.title", this, "handleTitleWillChange", true);
             this.addPathChangeListener("projectController.currentDocument.title", this, "handleTitleChange");
@@ -140,33 +134,6 @@ exports.Main = Component.specialize({
                 currentPath += dir + "/";
             }
         }
-    },
-
-    _frontEditor: {
-        value: null
-    },
-
-    bringEditorToFront: {
-        value: function (editor) {
-            if (!editor.element || editor.element.parentElement !== this.editorSlot) {
-                this._editorsToInsert.push(editor);
-                this._openEditors.push(editor);
-            }
-
-            this._frontEditor = editor;
-            this.needsDraw = true;
-        }
-    },
-
-    hideEditors: {
-        value: function () {
-            this._frontEditor = null;
-            this.needsDraw = true;
-        }
-    },
-
-    _openEditors: {
-        value: null
     },
 
     handleAsyncActivity: {
@@ -340,40 +307,6 @@ exports.Main = Component.specialize({
             if (this.windowTitle) {
                 document.title = this.windowTitle;
             }
-
-            var editorArea,
-                editorElement,
-                frontEditor = this._frontEditor;
-
-            if (this._editorsToInsert.length) {
-                editorArea = this.editorSlot;
-
-                this._editorsToInsert.forEach(function (editor) {
-                    if (!editor.element) {
-                        editor.element = document.createElement("div");
-                    }
-                    editorArea.appendChild(editor.element);
-                    editor.attachToParentComponent();
-                    editor.needsDraw = true;
-                });
-                this._editorsToInsert = [];
-            }
-
-            this._openEditors.forEach(function (editor) {
-                editorElement = editor.element;
-                if (editor === frontEditor) {
-                    editorElement.classList.remove("standby");
-                } else {
-                    editorElement.classList.add("standby");
-                }
-            });
-
-        }
-    },
-
-    preloadEditor: {
-        value: function(editor) {
-            this.templateObjects.preloadEditorSlot.content = editor;
         }
     }
 });

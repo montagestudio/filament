@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="text-editor.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"},
+                "editorSlot": {"#": "editorSlot"}
+            }
+        },
+
+        "documentTabList": {
+            "prototype": "./document-tab-list.reel",
+            "properties": {
+                "element": {"#": "documentTabList"}
+            },
+            "bindings": {
+                "projectController": {"<-": "@owner.projectController"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="TextEditor">
+        <div data-montage-id="documentTabList"></div>
+        <div data-montage-id="editorSlot" class="TextEditor-editorSlot"></div>
+    </div>
+</body>
+</html>
