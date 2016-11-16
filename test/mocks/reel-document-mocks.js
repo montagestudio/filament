@@ -62,6 +62,21 @@ var ReelDocMock = Montage.specialize({
             }
             return this._packageRequire;
         }
+    },
+
+    editingProxyMap: {
+        value: null
+    },
+
+    editingProxies: {
+        get: function () {
+            var self = this;
+            return this.editingProxyMap ?
+                Object.keys(this.editingProxyMap).map(function (key) {
+                    return self.editingProxyMap[key];
+                }) :
+                null;
+        }
     }
 
 });

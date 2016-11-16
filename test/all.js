@@ -16,6 +16,7 @@ require("montage-testing").run(require, [
     // "test/core/project-controller-spec",
     "test/core/reel-blueprint-editing-spec",
     "test/core/reel-context-spec",
+    "test/core/reel-document-factory-spec",
     "test/core/reel-document-selected-elements-spec",
     "test/core/reel-document-spec",
     "test/core/reel-proxy-spec",

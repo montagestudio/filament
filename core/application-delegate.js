@@ -5,6 +5,7 @@ var Montage = require("montage/core/core").Montage,
     PreviewController = require("core/preview-controller").PreviewController,
     ProjectController = require("core/project-controller").ProjectController,
     ReelDocument = require("core/reel-document").ReelDocument,
+    ReelDocumentFactory = require("core/reel-document-factory").ReelDocumentFactory,
     Document = require("palette/core/document").Document,
     FilamentService = require("core/filament-service").FilamentService;
 
@@ -162,6 +163,11 @@ exports.ApplicationDelegate = Montage.specialize({
                             //TODO not launch the preview automatically?
                             return self.previewController.launchPreview();
                         });
+                    }).then(function () {
+                        return projectController.getPackageRequire(projectController.projectUrl);
+                    }).then(function (packageRequire) {
+                        self.reelDocumentFactory = new ReelDocumentFactory()
+                            .init(projectController.documentDataSource, self.environmentBridge, packageRequire);
                     }).then(function () {
                         return self.didLoadProject();
                     });

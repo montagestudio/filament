@@ -191,7 +191,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this.previewController = previewController;
             this._applicationDelegate = applicationDelegate;
 
-            this._documentDataSource = new DocumentDataSource(bridge);
+            this.documentDataSource = new DocumentDataSource(bridge);
 
             this._moduleIdIconUrlMap = new Map();
             this._moduleIdLibraryItemMap = new Map();
@@ -503,7 +503,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
     createDocumentWithTypeAndUrl: {
         value: function (documentType, url) {
-            return new documentType().init(url, this._documentDataSource, this._packageRequire);
+            return new documentType().init(url, this.documentDataSource, this._packageRequire);
         }
     },
 
