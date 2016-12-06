@@ -1481,6 +1481,24 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    javascriptProperties: {
+        get: function () {
+            var self = this;
+            return this._dataSource.read(this._getJsFileUrl()).then(function (javascript) {
+                return modifyModule.getProperties(javascript, self._exportName);
+            });
+        }
+    },
+
+    functions: {
+        get: function () {
+            var self = this;
+            return this._dataSource.read(this._getJsFileUrl()).then(function (javascript) {
+                return modifyModule.getFunctions(javascript, self._exportName);
+            });
+        }
+    },
+
     __implicitActionEventListenerTemplate: {
         value: null
     },

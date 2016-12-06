@@ -66,6 +66,78 @@ exports.removeMethod = function (input, name, methodName) {
     return leader + follower;
 };
 
+exports.getProperties = function (input, exportName) {
+    var syntax = Esprima.parse(input, {
+        comment: true,
+        loc: true,
+        range: true
+    });
+    var nodes = getSpecializeProperties(syntax, exportName),
+        propertyNodes,
+        properties = {};
+    for (var i = 0, length = nodes.length; i < length; i++) {
+        var node = nodes[i];
+        if (node.type === "Property" && node.value.type === "ObjectExpression") {
+            for (var j = 0, jl = node.value.properties.length; j < jl; j++) {
+                var objectProperty = node.value.properties[j];
+                if (objectProperty.value.type === "Identifier" ||
+                    objectProperty.value.type === "Literal") {
+                    properties[node.key.name] = objectProperty.value;
+                }
+            }
+        }
+    }
+    return properties;
+}
+
+exports.getFunctions = function (input, exportName) {
+    var syntax = Esprima.parse(input, {
+        comment: true,
+        loc: true,
+        range: true
+    });
+    var nodes = getSpecializeProperties(syntax, exportName),
+        propertyNodes,
+        functions = {};
+    for (var i = 0, length = nodes.length; i < length; i++) {
+        var node = nodes[i];
+        if (node.type === "Property" && node.value.type === "ObjectExpression") {
+            for (var j = 0, jl = node.value.properties.length; j < jl; j++) {
+                var objectProperty = node.value.properties[j];
+                if (objectProperty.value.type === "FunctionExpression") { 
+                    functions[node.key.name] = null;
+                }
+            }
+        }
+    }
+    return functions;
+}
+
+function getExportDefinition(syntax, exportName) {
+    var nodes = syntax.body;
+    for (var index = 0, length = nodes.length; index < length; index++) {
+        var node = nodes[index];
+        if (node.type === "ExpressionStatement") {
+            var expression = node.expression;
+            if (expression.type === "AssignmentExpression" && expression.operator === "=") {
+                var left = expression.left;
+                if (!doesExport(left, exportName)) {
+                    continue;
+                }
+                return expression.right;
+            }
+        }
+    }
+}
+
+function getSpecializeProperties(syntax, exportName) {
+    var export_ = getExportDefinition(syntax, exportName);
+    if (export_ && export_.arguments[0]) {
+        return export_.arguments[0].properties;
+    }
+    return [];
+}
+
 function findDeclaration(syntax, name) {
     var nodes = syntax.body;
     for (var index = 0, length = nodes.length; index < length; index++) {

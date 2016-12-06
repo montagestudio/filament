@@ -7,6 +7,7 @@ require("montage-testing").run(require, [
     "test/core/asset-manager-spec",
     "test/core/code-editor-document-spec",
     "test/core/document-data-source-spec",
+    "test/core/entity-proxy-spec",
     "test/core/node-proxy-spec",
     "test/core/object-references-spec",
     "test/core/project-controller-extensions-spec",
