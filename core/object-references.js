@@ -6,6 +6,9 @@ function equals(a, b) {
 }
 
 function hash(object) {
+    if (!object[0].uuid) {
+        Montage.defineUuidProperty(object[0]);
+    }
     return object[0].uuid + object[1];
 }
 
@@ -38,7 +41,7 @@ ObjectReferences.prototype.get = function(referencedObject) {
     var value = this.map.get(referencedObject);
 
     if (!value) {
-        value = new Set(void 0, equals, hash);
+        value = new Set(null, equals, hash);
         this.map.set(referencedObject, value);
     }
 

@@ -24,7 +24,7 @@ describe("core/project-controller-extensions-spec", function () {
                 return Promise.resolve(["projectUrl/ui/pass.reel"]);
             },
             getExtensionsAt: function () {
-                return Promise.resolve([{url: "fs:///projectUrl/projectUrl.filament-extension"}]);
+                return Promise.resolve(["fs:///projectUrl/projectUrl.filament-extension"]);
             }
         });
 

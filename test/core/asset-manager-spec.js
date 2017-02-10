@@ -22,7 +22,7 @@ describe("asset-manager-spec", function () {
                 projectController = {
                     environmentBridge: new environmentBridgeMock({
                         detectMimeTypeAtUrl: function (url) {
-                            return Promise.fcall(function () {
+                            return Promise.try(function () {
                                 var fileData = AssetTools.defineFileDataWithUrl(url),
                                     mimeType = null;
 
