@@ -95,8 +95,11 @@ describe("core/reel-document-spec", function () {
 
         beforeEach(function () {
             mockDocument = document.implementation.createHTMLDocument();
+            var owner = document.createElement("div");
+            owner.setAttribute("data-montage-id", "owner");
+            mockDocument.body.appendChild(owner);
 
-            serialization = '{"owner": {"properties": {}}, "foo": {"prototype": "foo-module"}}';
+            serialization = '{"owner": {"properties": {"element": {"#": "owner"}}}, "foo": {"prototype": "foo-module"}}';
 
             var serializationNode = mockDocument.createElement("script");
             serializationNode.setAttribute("type", "text/montage-serialization");
@@ -105,7 +108,10 @@ describe("core/reel-document-spec", function () {
 
             dataSource = documentDataSourceMock({
                 read: function(url) {
-                    return Promise.resolve(mockDocument.documentElement.outerHTML);
+                    if (url.endsWith(".html")) {
+                        return Promise.resolve(mockDocument.documentElement.outerHTML);
+                    }
+                    return Promise.resolve("");
                 }
             });
 
@@ -122,6 +128,12 @@ describe("core/reel-document-spec", function () {
         it("should have a title that is the last path component and extension of the fileUrl", function () {
             return reelDocumentPromise.then(function (reelDocument) {
                 expect(reelDocument.title).toBe("simple.reel");
+            }).timeout(WAITSFOR_TIMEOUT);
+        });
+
+        it("should have an entity proxy tree representing its components and DOM nodes", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                expect(reelDocument.entityTree.children.length).toBe(1);
             }).timeout(WAITSFOR_TIMEOUT);
         });
 
