@@ -11,6 +11,7 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     ReelContext = require("core/serialization/reel-context").ReelContext,
     ReelProxy = require("core/reel-proxy").ReelProxy,
     NodeProxy = require("core/node-proxy").NodeProxy,
+    EntityProxy = require("core/entity-proxy").EntityProxy,
     visit = require("montage/core/serialization/serializer/montage-malker").visit,
     Url = require("core/node/url"),
     WeakMap = require("montage/collections/weak-map"),
@@ -163,6 +164,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             }
             this.buildTemplateObjectTree();
+            this.buildEntityTree();
         }
     },
 
@@ -2630,6 +2632,40 @@ exports.ReelDocument = EditingDocument.specialize({
             };
             // let's add them in top to keep the tree "cleaner"
             root.children.unshift(nodeTemplateLess);
+        }
+    },
+
+    /**
+     * A tree of {@see EntityProxy}, a general interface for ReelProxies (from
+     * serialization) and NodeProxies (from DOM).
+     *
+     * The templateObjectsTree and the templateBodyNode tree each represent
+     * the component's template objects and DOM, respectively, for interfaces which
+     * wish to make that distinction clear, such as the old ComponentEditor.
+     *
+     * The entityTree is intended for interfaces which wish to see DOM nodes and
+     * template objects as one, such as the new component tree viewer.
+     *
+     * @public
+     * @type {Object?}
+     */
+    entityTree: {
+        value: null
+    },
+
+    /**
+     * Generates this component's entity tree. Since this process uses the
+     * reelDocument's templateBodyNode and editingProxies, both structures must
+     * have been initialized prior to calling this function.
+     *
+     * @function
+     */
+    buildEntityTree: {
+        value: function () {
+            var self = this,
+                ownerProxy = this.templateBodyNode.children[0];
+            this.entityTree = new EntityProxy().init(ownerProxy, this, true);
+            return this.entityTree;
         }
     },
 
