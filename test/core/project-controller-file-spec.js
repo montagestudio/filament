@@ -44,7 +44,7 @@ describe("core/project-controller-file-spec", function () {
             it("must return a rejected promise", function () {
                 var closedDocumentPromise = projectController.closeDocument(unopenedDocument);
 
-                expect(Promise.isPromiseAlike(closedDocumentPromise)).toBeTruthy();
+                expect(Promise.is(closedDocumentPromise)).toBeTruthy();
 
                 return closedDocumentPromise.catch(function (error) {
                     expect(error instanceof Error).toBeTruthy();
@@ -102,7 +102,7 @@ describe("core/project-controller-file-spec", function () {
 
             it("should return a promise for the closed document", function () {
                 var closedDocumentPromise =  projectController.closeDocument(openedDocument);
-                expect(Promise.isPromiseAlike(closedDocumentPromise)).toBeTruthy();
+                expect(Promise.is(closedDocumentPromise)).toBeTruthy();
                 closedDocumentPromise.done();
             });
 

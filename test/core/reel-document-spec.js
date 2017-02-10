@@ -25,7 +25,7 @@ describe("core/reel-document-spec", function () {
         });
 
         it("should return a promise for the populated document", function () {
-            expect(Promise.isPromiseAlike(reelDocumentPromise)).toBeTruthy();
+            expect(Promise.is(reelDocumentPromise)).toBeTruthy();
             reelDocumentPromise.timeout(WAITSFOR_TIMEOUT).done();
         });
 
@@ -45,7 +45,7 @@ describe("core/reel-document-spec", function () {
         });
 
         it("should return a promise for the populated document", function () {
-            expect(Promise.isPromiseAlike(reelDocumentPromise)).toBeTruthy();
+            expect(Promise.is(reelDocumentPromise)).toBeTruthy();
             reelDocumentPromise.timeout(WAITSFOR_TIMEOUT).done();
         });
 
