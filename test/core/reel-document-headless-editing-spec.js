@@ -76,7 +76,7 @@ describe("core/reel-document-headless-editing-spec", function () {
         it("should return a promise for a proxy of the added component", function () {
             return readyPromise.spread(function (reelDocument, insertionTemplate) {
                 var addedObjects = reelDocument.addObjectsFromTemplate(insertionTemplate);
-                expect(Promise.isPromiseAlike(addedObjects)).toBeTruthy();
+                expect(Promise.is(addedObjects)).toBeTruthy();
                 addedObjects.done();
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -172,7 +172,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                 var proxyToRemove = reelDocument.editingProxyMap[labelInOwner],
                     removalPromise = reelDocument.removeObject(proxyToRemove);
 
-                expect(Promise.isPromiseAlike(removalPromise)).toBeTruthy();
+                expect(Promise.is(removalPromise)).toBeTruthy();
                 removalPromise.done();
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -297,7 +297,7 @@ describe("core/reel-document-headless-editing-spec", function () {
         it("should return a promise for a proxy of the added object", function () {
             return readyPromise.spread(function (reelDocument, insertionTemplate) {
                 var addedObjects = reelDocument.addObjectsFromTemplate(insertionTemplate);
-                expect(Promise.isPromiseAlike(addedObjects)).toBeTruthy();
+                expect(Promise.is(addedObjects)).toBeTruthy();
                 addedObjects.done();
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -333,7 +333,7 @@ describe("core/reel-document-headless-editing-spec", function () {
                 var proxyToRemove = reelDocument.editingProxyMap[labelInOwner],
                     removalPromise = reelDocument.removeObject(proxyToRemove);
 
-                expect(Promise.isPromiseAlike(removalPromise)).toBeTruthy();
+                expect(Promise.is(removalPromise)).toBeTruthy();
                 removalPromise.done();
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -401,7 +401,7 @@ describe("core/reel-document-headless-editing-spec", function () {
         it("should return a promise for a proxy of the added object", function () {
             return readyPromise.spread(function (reelDocument, insertionTemplate) {
                 var addedObjects = reelDocument.addObjectsFromTemplate(insertionTemplate);
-                expect(Promise.isPromiseAlike(addedObjects)).toBeTruthy();
+                expect(Promise.is(addedObjects)).toBeTruthy();
                 addedObjects.done();
             }).timeout(WAITSFOR_TIMEOUT);
         });
@@ -462,7 +462,7 @@ describe("core/reel-document-headless-editing-spec", function () {
         it("should return a promise for a proxy of the added object", function () {
             return readyPromise.spread(function (reelDocument, insertionTemplate) {
                 var addedObjects = reelDocument.addObjectsFromTemplate(insertionTemplate);
-                expect(Promise.isPromiseAlike(addedObjects)).toBeTruthy();
+                expect(Promise.is(addedObjects)).toBeTruthy();
                 addedObjects.done();
             }).timeout(WAITSFOR_TIMEOUT);
         });

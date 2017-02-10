@@ -22,15 +22,18 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                 removeOwnerBlueprintProperty: function (name) { return Promise.resolve(); },
                 addOwnerBlueprintEvent: function (name) { return Promise.resolve(); },
                 // modifyOwnerBlueprintEvent: function (name) { return Promise.resolve(); },
-                removeOwnerBlueprintEvent: function (name) { return Promise.resolve(); }
+                removeOwnerBlueprintEvent: function (name) { return Promise.resolve(); },
+                registerFile: function (type, cb, editor) { return Promise.resolve(); },
+                unregisterFile: function (type) { return Promise.resolve(); },
+                _ownerBlueprint: Promise.resolve(blueprint)
             };
 
-            editor._ownerObject = {
+            editor.editingDocument = editingDocument;
+
+            editor.ownerObject = {
                 editingDocument: editingDocument,
                 exportName: "Mock"
             };
-
-            editor.ownerBlueprint = blueprint;
         });
 
         describe("properties", function () {
@@ -107,11 +110,16 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                     spyOn(editingDocument, "modifyOwnerBlueprintProperty").andCallThrough();
 
                     runs(function () {
+                        var aSelect;
+
                         expect(defaultGroup[0].valueType).toBe("string");
 
                         // simulate select
-                        editor.templateObjects.valueType[1].element.value = "number";
-                        editor.templateObjects.valueType[1].handleChange();
+                        aSelect = editor.templateObjects.valueType.filter(function (valueType) {
+                            return valueType.propertyBlueprint && valueType.propertyBlueprint.name === "a";
+                        })[0];
+                        aSelect.element.value = "number";
+                        aSelect.handleChange();
 
                         expect(editingDocument.modifyOwnerBlueprintProperty).toHaveBeenCalled();
                         var args = editingDocument.modifyOwnerBlueprintProperty.mostRecentCall.args;
@@ -131,11 +139,16 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                     });
 
                     runs(function () {
+                        var aSelect;
+
                         expect(defaultGroup[0].valueType).toBe("string");
 
                         // simulate select
-                        editor.templateObjects.valueType[1].element.value = "number";
-                        editor.templateObjects.valueType[1].handleChange();
+                        aSelect = editor.templateObjects.valueType.filter(function (valueType) {
+                            return valueType.propertyBlueprint && valueType.propertyBlueprint.name === "a";
+                        })[0];
+                        aSelect.element.value = "number";
+                        aSelect.handleChange();
 
                         expect(editingDocument.modifyOwnerBlueprintProperty).toHaveBeenCalled();
                     });
@@ -147,11 +160,16 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                     spyOn(editingDocument, "modifyOwnerBlueprintProperty").andCallThrough();
 
                     runs(function () {
+                        var aCheckbox;
+
                         expect(defaultGroup[0].cardinality).toBe(1);
 
                         // simulate select
-                        editor.templateObjects.multiple[1].element.checked = true;
-                        editor.templateObjects.multiple[1].handleChange();
+                        aCheckbox = editor.templateObjects.multiple.filter(function (valueType) {
+                            return valueType.propertyBlueprint && valueType.propertyBlueprint.name === "a";
+                        })[0];
+                        aCheckbox.element.checked = true;
+                        aCheckbox.handleChange();
 
                         expect(editingDocument.modifyOwnerBlueprintProperty).toHaveBeenCalled();
                         var args = editingDocument.modifyOwnerBlueprintProperty.mostRecentCall.args;
