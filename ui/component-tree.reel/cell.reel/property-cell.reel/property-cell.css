@@ -1,0 +1,15 @@
+.PropertyCell {
+    display: flex;
+    align-items: center;
+}
+
+.PropertyCell-icon {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto 14px;
+    background-image: url(/assets/icons/binding.png);
+}
+
+.PropertyCell--isDefault .montage-Text {
+    font-style: italic;
+}

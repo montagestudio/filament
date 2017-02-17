@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="component-tree.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"},
+                "tree": {"@": "tree"}
+            }
+        },
+
+        "showProperties": {
+            "prototype": "matte/ui/toggle-button.reel",
+            "properties": {
+                "element": {"#": "showProperties"}
+            },
+            "bindings": {
+                "pressed": {"<->": "@owner.showProperties"}
+            }
+        },
+        "showListeners": {
+            "prototype": "matte/ui/toggle-button.reel",
+            "properties": {
+                "element": {"#": "showListeners"}
+            },
+            "bindings": {
+                "pressed": {"<->": "@owner.showListeners"}
+            }
+        },
+        "showFunctions": {
+            "prototype": "matte/ui/toggle-button.reel",
+            "properties": {
+                "element": {"#": "showFunctions"}
+            },
+            "bindings": {
+                "pressed": {"<->": "@owner.showFunctions"}
+            }
+        },
+        "showClasses": {
+            "prototype": "matte/ui/toggle-button.reel",
+            "properties": {
+                "element": {"#": "showClasses"}
+            },
+            "bindings": {
+                "pressed": {"<->": "@owner.showClasses"}
+            }
+        },
+
+        "treeController": {
+            "prototype": "montage/core/tree-controller",
+            "properties": {
+                "data": { "children": [] }
+            },
+            "bindings": {
+                "data": {"<-": "@owner.data"}
+            }
+        },
+
+        "tree": {
+            "prototype": "ui/tree-list.reel",
+            "properties": {
+                "element": {"#": "tree"},
+                "controller": {"@": "treeController"},
+                "isRootExpanded": true,
+                "isRootVisible": true,
+                "indentationWidth": 20,
+                "rowHeight": 22
+            }
+        },
+
+        "treeCell": {
+            "prototype": "./cell.reel",
+            "properties": {
+                "element": {"#": "treeCell"}
+            },
+            "bindings": {
+                "info": {"<-": "@tree:iteration.object"},
+                "componentStore": {"<-": "@owner.componentStore"}
+            }
+        }
+    }
+    </script>
+</head>
+<div></div>
+<body>
+    <div data-montage-id="owner" class="ComponentTree">
+        <header class="ComponentTree-header">
+            <button data-montage-id="showProperties" class="ComponentTree-filterToggle ComponentTree-icon ComponentTree-icon--property" title="Toggle Properties"></button>
+            <button data-montage-id="showListeners" class="ComponentTree-filterToggle ComponentTree-icon ComponentTree-icon--listener" title="Toggle Listeners"></button>
+            <button data-montage-id="showFunctions" class="ComponentTree-filterToggle ComponentTree-icon ComponentTree-icon--functions" title="Toggle Functions"></button>
+            <button data-montage-id="showClasses" class="ComponentTree-filterToggle ComponentTree-icon ComponentTree-icon--classes" title="Toggle Classes"></button>
+        </header>
+        <div class="Shadow Shadow--top"></div>
+        <div data-montage-id="tree" class="ComponentTree-list">
+            <div data-montage-id="treeCell"></div>
+        </div>
+    </div>
+</body>
+</html>

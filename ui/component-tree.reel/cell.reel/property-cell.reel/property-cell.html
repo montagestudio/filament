@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="property-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            },
+            "bindings": {
+                "classList.has('PropertyCell--isDefault')": {"<-": "@owner.data.property.isDefault"}
+            }
+        },
+
+        "propertyName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "propertyName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.data.key"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="PropertyCell">
+        <i class="Cell-icon PropertyCell-icon"></i>
+        <div data-montage-id="propertyName"></div>
+    </div>
+</body>
+</html>

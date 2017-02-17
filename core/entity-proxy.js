@@ -224,13 +224,20 @@ exports.EntityProxy = Target.specialize({
                                 self._properties.set(key, {value: properties[key], source: "javascript"});
                             }
                         }
-                    });
+                        self.dispatchOwnPropertyChange("properties", self.properties);
+                    })
+                    .catch(Function.noop);
                 Promise.resolve(reelDocument.functions)
                     .then(function (functions) {
-                        if (functions) {
-                            self._functions = functions;
+                        self._functions = new Map;
+                        for (var key in functions) {
+                            if (functions.hasOwnProperty(key)) {
+                                self._functions.set(key, null);
+                            }
                         }
-                    });
+                        self.dispatchOwnPropertyChange("functions", self.functions);
+                    })
+                    .catch(Function.noop);
             }
             this.children = this._topLevelComponentChildren().concat(this._domChildren());
             return this;

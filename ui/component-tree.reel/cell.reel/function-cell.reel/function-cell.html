@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="function-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            }
+        },
+
+        "functionName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "functionName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.data.identifier"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="FunctionCell">
+        <i class="Cell-icon FunctionCell-icon"></i>
+        <div data-montage-id="functionName"></div>
+    </div>
+</body>
+</html>

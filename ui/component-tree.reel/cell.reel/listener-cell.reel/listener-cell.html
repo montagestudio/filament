@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="listener-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            },
+            "bindings": {
+                "classList.has('ListenerCell--isDefault": {"<-": "@owner.data.isDefault"}
+            }
+        },
+
+        "eventType": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "eventType"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.data.eventType"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="ListenerCell">
+        <i class="Cell-icon ListenerCell-icon"></i>
+        <div data-montage-id="eventType"></div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+.ListenerCell {
+    display: flex;
+    align-items: center;
+}
+
+.ListenerCell-icon {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto 14px;
+    background-image: url(/assets/icons/event.png);
+}
+
+.ListenerCell--isDefault .montage-Text {
+    font-style: italic;
+}

@@ -1,0 +1,29 @@
+.EntityCell {
+    color: #49a6d2;
+    display: flex;
+    align-items: center;
+}
+
+/*
+This should be done in a substitution instead of css, but substitutions are
+buggy and sometimes don't render the right content in a tree view.
+*/
+
+.EntityCell-icon--component, .EntityCell-icon--element {
+    display: none;
+}
+
+.EntityCell.hasComponent .EntityCell-icon--component {
+    display: block;
+}
+.EntityCell.hasComponent .EntityCell-label {
+    color: #ffbc6d;
+}
+
+.EntityCell:not(.hasComponent) .EntityCell-icon--element {
+    display: block;
+}
+
+.EntityCell.hasClass .EntityCell-label {
+    color: #A5C261;
+}

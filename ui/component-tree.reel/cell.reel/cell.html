@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            },
+            "bindings": {
+                "classList.has('Cell--selected')": {"<-": "@owner.info.data.isSelected"}
+            }
+        },
+
+        "isExpandableCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "isExpandableCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.info.data.children.length"}
+            }
+        },
+
+        "expanded": {
+            "prototype": "ui/toggle.reel",
+            "properties": {
+                "element": {"#": "expanded"}
+            },
+            "bindings": {
+                "checked": {"<->": "@owner.info.isExpanded"},
+                "label": {"<-": "@owner.info.name + ' expanded'"}
+            }
+        },
+
+        "cellButton": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "element": {"#": "cellButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ],
+            "bindings": {
+                "enabled": {"<-": "@owner.info.data.type == 'entity'"}
+            }
+        },
+
+        "substitution": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "substitution"}
+            },
+            "bindings": {
+                "switchValue": {"<-": "@owner.info.data.type"}
+            }
+        },
+
+        "entity": {
+            "prototype": "./entity-cell.reel",
+            "properties": {
+                "element": {"#": "entity"}
+            },
+            "bindings": {
+                "data": {"<-": "@owner.info.data"}
+            }
+        },
+
+        "property": {
+            "prototype": "./property-cell.reel",
+            "properties": {
+                "element": {"#": "property"}
+            },
+            "bindings": {
+                "data": {"<-": "@owner.info.data"}
+            }
+        },
+
+        "listener": {
+            "prototype": "./listener-cell.reel",
+            "properties": {
+                "element": {"#": "listener"}
+            },
+            "bindings": {
+                "data": {"<-": "@owner.info.data"}
+            }
+        },
+
+        "function": {
+            "prototype": "./function-cell.reel",
+            "properties": {
+                "element": {"#": "function"}
+            },
+            "bindings": {
+                "data": {"<-": "@owner.info.data"}
+            }
+        },
+
+        "class": {
+            "prototype": "./class-cell.reel",
+            "properties": {
+                "element": {"#": "class"}
+            },
+            "bindings": {
+                "data": {"<-": "@owner.info.data"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="Cell">
+        <span data-montage-id="isExpandableCondition" class="Cell-isExpandableCondition">
+            <input data-montage-id="expanded" type="checkbox">
+        </span>
+        <div data-montage-id="cellButton" class="Cell-button">
+            <div data-montage-id="substitution">
+                <div data-arg="entity" data-montage-id="entity"></div>
+                <div data-arg="property" data-montage-id="property"></div>
+                <div data-arg="listener" data-montage-id="listener"></div>
+                <div data-arg="function" data-montage-id="function"></div>
+                <div data-arg="class" data-montage-id="class"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

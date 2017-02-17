@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="entity-cell.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            },
+            "bindings": {
+                "classList.has('hasComponent')": {"<-": "@owner.data.proxy.hasComponent"},
+                "classList.has('hasClass')": {"<-": "@owner.data.proxy.labelType == 'class'"}
+            }
+        },
+
+        "label": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "label"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.data.proxy.label"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="EntityCell">
+        <img src="/assets/icons/pe-reel.svg" class="Cell-icon EntityCell-icon--component">
+        <img src="/assets/icons/tag.png" class="Cell-icon EntityCell-icon--element">
+        <span data-montage-id="label" class="EntityCell-label"></span>
+    </div>
+</body>
+</html>

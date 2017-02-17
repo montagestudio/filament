@@ -1,0 +1,94 @@
+.ComponentTree {
+    display: flex;
+    flex-direction: column;
+}
+
+.ComponentTree-header {
+    padding: 15px 5px 15px 5px;
+    border-bottom: 1px solid hsl(0, 0%, 15%);
+    display: flex;
+}
+
+.ComponentTree .Tree-list {
+    margin: 0 !important;
+}
+
+.ComponentTree .PackageExplorer-explorer-scroll {
+    margin: 0;
+    height: 100%;
+}
+
+/* Header -------------------------- */
+
+.ComponentTree-filterToggle.matte-Button {
+    vertical-align: middle;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    opacity: 0.5;
+}
+
+.ComponentTree-filterToggle.matte-Button:hover {
+    background-color: hsl(0,0%,100%);
+}
+
+.ComponentTree-filterToggle.matte-Button:active,
+.ComponentTree-filterToggle.matte-Button.pressed:active {
+    background-color: hsl(0,0%,90%);
+}
+
+.ComponentTree-hiddenControl.is-disabled .ComponentTree-filterToggle,
+.ComponentTree-filterToggle.matte-Button.pressed {
+    opacity: 1;
+}
+
+.ComponentTree-filterToggle.matte-Button.disabled {
+    opacity: 0.1;
+    cursor: default;
+}
+
+/* List ---------------------------- */
+
+.ComponentTree-list {
+    -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    min-height: 0;
+    overflow: scroll;
+    padding-top: 4px;
+    padding-bottom: 150px;
+    list-style: none;
+    margin: 8px 0 0 8px;
+}
+
+.ComponentTree-list .Tree-list > div + div {
+    margin-top: 7px;
+}
+
+/* Icons --------------------------- */
+
+.ComponentTree-icon {
+    width: 32px;
+    height: 32px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto 14px;
+}
+
+.ComponentTree-icon--property {
+    background-image: url(/assets/icons/binding.png);
+}
+
+.ComponentTree-icon--listener {
+    background-image: url(/assets/icons/event.png);
+}
+
+.ComponentTree-icon--functions {
+    background-image: url(/assets/icons/function.svg);
+}
+
+.ComponentTree-icon--classes {
+    background-image: url(/assets/icons/pe-css.svg);
+}

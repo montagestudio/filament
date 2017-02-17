@@ -1,0 +1,44 @@
+.Cell {
+    display: flex;
+    white-space: nowrap;
+    transition: .1s linear background-color, outline-color;
+    position: relative;
+    align-items: center;
+}
+
+.Cell-isExpandableCondition {
+    display: flex;
+    align-items: center;
+}
+
+.Cell-isExpandableCondition.montage-invisible {
+    display: flex;
+    visibility: hidden;
+}
+
+.Cell-button {
+    display: flex;
+    align-items: center;
+    min-height: 22px;
+    height: auto;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.Cell-button:hover {
+    background-color: hsl(0, 0%, 26%);
+}
+
+.Cell-button:focus {
+    outline: none;
+}
+
+.Cell--selected .Cell-button {
+    background-color: hsl(0, 0%, 30%);
+}
+
+.Cell-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 2px;
+}

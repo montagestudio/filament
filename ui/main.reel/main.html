@@ -143,6 +143,17 @@
                 }
             },
 
+            "componentTree": {
+                "prototype": "ui/component-tree.reel",
+                "properties": {
+                    "element": {"#": "componentTree"}
+                },
+                "bindings": {
+                    "projectController": {"<-": "@owner.projectController"},
+                    "reelDocumentFactory": {"<-": "@application.delegate.reelDocumentFactory"}
+                }
+            },
+
             "application": {
                 "prototype": "montage/core/application",
                 "listeners": [
@@ -277,6 +288,7 @@
                 </header>
                 <div data-montage-id="leftPanelSubstitution" class="Main-panel-substitution">
                     <div data-arg="package" data-montage-id="packageExplorer" class="Main-packageExplorer"></div>
+                    <div data-arg="components" data-montage-id="componentTree" class="Main-componentTree"></div>
                 </div>
             </aside>
             <div data-montage-id="split"></div>
