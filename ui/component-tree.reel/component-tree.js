@@ -8,10 +8,43 @@ var Component = require("montage/ui/component").Component,
     MultiMap = require("montage/collections/multi-map").MultiMap,
     SortedSet = require("montage/collections/sorted-set").SortedSet;
 
+var NodeSet = Montage.specialize({
+
+    array: {
+        value: null
+    },
+
+    constructor: {
+        value: function NodeSet(parentNode, propertyName, sortKey, mapper) {
+            var self = this;
+            this.array = [];
+            this._collection = new SortedSet(
+                null,
+                function (a, b) {
+                    return a[sortKey] === b[sortKey];
+                },
+                function (a, b) {
+                    return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
+                }
+            );
+            function handleValueChange(value) {
+                SortedSet.prototype.push.apply(self._collection, (value || []).map(mapper));
+                self.array = self._collection.toArray();
+            }
+            parentNode.addPathChangeListener("proxy." + propertyName, handleValueChange);
+            parentNode.addPathChangeListener("ownerProxy." + propertyName, handleValueChange);
+        }
+    }
+})
+
 var EntityNode = Montage.specialize({
 
     type: {
         value: CellType.Entity
+    },
+
+    ownerProxy: {
+        value: null
     },
 
     constructor: {
@@ -20,30 +53,38 @@ var EntityNode = Montage.specialize({
             this.proxy = entity;
             this.componentTree = componentTree;
 
-            this.propertyNodes = this._createNodeContainer("properties", "key", function (value, key) {
+            this.propertyNodes = new NodeSet(this, "properties", "key", function (value, key) {
                 return {
                     type: CellType.Property,
                     key: key
                 };
             });
-            this.listenerNodes = this._createNodeContainer("listeners", "type", function (listener) {
+            this.propertyNodes.addOwnPropertyChangeListener("array", this._dispatchChildrenChange.bind(this));
+
+            this.listenerNodes = new NodeSet(this, "listeners", "type", function (listener) {
                 return {
                     type: CellType.Listener,
                     eventType: listener.type
                 };
             });
-            this.functionNodes = this._createNodeContainer("functions", "identifier", function (value, key) {
+            this.listenerNodes.addOwnPropertyChangeListener("array", this._dispatchChildrenChange.bind(this));
+
+            this.functionNodes = new NodeSet(this, "functions", "identifier", function (value, key) {
                 return {
                     type: CellType.Function,
                     identifier: key
                 };
             });
-            this.classNodes = this._createNodeContainer("classes", "name", function (name) {
+            this.functionNodes.addOwnPropertyChangeListener("array", this._dispatchChildrenChange.bind(this));
+
+            this.classNodes = new NodeSet(this, "classes", "name", function (name) {
                 return {
                     type: CellType.Class,
                     name: name
                 };
             });
+            this.classNodes.addOwnPropertyChangeListener("array", this._dispatchChildrenChange.bind(this));
+
             this.entityNodes = [];
             this._dispatchChildrenChange();
 
@@ -54,34 +95,13 @@ var EntityNode = Montage.specialize({
         }
     },
 
-    _createNodeContainer: {
-        value: function (pluralName, sortKey, nodeMapper) {
-            var self = this,
-                set = new SortedSet(
-                    this.proxy[pluralName] && this.proxy[pluralName].map(nodeMapper),
-                    function (a, b) {
-                        return a[sortKey] === b[sortKey];
-                    },
-                    function (a, b) {
-                        return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
-                    }
-                );
-            this.proxy.addOwnPropertyChangeListener(pluralName, function (value) {
-                set.clear();
-                SortedSet.prototype.push.apply(set, (value || []).map(nodeMapper));
-                self._dispatchChildrenChange();
-            });
-            return set;
-        }
-    },
-
     children: {
         get: function () {
             return []
-                .concat(this.componentTree.showProperties ? this.propertyNodes.toArray() : [])
-                .concat(this.componentTree.showListeners ? this.listenerNodes.toArray() : [])
-                .concat(this.componentTree.showFunctions ? this.functionNodes.toArray() : [])
-                .concat(this.componentTree.showClasses ? this.classNodes.toArray() : [])
+                .concat(this.componentTree.showProperties ? this.propertyNodes.array : [])
+                .concat(this.componentTree.showListeners ? this.listenerNodes.array : [])
+                .concat(this.componentTree.showFunctions ? this.functionNodes.array : [])
+                .concat(this.componentTree.showClasses ? this.classNodes.array : [])
                 .concat(this.entityNodes);
         }
     },
@@ -90,26 +110,6 @@ var EntityNode = Montage.specialize({
         value: function () {
             this.dispatchOwnPropertyChange("children", this.children);
         }
-    },
-
-    propertyNodes: {
-        value: null
-    },
-
-    listenerNodes: {
-        value: null
-    },
-
-    functionNodes: {
-        value: null
-    },
-
-    classNodes: {
-        value: null
-    },
-
-    entityNodes: {
-        value: null
     }
 });
 
@@ -164,10 +164,10 @@ exports.ComponentTree = Component.specialize(/** @lends ComponentTree# */ {
             var self = this;
             this.reelDocumentFactory.makeReelDocument(proxy.moduleId)
                 .then(function (doc) {
-                    var root = self._treeNodeForProxy(doc.entityTree);
                     self._proxyMap.get(proxy)
                         .forEach(function (node) {
-                            node.entityNodes = root.entityNodes;
+                            node.ownerProxy = doc.entityTree;
+                            node.entityNodes = doc.entityTree.children.map(self._treeNodeForProxy.bind(self));
                         });
                     self.tree.handleTreeChange();
                 })
