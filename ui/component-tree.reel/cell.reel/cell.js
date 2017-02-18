@@ -27,13 +27,13 @@ exports.Cell = Component.specialize(/** @lends Cell# */ {
         value: null
     },
 
-    componentStore: {
+    componentTree: {
         value: null
     },
 
     handleCellButtonAction: {
         value: function () {
-            this.componentStore.select(this.info.data.proxy);
+            //this.componentStore.select(this.info.data.proxy);
         }
     },
 
@@ -48,11 +48,9 @@ exports.Cell = Component.specialize(/** @lends Cell# */ {
     handleExpandedChange: {
         value: function (isExpanded) {
             var data = this.info ? this.info.data : null;
-            if (isExpanded && data && data.proxy.prototypeModuleId && !data.isPreloaded) {
-                this.componentStore.preloadChildrenOfComponent(this.info.data.proxy.prototypeModuleId)
-                    .then(function () {
-                        data.isPreloaded = true;
-                    });
+            if (isExpanded && data && data.proxy.moduleId && !data.isExpanded) {
+                this.componentTree.expandProxy(this.info.data.proxy);
+                data.isExpanded = true;
             }
         }
     }

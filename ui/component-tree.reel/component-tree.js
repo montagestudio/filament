@@ -5,6 +5,7 @@ var Component = require("montage/ui/component").Component,
     CellModule = require("./cell.reel"),
     CellType = CellModule.CellType,
     Montage = require("montage").Montage,
+    MultiMap = require("montage/collections/multi-map").MultiMap,
     SortedSet = require("montage/collections/sorted-set").SortedSet;
 
 var EntityNode = Montage.specialize({
@@ -143,38 +144,48 @@ exports.ComponentTree = Component.specialize(/** @lends ComponentTree# */ {
     },
 
     /**
-     * @type {Map.<EntityProxy, Object>}
+     * @type {MultiMap.<EntityProxy, Object>}
      */
     _proxyMap: {
         value: null
-    },
-
-    _buildTree: {
-        value: function () {
-            var self = this;
-            this.reelDocumentFactory.makeReelDocument("ui/main.reel")
-                .then(function (doc) {
-                    self.data = self._treeNodeForProxy(doc.entityTree);
-                    self.tree.handleTreeChange();
-                });
-        }
     },
 
     _treeNodeForProxy: {
         value: function (proxy) {
             var node = new EntityNode(proxy, this);
             node.entityNodes = proxy.children.map(this._treeNodeForProxy.bind(this));
-            this._proxyMap.set(proxy, node);
+            this._proxyMap.get(proxy).push(node);
             return node;
+        }
+    },
+
+    expandProxy: {
+        value: function (proxy) {
+            var self = this;
+            this.reelDocumentFactory.makeReelDocument(proxy.moduleId)
+                .then(function (doc) {
+                    var root = self._treeNodeForProxy(doc.entityTree);
+                    self._proxyMap.get(proxy)
+                        .forEach(function (node) {
+                            node.entityNodes = root.entityNodes;
+                        });
+                    self.tree.handleTreeChange();
+                })
+                .catch(Function.noop);
         }
     },
 
     enterDocument: {
         value: function (firstTime) {
+            var self = this;
             if (firstTime) {
-                this._proxyMap = new Map();
+                this._proxyMap = new MultiMap();
                 this.element.addEventListener("click", this, false);
-                this._buildTree();
+                this.reelDocumentFactory.makeReelDocument("ui/main.reel")
+                    .then(function (doc) {
+                        self.data = self._treeNodeForProxy(doc.entityTree);
+                        self.tree.handleTreeChange();
+                    });
             }
         }
     },
