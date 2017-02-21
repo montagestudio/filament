@@ -211,9 +211,11 @@ exports.EntityProxy = Target.specialize({
             this._reelDocument = reelDocument;
             if (this.hasComponent) {
                 this._properties = new Map;
-                this._reelProxy.properties.forEach(function (value, key) {
+                function addSerializationProperty(value, key) {
                     self._properties.set(key, {value: value, source: "serialization"});
-                });
+                }
+                this._reelProxy.properties.forEach(addSerializationProperty);
+                this._reelProxy.properties.addMapChangeListener(addSerializationProperty);
             }
             if (isOwner) {
                 this._isOwner = true;
