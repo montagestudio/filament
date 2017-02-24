@@ -7,10 +7,10 @@
         "url": "git+ssh://git@github.com:declarativ/filament.git"
     },
     "dependencies": {
-        "montage": "git+ssh://git@github.com:montagejs/montage.git#36904c2d69f43eb288b773bc25204c375129cd2f",
+        "montage": "git+ssh://git@github.com:montages/montage.git#521c1be4082437a01f884a751c1fa0d307fb6838",
         "matte": "git+ssh://git@github.com:montagejs/matte.git#f5826241231011ee3c6599ad147a7c33053d9928",
         "palette": "git+ssh://git@github.com:montagestudio/palette#master",
-        "flow-editor": "git+ssh://git@github.com:montagestudio/flow-editor.git#4a33a664fe39e7a8f7e7977bfe8f32f3db29c25d",
+        "flow-editor": "git+ssh://git@github.com:montagestudio/flow-editor.git#914818e9a1b5ca4911d755129488eb6166eaf1b8",
         "minit": "git+ssh://git@github.com:montagejs/minit.git#60425519921b36c2d9722aec7343044142f5261e",
         "bluebird": "~3.3.1",
         "q": "0.9.7",
