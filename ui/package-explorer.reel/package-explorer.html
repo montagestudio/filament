@@ -68,13 +68,12 @@
             },
 
             "fileList": {
-                "prototype": "ui/tree-list.reel",
+                "prototype": "montage/ui/tree-list.reel",
                 "properties": {
                     "element": {"#": "fileList"},
                     "indentationWidth": 20,
                     "rowHeight": 22,
-                    "isRootVisible": false,
-                    "isSelectionEnabled": true
+                    "isRootVisible": false
                 },
                 "bindings": {
                     "controller": {"<-": "@owner.fileTreeController"}
