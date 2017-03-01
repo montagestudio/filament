@@ -4,6 +4,21 @@
     align-items: center;
 }
 
+.EntityCell .Toggle.matte-InputCheckbox {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #797979;
+    margin-right: 4px;
+    background: url("/assets/icons/eye-off.svg") no-repeat center center;
+    background-size: 20px;
+}
+
+.EntityCell .Toggle.matte-InputCheckbox:checked {
+    background: url("/assets/icons/eye.svg") no-repeat center center;
+    background-size: 20px;
+    transform: rotate(0deg);
+}
+
 /*
 This should be done in a substitution instead of css, but substitutions are
 buggy and sometimes don't render the right content in a tree view.

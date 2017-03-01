@@ -10,7 +10,8 @@
                 "element": {"#": "owner"}
             },
             "bindings": {
-                "classList.has('Cell--selected')": {"<-": "@owner.info.data.isSelected"}
+                "classList.has('Cell--selected')": {"<-": "@owner.info.data.isSelected"},
+                "classList.has('Cell--entity')": {"<-": "@owner.info.data.type == 'entity'"}
             }
         },
 
@@ -21,7 +22,7 @@
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "@owner.info.data.children.length"}
+                "condition": {"<-": "@owner.info.data.type == 'entity'"}
             }
         },
 
@@ -55,7 +56,8 @@
         "substitution": {
             "prototype": "montage/ui/substitution.reel",
             "properties": {
-                "element": {"#": "substitution"}
+                "element": {"#": "substitution"},
+                "shouldLoadComponentTree": true
             },
             "bindings": {
                 "switchValue": {"<-": "@owner.info.data.type"}
