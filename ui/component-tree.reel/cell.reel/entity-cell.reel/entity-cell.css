@@ -31,7 +31,12 @@ buggy and sometimes don't render the right content in a tree view.
 .EntityCell.hasComponent .EntityCell-icon--component {
     display: block;
 }
-.EntityCell.hasComponent .EntityCell-label {
+
+.EntityCell .Cell-label {
+    flex: 1;
+}
+
+.EntityCell.hasComponent .Cell-label {
     color: #ffbc6d;
 }
 
@@ -39,6 +44,35 @@ buggy and sometimes don't render the right content in a tree view.
     display: block;
 }
 
-.EntityCell.hasClass .EntityCell-label {
+.EntityCell.hasClass .Cell-label {
     color: #A5C261;
+}
+
+.EntityCell-badge {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #797979;
+    border-radius: 8px;
+}
+
+.EntityCell-badge.EntityCell-badge--properties {
+    display: block;
+    background: url("/assets/icons/binding.png") no-repeat center center;
+    background-size: 14px;
+}
+.EntityCell-badge.EntityCell-badge--functions {
+    display: block;
+    background: url("/assets/icons/function.svg") no-repeat center center;
+    background-size: 14px;
+}
+.EntityCell-badge.EntityCell-badge--listeners {
+    display: block;
+    background: url("/assets/icons/event.png") no-repeat center center;
+    background-size: 14px;
+}
+.EntityCell-badge.EntityCell-badge--classes {
+    display: block;
+    background: url("/assets/icons/pe-css.svg") no-repeat center center;
+    background-size: 14px;
 }

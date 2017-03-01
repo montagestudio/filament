@@ -34,6 +34,46 @@
             "bindings": {
                 "value": {"<-": "@owner.data.proxy.label"}
             }
+        },
+
+        "propertiesBadge": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "element": {"#": "propertiesBadge"}
+            },
+            "bindings": {
+                "classList.has('EntityCell-badge--properties')": {"<-": "@owner.data.proxy.properties.size > 0"}
+            }
+        },
+
+        "functionsBadge": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "element": {"#": "functionsBadge"}
+            },
+            "bindings": {
+                "classList.has('EntityCell-badge--functions')": {"<-": "@owner.data.proxy.functions.size > 0"}
+            }
+        },
+
+        "listenersBadge": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "element": {"#": "listenersBadge"}
+            },
+            "bindings": {
+                "classList.has('EntityCell-badge--listeners')": {"<-": "@owner.data.proxy.listeners.length > 0"}
+            }
+        },
+
+        "classesBadge": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "element": {"#": "classesBadge"}
+            },
+            "bindings": {
+                "classList.has('EntityCell-badge--classes')": {"<-": "@owner.data.proxy.classes.length > 0"}
+            }
         }
     }
     </script>
@@ -43,7 +83,11 @@
         <input data-montage-id="visible" type="checkbox">
         <img src="/assets/icons/pe-reel.svg" class="Cell-icon EntityCell-icon--component">
         <img src="/assets/icons/tag.png" class="Cell-icon EntityCell-icon--element">
-        <span data-montage-id="label" class="EntityCell-label"></span>
+        <span data-montage-id="label" class="Cell-label"></span>
+        <div data-montage-id="propertiesBadge" class="EntityCell-badge"></div>
+        <div data-montage-id="functionsBadge" class="EntityCell-badge"></div>
+        <div data-montage-id="listenersBadge" class="EntityCell-badge"></div>
+        <div data-montage-id="classesBadge" class="EntityCell-badge"></div>
     </div>
 </body>
 </html>

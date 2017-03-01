@@ -24,6 +24,7 @@
 }
 
 .Cell-button {
+    flex: 1;
     display: flex;
     align-items: center;
     min-height: 22px;
@@ -42,6 +43,10 @@
 
 .Cell--selected .Cell-button {
     background-color: hsl(0, 0%, 30%);
+}
+
+.Cell-button-substitution {
+    width: 100%;
 }
 
 .Cell-icon {
