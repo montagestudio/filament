@@ -1,3 +1,8 @@
+.CellWrapper {
+    position: relative;
+    height: 38px;
+}
+
 .Cell {
     display: flex;
     white-space: nowrap;
@@ -5,6 +10,7 @@
     position: relative;
     align-items: center;
     height: 34px;
+    top: 2px;
 }
 
 .Cell--entity {
@@ -58,4 +64,9 @@
 .Cell-label {
     height: 20px;
     line-height: 20px;
+}
+
+.AddEntity.child {
+    padding-left: 20px;
+    margin-top: 0px;
 }

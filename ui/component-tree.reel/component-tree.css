@@ -62,8 +62,8 @@
     list-style: none;
 }
 
-.ComponentTree-list .Tree-list > div + div {
-    margin-top: 7px;
+.ComponentTree-list .montage-TreeList-nodeWrapper {
+    overflow: visible;
 }
 
 /* Icons --------------------------- */

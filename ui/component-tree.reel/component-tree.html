@@ -67,7 +67,7 @@
                 "isRootExpanded": true,
                 "isRootVisible": true,
                 "indentationWidth": 20,
-                "rowHeight": 36
+                "rowHeight": 38
             }
         },
 
@@ -78,7 +78,8 @@
             },
             "bindings": {
                 "info": {"<-": "@tree:iteration.object"},
-                "componentTree": {"<-": "@owner"}
+                "componentTree": {"<-": "@owner"},
+                "dragDelegate": {"<-": "componentTree.dragDelegate"}
             }
         }
     }

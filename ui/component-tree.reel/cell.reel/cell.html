@@ -7,7 +7,16 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "owner"}
+                "element": {"#": "owner"},
+                "cell": {"@": "cell"}
+            }
+        },
+
+        "cell": {
+            "prototype": "montage/ui/component",
+            "properties": {
+                "element": {"#": "cell"},
+                "hasTemplate": false
             },
             "bindings": {
                 "classList.has('Cell--selected')": {"<-": "@owner.info.data.isSelected"},
@@ -112,23 +121,109 @@
             "bindings": {
                 "data": {"<-": "@owner.info.data"}
             }
+        },
+
+        "addChildProxy": {
+            "prototype": "./add-entity.reel",
+            "properties": {
+                "element": {"#": "addChildProxy"},
+                "type": "child"
+            },
+            "bindings": {
+                "classList.has('dropover')": {"<-": "@owner.info.data.isDropChildTarget && (!@owner.info.isExpanded || @owner.info.data.children.length < 1)"}
+            },
+            "listeners": [
+                {
+                    "type": "insertTemplateAction",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "insertProxyAction",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "moveTemplate",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "addProxyAfter": {
+            "prototype": "./add-entity.reel",
+            "properties": {
+                "element": {"#": "addProxyAfter"},
+                "type": "after"
+            },
+            "bindings": {
+                "classList.has('dropover')": {"<-": "@owner.info.data.isDropAfterTarget && (!@owner.info.isExpanded || @owner.info.data.children.length < 1)"}
+            },
+            "listeners": [
+                {
+                    "type": "insertTemplateAction",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "insertProxyAction",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "moveTemplate",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "addProxyBefore": {
+            "prototype": "./add-entity.reel",
+            "properties": {
+                "element": {"#": "addProxyBefore"},
+                "type": "before"
+            },
+            "bindings": {
+                "classList.has('dropover')": {"<-": "@owner.info.data.isDropBeforeTarget"}
+            },
+            "listeners": [
+                {
+                    "type": "insertTemplateAction",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "insertProxyAction",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "moveTemplate",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>
 </head>
 <body>
-    <div data-montage-id="owner" class="Cell">
-        <span data-montage-id="isExpandableCondition" class="Cell-isExpandableCondition">
-            <input data-montage-id="expanded" type="checkbox">
-        </span>
-        <div data-montage-id="cellButton" class="Cell-button">
-            <div data-montage-id="substitution" class="Cell-button-substitution">
-                <div data-arg="entity" data-montage-id="entity"></div>
-                <div data-arg="property" data-montage-id="property"></div>
-                <div data-arg="listener" data-montage-id="listener"></div>
-                <div data-arg="function" data-montage-id="function"></div>
-                <div data-arg="class" data-montage-id="class"></div>
+    <div data-montage-id="owner" class="CellWrapper">
+        <div class="addProxy Cell-before">
+            <div data-montage-id="addProxyBefore" class="addProxy sibling before"></div>
+        </div>
+        <div data-montage-id="cell" class="Cell" draggable="true">
+            <span data-montage-id="isExpandableCondition" class="Cell-isExpandableCondition">
+                <input data-montage-id="expanded" type="checkbox">
+            </span>
+            <div data-montage-id="cellButton" class="Cell-button">
+                <div data-montage-id="substitution" class="Cell-button-substitution">
+                    <div data-arg="entity" data-montage-id="entity"></div>
+                    <div data-arg="property" data-montage-id="property"></div>
+                    <div data-arg="listener" data-montage-id="listener"></div>
+                    <div data-arg="function" data-montage-id="function"></div>
+                    <div data-arg="class" data-montage-id="class"></div>
+                </div>
             </div>
+        </div>
+        <div class="addProxy Cell-child">
+            <div data-montage-id="addChildProxy" class="addProxy child"></div>
+        </div>
+        <div class="addProxy Cell-after">
+            <div data-montage-id="addProxyAfter" class="addProxy sibling after"></div>
         </div>
     </div>
 </body>

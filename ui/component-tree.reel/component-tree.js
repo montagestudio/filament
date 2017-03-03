@@ -47,11 +47,24 @@ var EntityNode = Montage.specialize({
         value: null
     },
 
+    isDropBeforeTarget: {
+        value: false
+    },
+
+    isDropAfterTarget: {
+        value: false
+    },
+
+    isDropChildTarget: {
+        value: false
+    },
+
     constructor: {
-        value: function EntityNode(entity, componentTree) {
+        value: function EntityNode(entity, componentTree, parentNode) {
             var self = this;
             this.proxy = entity;
             this.componentTree = componentTree;
+            this.parentNode = parentNode;
 
             this.propertyNodes = new NodeSet(this, "properties", "key", function (value, key) {
                 return {
@@ -113,6 +126,100 @@ var EntityNode = Montage.specialize({
     }
 });
 
+var DragDelegate = Montage.specialize({
+
+    _draggedNode: {
+        value: null
+    },
+    draggedNode: {
+        get: function () {
+            return this._draggedNode;
+        }
+    },
+
+    _touchedNodes: {
+        value: null
+    },
+
+    constructor: {
+        value: function DragDelegate() {
+            this._touchedNodes = new Set();
+        }
+    },
+
+    /**
+     * Signal the start of a cell drag action from the user. Doing so will
+     * cause the tree to calculate where the node can be moved, and set flags
+     * on nodes that are drop targets.
+     *
+     * @function
+     * @param {Integer} row The row index of the cell, given by the cell info.
+     * @param {EntityNode} entityNode The data of the cell being dragged.
+     */
+    beginDragging: {
+        value: function (row, entityNode) {
+            var componentOwnerNode,
+                visitQueue,
+                node;
+
+            if (this._draggedNode === entityNode) {
+                return;
+            }
+            this._draggedNode = entityNode;
+
+            componentOwnerNode = entityNode.parentNode;
+            while (!componentOwnerNode.ownerProxy) {
+                componentOwnerNode = componentOwnerNode.parentNode;
+            }
+
+            // Iterate over the component owner's children recursively and
+            // set each child's drop permissions with the following criteria:
+            //                              |before|after|child|
+            //                              -------------------
+            // Node that is being dragged   |  no  | no  | no  |
+            // Component node               |  yes | yes | no  |
+            // DOM element node             |  yes | yes | yes |
+            visitQueue = Array.prototype.slice.call(componentOwnerNode.entityNodes);
+            while (visitQueue.length > 0) {
+                node = visitQueue.shift();
+                if (node === entityNode) {
+                    continue;
+                }
+                this._touchedNodes.add(node);
+                node.isDropBeforeTarget = true;
+                node.isDropAfterTarget = true;
+                if (node.ownerProxy) {
+                    continue;
+                }
+                node.isDropChildTarget = true;
+                visitQueue = node.entityNodes.concat(visitQueue);
+            }
+        }
+    },
+
+    /**
+     * Signal the end of a cell drag action. Does nothing if there is no
+     * drag action in progress.
+     *
+     * @function
+     */
+    endDrag: {
+        value: function () {
+            if (!this._draggedNode) {
+                return;
+            }
+
+            this._touchedNodes.forEach(function (node) {
+                node.isDropBeforeTarget = false;
+                node.isDropChildTarget = false;
+                node.isDropAfterTarget = false;
+            });
+
+            this._draggedNode = null;
+        }
+    }
+});
+
 /**
  * @class StructureExplorer
  * @extends Component
@@ -143,6 +250,18 @@ exports.ComponentTree = Component.specialize(/** @lends ComponentTree# */ {
         value: true
     },
 
+    _dragDelegate: {
+        value: null
+    },
+    dragDelegate: {
+        get: function () {
+            if (!this._dragDelegate) {
+                this._dragDelegate = new DragDelegate();
+            }
+            return this._dragDelegate;
+        }
+    },
+
     /**
      * @type {MultiMap.<EntityProxy, Object>}
      */
@@ -151,9 +270,12 @@ exports.ComponentTree = Component.specialize(/** @lends ComponentTree# */ {
     },
 
     _treeNodeForProxy: {
-        value: function (proxy) {
-            var node = new EntityNode(proxy, this);
-            node.entityNodes = proxy.children.map(this._treeNodeForProxy.bind(this));
+        value: function (proxy, parentNode) {
+            var self = this,
+                node = new EntityNode(proxy, this, parentNode);
+            node.entityNodes = proxy.children.map(function (proxy) {
+                return self._treeNodeForProxy(proxy, node);
+            });
             this._proxyMap.get(proxy).push(node);
             return node;
         }
@@ -161,17 +283,34 @@ exports.ComponentTree = Component.specialize(/** @lends ComponentTree# */ {
 
     expandProxy: {
         value: function (proxy) {
+            var visitQueue = Array.prototype.slice.call(proxy.children),
+                child;
+            while (child = visitQueue.shift()) {
+                if (child.moduleId) {
+                    this._loadProxyDocument(child);
+                }
+                if (child.children && child.children.length) {
+                    visitQueue = child.children.concat(visitQueue);
+                }
+            }
+        }
+    },
+
+    _loadProxyDocument: {
+        value: function (proxy) {
             var self = this;
-            this.reelDocumentFactory.makeReelDocument(proxy.moduleId)
+            return this.reelDocumentFactory.makeReelDocument(proxy.moduleId)
                 .then(function (doc) {
                     self._proxyMap.get(proxy)
                         .forEach(function (node) {
                             node.ownerProxy = doc.entityTree;
-                            node.entityNodes = doc.entityTree.children.map(self._treeNodeForProxy.bind(self));
+                            node.entityNodes = doc.entityTree.children.map(function (child) {
+                                return self._treeNodeForProxy(child, node);
+                            });
                         });
                     self.tree.handleTreeChange();
                 })
-                .catch(Function.noop);
+                .catch(Function.noop)
         }
     },
 
@@ -184,7 +323,7 @@ exports.ComponentTree = Component.specialize(/** @lends ComponentTree# */ {
                 this.reelDocumentFactory.makeReelDocument("ui/main.reel")
                     .then(function (doc) {
                         self.data = self._treeNodeForProxy(doc.entityTree);
-                        self.tree.handleTreeChange();
+                        self.data.ownerProxy = self.data.proxy;
                     });
             }
         }

@@ -1,0 +1,68 @@
+.AddEntity {
+    height: 15px;
+    margin: 0px;
+    background: transparent;
+    display: none;
+    overflow: hidden;
+    z-index: 9;
+}
+
+.AddEntity .AddEntity-segment {
+    display: block;
+    color: hsl(0,0%,60%);
+    background: transparent;
+    height: 2px;
+    margin-top: 8px;
+    pointer-events: none;
+}
+
+.AddEntity .AddEntity-segment input {
+    background-color: transparent;
+    text-align: center;
+    border: 0px;
+    padding: 0 10px;
+    border-radius: 22px;
+    line-height: 22px;
+    font-size: 11px;
+}
+
+.AddEntity.sibling.before {
+    height: 16px;
+}
+
+.AddEntity.dropover {
+    display: block;
+}
+.AddEntity.dropover .AddEntity-segment {
+    background: rgb(121, 121, 121);
+}
+.AddEntity.dropover.AddEntity--dropTarget .AddEntity-segment {
+    background: hsl(214,100%,50%);
+}
+
+.Cell-child {
+    position: absolute;
+    top: 23px;
+    left: 0;
+    width: 100%;
+}
+.Cell-child .AddEntity-segment {
+    margin-top: 13px;
+}
+.Cell-before {
+    position: absolute;
+    top: -8px;
+    left: 0;
+    width: 100%;
+    z-index: 9;
+}
+.Cell-after {
+    position: absolute;
+    top: 38px;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+}
+.Cell-after .AddEntity-segment {
+    margin-top: 0;
+}
