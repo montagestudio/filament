@@ -139,6 +139,62 @@ describe("core/reel-document-spec", function () {
 
     });
 
+    describe("entity proxy tree modifications", function () {
+        beforeEach(function () {
+            reelDocumentPromise = new ReelDocument().init(require.location + "test/mocks/ui/complex.reel/", dataSource, require).load();
+        });
+
+        it("should move an entity proxy before a given proxy", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var srcProxy = reelDocument.entityTree.children[0].children[1];
+                var tarProxy = reelDocument.entityTree.children[0]; 
+                reelDocument.moveEntityBefore(srcProxy, tarProxy);
+                expect(reelDocument.entityTree.children[0]).toBe(srcProxy);
+                expect(tarProxy.children.length).toBe(1);
+            });
+        });
+
+        it("should move an entity proxy after a given proxy", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var srcProxy = reelDocument.entityTree.children[0].children[1];
+                var tarProxy = reelDocument.entityTree.children[0]; 
+                reelDocument.moveEntityAfter(srcProxy, tarProxy);
+                expect(reelDocument.entityTree.children[1]).toBe(srcProxy);
+                expect(tarProxy.children.length).toBe(1);
+            });
+        });
+
+        it("should move an entity proxy as a child of a given proxy", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var srcProxy = reelDocument.entityTree.children[0].children[1];
+                var tarProxy = reelDocument.entityTree; 
+                reelDocument.moveEntityChild(srcProxy, tarProxy);
+                expect(reelDocument.entityTree.children.length).toBe(2);
+                expect(reelDocument.entityTree.children[0].children.length).toBe(1);
+            });
+        });
+
+        it("should throw an error if moving a proxy to be a child of itself", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var srcProxy = reelDocument.entityTree.children[0];
+                var tarProxy = srcProxy.children[0];
+                expect(function () {
+                    reelDocument.moveEntityChild(srcProxy, tarProxy);
+                }).toThrow();
+            });
+        });
+
+        it("should throw an error if moving a proxy to be a child of an external component", function () {
+            return reelDocumentPromise.then(function (reelDocument) {
+                var srcProxy = reelDocument.entityTree.children[0].children[1];
+                var tarProxy = reelDocument.entityTree.children[0].children[0];
+                expect(function () {
+                    reelDocument.moveEntityChild(srcProxy, tarProxy);
+                }).toThrow();
+            });
+        });
+    });
+
     describe("external data changes", function() {
         it("should consider the document not modified once the data source has been changed", function() {
             return reelDocumentPromise.then(function (doc) {

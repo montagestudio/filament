@@ -142,7 +142,8 @@ var DragDelegate = Montage.specialize({
     },
 
     constructor: {
-        value: function DragDelegate() {
+        value: function DragDelegate(componentTree) {
+            this._componentTree = componentTree;
             this._touchedNodes = new Set();
         }
     },
@@ -202,9 +203,13 @@ var DragDelegate = Montage.specialize({
      * drag action in progress.
      *
      * @function
+     * @param {?EntityNode} targetNode The target node being dragged to.
+     * @param {?String} positioning The type of move: "before", "after" or "child".
      */
     endDrag: {
-        value: function () {
+        value: function (targetNode, positioning) {
+            var functionName;
+
             if (!this._draggedNode) {
                 return;
             }
@@ -214,6 +219,10 @@ var DragDelegate = Montage.specialize({
                 node.isDropChildTarget = false;
                 node.isDropAfterTarget = false;
             });
+
+            if (targetNode) {
+                this._componentTree.moveEntity(this._draggedNode, targetNode, positioning);
+            }
 
             this._draggedNode = null;
         }
@@ -256,7 +265,7 @@ exports.ComponentTree = Component.specialize(/** @lends ComponentTree# */ {
     dragDelegate: {
         get: function () {
             if (!this._dragDelegate) {
-                this._dragDelegate = new DragDelegate();
+                this._dragDelegate = new DragDelegate(this);
             }
             return this._dragDelegate;
         }
@@ -335,6 +344,45 @@ exports.ComponentTree = Component.specialize(/** @lends ComponentTree# */ {
             if (target === this.tree.element) {
                 this.componentTreeController.clearSelection();
             }
+        }
+    },
+
+    moveEntity: {
+        value: function (srcNode, destNode, positioning) {
+            var self = this,
+                owner = srcNode.proxy,
+                srcParentChildren = srcNode.parentNode.entityNodes,
+                destParentChildren = destNode.parentNode ? destNode.parentNode.entityNodes : null;
+            while (!owner.isOwner) {
+                owner = owner.parentEntity;
+            }
+            this.reelDocumentFactory.makeReelDocument(owner.moduleId)
+                .then(function (doc) {
+                    // TODO: This involves a lot of manual repositioning in the tree.
+                    // I would rather be able to completely rely on bindings on
+                    // the reelDocument.
+                    switch (positioning) {
+                        case "before":
+                            doc.moveEntityBefore(srcNode.proxy, destNode.proxy);
+                            srcParentChildren.splice(srcParentChildren.indexOf(srcNode), 1);
+                            srcNode.parentNode = destNode.parentNode;
+                            destParentChildren.splice(destParentChildren.indexOf(destNode), 0, srcNode);
+                            break;
+                        case "after":
+                            doc.moveEntityAfter(srcNode.proxy, destNode.proxy);
+                            srcParentChildren.splice(srcParentChildren.indexOf(srcNode), 1);
+                            srcNode.parentNode = destNode.parentNode;
+                            destParentChildren.splice(destParentChildren.indexOf(destNode) + 1, 0, srcNode);
+                            break;
+                        case "child":
+                            doc.moveEntityChild(srcNode.proxy, destNode.proxy);
+                            srcParentChildren.splice(srcParentChildren.indexOf(srcNode), 1);
+                            srcNode.parentNode = destNode;
+                            destNode.children.unshift(srcNode);
+                            break;
+                    }
+                    self.tree.handleTreeChange();
+                });
         }
     }
 });

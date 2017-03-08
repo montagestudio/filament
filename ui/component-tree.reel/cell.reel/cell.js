@@ -65,7 +65,7 @@ exports.Cell = Component.specialize(/** @lends Cell# */ {
 
     handleDragend: {
         value: function (evt) {
-            this.classList.remove("NodeCell--dragged");
+            this.classList.remove("Cell--dragged");
             this.dragDelegate.endDrag();
         }
     },
@@ -83,6 +83,14 @@ exports.Cell = Component.specialize(/** @lends Cell# */ {
             if (this.info.data.proxy) {
                 this.componentTree.addEntityNodeHover = null;
             }
+        }
+    },
+
+    handleMoveEntity: {
+        value: function (event) {
+            var addEntity = event.target;
+            this.classList.remove("Cell--dragged");
+            this.dragDelegate.endDrag(this.info.data, addEntity.type);
         }
     }
 });

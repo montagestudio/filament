@@ -9,7 +9,13 @@
             "properties": {
                 "element": {"#": "owner"},
                 "cell": {"@": "cell"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "moveEntity",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "cell": {
@@ -131,21 +137,7 @@
             },
             "bindings": {
                 "classList.has('dropover')": {"<-": "@owner.info.data.isDropChildTarget && (!@owner.info.isExpanded || @owner.info.data.children.length < 1)"}
-            },
-            "listeners": [
-                {
-                    "type": "insertTemplateAction",
-                    "listener": {"@": "owner"}
-                },
-                {
-                    "type": "insertProxyAction",
-                    "listener": {"@": "owner"}
-                },
-                {
-                    "type": "moveTemplate",
-                    "listener": {"@": "owner"}
-                }
-            ]
+            }
         },
 
         "addProxyAfter": {
@@ -156,21 +148,7 @@
             },
             "bindings": {
                 "classList.has('dropover')": {"<-": "@owner.info.data.isDropAfterTarget && (!@owner.info.isExpanded || @owner.info.data.children.length < 1)"}
-            },
-            "listeners": [
-                {
-                    "type": "insertTemplateAction",
-                    "listener": {"@": "owner"}
-                },
-                {
-                    "type": "insertProxyAction",
-                    "listener": {"@": "owner"}
-                },
-                {
-                    "type": "moveTemplate",
-                    "listener": {"@": "owner"}
-                }
-            ]
+            }
         },
 
         "addProxyBefore": {
@@ -181,21 +159,7 @@
             },
             "bindings": {
                 "classList.has('dropover')": {"<-": "@owner.info.data.isDropBeforeTarget"}
-            },
-            "listeners": [
-                {
-                    "type": "insertTemplateAction",
-                    "listener": {"@": "owner"}
-                },
-                {
-                    "type": "insertProxyAction",
-                    "listener": {"@": "owner"}
-                },
-                {
-                    "type": "moveTemplate",
-                    "listener": {"@": "owner"}
-                }
-            ]
+            }
         }
     }
     </script>

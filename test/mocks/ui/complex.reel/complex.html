@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Complex</title>
+
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "properties": {
+                    "element": {"#": "complex"},
+                    "div": {"#": "div"}
+                }
+            },
+
+            "toggle": {
+                "prototype": "ui/toggle.reel",
+                "properties": {
+                    "element": {"#": "toggle"}
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div data-montage-id="complex">
+        <div class="complex-containerDiv">
+            <div data-montage-id="toggle"></div>
+            <div data-montage-id="div"></div>
+        </div>
+    </div>
+</body>
+</html>

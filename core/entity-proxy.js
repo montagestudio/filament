@@ -178,6 +178,10 @@ exports.EntityProxy = Target.specialize({
         }
     },
 
+    parentEntity: {
+        value: null
+    },
+
     /**
      * @type {EntityProxy[]}
      */
@@ -249,11 +253,14 @@ exports.EntityProxy = Target.specialize({
     _topLevelComponentChildren: {
         value: function () {
             var self = this,
-                children = [];
+                children = [],
+                childProxy;
             if (this.isOwner && this._reelDocument.editingProxies) {
                 this._reelDocument.editingProxies.forEach(function (proxy) {
                     if (!proxy.properties.has("element")) {
-                        children.push(new self.constructor().init(proxy, self._reelDocument));
+                        childProxy = new self.constructor().init(proxy, self._reelDocument);
+                        children.push(childProxy);
+                        childProxy.parentEntity = self;
                     }
                 });
             }
@@ -264,10 +271,13 @@ exports.EntityProxy = Target.specialize({
     _domChildren: {
         value: function () {
             var self = this,
-                children = [];
+                children = [],
+                childProxy;
             if (this._nodeProxy && this._nodeProxy.children) {
                 this._nodeProxy.children.forEach(function (proxy) {
-                    children.push(new self.constructor().init(proxy, self._reelDocument));
+                    childProxy = new self.constructor().init(proxy, self._reelDocument);
+                    children.push(childProxy);
+                    childProxy.parentEntity = self;
                 });
             }
             return children;

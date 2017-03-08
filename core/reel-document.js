@@ -2240,7 +2240,7 @@ exports.ReelDocument = EditingDocument.specialize({
             } else {
                 this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeChildNode, this, nodeProxy, nodeProxy.parentNode]));
             }
-            this.editor.refresh();
+            this.editor && this.editor.refresh();
             this.dispatchEventNamed("domModified", true, false);
             this.buildTemplateObjectTree();
             return nodeProxy;
@@ -2266,7 +2266,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeChildNode, this, nodeProxy, parentNode]));
             }
 
-            this.editor.refresh();
+            this.editor && this.editor.refresh();
             this.dispatchEventNamed("domModified", true, false);
             this.buildTemplateObjectTree();
             return nodeProxy;
@@ -2292,7 +2292,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.undoManager.register("Move Node", Promise.resolve([this.moveTemplateNodeChildNode, this, nodeProxy, parentNode]));
             }
 
-            this.editor.refresh();
+            this.editor && this.editor.refresh();
             this.dispatchEventNamed("domModified", true, false);
             this.buildTemplateObjectTree();
             return nodeProxy;
@@ -2666,6 +2666,79 @@ exports.ReelDocument = EditingDocument.specialize({
                 ownerProxy = this.templateBodyNode.children[0];
             this.entityTree = new EntityProxy().init(ownerProxy, this, true);
             return this.entityTree;
+        }
+    },
+
+    moveEntityBefore: {
+        value: function (srcProxy, destProxy) {
+            if (!this.isEntityAncestorOf(this.entityTree, destProxy)) {
+                throw new Error("Destination proxy is not in this document's tree");
+            }
+            if (this.isEntityAncestorOf(srcProxy, destProxy)) {
+                throw new Error("Cannot move an entity into itself");
+            }
+            var srcSiblings = srcProxy.parentEntity.children,
+                destSiblings = destProxy.parentEntity.children;
+            srcSiblings.splice(srcSiblings.indexOf(srcProxy), 1);
+            destSiblings.splice(destSiblings.indexOf(destProxy), 0, srcProxy);
+            srcProxy.parentEntity = destProxy.parentEntity;
+            if (srcProxy.hasTemplate && destProxy.hasTemplate) {
+                this.moveTemplateNodeBeforeNode(srcProxy._nodeProxy, destProxy._nodeProxy);
+            }
+        }
+    },
+
+    moveEntityAfter: {
+        value: function (srcProxy, destProxy) {
+            if (!this.isEntityAncestorOf(this.entityTree, destProxy)) {
+                throw new Error("Destination proxy is not in this document's tree");
+            }
+            if (this.isEntityAncestorOf(srcProxy, destProxy)) {
+                throw new Error("Cannot move an entity into itself");
+            }
+            var srcSiblings = srcProxy.parentEntity.children,
+                destSiblings = destProxy.parentEntity.children;
+            srcSiblings.splice(srcSiblings.indexOf(srcProxy), 1);
+            destSiblings.splice(destSiblings.indexOf(destProxy) + 1, 0, srcProxy);
+            srcProxy.parentEntity = destProxy.parentEntity;
+            if (srcProxy.hasTemplate && destProxy.hasTemplate) {
+                this.moveTemplateNodeAfterNode(srcProxy._nodeProxy, destProxy._nodeProxy);
+            }
+        }
+    },
+
+    moveEntityChild: {
+        value: function (srcProxy, destProxy) {
+            if (destProxy !== this.entityTree) {
+                if (!this.isEntityAncestorOf(this.entityTree, destProxy)) {
+                    throw new Error("Destination proxy is not in this document's tree");
+                }
+                if (this.isEntityAncestorOf(srcProxy, destProxy)) {
+                    throw new Error("Cannot move an entity into itself");
+                }
+                if (destProxy.moduleId) {
+                    throw new Error("Cannot move source proxy. Destination proxy is an external component owner");
+                }
+            }
+            var srcSiblings = srcProxy.parentEntity.children;
+            srcSiblings.splice(srcSiblings.indexOf(srcProxy), 1);
+            destProxy.children.push(srcProxy);
+            srcProxy.parentEntity = destProxy;
+            if (srcProxy.hasTemplate && destProxy.hasTemplate) {
+                this.moveTemplateNodeChildNode(srcProxy._nodeProxy, destProxy._nodeProxy);
+            }
+        }
+    },
+
+    isEntityAncestorOf: {
+        value: function (ancestor, child) {
+            var parent = child;
+            while (parent = parent.parentEntity) {
+                if (parent === ancestor) {
+                    return true;
+                }
+            }
+            return false;
         }
     },
 

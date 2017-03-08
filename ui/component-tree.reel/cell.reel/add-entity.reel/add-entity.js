@@ -61,14 +61,7 @@ exports.AddEntity = Component.specialize(/** @lends AddEntity# */ {
             var dataTransfer = event.dataTransfer,
                 types = dataTransfer.types;
             event.stopPropagation();
-            if (types.indexOf(MimeTypes.ENTITY) !== -1) {
-                // TODO: Get proxy from component tree
-                console.log("drop:", dataTransfer.getData(MimeTypes.ENTITY));
-                // var proxy = JSON.parse(dataTransfer.getData(MimeTypes.ENTITY));
-                this.dispatchEventNamed("moveEntity", true, true, {
-                    //proxy: proxy
-                });
-            }
+            this.dispatchEventNamed("moveEntity", true, true);
             this.isDropTarget = false;
             this.dispatchEventNamed("addProxyOut", true, true);
         }
