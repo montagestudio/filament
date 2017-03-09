@@ -80,7 +80,13 @@
                 "info": {"<-": "@tree:iteration.object"},
                 "componentTree": {"<-": "@owner"},
                 "dragDelegate": {"<-": "componentTree.dragDelegate"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "select",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>

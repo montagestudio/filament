@@ -208,6 +208,16 @@
                 }
             },
 
+            "inspector": {
+                "prototype": "ui/inspector.reel",
+                "properties": {
+                    "element": {"#": "inspector"}
+                },
+                "bindings": {
+                    "selectedProxy": {"<-": "@componentTree.selection.0"}
+                }
+            },
+
             "textEditor": {
                 "prototype": "ui/text-editor.reel",
                 "properties": {
@@ -300,7 +310,9 @@
                     <div data-montage-id="libraryTab" class="Main-panel-header-tab">Library</div>
                 </header>
                 <div data-montage-id="middlePanelSubstitution" class="Main-panel-substitution">
+                    <div data-arg="inspector" data-montage-id="inspector"></div>
                     <div data-arg="textEditor" data-montage-id="textEditor" class="Main-textEditor"></div>
+                    <div data-arg="library"></div>
                 </div>
             </aside>
 

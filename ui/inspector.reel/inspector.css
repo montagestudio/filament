@@ -1,0 +1,131 @@
+.Inspector {
+    display: flex;
+    flex-direction: column;
+}
+
+.Inspector-header {
+    padding: 8px;
+    height: 45px;
+    border-top: 1px solid hsla(0, 100%, 100%, 0.2);
+    border-bottom: 1px solid hsla(0, 0%, 0%, 0.6);
+    background: linear-gradient( hsl(0, 0%, 38%), hsl(0, 0%, 28%) );
+}
+
+.Inspector-title {
+    color: hsl(0, 0%, 94%);
+    text-shadow: 0 -1px 0 hsl(0, 0%, 23%);
+    font-size: 18px;
+    line-height: 22px;
+}
+
+.Inspector-content {
+    flex: 1;
+    border-bottom: 1px solid hsl(0, 0%, 80%);
+    background-color: hsl(0, 0%, 86%);
+    display: flex;
+    flex-direction: column;
+}
+
+.Inspector-tabs {
+    width: 100%;
+    display: flex;
+    flex-shrink: 0;
+}
+
+.Inspector-tab.matte-RadioButton {
+    flex: 1;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: hsl(0, 0%, 46%);
+    background-color: hsl(0, 0%, 70%);
+    border: none;
+    border-bottom: 1px solid hsl(0, 0%, 64%);
+    border-radius: 0;
+    border-top: none;
+    cursor: pointer;
+}
+
+.Inspector-tab.matte-RadioButton + .Inspector-tab {
+    border-left: 1px solid hsl(0, 0%, 64%);
+}
+
+.Inspector-tab.matte-RadioButton:hover {
+    color: hsl(0, 0%, 42%);
+    background-color: hsl(0, 0%, 74%);
+}
+
+.Inspector-tab.matte-RadioButton.montage-RadioButton--checked {
+    color: hsl(0, 0%, 30%);
+    background: hsl(0, 0%, 86%);
+    cursor: default;
+    border-bottom: none;
+}
+
+.Inspector-substitution {
+    flex: 1;
+}
+
+.Inspector-substitution > * {
+    height: 100%;
+}
+
+
+
+
+/* PackageExplorer footer ------------------- */
+
+.PackageExplorer-footer {
+    background: -webkit-linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
+    background: -moz-linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
+    background: -ms-linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
+    background: linear-gradient( hsl(0,0%,96%), hsl(0,0%,92%) );
+    height: 32px;
+}
+
+.PackageExplorer-footer-button:before {
+    content: "+";
+    position: relative;
+    top: 1px;
+    margin-right: 4px;
+    line-height: 0;
+    font-size: 18px;
+    font-weight: bold;
+    -webkit-font-smoothing: none;
+    -moz-font-smoothing: none;
+    -ms-font-smoothing: none;
+    font-smoothing: none;
+}
+
+.PackageExplorer-footer-button.matte-Button {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 8px;
+    font-family: inherit;
+    font-weight: normal;
+    font-size: 14px;
+    color: hsl(0, 0%, 94%);
+    border-radius: 0;
+    border: none;
+    border-top: 1px solid hsla(0, 100%, 100%, 0.12);
+    box-shadow: none;
+    background-color: hsl(0, 0%, 30%);
+}
+
+.PackageExplorer-footer-button.matte-Button:hover {
+    color: hsl(0, 0%, 100%);
+    background-color: hsl(0, 0%, 36%);
+}
+
+.PackageExplorer-footer-button.matte-Button.active {
+    border-color:  hsl(0, 0%, 22%);
+    background-color: hsl(0, 0%, 24%);
+}
+
+.PackageExplorer-footer-button.matte-Button:focus {
+    border-color: hsl(0, 0%, 22%);
+}

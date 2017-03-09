@@ -57,13 +57,15 @@
     flex: 1;
     min-height: 0;
     overflow: scroll;
-    padding-top: 4px;
-    padding-bottom: 150px;
     list-style: none;
 }
 
 .ComponentTree-list .montage-TreeList-nodeWrapper {
     overflow: visible;
+}
+
+.ComponentTree-list .montage-TreeList-repetition {
+    flex: 0;
 }
 
 /* Icons --------------------------- */

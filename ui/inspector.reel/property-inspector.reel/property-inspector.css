@@ -1,0 +1,21 @@
+.PropertyInspector {
+
+}
+
+.PropertyInspector-hasObjectCondition {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.PropertyInspector-hasObjectCondition.montage-invisible {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.PropertyInspector-hasObjectCondition.montage-invisible:before {
+    content: "Select a component from the tree on the left to view its properties."
+}
+.PropertyInspector-hasObjectCondition.montage-invisible * {
+    display: none;
+}

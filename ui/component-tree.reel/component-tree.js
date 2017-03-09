@@ -327,6 +327,7 @@ exports.ComponentTree = Component.specialize(/** @lends ComponentTree# */ {
         value: function (firstTime) {
             var self = this;
             if (firstTime) {
+                this.selection = [];
                 this._proxyMap = new MultiMap();
                 this.element.addEventListener("click", this, false);
                 this.reelDocumentFactory.makeReelDocument("ui/main.reel")
@@ -340,10 +341,15 @@ exports.ComponentTree = Component.specialize(/** @lends ComponentTree# */ {
 
     handleClick: {
         value: function (evt) {
-            var target = evt.target;
-            if (target === this.tree.element) {
-                this.componentTreeController.clearSelection();
+            if (evt.target === this.tree.element) {
+                this.selection = [];
             }
+        }
+    },
+
+    handleTreeCellSelect: {
+        value: function (evt) {
+            this.selection = [evt.detail.proxy];
         }
     },
 

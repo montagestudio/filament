@@ -92,5 +92,13 @@ exports.Cell = Component.specialize(/** @lends Cell# */ {
             this.classList.remove("Cell--dragged");
             this.dragDelegate.endDrag(this.info.data, addEntity.type);
         }
+    },
+
+    handleCellButtonAction: {
+        value: function () {
+            if (this.info.data.proxy) {
+                this.dispatchEventNamed("select", true, false, { proxy: this.info.data.proxy });
+            }
+        }
     }
 });

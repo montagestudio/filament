@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="inspector.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            }
+        },
+
+        "tabController": {
+            "prototype": "montage/core/radio-button-controller",
+            "bindings": {
+                "value": {"<->": "@owner.currentTab"}
+            }
+        },
+
+        "propertiesTab": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "propertiesTab"},
+                "radioButtonController": {"@": "tabController"},
+                "value": "properties"
+            }
+        },
+
+        "listenersTab": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "listenersTab"},
+                "radioButtonController": {"@": "tabController"},
+                "value": "listeners"
+            }
+        },
+
+        "methodsTab": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "methodsTab"},
+                "radioButtonController": {"@": "tabController"},
+                "value": "methods"
+            }
+        },
+
+        "styleTab": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "styleTab"},
+                "radioButtonController": {"@": "tabController"},
+                "value": "style"
+            }
+        },
+
+        "inspectorSubstitution": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "inspectorSubstitution"}
+            },
+            "bindings": {
+                "switchValue": {"<-": "@owner.currentTab"}
+            }
+        },
+
+        "propertyInspector": {
+            "prototype": "./property-inspector.reel",
+            "properties": {
+                "element": {"#": "propertyInspector"}
+            },
+            "bindings": {
+                "proxy": {"<-": "@owner.selectedProxy"}
+            }
+        },
+
+        "listenerInspector": {
+            "prototype": "./listener-inspector.reel",
+            "properties": {
+                "element": {"#": "listenerInspector"}
+            },
+            "bindings": {
+                "proxy": {"<-": "@owner.selectedProxy"}
+            }
+        },
+
+        "methodInspector": {
+            "prototype": "./method-inspector.reel",
+            "properties": {
+                "element": {"#": "methodInspector"}
+            },
+            "bindings": {
+                "proxy": {"<-": "@owner.selectedProxy"}
+            }
+        },
+
+        "styleInspector": {
+            "prototype": "./style-inspector.reel",
+            "properties": {
+                "element": {"#": "styleInspector"}
+            },
+            "bindings": {
+                "proxy": {"<-": "@owner.selectedProxy"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="Inspector">
+        <div class="Inspector-content">
+            <div class="Inspector-tabs">
+                <div data-montage-id="propertiesTab"    class="Inspector-tab">Properties</div>
+                <div data-montage-id="listenersTab"     class="Inspector-tab">Listeners</div>
+                <div data-montage-id="methodsTab"       class="Inspector-tab">Methods</div>
+                <div data-montage-id="styleTab"         class="Inspector-tab">Style</div>
+            </div>
+            <div data-montage-id="inspectorSubstitution" class="Inspector-substitution">
+                <div data-arg="properties" data-montage-id="propertyInspector"></div>
+                <div data-arg="listeners" data-montage-id="listenerInspector"></div>
+                <div data-arg="methods" data-montage-id="methodInspector"></div>
+                <div data-arg="style" data-montage-id="styleInspector"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
