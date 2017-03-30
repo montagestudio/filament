@@ -1,0 +1,47 @@
+.InspectorSubsection {
+    display: flex;
+    flex-direction: column;
+}
+
+.InspectorSubsection-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background-color: hsl(0, 0%, 96%);
+    border-top: 1px solid hsl(0, 0%, 90%);
+    color: hsl(0, 0%, 5%);
+}
+
+.InspectorSubsection-header-label {
+    flex: 1;
+    margin: 0;
+    font-size: inherit;
+    font-weight: normal;
+    line-height: 32px;
+    color: hsl(0, 0%, 30%);
+}
+
+.InspectorSubsection-expandButton.Toggle.matte-InputCheckbox {
+    width: 32px;
+    height: 32px;
+    background-position: center center;
+    transform-origin: center;
+}
+
+.InspectorSubsection-addButton.matte-Button {
+    margin: 0;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 32px;
+    text-align: center;
+    border: none;
+    color: hsl(0, 0%, 60%);
+    background-color: transparent;
+}
+.InspectorSubsection-addButton.matte-Button:hover {
+    color: #000;
+    background-color: hsl(0, 0%, 92%);
+}

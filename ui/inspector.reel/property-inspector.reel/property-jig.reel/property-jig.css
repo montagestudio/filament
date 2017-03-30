@@ -1,0 +1,84 @@
+.PropertyJig.Jig {
+    min-width: 560px;
+}
+
+/* PropertyJig sections ---------------------- */
+
+.PropertyJig-section--source,
+.PropertyJig-section--target {
+    -webkit-flex: 1 1 auto;
+    -moz-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+
+.PropertyJig-section--direction {
+    -webkit-flex: 0 0 auto;
+    -moz-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+}
+
+
+
+/* PropertyJig direction ---------------------- */
+
+.PropertyJig-direction {
+    position: relative;
+    padding-left: 1px;
+    margin: 0 -1px 0 0;
+    font-size: 0;
+}
+
+.PropertyJig-radio {
+    margin: 0 0 0 -1px;
+    width: 30px;
+    height: 30px;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-color: hsl(0,0%,80%);
+    background-color: hsl(0,0%,94%);
+    box-shadow: inset 0 1px 0 hsla(0,0%,100%,1), 0 1px 2px hsla(0,0%,0%,0.1);
+}
+
+.PropertyJig-radio:hover {
+    background-color: hsla(0,0%,0%,.02);
+}
+
+.PropertyJig-radio.montage-RadioButton--checked {
+    background-color: hsl(210,100%,90%);
+    border-color: hsl(210,100%,80%);
+    box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.08), 0 1px 0 hsla(0,0%,100%,.6);
+}
+
+.PropertyJig-radio:focus {
+    border-color: hsl(210,100%,70%);
+    background-color: hsla(210,100%,60%,0.1);
+}
+
+.PropertyJig-radio--unidirectional {
+    border-radius: 3px 0 0 3px;
+    background-image: url(/assets/icons/binding-un.svg),
+                        -webkit-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+    background-image: url(/assets/icons/binding-un.svg),
+                        -moz-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+    background-image: url(/assets/icons/binding-un.svg),
+                        -ms-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+    background-image: url(/assets/icons/binding-un.svg),
+                        linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+}
+.PropertyJig-radio--unidirectional.montage-RadioButton--checked {
+    background-image: url(/assets/icons/binding-un.svg);
+}
+
+.PropertyJig-radio--bidirectional {
+    border-radius: 0 3px 3px 0;
+    background-image: url(/assets/icons/binding-bi.svg),
+                        -webkit-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+                        -moz-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+                        -ms-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+                        linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
+}
+.PropertyJig-radio--bidirectional.montage-RadioButton--checked {
+    background-image: url(/assets/icons/binding-bi.svg);
+}

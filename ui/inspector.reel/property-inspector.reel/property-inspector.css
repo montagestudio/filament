@@ -19,3 +19,9 @@
 .PropertyInspector-hasObjectCondition.montage-invisible * {
     display: none;
 }
+
+.PropertyInspector-list {
+    margin-left: 36px;
+    padding: 5px;
+    overflow: auto;
+}

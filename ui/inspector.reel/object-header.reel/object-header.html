@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="object-header.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            }
+        },
+
+        "parentObject": {
+            "prototype": "./object-header-item.reel",
+            "properties": {
+                "element": {"#": "parentObject"},
+                "isParent": true
+            },
+            "bindings": {
+                "object": {"<-": "@owner.object.parent"},
+                "classList.has('montage-invisible')": {"<-": "!object"}
+            }
+        },
+
+        "selectedObject": {
+            "prototype": "./object-header-item.reel",
+            "properties": {
+                "element": {"#": "selectedObject"}
+            },
+            "bindings": {
+                "object": {"<-": "@owner.object"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <header data-montage-id="owner" class="ObjectHeader">
+        <section data-montage-id="parentObject"></section>
+        <section data-montage-id="selectedObject"></section>
+    </header>
+</body>
+</html>

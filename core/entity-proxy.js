@@ -216,7 +216,12 @@ exports.EntityProxy = Target.specialize({
             if (this.hasComponent) {
                 this._properties = new Map;
                 function addSerializationProperty(value, key) {
-                    self._properties.set(key, {value: value, source: "serialization"});
+                    self._properties.set(key, {
+                        key: key,
+                        value: value,
+                        binding: "oneshot",
+                        source: "serialization"
+                    });
                 }
                 this._reelProxy.properties.forEach(addSerializationProperty);
                 this._reelProxy.properties.addMapChangeListener(addSerializationProperty);
@@ -227,7 +232,12 @@ exports.EntityProxy = Target.specialize({
                     .then(function (properties) {
                         for (var key in properties) {
                             if (properties.hasOwnProperty(key)) {
-                                self._properties.set(key, {value: properties[key], source: "javascript"});
+                                self._properties.set(key, {
+                                    key: key,
+                                    value: properties[key],
+                                    binding: "oneshot",
+                                    source: "javascript"
+                                });
                             }
                         }
                         self.dispatchOwnPropertyChange("properties", self.properties);

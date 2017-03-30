@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="property-entry.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "property-entry"}
+            }
+        },
+
+        "pressComposer": {
+            "prototype": "montage/composer/press-composer",
+            "properties": {
+                "component": {"@": "owner"}
+            },
+            "listeners": [
+                {
+                    "type": "press",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "key": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "key"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.property.key"}
+            },
+            "listeners": [
+                {
+                    "type": "mouseup",
+                    "listener": {
+                        "@": "owner"
+                    }
+                }
+            ]
+        },
+
+        "unidirectionalCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "unidirectionalCondition"}
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.property.oneway"}
+            }
+        },
+
+        "bidirectionalCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "bidirectionalCondition"}
+            },
+            "bindings": {
+                "condition": {"<-": "!@owner.property.oneway"}
+            }
+        },
+
+        "value": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "value"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.property.value"}
+            },
+            "listeners": [
+                {
+                    "type": "mouseup",
+                    "listener": {
+                        "@": "owner"
+                    }
+                }
+            ]
+        },
+
+        "cancelBindingButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "removeButton"}
+            },
+            "bindings": {
+                "detail.get('binding')": {"<-": "@owner.property"},
+                "detail.get('targetObject')": {"<-": "@owner.targetObject"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <li data-montage-id="property-entry" class="PropertyEntry" draggable="true">
+        <div data-montage-id="key" class="PropertyEntry-pill"></div>
+        <div data-montage-id="unidirectionalCondition" class="PropertyEntry-direction PropertyEntry-direction--unidirectional"></div>
+        <div data-montage-id="bidirectionalCondition" class="PropertyEntry-direction PropertyEntry-direction--bidirectional"></div>
+        <div data-montage-id="value" class="PropertyEntry-pill"></div>
+        <button data-montage-id="removeButton" class="PropertyEntry-removeButton TemplateObjectCell-button TemplateObjectCell-button--pill">-</button>
+    </li>
+</body>
+</html>

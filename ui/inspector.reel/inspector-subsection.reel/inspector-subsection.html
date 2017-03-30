@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="inspector-subsection.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            }
+        },
+
+        "label": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "label"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.label"}
+            }
+        },
+
+        "expandButton": {
+            "prototype": "ui/toggle.reel",
+            "properties": {
+                "element": {"#": "expandButton"}
+            },
+            "bindings": {
+                "checked": {"<->": "@owner.isExpanded"}
+            }
+        },
+
+        "addButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "addButton"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="InspectorSubsection">
+        <header class="InspectorSubsection-header">
+            <input data-montage-id="expandButton" type="checkbox" class="InspectorSubsection-expandButton" />
+            <h2 data-montage-id="label" class="InspectorSubsection-header-label"></h2>
+            <div data-montage-id="addButton" class="InspectorSubsection-addButton">+</div>
+        </header>
+    </div>
+</body>
+</html>

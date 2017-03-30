@@ -1,0 +1,166 @@
+.ObjectHeaderItem {
+    background-color: hsl(0, 0%, 94%);
+    height: 60px;
+}
+
+.ObjectHeaderItem--isParent {
+    opacity: 0.5;
+    height: 25px;
+}
+
+.ObjectHeaderItem--isComponent {
+    background-color: hsl(43, 100%, 85%);
+}
+
+.ObjectHeaderItem--isMontageComponent {
+    background-color:  hsl(210, 100%, 90%);
+}
+
+.ObjectHeaderItem-bar {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
+    height: 100%;
+}
+
+.ObjectHeaderItem-referenceProxy {
+    -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+    padding: 8px;
+}
+
+.ObjectHeaderItem-icon {
+    width: 42px;
+    height: 28px;
+    margin: 1px 0;
+}
+
+.ObjectHeaderItem--isParent .ObjectHeaderItem-icon {
+    padding: 7px 10px 7px 10px;
+}
+
+.ObjectHeaderItem-icon:hover {
+    opacity: .6;
+    cursor: move;
+}
+
+.ObjectHeaderItem-flex {
+    -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    min-width: 0;
+    margin-left: 8px;
+}
+
+.ObjectHeaderItem--isParent .ObjectHeaderItem-flex {
+    display: flex;
+    align-items: center;
+}
+.ObjectHeaderItem--isParent .ObjectHeaderItem-flex > * + * {
+    margin-left: 5px;
+}
+
+.ObjectHeaderItem-title {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.2;
+    color: hsl(0, 0%, 20%);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ObjectHeaderItem-exportId {
+    display: block;
+    font-style: italic;
+    font-size: 12px;
+    line-height: 1.2;
+    color: hsl(0, 0%, 50%);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.ObjectHeaderItem-buttonGroup {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+    padding-right: 5px;
+}
+
+/* Header button ------------------------------ */
+
+.ObjectHeaderItem-button.matte-Button {
+    display: block;
+    margin: 0 2px;
+    border-color: transparent;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 14px;
+    opacity: .3;
+}
+
+.ObjectHeaderItem-button.matte-Button:hover {
+    background-color: hsla(0,0%,100%,0);
+    opacity: .5;
+}
+
+.ObjectHeaderItem-button.matte-Button.active,
+.ObjectHeaderItem-button.matte-Button.active:hover {
+    border-color: hsla(0,0%,0%,.12);
+    background-color: hsla(0,0%,0%,.12);
+    opacity: .3;
+}
+
+.ObjectHeaderItem-button.matte-Button.pressed {
+    border-color: hsla(0,0%,0%,.12);
+    background-color: hsla(0,0%,0%,.12);
+    opacity: .5;
+}
+
+.ObjectHeaderItem-button--comment {
+    background-image: url(/assets/icons/comment.png);
+}
+
+
+/* Comments ------------------------------ */
+
+.ObjectHeaderItem-comment {
+    display: block;
+    width: 100%;
+    min-height: 2em;
+    margin: 0;
+    padding: 4px 6px;
+    border-radius: 0;
+    border: none;
+    border-top: 1px solid hsla(0,0%,0%,.1);
+    font-size: 11px;
+    text-shadow: 0 1px 0 hsla(0, 0%, 100%, .3);
+    color: hsl(0, 0%, 30%);
+    background: hsl(42, 83%, 95%);
+}
+
+.ObjectHeaderItem-comment--disabled {
+    opacity: .5;
+    pointer-events: none;
+}
+
+.ObjectHeaderItem-comment:focus {
+    border-color: hsla(0,0%,0%,.2);
+    background: hsl(42, 83%, 98%);
+}

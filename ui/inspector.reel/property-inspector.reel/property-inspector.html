@@ -20,13 +20,142 @@
             "bindings": {
                 "condition": {"<-": "!!@owner.proxy"}
             }
+        },
+
+        "objectHeader": {
+            "prototype": "../object-header.reel",
+            "properties": {
+                "element": {"#": "objectHeader"}
+            },
+            "bindings": {
+                "object": {"<-": "@owner.proxy"}
+            }
+        },
+
+        "instancePropertiesSection": {
+            "prototype": "../inspector-subsection.reel",
+            "properties": {
+                "element": {"#": "instancePropertiesSection"},
+                "label": "Instance Properties",
+                "isExpanded": true
+            }
+        },
+
+        "instancePropertiesList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "instancePropertiesList"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.proxy.properties.valuesArray()"},
+                "targetObject": {"<-": "@owner.proxy"},
+                "classList.has('montage-invisible')": {"<-": "!@instancePropertiesSection.isExpanded"}
+            }
+        },
+
+        "instancePropertyEntry": {
+            "prototype": "./property-entry.reel",
+            "properties": {
+                "element": {"#": "instancePropertyEntry"}
+            },
+            "bindings": {
+                "targetObject": {"<-": "@instancePropertiesList.targetObject"},
+                "property": {"<-": "@instancePropertiesList:iteration.object"}
+            }
+        },
+
+        "isComponentCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "isComponentCondition"},
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.proxy.hasComponent"}
+            }
+        },
+
+        "defaultPropertiesSection": {
+            "prototype": "../inspector-subsection.reel",
+            "properties": {
+                "element": {"#": "defaultPropertiesSection"},
+                "isExpanded": true
+            },
+            "bindings": {
+                "label": {"<-": "'Default Properties - Inherited from ' + @owner.proxy.moduleId"}
+            }
+        },
+
+        "defaultPropertiesList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "defaultPropertiesList"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.proxy.properties"},
+                "targetObject": {"<-": "@owner.proxy"},
+                "classList.has('montage-invisible')": {"<-": "!@defaultPropertiesSection.isExpanded"}
+            }
+        },
+
+        "defaultPropertyEntry": {
+            "prototype": "./property-entry.reel",
+            "properties": {
+                "element": {"#": "defaultPropertyEntry"}
+            },
+            "bindings": {
+                "targetObject": {"<-": "@defaultPropertiesList.targetObject"},
+                "property": {"<-": "@defaultPropertiesList:iteration.object"}
+            }
+        },
+
+        "bindingOverlay": {
+            "prototype": "montage/ui/overlay.reel",
+            "properties": {
+                "element": {"#": "bindingOverlay"},
+                "delegate": {"@": "bindingCreator"}
+            }
+        },
+
+        "bindingCreator": {
+            "prototype": "ui/binding-jig.reel",
+            "properties": {
+                "element": {"#": "bindingCreator"}
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.currentDocument"}
+            },
+            "listeners": [
+                {
+                    "type": "commit",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "discard",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>
 </head>
 <body>
     <div data-montage-id="owner" class="PropertyInspector">
+        <div data-montage-id="bindingOverlay">
+            <div data-montage-id="bindingCreator"></div>
+        </div>
         <div data-montage-id="hasObjectCondition" class="PropertyInspector-hasObjectCondition">
+            <div data-montage-id="objectHeader"></div>
+            <section data-montage-id="instancePropertiesSection"></section>
+            <div data-montage-id="instancePropertiesList" class="PropertyInspector-list">
+                <div data-montage-id="instancePropertyEntry"></div>
+            </div>
+            <div data-montage-id="isComponentCondition">
+                <section data-montage-id="defaultPropertiesSection"></section>
+                <div data-montage-id="defaultPropertiesList" class="PropertyInspector-list">
+                    <div data-montage-id="defaultPropertyEntry"></div>
+                </div>
+            </div>
         </div>
     </div>
 </body>

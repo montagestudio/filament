@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="object-header-item.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"},
+                "icon": {"@": "icon"}
+            },
+            "bindings": {
+                "classList.has('ObjectHeaderItem--isParent')": {
+                    "<-": "@owner.isParent"
+                },
+                "classList.has('ObjectHeaderItem--isComponent')": {
+                    "<-": "@owner.object.hasComponent"
+                },
+                "classList.has('ObjectHeaderItem--isMontageComponent')": {
+                    "<-": "@owner.object.exportId && !@owner.object.isInProjectPackage"
+                }
+            }
+        },
+
+        "icon": {
+            "prototype": "matte/ui/image.reel",
+            "properties": {
+                "element": {"#": "icon"}
+            },
+            "bindings": {
+                "src": {"<-": "@owner.iconUrl"}
+            }
+        },
+
+        "objectLabel": {
+            "prototype": "ui/text-editor-field.reel",
+            "properties": {
+                "element": {"#": "objectLabel"},
+                "shouldSaveOnBlur": true
+            },
+            "bindings": {
+                "enabled": {"<-": "!@owner.isParent"},
+                "value": {"<-": "@owner.object.montageId"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "templateObjectExportId": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "templateObjectExportId"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.object.label"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="ObjectHeaderItem">
+        <section class="ObjectHeaderItem-bar">
+            <div data-montage-id="referenceProxy" class="ObjectHeaderItem-referenceProxy" draggable="true">
+                <img data-montage-id="icon" class="ObjectHeaderItem-icon" src="" draggable="false" alt="">
+                <div class="ObjectHeaderItem-flex">
+                    <h3 data-montage-id="objectLabel" class="ObjectHeaderItem-title"></h3>
+                    <label data-montage-id="templateObjectExportId" class="ObjectHeaderItem-exportId"></label>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
