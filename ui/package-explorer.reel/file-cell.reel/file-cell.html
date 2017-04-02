@@ -9,7 +9,8 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "file-cell"}
+                "element": {"#": "file-cell"},
+                "expandedToggle": {"@": "expanded"}
             }
         },
 
@@ -19,7 +20,7 @@
                 "element": {"#": "file-title"}
             },
             "bindings": {
-                "value": {"<-": "@owner.fileInfo.name"}
+                "value": {"<-": "@owner.fileDescriptor.name"}
             }
         },
 
@@ -29,15 +30,15 @@
                 "element": {"#": "open-file-button"}
             },
             "bindings": {
-                "classList.has('folder')": {"<-": "@owner.fileInfo.isDirectory"},
-                "classList.has('reel')": {"<-": "@owner.fileInfo.isReel"},
-                "classList.has('html')": {"<-": "@owner.fileInfo.isHtml"},
-                "classList.has('css')": {"<-": "@owner.fileInfo.isCss"},
-                "classList.has('js')": {"<-": "@owner.fileInfo.isJavaScript"},
-                "classList.has('json')": {"<-": "@owner.fileInfo.isJson"},
-                "classList.has('package')": {"<-": "@owner.fileInfo.isPackage"},
-                "classList.has('image')": {"<-": "@owner.fileInfo.isImage"},
-                "classList.has('open')": {"<-": "@owner.fileInfo.associatedDocument"}
+                "classList.has('folder')": {"<-": "@owner.fileDescriptor.isDirectory"},
+                "classList.has('reel')": {"<-": "@owner.fileDescriptor.isReel"},
+                "classList.has('html')": {"<-": "@owner.fileDescriptor.isHtml"},
+                "classList.has('css')": {"<-": "@owner.fileDescriptor.isCss"},
+                "classList.has('js')": {"<-": "@owner.fileDescriptor.isJavaScript"},
+                "classList.has('json')": {"<-": "@owner.fileDescriptor.isJson"},
+                "classList.has('package')": {"<-": "@owner.fileDescriptor.isPackage"},
+                "classList.has('image')": {"<-": "@owner.fileDescriptor.isImage"},
+                "classList.has('open')": {"<-": "@owner.fileDescriptor.associatedDocument"}
             },
             "listeners": [
                 {
@@ -53,8 +54,8 @@
                 "element": {"#": "expanded"}
             },
             "bindings": {
-                "checked": {"<->": "@owner.iteration.expanded"},
-                "label": {"<-": "@owner.fileInfo.name + ' expanded'"}
+                "checked": {"<->": "@owner.info.isExpanded"},
+                "label": {"<-": "@owner.fileDescriptor.name + ' expanded'"}
             }
         },
 
@@ -65,7 +66,7 @@
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "@owner.fileInfo.isDirectory"}
+                "condition": {"<-": "@owner.fileDescriptor.isDirectory"}
             }
         },
 

@@ -20,13 +20,21 @@
     min-height: 0;
 }
 
-.NodeList .Tree-list {
+.NodeList.TreeList {
     padding: 12px;
     padding-bottom: 30px;
     font-size: 13px;
+}
+
+.NodeList .TreeList-repetition {
+    position: relative;
+}
+
+.NodeList .TreeListNodeWrapper:first-child {
     background: linear-gradient( to right, hsl(0,0%,86%) 0px, hsl(0,0%,86%) 1px, hsla(0,0%,86%,0) 1px );
-    background-size: 18px;
+    background-size: 20px;
     background-clip: content-box;
+    background-position: 6px;
 }
 
 .DomExplorer .NodeList .Tree-list-row {

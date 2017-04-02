@@ -2523,7 +2523,7 @@ exports.ReelDocument = EditingDocument.specialize({
 
             while (reelProxy = proxyFIFO.shift()) {
                 if (this._reelProxyHasElementProperty(reelProxy)) {
-                    this._addNodeWithDOM(reelProxy, insertionMap, proxyFIFO, successivePushes);
+                    this._addNodeWithDOM(reelProxy, root, insertionMap, proxyFIFO, successivePushes);
                 } else {
                     this._addNodeWithoutDOM(reelProxy, root);
                 }
@@ -2544,7 +2544,7 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     _addNodeWithDOM: {
-        value: function(reelProxy, insertionMap, proxyFIFO, successivePushes) {
+        value: function(reelProxy, root, insertionMap, proxyFIFO, successivePushes) {
             // find the parent component
             var parentReelProxy = this._buildTreeFindParentComponent(reelProxy);
             if (!parentReelProxy) {
