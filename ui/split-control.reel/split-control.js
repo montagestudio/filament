@@ -82,13 +82,13 @@ exports.SplitControl = AbstractSlider.specialize(/** @lends SplitControl# */ {
             if(this.controlledComponent) {
                 this.controlledComponent.classList.add("Panel--noAnimation");
             }
-            AbstractSlider.handleThumbTranslateStart.apply(this, arguments);
+            AbstractSlider.prototype.handleThumbTranslateStart.apply(this, arguments);
         }
     },
 
     handleThumbTranslate: {
         value: function (event) {
-            AbstractSlider.handleThumbTranslate.apply(this, arguments);
+            AbstractSlider.prototype.handleThumbTranslate.apply(this, arguments);
         }
     },
 
@@ -98,7 +98,7 @@ exports.SplitControl = AbstractSlider.specialize(/** @lends SplitControl# */ {
             if(this.controlledComponent) {
                 this.controlledComponent.classList.remove("Panel--noAnimation");
             }
-            AbstractSlider.handleThumbTranslateEnd.apply(this, arguments);
+            AbstractSlider.prototype.handleThumbTranslateEnd.apply(this, arguments);
         }
     },
 
