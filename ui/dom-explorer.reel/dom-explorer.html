@@ -51,25 +51,24 @@
         },
 
         "nodeTreeController": {
-            "prototype": "montage/core/tree-controller",
+            "prototype": "core/tree-controller",
             "properties": {
+                "childrenPath": "children",
                 "initiallyExpanded": true
             },
             "bindings": {
-                "data": {"<-": "@owner.editingDocument.templateBodyNode.children.0"}
+                "content": {"<-": "@owner.editingDocument.templateBodyNode.children.0"}
             }
         },
 
         "nodeList": {
-            "prototype": "montage/ui/tree-list.reel",
+            "prototype": "ui/tree.reel",
             "properties": {
                 "element": {"#": "nodeList"},
-                "isSelectionEnabled": false,
-                "indentationWidth": 20,
-                "rowHeight": 30
+                "isSelectionEnabled": false
             },
             "bindings": {
-                "controller": {"<-": "@owner.nodeTreeController"}
+                "treeController": {"<-": "@owner.nodeTreeController"}
             }
         },
 
@@ -80,7 +79,7 @@
                 "domExplorer": {"@": "owner"}
             },
             "bindings": {
-                "info": {"<-": "@nodeList:iteration.object"},
+                "data": {"<-": "@nodeCell.parentComponent.iteration"},
                 "domExplorer": {"<-": "@owner"}
             }
         },
@@ -120,7 +119,7 @@
 <body>
     <div data-montage-id="dom-explorer" class="DomExplorer preshift">
         <div data-montage-id="nodeList" class="NodeList">
-            <div data-montage-id="nodeCell"></div>
+            <div data-montage-id="nodeCell" data-arg="treeNode"></div>
         </div>
         <footer data-montage-id="drawer">
             <div data-montage-id="createNodeCell" data-arg="createElement"></div>
