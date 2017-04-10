@@ -221,15 +221,10 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
                 var keyEquivalent = this._menuItemModel.keyEquivalent;
 
                 if (keyEquivalent) {
-                    this._keyComposer = new KeyComposer();
-                    this._keyComposer.component = this;
-                    this._keyComposer.keys = keyEquivalent;
-                    this._keyComposer.identifier = "menuAction";
+                    this._keyComposer = KeyComposer.createGlobalKey(this, keyEquivalent, "menuAction");
+                    this.loadComposer(this._keyComposer);
                     this.addComposer(this._keyComposer);
-                    this._keyComposer.element = window;
-
-                    this.addEventListener("keyPress", this, false);
-                    this._keyComposer.addEventListener("keyPress", null, false);
+                    this._keyComposer.addEventListener("keyPress", this, false);
                     this.updateKeys(keyEquivalent);
                 }
             }
