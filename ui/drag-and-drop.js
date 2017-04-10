@@ -46,7 +46,8 @@ exports.replaceDroppedTextPlain = function (plain, rich, element) {
         // HACK: The actual selection happens after the input event, even
         // though no selection event is fired. So this waits for the next tick
         // and changes the selection then.
-        Promise.nextTick(function () {
+        //Benoit: Replaces Promise.nextTick(..) Not ideal as it creates a useless promise
+        Promise.resolve().then(function () {
             element.setSelectionRange(point, point + rich.length);
         });
     };
