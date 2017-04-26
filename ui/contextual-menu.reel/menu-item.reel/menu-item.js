@@ -253,10 +253,11 @@ exports.MenuItem = Component.specialize(/** @lends MenuItem# */ {
         }
     },
 
-
     handleKeyPress: {
         value: function(event) {
             if (event.identifier === "menuAction" && this.menuItemModel) {
+                event.preventDefault();
+                event.stopPropagation();
                 this.dispatchEventNamed("menuFlashing", true, true);
                 this._dispatchAction();
             }

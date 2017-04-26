@@ -624,13 +624,14 @@ exports.PreviewController = Target.specialize({
                 if (parentsChildren.length - nodeCount === 0) {
                     node = parentNode;
                     isContainerNode = true;
+                    how = "append";
                 } else {
                     // Use the node that was in the position of the last
                     // node before the contents of the template were added.
                     node = parentsChildren[parentsChildren.length - 1 - nodeCount];
                     isContainerNode = false;
+                    how = "after";
                 }
-                how = "after";
             } else {
                 node = parentNode;
                 isContainerNode = true;
