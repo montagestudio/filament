@@ -69,8 +69,8 @@ exports.EditProperties = Component.specialize({
             this._ownerBlueprint = value;
             if (value) {
                 // add... returns the existing group if it already exists
-                this.propertiesController.content = value.addPropertyBlueprintGroupNamed(this.ownerObject.exportName);
-                this.eventsController.content = value.eventBlueprints;
+                this.propertiesController.content = value.addPropertyDescriptorGroupNamed(this.ownerObject.exportName);
+                this.eventsController.content = value.eventDescriptors;
             }
         }
     },
@@ -126,7 +126,7 @@ exports.EditProperties = Component.specialize({
             // Check if this property name already exists
             // The check should also be in blueprints, but this way we can
             // stop sooner and (not) update the UI sooner.
-            if (this.ownerBlueprint.propertyBlueprints.map(function (p) { return p.name; }).indexOf(name) !== -1) {
+            if (this.ownerBlueprint.propertyDescriptors.map(function (p) { return p.name; }).indexOf(name) !== -1) {
                 event.preventDefault();
                 return;
             }
@@ -155,7 +155,7 @@ exports.EditProperties = Component.specialize({
             // Check if this event name already exists
             // The check should also be in blueprints, but this way we can
             // stop sooner and (not) update the UI sooner.
-            if (this.ownerBlueprint.eventBlueprints.some(function (p) { return p.name === name; })) {
+            if (this.ownerBlueprint.eventDescriptors.some(function (p) { return p.name === name; })) {
                 event.preventDefault();
                 return;
             }

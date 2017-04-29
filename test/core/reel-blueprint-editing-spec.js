@@ -1,7 +1,7 @@
 var Promise = require("montage/core/promise").Promise;
-var Blueprint = require("montage/core/meta/blueprint").Blueprint;
-var PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint;
-var EventBlueprint = require("montage/core/meta/event-blueprint").EventBlueprint;
+var ObjectDescriptor = require("montage/core/meta/object-descriptor").ObjectDescriptor;
+var PropertyDescriptor = require("montage/core/meta/property-descriptor").PropertyDescriptor;
+var EventDescriptor = require("montage/core/meta/event-descriptor").EventDescriptor;
 var Template = require("montage/core/template").Template;
 var mockReelDocument = require("test/mocks/reel-document-mocks").mockReelDocument;
 
@@ -16,7 +16,7 @@ describe("core/reel-blueprint-editing-spec", function () {
             moduleId: Object.create(null)
         };
 
-        blueprint = new Blueprint();
+        blueprint = new ObjectDescriptor();
 
         reelDocumentPromise = mockReelDocument("foo/bar/mock.reel", {
             "owner": {
@@ -28,8 +28,8 @@ describe("core/reel-blueprint-editing-spec", function () {
         '<div id="ownerElement" data-montage-id="ownerElement"></div>')
         .then(function (reelDocument) {
             reelDocument.__ownerBlueprint = Promise.resolve(blueprint);
-            reelDocument._propertyBlueprintConstructor = PropertyBlueprint;
-            reelDocument._eventBlueprintConstructor = EventBlueprint;
+            reelDocument._propertyBlueprintConstructor = PropertyDescriptor;
+            reelDocument._eventBlueprintConstructor = EventDescriptor;
             return reelDocument;
         });
     });
@@ -38,12 +38,12 @@ describe("core/reel-blueprint-editing-spec", function () {
         var a, b, defaultGroup;
 
         beforeEach(function () {
-            a = new PropertyBlueprint().initWithNameBlueprintAndCardinality("a", blueprint, 1);
-            b = new PropertyBlueprint().initWithNameBlueprintAndCardinality("b", blueprint, 1);
-            blueprint.addPropertyBlueprint(a);
-            blueprint.addPropertyBlueprint(b);
+            a = new PropertyDescriptor().initWithNameObjectDescriptorAndCardinality("a", blueprint, 1);
+            b = new PropertyDescriptor().initWithNameObjectDescriptorAndCardinality("b", blueprint, 1);
+            blueprint.addPropertyDescriptor(a);
+            blueprint.addPropertyDescriptor(b);
 
-            defaultGroup = blueprint.addPropertyBlueprintGroupNamed("Mock");
+            defaultGroup = blueprint.addPropertyDescriptorGroupNamed("Mock");
             defaultGroup.push(a, b);
         });
 
@@ -61,12 +61,12 @@ describe("core/reel-blueprint-editing-spec", function () {
 
             it("adds a group named after the component if one doesn't exist", function () {
                 return reelDocumentPromise.then(function (reelDocument) {
-                    blueprint = new Blueprint();
+                    blueprint = new ObjectDescriptor();
                     reelDocument.__ownerBlueprint = Promise.resolve(blueprint);
 
                     return reelDocument.addOwnerBlueprintProperty("pass")
                     .then(function () {
-                        defaultGroup = blueprint.propertyBlueprintGroupForName(reelDocument._exportName);
+                        defaultGroup = blueprint.propertyDescriptorGroupForName(reelDocument._exportName);
                         expect(defaultGroup.length).toBe(1);
                         expect(defaultGroup[0].name).toBe("pass");
                     });
@@ -120,12 +120,12 @@ describe("core/reel-blueprint-editing-spec", function () {
         var a, b, eventBlueprints;
 
         beforeEach(function () {
-            a = new EventBlueprint().initWithNameAndBlueprint("a", blueprint);
-            b = new EventBlueprint().initWithNameAndBlueprint("b", blueprint);
-            blueprint.addEventBlueprint(a);
-            blueprint.addEventBlueprint(b);
+            a = new EventDescriptor().initWithNameAndObjectDescriptor("a", blueprint);
+            b = new EventDescriptor().initWithNameAndObjectDescriptor("b", blueprint);
+            blueprint.addEventDescriptor(a);
+            blueprint.addEventDescriptor(b);
 
-            eventBlueprints = blueprint.eventBlueprints;
+            eventBlueprints = blueprint.eventDescriptors;
         });
 
         describe("adding a blueprint event", function () {

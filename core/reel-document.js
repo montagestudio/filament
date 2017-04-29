@@ -458,8 +458,8 @@ exports.ReelDocument = EditingDocument.specialize({
                 // Before we can actually edit the ownerBlueprint, we need other types of blueprint
                 // from the same package
                 this.__ownerBlueprint = Promise.all([
-                    packageRequire.async("montage/core/meta/property-blueprint").get("PropertyBlueprint"),
-                    packageRequire.async("montage/core/meta/event-blueprint").get("EventBlueprint"),
+                    packageRequire.async("montage/core/meta/property-descriptor").get("PropertyDescriptor"),
+                    packageRequire.async("montage/core/meta/event-descriptor").get("EventDescriptor"),
                     packageRequire.async(this._moduleId).get(this._exportName).get("blueprint")
                 ]).spread(function (propertyBlueprint, eventBlueprint, ownerBlueprint) {
                     self._propertyBlueprintConstructor = propertyBlueprint;
@@ -2341,7 +2341,7 @@ exports.ReelDocument = EditingDocument.specialize({
             return this.undoManager.register(
                 "Add owner property",
                 this._ownerBlueprint.then(function (blueprint) {
-                    var propertyBlueprint = new self._propertyBlueprintConstructor().initWithNameBlueprintAndCardinality(
+                    var propertyBlueprint = new self._propertyBlueprintConstructor().initWithNameObjectDescriptorAndCardinality(
                         name,
                         blueprint,
                         cardinality || 1
@@ -2353,8 +2353,8 @@ exports.ReelDocument = EditingDocument.specialize({
                         propertyBlueprint.collectionValueType = collectionValueType;
                     }
 
-                    blueprint.addPropertyBlueprint(propertyBlueprint);
-                    blueprint.addPropertyBlueprintToGroupNamed(propertyBlueprint, self._exportName);
+                    blueprint.addPropertyDescriptor(propertyBlueprint);
+                    blueprint.addPropertyDescriptorToGroupNamed(propertyBlueprint, self._exportName);
                     return [self.removeOwnerBlueprintProperty, self, name];
                 })
             );
@@ -2367,7 +2367,7 @@ exports.ReelDocument = EditingDocument.specialize({
             // get the owner blueprint first so that we can bail if the new
             // and previous value are the same
             return this._ownerBlueprint.then(function (blueprint) {
-                var propertyBlueprint = blueprint.propertyBlueprintForName(name);
+                var propertyBlueprint = blueprint.propertyDescriptorForName(name);
                 var previousValue = propertyBlueprint[property];
                 if (value === previousValue) {
                     return Promise.resolve();
@@ -2387,9 +2387,9 @@ exports.ReelDocument = EditingDocument.specialize({
             return self.undoManager.register(
                 "Remove owner property",
                 this._ownerBlueprint.then(function (blueprint) {
-                    var propertyBlueprint = blueprint.propertyBlueprintForName(name);
-                    blueprint.removePropertyBlueprint(propertyBlueprint);
-                    blueprint.removePropertyBlueprintFromGroupNamed(propertyBlueprint, self._exportName);
+                    var propertyBlueprint = blueprint.propertyDescriptorForName(name);
+                    blueprint.removePropertyDescriptor(propertyBlueprint);
+                    blueprint.removePropertyDescriptorFromGroupNamed(propertyBlueprint, self._exportName);
                     return [self.addOwnerBlueprintProperty, self, name, propertyBlueprint.valueType, propertyBlueprint.cardinality, propertyBlueprint.collectionValueType];
                 })
             );
@@ -2402,12 +2402,12 @@ exports.ReelDocument = EditingDocument.specialize({
             return this.undoManager.register(
                 "Add owner event",
                 this._ownerBlueprint.then(function (blueprint) {
-                    var eventBlueprint = new self._eventBlueprintConstructor().initWithNameAndBlueprint(
+                    var eventBlueprint = new self._eventBlueprintConstructor().initWithNameAndObjectDescriptor(
                         name,
                         blueprint
                     );
 
-                    blueprint.addEventBlueprint(eventBlueprint);
+                    blueprint.addEventDescriptor(eventBlueprint);
                     return [self.removeOwnerBlueprintEvent, self, name];
                 })
             );
@@ -2420,8 +2420,8 @@ exports.ReelDocument = EditingDocument.specialize({
             return self.undoManager.register(
                 "Remove owner event",
                 this._ownerBlueprint.then(function (blueprint) {
-                    var eventBlueprint = blueprint.eventBlueprintForName(name);
-                    blueprint.removeEventBlueprint(eventBlueprint);
+                    var eventBlueprint = blueprint.eventDescriptorForName(name);
+                    blueprint.removeEventDescriptor(eventBlueprint);
                     return [self.addOwnerBlueprintEvent, self, name];
                 })
             );
