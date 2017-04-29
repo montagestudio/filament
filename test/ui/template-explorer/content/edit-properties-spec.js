@@ -1,8 +1,8 @@
 /*global require,describe,it,expect,runs,waits */
 var TestPageLoader = require("montage-testing/testpageloader").TestPageLoader;
 var Blueprint = require("montage/core/meta/blueprint").Blueprint;
-var PropertyBlueprint = require("montage/core/meta/property-blueprint").PropertyBlueprint;
-var EventBlueprint = require("montage/core/meta/event-blueprint").EventBlueprint;
+var PropertyDescriptor = require("montage/core/meta/property-descriptor").PropertyDescriptor;
+var EventDescriptor = require("montage/core/meta/event-descriptor").EventDescriptor;
 var Promise = require("montage/core/promise").Promise;
 
 TestPageLoader.queueTest("edit-properties-test", function(testPage) {
@@ -40,12 +40,12 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
 
             var a, b, defaultGroup;
             beforeEach(function () {
-                a = new PropertyBlueprint().initWithNameBlueprintAndCardinality("a", blueprint, 1);
-                b = new PropertyBlueprint().initWithNameBlueprintAndCardinality("b", blueprint, 1);
-                blueprint.addPropertyBlueprint(a);
-                blueprint.addPropertyBlueprint(b);
+                a = new PropertyDescriptor().initWithNameObjectDescriptorAndCardinality("a", blueprint, 1);
+                b = new PropertyDescriptor().initWithNameObjectDescriptorAndCardinality("b", blueprint, 1);
+                blueprint.addPropertyDescriptor(a);
+                blueprint.addPropertyDescriptor(b);
 
-                defaultGroup = blueprint.addPropertyBlueprintGroupNamed("Mock");
+                defaultGroup = blueprint.addPropertyDescriptorGroupNamed("Mock");
                 defaultGroup.push(a, b);
 
                 waits(50); // wait for a draw that may or may not happen
@@ -132,7 +132,7 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                 it("calls modifyOwnerBlueprintProperty before the change is made", function () {
                     spyOn(editingDocument, "modifyOwnerBlueprintProperty")
                     .andCallFake(function (name, property, value) {
-                        var propertyBlueprint = blueprint.propertyBlueprintForName(name);
+                        var propertyBlueprint = blueprint.propertyDescriptorForName(name);
                         expect(propertyBlueprint[property]).toBe("string");
                         expect(value).toBe("number");
                         return Promise.resolve();
@@ -185,10 +185,10 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
         describe("events", function () {
             var a, b;
             beforeEach(function () {
-                a = new EventBlueprint().initWithNameAndBlueprint("a", blueprint);
-                b = new EventBlueprint().initWithNameAndBlueprint("b", blueprint);
-                blueprint.addEventBlueprint(a);
-                blueprint.addEventBlueprint(b);
+                a = new EventDescriptor().initWithNameAndObjectDescriptor("a", blueprint);
+                b = new EventDescriptor().initWithNameAndObjectDescriptor("b", blueprint);
+                blueprint.addEventDescriptor(a);
+                blueprint.addEventDescriptor(b);
 
                 waits(50); // wait for a draw that may or may not happen
             });
