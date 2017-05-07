@@ -132,9 +132,6 @@ exports.TemplateExplorer = Component.specialize(/** @lends module:"./template-ex
 
             this._element.addEventListener("click", this);
 
-            application.addEventListener("editBindingForObject", this, false);
-            application.addEventListener("editListenerForObject", this, false);
-
             this.addRangeAtPathChangeListener("editingDocument.selectedObjects", this, "handleSelectedObjectsChange");
             this.addEventListener("toggle", this);
         }
@@ -202,73 +199,6 @@ exports.TemplateExplorer = Component.specialize(/** @lends module:"./template-ex
             }
             this._willAcceptDrop = false;
             event.preventDefault();
-        }
-    },
-
-    handleDefineBindingButtonAction: {
-        value: function (evt) {
-            //TODO not wipe out content if open/already has a bindingModel
-            var bindingModel = Object.create(null);
-            bindingModel.targetObject = evt.detail.get("targetObject");
-            bindingModel.oneway = true;
-
-            this.dispatchEventNamed("addBinding", true, false, {
-                bindingModel: bindingModel
-            });
-        }
-    },
-
-    handleCancelBindingButtonAction: {
-        value: function (evt) {
-            evt.stop();
-            var targetObject = evt.detail.get("targetObject");
-            var binding = evt.detail.get("binding");
-            this.editingDocument.cancelOwnedObjectBinding(targetObject, binding);
-        }
-    },
-
-    handleEditBindingForObject: {
-        value: function (evt) {
-            var bindingModel = evt.detail.bindingModel;
-            var existingBinding = evt.detail.existingBinding;
-
-            this.dispatchEventNamed("addBinding", true, false, {
-                bindingModel: bindingModel,
-                existingBinding: existingBinding
-            });
-        }
-    },
-
-    handleAddListenerButtonAction: {
-        value: function (evt) {
-            var listenerModel = Object.create(null);
-            listenerModel.targetObject = evt.detail.get("targetObject");
-            listenerModel.useCapture = false;
-
-            this.dispatchEventNamed("addListenerForObject", true, false, {
-                listenerModel: listenerModel
-            });
-        }
-    },
-
-    handleEditListenerForObject: {
-        value: function (evt) {
-            var listenerModel = evt.detail.listenerModel;
-            var existingListener = evt.detail.existingListener;
-
-            this.dispatchEventNamed("addListenerForObject", true, false, {
-                listenerModel: listenerModel,
-                existingListener: existingListener
-            });
-        }
-    },
-
-    handleRemoveListenerButtonAction: {
-        value: function (evt) {
-            evt.stop();
-            var targetObject = evt.detail.get("targetObject");
-            var listener = evt.detail.get("listener");
-            this.editingDocument.removeOwnedObjectEventListener(targetObject, listener);
         }
     },
 

@@ -1,0 +1,17 @@
+{
+    "root": {
+        "prototype": "montage/core/meta/module-blueprint",
+        "properties": {
+            "name": "complex",
+            "customPrototype": false,
+            "propertyValidationRules": {},
+            "blueprintModule": {
+                "%": "test/mocks/ui/complex.reel/complex.meta"
+            },
+            "exportName": "Complex",
+            "module": {
+                "%": "test/mocks/ui/complex.reel"
+            }
+        }
+    }
+}

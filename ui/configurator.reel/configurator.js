@@ -27,6 +27,10 @@ exports.Configurator = Panel.specialize({
         value: null
     },
 
+    selectedTab: {
+        value: "properties"
+    },
+
     handlePathChange: {
         value: function (value, path) {
             if ("editingDocument.selectedObjects.0" === path) {
@@ -41,5 +45,4 @@ exports.Configurator = Panel.specialize({
             }
         }
     }
-
 });

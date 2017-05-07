@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script type="text/javascript" src="../../../../node_modules/montage/montage.js" data-package="../../../../"></script>
+    <script type="text/montage-serialization">
+        {
+            "test": {
+                "prototype": "test/ui/configurator/configurator-test",
+                "properties": {
+                    "configurator": {"@": "configurator"}
+                }
+            },
+
+            "configurator": {
+                "prototype": "ui/configurator.reel",
+                "properties": {
+                    "element": {"#": "configurator"}
+                }
+            }
+        }
+    </script>
+
+</head>
+<body>
+    <h1>configurator test</h1>
+
+    <div data-montage-id="configurator"></div></div>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 
-.Configurator {
+.Configurator.Panel {
     background: hsl(0, 0%, 92%);
+    flex-grow: 1;
 }
 
 .Configurator-inspectorCondition {
@@ -10,6 +11,45 @@
     flex-flow: column;
     -webkit-flex: 1;
     flex: 1;
+}
+
+.Configurator-tabs {
+    display: flex;
+    width: 100%;
+}
+
+.Configurator-tab.matte-RadioButton {
+    flex: 1;
+    height: 33px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    color: hsl(0, 0%, 46%);
+    background-color: hsl(0, 0%, 70%);
+    font-size: 15px;
+    line-height: 1;
+    border: none;
+    border-bottom: 1px solid hsl(0, 0%, 64%);
+    border-radius: 0;
+    border-top: none;
+    cursor: pointer;
+}
+
+.Configurator-tab.matte-RadioButton + .Configurator-tab {
+    border-left: 1px solid hsl(0, 0%, 64%);
+}
+
+.Configurator-tab.matte-RadioButton:hover {
+    color: hsl(0, 0%, 42%);
+    background-color: hsl(0, 0%, 74%);
+}
+
+.Configurator-tab.matte-RadioButton.montage-RadioButton--checked {
+    color: hsl(0, 0%, 30%);
+    background: hsl(0, 0%, 92%);
+    cursor: default;
+    border-bottom: none;
 }
 
 

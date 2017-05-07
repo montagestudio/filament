@@ -80,48 +80,6 @@
                 }
             },
 
-            "bindingsCondition": {
-                "prototype": "montage/ui/condition.reel",
-                "properties": {
-                    "element": {"#": "bindingsCondition"},
-                    "removalStrategy": "hide"
-                },
-                "bindings": {
-                    "condition": {"<-": "@owner.showBindings"}
-                }
-            },
-
-            "bindingExplorer": {
-                "prototype": "../content/binding-explorer.reel",
-                "properties": {
-                    "element": {"#": "bindingExplorer"}
-                },
-                "bindings": {
-                    "templateObject": {"<-": "@owner.templateObject"}
-                }
-            },
-
-            "listenersCondition": {
-                "prototype": "montage/ui/condition.reel",
-                "properties": {
-                    "element": {"#": "listenersCondition"},
-                    "removalStrategy": "hide"
-                },
-                "bindings": {
-                    "condition": {"<-": "@owner.showListeners"}
-                }
-            },
-
-            "listenerExplorer": {
-                "prototype": "../content/listener-explorer.reel",
-                "properties": {
-                    "element": {"#": "listenerExplorer"}
-                },
-                "bindings": {
-                    "templateObject": {"<-": "@owner.templateObject"}
-                }
-            },
-
             "select": {
                 "prototype": "montage/composer/press-composer",
                 "properties": {
@@ -157,15 +115,6 @@
     <section data-montage-id="elementCondition" class="TemplateObjectCell-section">
         <div data-montage-id="elementField"></div>
     </section>
-
-    <section data-montage-id="bindingsCondition" class="TemplateObjectCell-section">
-        <div data-montage-id="bindingExplorer"></div>
-    </section>
-
-    <section data-montage-id="listenersCondition" class="TemplateObjectCell-section">
-        <div data-montage-id="listenerExplorer"></div>
-    </section>
-
 </header>
 
 </ul>

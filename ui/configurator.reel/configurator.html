@@ -14,6 +14,38 @@
                     "element": {
                         "#": "configurator"
                     }
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
+            },
+
+            "tabController": {
+                "prototype": "montage/core/radio-button-controller",
+                "bindings": {
+                    "value": {"<->": "@owner.selectedTab"}
+                }
+            },
+
+            "content": {
+                "prototype": "montage/ui/substitution.reel",
+                "properties": {
+                    "element": {"#": "content"}
+                },
+                "bindings": {
+                    "switchValue": {"<-": "@tabController.value"}
+                }
+            },
+
+            "propertiesTab": {
+                "prototype": "matte/ui/radio-button.reel",
+                "properties": {
+                    "element": {"#": "propertiesTab"},
+                    "radioButtonController": {"@": "tabController"},
+                    "value": "properties"
                 }
             },
 
@@ -38,6 +70,64 @@
                     "inspectorController": {"<-": "@owner.inspectorControllers.0"},
                     "editingDocument": {"<-": "@owner.editingDocument"}
                 }
+            },
+
+            "bindingsTab": {
+                "prototype": "matte/ui/radio-button.reel",
+                "properties": {
+                    "element": {"#": "bindingsTab"},
+                    "radioButtonController": {"@": "tabController"},
+                    "value": "bindings"
+                }
+            },
+
+            "bindingInspector": {
+                "prototype": "./binding-explorer.reel",
+                "properties": {
+                    "element": {"#": "bindingInspector"}
+                },
+                "bindings": {
+                    "editingDocument": {"<-": "@owner.editingDocument"},
+                    "templateObject": {"<-": "@owner.editingDocument.selectedObjects.0"}
+                }
+            },
+
+            "listenersTab": {
+                "prototype": "matte/ui/radio-button.reel",
+                "properties": {
+                    "element": {"#": "listenersTab"},
+                    "radioButtonController": {"@": "tabController"},
+                    "value": "listeners"
+                }
+            },
+
+            "listenerExplorer": {
+                "prototype": "./listener-explorer.reel",
+                "properties": {
+                    "element": {"#": "listenerExplorer"}
+                },
+                "bindings": {
+                    "editingDocument": {"<-": "@owner.editingDocument"},
+                    "templateObject": {"<-": "@owner.editingDocument.selectedObjects.0"}
+                }
+            },
+
+            "methodsTab": {
+                "prototype": "matte/ui/radio-button.reel",
+                "properties": {
+                    "element": {"#": "methodsTab"},
+                    "radioButtonController": {"@": "tabController"},
+                    "value": "methods"
+                }
+            },
+
+            "styleTab": {
+                "prototype": "matte/ui/radio-button.reel",
+                "properties": {
+                    "element": {"#": "styleTab"},
+                    "radioButtonController": {"@": "tabController"},
+                    "value": "style"
+                }
             }
         }
     </script>
@@ -45,8 +135,19 @@
 </head>
 <body>
     <aside id="configurator" data-montage-id="configurator" class="Panel Configurator">
-        <div data-montage-id="inspector-condition" class="Configurator-inspectorCondition">
-            <div data-montage-id="inspector"></div>
+        <nav class="Configurator-tabs">
+            <div data-montage-id="propertiesTab" class="Configurator-tab">Properties</div>
+            <div data-montage-id="bindingsTab" class="Configurator-tab">Bindings</div>
+            <div data-montage-id="listenersTab" class="Configurator-tab">Listeners</div>
+            <div data-montage-id="methodsTab" class="Configurator-tab">Methods</div>
+            <div data-montage-id="styleTab" class="Configurator-tab">Style</div>
+        </nav>
+        <div data-montage-id="content" class="Configurator-content">
+            <div data-arg="properties" data-montage-id="inspector-condition" class="Configurator-inspectorCondition">
+                <div data-montage-id="inspector"></div>
+            </div>
+            <div data-arg="bindings" data-montage-id="bindingInspector"></div>
+            <div data-arg="listeners" data-montage-id="listenerExplorer"></div>
         </div>
     </aside>
 </body>

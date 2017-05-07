@@ -4,8 +4,8 @@
  */
 var Component = require("montage/ui/component").Component,
     ObjectLabelConverter = require("core/object-label-converter").ObjectLabelConverter,
+    application = require("montage/core/application").application,
     MimeTypes = require("core/mime-types");
-
 
 /**
  * @class BindingsExplorer
@@ -31,6 +31,7 @@ exports.BindingExplorer = Component.specialize( /** @lends BindingsExplorer# */ 
             element.addEventListener("dragleave", this, false);
             element.addEventListener("drop", this, false);
 
+            application.addEventListener("editBindingForObject", this, false);
         }
     },
 
@@ -148,5 +149,39 @@ exports.BindingExplorer = Component.specialize( /** @lends BindingsExplorer# */ 
 
             self.isDropTarget = false;
         }
-    }
+    },
+
+    handleDefineBindingButtonAction: {
+        value: function (evt) {
+            //TODO not wipe out content if open/already has a bindingModel
+            var bindingModel = Object.create(null);
+            bindingModel.targetObject = evt.detail.get("targetObject");
+            bindingModel.oneway = true;
+
+            this.dispatchEventNamed("addBinding", true, false, {
+                bindingModel: bindingModel
+            });
+        }
+    },
+
+    handleCancelBindingButtonAction: {
+        value: function (evt) {
+            evt.stop();
+            var targetObject = evt.detail.get("targetObject");
+            var binding = evt.detail.get("binding");
+            this.editingDocument.cancelOwnedObjectBinding(targetObject, binding);
+        }
+    },
+
+    handleEditBindingForObject: {
+        value: function (evt) {
+            var bindingModel = evt.detail.bindingModel;
+            var existingBinding = evt.detail.existingBinding;
+
+            this.dispatchEventNamed("addBinding", true, false, {
+                bindingModel: bindingModel,
+                existingBinding: existingBinding
+            });
+        }
+    },
 });

@@ -30,7 +30,13 @@
             "bindings": {
                 "targetObject": {"<-": "@bindingList.targetObject"},
                 "binding": {"<-": "@bindingList:iteration.object"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "defineBindingButton": {
@@ -40,7 +46,13 @@
             },
             "bindings": {
                 "detail.get('targetObject')": {"<-": "@owner.templateObject"}
-            }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
     }
     </script>

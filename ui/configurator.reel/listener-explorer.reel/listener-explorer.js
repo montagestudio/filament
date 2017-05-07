@@ -4,6 +4,7 @@
  */
 var Component = require("montage/ui/component").Component,
     ObjectLabelConverter = require("core/object-label-converter").ObjectLabelConverter,
+    application = require("montage/core/application").application,
     MimeTypes = require("core/mime-types");
 
 /**
@@ -82,6 +83,8 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
             if (!firstTime) {
                 return;
             }
+
+            application.addEventListener("editListenerForObject", this, false);
 
             // Allow event button to be dragged as a reference to this as an eventTarget
             var eventButton = this.templateObjects.addListenerButton.element;
@@ -201,6 +204,38 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
                 transfer.setData("text/plain", eventType);
             }
         }
-    }
+    },
 
+    handleAddListenerButtonAction: {
+        value: function (evt) {
+            var listenerModel = Object.create(null);
+            listenerModel.targetObject = evt.detail.get("targetObject");
+            listenerModel.useCapture = false;
+
+            this.dispatchEventNamed("addListenerForObject", true, false, {
+                listenerModel: listenerModel
+            });
+        }
+    },
+
+    handleEditListenerForObject: {
+        value: function (evt) {
+            var listenerModel = evt.detail.listenerModel;
+            var existingListener = evt.detail.existingListener;
+
+            this.dispatchEventNamed("addListenerForObject", true, false, {
+                listenerModel: listenerModel,
+                existingListener: existingListener
+            });
+        }
+    },
+
+    handleRemoveListenerButtonAction: {
+        value: function (evt) {
+            evt.stop();
+            var targetObject = evt.detail.get("targetObject");
+            var listener = evt.detail.get("listener");
+            this.editingDocument.removeOwnedObjectEventListener(targetObject, listener);
+        }
+    }
 });
