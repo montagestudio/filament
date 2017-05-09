@@ -287,11 +287,8 @@ exports.ComponentEditor = Editor.specialize({
 
     clearHighlighting: {
         value: function(){
-            var domExplorer = this.templateObjects.domExplorer,
-                templateExplorer = this.templateObjects.templateExplorer;
+            var templateExplorer = this.templateObjects.templateExplorer;
 
-            // de-highlight domExplorer element
-            domExplorer.highlightedElement = null;
             // de-highlight templateExplorer component
             templateExplorer.highlightedComponent = null;
         }
@@ -310,27 +307,15 @@ exports.ComponentEditor = Editor.specialize({
                 highlight = detail.highlight,
                 component = detail.component,
                 element = detail.element,
-                domExplorer = this.templateObjects.domExplorer,
                 templateExplorer = this.templateObjects.templateExplorer;
 
             this.clearHighlighting();
             if (!highlight) {return;}
 
-            // set domExplorer's highlighted element
-            if (element) {
-                domExplorer.highlightedElement = element;
-            }
             // set templateExplorer's highlighted component (hover effect)
             if (component) {
                 templateExplorer.highlightedComponent = component;
             }
-        }
-    },
-
-    handleTemplateObjectDragend: {
-        value: function (evt) {
-            var domExplorer = this.templateObjects.domExplorer;
-            domExplorer.addElementNodeHover = null;
         }
     },
 

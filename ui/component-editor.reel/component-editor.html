@@ -51,7 +51,7 @@
             "templateObjectsController": {
                 "prototype": "montage/core/range-controller",
                 "bindings": {
-                    "content": {"<-": "@owner.currentDocument.editingProxies"},
+                    "content": {"<-": "@owner.currentDocument.templateNodes.concat(@owner.currentDocument.editingProxies)"},
                     "selection": {"<->": "@owner.currentDocument.selectedObjects"}
                 }
             },
@@ -71,8 +71,11 @@
                 },
                 "bindings": {
                     "editingDocument": {"<-": "@owner.currentDocument"},
+                    "_selectedObject": {"<-": "editingDocument.selectedObjects.0"},
+                    "nodeProxy": {"<-": "_selectedObject.proxyType == 'NodeProxy' ? _selectedObject : reelProxy.properties.get('element')"},
+                    "reelProxy": {"<-": "_selectedObject.proxyType == 'ProxyObject' ? _selectedObject : nodeProxy.component"},
                     "viewController": {"<-": "@owner.viewController"},
-                    "state": {"<-": "@owner.currentDocument.selectedObjects.length > 0 ? @LOCKED_STATE : @HIDDEN_STATE"}
+                    "state": {"<-": "@LOCKED_STATE"}
                 }
             },
 
@@ -81,18 +84,6 @@
                 "properties": {
                     "element": {"#": "templateExplorer"},
                     "_blocksOwnerComponentDraw": true
-                },
-                "bindings": {
-                    "ownerObject": {"<-": "@owner.currentDocument.editingProxyMap.owner"},
-                    "templateObjectsController": {"<-": "@owner.templateObjectsController"},
-                    "editingDocument": {"<-": "@owner.currentDocument"}
-                }
-            },
-
-            "domExplorer": {
-                "prototype": "ui/dom-explorer.reel",
-                "properties": {
-                    "element": {"#": "domExplorer"}
                 },
                 "bindings": {
                     "templateObjectsController": {"<-": "@owner.templateObjectsController"},
@@ -208,10 +199,6 @@
 
         <section data-montage-id="templateExplorer" class="ComponentEditor-column palette" data-skin="light"></section>
 
-        <section data-montage-id="documentEditorExplorerColumn" class="ComponentEditor-column Column palette" data-skin="light">
-            <header class="Bar"></header>
-            <footer data-montage-id="domExplorer" class="ComponentEditor-column-row ComponentEditor-column-row--fixed"></footer>
-        </section>
         <aside data-montage-id="configurator" class="Column palette" data-skin="light"></aside>
         <aside data-arg="modalEditor" data-montage-id="modalEditorSlot" class="modalEditorSlot"></aside>
         <aside data-montage-id="library" class="palette" data-skin="dark"></aside>

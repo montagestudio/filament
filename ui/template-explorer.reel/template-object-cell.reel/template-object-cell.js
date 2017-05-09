@@ -103,18 +103,18 @@ exports.TemplateObjectCell = Component.specialize({
         value: false
     },
 
-    _templateObject: {
+    _reelProxy: {
         value: null
     },
-    templateObject: {
+    reelProxy: {
         get: function() {
-            return this._templateObject;
+            return this._reelProxy;
         },
         set: function(value) {
-            if (this._templateObject === value) {
+            if (this._reelProxy === value) {
                 return;
             }
-            this._templateObject = value;
+            this._reelProxy = value;
 
             if (value) {
                 var self = this;
@@ -123,9 +123,9 @@ exports.TemplateObjectCell = Component.specialize({
 
                 this._describeTemplateObject()
                     .spread(function (templateObject, description) {
-                        // Only accept values if the templateObject hasn't changed
+                        // Only accept values if the reelProxy hasn't changed
                         // since we went off to describe it
-                        if (templateObject === self._templateObject) {
+                        if (templateObject === self._reelProxy) {
                             var keys = Object.keys(description);
                             keys.forEach(function (key) {
                                 self[key] = description[key];
@@ -141,14 +141,14 @@ exports.TemplateObjectCell = Component.specialize({
 
     _describeTemplateObject: {
         value: function () {
-            var templateObject = this.templateObject,
+            var reelProxy = this.reelProxy,
                 description = {};
 
             // Determine if this object is provided by the project's own package
             // TODO not restrict this to components within the ui directory
-            description.isInProjectPackage = /^ui\//.test(templateObject.moduleId);
-            description.isTemplateObjectComponent = /\.reel$/.test(templateObject.moduleId);
-            return Promise.resolve([templateObject, description]);
+            description.isInProjectPackage = /^ui\//.test(reelProxy.moduleId);
+            description.isTemplateObjectComponent = /\.reel$/.test(reelProxy.moduleId);
+            return Promise.resolve([reelProxy, description]);
         }
     },
 
@@ -196,9 +196,9 @@ exports.TemplateObjectCell = Component.specialize({
                 var eventTargetData = JSON.parse(event.dataTransfer.getData(MimeTypes.MONTAGE_EVENT_TARGET));
 
                 listenerModel = Object.create(null);
-                listenerModel.targetObject = this.templateObject.editingDocument.editingProxyMap[eventTargetData.targetLabel];
+                listenerModel.targetObject = this.editingDocument.editingProxyMap[eventTargetData.targetLabel];
                 listenerModel.type = eventTargetData.eventType;
-                listenerModel.listener = this.templateObject;
+                listenerModel.listener = this.reelProxy;
 
                 this.dispatchEventNamed("addListenerForObject", true, false, {
                     listenerModel: listenerModel
@@ -214,7 +214,7 @@ exports.TemplateObjectCell = Component.specialize({
         value: function () {
             if (this.isInProjectPackage) {
                 this.dispatchEventNamed("openModuleId", true ,true, {
-                    moduleId: this.templateObject.moduleId
+                    moduleId: this.reelProxy.moduleId
                 });
             }
         }
@@ -222,12 +222,11 @@ exports.TemplateObjectCell = Component.specialize({
 
     handleMouseover: {
         value: function () {
-            var proxy = this.templateObject,
-                editingDocument,
+            var proxy = this.reelProxy,
+                editingDocument = this.editingDocument,
                 nodeProxy;
 
             if (proxy) {
-                editingDocument = proxy._editingDocument;
                 nodeProxy = editingDocument.nodeProxyForComponent(proxy);
 
                 this.dispatchEventNamed("highlightComponent", true, true, {
@@ -241,7 +240,7 @@ exports.TemplateObjectCell = Component.specialize({
 
     handleMouseout: {
         value: function () {
-            var proxy = this.templateObject;
+            var proxy = this.reelProxy;
 
             if (proxy) {
                 this.dispatchEventNamed("highlightComponent", true, true, {
@@ -254,8 +253,8 @@ exports.TemplateObjectCell = Component.specialize({
 
     handleObjectLabelAction: {
         value: function (event) {
-            var proxy = this.templateObject,
-                editingDocument = proxy._editingDocument;
+            var proxy = this.reelProxy,
+                editingDocument = this.editingDocument;
 
             event.stopPropagation();
 
@@ -267,8 +266,8 @@ exports.TemplateObjectCell = Component.specialize({
 
     handleHiddenToggleButtonAction: {
         value: function (evt) {
-            var proxy = this.templateObject,
-                editingDocument = proxy._editingDocument,
+            var proxy = this.reelProxy,
+                editingDocument = this.editingDocument,
                 hidden = !this.templateObjects.hiddenToggleButton.pressed;
 
             editingDocument.setOwnedObjectEditorMetadata(proxy, "isHidden", hidden);
@@ -277,8 +276,8 @@ exports.TemplateObjectCell = Component.specialize({
 
     handleToggle: {
         value: function (evt) {
-            var reelProxy = this.templateObject,
-                editingDocument = reelProxy._editingDocument,
+            var reelProxy = this.reelProxy,
+                editingDocument = this.editingDocument,
                 expanded = this.expanded.checked;
 
             editingDocument.templateObjectsTreeToggleStates.set(reelProxy, expanded);
@@ -300,8 +299,8 @@ exports.TemplateObjectCell = Component.specialize({
 
     deleteTemplateObject: {
         value: function () {
-            var reelProxy = this.templateObject,
-                editingDocument = reelProxy._editingDocument;
+            var reelProxy = this.reelProxy,
+                editingDocument = this.editingDocument;
 
             editingDocument.removeObject(reelProxy);
         }
@@ -309,14 +308,14 @@ exports.TemplateObjectCell = Component.specialize({
 
     handleClick: {
         value: function (evt) {
-            var reelProxy  = this.templateObject,
-                editingDocument = reelProxy._editingDocument;
+            var proxy = this.reelProxy || this.nodeProxy,
+                editingDocument = this.editingDocument;
             if (!this.canSelect(evt)) {
                 return;
             }
             // FIXME: Add support for multiple selection
             editingDocument.clearSelectedObjects();
-            editingDocument.selectObject(reelProxy);
+            editingDocument.selectObject(proxy);
         }
     }
 

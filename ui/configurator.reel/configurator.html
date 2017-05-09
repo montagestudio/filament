@@ -11,9 +11,12 @@
         {
             "owner": {
                 "properties": {
-                    "element": {
-                        "#": "configurator"
-                    }
+                    "element": {"#": "configurator"},
+                    "propertiesTab": {"@": "propertiesTab"},
+                    "bindingsTab": {"@": "bindingsTab"},
+                    "listenersTab": {"@": "listenersTab"},
+                    "methodsTab": {"@": "methodsTab"},
+                    "styleTab": {"@": "styleTab"}
                 },
                 "listeners": [
                     {
@@ -46,6 +49,9 @@
                     "element": {"#": "propertiesTab"},
                     "radioButtonController": {"@": "tabController"},
                     "value": "properties"
+                },
+                "bindings": {
+                    "enabled": {"<-": "@owner.reelProxy.defined() || @owner.nodeProxy.defined()"}
                 }
             },
 
@@ -56,7 +62,7 @@
                     "removalStrategy": "hide"
                 },
                 "bindings": {
-                    "condition": {"<-": "@owner.editingDocument.selectedObjects.0"}
+                    "condition": {"<-": "@owner.reelProxy.defined()"}
                 }
             },
 
@@ -66,7 +72,7 @@
                     "element": {"#": "inspector"}
                 },
                 "bindings": {
-                    "object": {"<-": "@owner.editingDocument.selectedObjects.0"},
+                    "object": {"<-": "@owner.reelProxy"},
                     "inspectorController": {"<-": "@owner.inspectorControllers.0"},
                     "editingDocument": {"<-": "@owner.editingDocument"}
                 }
@@ -78,6 +84,9 @@
                     "element": {"#": "bindingsTab"},
                     "radioButtonController": {"@": "tabController"},
                     "value": "bindings"
+                },
+                "bindings": {
+                    "enabled": {"<-": "@owner.reelProxy.defined()"}
                 }
             },
 
@@ -88,7 +97,7 @@
                 },
                 "bindings": {
                     "editingDocument": {"<-": "@owner.editingDocument"},
-                    "templateObject": {"<-": "@owner.editingDocument.selectedObjects.0"}
+                    "templateObject": {"<-": "@owner.reelProxy"}
                 }
             },
 
@@ -98,6 +107,9 @@
                     "element": {"#": "listenersTab"},
                     "radioButtonController": {"@": "tabController"},
                     "value": "listeners"
+                },
+                "bindings": {
+                    "enabled": {"<-": "@owner.reelProxy.defined()"}
                 }
             },
 
@@ -108,7 +120,7 @@
                 },
                 "bindings": {
                     "editingDocument": {"<-": "@owner.editingDocument"},
-                    "templateObject": {"<-": "@owner.editingDocument.selectedObjects.0"}
+                    "templateObject": {"<-": "@owner.reelProxy"}
                 }
             },
 
@@ -118,6 +130,9 @@
                     "element": {"#": "methodsTab"},
                     "radioButtonController": {"@": "tabController"},
                     "value": "methods"
+                },
+                "bindings": {
+                    "enabled": {"<-": "@owner.reelProxy.defined()"}
                 }
             },
 
@@ -127,6 +142,9 @@
                     "element": {"#": "styleTab"},
                     "radioButtonController": {"@": "tabController"},
                     "value": "style"
+                },
+                "bindings": {
+                    "enabled": {"<-": "@owner.nodeProxy.defined()"}
                 }
             }
         }

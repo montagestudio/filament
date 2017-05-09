@@ -21,30 +21,30 @@ exports.EditProperties = Component.specialize({
         }
     },
 
-    _ownerObject: {
+    _editingDocument: {
         value: null
     },
-    ownerObject: {
-        get: function() {
-            return this._ownerObject;
+    editingDocument: {
+        get: function () {
+            return this._editingDocument;
         },
-        set: function(value) {
-            if (this._ownerObject === value) {
+        set: function (value) {
+            var self = this;
+
+            if (this._editingDocument === value) {
                 return;
             }
 
-            if (this._ownerObject) {
-                this._ownerObject.editingDocument.unregisterFile("meta");
+            if (this._editingDocument) {
+                this._editingDocument.unregisterFile("meta");
             }
 
-            this._ownerObject = value;
+            this._editingDocument = value;
 
             if (value) {
-                var self = this;
+                value.registerFile("meta", this._saveMeta, this);
 
-                value.editingDocument.registerFile("meta", this._saveMeta, this);
-
-                value.editingDocument._ownerBlueprint
+                value._ownerBlueprint
                 .then(function (blueprint) {
                     self.ownerBlueprint = blueprint;
                 })
@@ -81,7 +81,7 @@ exports.EditProperties = Component.specialize({
 
     _saveMeta: {
         value: function (location, dataSource) {
-            var serializer = new Serializer().initWithRequire(this.ownerObject.editingDocument._packageRequire);
+            var serializer = new Serializer().initWithRequire(this.editingDocument._packageRequire);
             var serializedDescription = serializer.serializeObject(this.ownerBlueprint);
             return dataSource.write(location, serializedDescription);
         }
@@ -92,7 +92,7 @@ exports.EditProperties = Component.specialize({
             var target = event.target;
             var name = target.propertyBlueprint.name;
             var value = target.value;
-            this._ownerObject.editingDocument.modifyOwnerBlueprintProperty(name, "valueType", value).done();
+            this.editingDocument.modifyOwnerBlueprintProperty(name, "valueType", value).done();
         }
     },
 
@@ -101,7 +101,7 @@ exports.EditProperties = Component.specialize({
             var target = event.target;
             var name = target.propertyBlueprint.name;
             var value = target.value;
-            this._ownerObject.editingDocument.modifyOwnerBlueprintProperty(name, "collectionValueType", value).done();
+            this.editingDocument.modifyOwnerBlueprintProperty(name, "collectionValueType", value).done();
         }
     },
 
@@ -110,7 +110,7 @@ exports.EditProperties = Component.specialize({
             var target = event.target;
             var name = target.propertyBlueprint.name;
             var value = target.checked ? Infinity : 1;
-            this._ownerObject.editingDocument.modifyOwnerBlueprintProperty(name, "cardinality", value).done();
+            this.editingDocument.modifyOwnerBlueprintProperty(name, "cardinality", value).done();
         }
     },
 
@@ -131,13 +131,13 @@ exports.EditProperties = Component.specialize({
                 return;
             }
 
-            this._ownerObject.editingDocument.addOwnerBlueprintProperty(name).done();
+            this.editingDocument.addOwnerBlueprintProperty(name).done();
         }
     },
 
     handlePropertiesRemove: {
         value: function (event) {
-            this._ownerObject.editingDocument.removeOwnerBlueprintProperty(event.detail.name).done();
+            this.editingDocument.removeOwnerBlueprintProperty(event.detail.name).done();
         }
     },
 
@@ -160,13 +160,13 @@ exports.EditProperties = Component.specialize({
                 return;
             }
 
-            this._ownerObject.editingDocument.addOwnerBlueprintEvent(name).done();
+            this.editingDocument.addOwnerBlueprintEvent(name).done();
         }
     },
 
     handleEventsRemove: {
         value: function (event) {
-            this._ownerObject.editingDocument.removeOwnerBlueprintEvent(event.detail.name).done();
+            this.editingDocument.removeOwnerBlueprintEvent(event.detail.name).done();
         }
     }
 

@@ -11,10 +11,10 @@
                 },
                 "bindings": {
                     "classList.has('TemplateObjectCell--owner')": {
-                        "<-": "@owner.templateObject.label == 'owner'"
+                        "<-": "@owner.reelProxy.label == 'owner'"
                     },
                     "classList.has('selected')": {
-                        "<-": "@owner.templateObjectsController.selection.has(templateObject)"
+                        "<-": "@owner.templateObjectsController.selection.has(reelProxy)"
                     },
                     "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"}
                 }
@@ -26,7 +26,9 @@
                     "element": {"#": "header"}
                 },
                 "bindings": {
-                    "templateObject": {"<-": "@owner.templateObject"}
+                    "editingDocument": {"<-": "@owner.editingDocument"},
+                    "reelProxy": {"<-": "@owner.reelProxy"},
+                    "nodeProxy": {"<-": "@owner.nodeProxy"}
                 }
             },
 
@@ -55,7 +57,8 @@
                     "element": {"#": "editProperties"}
                 },
                 "bindings": {
-                    "ownerObject": {"<-": "@owner.templateObject"}
+                    "ownerObject": {"<-": "@owner.reelProxy"},
+                    "editingDocument": {"<-": "@owner.editingDocument"}
                 }
             },
 
@@ -76,7 +79,7 @@
                     "element": {"#": "elementField"}
                 },
                 "bindings": {
-                    "templateObject": {"<-": "@owner.templateObject"}
+                    "entity": {"<-": "@owner.reelProxy"}
                 }
             },
 

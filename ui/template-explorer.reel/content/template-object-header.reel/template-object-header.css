@@ -100,6 +100,10 @@
     opacity: .3;
 }
 
+.TemplateObjectHeader-button.matte-Button.montage-invisible {
+    display: none;
+}
+
 .TemplateObjectHeader-button.matte-Button:hover {
     background-color: hsla(0,0%,100%,0);
     opacity: .5;

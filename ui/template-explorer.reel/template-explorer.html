@@ -39,9 +39,8 @@
                 "element": {"#": "ownerObjectCell"}
             },
             "bindings": {
-                "showBindings": {"<-": "@owner.showBindings"},
-                "showListeners": {"<-": "@owner.showListeners"},
-                "templateObject": {"<-": "@owner.ownerObject"},
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "reelProxy": {"<-": "@owner.editingDocument.editingProxyMap.owner"},
                 "templateObjectsController": {"<-": "@owner.templateObjectsController"}
             }
         },
@@ -54,20 +53,6 @@
                 "pressed": {"<->": "!@owner.showHidden"}
             }
         },
-        "templateObjectCell": {
-            "prototype": "./template-object-cell.reel",
-            "properties": {
-                "element": {"#": "templateObjectCell"},
-                "_blocksOwnerComponentDraw": true
-            },
-            "bindings": {
-                "editingDocument": {"<-": "@owner.editingDocument"},
-                "templateExplorer": {"<-": "@owner"},
-                "templateObject": {"<-": "@templateObjectCell.parentComponent.iteration.content.templateObject"},
-                "isExpanded": {"<->": "@templateObjectCell.parentComponent.iteration.expanded"},
-                "isCollapsible": {"<->": "@templateObjectCell.parentComponent.iteration.children.length"}
-            }
-        },
         "templateObjectFilter": {
             "prototype": "ui/widgets/input-search.reel",
             "properties": {
@@ -75,6 +60,43 @@
             },
             "bindings": {
                 "value": {"<->": "@owner.templateObjectFilterTerm"}
+            }
+        },
+        "objectsTreeController": {
+            "prototype": "core/tree-controller",
+            "properties": {
+                "childrenPath": "children",
+                "expandedPath": "expanded",
+                "initiallyExpanded": true,
+                "content": {"children": []}
+            },
+            "bindings": {
+                "content.children": {"<-": "@owner.editingDocument.editingProxies.filter{!properties.get('element').defined()}"}
+            }
+        },
+        "objectList": {
+            "prototype": "ui/tree.reel",
+            "properties": {
+                "element": {"#": "objectList"},
+                "isSelectionEnabled": true,
+                "ignoreRoot": true
+            },
+            "bindings": {
+                "treeController": {"<-": "@objectsTreeController"}
+            }
+        },
+        "objectCell": {
+            "prototype": "./template-object-cell.reel",
+            "properties": {
+                "element": {"#": "objectCell"},
+                "_blocksOwnerComponentDraw": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "templateExplorer": {"<-": "@owner"},
+                "reelProxy": {"<-": "@objectCell.parentComponent.iteration.content"},
+                "isExpanded": {"<->": "@objectCell.parentComponent.iteration.expanded"},
+                "isCollapsible": {"<->": "@objectCell.parentComponent.iteration.children.length"}
             }
         },
         "templateTreeController": {
@@ -85,7 +107,7 @@
                 "initiallyExpanded": true
             },
             "bindings": {
-                "content": {"<-": "@owner.editingDocument.templateObjectsTree"}
+                "content": {"<-": "@owner.editingDocument.templateBodyNode.children[0]"}
             }
         },
         "templateNodeList": {
@@ -97,6 +119,21 @@
             },
             "bindings": {
                 "treeController": {"<-": "@owner.templateTreeController"}
+            }
+        },
+        "templateObjectCell": {
+            "prototype": "./template-object-cell.reel",
+            "properties": {
+                "element": {"#": "templateObjectCell"},
+                "_blocksOwnerComponentDraw": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "templateExplorer": {"<-": "@owner"},
+                "nodeProxy": {"<-": "@templateObjectCell.parentComponent.iteration.content"},
+                "reelProxy": {"<-": "nodeProxy.component"},
+                "isExpanded": {"<->": "@templateObjectCell.parentComponent.iteration.expanded"},
+                "isCollapsible": {"<->": "@templateObjectCell.parentComponent.iteration.children.length"}
             }
         }
     }
@@ -114,6 +151,9 @@
             </label>
         </header>
         <section data-montage-id="ownerObjectCell"></section>
+        <ul data-montage-id="objectList" class="TemplateExplorer-objectList">
+            <li data-montage-id="objectCell" data-arg="treeNode"></li>
+        </ul>
         <ul data-montage-id="templateNodeList" class="TemplateExplorer-list">
             <li data-montage-id="templateObjectCell" data-arg="treeNode"></li>
         </ul>

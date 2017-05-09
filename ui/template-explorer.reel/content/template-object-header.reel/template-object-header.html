@@ -18,7 +18,7 @@
                 "element": {"#": "icon"}
             },
             "bindings": {
-                "src": {"<-": "@owner.templateObject.editingDocument.editor.projectController.iconUrlForModuleId(@owner.templateObject.moduleId, @owner.templateObject.exportName)"}
+                "src": {"<-": "@owner.reelProxy.defined() ? @owner.editingDocument.editor.projectController.iconUrlForModuleId(@owner.reelProxy.moduleId, @owner.reelProxy.exportName) : '/assets/icons/tag.png'"}
             }
         },
 
@@ -28,7 +28,7 @@
                 "element": {"#": "templateObjectExportId"}
             },
             "bindings": {
-                "value": {"<-": "@owner.templateObject.exportId"}
+                "value": {"<-": "@owner.reelProxy.exportId ?? @owner.nodeProxy.tagName.toLowerCase()"}
             }
         },
 
@@ -39,7 +39,8 @@
                 "title": "Comment"
             },
             "bindings": {
-                "classList.has('TemplateObjectHeader--active')": {"<-": "@owner.isEditingComment"}
+                "classList.has('TemplateObjectHeader--active')": {"<-": "@owner.isEditingComment"},
+                "classList.has('montage-invisible')": {"<-": "!@owner.reelProxy.defined()"}
             },
             "listeners": [
                 {
@@ -56,7 +57,7 @@
                 "removalStrategy": "hide"
             },
             "bindings": {
-                "condition": {"<-": "(@owner.templateObject.editorMetadata.get('comment') || @owner.isEditingComment)"}
+                "condition": {"<-": "(@owner.reelProxy.editorMetadata.get('comment') || @owner.isEditingComment)"}
             }
         },
 
@@ -66,7 +67,7 @@
                 "element": {"#": "commentField"}
             },
             "bindings": {
-                "value": {"<-": "@owner.templateObject.editorMetadata.get('comment')"},
+                "value": {"<-": "@owner.reelProxy.editorMetadata.get('comment')"},
                 "classList.has('TemplateObjectHeader-comment--disabled')": {"<-": "!@owner.isEditingComment"}
             }
         }

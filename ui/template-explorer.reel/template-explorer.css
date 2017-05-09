@@ -147,6 +147,17 @@
     list-style: none;
 }
 
+.TemplateExplorer-objectList {
+    min-height: 0;
+    overflow: scroll;
+    margin: 0;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid hsl(0, 0%, 80%);
+    background-color: hsl(0, 0%, 86%);
+    list-style: none;
+}
+
 .TemplateExplorer-list-item {
     border: 1px solid hsl(0, 0%, 80%);
     border-radius: 6px;
@@ -225,6 +236,18 @@
     display: flex;
 }
 
+.TemplateObjectCell-objectLabel--isClassName {
+    color: #a5c261;
+}
+
+.TemplateObjectCell-objectLabel--isMontageId {
+    color: #49a6d2;
+}
+
+.TemplateObjectCell-objectLabel--isComponentLabel {
+    color: #ffbc6d;
+}
+
 .TemplateObjectCell-icon {
     width: 32px;
     height: 32px;
@@ -292,11 +315,11 @@
     min-width: 0;
     width: 32px;
     height: 32px;
-    font-size: 18px; 
+    font-size: 18px;
     font-weight: bold;
     line-height: 32px;
     text-align: center;
-    color: hsl(0, 0%, 60%); 
+    color: hsl(0, 0%, 60%);
     border-radius: 0;
     border: none;
     background-color: transparent;

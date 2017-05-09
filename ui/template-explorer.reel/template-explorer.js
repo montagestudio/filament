@@ -145,14 +145,6 @@ exports.TemplateExplorer = Component.specialize(/** @lends module:"./template-ex
         value: null
     },
 
-    showListeners: {
-        value: true
-    },
-
-    showBindings: {
-        value: true
-    },
-
     handleDragover: {
         enumerable: false,
         value: function (event) {

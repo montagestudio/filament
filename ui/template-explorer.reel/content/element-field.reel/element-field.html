@@ -10,7 +10,7 @@
                 "element": {"#": "ElementField"}
             },
             "bindings": {
-                "classList.has('ElementField--invalid')": {"<-": "!@owner.templateObject.properties.get('element').isInTemplate"},
+                "classList.has('ElementField--invalid')": {"<-": "!@owner.entity.isInTemplate"},
                 "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"}
             }
         },
@@ -21,7 +21,7 @@
                 "element": {"#": "elementTagName"}
             },
             "bindings": {
-                "value": {"<-": "@owner.templateObject.properties.get('element').tagName || 'Drop element here'"}
+                "value": {"<-": "@owner.entity.tagName || 'Drop element here'"}
             }
         },
 
@@ -31,7 +31,7 @@
                 "element": {"#": "elementId"}
             },
             "bindings": {
-                "value": {"<-": "@owner.templateObject.properties.get('element').montageId"}
+                "value": {"<-": "@owner.entity.montageId"}
             }
         },
 
@@ -41,8 +41,8 @@
                 "element": {"#": "removeElement"}
             },
             "bindings": {
-                "enabled": {"<-": "@owner.templateObject.properties.get('element')"},
-                "classList.has('montage-invisible')": {"<-": "(@owner.templateObject.label == 'owner') || !@owner.templateObject.properties.get('element')"},
+                "enabled": {"<-": "@owner.entity"},
+                "classList.has('montage-invisible')": {"<-": "(@owner.templateObject.label == 'owner') || !@owner.entity"},
                 "detail.get('templateObject')": {"<-": "@owner.templateObject"}
             }
         }

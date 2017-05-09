@@ -24,7 +24,7 @@
                         "<-": "@owner.templateExplorer.highlightedComponent == @owner.templateObject"},
 
                     "classList.has('TemplateObjectCell--excluded')": {
-                        "<-": "!@owner.templateExplorer.templateObjectsController.organizedContent.has(@owner.templateObject)"
+                        "<-": "@owner.nodeProxy && !@owner.templateExplorer.templateObjectsController.organizedContent.has(@owner.nodeProxy)"
                     },
 
                     "classList.has('TemplateObjectCell--notCollapsible')": {
@@ -32,7 +32,7 @@
                     },
 
                     "classList.has('TemplateObjectCell--selected')": {
-                        "<-": "@owner.editingDocument.selectedObjects.has(@owner.templateObject)"
+                        "<-": "@owner.reelProxy.defined() ? @owner.editingDocument.selectedObjects.has(@owner.reelProxy) : @owner.editingDocument.selectedObjects.has(@owner.nodeProxy)"
                     }
                 }
             },
@@ -43,7 +43,9 @@
                     "element": {"#": "header"}
                 },
                 "bindings": {
-                    "templateObject": {"<-": "@owner.templateObject"}
+                    "editingDocument": {"<-": "@owner.editingDocument"},
+                    "reelProxy": {"<-": "@owner.reelProxy"},
+                    "nodeProxy": {"<-": "@owner.nodeProxy"}
                 },
                 "listeners": [
                     {
@@ -60,32 +62,17 @@
                     "shouldSaveOnBlur": true
                 },
                 "bindings": {
-                    "value": {"<-": "@owner.templateObject.label"}
+                    "value": {"<-": "@owner.reelProxy.defined() ? @owner.reelProxy.label : (@owner.nodeProxy.montageId ?? @owner.nodeProxy.className ?? @owner.nodeProxy.tagName)"},
+                    "classList.has('TemplateObjectCell-objectLabel--isClassName')":
+                        {"<-": "!@owner.reelProxy && !@owner.nodeProxy.montageId && @owner.nodeProxy.className"},
+                    "classList.has('TemplateObjectCell-objectLabel--isMontageId')":
+                        {"<-": "!@owner.reelProxy && @owner.nodeProxy.montageId"},
+                    "classList.has('TemplateObjectCell-objectLabel--isComponentLabel')":
+                        {"<-": "@owner.reelProxy"}
                 },
                 "listeners": [
                     {"type": "action", "listener": {"@": "owner"}}
                 ]
-            },
-
-            "elementCondition": {
-                "prototype": "montage/ui/condition.reel",
-                "properties": {
-                    "element": {"#": "elementCondition"},
-                    "removalStrategy": "hide"
-                },
-                "bindings": {
-                    "condition": {"<-": "@owner.isTemplateObjectComponent"}
-                }
-            },
-
-            "elementField": {
-                "prototype": "../content/element-field.reel",
-                "properties": {
-                    "element": {"#": "elementField"}
-                },
-                "bindings": {
-                    "templateObject": {"<-": "@owner.templateObject"}
-                }
             },
 
             "hiddenToggleButton": {
@@ -95,7 +82,8 @@
                     "title": "Hidden"
                 },
                 "bindings": {
-                    "pressed": {"<-": "!@owner.templateObject.editorMetadata.get('isHidden')"}
+                    "classList.has('montage-invisible')": {"<-": "!@owner.reelProxy || !@owner.nodeProxy"},
+                    "pressed": {"<-": "!@owner.reelProxy.editorMetadata.get('isHidden')"}
                 },
                 "listeners": [
                     {
@@ -113,7 +101,7 @@
                 },
                 "bindings": {
                     "condition": {"<-": "@owner.isCollapsible"}
-                } 
+                }
             },
 
             "toggleExpanded": {
@@ -123,7 +111,7 @@
                 },
                 "bindings": {
                     "checked": {"<->": "@owner.isExpanded"},
-                    "label": {"<-": "@owner.templateObject.label + ' expanded'"}
+                    "label": {"<-": "@objectLabel.value + ' expanded'"}
                 }
             }
         }
@@ -144,10 +132,6 @@
                 <button data-montage-id="hiddenToggleButton" class="TemplateObjectCell-hiddenToggleButton"></button>
             </div>
         </header>
-    
-        <section data-montage-id="elementCondition" class="TemplateObjectCell-section">
-            <div data-montage-id="elementField"></div>
-        </section>
     </li>
 </div>
 

@@ -49,7 +49,9 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
     surrendersActiveTarget: {
         value: function (newTarget) {
             // Apply changes when comment area looses focus
-            this._commitComment(this.templateObjects.commentField.value);
+            if (this.reelProxy) {
+                this._commitComment(this.templateObjects.commentField.value);
+            }
             return true;
         }
     },
@@ -68,10 +70,10 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
                 referenceProxyElement = this._referenceProxyElement,
                 transfer = evt.dataTransfer;
 
-            // Dragging the templateObject reference
+            // Dragging the proxy reference
             if (target === referenceProxyElement) {
-                transfer.setData(MimeTypes.SERIALIZATION_OBJECT_LABEL, this.templateObject.label);
-                transfer.setData("text/plain", "@" + this.templateObject.label);
+                transfer.setData(MimeTypes.SERIALIZATION_OBJECT_LABEL, this.reelProxy.label);
+                transfer.setData("text/plain", "@" + this.reelProxy.label);
                 evt.dataTransfer.effectAllowed = "copyMove";
             }
         }
@@ -85,10 +87,9 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
 
     _commitComment: {
         value: function (commentValue) {
-            var proxy = this.templateObject,
-                editingDocument = proxy._editingDocument;
+            var proxy = this.reelProxy;
 
-            editingDocument.setOwnedObjectEditorMetadata(proxy, "comment", commentValue);
+            this.editingDocument.setOwnedObjectEditorMetadata(proxy, "comment", commentValue);
             this.isEditingComment = false;
         }
     },
@@ -96,7 +97,7 @@ exports.TemplateObjectHeader = Component.specialize(/** @lends TemplateObjectHea
     _discardComment: {
         value: function () {
             var commentField = this.templateObjects.commentField;
-            commentField.value = this.templateObject.getEditorMetadata('comment');
+            commentField.value = this.reelProxy.getEditorMetadata('comment');
             this.isEditingComment = false;
         }
     },
