@@ -127,6 +127,39 @@ exports.EntityProxy = Target.specialize({
         }
     },
 
+    /*
+     * @type {?String}
+     */
+    exportName: {
+        get: function () {
+            return this._reelProxy ? this._reelProxy.exportName : null;
+        }
+    },
+
+    exportId: {
+        get: function () {
+            return this._reelProxy ? this._reelProxy.exportId : null;
+        }
+    },
+
+    packageRequire: {
+        get: function () {
+            return this._reelProxy ? this._reelProxy.packageRequire : null;
+        }
+    },
+
+    tagName: {
+        get: function () {
+            return this._nodeProxy ? this._nodeProxy.tagName : null;
+        }
+    },
+
+    isInTemplate: {
+        get: function () {
+            return this._nodeProxy && this._nodeProxy.isInTemplate;
+        }
+    },
+
     /**
      * @type {?Map<String, Any>}
      */
@@ -137,6 +170,15 @@ exports.EntityProxy = Target.specialize({
     },
     _properties: {
         value: null
+    },
+
+    /**
+     * @type {?Array<Object>}
+     */
+    bindings: {
+        get: function () {
+            return this._reelProxy ? this._reelProxy.bindings : null;
+        }
     },
 
     /**
@@ -185,6 +227,77 @@ exports.EntityProxy = Target.specialize({
         value: null
     },
 
+    editorMetadata: {
+        value: null
+    },
+
+    setEditorMetadata: {
+        value: function (property, value) {
+            if (this._reelProxy) {
+                return this._reelProxy.setEditorMetadata(property, value);
+            }
+            if (("comment" === property || "isHidden" === property) && !value) {
+                this.editorMetadata.delete(property);
+            } else {
+                this.editorMetadata.set(property, value);
+            }
+        }
+    },
+
+    getEditorMetadata: {
+        value: function (property) {
+            if (this._reelProxy) {
+                return this._reelProxy.getEditorMetadata(property);
+            }
+            if (!this.editorMetadata) {
+                this.editorMetadata = new Map();
+            }
+            return this.editorMetadata.get(property);
+        }
+    },
+
+    setObjectProperty: {
+        get: function () {
+            return this._reelProxy && this._reelProxy.setObjectProperty;
+        }
+    },
+
+    getObjectProperty: {
+        value: function (property) {
+            if (this._reelProxy) {
+                return this._reelProxy.getObjectProperty(property);
+            }
+            return void 0;
+        }
+    },
+
+    deleteObjectProperty: {
+        get: function () {
+            return this._reelProxy && this._reelProxy.deleteObjectProperty;
+        }
+    },
+
+    setObjectProperties: {
+        get: function () {
+            return this._reelProxy && this._reelProxy.setObjectProperties;
+        }
+    },
+
+    setObjectProperty: {
+        get: function () {
+            return this._reelProxy && this._reelProxy.setObjectProperty;
+        }
+    },
+
+    getObjectProperties: {
+        value: function (values) {
+            if (this._reelProxy) {
+                return this._reelProxy.getObjectProperties(values);
+            }
+            return {};
+        }
+    },
+
     /**
      * @function
      * @param proxy {(NodeProxy|ReelProxy)} The nodeProxy or reelProxy that
@@ -212,7 +325,7 @@ exports.EntityProxy = Target.specialize({
             if (this.hasComponent) {
                 this._properties = new Map;
                 this._reelProxy.properties.forEach(function (value, key) {
-                    self._properties.set(key, {value: value, source: "serialization"});
+                    self._properties.set(key, value);
                 });
             }
             if (isOwner) {
@@ -221,7 +334,7 @@ exports.EntityProxy = Target.specialize({
                     .then(function (properties) {
                         for (var key in properties) {
                             if (properties.hasOwnProperty(key)) {
-                                self._properties.set(key, {value: properties[key], source: "javascript"});
+                                self._properties.set(key, properties[key]);
                             }
                         }
                     });
