@@ -435,11 +435,11 @@ exports.ComponentEditor = Editor.specialize({
                 location: "https://localhost/",
                 async: function() {
                     return Promise.resolve({
-                        PropertyBlueprint: {},
-                        EventBlueprint: {},
+                        PropertyDescriptor: {},
+                        EventDescriptor: {},
                         ModuleId: Promise.resolve({
                             blueprint: {
-                                addPropertyBlueprintGroupNamed: function(){}
+                                addPropertyDescriptorGroupNamed: function(){}
                             }
                         })
                     });
