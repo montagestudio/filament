@@ -4,10 +4,14 @@ var modifyModule = require("filament/core/modify-module");
 var process = require("process");
 var cwd = process.cwd(); // filament root
 
+function readFile(fileName) {
+    return fs.readFileSync(path.join(cwd, "test", "spec", "modify-module", fileName + ".js"), "utf-8");
+}
+
 function test(methodName, inputName, outputName) {
-    var input = fs.readFileSync(path.join(cwd, "test", "spec", "modify-module", inputName + ".js"), "utf-8");
+    var input = readFile(inputName);
     var output = modifyModule[methodName](input, "Input", "handleActionEvent", "event");
-    var oracle = fs.readFileSync(path.join(cwd, "test", "spec", "modify-module", outputName + ".js"), "utf-8");
+    var oracle = readFile(outputName);
     expect(output).toBe(oracle);
 }
 
@@ -57,6 +61,36 @@ describe("modify-module", function () {
 
         it("idempotence", function () {
             test("removeMethod", "other-method", "other-method");
+        });
+    });
+
+    describe("getProperties", function () {
+        it("returns an empty object when given an invalid file", function () {
+            var input = readFile("invalid-syntax");
+            var properties = modifyModule.getProperties(input, "Input");
+            expect(properties).toEqual({});
+        });
+
+        it("returns an object with correct property mappings", function () {
+            var input = readFile("2-properties");
+            var properties = modifyModule.getProperties(input, "Input");
+            expect(properties["firstProperty"]).toBe(23);
+            expect(properties["secondProperty"]).toEqual("bar");
+        });
+    });
+
+    describe("getFunctions", function () {
+        it("returns an empty object when given an invalid file", function () {
+            var input = readFile("invalid-syntax");
+            var functions = modifyModule.getFunctions(input, "Input");
+            expect(functions).toEqual({});
+        });
+
+        it("returns an object entries for each function", function () {
+            var input = readFile("2-other-methods");
+            var functions = modifyModule.getFunctions(input, "Input");
+            expect("someMethod" in functions).toBe(true);
+            expect("otherMethod" in functions).toBe(true);
         });
     });
 });
