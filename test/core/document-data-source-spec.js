@@ -1,6 +1,6 @@
-var DocumentDataSource = require("core/document-data-source").DocumentDataSource,
+var DocumentDataSource = require("filament/core/document-data-source").DocumentDataSource,
     Promise = require("montage/core/promise").Promise,
-    environmentBridgeMock = require("test/mocks/environment-bridge-mocks").environmentBridgeMock;
+    environmentBridgeMock = require("mocks/environment-bridge-mocks").environmentBridgeMock;
 
 function DataModifier(file) {
     var data = file.content;

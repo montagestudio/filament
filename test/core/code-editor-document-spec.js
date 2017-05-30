@@ -1,5 +1,5 @@
 var Promise = require("montage/core/promise").Promise,
-    documentDataSourceMock = require("test/mocks/document-data-source-mocks").documentDataSourceMock,
+    documentDataSourceMock = require("mocks/document-data-source-mocks").documentDataSourceMock,
     WAITSFOR_TIMEOUT = 2500;
 
 describe("extensions/code-editor.filament-extension/core/code-editor-document-spec", function () {

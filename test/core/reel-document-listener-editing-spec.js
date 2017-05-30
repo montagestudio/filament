@@ -1,5 +1,5 @@
 var Template = require("montage/core/template").Template,
-    mockReelDocument = require("test/mocks/reel-document-mocks").mockReelDocument,
+    mockReelDocument = require("mocks/reel-document-mocks").mockReelDocument,
     WAITSFOR_TIMEOUT = 2500;
 
 describe("core/reel-document-listener-editing-spec", function () {

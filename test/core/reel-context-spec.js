@@ -1,6 +1,6 @@
-var ReelReviver = require("core/serialization/reel-reviver").ReelReviver,
-    ReelContext = require("core/serialization/reel-context").ReelContext,
-    mockReelDocument = require("test/mocks/reel-document-mocks").mockReelDocument,
+var ReelReviver = require("filament/core/serialization/reel-reviver").ReelReviver,
+    ReelContext = require("filament/core/serialization/reel-context").ReelContext,
+    mockReelDocument = require("mocks/reel-document-mocks").mockReelDocument,
     WAITSFOR_TIMEOUT = 2500;
 
 var getContextFor = function (ownerExportId, serialization, markup) {

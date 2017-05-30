@@ -1,13 +1,13 @@
 var Montage = require("montage").Montage,
-    environmentBridgeMock = require("test/mocks/environment-bridge-mocks").environmentBridgeMock,
-    menuMock = require("test/mocks/menu-mocks").menuMock,
-    editorMock = require("test/mocks/editor-mocks").editorMock,
-    editorControllerMock = require("test/mocks/editor-controller-mocks").editorControllerMock,
-    applicationDelegateMock = require("test/mocks/application-delegate-mocks").applicationDelegateMock,
-    ViewController = require("core/view-controller").ViewController,
-    ProjectController = require("core/project-controller").ProjectController,
+    environmentBridgeMock = require("mocks/environment-bridge-mocks").environmentBridgeMock,
+    menuMock = require("mocks/menu-mocks").menuMock,
+    editorMock = require("mocks/editor-mocks").editorMock,
+    editorControllerMock = require("mocks/editor-controller-mocks").editorControllerMock,
+    applicationDelegateMock = require("mocks/application-delegate-mocks").applicationDelegateMock,
+    ViewController = require("filament/core/view-controller").ViewController,
+    ProjectController = require("filament/core/project-controller").ProjectController,
     Promise = require("montage/core/promise").Promise,
-    FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
+    FileDescriptor = require("filament/adaptor/client/core/file-descriptor").FileDescriptor,
     WAITSFOR_TIMEOUT = 2500;
 
 describe("core/project-controller-filesystem-spec", function () {

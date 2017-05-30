@@ -1,10 +1,10 @@
 /*global describe,beforeEach,it,expect,waitsFor,runs*/
 
-var environmentBridgeMock = require("test/mocks/environment-bridge-mocks").environmentBridgeMock,
-    FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
-    AssetsManager = require("core/assets-management/assets-manager").AssetsManager,
-    AssetTools = require("core/assets-management/asset-tools").AssetTools,
-    ReelDocument = require("core/reel-document").ReelDocument,
+var environmentBridgeMock = require("mocks/environment-bridge-mocks").environmentBridgeMock,
+    FileDescriptor = require("filament/adaptor/client/core/file-descriptor").FileDescriptor,
+    AssetsManager = require("filament/core/assets-management/assets-manager").AssetsManager,
+    AssetTools = require("filament/core/assets-management/asset-tools").AssetTools,
+    ReelDocument = require("filament/core/reel-document").ReelDocument,
     AssetCategories = new AssetsManager().assetCategories,
     Promise = require("montage/core/promise").Promise;
 
@@ -184,7 +184,7 @@ describe("asset-manager-spec", function () {
             expect(assetsManager.assets.IMAGE.length).toEqual(2);
         });
 
-        it("should be able to add an asset when a file has been added to the project", function () {
+        it("should be able to add an asset when a file has been added to the project", function (done) {
             var event = {
                 detail: {
                     change: "create",
@@ -197,20 +197,15 @@ describe("asset-manager-spec", function () {
             },
                 oldCount = assetsManager.assetsCount;
 
-            runs(function() {
-                assetsManager.handleFileSystemChange(event);
-            });
+            assetsManager.handleFileSystemChange(event);
 
-            waitsFor(function() {
-                return assetsManager.assetsCount > oldCount;
-            }, "the asset should has been added", 250);
-
-            runs(function() {
+            Promise.delay(250).then(function () {
+                expect(assetsManager.assetsCount).toBeGreaterThan(oldCount);
                 expect(assetsManager.assetsCount).toEqual(9);
                 expect(assetsManager.assets.IMAGE.length).toEqual(3);
                 expect(assetsManager.assets.IMAGE[2].name).toEqual("chocolate");
+                done();
             });
-
         });
 
         it("should be able to find an asset with a fileUrl or a index node", function () {
@@ -242,7 +237,7 @@ describe("asset-manager-spec", function () {
             expect(asset.exist).toEqual(false);
         });
 
-        it("should be able to 'revive' an Asset Object when it's file is back within a project", function () {
+        it("should be able to 'revive' an Asset Object when it's file is back within a project", function (done) {
             var event = {
                 detail: {
                     change: "delete",
@@ -256,8 +251,7 @@ describe("asset-manager-spec", function () {
 
             assetsManager.handleFileSystemChange(event);
 
-            var asset = assetsManager.getAssetByFileUrl("http://a/b/c/winter.jpg"),
-                flag = false;
+            var asset = assetsManager.getAssetByFileUrl("http://a/b/c/winter.jpg");
 
             expect(assetsManager.assetsCount).toEqual(8);
             expect(asset.exist).toEqual(false);
@@ -273,25 +267,15 @@ describe("asset-manager-spec", function () {
                 }
             };
 
-            runs(function() {
-                assetsManager.handleFileSystemChange(backEvent);
+            assetsManager.handleFileSystemChange(backEvent);
 
-                setTimeout(function() {
-                    flag = true;
-                }, 200);
+            Promise.delay(400).then(function () {
+                expect(asset.exist).toBe(true);
+                done();
             });
-
-            waitsFor(function() {
-                return asset.exist === true;
-            }, "the asset should has been added", 400);
-
-            runs(function() {
-                expect(asset.exist).toEqual(true);
-            });
-
         });
 
-        it("should be able to update an asset when a file has been modified", function () {
+        it("should be able to update an asset when a file has been modified", function (done) {
             var asset = assetsManager.getAssetByFileUrl("http://a/b/c/winter.jpg"),
                 event = {
                     detail: {
@@ -304,25 +288,15 @@ describe("asset-manager-spec", function () {
                     }
                 },
 
-                inode = asset.inode,
-                flag = false;
+                inode = asset.inode;
 
-            runs(function() {
-                assetsManager.handleFileSystemChange(event);
+            assetsManager.handleFileSystemChange(event);
 
-                setTimeout(function () { // Wait for the modification be applied.
-                    flag = true;
-                }, 150);
-            });
-
-            waitsFor(function() {
-                return flag;
-            }, "the asset should has been modified", 250);
-
-            runs(function() {
+            Promise.delay(150).then(function () {
                 expect(assetsManager.assetsCount).toEqual(8);
                 var assetModified = assetsManager.getAssetByFileUrl("http://a/b/c/winter.jpg");
                 expect(assetModified.inode).not.toEqual(inode);
+                done();
             });
         });
 

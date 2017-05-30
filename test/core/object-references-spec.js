@@ -1,4 +1,4 @@
-var ObjectReferences = require("core/object-references").ObjectReferences;
+var ObjectReferences = require("filament/core/object-references").ObjectReferences;
 
 describe("core/object-references-spec", function () {
     var references, one, two, property;

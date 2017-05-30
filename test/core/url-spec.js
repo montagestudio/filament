@@ -1,4 +1,4 @@
-var Url = require("core/url");
+var Url = require("filament/core/url");
 
 describe("core/url-spec", function () {
 

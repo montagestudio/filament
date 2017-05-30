@@ -1,6 +1,4 @@
-
-var TreeController = require("core/tree-controller").TreeController;
-
+var TreeController = require("filament/core/tree-controller").TreeController;
 
 Error.stackTraceLimit = Infinity;
 
@@ -261,39 +259,41 @@ describe("core/tree-controller-spec", function () {
         });
 
         // 4 + 2 * 2 -> pre= +4*22; post= 422+*
-        describe("walk tree", function(){
-            var ast = {
-                value: "+",
-                children: [{
-                    value: "4",
-                    children: []
-                },
-                {
-                    value: "*",
+        describe("walk tree", function () {
+            it("", function () {
+                var ast = {
+                    value: "+",
                     children: [{
-                        value: "2",
+                        value: "4",
                         children: []
                     },
                         {
-                            value: "2",
-                            children: []
-                        },
-                    ]
-                    }]
+                            value: "*",
+                            children: [{
+                                value: "2",
+                                children: []
+                            },
+                                {
+                                    value: "2",
+                                    children: []
+                                },
+                            ]
+                        }]
                 };
-            treeController = new TreeController();
-            treeController.content = ast;
-            var res = "";
-            treeController.preOrderWalk(function(node){
-                res +=  node.content.value;
-            });
-            expect(res).toBe("+4*22");
+                treeController = new TreeController();
+                treeController.content = ast;
+                var res = "";
+                treeController.preOrderWalk(function (node) {
+                    res += node.content.value;
+                });
+                expect(res).toBe("+4*22");
 
-            res = "";
-            treeController.postOrderWalk(function(node){
-                res +=  node.content.value;
+                res = "";
+                treeController.postOrderWalk(function (node) {
+                    res += node.content.value;
+                });
+                expect(res).toBe("422*+");
             });
-            expect(res).toBe("422*+");
         });
 
     });

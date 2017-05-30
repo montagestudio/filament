@@ -1,5 +1,5 @@
 var Montage = require("montage").Montage,
-    ReelDocument = require("core/reel-document").ReelDocument,
+    ReelDocument = require("filament/core/reel-document").ReelDocument,
     documentDataSourceMock = require("./document-data-source-mocks").documentDataSourceMock,
     Promise = require("montage/core/promise").Promise;
 

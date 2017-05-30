@@ -1,14 +1,14 @@
 /*global global */
-var rollbarMock = require("test/mocks/rollbar-mocks").rollbarMock;
+var rollbarMock = require("mocks/rollbar-mocks").rollbarMock;
 
 global.Rollbar = rollbarMock();
 
-var environmentBridgeMock = require("test/mocks/environment-bridge-mocks").environmentBridgeMock,
-    editorControllerMock = require("test/mocks/editor-controller-mocks").editorControllerMock,
-    extensionControllerMock = require("test/mocks/extension-controller-mocks").extensionControllerMock,
-    applicationDelegateMock = require("test/mocks/application-delegate-mocks").applicationDelegateMock,
-    ViewController = require("core/view-controller").ViewController,
-    ProjectController = require("core/project-controller").ProjectController,
+var environmentBridgeMock = require("mocks/environment-bridge-mocks").environmentBridgeMock,
+    editorControllerMock = require("mocks/editor-controller-mocks").editorControllerMock,
+    extensionControllerMock = require("mocks/extension-controller-mocks").extensionControllerMock,
+    applicationDelegateMock = require("mocks/application-delegate-mocks").applicationDelegateMock,
+    ViewController = require("filament/core/view-controller").ViewController,
+    ProjectController = require("filament/core/project-controller").ProjectController,
     Promise = require("montage/core/promise").Promise;
 
 describe("core/project-controller-extensions-spec", function () {
@@ -44,7 +44,7 @@ describe("core/project-controller-extensions-spec", function () {
     });
 
     it("loads extensions in the package", function () {
-        spyOn(extensionController, "loadExtension").andCallThrough();
+        spyOn(extensionController, "loadExtension").and.callThrough();
 
         return projectController.loadProject("projectUrl").then(function () {
             expect(extensionController.loadExtension).toHaveBeenCalled();

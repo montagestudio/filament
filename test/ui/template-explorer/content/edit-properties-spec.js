@@ -1,4 +1,4 @@
-/*global require,describe,it,expect,runs,waits */
+/*global require,describe,it,expect */
 var TestPageLoader = require("montage-testing/testpageloader").TestPageLoader;
 var Blueprint = require("montage/core/meta/blueprint").Blueprint;
 var PropertyDescriptor = require("montage/core/meta/property-descriptor").PropertyDescriptor;
@@ -39,7 +39,7 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
         describe("properties", function () {
 
             var a, b, defaultGroup;
-            beforeEach(function () {
+            beforeEach(function (done) {
                 a = new PropertyDescriptor().initWithNameObjectDescriptorAndCardinality("a", blueprint, 1);
                 b = new PropertyDescriptor().initWithNameObjectDescriptorAndCardinality("b", blueprint, 1);
                 blueprint.addPropertyDescriptor(a);
@@ -48,12 +48,12 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                 defaultGroup = blueprint.addPropertyDescriptorGroupNamed("Mock");
                 defaultGroup.push(a, b);
 
-                waits(50); // wait for a draw that may or may not happen
+                Promise.delay(50).then(done); // wait for a draw that may or may not happen
             });
 
             describe("add property button", function () {
                 it("does nothing if no name given", function () {
-                    spyOn(editingDocument, "addOwnerBlueprintProperty").andCallThrough();
+                    spyOn(editingDocument, "addOwnerBlueprintProperty").and.callThrough();
 
                     var event = new CustomEvent("add", {bubbles: true, cancelable: true, detail: ""});
                     editor.templateObjects.properties.dispatchEvent(event);
@@ -63,14 +63,12 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                 });
 
                 it("calls addOwnerBlueprintProperty to add the property", function () {
-                    spyOn(editingDocument, "addOwnerBlueprintProperty").andCallThrough();
+                    spyOn(editingDocument, "addOwnerBlueprintProperty").and.callThrough();
 
                     var event = new CustomEvent("add", {bubbles: true, cancelable: true, detail: "pass"});
                     editor.templateObjects.properties.dispatchEvent(event);
 
-                    expect(editingDocument.addOwnerBlueprintProperty).toHaveBeenCalled();
-                    var args = editingDocument.addOwnerBlueprintProperty.mostRecentCall.args;
-                    expect(args[0]).toBe("pass");
+                    expect(editingDocument.addOwnerBlueprintProperty).toHaveBeenCalledWith("pass");
                     expect(event.defaultPrevented).toBe(false);
                 });
 
@@ -82,7 +80,7 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                 // });
 
                 it("cannot be named the same as an existing blueprint", function () {
-                    spyOn(editingDocument, "addOwnerBlueprintProperty").andCallThrough();
+                    spyOn(editingDocument, "addOwnerBlueprintProperty").and.callThrough();
 
                     var event = new CustomEvent("add", {bubbles: true, cancelable: true, detail: "a"});
                     editor.templateObjects.properties.dispatchEvent(event);
@@ -94,89 +92,78 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
 
             describe("remove button", function () {
                 it("removes the property", function () {
-                    spyOn(editingDocument, "removeOwnerBlueprintProperty").andCallThrough();
+                    spyOn(editingDocument, "removeOwnerBlueprintProperty").and.callThrough();
 
                     var event = new CustomEvent("remove", {bubbles: true, cancelable: true, detail: a});
                     editor.templateObjects.properties.dispatchEvent(event);
 
-                    expect(editingDocument.removeOwnerBlueprintProperty).toHaveBeenCalled();
-                    var args = editingDocument.removeOwnerBlueprintProperty.mostRecentCall.args;
-                    expect(args[0]).toBe("a");
+                    expect(editingDocument.removeOwnerBlueprintProperty).toHaveBeenCalledWith("a");
                 });
             });
 
             describe("valueType select", function () {
-                it("changes to valueType of the property", function () {
-                    spyOn(editingDocument, "modifyOwnerBlueprintProperty").andCallThrough();
+                it("changes to valueType of the property", function (done) {
+                    spyOn(editingDocument, "modifyOwnerBlueprintProperty").and.callThrough();
 
-                    runs(function () {
-                        var aSelect;
+                    var aSelect;
 
-                        expect(defaultGroup[0].valueType).toBe("string");
+                    expect(defaultGroup[0].valueType).toBe("string");
 
-                        // simulate select
-                        aSelect = editor.templateObjects.valueType.filter(function (valueType) {
-                            return valueType.propertyBlueprint && valueType.propertyBlueprint.name === "a";
-                        })[0];
-                        aSelect.element.value = "number";
-                        aSelect.handleChange();
+                    // simulate select
+                    aSelect = editor.templateObjects.valueType.filter(function (valueType) {
+                        return valueType.propertyBlueprint && valueType.propertyBlueprint.name === "a";
+                    })[0];
+                    aSelect.element.value = "number";
+                    aSelect.handleChange();
 
-                        expect(editingDocument.modifyOwnerBlueprintProperty).toHaveBeenCalled();
-                        var args = editingDocument.modifyOwnerBlueprintProperty.mostRecentCall.args;
-                        expect(args[0]).toBe("a");
-                        expect(args[1]).toBe("valueType");
-                        expect(args[2]).toBe("number");
-                    });
+                    expect(editingDocument.modifyOwnerBlueprintProperty)
+                        .toHaveBeenCalledWith("a", "valueType", "number");
+                    done();
                 });
 
-                it("calls modifyOwnerBlueprintProperty before the change is made", function () {
+                it("calls modifyOwnerBlueprintProperty before the change is made", function (done) {
                     spyOn(editingDocument, "modifyOwnerBlueprintProperty")
-                    .andCallFake(function (name, property, value) {
+                    .and.callFake(function (name, property, value) {
                         var propertyBlueprint = blueprint.propertyDescriptorForName(name);
                         expect(propertyBlueprint[property]).toBe("string");
                         expect(value).toBe("number");
                         return Promise.resolve();
                     });
 
-                    runs(function () {
-                        var aSelect;
+                    var aSelect;
 
-                        expect(defaultGroup[0].valueType).toBe("string");
+                    expect(defaultGroup[0].valueType).toBe("string");
 
-                        // simulate select
-                        aSelect = editor.templateObjects.valueType.filter(function (valueType) {
-                            return valueType.propertyBlueprint && valueType.propertyBlueprint.name === "a";
-                        })[0];
-                        aSelect.element.value = "number";
-                        aSelect.handleChange();
+                    // simulate select
+                    aSelect = editor.templateObjects.valueType.filter(function (valueType) {
+                        return valueType.propertyBlueprint && valueType.propertyBlueprint.name === "a";
+                    })[0];
+                    aSelect.element.value = "number";
+                    aSelect.handleChange();
 
-                        expect(editingDocument.modifyOwnerBlueprintProperty).toHaveBeenCalled();
-                    });
+                    expect(editingDocument.modifyOwnerBlueprintProperty).toHaveBeenCalled();
+                    done();
                 });
             });
 
             describe("multi checkbox", function () {
-                it("changes cardinality of the property", function () {
-                    spyOn(editingDocument, "modifyOwnerBlueprintProperty").andCallThrough();
+                it("changes cardinality of the property", function (done) {
+                    spyOn(editingDocument, "modifyOwnerBlueprintProperty").and.callThrough();
 
-                    runs(function () {
-                        var aCheckbox;
+                    var aCheckbox;
 
-                        expect(defaultGroup[0].cardinality).toBe(1);
+                    expect(defaultGroup[0].cardinality).toBe(1);
 
-                        // simulate select
-                        aCheckbox = editor.templateObjects.multiple.filter(function (valueType) {
-                            return valueType.propertyBlueprint && valueType.propertyBlueprint.name === "a";
-                        })[0];
-                        aCheckbox.element.checked = true;
-                        aCheckbox.handleChange();
+                    // simulate select
+                    aCheckbox = editor.templateObjects.multiple.filter(function (valueType) {
+                        return valueType.propertyBlueprint && valueType.propertyBlueprint.name === "a";
+                    })[0];
+                    aCheckbox.element.checked = true;
+                    aCheckbox.handleChange();
 
-                        expect(editingDocument.modifyOwnerBlueprintProperty).toHaveBeenCalled();
-                        var args = editingDocument.modifyOwnerBlueprintProperty.mostRecentCall.args;
-                        expect(args[0]).toBe("a");
-                        expect(args[1]).toBe("cardinality");
-                        expect(args[2]).toBe(Infinity);
-                    });
+                    expect(editingDocument.modifyOwnerBlueprintProperty)
+                        .toHaveBeenCalledWith("a", "cardinality", Infinity);
+                    done();
                 });
             });
 
@@ -184,18 +171,18 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
 
         describe("events", function () {
             var a, b;
-            beforeEach(function () {
+            beforeEach(function (done) {
                 a = new EventDescriptor().initWithNameAndObjectDescriptor("a", blueprint);
                 b = new EventDescriptor().initWithNameAndObjectDescriptor("b", blueprint);
                 blueprint.addEventDescriptor(a);
                 blueprint.addEventDescriptor(b);
 
-                waits(50); // wait for a draw that may or may not happen
+                Promise.delay(50).then(done); // wait for a draw that may or may not happen
             });
 
             describe("add event button", function () {
                 it("does nothing if no name given", function () {
-                    spyOn(editingDocument, "addOwnerBlueprintEvent").andCallThrough();
+                    spyOn(editingDocument, "addOwnerBlueprintEvent").and.callThrough();
 
                     var event = new CustomEvent("add", {bubbles: true, cancelable: true, detail: ""});
                     editor.templateObjects.events.dispatchEvent(event);
@@ -205,14 +192,12 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                 });
 
                 it("calls addOwnerBlueprintEvent to add the event", function () {
-                    spyOn(editingDocument, "addOwnerBlueprintEvent").andCallThrough();
+                    spyOn(editingDocument, "addOwnerBlueprintEvent").and.callThrough();
 
                     var event = new CustomEvent("add", {bubbles: true, cancelable: true, detail: "pass"});
                     editor.templateObjects.events.dispatchEvent(event);
 
-                    expect(editingDocument.addOwnerBlueprintEvent).toHaveBeenCalled();
-                    var args = editingDocument.addOwnerBlueprintEvent.mostRecentCall.args;
-                    expect(args[0]).toBe("pass");
+                    expect(editingDocument.addOwnerBlueprintEvent).toHaveBeenCalledWith("pass");
                     expect(event.defaultPrevented).toBe(false);
                 });
 
@@ -224,7 +209,7 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
                 // });
 
                 it("cannot be named the same as an existing blueprint", function () {
-                    spyOn(editingDocument, "addOwnerBlueprintEvent").andCallThrough();
+                    spyOn(editingDocument, "addOwnerBlueprintEvent").and.callThrough();
 
                     var event = new CustomEvent("add", {bubbles: true, cancelable: true, detail: "a"});
                     editor.templateObjects.events.dispatchEvent(event);
@@ -236,14 +221,12 @@ TestPageLoader.queueTest("edit-properties-test", function(testPage) {
 
             describe("remove button", function () {
                 it("removes the event", function () {
-                    spyOn(editingDocument, "removeOwnerBlueprintEvent").andCallThrough();
+                    spyOn(editingDocument, "removeOwnerBlueprintEvent").and.callThrough();
 
                     var event = new CustomEvent("remove", {bubbles: true, cancelable: true, detail: a});
                     editor.templateObjects.events.dispatchEvent(event);
 
-                    expect(editingDocument.removeOwnerBlueprintEvent).toHaveBeenCalled();
-                    var args = editingDocument.removeOwnerBlueprintEvent.mostRecentCall.args;
-                    expect(args[0]).toBe("a");
+                    expect(editingDocument.removeOwnerBlueprintEvent).toHaveBeenCalledWith("a");
                 });
             });
 

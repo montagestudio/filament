@@ -1,6 +1,6 @@
 var Promise = require("montage/core/promise").Promise,
-    ReelDocument = require("core/reel-document").ReelDocument,
-    documentDataSourceMock = require("test/mocks/document-data-source-mocks").documentDataSourceMock,
+    ReelDocument = require("filament/core/reel-document").ReelDocument,
+    documentDataSourceMock = require("mocks/document-data-source-mocks").documentDataSourceMock,
     WAITSFOR_TIMEOUT = 2500;
 
 describe("core/reel-document-spec", function () {
@@ -21,7 +21,7 @@ describe("core/reel-document-spec", function () {
     describe("loading a data model given a locationId", function () {
 
         beforeEach(function () {
-            reelDocumentPromise = new ReelDocument().init(require.location + "test/mocks/ui/simple.reel/", dataSource, require).load();
+            reelDocumentPromise = new ReelDocument().init(require.location + "mocks/ui/simple.reel/", dataSource, require).load();
         });
 
         it("should return a promise for the populated document", function () {
@@ -41,7 +41,7 @@ describe("core/reel-document-spec", function () {
 
     describe("loading a template with image references", function () {
         beforeEach(function () {
-            reelDocumentPromise = new ReelDocument().init(require.location + "test/mocks/ui/images.reel/", dataSource, require).load();
+            reelDocumentPromise = new ReelDocument().init(require.location + "mocks/ui/images.reel/", dataSource, require).load();
         });
 
         it("should return a promise for the populated document", function () {
@@ -109,7 +109,7 @@ describe("core/reel-document-spec", function () {
                 }
             });
 
-            reelDocumentPromise = new ReelDocument().init(require.location + "test/mocks/ui/simple.reel/", dataSource, require).load();
+            reelDocumentPromise = new ReelDocument().init(require.location + "mocks/ui/simple.reel/", dataSource, require).load();
         });
 
         it("should have a proxy object for each serialization label", function () {

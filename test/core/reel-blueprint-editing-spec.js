@@ -3,7 +3,7 @@ var ObjectDescriptor = require("montage/core/meta/object-descriptor").ObjectDesc
 var PropertyDescriptor = require("montage/core/meta/property-descriptor").PropertyDescriptor;
 var EventDescriptor = require("montage/core/meta/event-descriptor").EventDescriptor;
 var Template = require("montage/core/template").Template;
-var mockReelDocument = require("test/mocks/reel-document-mocks").mockReelDocument;
+var mockReelDocument = require("mocks/reel-document-mocks").mockReelDocument;
 
 
 describe("core/reel-blueprint-editing-spec", function () {

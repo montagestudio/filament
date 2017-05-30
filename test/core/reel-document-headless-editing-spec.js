@@ -1,6 +1,6 @@
 var Template = require("montage/core/template").Template,
     Promise = require("montage/core/promise").Promise,
-    mockReelDocument = require("test/mocks/reel-document-mocks").mockReelDocument,
+    mockReelDocument = require("mocks/reel-document-mocks").mockReelDocument,
     WAITSFOR_TIMEOUT = 2500;
 
 var templateWithSerializationAndBodyContent = function (serializationObject, htmlString) {
