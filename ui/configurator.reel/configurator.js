@@ -5,9 +5,6 @@ exports.Configurator = Panel.specialize({
     constructor: {
         value: function Configurator() {
             this.super();
-            //TODO handle multiple selection better
-            this.addPathChangeListener("reelProxy", this);
-            this.addPathChangeListener("nodeProxy", this);
         }
     },
 

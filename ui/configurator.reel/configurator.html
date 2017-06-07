@@ -66,10 +66,10 @@
                 }
             },
 
-            "inspector": {
-                "prototype": "palette/ui/inspector/inspector.reel",
+            "propertyInspector": {
+                "prototype": "./property-explorer.reel",
                 "properties": {
-                    "element": {"#": "inspector"}
+                    "element": {"#": "propertyInspector"}
                 },
                 "bindings": {
                     "object": {"<-": "@owner.reelProxy"},
@@ -162,7 +162,7 @@
         </nav>
         <div data-montage-id="content" class="Configurator-content">
             <div data-arg="properties" data-montage-id="inspector-condition" class="Configurator-inspectorCondition">
-                <div data-montage-id="inspector"></div>
+                <div data-montage-id="propertyInspector"></div>
             </div>
             <div data-arg="bindings" data-montage-id="bindingInspector"></div>
             <div data-arg="listeners" data-montage-id="listenerExplorer"></div>

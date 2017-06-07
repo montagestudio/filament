@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="property-explorer.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {
+                    "#": "inspector"
+                },
+                "_labelField": {"@": "labelField"}
+            },
+            "listeners": [
+                {
+                    "type": "propertyInspectorChange",
+                    "listener": {
+                        "@": "owner"
+                    }
+                }
+            ]
+        },
+
+        "labelField": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {
+                    "#": "title"
+                }
+            },
+            "bindings": {
+                "value": {
+                    "<-": "@owner.object.label"
+                }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {
+                        "@": "owner"
+                    }
+                }
+            ]
+        },
+
+        "editorCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {
+                    "#": "editor-condition"
+                },
+                "removalStrategy": "hide"
+            },
+            "bindings": {
+                "condition": {
+                    "<-": "@owner.inspectorController.hasEditor"
+                }
+            }
+        },
+
+        "modalEditorButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {
+                    "#": "editor-button"
+                }
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {
+                        "@": "owner"
+                    }
+                }
+            ]
+        },
+
+        "propertyGroups": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "propertyGroups"}
+            },
+            "bindings": {
+                "contentController": {"<-": "@owner.propertyGroupsController"}
+            }
+        },
+
+        "propertyGroup": {
+            "prototype": "palette/ui/inspector/blueprint/property-group-editor.reel",
+            "properties": {
+                "element": {"#": "propertyGroup"}
+            },
+            "bindings": {
+                "editingDocument": {
+                    "<-": "@owner.editingDocument"
+                },
+                "object": {"<-": "@owner.object"},
+                "name": {"<-": "@propertyGroups:iteration.object.name"},
+                "properties": {"<-": "@propertyGroups:iteration.object.properties"},
+                "open": {"<-": "@propertyGroups:iteration.object.open"}
+            }
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <section data-montage-id="inspector" class="Inspector">
+
+        <header class="Inspector-header Bar">
+            <input data-montage-id="title" class="Inspector-header-title" type="text" value="Inspector title">
+            <div data-montage-id="editor-condition">
+                <button data-montage-id="editor-button" class="Button Inspector-header-button" data-icon="&#59204;"></button>
+            </div>
+        </header>
+
+        <div data-montage-id="propertyGroups">
+            <div data-montage-id="propertyGroup"></div>
+        </div>
+    </section>
+</body>
+</html>
