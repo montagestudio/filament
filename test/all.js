@@ -21,6 +21,7 @@ module.exports = require("montage-testing").run(require, [
     {name: "spec/core/reel-proxy-spec", node: false},
     "spec/core/tree-controller-spec",
     "spec/core/url-spec",
+    {name: "spec/modify-module/modify-module-backend-spec", karma: false, browser: false},
     {name: "spec/services/file-sync-spec", karma: false},
     {name: "spec/ui/template-explorer/content/edit-properties-spec", node: false}
 

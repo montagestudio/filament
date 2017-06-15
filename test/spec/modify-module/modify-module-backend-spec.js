@@ -1,11 +1,13 @@
 var fs = require("fs");
 var path = require("path");
-var modifyModule = require("../../core/modify-module");
+var modifyModule = require("filament/core/modify-module");
+var process = require("process");
+var cwd = process.cwd(); // filament root
 
 function test(methodName, inputName, outputName) {
-    var input = fs.readFileSync(path.join(__dirname, inputName + ".js"), "utf-8");
+    var input = fs.readFileSync(path.join(cwd, "test", "spec", "modify-module", inputName + ".js"), "utf-8");
     var output = modifyModule[methodName](input, "Input", "handleActionEvent", "event");
-    var oracle = fs.readFileSync(path.join(__dirname, outputName + ".js"), "utf-8");
+    var oracle = fs.readFileSync(path.join(cwd, "test", "spec", "modify-module", outputName + ".js"), "utf-8");
     expect(output).toBe(oracle);
 }
 
