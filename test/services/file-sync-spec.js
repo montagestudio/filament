@@ -1,4 +1,4 @@
-var FileSyncService = require("../../services/file-sync").FileSyncService;
+var FileSyncService = require("filament/services/file-sync").FileSyncService;
 
 describe("core/file-sync-spec", function() {
     it("should return false if displayed and model contents do not match", function() {

@@ -25,6 +25,7 @@
         "esprima": "^1.2.2"
     },
     "devDependencies": {
+        "jasmine-console-reporter": "^1.2.7",
         "jasmine-core": "^2.5.2",
         "jasmine-node": "1.2.2",
         "karma": "^1.5.0",
@@ -51,7 +52,9 @@
         }
     },
     "scripts": {
-        "test": "node test/run.js",
+        "test": "node test/run-node.js",
+        "test:karma": "karma start --no-auto-watch --single-run",
+        "test:karma-dev": "karma start --auto-watch --no-single-run",
         "lint": "./node_modules/.bin/jshint --verbose .",
         "lumieres": "node test/functional/run.js",
 

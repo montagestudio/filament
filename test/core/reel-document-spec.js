@@ -1,91 +1,80 @@
 var Promise = require("montage/core/promise").Promise,
     ReelDocument = require("filament/core/reel-document").ReelDocument,
-    documentDataSourceMock = require("mocks/document-data-source-mocks").documentDataSourceMock,
-    WAITSFOR_TIMEOUT = 2500;
+    documentDataSourceMock = require("mocks/document-data-source-mocks").documentDataSourceMock;
 
 describe("core/reel-document-spec", function () {
 
-    var reelDocumentPromise,
+    var reelDocument,
         dataSource = documentDataSourceMock({
-            read: function(url) {
+            read: function (url) {
                 return require.async(url.slice(require.location.length))
                 .then(function(exports) {
                     return exports.content;
                 });
             },
-            write: function(url) {
+            write: function (url) {
                 return Promise.resolve();
             }
         });
 
     describe("loading a data model given a locationId", function () {
 
-        beforeEach(function () {
-            reelDocumentPromise = new ReelDocument().init(require.location + "mocks/ui/simple.reel/", dataSource, require).load();
-        });
-
-        it("should return a promise for the populated document", function () {
-            expect(Promise.is(reelDocumentPromise)).toBeTruthy();
-            reelDocumentPromise.timeout(WAITSFOR_TIMEOUT).done();
+        beforeEach(function (done) {
+            new ReelDocument()
+                .init(require.location + "mocks/ui/simple.reel/", dataSource, require)
+                .load()
+                .then(function (doc) {
+                    reelDocument = doc;
+                })
+                .then(done);
         });
 
         it("should resolve as a populated document", function () {
-            return reelDocumentPromise.then(function (doc) {
-                expect(doc).toBeTruthy();
-                expect(doc.editingProxies).toBeTruthy();
-                expect(doc.editingProxies.length).toBe(1);
-            }).timeout(WAITSFOR_TIMEOUT);
+            expect(reelDocument).toBeTruthy();
+            expect(reelDocument.editingProxies).toBeTruthy();
+            expect(reelDocument.editingProxies.length).toBe(1);
         });
 
     });
 
     describe("loading a template with image references", function () {
-        beforeEach(function () {
-            reelDocumentPromise = new ReelDocument().init(require.location + "mocks/ui/images.reel/", dataSource, require).load();
-        });
-
-        it("should return a promise for the populated document", function () {
-            expect(Promise.is(reelDocumentPromise)).toBeTruthy();
-            reelDocumentPromise.timeout(WAITSFOR_TIMEOUT).done();
+        beforeEach(function (done) {
+            new ReelDocument()
+                .init(require.location + "mocks/ui/images.reel/", dataSource, require)
+                .load()
+                .then(function (doc) {
+                    reelDocument = doc;
+                })
+                .then(done);
         });
 
         it("should resolve as a populated document", function () {
-            return reelDocumentPromise.then(function (doc) {
-                expect(doc).toBeTruthy();
-                expect(doc.editingProxies).toBeTruthy();
-                expect(doc.editingProxies.length).toBe(1);
-            }).timeout(WAITSFOR_TIMEOUT);
+            expect(reelDocument).toBeTruthy();
+            expect(reelDocument.editingProxies).toBeTruthy();
+            expect(reelDocument.editingProxies.length).toBe(1);
         });
 
         it("should not add a src attribute to images that did not have one", function () {
-            return reelDocumentPromise.then(function (doc) {
-                var image = doc.htmlDocument.getElementById("noSrc");
-                expect(image.hasAttribute("src")).toBeFalsy();
-            }).timeout(WAITSFOR_TIMEOUT);
+            var image = reelDocument.htmlDocument.getElementById("noSrc");
+            expect(image.hasAttribute("src")).toBeFalsy();
         });
 
         it("should not populate a src attribute on images that has an empt src attribute", function () {
-            return reelDocumentPromise.then(function (doc) {
-                var image = doc.htmlDocument.getElementById("emptySrc");
-                expect(image.hasAttribute("src")).toBeTruthy();
-                expect(image.getAttribute("src")).toBe("");
-            }).timeout(WAITSFOR_TIMEOUT);
+            var image = reelDocument.htmlDocument.getElementById("emptySrc");
+            expect(image.hasAttribute("src")).toBeTruthy();
+            expect(image.getAttribute("src")).toBe("");
         });
 
         it("should not rebase a relative url in a src attribute on images", function () {
-            return reelDocumentPromise.then(function (doc) {
-                var image = doc.htmlDocument.getElementById("relativeSrc");
-                expect(image.hasAttribute("src")).toBeTruthy();
-                expect(image.getAttribute("src")).toBe("foo.png");
-            }).timeout(WAITSFOR_TIMEOUT);
+            var image = reelDocument.htmlDocument.getElementById("relativeSrc");
+            expect(image.hasAttribute("src")).toBeTruthy();
+            expect(image.getAttribute("src")).toBe("foo.png");
         });
 
         it("should not alter a src attribute on images with an absolute url", function () {
-            return reelDocumentPromise.then(function (doc) {
-                var image = doc.htmlDocument.getElementById("absoluteSrc");
-                expect(image.hasAttribute("src")).toBeTruthy();
-                expect(image.getAttribute("src")).toBe("http://example.com/bar.png");
-            }).timeout(WAITSFOR_TIMEOUT);
+            var image = reelDocument.htmlDocument.getElementById("absoluteSrc");
+            expect(image.hasAttribute("src")).toBeTruthy();
+            expect(image.getAttribute("src")).toBe("http://example.com/bar.png");
         });
     });
 
@@ -93,7 +82,7 @@ describe("core/reel-document-spec", function () {
 
         var mockDocument, serialization, dataSource;
 
-        beforeEach(function () {
+        beforeEach(function (done) {
             mockDocument = document.implementation.createHTMLDocument();
 
             serialization = '{"owner": {"properties": {}}, "foo": {"prototype": "foo-module"}}';
@@ -109,31 +98,31 @@ describe("core/reel-document-spec", function () {
                 }
             });
 
-            reelDocumentPromise = new ReelDocument().init(require.location + "mocks/ui/simple.reel/", dataSource, require).load();
+            new ReelDocument()
+                .init(require.location + "mocks/ui/simple.reel/", dataSource, require)
+                .load()
+                .then(function (doc) {
+                    reelDocument = doc;
+                })
+                .then(done);
         });
 
         it("should have a proxy object for each serialization label", function () {
-            return reelDocumentPromise.then(function (reelDocument) {
-                expect(reelDocument.editingProxyMap.owner.label).toBe("owner");
-                expect(reelDocument.editingProxyMap.foo.label).toBe("foo");
-            }).timeout(WAITSFOR_TIMEOUT);
+            expect(reelDocument.editingProxyMap.owner.label).toBe("owner");
+            expect(reelDocument.editingProxyMap.foo.label).toBe("foo");
         });
 
         it("should have a title that is the last path component and extension of the fileUrl", function () {
-            return reelDocumentPromise.then(function (reelDocument) {
-                expect(reelDocument.title).toBe("simple.reel");
-            }).timeout(WAITSFOR_TIMEOUT);
+            expect(reelDocument.title).toBe("simple.reel");
         });
 
     });
 
     describe("external data changes", function() {
         it("should consider the document not modified once the data source has been changed", function() {
-            return reelDocumentPromise.then(function (doc) {
-                doc._changeCount = 1;
-                doc.handleDataChange();
-                expect(doc._changeCount).toBe(0);
-            }).timeout(WAITSFOR_TIMEOUT);
+            reelDocument._changeCount = 1;
+            reelDocument.handleDataChange();
+            expect(reelDocument._changeCount).toBe(0);
         });
     });
 });

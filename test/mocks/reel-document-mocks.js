@@ -5,7 +5,6 @@ var Montage = require("montage").Montage,
 
 //TODO this could be brought inline with the rest of the "mocking system"
 exports.mockReelDocument = function (fileUrl, serialization, bodyMarkup) {
-
     var mockDocument = document.implementation.createHTMLDocument(),
         dataSource,
         serializationNode = mockDocument.createElement("script");
@@ -34,7 +33,9 @@ exports.mockReelDocument = function (fileUrl, serialization, bodyMarkup) {
     });
 
     fileUrl = require.location + fileUrl;
-    return new ReelDocument().init(fileUrl, dataSource, require).load()
+    var rd = new ReelDocument();
+    rd.init(fileUrl, dataSource, require);
+    return rd.load()
     .then(function (reelDocument) {
         // Mini mock for ui/component-editor/document-editor.reel
         // use _editor to avoid setter

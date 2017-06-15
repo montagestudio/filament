@@ -38,18 +38,18 @@ describe("core/project-controller-extensions-spec", function () {
         projectController = new ProjectController().init(bridge, viewController, editorController, extensionController, null, applicationDelegate);
         projectController._packageRequires["projectUrl/"] = Promise.resolve(require);
 
-        require.injectPackageDescription(require.location + "projectUrl/" , {
+        require.injectPackageDescription("projectUrl/" , {
             name: "test"
         });
     });
 
-    it("loads extensions in the package", function () {
+    it("loads extensions in the package", function (done) {
         spyOn(extensionController, "loadExtension").and.callThrough();
 
-        return projectController.loadProject("projectUrl").then(function () {
+        projectController.loadProject("projectUrl").then(function () {
             expect(extensionController.loadExtension).toHaveBeenCalled();
-            expect(extensionController.loadExtension.mostRecentCall.args[0]).toBe("fs:///projectUrl/projectUrl.filament-extension");
-        });
+            expect(extensionController.loadExtension.calls.argsFor(0)[0]).toBe("fs:///projectUrl/projectUrl.filament-extension");
+        }).then(done);
     });
 
 });

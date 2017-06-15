@@ -1,5 +1,7 @@
 var WeakMap = require("montage/collections/weak-map");
 var Set = require("montage/collections/set");
+var Montage = require("montage/core/core").Montage;
+require("montage/core/uuid");
 
 function equals(a, b) {
     return a && b && a[0] === b[0] && a[1] === b[1];

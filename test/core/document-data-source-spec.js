@@ -93,7 +93,7 @@ describe("core/document-data-source-spec", function () {
                 dataSource.registerDataModifier(dataModifier2);
 
                 dataModifier1._hasModifiedData = true;
-                spyOn(dataModifier1, "acceptModifiedData").andCallThrough();
+                spyOn(dataModifier1, "acceptModifiedData").and.callThrough();
 
                 return dataSource.read(files.file1.url)
                 .then(function() {
@@ -132,7 +132,7 @@ describe("core/document-data-source-spec", function () {
 
                 dataModifier1._hasModifiedData = true;
                 dataModifier2._hasModifiedData = true;
-                spyOn(dataModifier2, "rejectModifiedData").andCallThrough();
+                spyOn(dataModifier2, "rejectModifiedData").and.callThrough();
 
                 return dataSource.read(files.file1.url)
                 .then(function() {

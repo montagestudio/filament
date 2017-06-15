@@ -388,9 +388,9 @@ describe("core/project-controller-filesystem-spec", function () {
 
                     expect(barDocument.filesDidChange).not.toHaveBeenCalled();
                     expect(fooDocument.filesDidChange).toHaveBeenCalled();
-                    expect(fooDocument.filesDidChange.mostRecentCall.args.length).toBe(1);
-                    expect(Array.isArray(fooDocument.filesDidChange.mostRecentCall.args[0])).toBe(true);
-                    expect(fooDocument.filesDidChange.mostRecentCall.args[0].length).toBe(1);
+                    expect(fooDocument.filesDidChange.calls.argsFor(0).length).toBe(1);
+                    expect(Array.isArray(fooDocument.filesDidChange.calls.argsFor(0)[0])).toBe(true);
+                    expect(fooDocument.filesDidChange.calls.argsFor(0)[0].length).toBe(1);
                 });
             });
 
@@ -407,9 +407,9 @@ describe("core/project-controller-filesystem-spec", function () {
                     projectController._setCurrentDocument(barDocument);
 
                     expect(barDocument.filesDidChange).toHaveBeenCalled();
-                    expect(barDocument.filesDidChange.mostRecentCall.args.length).toBe(1);
-                    expect(Array.isArray(barDocument.filesDidChange.mostRecentCall.args[0])).toBe(true);
-                    expect(barDocument.filesDidChange.mostRecentCall.args[0].length).toBe(3);
+                    expect(barDocument.filesDidChange.calls.argsFor(0).length).toBe(1);
+                    expect(Array.isArray(barDocument.filesDidChange.calls.argsFor(0)[0])).toBe(true);
+                    expect(barDocument.filesDidChange.calls.argsFor(0)[0].length).toBe(3);
                 });
             });
 
