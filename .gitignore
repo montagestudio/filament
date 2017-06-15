@@ -6,3 +6,4 @@ npm-cache
 npm-debug.log
 SikuliLog.txt
 node_modules/
+report/
