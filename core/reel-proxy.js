@@ -31,19 +31,6 @@ var EditingProxy = require("palette/core/editing-proxy").EditingProxy,
  */
 exports.ReelProxy = EditingProxy.specialize( {
 
-    constructor: {
-        value: function ReelProxy() {
-            this.super();
-        }
-    },
-
-    destroy: {
-        value: function() {
-            this.cancelBindings();
-            this._editingDocument = null;
-        }
-    },
-
     /**
      * The identifier of the representedObject
      */
@@ -134,39 +121,6 @@ exports.ReelProxy = EditingProxy.specialize( {
         value: function (serialization) {
             this.super(serialization);
 
-            var key;
-
-            var bindings = [];
-            var serializationBindings = {};
-            if (serialization.values) {
-                for (key in serialization.values) {
-                    if (serialization.values.hasOwnProperty(key) && typeof serialization.values[key] === "object") {
-                        if ("<-" in serialization.values[key] || "<->" in serialization.values[key]) {
-                            serializationBindings[key] = serialization.values[key];
-                        }
-                    }
-                }
-            } else {
-                serializationBindings = serialization.bindings;
-            }
-            for (key in serializationBindings) {
-                if (serializationBindings.hasOwnProperty(key)) {
-                    var bindingEntry = serializationBindings[key];
-                    var bindingDescriptor = Object.create(null);
-
-                    bindingDescriptor.targetPath = key;
-                    bindingDescriptor.oneway = ("<-" in bindingEntry);
-                    bindingDescriptor.sourcePath = bindingDescriptor.oneway ? bindingEntry["<-"] : bindingEntry["<->"];
-                    /* TODO the converter seems to be maintaining state */
-                    if (bindingEntry.converter) {
-                        bindingDescriptor.converter = bindingEntry.converter;
-                    }
-
-                    bindings.push(bindingDescriptor);
-                }
-            }
-            this._bindings = bindings;
-
             var listeners = [],
                 listenerDescriptor;
 
@@ -211,19 +165,6 @@ exports.ReelProxy = EditingProxy.specialize( {
         value: false
     },
 
-    _bindings: {
-        value: null
-    },
-
-    /**
-     * The collection of bindings associated with the object this proxy represents
-     */
-    bindings: {
-        get: function () {
-            return this._bindings;
-        }
-    },
-
     _listeners: {
         value: null
     },
@@ -234,75 +175,6 @@ exports.ReelProxy = EditingProxy.specialize( {
     listeners: {
         get: function () {
             return this._listeners;
-        }
-    },
-
-    defineObjectBinding: {
-        value: function (targetPath, oneway, sourcePath, converter) {
-            var binding = Object.create(null);
-
-            //TODO guard against binding to the exact same targetPath twice
-            binding.targetPath = targetPath;
-            binding.oneway = oneway;
-            binding.sourcePath = sourcePath;
-            binding.converter = converter;
-
-            this.bindings.push(binding);
-
-            return binding;
-        }
-    },
-
-    /**
-     * Update an existing binding with new parameters
-     *
-     * All parameters are required, currently you cannot update a single
-     * property of the existing binding without affecting the others.
-     *
-     * @param {Object} binding The existing binding to update
-     * @param {string} targetPath The targetPath to set on the binding
-     * @param {boolean} oneway Whether or not to set the binding as being oneway
-     * @param {string} sourcePath The sourcePath to set on the binding
-     * @param {string} converter The converter to set on the binding
-     */
-    updateObjectBinding: {
-        value: function (binding, targetPath, oneway, sourcePath, converter) {
-            var bindingIndex = this.bindings.indexOf(binding);
-
-            if (bindingIndex === -1) {
-                throw new Error("Cannot update a binding that's not associated with this proxy.");
-            }
-
-
-            binding.targetPath = targetPath;
-            binding.oneway = oneway;
-            binding.sourcePath = sourcePath;
-            binding.converter = converter;
-
-            return binding;
-        }
-    },
-
-    /**
-     * Add a a specified binding object to the proxy at a specific index
-     * in the bindings collection
-     */
-    addBinding: {
-        value: function (binding, insertionIndex) {
-            var bindingIndex = this.bindings.indexOf(binding);
-
-            if (-1 === bindingIndex) {
-                if (isNaN(insertionIndex)) {
-                    this.bindings.push(binding);
-                } else {
-                    this.bindings.splice(insertionIndex, 0, binding);
-                }
-            } else {
-                //TODO guard against adding exact same binding to multiple proxies
-                throw new Error("Cannot add the same binding to a proxy more than once");
-            }
-
-            return binding;
         }
     },
 
@@ -326,24 +198,6 @@ exports.ReelProxy = EditingProxy.specialize( {
             }
 
             return listener;
-        }
-    },
-
-    /**
-     * Remove the specific binding from the set of active bindings on this proxy
-     *
-     * @return {Object} an object with two keys index and removedBinding
-     */
-    cancelObjectBinding: {
-        value: function (binding) {
-            var bindingIndex = this.bindings.indexOf(binding);
-
-            if (bindingIndex > -1) {
-                this.bindings.splice(bindingIndex, 1);
-                return {index: bindingIndex, removedBinding: binding};
-            } else {
-                throw new Error("Cannot cancel a binding that's not associated with this proxy");
-            }
         }
     },
 
