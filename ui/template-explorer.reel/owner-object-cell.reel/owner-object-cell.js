@@ -116,7 +116,7 @@ exports.OwnerObjectCell = Component.specialize({
     handlePress: {
         value: function () {
             this.dispatchEventNamed("selectComponent", true, true, {
-                templateObject: this.templateObject
+                templateObject: this.reelProxy
             });
         }
     }
