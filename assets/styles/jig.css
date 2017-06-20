@@ -1,4 +1,4 @@
-/* 
+/*
  * Jig
  * Used for: binding-jig.reel, listener-jig.reel
  * --------------------------------
@@ -32,6 +32,10 @@
 
 .Jig-col:last-child {
     margin-right: 0;
+}
+
+.Jig-col-invisible {
+    visibility: hidden;
 }
 
 .Jig-targetObjectLabel {

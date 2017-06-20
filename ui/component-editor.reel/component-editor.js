@@ -238,9 +238,11 @@ exports.ComponentEditor = Editor.specialize({
 
             // If the binding jig is already referring to this binding, leave what's already in the overlay in case user was editing
             if (bindingJig.existingBinding !== existingBinding) {
-                bindingJig.bindingModel = bindingModel;
+                bindingJig.model = bindingModel;
                 bindingJig.existingBinding = existingBinding;
             }
+
+            bindingJig.isToggleBindingDisabled = true;
 
             overlay = this.templateObjects.bindingOverlay;
 //            overlay.anchor = evt.target.element; //TODO when anchoring works well inside this scrollview

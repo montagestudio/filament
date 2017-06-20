@@ -4,7 +4,7 @@ var Component = require("montage/ui/component").Component,
     replaceDroppedTextPlain = require("ui/drag-and-drop").replaceDroppedTextPlain,
     defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
-exports.BindingJig = Component.specialize({
+exports.PropertyJig = Component.specialize({
 
     _focusTimeout: {
         value: null
@@ -18,7 +18,7 @@ exports.BindingJig = Component.specialize({
         value: function () {
 
             // We enter the document prior to the overlay presenting it
-            if (!this.bindingModel) {
+            if (!this.model) {
                 return;
             }
 
@@ -28,7 +28,7 @@ exports.BindingJig = Component.specialize({
 
             var self = this;
             this._focusTimeout = setTimeout(function () {
-                self.templateObjects.targetPath.element.focus();
+                self.templateObjects.key.element.focus();
             }, 100);
         }
     },
@@ -44,7 +44,7 @@ exports.BindingJig = Component.specialize({
         value: null
     },
 
-    bindingModel: {
+    model: {
         value: null
     },
 
@@ -58,6 +58,19 @@ exports.BindingJig = Component.specialize({
 
     sourcePath: {
         value: null
+    },
+
+    /**
+     * Prevents the user from choosing whether the property is bound or not.
+     * This is useful e.g. when defining a binding on an existing property - in
+     * this case it doesn't make sense from a UI perspective to allow the user
+     * to uncheck the bound checkbox.
+     *
+     * @type {boolean}
+     * @default false
+     */
+    isToggleBindingDisabled: {
+        value: false
     },
 
     shouldDismissOverlay: {
@@ -83,11 +96,11 @@ exports.BindingJig = Component.specialize({
         }
     },
 
-    handleDefineBindingButtonAction: {
+    handleDefineButtonAction: {
         value: function (evt) {
-            evt.stop();
+            evt && evt.stop && evt.stop();
             var self = this;
-            this._commitBindingEdits().catch(function(error) {
+            this._commitBindingEdits().catch(function (error) {
                 if (error instanceof NotModifiedError) {
                     self._discardBindingEdits();
                 }
@@ -121,25 +134,9 @@ exports.BindingJig = Component.specialize({
         }
     },
 
-    handleAction: {
-        value: function (evt) {
-            var target = evt.target,
-                objects = this.templateObjects;
-
-            if (target === objects.bidirectional ||
-                target === objects.unidirectional) {
-                return;
-            }
-
-            this._commitBindingEdits().catch(function(error) {
-                // Ignore validation error
-            }).done();
-        }
-    },
-
     _discardBindingEdits: {
         value: function () {
-            this.bindingModel = null;
+            this.model = null;
             this.existingBinding = null;
             this.dispatchEventNamed("discard", true, false);
         }
@@ -147,38 +144,37 @@ exports.BindingJig = Component.specialize({
 
     _commitBindingEdits: {
         value: function () {
-            var model = this.bindingModel,
+            var self = this,
+                model = this.model,
                 proxy = model.targetObject,
-                targetPath = model.targetPath,
-                oneway = model.oneway,
-                sourcePath = model.sourcePath,
-                converter = model.converter,
                 bindingPromise;
 
-            if (this.existingBinding) {
-                bindingPromise = this.editingDocument.updateOwnedObjectBinding(proxy, this.existingBinding, targetPath, oneway, sourcePath, converter);
+            if (this.model.bound) {
+                if (this.existingBinding) {
+                    bindingPromise = this.editingDocument.updateOwnedObjectBinding(proxy, this.existingBinding, model.key, model.oneway, model.sourcePath, model.converter);
+                } else {
+                    bindingPromise = this.editingDocument.defineOwnedObjectBinding(proxy, model.key, model.oneway, model.sourcePath, model.converter);
+                }
             } else {
-                bindingPromise = this.editingDocument.defineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath, converter);
+                this.editingDocument.setOwnedObjectProperty(proxy, model.key, model.value);
+                bindingPromise = Promise.resolve();
             }
 
-            var self = this;
-            return bindingPromise.then(function(bindingEntry) {
+            return bindingPromise.then(function (bindingEntry) {
                 self.dispatchEventNamed("commit", true, false, {
                     bindingEntry: bindingEntry
                 });
 
                 self.existingBinding = null;
-                self.bindingModel = null;
-
+                self.model = null;
             });
-
         }
     },
 
-    targetPathShouldGetSuggestions: {
+    keyShouldGetSuggestions: {
         value: function(autocomplete, searchTerm) {
             var searchProperty = searchTerm,
-                component = this.bindingModel.targetObject;
+                component = this.model.targetObject;
             component.packageRequire.async(component.moduleId).get(component.exportName).get("blueprint")
                 .then(function (blueprint) {
                     var suggestions = [];

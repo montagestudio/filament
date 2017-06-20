@@ -1,18 +1,18 @@
-.BindingJig.Jig {
+.PropertyJig.Jig {
     min-width: 560px;
 }
 
-/* BindingJig sections ---------------------- */
+/* PropertyJig sections ---------------------- */
 
-.BindingJig-section--source,
-.BindingJig-section--target {
+.PropertyJig-section--source,
+.PropertyJig-section--target {
     -webkit-flex: 1 1 auto;
     -moz-flex: 1 1 auto;
     -ms-flex: 1 1 auto;
     flex: 1 1 auto;
 }
 
-.BindingJig-section--direction {
+.PropertyJig-section--direction {
     -webkit-flex: 0 0 auto;
     -moz-flex: 0 0 auto;
     -ms-flex: 0 0 auto;
@@ -21,16 +21,16 @@
 
 
 
-/* BindingJig direction ---------------------- */
+/* PropertyJig direction ---------------------- */
 
-.BindingJig-direction {
+.PropertyJig-direction {
     position: relative;
     padding-left: 1px;
     margin: 0 -1px 0 0;
     font-size: 0;
 }
 
-.BindingJig-radio {
+.matte-RadioButton.PropertyJig-radio {
     margin: 0 0 0 -1px;
     width: 30px;
     height: 30px;
@@ -41,22 +41,22 @@
     box-shadow: inset 0 1px 0 hsla(0,0%,100%,1), 0 1px 2px hsla(0,0%,0%,0.1);
 }
 
-.BindingJig-radio:hover {
+.matte-RadioButton.PropertyJig-radio:hover {
     background-color: hsla(0,0%,0%,.02);
 }
 
-.BindingJig-radio.montage-RadioButton--checked {
+.matte-RadioButton.PropertyJig-radio.montage-RadioButton--checked {
     background-color: hsl(210,100%,90%);
     border-color: hsl(210,100%,80%);
     box-shadow: inset 0 1px 2px hsla(0,0%,0%,0.08), 0 1px 0 hsla(0,0%,100%,.6);
 }
 
-.BindingJig-radio:focus {
+.matte-RadioButton.PropertyJig-radio:focus {
     border-color: hsl(210,100%,70%);
     background-color: hsla(210,100%,60%,0.1);
 }
 
-.BindingJig-radio--unidirectional {
+.matte-RadioButton.PropertyJig-radio--unidirectional {
     border-radius: 3px 0 0 3px;
     background-image: url(/assets/icons/binding-un.svg),
                         -webkit-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
@@ -67,11 +67,11 @@
     background-image: url(/assets/icons/binding-un.svg),
                         linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
 }
-.BindingJig-radio--unidirectional.montage-RadioButton--checked {
+.matte-RadioButton.PropertyJig-radio--unidirectional.montage-RadioButton--checked {
     background-image: url(/assets/icons/binding-un.svg);
 }
 
-.BindingJig-radio--bidirectional {
+.matte-RadioButton.PropertyJig-radio--bidirectional {
     border-radius: 0 3px 3px 0;
     background-image: url(/assets/icons/binding-bi.svg),
                         -webkit-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
@@ -79,6 +79,17 @@
                         -ms-linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
                         linear-gradient(top, hsla(0,0%,100%,.8), hsla(0,0%,100%,0) );
 }
-.BindingJig-radio--bidirectional.montage-RadioButton--checked {
+.matte-RadioButton.PropertyJig-radio--bidirectional.montage-RadioButton--checked {
     background-image: url(/assets/icons/binding-bi.svg);
+}
+
+
+.PropertyJig .Jig-col--bound {
+    flex-grow: 0;
+}
+
+.PropertyJig .PropertyJig-input--bound {
+    width: 23px;
+    height: 24px;
+    margin-left: 0;
 }

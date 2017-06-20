@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link href="property-jig.css" rel="stylesheet">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "propertyJig"}
+            },
+            "listeners": [
+                {
+                    "type": "keyPress",
+                    "listener": {"@": "owner"}
+                }, {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "targetObjectLabel": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "targetObjectLabel"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.model.targetObject.label"}
+            }
+        },
+
+        "key": {
+            "prototype": "ui/widgets/autocomplete/autocomplete.reel",
+            "properties": {
+                "element": {"#": "key"},
+                "delegate": {"@": "owner"},
+                "delay": 100,
+                "minLength": 0,
+                "separator": {
+                    "value" : " ",
+                    "distinct" : false
+                }
+            },
+            "bindings": {
+                "value": {"<->": "@owner.model.key"}
+            }
+        },
+
+        "bound": {
+            "prototype": "montage/ui/checkbox.reel",
+            "properties": {
+                "element": {"#": "bound"}
+            },
+            "bindings": {
+                "checked": {"<->": "@owner.model.bound"},
+                "disabled": {"<-": "@owner.isToggleBindingDisabled"}
+            }
+        },
+
+        "directionCol": {
+            "prototype": "montage/ui/component",
+            "properties": {
+                "element": {"#": "directionCol"},
+                "hasTemplate": false
+            },
+            "bindings": {
+                "classList.has('Jig-col-invisible')": {"<-": "!@owner.model.bound"}
+            }
+        },
+
+        "bindingDirectionController": {
+            "prototype": "montage/core/radio-button-controller",
+            "bindings": {
+                "value": {"<->": "@owner.model.oneway"}
+            }
+        },
+
+        "unidirectional": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "unidirectional"},
+                "radioButtonController": {"@": "bindingDirectionController"},
+                "value": true
+            }
+        },
+
+        "bidirectional": {
+            "prototype": "matte/ui/radio-button.reel",
+            "properties": {
+                "element": {"#": "bidirectional"},
+                "radioButtonController": {"@": "bindingDirectionController"},
+                "value": false
+            }
+        },
+
+        "contentSubstitution": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "contentSubstitution"}
+            },
+            "bindings": {
+                "switchValue": {"<-": "@owner.model.bound ? 'bound' : 'unbound'"}
+            }
+        },
+
+        "valueType": {
+            "prototype": "matte/ui/select.reel",
+            "properties": {
+                "element": {"#": "valueType"},
+                "content": [
+                    {"text": "string", "value": "string"},
+                    {"text": "number", "value": "number"},
+                    {"text": "boolean", "value": "boolean"},
+                    {"text": "date", "value": "date"},
+                    {"text": "enum", "value": "enum"},
+                    {"text": "url", "value": "url"},
+                    {"text": "object", "value": "object"}
+                ]
+            },
+            "listeners": [
+                {"type": "action", "listener": {"@": "owner"}}
+            ]
+        },
+
+        "value": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "value"}
+            }
+        },
+
+        "sourcePath": {
+            "prototype": "ui/widgets/autocomplete/autocomplete.reel",
+            "properties": {
+                "element": {"#": "sourcePathAutocomplete"},
+                "delegate": {"@": "owner"},
+                "delay": 100,
+                "minLength": 1,
+                "separator": {
+                    "value" : " ",
+                    "distinct" : false
+                }
+            },
+            "bindings": {
+                "value": {"<->": "@owner.model.sourcePath"}
+            }
+        },
+
+        "converter": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "converter"}
+            },
+            "bindings": {
+                "value": {
+                    "<->": "@owner.model.converter",
+                    "converter": {"@": "objectLabelConverter"}
+                }
+            }
+        },
+
+        "objectLabelConverter": {
+            "prototype": "core/object-label-converter",
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"}
+            }
+        },
+
+        "defineButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "defineButton"},
+                "label": "Define"
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "cancelButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "label": "Cancel",
+                "element": {"#":"cancelButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "cancelEditing": {
+            "prototype": "montage/composer/key-composer",
+            "properties": {
+                "keys": "escape",
+                "component": {"@": "owner"},
+                "identifier": "cancelEditing",
+                "element": {"#": "propertyJig"}
+            },
+            "listeners": [
+                {
+                    "type": "keyPress",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="propertyJig" class="Jig PropertyJig">
+        <h2 data-montage-id="targetObjectLabel" class="Jig-targetObjectLabel"></h2>
+
+        <section class="Jig-row Jig-row--has-col">
+            <div class="Jig-col">
+                <label for="key" class="Jig-label">Key</label>
+                <input id="key" data-montage-id="key" class="Jig-input" type="text">
+            </div>
+
+            <div class="Jig-col Jig-col--bound">
+                <label for="bound" class="Jig-label">Bound</label>
+                <input id="bound" data-montage-id="bound" class="Jig-input PropertyJig-input--bound" type="checkbox">
+            </div>
+
+            <div data-montage-id="directionCol" class="Jig-col">
+                <label class="Jig-label">Data Flow</label>
+                <span class="PropertyJig-direction">
+                    <input title="One-way" data-montage-id="unidirectional" class="PropertyJig-radio PropertyJig-radio--unidirectional" type="radio" name="direction">
+                    <input title="Two-way" data-montage-id="bidirectional" class="PropertyJig-radio PropertyJig-radio--bidirectional" type="radio" name="direction">
+                </span>
+            </div>
+        </section>
+
+        <div data-montage-id="contentSubstitution">
+            <div data-arg="bound">
+                <section class="Jig-row">
+                    <label for="sourcePathAutocomplete" class="Jig-label">Source Path</label>
+                    <input id="sourcePathAutocomplete" data-montage-id="sourcePathAutocomplete" class="Jig-input" type="text">
+                </section>
+
+                <section class="Jig-row">
+                    <label for="converter" class="Jig-label">Converter (Optional)</label>
+                    <input id="converter" data-montage-id="converter" class="Jig-input" type="text">
+                </section>
+            </div>
+            <div data-arg="unbound">
+                <section class="Jig-row">
+                    <label for="valueType" class="Jig-label">Type</label>
+                    <select id="valueType" data-montage-id="valueType" class="Jig-input"></select>
+                </section>
+                <section class="Jig-row">
+                    <label for="value" class="Jig-label">Value</label>
+                    <input id="value" data-montage-id="value" class="Jig-input" type="text">
+                </section>
+            </div>
+        </div>
+
+        <footer class="Jig-footer">
+            <button data-montage-id="cancelButton" class="Button"></button>
+            <button data-montage-id="defineButton" class="Button--action"></button>
+        </footer>
+    </div>
+</body>
+</html>

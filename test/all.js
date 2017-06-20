@@ -26,6 +26,7 @@ module.exports = require("montage-testing").run(require, [
     "spec/core/url-spec",
     {name: "spec/modify-module/modify-module-backend-spec", karma: false, browser: false},
     {name: "spec/services/file-sync-spec", karma: false},
+    {name: "spec/ui/property-jig/property-jig-spec", node: false},
     {name: "spec/ui/template-explorer/content/edit-properties-spec", node: false}
 
     // TODO: Specs broken due to some issue with Montage serialization visitors
