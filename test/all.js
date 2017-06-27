@@ -26,6 +26,8 @@ module.exports = require("montage-testing").run(require, [
     "spec/core/url-spec",
     {name: "spec/modify-module/modify-module-backend-spec", karma: false, browser: false},
     {name: "spec/services/file-sync-spec", karma: false},
+    {name: "spec/ui/configurator/configurator-spec", node: false, karma: false},
+    {name: "spec/ui/configurator/property-editor/property-editor-spec", node: false, karma: false},
     {name: "spec/ui/property-jig/property-jig-spec", node: false},
     {name: "spec/ui/template-explorer/content/edit-properties-spec", node: false},
     {name: "spec/ui/template-explorer/template-explorer-spec", node: false},

@@ -1,0 +1,47 @@
+{
+    "blueprint_targetobject_propertyA": {
+        "prototype": "montage/core/meta/property-blueprint",
+        "properties": {
+            "name": "propertyA",
+            "blueprint": {
+                "@": "root"
+            },
+            "valueType": "string"
+        }
+    },
+    "blueprint_targetobject_propertyB": {
+        "prototype": "montage/core/meta/property-blueprint",
+        "properties": {
+            "name": "propertyB",
+            "blueprint": {
+                "@": "root"
+            },
+            "valueType": "string"
+        }
+    },
+    "root": {
+        "prototype": "montage/core/meta/module-blueprint",
+        "properties": {
+            "name": "TargetObject",
+            "customPrototype": false,
+            "propertyBlueprints": [
+                {"@": "blueprint_targetobject_propertyA"},
+                {"@": "blueprint_targetobject_propertyB"}
+            ],
+            "propertyBlueprintGroups": {
+                "target-object": [
+                    {"@": "blueprint_targetobject_propertyA"},
+                    {"@": "blueprint_targetobject_propertyB"}
+                ]
+            },
+            "propertyValidationRules": {},
+            "blueprintModule": {
+                "%": "spec/ui/property-editor/target-object.meta"
+            },
+            "exportName": "TargetObject",
+            "module": {
+                "%": "spec/ui/property-editor/target-object"
+            }
+        }
+    }
+}

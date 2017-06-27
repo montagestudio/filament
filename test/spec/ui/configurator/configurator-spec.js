@@ -1,11 +1,11 @@
 /*global require,describe,it,expect,runs,waits */
 var TestPageLoader = require("montage-testing/testpageloader").TestPageLoader,
     Promise = require("montage/core/promise").Promise,
-    ReelDocument = require("core/reel-document").ReelDocument,
-    documentDataSourceMock = require("test/mocks/document-data-source-mocks").documentDataSourceMock;
+    ReelDocument = require("filament/core/reel-document").ReelDocument,
+    documentDataSourceMock = require("mocks/document-data-source-mocks").documentDataSourceMock;
 
 TestPageLoader.queueTest("configurator-test", function(testPage) {
-    describe("ui/configurator", function() {
+    describe("configurator", function() {
 
         var test,
             dataSource = documentDataSourceMock({
@@ -25,7 +25,7 @@ TestPageLoader.queueTest("configurator-test", function(testPage) {
         beforeEach(function() {
             test = testPage.test;
             configurator = test.configurator;
-            editingDocument = new ReelDocument().init(require.location + "test/mocks/ui/complex.reel/", dataSource, require);
+            editingDocument = new ReelDocument().init(require.location + "mocks/ui/complex.reel/", dataSource, require);
             return editingDocument.load().then(function () {
                 configurator.editingDocument = editingDocument;
                 configurator.ownerObject = editingDocument.editingProxyMap.owner;

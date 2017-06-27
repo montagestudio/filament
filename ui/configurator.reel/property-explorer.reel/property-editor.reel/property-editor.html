@@ -17,7 +17,7 @@
                 "element": {"#": "bindingButtonSubstitution"}
             },
             "bindings": {
-                "switchValue": {"<-": "@owner.model.isBound ? (@owner.model.isBindingComplex ? 'none' : 'bound') : 'unbound'"}
+                "switchValue": {"<-": "@owner.model.isBound ? (@owner.model.isKeyComplex ? 'none' : 'bound') : 'unbound'"}
             }
         },
         "defineBindingButton": {
@@ -269,7 +269,7 @@
                 "element": {"#": "deleteButtonCondition"}
             },
             "bindings": {
-                "condition": {"<-": "@owner.isPropertyCustom"}
+                "condition": {"<-": "@owner.model.isCustom"}
             }
         },
         "deleteButton": {

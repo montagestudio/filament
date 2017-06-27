@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Slot Test</title>
+    <script src="../../../../../node_modules/montage/montage.js" data-package="../../../../"></script>
+    <script type="text/montage-serialization">
+            {
+
+                "test": {
+                    "prototype": "spec/ui/configurator/property-editor/property-editor-test",
+                    "properties": {
+                        "propertyEditor": {"@": "propertyEditor"},
+                        "boundPropertyEditor": {"@": "boundPropertyEditor"},
+                        "customPropertyEditor": {"@": "customPropertyEditor"},
+                        "boundCustomPropertyEditor": {"@": "boundCustomPropertyEditor"},
+                        "complexBindingEditor": {"@": "complexBindingEditor"}
+                    }
+                },
+
+                "propertyEditor": {
+                    "prototype": "filament/ui/configurator.reel/property-explorer.reel/property-editor.reel",
+                    "properties": {
+                        "element": {"#": "propertyEditor"}
+                    },
+                    "bindings": {
+                        "model": {"<-": "@test.propertyA"}
+                    }
+                },
+
+                "boundPropertyEditor": {
+                    "prototype": "filament/ui/configurator.reel/property-explorer.reel/property-editor.reel",
+                    "properties": {
+                        "element": {"#": "boundPropertyEditor"}
+                    },
+                    "bindings": {
+                        "model": {"<-": "@test.propertyB"}
+                    }
+                },
+
+                "customPropertyEditor": {
+                    "prototype": "filament/ui/configurator.reel/property-explorer.reel/property-editor.reel",
+                    "properties": {
+                        "element": {"#": "customPropertyEditor"}
+                    },
+                    "bindings": {
+                        "model": {"<-": "@test.customPropertyA"}
+                    }
+                },
+
+                "boundCustomPropertyEditor": {
+                    "prototype": "filament/ui/configurator.reel/property-explorer.reel/property-editor.reel",
+                    "properties": {
+                        "element": {"#": "boundCustomPropertyEditor"}
+                    },
+                    "bindings": {
+                        "model": {"<-": "@test.customPropertyB"}
+                    }
+                },
+
+                "complexBindingEditor": {
+                    "prototype": "filament/ui/configurator.reel/property-explorer.reel/property-editor.reel",
+                    "properties": {
+                        "element": {"#": "complexBindingEditor"}
+                    },
+                    "bindings": {
+                        "model": {"<-": "@test.complexBinding"}
+                    }
+                },
+
+                "application": {
+                    "prototype": "montage/core/application",
+                    "properties": {
+                        "delegate": {
+                            "@": "test"
+                        }
+                    }
+                }
+
+            }
+        </script>
+</head>
+<body>
+    <div data-montage-id="propertyEditor"></div>
+    <div data-montage-id="boundPropertyEditor"></div>
+    <div data-montage-id="customPropertyEditor"></div>
+    <div data-montage-id="boundCustomPropertyEditor"></div>
+    <div data-montage-id="complexBindingEditor"></div>
+</body>
+</html>

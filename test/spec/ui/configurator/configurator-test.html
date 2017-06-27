@@ -2,18 +2,18 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <script type="text/javascript" src="../../../../node_modules/montage/montage.js" data-package="../../../../"></script>
+    <script type="text/javascript" src="../../../../node_modules/montage/montage.js" data-package="../../../"></script>
     <script type="text/montage-serialization">
         {
             "test": {
-                "prototype": "test/ui/configurator/configurator-test",
+                "prototype": "spec/ui/configurator/configurator-test",
                 "properties": {
                     "configurator": {"@": "configurator"}
                 }
             },
 
             "configurator": {
-                "prototype": "ui/configurator.reel",
+                "prototype": "filament/ui/configurator.reel",
                 "properties": {
                     "element": {"#": "configurator"}
                 }
@@ -25,7 +25,7 @@
 <body>
     <h1>configurator test</h1>
 
-    <div data-montage-id="configurator"></div></div>
+    <div data-montage-id="configurator"></div>
 
 </body>
 </html>

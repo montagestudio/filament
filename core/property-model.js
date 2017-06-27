@@ -54,12 +54,14 @@ exports.PropertyModel = Montage.specialize({
     /**
      * Alias for key.
      *
-     * @property targetPath
      * @type {String}
      */
+    targetPath: {
+        value: null
+    },
 
     /**
-     * The descriptor for the observed property.
+     * The descriptor for the observed property, if there is one.
      *
      * @readonly
      * @type {PropertyDescriptor}
@@ -70,20 +72,30 @@ exports.PropertyModel = Montage.specialize({
         }
     },
 
-    _editingDocument: {
-        get: function () {
-            return this.targetObject.editingDocument;
-        }
+    /**
+     * Whether the property is defined exclusively through serialization and
+     * does not have a PropertyDescriptor.
+     *
+     * @type {Boolean}
+     */
+    isCustom: {
+        value: null
     },
 
+    /**
+     * The value of the property on the targetObject. Setting will cause
+     * changes to propagate to the object's editingDocument for serialization.
+     *
+     * @type {Any}
+     */
     value: {
         get: function () {
             return this._value;
         },
         set: function (value) {
             if (this._value !== value && typeof value !== "undefined") {
-                if (!(this.propertyDescriptor && this.propertyDescriptor.readOnly)) {
-                    this._editingDocument.setOwnedObjectProperty(this.targetObject, this.key, value);
+                if (!(this._propertyDescriptor && this._propertyDescriptor.readOnly)) {
+                    this.targetObject.editingDocument.setOwnedObjectProperty(this.targetObject, this._key, value);
                 }
             }
             this._value = value;
@@ -91,31 +103,42 @@ exports.PropertyModel = Montage.specialize({
     },
 
     /**
-     * Whether the targetPath of the binding is complex, i.e. is not just a
-     * simple (valid) property key. This includes property chains (with .),
-     * FRB functions, arithmetic, concatenation, higher order functions,
-     * boolean operators, scope operators (^), etc.
-     * A property editor that is inspecting a complex binding will not allow
-     * the user to revert the binding into a property.
+     * Whether the key of this property (in practice, the targetPath of the
+     * binding) is complex, i.e. is not just a simple (valid) property key.
+     * This includes chaining (with .), FRB functions, arithmetic, concatenation,
+     * higher order functions, boolean operators, scope operators (^), etc.
+     * A model representing a complex binding cannot be reverted to a simple
+     * unbound property.
+     *
+     * @example
+     * "foo": not complex
+     * "someKindOfProperty": not complex
+     * "foo.bar": complex
+     * "foo + bar": complex
+     * "foo.filter{^baz == ban}": complex
      *
      * @readonly
      * @type {Boolean}
      */
-    isBindingComplex: {
+    isKeyComplex: {
         get: function () {
             return !(/^[A-Za-z]+\w*$/.test(this.key));
         }
     },
 
     /**
-     * @property isBound
      * @type {Boolean}
      */
+    isBound: {
+        value: null
+    },
 
     /**
-     * @readonly
      * @type {Object}
      */
+    bindingModel: {
+        value: null
+    },
 
     /**
      * @constructor
@@ -137,6 +160,9 @@ exports.PropertyModel = Montage.specialize({
             this.defineBinding("targetPath", {
                 "<-": "key"
             });
+            this.defineBinding("isCustom", {
+                "<-": "!propertyDescriptor"
+            });
             this.defineBinding("bindingModel", {
                 "<-": "targetObject.bindings.filter{key == ^key}.0"
             });
@@ -149,7 +175,7 @@ exports.PropertyModel = Montage.specialize({
 
     _valueChanged: {
         value: function (value) {
-            this.value = value;
+            this._value = value;
         }
     },
 
@@ -176,11 +202,12 @@ exports.PropertyModel = Montage.specialize({
 
     /**
      * Cancels an existing binding for this property, reverting it to an
-     * unbound property. Does nothing if there is no binding to cancel.
+     * unbound property. Does nothing if there is no binding to cancel or if
+     * the binding is complex.
      */
     cancelBinding: {
         value: function () {
-            if (this.isBound) {
+            if (this.isBound && !this.isKeyComplex) {
                 this.targetObject.cancelObjectBinding(this.bindingModel);
             }
         }
