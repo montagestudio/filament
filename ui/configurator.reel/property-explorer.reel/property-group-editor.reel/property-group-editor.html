@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="property-group-editor.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "property-group-editor"}
+            }
+        },
+
+        "name": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "name"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.name"}
+            }
+        },
+
+        "addPropertyButton": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "element": {"#": "addPropertyButton"},
+                "label": "+"
+            },
+            "bindings": {
+                "classList.has('montage-invisible')": {"<-": "!@owner.isCustomizable"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "propertiesController": {
+            "prototype": "montage/core/range-controller",
+            "bindings": {
+                "content": {"<-": "@owner.properties"}
+            }
+        },
+
+        "propertyList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "propertyList"}
+             },
+            "bindings": {
+                "contentController": {"<-": "@propertiesController"}
+            }
+        },
+
+        "propertyEditor": {
+            "prototype": "../property-editor.reel",
+            "properties": {
+                "element": {"#": "propertyEditor"}
+            },
+            "bindings": {
+                "editingDocument": {
+                    "<-": "@owner.editingDocument"
+                },
+                "model": {"<-": "@propertyList:iteration.object"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <details data-montage-id="property-group-editor" class="PropertyGroupEditor">
+        <summary class="PropertyGroupEditor-toggle">
+            <span data-montage-id="name" class="PropertyGroupEditor-name">Group name</span>
+            <button data-montage-id="addPropertyButton"></button>
+        </summary>
+        <div data-montage-id="propertyList" class="propertyList">
+            <div data-montage-id="propertyEditor"></div>
+        </div>
+    </details>
+</body>
+</html>

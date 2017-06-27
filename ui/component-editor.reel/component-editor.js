@@ -80,6 +80,7 @@ exports.ComponentEditor = Editor.specialize({
 
                 //TODO why are these done here and not in the template? not sure they need to be here
                 this.addEventListener("addListenerForObject", this, false);
+                this.addEventListener("addProperty", this, false);
                 this.addEventListener("addBinding", this, false);
 
                 this.needsDraw = true;
@@ -224,6 +225,16 @@ exports.ComponentEditor = Editor.specialize({
     handleListenerCreatorDiscard: {
         value: function (evt) {
             this.templateObjects.eventTargetOverlay.hide();
+        }
+    },
+
+    handleAddProperty: {
+        value: function (evt) {
+            var propertyModel = evt.detail.propertyModel;
+            this.propertyJig.isToggleBindingDisabled = false;
+            this.propertyJig.model = propertyModel;
+            this.propertyJig.existingBinding = void 0;
+            this.propertyOverlay.show();
         }
     },
 

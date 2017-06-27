@@ -1,0 +1,122 @@
+.PropertyEditor {
+    display: flex;
+    padding: 5px 8px;
+    background: hsl(0,0%,85%);
+    border-bottom: 1px solid hsla(0,0%,0%,.05);
+}
+
+.PropertyEditor > .montage-slot {
+    flex: 1;
+}
+
+.PropertyEditor-bindingIcon {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.PropertyEditor-bindingIcon--define {
+    background-image: url(/assets/icons/binding.png);
+}
+.PropertyEditor-bindingIcon--cancel {
+    background-image: url(/assets/icons/cancel-binding.png);
+}
+
+.PropertyEditor-bindingIcon:hover {
+    background-color: hsl(0, 0%, 96%);
+}
+
+.PropertyEditor-bindingIcon:active {
+    background-color: #e5e5e5;
+}
+
+/* Property ---------------------- */
+
+.Property {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+}
+
+.Property-label,
+.Property-field {
+    padding: 0 5px;
+    line-height: 24px;
+}
+
+.Property-label {
+    width: 80px;
+    color: hsl(0,0%,50%);
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.Property-field {
+    -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    text-align: left;
+}
+
+/* Property Collection ---------------------- */
+
+.PropertyCollection {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.PropertyCollection-item {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: flex;
+    margin: 6px 0 0 0;
+    padding-right: 6px;
+}
+
+/* Matte overrides */
+
+.PropertyEditor .matte-Button {
+    height: 24px;
+    min-width: 24px;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+}
+
+.PropertyEditor .matte-InputText {
+    display: block;
+    width: 100%;
+    height: 24px;
+}
+
+.PropertyEditor .matte-InputNumber {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.PropertyEditor .matte-InputCheckbox {
+    margin: 0;
+}
+
+.PropertyEditor .matte-Select {
+    margin: 0;
+    height: 24px;
+    padding: 0 16px 0 6px;
+}
+
+.PropertyEditor-bindingButtonSubstitution, .PropertyEditor-deleteButtonCondition {
+    visibility: hidden;
+}
+
+.PropertyEditor.mouseOver .PropertyEditor-bindingButtonSubstitution, .PropertyEditor.mouseOver .PropertyEditor-deleteButtonCondition {
+    visibility: inherit;
+}

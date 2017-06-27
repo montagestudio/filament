@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="property-editor.css">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "property-editor"}
+            }
+        },
+
+        "bindingButtonSubstitution": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "bindingButtonSubstitution"}
+            },
+            "bindings": {
+                "switchValue": {"<-": "@owner.model.isBound ? (@owner.model.isBindingComplex ? 'none' : 'bound') : 'unbound'"}
+            }
+        },
+        "defineBindingButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "defineBindingButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+        "cancelBindingButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "cancelBindingButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "booleanPropertyInspector": {
+            "prototype": "palette/ui/inspector/blueprint/property-value-type/boolean-property-inspector.reel",
+            "properties": {
+                "element": {"#": "booleanPropertyInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.model.key"},
+                "objectValue": {"<->": "@owner.model.value"},
+                "propertyBlueprint": {"<-": "@owner.model.propertyDescriptor"}
+            }
+        },
+        "boundPropertyInspector": {
+            "prototype": "palette/ui/inspector/blueprint/bound-property-editor.reel",
+            "properties": {
+                "element": {"#": "boundPropertyInspector"}
+            },
+            "bindings": {
+                "binding": {"<-": "@owner.model.bindingModel"},
+                "label": {"<-": "@owner.model.key"},
+                "object": {"<->": "@owner.model.targetObject"}
+            }
+        },
+        "datePropertyInspector": {
+            "prototype": "palette/ui/inspector/blueprint/property-value-type/date-property-inspector.reel",
+            "properties": {
+                "element": {"#": "datePropertyInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.model.key"},
+                "objectValue": {"<->": "@owner.model.value"},
+                "propertyBlueprint": {"<-": "@owner.model.propertyDescriptor"}
+            }
+        },
+        "enumPropertyInspector": {
+            "prototype": "palette/ui/inspector/blueprint/property-value-type/enum-property-inspector.reel",
+            "properties": {
+                "element": {"#": "enumPropertyInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.model.key"},
+                "objectValue": {"<->": "@owner.model.value"},
+                "propertyBlueprint": {"<-": "@owner.model.propertyDescriptor"}
+            }
+        },
+        "inspectorSubstitution": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "inspectorSubstitution"}
+            },
+            "bindings": {
+                "switchValue": {"<-": "@owner._propertyType"}
+            }
+        },
+        "listAssociationInspector": {
+            "prototype": "palette/ui/inspector/blueprint/association-value-type/list-association-inspector.reel",
+            "properties": {
+                "element": {"#": "listAssociationInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.model.key"},
+                "objectValue": {"<->": "@owner.model.value"},
+                "propertyBlueprint": {"<-": "@owner.model.propertyDescriptor"}
+            }
+        },
+        "listPropertyInspector": {
+            "prototype": "palette/ui/inspector/blueprint/property-value-type/list-property-inspector.reel",
+            "properties": {
+                "element": {"#": "listPropertyInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.model.key"},
+                "objectValue": {"<->": "@owner.model.value"},
+                "propertyBlueprint": {"<-": "@owner.model.propertyDescriptor"}
+            }
+        },
+        "mapAssociationInspector": {
+            "prototype": "palette/ui/inspector/blueprint/association-value-type/map-association-inspector.reel",
+            "properties": {
+                "element": {"#": "mapAssociationInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.model.key"},
+                "objectValue": {"<->": "@owner.model.value"},
+                "propertyBlueprint": {"<-": "@owner.model.propertyDescriptor"}
+            }
+        },
+        "mapPropertyInspector": {
+            "prototype": "palette/ui/inspector/blueprint/property-value-type/map-property-inspector.reel",
+            "properties": {
+                "element": {"#": "mapPropertyInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.model.key"},
+                "objectValue": {"<->": "@owner.model.value"},
+                "propertyBlueprint": {"<-": "@owner.model.propertyDescriptor"}
+            }
+        },
+        "numberPropertyInspector": {
+            "prototype": "palette/ui/inspector/blueprint/property-value-type/number-property-inspector.reel",
+            "properties": {
+                "element": {"#": "numberPropertyInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.model.key"},
+                "objectValue": {"<->": "@owner.model.value"},
+                "propertyBlueprint": {"<-": "@owner.model.propertyDescriptor"}
+            }
+        },
+        "objectAssociationInspector": {
+            "prototype": "palette/ui/inspector/blueprint/association-value-type/object-association-inspector.reel",
+            "properties": {
+                "element": {"#": "objectAssociationInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.model.key"},
+                "objectValue": {"<->": "@owner.model.value"},
+                "propertyBlueprint": {"<-": "@owner.model.propertyDescriptor"}
+            }
+        },
+        "objectPropertyInspector": {
+            "prototype": "palette/ui/inspector/blueprint/property-value-type/object-property-inspector.reel",
+            "properties": {
+                "element": {"#": "objectPropertyInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.model.key"},
+                "objectValue": {"<->": "@owner.model.value"},
+                "propertyBlueprint": {"<-": "@owner.model.propertyDescriptor"}
+            }
+        },
+        "setAssociationInspector": {
+            "prototype": "palette/ui/inspector/blueprint/association-value-type/set-association-inspector.reel",
+            "properties": {
+                "element": {"#": "setAssociationInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.model.key"},
+                "objectValue": {"<->": "@owner.model.value"},
+                "propertyBlueprint": {"<-": "@owner.model.propertyDescriptor"}
+            }
+        },
+        "setPropertyInspector": {
+            "prototype": "palette/ui/inspector/blueprint/property-value-type/set-property-inspector.reel",
+            "properties": {
+                "element": {"#": "setPropertyInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.model.key"},
+                "objectValue": {"<->": "@owner.model.value"},
+                "propertyBlueprint": {"<-": "@owner.model.propertyDescriptor"}
+            }
+        },
+        "stringPropertyInspector": {
+            "prototype": "palette/ui/inspector/blueprint/property-value-type/string-property-inspector.reel",
+            "properties": {
+                "element": {"#": "stringPropertyInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.model.key"},
+                "objectValue": {"<->": "@owner.model.value"},
+                "propertyBlueprint": {"<-": "@owner.model.propertyDescriptor"}
+            }
+        },
+
+        "urlPropertyInspector": {
+            "prototype": "palette/ui/inspector/blueprint/property-value-type/url-property-inspector.reel",
+            "properties": {
+                "element": {"#": "urlPropertyInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "label": {"<-": "@owner.model.key"},
+                "objectValue": {"<->": "@owner.model.value"},
+                "propertyBlueprint": {"<-": "@owner.model.propertyDescriptor"}
+            }
+        },
+
+        "resourcePropertyInspector": {
+            "prototype": "palette/ui/inspector/blueprint/property-value-type/resource-property-inspector.reel",
+            "properties": {
+                "element": {"#": "resourcePropertyInspector"},
+                "readOnlyLabel": true
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "objectValue": {"<->": "@owner.model.value"},
+                "propertyBlueprint": {"<-": "@owner.model.propertyDescriptor"},
+                "label": {"<-": "@owner.model.key"}
+            }
+        },
+
+        "deleteButtonCondition": {
+            "prototype": "montage/ui/condition.reel",
+            "properties": {
+                "element": {"#": "deleteButtonCondition"}
+            },
+            "bindings": {
+                "condition": {"<-": "@owner.isPropertyCustom"}
+            }
+        },
+        "deleteButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "deleteButton"},
+                "label": "-"
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+
+    }
+    </script>
+</head>
+<body>
+    <label data-montage-id="property-editor" class="PropertyEditor" title="">
+        <div data-montage-id="bindingButtonSubstitution" class="PropertyEditor-bindingButtonSubstitution">
+            <button data-arg="unbound" data-montage-id="defineBindingButton" title="Define a binding for this property" class="PropertyEditor-bindingButton PropertyEditor-bindingButton--define">
+                <i class="PropertyEditor-bindingIcon PropertyEditor-bindingIcon--define"></i>
+            </button>
+            <button data-arg="bound" data-montage-id="cancelBindingButton" title="Revert binding" class="PropertyEditor-bindingButton PropertyEditor-bindingButton--cancel">
+                <i class="PropertyEditor-bindingIcon PropertyEditor-bindingIcon--cancel"></i>
+            </button>
+        </div>
+        <div data-montage-id="inspectorSubstitution">
+            <div data-arg="binding" data-montage-id="boundPropertyInspector"></div>
+            <div data-arg="object-association" data-montage-id="objectAssociationInspector"></div>
+            <div data-arg="list-association" data-montage-id="listAssociationInspector"></div>
+            <div data-arg="set-association" data-montage-id="setAssociationInspector"></div>
+            <div data-arg="map-association" data-montage-id="mapAssociationInspector"></div>
+            <div data-arg="boolean-property" data-montage-id="booleanPropertyInspector"></div>
+            <div data-arg="date-property" data-montage-id="datePropertyInspector"></div>
+            <div data-arg="enum-property" data-montage-id="enumPropertyInspector"></div>
+            <div data-arg="number-property" data-montage-id="numberPropertyInspector"></div>
+            <div data-arg="object-property" data-montage-id="objectPropertyInspector"></div>
+            <div data-arg="string-property" data-montage-id="stringPropertyInspector"></div>
+            <div data-arg="url-property" data-montage-id="urlPropertyInspector"></div>
+            <div data-arg="list-property" data-montage-id="listPropertyInspector"></div>
+            <div data-arg="set-property" data-montage-id="setPropertyInspector"></div>
+            <div data-arg="map-property" data-montage-id="mapPropertyInspector"></div>
+            <div data-arg="resource-property" data-montage-id="resourcePropertyInspector"></div>
+        </div>
+        <div data-montage-id="deleteButtonCondition" class="PropertyEditor-deleteButtonCondition">
+            <div data-montage-id="deleteButton" class="PropertyEditor-deleteButton"></div>
+        </div>
+    </label>
+</body>
+</html>

@@ -1,0 +1,38 @@
+.PropertyGroupEditor {
+    font-size: 12px;
+}
+
+.PropertyGroupEditor-toggle {
+	padding: 4px 10px;
+	color: hsl(0,0%,40%);
+	background: hsl(0,0%,90%);
+	border-top: 1px solid hsla(0,0%,100%,.5);
+	border-bottom: 1px solid hsla(0,0%,0%,.08);
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+}
+
+.PropertyGroupEditor-toggle:hover {
+	background: hsl(0,0%,92%);
+}
+
+.PropertyGroupEditor-toggle:active {
+	background: hsl(0,0%,88%);
+}
+
+.PropertyGroupEditor-toggle:focus {
+	outline: none;
+}
+
+.PropertyGroupEditor-name {
+	flex: 1;
+}
+
+.PropertyGroupEditor .propertyList {
+
+}

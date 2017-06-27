@@ -5,6 +5,7 @@
 */
 var Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
+    PropertyModel = require("core/property-model").PropertyModel,
     RangeController = require("montage/core/range-controller").RangeController;
 
 /**
@@ -98,24 +99,65 @@ exports.PropertyExplorer = Component.specialize( /** @lends module:"ui/configura
             return this._objectBlueprint;
         },
         set: function (value) {
-            if (this._objectBlueprint !== value) {
-                this._objectBlueprint = value;
-                if (value !== null) {
-                    // we could create a binding to the propertyBlueprintGroups,
-                    // but at the moment I'm not expecting the component blueprint
-                    // to change at runtime
-                    var standardGroups = value.propertyDescriptorGroups.map(function (groupName, index) {
-                        return {
-                            name: groupName,
-                            properties: value.propertyDescriptorGroupForName(groupName),
-                            open: index === 0
-                        };
-                    });
-                    this.propertyGroupsController.content = [{
-                        name: "Custom"
-                    }].concat(standardGroups);
-                }
+            var self = this,
+                parentGroups = new Set(),
+                groups,
+                isObjectOwner;
+            if (this._objectBlueprint === value) {
+                return;
             }
+            this._objectBlueprint = value;
+            if (value === null) {
+                return;
+            }
+            isObjectOwner = this.object === this.editingDocument.templateObjectsTree.templateObject;
+            if (value.parent) {
+                parentGroups.addEach(value.parent.propertyDescriptorGroups);
+            }
+            // we could create a binding to the propertyBlueprintGroups,
+            // but at the moment I'm not expecting the component blueprint
+            // to change at runtime
+            groups = value.propertyDescriptorGroups.map(function (groupName, index) {
+                return {
+                    name: groupName,
+                    properties: value.propertyDescriptorGroupForName(groupName).map(function (property) {
+                        return new PropertyModel(self.object, value, property.name);
+                    }),
+                    open: index === 0,
+                    isCustomizable: isObjectOwner && !parentGroups.has(groupName)
+                };
+            });
+            if (!isObjectOwner) {
+                groups.unshift({
+                    name: "Custom",
+                    isCustomizable: true,
+                    properties: this.customPropertyKeys.map(function (key) {
+                        return new PropertyModel(self.object, value, key);
+                    })
+                });
+            }
+            this.propertyGroupsController.content = groups;
+        }
+    },
+
+    /**
+     * String keys of all the properties and bindings defined on the current
+     * object that are not defined in the object's blueprint.
+     *
+     * @type {Array<String>}
+     */
+    customPropertyKeys: {
+        get: function () {
+            var describedKeys = this.objectBlueprint.propertyDescriptors.map(function (descriptor) {
+                return descriptor.name;
+            });
+            var propertyKeys = this.object.properties.keysArray();
+            var bindingKeys = this.object.bindings.map(function (bindingModel) {
+                return bindingModel.key;
+            });
+            return propertyKeys.concat(bindingKeys).filter(function (key) {
+                return describedKeys.indexOf(key) === -1;
+            });
         }
     },
 

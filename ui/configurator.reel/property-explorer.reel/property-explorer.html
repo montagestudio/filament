@@ -87,7 +87,7 @@
         },
 
         "propertyGroup": {
-            "prototype": "palette/ui/inspector/blueprint/property-group-editor.reel",
+            "prototype": "./property-group-editor.reel",
             "properties": {
                 "element": {"#": "propertyGroup"}
             },
@@ -98,7 +98,8 @@
                 "object": {"<-": "@owner.object"},
                 "name": {"<-": "@propertyGroups:iteration.object.name"},
                 "properties": {"<-": "@propertyGroups:iteration.object.properties"},
-                "open": {"<-": "@propertyGroups:iteration.object.open"}
+                "open": {"<-": "@propertyGroups:iteration.object.open"},
+                "isCustomizable": {"<-": "@propertyGroups:iteration.object.isCustomizable"}
             }
         }
 
