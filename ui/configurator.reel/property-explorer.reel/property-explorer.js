@@ -191,16 +191,6 @@ exports.PropertyExplorer = Component.specialize( /** @lends module:"ui/configura
         }
     },
 
-    //TODO wait for the change to be considered committed, this action happens on every character change
-    handlePropertyInspectorChange: {
-        value: function (evt) {
-            var detail = evt.detail;
-            if (this.object) {
-                this.editingDocument.setOwnedObjectProperty(this.object, detail.propertyName, detail.value);
-            }
-        }
-    },
-
     handleLabelFieldAction : {
         value: function (evt) {
             if (this.object) {

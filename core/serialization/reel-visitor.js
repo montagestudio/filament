@@ -128,7 +128,7 @@ exports.ReelVisitor = ProxyVisitor.specialize({
                     output.trace = true;
                 }
 
-                outputs[binding.targetPath] = output;
+                outputs[binding.key] = output;
                 hasBindings = true;
             });
 

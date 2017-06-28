@@ -186,7 +186,7 @@ exports.PropertyModel = Montage.specialize({
     delete: {
         value: function () {
             this.cancelBinding();
-            this.targetObject.deleteObjectProperty(this.key);
+            this.targetObject.editingDocument.deleteOwnedObjectProperty(this.targetObject, this.key);
         }
     },
 
@@ -202,13 +202,12 @@ exports.PropertyModel = Montage.specialize({
 
     /**
      * Cancels an existing binding for this property, reverting it to an
-     * unbound property. Does nothing if there is no binding to cancel or if
-     * the binding is complex.
+     * unbound property. Does nothing if there is no binding to cancel.
      */
     cancelBinding: {
         value: function () {
-            if (this.isBound && !this.isKeyComplex) {
-                this.targetObject.cancelObjectBinding(this.bindingModel);
+            if (this.isBound) {
+                this.targetObject.editingDocument.cancelOwnedObjectBinding(this.targetObject, this.bindingModel);
             }
         }
     }
