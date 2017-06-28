@@ -107,6 +107,10 @@ exports.PropertyExplorer = Component.specialize( /** @lends module:"ui/configura
                 return;
             }
             this._objectBlueprint = value;
+            if (this._cancelPropertiesListener) {
+                this._cancelPropertiesListener();
+                this._cancelPropertiesListener = void 0;
+            }
             if (value === null) {
                 return;
             }
@@ -128,13 +132,32 @@ exports.PropertyExplorer = Component.specialize( /** @lends module:"ui/configura
                 };
             });
             if (!isObjectOwner) {
+                var describedPropertyKeys = this.objectBlueprint.propertyDescriptors.map(function (descriptor) {
+                    return descriptor.name
+                });
+                var customProperties = [];
                 groups.unshift({
                     name: "Custom",
                     isCustomizable: true,
-                    properties: this.customPropertyKeys.map(function (key) {
-                        return new PropertyModel(self.object, value, key);
-                    })
+                    properties: customProperties
                 });
+                this._cancelPropertiesListener = this.object.addRangeAtPathChangeListener(
+                    "properties.keysArray().concat(bindings.map{key}).sortedSet{this}",
+                    function (plus, minus) {
+                        plus.forEach(function (key) {
+                            if (describedPropertyKeys.indexOf(key) === -1) {
+                                customProperties.push(new PropertyModel(self.object, self._objectBlueprint, key));
+                            }
+                        });
+                        minus.forEach(function (key) {
+                            for (var i = 0; i < customProperties.length; ++i) {
+                                if (customProperties[i].key === key) {
+                                    customProperties.splice(i, 1);
+                                }
+                            }
+                        });
+                    }
+                );
             }
             this.propertyGroupsController.content = groups;
         }

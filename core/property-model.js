@@ -26,20 +26,6 @@ exports.PropertyModel = Montage.specialize({
     },
 
     /**
-     * The descriptor of the target object itself (not the property).
-     *
-     * @type {ObjectDescriptor}
-     */
-    targetObjectDescriptor: {
-        get: function () {
-            return this._targetObjectDescriptor;
-        },
-        set: function (value) {
-            this._targetObjectDescriptor = value;
-        }
-    },
-
-    /**
      * The name of the property, or the targetPath if the property is bound.
      *
      * @readonly
@@ -93,12 +79,11 @@ exports.PropertyModel = Montage.specialize({
             return this._value;
         },
         set: function (value) {
-            if (this._value !== value && typeof value !== "undefined") {
-                if (!(this._propertyDescriptor && this._propertyDescriptor.readOnly)) {
-                    this.targetObject.editingDocument.setOwnedObjectProperty(this.targetObject, this._key, value);
-                }
+            if (value === this._value) {
+                return;
             }
             this._value = value;
+            this.commit();
         }
     },
 
@@ -117,13 +102,10 @@ exports.PropertyModel = Montage.specialize({
      * "foo + bar": complex
      * "foo.filter{^baz == ban}": complex
      *
-     * @readonly
      * @type {Boolean}
      */
     isKeyComplex: {
-        get: function () {
-            return !(/^[A-Za-z]+\w*$/.test(this.key));
-        }
+        value: null
     },
 
     /**
@@ -149,19 +131,25 @@ exports.PropertyModel = Montage.specialize({
      */
     constructor: {
         value: function PropertyModel(targetObject, targetObjectDescriptor, key) {
+            var self = this;
             this.super();
 
             this.targetObject = targetObject;
-            this.targetObjectDescriptor = targetObjectDescriptor;
             this._key = key;
-            if (this.targetObjectDescriptor) {
-                this._propertyDescriptor = this.targetObjectDescriptor.propertyDescriptorForName(key);
+            if (targetObjectDescriptor) {
+                this._propertyDescriptor = targetObjectDescriptor.propertyDescriptorForName(key);
             }
             this.defineBinding("targetPath", {
                 "<-": "key"
             });
             this.defineBinding("isCustom", {
                 "<-": "!propertyDescriptor"
+            });
+            this.defineBinding("isKeyComplex", {
+                "<-": "key",
+                convert: function (k) {
+                    return k.length > 0 && !(/^[A-Za-z]+\w*$/.test(k));
+                }
             });
             this.defineBinding("bindingModel", {
                 "<-": "targetObject.bindings.filter{key == ^key}.0"
@@ -176,6 +164,36 @@ exports.PropertyModel = Montage.specialize({
     _valueChanged: {
         value: function (value) {
             this._value = value;
+        }
+    },
+
+    /**
+     * Applies the property, saving it to its target object's editing document.
+     * This needs to be done to update the target object's serialization.
+     */
+    commit: {
+        value: function () {
+            var self = this,
+                model = this.bindingModel,
+                existingBinding;
+
+            if (this._propertyDescriptor && this._propertyDescriptor.readOnly) {
+                return;
+            }
+
+            if (this.isBound) {
+                existingBinding = this.targetObject.bindings.filter(function (binding) {
+                    return binding.key === self.key;
+                })[0];
+                if (existingBinding) {
+                    return this.targetObject.editingDocument.updateOwnedObjectBinding(this.targetObject, existingBinding, model.key, model.oneway, model.sourcePath, model.converter);
+                } else {
+                    return this.targetObject.editingDocument.defineOwnedObjectBinding(this.targetObject, model.key, model.oneway, model.sourcePath, model.converter);
+                }
+            } else {
+                this.targetObject.editingDocument.setOwnedObjectProperty(this.targetObject, this._key, this.value);
+                return Promise.resolve();
+            }
         }
     },
 
