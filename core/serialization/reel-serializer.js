@@ -1,5 +1,5 @@
 var ReelVisitor = require("./reel-visitor").ReelVisitor;
-var ProxySerializer = require("palette/core/serialization/proxy-serializer").ProxySerializer;
+var ProxySerializer = require("palette/core/serialization/serializer/proxy-serializer").ProxySerializer;
 
 exports.ReelSerializer = ProxySerializer.specialize({
 

@@ -1,5 +1,5 @@
 var Promise = require("montage/core/promise").Promise,
-    ProxyReviver = require("palette/core/serialization/proxy-reviver").ProxyReviver,
+    ProxyReviver = require("palette/core/serialization/deserializer/proxy-reviver").ProxyReviver,
     ReelProxy = require("core/reel-proxy").ReelProxy;
 
 exports.ReelReviver = ProxyReviver.specialize({

@@ -1,4 +1,4 @@
-var ProxyVisitor = require("palette/core/serialization/proxy-visitor").ProxyVisitor;
+var ProxyVisitor = require("palette/core/serialization/serializer/proxy-visitor").ProxyVisitor;
 var BUILDER_UNIT_LABEL = "_dev";
 
 exports.ReelVisitor = ProxyVisitor.specialize({

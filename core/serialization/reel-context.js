@@ -1,4 +1,4 @@
-var ProxyContext = require("palette/core/serialization/proxy-context").ProxyContext;
+var ProxyContext = require("palette/core/serialization/deserializer/proxy-context").ProxyContext;
 
 exports.ReelContext = ProxyContext.specialize({
 
