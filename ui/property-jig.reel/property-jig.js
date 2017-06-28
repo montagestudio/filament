@@ -29,6 +29,9 @@ exports.PropertyJig = Component.specialize({
                     self.model.bound = true;
                 }
             });
+            this.defineBinding("isKeyConflicting", {
+                "<-": "existingPropertyKeys.has(model.key)"
+            });
         }
     },
 
@@ -67,6 +70,10 @@ exports.PropertyJig = Component.specialize({
     },
 
     existingBinding: {
+        value: null
+    },
+
+    existingPropertyKeys: {
         value: null
     },
 

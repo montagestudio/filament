@@ -124,9 +124,12 @@
         },
 
         "value": {
-            "prototype": "montage/ui/text.reel",
+            "prototype": "ui/widgets/autocomplete/autocomplete.reel",
             "properties": {
                 "element": {"#": "value"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.model.value"}
             }
         },
 
@@ -167,11 +170,25 @@
             }
         },
 
+        "errorMessage": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "errorMessage"},
+                "value": "There is already a property defined with the given key."
+            },
+            "bindings": {
+                "classList.has('montage-invisible')": {"<-": "!@owner.isKeyConflicting"}
+            }
+        },
+
         "defineButton": {
             "prototype": "matte/ui/button.reel",
             "properties": {
                 "element": {"#": "defineButton"},
                 "label": "Define"
+            },
+            "bindings": {
+                "disabled": {"<-": "@owner.model.key.length == 0 || @owner.isKeyConflicting"}
             },
             "listeners": [
                 {
@@ -260,6 +277,10 @@
                 </section>
             </div>
         </div>
+
+        <section class="Jig-row">
+            <div data-montage-id="errorMessage"></div>
+        </section>
 
         <footer class="Jig-footer">
             <button data-montage-id="cancelButton" class="Button"></button>

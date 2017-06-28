@@ -230,10 +230,12 @@ exports.ComponentEditor = Editor.specialize({
 
     handleAddProperty: {
         value: function (evt) {
-            var propertyModel = evt.detail.propertyModel;
+            var propertyModel = evt.detail.propertyModel,
+                existingPropertyKeys = evt.detail.existingPropertyKeys;
             this.propertyJig.isToggleBindingDisabled = false;
             this.propertyJig.model = propertyModel;
             this.propertyJig.existingBinding = void 0;
+            this.propertyJig.existingPropertyKeys = existingPropertyKeys;
             this.propertyOverlay.show();
         }
     },
@@ -242,6 +244,7 @@ exports.ComponentEditor = Editor.specialize({
         value: function (evt) {
             var bindingModel = evt.detail.bindingModel,
                 existingBinding = evt.detail.existingBinding,
+                existingPropertyKeys = evt.detail.existingPropertyKeys,
                 bindingJig,
                 overlay;
 
@@ -254,6 +257,7 @@ exports.ComponentEditor = Editor.specialize({
             }
 
             bindingJig.isToggleBindingDisabled = true;
+            bindingJig.existingPropertyKeys = existingPropertyKeys;
 
             overlay = this.templateObjects.bindingOverlay;
 //            overlay.anchor = evt.target.element; //TODO when anchoring works well inside this scrollview

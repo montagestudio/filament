@@ -20,6 +20,10 @@ exports.PropertyGroupEditor = Component.specialize(/** @lends module:"./property
         value: null
     },
 
+    objectBlueprint: {
+        value: null
+    },
+
     name: {
         value: null
     },
@@ -57,8 +61,12 @@ exports.PropertyGroupEditor = Component.specialize(/** @lends module:"./property
                 targetObject: this.object,
                 bound: false
             };
+            var existingPropertyKeys = this.objectBlueprint.propertyDescriptors.map(function (descriptor) {
+                return descriptor.name;
+            }).concat(this.object.properties.keysArray());
             this.dispatchEventNamed("addProperty", true, false, {
-                propertyModel: propertyModel
+                propertyModel: propertyModel,
+                existingPropertyKeys: existingPropertyKeys
             });
         }
     }
