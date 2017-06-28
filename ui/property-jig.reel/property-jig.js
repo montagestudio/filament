@@ -14,6 +14,24 @@ exports.PropertyJig = Component.specialize({
         value: true
     },
 
+    constructor: {
+        value: function PropertyJig() {
+            var self = this;
+            this.super();
+            this.defineBinding("isKeyComplex", {
+                "<-": "model.key",
+                convert: function (k) {
+                    return !!k && k.length > 0 && !(/^[A-Za-z]+\w*$/.test(k))
+                }
+            });
+            this.addPathChangeListener("isKeyComplex", function (value) {
+                if (value) {
+                    self.model.bound = true;
+                }
+            });
+        }
+    },
+
     enterDocument: {
         value: function () {
 

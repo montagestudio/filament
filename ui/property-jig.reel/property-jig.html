@@ -54,7 +54,7 @@
             },
             "bindings": {
                 "checked": {"<->": "@owner.model.bound"},
-                "disabled": {"<-": "@owner.isToggleBindingDisabled"}
+                "disabled": {"<-": "@owner.isToggleBindingDisabled || @owner.isKeyComplex"}
             }
         },
 
