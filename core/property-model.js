@@ -203,7 +203,9 @@ exports.PropertyModel = Montage.specialize({
      */
     delete: {
         value: function () {
-            this.cancelBinding();
+            if (this.isBound) {
+                this.targetObject.editingDocument.cancelOwnedObjectBinding(this.targetObject, this.bindingModel);
+            }
             this.targetObject.editingDocument.deleteOwnedObjectProperty(this.targetObject, this.key);
         }
     },
@@ -219,13 +221,20 @@ exports.PropertyModel = Montage.specialize({
     },
 
     /**
-     * Cancels an existing binding for this property, reverting it to an
-     * unbound property. Does nothing if there is no binding to cancel.
+     * Cancels an existing binding for this property. Does nothing if there is
+     * no binding to cancel. If the target object does not have an unbound
+     * property already defined, cancelling the binding will create one with the
+     * property's default value.
      */
     cancelBinding: {
         value: function () {
-            if (this.isBound) {
-                this.targetObject.editingDocument.cancelOwnedObjectBinding(this.targetObject, this.bindingModel);
+            if (!this.isBound) {
+                return;
+            }
+            this.targetObject.editingDocument.cancelOwnedObjectBinding(this.targetObject, this.bindingModel);
+            if (typeof this.targetObject.getObjectProperty(this.key) === "undefined") {
+                var defaultValue = this._propertyDescriptor ? this._propertyDescriptor.defaultValue : "";
+                this.targetObject.editingDocument.setOwnedObjectProperty(this.targetObject, this.key, defaultValue);
             }
         }
     }
