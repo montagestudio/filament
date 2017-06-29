@@ -13,7 +13,6 @@
                 "properties": {
                     "element": {"#": "configurator"},
                     "propertiesTab": {"@": "propertiesTab"},
-                    "bindingsTab": {"@": "bindingsTab"},
                     "listenersTab": {"@": "listenersTab"},
                     "methodsTab": {"@": "methodsTab"},
                     "styleTab": {"@": "styleTab"}
@@ -78,29 +77,6 @@
                 }
             },
 
-            "bindingsTab": {
-                "prototype": "matte/ui/radio-button.reel",
-                "properties": {
-                    "element": {"#": "bindingsTab"},
-                    "radioButtonController": {"@": "tabController"},
-                    "value": "bindings"
-                },
-                "bindings": {
-                    "enabled": {"<-": "@owner.reelProxy.defined()"}
-                }
-            },
-
-            "bindingInspector": {
-                "prototype": "./binding-explorer.reel",
-                "properties": {
-                    "element": {"#": "bindingInspector"}
-                },
-                "bindings": {
-                    "editingDocument": {"<-": "@owner.editingDocument"},
-                    "templateObject": {"<-": "@owner.reelProxy"}
-                }
-            },
-
             "listenersTab": {
                 "prototype": "matte/ui/radio-button.reel",
                 "properties": {
@@ -155,7 +131,6 @@
     <aside id="configurator" data-montage-id="configurator" class="Panel Configurator">
         <nav class="Configurator-tabs">
             <div data-montage-id="propertiesTab" class="Configurator-tab">Properties</div>
-            <div data-montage-id="bindingsTab" class="Configurator-tab">Bindings</div>
             <div data-montage-id="listenersTab" class="Configurator-tab">Listeners</div>
             <div data-montage-id="methodsTab" class="Configurator-tab">Methods</div>
             <div data-montage-id="styleTab" class="Configurator-tab">Style</div>
@@ -164,7 +139,6 @@
             <div data-arg="properties" data-montage-id="inspector-condition" class="Configurator-inspectorCondition">
                 <div data-montage-id="propertyInspector"></div>
             </div>
-            <div data-arg="bindings" data-montage-id="bindingInspector"></div>
             <div data-arg="listeners" data-montage-id="listenerExplorer"></div>
         </div>
     </aside>

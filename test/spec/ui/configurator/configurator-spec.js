@@ -44,16 +44,8 @@ TestPageLoader.queueTest("configurator-test", function(testPage) {
             expect(propertiesTab.innerHTML.toLowerCase()).toContain("properties");
         });
 
-        it("has a bindings tab", function () {
-            var bindingsTab = testPage.document.querySelector("#configurator nav div:nth-child(2)");
-            bindingsTab.dispatchEvent(new MouseEvent("click"));
-
-            expect(bindingsTab).toBeTruthy();
-            expect(bindingsTab.innerHTML.toLowerCase()).toContain("bindings");
-        });
-
         it("has a listeners tab", function () {
-            var listenersTab = testPage.document.querySelector("#configurator nav div:nth-child(3)");
+            var listenersTab = testPage.document.querySelector("#configurator nav div:nth-child(2)");
             listenersTab.dispatchEvent(new MouseEvent("click"));
 
             expect(listenersTab).toBeTruthy();
@@ -61,7 +53,7 @@ TestPageLoader.queueTest("configurator-test", function(testPage) {
         });
 
         it("has a methods tab", function () {
-            var methodsTab = testPage.document.querySelector("#configurator nav div:nth-child(4)");
+            var methodsTab = testPage.document.querySelector("#configurator nav div:nth-child(3)");
             methodsTab.dispatchEvent(new MouseEvent("click"));
 
             expect(methodsTab).toBeTruthy();
@@ -69,7 +61,7 @@ TestPageLoader.queueTest("configurator-test", function(testPage) {
         });
 
         it("has a style tab", function () {
-            var styleTab = testPage.document.querySelector("#configurator nav div:nth-child(5)");
+            var styleTab = testPage.document.querySelector("#configurator nav div:nth-child(4)");
             styleTab.dispatchEvent(new MouseEvent("click"));
 
             expect(styleTab).toBeTruthy();
