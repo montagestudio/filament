@@ -33,6 +33,10 @@
     background-color: #e5e5e5;
 }
 
+.PropertyEditor-inspector {
+    flex: 1;
+}
+
 /* Property ---------------------- */
 
 .Property {
@@ -115,6 +119,13 @@
 
 .PropertyEditor-bindingButtonSubstitution, .PropertyEditor-deleteButtonCondition {
     visibility: hidden;
+    width: 24px;
+    height: 24px;
+}
+
+.PropertyEditor-deleteButtonCondition.montage-invisible {
+    display: block;
+    visibility: hidden !important;
 }
 
 .PropertyEditor.mouseOver .PropertyEditor-bindingButtonSubstitution, .PropertyEditor.mouseOver .PropertyEditor-deleteButtonCondition {
