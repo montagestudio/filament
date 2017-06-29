@@ -19,7 +19,17 @@ exports.PropertyEditorTest = Component.specialize({
                     "customPropertyB": {"<-": "'def'"},
                     "complex.binding": {"<-": "'ghi'"}
                 }
-            }, "spec/ui/configurator.reel/property-editor/target-object", {});
+            }, "spec/ui/configurator.reel/property-editor/target-object", {
+                setOwnedObjectProperty: function (proxy, property, value) {
+                    proxy.setObjectProperty(property, value);
+                },
+                deleteOwnedObjectProperty: function (proxy, property) {
+                    proxy.deleteObjectProperty(property);
+                },
+                cancelOwnedObjectBinding: function (proxy, binding) {
+                    proxy.cancelObjectBinding(binding);
+                }
+            });
             object.blueprint.then(function (blueprint) {
                 self.propertyA = new PropertyModel(self.proxy, blueprint, "propertyA");
                 self.propertyB = new PropertyModel(self.proxy, blueprint, "propertyB");

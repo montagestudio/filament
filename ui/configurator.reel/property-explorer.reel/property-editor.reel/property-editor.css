@@ -125,7 +125,6 @@
 
 .PropertyEditor-deleteButtonCondition.montage-invisible {
     display: block;
-    visibility: hidden !important;
 }
 
 .PropertyEditor.mouseOver .PropertyEditor-bindingButtonSubstitution, .PropertyEditor.mouseOver .PropertyEditor-deleteButtonCondition {
