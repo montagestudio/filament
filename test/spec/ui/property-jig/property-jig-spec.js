@@ -71,15 +71,14 @@ TestPageLoader.queueTest("property-jig-test", function(testPage) {
                     sourcePath: "alternatePath",
                     oneway: false
                 };
-                spyOn(test.editingDocument, "updateOwnedObjectBinding").and.callThrough();
+                spyOn(test.editingDocument, "defineOwnedObjectBinding").and.callThrough();
                 propertyJig.handleDefineButtonAction();
-                expect(test.editingDocument.updateOwnedObjectBinding).toHaveBeenCalled();
-                expect(test.editingDocument.updateOwnedObjectBinding.calls.argsFor(0)[0]).toBe(object);
-                expect(test.editingDocument.updateOwnedObjectBinding.calls.argsFor(0)[1]).toBe(propertyJig.existingBinding);
-                expect(test.editingDocument.updateOwnedObjectBinding.calls.argsFor(0)[2]).toBe("targetPath");
-                expect(test.editingDocument.updateOwnedObjectBinding.calls.argsFor(0)[3]).toBe(true);
-                expect(test.editingDocument.updateOwnedObjectBinding.calls.argsFor(0)[4]).toBe("sourcePath");
-                expect(test.editingDocument.updateOwnedObjectBinding.calls.argsFor(0)[5]).toBeFalsy();
+                expect(test.editingDocument.defineOwnedObjectBinding).toHaveBeenCalled();
+                expect(test.editingDocument.defineOwnedObjectBinding.calls.argsFor(0)[0]).toBe(object);
+                expect(test.editingDocument.defineOwnedObjectBinding.calls.argsFor(0)[1]).toBe("targetPath");
+                expect(test.editingDocument.defineOwnedObjectBinding.calls.argsFor(0)[2]).toBe(true);
+                expect(test.editingDocument.defineOwnedObjectBinding.calls.argsFor(0)[3]).toBe("sourcePath");
+                expect(test.editingDocument.defineOwnedObjectBinding.calls.argsFor(0)[4]).toBeFalsy();
             });
         });
     });

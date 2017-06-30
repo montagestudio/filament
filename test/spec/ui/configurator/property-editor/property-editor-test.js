@@ -26,8 +26,8 @@ exports.PropertyEditorTest = Component.specialize({
                 deleteOwnedObjectProperty: function (proxy, property) {
                     proxy.deleteObjectProperty(property);
                 },
-                cancelOwnedObjectBinding: function (proxy, binding) {
-                    proxy.cancelObjectBinding(binding);
+                cancelOwnedObjectBinding: function (proxy, key) {
+                    proxy.cancelObjectBinding(key);
                 }
             });
             object.blueprint.then(function (blueprint) {

@@ -14,10 +14,7 @@ exports.PropertyJigTest = TestController.specialize({
             },
             defineOwnedObjectBinding: function (proxy, targetPath, oneway, sourcePath, converter) {
                 return Promise.resolve();
-            },
-            updateOwnedObjectBinding: function (proxy, existingBinding, targetpath, oneway, sourcePath, converter) {
-                return Promise.resolve();
-            },
+            }
         }
     }
 });

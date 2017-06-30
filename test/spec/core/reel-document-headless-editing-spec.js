@@ -526,35 +526,35 @@ describe("core/reel-document-headless-editing-spec", function () {
 
     describe("removing bindings", function () {
 
-        it ("should remove the binding from the specified object", function () {
-            return reelDocumentPromise.then(function (reelDocument) {
+        it ("should remove the binding from the specified object", function (done) {
+            reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
                 var binding = targetProxy.bindings[0];
 
-                reelDocument.cancelOwnedObjectBinding(targetProxy, binding);
+                reelDocument.cancelOwnedObjectBinding(targetProxy, binding.key);
 
-                expect(targetProxy.bindings.indexOf(binding) === -1).toBeTruthy();
+                expect(targetProxy.bindings.indexOf(binding)).toBe(-1);
 
-            }).timeout(WAITSFOR_TIMEOUT);
+            }).then(done);
         });
 
-        it ("should register an undoable operation for the removal of a binding", function () {
+        it ("should register an undoable operation for the removal of a binding", function (done) {
             return reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
                 var binding = targetProxy.bindings[0];
 
-                reelDocument.cancelOwnedObjectBinding(targetProxy, binding);
+                reelDocument.cancelOwnedObjectBinding(targetProxy, binding.key);
                 expect(reelDocument.undoManager.undoCount).toBe(1);
 
-            }).timeout(WAITSFOR_TIMEOUT);
+            }).then(done);
         });
 
-        it ("should undo the removal of a binding by restoring the same binding", function () {
+        it ("should undo the removal of a binding by restoring the same binding", function (done) {
             return reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
                 var binding = targetProxy.bindings[0];
 
-                reelDocument.cancelOwnedObjectBinding(targetProxy, binding);
+                reelDocument.cancelOwnedObjectBinding(targetProxy, binding.key);
                 return reelDocument.undo().then(function (definedBinding) {
                     expect(definedBinding).toBe(binding);
                     expect(definedBinding.targetPath).toBe(binding.targetPath);
@@ -563,43 +563,26 @@ describe("core/reel-document-headless-editing-spec", function () {
                     expect(definedBinding.converter).toBe(binding.converter);
                 });
 
-            }).timeout(WAITSFOR_TIMEOUT);
-        });
-
-        it ("should undo the removal of a binding by restoring the same binding at the same index", function () {
-            return reelDocumentPromise.then(function (reelDocument) {
-                var targetProxy = reelDocument.editingProxyMap.foo;
-                var binding = targetProxy.bindings[0];
-
-                //Pad the bindings collection
-                targetProxy.bindings.push("foo");
-                targetProxy.bindings.push("bar");
-
-                reelDocument.cancelOwnedObjectBinding(targetProxy, binding);
-                return reelDocument.undo().then(function (definedBinding) {
-                    expect(targetProxy.bindings.indexOf(definedBinding)).toBe(0);
-                });
-
-            }).timeout(WAITSFOR_TIMEOUT);
+            }).then(done);
         });
 
         describe("when considering a series of undoable operations", function () {
 
-            it ("should successfully perform an editing undo after undoing the removal of a binding", function () {
+            it ("should successfully perform an editing undo after undoing the removal of a binding", function (done) {
                 return reelDocumentPromise.then(function (reelDocument) {
                     var targetProxy = reelDocument.editingProxyMap.foo;
                     var binding = targetProxy.bindings[0];
                     var newconverter = reelDocument.editingProxyMap.newconverter;
 
                     //Perform some edits that will be undoable
-                    reelDocument.updateOwnedObjectBinding(targetProxy, binding, "newTargetPath", false, "newSourcePath", newconverter);
+                    reelDocument.defineOwnedObjectBinding(targetProxy, "targetValue", false, "newSourcePath", newconverter);
 
                     //Remove the binding that's been edited, this will be undone shortly
-                    reelDocument.cancelOwnedObjectBinding(targetProxy, binding);
+                    reelDocument.cancelOwnedObjectBinding(targetProxy, "targetValue");
 
                     return reelDocument.undo().then(function (definedBinding) {
                         //Binding should look as it did before the removal
-                        expect(definedBinding.targetPath).toBe("newTargetPath");
+                        expect(definedBinding.targetPath).toBe("targetValue");
                         expect(definedBinding.oneway).toBe(false);
                         expect(definedBinding.sourcePath).toBe("newSourcePath");
                         expect(definedBinding.converter).toBe(newconverter);
@@ -612,21 +595,20 @@ describe("core/reel-document-headless-editing-spec", function () {
                             expect(definedBinding.converter).toBeUndefined();
                         });
                     });
-
-                }).timeout(WAITSFOR_TIMEOUT);
+                }).then(done);
             });
 
-            it("should not create a new binding to as a result of undoing edits to a undoing the removal of a binding", function () {
+            it("should not create a new binding to as a result of undoing edits to a undoing the removal of a binding", function (done) {
                 return reelDocumentPromise.then(function (reelDocument) {
                     var targetProxy = reelDocument.editingProxyMap.foo;
                     var binding = targetProxy.bindings[0];
                     var expectedBindingCount = targetProxy.bindings.length;
 
                     //Perform some edits that will be undoable
-                    reelDocument.updateOwnedObjectBinding(targetProxy, binding, "newTargetPath", false, "newSourcePath", "newconverter");
+                    reelDocument.defineOwnedObjectBinding(targetProxy, "targetValue", false, "newSourcePath", "newconverter");
 
                     //Remove the binding that's been edited, this will be undone shortly
-                    reelDocument.cancelOwnedObjectBinding(targetProxy, binding);
+                    reelDocument.cancelOwnedObjectBinding(targetProxy, "targetValue");
 
                     return reelDocument.undo().then(function (definedBinding) {
                         expect(targetProxy.bindings.length).toBe(expectedBindingCount);
@@ -635,11 +617,9 @@ describe("core/reel-document-headless-editing-spec", function () {
                         });
                     });
 
-                }).timeout(WAITSFOR_TIMEOUT);
+                }).then(done);
             });
-
         });
-
     });
 
     describe("defining bindings", function () {
@@ -653,60 +633,47 @@ describe("core/reel-document-headless-editing-spec", function () {
             converter = "";
         });
 
-        it ("should define the binding with the expected properties", function () {
-            return reelDocumentPromise.then(function (reelDocument) {
+        it ("should define the binding with the expected properties", function (done) {
+            reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
 
-                var bindingPromise = reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter);
+                var binding = reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter);
 
-                bindingPromise.then(function(binding) {
-                    expect(binding.targetPath).toBe(targetPath);
-                    expect(binding.oneway).toBe(oneway);
-                    expect(binding.sourcePath).toBe(sourcePath);
-                    expect(binding.converter).toBe(converter);
-                });
-
-                return bindingPromise.done();
-
-            }).timeout(WAITSFOR_TIMEOUT);
+                expect(binding.targetPath).toBe(targetPath);
+                expect(binding.oneway).toBe(oneway);
+                expect(binding.sourcePath).toBe(sourcePath);
+                expect(binding.converter).toBe(converter);
+            }).then(done);
         });
 
-        it ("should define the binding on the specified object", function () {
+        it ("should define the binding on the specified object", function (done) {
             return reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
-                var bindingPromise = reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter);
-                bindingPromise.then(function(binding) {
-                    expect(targetProxy.bindings.indexOf(binding) === -1).toBeFalsy();
-                });
-                return bindingPromise.done();
+                var binding = reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter);
 
-            }).timeout(WAITSFOR_TIMEOUT);
+                expect(targetProxy.bindings.indexOf(binding) === -1).toBeFalsy();
+            }).then(done);
         });
 
 
-        it ("should register an undoable operation for the defining of a binding", function () {
+        it ("should register an undoable operation for the defining of a binding", function (done) {
             return reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
-                return reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter).then(function(binding) {
-                    expect(reelDocument.undoManager.undoCount).toBe(1);
-                }).done();
-            }).timeout(WAITSFOR_TIMEOUT);
+                reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter)
+                expect(reelDocument.undoManager.undoCount).toBe(1);
+            }).then(done);
         });
 
-        it ("should undo the defining of a binding by removing that binding", function () {
+        it ("should undo the defining of a binding by removing that binding", function (done) {
             return reelDocumentPromise.then(function (reelDocument) {
                 var targetProxy = reelDocument.editingProxyMap.foo;
-                var bindingPromise = reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter);
+                var binding = reelDocument.defineOwnedObjectBinding(targetProxy, targetPath, oneway, sourcePath, converter);
 
-                bindingPromise.then(function(binding) {
-                    return reelDocument.undo().then(function (deletedBinding) {
-                        expect(deletedBinding).toBe(binding);
-                        expect(targetProxy.bindings.indexOf(binding) === -1).toBeTruthy();
-                    });
+                return reelDocument.undo().then(function (deletedBinding) {
+                    expect(deletedBinding).toBe(binding);
+                    expect(targetProxy.bindings.indexOf(binding) === -1).toBeTruthy();
                 });
-
-                return bindingPromise.done();
-            }).timeout(WAITSFOR_TIMEOUT);
+            }).then(done);
         });
     });
 

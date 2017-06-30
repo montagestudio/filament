@@ -1,6 +1,6 @@
 var Component = require("montage/ui/component").Component,
     MimeTypes = require("core/mime-types"),
-    NotModifiedError = require("core/error").NotModifiedError,
+    NotModifiedError = require("palette/core/error").NotModifiedError,
     replaceDroppedTextPlain = require("ui/drag-and-drop").replaceDroppedTextPlain,
     defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
@@ -125,11 +125,13 @@ exports.PropertyJig = Component.specialize({
         value: function (evt) {
             evt && evt.stop && evt.stop();
             var self = this;
-            this._commitBindingEdits().catch(function (error) {
+            try {
+                this._commitBindingEdits();
+            } catch (error) {
                 if (error instanceof NotModifiedError) {
                     self._discardBindingEdits();
                 }
-            }).done();
+            }
         }
     },
 
@@ -169,30 +171,22 @@ exports.PropertyJig = Component.specialize({
 
     _commitBindingEdits: {
         value: function () {
-            var self = this,
-                model = this.model,
+            var model = this.model,
                 proxy = model.targetObject,
-                bindingPromise;
+                binding;
 
             if (this.model.bound) {
-                if (this.existingBinding) {
-                    bindingPromise = this.editingDocument.updateOwnedObjectBinding(proxy, this.existingBinding, model.key, model.oneway, model.sourcePath, model.converter);
-                } else {
-                    bindingPromise = this.editingDocument.defineOwnedObjectBinding(proxy, model.key, model.oneway, model.sourcePath, model.converter);
-                }
+                binding = this.editingDocument.defineOwnedObjectBinding(proxy, model.key, model.oneway, model.sourcePath, model.converter);
             } else {
                 this.editingDocument.setOwnedObjectProperty(proxy, model.key, model.value);
-                bindingPromise = Promise.resolve();
             }
 
-            return bindingPromise.then(function (bindingEntry) {
-                self.dispatchEventNamed("commit", true, false, {
-                    bindingEntry: bindingEntry
-                });
-
-                self.existingBinding = null;
-                self.model = null;
+            this.dispatchEventNamed("commit", true, false, {
+                bindingEntry: binding
             });
+
+            this.existingBinding = null;
+            this.model = null;
         }
     },
 

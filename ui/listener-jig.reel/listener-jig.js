@@ -4,7 +4,7 @@
     @requires montage/ui/component
 */
 var Component = require("montage/ui/component").Component,
-    NotModifiedError = require("core/error").NotModifiedError,
+    NotModifiedError = require("palette/core/error").NotModifiedError,
     defaultEventManager = require("montage/core/event/event-manager").defaultEventManager;
 
 /**

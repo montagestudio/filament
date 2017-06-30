@@ -14,8 +14,8 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     visit = require("montage/core/serialization/serializer/montage-malker").visit,
     Url = require("core/url"),
     WeakMap = require("montage/collections/weak-map"),
-    ValidationError = require("core/error").ValidationError,
-    NotModifiedError = require("core/error").NotModifiedError,
+    ValidationError = require("palette/core/error").ValidationError,
+    NotModifiedError = require("palette/core/error").NotModifiedError,
     ObjectReferences = require("core/object-references").ObjectReferences,
     modifyModule = require("core/modify-module");
 
@@ -68,10 +68,6 @@ exports.ReelDocument = EditingDocument.specialize({
     },
 
     domChangesDispatchingEnabled: {
-        value: true
-    },
-
-    bindingChangesDispatchingEnabled: {
         value: true
     },
 
@@ -289,7 +285,7 @@ exports.ReelDocument = EditingDocument.specialize({
     handleCancelBinding: {
         value: function (evt) {
             var detail = evt.detail;
-            this.cancelOwnedObjectBinding(detail.targetObject, detail.binding);
+            this.cancelOwnedObjectBinding(detail.targetObject, detail.binding.key);
         }
     },
 
@@ -1361,129 +1357,6 @@ exports.ReelDocument = EditingDocument.specialize({
                 this.activeSelection = this.selectedElements;
                 this.clearSelectedObjects();
             }
-        }
-    },
-
-    defineOwnedObjectBinding: {
-        value: function (proxy, targetPath, oneway, sourcePath, converter) {
-            if (!this.isBindingParamsValid(targetPath, sourcePath)) {
-                var error = new ValidationError("Invalid binding.");
-                return Promise.reject(error);
-            }
-
-            var binding = proxy.defineObjectBinding(targetPath, oneway, sourcePath, converter);
-
-            if (binding) {
-                this.undoManager.register("Define Binding", Promise.resolve([this.cancelOwnedObjectBinding, this, proxy, binding]));
-                this._dispatchDidDefineOwnedObjectBinding(proxy, targetPath, oneway, sourcePath, converter);
-            }
-
-            // Need to rebuild the serialization here so that the template
-            // updates, ready for the inner template inspector
-            this._buildSerializationObjects();
-
-            // Refresh the stage
-            this.editor.refresh();
-
-            return Promise.resolve(binding);
-        }
-    },
-
-    _addOwnedObjectBinding: {
-        value: function (proxy, binding, insertionIndex) {
-
-            var addedBinding = proxy.addBinding(binding, insertionIndex);
-
-            if (addedBinding) {
-                this.undoManager.register("Define Binding", Promise.resolve([this.cancelOwnedObjectBinding, this, proxy, binding]));
-            }
-
-            return addedBinding;
-
-        }
-    },
-
-    cancelOwnedObjectBinding: {
-        value: function (proxy, binding) {
-            var removedBinding,
-                removedIndex,
-                removedInfo;
-
-            removedInfo = proxy.cancelObjectBinding(binding);
-            removedBinding = removedInfo.removedBinding;
-            removedIndex = removedInfo.index;
-
-            if (removedBinding) {
-                this.undoManager.register("Cancel Binding", Promise.resolve([
-                    this._addOwnedObjectBinding, this, proxy, removedBinding, removedIndex
-                ]));
-                this._dispatchDidCancelOwnedObjectBinding(proxy, binding);
-            }
-
-            // Need to rebuild the serialization here so that the template
-            // updates, ready for the inner template inspector
-            this._buildSerializationObjects();
-
-            // Refresh the stage
-            this.editor.refresh();
-
-            return removedBinding;
-        }
-    },
-
-    isBindingParamsValid: {
-        value: function(targetPath, sourcePath) {
-            return targetPath && sourcePath;
-        }
-    },
-
-    _hasBindingChanged: {
-        value: function(existingBinding, targetPath, oneway, sourcePath, converter) {
-            return existingBinding.targetPath !== targetPath ||
-                existingBinding.oneway !== oneway ||
-                existingBinding.sourcePath !== sourcePath ||
-                existingBinding.converter !== converter;
-        }
-    },
-
-    updateOwnedObjectBinding: {
-        value: function (proxy, existingBinding, targetPath, oneway, sourcePath, converter) {
-            var error;
-
-            if (!this.isBindingParamsValid(targetPath, sourcePath)) {
-                error = new ValidationError("Invalid binding.");
-                return Promise.reject(error);
-            }
-
-            if (!this._hasBindingChanged(existingBinding, targetPath, oneway, sourcePath, converter)) {
-                error = new NotModifiedError("Nothing has been modified.");
-                return Promise.reject(error);
-            }
-
-            var originalTargetPath = existingBinding.targetPath,
-                originalOneway = existingBinding.oneway,
-                originalSourcePath = existingBinding.sourcePath,
-                originalconverter = existingBinding.converter,
-                updatedBinding;
-
-            this._dispatchWillUpdateOwnedObjectBinding(proxy, existingBinding);
-            updatedBinding = proxy.updateObjectBinding(existingBinding, targetPath, oneway, sourcePath, converter);
-
-            if (updatedBinding) {
-                this.undoManager.register("Edit Binding", Promise.resolve([
-                    this.updateOwnedObjectBinding, this, proxy, updatedBinding, originalTargetPath, originalOneway, originalSourcePath, originalconverter
-                ]));
-                this._dispatchDidUpdateOwnedObjectBinding(proxy, targetPath, oneway, sourcePath, converter);
-            }
-
-            // Need to rebuild the serialization here so that the template
-            // updates, ready for the inner template inspector
-            this._buildSerializationObjects();
-
-            // Refresh the stage
-            this.editor.refresh();
-
-            return Promise.resolve(updatedBinding);
         }
     },
 
@@ -2683,56 +2556,6 @@ exports.ReelDocument = EditingDocument.specialize({
                     nodeProxy: nodeProxy,
                     attribute: attribute,
                     value: value
-                });
-            }
-        }
-    },
-
-    _dispatchDidDefineOwnedObjectBinding: {
-        value: function(proxy, targetPath, oneway, sourcePath, converter) {
-            if (this.bindingChangesDispatchingEnabled) {
-                this.dispatchEventNamed("didDefineOwnedObjectBinding", true, false, {
-                    proxy: proxy,
-                    targetPath: targetPath,
-                    oneway: oneway,
-                    sourcePath: sourcePath,
-                    converter: converter
-                });
-            }
-        }
-    },
-
-    _dispatchDidCancelOwnedObjectBinding: {
-        value: function(proxy, binding) {
-            if (this.bindingChangesDispatchingEnabled) {
-                this.dispatchEventNamed("didCancelOwnedObjectBinding", true, false, {
-                    proxy: proxy,
-                    binding: binding
-                });
-            }
-        }
-    },
-
-    _dispatchWillUpdateOwnedObjectBinding: {
-        value: function(proxy, binding) {
-            if (this.bindingChangesDispatchingEnabled) {
-                this.dispatchEventNamed("willUpdateOwnedObjectBinding", true, false, {
-                    proxy: proxy,
-                    binding: binding
-                });
-            }
-        }
-    },
-
-    _dispatchDidUpdateOwnedObjectBinding: {
-        value: function(proxy, targetPath, oneway, sourcePath, converter) {
-            if (this.bindingChangesDispatchingEnabled) {
-                this.dispatchEventNamed("didUpdateOwnedObjectBinding", true, false, {
-                    proxy: proxy,
-                    targetPath: targetPath,
-                    oneway: oneway,
-                    sourcePath: sourcePath,
-                    converter: converter
                 });
             }
         }
