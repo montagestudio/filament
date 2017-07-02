@@ -1,10 +1,21 @@
 var Montage = require("montage").Montage;
 
+function isBindingPathComplex(path) {
+    return !!path &&
+        path.length > 0 &&
+        !(/^[A-Za-z]+\w*$/.test(path));
+}
+
 /**
  * A representation of a single property on an object. Can represent
  * properties with descriptors, custom properties, and bindings. Useful because
  * many parts of the component editor involve viewing and customizing an
  * object's properties.
+ *
+ * The PropertyModel is intended to be dirty-able in that its values are not
+ * automatically synchronized with the Proxy it is targeting. This is to allow
+ * flexibility when defining new properties. Use the commit() method to apply
+ * changes onto the editing model.
  *
  * @class PropertyModel
  * @extends Montage
@@ -14,6 +25,7 @@ exports.PropertyModel = Montage.specialize({
     /**
      * The proxy that the inspected property is defined on.
      *
+     * @readonly
      * @type {ReelProxy}
      */
     targetObject: {
@@ -22,27 +34,53 @@ exports.PropertyModel = Montage.specialize({
         },
         set: function (value) {
             this._targetObject = value;
+            this._isTargetObjectOwnerOfDocument =
+                value.editingDocument.templateObjectsTree.templateObject === value;
         }
     },
 
+    _isTargetObjectOwnerOfDocument: {
+        value: false
+    },
+
     /**
-     * The name of the property, or the targetPath if the property is bound.
+     * The name of the property, or the target path if the property is bound.
      *
-     * @readonly
      * @type {String}
      */
     key: {
         get: function () {
             return this._key;
+        },
+        set: function (value) {
+            if (this._key !== value) {
+                this._key = value;
+                if (this.targetObjectDescriptor) {
+                    this._propertyDescriptor = this.targetObjectDescriptor.propertyDescriptorForName(value);
+                }
+            }
         }
     },
 
     /**
-     * Alias for key.
+     * Whether the key of this property (in practice, the targetPath of the
+     * binding) has features that make it complex, * i.e. is not just a simple
+     * (valid) property key.
+     * This includes chaining (with .), FRB functions, arithmetic, concatenation,
+     * higher order functions, boolean operators, scope operators (^), etc.
+     * A model representing a complex binding cannot be reverted to a simple
+     * unbound property.
      *
-     * @type {String}
+     * @example
+     * "someProperty": not complex
+     * "foo.bar": complex
+     * "foo + bar": complex
+     * "foo.filter{^baz == ban}": complex
+     *
+     * @readonly
+     * @type {Boolean}
      */
-    targetPath: {
+    isKeyComplex: {
         value: null
     },
 
@@ -62,6 +100,7 @@ exports.PropertyModel = Montage.specialize({
      * Whether the property is defined exclusively through serialization and
      * does not have a PropertyDescriptor.
      *
+     * @readonly
      * @type {Boolean}
      */
     isCustom: {
@@ -69,10 +108,35 @@ exports.PropertyModel = Montage.specialize({
     },
 
     /**
-     * The value of the property on the targetObject. Setting will cause
-     * changes to propagate to the object's editingDocument for serialization.
+     * Whether the property being modeled is a binding. This property can be
+     * set to define/cancel bindings. It will be updated automatically whenever
+     * the underlying object's properties/bindings collections change.
      *
-     * @type {Any}
+     * @type {Boolean}
+     */
+    isBound: {
+        get: function () {
+            return this._isBound;
+        },
+        set: function (value) {
+            this._isBound = value;
+            if (value) {
+                this.sourcePath = this.sourcePath || "";
+                this.oneway = !!this.oneway;
+            } else {
+                if (typeof this.value === "undefined") {
+                    this.value = this._propertyDescriptor ?
+                        this._propertyDescriptor.defaultValue : "";
+                }
+            }
+        }
+    },
+
+    /**
+     * The value of the unbound property. Not necessarily in sync with the
+     * targetObject, call commit() to synchronize changes.
+     *
+     * @type {*}
      */
     value: {
         get: function () {
@@ -83,43 +147,91 @@ exports.PropertyModel = Montage.specialize({
                 return;
             }
             this._value = value;
-            this.commit();
         }
     },
 
     /**
-     * Whether the key of this property (in practice, the targetPath of the
-     * binding) is complex, i.e. is not just a simple (valid) property key.
-     * This includes chaining (with .), FRB functions, arithmetic, concatenation,
-     * higher order functions, boolean operators, scope operators (^), etc.
-     * A model representing a complex binding cannot be reverted to a simple
-     * unbound property.
+     * The type of the value. Only used if defining properties onto the object's
+     * descriptor (i.e. the object is the owner of its document).
      *
-     * @example
-     * "foo": not complex
-     * "someKindOfProperty": not complex
-     * "foo.bar": complex
-     * "foo + bar": complex
-     * "foo.filter{^baz == ban}": complex
-     *
-     * @type {Boolean}
+     * @default string
+     * @type {String}
      */
-    isKeyComplex: {
+    valueType: {
         value: null
     },
 
     /**
-     * @type {Boolean}
+     * The "right-side" of a binding.
+     *
+     * @type {String}
      */
-    isBound: {
+    sourcePath: {
+        value: null
+    },
+
+    // TODO: Wouldn't it make more sense to have a "twoway" property instead?
+    // "oneway" is the property defined on binding models
+    /**
+     * The data flow of the binding. (true = <-, false = <->)
+     *
+     * @type {boolean}
+     */
+    oneway: {
         value: null
     },
 
     /**
-     * @type {Object}
+     * The converter delegate that contains functions for converting/reverting
+     * a sourcePath to a targetPath.
+     *
+     * @type {?Object}
      */
-    bindingModel: {
+    converter: {
         value: null
+    },
+
+    /**
+     * The actual value of this property as defined in the target object's
+     * properties collection.
+     *
+     * @private
+     * @type {?*}
+     */
+    _objectPropertyValue: {
+        get: function () {
+            return this.__objectPropertyValue;
+        },
+        set: function (value) {
+            this.__objectPropertyValue = value;
+            if (value) {
+                this.value = value;
+            }
+        }
+    },
+
+    /**
+     * The object representing the binding of this property as defined in the
+     * target object's bindings collection.
+     *
+     * @private
+     * @type {?Object}
+     */
+    _objectBindingModel: {
+        get: function () {
+            return this.__objectBindingModel;
+        },
+        set: function (value) {
+            this.__objectBindingModel = value;
+            if (value) {
+                this.isBound = true;
+                this.sourcePath = value.sourcePath;
+                this.oneway = value.oneway;
+                this.converter = value.converter;
+            } else {
+                this.isBound = false;
+            }
+        }
     },
 
     /**
@@ -131,39 +243,22 @@ exports.PropertyModel = Montage.specialize({
      */
     constructor: {
         value: function PropertyModel(targetObject, targetObjectDescriptor, key) {
-            var self = this;
             this.super();
 
             this.targetObject = targetObject;
-            this._key = key;
-            if (targetObjectDescriptor) {
-                this._propertyDescriptor = targetObjectDescriptor.propertyDescriptorForName(key);
-            }
-            this.defineBinding("targetPath", {
-                "<-": "key"
-            });
-            this.defineBinding("isCustom", {
-                "<-": "!propertyDescriptor"
-            });
-            this.defineBinding("isKeyComplex", {
-                "<-": "key",
-                convert: function (k) {
-                    return k.length > 0 && !(/^[A-Za-z]+\w*$/.test(k));
-                }
-            });
-            this.defineBinding("bindingModel", {
-                "<-": "targetObject.bindings.filter{key == ^key}.0"
-            });
-            this.defineBinding("isBound", {
-                "<-": "!!bindingModel"
-            });
-            this.addPathChangeListener("targetObject.properties.get(key)", this, "_valueChanged");
-        }
-    },
+            this.targetObjectDescriptor = targetObjectDescriptor;
+            this.key = key;
 
-    _valueChanged: {
-        value: function (value) {
-            this._value = value;
+            this.defineBinding("isKeyComplex",          {"<-": "key", convert: isBindingPathComplex});
+            this.defineBinding("isCustom",              {"<-": "!propertyDescriptor"});
+            this.defineBinding("_objectPropertyValue",  {"<-": "targetObject.properties.get(key)"});
+            this.defineBinding("_objectBindingModel",   {"<-": "targetObject.bindings.filter{key == ^key}.0"});
+
+            if (this._objectBindingModel) {
+                this._committedBindingKey = this.key;
+            } else if (this._objectPropertyValue) {
+                this._committedPropertyKey = this.key;
+            }
         }
     },
 
@@ -173,27 +268,45 @@ exports.PropertyModel = Montage.specialize({
      */
     commit: {
         value: function () {
-            var self = this,
-                model = this.bindingModel,
-                existingBinding;
+            var doc = this.targetObject.editingDocument,
+                result;
 
             if (this._propertyDescriptor && this._propertyDescriptor.readOnly) {
                 return;
             }
 
-            if (this.isBound) {
-                existingBinding = this.targetObject.bindings.filter(function (binding) {
-                    return binding.key === self.key;
-                })[0];
-                if (existingBinding) {
-                    return this.targetObject.editingDocument.updateOwnedObjectBinding(this.targetObject, existingBinding, model.key, model.oneway, model.sourcePath, model.converter);
-                } else {
-                    return this.targetObject.editingDocument.defineOwnedObjectBinding(this.targetObject, model.key, model.oneway, model.sourcePath, model.converter);
-                }
-            } else {
-                this.targetObject.editingDocument.setOwnedObjectProperty(this.targetObject, this._key, this.value);
-                return Promise.resolve();
+            if (this._committedPropertyKey && this._committedPropertyKey !== this.key) {
+                doc.deleteOwnedObjectProperty(this.targetObject, this._committedPropertyKey);
+            } else if (this._committedBindingKey && this._committedBindingKey !== this.key) {
+                doc.cancelOwnedObjectBinding(this.targetObject, this._committedBindingKey);
             }
+
+            if (this._isTargetObjectOwnerOfDocument && this._committedPropertyKey && this._committedPropertyKey !== this.key) {
+                doc.removeOwnerBlueprintProperty(this._committedPropertyKey);
+                this._propertyDescriptor = void 0;
+            }
+
+            if (this.isBound) {
+                result = doc.defineOwnedObjectBinding(this.targetObject, this.key, this.oneway, this.sourcePath, this.converter);
+                this._committedPropertyKey = void 0;
+                this._committedBindingKey = this.key;
+            } else {
+                if (this._isTargetObjectOwnerOfDocument) {
+                    if (this._propertyDescriptor) {
+                        doc.modifyOwnerBlueprintProperty(this.key, "valueType", this.valueType);
+                    } else {
+                        doc.addOwnerBlueprintProperty(this.key, this.valueType);
+                    }
+                }
+                if (this._committedBindingKey) {
+                    doc.cancelOwnedObjectBinding(this._targetObject, this.key);
+                }
+                result = doc.setOwnedObjectProperty(this.targetObject, this.key, this.value);
+                this._committedPropertyKey = this.key;
+                this._committedBindingKey = void 0;
+            }
+
+            return result;
         }
     },
 
@@ -203,39 +316,15 @@ exports.PropertyModel = Montage.specialize({
      */
     delete: {
         value: function () {
+            if (this._isTargetObjectOwnerOfDocument) {
+                this.targetObject.editingDocument.removeOwnerBlueprintProperty(this.key);
+            }
             if (this.isBound) {
-                this.targetObject.editingDocument.cancelOwnedObjectBinding(this.targetObject, this.bindingModel);
+                this.targetObject.editingDocument.cancelOwnedObjectBinding(
+                    this.targetObject, this.key);
             }
-            this.targetObject.editingDocument.deleteOwnedObjectProperty(this.targetObject, this.key);
-        }
-    },
-
-    /**
-     * Creates a binding in place for this property. Does nothing if a binding
-     * already exists.
-     */
-    convertToBinding: {
-        value: function () {
-
-        }
-    },
-
-    /**
-     * Cancels an existing binding for this property. Does nothing if there is
-     * no binding to cancel. If the target object does not have an unbound
-     * property already defined, cancelling the binding will create one with the
-     * property's default value.
-     */
-    cancelBinding: {
-        value: function () {
-            if (!this.isBound) {
-                return;
-            }
-            this.targetObject.editingDocument.cancelOwnedObjectBinding(this.targetObject, this.bindingModel);
-            if (typeof this.targetObject.getObjectProperty(this.key) === "undefined") {
-                var defaultValue = this._propertyDescriptor ? this._propertyDescriptor.defaultValue : "";
-                this.targetObject.editingDocument.setOwnedObjectProperty(this.targetObject, this.key, defaultValue);
-            }
+            this.targetObject.editingDocument.deleteOwnedObjectProperty(
+                this.targetObject, this.key);
         }
     }
 });

@@ -17,6 +17,7 @@ module.exports = require("montage-testing").run(require, [
     {name: "spec/core/project-controller-file-spec", node: false},
     {name: "spec/core/project-controller-filesystem-spec", node: false},
     {name: "spec/core/project-controller-spec", node: false},
+    "spec/core/property-model-spec",
     {name: "spec/core/reel-blueprint-editing-spec", node: false},
     {name: "spec/core/reel-context-spec", node: false},
     {name: "spec/core/reel-document-selected-elements-spec", node: false},
