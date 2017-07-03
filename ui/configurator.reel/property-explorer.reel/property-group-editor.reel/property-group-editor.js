@@ -3,7 +3,8 @@
     @requires montage
     @requires montage/ui/component
 */
-var Component = require("montage/ui/component").Component;
+var Component = require("montage/ui/component").Component,
+    PropertyModel = require("core/property-model").PropertyModel;
 
 /**
     Description TODO
@@ -57,10 +58,7 @@ exports.PropertyGroupEditor = Component.specialize(/** @lends module:"./property
 
     handleAddPropertyButtonAction: {
         value: function (event) {
-            var propertyModel = {
-                targetObject: this.object,
-                bound: false
-            };
+            var propertyModel = new PropertyModel(this.object, this.objectBlueprint, "");
             var existingPropertyKeys = this.objectBlueprint.propertyDescriptors.map(function (descriptor) {
                 return descriptor.name;
             }).concat(this.object.properties.keysArray());

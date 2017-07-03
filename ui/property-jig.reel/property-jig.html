@@ -53,7 +53,7 @@
                 "element": {"#": "bound"}
             },
             "bindings": {
-                "checked": {"<->": "@owner.model.bound"},
+                "checked": {"<->": "@owner.model.isBound"},
                 "disabled": {"<-": "@owner.isToggleBindingDisabled || @owner.isKeyComplex"}
             }
         },
@@ -65,7 +65,7 @@
                 "hasTemplate": false
             },
             "bindings": {
-                "classList.has('Jig-col-invisible')": {"<-": "!@owner.model.bound"}
+                "classList.has('Jig-col-invisible')": {"<-": "!@owner.model.isBound"}
             }
         },
 
@@ -100,7 +100,7 @@
                 "element": {"#": "contentSubstitution"}
             },
             "bindings": {
-                "switchValue": {"<-": "@owner.model.bound ? 'bound' : 'unbound'"}
+                "switchValue": {"<-": "@owner.model.isBound ? 'bound' : 'unbound'"}
             }
         },
 

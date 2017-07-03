@@ -78,21 +78,17 @@ exports.PropertyEditor = Component.specialize(/** @lends PropertyEditor# */ {
 
     handleDefineBindingButtonAction: {
         value: function () {
-            var bindingModel = Object.create(null);
-            bindingModel.bound = true;
-            bindingModel.targetObject = this.model.targetObject;
-            bindingModel.key = this.model.key;
-            bindingModel.oneway = true;
-            bindingModel.sourcePath = "";
+            this.model.isBound = true;
             this.dispatchEventNamed("addBinding", true, false, {
-                bindingModel: bindingModel
+                bindingModel: this.model
             });
         }
     },
 
     handleCancelBindingButtonAction: {
         value: function () {
-            this.model.cancelBinding();
+            this.model.isBound = false;
+            this.model.commit();
         }
     },
 

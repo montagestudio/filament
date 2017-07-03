@@ -16,19 +16,7 @@ exports.PropertyJig = Component.specialize({
 
     constructor: {
         value: function PropertyJig() {
-            var self = this;
             this.super();
-            this.defineBinding("isKeyComplex", {
-                "<-": "model.key",
-                convert: function (k) {
-                    return !!k && k.length > 0 && !(/^[A-Za-z]+\w*$/.test(k))
-                }
-            });
-            this.addPathChangeListener("isKeyComplex", function (value) {
-                if (value) {
-                    self.model.bound = true;
-                }
-            });
             this.defineBinding("isKeyConflicting", {
                 "<-": "existingPropertyKeys.has(model.key)"
             });
@@ -69,19 +57,7 @@ exports.PropertyJig = Component.specialize({
         value: null
     },
 
-    existingBinding: {
-        value: null
-    },
-
     existingPropertyKeys: {
-        value: null
-    },
-
-    targetPath: {
-        value: null
-    },
-
-    sourcePath: {
         value: null
     },
 
@@ -164,28 +140,18 @@ exports.PropertyJig = Component.specialize({
     _discardBindingEdits: {
         value: function () {
             this.model = null;
-            this.existingBinding = null;
             this.dispatchEventNamed("discard", true, false);
         }
     },
 
     _commitBindingEdits: {
         value: function () {
-            var model = this.model,
-                proxy = model.targetObject,
-                binding;
-
-            if (this.model.bound) {
-                binding = this.editingDocument.defineOwnedObjectBinding(proxy, model.key, model.oneway, model.sourcePath, model.converter);
-            } else {
-                this.editingDocument.setOwnedObjectProperty(proxy, model.key, model.value);
-            }
+            this.model.commit();
 
             this.dispatchEventNamed("commit", true, false, {
-                bindingEntry: binding
+                bindingEntry: this.model
             });
 
-            this.existingBinding = null;
             this.model = null;
         }
     },

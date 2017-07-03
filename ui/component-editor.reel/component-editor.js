@@ -234,7 +234,6 @@ exports.ComponentEditor = Editor.specialize({
                 existingPropertyKeys = evt.detail.existingPropertyKeys;
             this.propertyJig.isToggleBindingDisabled = false;
             this.propertyJig.model = propertyModel;
-            this.propertyJig.existingBinding = void 0;
             this.propertyJig.existingPropertyKeys = existingPropertyKeys;
             this.propertyOverlay.show();
         }
@@ -243,19 +242,13 @@ exports.ComponentEditor = Editor.specialize({
     handleAddBinding: {
         value: function (evt) {
             var bindingModel = evt.detail.bindingModel,
-                existingBinding = evt.detail.existingBinding,
                 existingPropertyKeys = evt.detail.existingPropertyKeys,
                 bindingJig,
                 overlay;
 
             bindingJig = this.templateObjects.bindingCreator;
 
-            // If the binding jig is already referring to this binding, leave what's already in the overlay in case user was editing
-            if (bindingJig.existingBinding !== existingBinding) {
-                bindingJig.model = bindingModel;
-                bindingJig.existingBinding = existingBinding;
-            }
-
+            bindingJig.model = bindingModel;
             bindingJig.isToggleBindingDisabled = true;
             bindingJig.existingPropertyKeys = existingPropertyKeys;
 
