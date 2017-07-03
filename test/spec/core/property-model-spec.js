@@ -245,4 +245,16 @@ describe("core/property-model", function () {
             expect(targetObjectDescriptor.propertyDescriptorForName("foo")).toBeFalsy();
         });
     });
+
+    it("resets", function () {
+        targetObject.properties.set("foo", "bar");
+        propertyModel = new PropertyModel(targetObject, targetObjectDescriptor, "foo");
+        propertyModel.value = "value";
+        propertyModel.key = "bar";
+        propertyModel.isBound = true;
+        propertyModel.reset();
+        expect(propertyModel.isBound).toBeFalsy();
+        expect(propertyModel.key).toBe("foo");
+        expect(propertyModel.value).toBe("bar");
+    });
 });

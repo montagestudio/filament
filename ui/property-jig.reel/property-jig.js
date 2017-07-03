@@ -139,6 +139,7 @@ exports.PropertyJig = Component.specialize({
 
     _discardBindingEdits: {
         value: function () {
+            this.model.reset();
             this.model = null;
             this.dispatchEventNamed("discard", true, false);
         }

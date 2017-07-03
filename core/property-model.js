@@ -311,6 +311,19 @@ exports.PropertyModel = Montage.specialize({
     },
 
     /**
+     * Discards all changes to this property model, restoring its values to
+     * be in sync with the target object. Does nothing if the property has
+     * not been committed onto the target object.
+     */
+    reset: {
+        value: function () {
+            this.key = this._committedBindingKey || this._committedPropertyKey || this.key;
+            this._objectPropertyValue = this.__objectPropertyValue;
+            this._objectBindingModel = this.__objectBindingModel;
+        }
+    },
+
+    /**
      * Deletes the property from the target object's serialization and/or
      * ObjectDescriptor.
      */
