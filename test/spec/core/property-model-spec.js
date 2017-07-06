@@ -209,7 +209,7 @@ describe("core/property-model", function () {
             propertyModel.key = "bar";
             propertyModel.commit();
             expect(targetObject.getObjectBinding("foo")).toBeFalsy();
-            expect(targetObject.getObjectBinding("bar")).toBeFalsy();
+            expect(targetObject.getObjectBinding("bar")).toBeTruthy();
         });
     });
 

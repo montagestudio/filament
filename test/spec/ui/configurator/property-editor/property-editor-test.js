@@ -28,8 +28,14 @@ exports.PropertyEditorTest = Component.specialize({
                 },
                 cancelOwnedObjectBinding: function (proxy, key) {
                     proxy.cancelObjectBinding(key);
-                }
+                },
+                addOwnerBlueprintProperty: Function.noop,
+                modifyOwnerBlueprintProperty: Function.noop,
+                removeOwnerBlueprintProperty: Function.noop
             });
+            this.proxy.editingDocument.templateObjectsTree = {
+                templateObject: this.proxy
+            };
             object.blueprint.then(function (blueprint) {
                 self.propertyA = new PropertyModel(self.proxy, blueprint, "propertyA");
                 self.propertyB = new PropertyModel(self.proxy, blueprint, "propertyB");

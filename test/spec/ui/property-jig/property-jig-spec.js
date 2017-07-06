@@ -17,7 +17,7 @@ TestPageLoader.queueTest("property-jig-test", function(testPage) {
             expect(propertyJig).toBeTruthy();
         });
 
-        describe("property editing", function () {
+        xdescribe("property editing", function () {
             beforeEach(function () {
                 propertyJig.model = {
                     targetObject: object,
@@ -37,7 +37,7 @@ TestPageLoader.queueTest("property-jig-test", function(testPage) {
             });
         });
 
-        describe("binding editing", function () {
+        xdescribe("binding editing", function () {
             it("can create a new binding", function () {
                 propertyJig.model = {
                     targetObject: object,
