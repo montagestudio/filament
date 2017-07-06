@@ -53,13 +53,20 @@ exports.PropertyModel = Montage.specialize({
             return this._key;
         },
         set: function (value) {
-            if (this._key !== value) {
-                this._key = value;
-                if (this.targetObjectDescriptor) {
-                    this._propertyDescriptor = this.targetObjectDescriptor.propertyDescriptorForName(value);
-                }
-            }
+            this._key = value;
         }
+    },
+
+    /**
+     * The serialized value of the key, changed when commit() is called.
+     * Used to prevent bindings to the editing model (properties & bindings)
+     * from changing while the user is modifying values.
+     *
+     * @private
+     * @type {String}
+     */
+    _trueKey: {
+        value: null
     },
 
     /**
@@ -91,9 +98,7 @@ exports.PropertyModel = Montage.specialize({
      * @type {PropertyDescriptor}
      */
     propertyDescriptor: {
-        get: function () {
-            return this._propertyDescriptor;
-        }
+        value: null
     },
 
     /**
@@ -125,8 +130,8 @@ exports.PropertyModel = Montage.specialize({
                 this.oneway = !!this.oneway;
             } else {
                 if (typeof this.value === "undefined") {
-                    this.value = this._propertyDescriptor ?
-                        this._propertyDescriptor.defaultValue : "";
+                    this.value = this.propertyDescriptor ?
+                        this.propertyDescriptor.defaultValue : "";
                 }
             }
         }
@@ -178,7 +183,7 @@ exports.PropertyModel = Montage.specialize({
      * @type {boolean}
      */
     oneway: {
-        value: null
+        value: true
     },
 
     /**
@@ -203,6 +208,9 @@ exports.PropertyModel = Montage.specialize({
             return this.__objectPropertyValue;
         },
         set: function (value) {
+            if (this._key !== this._trueKey) {
+                return;
+            }
             this.__objectPropertyValue = value;
             if (value) {
                 this.value = value;
@@ -222,6 +230,9 @@ exports.PropertyModel = Montage.specialize({
             return this.__objectBindingModel;
         },
         set: function (value) {
+            if (this._key !== this._trueKey) {
+                return;
+            }
             this.__objectBindingModel = value;
             if (value) {
                 this.isBound = true;
@@ -247,18 +258,14 @@ exports.PropertyModel = Montage.specialize({
 
             this.targetObject = targetObject;
             this.targetObjectDescriptor = targetObjectDescriptor;
-            this.key = key;
+            this._key = key;
+            this._trueKey = key;
 
             this.defineBinding("isKeyComplex",          {"<-": "key", convert: isBindingPathComplex});
+            this.defineBinding("propertyDescriptor",    {"<-": "targetObjectDescriptor.propertyDescriptorForName(key)"});
             this.defineBinding("isCustom",              {"<-": "!propertyDescriptor"});
             this.defineBinding("_objectPropertyValue",  {"<-": "targetObject.properties.get(key)"});
             this.defineBinding("_objectBindingModel",   {"<-": "targetObject.bindings.filter{key == ^key}.0"});
-
-            if (this._objectBindingModel) {
-                this._committedBindingKey = this.key;
-            } else if (this._objectPropertyValue) {
-                this._committedPropertyKey = this.key;
-            }
         }
     },
 
@@ -269,42 +276,38 @@ exports.PropertyModel = Montage.specialize({
     commit: {
         value: function () {
             var doc = this.targetObject.editingDocument,
+                oldKey = this._trueKey,
                 result;
 
-            if (this._propertyDescriptor && this._propertyDescriptor.readOnly) {
+            if (this.propertyDescriptor && this.propertyDescriptor.readOnly) {
                 return;
             }
 
-            if (this._committedPropertyKey && this._committedPropertyKey !== this.key) {
-                doc.deleteOwnedObjectProperty(this.targetObject, this._committedPropertyKey);
-            } else if (this._committedBindingKey && this._committedBindingKey !== this.key) {
-                doc.cancelOwnedObjectBinding(this.targetObject, this._committedBindingKey);
-            }
-
-            if (this._isTargetObjectOwnerOfDocument && this._committedPropertyKey && this._committedPropertyKey !== this.key) {
-                doc.removeOwnerBlueprintProperty(this._committedPropertyKey);
-                this._propertyDescriptor = void 0;
-            }
-
             if (this.isBound) {
-                result = doc.defineOwnedObjectBinding(this.targetObject, this.key, this.oneway, this.sourcePath, this.converter);
-                this._committedPropertyKey = void 0;
-                this._committedBindingKey = this.key;
+                result = doc.defineOwnedObjectBinding(this.targetObject, this._key, this.oneway, this.sourcePath, this.converter);
             } else {
+                doc.cancelOwnedObjectBinding(this.targetObject, this._key);
                 if (this._isTargetObjectOwnerOfDocument) {
-                    if (this._propertyDescriptor) {
-                        doc.modifyOwnerBlueprintProperty(this.key, "valueType", this.valueType);
+                    if (this._key === oldKey && this.propertyDescriptor) {
+                        doc.modifyOwnerBlueprintProperty(this._key, "valueType", this.valueType);
                     } else {
-                        doc.addOwnerBlueprintProperty(this.key, this.valueType);
+                        doc.addOwnerBlueprintProperty(this._key, this.valueType);
                     }
                 }
-                if (this._committedBindingKey) {
-                    doc.cancelOwnedObjectBinding(this._targetObject, this.key);
-                }
-                result = doc.setOwnedObjectProperty(this.targetObject, this.key, this.value);
-                this._committedPropertyKey = this.key;
-                this._committedBindingKey = void 0;
+                result = doc.setOwnedObjectProperty(this.targetObject, this._key, this.value);
             }
+
+            if (this._key !== oldKey) {
+                doc.cancelOwnedObjectBinding(this.targetObject, oldKey);
+                if (!this.isBound) {
+                    doc.deleteOwnedObjectProperty(this.targetObject, oldKey);
+                }
+                if (this._isTargetObjectOwnerOfDocument) {
+                    doc.removeOwnerBlueprintProperty(oldKey);
+                }
+            }
+
+            this._trueKey = this._key;
 
             return result;
         }
@@ -317,7 +320,7 @@ exports.PropertyModel = Montage.specialize({
      */
     reset: {
         value: function () {
-            this.key = this._committedBindingKey || this._committedPropertyKey || this.key;
+            this.key = this._trueKey;
             this._objectPropertyValue = this.__objectPropertyValue;
             this._objectBindingModel = this.__objectBindingModel;
         }
