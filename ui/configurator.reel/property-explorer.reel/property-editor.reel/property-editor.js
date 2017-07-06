@@ -42,8 +42,161 @@ exports.PropertyEditor = Component.specialize(/** @lends PropertyEditor# */ {
         }
     },
 
+    // TODO: This property basically implements the logic of a substitution.
+    // The key difference is that it loads components on the fly rather than
+    // during deserialization. We don't want every inspector to be loaded into
+    // memory at all times because even when inspectors are not in the DOM
+    // their bindings will still be triggered, which causes some faulty logic.
+    // -Corentin
     _propertyType: {
-        value: null
+        get: function () {
+            return this.__propertyType;
+        },
+        set: function (value) {
+            var self = this;
+            if (this.__propertyType === value) {
+                return;
+            }
+            this.__propertyType = value;
+
+            // Yeah, I know...
+            switch (value) {
+                case "binding":
+                    return require.async("palette/ui/inspector/blueprint/bound-property-editor.reel")
+                        .then(function (module) {
+                            var editor = new module.BoundPropertyEditor();
+                            editor.readOnlyLabel = true;
+                            editor.defineBinding("binding", {"<-": "model", source: self});
+                            editor.defineBinding("label", {"<-": "model.key", source: self});
+                            editor.defineBinding("object", {"<-": "model.targetObject", source: self});
+                            self.inspector = editor;
+                        });
+                case "object-association":
+                    return require.async("palette/ui/inspector/blueprint/association-value-type/object-association-inspector.reel")
+                        .then(function (module) {
+                            var inspector = new module.ObjectAssociationInspector();
+                            self._configureInspector(inspector);
+                            self.inspector = inspector;
+                        });
+                case "list-association":
+                    return require.async("palette/ui/inspector/blueprint/association-value-type/list-association-inspector.reel")
+                        .then(function (module) {
+                            var inspector = new module.ListAssociationInspector();
+                            self._configureInspector(inspector);
+                            self.inspector = inspector;
+                        });
+                case "set-association":
+                    return require.async("palette/ui/inspector/blueprint/association-value-type/set-association-inspector.reel")
+                        .then(function (module) {
+                            var inspector = new module.SetAssociationInspector();
+                            self._configureInspector(inspector);
+                            self.inspector = inspector;
+                        });
+                case "map-association":
+                    return require.async("palette/ui/inspector/blueprint/association-value-type/map-association-inspector.reel")
+                        .then(function (module) {
+                            var inspector = new module.MapAssociationInspector();
+                            self._configureInspector(inspector);
+                            self.inspector = inspector;
+                        });
+                case "boolean-property":
+                    return require.async("palette/ui/inspector/blueprint/property-value-type/boolean-property-inspector.reel")
+                        .then(function (module) {
+                            var inspector = new module.BooleanPropertyInspector();
+                            self._configureInspector(inspector);
+                            self.inspector = inspector;
+                        });
+                case "date-property":
+                    return require.async("palette/ui/inspector/blueprint/property-value-type/date-property-inspector.reel")
+                        .then(function (module) {
+                            var inspector = new module.DatePropertyInspector();
+                            self._configureInspector(inspector);
+                            self.inspector = inspector;
+                        });
+                case "enum-property":
+                    return require.async("palette/ui/inspector/blueprint/property-value-type/enum-property-inspector.reel")
+                        .then(function (module) {
+                            var inspector = new module.EnumPropertyInspector();
+                            self._configureInspector(inspector);
+                            self.inspector = inspector;
+                        });
+                case "number-property":
+                    return require.async("palette/ui/inspector/blueprint/property-value-type/number-property-inspector.reel")
+                        .then(function (module) {
+                            var inspector = new module.NumberPropertyInspector();
+                            self._configureInspector(inspector);
+                            self.inspector = inspector;
+                        });
+                case "object-property":
+                    return require.async("palette/ui/inspector/blueprint/property-value-type/object-property-inspector.reel")
+                        .then(function (module) {
+                            var inspector = new module.ObjectPropertyInspector();
+                            self._configureInspector(inspector);
+                            self.inspector = inspector;
+                        });
+                case "string-property":
+                    return require.async("palette/ui/inspector/blueprint/property-value-type/string-property-inspector.reel")
+                        .then(function (module) {
+                            var inspector = new module.StringPropertyInspector();
+                            self._configureInspector(inspector);
+                            self.inspector = inspector;
+                        });
+                case "url-property":
+                    return require.async("palette/ui/inspector/blueprint/property-value-type/url-property-inspector.reel")
+                        .then(function (module) {
+                            var inspector = new module.UrlPropertyInspector();
+                            self._configureInspector(inspector);
+                            self.inspector = inspector;
+                        });
+                case "list-property":
+                    return require.async("palette/ui/inspector/blueprint/property-value-type/list-property-inspector.reel")
+                        .then(function (module) {
+                            var inspector = new module.ListPropertyInspector();
+                            self._configureInspector(inspector);
+                            self.inspector = inspector;
+                        });
+                case "set-property":
+                    return require.async("palette/ui/inspector/blueprint/property-value-type/set-property-inspector.reel")
+                        .then(function (module) {
+                            var inspector = new module.SetPropertyInspector();
+                            self._configureInspector(inspector);
+                            self.inspector = inspector;
+                        });
+                case "map-property":
+                    return require.async("palette/ui/inspector/blueprint/property-value-type/map-property-inspector.reel")
+                        .then(function (module) {
+                            var inspector = new module.MapPropertyInspector();
+                            self._configureInspector(inspector);
+                            self.inspector = inspector;
+                        });
+                case "resource-property":
+                    return require.async("palette/ui/inspector/blueprint/property-value-type/resource-property-inspector.reel")
+                        .then(function (module) {
+                            var inspector = new module.ResourcePropertyInspector();
+                            self._configureInspector(inspector);
+                            self.inspector = inspector;
+                        });
+                default:
+                    this.inspector = void 0;
+                    break;
+            }
+        }
+    },
+
+    /**
+     * Helper to define standard values and bindings on property inspectors and
+     * association inspectors.
+     *
+     * @private
+     */
+    _configureInspector: {
+        value: function (inspector) {
+            inspector.readOnlyLabel = true;
+            inspector.defineBinding("editingDocument", {"<-": "editingDocument", source: this});
+            inspector.defineBinding("label", {"<-": "model.key", source: this});
+            inspector.defineBinding("objectValue", {"<->": "model.value", source: this});
+            inspector.defineBinding("propertyBlueprint", {"<-": "model.propertyDescriptor", source: this});
+        }
     },
 
     model: {
