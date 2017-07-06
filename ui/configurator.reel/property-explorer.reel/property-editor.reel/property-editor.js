@@ -236,7 +236,7 @@ exports.PropertyEditor = Component.specialize(/** @lends PropertyEditor# */ {
             // probably improve this to only commit when the editing field
             // loses focus.
             // - Corentin
-            this.model && this.model.commit();
+            this.model && !this.model.isBound && this.model.commit();
         }
     },
 
