@@ -144,9 +144,14 @@ exports.PropertyExplorer = Component.specialize( /** @lends module:"ui/configura
                 this._cancelPropertiesListener = this.object.addRangeAtPathChangeListener(
                     "properties.keysArray().concat(bindings.map{key}).sortedSet{this}",
                     function (plus, minus) {
+                        var keys = customProperties.map(function (prop) {
+                            return prop.key;
+                        });
                         plus.forEach(function (key) {
-                            if (describedPropertyKeys.indexOf(key) === -1) {
-                                customProperties.push(new PropertyModel(self.object, self._objectBlueprint, key));
+                            if (keys.indexOf(key) === -1 && describedPropertyKeys.indexOf(key) === -1) {
+                                customProperties.push(
+                                    new PropertyModel(self.object, self._objectBlueprint, key)
+                                );
                             }
                         });
                         minus.forEach(function (key) {
