@@ -106,6 +106,8 @@ exports.PropertyJig = Component.specialize({
             } catch (error) {
                 if (error instanceof NotModifiedError) {
                     self._discardBindingEdits();
+                } else {
+                    throw error;
                 }
             }
         }

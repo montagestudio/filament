@@ -24,6 +24,7 @@ exports.PropertyEditor = Component.specialize(/** @lends PropertyEditor# */ {
             this.addPathChangeListener("model.propertyDescriptor.isToMany", this, "handlePropertyTypeDependencyChange");
             this.addPathChangeListener("model.propertyDescriptor.collectionValueType", this, "handlePropertyTypeDependencyChange");
             this.addPathChangeListener("model.propertyDescriptor.valueType", this, "handlePropertyTypeDependencyChange");
+            this.addPathChangeListener("model.value", this, "handleValueChange");
         }
     },
 
@@ -73,6 +74,16 @@ exports.PropertyEditor = Component.specialize(/** @lends PropertyEditor# */ {
                 // TODO: Could do something smarter here, infer the type from the value
                 this._propertyType = "string-property";
             }
+        }
+    },
+
+    handleValueChange: {
+        value: function () {
+            // TODO: This commits the model after every value change, should
+            // probably improve this to only commit when the editing field
+            // loses focus.
+            // - Corentin
+            this.model && this.model.commit();
         }
     },
 
