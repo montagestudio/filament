@@ -163,18 +163,22 @@ exports.PropertyJig = Component.specialize({
         value: function(autocomplete, searchTerm) {
             var searchProperty = searchTerm,
                 component = this.model.targetObject;
-            component.packageRequire.async(component.moduleId).get(component.exportName).get("blueprint")
-                .then(function (blueprint) {
-                    var suggestions = [];
-                    blueprint.propertyBlueprints.forEach(function (property) {
-                        if (property.name.startsWith(searchProperty)) {
-                            suggestions.push(property.name);
-                        }
+            if (!this.model.isBound) {
+                autocomplete.suggestions = [];
+            } else {
+                component.packageRequire.async(component.moduleId).get(component.exportName).get("blueprint")
+                    .then(function (blueprint) {
+                        var suggestions = [];
+                        blueprint.propertyBlueprints.forEach(function (property) {
+                            if (property.name.startsWith(searchProperty)) {
+                                suggestions.push(property.name);
+                            }
+                        });
+                        autocomplete.suggestions = suggestions;
+                    }, function (reason) {
+                        console.warn("Unable to load blueprint: ", reason.message ? reason.message : reason);
                     });
-                    autocomplete.suggestions = suggestions;
-                }, function (reason) {
-                    console.warn("Unable to load blueprint: ", reason.message ? reason.message : reason);
-                }).done();
+            }
         }
     },
 
