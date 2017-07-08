@@ -145,6 +145,12 @@ describe("core/property-model", function () {
             expect(targetObject.properties.get("bar")).toBe("someValue");
         });
 
+        it("saves unbound properties without a value", function () {
+            propertyModel = new PropertyModel(targetObject, targetObjectDescriptor, "bar");
+            propertyModel.commit();
+            expect(targetObject.properties.has("bar")).toBeTruthy();
+        });
+
         it("saves bound properties", function () {
             var converter = {},
                 binding;

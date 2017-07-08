@@ -306,7 +306,7 @@ exports.PropertyModel = Montage.specialize({
                         throw new Error("Cannot define blueprint property " + this._key + " without a valueType");
                     }
                 }
-                if (this.value !== this.defaultValue || (this._objectPropertyValue && this._objectPropertyValue !== this.defaultValue)) {
+                if (!this.defaultValue || this.value !== this.defaultValue || this._objectPropertyValue) {
                     result = doc.setOwnedObjectProperty(this.targetObject, this._key, this.value);
                 }
             }
