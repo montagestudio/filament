@@ -25,6 +25,7 @@ exports.PropertyEditor = Component.specialize(/** @lends PropertyEditor# */ {
             this.addPathChangeListener("model.propertyDescriptor.collectionValueType", this, "handlePropertyTypeDependencyChange");
             this.addPathChangeListener("model.propertyDescriptor.valueType", this, "handlePropertyTypeDependencyChange");
             this.addPathChangeListener("model.value", this, "handleValueChange");
+            this.addBeforeOwnPropertyChangeListener("model", this.handleModelWillChange.bind(this));
         }
     },
 
@@ -204,7 +205,15 @@ exports.PropertyEditor = Component.specialize(/** @lends PropertyEditor# */ {
             return this._model;
         },
         set: function (value) {
-            this._model = value;
+            if (this._model !== value) {
+                this._model = value;
+            }
+        }
+    },
+
+    handleModelWillChange: {
+        value: function () {
+            this._propertyType = void 0;
         }
     },
 
@@ -236,7 +245,7 @@ exports.PropertyEditor = Component.specialize(/** @lends PropertyEditor# */ {
             // probably improve this to only commit when the editing field
             // loses focus.
             // - Corentin
-            this.model && !this.model.isBound && this.model.commit();
+            this.model && this.model.value !== void 0 && this.model.value !== null && this.model.commit();
         }
     },
 
@@ -259,6 +268,12 @@ exports.PropertyEditor = Component.specialize(/** @lends PropertyEditor# */ {
     handleDeleteButtonAction: {
         value: function () {
             this.model.delete();
+        }
+    },
+
+    handleResetToDefaultButtonAction: {
+        value: function () {
+            this.model.resetToDefault();
         }
     }
 });

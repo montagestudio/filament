@@ -105,6 +105,11 @@ describe("core/property-model", function () {
             propertyModel = new PropertyModel(targetObject, targetObjectDescriptor, "bar");
             expect(propertyModel.propertyDescriptor).toBeFalsy();
         });
+
+        it("sets the value to the defaultValue of the property's descriptor if available", function () {
+            propertyModel = new PropertyModel(targetObject, targetObjectDescriptor, "foo");
+            expect(propertyModel.value).toBe(true);
+        });
     });
 
     describe("object property changes", function () {
@@ -182,10 +187,11 @@ describe("core/property-model", function () {
             });
             propertyModel = new PropertyModel(targetObject, targetObjectDescriptor, "foo");
             propertyModel.isBound = false;
+            propertyModel.value = false;
             propertyModel.commit();
             binding = targetObject.getObjectBinding("foo");
             expect(binding).toBeFalsy();
-            expect(targetObject.properties.get("foo")).toBe(true);
+            expect(targetObject.properties.get("foo")).toBe(false);
         });
     });
 
@@ -256,5 +262,15 @@ describe("core/property-model", function () {
         expect(propertyModel.isBound).toBeFalsy();
         expect(propertyModel.key).toBe("foo");
         expect(propertyModel.value).toBe("bar");
+    });
+
+    it("restores defaults", function () {
+        propertyModel = new PropertyModel(targetObject, targetObjectDescriptor, "foo");
+        propertyModel.value = "value";
+        propertyModel.isBound = true;
+        propertyModel.commit();
+        propertyModel.resetToDefault();
+        expect(propertyModel.isBound).toBeFalsy();
+        expect(propertyModel.value).toBe(true);
     });
 });

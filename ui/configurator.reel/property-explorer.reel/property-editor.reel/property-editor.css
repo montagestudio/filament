@@ -33,6 +33,16 @@
     background-color: #e5e5e5;
 }
 
+.PropertyEditor-resetButtonIcon {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(/assets/icons/undo.png);
+}
+
 .PropertyEditor-inspector {
     flex: 1;
 }
@@ -117,17 +127,12 @@
     padding: 0 16px 0 6px;
 }
 
-.PropertyEditor-bindingButtonSubstitution, .PropertyEditor-deleteButtonCondition {
+.PropertyEditor-bindingButtonSubstitution, .PropertyEditor-deleteButtonSubstitution {
     visibility: hidden;
     width: 24px;
     height: 24px;
 }
 
-.PropertyEditor-deleteButtonCondition.montage-invisible {
-    display: block;
-    visibility: hidden !important;
-}
-
-.PropertyEditor.mouseOver .PropertyEditor-bindingButtonSubstitution, .PropertyEditor.mouseOver .PropertyEditor-deleteButtonCondition {
+.PropertyEditor.mouseOver .PropertyEditor-bindingButtonSubstitution, .PropertyEditor.mouseOver .PropertyEditor-deleteButtonSubstitution {
     visibility: inherit;
 }

@@ -46,6 +46,12 @@ exports.PropertyExplorer = Component.specialize( /** @lends module:"ui/configura
 
             this.needsDraw = true;
 
+            if (this._cancelPropertiesListener) {
+                this._cancelPropertiesListener();
+                this._cancelPropertiesListener = void 0;
+            }
+            this.propertyGroupsController.content = null;
+
             if (this._object && this._object.moduleId && (this._object.moduleId !== "") && this._object.exportName && (this._object.exportName !== "")) {
 
                 if (typeof this._labelField !== "undefined") {
@@ -107,10 +113,6 @@ exports.PropertyExplorer = Component.specialize( /** @lends module:"ui/configura
                 return;
             }
             this._objectBlueprint = value;
-            if (this._cancelPropertiesListener) {
-                this._cancelPropertiesListener();
-                this._cancelPropertiesListener = void 0;
-            }
             if (value === null) {
                 return;
             }
@@ -138,6 +140,7 @@ exports.PropertyExplorer = Component.specialize( /** @lends module:"ui/configura
                 var customProperties = [];
                 groups.unshift({
                     name: "Custom",
+                    open: true,
                     isCustomizable: true,
                     properties: customProperties
                 });

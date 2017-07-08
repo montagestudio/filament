@@ -56,14 +56,13 @@
             }
         },
 
-        "deleteButtonCondition": {
-            "prototype": "montage/ui/condition.reel",
+        "deleteButtonSubstitution": {
+            "prototype": "montage/ui/substitution.reel",
             "properties": {
-                "element": {"#": "deleteButtonCondition"},
-                "removalStrategy": "hide"
+                "element": {"#": "deleteButtonSubstitution"}
             },
             "bindings": {
-                "condition": {"<-": "@owner.model.isCustom"}
+                "switchValue": {"<-": "@owner.isInCustomizableGroup ? 'delete' : 'reset'"}
             }
         },
         "deleteButton": {
@@ -78,8 +77,19 @@
                     "listener": {"@": "owner"}
                 }
             ]
+        },
+        "resetToDefaultButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "resetToDefaultButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
         }
-
     }
     </script>
 </head>
@@ -111,8 +121,11 @@
             <div data-arg="map-property" data-montage-id="mapPropertyInspector"></div>
             <div data-arg="resource-property" data-montage-id="resourcePropertyInspector"></div>
         </div>
-        <div data-montage-id="deleteButtonCondition" class="PropertyEditor-deleteButtonCondition">
-            <button data-montage-id="deleteButton" class="PropertyEditor-deleteButton"></button>
+        <div data-montage-id="deleteButtonSubstitution" class="PropertyEditor-deleteButtonSubstitution">
+            <button data-arg="delete" data-montage-id="deleteButton" title="Delete this property" class="PropertyEditor-deleteButton"></button>
+            <button data-arg="reset" data-montage-id="resetToDefaultButton" title="Reset this property to defaults" class="PropertyEditor-resetButton">
+                <i class="PropertyEditor-resetButtonIcon"></i>
+            </button>
         </div>
     </label>
 </body>

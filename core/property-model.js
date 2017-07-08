@@ -101,6 +101,10 @@ exports.PropertyModel = Montage.specialize({
         value: null
     },
 
+    defaultValue: {
+        value: null
+    },
+
     /**
      * Whether the property is defined exclusively through serialization and
      * does not have a PropertyDescriptor.
@@ -130,8 +134,7 @@ exports.PropertyModel = Montage.specialize({
                 this.oneway = !!this.oneway;
             } else {
                 if (typeof this.value === "undefined") {
-                    this.value = this.propertyDescriptor ?
-                        this.propertyDescriptor.defaultValue : "";
+                    this.value = this.defaultValue;
                 }
             }
         }
@@ -264,6 +267,8 @@ exports.PropertyModel = Montage.specialize({
             this.defineBinding("isKeyComplex",          {"<-": "key", convert: isBindingPathComplex});
             this.defineBinding("propertyDescriptor",    {"<-": "targetObjectDescriptor.propertyDescriptorForName(key)"});
             this.defineBinding("isCustom",              {"<-": "!propertyDescriptor"});
+            this.defineBinding("defaultValue",          {"<-": "propertyDescriptor.defaultValue"});
+            this.defineBinding("valueType",             {"<-": "propertyDescriptor.valueType"});
             this.defineBinding("_objectPropertyValue",  {"<-": "targetObject.properties.get(key)"});
             this.defineBinding("_objectBindingModel",   {"<-": "targetObject.bindings.filter{key == ^key}.0"});
         }
@@ -289,15 +294,24 @@ exports.PropertyModel = Montage.specialize({
                 doc.cancelOwnedObjectBinding(this.targetObject, this._key);
                 if (this._isTargetObjectOwnerOfDocument) {
                     if (this._key === oldKey && this.propertyDescriptor) {
-                        doc.modifyOwnerBlueprintProperty(this._key, "valueType", this.valueType);
-                    } else {
+                        if (this.valueType !== this.propertyDescriptor.valueType) {
+                            doc.modifyOwnerBlueprintProperty(this._key, "valueType", this.valueType);
+                        }
+                        if (this.value !== this.propertyDescriptor.defaultValue) {
+                            doc.modifyOwnerBlueprintProperty(this._key, "defaultValue", this.value);
+                        }
+                    } else if (this.valueType) {
                         doc.addOwnerBlueprintProperty(this._key, this.valueType);
+                    } else {
+                        throw new Error("Cannot define blueprint property " + this._key + " without a valueType");
                     }
                 }
-                result = doc.setOwnedObjectProperty(this.targetObject, this._key, this.value);
+                if (this.value !== this.defaultValue || (this._objectPropertyValue && this._objectPropertyValue !== this.defaultValue)) {
+                    result = doc.setOwnedObjectProperty(this.targetObject, this._key, this.value);
+                }
             }
 
-            if (this._key !== oldKey) {
+            if (oldKey && this._key !== oldKey) {
                 doc.cancelOwnedObjectBinding(this.targetObject, oldKey);
                 if (!this.isBound) {
                     doc.deleteOwnedObjectProperty(this.targetObject, oldKey);
@@ -341,6 +355,26 @@ exports.PropertyModel = Montage.specialize({
             }
             this.targetObject.editingDocument.deleteOwnedObjectProperty(
                 this.targetObject, this.key);
+        }
+    },
+
+    /**
+     * Restores the inspected property to its values as defined in its property
+     * descriptor.
+     *
+     * @throws Error if the property does not have a PropertyDescriptor
+     */
+    resetToDefault: {
+        value: function () {
+            if (!this.propertyDescriptor) {
+                throw new Error("Cannot reset property model to default because it has no property descriptor");
+            }
+            if (this._isTargetObjectOwnerOfDocument) {
+                return;
+            }
+            this.reset();
+            this.delete();
+            this.value = this.defaultValue;
         }
     }
 });

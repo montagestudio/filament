@@ -118,19 +118,13 @@
                     {"text": "object", "value": "object"}
                 ]
             },
+            "bindings": {
+                "propertyBlueprint": {"<-": "@owner.model.propertyDescriptor"},
+                "value": {"<->": "@owner.model.valueType"}
+            },
             "listeners": [
                 {"type": "action", "listener": {"@": "owner"}}
             ]
-        },
-
-        "value": {
-            "prototype": "ui/widgets/autocomplete/autocomplete.reel",
-            "properties": {
-                "element": {"#": "value"}
-            },
-            "bindings": {
-                "value": {"<->": "@owner.model.value"}
-            }
         },
 
         "sourcePath": {
@@ -270,10 +264,6 @@
                 <section class="Jig-row">
                     <label for="valueType" class="Jig-label">Type</label>
                     <select id="valueType" data-montage-id="valueType" class="Jig-input"></select>
-                </section>
-                <section class="Jig-row">
-                    <label for="value" class="Jig-label">Value</label>
-                    <input id="value" data-montage-id="value" class="Jig-input" type="text">
                 </section>
             </div>
         </div>
