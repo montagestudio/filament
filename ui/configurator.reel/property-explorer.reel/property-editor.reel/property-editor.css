@@ -45,6 +45,7 @@
 
 .PropertyEditor-inspector {
     flex: 1;
+    overflow: hidden;
 }
 
 /* Property ---------------------- */
