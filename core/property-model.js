@@ -321,7 +321,13 @@ exports.PropertyModel = Montage.specialize({
                     }
                 }
                 if (!this.defaultValue || this.value !== this.defaultValue || this._objectPropertyValue) {
-                    result = doc.setOwnedObjectProperty(this.targetObject, this._key, this.value || null);
+                    if (typeof this.value === "undefined") {
+                        // TODO: If value is undefined we should calculate
+                        // the default value based on the valueType instead
+                        // of just setting it to null
+                        this.value = null;
+                    }
+                    result = doc.setOwnedObjectProperty(this.targetObject, this._key, this.value);
                 }
             }
 
