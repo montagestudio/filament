@@ -71,9 +71,10 @@
                     "element": {"#": "propertyInspector"}
                 },
                 "bindings": {
-                    "object": {"<-": "@owner.reelProxy"},
+                    "editingDocument": {"<-": "@owner.editingDocument"},
                     "inspectorController": {"<-": "@owner.inspectorControllers.0"},
-                    "editingDocument": {"<-": "@owner.editingDocument"}
+                    "object": {"<-": "@owner.reelProxy"},
+                    "objectBlueprint": {"<-": "@owner.objectBlueprint"}
                 }
             },
 

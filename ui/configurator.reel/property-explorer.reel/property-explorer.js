@@ -38,59 +38,24 @@ exports.PropertyExplorer = Component.specialize( /** @lends module:"ui/configura
                 return;
             }
 
-            if (this._blueprintDeferred && !this._blueprintDeferred.promise.isFulfilled()) {
-                this._blueprintDeferred.reject(new Error("Inspected Object changed before blueprint was resolved"));
-            }
-
-            this._object = value;
-
-            this.needsDraw = true;
-
             if (this._cancelPropertiesListener) {
                 this._cancelPropertiesListener();
                 this._cancelPropertiesListener = void 0;
             }
             this.propertyGroupsController.content = null;
 
-            if (this._object && this._object.moduleId && (this._object.moduleId !== "") && this._object.exportName && (this._object.exportName !== "")) {
+            this._object = value;
 
-                if (typeof this._labelField !== "undefined") {
+            this.needsDraw = true;
+
+            if (typeof this._labelField !== "undefined") {
+                if (this._object && this._object.moduleId && this._object.exportName) {
                     this._labelField.value = this._object.label;
-                }
-
-                this._blueprintDeferred = Promise.defer();
-
-                var self = this;
-                this._object.packageRequire.async(this._object.moduleId).get(this._object.exportName).get("blueprint")
-                    .then(function (blueprint) {
-                        self._blueprintDeferred.resolve(blueprint);
-                        self.objectBlueprint = blueprint;
-                    }, function (reason) {
-                        console.warn("Unable to load blueprint: ", reason.message ? reason.message : reason);
-                        self._blueprintDeferred.reject(null);
-                    }).done();
-
-            } else {
-                this._blueprintDeferred = null;
-                this.objectBlueprint = null;
-                if (typeof this._labelField !== "undefined") {
+                } else {
                     this._labelField.value = "";
                 }
             }
         }
-    },
-
-    /**
-     * Used to prevent blueprint being resolved if this.object changes
-     * while the blueprint is being loaded.
-     *
-     * Takes advantage of the fact that a promise cannot be resolved after
-     * being rejected and vice versa.
-     * @type {Promise}
-     * @private
-     */
-    _blueprintDeferred: {
-        value: null
     },
 
     _objectBlueprint: {
@@ -113,7 +78,7 @@ exports.PropertyExplorer = Component.specialize( /** @lends module:"ui/configura
                 return;
             }
             this._objectBlueprint = value;
-            if (value === null) {
+            if (!value) {
                 return;
             }
             isObjectOwner = this.object === this.editingDocument.templateObjectsTree.templateObject;
