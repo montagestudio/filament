@@ -1,7 +1,8 @@
-
 .Configurator.Panel {
     background: hsl(0, 0%, 92%);
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .Configurator-inspectorCondition {
@@ -50,6 +51,10 @@
     background: hsl(0, 0%, 92%);
     cursor: default;
     border-bottom: none;
+}
+
+.Configurator-content {
+    overflow-y: auto;
 }
 
 
@@ -128,16 +133,6 @@
     border: none;
     background-color: hsl(0, 0%, 90%);
 }
-
-
-/* Groups ------------------------- */
-
-.PropertyGroupEditor {
-}
-
-.PropertyGroupEditor:last-child {
-}
-
 
 /* Group Toggle ------------------------- */
 
