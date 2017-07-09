@@ -36,3 +36,36 @@
 .PropertyGroupEditor .propertyList {
 
 }
+
+.PropertyGroupEditor-button.matte-Button {
+	margin: 0;
+	padding: 0;
+	min-width: 0;
+	width: 16px;
+	height: 16px;
+	font-size: 16px;
+	font-weight: bold;
+	line-height: 16px;
+	text-align: center;
+	color: hsl(0, 0%, 60%);
+	border-radius: 0;
+	border: none;
+	background-color: transparent;
+	-webkit-font-smoothing: none;
+	-moz-font-smoothing: none;
+	-ms-font-smoothing: none;
+	font-smoothing: none;
+}
+
+.PropertyGroupEditor-button.matte-Button:hover {
+	background-color: hsl(0,0%,92%);
+}
+
+.PropertyGroupEditor-button.matte-Button:active {
+	background-color: hsla(0, 0%, 82%, 1);
+}
+
+.PropertyGroupEditor-button--pill.matte-Button {
+	height: 22px;
+	line-height: 22px;
+}
