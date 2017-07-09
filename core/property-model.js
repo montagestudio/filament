@@ -88,7 +88,18 @@ exports.PropertyModel = Montage.specialize({
      * @type {Boolean}
      */
     isKeyComplex: {
-        value: null
+        get: function () {
+            return this._isKeyComplex;
+        },
+        set: function (value) {
+            if (this._isKeyComplex === value) {
+                return;
+            }
+            this._isKeyComplex = value;
+            if (value) {
+                this.isBound = true;
+            }
+        }
     },
 
     /**
@@ -128,6 +139,9 @@ exports.PropertyModel = Montage.specialize({
             return this._isBound;
         },
         set: function (value) {
+            if (!value && this._isKeyComplex) {
+                return;
+            }
             this._isBound = value;
             if (value) {
                 this.sourcePath = this.sourcePath || "";
@@ -307,7 +321,7 @@ exports.PropertyModel = Montage.specialize({
                     }
                 }
                 if (!this.defaultValue || this.value !== this.defaultValue || this._objectPropertyValue) {
-                    result = doc.setOwnedObjectProperty(this.targetObject, this._key, this.value);
+                    result = doc.setOwnedObjectProperty(this.targetObject, this._key, this.value || null);
                 }
             }
 

@@ -223,6 +223,14 @@ describe("core/property-model", function () {
             expect(targetObject.getObjectBinding("foo")).toBeFalsy();
             expect(targetObject.getObjectBinding("bar")).toBeTruthy();
         });
+
+        it("forces the property to be bound when the key is complex", function () {
+            propertyModel = new PropertyModel(targetObject, targetObjectDescriptor, "bar");
+            propertyModel.key = "bar.foo";
+            expect(propertyModel.isBound).toBe(true);
+            propertyModel.isBound = false;
+            expect(propertyModel.isBound).toBe(true);
+        });
     });
 
     describe("ObjectDescriptor editing on owners", function () {
