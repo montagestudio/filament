@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/montagestudio/filament.svg?token=qyPbDX3xy8r4fYLHPsUC&branch=master)](http://travis-ci.com/montagestudio/filament)
+
 Filament
 ========
 
