@@ -62,7 +62,7 @@
                     "shouldSaveOnBlur": true
                 },
                 "bindings": {
-                    "value": {"<-": "@owner.reelProxy.defined() ? @owner.reelProxy.label : (@owner.nodeProxy.montageId ?? @owner.nodeProxy.className ?? @owner.nodeProxy.tagName)"},
+                    "value": {"<-": "@owner.reelProxy.label ?? @owner.nodeProxy.montageId ?? @owner.nodeProxy.className ?? @owner.nodeProxy.tagName"},
                     "classList.has('TemplateObjectCell-objectLabel--isClassName')":
                         {"<-": "!@owner.reelProxy && !@owner.nodeProxy.montageId && @owner.nodeProxy.className"},
                     "classList.has('TemplateObjectCell-objectLabel--isMontageId')":

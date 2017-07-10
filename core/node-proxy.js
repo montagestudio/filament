@@ -177,6 +177,12 @@ exports.NodeProxy = NodeProxy = Target.specialize({
         }
     },
 
+    className: {
+        get: function () {
+            return this._templateNode.className;
+        }
+    },
+
     getAttribute: {
         value: function (attributeName) {
             return this._templateNode ? this._templateNode.getAttribute(attributeName) : null;
