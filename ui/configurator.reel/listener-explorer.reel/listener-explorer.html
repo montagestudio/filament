@@ -7,10 +7,79 @@
     {
         "owner": {
             "properties": {
-                "element": {"#": "ListenerExplorer"}
+                "element": {"#": "ListenerExplorer"},
+                "eventCreator": {"@": "eventCreator"},
+                "eventOverlay": {"@": "eventOverlay"}
             },
             "bindings": {
                 "classList.has('Filament--willAcceptDrop')": {"<-": "@owner._willAcceptDrop"}
+            }
+        },
+
+        "addEventButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "addEventButton"}
+            },
+            "bindings": {
+                "detail.get('targetObject')": {"<-": "@owner.templateObject"},
+                "classList.has('montage-invisible')": {"<-": "@owner.templateObject != @owner.editingDocument.templateObjectsTree.templateObject"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "eventOverlay": {
+            "prototype": "montage/ui/overlay.reel",
+            "properties": {
+                "element": {"#": "eventOverlay"},
+                "delegate": {"@": "eventCreator"}
+            }
+        },
+
+        "eventCreator": {
+            "prototype": "./event-jig.reel",
+            "properties": {
+                "element": {"#": "eventCreator"}
+            },
+            "bindings": {
+                "editingDocument": {"<-": "@owner.editingDocument"},
+                "targetObject": {"<-": "@owner.templateObject"}
+            },
+            "listeners": [
+                {
+                    "type": "commit",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "discard",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+
+        "eventList": {
+            "prototype": "montage/ui/repetition.reel",
+            "properties": {
+                "element": {"#": "eventList"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.objectBlueprint.eventDescriptors"},
+                "targetObject": {"<-": "@owner.templateObject"}
+            }
+        },
+
+        "eventEntry": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "eventEntry"}
+            },
+            "bindings": {
+                "value": {"<-": "@eventList:iteration.object.name"}
             }
         },
 
@@ -62,12 +131,28 @@
 </head>
 <body>
     <div data-montage-id="ListenerExplorer" class="ListenerExplorer">
+        <section>
+            <div data-montage-id="eventOverlay">
+                <div data-montage-id="eventCreator"></div>
+            </div>
+        </section>
+
+        <header class="TemplateObjectCell-header">
+            <i class="TemplateObjectCell-icon TemplateObjectCell-icon--listener"></i>
+            <h2 class="TemplateObjectCell-title">Events</h2>
+            <div data-montage-id="addEventButton" class="TemplateObjectCell-button" draggable="true">+</div>
+        </header>
+
+        <ul data-montage-id="eventList" class="TemplateObjectCell-list">
+            <li data-montage-id="eventEntry"></li>
+        </ul>
+
         <header class="TemplateObjectCell-header">
             <i class="TemplateObjectCell-icon TemplateObjectCell-icon--listener"></i>
             <h2 class="TemplateObjectCell-title">Listeners</h2>
             <div data-montage-id="addListenerButton" class="TemplateObjectCell-button" draggable="true">+</div>
         </header>
-            
+
         <ul data-montage-id="listenerList" class="TemplateObjectCell-list">
             <li data-montage-id="listenerEntry"></li>
         </ul>

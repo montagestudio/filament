@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link href="event-jig.css" rel="stylesheet">
+    <script type="text/montage-serialization">
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "event-jig"}
+            },
+            "listeners": [
+                {
+                    "type": "keyPress",
+                    "listener": {"@": "owner"}
+                },
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+        "targetObjectLabel": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "targetObjectLabel"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.targetObject.label"}
+            }
+        },
+        "typeField": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "typeField"},
+                "placeholderValue": "action"
+            },
+            "bindings": {
+                "value": {"<->": "@owner.eventType"}
+            }
+        },
+        "cancelButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "cancelButton"},
+                "label": "Cancel"
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+        "cancelEditing": {
+            "prototype": "montage/composer/key-composer",
+            "properties": {
+                "element": {"#": "event-jig"},
+                "component": {"@": "owner"},
+                "identifier": "cancelEditing",
+                "keys": "escape"
+            },
+            "listeners": [
+                {
+                    "type": "keyPress",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
+        "defineEventButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "defineEventButton"},
+                "label": "Define Event"
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="event-jig" class="Jig EventJig">
+        
+        <h2 data-montage-id="targetObjectLabel" class="Jig-targetObjectLabel"></h2>
+        
+        <section class="Jig-row Jig-row--has-col">
+            <div class="Jig-col">
+                <label class="Jig-label">Event Type</label>
+                <input data-montage-id="typeField" class="Jig-input" type="text">
+            </div>
+        </section>
+
+        <footer class="Jig-footer">
+            <button data-montage-id="cancelButton" class="Button"></button>
+            <button data-montage-id="defineEventButton" class="Button--action"></button>
+        </footer>
+    </div>
+</body>
+</html>

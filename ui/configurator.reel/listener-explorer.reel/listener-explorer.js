@@ -206,6 +206,29 @@ exports.ListenerExplorer = Component.specialize(/** @lends ListenerExplorer# */ 
         }
     },
 
+    handleAddEventButtonAction: {
+        value: function (evt) {
+            var eventJig = this.eventCreator,
+                overlay = this.eventOverlay;
+            eventJig.existingEventNames = this.objectBlueprint.eventDescriptors.map(function (descriptor) {
+                return descriptor.name;
+            });
+            overlay.show();
+        }
+    },
+
+    handleEventCreatorCommit: {
+        value: function (evt) {
+            this.eventOverlay.hide();
+        }
+    },
+
+    handleEventCreatorDiscard: {
+        value: function (evt) {
+            this.eventOverlay.hide();
+        }
+    },
+
     handleAddListenerButtonAction: {
         value: function (evt) {
             var listenerModel = Object.create(null);
