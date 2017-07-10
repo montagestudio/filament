@@ -35,15 +35,9 @@ exports.EditProperties = Component.specialize({
                 return;
             }
 
-            if (this._editingDocument) {
-                this._editingDocument.unregisterFile("meta");
-            }
-
             this._editingDocument = value;
 
             if (value) {
-                value.registerFile("meta", this._saveMeta, this);
-
                 value._ownerBlueprint
                 .then(function (blueprint) {
                     self.ownerBlueprint = blueprint;
@@ -77,14 +71,6 @@ exports.EditProperties = Component.specialize({
 
     propertiesController: {
         value: null
-    },
-
-    _saveMeta: {
-        value: function (location, dataSource) {
-            var serializer = new Serializer().initWithRequire(this.editingDocument._packageRequire);
-            var serializedDescription = serializer.serializeObject(this.ownerBlueprint);
-            return dataSource.write(location, serializedDescription);
-        }
     },
 
     handleValueTypeAction: {

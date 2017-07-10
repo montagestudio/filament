@@ -2,8 +2,9 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     TemplateFormatter = require("palette/core/template-formatter").TemplateFormatter,
     Template = require("montage/core/template").Template,
     Promise = require("montage/core/promise").Promise,
-    MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     MontageLabeler = require("montage/core/serialization/serializer/montage-labeler").MontageLabeler,
+    MontageSerializer = require("montage/core/serialization/serializer/montage-serializer").MontageSerializer,
+    MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     SORTERS = require("palette/core/sorters"),
     ComponentEditor = require("ui/component-editor.reel").ComponentEditor,
     ReelSerializer = require("core/serialization/reel-serializer").ReelSerializer,
@@ -543,6 +544,17 @@ exports.ReelDocument = EditingDocument.specialize({
             .then(function() {
                 self._ignoreDataChange = false;
             });
+        }
+    },
+
+    _saveMeta: {
+        value: function (location, dataSource) {
+            var serializer = new Serializer().initWithRequire(this._packageRequire);
+            return this._ownerBlueprint
+                .then(function (blueprint) {
+                    var serializedDescription = serializer.serializeObject(blueprint);
+                    return dataSource.write(location, serializedDescription);
+                });
         }
     },
 
@@ -2640,6 +2652,7 @@ exports.ReelDocument = EditingDocument.specialize({
                 self._javascript = javascript;
                 self.registerFile("html", self._saveHtml, self);
                 self.registerFile("js", self._saveJs, self);
+                self.registerFile("meta", self._saveMeta, self);
                 self._openTemplate(template);
                 return self;
             }, function (error) {
