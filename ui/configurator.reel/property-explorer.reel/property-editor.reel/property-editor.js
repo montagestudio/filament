@@ -2,8 +2,7 @@
  * @module "ui/inspector/blueprint/property-editor.reel"
  * @requires montage/ui/component
  */
-var Component = require("montage/ui/component").Component,
-    Gate = require("montage/core/gate").Gate;
+var Component = require("montage/ui/component").Component
 
 /**
  * An editor for a single property on an editing proxy. Displays an appropriate
@@ -27,6 +26,10 @@ exports.PropertyEditor = Component.specialize(/** @lends PropertyEditor# */ {
             this.addPathChangeListener("model.value", this, "handleValueChange");
             this.addBeforeOwnPropertyChangeListener("model", this.handleModelWillChange.bind(this));
         }
+    },
+
+    isLabelReadOnly: {
+        value: false
     },
 
     enterDocument: {
@@ -246,6 +249,18 @@ exports.PropertyEditor = Component.specialize(/** @lends PropertyEditor# */ {
             // loses focus.
             // - Corentin
             this.model && this.model.value !== void 0 && this.model.value !== null && this.model.commit();
+        }
+    },
+
+    handlePress: {
+        value: function (evt) {
+            var isTargetingName = evt.targetElement === this.readOnlyPropertyName.element ||
+                evt.targetElement === this.readWritePropertyName.element;
+            if (isTargetingName && this.isInCustomizableGroup) {
+                this.dispatchEventNamed("addProperty", true, false, {
+                    propertyModel: this.model
+                });
+            }
         }
     },
 

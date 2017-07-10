@@ -8,8 +8,23 @@
         "owner": {
             "properties": {
                 "element": {"#": "property-editor"},
-                "inspectorSlot": {"@": "inspectorSlot"}
+                "readOnlyPropertyName": {"@": "readOnlyPropertyName"},
+                "readWritePropertyName": {"@": "readWritePropertyName"},
+                "valueInspectorSlot": {"@": "valueInspectorSlot"}
             }
+        },
+
+        "pressComposer": {
+            "prototype": "montage/composer/press-composer",
+            "properties": {
+                "component": {"@": "owner"}
+            },
+            "listeners": [
+                {
+                    "type": "press",
+                    "listener": {"@": "owner"}
+                }
+            ]
         },
 
         "bindingButtonSubstitution": {
@@ -46,10 +61,41 @@
             ]
         },
 
-        "inspectorSlot": {
+        "propertyNameSubstitution": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "propertyNameSubstitution"}
+            },
+            "bindings": {
+                "switchValue": {"<-": "@owner.isLabelReadOnly ? 'readOnly' : 'readWrite'"},
+                "classList.has('clickable')": {"<-": "@owner.isInCustomizableGroup"}
+            }
+        },
+        "readOnlyPropertyName": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "readOnlyPropertyName"}
+            },
+            "bindings": {
+                "value": {"<-": "@owner.model.key"},
+                "element.get('title')": {"<-": "value"}
+            }
+        },
+        "readWritePropertyName": {
+            "prototype": "matte/ui/input-text.reel",
+            "properties": {
+                "element": {"#": "readWritePropertyName"}
+            },
+            "bindings": {
+                "value": {"<->": "@owner.model.key"},
+                "element.get('title')": {"<-": "value"}
+            }
+        },
+
+        "valueInspectorSlot": {
             "prototype": "montage/ui/slot.reel",
             "properties": {
-                "element": {"#": "inspectorSlot"}
+                "element": {"#": "valueInspectorSlot"}
             },
             "bindings": {
                 "content": {"<-": "@owner.inspector"}
@@ -103,7 +149,11 @@
                 <i class="PropertyEditor-bindingIcon PropertyEditor-bindingIcon--cancel"></i>
             </button>
         </div>
-        <div data-montage-id="inspectorSlot" class="PropertyEditor-inspector">
+        <div data-montage-id="propertyNameSubstitution" class="Property-label">
+            <span data-arg="readOnly" data-montage-id="readOnlyPropertyName"></span>
+            <input data-arg="readWrite" data-montage-id="readWritePropertyName"/>
+        </div>
+        <div data-montage-id="valueInspectorSlot" class="PropertyEditor-inspector">
             <div data-arg="binding" data-montage-id="boundPropertyInspector"></div>
             <div data-arg="object-association" data-montage-id="objectAssociationInspector"></div>
             <div data-arg="list-association" data-montage-id="listAssociationInspector"></div>
