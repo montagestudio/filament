@@ -1,3 +1,6 @@
+// TODO: Hack to force cache montage. Remove when montage updated to npm 3.
+require("montage");
+
 require.inject("filament/adaptor/client/core/file-descriptor", require("mocks/file-descriptor-mocks"));
 
 // More of these specs should be able to run under node
