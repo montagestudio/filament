@@ -9,7 +9,7 @@
     "dependencies": {
         "montage": "montagejs/montage.git#master",
         "matte": "montagejs/matte.git#master",
-        "palette": "montagestudio/palette#0533860d2a2dc8062f4369b2e167ec5919abc8d4",
+        "palette": "montagestudio/palette#0bb952dc9d2caffa1025bbcdfa8884af015b8978",
         "flow-editor": "montagestudio/flow-editor.git#master",
         "minit": "montagejs/minit.git#master",
         "bluebird": "~3.3.1",
