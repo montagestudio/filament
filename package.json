@@ -4,20 +4,20 @@
     "private": true,
     "repository": {
         "type": "git",
-        "url": "git+ssh://git@github.com:declarativ/filament.git"
+        "url": "git://git@github.com:montagestudio/filament.git"
     },
     "dependencies": {
-        "montage": "git+ssh://git@github.com:montagejs/montage.git#c9e8a3f2c4f9c485e5f7f17cdc731b12e18082c4",
-        "matte": "git+ssh://git@github.com:montagejs/matte.git#f5826241231011ee3c6599ad147a7c33053d9928",
-        "palette": "git+ssh://git@github.com:montagestudio/palette#master",
-        "flow-editor": "git+ssh://git@github.com:montagestudio/flow-editor.git#914818e9a1b5ca4911d755129488eb6166eaf1b8",
-        "minit": "git+ssh://git@github.com:montagejs/minit.git#60425519921b36c2d9722aec7343044142f5261e",
+        "montage": "montagejs/montage.git#master",
+        "matte": "montagejs/matte.git#master",
+        "palette": "montagestudio/palette#0533860d2a2dc8062f4369b2e167ec5919abc8d4",
+        "flow-editor": "montagestudio/flow-editor.git#master",
+        "minit": "montagejs/minit.git#master",
         "bluebird": "~3.3.1",
         "q": "0.9.7",
         "q-connection": "0.6.1",
         "q-io": "1.10.0",
         "qr-encode": "0.1.0",
-        "mjs-volume": "git+ssh://git@github.com:montagestudio/mjs-volume.git#93d2e1b0daa11e57f86421b771fd03923e8f0e60",
+        "mjs-volume": "montagestudio/mjs-volume.git#master",
         "mop": "0.15.2",
         "npm": "1.3.10",
         "underscore": "1.4.4",
@@ -35,11 +35,10 @@
         "karma-jasmine": "^1.1.0",
         "karma-phantomjs-launcher": "^1.0.2",
         "sandboxed-module": "0.1.4",
-        "montage-testing": "git+ssh://git@github.com:montagejs/montage-testing.git#master",
-        "mr": "git+ssh://git@github.com:montagejs/mr#master",
+        "montage-testing": "montagejs/montage-testing.git#master",
         "jshint": "2.1.9",
         "watchr": "2.3.3",
-        "glTF-webgl-viewer": "git+ssh://git@github.com:montagejs/glTF-webgl-viewer.git#master"
+        "glTF-webgl-viewer": "montagejs/glTF-webgl-viewer.git#master"
     },
     "mappings": {
         "filament-extension": {
