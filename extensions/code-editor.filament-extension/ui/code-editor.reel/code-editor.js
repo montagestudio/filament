@@ -168,7 +168,7 @@ var CodeEditor = exports.CodeEditor = Editor.specialize ({
                     // ourselves on the nextTick since we shouldn't change the
                     // document during a "beforeChange" event.
                     changeObj.cancel();
-                    Promise.nextTick(function() {
+                    Promise.resolve().then(function () {
                         cm.operation(function() {
                             cm.getDoc().replaceRange(
                                 changeObj.text.join("\n"),
