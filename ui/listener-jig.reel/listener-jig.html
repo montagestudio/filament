@@ -53,7 +53,7 @@
             "prototype": "matte/ui/input-text.reel",
             "properties": {
                 "element": {"#": "listenerField"},
-                "placeholderValue": "@owner or @myObject"
+                "placeholder": "@owner or @myObject"
             },
             "bindings": {
                 "value": {"<->": "@owner.listenerModel.listener", "converter": {"@": "objectLabelConverter"}}
@@ -63,7 +63,7 @@
             "prototype": "matte/ui/input-text.reel",
             "properties": {
                 "element": {"#": "methodNameField"},
-                "placeholderValue": "myFunction"
+                "placeholder": "myFunction"
             },
             "bindings": {
                 "value": {"<->": "@owner.listenerModel.methodName"}
@@ -88,7 +88,7 @@
             "prototype": "matte/ui/input-text.reel",
             "properties": {
                 "element": {"#": "typeField"},
-                "placeholderValue": "action"
+                "placeholder": "action"
             },
             "bindings": {
                 "value": {"<->": "@owner.listenerModel.type"}
