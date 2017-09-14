@@ -4,7 +4,7 @@ node_js:
 script: npm run $COMMAND
 env:
   - COMMAND=test
-  - COMMAND=test:karma
+  - COMMAND=test:karma-travis
 notifications:
   irc:
     channels:

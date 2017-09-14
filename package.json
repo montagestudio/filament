@@ -58,6 +58,7 @@
     "test": "node test/run-node.js",
     "test:karma": "karma start --no-auto-watch --single-run",
     "test:karma-dev": "karma start --auto-watch --no-single-run",
+    "test:karma-travis": "karma start --no-auto-watch --single-run --browsers=Chrome_travis_ci",
     "lint": "./node_modules/.bin/jshint --verbose .",
     "lumieres": "node test/functional/run.js",
     "stage-deps": "git add --update node_modules && git add node_modules",
