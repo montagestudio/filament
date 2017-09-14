@@ -1,14 +1,6 @@
 {
   "blueprint_component_reference": {
-    "prototype": "filament-extension/montage/core/meta/blueprint-reference",
-    "properties": {
-      "valueReference": {
-        "blueprintName": "Component",
-        "blueprintModule": {
-          "%": "filament-extension/montage/ui/component.meta"
-        }
-      }
-    }
+      "object": "filament-extension/montage/ui/component.meta"
   },
   "blueprint_unnamed_listenerInfo": {
     "prototype": "filament-extension/montage/core/meta/property-blueprint",
