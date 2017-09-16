@@ -9,3 +9,45 @@
 .montage-app-loading .main {
     display: none;
 }
+
+
+/* Bootstrap --------------------------- */
+
+.Bootstrap {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.montage-app-bootstrapping .Bootstrap,
+.montage-app-loading .Bootstrap {
+    display: -webkit-flex;
+    display: flex;
+}
+
+.Bootstrap-icon {
+    margin: auto;
+    fill: #007FC4;
+}
+
+.Bootstrap-icon-path {
+    opacity: .3;
+    -webkit-animation: Bootstrap-icon-shading 1s cubic-bezier(.72, .11, .73, .95) infinite;
+}
+
+
+.Bootstrap-icon-path--1 { -webkit-animation-delay: -.1s; }
+.Bootstrap-icon-path--2 { -webkit-animation-delay: -.0s; }
+
+@-webkit-keyframes Bootstrap-icon-shading {
+    60% {
+        opacity: .3;
+    }
+    80% {
+        opacity: 1;
+        animaiton-timing-function: cubic-bezier(.31, .06, .30, .92);
+    }
+}
