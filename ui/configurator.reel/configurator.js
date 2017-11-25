@@ -34,7 +34,7 @@ exports.Configurator = Panel.specialize({
                     inspectorController = this.viewController ? this.viewController.modalEditorTypeForObject(selectedObject) : null;
 
                 if (inspectorController) {
-                    this.inspectorControllers = [inspectorController];
+                    this.inspectorControllers = [new inspectorController()];
                 } else {
                     this.inspectorControllers = null;
                 }
