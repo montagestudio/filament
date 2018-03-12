@@ -1712,7 +1712,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             var self = this;
 
             return this.filesAtUrl(this.packageUrl).then(function (fileDescriptors) {
-                var descriptor = new FileDescriptor().initWithUrlAndStat(self.packageUrl + "/", {mode: FileDescriptor.S_IFDIR});
+                var descriptor = new FileDescriptor().initWithUrlAndStat(Url.format(self.packageUrl), {mode: FileDescriptor.S_IFDIR});
                 descriptor.root = true;
                 descriptor.expanded = true;
                 descriptor.children.addEach(fileDescriptors);
