@@ -114,6 +114,12 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    moduleId: {
+        get: function () {
+            return this._moduleId;
+        }
+    },
+
     _openTemplate: {
         value: function(template) {
             var error,

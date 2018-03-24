@@ -288,7 +288,7 @@ exports.ProjectDocument = Document.specialize({
             });
         }
     },
-    
+
     _closeDocumentsBeforeRemoval: {
         value : function (url) {
             var projectController = this._documentController,
@@ -647,26 +647,23 @@ exports.ProjectDocument = Document.specialize({
 
             this.isBusy = true;
             savedPromises = this.dirtyDocuments.map(function (doc) {
-                var url = doc.url;
+                var moduleId = doc.moduleId;
 
                 commitBatch = commitBatch || self._environmentBridge.openCommitBatch(message);
 
                 if (!message) {
-                    var index = url.indexOf("/", url.indexOf("//") + 2),    // simplified url parsing
-                        filePath = decodeURIComponent(url.substring(index + 1)),
-                        componentExt = ".reel";
-
-                    index = filePath.indexOf(componentExt);
+                    var componentExt = ".reel";
+                    var index = moduleId.indexOf(componentExt);
                     if (index !== -1) {
-                        components[filePath] = filePath.substring(0, index + componentExt.length);
+                        components[moduleId] = moduleId.substring(0, index + componentExt.length);
                     } else {
-                        otherFiles.push(filePath);
+                        otherFiles.push(doc.moduleId);
                     }
                 }
 
-                return self._environmentBridge.save(doc, url)
+                return self._environmentBridge.save(doc, doc.url)
                     .then(function(result) {
-                        return self._environmentBridge.stageFiles(commitBatch, url).then(function() { return result;});
+                        return self._environmentBridge.stageFiles(commitBatch, doc.moduleId).then(function() { return result;});
                     });
             });
 
