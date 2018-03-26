@@ -1,3 +1,6 @@
+.Login {
+    font-size: 16px;
+}
 
 /* Aside --------------------------------- */
 
@@ -47,6 +50,26 @@
     background-image: url(/assets/img/github.svg);
 }
 
+.Attract {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 400px;
+    pointer-events: none;
+    min-width: 85%; /* Fallback, fits a 27" screen */
+    min-width: calc(100% - 400px); /* 100% - width of .Aside panel */
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    overflow: hidden;
+}
+
+.Loader {
+    right: auto;
+    width: 400px;
+}
 
 
 /* Responsive --------------------------------- */
@@ -59,4 +82,8 @@
         width: auto;
     }
 
+    .Attract {
+        /* TODO: Add proper fallback */
+        display: none;
+    }
 }

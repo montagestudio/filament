@@ -21,6 +21,13 @@
             }
         },
 
+        "login": {
+            "prototype": "ui/login/login.reel",
+            "properties": {
+                "element": {"#": "login"}
+            }
+        },
+
         "projectList": {
             "prototype": "ui/project-list/project-list.reel",
             "properties": {
@@ -40,6 +47,7 @@
 <body>
     <div data-montage-id="owner" class="Main">
         <div data-montage-id="routeSubstitution" class="Main-routeSubstitution">
+            <div data-arg="login" data-montage-id="login"></div>
             <div data-arg="projectList" data-montage-id="projectList"></div>
             <div data-arg="workbench" data-montage-id="workbench"></div>
         </div>
