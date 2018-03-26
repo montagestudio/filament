@@ -106,7 +106,6 @@ exports.ApplicationDelegate = Montage.specialize({
         value: null
     },
 
-
     constructor: {
         value: function () {
             // Make stack traces from promise errors easily available in the
@@ -143,76 +142,70 @@ exports.ApplicationDelegate = Montage.specialize({
                 .spread(function (app, bridge, mainComponent) {
                     self.application = app;
                     self.environmentBridge = bridge;
-
-                    if (typeof bridge.setEnableFileDrop === "function") {
-                        bridge.setEnableFileDrop(true);
-                    }
-
-                    extensionController = self.extensionController = new ExtensionController().init(self);
+                    self.mainComponent = mainComponent;
 
                     //TODO move this elsewhere, maybe rename to specifically reflect the stage of bootstrapping
                     return self.didLoadEnvironmentBridge().then(function () {
                         return bridge.mainMenu;
                     }).then(function(mainMenu) {
                         app.mainMenu = mainMenu;
+                    });
+                }).then(function () {
+                    return self.willLoadProject();
+                }).then(function () {
+                    extensionController = self.extensionController = new ExtensionController().init(self);
+                    return extensionController.loadExtensions().catch(function (error) {
+                        console.log("Failed loading extensions, proceeding with none");
+                        return [];
+                    }).then(function(extensions) {
+                        loadedExtensions = extensions;
+                    });
+                }).then(function () {
+                    projectController = self.projectController = new ProjectController().init(self.environmentBridge, self.viewController, self.mainComponent, extensionController, self.previewController, self);
+
+                    projectController.registerUrlMatcherForDocumentType(function (fileUrl) {
+                        return (/\.reel\/?$/).test(fileUrl);
+                    }, ReelDocument);
+
+                    // Ensure that the currentEditor is considered the nextTarget before the application
+                    //TODO should probably be the document
+                    self.mainComponent.defineBinding("nextTarget", {"<-": "projectController.currentEditor", source: self});
+
+                    //TODO not activate all extensions by default
+                    return Promise.all(loadedExtensions.map(function (extension) {
+                        return extensionController.activateExtension(extension);
+                    }));
+                }).then(function () {
+                    return self.environmentBridge.projectUrl;
+                }).then(function (projectUrl) {
+                    var promisedProjectUrl;
+
+                    preloadDocument = new Document().init("ui/component.reel");
+                    projectController.documents.push(preloadDocument);
+                    projectController.selectDocument(preloadDocument);
+
+                    if (projectUrl) {
+                        promisedProjectUrl = Promise.resolve(projectUrl);
+                    } else {
+                        promisedProjectUrl = projectController.createApplication();
+                    }
+
+                    // With extensions now loaded and activated, load a project
+                    return promisedProjectUrl.then(function(projectUrl) {
+                        return self.loadProject(projectUrl).then(function() { return projectUrl; });
                     }).then(function () {
-                        // Give subclasses a way to interject before proceeding to load the project
-                        return self.willLoadProject();
-                    }).then(function () {
-                        return extensionController.loadExtensions().catch(function (error) {
-                            console.log("Failed loading extensions, proceeding with none");
-                            return [];
-                        }).then(function(extensions) {
-                            loadedExtensions = extensions;
-                        });
-                    }).then(function () {
-                        projectController = self.projectController = new ProjectController().init(self.environmentBridge, self.viewController, mainComponent, extensionController, self.previewController, self);
-
-                        projectController.registerUrlMatcherForDocumentType(function (fileUrl) {
-                            return (/\.reel\/?$/).test(fileUrl);
-                        }, ReelDocument);
-
-                        // Ensure that the currentEditor is considered the nextTarget before the application
-                        //TODO should probably be the document
-                        mainComponent.defineBinding("nextTarget", {"<-": "projectController.currentEditor", source: self});
-
-                        //TODO not activate all extensions by default
-                        return Promise.all(loadedExtensions.map(function (extension) {
-                            return extensionController.activateExtension(extension);
-                        }));
-                    }).then(function () {
-                        return bridge.projectUrl;
-                    }).then(function (projectUrl) {
-                        var promisedProjectUrl;
-
-                        preloadDocument = new Document().init("ui/component.reel");
-                        projectController.documents.push(preloadDocument);
-                        projectController.selectDocument(preloadDocument);
-
-                        if (projectUrl) {
-                            promisedProjectUrl = Promise.resolve(projectUrl);
-                        } else {
-                            promisedProjectUrl = projectController.createApplication();
-                        }
-
-                        // With extensions now loaded and activated, load a project
-                        return promisedProjectUrl.then(function(projectUrl) {
-                            return self.loadProject(projectUrl).then(function() { return projectUrl; });
-                        });
-                    }).then(function (projectUrl) {
                         var ix = projectController.documents.indexOf(preloadDocument);
                         projectController.documents.splice(ix, 1);
 
                         //TODO only do this if we have an index.html
-                        return self.previewController.registerPreview(projectUrl, projectUrl + "/index.html").then(function () {
-                            //TODO not launch the preview automatically?
-                            return self.previewController.launchPreview();
-                        });
+                        return self.previewController.registerPreview(projectUrl, projectUrl + "/index.html");
                     }).then(function () {
-                        return self.didLoadProject();
+                        //TODO not launch the preview automatically?
+                        return self.previewController.launchPreview();
                     });
-
-                }, function(error) {
+                }).then(function () {
+                    return self.didLoadProject();
+                }).catch(function (error) {
                     console.error("Failed loading application");
                     return error;
                 }).done();
@@ -236,10 +229,13 @@ exports.ApplicationDelegate = Montage.specialize({
             bridge.promptPanel = this.promptPanel;
             bridge.confirmPanel = this.confirmPanel;
             bridge.applicationDelegate = this;
-            bridge.userController.getUser().then(function (user) {
+            if (typeof bridge.setEnableFileDrop === "function") {
+                bridge.setEnableFileDrop(true);
+            }
+            return bridge.userController.getUser().then(function (user) {
                 track.setUsername(user.login);
+                return null;
             });
-            return Promise.resolve();
         }
     },
 
