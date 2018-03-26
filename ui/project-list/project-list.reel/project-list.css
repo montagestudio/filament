@@ -1,5 +1,5 @@
 
-.Main {
+.ProjectList {
 
 }
 
@@ -130,7 +130,7 @@
     margin-left: .5em;
 }
 
-.User-logout {
+.User-logout.matte-Button {
     position: absolute;
     top: 16px;
     right: 0.5rem;
@@ -358,7 +358,7 @@
 
 /* Button New */
 
-.NewProjectButton {
+.NewProjectButton.matte-Button {
     position: relative;
     padding: .8rem .8rem .8rem 4em;
     width: 100%;
@@ -397,13 +397,13 @@
     border-bottom-left-radius: inherit;
     border-right: 1px solid hsla(0,0%,0%,.06);
     background: no-repeat center;
-    background-image: url(../../assets/images/plus.svg);
+    background-image: url(../../../assets/images/plus.svg);
 }
 
 
 /* Button Link ---------------------------- */
 
-.ButtonLink,
+.ButtonLink.matte-Button,
 .ButtonLink:active {
     border-radius: 0;
     border: none;
@@ -426,6 +426,7 @@
 .ButtonLink[data-icon]:before {
     content: "";
     background: no-repeat center center;
+    position: initial;
     width: 16px;
     height: 16px;
     line-height: 16px;
@@ -443,7 +444,7 @@
 
 /* Refresh Button ---------------------------- */
 
-.Projects-refreshButton {
+.Projects-refreshButton.matte-Button {
     position: absolute;
     top: 0;
     right: 0;

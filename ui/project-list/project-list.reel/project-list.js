@@ -1,10 +1,10 @@
 var Bindings = require("montage/core/core").Bindings,
     Component = require("montage/ui/component").Component,
-    repositoriesController = require("../../core/repositories-controller").repositoriesController,
+    repositoriesController = require("core/repositories-controller").repositoriesController,
     UserController = require("adaptor/client/core/user-controller").UserController,
     requestOk = require("core/request").requestOk;
 
-exports.Main = Component.specialize({
+exports.ProjectList = Component.specialize({
 
     version: {
         value: "X"
@@ -55,7 +55,7 @@ exports.Main = Component.specialize({
     },
 
     constructor: {
-        value: function Main() {
+        value: function ProjectList() {
             this.super();
 
             this.repositoriesController = repositoriesController;
