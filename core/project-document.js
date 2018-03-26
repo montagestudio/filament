@@ -486,9 +486,9 @@ exports.ProjectDocument = Document.specialize({
                 retVal;
 
             if (bridge && typeof bridge.updateProjectRefs === "function") {
-                var previousProgressMessage = applicationDelegate.progressPanel.message;
+                var previousProgressMessage = applicationDelegate.environmentBridge.progressPanel.message;
                 if (updateType !== "merge") {
-                    applicationDelegate.progressPanel.message =
+                    applicationDelegate.environmentBridge.progressPanel.message =
                         reference && resolution !== "rebase" ? "Resolving conflict…" : "Updating repository…";
                 }
 
@@ -592,7 +592,7 @@ exports.ProjectDocument = Document.specialize({
                     }
                 })
                 .finally(function() {
-                    applicationDelegate.progressPanel.message = previousProgressMessage;
+                    applicationDelegate.environmentBridge.progressPanel.message = previousProgressMessage;
                 });
             }
 

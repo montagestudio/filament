@@ -1,186 +1,47 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Main</title>
-    <meta charset="utf-8">
-
-    <link href="../../assets/fonts/fonts.css" rel="stylesheet">
-    <link href="../../assets/icons/style.css" rel="stylesheet">
-    <link href="../../assets/styles/filament-matte.css" rel="stylesheet">
-    <link href="../../assets/styles/filament-components.css" rel="stylesheet">
-    <link href="../../assets/styles/jig.css" rel="stylesheet">
-    <link href="../infobar/infobar.css" rel="stylesheet">
-    <link href="main.css" rel="stylesheet">
-
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="main.css">
     <script type="text/montage-serialization">
-        {
-            "localizer": {
-                "object": "montage/core/localizer[defaultLocalizer]"
-            },
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"},
+                "workbench": {"@": "workbench"}
+            }
+        },
 
-            "owner": {
-                "properties": {
-                    "element": {"#": "main"},
-                    "editorSlot": {"#": "editorSlot"},
-                    "packageExplorer": {"@": "packageExplorer"}
-                },
-                "bindings": {
-                    "projectController": {"<-": "@application.delegate.projectController"},
-                    "extensionController": {"<-": "@application.delegate.extensionController"},
-                    "classList.has('isShowingPreviewPanel')": {"<-": "isShowingPreviewPanel"}
-                }
-            },
+        "routeSubstitution": {
+            "prototype": "montage/ui/substitution.reel",
+            "properties": {
+                "element": {"#": "routeSubstitution"},
+                "switchValue": {"<-": "@owner.application.delegate.currentRoute"}
+            }
+        },
 
-            "closeDocument": {
-                "prototype": "montage/composer/key-composer",
-                "properties": {
-                    "keys": "command+w",
-                    "identifier": "closeDocument",
-                    "component": {"@": "application"}
-                },
-                "listeners": [
-                    {
-                        "type": "keyPress",
-                        "listener": {"@": "owner"}
-                    }
-                ]
-            },
+        "projectList": {
+            "prototype": "ui/project-list/project-list.reel",
+            "properties": {
+                "element": {"#": "projectList"}
+            }
+        },
 
-            "toolbar": {
-                "prototype": "adaptor/client/ui/toolbar.reel",
-                "properties": {
-                    "element": {"#": "toolbar"}
-                },
-                "bindings": {
-                    "mainMenu": {"<-": "@owner.application.mainMenu"},
-                    "environmentBridge": {"<-": "@owner.application.delegate.environmentBridge"},
-                    "projectDocument": {"<-": "@owner.application.delegate.projectController.projectDocument"}
-                }
-            },
-
-            "workflow": {
-                "prototype": "adaptor/client/ui/workflow.reel",
-                "properties": {
-                    "element": {"#": "workflow"}
-                },
-                "bindings": {
-                    "projectDocument": {"<-": "@owner.application.delegate.projectController.projectDocument"}
-                }
-            },
-
-            "previewControlPanel": {
-                "prototype": "ui/preview-control-panel.reel",
-                "properties": {
-                    "element": {"#": "previewControlPanel"}
-                },
-                "bindings": {
-                    "previewController": {"<-": "@owner.projectController.previewController"}
-                }
-            },
-
-            "tasksInfobar": {
-                "prototype": "ui/infobar/activity-infobar.reel",
-                "properties": {
-                    "element": {"#": "tasksInfobar"}
-                }
-            },
-
-            "packageExplorer": {
-                "prototype": "ui/package-explorer.reel",
-                "properties": {
-                    "element": {"#": "packageExplorer"}
-                },
-                "bindings": {
-                    "files": {"<-": "@owner.projectController.files"},
-                    "icon": {"<-": "@owner.projectController.icon"},
-                    "packageDescription": {"<-": "@owner.projectController.packageDescription"},
-                    "projectController": {"<-": "@owner.projectController"},
-                    "previewController": {"<-": "@application.delegate.previewController"}
-                }
-            },
-
-            "application": {
-                "prototype": "montage/core/application",
-                "listeners": [
-                    {
-                        "type": "keyPress",
-                        "listener": {"@": "owner"}
-                    }
-                ]
-            },
-
-            "documentTabList": {
-                "prototype": "ui/document-tab-list.reel",
-                "properties": {
-                    "element": {"#": "documentTabList"}
-                },
-                "bindings": {
-                    "projectController": {"<-": "@owner.projectController"}
-                }
-            },
-
-            "split": {
-                "prototype": "ui/split-control.reel",
-                "properties": {
-                    "element": {"#": "split"},
-                    "splitAxis": "vertical",
-                    "containerElement": {"#": "containerElement"},
-                    "controlledComponent": {"@": "packageExplorer"}
-                }
-            },
-            "goToFile": {
-                "prototype": "ui/go-to-file.reel",
-                "properties": {
-                    "element": {"#": "goToFile"}
-                },
-                "bindings": {
-                    "projectController": {"<-": "@owner.projectController"}
-                }
-            },
-            "contextualMenu": {
-                "prototype": "ui/contextual-menu.reel",
-                "properties": {
-                    "element": {"#": "contextualMenu"}
-                }
-            },
-            "preloadEditorSlot": {
-                "prototype": "montage/ui/slot.reel",
-                "properties": {
-                    "element": {"#": "preloadEditorSlot"}
-                }
+        "workbench": {
+            "prototype": "ui/workbench.reel",
+            "properties": {
+                "element": {"#": "workbench"}
             }
         }
+    }
     </script>
-
 </head>
 <body>
-
-    <div data-montage-id="main" class="Main-wrap">
-
-        <div data-montage-id="tasksInfobar"></div>
-
-        <nav data-montage-id="toolbar">
-            <div data-montage-id="workflow"></div>
-        </nav>
-
-
-        <div data-montage-id="containerElement" class="Main">
-
-            <div data-montage-id="previewControlPanel"></div>
-
-            <aside data-montage-id="packageExplorer"></aside>
-            <div data-montage-id="split"></div>
-            <section class="editor">
-                <div data-montage-id="documentTabList"></div>
-                <section data-montage-id="editorSlot" class="editorSlot"></section>
-            </section>
-
-            <div data-montage-id="goToFile"></div>
-            <div data-montage-id="contextualMenu"></div>
+    <div data-montage-id="owner" class="Main">
+        <div data-montage-id="routeSubstitution" class="Main-routeSubstitution">
+            <div data-arg="projectList" data-montage-id="projectList"></div>
+            <div data-arg="workbench" data-montage-id="workbench"></div>
         </div>
-
-        <div data-montage-id="preloadEditorSlot" style="display: none"></div>
     </div>
-
 </body>
 </html>

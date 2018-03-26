@@ -8,7 +8,7 @@ var Montage = require("montage/core/core").Montage,
     ReelDocument = require("core/reel-document").ReelDocument,
     Document = require("palette/core/document").Document,
     FilamentService = require("core/filament-service").FilamentService,
-    repositoriesController = require("project-list/core/repositories-controller").repositoriesController;
+    repositoriesController = require("core/repositories-controller").repositoriesController;
 
 var LICENSES = require("./licenses.html").content;
 
@@ -32,6 +32,10 @@ exports.ApplicationDelegate = Montage.specialize({
 
             return bridgePromise;
         }
+    },
+
+    currentRoute: {
+        value: null
     },
 
     application: {
@@ -70,30 +74,6 @@ exports.ApplicationDelegate = Montage.specialize({
         value: null
     },
 
-    progressPanel: {
-        value: null
-    },
-
-    promptPanel: {
-        value: null
-    },
-
-    initializeRepositoryPanel: {
-        value: null
-    },
-
-    unknownRepositoryPanel: {
-        value: null
-    },
-
-    mergePanel: {
-        value: null
-    },
-
-    mergeConflictPanel: {
-        value: null
-    },
-
     showModal: {
         value: false
     },
@@ -108,6 +88,41 @@ exports.ApplicationDelegate = Montage.specialize({
 
     constructor: {
         value: function () {
+            var self = this;
+            this._deferredApplication = Promise.defer();
+            this._deferredMainComponent = Promise.defer();
+
+            // TODO: Should only do this if the workbench is being loaded
+            this.viewController = new ViewController();
+            this.previewController = (new PreviewController()).init(this);
+
+            Promise.all([this._deferredApplication.promise, this._deferredMainComponent.promise])
+                .spread(function (app, mainComponent) {
+                    var pathname = window.location.pathname;
+
+                    self.application = app;
+                    self.mainComponent = mainComponent;
+
+                    if (pathname.split("/").length === 3) {
+                        // --> /owner/repo
+                        self.currentRoute = "workbench";
+                        self.loadWorkbench();
+                    } else {
+                        // --> /
+                        self.currentRoute = "projectList";
+                    }
+                });
+        }
+    },
+
+    loadWorkbench: {
+        value: function () {
+            var self = this,
+                extensionController,
+                loadedExtensions,
+                projectController,
+                preloadDocument;
+
             // Make stack traces from promise errors easily available in the
             // console. Otherwise you need to manually inspect the error.stack
             // in the debugger.
@@ -122,33 +137,15 @@ exports.ApplicationDelegate = Montage.specialize({
                 }
             };
 
-            this._deferredApplication = Promise.defer();
-            this._deferredMainComponent = Promise.defer();
-
-            this.viewController = new ViewController();
-
-            this.previewController = (new PreviewController()).init(this);
-
-            var self = this,
-                promisedApplication = this._deferredApplication.promise,
-                promisedMainComponent = this._deferredMainComponent.promise,
-                promisedBridge = this.getEnvironmentBridge(),
-                extensionController,
-                loadedExtensions,
-                projectController,
-                preloadDocument;
-
-            Promise.all([promisedApplication, promisedBridge, promisedMainComponent])
-                .spread(function (app, bridge, mainComponent) {
-                    self.application = app;
+            this.getEnvironmentBridge()
+                .then(function (bridge) {
                     self.environmentBridge = bridge;
-                    self.mainComponent = mainComponent;
 
                     //TODO move this elsewhere, maybe rename to specifically reflect the stage of bootstrapping
                     return self.didLoadEnvironmentBridge().then(function () {
                         return bridge.mainMenu;
                     }).then(function(mainMenu) {
-                        app.mainMenu = mainMenu;
+                        self.application.mainMenu = mainMenu;
                     });
                 }).then(function () {
                     return self.willLoadProject();
@@ -161,7 +158,11 @@ exports.ApplicationDelegate = Montage.specialize({
                         loadedExtensions = extensions;
                     });
                 }).then(function () {
-                    projectController = self.projectController = new ProjectController().init(self.environmentBridge, self.viewController, self.mainComponent, extensionController, self.previewController, self);
+                    var editorController = self.mainComponent.workbench;
+                    projectController = self.projectController = new ProjectController().init(
+                        self.environmentBridge, self.viewController, editorController, extensionController,
+                        self.previewController, self
+                    );
 
                     projectController.registerUrlMatcherForDocumentType(function (fileUrl) {
                         return (/\.reel\/?$/).test(fileUrl);
@@ -176,33 +177,27 @@ exports.ApplicationDelegate = Montage.specialize({
                         return extensionController.activateExtension(extension);
                     }));
                 }).then(function () {
-                    return self.environmentBridge.projectUrl;
-                }).then(function (projectUrl) {
-                    var promisedProjectUrl;
-
                     preloadDocument = new Document().init("ui/component.reel");
                     projectController.documents.push(preloadDocument);
                     projectController.selectDocument(preloadDocument);
 
-                    if (projectUrl) {
-                        promisedProjectUrl = Promise.resolve(projectUrl);
-                    } else {
-                        promisedProjectUrl = projectController.createApplication();
-                    }
-
+                    return self.environmentBridge.projectUrl
+                        .then(function (projectUrl) {
+                            return projectUrl || projectController.createApplication();
+                        });
+                }).then(function (projectUrl) {
                     // With extensions now loaded and activated, load a project
-                    return promisedProjectUrl.then(function(projectUrl) {
-                        return self.loadProject(projectUrl).then(function() { return projectUrl; });
-                    }).then(function () {
-                        var ix = projectController.documents.indexOf(preloadDocument);
-                        projectController.documents.splice(ix, 1);
+                    return self.loadProject(projectUrl)
+                        .then(function () {
+                            var ix = projectController.documents.indexOf(preloadDocument);
+                            projectController.documents.splice(ix, 1);
 
-                        //TODO only do this if we have an index.html
-                        return self.previewController.registerPreview(projectUrl, projectUrl + "/index.html");
-                    }).then(function () {
-                        //TODO not launch the preview automatically?
-                        return self.previewController.launchPreview();
-                    });
+                            //TODO only do this if we have an index.html
+                            return self.previewController.registerPreview(projectUrl, projectUrl + "/index.html");
+                        }).then(function () {
+                            //TODO not launch the preview automatically?
+                            return self.previewController.launchPreview();
+                        });
                 }).then(function () {
                     return self.didLoadProject();
                 }).catch(function (error) {
@@ -225,9 +220,6 @@ exports.ApplicationDelegate = Montage.specialize({
         value: function () {
             //TODO the bridge and the appDelegate are fighting over responsibilities…
             var bridge = this.environmentBridge;
-            bridge.progressPanel = this.progressPanel;
-            bridge.promptPanel = this.promptPanel;
-            bridge.confirmPanel = this.confirmPanel;
             bridge.applicationDelegate = this;
             if (typeof bridge.setEnableFileDrop === "function") {
                 bridge.setEnableFileDrop(true);
@@ -252,11 +244,11 @@ exports.ApplicationDelegate = Montage.specialize({
 
             self.showModal = true;
             self.currentPanelKey = "progress";
-            self.progressPanel.message = "Verifying project…";
+            self.updateStatusMessage("Verifying project…");
 
             return bridge.repositoryExists()
                 .then(function (exists) {
-                    self.progressPanel.message = "Verifying repository…";
+                    self.updateStatusMessage("Verifying repository…");
 
                     return Promise.all([
                         Promise.resolve(exists),
@@ -350,7 +342,7 @@ exports.ApplicationDelegate = Montage.specialize({
             return new Promise(function(resolve) {
                 var loadProject = function() {
                     self.currentPanelKey = "progress";
-                    self.progressPanel.message = "Loading project…";
+                    self.updateStatusMessage("Loading project…");
                     self.showModal = true;
                     track.message("loading project");
                     self.projectController.loadProject(projectUrl)
@@ -444,7 +436,7 @@ exports.ApplicationDelegate = Montage.specialize({
                     Promise.delay(7000)
                         .then(function (result) {
                             self.currentPanelKey = "progress";
-                            self.progressPanel.message = "Initializing project and installing dependencies…";
+                            self.updateStatusMessage("Initializing project and installing dependencies…");
                         })
                         .done();
 
@@ -462,7 +454,7 @@ exports.ApplicationDelegate = Montage.specialize({
             if (bridge) {
 
                 self.currentPanelKey = "progress";
-                self.progressPanel.message = "Initializing project and installing dependencies…";
+                self.updateStatusMessage("Initializing project and installing dependencies…");
 
                 initializationPromise = bridge.initializeProject();
             }

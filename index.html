@@ -11,6 +11,7 @@
     <link href="assets/styles/firefly.css" rel="stylesheet">
     <link href="assets/styles/filament.css" rel="stylesheet">
     <link href="assets/styles/bootstrapping.css" rel="stylesheet">
+    <link href="assets/styles/filament-page.css" rel="stylesheet">
 
     <script src="node_modules/montage/montage.js" data-package="/app"></script>
     <script type="text/montage-serialization">
@@ -45,18 +46,7 @@
             },
 
             "applicationDelegate": {
-                "prototype": "core/application-delegate",
-                "properties": {
-                    "promptPanel": {"@": "promptPanel"},
-                    "progressPanel": {"@": "progressPanel"},
-                    "confirmPanel": {"@": "confirmPanel"},
-                    "initializeRepositoryPanel": {"@": "initializeRepoPanel"},
-                    "unknownRepositoryPanel": {"@": "unknownRepositoryPanel"},
-                    "mergePanel": {"@": "mergePanel"},
-                    "mergeConflictPanel": {"@": "mergeConflictPanel"},
-                    "infoPanel": {"@": "infoPanel"},
-                    "downloadLink": {"#": "downloadLink"}
-                }
+                "prototype": "core/application-delegate"
             },
 
             "application": {
@@ -64,113 +54,7 @@
                 "properties": {
                     "delegate": {"@": "applicationDelegate"}
                 }
-            },
-
-            "modalOverlay": {
-                "prototype": "adaptor/client/ui/modal-overlay.reel",
-                "properties": {
-                    "element": {"#": "modalOverlay"}
-                },
-                "bindings": {
-                    "visible": {"<-": "@applicationDelegate.showModal"},
-                    "classList.has('is-booting')": {"<-": "!@applicationDelegate.isProjectLoaded"}
-                }
-            },
-
-            "unknownRepositoryPanel": {
-                "prototype": "adaptor/client/ui/unknown-repository-panel.reel",
-                "properties": {
-                    "element": {"#": "unknownRepositoryPanel"}
-                },
-                "bindings": {
-                    "owner": {"<-": "@applicationDelegate.environmentBridge.repositoryController.owner"},
-                    "repo": {"<-": "@applicationDelegate.environmentBridge.repositoryController.repo"}
-                },
-                "listeners": [
-                    {
-                        "type": "createRepository",
-                        "listener": {"@": "applicationDelegate"}
-                    }
-                ]
-            },
-
-            "initializeRepoPanel": {
-                "prototype": "adaptor/client/ui/initialize-repository-panel.reel",
-                "properties": {
-                    "element": {"#": "initializeRepoPanel"}
-                },
-                "bindings": {
-                    "owner": {"<-": "@applicationDelegate.environmentBridge.repositoryController.owner"},
-                    "repo": {"<-": "@applicationDelegate.environmentBridge.repositoryController.repo"}
-                },
-                "listeners": [
-                    {
-                        "type": "initializeRepository",
-                        "listener": {"@": "applicationDelegate"}
-                    }
-                ]
-            },
-
-            "mergePanel": {
-                "prototype": "adaptor/client/ui/merge-panel.reel",
-                "properties": {
-                    "element": {"#": "mergePanel"}
-                },
-                "bindings": {
-                    "owner": {"<-": "@applicationDelegate.environmentBridge.repositoryController.owner"},
-                    "repo": {"<-": "@applicationDelegate.environmentBridge.repositoryController.repo"}
-                }
-            },
-
-            "mergeConflictPanel": {
-                "prototype": "adaptor/client/ui/merge-conflict-panel.reel",
-                "properties": {
-                    "element": {"#": "mergeConflictPanel"}
-                },
-                "bindings": {
-                    "owner": {"<-": "@applicationDelegate.environmentBridge.repositoryController.owner"},
-                    "repo": {"<-": "@applicationDelegate.environmentBridge.repositoryController.repo"}
-                }
-            },
-
-            "progressPanel": {
-                "prototype": "adaptor/client/ui/progress-panel.reel",
-                "properties": {
-                    "element": {"#": "progressPanel"}
-                }
-            },
-
-            "promptPanel": {
-                "prototype": "adaptor/client/ui/prompt-panel.reel",
-                "properties": {
-                    "element": {"#": "promptPanel"}
-                }
-            },
-
-            "confirmPanel": {
-                "prototype": "adaptor/client/ui/confirm-panel.reel",
-                "properties": {
-                    "element": {"#": "confirmPanel"}
-                }
-            },
-
-            "infoPanel": {
-                "prototype": "adaptor/client/ui/info-panel.reel",
-                "properties": {
-                    "element": {"#": "infoPanel"}
-                }
-            },
-
-            "panelSwitcher": {
-                "prototype": "montage/ui/substitution.reel",
-                "properties": {
-                    "element": {"#": "panelSwitcher"}
-                },
-                "bindings": {
-                    "switchValue": {"<-": "@applicationDelegate.currentPanelKey"}
-                }
             }
-
         }
     </script>
 
@@ -179,19 +63,6 @@
 
     <div data-montage-id="status"></div>
 
-    <section data-montage-id="modalOverlay" class="ModalOverlay-noDisplay">
-        <div data-montage-id="panelSwitcher" data-arg="panel" class="ModalOverlay-switcher">
-            <div data-arg="unknown" data-montage-id="unknownRepositoryPanel" class="ModalOverlay-item"></div>
-            <div data-arg="initialize" data-montage-id="initializeRepoPanel" class="ModalOverlay-item"></div>
-            <div data-arg="merge" data-montage-id="mergePanel" class="ModalOverlay-item"></div>
-            <div data-arg="conflict" data-montage-id="mergeConflictPanel" class="ModalOverlay-item"></div>
-            <div data-arg="progress" data-montage-id="progressPanel" class="ModalOverlay-item"></div>
-            <div data-arg="prompt" data-montage-id="promptPanel" class="ModalOverlay-item"></div>
-            <div data-arg="confirm" data-montage-id="confirmPanel" class="ModalOverlay-item"></div>
-            <div data-arg="info" data-montage-id="infoPanel" class="ModalOverlay-item"></div>
-        </div>
-        <a href="" data-montage-id="downloadLink" download="download"></a>
-    </section>
 
     <div data-montage-id="loader" class="Filament-loader--firefly">
         <div data-montage-id="loaderWidget"></div>
