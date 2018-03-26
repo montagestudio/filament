@@ -1,4 +1,4 @@
-/* 
+/*
  * Filament Pages
  * Used for: All the pages outside of the main app.
  * Like /login and /project-list
@@ -6,24 +6,6 @@
 
 
 /* Global ------------------------------------- */
-
-* {
-    -moz-box-sizing: border-box;
-         box-sizing: border-box;
-}
-
-html {
-    font-family: Clear Sans, sans-serif;
-    font-size: 16px;
-    color: hsl(210, 10%, 75%);
-    background-color: hsl(210, 24%, 16%);
-    /* background-color: hsl(0, 0%, 22%); */
-}
-
-body {
-    margin: 0;
-    font-size: 16px;
-}
 
 a,
 a:active {
@@ -33,12 +15,6 @@ a:active {
 a:hover {
     color: hsl(212, 60%, 80%);
 }
-
-
-.montage-invisible {
-    display: none;
-}
-
 
 
 /* Aside ------------------------------------- */
@@ -54,6 +30,7 @@ a:hover {
     text-align: center;
     background: url(/assets/img/bg.jpg) no-repeat center top;
     background-size: 100% auto;
+    background-color: hsl(210, 24%, 16%);
     overflow: auto;
     -webkit-overflow-scrolling: touch;
 }

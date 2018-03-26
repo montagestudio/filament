@@ -1,5 +1,9 @@
 .Main {
+    height: 100%;
+}
 
+.Main-routeSubstitution {
+    height: 100%;
 }
 
 .Main-routeSubstitution > * {
