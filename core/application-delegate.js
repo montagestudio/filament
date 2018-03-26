@@ -34,7 +34,11 @@ exports.ApplicationDelegate = Montage.specialize({
         }
     },
 
-    currentRoute: {
+    isAuthenticated: {
+        value: null
+    },
+
+    isProjectOpen: {
         value: null
     },
 
@@ -103,13 +107,15 @@ exports.ApplicationDelegate = Montage.specialize({
                     self.application = app;
                     self.mainComponent = mainComponent;
 
+                    self.isAuthenticated = true;
+
                     if (pathname.split("/").length === 3) {
                         // --> /owner/repo
-                        self.currentRoute = "workbench";
+                        self.isProjectOpen = true;
                         self.loadWorkbench();
                     } else {
                         // --> /
-                        self.currentRoute = "projectList";
+                        self.isProjectOpen = false;
                     }
                 });
         }
