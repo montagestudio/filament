@@ -233,9 +233,11 @@ exports.ProjectList = Component.specialize({
 
     handleLogoutButtonAction: {
         value: function () {
+            var self = this;
             this.repositoriesController.clearCachedRepositories()
                 .finally(function () {
-                    window.location = "/logout";
+                    self.application.delegate.clearToken();
+                    self.application.delegate.handleLocationChange();
                 })
                 .done();
         }

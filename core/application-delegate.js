@@ -134,23 +134,31 @@ exports.ApplicationDelegate = Montage.specialize({
     handleLocationChange: {
         value: function () {
             var self = this;
-            request.requestOk({ url: "/auth" })
-                .then(function () {
-                    var pathname = window.location.pathname;
-                    self.isAuthenticated = true;
+            var newToken = this._getHashParam(window.location, "token");
+            if (newToken) {
+                this.storeToken(newToken);
+                // Get rid of the hash from the location
+                window.history.replaceState({}, window.location.href.split("#")[0], window.location.href.split("#")[0]);
+            }
+            request.requestOk({
+                url: "/auth",
+                headers: {
+                    "x-access-token": localStorage.getItem("MontageStudioToken")
+                }
+            }).then(function () {
+                var pathname = window.location.pathname;
+                self.isAuthenticated = true;
 
-                    if (pathname.split("/").length === 3) {
-                        // --> /owner/repo
-                        self.isProjectOpen = true;
-                    } else {
-                        // --> /
-                        self.isProjectOpen = false;
-                    }
-                })
-                .catch(function () {
-                    self.isAuthenticated = false;
-                })
-                .done();
+                if (pathname.split("/").length === 3) {
+                    // --> /owner/repo
+                    self.isProjectOpen = true;
+                } else {
+                    // --> /
+                    self.isProjectOpen = false;
+                }
+            }).catch(function () {
+                self.isAuthenticated = false;
+            }).done();
         }
     },
 
@@ -158,6 +166,28 @@ exports.ApplicationDelegate = Montage.specialize({
         value: function (location) {
             window.history.pushState({}, location, location);
             this.handleLocationChange();
+        }
+    },
+
+    _getHashParam: {
+        value: function (url, name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[#&?]' + name + '=([^;]*)'),
+                results = regex.exec(url.search || url.hash);
+
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+    },
+
+    storeToken: {
+        value: function (token) {
+            localStorage.setItem("MontageStudioToken", token);
+        }
+    },
+
+    clearToken: {
+        value: function () {
+            localStorage.removeItem("MontageStudioToken");
         }
     },
 
