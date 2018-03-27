@@ -46,22 +46,6 @@ exports.ApplicationDelegate = Montage.specialize({
         value: null
     },
 
-    viewController: {
-        value: null
-    },
-
-    projectController: {
-        value: null
-    },
-
-    extensionController: {
-        value: null
-    },
-
-    previewController: {
-        value: null
-    },
-
     environmentBridge: {
         value: null
     },
@@ -75,18 +59,6 @@ exports.ApplicationDelegate = Montage.specialize({
     },
 
     _deferredRepositoryInitialization: {
-        value: null
-    },
-
-    showModal: {
-        value: false
-    },
-
-    isProjectLoaded: {
-        value: false
-    },
-
-    currentPanelKey: {
         value: null
     },
 
@@ -110,29 +82,14 @@ exports.ApplicationDelegate = Montage.specialize({
                 }
             };
 
-            request.requestOk({ url: "/auth" })
-                .then(function () {
-                    self.isAuthenticated = true;
-                    return Promise.all([self._deferredApplication.promise, self._deferredMainComponent.promise]);
-                })
-                .spread(function (app, mainComponent) {
-                    var pathname = window.location.pathname;
+            window.addEventListener("popstate", this.handleLocationChange.bind(this));
 
+            Promise.all([self._deferredApplication.promise, self._deferredMainComponent.promise])
+                .spread(function (app, mainComponent) {
                     self.application = app;
                     self.mainComponent = mainComponent;
-
-                    if (pathname.split("/").length === 3) {
-                        // --> /owner/repo
-                        self.isProjectOpen = true;
-                    } else {
-                        // --> /
-                        self.isProjectOpen = false;
-                    }
-                })
-                .catch(function () {
-                    self.isAuthenticated = false;
-                })
-                .done();
+                    self.handleLocationChange();
+                });
         }
     },
 
@@ -174,6 +131,35 @@ exports.ApplicationDelegate = Montage.specialize({
         }
     },
 
+    handleLocationChange: {
+        value: function () {
+            var self = this;
+            request.requestOk({ url: "/auth" })
+                .then(function () {
+                    var pathname = window.location.pathname;
+                    self.isAuthenticated = true;
+
+                    if (pathname.split("/").length === 3) {
+                        // --> /owner/repo
+                        self.isProjectOpen = true;
+                    } else {
+                        // --> /
+                        self.isProjectOpen = false;
+                    }
+                })
+                .catch(function () {
+                    self.isAuthenticated = false;
+                })
+                .done();
+        }
+    },
+
+    changeLocation: {
+        value: function (location) {
+            window.history.pushState({}, location, location);
+            this.handleLocationChange();
+        }
+    },
 
     handleMenuAction: {
         value: function (evt) {
