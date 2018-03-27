@@ -8,7 +8,8 @@ var Montage = require("montage/core/core").Montage,
     ReelDocument = require("core/reel-document").ReelDocument,
     Document = require("palette/core/document").Document,
     FilamentService = require("core/filament-service").FilamentService,
-    repositoriesController = require("core/repositories-controller").repositoriesController;
+    repositoriesController = require("core/repositories-controller").repositoriesController,
+    request = require("./request");
 
 var LICENSES = require("./licenses.html").content;
 
@@ -100,14 +101,16 @@ exports.ApplicationDelegate = Montage.specialize({
             this.viewController = new ViewController();
             this.previewController = (new PreviewController()).init(this);
 
-            Promise.all([this._deferredApplication.promise, this._deferredMainComponent.promise])
+            request.requestOk({ url: "/auth" })
+                .then(function () {
+                    self.isAuthenticated = true;
+                    return Promise.all([self._deferredApplication.promise, self._deferredMainComponent.promise]);
+                })
                 .spread(function (app, mainComponent) {
                     var pathname = window.location.pathname;
 
                     self.application = app;
                     self.mainComponent = mainComponent;
-
-                    self.isAuthenticated = true;
 
                     if (pathname.split("/").length === 3) {
                         // --> /owner/repo
@@ -117,7 +120,11 @@ exports.ApplicationDelegate = Montage.specialize({
                         // --> /
                         self.isProjectOpen = false;
                     }
-                });
+                })
+                .catch(function () {
+                    self.isAuthenticated = false;
+                })
+                .done();
         }
     },
 
