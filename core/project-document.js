@@ -75,19 +75,18 @@ exports.ProjectDocument = Document.specialize({
      * @param {Object} environmentBridge The backend service provider used to manipulate the package
      */
     init: {
-        value: function (documentController, environmentBridge) {
-            var self = this.super();
-
-            self._environmentBridge = environmentBridge;
-            self._documentController = documentController;
+        value: function (documentController, environmentBridge, workbench) {
+            this._environmentBridge = environmentBridge;
+            this._documentController = documentController;
+            this._workbench = workbench;
 
             this._menuValidateRegistered = false;
             this._menuActionRegistered = false;
             this._initMerge();
             this._initBuild();
-            window.pd = self;
+            window.pd = this;
 
-            return self;
+            return this;
         }
     },
 
@@ -486,9 +485,9 @@ exports.ProjectDocument = Document.specialize({
                 retVal;
 
             if (bridge && typeof bridge.updateProjectRefs === "function") {
-                var previousProgressMessage = applicationDelegate.environmentBridge.progressPanel.message;
+                var previousProgressMessage = this._workbench.progressPanel.message;
                 if (updateType !== "merge") {
-                    applicationDelegate.environmentBridge.progressPanel.message =
+                    this._workbench.progressPanel.message =
                         reference && resolution !== "rebase" ? "Resolving conflict…" : "Updating repository…";
                 }
 
@@ -592,7 +591,7 @@ exports.ProjectDocument = Document.specialize({
                     }
                 })
                 .finally(function() {
-                    applicationDelegate.environmentBridge.progressPanel.message = previousProgressMessage;
+                    self._workbench.progressPanel.message = previousProgressMessage;
                 });
             }
 
@@ -853,11 +852,11 @@ exports.ProjectDocument = Document.specialize({
 // Constructor Properties
 {
     load: {
-        value: function (documentController, environmentBridge) {
+        value: function (documentController, environmentBridge, workbench) {
             var self = this,
                 projectDocument;
 
-            projectDocument = new self().init(documentController, environmentBridge);
+            projectDocument = new self().init(documentController, environmentBridge, workbench);
 
             if (environmentBridge && typeof environmentBridge.listRepositoryBranches === "function") {
                 return environmentBridge.listRepositoryBranches()

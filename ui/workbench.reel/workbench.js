@@ -1,12 +1,33 @@
 var Component = require("montage/ui/component").Component,
-    application = require("montage/core/application").application;
+    Promise = require("montage/core/promise").Promise,
+    track = require("track"),
+    application = require("montage/core/application").application,
+    ViewController = require("core/view-controller").ViewController,
+    PreviewController = require("core/preview-controller").PreviewController,
+    ExtensionController = require("core/extension-controller").ExtensionController,
+    ProjectController = require("core/project-controller").ProjectController,
+    ReelDocument = require("core/reel-document").ReelDocument,
+    Document = require("palette/core/document").Document,
+    repositoriesController = require("core/repositories-controller").repositoriesController;
 
 // Browser Compatibility
 require("core/compatibility");
 
 exports.Workbench = Component.specialize({
 
+    extensionController: {
+        value: null
+    },
+
+    previewController: {
+        value: null
+    },
+
     projectController: {
+        value: null
+    },
+
+    viewController: {
         value: null
     },
 
@@ -30,36 +51,89 @@ exports.Workbench = Component.specialize({
 
     enterDocument: {
         value: function (firstTime) {
-            var self = this;
-            if (firstTime) {
-                application.addEventListener("asyncActivity", this, false);
-                application.addEventListener("addFile", this);
-                application.addEventListener("newFile", this);
-                application.addEventListener("addModule", this);
-                application.addEventListener("addDirectory", this);
-                application.addEventListener("removeTree", this);
-                application.addEventListener("expandTree", this);
+            var self = this,
+                preloadDocument;
 
-                //TODO make this less environment specific
-                if (typeof lumieres === "undefined") {
-                    application.addEventListener("menuAction", this);
-                    window.onbeforeunload = this.handleBeforeunload.bind(this);
-                    window.addEventListener("beforeunload", this, false);
-                } else {
-                    document.addEventListener("save", this, false);
-                }
-
-                document.addEventListener("contextmenu", this, false);
-
-                // TODO: Not clean...
-                this.application.delegate.getEnvironmentBridge()
-                    .then(function (bridge) {
-                        bridge.progressPanel = self.progressPanel;
-                        bridge.promptPanel = self.promptPanel;
-                        bridge.confirmPanel = self.confirmPanel;
+            this._initializeListeners();
+            this.application.delegate.getEnvironmentBridge()
+                .then(function (bridge) {
+                    self.environmentBridge = bridge;
+                    return bridge.userController.getUser().then(function (user) {
+                        track.setUsername(user.login);
+                        return bridge.mainMenu;
+                    }).then(function(mainMenu) {
+                        console.log(mainMenu);
+                        self.application.mainMenu = mainMenu;
                     });
-            }
+                }).then(function () {
+                    return self.willLoadProject();
+                }).then(function () {
+                    // TODO: Clean up relationship between extension controller and project controller
+                    self.previewController = new PreviewController().init(self.environmentBridge);
+                    self.viewController = new ViewController();
+                    self.projectController = new ProjectController();
+                    self.extensionController = new ExtensionController().init(self.application, self.environmentBridge, self.projectController, self.viewController);
+                    self.projectController.init(self.environmentBridge, self.viewController, self, self.extensionController, self.previewController);
 
+                    self.projectController.registerUrlMatcherForDocumentType(function (fileUrl) {
+                        return (/\.reel\/?$/).test(fileUrl);
+                    }, ReelDocument);
+                    // Ensure that the currentEditor is considered the nextTarget before the application
+                    //TODO should probably be the document
+                    self.defineBinding("nextTarget", {"<-": "projectController.currentEditor", source: self});
+
+                    return self.extensionController.loadExtensions().catch(function (error) {
+                        console.log("Failed loading extensions, proceeding with none");
+                        return [];
+                    }).then(function(extensions) {
+                        //TODO not activate all extensions by default
+                        return Promise.all(extensions.map(function (extension) {
+                            return self.extensionController.activateExtension(extension);
+                        }));
+                    });
+                }).then(function () {
+                    preloadDocument = new Document().init("ui/component.reel");
+                    self.projectController.documents.push(preloadDocument);
+                    self.projectController.selectDocument(preloadDocument);
+
+                    return self.environmentBridge.projectUrl
+                        .then(function (projectUrl) {
+                            return projectUrl || self.projectController.createApplication();
+                        }).then(function (projectUrl) {
+                            // With extensions now loaded and activated, load a project
+                            return self.loadProject(projectUrl).then(function () {
+                                var ix = self.projectController.documents.indexOf(preloadDocument);
+                                self.projectController.documents.splice(ix, 1);
+
+                                //TODO only do this if we have an index.html
+                                return self.previewController.registerPreview(projectUrl, projectUrl + "/index.html");
+                            });
+                        }).then(function () {
+                            //TODO not launch the preview automatically?
+                            return self.previewController.launchPreview();
+                        });
+                }).then(function () {
+                    self.showModal = false;
+                    self.isProjectLoaded = true;
+                    self.currentPanelKey = null;
+                }).catch(function (error) {
+                    console.error(error);
+                    return error;
+                }).done();
+        }
+    },
+
+    _initializeListeners: {
+        value: function () {
+            application.addEventListener("asyncActivity", this, false);
+            application.addEventListener("addFile", this);
+            application.addEventListener("newFile", this);
+            application.addEventListener("addModule", this);
+            application.addEventListener("addDirectory", this);
+            application.addEventListener("removeTree", this);
+            application.addEventListener("expandTree", this);
+            document.addEventListener("save", this, false);
+            document.addEventListener("contextmenu", this, false);
             document.body.addEventListener("dragover", stop, false);
             document.body.addEventListener("drop", stop, false);
             function stop(evt) {
@@ -76,6 +150,177 @@ exports.Workbench = Component.specialize({
                     event.preventDefault();
                 }
             });
+        }
+    },
+
+    /**
+     * Template method available for subclasses to implement their own logic
+     * ahead of loading the project as directed by the environment.
+     *
+     * @return {Promise} A promise to continue the loading sequence
+     */
+    willLoadProject: {
+        value: function () {
+            var self = this,
+                bridge = this.environmentBridge;
+
+            this.showModal = true;
+            this.currentPanelKey = "progress";
+            this.progressPanel.message = "Verifying project…";
+
+            return bridge.repositoryExists()
+                .then(function (exists) {
+                    self.progressPanel.message = "Verifying repository…";
+
+                    return Promise.all([
+                        Promise.resolve(exists),
+                        (exists ? bridge.isProjectEmpty().then(function (empty) { return !empty; })
+                            : Promise.resolve(false)),
+                        bridge.workspaceExists()
+                    ]);
+                })
+                .spread(function (repositoryExists, repositoryPopulated, workspaceStatus) {
+                    var readyWorkspacePromise;
+
+                    if (!repositoryExists) {
+
+                        if (workspaceStatus === "initializing") {
+                            throw new Error("Initializing a project for a repository that no longer exists");
+                        } else if (workspaceStatus) {
+                            // Workspace exists, repository has gone missing
+                            // TODO offer to discard workspace or create repo from workspace
+                            throw new Error("Repository no longer exists for project.");
+                        } else {
+                            // No repo and no workspace
+                            self.currentPanelKey = "unknown";
+                            readyWorkspacePromise = self.unknownRepositoryPanel.getResponse()
+                                .then(function (response) {
+                                    if (response) {
+                                        return self._createRepository(response.name, response.description);
+                                    } else {
+                                        window.location = "/";
+                                    }
+                                });
+                        }
+                    } else {
+                        // The repository exists…
+                        if (repositoryPopulated) {
+                            if (workspaceStatus === "initializing" || !workspaceStatus) {
+                                // Project exists and is currently building the container workspace
+                                // or
+                                // Project is populated with content, no workspace exists
+                                // TODO check if we should bother creating a workspace for this repo
+                                // Hopefully it's not about to run minit to try and reinitialize the project
+                                readyWorkspacePromise = self._initializeProject();
+                            }
+                        } else {
+                            // The repository exists but is empty…
+                            if (workspaceStatus === "initializing") {
+                                // Busy initializing
+                                readyWorkspacePromise = self._initializeProject();
+                            } else if (workspaceStatus) {
+                                // Must have just wrapped up workspace will be pushed soon
+                                readyWorkspacePromise = self._initializeProject();
+                            } else {
+                                // Repository exists, is empty, and we have no workspace
+                                self.currentPanelKey = "initialize";
+                                readyWorkspacePromise = self.initializeRepositoryPanel.getResponse()
+                                    .then(function (response) {
+                                        if (response) {
+                                            return self._initializeProject();
+                                        } else {
+                                            window.location = "/";
+                                        }
+                                    });
+                            }
+                        }
+                    }
+
+                    return readyWorkspacePromise;
+                })
+                .catch(function(err) {
+                    var message = err.message || "Internal Server Error";
+
+                    self.currentPanelKey = "confirm";
+                    track.error(new Error("Error setting up the project: " + message));
+
+                    return self.confirmPanel.getResponse("Error setting up the project: " + message, true, "Retry", "Close")
+                        .then(function (response) {
+                            self.showModal = false;
+                            if (response === true) {
+                                return self.willLoadProject();
+                            } else {
+                                window.location = "/";
+                                return Promise.resolve(false);
+                            }
+                        });
+                });
+        }
+    },
+
+    loadProject: {
+        value: function(projectUrl) {
+            var self = this;
+            return new Promise(function(resolve) {
+                var loadProject = function() {
+                    self.currentPanelKey = "progress";
+                    self.progressPanel.message = "Loading project…";
+                    self.showModal = true;
+                    track.message("loading project");
+                    self.projectController.loadProject(projectUrl)
+                        .then(resolve, loadProjectFail);
+                };
+
+                var loadProjectFail = function(reason) {
+                    var message = reason.message || "Internal Server Error";
+                    console.error(reason);
+                    self.currentPanelKey = "confirm";
+                    track.error("Couldn't load project: " + message);
+
+                    self.confirmPanel.getResponse("Error loading the project", true, "Retry", "Close")
+                        .then(function (response) {
+                            self.showModal = false;
+                            if (response === true) {
+                                loadProject();
+                            } else {
+                                window.location = "/";
+                            }
+                        });
+                };
+
+                loadProject();
+            });
+        }
+    },
+
+    _createRepository: {
+        value: function (name, description) {
+            var self = this;
+
+            this.currentPanelKey = "progress";
+            this.progressPanel.message = "Creating repository…";
+
+            return repositoriesController.createRepository(name, description)
+                .then(function () {
+                    return self._initializeProject();
+                });
+        }
+    },
+
+    _initializeProject: {
+        value: function () {
+            this.currentPanelKey = "progress";
+            this.progressPanel.message = "Initializing project and installing dependencies…";
+
+            var promise = this.environmentBridge.repositoryController.initializeRepositoryWorkspace();
+            this.progressPanel.activityPromise = promise;
+            return promise;
+        }
+    },
+
+    updateStatusMessage: {
+        value: function(message) {
+            this.progressPanel.message = message;
         }
     },
 

@@ -28,8 +28,6 @@
                     "confirmPanel": {"@": "confirmPanel"}
                 },
                 "bindings": {
-                    "projectController": {"<-": "@application.delegate.projectController"},
-                    "extensionController": {"<-": "@application.delegate.extensionController"},
                     "classList.has('isShowingPreviewPanel')": {"<-": "isShowingPreviewPanel"}
                 }
             },
@@ -40,8 +38,8 @@
                     "element": {"#": "modalOverlay"}
                 },
                 "bindings": {
-                    "visible": {"<-": "@application.delegate.showModal"},
-                    "classList.has('is-booting')": {"<-": "!@application.delegate.isProjectLoaded"}
+                    "visible": {"<-": "@owner.showModal"},
+                    "classList.has('is-booting')": {"<-": "!@owner.isProjectLoaded"}
                 }
             },
 
@@ -51,7 +49,7 @@
                     "element": {"#": "panelSwitcher"}
                 },
                 "bindings": {
-                    "switchValue": {"<-": "@application.delegate.currentPanelKey"}
+                    "switchValue": {"<-": "@owner.currentPanelKey"}
                 }
             },
 
@@ -161,8 +159,8 @@
                 },
                 "bindings": {
                     "mainMenu": {"<-": "@owner.application.mainMenu"},
-                    "environmentBridge": {"<-": "@owner.application.delegate.environmentBridge"},
-                    "projectDocument": {"<-": "@owner.application.delegate.projectController.projectDocument"}
+                    "environmentBridge": {"<-": "@owner.environmentBridge"},
+                    "projectDocument": {"<-": "@owner.projectController.projectDocument"}
                 }
             },
 
@@ -172,7 +170,7 @@
                     "element": {"#": "workflow"}
                 },
                 "bindings": {
-                    "projectDocument": {"<-": "@owner.application.delegate.projectController.projectDocument"}
+                    "projectDocument": {"<-": "@owner.projectController.projectDocument"}
                 }
             },
 
@@ -203,7 +201,7 @@
                     "icon": {"<-": "@owner.projectController.icon"},
                     "packageDescription": {"<-": "@owner.projectController.packageDescription"},
                     "projectController": {"<-": "@owner.projectController"},
-                    "previewController": {"<-": "@application.delegate.previewController"}
+                    "previewController": {"<-": "@owner.previewController"}
                 }
             },
 

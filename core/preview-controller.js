@@ -5,17 +5,11 @@ var Target = require("montage/core/target").Target,
 
 exports.PreviewController = Target.specialize({
 
-    constructor: {
-        value: function PreviewController () {
-            this.super();
-        }
-    },
-
     init: {
-        value: function (appDelegate) {
-            this._applicationDelegate = appDelegate;
-
+        value: function (environmentBridge) {
             var self = this;
+
+            this._environmentBridge = environmentBridge;
 
             // TODO replace all this with propertyPath dependencies
             this.addBeforePathChangeListener("_applicationDelegate.environmentBridge", function () {
@@ -63,19 +57,9 @@ exports.PreviewController = Target.specialize({
         }
     },
 
-    _applicationDelegate: {
-        value: null
-    },
-
-    applicationDelegate: {
-        get: function () {
-            return this._applicationDelegate;
-        }
-    },
-
     environmentBridge: {
         get: function () {
-            return this._applicationDelegate.environmentBridge;
+            return this._environmentBridge;
         }
     },
 

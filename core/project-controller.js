@@ -62,10 +62,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
         value: null
     },
 
-    _applicationDelegate: {
-        value: null
-    },
-
     _projectUrl: {
         value: null
     },
@@ -183,7 +179,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
      * @return {ProjectController} An initialized instance of a ProjectController
      */
     init: {
-        value: function (bridge, viewController, editorController, extensionController, previewController, applicationDelegate) {
+        value: function (bridge, viewController, editorController, extensionController, previewController) {
             bridge.setDocumentDirtyState(false);
 
             this._environmentBridge = bridge;
@@ -191,7 +187,6 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
             this._editorController = editorController;
             this._extensionController = extensionController;
             this.previewController = previewController;
-            this._applicationDelegate = applicationDelegate;
 
             this._documentDataSource = new DocumentDataSource(bridge);
 
@@ -261,7 +256,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                 return self._openProject(projectInfo.packageUrl, projectInfo.dependencies);
             })
             .then(function() {
-                self._applicationDelegate.updateStatusMessage("Loading package…");
+                self._editorController.updateStatusMessage("Loading package…");
                 return self._packageRequirePromise;
             });
         }
@@ -303,7 +298,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     dependency: packageDescription.name,
                     url: self.packageUrl
                 });
-                return ProjectDocument.load(self, self.environmentBridge)
+                return ProjectDocument.load(self, self.environmentBridge, self._editorController)
                     .then(function(projectDocument) {
                         self.projectDocument = projectDocument;
                     });
@@ -448,7 +443,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
 
             if (editorType.requestsPreload) {
                 editor = this._getEditor(editorType);
-                this._applicationDelegate.updateStatusMessage("Loading editor…");
+                this._editorController.updateStatusMessage("Loading editor…");
                 editor.preload().done();
                 this._editorController.preloadEditor(editor);
             }
@@ -1034,7 +1029,7 @@ exports.ProjectController = ProjectController = DocumentController.specialize({
                     promisedLibraryItems = Promise.resolve(packageLibraryItems);
                 }
 
-                self._applicationDelegate.updateStatusMessage("Loading library…");
+                self._editorController.updateStatusMessage("Loading library…");
                 return promisedLibraryItems.then(function (libraryItems) {
                     dependencyLibraryEntry.libraryItems = libraryItems.filter(function(libraryItem) {
                         var dependencyVersion = dependencyInfo.version;

@@ -6,16 +6,6 @@ var Target = require("montage/core/target").Target,
 
 exports.ExtensionController = Target.specialize({
 
-    _applicationDelegate: {
-        value: null
-    },
-
-    applicationDelegate: {
-        get: function () {
-            return this._applicationDelegate;
-        }
-    },
-
     /**
      * The collection of all extensions loaded by the projectController.
      * Note that these are not necessarily active, simply loaded.
@@ -39,8 +29,11 @@ exports.ExtensionController = Target.specialize({
     },
 
     init: {
-        value: function (applicationDelegate) {
-            this._applicationDelegate = applicationDelegate;
+        value: function (application, environmentBridge, projectController, viewController) {
+            this._application = application;
+            this._environmentBridge = environmentBridge;
+            this._projectController = projectController;
+            this._viewController = viewController;
             this.nextTarget = application;
             return this;
         }
@@ -48,10 +41,9 @@ exports.ExtensionController = Target.specialize({
 
     loadExtensions: {
         value: function () {
-            var self = this,
-                bridge = this.applicationDelegate.environmentBridge;
+            var self = this;
 
-            return bridge.availableExtensions.then(function (extensionUrls) {
+            return this._environmentBridge.availableExtensions.then(function (extensionUrls) {
                 return Promise.all(extensionUrls.map(function (entry) {
                     return self.loadExtension(entry.url);
                 }), function (error) {
@@ -200,11 +192,10 @@ exports.ExtensionController = Target.specialize({
                 this.activeExtensions.push(extension);
 
                 if (typeof extension.activate === "function") {
-                    //TODO only pass along the applicationDelegate?
                     activationPromise = Promise.resolve(extension.activate(
-                        this.applicationDelegate.application,
-                        this.applicationDelegate.projectController,
-                        this.applicationDelegate.viewController
+                        this._application,
+                        this._projectController,
+                        this._viewController
                     ));
                 } else {
                     activationPromise = Promise.resolve(extension);
@@ -239,8 +230,7 @@ exports.ExtensionController = Target.specialize({
                 this.activeExtensions.splice(index, 1);
 
                 if (typeof extension.deactivate === "function") {
-                    //TODO only pass along the applicationDelegate
-                    deactivationPromise = extension.deactivate(this.applicationDelegate.application, this.applicationDelegate.projectController, this.applicationDelegate.viewController);
+                    deactivationPromise = extension.deactivate(this._application, this._projectController, this._viewController);
                 } else {
                     deactivationPromise = Promise.resolve(extension);
                 }
