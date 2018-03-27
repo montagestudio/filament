@@ -27,7 +27,7 @@
 
 /* Link --------------------------------- */
 
-.HistoryListItem-link.matte-Anchor {
+.HistoryListItem-link.matte-Button {
     -webkit-flex: 1;
     flex: 1;
     padding: 0.8rem;
@@ -37,9 +37,13 @@
     overflow: hidden;
     white-space: nowrap;
     background: #fff;
+    font-size: inherit;
+    height: auto;
+    margin: 0;
+    border: none;
 }
 
-.HistoryListItem-link.matte-Anchor:hover {
+.HistoryListItem-link.matte-Button:hover {
     background-color: hsl(0, 0%, 96%);
 }
 

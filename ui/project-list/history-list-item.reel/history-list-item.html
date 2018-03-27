@@ -18,15 +18,20 @@
             },
 
             "documentName": {
-                "prototype": "matte/ui/anchor.reel",
+                "prototype": "matte/ui/button.reel",
                 "properties": {
                     "element": {"#": "name"}
                 },
                 "bindings": {
-                    "textContent":  {"<-": "@owner.repository.name"},
-                    "href":         {"<-": "'/'+ @owner.repository.owner.login + '/' + @owner.repository.name"},
-                    "title":        {"<-": "@owner.repository.owner.login + '/' + @owner.repository.name + @owner.forkParent"}
-                }
+                    "label": {"<-": "@owner.repository.name"},
+                    "title": {"<-": "@owner.repository.owner.login + '/' + @owner.repository.name + @owner.forkParent"}
+                },
+                "listeners": [
+                    {
+                        "type": "action",
+                        "listener": {"@": "owner"}
+                    }
+                ]
             },
 
             "typeIndicator": {
