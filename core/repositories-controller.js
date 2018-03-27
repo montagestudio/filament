@@ -121,6 +121,7 @@ var RepositoriesController = Montage.specialize({
                                 self.organizationsController.add(contributedUser);
                                 return gitUser;
                             });
+                        return githubApi;
                     });
             }
             return this.__githubApi;
