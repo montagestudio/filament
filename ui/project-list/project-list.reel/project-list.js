@@ -2,7 +2,7 @@ var Bindings = require("montage/core/core").Bindings,
     Component = require("montage/ui/component").Component,
     repositoriesController = require("core/repositories-controller").repositoriesController,
     UserController = require("adaptor/client/core/user-controller").UserController,
-    requestOk = require("core/request").requestOk;
+    requestOk = require("adaptor/client/core/request").requestOk;
 
 exports.ProjectList = Component.specialize({
 

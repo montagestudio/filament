@@ -4,7 +4,7 @@
     @requires montage/ui/component
 */
 var Component = require("montage/ui/component").Component,
-    request = require("core/request"),
+    request = require("adaptor/client/core/request"),
     MimeTypes = require("core/mime-types");
 
 /**

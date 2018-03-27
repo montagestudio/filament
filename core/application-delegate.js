@@ -2,7 +2,7 @@ var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
     track = require("track"),
     FilamentService = require("core/filament-service").FilamentService,
-    request = require("./request");
+    request = require("adaptor/client/core/request");
 
 var LICENSES = require("./licenses.html").content;
 
@@ -130,10 +130,7 @@ exports.ApplicationDelegate = Montage.specialize({
                 window.history.replaceState({}, window.location.href.split("#")[0], window.location.href.split("#")[0]);
             }
             request.requestOk({
-                url: "/auth",
-                headers: {
-                    "x-access-token": localStorage.getItem("MontageStudioToken")
-                }
+                url: "/auth"
             }).then(function () {
                 var pathname = window.location.pathname;
                 self.isAuthenticated = true;
