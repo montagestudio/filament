@@ -100,7 +100,31 @@ var RepositoriesController = Montage.specialize({
     },
 
     _githubApi: {
-        value: null
+        get: function () {
+            var self = this;
+            if (!this.__githubApi) {
+                this.__githubApi = github.githubApi()
+                    .then(function(githubApi) {
+                        self._githubUser = githubApi.getUser()
+                            .then(function(user) {
+                                var gitUser = new GitUser().initWithGithubUser(user),
+                                    contributedUser = new GitUser().initWithGithubUser(user);
+                                gitUser.listContributedRepositories = false;
+                                gitUser.displayedName = user.login;
+                                gitUser.login = LOGIN_MY_REPOS;
+                                gitUser.canCreateRepo = true;
+                                self.organizationsController.add(gitUser);
+                                self.organizationsController.select(gitUser);
+                                contributedUser.listOwnedRepositories = false;
+                                contributedUser.displayedName = 'Contributing on';
+                                contributedUser.login = LOGIN_CONTRIBUTING_ON;
+                                self.organizationsController.add(contributedUser);
+                                return gitUser;
+                            });
+                    });
+            }
+            return this.__githubApi;
+        }
     },
 
     _githubUser: {
@@ -129,25 +153,6 @@ var RepositoriesController = Montage.specialize({
             this.organizationsController = new RangeController().initWithContent([]);
 
             var self = this;
-            this._githubApi = github.githubApi();
-            this._githubApi.then(function(githubApi) {
-                self._githubUser = githubApi.getUser()
-                    .then(function(user) {
-                        var gitUser = new GitUser().initWithGithubUser(user),
-                            contributedUser = new GitUser().initWithGithubUser(user);
-                        gitUser.listContributedRepositories = false;
-                        gitUser.displayedName = user.login;
-                        gitUser.login = LOGIN_MY_REPOS;
-                        gitUser.canCreateRepo = true;
-                        self.organizationsController.add(gitUser);
-                        self.organizationsController.select(gitUser);
-                        contributedUser.listOwnedRepositories = false;
-                        contributedUser.displayedName = 'Contributing on';
-                        contributedUser.login = LOGIN_CONTRIBUTING_ON;
-                        self.organizationsController.add(contributedUser);
-                        return gitUser;
-                    });
-            });
         }
     },
 
