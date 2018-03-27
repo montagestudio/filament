@@ -111,23 +111,12 @@ exports.ApplicationDelegate = Montage.specialize({
                 self.openFileUrl(url.replace("file://localhost/", "fs://localhost/")).done();
             });
 
-            window.addEventListener("beforeunload", function () {
-                self.willClose();
-            }, true);
-
             // TODO this is a temporary workaround to redirect keyEquivalents to the
             // toolbar as a last resort if they make it up here
             app.addEventListener("keyPress", this);
             app.addEventListener("menuAction", this, false);
 
             this._deferredApplication.resolve(app);
-        }
-    },
-
-    willClose: {
-        value: function () {
-            //TODO only if we're registered
-            this.previewController.unregisterPreview().done();
         }
     },
 

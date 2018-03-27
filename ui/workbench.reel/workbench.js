@@ -123,6 +123,13 @@ exports.Workbench = Component.specialize({
         }
     },
 
+    exitDocument: {
+        value: function () {
+            //TODO only if we're registered
+            this.previewController.unregisterPreview().done();
+        }
+    },
+
     _initializeListeners: {
         value: function () {
             application.addEventListener("asyncActivity", this, false);
