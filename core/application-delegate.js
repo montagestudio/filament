@@ -135,6 +135,18 @@ exports.ApplicationDelegate = Montage.specialize({
                 var pathname = window.location.pathname;
                 self.isAuthenticated = true;
 
+                // We need to add the JWT token as a browser cookie for WS communications because:
+                // - Chrome does not send an "Authorization" header with a WS URL like
+                //   authtoken@montage.studio/user/repo
+                // - We can't leverage WebSocket subprotocols to pass the token because the
+                //   Project Daemon and Project services use subprotocols internally and there is
+                //   no way to "override" the chosen protocol (sec-websocket-protocol header) when
+                //   we pipe one WS connection into another
+                // - There is no way to send arbitrary response headers over a WS handshake
+                // So we resort to setting a local cookie, which does get sent with WS connections
+                var token = localStorage.getItem("MontageStudioToken");
+                document.cookie = ["token=" + token, "path=/", "domain=" + window.location.host].join(";");
+
                 if (pathname.split("/").length === 3) {
                     // --> /owner/repo
                     self.isProjectOpen = true;
