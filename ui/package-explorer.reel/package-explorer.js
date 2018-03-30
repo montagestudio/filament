@@ -16,12 +16,6 @@ exports.PackageExplorer = Component.specialize({
         value: null
     },
 
-    constructor: {
-        value: function PackageExplorer() {
-            return this.super();
-        }
-    },
-
     didBecomeActiveTarget: {
         value: function () {
             this.classList.add("activeTarget");
@@ -40,7 +34,10 @@ exports.PackageExplorer = Component.specialize({
     },
 
     enterDocument: {
-        value: function () {
+        value: function (firstTime) {
+            if (!firstTime) {
+                return;
+            }
             // there is no action event built into the montage anchor.reel
             this.templateObjects.previewLink.element.identifier = "previewLink";
             this.templateObjects.previewLink.element.addEventListener("click", this, false);

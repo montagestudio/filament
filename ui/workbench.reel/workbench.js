@@ -54,7 +54,13 @@ exports.Workbench = Component.specialize({
             var self = this,
                 preloadDocument;
 
-            this._initializeListeners();
+            if (firstTime) {
+                this._initializeListeners();
+                // Ensure that the currentEditor is considered the nextTarget before the application
+                //TODO should probably be the document
+                self.defineBinding("nextTarget", {"<-": "projectController.currentEditor", source: self});
+            }
+
             this.application.delegate.getEnvironmentBridge()
                 .then(function (bridge) {
                     self.environmentBridge = bridge;
@@ -78,9 +84,6 @@ exports.Workbench = Component.specialize({
                     self.projectController.registerUrlMatcherForDocumentType(function (fileUrl) {
                         return (/\.reel\/?$/).test(fileUrl);
                     }, ReelDocument);
-                    // Ensure that the currentEditor is considered the nextTarget before the application
-                    //TODO should probably be the document
-                    self.defineBinding("nextTarget", {"<-": "projectController.currentEditor", source: self});
 
                     return self.extensionController.loadExtensions().catch(function (error) {
                         console.log("Failed loading extensions, proceeding with none");
@@ -127,6 +130,7 @@ exports.Workbench = Component.specialize({
         value: function () {
             //TODO only if we're registered
             this.previewController.unregisterPreview().done();
+            this.isProjectLoaded = false;
         }
     },
 
