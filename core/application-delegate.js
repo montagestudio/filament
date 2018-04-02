@@ -21,7 +21,7 @@ exports.ApplicationDelegate = Montage.specialize({
                 bridgePromise = require.async("adaptor/client/core/environment-bridge").then(function (exported) {
                     return new exported.EnvironmentBridge().init("filament-backend", new FilamentService(self));
                 }).then(function (bridge) {
-                    bridge.applicationDelegate = self;
+                    bridge._applicationDelegate = self;
                     if (typeof bridge.setEnableFileDrop === "function") {
                         bridge.setEnableFileDrop(true);
                     }
