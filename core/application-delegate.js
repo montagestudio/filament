@@ -133,6 +133,19 @@ exports.ApplicationDelegate = Montage.specialize({
         }
     },
 
+    request: {
+        value: function (req) {
+            var loc = window.location;
+            if (req.subdomain) {
+                req.url = loc.protocol + "//" + req.subdomain + "." + loc.host + (req.url[0] === "/" ? "" : "/") + req.url;
+                console.log("build url", req.url);
+            }
+            req.headers = req.headers || {};
+            req.headers["x-access-token"] = this.accessToken;
+            return request.requestOk(req);
+        }
+    },
+
     handleLocationChange: {
         value: function () {
             var self = this;
@@ -142,7 +155,7 @@ exports.ApplicationDelegate = Montage.specialize({
                 // Get rid of the hash from the location
                 window.history.replaceState({}, window.location.href.split("#")[0], window.location.href.split("#")[0]);
             }
-            request.requestOk({
+            this.request({
                 url: "/auth"
             }).then(function () {
                 var pathname = window.location.pathname;
