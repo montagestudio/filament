@@ -236,7 +236,7 @@ exports.ProjectList = Component.specialize({
             var self = this;
             this.repositoriesController.clearCachedRepositories()
                 .finally(function () {
-                    self.application.delegate.clearToken();
+                    self.application.delegate.accessToken = undefined;
                     self.application.delegate.handleLocationChange();
                 })
                 .done();

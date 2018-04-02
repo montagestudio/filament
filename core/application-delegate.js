@@ -58,8 +58,21 @@ exports.ApplicationDelegate = Montage.specialize({
         value: null
     },
 
-    _deferredRepositoryInitialization: {
-        value: null
+    accessToken: {
+        get: function () {
+            if (typeof this._accessToken === "undefined") {
+                this._accessToken = localStorage.getItem("MontageStudioToken");
+            }
+            return this._accessToken;
+        },
+        set: function (value) {
+            this._accessToken = value;
+            if (typeof value === "undefined") {
+                localStorage.removeItem("MontageStudioToken");
+            } else {
+                localStorage.setItem("MontageStudioToken", value);
+            }
+        }
     },
 
     constructor: {
@@ -125,7 +138,7 @@ exports.ApplicationDelegate = Montage.specialize({
             var self = this;
             var newToken = this._getHashParam(window.location, "token");
             if (newToken) {
-                this.storeToken(newToken);
+                this.accessToken = newToken;
                 // Get rid of the hash from the location
                 window.history.replaceState({}, window.location.href.split("#")[0], window.location.href.split("#")[0]);
             }
@@ -144,8 +157,7 @@ exports.ApplicationDelegate = Montage.specialize({
                 //   we pipe one WS connection into another
                 // - There is no way to send arbitrary response headers over a WS handshake
                 // So we resort to setting a local cookie, which does get sent with WS connections
-                var token = localStorage.getItem("MontageStudioToken");
-                document.cookie = ["token=" + token, "path=/", "domain=" + window.location.host].join(";");
+                document.cookie = ["token=" + this.accessToken, "path=/", "domain=" + window.location.host].join(";");
 
                 if (pathname.split("/").length === 3) {
                     // --> /owner/repo
@@ -174,18 +186,6 @@ exports.ApplicationDelegate = Montage.specialize({
                 results = regex.exec(url.search || url.hash);
 
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-        }
-    },
-
-    storeToken: {
-        value: function (token) {
-            localStorage.setItem("MontageStudioToken", token);
-        }
-    },
-
-    clearToken: {
-        value: function () {
-            localStorage.removeItem("MontageStudioToken");
         }
     },
 
