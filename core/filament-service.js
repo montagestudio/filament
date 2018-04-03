@@ -4,16 +4,6 @@ var Montage = require("montage/core/core").Montage,
 
 exports.FilamentService = Montage.specialize({
 
-    constructor: {
-        value: function FilamentService (applicationDelegate) {
-            this._applicationDelegate = applicationDelegate;
-        }
-    },
-
-    _applicationDelegate: {
-        value: null
-    },
-
     showNotification: {
         value: function(message) {
             // TODO: this is not an async activity but since we currently lack
@@ -27,7 +17,7 @@ exports.FilamentService = Montage.specialize({
 
     inspectComponent: {
         value: function(moduleId, label) {
-            var packageUrl = this._applicationDelegate.projectController.packageUrl;
+            var packageUrl = application.delegate.projectController.packageUrl;
 
             application.dispatchEventNamed("openUrl", true, true, packageUrl + moduleId);
         }
@@ -35,7 +25,10 @@ exports.FilamentService = Montage.specialize({
 
     dispatchEventNamed: {
         value: function(type, canBubble, cancelable, detail) {
-            this._applicationDelegate.environmentBridge.dispatchEventNamed(type, canBubble, cancelable, detail);
+            application.delegate.getEnvironmentBridge()
+                .then(function (bridge) {
+                    bridge.dispatchEventNamed(type, canBubble, cancelable, detail);
+                });
         }
     }
 });
