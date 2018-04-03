@@ -2,12 +2,6 @@ var CoreExtension = require("filament-extension/core/extension").Extension;
 
 exports.Extension = CoreExtension.specialize( {
 
-    constructor: {
-        value: function Extension() {
-            this.super();
-        }
-    },
-
     name: {
         get:function () {
             //TODO read the name from the package or something
@@ -76,7 +70,8 @@ exports.Extension = CoreExtension.specialize( {
             // TODO: what is the right way to get the environment bridge?
             var bridge = this.application.delegate.environmentBridge;
             var repositoryController = bridge.repositoryController;
-            var url = "/build/" + repositoryController.owner + "/" + repositoryController.repo + "/archive";
+            var host = window.location.protocol + "//build." + window.location.host;
+            var url = host + "/" + repositoryController.owner + "/" + repositoryController.repo + "/archive";
 
             return bridge.downloadFile(url);
         }
