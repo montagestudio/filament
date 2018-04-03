@@ -143,7 +143,9 @@ exports.Workbench = Component.specialize({
             application.addEventListener("addDirectory", this);
             application.addEventListener("removeTree", this);
             application.addEventListener("expandTree", this);
-            document.addEventListener("save", this, false);
+            application.addEventListener("menuAction", this);
+            window.onbeforeunload = this.handleBeforeunload.bind(this);
+            window.addEventListener("beforeUnload", this, false);
             document.addEventListener("contextmenu", this, false);
             document.body.addEventListener("dragover", stop, false);
             document.body.addEventListener("drop", stop, false);
