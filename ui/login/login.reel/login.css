@@ -32,8 +32,10 @@
 
 /* Login */
 
-.Aside-button.Aside-button--login {
+.Aside-button.Aside-button--login.matte-Button {
     padding-left: 4em; /* Space for icon */
+    border: none;
+    height: auto;
 }
 
 .Aside-button--login:before {

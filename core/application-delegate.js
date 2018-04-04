@@ -137,7 +137,6 @@ exports.ApplicationDelegate = Montage.specialize({
             var loc = window.location;
             if (req.subdomain) {
                 req.url = loc.protocol + "//" + req.subdomain + "." + loc.host + (req.url[0] === "/" ? "" : "/") + req.url;
-                console.log("build url", req.url);
             }
             req.headers = req.headers || {};
             req.headers["x-access-token"] = this.accessToken;
@@ -155,7 +154,8 @@ exports.ApplicationDelegate = Montage.specialize({
                 window.history.replaceState({}, window.location.href.split("#")[0], window.location.href.split("#")[0]);
             }
             this.request({
-                url: "/auth"
+                subdomain: "auth",
+                url: "/"
             }).then(function () {
                 var pathname = window.location.pathname;
                 self.isAuthenticated = true;

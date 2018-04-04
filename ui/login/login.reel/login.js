@@ -30,5 +30,11 @@ exports.Login = Component.specialize(/** @lends Login# */ {
                 this.needsTutorial = needsTutorial;
             }
         }
+    },
+
+    handleLoginButtonAction: {
+        value: function () {
+            window.location = window.location.protocol + "//auth." + window.location.host + "/github";
+        }
     }
 });

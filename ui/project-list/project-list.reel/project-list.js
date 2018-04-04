@@ -228,7 +228,7 @@ exports.ProjectList = Component.specialize({
         value: function () {
             this.repositoriesController.clearCachedRepositories()
                 .finally(function () {
-                    window.location = "/auth/github/private";
+                    window.location = window.location.protocol + "//auth." + window.location.host + "/github/private";
                 })
                 .done();
         }

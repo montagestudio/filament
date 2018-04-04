@@ -19,6 +19,18 @@
                 "element": {"#": "beta"}
             }
         },
+        "loginButton": {
+            "prototype": "matte/ui/button.reel",
+            "properties": {
+                "element": {"#": "loginButton"}
+            },
+            "listeners": [
+                {
+                    "type": "action",
+                    "listener": {"@": "owner"}
+                }
+            ]
+        },
         "versionText": {
             "prototype": "montage/ui/text.reel",
             "properties": {
@@ -61,7 +73,7 @@
                 </section>
 
                 <section class="Aside-section">
-                    <a href="/auth/github/" class="Aside-button Aside-button--login">Sign in with GitHub</a>
+                    <div data-montage-id="loginButton" class="Aside-button Aside-button--login">Sign in with GitHub</a>
                     <p class="Aside-info" style="display: none;">
                         <span data-montage-id="versionText" class="Aside-version"></span>
                         <span class="Aside-support">(Optimized for Google Chrome)</span>
