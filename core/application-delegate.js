@@ -169,7 +169,7 @@ exports.ApplicationDelegate = Montage.specialize({
                 //   we pipe one WS connection into another
                 // - There is no way to send arbitrary response headers over a WS handshake
                 // So we resort to setting a local cookie, which does get sent with WS connections
-                document.cookie = "token=" + self.accessToken;
+                document.cookie = "token=" + self.accessToken + "; domain=." + window.location.hostname + ";";
 
                 if (pathname.split("/").length === 3) {
                     // --> /owner/repo
