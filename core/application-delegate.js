@@ -2,34 +2,23 @@ var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
     track = require("track"),
     FilamentService = require("core/filament-service").FilamentService,
-    request = require("adaptor/client/core/request");
+    EnvironmentBridge = require("core/environment-bridge").EnvironmentBridge,
+    request = require("core/request");
 
 var LICENSES = require("./licenses.html").content;
 
 exports.ApplicationDelegate = Montage.specialize({
 
-    _bridgePromise: {
-        value: null
-    },
-
-    getEnvironmentBridge: {
-        value: function () {
-            var self = this;
-            var bridgePromise = this._bridgePromise;
-
-            if (!bridgePromise) {
-                bridgePromise = require.async("adaptor/client/core/environment-bridge").then(function (exported) {
-                    var bridge = new exported.EnvironmentBridge().init("filament-backend", new FilamentService());
-                    bridge._applicationDelegate = self;
-                    if (typeof bridge.setEnableFileDrop === "function") {
-                        bridge.setEnableFileDrop(true);
-                    }
-                    return bridge;
-                });
-                this._bridgePromise = bridgePromise;
+    environmentBridge: {
+        get: function () {
+            if (!this._environmentBridge) {
+                this._environmentBridge = new EnvironmentBridge("filament-backend", new FilamentService());
+                this._environmentBridge._applicationDelegate = this;
+                if (typeof this._environmentBridge.setEnableFileDrop === "function") {
+                    this._environmentBridge.setEnableFileDrop(true);
+                }
             }
-
-            return bridgePromise;
+            return this._environmentBridge;
         }
     },
 
@@ -42,10 +31,6 @@ exports.ApplicationDelegate = Montage.specialize({
     },
 
     application: {
-        value: null
-    },
-
-    environmentBridge: {
         value: null
     },
 

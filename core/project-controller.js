@@ -10,7 +10,7 @@ var DocumentController = require("palette/core/document-controller").DocumentCon
     MontageReviver = require("montage/core/serialization/deserializer/montage-reviver").MontageReviver,
     ProjectController,
     AssetsManager = require("./assets-management/assets-manager").AssetsManager,
-    FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
+    FileDescriptor = require("core/file-descriptor").FileDescriptor,
     Template = require("montage/core/template").Template,
     Url = require("core/url"),
     ProjectDocument = require("core/project-document").ProjectDocument,

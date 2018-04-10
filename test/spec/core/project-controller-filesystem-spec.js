@@ -7,7 +7,7 @@ var Montage = require("montage").Montage,
     ViewController = require("filament/core/view-controller").ViewController,
     ProjectController = require("filament/core/project-controller").ProjectController,
     Promise = require("montage/core/promise").Promise,
-    FileDescriptor = require("filament/adaptor/client/core/file-descriptor").FileDescriptor,
+    FileDescriptor = require("core/file-descriptor").FileDescriptor,
     WAITSFOR_TIMEOUT = 2500;
 
 describe("core/project-controller-filesystem-spec", function () {

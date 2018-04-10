@@ -4,8 +4,7 @@ var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
     github = require("adaptor/client/core/github"),
     RangeController = require("montage/core/range-controller").RangeController,
-    RepositoryController = require("adaptor/client/core/repository-controller").RepositoryController,
-    application = require("montage/core/application").application;
+    RepositoryController = require("core/repository-controller").RepositoryController;
 /* jshint +W079 */
 
 var SORT_PATH = "-pushed_at",

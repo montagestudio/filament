@@ -1,4 +1,4 @@
-var FileDescriptor = require("adaptor/client/core/file-descriptor").FileDescriptor,
+var FileDescriptor = require("core/file-descriptor").FileDescriptor,
     application = require("montage/core/application").application,
     ReelDocument = require("core/reel-document").ReelDocument,
     AssetsConfig = require("./assets-config").AssetsConfig,

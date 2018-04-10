@@ -4,7 +4,6 @@
     @requires montage/ui/component
 */
 var Component = require("montage/ui/component").Component,
-    request = require("adaptor/client/core/request"),
     MimeTypes = require("core/mime-types");
 
 /**
@@ -52,9 +51,10 @@ exports.LibraryCell = Component.specialize(/** @lends module:"ui/library-cell.re
             var libraryItem = this.prototypeObject;
 
             if (!libraryItem.templateContent && libraryItem.require) {
-                request.requestOk(libraryItem.templateUrl).then(function (response) {
-                    libraryItem.templateContent = response.body;
-                });
+                this.application.delegate.request({ url: libraryItem.templateUrl })
+                    .then(function (response) {
+                        libraryItem.templateContent = response.body;
+                    });
             }
         }
     },

@@ -61,17 +61,13 @@ exports.Workbench = Component.specialize({
                 self.defineBinding("nextTarget", {"<-": "projectController.currentEditor", source: self});
             }
 
-            this.application.delegate.getEnvironmentBridge()
-                .then(function (bridge) {
-                    self.environmentBridge = bridge;
-                    return bridge.userController.getUser().then(function (user) {
-                        track.setUsername(user.login);
-                        return bridge.mainMenu;
-                    }).then(function(mainMenu) {
-                        console.log(mainMenu);
-                        self.application.mainMenu = mainMenu;
-                    });
-                }).then(function () {
+            this.environmentBridge = this.application.delegate.environmentBridge;
+            return this.environmentBridge.userController.getUser()
+                .then(function (user) {
+                    track.setUsername(user.login);
+                    return self.environmentBridge.mainMenu;
+                }).then(function(mainMenu) {
+                    self.application.mainMenu = mainMenu;
                     return self.willLoadProject();
                 }).then(function () {
                     // TODO: Clean up relationship between extension controller and project controller

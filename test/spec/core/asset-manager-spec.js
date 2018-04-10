@@ -1,7 +1,7 @@
 /*global describe,beforeEach,it,expect,waitsFor,runs*/
 
 var environmentBridgeMock = require("mocks/environment-bridge-mocks").environmentBridgeMock,
-    FileDescriptor = require("filament/adaptor/client/core/file-descriptor").FileDescriptor,
+    FileDescriptor = require("core/file-descriptor").FileDescriptor,
     AssetsManager = require("filament/core/assets-management/assets-manager").AssetsManager,
     AssetTools = require("filament/core/assets-management/asset-tools").AssetTools,
     ReelDocument = require("filament/core/reel-document").ReelDocument,
