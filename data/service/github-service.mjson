@@ -1,0 +1,23 @@
+{
+    "root": {
+        "prototype": "logic/service/github-service",
+        "values": {
+            "name": "GithubService",
+            "exportName": "GithubService",
+            "mappings": [
+                {"@": "githubUserMapping"}
+            ],
+            "types": [
+                {"@": "githubUser"}
+            ]
+        }
+    },
+
+    "githubUser": {
+        "object": "data/model/github-user.mjson"
+    },
+
+    "githubUserMapping": {
+        "object": "data/mapping/github-user-mapping.mjson"
+    }
+}

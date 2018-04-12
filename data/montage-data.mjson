@@ -4,12 +4,17 @@
         "values": {
             "name": "DataService",
             "childServices": [
-                {"@": "fireflyService"}
+                {"@": "fireflyService"},
+                {"@": "githubService"}
             ]
         }
     },
 
     "fireflyService": {
         "object": "data/service/firefly-service.mjson"
+    },
+
+    "githubService": {
+        "object": "data/service/github-service.mjson"
     }
 }

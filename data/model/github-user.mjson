@@ -1,0 +1,62 @@
+{
+    "root": {
+        "prototype": "montage/core/meta/module-object-descriptor",
+        "values": {
+            "name": "GithubUser",
+            "propertyDescriptors": [
+                {"@": "login"},
+                {"@": "displayedName"},
+                {"@": "publicRepositories"},
+                {"@": "privateRepositories"},
+                {"@": "collaborators"}
+            ],
+            "objectDescriptorModule": {
+                "%": "data/model/github-user.mjson"
+            },
+            "exportName": "GithubUser",
+            "module": {
+                "%": "logic/model/github-user"
+            }
+        }
+    },
+
+    "login": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "login",
+            "valueType": "string"
+        }
+    },
+
+    "displayedName": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "displayedName",
+            "valueType": "string"
+        }
+    },
+
+    "publicRepositories": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "publicRepositories",
+            "valueType": "number"
+        }
+    },
+
+    "privateRepositories": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "privateRepositories",
+            "valueType": "number"
+        }
+    },
+
+    "collaborators": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "collaborators",
+            "valueType": "array"
+        }
+    }
+}

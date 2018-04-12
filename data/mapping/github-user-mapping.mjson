@@ -1,0 +1,29 @@
+{
+    "root": {
+        "prototype": "montage/data/service/expression-data-mapping",
+        "values": {
+            "objectDescriptor": {"@": "GithubUserDescriptor"},
+            "rawDataPrimaryKeys": ["login"],
+            "objectMapping": {
+                "rules": {
+                    "login": {"<->": "login"},
+                    "displayedName": {"<->": "name"},
+                    "publicRepositories": {"<->": "public_repos"},
+                    "privateRepositories": {"<->": "total_private_repos"},
+                    "collaborators": {"<->": "collaborators"}
+                }
+            },
+            "rawDataMapping": {
+                "rules": {
+                }
+            },
+            "requisitePropertyNames": [
+                "login", "displayedName", "publicRepositories", "privateRepositories"
+            ]
+        }
+    },
+
+    "GithubUserDescriptor": {
+        "object": "data/model/github-user.mjson"
+    }
+}
