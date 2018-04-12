@@ -5,10 +5,12 @@
             "name": "GithubService",
             "exportName": "GithubService",
             "mappings": [
-                {"@": "githubUserMapping"}
+                {"@": "githubUserMapping"},
+                {"@": "githubOrganizationMapping"}
             ],
             "types": [
-                {"@": "githubUser"}
+                {"@": "githubUser"},
+                {"@": "githubOrganization"}
             ]
         }
     },
@@ -19,5 +21,13 @@
 
     "githubUserMapping": {
         "object": "data/mapping/github-user-mapping.mjson"
+    },
+
+    "githubOrganization": {
+        "object": "data/model/github-organization.mjson"
+    },
+
+    "githubOrganizationMapping": {
+        "object": "data/mapping/github-organization-mapping.mjson"
     }
 }

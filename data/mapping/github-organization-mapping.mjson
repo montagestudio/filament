@@ -1,0 +1,25 @@
+{
+    "root": {
+        "prototype": "montage/data/service/expression-data-mapping",
+        "values": {
+            "objectDescriptor": {"@": "GithubOrganizationDescriptor"},
+            "rawDataPrimaryKeys": ["login"],
+            "objectMapping": {
+                "rules": {
+                    "login": {"<->": "login"}
+                }
+            },
+            "rawDataMapping": {
+                "rules": {
+                }
+            },
+            "requisitePropertyNames": [
+                "login"
+            ]
+        }
+    },
+
+    "GithubOrganizationDescriptor": {
+        "object": "data/model/github-organization.mjson"
+    }
+}

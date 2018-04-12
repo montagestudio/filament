@@ -1,5 +1,7 @@
 var HttpService = require("montage/data/service/http-service").HttpService,
-    DataService = require("montage/data/service/data-service").DataService;
+    DataService = require("montage/data/service/data-service").DataService,
+    User = require("data/model/github-user.mjson").montageObject,
+    Organization = require("data/model/github-organization.mjson").montageObject;
 
 var API_URL = "https://api.github.com";
 
@@ -27,6 +29,12 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
         }
     },
 
+    fetchHttpRawData: {
+        value: function (url, body, type, headers, useCredentials) {
+            return HttpService.prototype.fetchHttpRawData.call(this, url, body, type, headers, useCredentials || false);
+        }
+    },
+
     setHeadersForQuery: {
         value: function (headers, query) {
             var param = "";
@@ -39,13 +47,34 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
 
     fetchRawData: {
         value: function (stream) {
-            var self = this,
-                apiUrl = API_URL + "/user";
+            var type = stream.query.type;
+            if (type === User) {
+                return this._fetchUser(stream);
+            } else if (type === Organization) {
+                return this._fetchOrganizations(stream);
+            }
+        }
+    },
 
-            return this.fetchHttpRawData(apiUrl, undefined, undefined, undefined, false).then(function (user) {
-                self.addRawData(stream, [user]);
-                self.rawDataDone(stream);
-            });
+    _fetchUser: {
+        value: function (stream) {
+            var self = this;
+            return this.fetchHttpRawData(API_URL + "/user")
+                .then(function (user) {
+                    self.addRawData(stream, [user]);
+                    self.rawDataDone(stream);
+                });
+        }
+    },
+
+    _fetchOrganizations: {
+        value: function (stream) {
+            var self = this;
+            return this.fetchHttpRawData(API_URL + "/user/orgs")
+                .then(function (orgs) {
+                    self.addRawData(stream, orgs);
+                    self.rawDataDone(stream);
+                });
         }
     }
 });

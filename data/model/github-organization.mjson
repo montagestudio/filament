@@ -1,0 +1,26 @@
+{
+    "root": {
+        "prototype": "montage/core/meta/module-object-descriptor",
+        "values": {
+            "name": "GithubOrganization",
+            "propertyDescriptors": [
+                {"@": "login"}
+            ],
+            "objectDescriptorModule": {
+                "%": "data/model/github-organization.mjson"
+            },
+            "exportName": "GithubOrganization",
+            "module": {
+                "%": "logic/model/github-organization"
+            }
+        }
+    },
+
+    "login": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "login",
+            "valueType": "string"
+        }
+    }
+}
