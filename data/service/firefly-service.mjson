@@ -1,0 +1,9 @@
+{
+    "root": {
+        "prototype": "logic/service/firefly-service",
+        "values": {
+            "name": "FireflyService",
+            "exportName": "FireflyService"
+        }
+    }
+}

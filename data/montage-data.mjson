@@ -1,0 +1,15 @@
+{
+    "root": {
+        "prototype": "montage/data/service/data-service",
+        "values": {
+            "name": "DataService",
+            "childServices": [
+                {"@": "fireflyService"}
+            ]
+        }
+    },
+
+    "fireflyService": {
+        "object": "data/service/firefly-service.mjson"
+    }
+}

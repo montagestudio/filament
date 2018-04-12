@@ -17,14 +17,17 @@
             "properties": {
                 "element": {"#": "routeSubstitution"},
                 "appDelegate": {"<-": "@owner.application.delegate"},
-                "switchValue": {"<-": "appDelegate.isAuthenticated ? (appDelegate.isProjectOpen ? 'workbench' : 'projectList') : 'login'"}
+                "switchValue": {"<-": "@owner.isAuthenticated ? (appDelegate.isProjectOpen ? 'workbench' : 'projectList') : 'auth'"}
             }
         },
 
-        "login": {
-            "prototype": "ui/login/login.reel",
+        "auth": {
+            "prototype": "montage/ui/slot.reel",
             "properties": {
-                "element": {"#": "login"}
+                "element": {"#": "auth"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.authorizationPanel"}
             }
         },
 
@@ -47,7 +50,7 @@
 <body>
     <div data-montage-id="owner" class="Main">
         <div data-montage-id="routeSubstitution" class="Main-routeSubstitution">
-            <div data-arg="login" data-montage-id="login"></div>
+            <div data-arg="auth" data-montage-id="auth"></div>
             <div data-arg="projectList" data-montage-id="projectList"></div>
             <div data-arg="workbench" data-montage-id="workbench"></div>
         </div>
