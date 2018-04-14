@@ -1,0 +1,34 @@
+{
+    "root": {
+        "prototype": "montage/data/service/expression-data-mapping",
+        "values": {
+            "objectDescriptor": {"@": "GithubRepositoryDescriptor"},
+            "rawDataPrimaryKeys": ["name"],
+            "objectMapping": {
+                "rules": {
+                    "name": {"<->": "name"},
+                    "owner": {"<-": "owner"},
+                    "description": {"<->": "description"},
+                    "homepage": {"<->": "homepage"},
+                    "private": {"<->": "private"},
+                    "hasIssues": {"<->": "has_issues"},
+                    "hasDownloads": {"<->": "has_downloads"}
+                }
+            },
+            "rawDataMapping": {
+                "rules": {
+                    "team_id": {"<-": "teamId"},
+                    "auto_init": {"<-": "autoInit"},
+                    "gitignore_template": {"<-": "gitignoreTemplate"}
+                }
+            },
+            "requisitePropertyNames": [
+                "name", "owner"
+            ]
+        }
+    },
+
+    "GithubRepositoryDescriptor": {
+        "object": "data/model/github-repository.mjson"
+    }
+}

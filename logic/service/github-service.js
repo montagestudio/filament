@@ -1,7 +1,8 @@
 var HttpService = require("montage/data/service/http-service").HttpService,
     DataService = require("montage/data/service/data-service").DataService,
     User = require("data/model/github-user.mjson").montageObject,
-    Organization = require("data/model/github-organization.mjson").montageObject;
+    Organization = require("data/model/github-organization.mjson").montageObject,
+    Repository = require("logic/model/github-repository").GithubRepository;
 
 var API_URL = "https://api.github.com";
 
@@ -30,8 +31,16 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
     },
 
     fetchHttpRawData: {
-        value: function (url, body, type, headers, useCredentials) {
-            return HttpService.prototype.fetchHttpRawData.call(this, url, body, type, headers, useCredentials || false);
+        value: function (url, headers, body, type, useCredentials) {
+            return HttpService.prototype.fetchHttpRawData.call(this, url, headers, body, type, useCredentials || false);
+        }
+    },
+
+    _createQueryString: {
+        value: function (query) {
+            return Object.keys(query).map(function(name) {
+                return encodeURIComponent(name) + "=" + encodeURIComponent(query[name]);
+            }).join("&");
         }
     },
 
@@ -48,10 +57,13 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
     fetchRawData: {
         value: function (stream) {
             var type = stream.query.type;
-            if (type === User) {
-                return this._fetchUser(stream);
-            } else if (type === Organization) {
-                return this._fetchOrganizations(stream);
+            switch (type) {
+                case User:
+                    return this._fetchUser(stream);
+                case Organization:
+                    return this._fetchOrganizations(stream);
+                case Repository:
+                    return this._fetchRepositories(stream);
             }
         }
     },
@@ -75,6 +87,38 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
                     self.addRawData(stream, orgs);
                     self.rawDataDone(stream);
                 });
+        }
+    },
+
+    _fetchRepositories: {
+        value: function (stream) {
+            var self = this,
+                parameters = stream.query.criteria.parameters,
+                url = API_URL + "/user/repos";
+            if (parameters) {
+                url += "?";
+                url += this._createQueryString(parameters);
+            }
+            return this.fetchHttpRawData(url)
+                .then(function (repos) {
+                    self.addRawData(stream, repos);
+                    self.rawDataDone(stream);
+                });
+        }
+    },
+
+    saveRawData: {
+        value: function (record, context) {
+            switch (context.constructor) {
+                case Repository:
+                    return this._saveRepository(record, context);
+            }
+        }
+    },
+
+    _saveRepository: {
+        value: function (record, context) {
+            return this.fetchHttpRawData(API_URL + "/user/repos", undefined, JSON.stringify(record));
         }
     }
 });

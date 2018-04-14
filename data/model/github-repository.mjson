@@ -1,0 +1,114 @@
+{
+    "root": {
+        "prototype": "montage/core/meta/module-object-descriptor",
+        "values": {
+            "name": "GithubRepository",
+            "propertyDescriptors": [
+                {"@": "name"},
+                {"@": "description"},
+                {"@": "homepage"},
+                {"@": "private"},
+                {"@": "hasIssues"},
+                {"@": "hasDownloads"},
+                {"@": "teamId"},
+                {"@": "autoInit"},
+                {"@": "gitignoreTemplate"}
+            ],
+            "objectDescriptorModule": {
+                "%": "data/model/github-repository.mjson"
+            },
+            "exportName": "GithubRepository",
+            "module": {
+                "%": "logic/model/github-repository"
+            }
+        }
+    },
+
+    "name": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "name",
+            "valueType": "string"
+        }
+    },
+
+    "owner": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "owner",
+            "valueType": "object"
+        }
+    },
+
+    "description": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "description",
+            "valueType": "string"
+        }
+    },
+
+    "homepage": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "homepage",
+            "valueType": "string"
+        }
+    },
+
+    "private": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "private",
+            "valueType": "boolean"
+        }
+    },
+
+    "hasIssues": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "hasIssues",
+            "valueType": "boolean"
+        }
+    },
+
+    "hasDownloads": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "hasDownloads",
+            "valueType": "boolean"
+        }
+    },
+
+    "teamId": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "teamId",
+            "valueType": "number"
+        }
+    },
+
+    "autoInit": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "autoInit",
+            "valueType": "boolean"
+        }
+    },
+
+    "gitignoreTemplate": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "gitignoreTemplate",
+            "valueType": "string"
+        }
+    },
+
+    "pushedAt": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "gitignoreTemplate",
+            "valueType": "Date"
+        }
+    }
+}
