@@ -5,7 +5,8 @@ var HttpService = require("montage/data/service/http-service").HttpService,
     Repository = require("data/model/github-repository.mjson").montageObject,
     Branch = require("data/model/github-branch.mjson").montageObject,
     GithubBlob = require("data/model/github-blob.mjson").montageObject,
-    Contents = require("data/model/github-contents.mjson").montageObject;
+    Contents = require("data/model/github-contents.mjson").montageObject,
+    Tree = require("data/model/github-tree.mjson").montageObject;
 
 var API_URL = "https://api.github.com";
 
@@ -73,6 +74,8 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
                     return this._fetchBlob(stream);
                 case Contents:
                     return this._fetchContents(stream);
+                case Tree:
+                    return this._fetchTree(stream);
             }
         }
     },
@@ -129,6 +132,9 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
                 owner = parameters && parameters.owner,
                 repo = parameters && parameters.repo,
                 branch = parameters && parameters.branch;
+            if (!owner || !repo || !branch) {
+                throw new Error("owner, repo, branch required");
+            }
             return this.fetchHttpRawData(API_URL + "/repos/" + owner + "/" + repo + "/branches" + (branch ? "/" + branch : ""))
                 .then(function (branches) {
                     self.addRawData(stream, Array.isArray(branches) ? branches : [branches]);
@@ -145,7 +151,7 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
                 repo = parameters && parameters.repo,
                 sha = parameters && parameters.sha;
             if (!owner || !repo || !sha) {
-                throw new Error("Owner, repo, sha required");
+                throw new Error("owner, repo, sha required");
             }
             return this.fetchHttpRawData(API_URL + "/repos/" + owner + "/" + repo + "/git/blobs/" + sha)
                 .then(function (blob) {
@@ -168,6 +174,25 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
             return this.fetchHttpRawData(API_URL + "/repos/" + owner + "/" + repo + "/contents/" + path)
                 .then(function (contents) {
                     self.addRawData(stream, [contents]);
+                    self.rawDataDone(stream);
+                });
+        }
+    },
+
+    _fetchTree: {
+        value: function (stream) {
+            var self = this,
+                parameters = stream.query.criteria.parameters,
+                owner = parameters && parameters.owner,
+                repo = parameters && parameters.repo,
+                sha = parameters && parameters.sha,
+                recursive = parameters && parameters.recursive;
+            if (!owner || !repo || !sha) {
+                throw new Error("owner, repo, sha required");
+            }
+            return this.fetchHttpRawData(API_URL + "/repos/" + owner + "/" + repo + "/git/trees/" + sha + (recursive ? "?recursive=1" : ""))
+                .then(function (tree) {
+                    self.addRawData(stream, [tree]);
                     self.rawDataDone(stream);
                 });
         }

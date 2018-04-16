@@ -10,7 +10,8 @@
                 {"@": "githubRepositoryMapping"},
                 {"@": "githubBranchMapping"},
                 {"@": "githubBlobMapping"},
-                {"@": "githubContentsMapping"}
+                {"@": "githubContentsMapping"},
+                {"@": "githubTreeMapping"}
             ],
             "types": [
                 {"@": "githubUser"},
@@ -18,7 +19,8 @@
                 {"@": "githubRepository"},
                 {"@": "githubBranch"},
                 {"@": "githubBlob"},
-                {"@": "githubContents"}
+                {"@": "githubContents"},
+                {"@": "githubTree"}
             ]
         }
     },
@@ -69,5 +71,13 @@
 
     "githubContentsMapping": {
         "object": "data/mapping/github-contents-mapping.mjson"
+    },
+
+    "githubTree": {
+        "object": "data/model/github-tree.mjson"
+    },
+
+    "githubTreeMapping": {
+        "object": "data/mapping/github-tree-mapping.mjson"
     }
 }

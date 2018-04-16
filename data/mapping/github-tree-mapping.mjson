@@ -1,0 +1,27 @@
+{
+    "root": {
+        "prototype": "montage/data/service/expression-data-mapping",
+        "values": {
+            "objectDescriptor": {"@": "GithubTreeDescriptor"},
+            "rawDataPrimaryKeys": ["sha"],
+            "objectMapping": {
+                "rules": {
+                    "sha": {"<->": "sha"},
+                    "url": {"<->": "url"},
+                    "tree": {"<->": "tree"}
+                }
+            },
+            "rawDataMapping": {
+                "rules": {
+                }
+            },
+            "requisitePropertyNames": [
+                "sha", "tree"
+            ]
+        }
+    },
+
+    "GithubTreeDescriptor": {
+        "object": "data/model/github-tree.mjson"
+    }
+}

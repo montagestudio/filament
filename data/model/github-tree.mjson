@@ -1,0 +1,44 @@
+{
+    "root": {
+        "prototype": "montage/core/meta/module-object-descriptor",
+        "values": {
+            "name": "GithubTree",
+            "propertyDescriptors": [
+                {"@": "sha"},
+                {"@": "url"},
+                {"@": "tree"}
+            ],
+            "objectDescriptorModule": {
+                "%": "data/model/github-tree.mjson"
+            },
+            "exportName": "GithubTree",
+            "module": {
+                "%": "logic/model/github-tree"
+            }
+        }
+    },
+
+    "sha": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "sha",
+            "valueType": "string"
+        }
+    },
+
+    "url": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "url",
+            "valueType": "string"
+        }
+    },
+
+    "tree": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "tree",
+            "valueType": "array"
+        }
+    }
+}
