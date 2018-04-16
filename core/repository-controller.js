@@ -90,8 +90,10 @@ exports.RepositoryController = Montage.specialize({
                 emptynessPromise = Promise.resolve(false);
             } else {
                 emptynessPromise = application.service.fetchData(GithubBranch, {
-                    owner: self.owner,
-                    repo: self.repo
+                    parameters: {
+                        owner: self.owner,
+                        repo: self.repo
+                    }
                 }).then(function (branches) {
                     return branches.length === 0;
                 });

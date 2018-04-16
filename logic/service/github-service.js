@@ -132,8 +132,8 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
                 owner = parameters && parameters.owner,
                 repo = parameters && parameters.repo,
                 branch = parameters && parameters.branch;
-            if (!owner || !repo || !branch) {
-                throw new Error("owner, repo, branch required");
+            if (!owner || !repo) {
+                return stream.dataError(new Error("owner, repo required"));
             }
             return this.fetchHttpRawData(API_URL + "/repos/" + owner + "/" + repo + "/branches" + (branch ? "/" + branch : ""))
                 .then(function (branches) {
@@ -151,7 +151,7 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
                 repo = parameters && parameters.repo,
                 sha = parameters && parameters.sha;
             if (!owner || !repo || !sha) {
-                throw new Error("owner, repo, sha required");
+                return stream.dataError(new Error("owner, repo, sha required"));
             }
             return this.fetchHttpRawData(API_URL + "/repos/" + owner + "/" + repo + "/git/blobs/" + sha)
                 .then(function (blob) {
@@ -169,7 +169,7 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
                 repo = parameters && parameters.repo,
                 path = parameters && parameters.path;
             if (!owner || !repo || !path) {
-                throw new Error("owner, repo, path required");
+                return stream.dataError(new Error("owner, repo, path required"));
             }
             return this.fetchHttpRawData(API_URL + "/repos/" + owner + "/" + repo + "/contents/" + path)
                 .then(function (contents) {
@@ -188,7 +188,7 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
                 sha = parameters && parameters.sha,
                 recursive = parameters && parameters.recursive;
             if (!owner || !repo || !sha) {
-                throw new Error("owner, repo, sha required");
+                return stream.dataError(new Error("owner, repo, sha required"));
             }
             return this.fetchHttpRawData(API_URL + "/repos/" + owner + "/" + repo + "/git/trees/" + sha + (recursive ? "?recursive=1" : ""))
                 .then(function (tree) {
