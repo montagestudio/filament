@@ -1,12 +1,8 @@
 var Montage = require("montage").Montage,
-    github = require("adaptor/client/core/github");
+    application = require("montage/core/application").application,
+    GithubUser = require("logic/model/github-user").GithubUser;
 
 exports.UserController = Montage.specialize({
-    constructor: {
-        value: function UserController() {
-            this.super();
-        }
-    },
 
     init: {
         value: function () {
@@ -32,24 +28,12 @@ exports.UserController = Montage.specialize({
         value: function () {
             if (!this._getUserPromise) {
                 var self = this;
-
-                this._getUserPromise = github.githubApi()
-                    .then(function(githubApi) {
-                        return githubApi.getUser();
-                    })
-                    .then(function(record) {
-                        var user = Object.create(null);
-                        user.name = record.name || record.login;
-                        user.login = record.login;
-                        //jshint -W106
-                        user.avatarUrl = record.avatar_url;
-                        user.url = record.html_url;
-                        //jshint +W106
-
+                this._getUserPromise = application.service.fetchData(GithubUser)
+                    .then(function (data) {
+                        var user = data[0];
                         self.dispatchBeforeOwnPropertyChange("user", self._user);
                         self._user = user;
                         self.dispatchOwnPropertyChange("user", self._user);
-
                         return user;
                     });
             }
