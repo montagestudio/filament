@@ -1,6 +1,7 @@
 var Montage = require("montage").Montage;
 var Promise = require("montage/core/promise").Promise;
 var github = require("adaptor/client/core/github");
+var GithubFs = require("core/github-fs").GithubFs;
 var application = require("montage/core/application").application;
 var GithubBranch = require("logic/model/github-branch").GithubBranch;
 var GithubRepository = require("logic/model/github-repository").GithubRepository;
@@ -103,26 +104,25 @@ exports.RepositoryController = Montage.specialize({
 
     isMontageRepository: {
         value: function() {
-            var self = this;
-            return github.githubFs(this.owner, this.repo)
-                .then(function(githubFs) {
-                    return githubFs.readFromDefaultBranch('/package.json')
-                        .then(function(content) {
-                            self._isNonEmptyRepository = true;
-                            if (content) {
-                                try {
-                                    var packageDescription = JSON.parse(content);
-                                    return packageDescription.dependencies && "montage" in packageDescription.dependencies;
-                                } catch(ex) {
-                                    // not a JSON file
-                                    return false;
-                                }
-                            } else {
-                                return false;
-                            }
-                        }, function() {
+            var self = this,
+                githubToken = application.service.childServices.toArray[0].authorization[0].githubAuthorization.token,
+                githubFs = new GithubFs(this.owner, this.repo, githubToken);
+            return githubFs.readFromDefaultBranch('/package.json')
+                .then(function(content) {
+                    self._isNonEmptyRepository = true;
+                    if (content) {
+                        try {
+                            var packageDescription = JSON.parse(content);
+                            return packageDescription.dependencies && "montage" in packageDescription.dependencies;
+                        } catch(ex) {
+                            // not a JSON file
                             return false;
-                        });
+                        }
+                    } else {
+                        return false;
+                    }
+                }, function() {
+                    return false;
                 });
         }
     },
