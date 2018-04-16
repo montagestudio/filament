@@ -125,10 +125,13 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
     _fetchBranches: {
         value: function (stream) {
             var self = this,
-                parameters = stream.query.criteria.parameters;
-            return this.fetchHttpRawData(API_URL + "/repos/" + parameters.owner + "/" + parameters.repo + "/branches")
+                parameters = stream.query.criteria.parameters,
+                owner = parameters && parameters.owner,
+                repo = parameters && parameters.repo,
+                branch = parameters && parameters.branch;
+            return this.fetchHttpRawData(API_URL + "/repos/" + owner + "/" + repo + "/branches" + (branch ? "/" + branch : ""))
                 .then(function (branches) {
-                    self.addRawData(stream, branches);
+                    self.addRawData(stream, Array.isArray(branches) ? branches : [branches]);
                     self.rawDataDone(stream);
                 });
         }
