@@ -13,7 +13,9 @@
                     "private": {"<->": "private"},
                     "hasIssues": {"<->": "has_issues"},
                     "hasDownloads": {"<->": "has_downloads"},
-                    "defaultBranch": {"<->": "default_branch"}
+                    "defaultBranch": {"<->": "default_branch"},
+                    "htmlUrl": {"<->": "html_url"},
+                    "parent": {"<->": "parent"}
                 }
             },
             "rawDataMapping": {

@@ -13,7 +13,9 @@
                 {"@": "teamId"},
                 {"@": "autoInit"},
                 {"@": "gitignoreTemplate"},
-                {"@": "defaultBranch"}
+                {"@": "defaultBranch"},
+                {"@": "htmlUrl"},
+                {"@": "parent"}
             ],
             "objectDescriptorModule": {
                 "%": "data/model/github-repository.mjson"
@@ -117,6 +119,22 @@
         "prototype": "montage/core/meta/property-descriptor",
         "values": {
             "name": "defaultBranch",
+            "valueType": "string"
+        }
+    },
+
+    "htmlUrl": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "htmlUrl",
+            "valueType": "string"
+        }
+    },
+
+    "parent": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "parent",
             "valueType": "string"
         }
     }

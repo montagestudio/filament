@@ -1,6 +1,5 @@
 var Montage = require("montage").Montage;
 var Promise = require("montage/core/promise").Promise;
-var github = require("adaptor/client/core/github");
 var GithubFs = require("core/github-fs").GithubFs;
 var application = require("montage/core/application").application;
 var GithubBranch = require("logic/model/github-branch").GithubBranch;
@@ -131,13 +130,14 @@ exports.RepositoryController = Montage.specialize({
         value: function() {
             var self = this;
 
-            return github.githubApi()
-                .then(function(githubApi) {
-                    return githubApi.getRepository(self.owner, self.repo);
-                })
-                .then(function(repository) {
-                    return repository.parent;
-                });
+            return application.service.fetchData(GithubRepository, {
+                parameters: {
+                    owner: self.owner,
+                    repo: self.repo
+                }
+            }).then(function (repository) {
+                return repository.parent;
+            });
         }
     },
 
@@ -167,14 +167,13 @@ exports.RepositoryController = Montage.specialize({
         value: function() {
             var self = this;
 
-            return github.githubApi()
-            .then(function(githubApi) {
-                return githubApi.getRepository(self.owner, self.repo);
-            })
-            .then(function(repo) {
-                // jshint -W106
-                return repo.html_url;
-                // jshint +W106
+            return application.service.fetchData(GithubRepository, {
+                parameters: {
+                    owner: self.owner,
+                    repo: self.repo
+                }
+            }).then(function (repo) {
+                return repo.htmlUrl;
             });
         }
     },
