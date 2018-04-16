@@ -4,6 +4,7 @@ var GithubFs = require("core/github-fs").GithubFs;
 var application = require("montage/core/application").application;
 var GithubBranch = require("logic/model/github-branch").GithubBranch;
 var GithubRepository = require("logic/model/github-repository").GithubRepository;
+var Workspace = require("logic/model/workspace").Workspace;
 
 /**
  * The functions provided by this file should be converted into a service.
@@ -182,10 +183,11 @@ exports.RepositoryController = Montage.specialize({
 
     workspaceExists: {
         value: function() {
-            return application.delegate.request({
-                method: "GET",
-                url: "/" + this.owner + "/" + this.repo + "/workspace",
-                subdomain: "api"
+            return application.service.fetchData(Workspace, {
+                parameters: {
+                    owner: this.owner,
+                    repo: this.repo
+                }
             })
             .then(function(message) {
                 return message.created;
