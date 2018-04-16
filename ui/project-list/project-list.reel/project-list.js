@@ -1,7 +1,8 @@
 var Bindings = require("montage/core/core").Bindings,
     Component = require("montage/ui/component").Component,
     repositoriesController = require("core/repositories-controller").repositoriesController,
-    UserController = require("core/user-controller").UserController;
+    UserController = require("core/user-controller").UserController,
+    Workspace = require("logic/model/workspace").Workspace;
 
 exports.ProjectList = Component.specialize({
 
@@ -119,14 +120,11 @@ exports.ProjectList = Component.specialize({
     _getWorkspaces: {
         value: function () {
             var self = this;
-            this.application.delegate.request({
-                url: "/workspaces",
-                subdomain: "api"
-            })
-            .then(function (response) {
-                self.workspaces = JSON.parse(response.body);
-            })
-            .done();
+            this.application.service.fetchData(Workspace)
+                .then(function (workspaces) {
+                    self.workspaces = workspaces;
+                })
+                .done();
         }
     },
 
