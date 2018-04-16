@@ -1,0 +1,62 @@
+{
+    "root": {
+        "prototype": "montage/core/meta/module-object-descriptor",
+        "values": {
+            "name": "GithubBlob",
+            "propertyDescriptors": [
+                {"@": "content"},
+                {"@": "encoding"},
+                {"@": "url"},
+                {"@": "sha"},
+                {"@": "size"}
+            ],
+            "objectDescriptorModule": {
+                "%": "data/model/github-blob.mjson"
+            },
+            "exportName": "GithubBlob",
+            "module": {
+                "%": "logic/model/github-blob"
+            }
+        }
+    },
+
+    "content": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "content",
+            "valueType": "string"
+        }
+    },
+
+    "encoding": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "encoding",
+            "valueType": "string"
+        }
+    },
+
+    "url": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "url",
+            "valueType": "string"
+        }
+    },
+
+    "sha": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "sha",
+            "valueType": "string"
+        }
+    },
+
+    "size": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "size",
+            "valueType": "number"
+        }
+    }
+}

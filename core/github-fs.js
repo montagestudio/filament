@@ -1,6 +1,8 @@
 var Promise = require("bluebird");
 var Boot = require("./fs-boot");
 var GithubApi = require("./github-api");
+var application = require("montage/core/application").application;
+var GithubBlob = require("logic/model/github-blob").GithubBlob;
 
 var concat = function (arrays) {
     return Array.prototype.concat.apply([], arrays);
@@ -33,8 +35,11 @@ GithubFs.prototype.read = function(path, options) {
         if (file === null) {
             return null;
         } else {
-            return self._api.getBlob(self.username, self.repository, file.sha, param)
-            .then(function(blob) {
+            return application.service.fetchData(GithubBlob, {
+                owner: self.username,
+                repo: self.repository,
+                sha: file.sha
+            }).then(function(blob) {
                 if (param === "raw") {
                     return blob;
                 } else {

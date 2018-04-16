@@ -1,0 +1,29 @@
+{
+    "root": {
+        "prototype": "montage/data/service/expression-data-mapping",
+        "values": {
+            "objectDescriptor": {"@": "GithubBlobDescriptor"},
+            "rawDataPrimaryKeys": ["sha"],
+            "objectMapping": {
+                "rules": {
+                    "content": {"<->": "content"},
+                    "encoding": {"<->": "encoding"},
+                    "url": {"<-": "url"},
+                    "sha": {"<-": "sha"},
+                    "size": {"<-": "size"}
+                }
+            },
+            "rawDataMapping": {
+                "rules": {
+                }
+            },
+            "requisitePropertyNames": [
+                "content", "encoding", "url", "sha", "size"
+            ]
+        }
+    },
+
+    "GithubBlobDescriptor": {
+        "object": "data/model/github-blob.mjson"
+    }
+}

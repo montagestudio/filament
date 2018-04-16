@@ -3,7 +3,8 @@ var HttpService = require("montage/data/service/http-service").HttpService,
     User = require("data/model/github-user.mjson").montageObject,
     Organization = require("data/model/github-organization.mjson").montageObject,
     Repository = require("data/model/github-repository.mjson").montageObject,
-    Branch = require("data/model/github-branch.mjson").montageObject;
+    Branch = require("data/model/github-branch.mjson").montageObject,
+    GithubBlob = require("data/model/github-blob.mjson").montageObject;
 
 var API_URL = "https://api.github.com";
 
@@ -67,6 +68,8 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
                     return this._fetchRepositories(stream);
                 case Branch:
                     return this._fetchBranches(stream);
+                case GithubBlob:
+                    return this._fetchBlob(stream);
             }
         }
     },
@@ -123,6 +126,24 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
             return this.fetchHttpRawData(API_URL + "/repos/" + parameters.owner + "/" + parameters.repo + "/branches")
                 .then(function (branches) {
                     self.addRawData(stream, branches);
+                    self.rawDataDone(stream);
+                });
+        }
+    },
+
+    _fetchBlob: {
+        value: function (stream) {
+            var self = this,
+                parameters = stream.query.criteria.parameters,
+                owner = parameters && parameters.owner,
+                repo = parameters && parameters.repo,
+                sha = parameters && parameters.sha;
+            if (!owner || !repo || !sha) {
+                throw new Error("Owner, repo, sha required");
+            }
+            return this.fetchHttpRawData(API_URL + "/repos/" + owner + "/" + repo + "/git/blobs/" + sha)
+                .then(function (blob) {
+                    self.addRawData(stream, [blob]);
                     self.rawDataDone(stream);
                 });
         }

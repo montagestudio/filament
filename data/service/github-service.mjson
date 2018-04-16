@@ -8,13 +8,15 @@
                 {"@": "githubUserMapping"},
                 {"@": "githubOrganizationMapping"},
                 {"@": "githubRepositoryMapping"},
-                {"@": "githubBranchMapping"}
+                {"@": "githubBranchMapping"},
+                {"@": "githubBlobMapping"}
             ],
             "types": [
                 {"@": "githubUser"},
                 {"@": "githubOrganization"},
                 {"@": "githubRepository"},
-                {"@": "githubBranch"}
+                {"@": "githubBranch"},
+                {"@": "githubBlob"}
             ]
         }
     },
@@ -49,5 +51,13 @@
 
     "githubBranchMapping": {
         "object": "data/mapping/github-branch-mapping.mjson"
+    },
+
+    "githubBlob": {
+        "object": "data/model/github-blob.mjson"
+    },
+
+    "githubBlobMapping": {
+        "object": "data/mapping/github-blob-mapping.mjson"
     }
 }
