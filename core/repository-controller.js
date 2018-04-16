@@ -2,6 +2,7 @@ var Montage = require("montage").Montage;
 var Promise = require("montage/core/promise").Promise;
 var github = require("adaptor/client/core/github");
 var application = require("montage/core/application").application;
+var GithubBranch = require("logic/model/github-branch").GithubBranch;
 
 /**
  * The functions provided by this file should be converted into a service.
@@ -87,10 +88,12 @@ exports.RepositoryController = Montage.specialize({
             if (this._isNonEmptyRepository) {
                 emptynessPromise = Promise.resolve(false);
             } else {
-                emptynessPromise = github.githubApi()
-                    .then(function(githubApi) {
-                        return githubApi.isRepositoryEmpty(self.owner, self.repo);
-                    });
+                emptynessPromise = application.service.fetchData(GithubBranch, {
+                    owner: self.owner,
+                    repo: self.repo
+                }).then(function (branches) {
+                    return branches.length === 0;
+                });
             }
 
             return emptynessPromise;

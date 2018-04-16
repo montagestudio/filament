@@ -2,7 +2,8 @@ var HttpService = require("montage/data/service/http-service").HttpService,
     DataService = require("montage/data/service/data-service").DataService,
     User = require("data/model/github-user.mjson").montageObject,
     Organization = require("data/model/github-organization.mjson").montageObject,
-    Repository = require("logic/model/github-repository").GithubRepository;
+    Repository = require("logic/model/github-repository").GithubRepository,
+    Branch = require("logic/model/github-branch").GithubBranch;
 
 var API_URL = "https://api.github.com";
 
@@ -64,6 +65,8 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
                     return this._fetchOrganizations(stream);
                 case Repository:
                     return this._fetchRepositories(stream);
+                case Branch:
+                    return this._fetchBranches(stream);
             }
         }
     },
@@ -102,6 +105,18 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
             return this.fetchHttpRawData(url)
                 .then(function (repos) {
                     self.addRawData(stream, repos);
+                    self.rawDataDone(stream);
+                });
+        }
+    },
+
+    _fetchBranches: {
+        value: function (stream) {
+            var self = this,
+                parameters = stream.query.criteria.parameters;
+            return this.fetchHttpRawData(API_URL + "/repos/" + parameters.owner + "/" + parameters.repo + "/branches")
+                .then(function (branches) {
+                    self.addRawData(stream, branches);
                     self.rawDataDone(stream);
                 });
         }

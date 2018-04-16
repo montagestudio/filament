@@ -1,0 +1,25 @@
+{
+    "root": {
+        "prototype": "montage/data/service/expression-data-mapping",
+        "values": {
+            "objectDescriptor": {"@": "GithubBranchDescriptor"},
+            "rawDataPrimaryKeys": ["name"],
+            "objectMapping": {
+                "rules": {
+                    "name": {"<->": "name"}
+                }
+            },
+            "rawDataMapping": {
+                "rules": {
+                }
+            },
+            "requisitePropertyNames": [
+                "name"
+            ]
+        }
+    },
+
+    "GithubBranchDescriptor": {
+        "object": "data/model/github-branch.mjson"
+    }
+}
