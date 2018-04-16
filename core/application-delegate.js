@@ -120,7 +120,10 @@ exports.ApplicationDelegate = Montage.specialize({
                 req.url = loc.protocol + "//" + req.subdomain + "." + loc.host + (req.url[0] === "/" ? "" : "/") + req.url;
             }
             req.headers = req.headers || {};
-            req.headers["x-access-token"] = this.accessToken;
+            var childService = this.application.service.childServices.toArray()[0];
+            if (childService && childService.authorization) {
+                req.headers["x-access-token"] = childService.authorization[0].token;
+            }
             return request.requestOk(req);
         }
     },
