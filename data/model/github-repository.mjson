@@ -12,7 +12,8 @@
                 {"@": "hasDownloads"},
                 {"@": "teamId"},
                 {"@": "autoInit"},
-                {"@": "gitignoreTemplate"}
+                {"@": "gitignoreTemplate"},
+                {"@": "defaultBranch"}
             ],
             "objectDescriptorModule": {
                 "%": "data/model/github-repository.mjson"
@@ -107,8 +108,16 @@
     "pushedAt": {
         "prototype": "montage/core/meta/property-descriptor",
         "values": {
-            "name": "gitignoreTemplate",
+            "name": "pushedAt",
             "valueType": "Date"
+        }
+    },
+
+    "defaultBranch": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "defaultBranch",
+            "valueType": "string"
         }
     }
 }

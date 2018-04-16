@@ -12,7 +12,8 @@
                     "homepage": {"<->": "homepage"},
                     "private": {"<->": "private"},
                     "hasIssues": {"<->": "has_issues"},
-                    "hasDownloads": {"<->": "has_downloads"}
+                    "hasDownloads": {"<->": "has_downloads"},
+                    "defaultBranch": {"<->": "default_branch"}
                 }
             },
             "rawDataMapping": {
