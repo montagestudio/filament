@@ -15,6 +15,12 @@ exports.FireflyService = HttpService.specialize(/** @lends FireflyService.protot
         value: false
     },
 
+    apiUrl: {
+        get: function () {
+            return window.location.protocol + "//api." + window.location.host;
+        }
+    },
+
     authorizationServices: {
         value: ["./github-authorization-service"]
     },
@@ -30,16 +36,19 @@ exports.FireflyService = HttpService.specialize(/** @lends FireflyService.protot
             var authorization = this.authorization;
 
             if (authorization && authorization.length) {
-                headers['authorization-token'] = authorization[0].token;
-                headers['authorization-secret'] = authorization[0].secret;
+                headers["x-access-token"] = authorization[0].token;
             }
         }
     },
 
     fetchRawData: {
         value: function (stream) {
-            this.addRawData(stream, [{ foo: 'bar' }]);
-            this.rawDataDone(stream);
+            var self = this;
+            return this.fetchHttpRawData(this.apiUrl + "/workspaces")
+                .then(function (workspaces) {
+                    self.addRawData(stream, workspaces);
+                    self.rawDataDone(stream);
+                });
         }
     }
 });

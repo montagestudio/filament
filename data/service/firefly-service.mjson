@@ -3,7 +3,21 @@
         "prototype": "logic/service/firefly-service",
         "values": {
             "name": "FireflyService",
-            "exportName": "FireflyService"
+            "exportName": "FireflyService",
+            "mappings": [
+                {"@": "workspaceMapping"}
+            ],
+            "types": [
+                {"@": "workspace"}
+            ]
         }
+    },
+
+    "workspace": {
+        "object": "data/model/workspace.mjson"
+    },
+
+    "workspaceMapping": {
+        "object": "data/mapping/workspace-mapping.mjson"
     }
 }
