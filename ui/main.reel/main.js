@@ -40,6 +40,24 @@ exports.Main = Component.specialize(/** @lends Main# */ {
         value: function(authorizationManager, dataService) {
             this.isAuthenticated = true;
             this.isAuthenticationLoading = false;
+
+            // TODO: Weird way to get the authentication
+            var authorization = dataService.rootService.childServices.map(function (service) {
+                return service.authorization && service.authorization[0];
+            }).filter(function (authorization) {
+                return authorization;
+            })[0];
+
+            // We need to add the JWT token as a browser cookie for WS communications because:
+            // - Chrome does not send an "Authorization" header with a WS URL like
+            //   authtoken@montage.studio/user/repo
+            // - We can't leverage WebSocket subprotocols to pass the token because the
+            //   Project Daemon and Project services use subprotocols internally and there is
+            //   no way to "override" the chosen protocol (sec-websocket-protocol header) when
+            //   we pipe one WS connection into another
+            // - There is no way to send arbitrary response headers over a WS handshake
+            // So we resort to setting a local cookie, which does get sent with WS connections
+            document.cookie = "token=" + authorization.token + "; domain=." + window.location.hostname + ";";
         }
     }
 });
