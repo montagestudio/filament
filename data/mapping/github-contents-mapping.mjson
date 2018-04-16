@@ -1,0 +1,31 @@
+{
+    "root": {
+        "prototype": "montage/data/service/expression-data-mapping",
+        "values": {
+            "objectDescriptor": {"@": "GithubContentsDescriptor"},
+            "rawDataPrimaryKeys": ["sha"],
+            "objectMapping": {
+                "rules": {
+                    "name": {"<->": "name"},
+                    "path": {"<->": "path"},
+                    "sha": {"<->": "sha"},
+                    "type": {"<->": "type"},
+                    "content": {"<->": "content"},
+                    "url": {"<->": "url"},
+                    "gitUrl": {"<->": "gitUrl"}
+                }
+            },
+            "rawDataMapping": {
+                "rules": {
+                }
+            },
+            "requisitePropertyNames": [
+                "name", "path", "sha", "type", "content", "url", "gitUrl"
+            ]
+        }
+    },
+
+    "GithubContentsDescriptor": {
+        "object": "data/model/github-contents.mjson"
+    }
+}

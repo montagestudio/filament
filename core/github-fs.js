@@ -3,6 +3,7 @@ var Boot = require("./fs-boot");
 var GithubApi = require("./github-api");
 var application = require("montage/core/application").application;
 var GithubBlob = require("logic/model/github-blob").GithubBlob;
+var GithubContents = require("logic/model/github-contents").GithubContents;
 
 var concat = function (arrays) {
     return Array.prototype.concat.apply([], arrays);
@@ -51,9 +52,11 @@ GithubFs.prototype.read = function(path, options) {
 };
 
 GithubFs.prototype.readFromDefaultBranch = function(path) {
-    var param = "raw";
-
-    return this._api.getContents(this.username, this.repository, path, param);
+    return application.service.fetchData(GithubContents, {
+        owner: this.username,
+        repo: this.repository,
+        path: path
+    });
 };
 
 /**

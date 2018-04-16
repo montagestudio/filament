@@ -1,0 +1,80 @@
+{
+    "root": {
+        "prototype": "montage/core/meta/module-object-descriptor",
+        "values": {
+            "name": "GithubContents",
+            "propertyDescriptors": [
+                {"@": "name"},
+                {"@": "path"},
+                {"@": "sha"},
+                {"@": "type"},
+                {"@": "content"},
+                {"@": "url"},
+                {"@": "gitUrl"}
+            ],
+            "objectDescriptorModule": {
+                "%": "data/model/github-contents.mjson"
+            },
+            "exportName": "GithubContents",
+            "module": {
+                "%": "logic/model/github-contents"
+            }
+        }
+    },
+
+    "name": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "name",
+            "valueType": "string"
+        }
+    },
+
+    "path": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "path",
+            "valueType": "string"
+        }
+    },
+
+    "sha": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "sha",
+            "valueType": "string"
+        }
+    },
+
+    "type": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "type",
+            "valueType": "string"
+        }
+    },
+
+    "content": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "content",
+            "valueType": "string"
+        }
+    },
+
+    "url": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "url",
+            "valueType": "string"
+        }
+    },
+
+    "gitUrl": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "gitUrl",
+            "valueType": "string"
+        }
+    }
+}
