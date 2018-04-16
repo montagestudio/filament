@@ -5,7 +5,9 @@
             "name": "GithubUser",
             "propertyDescriptors": [
                 {"@": "login"},
-                {"@": "displayedName"},
+                {"@": "avatarUrl"},
+                {"@": "htmlUrl"},
+                {"@": "name"},
                 {"@": "publicRepositories"},
                 {"@": "privateRepositories"},
                 {"@": "collaborators"}
@@ -28,10 +30,26 @@
         }
     },
 
-    "displayedName": {
+    "avatarUrl": {
         "prototype": "montage/core/meta/property-descriptor",
         "values": {
-            "name": "displayedName",
+            "name": "avatarUrl",
+            "valueType": "string"
+        }
+    },
+
+    "htmlUrl": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "htmlUrl",
+            "valueType": "string"
+        }
+    },
+
+    "name": {
+        "prototype": "montage/core/meta/property-descriptor",
+        "values": {
+            "name": "name",
             "valueType": "string"
         }
     },

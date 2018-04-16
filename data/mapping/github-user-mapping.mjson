@@ -7,7 +7,9 @@
             "objectMapping": {
                 "rules": {
                     "login": {"<->": "login"},
-                    "displayedName": {"<->": "name"},
+                    "avatarUrl": {"<->": "avatar_url"},
+                    "htmlUrl": {"<->": "html_url"},
+                    "name": {"<->": "name"},
                     "publicRepositories": {"<->": "public_repos"},
                     "privateRepositories": {"<->": "total_private_repos"},
                     "collaborators": {"<->": "collaborators"}
@@ -18,7 +20,7 @@
                 }
             },
             "requisitePropertyNames": [
-                "login", "displayedName", "publicRepositories", "privateRepositories"
+                "login", "avatarUrl", "htmlUrl", "name", "publicRepositories", "privateRepositories"
             ]
         }
     },
