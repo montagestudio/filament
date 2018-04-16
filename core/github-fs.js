@@ -1,9 +1,11 @@
 var Promise = require("bluebird");
 var Boot = require("./fs-boot");
-var GithubApi = require("./github-api");
 var application = require("montage/core/application").application;
 var GithubBlob = require("logic/model/github-blob").GithubBlob;
 var GithubContents = require("logic/model/github-contents").GithubContents;
+var GithubRepository = require("logic/model/github-repository").GithubRepository;
+var GithubBranch = require("logic/model/github-branch").GithubBranch;
+var GithubTree = require("logic/model/github-tree").GithubTree;
 
 var concat = function (arrays) {
     return Array.prototype.concat.apply([], arrays);
@@ -14,7 +16,6 @@ module.exports = GithubFs;
 function GithubFs(username, repository, accessToken) {
     this.username = username;
     this.repository = repository;
-    this._api = new GithubApi(accessToken);
     this._branchTree = null;
 }
 
@@ -214,40 +215,42 @@ GithubFs.prototype._getFile = function(path) {
 
 GithubFs.prototype._getBranchTree = function() {
     if (!this._branchTree) {
-        this._branchTree = Promise.defer();
-
         var user = this.username,
             repo = this.repository,
-            api = this._api,
             self = this;
 
-        api.getRepository(user, repo).then(function(repository) {
-            api.listBranches(user, repo).then(function(branches) {
-                //jshint -W106
-                var defaultBranch = repository.default_branch,
-                //jshint +W106
-                    defaultBranchFound;
-
-                for (var i = 0; i < branches.length; i++) {
-                    if (branches[i].name === defaultBranch) {
-                        defaultBranchFound = true;
-                        break;
-                    }
+        this._branchTree = application.service.fetchData(GithubRepository, {
+            parameters: {
+                owner: user,
+                repo: repo
+            }
+        }).then(function (repository) {
+            application.service.fetchData(GithubBranch, {
+                parameters: {
+                    owner: user,
+                    repo: repo
                 }
+            }).then(function (branches) {
+                var defaultBranch = branches.filter(function (branch) {
+                    return branch.name === repository.defaultBranch;
+                })[0];
 
-                if (defaultBranchFound) {
-                    api.getBranch(user, repo, defaultBranch)
-                    .then(function(branch) {
-                        api.getTree(user, repo, branch.commit.sha, true)
-                        .then(function(tree) {
-                            self._branchTree.resolve(tree.tree);
-                        }).done();
-                    }).done();
+                if (defaultBranch) {
+                    return application.service.fetchData(GithubTree, {
+                        parameters: {
+                            owner: user,
+                            repo: repo,
+                            sha: defaultBranch.commit.sha,
+                            recursive: true
+                        }
+                    }).then(function(tree) {
+                        self._branchTree.resolve(tree.tree);
+                    });
                 } else {
-                    self._branchTree.resolve([]);
+                    return [];
                 }
-            }).done();
-        }).catch(this._branchTree.reject).done();
+            });
+        });
     }
 
     return this._branchTree.promise;
