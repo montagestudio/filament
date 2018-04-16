@@ -2,8 +2,8 @@ var HttpService = require("montage/data/service/http-service").HttpService,
     DataService = require("montage/data/service/data-service").DataService,
     User = require("data/model/github-user.mjson").montageObject,
     Organization = require("data/model/github-organization.mjson").montageObject,
-    Repository = require("logic/model/github-repository").GithubRepository,
-    Branch = require("logic/model/github-branch").GithubBranch;
+    Repository = require("data/model/github-repository.mjson").montageObject,
+    Branch = require("data/model/github-branch.mjson").montageObject;
 
 var API_URL = "https://api.github.com";
 
@@ -50,7 +50,7 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
             var param = "";
             // jshint -W069
             headers["Accept"] = "application/vnd.github.v3" + param + "+json";
-            headers["Authorization"] = "token " + this.authorization[0].token;
+            headers["Authorization"] = "token " + this.authorization[0].githubAuthorization.token;
             // jshint +W069
         }
     },
@@ -99,12 +99,18 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
                 parameters = stream.query.criteria.parameters,
                 url = API_URL + "/user/repos";
             if (parameters) {
-                url += "?";
-                url += this._createQueryString(parameters);
+                if (parameters.owner && parameters.repo) {
+                    url = API_URL + "/repos/" + parameters.owner + "/" + parameters.repo;
+                } else if (parameters.owner || parameters.repo) {
+                    throw new Error("Need BOTH a 'owner' and 'repo' to fetch a specific repository.");
+                } else {
+                    url += "?";
+                    url += this._createQueryString(parameters);
+                }
             }
             return this.fetchHttpRawData(url)
                 .then(function (repos) {
-                    self.addRawData(stream, repos);
+                    self.addRawData(stream, Array.isArray(repos) ? repos: [repos]);
                     self.rawDataDone(stream);
                 });
         }

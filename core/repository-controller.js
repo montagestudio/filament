@@ -3,6 +3,7 @@ var Promise = require("montage/core/promise").Promise;
 var github = require("adaptor/client/core/github");
 var application = require("montage/core/application").application;
 var GithubBranch = require("logic/model/github-branch").GithubBranch;
+var GithubRepository = require("logic/model/github-repository").GithubRepository;
 
 /**
  * The functions provided by this file should be converted into a service.
@@ -144,9 +145,20 @@ exports.RepositoryController = Montage.specialize({
         value: function() {
             var self = this;
 
-            return github.githubApi()
-            .then(function(githubApi) {
-                return githubApi.repositoryExists(self.owner, self.repo);
+            return application.service.fetchData(GithubRepository, {
+                parameters: {
+                    owner: self.owner,
+                    repo: self.repo
+                }
+            }).then(function (data) {
+                var repository = data[0];
+                return !!repository;
+            }).catch(function (err) {
+                if ("Not Found" === err.message) {
+                    return false;
+                } else {
+                    throw err;
+                }
             });
         }
     },
