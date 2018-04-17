@@ -6,6 +6,7 @@
             "propertyDescriptors": [
                 {"@": "name"},
                 {"@": "description"},
+                {"@": "owner"},
                 {"@": "homepage"},
                 {"@": "private"},
                 {"@": "hasIssues"},
@@ -13,6 +14,7 @@
                 {"@": "teamId"},
                 {"@": "autoInit"},
                 {"@": "gitignoreTemplate"},
+                {"@": "pushedAt"},
                 {"@": "defaultBranch"},
                 {"@": "htmlUrl"},
                 {"@": "parent"}
@@ -111,7 +113,7 @@
         "prototype": "montage/core/meta/property-descriptor",
         "values": {
             "name": "pushedAt",
-            "valueType": "Date"
+            "valueType": "string"
         }
     },
 

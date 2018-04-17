@@ -15,7 +15,8 @@
                     "hasDownloads": {"<->": "has_downloads"},
                     "defaultBranch": {"<->": "default_branch"},
                     "htmlUrl": {"<->": "html_url"},
-                    "parent": {"<->": "parent"}
+                    "parent": {"<->": "parent"},
+                    "pushedAt": {"<->": "pushed_at"}
                 }
             },
             "rawDataMapping": {
@@ -26,7 +27,8 @@
                 }
             },
             "requisitePropertyNames": [
-                "name", "owner"
+                "name", "owner", "description", "homepage", "private", "hasIssues", "hasDownloads",
+                "defaultBranch", "htmlUrl", "parent", "pushedAt"
             ]
         }
     },
