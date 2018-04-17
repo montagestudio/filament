@@ -107,7 +107,11 @@ exports.RepositoryController = Montage.specialize({
     isMontageRepository: {
         value: function() {
             var self = this,
-                githubToken = application.service.childServices.toArray[0].authorization[0].githubAuthorization.token,
+                githubToken = application.service.childServices.map(function (service) {
+                    return service.authorization && service.authorization[0];
+                }).filter(function (authorization) {
+                    return authorization;
+                })[0],
                 githubFs = new GithubFs(this.owner, this.repo, githubToken);
             return githubFs.readFromDefaultBranch('/package.json')
                 .then(function(content) {
@@ -123,7 +127,7 @@ exports.RepositoryController = Montage.specialize({
                     } else {
                         return false;
                     }
-                }, function() {
+                }, function () {
                     return false;
                 });
         }
