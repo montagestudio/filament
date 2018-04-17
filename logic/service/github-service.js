@@ -42,7 +42,9 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
 
     _createQueryString: {
         value: function (query) {
-            return Object.keys(query).map(function(name) {
+            return Object.keys(query).filter(function (name) {
+                return typeof query[name] !== "undefined";
+            }).map(function(name) {
                 return encodeURIComponent(name) + "=" + encodeURIComponent(query[name]);
             }).join("&");
         }
@@ -106,17 +108,22 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
         value: function (stream) {
             var self = this,
                 parameters = stream.query.criteria.parameters,
+                owner = parameters && parameters.owner,
+                repo = parameters && parameters.repo,
+                org = parameters && parameters.org,
+                affiliation = parameters && parameters.affiliation,
                 url = API_URL + "/user/repos";
-            if (parameters) {
-                if (parameters.owner && parameters.repo) {
-                    url = API_URL + "/repos/" + parameters.owner + "/" + parameters.repo;
-                } else if (parameters.owner || parameters.repo) {
-                    throw new Error("Need BOTH a 'owner' and 'repo' to fetch a specific repository.");
-                } else {
-                    url += "?";
-                    url += this._createQueryString(parameters);
-                }
+            if (owner && repo) {
+                url = API_URL + "/repos/" + owner + "/" + parameters.repo;
+            } else if (org) {
+                url = API_URL + "/orgs/" + org;
+            } else {
+                url = API_URL + "/user/repos";
             }
+            url += "?";
+            url += this._createQueryString({
+                affiliation: affiliation
+            });
             return this.fetchHttpRawData(url)
                 .then(function (repos) {
                     self.addRawData(stream, Array.isArray(repos) ? repos: [repos]);
