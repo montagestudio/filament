@@ -1,13 +1,14 @@
 /* global localStorage */
-/* jshint -W079 */
 var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
-    github = require("adaptor/client/core/github"),
+    application = require("montage/core/application").application,
     RangeController = require("montage/core/range-controller").RangeController,
-    RepositoryController = require("core/repository-controller").RepositoryController;
-/* jshint +W079 */
+    RepositoryController = require("core/repository-controller").RepositoryController,
+    GithubUser = require("logic/model/github-user").GithubUser,
+    GithubOrganization = require("logic/model/github-organization").GithubOrganization,
+    GithubRepository = require("logic/model/github-repository").GithubRepository;
 
-var SORT_PATH = "-pushed_at",
+var SORT_PATH = "-pushedAtInSeconds",
     TYPE_USER = 'USER',
     LOGIN_MY_REPOS = 'my_repos',
     LOGIN_CONTRIBUTING_ON = 'contributing_on',
@@ -15,49 +16,14 @@ var SORT_PATH = "-pushed_at",
     LOCAL_STORAGE_PREFIX = 'cachedRepositories_',
     LOCAL_STORAGE_REPOSITORIES_COUNT_KEY = "cachedProcessedRepositoriesCount";
 
-/* jshint -W106 */
-var GitUser = Montage.specialize({
-    login: {
-        value: null
-    },
-
-    displayedName: {
-        value: null
-    },
-
-    publicRepositories: {
-        value: null
-    },
-
-    privateRepositories: {
-        value: null
-    },
-
-    collaborators: {
-        value: null
-    },
-
-    listOwnedRepositories: {
-        value: true
-    },
-
-    listContributedRepositories: {
-        value: true
-    },
-
-    initWithGithubUser: {
-        value: function(githubUser) {
-            this.login = githubUser.login;
-            this.displayedName = githubUser.name;
-            this.publicRepositories = githubUser.public_repos;
-            this.privateRepositories = githubUser.total_private_repos;
-            this.collaborators = githubUser.collaborators || 0;
-            this.type = TYPE_USER;
-            return this;
+var ContributingUser = Montage.specialize({
+    constructor: {
+        value: function ContributingUser() {
+            this.displayedName = "Contributing on";
+            this.login = LOGIN_CONTRIBUTING_ON;
         }
     }
 });
-/* jshint +W106 */
 
 var RepositoriesController = Montage.specialize({
 
@@ -99,35 +65,6 @@ var RepositoriesController = Montage.specialize({
         value: 0
     },
 
-    _githubApi: {
-        get: function () {
-            var self = this;
-            if (!this.__githubApi) {
-                this.__githubApi = github.githubApi()
-                    .then(function(githubApi) {
-                        self._githubUser = githubApi.getUser()
-                            .then(function(user) {
-                                var gitUser = new GitUser().initWithGithubUser(user),
-                                    contributedUser = new GitUser().initWithGithubUser(user);
-                                gitUser.listContributedRepositories = false;
-                                gitUser.displayedName = user.login;
-                                gitUser.login = LOGIN_MY_REPOS;
-                                gitUser.canCreateRepo = true;
-                                self.organizationsController.add(gitUser);
-                                self.organizationsController.select(gitUser);
-                                contributedUser.listOwnedRepositories = false;
-                                contributedUser.displayedName = 'Contributing on';
-                                contributedUser.login = LOGIN_CONTRIBUTING_ON;
-                                self.organizationsController.add(contributedUser);
-                                return gitUser;
-                            });
-                        return githubApi;
-                    });
-            }
-            return this.__githubApi;
-        }
-    },
-
     _githubUser: {
         value: null
     },
@@ -158,12 +95,21 @@ var RepositoriesController = Montage.specialize({
     loadOrganizations: {
         value: function() {
             var self = this;
-            this._githubApi
-                .then(function(githubApi) {
-                    githubApi.listUserOrganizations()
-                        .then(function(organizations) {
-                            self.organizationsController.addEach(organizations);
-                        });
+            return application.service.fetchData(GithubUser)
+                .then(function (users) {
+                    var user = users[0];
+                    self._githubUser = user;
+                    // user.canCreateRepo = true;
+                    self.organizationsController.add(user);
+                    self.organizationsController.select(user);
+
+                    var contributingUser = new ContributingUser();
+                    self.organizationsController.add(contributingUser);
+
+                    return application.service.fetchData(GithubOrganization);
+                })
+                .then(function (organizations) {
+                    self.organizationsController.addEach(organizations);
                 });
         }
     },
@@ -187,31 +133,23 @@ var RepositoriesController = Montage.specialize({
      */
     createRepository: {
         value: function(repositoryName, options) {
-            var self = this,
-                githubUser;
+            var self = this;
 
-            return this._githubUser
-                .then(function(user) {
-                    githubUser = user;
-                    return self._githubApi;
-                })
-                .then(function(githubApi) {
-                    var repositoryCreationPromise;
-                    if (self._selectedOrganization.type === TYPE_USER) {
-                        repositoryCreationPromise = githubApi.createUserRepository(repositoryName, options);
-                    } else {
-                        repositoryCreationPromise = githubApi.createOrganizationRepository(self._selectedOrganization.login, repositoryName, options);
-                    }
-                    return repositoryCreationPromise;
-                })
-                .then(function(repo) {
-                    /* jshint -W106 */
-                    // This is the format expected by the github API, ignoring for now
-                    repo.pushed_at = +new Date(repo.pushed_at);
-                    /* jshint +W106 */
-                    self._repositoriesContents[githubUser.login].content.push(repo);
-                    self.cacheOwnerRepositories(githubUser);
-                    return repo;
+            var repository = application.service.createDataObject(GithubRepository);
+            repository.name = repositoryName;
+            Object.assign(repository, options);
+            return application.service.saveDataObject(repository)
+            // var repositoryCreationPromise;
+            // if (self._selectedOrganization.type === TYPE_USER) {
+            //     repositoryCreationPromise = githubApi.createUserRepository(repositoryName, options);
+            // } else {
+            //     repositoryCreationPromise = githubApi.createOrganizationRepository(self._selectedOrganization.login, repositoryName, options);
+            // }
+            // return repositoryCreationPromise
+                .then(function () {
+                    self._repositoriesContents[self._githubUser.login].content.push(repository);
+                    self.cacheOwnerRepositories(self._githubUser);
+                    return repository;
                 });
         }
     },
@@ -228,19 +166,12 @@ var RepositoriesController = Montage.specialize({
         value: function(owner, name, organization) {
             var self = this;
 
-            return this._githubUser
-                .then(function(user) {
-                    organization = organization || user;
-                    return self._githubApi;
-                })
+            organization = organization || this._githubUser;
+            return self._githubApi
                 .then(function(githubApi) {
                     return githubApi.forkRepositoryInOrganization(owner, name, organization);
                 })
                 .then(function(repo) {
-                    /* jshint -W106 */
-                    // This is the format expected by the github API, ignoring for now
-                    repo.pushed_at = +new Date(repo.pushed_at);
-                    /* jshint +W106 */
                     self._repositoriesContents[organization.login].content.push(repo);
                     self.cacheOwnerRepositories(organization);
                     return repo;
@@ -288,7 +219,8 @@ var RepositoriesController = Montage.specialize({
                     if (self.isUserSelected) {
                         self.ownedRepositories = self._repositoriesContents[organization.login].content;
                     }
-                });
+                })
+                .done();
             self.contentController = self._repositoriesContents[organization.login];
         }
     },
@@ -323,50 +255,36 @@ var RepositoriesController = Montage.specialize({
     },
 
     _loadOwnerRepositories: {
-        value: function(owner, page) {
+        value: function (owner) {
             var ownerName = owner.login;
             this._loadOwnerRepositoriesFromCache(owner);
-            if (page || typeof this._repositoriesContents[owner.login] === "undefined" || this._repositoriesContents[owner.login].content.length === 0) {
-                var self = this,
-                    perPage = 30;
+            if (typeof this._repositoriesContents[owner.login] === "undefined" || this._repositoriesContents[owner.login].content.length === 0) {
+                var self = this;
 
-                if (!page) {
-                    page = 1;
-                    self.processedRepositories = 0;
-                    self._repositoriesCount = 0;
+                self.processedRepositories = 0;
+                self._repositoriesCount = 0;
+
+                var options = {};
+                if (owner.constructor === GithubUser) {
+                    options.affiliation = "owner";
+                } else if (owner.constructor === ContributingUser) {
+                    options.affiliation = "collaborator";
+                } else {
+                    options.org = owner.login;
                 }
-                page = page || 1;
-
-                return self._githubApi
-                    .then(function (githubApi) {
-                        //jshint -W106
-                        var options = {page: page, per_page: perPage};
-                        //jshint +W106
-                        if (owner.type === TYPE_USER) {
-                            if (owner.login === LOGIN_MY_REPOS) {
-                                return githubApi.listOwnedRepositories(options);
-                            } else if (owner.login === LOGIN_CONTRIBUTING_ON) {
-                                return githubApi.listContributingRepositories(options);
-                            }
-                        } else {
-                            return githubApi.listOrganizationRepositories(ownerName, options);
-                        }
-                    })
-                    .then(function (repositories) {
-                        self.repositoriesCount += repositories.length;
-                        var filteringPromises = [];
-                        for (var i = 0, repositoriesCount = repositories.length; i < repositoriesCount; i++) {
-                            filteringPromises.push(self._filterValidRepositories(repositories[i], self._repositoriesContents[ownerName]));
-                        }
-                        if (repositories.length >= perPage) {
-                            return self._loadOwnerRepositories(owner, ++page);
-                        } else {
-                            return Promise.all(filteringPromises)
-                                .then(function() {
-                                    return false;
-                                });
-                        }
-                    });
+                return application.service.fetchData(GithubRepository, {
+                    parameters: options
+                }).then(function (repositories) {
+                    self.repositoriesCount += repositories.length;
+                    var filteringPromises = [];
+                    for (var i = 0, repositoriesCount = repositories.length; i < repositoriesCount; i++) {
+                        filteringPromises.push(self._filterValidRepositories(repositories[i], self._repositoriesContents[ownerName]));
+                    }
+                    return Promise.all(filteringPromises)
+                        .then(function() {
+                            return false;
+                        });
+                });
             } else {
                 return Promise.resolve(true);
             }
@@ -379,9 +297,6 @@ var RepositoriesController = Montage.specialize({
             return this._isRepositoryValid(repository)
                 .then(function (isRepositoryValid) {
                     if (isRepositoryValid) {
-                        //jshint -W106
-                        repository.pushed_at = +new Date(repository.pushed_at);
-                        //jshint +W106
                         targetRangeController.content.push(repository);
                     }
                     self._increaseProcessedRepositories();

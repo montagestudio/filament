@@ -117,7 +117,7 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
             if (owner && repo) {
                 url = API_URL + "/repos/" + owner + "/" + parameters.repo;
             } else if (org) {
-                url = API_URL + "/orgs/" + org;
+                url = API_URL + "/orgs/" + org + "/repos";
             } else {
                 url = API_URL + "/user/repos";
             }

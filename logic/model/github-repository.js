@@ -43,6 +43,12 @@ exports.GithubRepository = Montage.specialize({
             this.description = "";
             this.homepage = "";
         }
+    },
+
+    pushedAtInSeconds: {
+        get: function () {
+            return +new Date(this.pushedAt);
+        }
     }
 
 });
