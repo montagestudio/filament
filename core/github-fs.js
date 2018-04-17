@@ -12,6 +12,7 @@ var concat = function (arrays) {
 };
 
 module.exports = GithubFs;
+module.exports.GithubFs = GithubFs;
 
 function GithubFs(username, repository, accessToken) {
     this.username = username;
@@ -54,9 +55,13 @@ GithubFs.prototype.read = function(path, options) {
 
 GithubFs.prototype.readFromDefaultBranch = function(path) {
     return application.service.fetchData(GithubContents, {
-        owner: this.username,
-        repo: this.repository,
-        path: path
+        parameters: {
+            owner: this.username,
+            repo: this.repository,
+            path: path
+        }
+    }).then(function (contents) {
+        return contents.length && contents[0].body;
     });
 };
 

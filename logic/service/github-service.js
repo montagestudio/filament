@@ -5,7 +5,8 @@ var HttpService = require("montage/data/service/http-service").HttpService,
     Repository = require("data/model/github-repository.mjson").montageObject,
     Branch = require("data/model/github-branch.mjson").montageObject,
     GithubBlob = require("data/model/github-blob.mjson").montageObject,
-    Contents = require("data/model/github-contents.mjson").montageObject,
+    Contents = require("logic/model/github-contents").GithubContents,
+    ContentsDescriptor = require("data/model/github-contents.mjson").montageObject,
     Tree = require("data/model/github-tree.mjson").montageObject;
 
 var API_URL = "https://api.github.com";
@@ -54,7 +55,7 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
         value: function (headers, query) {
             var param = "";
             // jshint -W069
-            headers["Accept"] = "application/vnd.github.v3" + param + "+json";
+            headers["Accept"] = headers["Accept"] || "application/vnd.github.v3" + param + "+json";
             headers["Authorization"] = "token " + this.authorization[0].githubAuthorization.token;
             // jshint +W069
         }
@@ -74,7 +75,7 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
                     return this._fetchBranches(stream);
                 case GithubBlob:
                     return this._fetchBlob(stream);
-                case Contents:
+                case ContentsDescriptor:
                     return this._fetchContents(stream);
                 case Tree:
                     return this._fetchTree(stream);
@@ -174,13 +175,17 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
                 parameters = stream.query.criteria.parameters,
                 owner = parameters && parameters.owner,
                 repo = parameters && parameters.repo,
-                path = parameters && parameters.path;
+                path = parameters && parameters.path,
+                url;
             if (!owner || !repo || !path) {
                 return stream.dataError(new Error("owner, repo, path required"));
             }
-            return this.fetchHttpRawData(API_URL + "/repos/" + owner + "/" + repo + "/contents/" + path)
+            url = API_URL + ("/repos/" + owner + "/" + repo + "/contents/" + path).replace("//", "/");
+            return this.fetchHttpRawData(url, { "Accept": "application/vnd.github.v3.raw+json" }, undefined, [HttpService.DataType.TEXT])
                 .then(function (contents) {
                     self.addRawData(stream, [contents]);
+                }, Function.noop)
+                .then(function () {
                     self.rawDataDone(stream);
                 });
         }
@@ -217,6 +222,16 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
     _saveRepository: {
         value: function (record, context) {
             return this.fetchHttpRawData(API_URL + "/user/repos", undefined, JSON.stringify(record));
+        }
+    },
+
+    mapRawDataToObject: {
+        value: function (rawData, object) {
+            if (object.constructor === Contents) {
+                object.body = rawData;
+            } else {
+                return HttpService.prototype.mapRawDataToObject.apply(this, arguments);
+            }
         }
     }
 });
