@@ -1,8 +1,11 @@
 var HttpService = require("montage/data/service/http-service").HttpService,
     DataService = require("montage/data/service/data-service").DataService,
-    User = require("data/model/github-user.mjson").montageObject,
-    Organization = require("data/model/github-organization.mjson").montageObject,
-    Repository = require("data/model/github-repository.mjson").montageObject,
+    User = require("logic/model/github-user").GithubUser,
+    UserDescriptor = require("data/model/github-user.mjson").montageObject,
+    Organization = require("logic/model/github-organization").GithubOrganization,
+    OrganizationDescriptor = require("data/model/github-organization.mjson").montageObject,
+    Repository = require("logic/model/github-repository").GithubRepository,
+    RepositoryDescriptor = require("data/model/github-repository.mjson").montageObject,
     Branch = require("data/model/github-branch.mjson").montageObject,
     GithubBlob = require("data/model/github-blob.mjson").montageObject,
     Contents = require("logic/model/github-contents").GithubContents,
@@ -65,11 +68,11 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
         value: function (stream) {
             var type = stream.query.type;
             switch (type) {
-                case User:
+                case UserDescriptor:
                     return this._fetchUser(stream);
-                case Organization:
+                case OrganizationDescriptor:
                     return this._fetchOrganizations(stream);
-                case Repository:
+                case RepositoryDescriptor:
                     return this._fetchRepositories(stream);
                 case Branch:
                     return this._fetchBranches(stream);
@@ -113,13 +116,13 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
                 repo = parameters && parameters.repo,
                 org = parameters && parameters.org,
                 affiliation = parameters && parameters.affiliation,
-                url = API_URL + "/user/repos";
-            if (owner && repo) {
-                url = API_URL + "/repos/" + owner + "/" + parameters.repo;
+                url;
+            if (owner) {
+                url = API_URL + "/repos/" + owner + (repo ? "/" + repo : "");
             } else if (org) {
-                url = API_URL + "/orgs/" + org + "/repos";
+                url = API_URL + "/orgs/" + org + "/repos" + (repo ? "/" + repo : "");
             } else {
-                url = API_URL + "/user/repos";
+                url = API_URL + "/user/repos" + (repo ? "/" + repo : "");
             }
             url += "?";
             url += this._createQueryString({
@@ -221,7 +224,22 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
 
     _saveRepository: {
         value: function (record, context) {
-            return this.fetchHttpRawData(API_URL + "/user/repos", undefined, JSON.stringify(record));
+            var self = this,
+                postPromise;
+            switch (context.owner && context.owner.constructor) {
+                case User:
+                    postPromise = this.fetchHttpRawData(API_URL + "/user/repos", undefined, JSON.stringify(record));
+                    break;
+                case Organization:
+                    postPromise = this.fetchHttpRawData(API_URL + "/orgs/" + context.owner.login + "/repos", undefined, JSON.stringify(record));
+                    break;
+                default:
+                    throw new Error("Owner must be provided and must be either a User or Organization");
+            }
+            return postPromise
+                .then(function (data) {
+                    // TODO: I want to map this data back onto the data object, how?
+                });
         }
     },
 
@@ -229,8 +247,6 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
         value: function (rawData, object) {
             if (object.constructor === Contents) {
                 object.body = rawData;
-            } else {
-                return HttpService.prototype.mapRawDataToObject.apply(this, arguments);
             }
         }
     }

@@ -121,20 +121,33 @@ var RepositoriesController = Montage.specialize({
     createRepository: {
         value: function(repositoryName, options) {
             var self = this;
-
+            var organization = this._selectedOrganization;
             var repository = application.service.createDataObject(GithubRepository);
             repository.name = repositoryName;
             Object.assign(repository, options);
+            if (organization.constructor === GithubOrganization) {
+                repository.owner = organization;
+            } else {
+                repository.owner = this._githubUser;
+            }
             return application.service.saveDataObject(repository)
-            // var repositoryCreationPromise;
-            // if (self._selectedOrganization.type === TYPE_USER) {
-            //     repositoryCreationPromise = githubApi.createUserRepository(repositoryName, options);
-            // } else {
-            //     repositoryCreationPromise = githubApi.createOrganizationRepository(self._selectedOrganization.login, repositoryName, options);
-            // }
-            // return repositoryCreationPromise
                 .then(function () {
-                    self._repositoriesContents[self._githubUser.login].content.push(repository);
+                    // TODO: :(. I want saveDataObject to give me my updated data object back
+                    var parameters = {
+                        repo: repositoryName
+                    };
+                    if (organization.constructor === GithubOrganization) {
+                        parameters.org = organization.login;
+                    } else {
+                        parameters.owner = self._githubUser.login;
+                    }
+                    return application.service.fetchData(GithubRepository, {
+                        parameters: parameters
+                    });
+                })
+                .then(function (repositories) {
+                    var repository = repositories[0];
+                    self._repositoriesContents[repository.owner.login].content.push(repository);
                     return repository;
                 });
         }
