@@ -1,30 +1,11 @@
 var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
     track = require("track"),
-    FilamentService = require("core/filament-service").FilamentService,
-    EnvironmentBridge = require("core/environment-bridge").EnvironmentBridge,
     request = require("core/request");
 
 var LICENSES = require("./licenses.html").content;
 
 exports.ApplicationDelegate = Montage.specialize({
-
-    environmentBridge: {
-        get: function () {
-            if (!this._environmentBridge) {
-                this._environmentBridge = new EnvironmentBridge("filament-backend", new FilamentService());
-                this._environmentBridge._applicationDelegate = this;
-                if (typeof this._environmentBridge.setEnableFileDrop === "function") {
-                    this._environmentBridge.setEnableFileDrop(true);
-                }
-            }
-            return this._environmentBridge;
-        }
-    },
-
-    isProjectOpen: {
-        value: null
-    },
 
     application: {
         value: null

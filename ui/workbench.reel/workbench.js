@@ -2,6 +2,7 @@ var Component = require("montage/ui/component").Component,
     Promise = require("montage/core/promise").Promise,
     track = require("track"),
     application = require("montage/core/application").application,
+    EnvironmentBridge = require("core/environment-bridge").EnvironmentBridge,
     ViewController = require("core/view-controller").ViewController,
     PreviewController = require("core/preview-controller").PreviewController,
     ExtensionController = require("core/extension-controller").ExtensionController,
@@ -61,7 +62,10 @@ exports.Workbench = Component.specialize({
                 self.defineBinding("nextTarget", {"<-": "projectController.currentEditor", source: self});
             }
 
-            this.environmentBridge = this.application.delegate.environmentBridge;
+            this.environmentBridge = new EnvironmentBridge(this.application, this);
+            if (typeof this.environmentBridge.setEnableFileDrop === "function") {
+                this.environmentBridge.setEnableFileDrop(true);
+            }
             return this.environmentBridge.userController.getUser()
                 .then(function (user) {
                     track.setUsername(user.login);

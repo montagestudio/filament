@@ -11,15 +11,6 @@ exports.PreviewController = Target.specialize({
 
             this._environmentBridge = environmentBridge;
 
-            // TODO replace all this with propertyPath dependencies
-            this.addBeforePathChangeListener("_applicationDelegate.environmentBridge", function () {
-                self.dispatchBeforeOwnPropertyChange("environmentBridge", self.environmentBridge);
-            }, null, true);
-
-            this.addPathChangeListener("_applicationDelegate.environmentBridge", function () {
-                self.dispatchOwnPropertyChange("environmentBridge", self.environmentBridge);
-            });
-
             this.addBeforePathChangeListener("environmentBridge.previewUrl", function () {
                 self.dispatchBeforeOwnPropertyChange("previewUrl", self.previewUrl);
             }, null, true);

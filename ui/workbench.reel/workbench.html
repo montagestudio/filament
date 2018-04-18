@@ -59,8 +59,8 @@
                     "element": {"#": "unknownRepositoryPanel"}
                 },
                 "bindings": {
-                    "owner": {"<-": "@application.delegate.environmentBridge.repositoryController.owner"},
-                    "repo": {"<-": "@application.delegate.environmentBridge.repositoryController.repo"}
+                    "owner": {"<-": "@owner.environmentBridge.repositoryController.owner"},
+                    "repo": {"<-": "@owner.environmentBridge.repositoryController.repo"}
                 },
                 "listeners": [
                     {
@@ -76,8 +76,8 @@
                     "element": {"#": "initializeRepoPanel"}
                 },
                 "bindings": {
-                    "owner": {"<-": "@application.delegate.environmentBridge.repositoryController.owner"},
-                    "repo": {"<-": "@application.delegate.environmentBridge.repositoryController.repo"}
+                    "owner": {"<-": "@owner.environmentBridge.repositoryController.owner"},
+                    "repo": {"<-": "@owner.environmentBridge.repositoryController.repo"}
                 },
                 "listeners": [
                     {
@@ -93,8 +93,8 @@
                     "element": {"#": "mergePanel"}
                 },
                 "bindings": {
-                    "owner": {"<-": "@application.delegate.environmentBridge.repositoryController.owner"},
-                    "repo": {"<-": "@application.delegate.environmentBridge.repositoryController.repo"}
+                    "owner": {"<-": "@owner.environmentBridge.repositoryController.owner"},
+                    "repo": {"<-": "@owner.environmentBridge.repositoryController.repo"}
                 }
             },
 
@@ -104,8 +104,8 @@
                     "element": {"#": "mergeConflictPanel"}
                 },
                 "bindings": {
-                    "owner": {"<-": "@application.delegate.environmentBridge.repositoryController.owner"},
-                    "repo": {"<-": "@application.delegate.environmentBridge.repositoryController.repo"}
+                    "owner": {"<-": "@owner.environmentBridge.repositoryController.owner"},
+                    "repo": {"<-": "@owner.environmentBridge.repositoryController.repo"}
                 }
             },
 
