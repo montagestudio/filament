@@ -31,18 +31,15 @@ exports.EnvironmentBridge = Target.specialize({
     },
 
     init: {
-        value: function (name, frontendService) {
-            this._frontendService = frontendService;
+        value: function (application, workbench) {
+            this.application = application;
+            this.workbench = workbench;
             return this;
         }
     },
 
     MenuItem: {
         value: MenuItem
-    },
-
-    _frontendService: {
-        value: null
     },
 
     progressPanel: {
@@ -82,7 +79,7 @@ exports.EnvironmentBridge = Target.specialize({
                 }).done();
 
                 self.dispatchBeforeOwnPropertyChange("backend", self._backend);
-                self._backend = Connection(connection, this._frontendService, {
+                self._backend = Connection(connection, this, {
                     capacity: 4096,
                     onmessagelost: function (message) {
                         window.console.warn("message to unknown promise", message);
@@ -311,6 +308,25 @@ exports.EnvironmentBridge = Target.specialize({
     logoutUrl: {
         get: function () {
             return "/logout";
+        }
+    },
+
+    showNotification: {
+        value: function(message) {
+            // TODO: this is not an async activity but since we currently lack
+            // a proper info bar we'll use this for now.
+            this.application.dispatchEventNamed("asyncActivity", true, false, {
+                promise: Promise.resolve(),
+                title: message
+            });
+        }
+    },
+
+    inspectComponent: {
+        value: function(moduleId, label) {
+            var packageUrl = this.workbench.projectController.packageUrl;
+
+            this.application.dispatchEventNamed("openUrl", true, true, packageUrl + moduleId);
         }
     },
 
