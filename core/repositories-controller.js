@@ -1,4 +1,3 @@
-/* global localStorage */
 var Montage = require("montage/core/core").Montage,
     Promise = require("montage/core/promise").Promise,
     application = require("montage/core/application").application,
@@ -8,28 +7,17 @@ var Montage = require("montage/core/core").Montage,
     GithubOrganization = require("logic/model/github-organization").GithubOrganization,
     GithubRepository = require("logic/model/github-repository").GithubRepository;
 
-var SORT_PATH = "-pushedAtInSeconds",
-    TYPE_USER = 'USER',
-    LOGIN_MY_REPOS = 'my_repos',
-    LOGIN_CONTRIBUTING_ON = 'contributing_on',
-    LOCAL_STORAGE_INDEX = 'cachedRepositories',
-    LOCAL_STORAGE_PREFIX = 'cachedRepositories_',
-    LOCAL_STORAGE_REPOSITORIES_COUNT_KEY = "cachedProcessedRepositoriesCount";
+var SORT_PATH = "-pushedAtInSeconds";
 
 var ContributingUser = Montage.specialize({
     constructor: {
         value: function ContributingUser() {
-            this.displayedName = "Contributing on";
-            this.login = LOGIN_CONTRIBUTING_ON;
+            this.login = "Contributing on";
         }
     }
 });
 
 var RepositoriesController = Montage.specialize({
-
-    isUserSelected: {
-        value: null
-    },
 
     organizationsController: {
         value: null
@@ -99,7 +87,6 @@ var RepositoriesController = Montage.specialize({
                 .then(function (users) {
                     var user = users[0];
                     self._githubUser = user;
-                    // user.canCreateRepo = true;
                     self.organizationsController.add(user);
                     self.organizationsController.select(user);
 
@@ -148,7 +135,6 @@ var RepositoriesController = Montage.specialize({
             // return repositoryCreationPromise
                 .then(function () {
                     self._repositoriesContents[self._githubUser.login].content.push(repository);
-                    self.cacheOwnerRepositories(self._githubUser);
                     return repository;
                 });
         }
@@ -173,7 +159,6 @@ var RepositoriesController = Montage.specialize({
                 })
                 .then(function(repo) {
                     self._repositoriesContents[organization.login].content.push(repo);
-                    self.cacheOwnerRepositories(organization);
                     return repo;
                 });
         }
@@ -197,12 +182,6 @@ var RepositoriesController = Montage.specialize({
         }
     },
 
-    _increaseProcessedRepositories: {
-        value: function() {
-            this.processedRepositories++;
-        }
-    },
-
     selectOrganization: {
         value: function(organization) {
             var self = this;
@@ -210,98 +189,50 @@ var RepositoriesController = Montage.specialize({
             if (typeof self._repositoriesContents[organization.login] === "undefined") {
                 self._repositoriesContents[organization.login] = new RangeController().initWithContent([]);
                 self._repositoriesContents[organization.login].sortPath = SORT_PATH;
+                self._loadValidRepositoriesForOwner(organization).done();
             }
-            self._loadOwnerRepositories(organization)
-                .then(function(isFromCache) {
-                    if (!isFromCache) {
-                        self.cacheOwnerRepositories(organization);
-                    }
-                    if (self.isUserSelected) {
-                        self.ownedRepositories = self._repositoriesContents[organization.login].content;
-                    }
-                })
-                .done();
             self.contentController = self._repositoriesContents[organization.login];
         }
     },
 
     updateRepositories: {
         value: function() {
-            var self = this,
-                owner = this._selectedOrganization;
-            localStorage.removeItem(LOCAL_STORAGE_PREFIX + owner.login);
-            if (this._repositoriesContents.hasOwnProperty(owner.login)) {
-                this._repositoriesContents[owner.login].content.clear();
-            } else {
-                this._repositoriesContents[owner.login] = new RangeController().initWithContent([]);
-                this._repositoriesContents[owner.login].sortPath = SORT_PATH;
-            }
-            return this._loadOwnerRepositories(owner)
-                .then(function() {
-                    self.cacheOwnerRepositories(owner);
-                });
+            var owner = this._selectedOrganization;
+            this._repositoriesContents[owner.login].content.clear();
+            return this._loadValidRepositoriesForOwner(owner);
         }
     },
 
-    _loadOwnerRepositoriesFromCache: {
-        value: function(owner) {
-            var cachedData = localStorage.getItem(LOCAL_STORAGE_PREFIX + owner.login);
-            if (cachedData) {
-                var parsedData = JSON.parse(cachedData);
-                this._repositoriesContents[owner.login] = new RangeController().initWithContent(parsedData);
-                this._repositoriesContents[owner.login].sortPath = SORT_PATH;
-            }
-        }
-    },
-
-    _loadOwnerRepositories: {
+    _loadValidRepositoriesForOwner: {
         value: function (owner) {
-            var ownerName = owner.login;
-            this._loadOwnerRepositoriesFromCache(owner);
-            if (typeof this._repositoriesContents[owner.login] === "undefined" || this._repositoriesContents[owner.login].content.length === 0) {
-                var self = this;
+            var self = this;
 
-                self.processedRepositories = 0;
-                self._repositoriesCount = 0;
+            self.processedRepositories = 0;
+            self._repositoriesCount = 0;
 
-                var options = {};
-                if (owner.constructor === GithubUser) {
-                    options.affiliation = "owner";
-                } else if (owner.constructor === ContributingUser) {
-                    options.affiliation = "collaborator";
-                } else {
-                    options.org = owner.login;
-                }
-                return application.service.fetchData(GithubRepository, {
-                    parameters: options
-                }).then(function (repositories) {
-                    self.repositoriesCount += repositories.length;
-                    var filteringPromises = [];
-                    for (var i = 0, repositoriesCount = repositories.length; i < repositoriesCount; i++) {
-                        filteringPromises.push(self._filterValidRepositories(repositories[i], self._repositoriesContents[ownerName]));
-                    }
-                    return Promise.all(filteringPromises)
-                        .then(function() {
-                            return false;
+            var parameters = {};
+            if (owner.constructor === GithubUser) {
+                parameters.affiliation = "owner";
+            } else if (owner.constructor === ContributingUser) {
+                parameters.affiliation = "collaborator";
+            } else {
+                parameters.org = owner.login;
+            }
+            return application.service.fetchData(GithubRepository, {
+                parameters: parameters
+            }).then(function (repositories) {
+                self.repositoriesCount += repositories.length;
+                var filterRepositories = repositories.map(function (repository) {
+                    return self._isRepositoryValid(repository)
+                        .then(function (isValid) {
+                            if (isValid) {
+                                self._repositoriesContents[owner.login].add(repository);
+                            }
+                            ++self.processedRepositories;
                         });
                 });
-            } else {
-                return Promise.resolve(true);
-            }
-        }
-    },
-
-    _filterValidRepositories: {
-        value: function (repository, targetRangeController) {
-            var self = this;
-            return this._isRepositoryValid(repository)
-                .then(function (isRepositoryValid) {
-                    if (isRepositoryValid) {
-                        targetRangeController.content.push(repository);
-                    }
-                    self._increaseProcessedRepositories();
-                    return isRepositoryValid;
-                });
+                return Promise.all(filterRepositories);
+            });
         }
     },
 
@@ -321,47 +252,16 @@ var RepositoriesController = Montage.specialize({
                 .then(function(isValid) {
                     isRepositoryValid = isValid;
                     if (repo.fork) {
-                        return repositoryController.getParent();
+                        return repositoryController.getParent()
+                            .then(function (parent) {
+                                if (parent) {
+                                    repo.parent = parent;
+                                }
+                                return isValid;
+                            });
                     }
-                    return Promise.resolve();
-                })
-                .then(function(parent) {
-                    if (parent) {
-                        repo.parent = parent;
-                    }
-                    return isRepositoryValid;
+                    return isValid;
                 });
-        }
-    },
-
-    clearCachedRepositories: {
-        value: function () {
-            this.repositoriesCount = 0;
-            localStorage.removeItem(LOCAL_STORAGE_REPOSITORIES_COUNT_KEY);
-
-            this.processedRepositories = 0;
-            var cachedOrganizationsValue = localStorage.getItem(LOCAL_STORAGE_INDEX) || "[]",
-                cachedOrganizations = JSON.parse(cachedOrganizationsValue);
-            for (var i = 0, organizationsCount = cachedOrganizations.length; i < organizationsCount; i++) {
-                localStorage.removeItem(cachedOrganizations[i]);
-            }
-            localStorage.removeItem(LOCAL_STORAGE_INDEX);
-
-            return Promise.resolve();
-        }
-    },
-
-    cacheOwnerRepositories: {
-        value: function (owner) {
-            if (this._repositoriesContents.hasOwnProperty(owner.login)) {
-                var cache = this._repositoriesContents[owner.login].content;
-                localStorage.setItem(LOCAL_STORAGE_PREFIX + owner.login, JSON.stringify(cache));
-                var cachedOrganizationsValue = localStorage.getItem(LOCAL_STORAGE_INDEX) || "[]",
-                    cachedOrganizations = JSON.parse(cachedOrganizationsValue);
-
-                cachedOrganizations.push(LOCAL_STORAGE_PREFIX + owner.login);
-                localStorage.setItem(LOCAL_STORAGE_INDEX, JSON.stringify(cachedOrganizations));
-            }
         }
     }
 });
