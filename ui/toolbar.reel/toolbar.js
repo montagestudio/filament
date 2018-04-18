@@ -67,7 +67,7 @@ exports.Toolbar = Component.specialize(/** @lends Toolbar# */ {
 
     handleHomeButtonAction: {
         value: function () {
-            this.application.delegate.changeLocation("/");
+            this.application.router.location = "/";
         }
     },
 

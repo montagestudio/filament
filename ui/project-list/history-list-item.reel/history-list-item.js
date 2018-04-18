@@ -9,7 +9,7 @@ exports.HistoryListItem = Component.specialize({
     handleDocumentNameAction: {
         value: function () {
             var path = ["", this.repository.owner.login, this.repository.name].join("/");
-            this.application.delegate.changeLocation(path);
+            this.application.router.location = path;
         }
     }
 });

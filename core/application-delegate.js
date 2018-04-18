@@ -56,13 +56,11 @@ exports.ApplicationDelegate = Montage.specialize({
                 }
             };
 
-            window.addEventListener("popstate", this.handleLocationChange.bind(this));
 
             Promise.all([self._deferredApplication.promise, self._deferredMainComponent.promise])
                 .spread(function (app, mainComponent) {
                     self.application = app;
                     self.mainComponent = mainComponent;
-                    self.handleLocationChange();
                 });
         }
     },
@@ -106,44 +104,6 @@ exports.ApplicationDelegate = Montage.specialize({
                 req.headers["x-access-token"] = childService.authorization[0].token;
             }
             return request.requestOk(req);
-        }
-    },
-
-    handleLocationChange: {
-        value: function () {
-            var self = this;
-            var newToken = this._getHashParam(window.location, "token");
-            if (newToken) {
-                this.accessToken = newToken;
-                // Get rid of the hash from the location
-                window.history.replaceState({}, window.location.href.split("#")[0], window.location.href.split("#")[0]);
-            }
-            var pathname = window.location.pathname;
-
-            if (pathname.split("/").length === 3) {
-                // --> /owner/repo
-                self.isProjectOpen = true;
-            } else {
-                // --> /
-                self.isProjectOpen = false;
-            }
-        }
-    },
-
-    changeLocation: {
-        value: function (location) {
-            window.history.pushState({}, location, location);
-            this.handleLocationChange();
-        }
-    },
-
-    _getHashParam: {
-        value: function (url, name) {
-            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-            var regex = new RegExp('[#&?]' + name + '=([^;]*)'),
-                results = regex.exec(url.search || url.hash);
-
-            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
     },
 

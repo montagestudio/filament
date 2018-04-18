@@ -16,8 +16,10 @@
             "prototype": "montage/ui/substitution.reel",
             "properties": {
                 "element": {"#": "routeSubstitution"},
-                "appDelegate": {"<-": "@owner.application.delegate"},
-                "switchValue": {"<-": "@owner.isAuthenticated ? (appDelegate.isProjectOpen ? 'workbench' : 'projectList') : 'auth'"}
+                "owner": {"@": "owner"}
+            },
+            "bindings": {
+                "switchValue": {"<-": "owner.isAuthenticated ? (owner.isProjectOpen ? 'workbench' : 'projectList') : 'auth'"}
             }
         },
 

@@ -13,13 +13,31 @@ exports.Main = Component.specialize(/** @lends Main# */ {
     constructor: {
         value: function Main() {
             this.super();
+
+            // Montage Data
             DataService.authorizationManager.delegate = this;
             this._initializeServices();
+
+            // Routing
+            this.application.router = this;
+            window.addEventListener("popstate", this.handleLocationChange.bind(this));
+            this.location = window.location.href;
         }
     },
 
     isAuthenticated: {
         value: false
+    },
+
+    isProjectOpen: {
+        value: undefined
+    },
+
+    location: {
+        set: function (location) {
+            window.history.pushState({}, location, location);
+            this.handleLocationChange();
+        }
     },
 
     _initializeServices: {
@@ -58,6 +76,19 @@ exports.Main = Component.specialize(/** @lends Main# */ {
             // - There is no way to send arbitrary response headers over a WS handshake
             // So we resort to setting a local cookie, which does get sent with WS connections
             document.cookie = "token=" + authorization.token + "; domain=." + window.location.hostname + ";";
+        }
+    },
+
+    handleLocationChange: {
+        value: function () {
+            var pathname = window.location.pathname;
+            if (pathname.split("/").length === 3) {
+                // --> /owner/repo
+                this.isProjectOpen = true;
+            } else {
+                // --> /
+                this.isProjectOpen = false;
+            }
         }
     }
 });
