@@ -29,7 +29,8 @@ exports.GithubAuthorizationPanel = AuthorizationPanel.specialize({
                 this.needsTutorial = needsTutorial;
             }
             this._getCredentials().then(function (credentials) {
-                 return self.service.authorize(credentials);
+                self.authorization = credentials;
+                return self.service.authorize(credentials);
             }).then(function (authorization) {
                 self.authorizationManagerPanel.approveAuthorization(authorization, self);
             });
@@ -50,7 +51,8 @@ exports.GithubAuthorizationPanel = AuthorizationPanel.specialize({
                     });
                 });
             }).then(function (credentials) {
-                 return self.service.authorize(credentials);
+                self.authorization = credentials;
+                return self.service.authorize(credentials);
             }).then(function (authorization) {
                 self.authorizationManagerPanel.approveAuthorization(authorization, self);
             }).catch(function (error) {

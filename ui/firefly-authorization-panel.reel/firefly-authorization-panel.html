@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="firefly-authorization-panel.css">
+    <script type="text/montage-serialization">
+    {
+        "localizer": {
+            "object": "montage/core/localizer[defaultLocalizer]"
+        },
+        "owner": {
+            "properties": {
+                "element": {"#": "owner"}
+            }
+        },
+        "beta": {
+            "prototype": "ui/widgets/beta.reel",
+            "properties": {
+                "element": {"#": "beta"}
+            }
+        },
+        "githubAuthorizationSlot": {
+            "prototype": "montage/ui/slot.reel",
+            "properties": {
+                "element": {"#": "githubAuthorizationSlot"}
+            },
+            "bindings": {
+                "content": {"<-": "@owner.githubAuthorizationPanel"}
+            }
+        },
+        "versionText": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "versionText"}
+            },
+            "localizations": {
+                "value": {
+                    "key": "version",
+                    "data": {
+                        "number": {"<-": "@owner.version"}
+                    }
+                }
+            }
+        },
+        "copyright": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "copyright"}
+            },
+            "localizations": {
+                "value": {"key": "copyright"}
+            }
+        }
+    }
+    </script>
+</head>
+<body>
+    <div data-montage-id="owner" class="Login">
+        <aside class="Aside Aside--login">
+            <div class="Aside-content">
+                <div data-montage-id="beta"></div>
+
+                <section class="Aside-section">
+                    <img class="Aside-logo" src="../../../assets/img/logo.svg" alt="Montage Studio">
+                </section>
+
+                <section class="Aside-section">
+                    <h1 class="Aside-headline">Develop. Run. Share.</h1>
+                    <p class="Aside-description">Build MontageJS applications in the cloud; store your code on GitHub.</p>
+                </section>
+
+                <section class="Aside-section">
+                    <div data-montage-id="githubAuthorizationSlot"></div>
+                    <p class="Aside-info" style="display: none;">
+                        <span data-montage-id="versionText" class="Aside-version"></span>
+                        <span class="Aside-support">(Optimized for Google Chrome)</span>
+                    </p>
+                </section>
+
+                <section class="Aside-section">
+                    <p>Need help? See our <a href="http://docs.montagestudio.com/montage-studio/tutorial-first-steps.html" target="_blank">First Steps</a> guide</p>
+                    <p data-montage-id="copyright" class="Aside-meta"></p>
+                </section>
+            </div>
+        </aside>
+
+        <video class="Attract" autoplay loop poster="/assets/videos/3d-attract.jpg">
+            <source src="/assets/videos/3d-attract.mp4" type="video/mp4">
+            <source src="/assets/videos/3d-attract.webm" type="video/webm">
+            <source src="/assets/videos/3d-attract.ogg" type="video/ogg">
+        </video>
+    </div>
+</body>
+</html>
