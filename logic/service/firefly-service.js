@@ -23,7 +23,7 @@ exports.FireflyService = HttpService.specialize(/** @lends FireflyService.protot
     },
 
     authorizationServices: {
-        value: ["./github-authorization-service"]
+        value: ["./firefly-authorization-service"]
     },
 
     authorizationManagerWillAuthorizeWithService: {
@@ -37,7 +37,7 @@ exports.FireflyService = HttpService.specialize(/** @lends FireflyService.protot
             var authorization = this.authorization;
 
             if (authorization && authorization.length) {
-                headers["x-access-token"] = authorization[0].token;
+                headers["x-access-token"] = authorization[0];
             }
         }
     },

@@ -59,7 +59,7 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
             var param = "";
             // jshint -W069
             headers["Accept"] = headers["Accept"] || "application/vnd.github.v3" + param + "+json";
-            headers["Authorization"] = "token " + this.authorization[0].githubAuthorization.token;
+            headers["Authorization"] = "token " + this.authorization[0].token;
             // jshint +W069
         }
     },

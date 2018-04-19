@@ -14,17 +14,13 @@ exports.GithubAuthorizationService = RawDataService.specialize({
 
     authorize: {
         value: function (panelResult) {
-            var self = this;
-            return new Promise(function (resolve, reject) {
-                if (panelResult) {
-                    self.authorization = self._mapRawDataToGithubAuthorization(panelResult);
-                    resolve(self.authorization);
-                } else {
-                    resolve(null);
-                }
-            });
+            if (!panelResult) {
+                return Promise.resolve(null);
+            }
+            this.authorization = this._mapRawDataToGithubAuthorization(panelResult);
+            return Promise.resolve(this.authorization);
         }
-     },
+    },
 
      _mapRawDataToGithubAuthorization: {
         value: function (rawData) {
