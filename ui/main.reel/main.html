@@ -19,7 +19,7 @@
                 "owner": {"@": "owner"}
             },
             "bindings": {
-                "switchValue": {"<-": "owner.isAuthenticated ? (owner.isProjectOpen ? 'workbench' : 'projectList') : 'auth'"}
+                "switchValue": {"<-": "application.delegate.isAuthenticated ? (owner.isProjectOpen ? 'workbench' : 'projectList') : 'auth'"}
             }
         },
 
@@ -29,7 +29,8 @@
                 "element": {"#": "auth"}
             },
             "bindings": {
-                "content": {"<-": "@owner.authorizationPanel"}
+                "content": {"<-": "application.delegate.fireflyAuthorizationPanel"},
+                "content.githubAuthorizationPanel": {"<-": "application.delegate.githubAuthorizationPanel"}
             }
         },
 

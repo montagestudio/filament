@@ -1,7 +1,11 @@
 var Montage = require("montage/core/core").Montage,
+    DataService = require("montage/data/service/data-service").DataService,
     Promise = require("montage/core/promise").Promise,
     track = require("track"),
-    request = require("core/request");
+    request = require("core/request"),
+    applicationService = require("data/montage-data.mjson").montageObject,
+    FireflyAuthorizationPanel = require("ui/firefly-authorization-panel.reel/firefly-authorization-panel").FireflyAuthorizationPanel,
+    GithubAuthorizationPanel = require("ui/github-authorization-panel.reel/github-authorization-panel").GithubAuthorizationPanel;
 
 var LICENSES = require("./licenses.html").content;
 
@@ -9,6 +13,10 @@ exports.ApplicationDelegate = Montage.specialize({
 
     application: {
         value: null
+    },
+
+    isAuthenticated: {
+        value: false
     },
 
     _deferredApplication: {
@@ -56,14 +64,42 @@ exports.ApplicationDelegate = Montage.specialize({
                 }
             };
 
-
-            Promise.all([self._deferredApplication.promise, self._deferredMainComponent.promise])
-                .spread(function (app, mainComponent) {
+            // Montage Data
+            DataService.authorizationManager.delegate = this;
+            this._deferredApplication.promise
+                .then(function (app) {
                     self.application = app;
-                    self.mainComponent = mainComponent;
+                    self._initializeServices();
                 });
         }
     },
+
+    _initializeServices: {
+        value: function () {
+            this.application.service = applicationService;
+        }
+    },
+
+    authorizationManagerWillInstantiateAuthorizationPanelForService: {
+        value: function(authorizationManager, authorizationPanel, authorizationService) {
+            this.isAuthenticationLoading = true;
+            var panel = new authorizationPanel();
+            if (authorizationPanel === FireflyAuthorizationPanel) {
+                this.fireflyAuthorizationPanel = panel;
+            } else if (authorizationPanel === GithubAuthorizationPanel) {
+                this.githubAuthorizationPanel = panel;
+            }
+            return panel;
+        }
+    },
+
+    authorizationManagerDidAuthorizeService: {
+        value: function(authorizationManager, dataService) {
+            this.isAuthenticated = true;
+            this.isAuthenticationLoading = false;
+        }
+    },
+
 
     handleComponentLoaded: {
         value: function (evt) {

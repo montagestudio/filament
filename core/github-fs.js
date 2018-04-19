@@ -230,6 +230,7 @@ GithubFs.prototype._getBranchTree = function() {
                 repo: repo
             }
         }).then(function (repository) {
+            debugger;
             application.service.fetchData(GithubBranch, {
                 parameters: {
                     owner: user,
