@@ -15,6 +15,20 @@ exports.GithubAuthorizationPanel = AuthorizationPanel.specialize({
         value: true
     },
 
+    credentials: {
+        get: function () {
+            var credentials = localStorage.getItem("github-credentials");
+            return credentials ? JSON.parse(credentials) : null;
+        },
+        set: function (credentials) {
+            if (credentials) {
+                localStorage.setItem("github-credentials", JSON.stringify(credentials));
+            } else {
+                localStorage.removeItem("github-credentials");
+            }
+        }
+    },
+
     enterDocument: {
         value: function (firstTime) {
             var self = this;
@@ -28,43 +42,56 @@ exports.GithubAuthorizationPanel = AuthorizationPanel.specialize({
 
                 this.needsTutorial = needsTutorial;
             }
-            this._getCredentials().then(function (credentials) {
-                self.authorization = credentials;
-                return self.service.authorize(credentials);
-            }).then(function (authorization) {
-                self.authorizationManagerPanel.approveAuthorization(authorization, self);
-            });
+            var credentials = this.credentials;
+            if (credentials) {
+                this.authorization = credentials;
+                this.service.authorize(credentials)
+                    .then(function (authorization) {
+                        self.authorizationManagerPanel.approveAuthorization(authorization, self);
+                    })
+                    .done();
+            }
         }
     },
 
     handleLoginButtonAction: {
         value: function(event) {
             var self = this;
-            self._getCredentials().catch(function () {
-                return self._openPopup("/auth/github").then(function (popup) {
-                    return self._pollForCredentials(popup).then(function (credentials) {
-                        return self._setCredentials(credentials);
-                    }).finally(function () {
-                        if (typeof popup.close === 'function') {
-                            popup.close();
-                        }
-                    });
-                });
-            }).then(function (credentials) {
-                self.authorization = credentials;
-                return self.service.authorize(credentials);
-            }).then(function (authorization) {
-                self.authorizationManagerPanel.approveAuthorization(authorization, self);
-            }).catch(function (error) {
-                console.error(error);
-                self.authorizationManagerPanel.cancelAuthorization();
-            });
+            Promise.resolve(this.credentials)
+                .then(function (credentials) {
+                    if (credentials) {
+                        return credentials;
+                    } else {
+                        var popup = self._openPopup("/auth/github");
+                        return self._pollForCredentials(popup)
+                            .then(function (credentials) {
+                                self.credentials = credentials;
+                                return credentials;
+                            }).finally(function () {
+                                if (typeof popup.close === 'function') {
+                                    popup.close();
+                                }
+                            });
+                    }
+                })
+                .then(function (credentials) {
+                    self.authorization = credentials;
+                    return self.service.authorize(credentials);
+                })
+                .then(function (authorization) {
+                    self.authorizationManagerPanel.approveAuthorization(authorization, self);
+                })
+                .catch(function (error) {
+                    console.error(error);
+                    self.authorizationManagerPanel.cancelAuthorization();
+                })
+                .done();
         }
     },
 
     logout: {
         value: function() {
-            this._setCredentials("");
+            this.credentials = null;
             this.authorizationManagerPanel.cancelAuthorization();
         }
     },
@@ -123,21 +150,15 @@ exports.GithubAuthorizationPanel = AuthorizationPanel.specialize({
 
     _openPopup: {
         value: function (url, options) {
-            var self = this;
-            return new Promise(function (resolve, reject) {
+            var popupOptions = this._stringifyOptions(this._prepareOptions(options)),
+                popupName = 'authorization-panel',
+                popupWindow = window.open(url, popupName, popupOptions);
 
-                var popupWindow,
-                    popupOptions = self._stringifyOptions(self._prepareOptions(options)),
-                    popupName = 'authorization-panel';
-
-                 popupWindow = window.open(url, popupName, popupOptions);
-
-                 if (popupWindow) {
-                    resolve(popupWindow);
-                 } else {
-                    reject(new Error('Unable to open popup'));
-                 }
-            });
+            if (popupWindow) {
+                return popupWindow;
+            } else {
+                throw new Error('Unable to open popup');
+            }
         }
     },
 
@@ -188,32 +209,6 @@ exports.GithubAuthorizationPanel = AuthorizationPanel.specialize({
                 results = regex.exec(url.search || url.hash);
 
             return results === null ? '' : JSON.parse(decodeURIComponent(results[1].replace(/\+/g, ' ')));
-        }
-    },
-
-    _getCredentials: {
-        value: function () {
-            return new Promise(function (resolve, reject) {
-                var credentials = localStorage.getItem('github-credentials', credentials);
-                if (credentials) {
-                    resolve(JSON.parse(credentials));
-                } else {
-                    reject(new Error('No credentials'));
-                }
-            });
-        }
-    },
-
-    _setCredentials: {
-        value: function (credentials) {
-            return new Promise(function (resolve, reject) {
-                if (!credentials) {
-                    reject(new Error('No credentials'));
-                } else {
-                    localStorage.setItem('github-credentials', JSON.stringify(credentials));
-                    resolve(credentials);
-                }
-            });
         }
     }
 });

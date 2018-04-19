@@ -234,13 +234,7 @@ exports.ProjectList = Component.specialize({
 
     handleLogoutButtonAction: {
         value: function () {
-            var self = this;
-            this.repositoriesController.clearCachedRepositories()
-                .finally(function () {
-                    self.application.delegate.accessToken = undefined;
-                    self.application.delegate.handleLocationChange();
-                })
-                .done();
+            this.application.delegate.logout();
         }
     },
 

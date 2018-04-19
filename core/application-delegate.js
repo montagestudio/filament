@@ -100,6 +100,14 @@ exports.ApplicationDelegate = Montage.specialize({
         }
     },
 
+    logout: {
+        value: function () {
+            if (this.githubAuthorizationPanel) {
+                this.githubAuthorizationPanel.logout();
+            }
+            this.isAuthenticated = false;
+        }
+    },
 
     handleComponentLoaded: {
         value: function (evt) {
