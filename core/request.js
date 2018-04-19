@@ -60,7 +60,7 @@ exports.request = function (request) {
         xhr.overrideMimeType(request.overrideMimeType);
     }
 
-    xhr.send(request.body);
+    xhr.send(typeof request.body === "string" ? request.body : JSON.stringify(request.body));
 
     return done.promise;
 };

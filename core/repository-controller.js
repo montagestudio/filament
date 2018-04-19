@@ -205,7 +205,7 @@ exports.RepositoryController = Montage.specialize({
                 method: "POST",
                 url: "/" + this.owner + "/" + this.repo + "/components",
                 subdomain: "api",
-                data: {
+                body: {
                     "name": name,
                     "packageHome": packageHome,
                     "destination": destination
@@ -220,7 +220,7 @@ exports.RepositoryController = Montage.specialize({
                 method: "POST",
                 url: "/" + this.owner + "/" + this.repo + "/modules",
                 subdomain: "api",
-                data: {
+                body: {
                     "name": name,
                     "extendsModuleId": extendsModuleId,
                     "extendsName": extendsName,
@@ -237,7 +237,7 @@ exports.RepositoryController = Montage.specialize({
                 method: "POST",
                 url: "/" + this.owner + "/" + this.repo + "/save",
                 subdomain: "api",
-                data: {
+                body: {
                     "filename": filename,
                     "contents": contents
                 }
@@ -251,7 +251,7 @@ exports.RepositoryController = Montage.specialize({
                 method: "POST",
                 url: "/" + this.owner + "/" + this.repo + "/flush",
                 subdomain: "api",
-                data: {
+                body: {
                     message: message
                 }
             });
