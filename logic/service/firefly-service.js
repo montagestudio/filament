@@ -1,6 +1,8 @@
 var HttpService = require("montage/data/service/http-service").HttpService,
     DataService = require("montage/data/service/data-service").DataService,
-    Workspace = require("data/model/workspace.mjson").montageObject;
+    Promise = require("montage/core/promise").Promise,
+    Workspace = require("logic/model/workspace").Workspace,
+    WorkspaceDescriptor = require("data/model/workspace.mjson").montageObject;
 
 /**
  * @class
@@ -48,7 +50,7 @@ exports.FireflyService = HttpService.specialize(/** @lends FireflyService.protot
                 type = stream.query.type,
                 rawDataPromise;
             switch (type) {
-                case Workspace:
+                case WorkspaceDescriptor:
                     rawDataPromise = this._fetchWorkspacesRawData(stream);
                     break;
             }
@@ -72,6 +74,35 @@ exports.FireflyService = HttpService.specialize(/** @lends FireflyService.protot
                 apiUrl = this.apiUrl + "/workspaces";
             }
             return this.fetchHttpRawData(apiUrl);
+        }
+    },
+
+    deleteRawData: {
+        value: function (data, context) {
+            switch (context.constructor) {
+                case Workspace:
+                    return this._deleteWorkspace(data, context);
+            }
+        }
+    },
+
+    _deleteWorkspace: {
+        value: function (data, context) {
+            var self = this,
+                xhr = new XMLHttpRequest();
+            return new Promise(function (resolve, reject) {
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        resolve(xhr);
+                    }
+                };
+                xhr.onerror = function () {
+                    reject(xhr.error);
+                };
+                xhr.open("DELETE", self.apiUrl + "/workspaces");
+                xhr.setRequestHeader("x-access-token", self.authorization[0]);
+                xhr.send();
+            });
         }
     }
 });

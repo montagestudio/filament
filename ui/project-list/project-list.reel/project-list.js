@@ -200,14 +200,11 @@ exports.ProjectList = Component.specialize({
     handleRemoveWorkspacesAction: {
         value: function () {
             var self = this;
-            this.application.delegate.request({
-                method: "DELETE",
-                subdomain: "api",
-                url: "/workspaces"
-            }).then(function (response) {
-                self._getWorkspaces();
-            })
-            .done();
+            this.application.service.deleteDataObject(this.workspaces[0])
+                .then(function () {
+                    return self._getWorkspaces();
+                })
+                .done();
         }
     },
 
