@@ -19,37 +19,8 @@ exports.ApplicationDelegate = Montage.specialize({
         value: false
     },
 
-    _deferredApplication: {
-        value: null
-    },
-
-    _deferredMainComponent: {
-        value: null
-    },
-
-    accessToken: {
-        get: function () {
-            if (typeof this._accessToken === "undefined") {
-                this._accessToken = localStorage.getItem("MontageStudioToken");
-            }
-            return this._accessToken;
-        },
-        set: function (value) {
-            this._accessToken = value;
-            if (typeof value === "undefined") {
-                localStorage.removeItem("MontageStudioToken");
-            } else {
-                localStorage.setItem("MontageStudioToken", value);
-            }
-        }
-    },
-
     constructor: {
         value: function () {
-            var self = this;
-            this._deferredApplication = Promise.defer();
-            this._deferredMainComponent = Promise.defer();
-
             // Make stack traces from promise errors easily available in the
             // console. Otherwise you need to manually inspect the error.stack
             // in the debugger.
@@ -64,19 +35,29 @@ exports.ApplicationDelegate = Montage.specialize({
                 }
             };
 
-            // Montage Data
             DataService.authorizationManager.delegate = this;
-            this._deferredApplication.promise
-                .then(function (app) {
-                    self.application = app;
-                    self._initializeServices();
-                });
         }
     },
 
-    _initializeServices: {
-        value: function () {
+    willFinishLoading: {
+        value: function (app) {
+            var self = this;
+
+            this.application = app;
             this.application.service = applicationService;
+
+            //TODO sort out where many of these belong, more of the actual handling should probably be here
+
+            window.addEventListener("openRelatedFile", function (evt) {
+                var url = evt.detail;
+                // FIXME: this method does not exist
+                self.openFileUrl(url.replace("file://localhost/", "fs://localhost/")).done();
+            });
+
+            // TODO this is a temporary workaround to redirect keyEquivalents to the
+            // toolbar as a last resort if they make it up here
+            app.addEventListener("keyPress", this);
+            app.addEventListener("menuAction", this, false);
         }
     },
 
@@ -109,33 +90,6 @@ exports.ApplicationDelegate = Montage.specialize({
         }
     },
 
-    handleComponentLoaded: {
-        value: function (evt) {
-            this._deferredMainComponent.resolve(evt.detail);
-        }
-    },
-
-    willFinishLoading: {
-        value: function (app) {
-            var self = this;
-
-            //TODO sort out where many of these belong, more of the actual handling should probably be here
-
-            window.addEventListener("openRelatedFile", function (evt) {
-                var url = evt.detail;
-                // FIXME: this method does not exist
-                self.openFileUrl(url.replace("file://localhost/", "fs://localhost/")).done();
-            });
-
-            // TODO this is a temporary workaround to redirect keyEquivalents to the
-            // toolbar as a last resort if they make it up here
-            app.addEventListener("keyPress", this);
-            app.addEventListener("menuAction", this, false);
-
-            this._deferredApplication.resolve(app);
-        }
-    },
-
     request: {
         value: function (req) {
             var loc = window.location;
@@ -145,7 +99,7 @@ exports.ApplicationDelegate = Montage.specialize({
             req.headers = req.headers || {};
             var childService = this.application.service.childServices.toArray()[0];
             if (childService && childService.authorization) {
-                req.headers["x-access-token"] = childService.authorization[0].token;
+                req.headers["x-access-token"] = childService.authorization[0];
             }
             return request.requestOk(req);
         }
