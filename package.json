@@ -55,6 +55,7 @@
     }
   },
   "scripts": {
+    "postinstall": "npm install --prefix node_modules/montage",
     "test": "node test/run-node.js",
     "test:karma": "karma start --no-auto-watch --single-run",
     "test:karma-dev": "karma start --auto-watch --no-single-run",
