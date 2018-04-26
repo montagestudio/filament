@@ -17,7 +17,7 @@
     "matte": "montagejs/matte.git#master",
     "minit": "montagejs/minit.git#master",
     "mjs-volume": "montagestudio/mjs-volume.git#master",
-    "montage": "montagejs/montage.git#master",
+    "montage": "montagejs/montage.git#0131271de93e10fa480847caa46cba2510669f50",
     "mop": "^16.1.3",
     "npm": "^5.3.0",
     "palette": "montagestudio/palette#master",
