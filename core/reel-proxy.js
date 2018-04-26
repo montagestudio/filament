@@ -140,7 +140,7 @@ exports.ReelProxy = EditingProxy.specialize( {
             var serializationBindings = {};
             if (serialization.values) {
                 for (key in serialization.values) {
-                    if (serialization.values.hasOwnProperty(key)) {
+                    if (serialization.values.hasOwnProperty(key) && typeof serialization.values[key] === "object") {
                         if ("<-" in serialization.values[key] || "<->" in serialization.values[key]) {
                             serializationBindings[key] = serialization.values[key];
                         }
