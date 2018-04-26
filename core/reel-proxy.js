@@ -126,10 +126,23 @@ exports.ReelProxy = EditingProxy.specialize( {
         value: function (serialization) {
             this.super(serialization);
 
+            var key;
             var bindings = [];
-            for (var key in serialization.bindings) {
-                if (serialization.bindings.hasOwnProperty(key)) {
-                    var bindingEntry = serialization.bindings[key];
+            var serializationBindings = {};
+            if (serialization.values) {
+                for (key in serialization.values) {
+                    if (serialization.values.hasOwnProperty(key)) {
+                        if ("<-" in serialization.values[key] || "<->" in serialization.values[key]) {
+                            serializationBindings[key] = serialization.values[key];
+                        }
+                    }
+                }
+            } else {
+                serializationBindings = serialization.bindings;
+            }
+            for (key in serializationBindings) {
+                if (serializationBindings.hasOwnProperty(key)) {
+                    var bindingEntry = serializationBindings[key];
                     var bindingDescriptor = Object.create(null);
 
                     bindingDescriptor.targetPath = key;
