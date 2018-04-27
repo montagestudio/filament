@@ -1,7 +1,7 @@
 /* global global,unescape,module */
 var minitCreate = require("minit/lib/create").create,
     Q = require("q"),
-    Promise = require("bluebird"),
+    Promise = require("montage/core/promise").Promise,
     npm = require("npm"),
     PATH = require('path');
 

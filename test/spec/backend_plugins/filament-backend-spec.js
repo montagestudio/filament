@@ -2,7 +2,7 @@
 
 var SandboxedModule = require('sandboxed-module');
 var QFSMock = require("q-io/fs-mock");
-var Promise = require("bluebird");
+var Promise = require("montage/core/promise").Promise;
 
 describe("filament backend", function () {
 

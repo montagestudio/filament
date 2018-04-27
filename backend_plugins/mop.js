@@ -1,4 +1,4 @@
-var Promise = require("bluebird");
+var Promise = require("montage/core/promise").Promise;
 var optimize = require("mop");
 
 exports.optimize = function(location, config) {

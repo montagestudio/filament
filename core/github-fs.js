@@ -1,4 +1,4 @@
-var Promise = require("bluebird");
+var Promise = require("montage/core/promise").Promise;
 var Boot = require("./fs-boot");
 var application = require("montage/core/application").application;
 var GithubBlob = require("logic/model/github-blob").GithubBlob;

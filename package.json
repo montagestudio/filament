@@ -11,7 +11,6 @@
     "npm": "~2.15.11"
   },
   "dependencies": {
-    "bluebird": "^3.5.0",
     "esprima": "^1.2.2",
     "flow-editor": "montagestudio/flow-editor.git#master",
     "matte": "montagejs/matte.git#master",
@@ -55,7 +54,6 @@
     }
   },
   "scripts": {
-    "postinstall": "npm install --prefix node_modules/montage",
     "test": "node test/run-node.js",
     "test:karma": "karma start --no-auto-watch --single-run",
     "test:karma-dev": "karma start --auto-watch --no-single-run",

@@ -1,7 +1,7 @@
 /* global process, __dirname*/
 var path = require ("path");
 var fs = require("fs");
-var Promise = require("bluebird");
+var Promise = require("montage/core/promise").Promise;
 var childProcess = require('child_process');
 
 var sikuli = process.env.SIKULI;
