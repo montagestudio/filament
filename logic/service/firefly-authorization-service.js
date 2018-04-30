@@ -31,7 +31,7 @@ exports.FireflyAuthorizationService = HttpService.specialize({
                     //   we pipe one WS connection into another
                     // - There is no way to send arbitrary response headers over a WS handshake
                     // So we resort to setting a local cookie, which does get sent with WS connections
-                    document.cookie = "token=" + jwt + "; domain=." + window.location.hostname + ";";
+                    document.cookie = "token=" + jwt + "; domain=." + window.location.hostname + "; path=/";
                     return self.authorization;
                 });
         }
