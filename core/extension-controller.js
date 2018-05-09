@@ -42,34 +42,8 @@ exports.ExtensionController = Target.specialize({
     loadExtensions: {
         value: function () {
             var self = this;
-
-            var builtInExtensionsPromise = new Promise(function (resolve, reject) {
-                var xhr = new XMLHttpRequest();
-                var matches;
-                var regex;
-                var results = [];
-                xhr.open("GET", "/app/extensions/");
-                xhr.onload = function () {
-                    var res;
-                    if (xhr.status === 200) {
-                        res = xhr.response;
-                        regex = /^<a href="(.*?)">/gm;
-                        while ((matches = regex.exec(res))) {
-                            results.push({ url: window.location.protocol + "//" + window.location.host + "/app/extensions/" + matches[1] });
-                        }
-                        resolve(results);
-                    } else {
-                        reject(xhr.response);
-                    }
-                };
-                xhr.send();
-            });
-
-            var projectExtensionsPromise = this._environmentBridge.availableExtensions;
-
-            return Promise.all([ builtInExtensionsPromise, projectExtensionsPromise ])
+            return this._environmentBridge.availableExtensions
                 .then(function (extensions) {
-                    extensions = extensions[0].concat(extensions[1]);
                     return Promise.all(extensions.map(function (entry) {
                         return self.loadExtension(entry.url);
                     }), function (error) {
