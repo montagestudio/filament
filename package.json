@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "esprima": "^1.2.2",
-    "flow-editor": "montagestudio/flow-editor.git#master",
+    "flow-editor": "montagestudio/flow-editor.git#0a5c22984beda2c412e33fa285d1cf52b302d2d9",
     "matte": "montagejs/matte.git#master",
     "minit": "montagejs/minit.git#master",
     "mjs-volume": "montagestudio/mjs-volume.git#master",
