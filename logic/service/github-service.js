@@ -1,4 +1,4 @@
-var HttpService = require("montage/data/service/http-service").HttpService,
+var GithubHttpService = require("./github-http-service").GithubHttpService,
     DataService = require("montage/data/service/data-service").DataService,
     User = require("logic/model/github-user").GithubUser,
     UserDescriptor = require("data/model/github-user.mjson").montageObject,
@@ -18,7 +18,7 @@ var API_URL = "https://api.github.com";
  * @class
  * @extends external:DataService
  */
-exports.GithubService = HttpService.specialize(/** @lends GithubService.prototype */ {
+exports.GithubService = GithubHttpService.specialize(/** @lends GithubService.prototype */ {
 
     authorizationPolicy: {
         value: DataService.AuthorizationPolicy.UP_FRONT
@@ -40,7 +40,7 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
 
     fetchHttpRawData: {
         value: function (url, headers, body, type, useCredentials) {
-            return HttpService.prototype.fetchHttpRawData.call(this, url, headers, body, type, useCredentials || false);
+            return GithubHttpService.prototype.fetchHttpRawData.call(this, url, headers, body, type, useCredentials || false);
         }
     },
 
@@ -184,7 +184,7 @@ exports.GithubService = HttpService.specialize(/** @lends GithubService.prototyp
                 return stream.dataError(new Error("owner, repo, path required"));
             }
             url = API_URL + ("/repos/" + owner + "/" + repo + "/contents/" + path).replace("//", "/");
-            return this.fetchHttpRawData(url, { "Accept": "application/vnd.github.v3.raw+json" }, undefined, [HttpService.DataType.TEXT])
+            return this.fetchHttpRawData(url, { "Accept": "application/vnd.github.v3.raw+json" }, undefined, [GithubHttpService.DataType.TEXT])
                 .then(function (contents) {
                     self.addRawData(stream, [contents]);
                 }, Function.noop)
