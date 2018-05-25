@@ -23,7 +23,7 @@ exports.AddDependencyOverlay = Overlay.specialize(/** @lends AddDependencyOverla
 
     show: {
         value: function () {
-            Overlay.show.call(this);
+            Overlay.prototype.show.call(this);
             this.url = this.version = this.name = null;
             this.templateObjects.regular.checked = true;
         }
