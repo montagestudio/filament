@@ -15,7 +15,7 @@ exports.ToolsBox = Object.create(Object.prototype, {
     isNameValid: {
         value: function (name) {
             return (typeof name === 'string') ?
-                (/^(?!(js|node|node_modules|favicon\.ico)$)(?=([0-9a-zA-Z~]([\w\-\.~]){0,})$)/i).test(name) : false;
+                (/^(?!(js|node|node_modules|favicon\.ico)$)(?=([0-9a-zA-Z~]([\w-\.~]){0,})$)/i).test(name) : false;
         }
     },
 
@@ -27,7 +27,7 @@ exports.ToolsBox = Object.create(Object.prototype, {
      */
     isVersionValid: {
         value: function (version) {
-            return (typeof version === 'string') ? (/^v?([0-9]+\.){2}[0-9]+(\-?[a-zA-Z0-9])*$/).test(version) : false;
+            return (typeof version === 'string') ? (/^v?([0-9]+\.){2}[0-9]+(-?[a-zA-Z0-9])*$/).test(version) : false;
         }
     },
 
@@ -40,7 +40,7 @@ exports.ToolsBox = Object.create(Object.prototype, {
     isUrlValid: {
         value: function (url) {
             return (typeof url === 'string') ?
-                (/^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w\.\-]*)*\/?$/).test(url) : false;
+                (/^(https?:\/\/)?([\da-z\.-]+)\.([a-z.]{2,6})([\/\w.-]*)*\/?$/).test(url) : false;
         }
     },
 
@@ -55,7 +55,7 @@ exports.ToolsBox = Object.create(Object.prototype, {
             var response = false;
 
             if (typeof gitUrl === 'string') {
-                var result = /^(?:(git|https?|ssh)?:\/\/|[\w\-\.~]+@)/.exec(gitUrl);
+                var result = /^(?:(git|https?|ssh)?:\/\/|[\w-.~]+@)/.exec(gitUrl);
 
                 if (Array.isArray(result) && result.length > 1) {
                     var protocol = result[1];
@@ -67,7 +67,7 @@ exports.ToolsBox = Object.create(Object.prototype, {
                         response = this.isSecureShellGitUrl(gitUrl);
 
                     } else { // git:// or git@github.com case
-                        response = /^(?:git:\/\/(?:[\w\-\.~]+@)?|[\w\-\.~]+@)github\.com(?:\/|:)[\/\w\.\-:~\?]*\/(?:[0-9a-zA-Z~][\w\-\.~]*)\.git(?:#[\w\-\.~]*)?$/.test(gitUrl);
+                        response = /^(?:git:\/\/(?:[\w-.~]+@)?|[\w-.~]+@)github\.com(?:\/|:)[\/\w.-:~\?]*\/(?:[0-9a-zA-Z~][\w-.~]*)\.git(?:#[\w-.~]*)?$/.test(gitUrl);
                     }
                 }
             }
@@ -79,14 +79,14 @@ exports.ToolsBox = Object.create(Object.prototype, {
     isSecureShellGitUrl: {
         value: function (url) {
             return typeof url === 'string' ?
-                /^(?:ssh:\/\/)?[\w\-\.~]+@github\.com:[\/\w\.\-:~\?]*\/(?:[0-9a-zA-Z~][\w\-\.~]*)\.git(?:#[\w\-\.~]*)?$/.test(url) : false;
+                /^(?:ssh:\/\/)?[\w-.~]+@github\.com:[\/\w.-:~\?]*\/(?:[0-9a-zA-Z~][\w-.~]*)\.git(?:#[\w-.~]*)?$/.test(url) : false;
         }
     },
 
     isHttpGitUrl: {
         value: function (url) {
             return typeof url === 'string' ?
-                /^https?:\/\/(?:[\w\-\.~]+@)?github\.com\/[\/\w\.\-:~\?]*\/(?:[0-9a-zA-Z~][\w\-\.~]*)\.git(?:#[\w\-\.~]*)?$/.test(url) : false;
+                /^https?:\/\/(?:[\w-.~]+@)?github\.com\/[\/\w.-:~\?]*\/(?:[0-9a-zA-Z~][\w-.~]*)\.git(?:#[\w-.~]*)?$/.test(url) : false;
         }
     },
 
@@ -134,7 +134,7 @@ exports.ToolsBox = Object.create(Object.prototype, {
                         url = url.replace(/github\.com:/, "github.com/");
                     }
 
-                    urlTransformed = url.replace(/^(?:(?:https?|ssh|git):\/\/(?:.*@)?|[\w\-\.~]+@)/, patternProtocol);
+                    urlTransformed = url.replace(/^(?:(?:https?|ssh|git):\/\/(?:.*@)?|[\w-.~]+@)/, patternProtocol);
                 }
             }
 
@@ -152,7 +152,7 @@ exports.ToolsBox = Object.create(Object.prototype, {
     findModuleNameFormGitUrl: {
         value: function  (url) {
             if (this.isNpmCompatibleGitUrl(url) || this.isGitUrl(url)) {
-                var resultRegExp = /([0-9a-zA-Z~][\w\-\.~]*)\.git/.exec(url);
+                var resultRegExp = /([0-9a-zA-Z~][\w-.~]*)\.git/.exec(url);
 
                 if (Array.isArray(resultRegExp) && resultRegExp.length > 1) {
                     return resultRegExp[1];
@@ -170,7 +170,7 @@ exports.ToolsBox = Object.create(Object.prototype, {
     isEmailValid: {
         value: function (email) {
             return (typeof email === 'string') ?
-                (/^([a-z0-9_\.\-\+!#$%&'/=?^_`{|}~]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/).test(email) : false;
+                (/^([a-z0-9_\.\-\+!#$%&'/=?^_`{|}~]+)@([\da-z.-]+)\.([a-z.]{2,6})$/).test(email) : false;
         }
     },
 
