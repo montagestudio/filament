@@ -163,12 +163,5 @@
     "redo_label": {
         "message": "Redo {label}",
         "description": "Label for redo menu label"
-    },
-    "num_updates": {
-        "message": "{updates, plural, =0 {No updates have been found} one {1 update has been found} other {# updates have been found}}",
-        "description": "how many updates has been found",
-        "locations": [
-            "backend_plugins/package-manager-library/outdated-command.js"
-        ]
     }
 }
