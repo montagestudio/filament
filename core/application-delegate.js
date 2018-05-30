@@ -54,10 +54,6 @@ exports.ApplicationDelegate = Montage.specialize({
                 self.openFileUrl(url.replace("file://localhost/", "fs://localhost/")).done();
             });
 
-            // TODO this is a temporary workaround to redirect keyEquivalents to the
-            // toolbar as a last resort if they make it up here
-            app.addEventListener("keyPress", this);
-            app.addEventListener("menuAction", this, false);
         }
     },
 
@@ -102,49 +98,6 @@ exports.ApplicationDelegate = Montage.specialize({
                 req.headers["x-access-token"] = childService.authorization[0];
             }
             return request.requestOk(req);
-        }
-    },
-
-    handleMenuAction: {
-        value: function (evt) {
-            switch (evt.detail.identifier) {
-            case "documentation":
-                window.open("http://docs.montagestudio.com/montage-studio/");
-                break;
-            case "forum":
-                window.open("http://forum.montagestudio.com/");
-                break;
-            case "report":
-                window.location = "mailto:feedback@montagestudio.com";
-                break;
-            case "api":
-                window.open("http://docs.montagestudio.com/api/AbstractButton.html");
-                break;
-            case "framework":
-                window.open("http://docs.montagestudio.com/montagejs/");
-                break;
-            case "licenses":
-                var self = this;
-                this.showModal = true;
-                this.currentPanelKey = "info";
-                this.infoPanel.getResponse(LICENSES, "Close")
-                .then(function() {
-                    self.showModal = false;
-                    self.currentPanelKey = null;
-                }).done();
-                break;
-            }
-        }
-    },
-
-    handleKeyPress: {
-        value: function (evt) {
-            if ("menuAction" === evt.identifier) {
-                var component = evt.keyComposer.component;
-                if (typeof component.handleKeyPress === "function") {
-                    component.handleKeyPress(evt);
-                }
-            }
         }
     }
 });

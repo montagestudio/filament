@@ -143,58 +143,54 @@ exports.Build = Montage.specialize({
 
     _showInfoPanel: {
         value: function(message) {
-            var applicationDelegate = application.delegate;
-
+            var workbench = this._environmentBridge.workbench;
             message = "Build successful." + (message ? "<br>" + message + "" : "");
-
-            applicationDelegate.showModal = true;
-            applicationDelegate.currentPanelKey = "info";
-            applicationDelegate.infoPanel.getResponse(message)
-            .then(function() {
-                applicationDelegate.showModal = false;
-                applicationDelegate.currentPanelKey = null;
-            }).done();
+            workbench.showModal = true;
+            workbench.currentPanelKey = "info";
+            workbench.infoPanel.getResponse(message)
+                .then(function() {
+                    workbench.showModal = false;
+                    workbench.currentPanelKey = null;
+                }).done();
         }
     },
 
     _showProgressPanel: {
         value: function() {
-            var applicationDelegate = application.delegate;
-
-            applicationDelegate.showModal = true;
-            applicationDelegate.currentPanelKey = "progress";
-            applicationDelegate.progressPanel.message = "Building...";
+            var workbench = this._environmentBridge.workbench;
+            workbench.showModal = true;
+            workbench.currentPanelKey = "progress";
+            workbench.progressPanel.message = "Building...";
         }
     },
 
     _updateProgressPanelMessage: {
         value: function(message) {
-            var applicationDelegate = application.delegate;
-
-            applicationDelegate.progressPanel.message = "Building: " + message;
+            var workbench = this._environmentBridge.workbench;
+            workbench.progressPanel.message = "Building: " + message;
         }
     },
 
     _hideProgressPanel: {
         value: function() {
-            var applicationDelegate = application.delegate;
+            var workbench = this._environmentBridge.workbench;
 
-            applicationDelegate.showModal = false;
-            applicationDelegate.currentPanelKey = null;
+            workbench.showModal = false;
+            workbench.currentPanelKey = null;
         }
     },
 
     _showErrorPanel: {
         value: function(chainIdentifier) {
             var self = this;
-            var applicationDelegate = application.delegate;
+            var workbench = this._environmentBridge.workbench;
 
-            applicationDelegate.showModal = true;
-            applicationDelegate.currentPanelKey = "confirm";
-            applicationDelegate.confirmPanel.getResponse("Building error", true, "Retry", "Close")
+            workbench.showModal = true;
+            workbench.currentPanelKey = "confirm";
+            workbench.confirmPanel.getResponse("Building error", true, "Retry", "Close")
             .then(function (response) {
-                applicationDelegate.showModal = false;
-                applicationDelegate.currentPanelKey = null;
+                workbench.showModal = false;
+                workbench.currentPanelKey = null;
                 if (response === true) {
                     self.buildFor(chainIdentifier);
                 }

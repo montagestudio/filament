@@ -479,7 +479,6 @@ exports.ProjectDocument = Document.specialize({
         value: function(updateType, resolution, reference) {
             var self = this,
                 bridge = this._environmentBridge,
-                applicationDelegate = application.delegate,
                 currentPanelKey,
                 operationAborted = false,
                 retVal;
@@ -497,20 +496,20 @@ exports.ProjectDocument = Document.specialize({
                         message;
 
                     if (result.success === false && resolutionStrategy.indexOf("rebase") !== -1) {
-                        currentPanelKey = applicationDelegate.showModal === true ? applicationDelegate.currentPanelKey : null;
-                        applicationDelegate.showModal = true;
-                        applicationDelegate.currentPanelKey = "confirm";
+                        currentPanelKey = self._workbench.showModal === true ? self._workbench.currentPanelKey : null;
+                        self._workbench.showModal = true;
+                        self._workbench.currentPanelKey = "confirm";
 
                         if (updateType === "merge") {
                             message = "We have detected remote changes. Before being able to push your work, you must update your project";
                         } else {
                             message = "We have detected remote changes. Would you like to update?";
                         }
-                        return applicationDelegate.confirmPanel.getResponse(message, "rebase", "Update", "Cancel")
+                        return self._workbench.confirmPanel.getResponse(message, "rebase", "Update", "Cancel")
                             .then(function(response) {
                                 if (response === "rebase") {
-                                    applicationDelegate.showModal = true;
-                                    applicationDelegate.currentPanelKey = "progress";
+                                    self._workbench.showModal = true;
+                                    self._workbench.currentPanelKey = "progress";
                                     return self._updateProjectRefs(updateType, "rebase", result.reference);
                                 } else {
                                      // update has been aborted by the user
@@ -519,10 +518,10 @@ exports.ProjectDocument = Document.specialize({
                                 }
                             }).finally(function() {
                                 if (currentPanelKey) {
-                                    applicationDelegate.currentPanelKey = currentPanelKey;
+                                    self._workbench.currentPanelKey = currentPanelKey;
                                 } else {
-                                    applicationDelegate.showModal = false;
-                                    applicationDelegate.currentPanelKey = null;
+                                    self._workbench.showModal = false;
+                                    self._workbench.currentPanelKey = null;
                                 }
                             });
                     } else {
@@ -539,9 +538,9 @@ exports.ProjectDocument = Document.specialize({
                         var comparedToParentBranch = true;
 
                         // Local shadow has diverged from remote branch (not a rebase case)
-                        currentPanelKey = applicationDelegate.showModal === true ? applicationDelegate.currentPanelKey : null;
-                        applicationDelegate.showModal = true;
-                        applicationDelegate.currentPanelKey = "conflict";
+                        currentPanelKey = self._workbench.showModal === true ? self._workbench.currentPanelKey : null;
+                        self._workbench.showModal = true;
+                        self._workbench.currentPanelKey = "conflict";
 
                         if (result.remote.indexOf("/montagestudio/") !== -1) {
                             // Let's cleanup the branch name we show to the user
@@ -567,23 +566,23 @@ exports.ProjectDocument = Document.specialize({
                                     localUrl = null;
                                     remoteUrl += info.shadowBranch + "~" + result.behind + "..." + info.shadowBranch;
                                 }
-                                return applicationDelegate.mergeConflictPanel.getResponse("Updating Project", "work",
+                                return self._workbench.mergeConflictPanel.getResponse("Updating Project", "work",
                                     result.remote, result.ahead, result.behind, localUrl, remoteUrl, result.resolutionStrategy);
                             })
                             .then(function(response) {
                             if (response && typeof response.resolution) {
-                                applicationDelegate.showModal = true;
-                                applicationDelegate.currentPanelKey = "progress";
+                                self._workbench.showModal = true;
+                                self._workbench.currentPanelKey = "progress";
                                 return self._updateProjectRefs(updateType, response.resolution, result.reference);
                             } else {
                                 return {success: true}; // update has been aborted by the user, let's bailout by returning success=true
                             }
                         }).finally(function() {
                             if (currentPanelKey) {
-                                applicationDelegate.currentPanelKey = currentPanelKey;
+                                self._workbench.currentPanelKey = currentPanelKey;
                             } else {
-                                applicationDelegate.showModal = false;
-                                applicationDelegate.currentPanelKey = null;
+                                self._workbench.showModal = false;
+                                self._workbench.currentPanelKey = null;
                             }
                         });
                     } else {
@@ -745,29 +744,28 @@ exports.ProjectDocument = Document.specialize({
     doMerge: {
         value: function() {
             var self = this,
-                applicationDelegate = application.delegate,
                 pushSuccessful = false;
 
             // Before we can merge, we need to make sure there wont be any conflict
-            applicationDelegate.showModal = true;
-            applicationDelegate.progressPanel.message = "Preparing to push…";
-            applicationDelegate.currentPanelKey = "progress";
+            this._workbench.showModal = true;
+            this._workbench.progressPanel.message = "Preparing to push…";
+            this._workbench.currentPanelKey = "progress";
 
             this._updateProjectRefs("merge")
                 .then(function(result) {
                     if (result.success) {
-                        applicationDelegate.currentPanelKey = "merge";
-                        applicationDelegate.showModal = true;
+                        self._workbench.currentPanelKey = "merge";
+                        self._workbench.showModal = true;
 
                         return self._environmentBridge.getRepositoryInfo(self.currentBranch.name)
                         .then(function(info) {
                             var commitUrl = info.repositoryUrl + "/compare/" + info.branch + "..." + info.shadowBranch;
-                            return applicationDelegate.mergePanel.getResponse(self.currentBranch.name, self.aheadCount,
+                            return self._workbench.mergePanel.getResponse(self.currentBranch.name, self.aheadCount,
                                 commitUrl, true, "Update files");
                         })
                         .then(function (response) {
                             if (typeof response === "object") {
-                                applicationDelegate.currentPanelKey = "progress";
+                                self._workbench.currentPanelKey = "progress";
                                 return self._mergePromise = self.merge(response.squash, response.message)
                                 .then(function(result) {
                                     if (result.success === true) {
@@ -784,17 +782,17 @@ exports.ProjectDocument = Document.specialize({
                     }
                 })
                 .finally(function() {
-                    applicationDelegate.showModal = false;
-                    applicationDelegate.currentPanelKey = null;
+                    self._workbench.showModal = false;
+                    self._workbench.currentPanelKey = null;
 
                     if (pushSuccessful !== true) {
-                        applicationDelegate.currentPanelKey = "confirm";
-                        applicationDelegate.showModal = true;
+                        self._workbench.currentPanelKey = "confirm";
+                        self._workbench.showModal = true;
                         track.error("Couldn't push project: ");
 
-                        applicationDelegate.confirmPanel.getResponse("Error pushing", true, "Retry", "Close")
+                        self._workbench.confirmPanel.getResponse("Error pushing", true, "Retry", "Close")
                         .then(function (response) {
-                            applicationDelegate.showModal = false;
+                            self._workbench.showModal = false;
                             if (response === true) {
                                 self.doMerge();
                             }
@@ -803,7 +801,6 @@ exports.ProjectDocument = Document.specialize({
                 });
         }
     },
-
 
     /**
      * Merges the shadow branch changes into its actual branch.
@@ -822,7 +819,6 @@ exports.ProjectDocument = Document.specialize({
     merge: {
         value: function (squash, message) {
             var bridge = this._environmentBridge,
-                applicationDelegate = application.delegate,
                 self = this,
                 retValue,
                 result;
@@ -830,7 +826,7 @@ exports.ProjectDocument = Document.specialize({
             if (bridge && typeof bridge.mergeShadowBranch === "function") {
                 this.isBusy = true;
 
-                applicationDelegate.progressPanel.message = "Pushing to " + self.currentBranch.name + "…";
+                self._workbench.progressPanel.message = "Pushing to " + self.currentBranch.name + "…";
                 result = bridge.mergeShadowBranch(self.currentBranch.name, message, squash)
                     .then(function(mergeResult) {
                         retValue = {success: mergeResult};

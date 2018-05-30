@@ -42,14 +42,6 @@ exports.EnvironmentBridge = Target.specialize({
         value: MenuItem
     },
 
-    progressPanel: {
-        value: null
-    },
-
-    promptPanel: {
-        value: null
-    },
-
     applicationDelegate: {
         value: null
     },
@@ -571,24 +563,22 @@ exports.EnvironmentBridge = Target.specialize({
         value: function (options) {
             var self = this;
             return this.packageUrl.then(function (packageUrl) {
-                var appDelegate = self.applicationDelegate,
-                    prefix;
-
+                var prefix;
                 if (options.defaultDirectory === packageUrl) {
                     prefix = "/";
                 }
                 else {
                     prefix = options.defaultDirectory.replace(packageUrl, "").replace(/([^/])$/, "$1/");
                 }
-                appDelegate.currentPanelKey = "prompt";
-                appDelegate.showModal = true;
-                return self.promptPanel.getResponse(options.prompt, options.defaultName, options.submitLabel, null, prefix).then(function (response) {
+                self.workbench.currentPanelKey = "prompt";
+                self.workbench.showModal = true;
+                return self.workbench.promptPanel.getResponse(options.prompt, options.defaultName, options.submitLabel, null, prefix).then(function (response) {
                     //TODO sanitize input
                     if (response) {
                         response = options.defaultDirectory + "/" + response;
                     }
-                    appDelegate.showModal = false;
-                    appDelegate.currentPanelKey = null;
+                    self.workbench.showModal = false;
+                    self.workbench.currentPanelKey = null;
                     return response;
                 });
             });
