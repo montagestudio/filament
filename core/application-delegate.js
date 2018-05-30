@@ -97,6 +97,8 @@ exports.ApplicationDelegate = Montage.specialize({
             if (childService && childService.authorization) {
                 req.headers["x-access-token"] = childService.authorization[0];
             }
+            req.headers["Content-Type"] = "application/json";
+            req.headers["Accept"] = req.headers["Accept"] || "application/json";
             return request.requestOk(req);
         }
     }
