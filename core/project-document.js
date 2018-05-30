@@ -76,6 +76,7 @@ exports.ProjectDocument = Document.specialize({
      */
     init: {
         value: function (documentController, environmentBridge, workbench) {
+            Document.prototype.init.call(this);
             this._environmentBridge = environmentBridge;
             this._documentController = documentController;
             this._workbench = workbench;
