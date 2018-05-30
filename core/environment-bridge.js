@@ -19,8 +19,10 @@ var Target = require("montage/core/target").Target,
 exports.EnvironmentBridge = Target.specialize({
 
     constructor: {
-        value: function EnvironmentBridge() {
+        value: function EnvironmentBridge(application, workbench) {
             this.super();
+            this.application = application;
+            this.workbench = workbench;
             this._serviceCache = {};
             var pathComponents = window.location.pathname.replace(/^\//, "").split("/");
             if (pathComponents.length >= 2) {
@@ -31,9 +33,7 @@ exports.EnvironmentBridge = Target.specialize({
     },
 
     init: {
-        value: function (application, workbench) {
-            this.application = application;
-            this.workbench = workbench;
+        value: function () {
             return this;
         }
     },
