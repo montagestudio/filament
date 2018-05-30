@@ -617,8 +617,8 @@ exports.EnvironmentBridge = Target.specialize({
     },
 
     createComponent: {
-        value: function (name, packageHome, destination) {
-            return this.repositoryController.createComponent(name, packageHome, destination).then(function(response) {
+        value: function (name, destination) {
+            return this.repositoryController.createComponent(name, destination).then(function(response) {
                 if (response.error) {
                     throw new Error(response.error);
                 }

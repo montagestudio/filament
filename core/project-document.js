@@ -342,7 +342,7 @@ exports.ProjectDocument = Document.specialize({
         value: function (name, packageHome, relativeDestination) {
             var self = this;
 
-            return this._environmentBridge.createComponent(name, packageHome, relativeDestination)
+            return this._environmentBridge.createComponent(name, relativeDestination)
                 .then(function (result) {
                     return self._updateShadowDelta().then(function() { return result; });
                 });

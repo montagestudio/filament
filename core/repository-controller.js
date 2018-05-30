@@ -200,14 +200,13 @@ exports.RepositoryController = Montage.specialize({
     },
 
     createComponent: {
-        value: function(name, packageHome, destination) {
+        value: function(name, destination) {
             return application.delegate.request({
                 method: "POST",
                 url: "/" + this.owner + "/" + this.repo + "/components",
                 subdomain: "api",
                 body: {
                     "name": name,
-                    "packageHome": packageHome,
                     "destination": destination
                 }
             });
