@@ -51,33 +51,10 @@ exports.RepositoryController = Montage.specialize({
         value: function() {
             var self = this;
             var done = Promise.defer();
-
             return application.delegate.request({
                 method: "POST",
                 url: "/" + this.owner + "/" + this.repo + "/init",
                 subdomain: "api"
-            }).then(function () {
-                function poll() {
-                    application.delegate.request({
-                        method: "GET",
-                        url: "/" + self.owner + "/" + self.repo + "/init/progress",
-                        subdomain: "api"
-                    })
-                    .then(function (response) {
-                        var message = JSON.parse(response.body);
-                        if (message.state === "pending") {
-                            setTimeout(poll, 5000);
-                        } else if (message.state === "fulfilled") {
-                            done.resolve();
-                        } else if (message.state === "rejected") {
-                            done.reject(new Error("Initialize failed"));
-                        }
-                    }).catch(done.reject);
-                }
-
-                poll();
-
-                return done.promise;
             });
         }
     },
