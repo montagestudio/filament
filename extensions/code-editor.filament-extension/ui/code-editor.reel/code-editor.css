@@ -10,6 +10,18 @@
     display: flex;
 }
 
+.CodeEditor-boundaryLine {
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    left: 43.9em;
+    top: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+    z-index: 10;
+}
+
 
 /* CodeMirror overrides ------------------------------ */
 
