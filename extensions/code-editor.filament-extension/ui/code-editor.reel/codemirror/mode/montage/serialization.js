@@ -127,14 +127,16 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
 
     function tokenPropertyValueString(stream, state) {
         var propertyName = getPropertyName(state);
-        var token = tokenString(stream, state);
+        var string = consumeString(stream, state);
 
-        if (propertyName === "prototype") {
+        setPropertyValue(state, string);
+
+        if (propertyName === "prototype" || propertyName === "object") {
             return "module";
         } else if (propertyName === "@") {
             return "object-reference";
         } else {
-            return token;
+            return "string-2";
         }
     }
 
@@ -173,6 +175,12 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
         //console.log("add property: ", name);
     }
 
+    function setPropertyValue(state, value) {
+        if (state.block) {
+            state.block.properties[state.block.properties.length - 1].value = value;
+        }
+    }
+
     function endProperty(state) {
         if (state.block && state.block.type === "object") {
             state.block.readingPropertyName = true;
@@ -190,6 +198,7 @@ CodeMirror.defineMode("text/montage-serialization", function(config/*, parserCon
 
         state.blocks.push({
             type: type || "object",
+            name: getPropertyName(state),
             readingPropertyName: type === "array" ? false : true,
             properties: [],
             inSameLineAsPreviousBlock: countOpenBlocksInLine(stream, state) > 0
