@@ -16,8 +16,9 @@ var EditingDocument = require("palette/core/editing-document").EditingDocument,
     WeakMap = require("montage/collections/weak-map"),
     ValidationError = require("core/error").ValidationError,
     NotModifiedError = require("core/error").NotModifiedError,
-    ObjectReferences = require("core/object-references").ObjectReferences,
-    modifyModule = require("core/modify-module");
+    modifyModule = require("core/modify-module"),
+    defaultEventManager = require("montage/core/event/event-manager").defaultEventManager,
+    ObjectReferences = require("core/object-references").ObjectReferences;
 
 // An object to use when merging templates to ensure labels are applied correctly
 var MergeDelegate = function (labeler, serializationToMerge) {
@@ -270,8 +271,8 @@ exports.ReelDocument = EditingDocument.specialize({
             if ("delete" === identifier) {
                 if (this.canDelete) {
                     this.deleteSelected();
+                    evt.stop();
                 }
-                evt.stop();
             } else if ("undo" === identifier) {
                 if (this.canUndo) {
                     this.undo().done();
@@ -293,10 +294,50 @@ exports.ReelDocument = EditingDocument.specialize({
         }
     },
 
+    _isActiveTartgetChildOfComponent: {
+        value: function (obj) {
+            var activeTarget = defaultEventManager.activeTarget,
+                component = activeTarget;
+
+            while (component && component.parentComponent && component.constructor.name !== "TemplateObjectCell") {
+                component = component.parentComponent;
+            }
+
+            return component.constructor.name === "TemplateObjectCell" && component._templateObject === obj;
+        }
+    },
+
+    _isActiveTartgetNodeCell: {
+        value: function (obj) {
+            var activeTarget = defaultEventManager.activeTarget,
+                component = activeTarget;
+
+            return component.constructor.name === "NodeCell" && component.nodeInfo === obj;
+        }
+    },
+
+    isSelectionParentOfActiveTarget: {
+        value: function (obj) {
+            if (this.activeSelection === this.selectedObjects) {
+                return this._isActiveTartgetChildOfComponent(obj);
+            } else if (this.activeSelection === this.selectedElements) {
+                return this._isActiveTartgetNodeCell(obj);
+            } else {
+                return false;
+            }
+        }
+    },
+
     canDelete: {
         get: function () {
+            var self = this;
+
             return !!this.activeSelection &&
                 this.activeSelection.length > 0 &&
+                // Only accept to delete if at least of one the selection representation is in active target
+                this.activeSelection.some(function (obj) {
+                    return  self.isSelectionParentOfActiveTarget(obj);
+                }) &&
                 !this.activeSelection.some(function (obj) {
                     return obj.label === "owner";
                 });

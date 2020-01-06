@@ -55,6 +55,10 @@ exports.NodeCell = Component.specialize(/** @lends module:"./node-cell.reel".Nod
         value: null
     },
 
+    acceptsActiveTarget: {
+        value: true
+    },
+
     domExplorer: {
         get: function() {
             return this._domExplorer;

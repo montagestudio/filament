@@ -170,7 +170,7 @@ Montage.defineProperty(exports, "defaultMenu", {
                 editMenu = makeMenuItem("Edit", "", true, "", [
                     makeMenuItem("Undo", "undo", false, "control+z"),
                     makeMenuItem("Redo", "redo", false, "control+shift+z"),
-                    makeMenuItem("Delete", "delete", false, "command+backspace")
+                    makeMenuItem("Delete", "delete", false, "backspace")
                 ]);
                 _defaultMenu.insertItem(editMenu);
 
